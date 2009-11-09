@@ -341,6 +341,24 @@ public interface BeeLangFactory extends EFactory
   RepositoryConfiguration createRepositoryConfiguration();
 
   /**
+   * Returns a new object of class '<em>Repository Declaration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Repository Declaration</em>'.
+   * @generated
+   */
+  RepositoryDeclaration createRepositoryDeclaration();
+
+  /**
+   * Returns a new object of class '<em>Resolution Strategy</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Resolution Strategy</em>'.
+   * @generated
+   */
+  ResolutionStrategy createResolutionStrategy();
+
+  /**
    * Returns a new object of class '<em>Concern</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -582,15 +600,6 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   WildcardRefParam createWildcardRefParam();
-
-  /**
-   * Returns a new object of class '<em>Type Cast Expression</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Type Cast Expression</em>'.
-   * @generated
-   */
-  TypeCastExpression createTypeCastExpression();
 
   /**
    * Returns a new object of class '<em>Unary Expression</em>'.
@@ -852,15 +861,6 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   SetOperationCall createSetOperationCall();
-
-  /**
-   * Returns a new object of class '<em>Type Cast Operation</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Type Cast Operation</em>'.
-   * @generated
-   */
-  TypeCastOperation createTypeCastOperation();
 
   /**
    * Returns a new object of class '<em>Unary Operation</em>'.

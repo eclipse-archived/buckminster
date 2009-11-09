@@ -349,6 +349,22 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BeeLangPackage.REPOSITORY_DECLARATION:
+      {
+        RepositoryDeclaration repositoryDeclaration = (RepositoryDeclaration)theEObject;
+        T result = caseRepositoryDeclaration(repositoryDeclaration);
+        if (result == null) result = caseRepositoryConfiguration(repositoryDeclaration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.RESOLUTION_STRATEGY:
+      {
+        ResolutionStrategy resolutionStrategy = (ResolutionStrategy)theEObject;
+        T result = caseResolutionStrategy(resolutionStrategy);
+        if (result == null) result = caseRepositoryConfiguration(resolutionStrategy);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BeeLangPackage.CONCERN:
       {
         Concern concern = (Concern)theEObject;
@@ -556,19 +572,12 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.TYPE_CAST_EXPRESSION:
-      {
-        TypeCastExpression typeCastExpression = (TypeCastExpression)theEObject;
-        T result = caseTypeCastExpression(typeCastExpression);
-        if (result == null) result = caseExpression(typeCastExpression);
-        if (result == null) result = caseIfExpressionTail(typeCastExpression);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case BeeLangPackage.UNARY_EXPRESSION:
       {
         UnaryExpression unaryExpression = (UnaryExpression)theEObject;
         T result = caseUnaryExpression(unaryExpression);
+        if (result == null) result = caseExpression(unaryExpression);
+        if (result == null) result = caseIfExpressionTail(unaryExpression);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -796,21 +805,13 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.TYPE_CAST_OPERATION:
-      {
-        TypeCastOperation typeCastOperation = (TypeCastOperation)theEObject;
-        T result = caseTypeCastOperation(typeCastOperation);
-        if (result == null) result = caseTypeCastExpression(typeCastOperation);
-        if (result == null) result = caseExpression(typeCastOperation);
-        if (result == null) result = caseIfExpressionTail(typeCastOperation);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case BeeLangPackage.UNARY_OPERATION:
       {
         UnaryOperation unaryOperation = (UnaryOperation)theEObject;
         T result = caseUnaryOperation(unaryOperation);
         if (result == null) result = caseUnaryExpression(unaryOperation);
+        if (result == null) result = caseExpression(unaryOperation);
+        if (result == null) result = caseIfExpressionTail(unaryOperation);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1621,6 +1622,38 @@ public class BeeLangSwitch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Repository Declaration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Repository Declaration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseRepositoryDeclaration(RepositoryDeclaration object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Resolution Strategy</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Resolution Strategy</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseResolutionStrategy(ResolutionStrategy object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Concern</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -2048,22 +2081,6 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseWildcardRefParam(WildcardRefParam object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Type Cast Expression</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Type Cast Expression</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseTypeCastExpression(TypeCastExpression object)
   {
     return null;
   }
@@ -2528,22 +2545,6 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseSetOperationCall(SetOperationCall object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Type Cast Operation</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Type Cast Operation</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseTypeCastOperation(TypeCastOperation object)
   {
     return null;
   }

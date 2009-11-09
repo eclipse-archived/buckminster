@@ -198,11 +198,17 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="prerequisites" upperBound="-1"
         eType="#//Prerequisite" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RepositoryConfiguration">
+  <eClassifiers xsi:type="ecore:EClass" name="RepositoryConfiguration"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RepositoryDeclaration" eSuperTypes="#//RepositoryConfiguration">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolverClass" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="advice" eType="#//CompoundConcern"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="context" eType="#//ContextBlock"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ResolutionStrategy" eSuperTypes="#//RepositoryConfiguration">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="strategy" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="repositoryConfig" upperBound="-1"
+        eType="#//RepositoryConfiguration" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Concern">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="documentation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -335,8 +341,7 @@
   <eClassifiers xsi:type="ecore:EEnum" name="SetOperator">
     <eLiterals name="SEQUENCE" literal=".."/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TypeCastExpression" eSuperTypes="#//Expression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="UnaryExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="UnaryExpression" eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="Expresion" eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="TryCatchExpression" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="tryBlock" eType="#//Expression"
@@ -515,12 +520,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="params" upperBound="-1"
         eType="#//Expression" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="#//SetOperator"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TypeCastOperation" eSuperTypes="#//TypeCastExpression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//TypeRef"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expr" eType="#//UnaryExpression"
-        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UnaryOperation" eSuperTypes="#//UnaryExpression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

@@ -186,10 +186,15 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuilderInput/postCondition"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//BuilderInput/prerequisites"/>
     </genClasses>
-    <genClasses ecoreClass="BeeLang.ecore#//RepositoryConfiguration">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//RepositoryConfiguration/location"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//RepositoryConfiguration/resolverClass"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//RepositoryConfiguration/advice"/>
+    <genClasses ecoreClass="BeeLang.ecore#//RepositoryConfiguration"/>
+    <genClasses ecoreClass="BeeLang.ecore#//RepositoryDeclaration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//RepositoryDeclaration/location"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//RepositoryDeclaration/resolverClass"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//RepositoryDeclaration/context"/>
+    </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//ResolutionStrategy">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//ResolutionStrategy/strategy"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//ResolutionStrategy/repositoryConfig"/>
     </genClasses>
     <genClasses ecoreClass="BeeLang.ecore#//Concern">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Concern/documentation"/>
@@ -268,7 +273,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//WildcardRefParam/extends"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//WildcardRefParam/superRef"/>
     </genClasses>
-    <genClasses ecoreClass="BeeLang.ecore#//TypeCastExpression"/>
     <genClasses ecoreClass="BeeLang.ecore#//UnaryExpression"/>
     <genClasses ecoreClass="BeeLang.ecore#//Expresion"/>
     <genClasses ecoreClass="BeeLang.ecore#//TryCatchExpression">
@@ -394,10 +398,6 @@
     <genClasses ecoreClass="BeeLang.ecore#//SetOperationCall">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//SetOperationCall/params"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//SetOperationCall/op"/>
-    </genClasses>
-    <genClasses ecoreClass="BeeLang.ecore#//TypeCastOperation">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//TypeCastOperation/type"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//TypeCastOperation/expr"/>
     </genClasses>
     <genClasses ecoreClass="BeeLang.ecore#//UnaryOperation">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//UnaryOperation/name"/>

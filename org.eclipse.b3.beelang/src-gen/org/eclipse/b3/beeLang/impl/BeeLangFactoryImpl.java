@@ -103,6 +103,8 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.BUILDER_OUTPUT: return createBuilderOutput();
       case BeeLangPackage.BUILDER_INPUT: return createBuilderInput();
       case BeeLangPackage.REPOSITORY_CONFIGURATION: return createRepositoryConfiguration();
+      case BeeLangPackage.REPOSITORY_DECLARATION: return createRepositoryDeclaration();
+      case BeeLangPackage.RESOLUTION_STRATEGY: return createResolutionStrategy();
       case BeeLangPackage.CONCERN: return createConcern();
       case BeeLangPackage.CONCERN_BLOCK: return createConcernBlock();
       case BeeLangPackage.ADVICE: return createAdvice();
@@ -130,7 +132,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.RULE_TYPE_PARAM: return createRuleTypeParam();
       case BeeLangPackage.RULE_TYPE_REF_PARAM: return createRuleTypeRefParam();
       case BeeLangPackage.WILDCARD_REF_PARAM: return createWildcardRefParam();
-      case BeeLangPackage.TYPE_CAST_EXPRESSION: return createTypeCastExpression();
       case BeeLangPackage.UNARY_EXPRESSION: return createUnaryExpression();
       case BeeLangPackage.EXPRESION: return createExpresion();
       case BeeLangPackage.TRY_CATCH_EXPRESSION: return createTryCatchExpression();
@@ -160,7 +161,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.BOOLEAN_OPERATION: return createBooleanOperation();
       case BeeLangPackage.RELATIONAL_OPERATION: return createRelationalOperation();
       case BeeLangPackage.SET_OPERATION_CALL: return createSetOperationCall();
-      case BeeLangPackage.TYPE_CAST_OPERATION: return createTypeCastOperation();
       case BeeLangPackage.UNARY_OPERATION: return createUnaryOperation();
       case BeeLangPackage.AT_CALL: return createAtCall();
       case BeeLangPackage.WITH_CLAUSE_EXPRESSION: return createWithClauseExpression();
@@ -634,6 +634,28 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public RepositoryDeclaration createRepositoryDeclaration()
+  {
+    RepositoryDeclarationImpl repositoryDeclaration = new RepositoryDeclarationImpl();
+    return repositoryDeclaration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ResolutionStrategy createResolutionStrategy()
+  {
+    ResolutionStrategyImpl resolutionStrategy = new ResolutionStrategyImpl();
+    return resolutionStrategy;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public Concern createConcern()
   {
     ConcernImpl concern = new ConcernImpl();
@@ -924,17 +946,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     WildcardRefParamImpl wildcardRefParam = new WildcardRefParamImpl();
     return wildcardRefParam;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public TypeCastExpression createTypeCastExpression()
-  {
-    TypeCastExpressionImpl typeCastExpression = new TypeCastExpressionImpl();
-    return typeCastExpression;
   }
 
   /**
@@ -1254,17 +1265,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     SetOperationCallImpl setOperationCall = new SetOperationCallImpl();
     return setOperationCall;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public TypeCastOperation createTypeCastOperation()
-  {
-    TypeCastOperationImpl typeCastOperation = new TypeCastOperationImpl();
-    return typeCastOperation;
   }
 
   /**

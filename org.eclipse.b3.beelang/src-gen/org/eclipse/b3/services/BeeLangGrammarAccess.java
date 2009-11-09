@@ -2259,36 +2259,55 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 	public class RepositoryConfigurationElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RepositoryConfiguration");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cRepositoryDeclarationParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cResolutionStrategyParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		
+		//RepositoryConfiguration:
+		//  RepositoryDeclaration|ResolutionStrategy; 
+		//
+		//          
+		//
+		//// TODO: resolverClass should be same as for new
+		public ParserRule getRule() { return rule; }
+
+		//RepositoryDeclaration|ResolutionStrategy 
+		//
+		//          
+		//
+		//// TODO: resolverClass should be same as for new
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//RepositoryDeclaration
+		public RuleCall getRepositoryDeclarationParserRuleCall_0() { return cRepositoryDeclarationParserRuleCall_0; }
+
+		//ResolutionStrategy
+		public RuleCall getResolutionStrategyParserRuleCall_1() { return cResolutionStrategyParserRuleCall_1; }
+	}
+
+	public class RepositoryDeclarationElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RepositoryDeclaration");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Alternatives cAlternatives_0 = (Alternatives)cGroup.eContents().get(0);
 		private final Assignment cLocationAssignment_0_0 = (Assignment)cAlternatives_0.eContents().get(0);
 		private final RuleCall cLocationURIParserRuleCall_0_0_0 = (RuleCall)cLocationAssignment_0_0.eContents().get(0);
 		private final Group cGroup_0_1 = (Group)cAlternatives_0.eContents().get(1);
-		private final Keyword cResolverKeyword_0_1_0 = (Keyword)cGroup_0_1.eContents().get(0);
+		private final Keyword cRepositoryKeyword_0_1_0 = (Keyword)cGroup_0_1.eContents().get(0);
 		private final Assignment cResolverClassAssignment_0_1_1 = (Assignment)cGroup_0_1.eContents().get(1);
 		private final RuleCall cResolverClassQualifiedNameParserRuleCall_0_1_1_0 = (RuleCall)cResolverClassAssignment_0_1_1.eContents().get(0);
-		private final Assignment cAdviceAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cAdviceCompoundConcernParserRuleCall_1_0 = (RuleCall)cAdviceAssignment_1.eContents().get(0);
-		private final Keyword cSemicolonKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cContextAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cContextContextBlockParserRuleCall_1_0 = (RuleCall)cContextAssignment_1.eContents().get(0);
 		
-		//RepositoryConfiguration:
-		//  (location=URI|"resolver" resolverClass=QualifiedName) advice=CompoundConcern? ";"; 
+		//RepositoryDeclaration:
+		//  (location=URI|"repository" resolverClass=QualifiedName) context=ContextBlock?; 
 		//
-		//
-		//	              
-		//	
-		//
-		/// *
-		// ** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
-		// ** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
-		// ** The ':' clashes with 'scheme:' which is the only known Builder in an opaque URI. 
-		// * /
+		//// TODO: resolverClass should be same as for new
 		public ParserRule getRule() { return rule; }
 
-		//(location=URI|"resolver" resolverClass=QualifiedName) advice=CompoundConcern? ";"
+		//(location=URI|"repository" resolverClass=QualifiedName) context=ContextBlock?
 		public Group getGroup() { return cGroup; }
 
-		//location=URI|"resolver" resolverClass=QualifiedName
+		//location=URI|"repository" resolverClass=QualifiedName
 		public Alternatives getAlternatives_0() { return cAlternatives_0; }
 
 		//location=URI
@@ -2297,11 +2316,11 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//URI
 		public RuleCall getLocationURIParserRuleCall_0_0_0() { return cLocationURIParserRuleCall_0_0_0; }
 
-		//"resolver" resolverClass=QualifiedName
+		//"repository" resolverClass=QualifiedName
 		public Group getGroup_0_1() { return cGroup_0_1; }
 
-		//"resolver"
-		public Keyword getResolverKeyword_0_1_0() { return cResolverKeyword_0_1_0; }
+		//"repository"
+		public Keyword getRepositoryKeyword_0_1_0() { return cRepositoryKeyword_0_1_0; }
 
 		//resolverClass=QualifiedName
 		public Assignment getResolverClassAssignment_0_1_1() { return cResolverClassAssignment_0_1_1; }
@@ -2309,14 +2328,66 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//QualifiedName
 		public RuleCall getResolverClassQualifiedNameParserRuleCall_0_1_1_0() { return cResolverClassQualifiedNameParserRuleCall_0_1_1_0; }
 
-		//advice=CompoundConcern?
-		public Assignment getAdviceAssignment_1() { return cAdviceAssignment_1; }
+		//context=ContextBlock?
+		public Assignment getContextAssignment_1() { return cContextAssignment_1; }
 
-		//CompoundConcern
-		public RuleCall getAdviceCompoundConcernParserRuleCall_1_0() { return cAdviceCompoundConcernParserRuleCall_1_0; }
+		//ContextBlock
+		public RuleCall getContextContextBlockParserRuleCall_1_0() { return cContextContextBlockParserRuleCall_1_0; }
+	}
 
-		//";"
-		public Keyword getSemicolonKeyword_2() { return cSemicolonKeyword_2; }
+	public class ResolutionStrategyElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ResolutionStrategy");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cStrategyAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final Alternatives cStrategyAlternatives_0_0 = (Alternatives)cStrategyAssignment_0.eContents().get(0);
+		private final Keyword cStrategySelectFirstKeyword_0_0_0 = (Keyword)cStrategyAlternatives_0_0.eContents().get(0);
+		private final Keyword cStrategySelectBestKeyword_0_0_1 = (Keyword)cStrategyAlternatives_0_0.eContents().get(1);
+		private final Keyword cLeftCurlyBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Assignment cRepositoryConfigAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cRepositoryConfigRepositoryConfigurationParserRuleCall_2_0 = (RuleCall)cRepositoryConfigAssignment_2.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		
+		//ResolutionStrategy:
+		//  strategy=( "select-first" | "select-best" ) "{" repositoryConfig+=
+		//  RepositoryConfiguration* "}"; 
+		//
+		//             
+		//	        
+		//	
+		/// *
+		// ** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
+		// ** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
+		// ** The ':' clashes with 'scheme:' which is the only known Builder in an opaque URI. 
+		// * /
+		public ParserRule getRule() { return rule; }
+
+		//strategy=( "select-first" | "select-best" ) "{" repositoryConfig+=
+		//RepositoryConfiguration* "}"
+		public Group getGroup() { return cGroup; }
+
+		//strategy=( "select-first" | "select-best" )
+		public Assignment getStrategyAssignment_0() { return cStrategyAssignment_0; }
+
+		//"select-first"|"select-best"
+		public Alternatives getStrategyAlternatives_0_0() { return cStrategyAlternatives_0_0; }
+
+		//"select-first"
+		public Keyword getStrategySelectFirstKeyword_0_0_0() { return cStrategySelectFirstKeyword_0_0_0; }
+
+		//"select-best"
+		public Keyword getStrategySelectBestKeyword_0_0_1() { return cStrategySelectBestKeyword_0_0_1; }
+
+		//"{"
+		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
+
+		//repositoryConfig+=RepositoryConfiguration*
+		public Assignment getRepositoryConfigAssignment_2() { return cRepositoryConfigAssignment_2; }
+
+		//RepositoryConfiguration
+		public RuleCall getRepositoryConfigRepositoryConfigurationParserRuleCall_2_0() { return cRepositoryConfigRepositoryConfigurationParserRuleCall_2_0; }
+
+		//"}"
+		public Keyword getRightCurlyBracketKeyword_3() { return cRightCurlyBracketKeyword_3; }
 	}
 
 	public class URIElements implements IParserRuleAccess {
@@ -2325,7 +2396,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		
 		//URI returns ecore::EString:
 		//  STRING; 
-		//
 		/// *
 		// ** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
 		// ** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
@@ -4340,61 +4410,21 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	public class UnaryOrInfixExpressionElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "UnaryOrInfixExpression");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final RuleCall cTypeCastExpressionParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cUnaryExpressionParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
 		private final RuleCall cPostopExpressionParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		
 		//UnaryOrInfixExpression returns Expression:
-		//  TypeCastExpression|PostopExpression;
+		//  UnaryExpression|PostopExpression;
 		public ParserRule getRule() { return rule; }
 
-		//TypeCastExpression|PostopExpression
+		//UnaryExpression|PostopExpression
 		public Alternatives getAlternatives() { return cAlternatives; }
 
-		//TypeCastExpression
-		public RuleCall getTypeCastExpressionParserRuleCall_0() { return cTypeCastExpressionParserRuleCall_0; }
+		//UnaryExpression
+		public RuleCall getUnaryExpressionParserRuleCall_0() { return cUnaryExpressionParserRuleCall_0; }
 
 		//PostopExpression
 		public RuleCall getPostopExpressionParserRuleCall_1() { return cPostopExpressionParserRuleCall_1; }
-	}
-
-	public class TypeCastExpressionElements implements IParserRuleAccess {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "TypeCastExpression");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Action cTypeCastOperationAction_0 = (Action)cGroup.eContents().get(0);
-		private final Keyword cLeftParenthesisKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cTypeAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cTypeTypeRefParserRuleCall_2_0 = (RuleCall)cTypeAssignment_2.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Assignment cExprAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cExprUnaryExpressionParserRuleCall_4_0 = (RuleCall)cExprAssignment_4.eContents().get(0);
-		
-		//TypeCastExpression:
-		//  {TypeCastOperation} "(" type=TypeRef ")" expr=UnaryExpression;
-		public ParserRule getRule() { return rule; }
-
-		//{TypeCastOperation} "(" type=TypeRef ")" expr=UnaryExpression
-		public Group getGroup() { return cGroup; }
-
-		//{TypeCastOperation}
-		public Action getTypeCastOperationAction_0() { return cTypeCastOperationAction_0; }
-
-		//"("
-		public Keyword getLeftParenthesisKeyword_1() { return cLeftParenthesisKeyword_1; }
-
-		//type=TypeRef
-		public Assignment getTypeAssignment_2() { return cTypeAssignment_2; }
-
-		//TypeRef
-		public RuleCall getTypeTypeRefParserRuleCall_2_0() { return cTypeTypeRefParserRuleCall_2_0; }
-
-		//")"
-		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
-
-		//expr=UnaryExpression
-		public Assignment getExprAssignment_4() { return cExprAssignment_4; }
-
-		//UnaryExpression
-		public RuleCall getExprUnaryExpressionParserRuleCall_4_0() { return cExprUnaryExpressionParserRuleCall_4_0; }
 	}
 
 	public class UnaryExpressionElements implements IParserRuleAccess {
@@ -7276,6 +7306,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	private BuilderOutputElements pBuilderOutput;
 	private BuilderInputElements pBuilderInput;
 	private RepositoryConfigurationElements pRepositoryConfiguration;
+	private RepositoryDeclarationElements pRepositoryDeclaration;
+	private ResolutionStrategyElements pResolutionStrategy;
 	private URIElements pURI;
 	private ConcernElements pConcern;
 	private ConcernBlockElements pConcernBlock;
@@ -7324,7 +7356,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	private SetOperatorElements unknownRuleSetOperator;
 	private SetExpressionElements pSetExpression;
 	private UnaryOrInfixExpressionElements pUnaryOrInfixExpression;
-	private TypeCastExpressionElements pTypeCastExpression;
 	private UnaryExpressionElements pUnaryExpression;
 	private PostopExpressionElements pPostopExpression;
 	private InfixExpressionElements pInfixExpression;
@@ -7915,17 +7946,11 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//RepositoryConfiguration:
-	//  (location=URI|"resolver" resolverClass=QualifiedName) advice=CompoundConcern? ";"; 
+	//  RepositoryDeclaration|ResolutionStrategy; 
 	//
+	//          
 	//
-	//	              
-	//	
-	//
-	/// *
-	// ** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
-	// ** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
-	// ** The ':' clashes with 'scheme:' which is the only known Builder in an opaque URI. 
-	// * /
+	//// TODO: resolverClass should be same as for new
 	public RepositoryConfigurationElements getRepositoryConfigurationAccess() {
 		return (pRepositoryConfiguration != null) ? pRepositoryConfiguration : (pRepositoryConfiguration = new RepositoryConfigurationElements());
 	}
@@ -7934,9 +7959,40 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		return getRepositoryConfigurationAccess().getRule();
 	}
 
+	//RepositoryDeclaration:
+	//  (location=URI|"repository" resolverClass=QualifiedName) context=ContextBlock?; 
+	//
+	//// TODO: resolverClass should be same as for new
+	public RepositoryDeclarationElements getRepositoryDeclarationAccess() {
+		return (pRepositoryDeclaration != null) ? pRepositoryDeclaration : (pRepositoryDeclaration = new RepositoryDeclarationElements());
+	}
+	
+	public ParserRule getRepositoryDeclarationRule() {
+		return getRepositoryDeclarationAccess().getRule();
+	}
+
+	//ResolutionStrategy:
+	//  strategy=( "select-first" | "select-best" ) "{" repositoryConfig+=
+	//  RepositoryConfiguration* "}"; 
+	//
+	//             
+	//	        
+	//	
+	/// *
+	// ** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
+	// ** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
+	// ** The ':' clashes with 'scheme:' which is the only known Builder in an opaque URI. 
+	// * /
+	public ResolutionStrategyElements getResolutionStrategyAccess() {
+		return (pResolutionStrategy != null) ? pResolutionStrategy : (pResolutionStrategy = new ResolutionStrategyElements());
+	}
+	
+	public ParserRule getResolutionStrategyRule() {
+		return getResolutionStrategyAccess().getRule();
+	}
+
 	//URI returns ecore::EString:
 	//  STRING; 
-	//
 	/// *
 	// ** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
 	// ** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
@@ -8520,23 +8576,13 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//UnaryOrInfixExpression returns Expression:
-	//  TypeCastExpression|PostopExpression;
+	//  UnaryExpression|PostopExpression;
 	public UnaryOrInfixExpressionElements getUnaryOrInfixExpressionAccess() {
 		return (pUnaryOrInfixExpression != null) ? pUnaryOrInfixExpression : (pUnaryOrInfixExpression = new UnaryOrInfixExpressionElements());
 	}
 	
 	public ParserRule getUnaryOrInfixExpressionRule() {
 		return getUnaryOrInfixExpressionAccess().getRule();
-	}
-
-	//TypeCastExpression:
-	//  {TypeCastOperation} "(" type=TypeRef ")" expr=UnaryExpression;
-	public TypeCastExpressionElements getTypeCastExpressionAccess() {
-		return (pTypeCastExpression != null) ? pTypeCastExpression : (pTypeCastExpression = new TypeCastExpressionElements());
-	}
-	
-	public ParserRule getTypeCastExpressionRule() {
-		return getTypeCastExpressionAccess().getRule();
 	}
 
 	//UnaryExpression:

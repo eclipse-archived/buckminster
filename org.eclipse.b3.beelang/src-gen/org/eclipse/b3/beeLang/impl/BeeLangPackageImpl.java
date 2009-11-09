@@ -99,7 +99,9 @@ import org.eclipse.b3.beeLang.RegexpSelector;
 import org.eclipse.b3.beeLang.RelationalOperation;
 import org.eclipse.b3.beeLang.RelationalOperator;
 import org.eclipse.b3.beeLang.RepositoryConfiguration;
+import org.eclipse.b3.beeLang.RepositoryDeclaration;
 import org.eclipse.b3.beeLang.RequiredCapability;
+import org.eclipse.b3.beeLang.ResolutionStrategy;
 import org.eclipse.b3.beeLang.ReturnExpression;
 import org.eclipse.b3.beeLang.RuleTypeParam;
 import org.eclipse.b3.beeLang.RuleTypeRefParam;
@@ -118,8 +120,6 @@ import org.eclipse.b3.beeLang.ThisLiteral;
 import org.eclipse.b3.beeLang.ThisSelector;
 import org.eclipse.b3.beeLang.ThrowExpression;
 import org.eclipse.b3.beeLang.TryCatchExpression;
-import org.eclipse.b3.beeLang.TypeCastExpression;
-import org.eclipse.b3.beeLang.TypeCastOperation;
 import org.eclipse.b3.beeLang.TypeParamDeclaration;
 import org.eclipse.b3.beeLang.TypeRef;
 import org.eclipse.b3.beeLang.UnaryExpression;
@@ -404,6 +404,20 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  private EClass repositoryDeclarationEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass resolutionStrategyEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   private EClass concernEClass = null;
 
   /**
@@ -587,13 +601,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass wildcardRefParamEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass typeCastExpressionEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -797,13 +804,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass setOperationCallEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass typeCastOperationEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2219,9 +2219,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getRepositoryConfiguration_Location()
+  public EClass getRepositoryDeclaration()
   {
-    return (EAttribute)repositoryConfigurationEClass.getEStructuralFeatures().get(0);
+    return repositoryDeclarationEClass;
   }
 
   /**
@@ -2229,9 +2229,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getRepositoryConfiguration_ResolverClass()
+  public EAttribute getRepositoryDeclaration_Location()
   {
-    return (EAttribute)repositoryConfigurationEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)repositoryDeclarationEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -2239,9 +2239,49 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getRepositoryConfiguration_Advice()
+  public EAttribute getRepositoryDeclaration_ResolverClass()
   {
-    return (EReference)repositoryConfigurationEClass.getEStructuralFeatures().get(2);
+    return (EAttribute)repositoryDeclarationEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getRepositoryDeclaration_Context()
+  {
+    return (EReference)repositoryDeclarationEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getResolutionStrategy()
+  {
+    return resolutionStrategyEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getResolutionStrategy_Strategy()
+  {
+    return (EAttribute)resolutionStrategyEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getResolutionStrategy_RepositoryConfig()
+  {
+    return (EReference)resolutionStrategyEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -2832,16 +2872,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
   public EReference getWildcardRefParam_SuperRef()
   {
     return (EReference)wildcardRefParamEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getTypeCastExpression()
-  {
-    return typeCastExpressionEClass;
   }
 
   /**
@@ -3869,36 +3899,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getTypeCastOperation()
-  {
-    return typeCastOperationEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getTypeCastOperation_Type()
-  {
-    return (EReference)typeCastOperationEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getTypeCastOperation_Expr()
-  {
-    return (EReference)typeCastOperationEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EClass getUnaryOperation()
   {
     return unaryOperationEClass;
@@ -4819,9 +4819,15 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(builderInputEClass, BUILDER_INPUT__PREREQUISITES);
 
     repositoryConfigurationEClass = createEClass(REPOSITORY_CONFIGURATION);
-    createEAttribute(repositoryConfigurationEClass, REPOSITORY_CONFIGURATION__LOCATION);
-    createEAttribute(repositoryConfigurationEClass, REPOSITORY_CONFIGURATION__RESOLVER_CLASS);
-    createEReference(repositoryConfigurationEClass, REPOSITORY_CONFIGURATION__ADVICE);
+
+    repositoryDeclarationEClass = createEClass(REPOSITORY_DECLARATION);
+    createEAttribute(repositoryDeclarationEClass, REPOSITORY_DECLARATION__LOCATION);
+    createEAttribute(repositoryDeclarationEClass, REPOSITORY_DECLARATION__RESOLVER_CLASS);
+    createEReference(repositoryDeclarationEClass, REPOSITORY_DECLARATION__CONTEXT);
+
+    resolutionStrategyEClass = createEClass(RESOLUTION_STRATEGY);
+    createEAttribute(resolutionStrategyEClass, RESOLUTION_STRATEGY__STRATEGY);
+    createEReference(resolutionStrategyEClass, RESOLUTION_STRATEGY__REPOSITORY_CONFIG);
 
     concernEClass = createEClass(CONCERN);
     createEAttribute(concernEClass, CONCERN__DOCUMENTATION);
@@ -4908,8 +4914,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     wildcardRefParamEClass = createEClass(WILDCARD_REF_PARAM);
     createEReference(wildcardRefParamEClass, WILDCARD_REF_PARAM__EXTENDS);
     createEReference(wildcardRefParamEClass, WILDCARD_REF_PARAM__SUPER_REF);
-
-    typeCastExpressionEClass = createEClass(TYPE_CAST_EXPRESSION);
 
     unaryExpressionEClass = createEClass(UNARY_EXPRESSION);
 
@@ -5041,10 +5045,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     setOperationCallEClass = createEClass(SET_OPERATION_CALL);
     createEReference(setOperationCallEClass, SET_OPERATION_CALL__PARAMS);
     createEAttribute(setOperationCallEClass, SET_OPERATION_CALL__OP);
-
-    typeCastOperationEClass = createEClass(TYPE_CAST_OPERATION);
-    createEReference(typeCastOperationEClass, TYPE_CAST_OPERATION__TYPE);
-    createEReference(typeCastOperationEClass, TYPE_CAST_OPERATION__EXPR);
 
     unaryOperationEClass = createEClass(UNARY_OPERATION);
     createEAttribute(unaryOperationEClass, UNARY_OPERATION__NAME);
@@ -5193,6 +5193,8 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     directPartReferemceEClass.getESuperTypes().add(this.getPrerequisiteEntry());
     capabilityReferencedPartEClass.getESuperTypes().add(this.getPrerequisiteEntry());
     compoundReferencesEClass.getESuperTypes().add(this.getPrerequisiteEntry());
+    repositoryDeclarationEClass.getESuperTypes().add(this.getRepositoryConfiguration());
+    resolutionStrategyEClass.getESuperTypes().add(this.getRepositoryConfiguration());
     compoundConcernEClass.getESuperTypes().add(this.getAdvice());
     nameSelectorEClass.getESuperTypes().add(this.getSelector());
     thisSelectorEClass.getESuperTypes().add(this.getSelector());
@@ -5206,7 +5208,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     closureTypeRefEClass.getESuperTypes().add(this.getTypeRef());
     ruleTypeRefParamEClass.getESuperTypes().add(this.getRuleTypeParam());
     wildcardRefParamEClass.getESuperTypes().add(this.getRuleTypeParam());
-    typeCastExpressionEClass.getESuperTypes().add(this.getExpression());
+    unaryExpressionEClass.getESuperTypes().add(this.getExpression());
     expresionEClass.getESuperTypes().add(this.getExpression());
     tryCatchExpressionEClass.getESuperTypes().add(this.getExpression());
     switchExpressionEClass.getESuperTypes().add(this.getExpression());
@@ -5224,7 +5226,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     booleanOperationEClass.getESuperTypes().add(this.getExpression());
     relationalOperationEClass.getESuperTypes().add(this.getExpression());
     setOperationCallEClass.getESuperTypes().add(this.getExpression());
-    typeCastOperationEClass.getESuperTypes().add(this.getTypeCastExpression());
     unaryOperationEClass.getESuperTypes().add(this.getUnaryExpression());
     atCallEClass.getESuperTypes().add(this.getExpression());
     withClauseExpressionEClass.getESuperTypes().add(this.getExpression());
@@ -5400,9 +5401,15 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getBuilderInput_Prerequisites(), this.getPrerequisite(), null, "prerequisites", null, 0, -1, BuilderInput.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(repositoryConfigurationEClass, RepositoryConfiguration.class, "RepositoryConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getRepositoryConfiguration_Location(), ecorePackage.getEString(), "location", null, 0, 1, RepositoryConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getRepositoryConfiguration_ResolverClass(), ecorePackage.getEString(), "resolverClass", null, 0, 1, RepositoryConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getRepositoryConfiguration_Advice(), this.getCompoundConcern(), null, "advice", null, 0, 1, RepositoryConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(repositoryDeclarationEClass, RepositoryDeclaration.class, "RepositoryDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getRepositoryDeclaration_Location(), ecorePackage.getEString(), "location", null, 0, 1, RepositoryDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRepositoryDeclaration_ResolverClass(), ecorePackage.getEString(), "resolverClass", null, 0, 1, RepositoryDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getRepositoryDeclaration_Context(), this.getContextBlock(), null, "context", null, 0, 1, RepositoryDeclaration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(resolutionStrategyEClass, ResolutionStrategy.class, "ResolutionStrategy", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getResolutionStrategy_Strategy(), ecorePackage.getEString(), "strategy", null, 0, 1, ResolutionStrategy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getResolutionStrategy_RepositoryConfig(), this.getRepositoryConfiguration(), null, "repositoryConfig", null, 0, -1, ResolutionStrategy.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(concernEClass, Concern.class, "Concern", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getConcern_Documentation(), ecorePackage.getEString(), "documentation", null, 0, 1, Concern.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5489,8 +5496,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEClass(wildcardRefParamEClass, WildcardRefParam.class, "WildcardRefParam", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getWildcardRefParam_Extends(), this.getTypeRef(), null, "extends", null, 0, -1, WildcardRefParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getWildcardRefParam_SuperRef(), this.getTypeRef(), null, "superRef", null, 0, 1, WildcardRefParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(typeCastExpressionEClass, TypeCastExpression.class, "TypeCastExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(unaryExpressionEClass, UnaryExpression.class, "UnaryExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -5622,10 +5627,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEClass(setOperationCallEClass, SetOperationCall.class, "SetOperationCall", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getSetOperationCall_Params(), this.getExpression(), null, "params", null, 0, -1, SetOperationCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getSetOperationCall_Op(), this.getSetOperator(), "op", null, 0, 1, SetOperationCall.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(typeCastOperationEClass, TypeCastOperation.class, "TypeCastOperation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getTypeCastOperation_Type(), this.getTypeRef(), null, "type", null, 0, 1, TypeCastOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getTypeCastOperation_Expr(), this.getUnaryExpression(), null, "expr", null, 0, 1, TypeCastOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(unaryOperationEClass, UnaryOperation.class, "UnaryOperation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUnaryOperation_Name(), ecorePackage.getEString(), "name", null, 0, 1, UnaryOperation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

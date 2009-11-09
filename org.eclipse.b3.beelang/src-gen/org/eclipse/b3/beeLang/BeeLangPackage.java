@@ -1401,13 +1401,32 @@ public interface BeeLangPackage extends EPackage
   int REPOSITORY_CONFIGURATION = 34;
 
   /**
+   * The number of structural features of the '<em>Repository Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REPOSITORY_CONFIGURATION_FEATURE_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.RepositoryDeclarationImpl <em>Repository Declaration</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.RepositoryDeclarationImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRepositoryDeclaration()
+   * @generated
+   */
+  int REPOSITORY_DECLARATION = 35;
+
+  /**
    * The feature id for the '<em><b>Location</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REPOSITORY_CONFIGURATION__LOCATION = 0;
+  int REPOSITORY_DECLARATION__LOCATION = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Resolver Class</b></em>' attribute.
@@ -1416,25 +1435,62 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REPOSITORY_CONFIGURATION__RESOLVER_CLASS = 1;
+  int REPOSITORY_DECLARATION__RESOLVER_CLASS = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 1;
 
   /**
-   * The feature id for the '<em><b>Advice</b></em>' containment reference.
+   * The feature id for the '<em><b>Context</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REPOSITORY_CONFIGURATION__ADVICE = 2;
+  int REPOSITORY_DECLARATION__CONTEXT = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 2;
 
   /**
-   * The number of structural features of the '<em>Repository Configuration</em>' class.
+   * The number of structural features of the '<em>Repository Declaration</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REPOSITORY_CONFIGURATION_FEATURE_COUNT = 3;
+  int REPOSITORY_DECLARATION_FEATURE_COUNT = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 3;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ResolutionStrategyImpl <em>Resolution Strategy</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.ResolutionStrategyImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getResolutionStrategy()
+   * @generated
+   */
+  int RESOLUTION_STRATEGY = 36;
+
+  /**
+   * The feature id for the '<em><b>Strategy</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RESOLUTION_STRATEGY__STRATEGY = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Repository Config</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RESOLUTION_STRATEGY__REPOSITORY_CONFIG = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Resolution Strategy</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RESOLUTION_STRATEGY_FEATURE_COUNT = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ConcernImpl <em>Concern</em>}' class.
@@ -1444,7 +1500,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getConcern()
    * @generated
    */
-  int CONCERN = 35;
+  int CONCERN = 37;
 
   /**
    * The feature id for the '<em><b>Documentation</b></em>' attribute.
@@ -1490,7 +1546,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getConcernBlock()
    * @generated
    */
-  int CONCERN_BLOCK = 36;
+  int CONCERN_BLOCK = 38;
 
   /**
    * The feature id for the '<em><b>Super Concerns</b></em>' attribute list.
@@ -1536,7 +1592,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdvice()
    * @generated
    */
-  int ADVICE = 37;
+  int ADVICE = 39;
 
   /**
    * The number of structural features of the '<em>Advice</em>' class.
@@ -1555,7 +1611,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCompoundConcern()
    * @generated
    */
-  int COMPOUND_CONCERN = 38;
+  int COMPOUND_CONCERN = 40;
 
   /**
    * The feature id for the '<em><b>Advice</b></em>' containment reference list.
@@ -1583,7 +1639,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdviceStatement()
    * @generated
    */
-  int ADVICE_STATEMENT = 39;
+  int ADVICE_STATEMENT = 41;
 
   /**
    * The feature id for the '<em><b>Path</b></em>' containment reference.
@@ -1638,7 +1694,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getQuery()
    * @generated
    */
-  int QUERY = 40;
+  int QUERY = 42;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -1666,7 +1722,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getQueryPath()
    * @generated
    */
-  int QUERY_PATH = 41;
+  int QUERY_PATH = 43;
 
   /**
    * The feature id for the '<em><b>Absolute</b></em>' attribute.
@@ -1703,7 +1759,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSelector()
    * @generated
    */
-  int SELECTOR = 42;
+  int SELECTOR = 44;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -1740,7 +1796,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNameSelector()
    * @generated
    */
-  int NAME_SELECTOR = 43;
+  int NAME_SELECTOR = 45;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -1786,7 +1842,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getThisSelector()
    * @generated
    */
-  int THIS_SELECTOR = 44;
+  int THIS_SELECTOR = 46;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -1823,7 +1879,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getParentSelector()
    * @generated
    */
-  int PARENT_SELECTOR = 45;
+  int PARENT_SELECTOR = 47;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -1860,7 +1916,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getChildrenSelector()
    * @generated
    */
-  int CHILDREN_SELECTOR = 46;
+  int CHILDREN_SELECTOR = 48;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -1897,7 +1953,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAncestorSelector()
    * @generated
    */
-  int ANCESTOR_SELECTOR = 47;
+  int ANCESTOR_SELECTOR = 49;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -1934,7 +1990,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRegexpSelector()
    * @generated
    */
-  int REGEXP_SELECTOR = 48;
+  int REGEXP_SELECTOR = 50;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -1980,7 +2036,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFilter()
    * @generated
    */
-  int FILTER = 49;
+  int FILTER = 51;
 
   /**
    * The feature id for the '<em><b>Predicate</b></em>' containment reference.
@@ -2008,7 +2064,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPreCondition()
    * @generated
    */
-  int PRE_CONDITION = 50;
+  int PRE_CONDITION = 52;
 
   /**
    * The feature id for the '<em><b>Asserts</b></em>' containment reference list.
@@ -2036,7 +2092,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPostCondition()
    * @generated
    */
-  int POST_CONDITION = 51;
+  int POST_CONDITION = 53;
 
   /**
    * The feature id for the '<em><b>Asserts</b></em>' containment reference list.
@@ -2064,7 +2120,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssertionExpression()
    * @generated
    */
-  int ASSERTION_EXPRESSION = 52;
+  int ASSERTION_EXPRESSION = 54;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -2101,7 +2157,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpressionList()
    * @generated
    */
-  int EXPRESSION_LIST = 53;
+  int EXPRESSION_LIST = 55;
 
   /**
    * The feature id for the '<em><b>Expressions</b></em>' containment reference list.
@@ -2129,7 +2185,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTypeParamDeclaration()
    * @generated
    */
-  int TYPE_PARAM_DECLARATION = 54;
+  int TYPE_PARAM_DECLARATION = 56;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference list.
@@ -2166,7 +2222,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getIfExpressionTail()
    * @generated
    */
-  int IF_EXPRESSION_TAIL = 70;
+  int IF_EXPRESSION_TAIL = 71;
 
   /**
    * The number of structural features of the '<em>If Expression Tail</em>' class.
@@ -2185,7 +2241,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 55;
+  int EXPRESSION = 57;
 
   /**
    * The number of structural features of the '<em>Expression</em>' class.
@@ -2204,7 +2260,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRuleTypeParam()
    * @generated
    */
-  int RULE_TYPE_PARAM = 59;
+  int RULE_TYPE_PARAM = 61;
 
   /**
    * The number of structural features of the '<em>Rule Type Param</em>' class.
@@ -2223,7 +2279,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRuleTypeRefParam()
    * @generated
    */
-  int RULE_TYPE_REF_PARAM = 60;
+  int RULE_TYPE_REF_PARAM = 62;
 
   /**
    * The number of structural features of the '<em>Rule Type Ref Param</em>' class.
@@ -2242,7 +2298,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTypeRef()
    * @generated
    */
-  int TYPE_REF = 56;
+  int TYPE_REF = 58;
 
   /**
    * The number of structural features of the '<em>Type Ref</em>' class.
@@ -2261,7 +2317,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSimpleTypeRef()
    * @generated
    */
-  int SIMPLE_TYPE_REF = 57;
+  int SIMPLE_TYPE_REF = 59;
 
   /**
    * The feature id for the '<em><b>Type Name</b></em>' attribute list.
@@ -2298,7 +2354,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getClosureTypeRef()
    * @generated
    */
-  int CLOSURE_TYPE_REF = 58;
+  int CLOSURE_TYPE_REF = 60;
 
   /**
    * The feature id for the '<em><b>Parameter Types</b></em>' containment reference list.
@@ -2335,7 +2391,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getWildcardRefParam()
    * @generated
    */
-  int WILDCARD_REF_PARAM = 61;
+  int WILDCARD_REF_PARAM = 63;
 
   /**
    * The feature id for the '<em><b>Extends</b></em>' containment reference list.
@@ -2365,25 +2421,6 @@ public interface BeeLangPackage extends EPackage
   int WILDCARD_REF_PARAM_FEATURE_COUNT = RULE_TYPE_PARAM_FEATURE_COUNT + 2;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.TypeCastExpressionImpl <em>Type Cast Expression</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.TypeCastExpressionImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTypeCastExpression()
-   * @generated
-   */
-  int TYPE_CAST_EXPRESSION = 62;
-
-  /**
-   * The number of structural features of the '<em>Type Cast Expression</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int TYPE_CAST_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 0;
-
-  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.UnaryExpressionImpl <em>Unary Expression</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2391,7 +2428,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getUnaryExpression()
    * @generated
    */
-  int UNARY_EXPRESSION = 63;
+  int UNARY_EXPRESSION = 64;
 
   /**
    * The number of structural features of the '<em>Unary Expression</em>' class.
@@ -2400,7 +2437,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int UNARY_EXPRESSION_FEATURE_COUNT = 0;
+  int UNARY_EXPRESSION_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 0;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ExpresionImpl <em>Expresion</em>}' class.
@@ -2410,7 +2447,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpresion()
    * @generated
    */
-  int EXPRESION = 64;
+  int EXPRESION = 65;
 
   /**
    * The number of structural features of the '<em>Expresion</em>' class.
@@ -2429,7 +2466,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTryCatchExpression()
    * @generated
    */
-  int TRY_CATCH_EXPRESSION = 65;
+  int TRY_CATCH_EXPRESSION = 66;
 
   /**
    * The feature id for the '<em><b>Try Block</b></em>' containment reference.
@@ -2475,7 +2512,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCatchBlock()
    * @generated
    */
-  int CATCH_BLOCK = 66;
+  int CATCH_BLOCK = 67;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2521,7 +2558,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFinallyBlock()
    * @generated
    */
-  int FINALLY_BLOCK = 67;
+  int FINALLY_BLOCK = 68;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -2549,7 +2586,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSwitchExpression()
    * @generated
    */
-  int SWITCH_EXPRESSION = 68;
+  int SWITCH_EXPRESSION = 69;
 
   /**
    * The feature id for the '<em><b>Switch Expr</b></em>' containment reference.
@@ -2586,7 +2623,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCase()
    * @generated
    */
-  int CASE = 69;
+  int CASE = 70;
 
   /**
    * The feature id for the '<em><b>Condition</b></em>' containment reference.
@@ -2623,7 +2660,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFeatureCall()
    * @generated
    */
-  int FEATURE_CALL = 71;
+  int FEATURE_CALL = 72;
 
   /**
    * The feature id for the '<em><b>Target</b></em>' containment reference.
@@ -2660,7 +2697,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getOperationCall()
    * @generated
    */
-  int OPERATION_CALL = 72;
+  int OPERATION_CALL = 73;
 
   /**
    * The feature id for the '<em><b>Target</b></em>' containment reference.
@@ -2733,7 +2770,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getContext()
    * @generated
    */
-  int CONTEXT = 73;
+  int CONTEXT = 74;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -2770,7 +2807,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getContextSelector()
    * @generated
    */
-  int CONTEXT_SELECTOR = 74;
+  int CONTEXT_SELECTOR = 75;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2798,7 +2835,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpressionSelector()
    * @generated
    */
-  int EXPRESSION_SELECTOR = 75;
+  int EXPRESSION_SELECTOR = 76;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2835,7 +2872,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getUnitSelector()
    * @generated
    */
-  int UNIT_SELECTOR = 76;
+  int UNIT_SELECTOR = 77;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2899,7 +2936,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getContextBlock()
    * @generated
    */
-  int CONTEXT_BLOCK = 77;
+  int CONTEXT_BLOCK = 78;
 
   /**
    * The feature id for the '<em><b>Statements</b></em>' containment reference list.
@@ -2927,7 +2964,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStatment()
    * @generated
    */
-  int STATMENT = 78;
+  int STATMENT = 79;
 
   /**
    * The number of structural features of the '<em>Statment</em>' class.
@@ -2946,7 +2983,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getClosureExpression()
    * @generated
    */
-  int CLOSURE_EXPRESSION = 79;
+  int CLOSURE_EXPRESSION = 80;
 
   /**
    * The feature id for the '<em><b>Parameters</b></em>' containment reference list.
@@ -2983,7 +3020,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFeature()
    * @generated
    */
-  int FEATURE = 80;
+  int FEATURE = 81;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -3020,7 +3057,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersion()
    * @generated
    */
-  int VERSION = 81;
+  int VERSION = 82;
 
   /**
    * The feature id for the '<em><b>Original</b></em>' attribute.
@@ -3048,7 +3085,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersionRange()
    * @generated
    */
-  int VERSION_RANGE = 82;
+  int VERSION_RANGE = 83;
 
   /**
    * The feature id for the '<em><b>Min Limit</b></em>' attribute.
@@ -3103,7 +3140,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBuilder()
    * @generated
    */
-  int BUILDER = 83;
+  int BUILDER = 84;
 
   /**
    * The feature id for the '<em><b>Documentation</b></em>' attribute.
@@ -3248,7 +3285,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVarargParameterDeclaration()
    * @generated
    */
-  int VARARG_PARAMETER_DECLARATION = 84;
+  int VARARG_PARAMETER_DECLARATION = 85;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -3285,7 +3322,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFunction()
    * @generated
    */
-  int FUNCTION = 85;
+  int FUNCTION = 86;
 
   /**
    * The feature id for the '<em><b>Documentation</b></em>' attribute.
@@ -3394,7 +3431,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getReturnExpression()
    * @generated
    */
-  int RETURN_EXPRESSION = 86;
+  int RETURN_EXPRESSION = 87;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -3422,7 +3459,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssignmentOperation()
    * @generated
    */
-  int ASSIGNMENT_OPERATION = 87;
+  int ASSIGNMENT_OPERATION = 88;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -3468,7 +3505,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVarDeclaration()
    * @generated
    */
-  int VAR_DECLARATION = 88;
+  int VAR_DECLARATION = 89;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -3505,7 +3542,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBooleanOperation()
    * @generated
    */
-  int BOOLEAN_OPERATION = 89;
+  int BOOLEAN_OPERATION = 90;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -3551,7 +3588,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRelationalOperation()
    * @generated
    */
-  int RELATIONAL_OPERATION = 90;
+  int RELATIONAL_OPERATION = 91;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -3597,7 +3634,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSetOperationCall()
    * @generated
    */
-  int SET_OPERATION_CALL = 91;
+  int SET_OPERATION_CALL = 92;
 
   /**
    * The feature id for the '<em><b>Params</b></em>' containment reference list.
@@ -3625,43 +3662,6 @@ public interface BeeLangPackage extends EPackage
    * @ordered
    */
   int SET_OPERATION_CALL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 2;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.TypeCastOperationImpl <em>Type Cast Operation</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.TypeCastOperationImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTypeCastOperation()
-   * @generated
-   */
-  int TYPE_CAST_OPERATION = 92;
-
-  /**
-   * The feature id for the '<em><b>Type</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int TYPE_CAST_OPERATION__TYPE = TYPE_CAST_EXPRESSION_FEATURE_COUNT + 0;
-
-  /**
-   * The feature id for the '<em><b>Expr</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int TYPE_CAST_OPERATION__EXPR = TYPE_CAST_EXPRESSION_FEATURE_COUNT + 1;
-
-  /**
-   * The number of structural features of the '<em>Type Cast Operation</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int TYPE_CAST_OPERATION_FEATURE_COUNT = TYPE_CAST_EXPRESSION_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.UnaryOperationImpl <em>Unary Operation</em>}' class.
@@ -5811,37 +5811,79 @@ public interface BeeLangPackage extends EPackage
   EClass getRepositoryConfiguration();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.RepositoryConfiguration#getLocation <em>Location</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.RepositoryDeclaration <em>Repository Declaration</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Repository Declaration</em>'.
+   * @see org.eclipse.b3.beeLang.RepositoryDeclaration
+   * @generated
+   */
+  EClass getRepositoryDeclaration();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getLocation <em>Location</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Location</em>'.
-   * @see org.eclipse.b3.beeLang.RepositoryConfiguration#getLocation()
-   * @see #getRepositoryConfiguration()
+   * @see org.eclipse.b3.beeLang.RepositoryDeclaration#getLocation()
+   * @see #getRepositoryDeclaration()
    * @generated
    */
-  EAttribute getRepositoryConfiguration_Location();
+  EAttribute getRepositoryDeclaration_Location();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.RepositoryConfiguration#getResolverClass <em>Resolver Class</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getResolverClass <em>Resolver Class</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Resolver Class</em>'.
-   * @see org.eclipse.b3.beeLang.RepositoryConfiguration#getResolverClass()
-   * @see #getRepositoryConfiguration()
+   * @see org.eclipse.b3.beeLang.RepositoryDeclaration#getResolverClass()
+   * @see #getRepositoryDeclaration()
    * @generated
    */
-  EAttribute getRepositoryConfiguration_ResolverClass();
+  EAttribute getRepositoryDeclaration_ResolverClass();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.RepositoryConfiguration#getAdvice <em>Advice</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getContext <em>Context</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Advice</em>'.
-   * @see org.eclipse.b3.beeLang.RepositoryConfiguration#getAdvice()
-   * @see #getRepositoryConfiguration()
+   * @return the meta object for the containment reference '<em>Context</em>'.
+   * @see org.eclipse.b3.beeLang.RepositoryDeclaration#getContext()
+   * @see #getRepositoryDeclaration()
    * @generated
    */
-  EReference getRepositoryConfiguration_Advice();
+  EReference getRepositoryDeclaration_Context();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ResolutionStrategy <em>Resolution Strategy</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Resolution Strategy</em>'.
+   * @see org.eclipse.b3.beeLang.ResolutionStrategy
+   * @generated
+   */
+  EClass getResolutionStrategy();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.ResolutionStrategy#getStrategy <em>Strategy</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Strategy</em>'.
+   * @see org.eclipse.b3.beeLang.ResolutionStrategy#getStrategy()
+   * @see #getResolutionStrategy()
+   * @generated
+   */
+  EAttribute getResolutionStrategy_Strategy();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.ResolutionStrategy#getRepositoryConfig <em>Repository Config</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Repository Config</em>'.
+   * @see org.eclipse.b3.beeLang.ResolutionStrategy#getRepositoryConfig()
+   * @see #getResolutionStrategy()
+   * @generated
+   */
+  EReference getResolutionStrategy_RepositoryConfig();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Concern <em>Concern</em>}'.
@@ -6464,16 +6506,6 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EReference getWildcardRefParam_SuperRef();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.TypeCastExpression <em>Type Cast Expression</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Type Cast Expression</em>'.
-   * @see org.eclipse.b3.beeLang.TypeCastExpression
-   * @generated
-   */
-  EClass getTypeCastExpression();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.UnaryExpression <em>Unary Expression</em>}'.
@@ -7567,38 +7599,6 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EAttribute getSetOperationCall_Op();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.TypeCastOperation <em>Type Cast Operation</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Type Cast Operation</em>'.
-   * @see org.eclipse.b3.beeLang.TypeCastOperation
-   * @generated
-   */
-  EClass getTypeCastOperation();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.TypeCastOperation#getType <em>Type</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Type</em>'.
-   * @see org.eclipse.b3.beeLang.TypeCastOperation#getType()
-   * @see #getTypeCastOperation()
-   * @generated
-   */
-  EReference getTypeCastOperation_Type();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.TypeCastOperation#getExpr <em>Expr</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Expr</em>'.
-   * @see org.eclipse.b3.beeLang.TypeCastOperation#getExpr()
-   * @see #getTypeCastOperation()
-   * @generated
-   */
-  EReference getTypeCastOperation_Expr();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.UnaryOperation <em>Unary Operation</em>}'.
@@ -9374,12 +9374,22 @@ public interface BeeLangPackage extends EPackage
     EClass REPOSITORY_CONFIGURATION = eINSTANCE.getRepositoryConfiguration();
 
     /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.RepositoryDeclarationImpl <em>Repository Declaration</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.RepositoryDeclarationImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRepositoryDeclaration()
+     * @generated
+     */
+    EClass REPOSITORY_DECLARATION = eINSTANCE.getRepositoryDeclaration();
+
+    /**
      * The meta object literal for the '<em><b>Location</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute REPOSITORY_CONFIGURATION__LOCATION = eINSTANCE.getRepositoryConfiguration_Location();
+    EAttribute REPOSITORY_DECLARATION__LOCATION = eINSTANCE.getRepositoryDeclaration_Location();
 
     /**
      * The meta object literal for the '<em><b>Resolver Class</b></em>' attribute feature.
@@ -9387,15 +9397,41 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute REPOSITORY_CONFIGURATION__RESOLVER_CLASS = eINSTANCE.getRepositoryConfiguration_ResolverClass();
+    EAttribute REPOSITORY_DECLARATION__RESOLVER_CLASS = eINSTANCE.getRepositoryDeclaration_ResolverClass();
 
     /**
-     * The meta object literal for the '<em><b>Advice</b></em>' containment reference feature.
+     * The meta object literal for the '<em><b>Context</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference REPOSITORY_CONFIGURATION__ADVICE = eINSTANCE.getRepositoryConfiguration_Advice();
+    EReference REPOSITORY_DECLARATION__CONTEXT = eINSTANCE.getRepositoryDeclaration_Context();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ResolutionStrategyImpl <em>Resolution Strategy</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.ResolutionStrategyImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getResolutionStrategy()
+     * @generated
+     */
+    EClass RESOLUTION_STRATEGY = eINSTANCE.getResolutionStrategy();
+
+    /**
+     * The meta object literal for the '<em><b>Strategy</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute RESOLUTION_STRATEGY__STRATEGY = eINSTANCE.getResolutionStrategy_Strategy();
+
+    /**
+     * The meta object literal for the '<em><b>Repository Config</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference RESOLUTION_STRATEGY__REPOSITORY_CONFIG = eINSTANCE.getResolutionStrategy_RepositoryConfig();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ConcernImpl <em>Concern</em>}' class.
@@ -9922,16 +9958,6 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EReference WILDCARD_REF_PARAM__SUPER_REF = eINSTANCE.getWildcardRefParam_SuperRef();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.TypeCastExpressionImpl <em>Type Cast Expression</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.TypeCastExpressionImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTypeCastExpression()
-     * @generated
-     */
-    EClass TYPE_CAST_EXPRESSION = eINSTANCE.getTypeCastExpression();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.UnaryExpressionImpl <em>Unary Expression</em>}' class.
@@ -10806,32 +10832,6 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EAttribute SET_OPERATION_CALL__OP = eINSTANCE.getSetOperationCall_Op();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.TypeCastOperationImpl <em>Type Cast Operation</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.TypeCastOperationImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTypeCastOperation()
-     * @generated
-     */
-    EClass TYPE_CAST_OPERATION = eINSTANCE.getTypeCastOperation();
-
-    /**
-     * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference TYPE_CAST_OPERATION__TYPE = eINSTANCE.getTypeCastOperation_Type();
-
-    /**
-     * The meta object literal for the '<em><b>Expr</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference TYPE_CAST_OPERATION__EXPR = eINSTANCE.getTypeCastOperation_Expr();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.UnaryOperationImpl <em>Unary Operation</em>}' class.

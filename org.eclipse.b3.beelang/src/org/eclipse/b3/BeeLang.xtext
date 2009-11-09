@@ -200,10 +200,16 @@ BuilderInput
 		'{' (prerequisites += Prerequisite)* '}'
 	;
 
-RepositoryConfiguration
-	: (location=URI | 'resolver' resolverClass=QualifiedName ) (advice=CompoundConcern)? ';'
+RepositoryConfiguration : RepositoryDeclaration | ResolutionStrategy ;
+
+// TODO: resolverClass should be same as for new
+RepositoryDeclaration 
+	: (location=URI | 'repository' resolverClass=QualifiedName ) (context=ContextBlock)?
 	;
 
+ResolutionStrategy : strategy = ("select-first" | "select-best") 
+	'{' (repositoryConfig += RepositoryConfiguration)* '}'
+	;
 /*
 ** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
 ** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).

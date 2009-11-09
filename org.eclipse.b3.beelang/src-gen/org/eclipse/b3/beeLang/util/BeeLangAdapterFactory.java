@@ -253,6 +253,16 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
         return createRepositoryConfigurationAdapter();
       }
       @Override
+      public Adapter caseRepositoryDeclaration(RepositoryDeclaration object)
+      {
+        return createRepositoryDeclarationAdapter();
+      }
+      @Override
+      public Adapter caseResolutionStrategy(ResolutionStrategy object)
+      {
+        return createResolutionStrategyAdapter();
+      }
+      @Override
       public Adapter caseConcern(Concern object)
       {
         return createConcernAdapter();
@@ -386,11 +396,6 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
       public Adapter caseWildcardRefParam(WildcardRefParam object)
       {
         return createWildcardRefParamAdapter();
-      }
-      @Override
-      public Adapter caseTypeCastExpression(TypeCastExpression object)
-      {
-        return createTypeCastExpressionAdapter();
       }
       @Override
       public Adapter caseUnaryExpression(UnaryExpression object)
@@ -536,11 +541,6 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
       public Adapter caseSetOperationCall(SetOperationCall object)
       {
         return createSetOperationCallAdapter();
-      }
-      @Override
-      public Adapter caseTypeCastOperation(TypeCastOperation object)
-      {
-        return createTypeCastOperationAdapter();
       }
       @Override
       public Adapter caseUnaryOperation(UnaryOperation object)
@@ -1230,6 +1230,36 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.RepositoryDeclaration <em>Repository Declaration</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.RepositoryDeclaration
+   * @generated
+   */
+  public Adapter createRepositoryDeclarationAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.ResolutionStrategy <em>Resolution Strategy</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.b3.beeLang.ResolutionStrategy
+   * @generated
+   */
+  public Adapter createResolutionStrategyAdapter()
+  {
+    return null;
+  }
+
+  /**
    * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.Concern <em>Concern</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -1630,21 +1660,6 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createWildcardRefParamAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.TypeCastExpression <em>Type Cast Expression</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.TypeCastExpression
-   * @generated
-   */
-  public Adapter createTypeCastExpressionAdapter()
   {
     return null;
   }
@@ -2080,21 +2095,6 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createSetOperationCallAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.TypeCastOperation <em>Type Cast Operation</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.TypeCastOperation
-   * @generated
-   */
-  public Adapter createTypeCastOperationAdapter()
   {
     return null;
   }
