@@ -11,6 +11,7 @@ import org.eclipse.emf.common.EMFPlugin;
 import org.eclipse.emf.common.ui.EclipseUIPlugin;
 
 import org.eclipse.emf.common.util.ResourceLocator;
+import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 
 /**
  * This is the central singleton for the Aggregator editor plugin. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -66,6 +67,8 @@ public final class AggregatorEditorPlugin extends EMFPlugin
 		return plugin;
 	}
 
+	private AdapterFactoryEditingDomain editingDomain;
+
 	/**
 	 * Create the instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -74,6 +77,11 @@ public final class AggregatorEditorPlugin extends EMFPlugin
 	public AggregatorEditorPlugin()
 	{
 		super(new ResourceLocator[] {});
+	}
+
+	public AdapterFactoryEditingDomain getActiveEditingDomain()
+	{
+		return this.editingDomain;
 	}
 
 	/**
@@ -86,6 +94,11 @@ public final class AggregatorEditorPlugin extends EMFPlugin
 	public ResourceLocator getPluginResourceLocator()
 	{
 		return plugin;
+	}
+
+	public void setActiveEditingDomain(AdapterFactoryEditingDomain editingDomain)
+	{
+		this.editingDomain = editingDomain;
 	}
 
 }

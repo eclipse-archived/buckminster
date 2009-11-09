@@ -21,5 +21,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.equinox.p2.metadata;bundle-version="1.0.100",
  org.eclipse.equinox.p2.metadata.repository;bundle-version="1.0.100",
  org.eclipse.equinox.p2.repository;bundle-version="1.0.0",
- org.eclipse.equinox.p2.core;bundle-version="1.0.100"
+ org.eclipse.equinox.p2.core;bundle-version="1.0.100",
+ org.eclipse.ui.workbench.texteditor;bundle-version="3.3.0",
+ org.eclipse.jface.text;bundle-version="3.3.0",
+ org.eclipse.core.expressions;bundle-version="3.4.100"
 Bundle-ActivationPolicy: lazy

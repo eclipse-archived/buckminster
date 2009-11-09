@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
@@ -86,6 +87,7 @@ import org.eclipse.emf.edit.ui.provider.UnwrappingSelectionProvider;
 import org.eclipse.emf.edit.ui.util.EditUIMarkerHelper;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
@@ -125,6 +127,8 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
@@ -213,6 +217,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		}
 	}
 
+	private static final String AGGREGATOR_EDITOR_SCOPE = "org.eclipse.buckminster.aggregator.presentation.aggregatorEditorScope";
+
 	/**
 	 * This looks up a string in the plugin's plugin.properties file. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -232,6 +238,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	{
 		return AggregatorEditorPlugin.INSTANCE.getString(key, new Object[] { s1 });
 	}
+
+	private IContextActivation contextActivation;
 
 	/**
 	 * This keeps track of the editing domain that is used to track all changes to the model. <!-- begin-user-doc -->
@@ -323,6 +331,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	 */
 	protected MarkerHelper markerHelper = new EditUIMarkerHelper();
 
+	private Pattern findIUIdPattern;
+
+	private VersionRange findIUVersionRange;
+
 	/**
 	 * This listens for when the outline becomes active <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -367,7 +379,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 		public void partDeactivated(IWorkbenchPart p)
 		{
-			// Ignore.
+			handleDeactivate();
 		}
 
 		public void partOpened(IWorkbenchPart p)
@@ -1003,6 +1015,62 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		}
 	}
 
+	public boolean findNextIU(boolean forward)
+	{
+		if(findIUIdPattern == null || findIUVersionRange == null)
+			return false;
+
+		TreeSelection treeSelection = (TreeSelection)getSelection();
+		Object[] currentSelection = null;
+		if(treeSelection != null && treeSelection.getPaths().length > 0)
+		{
+			TreePath path = treeSelection.getPaths()[0];
+			currentSelection = new Object[path.getSegmentCount()];
+			for(int i = 0; i < path.getSegmentCount(); i++)
+				currentSelection[i] = path.getSegment(i);
+		}
+
+		boolean firstResourceFound = false;
+		Object[] foundNode = null;
+
+		List<Resource> resources = editingDomain.getResourceSet().getResources();
+		if(!forward)
+		{
+			List<Resource> reverseResources = new ArrayList<Resource>();
+
+			for(int i = resources.size(); i > 0; i--)
+				reverseResources.add(resources.get(i - 1));
+
+			resources = reverseResources;
+		}
+
+		for(Resource resource : resources)
+		{
+			if(!(resource instanceof MetadataRepositoryResourceImpl))
+				continue;
+
+			if(!firstResourceFound)
+				if(currentSelection == null || !(currentSelection[0] instanceof MetadataRepositoryResourceImpl)
+						|| resource == currentSelection[0])
+					firstResourceFound = true;
+				else
+					continue;
+
+			foundNode = ((MetadataRepositoryResourceImpl)resource).findIUPresentation(findIUIdPattern,
+					findIUVersionRange, currentSelection, forward);
+			if(foundNode != null)
+				break;
+		}
+
+		if(foundNode != null)
+		{
+			getViewer().setSelection(new TreeSelection(new TreePath(foundNode)), true);
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1312,6 +1380,12 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		((IMenuListener)getEditorSite().getActionBarContributor()).menuAboutToShow(menuManager);
 	}
 
+	public void registerFindIUArguments(Pattern idPattern, VersionRange versionRange)
+	{
+		findIUIdPattern = idPattern;
+		findIUVersionRange = versionRange;
+	}
+
 	/**
 	 * This implements {@link org.eclipse.jface.viewers.ISelectionProvider}. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
@@ -1563,6 +1637,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			changedResources.clear();
 			savedResources.clear();
 		}
+
+		AggregatorEditorPlugin.INSTANCE.setActiveEditingDomain(editingDomain);
+		contextActivation = ((IContextService)getSite().getWorkbenchWindow().getWorkbench().getAdapter(
+				IContextService.class)).activateContext(AGGREGATOR_EDITOR_SCOPE);
 	}
 
 	/**
@@ -1608,6 +1686,12 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			updateProblemIndication = true;
 			updateProblemIndication();
 		}
+	}
+
+	protected void handleDeactivate()
+	{
+		AggregatorEditorPlugin.INSTANCE.setActiveEditingDomain(null);
+		((IContextService)getSite().getWorkbenchWindow().getWorkbench().getAdapter(IContextService.class)).deactivateContext(contextActivation);
 	}
 
 	/**
