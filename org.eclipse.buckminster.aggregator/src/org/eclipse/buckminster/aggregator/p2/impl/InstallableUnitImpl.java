@@ -147,7 +147,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 
 	public static Comparator<IInstallableUnit> SELECTION_COMPARATOR = new IUSelectionComparator();
 
-	private static Copyright importToModel(ICopyright cr)
+	public static Copyright importToModel(ICopyright cr)
 	{
 		if(cr == null)
 			return null;
@@ -157,7 +157,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return mcr;
 	}
 
-	private static License importToModel(ILicense lc)
+	public static License importToModel(ILicense lc)
 	{
 		if(lc == null)
 			return null;
@@ -168,7 +168,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return mlc;
 	}
 
-	private static ProvidedCapability importToModel(IProvidedCapability pc)
+	public static ProvidedCapability importToModel(IProvidedCapability pc)
 	{
 		if(pc == null)
 			return null;
@@ -179,7 +179,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return mrq;
 	}
 
-	private static RequiredCapability importToModel(IRequiredCapability rc)
+	public static RequiredCapability importToModel(IRequiredCapability rc)
 	{
 		if(rc == null)
 			return null;
@@ -195,7 +195,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return mrc;
 	}
 
-	private static TouchpointData importToModel(ITouchpointData ptd)
+	public static TouchpointData importToModel(ITouchpointData ptd)
 	{
 		if(ptd == null)
 			return null;
@@ -208,7 +208,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return mtpd;
 	}
 
-	private static TouchpointInstruction importToModel(ITouchpointInstruction ti)
+	public static TouchpointInstruction importToModel(ITouchpointInstruction ti)
 	{
 		if(ti == null)
 			return null;
@@ -493,7 +493,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return miu;
 	}
 
-	private static ArtifactKey importToModel(IArtifactKey key)
+	public static ArtifactKey importToModel(IArtifactKey key)
 	{
 		if(key == null)
 			return null;
@@ -504,7 +504,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return mkey;
 	}
 
-	private static TouchpointType importToModel(ITouchpointType tpt)
+	public static TouchpointType importToModel(ITouchpointType tpt)
 	{
 		if(tpt == null)
 			return null;
@@ -514,7 +514,7 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return mtpt;
 	}
 
-	private static UpdateDescriptor importToModel(IUpdateDescriptor ud)
+	public static UpdateDescriptor importToModel(IUpdateDescriptor ud)
 	{
 		if(ud == null)
 			return null;
