@@ -12,6 +12,7 @@ import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Bundle;
 import org.eclipse.buckminster.aggregator.Category;
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
@@ -107,6 +108,22 @@ public class AggregatorSwitch<T1>
 	 * @generated
 	 */
 	public T1 caseCategory(Category object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Children Provider</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Children Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public <T> T1 caseChildrenProvider(ChildrenProvider<T> object)
 	{
 		return null;
 	}
@@ -767,6 +784,14 @@ public class AggregatorSwitch<T1>
 		{
 			MavenItem mavenItem = (MavenItem)theEObject;
 			T1 result = caseMavenItem(mavenItem);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.CHILDREN_PROVIDER:
+		{
+			ChildrenProvider<?> childrenProvider = (ChildrenProvider<?>)theEObject;
+			T1 result = caseChildrenProvider(childrenProvider);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

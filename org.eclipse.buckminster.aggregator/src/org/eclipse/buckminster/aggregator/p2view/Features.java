@@ -9,9 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Features</b></em>'. <!-- end-user-doc -->
@@ -27,7 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Features extends EObject
+public interface Features extends ChildrenProvider<Feature>
 {
 	/**
 	 * Returns the value of the '<em><b>Features</b></em>' reference list. The list contents are of type

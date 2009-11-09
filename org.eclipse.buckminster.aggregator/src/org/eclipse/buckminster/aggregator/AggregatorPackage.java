@@ -693,6 +693,24 @@ public interface AggregatorPackage extends EPackage
 		EAttribute MAVEN_ITEM__ARTIFACT_ID = eINSTANCE.getMavenItem_ArtifactId();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.ChildrenProvider
+		 * <em>Children Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.ChildrenProvider
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getChildrenProvider()
+		 * @generated
+		 */
+		EClass CHILDREN_PROVIDER = eINSTANCE.getChildrenProvider();
+
+		/**
+		 * The meta object literal for the '<em><b>Children</b></em>' reference list feature. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference CHILDREN_PROVIDER__CHILDREN = eINSTANCE.getChildrenProvider_Children();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.AggregateType
 		 * <em>Aggregate Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -1896,6 +1914,33 @@ public interface AggregatorPackage extends EPackage
 	int MAVEN_ITEM_FEATURE_COUNT = 2;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.ChildrenProvider
+	 * <em>Children Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.ChildrenProvider
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getChildrenProvider()
+	 * @generated
+	 */
+	int CHILDREN_PROVIDER = 24;
+
+	/**
+	 * The feature id for the '<em><b>Children</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CHILDREN_PROVIDER__CHILDREN = 0;
+
+	/**
+	 * The number of structural features of the '<em>Children Provider</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CHILDREN_PROVIDER_FEATURE_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.AggregateType <em>Aggregate Type</em>}'
 	 * enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1903,7 +1948,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getAggregateType()
 	 * @generated
 	 */
-	int AGGREGATE_TYPE = 24;
+	int AGGREGATE_TYPE = 25;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.OperatingSystem <em>Operating System</em>}'
@@ -1913,7 +1958,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getOperatingSystem()
 	 * @generated
 	 */
-	int OPERATING_SYSTEM = 25;
+	int OPERATING_SYSTEM = 26;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.WindowSystem <em>Window System</em>}' enum.
@@ -1923,7 +1968,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getWindowSystem()
 	 * @generated
 	 */
-	int WINDOW_SYSTEM = 26;
+	int WINDOW_SYSTEM = 27;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.Architecture <em>Architecture</em>}' enum.
@@ -1933,7 +1978,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getArchitecture()
 	 * @generated
 	 */
-	int ARCHITECTURE = 27;
+	int ARCHITECTURE = 28;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.PackedStrategy <em>Packed Strategy</em>}'
@@ -1943,7 +1988,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getPackedStrategy()
 	 * @generated
 	 */
-	int PACKED_STRATEGY = 28;
+	int PACKED_STRATEGY = 29;
 
 	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1952,7 +1997,7 @@ public interface AggregatorPackage extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 29;
+	int URI = 30;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -2172,6 +2217,28 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getCategory_LabelOverride();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.ChildrenProvider
+	 * <em>Children Provider</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Children Provider</em>'.
+	 * @see org.eclipse.buckminster.aggregator.ChildrenProvider
+	 * @generated
+	 */
+	EClass getChildrenProvider();
+
+	/**
+	 * Returns the meta object for the reference list '
+	 * {@link org.eclipse.buckminster.aggregator.ChildrenProvider#getChildren <em>Children</em>}'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference list '<em>Children</em>'.
+	 * @see org.eclipse.buckminster.aggregator.ChildrenProvider#getChildren()
+	 * @see #getChildrenProvider()
+	 * @generated
+	 */
+	EReference getChildrenProvider_Children();
 
 	/**
 	 * Returns the meta object for class '{@link java.lang.Comparable <em>Comparable</em>}'. <!-- begin-user-doc -->

@@ -9,8 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Miscellaneous</b></em>'. <!-- end-user-doc -->
@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Miscellaneous extends EObject
+public interface Miscellaneous extends ChildrenProvider<OtherIU>
 {
 	/**
 	 * Returns the value of the '<em><b>Others</b></em>' reference list. The list contents are of type

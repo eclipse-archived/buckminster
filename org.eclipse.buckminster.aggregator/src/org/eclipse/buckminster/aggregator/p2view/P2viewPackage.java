@@ -9,6 +9,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -692,12 +693,20 @@ public interface P2viewPackage extends EPackage
 	int METADATA_REPOSITORY_STRUCTURED_VIEW = 0;
 
 	/**
+	 * The feature id for the '<em><b>Children</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY_STRUCTURED_VIEW__CHILDREN = AggregatorPackage.CHILDREN_PROVIDER__CHILDREN;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_STRUCTURED_VIEW__NAME = 0;
+	int METADATA_REPOSITORY_STRUCTURED_VIEW__NAME = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Installable Unit List</b></em>' containment reference. <!-- begin-user-doc -->
@@ -706,7 +715,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST = 1;
+	int METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Properties</b></em>' containment reference. <!-- begin-user-doc --> <!--
@@ -715,7 +724,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES = 2;
+	int METADATA_REPOSITORY_STRUCTURED_VIEW__PROPERTIES = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Metadata Repository</b></em>' containment reference. <!-- begin-user-doc --> <!--
@@ -724,7 +733,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY = 3;
+	int METADATA_REPOSITORY_STRUCTURED_VIEW__METADATA_REPOSITORY = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Loaded</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -732,7 +741,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED = 4;
+	int METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 4;
 
 	/**
 	 * The number of structural features of the '<em>Metadata Repository Structured View</em>' class. <!--
@@ -741,7 +750,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_STRUCTURED_VIEW_FEATURE_COUNT = 5;
+	int METADATA_REPOSITORY_STRUCTURED_VIEW_FEATURE_COUNT = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 5;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.InstallableUnitsImpl
@@ -754,13 +763,21 @@ public interface P2viewPackage extends EPackage
 	int INSTALLABLE_UNITS = 1;
 
 	/**
+	 * The feature id for the '<em><b>Children</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int INSTALLABLE_UNITS__CHILDREN = AggregatorPackage.CHILDREN_PROVIDER__CHILDREN;
+
+	/**
 	 * The feature id for the '<em><b>Category Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNITS__CATEGORY_CONTAINER = 0;
+	int INSTALLABLE_UNITS__CATEGORY_CONTAINER = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Feature Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -769,7 +786,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNITS__FEATURE_CONTAINER = 1;
+	int INSTALLABLE_UNITS__FEATURE_CONTAINER = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Product Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -778,7 +795,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNITS__PRODUCT_CONTAINER = 2;
+	int INSTALLABLE_UNITS__PRODUCT_CONTAINER = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Bundle Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -787,7 +804,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNITS__BUNDLE_CONTAINER = 3;
+	int INSTALLABLE_UNITS__BUNDLE_CONTAINER = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Fragment Container</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc
@@ -796,7 +813,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNITS__FRAGMENT_CONTAINER = 4;
+	int INSTALLABLE_UNITS__FRAGMENT_CONTAINER = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Miscellaneous Container</b></em>' reference. <!-- begin-user-doc --> <!--
@@ -805,7 +822,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER = 5;
+	int INSTALLABLE_UNITS__MISCELLANEOUS_CONTAINER = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 5;
 
 	/**
 	 * The number of structural features of the '<em>Installable Units</em>' class. <!-- begin-user-doc --> <!--
@@ -814,7 +831,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNITS_FEATURE_COUNT = 6;
+	int INSTALLABLE_UNITS_FEATURE_COUNT = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 6;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoriesImpl
@@ -827,12 +844,20 @@ public interface P2viewPackage extends EPackage
 	int CATEGORIES = 2;
 
 	/**
+	 * The feature id for the '<em><b>Children</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CATEGORIES__CHILDREN = AggregatorPackage.CHILDREN_PROVIDER__CHILDREN;
+
+	/**
 	 * The feature id for the '<em><b>Categories</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CATEGORIES__CATEGORIES = 0;
+	int CATEGORIES__CATEGORIES = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Categories</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -841,7 +866,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CATEGORIES_FEATURE_COUNT = 1;
+	int CATEGORIES_FEATURE_COUNT = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FeaturesImpl <em>Features</em>}
@@ -854,12 +879,20 @@ public interface P2viewPackage extends EPackage
 	int FEATURES = 3;
 
 	/**
+	 * The feature id for the '<em><b>Children</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FEATURES__CHILDREN = AggregatorPackage.CHILDREN_PROVIDER__CHILDREN;
+
+	/**
 	 * The feature id for the '<em><b>Features</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURES__FEATURES = 0;
+	int FEATURES__FEATURES = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Features</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -867,7 +900,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FEATURES_FEATURE_COUNT = 1;
+	int FEATURES_FEATURE_COUNT = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductsImpl <em>Products</em>}
@@ -880,12 +913,20 @@ public interface P2viewPackage extends EPackage
 	int PRODUCTS = 4;
 
 	/**
+	 * The feature id for the '<em><b>Children</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PRODUCTS__CHILDREN = AggregatorPackage.CHILDREN_PROVIDER__CHILDREN;
+
+	/**
 	 * The feature id for the '<em><b>Products</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCTS__PRODUCTS = 0;
+	int PRODUCTS__PRODUCTS = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Products</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -893,7 +934,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PRODUCTS_FEATURE_COUNT = 1;
+	int PRODUCTS_FEATURE_COUNT = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.BundlesImpl <em>Bundles</em>}'
@@ -906,12 +947,20 @@ public interface P2viewPackage extends EPackage
 	int BUNDLES = 5;
 
 	/**
+	 * The feature id for the '<em><b>Children</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int BUNDLES__CHILDREN = AggregatorPackage.CHILDREN_PROVIDER__CHILDREN;
+
+	/**
 	 * The feature id for the '<em><b>Bundles</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLES__BUNDLES = 0;
+	int BUNDLES__BUNDLES = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Bundles</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -919,7 +968,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int BUNDLES_FEATURE_COUNT = 1;
+	int BUNDLES_FEATURE_COUNT = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.FragmentsImpl
@@ -932,12 +981,20 @@ public interface P2viewPackage extends EPackage
 	int FRAGMENTS = 6;
 
 	/**
+	 * The feature id for the '<em><b>Children</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int FRAGMENTS__CHILDREN = AggregatorPackage.CHILDREN_PROVIDER__CHILDREN;
+
+	/**
 	 * The feature id for the '<em><b>Fragments</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int FRAGMENTS__FRAGMENTS = 0;
+	int FRAGMENTS__FRAGMENTS = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Fragments</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -946,7 +1003,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int FRAGMENTS_FEATURE_COUNT = 1;
+	int FRAGMENTS_FEATURE_COUNT = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.MiscellaneousImpl
@@ -959,12 +1016,20 @@ public interface P2viewPackage extends EPackage
 	int MISCELLANEOUS = 7;
 
 	/**
+	 * The feature id for the '<em><b>Children</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MISCELLANEOUS__CHILDREN = AggregatorPackage.CHILDREN_PROVIDER__CHILDREN;
+
+	/**
 	 * The feature id for the '<em><b>Others</b></em>' reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MISCELLANEOUS__OTHERS = 0;
+	int MISCELLANEOUS__OTHERS = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Miscellaneous</em>' class. <!-- begin-user-doc --> <!--
@@ -973,7 +1038,7 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int MISCELLANEOUS_FEATURE_COUNT = 1;
+	int MISCELLANEOUS_FEATURE_COUNT = AggregatorPackage.CHILDREN_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.IUPresentationImpl

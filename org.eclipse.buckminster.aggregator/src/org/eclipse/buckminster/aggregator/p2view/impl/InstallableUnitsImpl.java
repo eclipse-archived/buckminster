@@ -19,7 +19,10 @@ import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 import org.eclipse.buckminster.aggregator.p2view.Products;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -196,6 +199,8 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.INSTALLABLE_UNITS__CHILDREN:
+			return getChildren();
 		case P2viewPackage.INSTALLABLE_UNITS__CATEGORY_CONTAINER:
 			if(resolve)
 				return getCategoryContainer();
@@ -234,6 +239,8 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.INSTALLABLE_UNITS__CHILDREN:
+			return !getChildren().isEmpty();
 		case P2viewPackage.INSTALLABLE_UNITS__CATEGORY_CONTAINER:
 			return categoryContainer != null;
 		case P2viewPackage.INSTALLABLE_UNITS__FEATURE_CONTAINER:
@@ -355,6 +362,25 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 			}
 		}
 		return categoryContainer;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<EObject> getChildren()
+	{
+		EList<EObject> children = new BasicEList<EObject>();
+
+		children.add(getCategoryContainer());
+		children.add(getFeatureContainer());
+		children.add(getProductContainer());
+		children.add(getBundleContainer());
+		children.add(getFragmentContainer());
+		children.add(getMiscellaneousContainer());
+
+		return children;
 	}
 
 	/**

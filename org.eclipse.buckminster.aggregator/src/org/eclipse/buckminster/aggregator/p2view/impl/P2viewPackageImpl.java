@@ -43,6 +43,7 @@ import org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities;
 import org.eclipse.buckminster.aggregator.p2view.Touchpoints;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -1131,15 +1132,47 @@ public class P2viewPackageImpl extends EPackageImpl implements P2viewPackage
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
+		AggregatorPackage theAggregatorPackage = (AggregatorPackage)EPackage.Registry.INSTANCE.getEPackage(AggregatorPackage.eNS_URI);
 		P2Package theP2Package = (P2Package)EPackage.Registry.INSTANCE.getEPackage(P2Package.eNS_URI);
 		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
-		AggregatorPackage theAggregatorPackage = (AggregatorPackage)EPackage.Registry.INSTANCE.getEPackage(AggregatorPackage.eNS_URI);
 
 		// Create type parameters
 
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		EGenericType g1 = createEGenericType(theAggregatorPackage.getChildrenProvider());
+		EGenericType g2 = createEGenericType(this.getInstallableUnits());
+		g1.getETypeArguments().add(g2);
+		metadataRepositoryStructuredViewEClass.getEGenericSuperTypes().add(g1);
+		g1 = createEGenericType(theAggregatorPackage.getChildrenProvider());
+		g2 = createEGenericType(ecorePackage.getEObject());
+		g1.getETypeArguments().add(g2);
+		installableUnitsEClass.getEGenericSuperTypes().add(g1);
+		g1 = createEGenericType(theAggregatorPackage.getChildrenProvider());
+		g2 = createEGenericType(this.getCategory());
+		g1.getETypeArguments().add(g2);
+		categoriesEClass.getEGenericSuperTypes().add(g1);
+		g1 = createEGenericType(theAggregatorPackage.getChildrenProvider());
+		g2 = createEGenericType(this.getFeature());
+		g1.getETypeArguments().add(g2);
+		featuresEClass.getEGenericSuperTypes().add(g1);
+		g1 = createEGenericType(theAggregatorPackage.getChildrenProvider());
+		g2 = createEGenericType(this.getProduct());
+		g1.getETypeArguments().add(g2);
+		productsEClass.getEGenericSuperTypes().add(g1);
+		g1 = createEGenericType(theAggregatorPackage.getChildrenProvider());
+		g2 = createEGenericType(this.getBundle());
+		g1.getETypeArguments().add(g2);
+		bundlesEClass.getEGenericSuperTypes().add(g1);
+		g1 = createEGenericType(theAggregatorPackage.getChildrenProvider());
+		g2 = createEGenericType(this.getFragment());
+		g1.getETypeArguments().add(g2);
+		fragmentsEClass.getEGenericSuperTypes().add(g1);
+		g1 = createEGenericType(theAggregatorPackage.getChildrenProvider());
+		g2 = createEGenericType(this.getOtherIU());
+		g1.getETypeArguments().add(g2);
+		miscellaneousEClass.getEGenericSuperTypes().add(g1);
 		iuPresentationWithDetailsEClass.getESuperTypes().add(this.getIUPresentation());
 		iuPresentationWithDetailsEClass.getESuperTypes().add(this.getIUDetails());
 		categoryEClass.getESuperTypes().add(this.getIUPresentation());

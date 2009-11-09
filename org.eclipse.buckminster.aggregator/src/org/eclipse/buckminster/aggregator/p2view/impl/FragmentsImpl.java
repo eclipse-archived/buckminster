@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.FragmentsImpl#getChildren <em>Children</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.FragmentsImpl#getFragments <em>Fragments</em>}</li>
  * </ul>
  * </p>
@@ -75,6 +76,8 @@ public class FragmentsImpl extends MinimalEObjectImpl.Container implements Fragm
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.FRAGMENTS__CHILDREN:
+			return getChildren();
 		case P2viewPackage.FRAGMENTS__FRAGMENTS:
 			return getFragments();
 		}
@@ -91,6 +94,8 @@ public class FragmentsImpl extends MinimalEObjectImpl.Container implements Fragm
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.FRAGMENTS__CHILDREN:
+			return !getChildren().isEmpty();
 		case P2viewPackage.FRAGMENTS__FRAGMENTS:
 			return fragments != null && !fragments.isEmpty();
 		}
@@ -131,6 +136,16 @@ public class FragmentsImpl extends MinimalEObjectImpl.Container implements Fragm
 			return;
 		}
 		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<Fragment> getChildren()
+	{
+		return getFragments();
 	}
 
 	/**

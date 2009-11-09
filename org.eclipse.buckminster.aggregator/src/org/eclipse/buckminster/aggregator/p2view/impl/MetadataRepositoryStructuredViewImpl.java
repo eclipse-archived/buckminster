@@ -13,14 +13,14 @@ import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2view.InstallableUnits;
 import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
-
 import org.eclipse.buckminster.aggregator.p2view.Properties;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
@@ -29,6 +29,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MetadataRepositoryStructuredViewImpl#getChildren <em>
+ * Children</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MetadataRepositoryStructuredViewImpl#getName <em>Name</em>}
  * </li>
  * <li>
@@ -224,6 +226,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__CHILDREN:
+			return getChildren();
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__NAME:
 			return getName();
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__INSTALLABLE_UNIT_LIST:
@@ -268,6 +272,8 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__CHILDREN:
+			return !getChildren().isEmpty();
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__NAME:
 			return NAME_EDEFAULT == null
 					? name != null
@@ -340,6 +346,18 @@ public class MetadataRepositoryStructuredViewImpl extends MinimalEObjectImpl.Con
 			return;
 		}
 		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<InstallableUnits> getChildren()
+	{
+		EList<InstallableUnits> children = new BasicEList<InstallableUnits>();
+		children.add(getInstallableUnitList());
+		return children;
 	}
 
 	/**

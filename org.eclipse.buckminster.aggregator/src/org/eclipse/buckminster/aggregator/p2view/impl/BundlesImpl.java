@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.BundlesImpl#getChildren <em>Children</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.BundlesImpl#getBundles <em>Bundles</em>}</li>
  * </ul>
  * </p>
@@ -75,6 +76,8 @@ public class BundlesImpl extends MinimalEObjectImpl.Container implements Bundles
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.BUNDLES__CHILDREN:
+			return getChildren();
 		case P2viewPackage.BUNDLES__BUNDLES:
 			return getBundles();
 		}
@@ -91,6 +94,8 @@ public class BundlesImpl extends MinimalEObjectImpl.Container implements Bundles
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.BUNDLES__CHILDREN:
+			return !getChildren().isEmpty();
 		case P2viewPackage.BUNDLES__BUNDLES:
 			return bundles != null && !bundles.isEmpty();
 		}
@@ -145,6 +150,16 @@ public class BundlesImpl extends MinimalEObjectImpl.Container implements Bundles
 			bundles = new EObjectResolvingEList<Bundle>(Bundle.class, this, P2viewPackage.BUNDLES__BUNDLES);
 		}
 		return bundles;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<Bundle> getChildren()
+	{
+		return getBundles();
 	}
 
 	/**

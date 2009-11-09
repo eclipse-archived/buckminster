@@ -437,6 +437,17 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 
 	private static final Pattern proxyFragmentPattern = Pattern.compile("^//@metadataRepository/@installableUnits\\[id='([^']*)',version='([^']*)'\\]$");
 
+	public static ArtifactKey importToModel(IArtifactKey key)
+	{
+		if(key == null)
+			return null;
+		ArtifactKeyImpl mkey = (ArtifactKeyImpl)P2Factory.eINSTANCE.createArtifactKey();
+		mkey.setClassifier(key.getClassifier());
+		mkey.setId(key.getId());
+		mkey.setVersion(key.getVersion());
+		return mkey;
+	}
+
 	public static InstallableUnit importToModel(IInstallableUnit iu)
 	{
 		if(iu == null)
@@ -491,17 +502,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 			tds.add(importToModel(td));
 
 		return miu;
-	}
-
-	public static ArtifactKey importToModel(IArtifactKey key)
-	{
-		if(key == null)
-			return null;
-		ArtifactKeyImpl mkey = (ArtifactKeyImpl)P2Factory.eINSTANCE.createArtifactKey();
-		mkey.setClassifier(key.getClassifier());
-		mkey.setId(key.getId());
-		mkey.setVersion(key.getVersion());
-		return mkey;
 	}
 
 	public static TouchpointType importToModel(ITouchpointType tpt)

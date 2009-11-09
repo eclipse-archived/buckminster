@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoriesImpl#getChildren <em>Children</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.CategoriesImpl#getCategories <em>Categories</em>}</li>
  * </ul>
  * </p>
@@ -75,6 +76,8 @@ public class CategoriesImpl extends MinimalEObjectImpl.Container implements Cate
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.CATEGORIES__CHILDREN:
+			return getChildren();
 		case P2viewPackage.CATEGORIES__CATEGORIES:
 			return getCategories();
 		}
@@ -91,6 +94,8 @@ public class CategoriesImpl extends MinimalEObjectImpl.Container implements Cate
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.CATEGORIES__CHILDREN:
+			return !getChildren().isEmpty();
 		case P2viewPackage.CATEGORIES__CATEGORIES:
 			return categories != null && !categories.isEmpty();
 		}
@@ -145,6 +150,16 @@ public class CategoriesImpl extends MinimalEObjectImpl.Container implements Cate
 			categories = new EObjectResolvingEList<Category>(Category.class, this, P2viewPackage.CATEGORIES__CATEGORIES);
 		}
 		return categories;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<Category> getChildren()
+	{
+		return getCategories();
 	}
 
 	/**

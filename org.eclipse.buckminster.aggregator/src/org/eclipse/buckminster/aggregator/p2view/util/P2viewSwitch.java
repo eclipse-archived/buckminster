@@ -11,6 +11,7 @@ package org.eclipse.buckminster.aggregator.p2view.util;
 
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.buckminster.aggregator.p2view.*;
 
 import org.eclipse.emf.ecore.EClass;
@@ -25,7 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage
  * @generated
  */
-public class P2viewSwitch<T>
+public class P2viewSwitch<T1>
 {
 	/**
 	 * The cached model package <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -57,7 +58,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseBundle(Bundle object)
+	public T1 caseBundle(Bundle object)
 	{
 		return null;
 	}
@@ -72,7 +73,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseBundles(Bundles object)
+	public T1 caseBundles(Bundles object)
 	{
 		return null;
 	}
@@ -87,7 +88,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseCategories(Categories object)
+	public T1 caseCategories(Categories object)
 	{
 		return null;
 	}
@@ -102,7 +103,23 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseCategory(Category object)
+	public T1 caseCategory(Category object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Children Provider</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Children Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public <T> T1 caseChildrenProvider(ChildrenProvider<T> object)
 	{
 		return null;
 	}
@@ -117,7 +134,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFeature(Feature object)
+	public T1 caseFeature(Feature object)
 	{
 		return null;
 	}
@@ -132,7 +149,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFeatures(Features object)
+	public T1 caseFeatures(Features object)
 	{
 		return null;
 	}
@@ -147,7 +164,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFragment(Fragment object)
+	public T1 caseFragment(Fragment object)
 	{
 		return null;
 	}
@@ -162,7 +179,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFragments(Fragments object)
+	public T1 caseFragments(Fragments object)
 	{
 		return null;
 	}
@@ -178,7 +195,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseInstallableUnits(InstallableUnits object)
+	public T1 caseInstallableUnits(InstallableUnits object)
 	{
 		return null;
 	}
@@ -193,7 +210,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseIUDetails(IUDetails object)
+	public T1 caseIUDetails(IUDetails object)
 	{
 		return null;
 	}
@@ -209,7 +226,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseIUPresentation(IUPresentation object)
+	public T1 caseIUPresentation(IUPresentation object)
 	{
 		return null;
 	}
@@ -225,7 +242,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseIUPresentationWithDetails(IUPresentationWithDetails object)
+	public T1 caseIUPresentationWithDetails(IUPresentationWithDetails object)
 	{
 		return null;
 	}
@@ -241,7 +258,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseMetadataRepositoryStructuredView(MetadataRepositoryStructuredView object)
+	public T1 caseMetadataRepositoryStructuredView(MetadataRepositoryStructuredView object)
 	{
 		return null;
 	}
@@ -256,7 +273,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseMiscellaneous(Miscellaneous object)
+	public T1 caseMiscellaneous(Miscellaneous object)
 	{
 		return null;
 	}
@@ -271,7 +288,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseOtherIU(OtherIU object)
+	public T1 caseOtherIU(OtherIU object)
 	{
 		return null;
 	}
@@ -286,7 +303,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseProduct(Product object)
+	public T1 caseProduct(Product object)
 	{
 		return null;
 	}
@@ -301,7 +318,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseProducts(Products object)
+	public T1 caseProducts(Products object)
 	{
 		return null;
 	}
@@ -316,7 +333,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseProperties(Properties object)
+	public T1 caseProperties(Properties object)
 	{
 		return null;
 	}
@@ -332,7 +349,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseProvidedCapabilities(ProvidedCapabilities object)
+	public T1 caseProvidedCapabilities(ProvidedCapabilities object)
 	{
 		return null;
 	}
@@ -348,7 +365,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseRequiredCapabilities(RequiredCapabilities object)
+	public T1 caseRequiredCapabilities(RequiredCapabilities object)
 	{
 		return null;
 	}
@@ -363,7 +380,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseTouchpoints(Touchpoints object)
+	public T1 caseTouchpoints(Touchpoints object)
 	{
 		return null;
 	}
@@ -379,7 +396,7 @@ public class P2viewSwitch<T>
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject)
 	 * @generated
 	 */
-	public T defaultCase(EObject object)
+	public T1 defaultCase(EObject object)
 	{
 		return null;
 	}
@@ -391,7 +408,7 @@ public class P2viewSwitch<T>
 	 * @return the first non-null result returned by a <code>caseXXX</code> call.
 	 * @generated
 	 */
-	public T doSwitch(EObject theEObject)
+	public T1 doSwitch(EObject theEObject)
 	{
 		return doSwitch(theEObject.eClass(), theEObject);
 	}
@@ -403,7 +420,7 @@ public class P2viewSwitch<T>
 	 * @return the first non-null result returned by a <code>caseXXX</code> call.
 	 * @generated
 	 */
-	protected T doSwitch(EClass theEClass, EObject theEObject)
+	protected T1 doSwitch(EClass theEClass, EObject theEObject)
 	{
 		if(theEClass.eContainer() == modelPackage)
 		{
@@ -425,14 +442,16 @@ public class P2viewSwitch<T>
 	 * @return the first non-null result returned by a <code>caseXXX</code> call.
 	 * @generated
 	 */
-	protected T doSwitch(int classifierID, EObject theEObject)
+	protected T1 doSwitch(int classifierID, EObject theEObject)
 	{
 		switch(classifierID)
 		{
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW:
 		{
 			MetadataRepositoryStructuredView metadataRepositoryStructuredView = (MetadataRepositoryStructuredView)theEObject;
-			T result = caseMetadataRepositoryStructuredView(metadataRepositoryStructuredView);
+			T1 result = caseMetadataRepositoryStructuredView(metadataRepositoryStructuredView);
+			if(result == null)
+				result = caseChildrenProvider(metadataRepositoryStructuredView);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -440,7 +459,9 @@ public class P2viewSwitch<T>
 		case P2viewPackage.INSTALLABLE_UNITS:
 		{
 			InstallableUnits installableUnits = (InstallableUnits)theEObject;
-			T result = caseInstallableUnits(installableUnits);
+			T1 result = caseInstallableUnits(installableUnits);
+			if(result == null)
+				result = caseChildrenProvider(installableUnits);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -448,7 +469,9 @@ public class P2viewSwitch<T>
 		case P2viewPackage.CATEGORIES:
 		{
 			Categories categories = (Categories)theEObject;
-			T result = caseCategories(categories);
+			T1 result = caseCategories(categories);
+			if(result == null)
+				result = caseChildrenProvider(categories);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -456,7 +479,9 @@ public class P2viewSwitch<T>
 		case P2viewPackage.FEATURES:
 		{
 			Features features = (Features)theEObject;
-			T result = caseFeatures(features);
+			T1 result = caseFeatures(features);
+			if(result == null)
+				result = caseChildrenProvider(features);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -464,7 +489,9 @@ public class P2viewSwitch<T>
 		case P2viewPackage.PRODUCTS:
 		{
 			Products products = (Products)theEObject;
-			T result = caseProducts(products);
+			T1 result = caseProducts(products);
+			if(result == null)
+				result = caseChildrenProvider(products);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -472,7 +499,9 @@ public class P2viewSwitch<T>
 		case P2viewPackage.BUNDLES:
 		{
 			Bundles bundles = (Bundles)theEObject;
-			T result = caseBundles(bundles);
+			T1 result = caseBundles(bundles);
+			if(result == null)
+				result = caseChildrenProvider(bundles);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -480,7 +509,9 @@ public class P2viewSwitch<T>
 		case P2viewPackage.FRAGMENTS:
 		{
 			Fragments fragments = (Fragments)theEObject;
-			T result = caseFragments(fragments);
+			T1 result = caseFragments(fragments);
+			if(result == null)
+				result = caseChildrenProvider(fragments);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -488,7 +519,9 @@ public class P2viewSwitch<T>
 		case P2viewPackage.MISCELLANEOUS:
 		{
 			Miscellaneous miscellaneous = (Miscellaneous)theEObject;
-			T result = caseMiscellaneous(miscellaneous);
+			T1 result = caseMiscellaneous(miscellaneous);
+			if(result == null)
+				result = caseChildrenProvider(miscellaneous);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -496,7 +529,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.IU_PRESENTATION:
 		{
 			IUPresentation iuPresentation = (IUPresentation)theEObject;
-			T result = caseIUPresentation(iuPresentation);
+			T1 result = caseIUPresentation(iuPresentation);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -504,7 +537,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.IU_PRESENTATION_WITH_DETAILS:
 		{
 			IUPresentationWithDetails iuPresentationWithDetails = (IUPresentationWithDetails)theEObject;
-			T result = caseIUPresentationWithDetails(iuPresentationWithDetails);
+			T1 result = caseIUPresentationWithDetails(iuPresentationWithDetails);
 			if(result == null)
 				result = caseIUPresentation(iuPresentationWithDetails);
 			if(result == null)
@@ -516,7 +549,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.CATEGORY:
 		{
 			Category category = (Category)theEObject;
-			T result = caseCategory(category);
+			T1 result = caseCategory(category);
 			if(result == null)
 				result = caseIUPresentation(category);
 			if(result == null)
@@ -526,7 +559,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.FEATURE:
 		{
 			Feature feature = (Feature)theEObject;
-			T result = caseFeature(feature);
+			T1 result = caseFeature(feature);
 			if(result == null)
 				result = caseIUPresentationWithDetails(feature);
 			if(result == null)
@@ -540,7 +573,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.PRODUCT:
 		{
 			Product product = (Product)theEObject;
-			T result = caseProduct(product);
+			T1 result = caseProduct(product);
 			if(result == null)
 				result = caseIUPresentationWithDetails(product);
 			if(result == null)
@@ -554,7 +587,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.BUNDLE:
 		{
 			Bundle bundle = (Bundle)theEObject;
-			T result = caseBundle(bundle);
+			T1 result = caseBundle(bundle);
 			if(result == null)
 				result = caseIUPresentationWithDetails(bundle);
 			if(result == null)
@@ -568,7 +601,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.FRAGMENT:
 		{
 			Fragment fragment = (Fragment)theEObject;
-			T result = caseFragment(fragment);
+			T1 result = caseFragment(fragment);
 			if(result == null)
 				result = caseBundle(fragment);
 			if(result == null)
@@ -584,7 +617,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.OTHER_IU:
 		{
 			OtherIU otherIU = (OtherIU)theEObject;
-			T result = caseOtherIU(otherIU);
+			T1 result = caseOtherIU(otherIU);
 			if(result == null)
 				result = caseIUPresentationWithDetails(otherIU);
 			if(result == null)
@@ -598,7 +631,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.PROPERTIES:
 		{
 			Properties properties = (Properties)theEObject;
-			T result = caseProperties(properties);
+			T1 result = caseProperties(properties);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -606,7 +639,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.REQUIRED_CAPABILITIES:
 		{
 			RequiredCapabilities requiredCapabilities = (RequiredCapabilities)theEObject;
-			T result = caseRequiredCapabilities(requiredCapabilities);
+			T1 result = caseRequiredCapabilities(requiredCapabilities);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -614,7 +647,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.PROVIDED_CAPABILITIES:
 		{
 			ProvidedCapabilities providedCapabilities = (ProvidedCapabilities)theEObject;
-			T result = caseProvidedCapabilities(providedCapabilities);
+			T1 result = caseProvidedCapabilities(providedCapabilities);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -622,7 +655,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.TOUCHPOINTS:
 		{
 			Touchpoints touchpoints = (Touchpoints)theEObject;
-			T result = caseTouchpoints(touchpoints);
+			T1 result = caseTouchpoints(touchpoints);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -630,7 +663,7 @@ public class P2viewSwitch<T>
 		case P2viewPackage.IU_DETAILS:
 		{
 			IUDetails iuDetails = (IUDetails)theEObject;
-			T result = caseIUDetails(iuDetails);
+			T1 result = caseIUDetails(iuDetails);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

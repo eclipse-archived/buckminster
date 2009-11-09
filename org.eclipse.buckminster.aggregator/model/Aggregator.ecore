@@ -212,6 +212,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="groupId" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="artifactId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ChildrenProvider" abstract="true" interface="true">
+    <eTypeParameters name="T"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
+        changeable="false" volatile="true" transient="true" resolveProxies="false">
+      <eGenericType eTypeParameter="#//ChildrenProvider/T"/>
+    </eStructuralFeatures>
+  </eClassifiers>
   <eSubpackages name="p2" nsURI="http://www.eclipse.org/buckminster/2009/p2" nsPrefix="p2">
     <eClassifiers xsi:type="ecore:EClass" name="IArtifactKey" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey"
         abstract="true" interface="true">
@@ -473,6 +480,9 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="metadataRepository" ordered="false"
           lowerBound="1" eType="#//p2/MetadataRepository" containment="true" resolveProxies="false"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="loaded" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eGenericSuperTypes eClassifier="#//ChildrenProvider">
+        <eTypeArguments eClassifier="#//p2view/InstallableUnits"/>
+      </eGenericSuperTypes>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstallableUnits">
       <eOperations name="getNotNullCategoryContainer" eType="#//p2view/Categories"/>
@@ -488,30 +498,51 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="fragmentContainer" eType="#//p2view/Fragments"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="miscellaneousContainer"
           eType="#//p2view/Miscellaneous"/>
+      <eGenericSuperTypes eClassifier="#//ChildrenProvider">
+        <eTypeArguments eClassifier="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+      </eGenericSuperTypes>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Categories">
       <eStructuralFeatures xsi:type="ecore:EReference" name="categories" upperBound="-1"
           eType="#//p2view/Category"/>
+      <eGenericSuperTypes eClassifier="#//ChildrenProvider">
+        <eTypeArguments eClassifier="#//p2view/Category"/>
+      </eGenericSuperTypes>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Features">
       <eStructuralFeatures xsi:type="ecore:EReference" name="features" upperBound="-1"
           eType="#//p2view/Feature"/>
+      <eGenericSuperTypes eClassifier="#//ChildrenProvider">
+        <eTypeArguments eClassifier="#//p2view/Feature"/>
+      </eGenericSuperTypes>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Products">
       <eStructuralFeatures xsi:type="ecore:EReference" name="products" upperBound="-1"
           eType="#//p2view/Product"/>
+      <eGenericSuperTypes eClassifier="#//ChildrenProvider">
+        <eTypeArguments eClassifier="#//p2view/Product"/>
+      </eGenericSuperTypes>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Bundles">
       <eStructuralFeatures xsi:type="ecore:EReference" name="bundles" upperBound="-1"
           eType="#//p2view/Bundle"/>
+      <eGenericSuperTypes eClassifier="#//ChildrenProvider">
+        <eTypeArguments eClassifier="#//p2view/Bundle"/>
+      </eGenericSuperTypes>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Fragments">
       <eStructuralFeatures xsi:type="ecore:EReference" name="fragments" upperBound="-1"
           eType="#//p2view/Fragment"/>
+      <eGenericSuperTypes eClassifier="#//ChildrenProvider">
+        <eTypeArguments eClassifier="#//p2view/Fragment"/>
+      </eGenericSuperTypes>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Miscellaneous">
       <eStructuralFeatures xsi:type="ecore:EReference" name="others" upperBound="-1"
           eType="#//p2view/OtherIU"/>
+      <eGenericSuperTypes eClassifier="#//ChildrenProvider">
+        <eTypeArguments eClassifier="#//p2view/OtherIU"/>
+      </eGenericSuperTypes>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IUPresentation" abstract="true">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

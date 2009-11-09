@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductsImpl#getChildren <em>Children</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.ProductsImpl#getProducts <em>Products</em>}</li>
  * </ul>
  * </p>
@@ -75,6 +76,8 @@ public class ProductsImpl extends MinimalEObjectImpl.Container implements Produc
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.PRODUCTS__CHILDREN:
+			return getChildren();
 		case P2viewPackage.PRODUCTS__PRODUCTS:
 			return getProducts();
 		}
@@ -91,6 +94,8 @@ public class ProductsImpl extends MinimalEObjectImpl.Container implements Produc
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.PRODUCTS__CHILDREN:
+			return !getChildren().isEmpty();
 		case P2viewPackage.PRODUCTS__PRODUCTS:
 			return products != null && !products.isEmpty();
 		}
@@ -131,6 +136,16 @@ public class ProductsImpl extends MinimalEObjectImpl.Container implements Produc
 			return;
 		}
 		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<Product> getChildren()
+	{
+		return getProducts();
 	}
 
 	/**

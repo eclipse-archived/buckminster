@@ -39,7 +39,7 @@ public class AddToParentRepositoryCommand extends AbstractCommand
 
 	public AddToParentRepositoryCommand(Aggregator aggregator, List<InstallableUnit> selectedIUs)
 	{
-		super(AggregatorEditPlugin.INSTANCE.getString("_UI_Add_to_Parent_Repository"));
+		super(AggregatorEditPlugin.INSTANCE.getString("_UI_Add_to_parent_Mapped_Repository"));
 
 		m_aggregator = aggregator;
 		m_selectedIUs = selectedIUs;

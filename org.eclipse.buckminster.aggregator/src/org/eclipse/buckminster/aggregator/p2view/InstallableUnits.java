@@ -9,6 +9,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -34,7 +35,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface InstallableUnits extends EObject
+public interface InstallableUnits extends ChildrenProvider<EObject>
 {
 	/**
 	 * Returns the value of the '<em><b>Bundle Container</b></em>' reference. <!-- begin-user-doc -->

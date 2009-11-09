@@ -14,6 +14,7 @@ import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Architecture;
 import org.eclipse.buckminster.aggregator.Bundle;
 import org.eclipse.buckminster.aggregator.Category;
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
@@ -49,6 +50,7 @@ import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.ETypeParameter;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 
@@ -286,6 +288,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	private EClass childrenProviderEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private EEnum aggregateTypeEEnum = null;
 
 	/**
@@ -473,6 +482,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		mavenItemEClass = createEClass(MAVEN_ITEM);
 		createEAttribute(mavenItemEClass, MAVEN_ITEM__GROUP_ID);
 		createEAttribute(mavenItemEClass, MAVEN_ITEM__ARTIFACT_ID);
+
+		childrenProviderEClass = createEClass(CHILDREN_PROVIDER);
+		createEReference(childrenProviderEClass, CHILDREN_PROVIDER__CHILDREN);
 
 		// Create enums
 		aggregateTypeEEnum = createEEnum(AGGREGATE_TYPE);
@@ -683,6 +695,26 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	public EAttribute getCategory_LabelOverride()
 	{
 		return (EAttribute)categoryEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getChildrenProvider()
+	{
+		return childrenProviderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getChildrenProvider_Children()
+	{
+		return (EReference)childrenProviderEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1333,6 +1365,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 
 		// Create type parameters
 		addETypeParameter(comparableEClass, "T");
+		ETypeParameter childrenProviderEClass_T = addETypeParameter(childrenProviderEClass, "T");
 
 		// Set bounds for type parameters
 
@@ -1641,6 +1674,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getMavenItem_ArtifactId(), ecorePackage.getEString(), "artifactId", null, 0, 1, MavenItem.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(childrenProviderEClass, ChildrenProvider.class, "ChildrenProvider", IS_ABSTRACT, IS_INTERFACE,
+				IS_GENERATED_INSTANCE_CLASS);
+		g1 = createEGenericType(childrenProviderEClass_T);
+		initEReference(getChildrenProvider_Children(), g1, null, "children", null, 0, -1, ChildrenProvider.class,
+				!IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(aggregateTypeEEnum, AggregateType.class, "AggregateType");

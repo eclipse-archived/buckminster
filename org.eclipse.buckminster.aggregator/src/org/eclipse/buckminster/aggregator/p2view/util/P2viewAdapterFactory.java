@@ -9,6 +9,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2view.util;
 
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.buckminster.aggregator.p2view.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -63,6 +64,12 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseCategory(Category object)
 		{
 			return createCategoryAdapter();
+		}
+
+		@Override
+		public <T> Adapter caseChildrenProvider(ChildrenProvider<T> object)
+		{
+			return createChildrenProviderAdapter();
 		}
 
 		@Override
@@ -255,6 +262,21 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createCategoryAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.ChildrenProvider
+	 * <em>Children Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.ChildrenProvider
+	 * @generated
+	 */
+	public Adapter createChildrenProviderAdapter()
 	{
 		return null;
 	}

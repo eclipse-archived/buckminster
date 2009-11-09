@@ -10,6 +10,7 @@ import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Bundle;
 import org.eclipse.buckminster.aggregator.Category;
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
@@ -74,6 +75,12 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseCategory(Category object)
 		{
 			return createCategoryAdapter();
+		}
+
+		@Override
+		public <T> Adapter caseChildrenProvider(ChildrenProvider<T> object)
+		{
+			return createChildrenProviderAdapter();
 		}
 
 		@Override
@@ -276,6 +283,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createCategoryAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.ChildrenProvider
+	 * <em>Children Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.ChildrenProvider
+	 * @generated
+	 */
+	public Adapter createChildrenProviderAdapter()
 	{
 		return null;
 	}

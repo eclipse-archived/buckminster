@@ -24,6 +24,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MiscellaneousImpl#getChildren <em>Children</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2view.impl.MiscellaneousImpl#getOthers <em>Others</em>}</li>
  * </ul>
  * </p>
@@ -71,6 +72,8 @@ public class MiscellaneousImpl extends MinimalEObjectImpl.Container implements M
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.MISCELLANEOUS__CHILDREN:
+			return getChildren();
 		case P2viewPackage.MISCELLANEOUS__OTHERS:
 			return getOthers();
 		}
@@ -87,6 +90,8 @@ public class MiscellaneousImpl extends MinimalEObjectImpl.Container implements M
 	{
 		switch(featureID)
 		{
+		case P2viewPackage.MISCELLANEOUS__CHILDREN:
+			return !getChildren().isEmpty();
 		case P2viewPackage.MISCELLANEOUS__OTHERS:
 			return others != null && !others.isEmpty();
 		}
@@ -127,6 +132,16 @@ public class MiscellaneousImpl extends MinimalEObjectImpl.Container implements M
 			return;
 		}
 		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<OtherIU> getChildren()
+	{
+		return getOthers();
 	}
 
 	/**

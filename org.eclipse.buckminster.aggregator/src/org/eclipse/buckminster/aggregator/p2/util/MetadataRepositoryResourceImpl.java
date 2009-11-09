@@ -5,14 +5,17 @@ import static java.lang.String.format;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Property;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
@@ -34,6 +37,7 @@ import org.eclipse.buckminster.aggregator.p2view.Product;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.TimeUtils;
+import org.eclipse.buckminster.aggregator.util.TwoColumnMatrix;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -44,6 +48,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -74,14 +79,17 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 		private Exception exception;
 
+		private TwoColumnMatrix<IUPresentation, Object[]> allIUMatrix;
+
 		public RepositoryLoaderJob(MetadataRepositoryImpl repository, java.net.URI location, boolean forceReload,
-				MetadataRepositoryStructuredView repoView)
+				MetadataRepositoryStructuredView repoView, TwoColumnMatrix<IUPresentation, Object[]> allIUMap)
 		{
 			super("Repository Loader");
 			this.repository = repository;
 			this.location = location;
 			this.forceReload = forceReload;
 			this.repoView = repoView;
+			this.allIUMatrix = allIUMap;
 			setUser(false);
 			setSystem(true);
 			setPriority(Job.SHORT);
@@ -171,6 +179,18 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			return Status.OK_STATUS;
 		}
 
+		private void addIUsToMap(Object container, List<? extends IUPresentation> iuPresentations)
+		{
+			Object[] treePath = new Object[4];
+			treePath[0] = MetadataRepositoryResourceImpl.this;
+			treePath[1] = repoView;
+			treePath[2] = repoView.getInstallableUnitList();
+			treePath[3] = container;
+
+			for(IUPresentation iup : iuPresentations)
+				allIUMatrix.add(iup, treePath);
+		}
+
 		private void createStructuredView()
 		{
 			repoView.setName(repository.getName());
@@ -249,31 +269,43 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			{
 				Collections.sort(categories, IUPresentation.COMPARATOR);
 				repoView.getInstallableUnitList().getNotNullCategoryContainer().getCategories().addAll(categories);
+
+				addIUsToMap(repoView.getInstallableUnitList().getCategoryContainer(), categories);
 			}
 			if(features.size() > 0)
 			{
 				Collections.sort(features, IUPresentation.COMPARATOR);
 				repoView.getInstallableUnitList().getNotNullFeatureContainer().getFeatures().addAll(features);
+
+				addIUsToMap(repoView.getInstallableUnitList().getFeatureContainer(), features);
 			}
 			if(products.size() > 0)
 			{
 				Collections.sort(products, IUPresentation.COMPARATOR);
 				repoView.getInstallableUnitList().getNotNullProductContainer().getProducts().addAll(products);
+
+				addIUsToMap(repoView.getInstallableUnitList().getProductContainer(), products);
 			}
 			if(bundles.size() > 0)
 			{
 				Collections.sort(bundles, IUPresentation.COMPARATOR);
 				repoView.getInstallableUnitList().getNotNullBundleContainer().getBundles().addAll(bundles);
+
+				addIUsToMap(repoView.getInstallableUnitList().getBundleContainer(), bundles);
 			}
 			if(fragments.size() > 0)
 			{
 				Collections.sort(fragments, IUPresentation.COMPARATOR);
 				repoView.getInstallableUnitList().getNotNullFragmentContainer().getFragments().addAll(fragments);
+
+				addIUsToMap(repoView.getInstallableUnitList().getFragmentContainer(), fragments);
 			}
 			if(miscellaneous.size() > 0)
 			{
 				Collections.sort(miscellaneous, IUPresentation.COMPARATOR);
 				repoView.getInstallableUnitList().getNotNullMiscellaneousContainer().getOthers().addAll(miscellaneous);
+
+				addIUsToMap(repoView.getInstallableUnitList().getMiscellaneousContainer(), miscellaneous);
 			}
 
 			Categories categoryContainer = repoView.getInstallableUnitList().getCategoryContainer();
@@ -319,6 +351,10 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			List<Bundle> bundles = new ArrayList<Bundle>();
 			List<Fragment> fragments = new ArrayList<Fragment>();
 
+			int idx = allIUMatrix.indexOf(category);
+			Object[] categoryTreePath = Arrays.copyOf(allIUMatrix.getValue(idx), allIUMatrix.getValue(idx).length + 1);
+			categoryTreePath[categoryTreePath.length - 1] = category;
+
 			for(IRequiredCapability requiredCapability : category.getInstallableUnit().getRequiredCapabilityList())
 			{
 				VersionRange range = requiredCapability.getRange();
@@ -333,6 +369,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				if(iuPresentation == null)
 					continue;
 
+				allIUMatrix.add(++idx, iuPresentation, categoryTreePath);
 				if(iuPresentation instanceof Category)
 				{
 					categories.add((Category)iuPresentation);
@@ -437,6 +474,10 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		}
 	}
 
+	private MetadataRepositoryStructuredView repoView;
+
+	private final TwoColumnMatrix<IUPresentation, Object[]> allIUPresentationMatrix = new TwoColumnMatrix<IUPresentation, Object[]>();
+
 	private Exception m_lastException = null;
 
 	private boolean m_forceReload = false;
@@ -463,6 +504,46 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	public MetadataRepositoryResourceImpl(URI uri)
 	{
 		super(uri);
+	}
+
+	public Object[] findIUPresentation(Pattern iuIdPattern, VersionRange iuVersionRange, Object[] startAfterPath,
+			boolean forward)
+	{
+		List<Object> firstNodePath = null;
+
+		if(startAfterPath != null && startAfterPath[0] == this && startAfterPath.length > 1)
+			firstNodePath = getFirstNode(startAfterPath, forward);
+		else
+			firstNodePath = getFirstNode(null, forward);
+
+		if(firstNodePath == null)
+			return null;
+
+		List<Object> foundIUPath = findIU(firstNodePath, iuIdPattern, iuVersionRange, forward);
+
+		return foundIUPath == null
+				? null
+				: foundIUPath.toArray();
+	}
+
+	public TwoColumnMatrix<IUPresentation, Object[]> findIUPresentations(Pattern iuIdPattern,
+			VersionRange iuVersionRange)
+	{
+		TwoColumnMatrix<IUPresentation, Object[]> found = new TwoColumnMatrix<IUPresentation, Object[]>();
+
+		for(int i = 0; i < allIUPresentationMatrix.size(); i++)
+		{
+			IUPresentation iup = allIUPresentationMatrix.getKey(i);
+			if(iup == null)
+				continue;
+
+			InstallableUnit iu = iup.getInstallableUnit();
+
+			if(iuIdPattern.matcher(iu.getId()).find() && iuVersionRange.isIncluded(iu.getVersion()))
+				found.add(iup, allIUPresentationMatrix.getValue(i));
+		}
+
+		return found;
 	}
 
 	public Exception getLastException()
@@ -501,8 +582,13 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		}
 
 		MetadataRepositoryImpl repository = (MetadataRepositoryImpl)P2Factory.eINSTANCE.createMetadataRepository();
-		MetadataRepositoryStructuredView repoView = P2viewFactory.eINSTANCE.createMetadataRepositoryStructuredView(repository);
-		RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location, m_forceReload, repoView);
+
+		repoView = P2viewFactory.eINSTANCE.createMetadataRepositoryStructuredView(repository);
+		allIUPresentationMatrix.clear();
+
+		RepositoryLoaderJob job = new RepositoryLoaderJob(repository, location, m_forceReload, repoView,
+				allIUPresentationMatrix);
+
 		try
 		{
 			boolean jobManagerReadyBeforeJobScheduled = !Job.getJobManager().isSuspended();
@@ -542,5 +628,153 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	{
 		super.doUnload();
 		m_forceReload = true;
+	}
+
+	private List<Object> findIU(List<Object> nodePath, Pattern iuIdPattern, VersionRange iuVersionRange, boolean forward)
+	{
+		List<Object> foundInSubTreePath = null;
+
+		if(forward)
+			foundInSubTreePath = findIUInSubTree(nodePath, iuIdPattern, iuVersionRange);
+		else
+			foundInSubTreePath = findIUInNode(nodePath, iuIdPattern, iuVersionRange);
+
+		if(foundInSubTreePath != null)
+			return foundInSubTreePath;
+
+		List<Object> nextNodePath = getNextNode(nodePath, forward);
+
+		if(nextNodePath != null)
+			return findIU(nextNodePath, iuIdPattern, iuVersionRange, forward);
+
+		return null;
+	}
+
+	private List<Object> findIUInNode(List<Object> nodePath, Pattern iuIdPattern, VersionRange iuVersionRange)
+	{
+		Object node = nodePath.get(nodePath.size() - 1);
+
+		if(node instanceof IUPresentation)
+		{
+			IUPresentation iup = (IUPresentation)node;
+			InstallableUnit iu = iup.getInstallableUnit();
+			if(iuIdPattern.matcher(iu.getId()).find() && iuVersionRange.isIncluded(iu.getVersion()))
+				return nodePath;
+		}
+
+		return null;
+	}
+
+	private List<Object> findIUInSubTree(List<Object> nodePath, Pattern iuIdPattern, VersionRange iuVersionRange)
+	{
+		List<Object> foundIUPath = findIUInNode(nodePath, iuIdPattern, iuVersionRange);
+		if(foundIUPath != null)
+			return foundIUPath;
+
+		Object node = nodePath.get(nodePath.size() - 1);
+
+		if(node instanceof ChildrenProvider<?>)
+		{
+			for(Object child : ((ChildrenProvider<?>)node).getChildren())
+			{
+				List<Object> childPath = new ArrayList<Object>(nodePath);
+				childPath.add(child);
+
+				foundIUPath = findIUInSubTree(childPath, iuIdPattern, iuVersionRange);
+
+				if(foundIUPath != null)
+					return foundIUPath;
+			}
+		}
+
+		return null;
+	}
+
+	private List<Object> getFirstNode(Object[] startAfterPath, boolean forward)
+	{
+		List<Object> firstNodePath = new ArrayList<Object>();
+
+		if(startAfterPath == null)
+		{
+			firstNodePath.add(this);
+			firstNodePath.add(repoView);
+
+			if(!forward)
+				firstNodePath = getLastChild(firstNodePath);
+		}
+		else
+			firstNodePath = getNextNode(Arrays.asList(startAfterPath), forward);
+
+		return firstNodePath;
+	}
+
+	private List<Object> getLastChild(List<Object> nodePath)
+	{
+		if(!(nodePath.get(nodePath.size() - 1) instanceof ChildrenProvider<?>))
+			return nodePath;
+
+		EList<?> children = ((ChildrenProvider<?>)nodePath.get(nodePath.size() - 1)).getChildren();
+
+		if(children == null || children.size() == 0)
+			return nodePath;
+
+		Object lastChild = children.get(children.size() - 1);
+
+		List<Object> childPath = new ArrayList<Object>(nodePath);
+		childPath.add(lastChild);
+
+		return getLastChild(childPath);
+	}
+
+	private List<Object> getNextNode(List<Object> nodePath, boolean forward)
+	{
+		Object parent = nodePath.get(nodePath.size() - 2);
+
+		if(forward)
+		{
+			if(parent instanceof ChildrenProvider<?>)
+			{
+				EList<?> children = ((ChildrenProvider<?>)parent).getChildren();
+				int nodeIndex = children.indexOf(nodePath.get(nodePath.size() - 1));
+				if(nodeIndex < (children.size() - 1))
+				{
+					List<Object> nextNodePath = new ArrayList<Object>(nodePath);
+					nextNodePath.remove(nodePath.size() - 1);
+					nextNodePath.add(children.get(nodeIndex + 1));
+
+					return nextNodePath;
+				}
+			}
+
+			List<Object> parentPath = new ArrayList<Object>(nodePath);
+			parentPath.remove(nodePath.size() - 1);
+
+			return parentPath.size() > 2
+					? getNextNode(parentPath, forward)
+					: null;
+		}
+		else
+		{
+			if(parent instanceof ChildrenProvider<?>)
+			{
+				EList<?> children = ((ChildrenProvider<?>)parent).getChildren();
+				int nodeIndex = children.indexOf(nodePath.get(nodePath.size() - 1));
+				if(nodeIndex > 0)
+				{
+					List<Object> nextNodePath = new ArrayList<Object>(nodePath);
+					nextNodePath.remove(nodePath.size() - 1);
+					nextNodePath.add(children.get(nodeIndex - 1));
+
+					return getLastChild(nextNodePath);
+				}
+			}
+
+			List<Object> parentPath = new ArrayList<Object>(nodePath);
+			parentPath.remove(nodePath.size() - 1);
+
+			return parentPath.size() > 2
+					? parentPath
+					: null;
+		}
 	}
 }

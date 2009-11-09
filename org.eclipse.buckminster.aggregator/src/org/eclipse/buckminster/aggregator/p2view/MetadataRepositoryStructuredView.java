@@ -9,8 +9,8 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Metadata Repository Structured View</b></em>'.
@@ -34,7 +34,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface MetadataRepositoryStructuredView extends EObject
+public interface MetadataRepositoryStructuredView extends ChildrenProvider<InstallableUnits>
 {
 	/**
 	 * Returns the value of the '<em><b>Installable Unit List</b></em>' containment reference. <!-- begin-user-doc -->
