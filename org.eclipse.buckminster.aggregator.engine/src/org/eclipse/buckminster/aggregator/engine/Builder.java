@@ -380,7 +380,7 @@ public class Builder extends AbstractCommand implements IApplication
 
 	private String mockEmailTo;
 
-	private boolean mirrorReferences = false;
+	private boolean mirrorReferences = false;;
 
 	private Pattern referenceIncludePattern;
 
@@ -412,6 +412,8 @@ public class Builder extends AbstractCommand implements IApplication
 
 	private String preservedProfile;
 
+	private Map<VersionedId, Version> replacements;
+
 	/**
 	 * Prevent that the {@link IInstallableUnit} identified by <code>versionedName</code> is mapped from
 	 * <code>repository</code>.
@@ -421,11 +423,14 @@ public class Builder extends AbstractCommand implements IApplication
 	 * @param versionedName
 	 *            Identifies the IInstallableUnit to exclude.
 	 */
-	public void addMappingExclusion(MappedRepository repository, VersionedId versionedName)
+	public void addMappingExclusion(MappedRepository repository, VersionedId versionedName, Version replacement)
 	{
 		List<VersionedId> exclInRepo = null;
 		if(exclusions == null)
+		{
 			exclusions = new HashMap<MappedRepository, List<VersionedId>>();
+			replacements = new HashMap<VersionedId, Version>();
+		}
 		else
 			exclInRepo = exclusions.get(repository);
 
@@ -435,6 +440,7 @@ public class Builder extends AbstractCommand implements IApplication
 			exclusions.put(repository, exclInRepo);
 		}
 		exclInRepo.add(versionedName);
+		replacements.put(versionedName, replacement);
 	}
 
 	/**
@@ -485,6 +491,13 @@ public class Builder extends AbstractCommand implements IApplication
 	public List<InstallableUnit> getCategoryIUs()
 	{
 		return categoryIUs;
+	}
+
+	public Map<VersionedId, Version> getReplacementMap()
+	{
+		return replacements == null
+				? Collections.<VersionedId, Version> emptyMap()
+				: replacements;
 	}
 
 	public CompositeMetadataRepository getSourceComposite()
@@ -673,8 +686,8 @@ public class Builder extends AbstractCommand implements IApplication
 				}
 
 				runCompositeGenerator(MonitorUtils.subMonitor(monitor, 70));
-				runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 15));
 				runVerificationFeatureGenerator(MonitorUtils.subMonitor(monitor, 15));
+				runCategoriesRepoGenerator(MonitorUtils.subMonitor(monitor, 15));
 				runRepositoryVerifier(MonitorUtils.subMonitor(monitor, 100));
 				if(action != ActionType.VERIFY)
 					runMirroring(MonitorUtils.subMonitor(monitor, 2000));

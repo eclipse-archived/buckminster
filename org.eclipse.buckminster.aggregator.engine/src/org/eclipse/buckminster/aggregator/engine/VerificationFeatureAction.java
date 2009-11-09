@@ -178,7 +178,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 										if(rule instanceof ExclusionRule)
 										{
 											builder.addMappingExclusion(repository, new VersionedId(riu.getId(),
-													riu.getVersion()));
+													riu.getVersion()), null);
 											continue allIUs;
 										}
 										if(rule instanceof ValidConfigurationsRule)
@@ -312,7 +312,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 			if(!isExplicit)
 			{
 				log.debug("%s/%s excluded since version %s is explicitly mapped", id, v, oldVersion);
-				builder.addMappingExclusion(mr, new VersionedId(id, v));
+				builder.addMappingExclusion(mr, new VersionedId(id, v), oldVersion);
 				// Reinstate the old one
 				requirements.put(id, old);
 			}
@@ -332,7 +332,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		if(isExplicit)
 		{
 			log.debug("%s/%s excluded since version %s is explicitly mapped", id, oldVersion, v);
-			builder.addMappingExclusion(old.repository, new VersionedId(id, oldVersion));
+			builder.addMappingExclusion(old.repository, new VersionedId(id, oldVersion), v);
 			explicit.add(id);
 			return;
 		}
@@ -342,7 +342,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		{
 			// The previous version was higher
 			//
-			builder.addMappingExclusion(mr, new VersionedId(id, v));
+			builder.addMappingExclusion(mr, new VersionedId(id, v), oldVersion);
 			log.debug("%s/%s excluded since a higher version (%s) was found", id, v, oldVersion);
 
 			// Reinstate the old one
@@ -350,7 +350,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 		}
 		else
 		{
-			builder.addMappingExclusion(old.repository, new VersionedId(id, oldVersion));
+			builder.addMappingExclusion(old.repository, new VersionedId(id, oldVersion), v);
 			log.debug("%s/%s excluded since a higher version (%s) was found", id, oldVersion, v);
 		}
 	}
