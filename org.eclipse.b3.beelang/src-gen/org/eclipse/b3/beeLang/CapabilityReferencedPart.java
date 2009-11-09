@@ -14,10 +14,10 @@ package org.eclipse.b3.beeLang;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getInterface <em>Interface</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getCapability <em>Capability</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getRange <em>Range</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getPartName <em>Part Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getParameters <em>Parameters</em>}</li>
  * </ul>
  * </p>
  *
@@ -28,56 +28,30 @@ package org.eclipse.b3.beeLang;
 public interface CapabilityReferencedPart extends PrerequisiteEntry
 {
   /**
-   * Returns the value of the '<em><b>Interface</b></em>' attribute.
+   * Returns the value of the '<em><b>Capability</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Interface</em>' attribute isn't clear,
+   * If the meaning of the '<em>Capability</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Interface</em>' attribute.
-   * @see #setInterface(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCapabilityReferencedPart_Interface()
-   * @model
+   * @return the value of the '<em>Capability</em>' containment reference.
+   * @see #setCapability(Capability)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCapabilityReferencedPart_Capability()
+   * @model containment="true"
    * @generated
    */
-  String getInterface();
+  Capability getCapability();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getInterface <em>Interface</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getCapability <em>Capability</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Interface</em>' attribute.
-   * @see #getInterface()
+   * @param value the new value of the '<em>Capability</em>' containment reference.
+   * @see #getCapability()
    * @generated
    */
-  void setInterface(String value);
-
-  /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Name</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCapabilityReferencedPart_Name()
-   * @model
-   * @generated
-   */
-  String getName();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getName <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
-   * @generated
-   */
-  void setName(String value);
+  void setCapability(Capability value);
 
   /**
    * Returns the value of the '<em><b>Range</b></em>' containment reference.
@@ -130,5 +104,31 @@ public interface CapabilityReferencedPart extends PrerequisiteEntry
    * @generated
    */
   void setPartName(String value);
+
+  /**
+   * Returns the value of the '<em><b>Parameters</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Parameters</em>' containment reference isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Parameters</em>' containment reference.
+   * @see #setParameters(ParameterList)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCapabilityReferencedPart_Parameters()
+   * @model containment="true"
+   * @generated
+   */
+  ParameterList getParameters();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.CapabilityReferencedPart#getParameters <em>Parameters</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Parameters</em>' containment reference.
+   * @see #getParameters()
+   * @generated
+   */
+  void setParameters(ParameterList value);
 
 } // CapabilityReferencedPart

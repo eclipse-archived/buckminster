@@ -6,10 +6,10 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.Closure;
 import org.eclipse.b3.beeLang.Filter;
 import org.eclipse.b3.beeLang.Prerequisite;
 import org.eclipse.b3.beeLang.PrerequisiteEntry;
+import org.eclipse.b3.beeLang.WithClause;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -28,9 +28,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#getAlias <em>Alias</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#getWithClause <em>With Clause</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#getPartReference <em>Part Reference</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#getClosure <em>Closure</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.PrerequisiteImpl#getAlias <em>Alias</em>}</li>
  * </ul>
  * </p>
  *
@@ -47,6 +47,26 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
    * @ordered
    */
   protected Filter filter;
+
+  /**
+   * The cached value of the '{@link #getWithClause() <em>With Clause</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWithClause()
+   * @generated
+   * @ordered
+   */
+  protected WithClause withClause;
+
+  /**
+   * The cached value of the '{@link #getPartReference() <em>Part Reference</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPartReference()
+   * @generated
+   * @ordered
+   */
+  protected PrerequisiteEntry partReference;
 
   /**
    * The default value of the '{@link #getAlias() <em>Alias</em>}' attribute.
@@ -67,26 +87,6 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
    * @ordered
    */
   protected String alias = ALIAS_EDEFAULT;
-
-  /**
-   * The cached value of the '{@link #getPartReference() <em>Part Reference</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getPartReference()
-   * @generated
-   * @ordered
-   */
-  protected PrerequisiteEntry partReference;
-
-  /**
-   * The cached value of the '{@link #getClosure() <em>Closure</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getClosure()
-   * @generated
-   * @ordered
-   */
-  protected Closure closure;
 
   /**
    * <!-- begin-user-doc -->
@@ -162,9 +162,9 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getAlias()
+  public WithClause getWithClause()
   {
-    return alias;
+    return withClause;
   }
 
   /**
@@ -172,12 +172,37 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setAlias(String newAlias)
+  public NotificationChain basicSetWithClause(WithClause newWithClause, NotificationChain msgs)
   {
-    String oldAlias = alias;
-    alias = newAlias;
+    WithClause oldWithClause = withClause;
+    withClause = newWithClause;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PREREQUISITE__ALIAS, oldAlias, alias));
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PREREQUISITE__WITH_CLAUSE, oldWithClause, newWithClause);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setWithClause(WithClause newWithClause)
+  {
+    if (newWithClause != withClause)
+    {
+      NotificationChain msgs = null;
+      if (withClause != null)
+        msgs = ((InternalEObject)withClause).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PREREQUISITE__WITH_CLAUSE, null, msgs);
+      if (newWithClause != null)
+        msgs = ((InternalEObject)newWithClause).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PREREQUISITE__WITH_CLAUSE, null, msgs);
+      msgs = basicSetWithClause(newWithClause, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PREREQUISITE__WITH_CLAUSE, newWithClause, newWithClause));
   }
 
   /**
@@ -233,9 +258,9 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
    * <!-- end-user-doc -->
    * @generated
    */
-  public Closure getClosure()
+  public String getAlias()
   {
-    return closure;
+    return alias;
   }
 
   /**
@@ -243,37 +268,12 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetClosure(Closure newClosure, NotificationChain msgs)
+  public void setAlias(String newAlias)
   {
-    Closure oldClosure = closure;
-    closure = newClosure;
+    String oldAlias = alias;
+    alias = newAlias;
     if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PREREQUISITE__CLOSURE, oldClosure, newClosure);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setClosure(Closure newClosure)
-  {
-    if (newClosure != closure)
-    {
-      NotificationChain msgs = null;
-      if (closure != null)
-        msgs = ((InternalEObject)closure).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PREREQUISITE__CLOSURE, null, msgs);
-      if (newClosure != null)
-        msgs = ((InternalEObject)newClosure).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PREREQUISITE__CLOSURE, null, msgs);
-      msgs = basicSetClosure(newClosure, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PREREQUISITE__CLOSURE, newClosure, newClosure));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PREREQUISITE__ALIAS, oldAlias, alias));
   }
 
   /**
@@ -288,10 +288,10 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
     {
       case BeeLangPackage.PREREQUISITE__FILTER:
         return basicSetFilter(null, msgs);
+      case BeeLangPackage.PREREQUISITE__WITH_CLAUSE:
+        return basicSetWithClause(null, msgs);
       case BeeLangPackage.PREREQUISITE__PART_REFERENCE:
         return basicSetPartReference(null, msgs);
-      case BeeLangPackage.PREREQUISITE__CLOSURE:
-        return basicSetClosure(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -308,12 +308,12 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
     {
       case BeeLangPackage.PREREQUISITE__FILTER:
         return getFilter();
-      case BeeLangPackage.PREREQUISITE__ALIAS:
-        return getAlias();
+      case BeeLangPackage.PREREQUISITE__WITH_CLAUSE:
+        return getWithClause();
       case BeeLangPackage.PREREQUISITE__PART_REFERENCE:
         return getPartReference();
-      case BeeLangPackage.PREREQUISITE__CLOSURE:
-        return getClosure();
+      case BeeLangPackage.PREREQUISITE__ALIAS:
+        return getAlias();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -331,14 +331,14 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
       case BeeLangPackage.PREREQUISITE__FILTER:
         setFilter((Filter)newValue);
         return;
-      case BeeLangPackage.PREREQUISITE__ALIAS:
-        setAlias((String)newValue);
+      case BeeLangPackage.PREREQUISITE__WITH_CLAUSE:
+        setWithClause((WithClause)newValue);
         return;
       case BeeLangPackage.PREREQUISITE__PART_REFERENCE:
         setPartReference((PrerequisiteEntry)newValue);
         return;
-      case BeeLangPackage.PREREQUISITE__CLOSURE:
-        setClosure((Closure)newValue);
+      case BeeLangPackage.PREREQUISITE__ALIAS:
+        setAlias((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -357,14 +357,14 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
       case BeeLangPackage.PREREQUISITE__FILTER:
         setFilter((Filter)null);
         return;
-      case BeeLangPackage.PREREQUISITE__ALIAS:
-        setAlias(ALIAS_EDEFAULT);
+      case BeeLangPackage.PREREQUISITE__WITH_CLAUSE:
+        setWithClause((WithClause)null);
         return;
       case BeeLangPackage.PREREQUISITE__PART_REFERENCE:
         setPartReference((PrerequisiteEntry)null);
         return;
-      case BeeLangPackage.PREREQUISITE__CLOSURE:
-        setClosure((Closure)null);
+      case BeeLangPackage.PREREQUISITE__ALIAS:
+        setAlias(ALIAS_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -382,12 +382,12 @@ public class PrerequisiteImpl extends MinimalEObjectImpl.Container implements Pr
     {
       case BeeLangPackage.PREREQUISITE__FILTER:
         return filter != null;
-      case BeeLangPackage.PREREQUISITE__ALIAS:
-        return ALIAS_EDEFAULT == null ? alias != null : !ALIAS_EDEFAULT.equals(alias);
+      case BeeLangPackage.PREREQUISITE__WITH_CLAUSE:
+        return withClause != null;
       case BeeLangPackage.PREREQUISITE__PART_REFERENCE:
         return partReference != null;
-      case BeeLangPackage.PREREQUISITE__CLOSURE:
-        return closure != null;
+      case BeeLangPackage.PREREQUISITE__ALIAS:
+        return ALIAS_EDEFAULT == null ? alias != null : !ALIAS_EDEFAULT.equals(alias);
     }
     return super.eIsSet(featureID);
   }

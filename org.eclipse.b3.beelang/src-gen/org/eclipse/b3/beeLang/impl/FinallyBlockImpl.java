@@ -6,7 +6,7 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.CompoundStatement;
+import org.eclipse.b3.beeLang.Expression;
 import org.eclipse.b3.beeLang.FinallyBlock;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.FinallyBlockImpl#getFinallyBlock <em>Finally Block</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.FinallyBlockImpl#getExpr <em>Expr</em>}</li>
  * </ul>
  * </p>
  *
@@ -34,14 +34,14 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 public class FinallyBlockImpl extends MinimalEObjectImpl.Container implements FinallyBlock
 {
   /**
-   * The cached value of the '{@link #getFinallyBlock() <em>Finally Block</em>}' containment reference.
+   * The cached value of the '{@link #getExpr() <em>Expr</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getFinallyBlock()
+   * @see #getExpr()
    * @generated
    * @ordered
    */
-  protected CompoundStatement finallyBlock;
+  protected Expression expr;
 
   /**
    * <!-- begin-user-doc -->
@@ -69,9 +69,9 @@ public class FinallyBlockImpl extends MinimalEObjectImpl.Container implements Fi
    * <!-- end-user-doc -->
    * @generated
    */
-  public CompoundStatement getFinallyBlock()
+  public Expression getExpr()
   {
-    return finallyBlock;
+    return expr;
   }
 
   /**
@@ -79,13 +79,13 @@ public class FinallyBlockImpl extends MinimalEObjectImpl.Container implements Fi
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetFinallyBlock(CompoundStatement newFinallyBlock, NotificationChain msgs)
+  public NotificationChain basicSetExpr(Expression newExpr, NotificationChain msgs)
   {
-    CompoundStatement oldFinallyBlock = finallyBlock;
-    finallyBlock = newFinallyBlock;
+    Expression oldExpr = expr;
+    expr = newExpr;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.FINALLY_BLOCK__FINALLY_BLOCK, oldFinallyBlock, newFinallyBlock);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.FINALLY_BLOCK__EXPR, oldExpr, newExpr);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -96,20 +96,20 @@ public class FinallyBlockImpl extends MinimalEObjectImpl.Container implements Fi
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setFinallyBlock(CompoundStatement newFinallyBlock)
+  public void setExpr(Expression newExpr)
   {
-    if (newFinallyBlock != finallyBlock)
+    if (newExpr != expr)
     {
       NotificationChain msgs = null;
-      if (finallyBlock != null)
-        msgs = ((InternalEObject)finallyBlock).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.FINALLY_BLOCK__FINALLY_BLOCK, null, msgs);
-      if (newFinallyBlock != null)
-        msgs = ((InternalEObject)newFinallyBlock).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.FINALLY_BLOCK__FINALLY_BLOCK, null, msgs);
-      msgs = basicSetFinallyBlock(newFinallyBlock, msgs);
+      if (expr != null)
+        msgs = ((InternalEObject)expr).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.FINALLY_BLOCK__EXPR, null, msgs);
+      if (newExpr != null)
+        msgs = ((InternalEObject)newExpr).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.FINALLY_BLOCK__EXPR, null, msgs);
+      msgs = basicSetExpr(newExpr, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.FINALLY_BLOCK__FINALLY_BLOCK, newFinallyBlock, newFinallyBlock));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.FINALLY_BLOCK__EXPR, newExpr, newExpr));
   }
 
   /**
@@ -122,8 +122,8 @@ public class FinallyBlockImpl extends MinimalEObjectImpl.Container implements Fi
   {
     switch (featureID)
     {
-      case BeeLangPackage.FINALLY_BLOCK__FINALLY_BLOCK:
-        return basicSetFinallyBlock(null, msgs);
+      case BeeLangPackage.FINALLY_BLOCK__EXPR:
+        return basicSetExpr(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -138,8 +138,8 @@ public class FinallyBlockImpl extends MinimalEObjectImpl.Container implements Fi
   {
     switch (featureID)
     {
-      case BeeLangPackage.FINALLY_BLOCK__FINALLY_BLOCK:
-        return getFinallyBlock();
+      case BeeLangPackage.FINALLY_BLOCK__EXPR:
+        return getExpr();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -154,8 +154,8 @@ public class FinallyBlockImpl extends MinimalEObjectImpl.Container implements Fi
   {
     switch (featureID)
     {
-      case BeeLangPackage.FINALLY_BLOCK__FINALLY_BLOCK:
-        setFinallyBlock((CompoundStatement)newValue);
+      case BeeLangPackage.FINALLY_BLOCK__EXPR:
+        setExpr((Expression)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -171,8 +171,8 @@ public class FinallyBlockImpl extends MinimalEObjectImpl.Container implements Fi
   {
     switch (featureID)
     {
-      case BeeLangPackage.FINALLY_BLOCK__FINALLY_BLOCK:
-        setFinallyBlock((CompoundStatement)null);
+      case BeeLangPackage.FINALLY_BLOCK__EXPR:
+        setExpr((Expression)null);
         return;
     }
     super.eUnset(featureID);
@@ -188,8 +188,8 @@ public class FinallyBlockImpl extends MinimalEObjectImpl.Container implements Fi
   {
     switch (featureID)
     {
-      case BeeLangPackage.FINALLY_BLOCK__FINALLY_BLOCK:
-        return finallyBlock != null;
+      case BeeLangPackage.FINALLY_BLOCK__EXPR:
+        return expr != null;
     }
     return super.eIsSet(featureID);
   }

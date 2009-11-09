@@ -16,7 +16,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.JavaImporter#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.JavaImporter#isPackage <em>Package</em>}</li>
  * </ul>
  * </p>
  *
@@ -51,31 +50,5 @@ public interface JavaImporter extends EObject
    * @generated
    */
   void setName(String value);
-
-  /**
-   * Returns the value of the '<em><b>Package</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Package</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Package</em>' attribute.
-   * @see #setPackage(boolean)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getJavaImporter_Package()
-   * @model
-   * @generated
-   */
-  boolean isPackage();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.JavaImporter#isPackage <em>Package</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Package</em>' attribute.
-   * @see #isPackage()
-   * @generated
-   */
-  void setPackage(boolean value);
 
 } // JavaImporter

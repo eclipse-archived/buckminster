@@ -15,8 +15,9 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.CatchBlock#getVariable <em>Variable</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.CatchBlock#getCatchBlock <em>Catch Block</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.CatchBlock#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.CatchBlock#getVar <em>Var</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.CatchBlock#getExpr <em>Expr</em>}</li>
  * </ul>
  * </p>
  *
@@ -27,55 +28,81 @@ import org.eclipse.emf.ecore.EObject;
 public interface CatchBlock extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Variable</b></em>' attribute.
+   * Returns the value of the '<em><b>Type</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Variable</em>' attribute isn't clear,
+   * If the meaning of the '<em>Type</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Variable</em>' attribute.
-   * @see #setVariable(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCatchBlock_Variable()
-   * @model
-   * @generated
-   */
-  String getVariable();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.CatchBlock#getVariable <em>Variable</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Variable</em>' attribute.
-   * @see #getVariable()
-   * @generated
-   */
-  void setVariable(String value);
-
-  /**
-   * Returns the value of the '<em><b>Catch Block</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Catch Block</em>' containment reference isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Catch Block</em>' containment reference.
-   * @see #setCatchBlock(CompoundStatement)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCatchBlock_CatchBlock()
+   * @return the value of the '<em>Type</em>' containment reference.
+   * @see #setType(TypeRef)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCatchBlock_Type()
    * @model containment="true"
    * @generated
    */
-  CompoundStatement getCatchBlock();
+  TypeRef getType();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.CatchBlock#getCatchBlock <em>Catch Block</em>}' containment reference.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.CatchBlock#getType <em>Type</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Catch Block</em>' containment reference.
-   * @see #getCatchBlock()
+   * @param value the new value of the '<em>Type</em>' containment reference.
+   * @see #getType()
    * @generated
    */
-  void setCatchBlock(CompoundStatement value);
+  void setType(TypeRef value);
+
+  /**
+   * Returns the value of the '<em><b>Var</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Var</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Var</em>' attribute.
+   * @see #setVar(String)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCatchBlock_Var()
+   * @model
+   * @generated
+   */
+  String getVar();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.CatchBlock#getVar <em>Var</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Var</em>' attribute.
+   * @see #getVar()
+   * @generated
+   */
+  void setVar(String value);
+
+  /**
+   * Returns the value of the '<em><b>Expr</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Expr</em>' containment reference isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Expr</em>' containment reference.
+   * @see #setExpr(Expression)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCatchBlock_Expr()
+   * @model containment="true"
+   * @generated
+   */
+  Expression getExpr();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.CatchBlock#getExpr <em>Expr</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Expr</em>' containment reference.
+   * @see #getExpr()
+   * @generated
+   */
+  void setExpr(Expression value);
 
 } // CatchBlock

@@ -5,12 +5,12 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import org.eclipse.b3.beeLang.AdvicePath;
 import org.eclipse.b3.beeLang.AdviceStatement;
 import org.eclipse.b3.beeLang.AssignmentOperator;
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.CompoundAdvice;
+import org.eclipse.b3.beeLang.CompoundConcern;
 import org.eclipse.b3.beeLang.Expression;
+import org.eclipse.b3.beeLang.QueryPath;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -47,7 +47,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
    * @generated
    * @ordered
    */
-  protected AdvicePath path;
+  protected QueryPath path;
 
   /**
    * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
@@ -87,7 +87,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
    * @generated
    * @ordered
    */
-  protected CompoundAdvice advice;
+  protected CompoundConcern advice;
 
   /**
    * <!-- begin-user-doc -->
@@ -115,7 +115,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
    * <!-- end-user-doc -->
    * @generated
    */
-  public AdvicePath getPath()
+  public QueryPath getPath()
   {
     return path;
   }
@@ -125,9 +125,9 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetPath(AdvicePath newPath, NotificationChain msgs)
+  public NotificationChain basicSetPath(QueryPath newPath, NotificationChain msgs)
   {
-    AdvicePath oldPath = path;
+    QueryPath oldPath = path;
     path = newPath;
     if (eNotificationRequired())
     {
@@ -142,7 +142,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setPath(AdvicePath newPath)
+  public void setPath(QueryPath newPath)
   {
     if (newPath != path)
     {
@@ -234,7 +234,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
    * <!-- end-user-doc -->
    * @generated
    */
-  public CompoundAdvice getAdvice()
+  public CompoundConcern getAdvice()
   {
     return advice;
   }
@@ -244,9 +244,9 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetAdvice(CompoundAdvice newAdvice, NotificationChain msgs)
+  public NotificationChain basicSetAdvice(CompoundConcern newAdvice, NotificationChain msgs)
   {
-    CompoundAdvice oldAdvice = advice;
+    CompoundConcern oldAdvice = advice;
     advice = newAdvice;
     if (eNotificationRequired())
     {
@@ -261,7 +261,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setAdvice(CompoundAdvice newAdvice)
+  public void setAdvice(CompoundConcern newAdvice)
   {
     if (newAdvice != advice)
     {
@@ -330,7 +330,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
     switch (featureID)
     {
       case BeeLangPackage.ADVICE_STATEMENT__PATH:
-        setPath((AdvicePath)newValue);
+        setPath((QueryPath)newValue);
         return;
       case BeeLangPackage.ADVICE_STATEMENT__OP:
         setOp((AssignmentOperator)newValue);
@@ -339,7 +339,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
         setValue((Expression)newValue);
         return;
       case BeeLangPackage.ADVICE_STATEMENT__ADVICE:
-        setAdvice((CompoundAdvice)newValue);
+        setAdvice((CompoundConcern)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -356,7 +356,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
     switch (featureID)
     {
       case BeeLangPackage.ADVICE_STATEMENT__PATH:
-        setPath((AdvicePath)null);
+        setPath((QueryPath)null);
         return;
       case BeeLangPackage.ADVICE_STATEMENT__OP:
         setOp(OP_EDEFAULT);
@@ -365,7 +365,7 @@ public class AdviceStatementImpl extends MinimalEObjectImpl.Container implements
         setValue((Expression)null);
         return;
       case BeeLangPackage.ADVICE_STATEMENT__ADVICE:
-        setAdvice((CompoundAdvice)null);
+        setAdvice((CompoundConcern)null);
         return;
     }
     super.eUnset(featureID);

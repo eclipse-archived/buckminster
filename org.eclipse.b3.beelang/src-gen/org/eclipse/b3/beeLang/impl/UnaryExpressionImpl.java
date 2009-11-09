@@ -10,6 +10,8 @@ import org.eclipse.b3.beeLang.UnaryExpression;
 
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Unary Expression</b></em>'.
@@ -19,7 +21,7 @@ import org.eclipse.emf.ecore.EClass;
  *
  * @generated
  */
-public class UnaryExpressionImpl extends ExpressionImpl implements UnaryExpression
+public class UnaryExpressionImpl extends MinimalEObjectImpl.Container implements UnaryExpression
 {
   /**
    * <!-- begin-user-doc -->

@@ -6,8 +6,8 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.CompoundPropertyOperation;
 import org.eclipse.b3.beeLang.NamedProperties;
+import org.eclipse.b3.beeLang.PropertyBody;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -62,7 +62,7 @@ public class NamedPropertiesImpl extends MinimalEObjectImpl.Container implements
    * @generated
    * @ordered
    */
-  protected CompoundPropertyOperation body;
+  protected PropertyBody body;
 
   /**
    * <!-- begin-user-doc -->
@@ -113,7 +113,7 @@ public class NamedPropertiesImpl extends MinimalEObjectImpl.Container implements
    * <!-- end-user-doc -->
    * @generated
    */
-  public CompoundPropertyOperation getBody()
+  public PropertyBody getBody()
   {
     return body;
   }
@@ -123,9 +123,9 @@ public class NamedPropertiesImpl extends MinimalEObjectImpl.Container implements
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetBody(CompoundPropertyOperation newBody, NotificationChain msgs)
+  public NotificationChain basicSetBody(PropertyBody newBody, NotificationChain msgs)
   {
-    CompoundPropertyOperation oldBody = body;
+    PropertyBody oldBody = body;
     body = newBody;
     if (eNotificationRequired())
     {
@@ -140,7 +140,7 @@ public class NamedPropertiesImpl extends MinimalEObjectImpl.Container implements
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setBody(CompoundPropertyOperation newBody)
+  public void setBody(PropertyBody newBody)
   {
     if (newBody != body)
     {
@@ -204,7 +204,7 @@ public class NamedPropertiesImpl extends MinimalEObjectImpl.Container implements
         setName((String)newValue);
         return;
       case BeeLangPackage.NAMED_PROPERTIES__BODY:
-        setBody((CompoundPropertyOperation)newValue);
+        setBody((PropertyBody)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -224,7 +224,7 @@ public class NamedPropertiesImpl extends MinimalEObjectImpl.Container implements
         setName(NAME_EDEFAULT);
         return;
       case BeeLangPackage.NAMED_PROPERTIES__BODY:
-        setBody((CompoundPropertyOperation)null);
+        setBody((PropertyBody)null);
         return;
     }
     super.eUnset(featureID);

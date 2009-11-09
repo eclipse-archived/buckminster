@@ -14,7 +14,7 @@ package org.eclipse.b3.beeLang;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.SetPropertyOperation#isImmutable <em>Immutable</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.SetPropertyOperation#isFinal <em>Final</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.SetPropertyOperation#getKey <em>Key</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.SetPropertyOperation#getOp <em>Op</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.SetPropertyOperation#getValue <em>Value</em>}</li>
@@ -28,30 +28,30 @@ package org.eclipse.b3.beeLang;
 public interface SetPropertyOperation extends PropertyOperation
 {
   /**
-   * Returns the value of the '<em><b>Immutable</b></em>' attribute.
+   * Returns the value of the '<em><b>Final</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Immutable</em>' attribute isn't clear,
+   * If the meaning of the '<em>Final</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Immutable</em>' attribute.
-   * @see #setImmutable(boolean)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getSetPropertyOperation_Immutable()
+   * @return the value of the '<em>Final</em>' attribute.
+   * @see #setFinal(boolean)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getSetPropertyOperation_Final()
    * @model
    * @generated
    */
-  boolean isImmutable();
+  boolean isFinal();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.SetPropertyOperation#isImmutable <em>Immutable</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.SetPropertyOperation#isFinal <em>Final</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Immutable</em>' attribute.
-   * @see #isImmutable()
+   * @param value the new value of the '<em>Final</em>' attribute.
+   * @see #isFinal()
    * @generated
    */
-  void setImmutable(boolean value);
+  void setFinal(boolean value);
 
   /**
    * Returns the value of the '<em><b>Key</b></em>' attribute.

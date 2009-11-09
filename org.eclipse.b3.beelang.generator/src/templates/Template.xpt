@@ -2,10 +2,10 @@
 
 «EXTENSION templates::Extensions»
 
-«DEFINE main FOR Model-»
+«DEFINE main FOR BuildUnit-»
 «FILE "output.txt"-»
-«FOREACH this.elements.typeSelect(Entity).sortBy(e|e.name) AS e-»
-«e.name» has «e.listSubclasses()».
+«FOREACH this.builders AS p-»
+«p.name»
 «ENDFOREACH-»
 «ENDFILE-»
 «ENDDEFINE»

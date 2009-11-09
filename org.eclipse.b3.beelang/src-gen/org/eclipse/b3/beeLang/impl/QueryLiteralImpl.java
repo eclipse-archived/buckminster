@@ -5,8 +5,8 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import org.eclipse.b3.beeLang.AdvicePath;
 import org.eclipse.b3.beeLang.BeeLangPackage;
+import org.eclipse.b3.beeLang.Query;
 import org.eclipse.b3.beeLang.QueryLiteral;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -40,7 +40,7 @@ public class QueryLiteralImpl extends ExpressionImpl implements QueryLiteral
    * @generated
    * @ordered
    */
-  protected AdvicePath val;
+  protected Query val;
 
   /**
    * <!-- begin-user-doc -->
@@ -68,7 +68,7 @@ public class QueryLiteralImpl extends ExpressionImpl implements QueryLiteral
    * <!-- end-user-doc -->
    * @generated
    */
-  public AdvicePath getVal()
+  public Query getVal()
   {
     return val;
   }
@@ -78,9 +78,9 @@ public class QueryLiteralImpl extends ExpressionImpl implements QueryLiteral
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetVal(AdvicePath newVal, NotificationChain msgs)
+  public NotificationChain basicSetVal(Query newVal, NotificationChain msgs)
   {
-    AdvicePath oldVal = val;
+    Query oldVal = val;
     val = newVal;
     if (eNotificationRequired())
     {
@@ -95,7 +95,7 @@ public class QueryLiteralImpl extends ExpressionImpl implements QueryLiteral
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setVal(AdvicePath newVal)
+  public void setVal(Query newVal)
   {
     if (newVal != val)
     {
@@ -154,7 +154,7 @@ public class QueryLiteralImpl extends ExpressionImpl implements QueryLiteral
     switch (featureID)
     {
       case BeeLangPackage.QUERY_LITERAL__VAL:
-        setVal((AdvicePath)newValue);
+        setVal((Query)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -171,7 +171,7 @@ public class QueryLiteralImpl extends ExpressionImpl implements QueryLiteral
     switch (featureID)
     {
       case BeeLangPackage.QUERY_LITERAL__VAL:
-        setVal((AdvicePath)null);
+        setVal((Query)null);
         return;
     }
     super.eUnset(featureID);

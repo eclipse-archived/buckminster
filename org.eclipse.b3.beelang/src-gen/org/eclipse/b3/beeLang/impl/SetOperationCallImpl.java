@@ -59,7 +59,7 @@ public class SetOperationCallImpl extends ExpressionImpl implements SetOperation
    * @generated
    * @ordered
    */
-  protected static final SetOperator OP_EDEFAULT = SetOperator.SELECT;
+  protected static final SetOperator OP_EDEFAULT = SetOperator.SEQUENCE;
 
   /**
    * The cached value of the '{@link #getOp() <em>Op</em>}' attribute.

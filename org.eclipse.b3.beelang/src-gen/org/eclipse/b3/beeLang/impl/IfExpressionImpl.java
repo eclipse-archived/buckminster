@@ -5,6 +5,8 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
+import java.util.Collection;
+
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Expression;
 import org.eclipse.b3.beeLang.IfExpression;
@@ -12,10 +14,15 @@ import org.eclipse.b3.beeLang.IfExpression;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
+import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -24,9 +31,9 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.IfExpressionImpl#getCondition <em>Condition</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.IfExpressionImpl#getThenPart <em>Then Part</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.IfExpressionImpl#getElsePart <em>Else Part</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.IfExpressionImpl#getCond <em>Cond</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.IfExpressionImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.IfExpressionImpl#getTail <em>Tail</em>}</li>
  * </ul>
  * </p>
  *
@@ -35,34 +42,34 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class IfExpressionImpl extends ExpressionImpl implements IfExpression
 {
   /**
-   * The cached value of the '{@link #getCondition() <em>Condition</em>}' containment reference.
+   * The cached value of the '{@link #getCond() <em>Cond</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getCondition()
+   * @see #getCond()
    * @generated
    * @ordered
    */
-  protected Expression condition;
+  protected Expression cond;
 
   /**
-   * The cached value of the '{@link #getThenPart() <em>Then Part</em>}' containment reference.
+   * The cached value of the '{@link #getValue() <em>Value</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getThenPart()
+   * @see #getValue()
    * @generated
    * @ordered
    */
-  protected Expression thenPart;
+  protected Expression value;
 
   /**
-   * The cached value of the '{@link #getElsePart() <em>Else Part</em>}' containment reference.
+   * The cached value of the '{@link #getTail() <em>Tail</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getElsePart()
+   * @see #getTail()
    * @generated
    * @ordered
    */
-  protected Expression elsePart;
+  protected EList<Expression> tail;
 
   /**
    * <!-- begin-user-doc -->
@@ -90,9 +97,9 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
    * <!-- end-user-doc -->
    * @generated
    */
-  public Expression getCondition()
+  public Expression getCond()
   {
-    return condition;
+    return cond;
   }
 
   /**
@@ -100,13 +107,13 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetCondition(Expression newCondition, NotificationChain msgs)
+  public NotificationChain basicSetCond(Expression newCond, NotificationChain msgs)
   {
-    Expression oldCondition = condition;
-    condition = newCondition;
+    Expression oldCond = cond;
+    cond = newCond;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__CONDITION, oldCondition, newCondition);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__COND, oldCond, newCond);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -117,20 +124,20 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setCondition(Expression newCondition)
+  public void setCond(Expression newCond)
   {
-    if (newCondition != condition)
+    if (newCond != cond)
     {
       NotificationChain msgs = null;
-      if (condition != null)
-        msgs = ((InternalEObject)condition).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__CONDITION, null, msgs);
-      if (newCondition != null)
-        msgs = ((InternalEObject)newCondition).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__CONDITION, null, msgs);
-      msgs = basicSetCondition(newCondition, msgs);
+      if (cond != null)
+        msgs = ((InternalEObject)cond).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__COND, null, msgs);
+      if (newCond != null)
+        msgs = ((InternalEObject)newCond).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__COND, null, msgs);
+      msgs = basicSetCond(newCond, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__CONDITION, newCondition, newCondition));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__COND, newCond, newCond));
   }
 
   /**
@@ -138,9 +145,9 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
    * <!-- end-user-doc -->
    * @generated
    */
-  public Expression getThenPart()
+  public Expression getValue()
   {
-    return thenPart;
+    return value;
   }
 
   /**
@@ -148,13 +155,13 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetThenPart(Expression newThenPart, NotificationChain msgs)
+  public NotificationChain basicSetValue(Expression newValue, NotificationChain msgs)
   {
-    Expression oldThenPart = thenPart;
-    thenPart = newThenPart;
+    Expression oldValue = value;
+    value = newValue;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__THEN_PART, oldThenPart, newThenPart);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__VALUE, oldValue, newValue);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -165,20 +172,20 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setThenPart(Expression newThenPart)
+  public void setValue(Expression newValue)
   {
-    if (newThenPart != thenPart)
+    if (newValue != value)
     {
       NotificationChain msgs = null;
-      if (thenPart != null)
-        msgs = ((InternalEObject)thenPart).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__THEN_PART, null, msgs);
-      if (newThenPart != null)
-        msgs = ((InternalEObject)newThenPart).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__THEN_PART, null, msgs);
-      msgs = basicSetThenPart(newThenPart, msgs);
+      if (value != null)
+        msgs = ((InternalEObject)value).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__VALUE, null, msgs);
+      if (newValue != null)
+        msgs = ((InternalEObject)newValue).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__VALUE, null, msgs);
+      msgs = basicSetValue(newValue, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__THEN_PART, newThenPart, newThenPart));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__VALUE, newValue, newValue));
   }
 
   /**
@@ -186,47 +193,13 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
    * <!-- end-user-doc -->
    * @generated
    */
-  public Expression getElsePart()
+  public EList<Expression> getTail()
   {
-    return elsePart;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetElsePart(Expression newElsePart, NotificationChain msgs)
-  {
-    Expression oldElsePart = elsePart;
-    elsePart = newElsePart;
-    if (eNotificationRequired())
+    if (tail == null)
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__ELSE_PART, oldElsePart, newElsePart);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
+      tail = new EObjectContainmentEList<Expression>(Expression.class, this, BeeLangPackage.IF_EXPRESSION__TAIL);
     }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setElsePart(Expression newElsePart)
-  {
-    if (newElsePart != elsePart)
-    {
-      NotificationChain msgs = null;
-      if (elsePart != null)
-        msgs = ((InternalEObject)elsePart).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__ELSE_PART, null, msgs);
-      if (newElsePart != null)
-        msgs = ((InternalEObject)newElsePart).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.IF_EXPRESSION__ELSE_PART, null, msgs);
-      msgs = basicSetElsePart(newElsePart, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.IF_EXPRESSION__ELSE_PART, newElsePart, newElsePart));
+    return tail;
   }
 
   /**
@@ -239,12 +212,12 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
   {
     switch (featureID)
     {
-      case BeeLangPackage.IF_EXPRESSION__CONDITION:
-        return basicSetCondition(null, msgs);
-      case BeeLangPackage.IF_EXPRESSION__THEN_PART:
-        return basicSetThenPart(null, msgs);
-      case BeeLangPackage.IF_EXPRESSION__ELSE_PART:
-        return basicSetElsePart(null, msgs);
+      case BeeLangPackage.IF_EXPRESSION__COND:
+        return basicSetCond(null, msgs);
+      case BeeLangPackage.IF_EXPRESSION__VALUE:
+        return basicSetValue(null, msgs);
+      case BeeLangPackage.IF_EXPRESSION__TAIL:
+        return ((InternalEList<?>)getTail()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -259,12 +232,12 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
   {
     switch (featureID)
     {
-      case BeeLangPackage.IF_EXPRESSION__CONDITION:
-        return getCondition();
-      case BeeLangPackage.IF_EXPRESSION__THEN_PART:
-        return getThenPart();
-      case BeeLangPackage.IF_EXPRESSION__ELSE_PART:
-        return getElsePart();
+      case BeeLangPackage.IF_EXPRESSION__COND:
+        return getCond();
+      case BeeLangPackage.IF_EXPRESSION__VALUE:
+        return getValue();
+      case BeeLangPackage.IF_EXPRESSION__TAIL:
+        return getTail();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -274,19 +247,21 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
    * <!-- end-user-doc -->
    * @generated
    */
+  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case BeeLangPackage.IF_EXPRESSION__CONDITION:
-        setCondition((Expression)newValue);
+      case BeeLangPackage.IF_EXPRESSION__COND:
+        setCond((Expression)newValue);
         return;
-      case BeeLangPackage.IF_EXPRESSION__THEN_PART:
-        setThenPart((Expression)newValue);
+      case BeeLangPackage.IF_EXPRESSION__VALUE:
+        setValue((Expression)newValue);
         return;
-      case BeeLangPackage.IF_EXPRESSION__ELSE_PART:
-        setElsePart((Expression)newValue);
+      case BeeLangPackage.IF_EXPRESSION__TAIL:
+        getTail().clear();
+        getTail().addAll((Collection<? extends Expression>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -302,14 +277,14 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
   {
     switch (featureID)
     {
-      case BeeLangPackage.IF_EXPRESSION__CONDITION:
-        setCondition((Expression)null);
+      case BeeLangPackage.IF_EXPRESSION__COND:
+        setCond((Expression)null);
         return;
-      case BeeLangPackage.IF_EXPRESSION__THEN_PART:
-        setThenPart((Expression)null);
+      case BeeLangPackage.IF_EXPRESSION__VALUE:
+        setValue((Expression)null);
         return;
-      case BeeLangPackage.IF_EXPRESSION__ELSE_PART:
-        setElsePart((Expression)null);
+      case BeeLangPackage.IF_EXPRESSION__TAIL:
+        getTail().clear();
         return;
     }
     super.eUnset(featureID);
@@ -325,12 +300,12 @@ public class IfExpressionImpl extends ExpressionImpl implements IfExpression
   {
     switch (featureID)
     {
-      case BeeLangPackage.IF_EXPRESSION__CONDITION:
-        return condition != null;
-      case BeeLangPackage.IF_EXPRESSION__THEN_PART:
-        return thenPart != null;
-      case BeeLangPackage.IF_EXPRESSION__ELSE_PART:
-        return elsePart != null;
+      case BeeLangPackage.IF_EXPRESSION__COND:
+        return cond != null;
+      case BeeLangPackage.IF_EXPRESSION__VALUE:
+        return value != null;
+      case BeeLangPackage.IF_EXPRESSION__TAIL:
+        return tail != null && !tail.isEmpty();
     }
     return super.eIsSet(featureID);
   }

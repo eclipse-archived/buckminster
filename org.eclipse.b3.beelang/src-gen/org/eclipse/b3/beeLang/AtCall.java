@@ -5,7 +5,6 @@
  */
 package org.eclipse.b3.beeLang;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -17,7 +16,7 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.AtCall#getTarget <em>Target</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.AtCall#getIndex <em>Index</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.AtCall#getParams <em>Params</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.AtCall#getParameters <em>Parameters</em>}</li>
  * </ul>
  * </p>
  *
@@ -80,19 +79,29 @@ public interface AtCall extends Expression
   void setIndex(Expression value);
 
   /**
-   * Returns the value of the '<em><b>Params</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.Parameter}.
+   * Returns the value of the '<em><b>Parameters</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Params</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Parameters</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Params</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getAtCall_Params()
+   * @return the value of the '<em>Parameters</em>' containment reference.
+   * @see #setParameters(ParameterList)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getAtCall_Parameters()
    * @model containment="true"
    * @generated
    */
-  EList<Parameter> getParams();
+  ParameterList getParameters();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.AtCall#getParameters <em>Parameters</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Parameters</em>' containment reference.
+   * @see #getParameters()
+   * @generated
+   */
+  void setParameters(ParameterList value);
 
 } // AtCall

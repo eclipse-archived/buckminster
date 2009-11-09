@@ -7,7 +7,8 @@ package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.CatchBlock;
-import org.eclipse.b3.beeLang.CompoundStatement;
+import org.eclipse.b3.beeLang.Expression;
+import org.eclipse.b3.beeLang.TypeRef;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -25,8 +26,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.CatchBlockImpl#getVariable <em>Variable</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.CatchBlockImpl#getCatchBlock <em>Catch Block</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.CatchBlockImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.CatchBlockImpl#getVar <em>Var</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.CatchBlockImpl#getExpr <em>Expr</em>}</li>
  * </ul>
  * </p>
  *
@@ -35,34 +37,44 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 public class CatchBlockImpl extends MinimalEObjectImpl.Container implements CatchBlock
 {
   /**
-   * The default value of the '{@link #getVariable() <em>Variable</em>}' attribute.
+   * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVariable()
+   * @see #getType()
    * @generated
    * @ordered
    */
-  protected static final String VARIABLE_EDEFAULT = null;
+  protected TypeRef type;
 
   /**
-   * The cached value of the '{@link #getVariable() <em>Variable</em>}' attribute.
+   * The default value of the '{@link #getVar() <em>Var</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getVariable()
+   * @see #getVar()
    * @generated
    * @ordered
    */
-  protected String variable = VARIABLE_EDEFAULT;
+  protected static final String VAR_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getCatchBlock() <em>Catch Block</em>}' containment reference.
+   * The cached value of the '{@link #getVar() <em>Var</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getCatchBlock()
+   * @see #getVar()
    * @generated
    * @ordered
    */
-  protected CompoundStatement catchBlock;
+  protected String var = VAR_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getExpr() <em>Expr</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getExpr()
+   * @generated
+   * @ordered
+   */
+  protected Expression expr;
 
   /**
    * <!-- begin-user-doc -->
@@ -90,9 +102,9 @@ public class CatchBlockImpl extends MinimalEObjectImpl.Container implements Catc
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getVariable()
+  public TypeRef getType()
   {
-    return variable;
+    return type;
   }
 
   /**
@@ -100,36 +112,13 @@ public class CatchBlockImpl extends MinimalEObjectImpl.Container implements Catc
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setVariable(String newVariable)
+  public NotificationChain basicSetType(TypeRef newType, NotificationChain msgs)
   {
-    String oldVariable = variable;
-    variable = newVariable;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CATCH_BLOCK__VARIABLE, oldVariable, variable));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public CompoundStatement getCatchBlock()
-  {
-    return catchBlock;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetCatchBlock(CompoundStatement newCatchBlock, NotificationChain msgs)
-  {
-    CompoundStatement oldCatchBlock = catchBlock;
-    catchBlock = newCatchBlock;
+    TypeRef oldType = type;
+    type = newType;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.CATCH_BLOCK__CATCH_BLOCK, oldCatchBlock, newCatchBlock);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.CATCH_BLOCK__TYPE, oldType, newType);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -140,20 +129,91 @@ public class CatchBlockImpl extends MinimalEObjectImpl.Container implements Catc
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setCatchBlock(CompoundStatement newCatchBlock)
+  public void setType(TypeRef newType)
   {
-    if (newCatchBlock != catchBlock)
+    if (newType != type)
     {
       NotificationChain msgs = null;
-      if (catchBlock != null)
-        msgs = ((InternalEObject)catchBlock).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CATCH_BLOCK__CATCH_BLOCK, null, msgs);
-      if (newCatchBlock != null)
-        msgs = ((InternalEObject)newCatchBlock).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CATCH_BLOCK__CATCH_BLOCK, null, msgs);
-      msgs = basicSetCatchBlock(newCatchBlock, msgs);
+      if (type != null)
+        msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CATCH_BLOCK__TYPE, null, msgs);
+      if (newType != null)
+        msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CATCH_BLOCK__TYPE, null, msgs);
+      msgs = basicSetType(newType, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CATCH_BLOCK__CATCH_BLOCK, newCatchBlock, newCatchBlock));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CATCH_BLOCK__TYPE, newType, newType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getVar()
+  {
+    return var;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setVar(String newVar)
+  {
+    String oldVar = var;
+    var = newVar;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CATCH_BLOCK__VAR, oldVar, var));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Expression getExpr()
+  {
+    return expr;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetExpr(Expression newExpr, NotificationChain msgs)
+  {
+    Expression oldExpr = expr;
+    expr = newExpr;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.CATCH_BLOCK__EXPR, oldExpr, newExpr);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setExpr(Expression newExpr)
+  {
+    if (newExpr != expr)
+    {
+      NotificationChain msgs = null;
+      if (expr != null)
+        msgs = ((InternalEObject)expr).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CATCH_BLOCK__EXPR, null, msgs);
+      if (newExpr != null)
+        msgs = ((InternalEObject)newExpr).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CATCH_BLOCK__EXPR, null, msgs);
+      msgs = basicSetExpr(newExpr, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CATCH_BLOCK__EXPR, newExpr, newExpr));
   }
 
   /**
@@ -166,8 +226,10 @@ public class CatchBlockImpl extends MinimalEObjectImpl.Container implements Catc
   {
     switch (featureID)
     {
-      case BeeLangPackage.CATCH_BLOCK__CATCH_BLOCK:
-        return basicSetCatchBlock(null, msgs);
+      case BeeLangPackage.CATCH_BLOCK__TYPE:
+        return basicSetType(null, msgs);
+      case BeeLangPackage.CATCH_BLOCK__EXPR:
+        return basicSetExpr(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -182,10 +244,12 @@ public class CatchBlockImpl extends MinimalEObjectImpl.Container implements Catc
   {
     switch (featureID)
     {
-      case BeeLangPackage.CATCH_BLOCK__VARIABLE:
-        return getVariable();
-      case BeeLangPackage.CATCH_BLOCK__CATCH_BLOCK:
-        return getCatchBlock();
+      case BeeLangPackage.CATCH_BLOCK__TYPE:
+        return getType();
+      case BeeLangPackage.CATCH_BLOCK__VAR:
+        return getVar();
+      case BeeLangPackage.CATCH_BLOCK__EXPR:
+        return getExpr();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -200,11 +264,14 @@ public class CatchBlockImpl extends MinimalEObjectImpl.Container implements Catc
   {
     switch (featureID)
     {
-      case BeeLangPackage.CATCH_BLOCK__VARIABLE:
-        setVariable((String)newValue);
+      case BeeLangPackage.CATCH_BLOCK__TYPE:
+        setType((TypeRef)newValue);
         return;
-      case BeeLangPackage.CATCH_BLOCK__CATCH_BLOCK:
-        setCatchBlock((CompoundStatement)newValue);
+      case BeeLangPackage.CATCH_BLOCK__VAR:
+        setVar((String)newValue);
+        return;
+      case BeeLangPackage.CATCH_BLOCK__EXPR:
+        setExpr((Expression)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -220,11 +287,14 @@ public class CatchBlockImpl extends MinimalEObjectImpl.Container implements Catc
   {
     switch (featureID)
     {
-      case BeeLangPackage.CATCH_BLOCK__VARIABLE:
-        setVariable(VARIABLE_EDEFAULT);
+      case BeeLangPackage.CATCH_BLOCK__TYPE:
+        setType((TypeRef)null);
         return;
-      case BeeLangPackage.CATCH_BLOCK__CATCH_BLOCK:
-        setCatchBlock((CompoundStatement)null);
+      case BeeLangPackage.CATCH_BLOCK__VAR:
+        setVar(VAR_EDEFAULT);
+        return;
+      case BeeLangPackage.CATCH_BLOCK__EXPR:
+        setExpr((Expression)null);
         return;
     }
     super.eUnset(featureID);
@@ -240,10 +310,12 @@ public class CatchBlockImpl extends MinimalEObjectImpl.Container implements Catc
   {
     switch (featureID)
     {
-      case BeeLangPackage.CATCH_BLOCK__VARIABLE:
-        return VARIABLE_EDEFAULT == null ? variable != null : !VARIABLE_EDEFAULT.equals(variable);
-      case BeeLangPackage.CATCH_BLOCK__CATCH_BLOCK:
-        return catchBlock != null;
+      case BeeLangPackage.CATCH_BLOCK__TYPE:
+        return type != null;
+      case BeeLangPackage.CATCH_BLOCK__VAR:
+        return VAR_EDEFAULT == null ? var != null : !VAR_EDEFAULT.equals(var);
+      case BeeLangPackage.CATCH_BLOCK__EXPR:
+        return expr != null;
     }
     return super.eIsSet(featureID);
   }
@@ -259,8 +331,8 @@ public class CatchBlockImpl extends MinimalEObjectImpl.Container implements Catc
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (variable: ");
-    result.append(variable);
+    result.append(" (var: ");
+    result.append(var);
     result.append(')');
     return result.toString();
   }

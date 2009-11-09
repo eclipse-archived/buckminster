@@ -16,9 +16,9 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#getAlias <em>Alias</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#getWithClause <em>With Clause</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#getPartReference <em>Part Reference</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#getClosure <em>Closure</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.Prerequisite#getAlias <em>Alias</em>}</li>
  * </ul>
  * </p>
  *
@@ -55,30 +55,30 @@ public interface Prerequisite extends EObject
   void setFilter(Filter value);
 
   /**
-   * Returns the value of the '<em><b>Alias</b></em>' attribute.
+   * Returns the value of the '<em><b>With Clause</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Alias</em>' attribute isn't clear,
+   * If the meaning of the '<em>With Clause</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Alias</em>' attribute.
-   * @see #setAlias(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPrerequisite_Alias()
-   * @model
+   * @return the value of the '<em>With Clause</em>' containment reference.
+   * @see #setWithClause(WithClause)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPrerequisite_WithClause()
+   * @model containment="true"
    * @generated
    */
-  String getAlias();
+  WithClause getWithClause();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.Prerequisite#getAlias <em>Alias</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.Prerequisite#getWithClause <em>With Clause</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Alias</em>' attribute.
-   * @see #getAlias()
+   * @param value the new value of the '<em>With Clause</em>' containment reference.
+   * @see #getWithClause()
    * @generated
    */
-  void setAlias(String value);
+  void setWithClause(WithClause value);
 
   /**
    * Returns the value of the '<em><b>Part Reference</b></em>' containment reference.
@@ -107,29 +107,29 @@ public interface Prerequisite extends EObject
   void setPartReference(PrerequisiteEntry value);
 
   /**
-   * Returns the value of the '<em><b>Closure</b></em>' containment reference.
+   * Returns the value of the '<em><b>Alias</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Closure</em>' containment reference isn't clear,
+   * If the meaning of the '<em>Alias</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Closure</em>' containment reference.
-   * @see #setClosure(Closure)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPrerequisite_Closure()
-   * @model containment="true"
+   * @return the value of the '<em>Alias</em>' attribute.
+   * @see #setAlias(String)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getPrerequisite_Alias()
+   * @model
    * @generated
    */
-  Closure getClosure();
+  String getAlias();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.Prerequisite#getClosure <em>Closure</em>}' containment reference.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.Prerequisite#getAlias <em>Alias</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Closure</em>' containment reference.
-   * @see #getClosure()
+   * @param value the new value of the '<em>Alias</em>' attribute.
+   * @see #getAlias()
    * @generated
    */
-  void setClosure(Closure value);
+  void setAlias(String value);
 
 } // Prerequisite

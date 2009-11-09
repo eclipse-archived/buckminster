@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ParameterImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.ParameterImpl#getVal <em>Val</em>}</li>
  * </ul>
  * </p>
@@ -33,6 +34,26 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  */
 public class ParameterImpl extends MinimalEObjectImpl.Container implements Parameter
 {
+  /**
+   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected static final String NAME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected String name = NAME_EDEFAULT;
+
   /**
    * The cached value of the '{@link #getVal() <em>Val</em>}' containment reference.
    * <!-- begin-user-doc -->
@@ -62,6 +83,29 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   protected EClass eStaticClass()
   {
     return BeeLangPackage.Literals.PARAMETER;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getName()
+  {
+    return name;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setName(String newName)
+  {
+    String oldName = name;
+    name = newName;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PARAMETER__NAME, oldName, name));
   }
 
   /**
@@ -138,6 +182,8 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
+      case BeeLangPackage.PARAMETER__NAME:
+        return getName();
       case BeeLangPackage.PARAMETER__VAL:
         return getVal();
     }
@@ -154,6 +200,9 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
+      case BeeLangPackage.PARAMETER__NAME:
+        setName((String)newValue);
+        return;
       case BeeLangPackage.PARAMETER__VAL:
         setVal((Expression)newValue);
         return;
@@ -171,6 +220,9 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
+      case BeeLangPackage.PARAMETER__NAME:
+        setName(NAME_EDEFAULT);
+        return;
       case BeeLangPackage.PARAMETER__VAL:
         setVal((Expression)null);
         return;
@@ -188,10 +240,29 @@ public class ParameterImpl extends MinimalEObjectImpl.Container implements Param
   {
     switch (featureID)
     {
+      case BeeLangPackage.PARAMETER__NAME:
+        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
       case BeeLangPackage.PARAMETER__VAL:
         return val != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (name: ");
+    result.append(name);
+    result.append(')');
+    return result.toString();
   }
 
 } //ParameterImpl

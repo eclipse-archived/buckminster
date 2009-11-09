@@ -61,12 +61,12 @@ public interface NamedProperties extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Body</em>' containment reference.
-   * @see #setBody(CompoundPropertyOperation)
+   * @see #setBody(PropertyBody)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getNamedProperties_Body()
    * @model containment="true"
    * @generated
    */
-  CompoundPropertyOperation getBody();
+  PropertyBody getBody();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.NamedProperties#getBody <em>Body</em>}' containment reference.
@@ -76,6 +76,6 @@ public interface NamedProperties extends EObject
    * @see #getBody()
    * @generated
    */
-  void setBody(CompoundPropertyOperation value);
+  void setBody(PropertyBody value);
 
 } // NamedProperties

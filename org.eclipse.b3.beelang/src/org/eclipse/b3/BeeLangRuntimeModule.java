@@ -12,12 +12,6 @@ import org.eclipse.xtext.conversion.IValueConverterService;
  */
 public class BeeLangRuntimeModule extends org.eclipse.b3.AbstractBeeLangRuntimeModule {
 
-//	Supply the class that does all the value conversion.
-//@Override
-//public Class<? extends IValueConverterService> bindIValueConverterService() {
-//	// TODO Auto-generated method stub
-//	return super.bindIValueConverterService();
-//}
 @Override
 public Class<? extends IValueConverterService> bindIValueConverterService() {
 		return BeeLangTerminalConverters.class;

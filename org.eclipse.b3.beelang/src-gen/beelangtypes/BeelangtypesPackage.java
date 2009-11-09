@@ -58,14 +58,14 @@ public interface BeelangtypesPackage extends EPackage
   BeelangtypesPackage eINSTANCE = beelangtypes.impl.BeelangtypesPackageImpl.init();
 
   /**
-   * The meta object id for the '<em>Hex Integer</em>' data type.
+   * The meta object id for the '<em>Radix Integer</em>' data type.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.b3.HexInteger
-   * @see beelangtypes.impl.BeelangtypesPackageImpl#getHexInteger()
+   * @see org.eclipse.b3.RadixInteger
+   * @see beelangtypes.impl.BeelangtypesPackageImpl#getRadixInteger()
    * @generated
    */
-  int HEX_INTEGER = 0;
+  int RADIX_INTEGER = 0;
 
   /**
    * The meta object id for the '<em>Regular Expression</em>' data type.
@@ -79,15 +79,15 @@ public interface BeelangtypesPackage extends EPackage
 
 
   /**
-   * Returns the meta object for data type '{@link org.eclipse.b3.HexInteger <em>Hex Integer</em>}'.
+   * Returns the meta object for data type '{@link org.eclipse.b3.RadixInteger <em>Radix Integer</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for data type '<em>Hex Integer</em>'.
-   * @see org.eclipse.b3.HexInteger
-   * @model instanceClass="org.eclipse.b3.HexInteger"
+   * @return the meta object for data type '<em>Radix Integer</em>'.
+   * @see org.eclipse.b3.RadixInteger
+   * @model instanceClass="org.eclipse.b3.RadixInteger"
    * @generated
    */
-  EDataType getHexInteger();
+  EDataType getRadixInteger();
 
   /**
    * Returns the meta object for data type '{@link org.eclipse.b3.RegularExpression <em>Regular Expression</em>}'.
@@ -124,14 +124,14 @@ public interface BeelangtypesPackage extends EPackage
   interface Literals
   {
     /**
-     * The meta object literal for the '<em>Hex Integer</em>' data type.
+     * The meta object literal for the '<em>Radix Integer</em>' data type.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.b3.HexInteger
-     * @see beelangtypes.impl.BeelangtypesPackageImpl#getHexInteger()
+     * @see org.eclipse.b3.RadixInteger
+     * @see beelangtypes.impl.BeelangtypesPackageImpl#getRadixInteger()
      * @generated
      */
-    EDataType HEX_INTEGER = eINSTANCE.getHexInteger();
+    EDataType RADIX_INTEGER = eINSTANCE.getRadixInteger();
 
     /**
      * The meta object literal for the '<em>Regular Expression</em>' data type.

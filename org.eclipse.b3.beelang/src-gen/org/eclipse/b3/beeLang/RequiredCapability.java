@@ -15,9 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.RequiredCapability#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.RequiredCapability#getInterface <em>Interface</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.RequiredCapability#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.RequiredCapability#getCapability <em>Capability</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.RequiredCapability#getRange <em>Range</em>}</li>
  * </ul>
  * </p>
@@ -29,82 +27,30 @@ import org.eclipse.emf.ecore.EObject;
 public interface RequiredCapability extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Filter</b></em>' containment reference.
+   * Returns the value of the '<em><b>Capability</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Filter</em>' containment reference isn't clear,
+   * If the meaning of the '<em>Capability</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Filter</em>' containment reference.
-   * @see #setFilter(Filter)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getRequiredCapability_Filter()
+   * @return the value of the '<em>Capability</em>' containment reference.
+   * @see #setCapability(FilteredCapability)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getRequiredCapability_Capability()
    * @model containment="true"
    * @generated
    */
-  Filter getFilter();
+  FilteredCapability getCapability();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.RequiredCapability#getFilter <em>Filter</em>}' containment reference.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.RequiredCapability#getCapability <em>Capability</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Filter</em>' containment reference.
-   * @see #getFilter()
+   * @param value the new value of the '<em>Capability</em>' containment reference.
+   * @see #getCapability()
    * @generated
    */
-  void setFilter(Filter value);
-
-  /**
-   * Returns the value of the '<em><b>Interface</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Interface</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Interface</em>' attribute.
-   * @see #setInterface(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getRequiredCapability_Interface()
-   * @model
-   * @generated
-   */
-  String getInterface();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.RequiredCapability#getInterface <em>Interface</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Interface</em>' attribute.
-   * @see #getInterface()
-   * @generated
-   */
-  void setInterface(String value);
-
-  /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Name</em>' attribute isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getRequiredCapability_Name()
-   * @model
-   * @generated
-   */
-  String getName();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.RequiredCapability#getName <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
-   * @generated
-   */
-  void setName(String value);
+  void setCapability(FilteredCapability value);
 
   /**
    * Returns the value of the '<em><b>Range</b></em>' containment reference.

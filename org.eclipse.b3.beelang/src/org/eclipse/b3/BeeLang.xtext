@@ -1,19 +1,22 @@
-grammar org.eclipse.b3.BeeLang with org.eclipse.xtext.common.Terminals
+grammar org.eclipse.b3.BeeLang // with org.eclipse.xtext.common.Terminals
 import "http://www.eclipse.org/emf/2002/Ecore" as ecore
 import "platform:/resource/org.eclipse.b3.beelang/src/org/eclipse/b3/BeeLangTypes.ecore" as types
 generate beeLang "http://www.eclipse.org/b3/BeeLang"
 
-BeeModel : (imports += Import)* body = Unit ;
+BeeModel hidden(WS, SL_COMMENT, ML_COMMENT): 
+	(imports += Import)* 
+	((functions+=Function) | (concern+=Concern))* 
+	(body = Unit)? ;
 
-Import
-	: (reexport ?='reexport')? 'import' importer=(JavaImporter | NativeImporter) ("as" nameSpace=ID)? ';' 
+Import : (reexport ?='reexport')? 
+		'import' importer=(JavaImporter | NativeImporter) ("as" nameSpace=ID)? ';' 
 	; 
 
-JavaImporter 	:  name=QualifiedName (package ?='.*')? ;
+JavaImporter 	: name=QualifiedName ;
 NativeImporter 	: uriString = STRING ;
 		
-/* UNIT - the body (compare to java class) */	
 Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
+	(documentation = DOCUMENTATION)?
 	(executionMode = ExecutionMode)?
 	'unit' (name=UnitName)? ('version' version = Version)?
 		('implements' implements += InterfaceName (',' implements+=InterfaceName)*)? 
@@ -21,8 +24,8 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 		(	//-- PROPERTIES
 			// goes first, because they may be used in the other clauses.
 			//
-			  ('properties'  CompoundPropertyOperation += NamedPropertyStatements)
-		)*
+			  ('default' 'properties'  defaultProperties = PropertyBody)
+		)?
 		( 	//-- PROVIDES
 			  ('provides' '{' (providedCapabilities += ProvidedCapability ';')+ '}')
 			| ('provides' providedCapabilities += ProvidedCapability ';')
@@ -31,31 +34,35 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 			| ('requires' requiredCapabilities += RequiredCapability ';')
 			| ('env' 'requires' '{' (metaRequiredCapabilities += RequiredCapability ';')+ '}' )
 			| ('env' 'requires' metaRequiredCapabilities += RequiredCapability ';')
-			//--ADVICE
-			| ('advice' advice+=NamedAdvice )
+			//--CONCERNS
+			| (concerns+=Concern )
 			//--SYNCHRONIZE
 			| ('sequential' '{' (synchronizations += Synchronization )+  '}' )
 			| ('sequential' synchronizations += Synchronization  )
-			//--BUILD METHODS
-			| (buildMethods += BuildMethod )			
+			//--BUILD METHODS & FUNCTIONS
+			| (builders += Builder )			
+			| (methods += Method )			
 			//-- REPOSITORIES
 			| ('repositories' '{' (repositoryConfigurations+=RepositoryConfiguration)* '}' )
+			| ('properties'  propertySets += NamedPropertyBody)
 		)*
 	'}';
 	
 
 	
-ProvidedCapability : ('when' filter=Filter)? interface=QualifiedName '/' name=QualifiedName  ('/' version=Version)?  ;
-RequiredCapability : ('when' filter=Filter)? interface=QualifiedName '/' name=QualifiedName ('/' range=VersionRange)?  ;
+ProvidedCapability : capability=FilteredCapability  ('/' version=Version)?  ;
+RequiredCapability : capability=FilteredCapability ('/' range=VersionRange)?  ;
+FilteredCapability : ('when' filter=Filter)? capability = Capability ;
+Capability : interface=InterfaceName '/' name=UnitName ;
 
 // An optionally named sequence of property statements
-NamedPropertyStatements returns NamedProperties
-	: (name = ID)? body = CompoundPropertyOperation 
+NamedPropertyBody returns NamedProperties
+	: name = ID body = PropertyBody 
 	;
 
 // Sequence of possibly filtered property statements	
-CompoundPropertyOperation returns CompoundPropertyOperation
-	:  '{' (operations += PropertyOperation)* '}'
+PropertyBody returns PropertyBody
+	:  ("extends" extends=Expression)? '{' (operations += PropertyOperation)* '}'
 	;
 
 // For model generation, to get supertype correct
@@ -63,16 +70,16 @@ PropertyOperation
 	: FilteredPropertyOperation 
 	| SetPropertyOperation 
 	| UnsetPropertyOperation 
-	| CompoundPropertyOperation
+	| PropertyBody
 	;
 
 FilteredPropertyOperation returns FilteredPropertyOperation
 	: 'when' filter=Filter
-		body=(SetPropertyOperation | UnsetPropertyOperation | CompoundPropertyOperation) 
+		body=(SetPropertyOperation | UnsetPropertyOperation | PropertyBody) 
 	;
 
 SetPropertyOperation returns SetPropertyOperation
-	: ( (immutable ?= 'immutable')? key=PropertyName op=AssignmentOperator value=Expression ';')
+	: ( (final ?= 'final')? key=PropertyName op=AssignmentOperator value=Expression ';')
 	;
 
 UnsetPropertyOperation returns UnsetPropertyOperation
@@ -88,8 +95,7 @@ SynchronizedPart
 	| PartName
 	;
 	
-/* PATH GROUP */
-PathGroup : paths+=PathVectorElement* ('annotations' annotations = CompoundPropertyOperation)? ;
+PathGroup : paths+=PathVectorElement* ('annotations' annotations = PropertyBody)? ;
 
 PathVectorElement returns PathVectorElement
 	: FilteredPathVector
@@ -111,106 +117,122 @@ UnbasedPathVector returns PathVector
 	
 CompoundPathVector returns CompoundPathVector: '{' body+=PathVectorElement* '}' ;
 
-/*
-* A path can be written without quotes if it consists of safe chars 
-* TODO: repace use of ID with better definition.
-* TODO: Validation of path syntax (MS, n*x) ?
-*/
+// A path can be written without quotes if it consists of safe chars 
 Path hidden()
 	: STRING
 	| ('/')? QualifiedName ('/' QualifiedName)* ('/')? // HIDDENBUG
 	;
 
-Prerequisite
-	: (('when' filter=Filter )? (alias=ID '=')? ((partReference=PrerequisiteEntry) (closure = Closure)?)) ';'
+Prerequisite : 
+		('when' filter=Filter )?
+		(withClause = WithClause)?
+		partReference=PrerequisiteEntry 
+		("as" alias=ID)? ';'
 	;
-	
-Closure : 'with' '{'
-			('properties' properties = CompoundPropertyOperation )? 
-			( 'advice' advice = CompoundAdvice)?
-		'}'
+
+// TODO: Validation, must have at least one of references, properties or concern.
+WithClause : 
+		'with'
+		( '(' references += Expression (',' references += Expression)* ')' )? 
+		(( 'properties' properties += PropertyBody ) 
+		| ( 'concern' concern += ConcernBlock ))*
 		;
-		
+			
 PrerequisiteEntry 
-	: PartInSelf
+	: DirectPartReferemce
 	| CapabilityReferencedPart
 	| CompoundReferences
 	;
 	
-PartInSelf	: partName=PartName  // i.e. self#partName
-	;
+DirectPartReferemce	: ((unit=QualifiedName)|(unit="unit"))? '#' builder=PartName  (parameters = ParameterList)?; 
 	
-CapabilityReferencedPart
-	: interface=InterfaceName '/' name=UnitName ('/' range=VersionRange)? '#' partName=PartName
-	| interface=InterfaceName '/' name=UnitName ('/' range=VersionRange)?
+CapabilityReferencedPart : 
+	capability=Capability ('/' range=VersionRange)? ('#' partName=PartName) ?
+	(parameters = ParameterList)?	 
 	;
 	
 CompoundReferences
 	: '{' (prerequisites += Prerequisite)* '}'
 	;
 	
-BuildMethod returns BuildMethod: (visibility = Visibility)?
-      (executionMode = ExecutionMode)?
-	 name=PartName
-		( 'provides' providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)*  )?
+Builder returns Statement : {Builder}
+	(documentation = DOCUMENTATION)? 
+	(visibility = Visibility)?
+    (executionMode = ExecutionMode)?
+  	(final ?= "final")?
+	(cached ?= "cached")?
+    "builder"
+	name=PartName
+	('(' params = ParameterDeclarationList ')')?
+	('provides' providedCapabilities += ProvidedCapability (',' providedCapabilities += ProvidedCapability)*  )?
 	(preCondition = PreCondition)?
 	(postCondition = PostCondition)?
 	 '{'
-		('properties' properties = CompoundPropertyOperation)?
-	     ( advice = Advice )?
-	     ( group = Group )? 
-	     ( layout = Layout )?
-	     (statements = Statements)?
+		('default' 'properties' properties = PropertyBody)?
+	     ( input = BuilderInput )? 
+	     ( output = BuilderOutput )?
+	     (expressionList = ExpressionList)?
 	 '}'
 	;
 
-Parameter : val = Expression ;
+Parameter : (name = ID ':')? val = Expression ;
+ParameterList : (params+=Parameter ("," params+=Parameter)* | params+=ClosureExpression)?;
 
-GroupKeyword : 'input' ; // used to be 'group'
-LayoutKeyword : 'output'; // used to be 'layout'
+ParameterDeclarationList : 
+	( params += ParameterDeclaration (',' params+=ParameterDeclaration)*(',' params+=ParameterDeclarationEllipse)?) 
+	| (params+= ParameterDeclarationEllipse)
+	;
+ParameterDeclaration : type=TypeRef? name = ID ;
+ParameterDeclarationEllipse returns ParameterDeclaration : 
+	{VarargParameterDeclaration} "..." (type=TypeRef)? name=ID
+	;
+ 
+InputKeyword : 'input' ; 
+OutputKeyword : 'output'; 
 	
-Layout returns Layout
-	: LayoutKeyword (postCondition = PostCondition)? '{' (body = PathGroup)? '}' 
+BuilderOutput returns BuilderOutput
+	: OutputKeyword '{' (body = PathGroup)? '}' 
 	;
 	
 
-Group
-	: GroupKeyword (preCondition = PreCondition)? (postCondition = PostCondition)?	 
+BuilderInput
+	: InputKeyword (preCondition = PreCondition)? (postCondition = PostCondition)?	 
 		'{' (prerequisites += Prerequisite)* '}'
 	;
 
 RepositoryConfiguration
-	: (location=URI | 'resolver' resolverClass=QualifiedName ) (advice=CompoundAdvice)? ';'
+	: (location=URI | 'resolver' resolverClass=QualifiedName ) (advice=CompoundConcern)? ';'
 	;
 
 /*
 ** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
 ** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
-** The ':' clashes with 'scheme:' which is the only known BuildMethod in an opaque URI. 
+** The ':' clashes with 'scheme:' which is the only known Builder in an opaque URI. 
 */
 URI : STRING
 	;
 
-/* ADVICE
-** TODO: Had to use '?' instead if '*', and '??' intead of '**' as these operators are intermixed with / which sometimes
-** makes them look like comments. (Forbidding // comments is not the wanted sollution). 
-**
-*/
-NamedAdvice 
-	: (name=ID)? advice=CompoundAdvice ;
+Concern : (documentation = DOCUMENTATION)? "concern" name=ID concern = ConcernBlock ;
 
-Advice : 'advice' CompoundAdvice ;
+ConcernBlock : 
+	("extends" superConcerns+= ID (',' superConcerns += ID)*)? 
+	'{' ((contexts+=Context) | (functions+=Function))* '}' 
+	;
 
-CompoundAdvice : '{' (advice += AdviceStatement ';')* '}' ;
+Advice : 'advice' CompoundConcern ;
 
-AdviceStatement :  path = AdvicePath ((op=AssignmentOperator value=Expression) | advice=CompoundAdvice) ;
+CompoundConcern : '{' (advice += AdviceStatement ';')* '}' ;
+
+AdviceStatement :  path = QueryPath ((op=AssignmentOperator value=Expression) | advice=CompoundConcern) ;
+
+Query : "query" ('{' selector=QueryPath '}') 
+	/* | ('traverse' selector=QueryExpressionPath "endquery")) */
+	;
 
 // a | ** | [foo==bar] | .. | a 
 // a:**:[foo==bar]:..:a
 	
-AdvicePath
-	: (absolute?=':')? selectors+=Selector (':' selectors+=Selector)* 
-	;
+QueryPath : (absolute?=':')? selectors+=Selector (':' selectors+=Selector)* ;
 
 Selector returns Selector
 	: DiscriminatingSelector | MultiNodeSelector | NodeSelector 
@@ -233,7 +255,31 @@ ChildrenSelector returns ChildrenSelector: {ChildrenSelector} '*' ;
 AncestorSelector returns AncestorSelector: {AncestorSelector} '**' ;
 RegexpSelector returns RegexpSelector: {RegexpSelector} pattern=REGEX ;
 
-WildcardNode : '*' ('*')? ;
+// QE
+//QueryExpressionPath : (absolute?="root" "to")? selectors+=QESelector ("to" selectors+=QESelector)* ;
+//
+//QESelector returns QESelector
+//	: QEDiscriminatingSelector | QEMultiNodeSelector | QENodeSelector 
+//	;
+//QEMultiNodeSelector returns QESelector
+//	: QENameSelector | QEThisSelector | QEChildrenSelector | QEAncestorSelector | QERegexpSelector
+//	;
+//QEDiscriminatingSelector returns Selector
+//	: selector=QEMultiNodeSelector "where" predicate=Expression 
+//	;
+//QENodeSelector returns Selector
+//	: QEParentSelector 
+//	;
+//
+//	 
+//QENameSelector returns NameSelector: "feature" name=QualifiedName ;
+//QEThisSelector returns ThisSelector: {ThisSelector} "this" ;
+//QEParentSelector returns ParentSelector: {ParentSelector} "parent" ;
+//QEChildrenSelector returns ChildrenSelector: {ChildrenSelector} "children" ;
+//QEAncestorSelector returns AncestorSelector: {AncestorSelector} "ancestors" ;
+//QERegexpSelector returns RegexpSelector: {RegexpSelector} "pattern" pattern=REGEX ;
+
+
 
 Filter : '(' predicate = Expression ')' ;
 
@@ -245,78 +291,39 @@ AssertionExpression : 'assert' expr=Expression (',' message=STRING)? ';'
 ;
 
 /* STATEMENTS */
-Statement
-	: IfStatement
-	| SwitchStatement
-	| WhileStatement
-	| ForStatement
-	| DoWhileStatement
-	| CompoundStatement
-	| (VarExpression)? ';'
-	| BreakStatement
-	| ContinueStatement
-	| ReturnStatement
-	| FunctionStatement
-	| LabelStatement
-	| ThrowStatement
-	| TryCatchStatement
-	| WithStatement
+ExpressionList : (expressions += Expression ';')+ ;
+
+Function returns Statement : {Function}	
+	(documentation = DOCUMENTATION)?
+   	(visibility = Visibility)?
+    (executionMode = ExecutionMode)?	   	
+   	(final ?= "final")?
+   	(cached ?= "cached")?
+   	"function"
+   	(type = TypeRef)?
+   	name=ID 
+   	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
+   	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
+   	((':' body=Expression ';') | (body=BlockExpression))
+	;
+
+Method returns Statement : {Function}	
+	(documentation = DOCUMENTATION)?
+   	(visibility = Visibility)?
+    (executionMode = ExecutionMode)?	   	
+   	(final ?= "final")?
+   	(cached ?= "cached")?
+   	"method"
+   	(type = TypeRef)?
+   	name=ID 
+   	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
+   	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
+   	((':' body=Expression ';') | (body=BlockExpression))
 	;
 	
-BreakStatement : {BreakStatement} 'break' (label=ID)? ';' ;
-ContinueStatement : {ContinueStatement} 'continue' (label=ID)? ';' ;
-
-CompoundStatement : '{' statements = Statements '}' ;
-
-Statements : (statements += Statement)+ ;
-
-WhileStatement : 'while' '(' condition=Expression ')' body=Statement ;
-
-SwitchStatement
-	: "switch" "(" switchExpr=VarExpression ")"
-		"{" case+=Case* ("default" ":" (statements=Statements)?)? "}";
-		
-Case: "case" condition=ValueLiteral ":" (statements=Statements)?;
-
-// TODO: needs validation that expression list only has one entry and is a LHS value
-// if inLoop == true. Needs validation that RHS is a collection item if inLoop == true.
-//
-ForStatement : {ForStatement} "for" '(' (init=VarExpressionList)? 
-	( (regular ?= ';' (cond=Expression)? ';' (iterate=ExpressionList)?) 
-	| ("in" iterate=Expression )
-	)
-	')'  
-	body = Statement
+TypeParamDeclaration 
+	: ID ( ("extends" type+= TypeRef ('&' type+=TypeRef)*) | ("super" superType=TypeRef))?
 	;
-	
-DoWhileStatement : 'do' statement = Statement 'while' '(' condition=Expression ')' ';' ;
-
-
-ReturnStatement 
-	: 'return' (return=Expression)? ';'
-	;
-FunctionStatement
-	: "function" name=ID '(' (params += ID (',' params += ID)*) ')' 
-		'{' statements = Statements '}'
-	;
-
-IfStatement 
-	: "if" '(' cond = Expression ')' then = Statement ("else" else= Statement)?
-	;
-	
-LabelStatement :  name=ID ":" statement = Statement ;
-
-ThrowStatement: "throw" expr=Expression ";" ;
-
-TryCatchStatement 
-	: "try" tryBlock = CompoundStatement 
-		((catchBlock = CatchBlock (finallyBlock=FinallyBlock)?) | finally=FinallyBlock)
-		;
-		
-CatchBlock: "catch" '(' variable = ID ')' catchBlock = CompoundStatement ;
-FinallyBlock: "finally" finallyBlock = CompoundStatement ;
-		
-WithStatement : "with" '(' expr=Expression ')' statement = Statement;
 		
 /* EXPRESSIONS */
 enum AssignmentOperator 
@@ -331,31 +338,28 @@ enum RelationalOperator
 	| EQ_INSTANCEOF="instanceof" 
 	;
 
-VarExpressionList : expr +=VarExpression ( ',' expr+=VarExpression)* ;
-ExpressionList : expr +=Expression ( ',' expr += Expression)* ;
+Expression returns Expression: AssignmentExpression | ReturnExpression;
 
-// Assignment is optional i JS
-// Also makes it possible to use VarExpression in a for(var a in xxx) loop
-//
-VarExpression returns Expression: Expression | {VarExpression}'var' name=ID ('=' value=Expression)? ;
-
-
-//Expression returns Expression: value = AssignmentExpression ;
-Expression returns Expression: AssignmentExpression ;
+ReturnExpression returns Expression : {ReturnExpression} "return" expr = AssignmentExpression ; 
 
 AssignmentExpression returns Expression:
-	 IfExpression ({AssignmentOperation.left=current} op=AssignmentOperator right=AssignmentExpression)?
+	 (OrExpression|VarDeclaration) ({AssignmentOperation.left=current} op=AssignmentOperator right=AssignmentExpression)?
 	;
 
-//ChainExpression returns Expression:
-//	ChainedExpression //({ChainExpression.first=current} ',' next=ChainedExpression)*
-//	;
+VarDeclaration returns Expression: {VarDeclaration} ('var' | type=TypeRef) name=ID ;
+
+TypeRef : SimpleTypeRef | ClosureTypeRef;
+SimpleTypeRef 
+	: typeName+=ID ('::' typeName+=ID)* ('<' ruleTypeParameter+=RuleTypeParam (',' ruleTypeParameter+=RuleTypeParam)* '>' )? 
+	;
+// ClosureTypeRef declares parameters and return type	
+ClosureTypeRef 
+	: ( '(' parameterTypes+=TypeRef (',' parameterTypes+=TypeRef)* ')')? '=>' returnType = TypeRef
+	;
 	
-ChainedExpression returns Expression:
-	IfExpression;
- 
-IfExpression returns Expression:
-	OrExpression ({IfExpression.condition=current} "?" thenPart=ChainedExpression ":" elsePart=ChainedExpression)?;
+RuleTypeParam : RuleTypeRefParam | WildcardRefParam ;
+RuleTypeRefParam : TypeRef ;
+WildcardRefParam : '?' ( ("extends" extends+=TypeRef (',' extends+=TypeRef)*) | "super" superRef=TypeRef )?;
 	 
 OrExpression returns Expression:
 	AndExpression ({BooleanOperation.left=current} operator="||" right=AndExpression)*;
@@ -378,7 +382,7 @@ AdditiveExpression returns Expression:
 MultiplicativeExpression returns Expression:
 	SetExpression ({OperationCall.params+=current} name=("*" | "/" | "%") params+=SetExpression)*;
 
-enum SetOperator : select | collect | reject | exists | notexists | foreach ;
+enum SetOperator : SEQUENCE = '..' ;
 
 SetExpression returns Expression:
 	UnaryOrInfixExpression ({SetOperationCall.params+=current} op=SetOperator params+=UnaryOrInfixExpression)*;
@@ -389,7 +393,7 @@ UnaryOrInfixExpression returns Expression
 	; 
 
 UnaryExpression :
-	 {UnaryOperation} name=("!" | "-" | "++" | "--" | "typeof" | "delete" | "~") params+=PostopExpression;
+	 {UnaryOperation} name=("!" | "-" | "++" | "--" | "~") params+=PostopExpression;
 
 PostopExpression returns Expression:
 	InfixExpression ({OperationCall.postTarget=current} name = ("--" | "++"))?
@@ -398,81 +402,151 @@ PostopExpression returns Expression:
 	
 InfixExpression returns Expression:
 	CallExpression ( 
-	  	({OperationCall.target=current} "." name=ID  "(" (params+=Parameter ("," params+=Parameter)*)? ")")
+	  	({OperationCall.target=current} "." name=ID  "(" parameters = ParameterList ")")
 	  |	({AtCall.target=current} '[' index=Expression ']'
-	  		("(" (params+=Parameter ("," params+=Parameter)*)? ")")?) 	  
+	  		("(" parameters = ParameterList ")")?) 	  
 	  | ({FeatureCall.target=current} "." type=ID)
 	)*;
 	
 CallExpression returns Expression: 
 	PrimaryExpression ( 
-		({OperationCall.target=current}"(" (params+=Parameter ("," params+=Parameter)*)? ")"))*
+		({OperationCall.target=current}"(" parameters = ParameterList ")"))*
 		;
-		
 PrimaryExpression returns Expression
 	: Literal 
-//	| FeatureCall 
+	| FeatureCall 
 	| ConstructorCallExpression
 	| VariableValue
 	| PropertyValue
 	| KeywordVariables
 	| ParanthesizedExpression
+	| IfExpression
+	| BlockExpression
+	| SwitchExpression
+	| ThrowExpression
+	| TryCatchExpression
+	| WildcardExpression
+	| WithExpression
 	;
+	
+WithExpression returns Expression: WithClauseExpression | WithContextExpression ;
+WithClauseExpression returns Expression : {WithClauseExpression} 
+	withclause=WithClause expr = BlockExpression 
+	;
+WithContextExpression returns Expresion : {WithContextExpression } 
+	"with" "context" context = Expression expr = BlockExpression
+	;
+		
+WildcardExpression returns Expression: {WildcardExpression} '_' ;
+
+ThrowExpression returns Expression: {ThrowExpression} "throw"  expr=Expression ';' ;
+TryCatchExpression : "try" tryBlock=Expression (catch+=CatchBlock)*
+	(finally=FinallyBlock)? "endtry" 
+	;
+		
+CatchBlock		: "catch" type = TypeRef var=ID ':' expr=Expression ;
+FinallyBlock	: "finally" expr = Expression ;
+SwitchExpression: "switch" switchExpr=Expression? (case+=Case)+  "endswitch" ;		
+Case			: "case" condition=Expression ":" expr=Expression;
+
+BlockExpression returns Expression: {BlockExpression} '{' (expr += Expression ';')* '}' ;
+
+IfExpression returns Expression
+	: {IfExpression} 'if'  cond=Expression "then" value=Expression 
+	(tail += ElseIfExpression)*
+	(tail += ElseExpression)?
+	"endif"
+	;
+
+// for typing	
+IfExpressionTail : ElseIfExpression | ElseExpression ;	
+ElseIfExpression returns Expression: {ElseIfExpression} "elseif" condition=Expression "then" value=Expression ;
+ElseExpression returns Expression: {ElseExpression} "else" value=Expression ;
 
 PropertyValue returns  Expression: {PropertyValue} name = PID;
 VariableValue returns  Expression: {VariableValue} name = ID ;
-KeywordVariables returns  Expression: {KeywordVariable} name = (GroupKeyword | LayoutKeyword | "properties") ;
+KeywordVariables returns  Expression: {KeywordVariable} 
+	name = (InputKeyword | OutputKeyword | "properties" | "unit") ;
 
-//FeatureCall:
-//	OperationCall
-//	;
-//	
-//OperationCall 
-//	: name=(ID|PID) "(" (params+=Parameter ("," params+=Parameter)*)? ")" 
-//	;
-
-ConstructorCallExpression returns Expression
-	: {CreatorCall} name='new' target=QualifiedName '(' (params+=Parameter ("," params+=Parameter)*)? ")" 
+FeatureCall:
+	OperationCall
 	;
 	
+OperationCall 
+	: name=(ID|PID) '(' (parameters = ParameterList)? ')' 
+	;
+
+ConstructorCallExpression returns Expression
+	: {CreatorCall} name="new" target=TypeRef ('(' (parameters=ParameterList)? ')')?
+		("as" alias=ID)? (contextBlock = ContextBlock)?
+	;
+
+Context : "context" selector = ContextSelector block = ContextBlock ;
+ContextSelector : TypeRefSelector | ExpressionSelector | UnitSelector ;
+TypeRefSelector returns ContextSelector: type = TypeRef ;
+ExpressionSelector : expr = Expression ;
+UnitSelector : 
+	"unit" interface=QualifiedName 
+	('/' (name=UnitName | namePattern = REGEX) ('/' versionRange=VersionRange)? )? 
+	;
+
+ContextBlock : '{'  ((statements +=Method) 
+					| (statements+=Builder)
+					| (statements+=ExpressionStatement)
+					| (statements+=PropertiesStatement)
+					)* '}' ;
+					
+ExpressionStatement returns Statement : {ExpressionStatement} val=Expression ';' ;
+PropertiesStatement returns Statment : {PropertiesStatement} "properties" properties = NamedPropertyBody ;
+
 Literal returns Expression
 	: ValueLiteral
 	| RegexpLiteral
-	| LiteralArray
-	| LiteralObject
+	| LiteralList
+	| LiteralMap
 	| LiteralFunction
 	;
 	
-LiteralArray returns  Expression: {LiteralArray} '[' (element += Expression (',' element += Expression)* )? ']' ;
-LiteralObject returns  Expression: {LiteralObject} '{' (features += Feature (',' features += Feature)* )? '}' ;
-LiteralFunction returns Expression
-	: {LiteralFunction} ("function"|"fun") '(' (parameters += ID (',' parameters += ID)*) ')' 
-		'{' statements = Statements '}'
+LiteralList returns  Expression
+	: {LiteralList} '[' (element += Expression (',' element += Expression)* )? ']' 
+		('<' type=TypeRef '>')?
 	;
+LiteralMap returns  Expression
+	: {LiteralMap} '[' (features += Feature (',' features += Feature)* )? ']'
+		('<' keyType=TypeRef ',' valType=TypeRef '>')? 
+	;
+LiteralFunction returns Expression: {LiteralFunction} '{' closure = ClosureExpression '}' ;
 
+ClosureExpression : 
+	(parameters += ParameterDeclaration (',' parameters += ParameterDeclaration)*)? '|' expr=Expression 
+	;
+	
 Feature returns Feature: {Feature} name = (ID|PID|STRING) ':' value= Expression ;
 
 ValueLiteral returns Expression
 	: BooleanLiteral 
 	| IntegerLiteral 
 	| NullLiteral 
-	| UndefinedLiteral
 	| StringLiteral
 	| RealLiteral
 	| QueryLiteral
+	| ThisLiteral
+	| SuperLiteral
 	;
 	
 BooleanLiteral returns  Expression: {BooleanLiteral} val=("true" | "false");
 // TODO: Hex is a string until an int converter is written for it
-IntegerLiteral returns  Expression: {IntegerLiteral} (ival = INT)|(sval=HEX);
+IntegerLiteral returns  Expression: {IntegerLiteral} val= IntValue;
 NullLiteral	returns  Expression: {NullLiteral} val="null";
-// Not a keyword in JS, but prevention of reassignment is wanted.
-UndefinedLiteral returns  Expression: {UndefinedLiteral} val="undefined";
+ThisLiteral	returns  Expression: {ThisLiteral} val="this";
+SuperLiteral returns  Expression: {SuperLiteral} val="super";
 StringLiteral returns  Expression: {StringLiteral} val = STRING;
 RealLiteral	returns  Expression: {RealLiteral} val = RealValue;
 RealValue returns ecore::EDouble: REAL ;
+// handles dec, oct, and hex values with radix
+IntValue returns types::RadixInteger: INT | HEX ;
 RegexpLiteral returns Expression: {RegexpLiteral} val = REGEX;
-QueryLiteral returns Expression: {QueryLiteral} "query" '{' val = AdvicePath '}' ;
+QueryLiteral returns Expression: {QueryLiteral} val=Query ;
 	
 ParanthesizedExpression returns Expression
 	:  "(" Expression ")"
@@ -499,10 +573,6 @@ VersionRange returns VersionRange
 QualifiedName hidden(): ID (INT|HEX|ID)* ('.' ID (INT|HEX|ID)*)* HIDDENBUG;
 HIDDENBUG hidden(WS, SL_COMMENT, ML_COMMENT): ('~~~~~')? ; // TODO: REPLACE HACK WHEN HIDDEN WORKS.
 
-
-// Declare Property ID to include '.'
-PROP hidden(): '$' '{' QualifiedName '}' ;
-
 PropertyName : PID ;
 EscapedQualifiedName:  STRING | QualifiedName;
 InterfaceName: QualifiedName ;
@@ -525,22 +595,18 @@ enum ExecutionMode 	: parallel | sequential ;
 // TODO: uncertain if the set of allowed chars is definitive.
 //
 Separator : '.' | '-' | '!' | '@' | '$' | '%' | '&' |'+' | '=' | '*' | '<' | '>' | ':' | '?';
-AlfanumSym : (ID | INT |HEX|REAL) (Separator|ID|INT|HEX|REAL)* ;
+AlfanumSym : (ID | INT | HEX | EXT_INT) (Separator|ID|INT|HEX |EXT_INT)* ;
 
+// --TERMINALS
 
-// Redeclare the default ID without the ^ keyword escape mechanism, and including
-// the JS $ char which is allowed in the first position.
-//
+// Redeclare the default ID without the ^ keyword escape mechanism
 terminal ID : (('a'..'z')|('A'..'Z')|'_') (('a'..'z')|('A'..'Z')|('0'..'9')|'_')* ;
 
 // Property Names start with $ and are qualified. Must be handled by lexer as
 // a.b.c is otherwise ambigous in expressions.
-
 terminal PID : '$' ID ('.' ID)* ;
 
-// JS Regexp - but cheating by using @ instead of / because of inability to push back terminators
-// and / clashes with / in math.
-//
+// JS Regexp
 terminal REGEX returns types::RegularExpression
 	: "~/" ( '\\' ('/'|'f'|'n'|'r'|'t'|'v'|'\\'|'.'|'*'|'+'|'?'
 					| 'w'|'W'|'s'|'S'|'d'|'D'|'b'
@@ -560,24 +626,22 @@ terminal STRING :
 '"' ('\\'('b'|'t'|'n'|'f'|'r'|'u'|'x'|'0'|'"'|"'"|'\\') | !('\\'|'"'|'\r'|'\n') )* '"' |
 "'" ('\\'('b'|'t'|'n'|'f'|'r'|'u'|'x'|'0'|'"'|"'"|'\\') | !('\\'|"'"|'\r'|'\n') )* "'";
 
-terminal ML_COMMENT : '/*' -> '*/' ;
+terminal DOCUMENTATION : '/**' -> '*/' ;
+terminal ML_COMMENT : '/*' (!'*') -> '*/' ;
 terminal SL_COMMENT : '//' !('\n'|'\r')* ('\r'? '\n')? ;
 terminal WS : (' '|'\t'|'\r'|'\n')+ ;
 
-// TODO: Should return EHex, but this requires a separate model, as EHex can not be infered.
-//
-terminal HEX returns types::HexInteger: '0' ('x'|'X')(('0'..'9')|('a'..'f')|('A'..'F'))+ ;
+// Uses special type to retain hex formatting.
+terminal HEX : '0' ('x'|'X')(('0'..'9')|('a'..'f')|('A'..'F'))+ ;
 
-// A JS integer is one of
-// 0
-// 0(0..7)*
-// 0(x|X)(0-91-fA-F)*
-// Validation can handle the octal case, and illegal 08, 09 00 sequencese
-// TODO: converter must handle octal case if we want to support it.
-//
-terminal INT returns ecore::EInt: ('0'..'9')+;
+//terminal REAL : ( ((('0'..'9') '.' ('0'..'9')) |('.' ('0'..'9'))) (('e'|'E')('-'|'+')INT)?) | (INT ('e'|'E')('-'|'+')INT) ;
 
-terminal REAL : ((INT '.' INT)|(INT '.')|('.' INT) | INT) (('e'|'E')('-'|'+')INT)? ;
+//terminal REAL : (INT? '.' INT) (('e'|'E')('-'|'+')INT)? ;
+terminal INT : ('0'..'9')+;
+REAL hidden(): INT ? '.' (EXT_INT | INT) HIDDENBUG;
+terminal EXT_INT: INT ('e'|'E')('-'|'+') INT;
+ 
+//terminal REAL : ((INT '.' INT)|(INT '.')|('.' INT) | INT) (('e'|'E')('-'|'+')INT)? ;
 
 terminal ANY_OTHER : . ;
 

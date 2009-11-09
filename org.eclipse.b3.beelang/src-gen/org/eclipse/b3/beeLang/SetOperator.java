@@ -23,154 +23,29 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum SetOperator implements Enumerator
 {
   /**
-   * The '<em><b>Select</b></em>' literal object.
+   * The '<em><b>SEQUENCE</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #SELECT_VALUE
+   * @see #SEQUENCE_VALUE
    * @generated
    * @ordered
    */
-  SELECT(0, "select", "select"),
+  SEQUENCE(0, "SEQUENCE", "..");
 
   /**
-   * The '<em><b>Collect</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #COLLECT_VALUE
-   * @generated
-   * @ordered
-   */
-  COLLECT(1, "collect", "collect"),
-
-  /**
-   * The '<em><b>Reject</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #REJECT_VALUE
-   * @generated
-   * @ordered
-   */
-  REJECT(2, "reject", "reject"),
-
-  /**
-   * The '<em><b>Exists</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #EXISTS_VALUE
-   * @generated
-   * @ordered
-   */
-  EXISTS(3, "exists", "exists"),
-
-  /**
-   * The '<em><b>Notexists</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #NOTEXISTS_VALUE
-   * @generated
-   * @ordered
-   */
-  NOTEXISTS(4, "notexists", "notexists"),
-
-  /**
-   * The '<em><b>Foreach</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #FOREACH_VALUE
-   * @generated
-   * @ordered
-   */
-  FOREACH(5, "foreach", "foreach");
-
-  /**
-   * The '<em><b>Select</b></em>' literal value.
+   * The '<em><b>SEQUENCE</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>Select</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>SEQUENCE</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #SELECT
-   * @model name="select"
+   * @see #SEQUENCE
+   * @model literal=".."
    * @generated
    * @ordered
    */
-  public static final int SELECT_VALUE = 0;
-
-  /**
-   * The '<em><b>Collect</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of '<em><b>Collect</b></em>' literal object isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @see #COLLECT
-   * @model name="collect"
-   * @generated
-   * @ordered
-   */
-  public static final int COLLECT_VALUE = 1;
-
-  /**
-   * The '<em><b>Reject</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of '<em><b>Reject</b></em>' literal object isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @see #REJECT
-   * @model name="reject"
-   * @generated
-   * @ordered
-   */
-  public static final int REJECT_VALUE = 2;
-
-  /**
-   * The '<em><b>Exists</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of '<em><b>Exists</b></em>' literal object isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @see #EXISTS
-   * @model name="exists"
-   * @generated
-   * @ordered
-   */
-  public static final int EXISTS_VALUE = 3;
-
-  /**
-   * The '<em><b>Notexists</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of '<em><b>Notexists</b></em>' literal object isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @see #NOTEXISTS
-   * @model name="notexists"
-   * @generated
-   * @ordered
-   */
-  public static final int NOTEXISTS_VALUE = 4;
-
-  /**
-   * The '<em><b>Foreach</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of '<em><b>Foreach</b></em>' literal object isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @see #FOREACH
-   * @model name="foreach"
-   * @generated
-   * @ordered
-   */
-  public static final int FOREACH_VALUE = 5;
+  public static final int SEQUENCE_VALUE = 0;
 
   /**
    * An array of all the '<em><b>Set Operator</b></em>' enumerators.
@@ -181,12 +56,7 @@ public enum SetOperator implements Enumerator
   private static final SetOperator[] VALUES_ARRAY =
     new SetOperator[]
     {
-      SELECT,
-      COLLECT,
-      REJECT,
-      EXISTS,
-      NOTEXISTS,
-      FOREACH,
+      SEQUENCE,
     };
 
   /**
@@ -245,12 +115,7 @@ public enum SetOperator implements Enumerator
   {
     switch (value)
     {
-      case SELECT_VALUE: return SELECT;
-      case COLLECT_VALUE: return COLLECT;
-      case REJECT_VALUE: return REJECT;
-      case EXISTS_VALUE: return EXISTS;
-      case NOTEXISTS_VALUE: return NOTEXISTS;
-      case FOREACH_VALUE: return FOREACH;
+      case SEQUENCE_VALUE: return SEQUENCE;
     }
     return null;
   }

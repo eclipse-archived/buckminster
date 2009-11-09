@@ -5,6 +5,8 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
+import org.eclipse.b3.RadixInteger;
+
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.IntegerLiteral;
 
@@ -21,7 +23,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.IntegerLiteralImpl#getIval <em>Ival</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.IntegerLiteralImpl#getVal <em>Val</em>}</li>
  * </ul>
  * </p>
  *
@@ -30,24 +32,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class IntegerLiteralImpl extends ExpressionImpl implements IntegerLiteral
 {
   /**
-   * The default value of the '{@link #getIval() <em>Ival</em>}' attribute.
+   * The default value of the '{@link #getVal() <em>Val</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getIval()
+   * @see #getVal()
    * @generated
    * @ordered
    */
-  protected static final int IVAL_EDEFAULT = 0;
+  protected static final RadixInteger VAL_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getIval() <em>Ival</em>}' attribute.
+   * The cached value of the '{@link #getVal() <em>Val</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getIval()
+   * @see #getVal()
    * @generated
    * @ordered
    */
-  protected int ival = IVAL_EDEFAULT;
+  protected RadixInteger val = VAL_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -75,9 +77,9 @@ public class IntegerLiteralImpl extends ExpressionImpl implements IntegerLiteral
    * <!-- end-user-doc -->
    * @generated
    */
-  public int getIval()
+  public RadixInteger getVal()
   {
-    return ival;
+    return val;
   }
 
   /**
@@ -85,12 +87,12 @@ public class IntegerLiteralImpl extends ExpressionImpl implements IntegerLiteral
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setIval(int newIval)
+  public void setVal(RadixInteger newVal)
   {
-    int oldIval = ival;
-    ival = newIval;
+    RadixInteger oldVal = val;
+    val = newVal;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.INTEGER_LITERAL__IVAL, oldIval, ival));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.INTEGER_LITERAL__VAL, oldVal, val));
   }
 
   /**
@@ -103,8 +105,8 @@ public class IntegerLiteralImpl extends ExpressionImpl implements IntegerLiteral
   {
     switch (featureID)
     {
-      case BeeLangPackage.INTEGER_LITERAL__IVAL:
-        return getIval();
+      case BeeLangPackage.INTEGER_LITERAL__VAL:
+        return getVal();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,8 +121,8 @@ public class IntegerLiteralImpl extends ExpressionImpl implements IntegerLiteral
   {
     switch (featureID)
     {
-      case BeeLangPackage.INTEGER_LITERAL__IVAL:
-        setIval((Integer)newValue);
+      case BeeLangPackage.INTEGER_LITERAL__VAL:
+        setVal((RadixInteger)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -136,8 +138,8 @@ public class IntegerLiteralImpl extends ExpressionImpl implements IntegerLiteral
   {
     switch (featureID)
     {
-      case BeeLangPackage.INTEGER_LITERAL__IVAL:
-        setIval(IVAL_EDEFAULT);
+      case BeeLangPackage.INTEGER_LITERAL__VAL:
+        setVal(VAL_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -153,8 +155,8 @@ public class IntegerLiteralImpl extends ExpressionImpl implements IntegerLiteral
   {
     switch (featureID)
     {
-      case BeeLangPackage.INTEGER_LITERAL__IVAL:
-        return ival != IVAL_EDEFAULT;
+      case BeeLangPackage.INTEGER_LITERAL__VAL:
+        return VAL_EDEFAULT == null ? val != null : !VAL_EDEFAULT.equals(val);
     }
     return super.eIsSet(featureID);
   }
@@ -170,8 +172,8 @@ public class IntegerLiteralImpl extends ExpressionImpl implements IntegerLiteral
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (ival: ");
-    result.append(ival);
+    result.append(" (val: ");
+    result.append(val);
     result.append(')');
     return result.toString();
   }

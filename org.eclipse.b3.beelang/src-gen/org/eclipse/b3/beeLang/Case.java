@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.Case#getCondition <em>Condition</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.Case#getStatements <em>Statements</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.Case#getExpr <em>Expr</em>}</li>
  * </ul>
  * </p>
  *
@@ -53,29 +53,29 @@ public interface Case extends EObject
   void setCondition(Expression value);
 
   /**
-   * Returns the value of the '<em><b>Statements</b></em>' containment reference.
+   * Returns the value of the '<em><b>Expr</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Statements</em>' containment reference isn't clear,
+   * If the meaning of the '<em>Expr</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Statements</em>' containment reference.
-   * @see #setStatements(Statements)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCase_Statements()
+   * @return the value of the '<em>Expr</em>' containment reference.
+   * @see #setExpr(Expression)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getCase_Expr()
    * @model containment="true"
    * @generated
    */
-  Statements getStatements();
+  Expression getExpr();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.Case#getStatements <em>Statements</em>}' containment reference.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.Case#getExpr <em>Expr</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Statements</em>' containment reference.
-   * @see #getStatements()
+   * @param value the new value of the '<em>Expr</em>' containment reference.
+   * @see #getExpr()
    * @generated
    */
-  void setStatements(Statements value);
+  void setExpr(Expression value);
 
 } // Case

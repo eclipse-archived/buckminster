@@ -10,7 +10,9 @@ import java.util.Collection;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.BeeModel;
 import org.eclipse.b3.beeLang.BuildUnit;
+import org.eclipse.b3.beeLang.Concern;
 import org.eclipse.b3.beeLang.Import;
+import org.eclipse.b3.beeLang.Statement;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -34,6 +36,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BeeModelImpl#getImports <em>Imports</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BeeModelImpl#getFunctions <em>Functions</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BeeModelImpl#getConcern <em>Concern</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BeeModelImpl#getBody <em>Body</em>}</li>
  * </ul>
  * </p>
@@ -51,6 +55,26 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
    * @ordered
    */
   protected EList<Import> imports;
+
+  /**
+   * The cached value of the '{@link #getFunctions() <em>Functions</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getFunctions()
+   * @generated
+   * @ordered
+   */
+  protected EList<Statement> functions;
+
+  /**
+   * The cached value of the '{@link #getConcern() <em>Concern</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getConcern()
+   * @generated
+   * @ordered
+   */
+  protected EList<Concern> concern;
 
   /**
    * The cached value of the '{@link #getBody() <em>Body</em>}' containment reference.
@@ -95,6 +119,34 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
       imports = new EObjectContainmentEList<Import>(Import.class, this, BeeLangPackage.BEE_MODEL__IMPORTS);
     }
     return imports;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<Statement> getFunctions()
+  {
+    if (functions == null)
+    {
+      functions = new EObjectContainmentEList<Statement>(Statement.class, this, BeeLangPackage.BEE_MODEL__FUNCTIONS);
+    }
+    return functions;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<Concern> getConcern()
+  {
+    if (concern == null)
+    {
+      concern = new EObjectContainmentEList<Concern>(Concern.class, this, BeeLangPackage.BEE_MODEL__CONCERN);
+    }
+    return concern;
   }
 
   /**
@@ -157,6 +209,10 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
     {
       case BeeLangPackage.BEE_MODEL__IMPORTS:
         return ((InternalEList<?>)getImports()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.BEE_MODEL__FUNCTIONS:
+        return ((InternalEList<?>)getFunctions()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.BEE_MODEL__CONCERN:
+        return ((InternalEList<?>)getConcern()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.BEE_MODEL__BODY:
         return basicSetBody(null, msgs);
     }
@@ -175,6 +231,10 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
     {
       case BeeLangPackage.BEE_MODEL__IMPORTS:
         return getImports();
+      case BeeLangPackage.BEE_MODEL__FUNCTIONS:
+        return getFunctions();
+      case BeeLangPackage.BEE_MODEL__CONCERN:
+        return getConcern();
       case BeeLangPackage.BEE_MODEL__BODY:
         return getBody();
     }
@@ -196,6 +256,14 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
         getImports().clear();
         getImports().addAll((Collection<? extends Import>)newValue);
         return;
+      case BeeLangPackage.BEE_MODEL__FUNCTIONS:
+        getFunctions().clear();
+        getFunctions().addAll((Collection<? extends Statement>)newValue);
+        return;
+      case BeeLangPackage.BEE_MODEL__CONCERN:
+        getConcern().clear();
+        getConcern().addAll((Collection<? extends Concern>)newValue);
+        return;
       case BeeLangPackage.BEE_MODEL__BODY:
         setBody((BuildUnit)newValue);
         return;
@@ -216,6 +284,12 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
       case BeeLangPackage.BEE_MODEL__IMPORTS:
         getImports().clear();
         return;
+      case BeeLangPackage.BEE_MODEL__FUNCTIONS:
+        getFunctions().clear();
+        return;
+      case BeeLangPackage.BEE_MODEL__CONCERN:
+        getConcern().clear();
+        return;
       case BeeLangPackage.BEE_MODEL__BODY:
         setBody((BuildUnit)null);
         return;
@@ -235,6 +309,10 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
     {
       case BeeLangPackage.BEE_MODEL__IMPORTS:
         return imports != null && !imports.isEmpty();
+      case BeeLangPackage.BEE_MODEL__FUNCTIONS:
+        return functions != null && !functions.isEmpty();
+      case BeeLangPackage.BEE_MODEL__CONCERN:
+        return concern != null && !concern.isEmpty();
       case BeeLangPackage.BEE_MODEL__BODY:
         return body != null;
     }

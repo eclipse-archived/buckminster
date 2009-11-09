@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.SetPropertyOperationImpl#isImmutable <em>Immutable</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.SetPropertyOperationImpl#isFinal <em>Final</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.SetPropertyOperationImpl#getKey <em>Key</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.SetPropertyOperationImpl#getOp <em>Op</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.SetPropertyOperationImpl#getValue <em>Value</em>}</li>
@@ -37,24 +37,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class SetPropertyOperationImpl extends PropertyOperationImpl implements SetPropertyOperation
 {
   /**
-   * The default value of the '{@link #isImmutable() <em>Immutable</em>}' attribute.
+   * The default value of the '{@link #isFinal() <em>Final</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isImmutable()
+   * @see #isFinal()
    * @generated
    * @ordered
    */
-  protected static final boolean IMMUTABLE_EDEFAULT = false;
+  protected static final boolean FINAL_EDEFAULT = false;
 
   /**
-   * The cached value of the '{@link #isImmutable() <em>Immutable</em>}' attribute.
+   * The cached value of the '{@link #isFinal() <em>Final</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #isImmutable()
+   * @see #isFinal()
    * @generated
    * @ordered
    */
-  protected boolean immutable = IMMUTABLE_EDEFAULT;
+  protected boolean final_ = FINAL_EDEFAULT;
 
   /**
    * The default value of the '{@link #getKey() <em>Key</em>}' attribute.
@@ -132,9 +132,9 @@ public class SetPropertyOperationImpl extends PropertyOperationImpl implements S
    * <!-- end-user-doc -->
    * @generated
    */
-  public boolean isImmutable()
+  public boolean isFinal()
   {
-    return immutable;
+    return final_;
   }
 
   /**
@@ -142,12 +142,12 @@ public class SetPropertyOperationImpl extends PropertyOperationImpl implements S
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setImmutable(boolean newImmutable)
+  public void setFinal(boolean newFinal)
   {
-    boolean oldImmutable = immutable;
-    immutable = newImmutable;
+    boolean oldFinal = final_;
+    final_ = newFinal;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.SET_PROPERTY_OPERATION__IMMUTABLE, oldImmutable, immutable));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.SET_PROPERTY_OPERATION__FINAL, oldFinal, final_));
   }
 
   /**
@@ -270,8 +270,8 @@ public class SetPropertyOperationImpl extends PropertyOperationImpl implements S
   {
     switch (featureID)
     {
-      case BeeLangPackage.SET_PROPERTY_OPERATION__IMMUTABLE:
-        return isImmutable();
+      case BeeLangPackage.SET_PROPERTY_OPERATION__FINAL:
+        return isFinal();
       case BeeLangPackage.SET_PROPERTY_OPERATION__KEY:
         return getKey();
       case BeeLangPackage.SET_PROPERTY_OPERATION__OP:
@@ -292,8 +292,8 @@ public class SetPropertyOperationImpl extends PropertyOperationImpl implements S
   {
     switch (featureID)
     {
-      case BeeLangPackage.SET_PROPERTY_OPERATION__IMMUTABLE:
-        setImmutable((Boolean)newValue);
+      case BeeLangPackage.SET_PROPERTY_OPERATION__FINAL:
+        setFinal((Boolean)newValue);
         return;
       case BeeLangPackage.SET_PROPERTY_OPERATION__KEY:
         setKey((String)newValue);
@@ -318,8 +318,8 @@ public class SetPropertyOperationImpl extends PropertyOperationImpl implements S
   {
     switch (featureID)
     {
-      case BeeLangPackage.SET_PROPERTY_OPERATION__IMMUTABLE:
-        setImmutable(IMMUTABLE_EDEFAULT);
+      case BeeLangPackage.SET_PROPERTY_OPERATION__FINAL:
+        setFinal(FINAL_EDEFAULT);
         return;
       case BeeLangPackage.SET_PROPERTY_OPERATION__KEY:
         setKey(KEY_EDEFAULT);
@@ -344,8 +344,8 @@ public class SetPropertyOperationImpl extends PropertyOperationImpl implements S
   {
     switch (featureID)
     {
-      case BeeLangPackage.SET_PROPERTY_OPERATION__IMMUTABLE:
-        return immutable != IMMUTABLE_EDEFAULT;
+      case BeeLangPackage.SET_PROPERTY_OPERATION__FINAL:
+        return final_ != FINAL_EDEFAULT;
       case BeeLangPackage.SET_PROPERTY_OPERATION__KEY:
         return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
       case BeeLangPackage.SET_PROPERTY_OPERATION__OP:
@@ -367,8 +367,8 @@ public class SetPropertyOperationImpl extends PropertyOperationImpl implements S
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (immutable: ");
-    result.append(immutable);
+    result.append(" (final: ");
+    result.append(final_);
     result.append(", key: ");
     result.append(key);
     result.append(", op: ");

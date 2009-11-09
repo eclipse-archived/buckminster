@@ -5,7 +5,6 @@
  */
 package org.eclipse.b3.beeLang;
 
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -15,8 +14,7 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.LiteralFunction#getParameters <em>Parameters</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.LiteralFunction#getStatements <em>Statements</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.LiteralFunction#getClosure <em>Closure</em>}</li>
  * </ul>
  * </p>
  *
@@ -27,45 +25,29 @@ import org.eclipse.emf.common.util.EList;
 public interface LiteralFunction extends Expression
 {
   /**
-   * Returns the value of the '<em><b>Parameters</b></em>' attribute list.
-   * The list contents are of type {@link java.lang.String}.
+   * Returns the value of the '<em><b>Closure</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Parameters</em>' attribute list isn't clear,
+   * If the meaning of the '<em>Closure</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Parameters</em>' attribute list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLiteralFunction_Parameters()
-   * @model unique="false"
-   * @generated
-   */
-  EList<String> getParameters();
-
-  /**
-   * Returns the value of the '<em><b>Statements</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Statements</em>' containment reference isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Statements</em>' containment reference.
-   * @see #setStatements(Statements)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLiteralFunction_Statements()
+   * @return the value of the '<em>Closure</em>' containment reference.
+   * @see #setClosure(ClosureExpression)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getLiteralFunction_Closure()
    * @model containment="true"
    * @generated
    */
-  Statements getStatements();
+  ClosureExpression getClosure();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.LiteralFunction#getStatements <em>Statements</em>}' containment reference.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.LiteralFunction#getClosure <em>Closure</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Statements</em>' containment reference.
-   * @see #getStatements()
+   * @param value the new value of the '<em>Closure</em>' containment reference.
+   * @see #getClosure()
    * @generated
    */
-  void setStatements(Statements value);
+  void setClosure(ClosureExpression value);
 
 } // LiteralFunction

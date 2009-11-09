@@ -30,7 +30,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.ExpressionListImpl#getExpr <em>Expr</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ExpressionListImpl#getExpressions <em>Expressions</em>}</li>
  * </ul>
  * </p>
  *
@@ -39,14 +39,14 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class ExpressionListImpl extends MinimalEObjectImpl.Container implements ExpressionList
 {
   /**
-   * The cached value of the '{@link #getExpr() <em>Expr</em>}' containment reference list.
+   * The cached value of the '{@link #getExpressions() <em>Expressions</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getExpr()
+   * @see #getExpressions()
    * @generated
    * @ordered
    */
-  protected EList<Expression> expr;
+  protected EList<Expression> expressions;
 
   /**
    * <!-- begin-user-doc -->
@@ -74,13 +74,13 @@ public class ExpressionListImpl extends MinimalEObjectImpl.Container implements 
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Expression> getExpr()
+  public EList<Expression> getExpressions()
   {
-    if (expr == null)
+    if (expressions == null)
     {
-      expr = new EObjectContainmentEList<Expression>(Expression.class, this, BeeLangPackage.EXPRESSION_LIST__EXPR);
+      expressions = new EObjectContainmentEList<Expression>(Expression.class, this, BeeLangPackage.EXPRESSION_LIST__EXPRESSIONS);
     }
-    return expr;
+    return expressions;
   }
 
   /**
@@ -93,8 +93,8 @@ public class ExpressionListImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case BeeLangPackage.EXPRESSION_LIST__EXPR:
-        return ((InternalEList<?>)getExpr()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.EXPRESSION_LIST__EXPRESSIONS:
+        return ((InternalEList<?>)getExpressions()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -109,8 +109,8 @@ public class ExpressionListImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case BeeLangPackage.EXPRESSION_LIST__EXPR:
-        return getExpr();
+      case BeeLangPackage.EXPRESSION_LIST__EXPRESSIONS:
+        return getExpressions();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -126,9 +126,9 @@ public class ExpressionListImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case BeeLangPackage.EXPRESSION_LIST__EXPR:
-        getExpr().clear();
-        getExpr().addAll((Collection<? extends Expression>)newValue);
+      case BeeLangPackage.EXPRESSION_LIST__EXPRESSIONS:
+        getExpressions().clear();
+        getExpressions().addAll((Collection<? extends Expression>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -144,8 +144,8 @@ public class ExpressionListImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case BeeLangPackage.EXPRESSION_LIST__EXPR:
-        getExpr().clear();
+      case BeeLangPackage.EXPRESSION_LIST__EXPRESSIONS:
+        getExpressions().clear();
         return;
     }
     super.eUnset(featureID);
@@ -161,8 +161,8 @@ public class ExpressionListImpl extends MinimalEObjectImpl.Container implements 
   {
     switch (featureID)
     {
-      case BeeLangPackage.EXPRESSION_LIST__EXPR:
-        return expr != null && !expr.isEmpty();
+      case BeeLangPackage.EXPRESSION_LIST__EXPRESSIONS:
+        return expressions != null && !expressions.isEmpty();
     }
     return super.eIsSet(featureID);
   }

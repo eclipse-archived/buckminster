@@ -89,6 +89,24 @@ public interface BeeLangFactory extends EFactory
   RequiredCapability createRequiredCapability();
 
   /**
+   * Returns a new object of class '<em>Filtered Capability</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Filtered Capability</em>'.
+   * @generated
+   */
+  FilteredCapability createFilteredCapability();
+
+  /**
+   * Returns a new object of class '<em>Capability</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Capability</em>'.
+   * @generated
+   */
+  Capability createCapability();
+
+  /**
    * Returns a new object of class '<em>Named Properties</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -98,13 +116,13 @@ public interface BeeLangFactory extends EFactory
   NamedProperties createNamedProperties();
 
   /**
-   * Returns a new object of class '<em>Compound Property Operation</em>'.
+   * Returns a new object of class '<em>Property Body</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Compound Property Operation</em>'.
+   * @return a new object of class '<em>Property Body</em>'.
    * @generated
    */
-  CompoundPropertyOperation createCompoundPropertyOperation();
+  PropertyBody createPropertyBody();
 
   /**
    * Returns a new object of class '<em>Property Operation</em>'.
@@ -206,13 +224,13 @@ public interface BeeLangFactory extends EFactory
   Prerequisite createPrerequisite();
 
   /**
-   * Returns a new object of class '<em>Closure</em>'.
+   * Returns a new object of class '<em>With Clause</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Closure</em>'.
+   * @return a new object of class '<em>With Clause</em>'.
    * @generated
    */
-  Closure createClosure();
+  WithClause createWithClause();
 
   /**
    * Returns a new object of class '<em>Prerequisite Entry</em>'.
@@ -224,13 +242,13 @@ public interface BeeLangFactory extends EFactory
   PrerequisiteEntry createPrerequisiteEntry();
 
   /**
-   * Returns a new object of class '<em>Part In Self</em>'.
+   * Returns a new object of class '<em>Direct Part Referemce</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Part In Self</em>'.
+   * @return a new object of class '<em>Direct Part Referemce</em>'.
    * @generated
    */
-  PartInSelf createPartInSelf();
+  DirectPartReferemce createDirectPartReferemce();
 
   /**
    * Returns a new object of class '<em>Capability Referenced Part</em>'.
@@ -251,13 +269,13 @@ public interface BeeLangFactory extends EFactory
   CompoundReferences createCompoundReferences();
 
   /**
-   * Returns a new object of class '<em>Build Method</em>'.
+   * Returns a new object of class '<em>Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Build Method</em>'.
+   * @return a new object of class '<em>Statement</em>'.
    * @generated
    */
-  BuildMethod createBuildMethod();
+  Statement createStatement();
 
   /**
    * Returns a new object of class '<em>Parameter</em>'.
@@ -269,22 +287,49 @@ public interface BeeLangFactory extends EFactory
   Parameter createParameter();
 
   /**
-   * Returns a new object of class '<em>Layout</em>'.
+   * Returns a new object of class '<em>Parameter List</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Layout</em>'.
+   * @return a new object of class '<em>Parameter List</em>'.
    * @generated
    */
-  Layout createLayout();
+  ParameterList createParameterList();
 
   /**
-   * Returns a new object of class '<em>Group</em>'.
+   * Returns a new object of class '<em>Parameter Declaration List</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Group</em>'.
+   * @return a new object of class '<em>Parameter Declaration List</em>'.
    * @generated
    */
-  Group createGroup();
+  ParameterDeclarationList createParameterDeclarationList();
+
+  /**
+   * Returns a new object of class '<em>Parameter Declaration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Parameter Declaration</em>'.
+   * @generated
+   */
+  ParameterDeclaration createParameterDeclaration();
+
+  /**
+   * Returns a new object of class '<em>Builder Output</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Builder Output</em>'.
+   * @generated
+   */
+  BuilderOutput createBuilderOutput();
+
+  /**
+   * Returns a new object of class '<em>Builder Input</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Builder Input</em>'.
+   * @generated
+   */
+  BuilderInput createBuilderInput();
 
   /**
    * Returns a new object of class '<em>Repository Configuration</em>'.
@@ -296,13 +341,22 @@ public interface BeeLangFactory extends EFactory
   RepositoryConfiguration createRepositoryConfiguration();
 
   /**
-   * Returns a new object of class '<em>Named Advice</em>'.
+   * Returns a new object of class '<em>Concern</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Named Advice</em>'.
+   * @return a new object of class '<em>Concern</em>'.
    * @generated
    */
-  NamedAdvice createNamedAdvice();
+  Concern createConcern();
+
+  /**
+   * Returns a new object of class '<em>Concern Block</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Concern Block</em>'.
+   * @generated
+   */
+  ConcernBlock createConcernBlock();
 
   /**
    * Returns a new object of class '<em>Advice</em>'.
@@ -314,13 +368,13 @@ public interface BeeLangFactory extends EFactory
   Advice createAdvice();
 
   /**
-   * Returns a new object of class '<em>Compound Advice</em>'.
+   * Returns a new object of class '<em>Compound Concern</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Compound Advice</em>'.
+   * @return a new object of class '<em>Compound Concern</em>'.
    * @generated
    */
-  CompoundAdvice createCompoundAdvice();
+  CompoundConcern createCompoundConcern();
 
   /**
    * Returns a new object of class '<em>Advice Statement</em>'.
@@ -332,13 +386,22 @@ public interface BeeLangFactory extends EFactory
   AdviceStatement createAdviceStatement();
 
   /**
-   * Returns a new object of class '<em>Advice Path</em>'.
+   * Returns a new object of class '<em>Query</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Advice Path</em>'.
+   * @return a new object of class '<em>Query</em>'.
    * @generated
    */
-  AdvicePath createAdvicePath();
+  Query createQuery();
+
+  /**
+   * Returns a new object of class '<em>Query Path</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Query Path</em>'.
+   * @generated
+   */
+  QueryPath createQueryPath();
 
   /**
    * Returns a new object of class '<em>Selector</em>'.
@@ -440,148 +503,121 @@ public interface BeeLangFactory extends EFactory
   AssertionExpression createAssertionExpression();
 
   /**
-   * Returns a new object of class '<em>Statement</em>'.
+   * Returns a new object of class '<em>Expression List</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Statement</em>'.
+   * @return a new object of class '<em>Expression List</em>'.
    * @generated
    */
-  Statement createStatement();
+  ExpressionList createExpressionList();
 
   /**
-   * Returns a new object of class '<em>Break Statement</em>'.
+   * Returns a new object of class '<em>Type Param Declaration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Break Statement</em>'.
+   * @return a new object of class '<em>Type Param Declaration</em>'.
    * @generated
    */
-  BreakStatement createBreakStatement();
+  TypeParamDeclaration createTypeParamDeclaration();
 
   /**
-   * Returns a new object of class '<em>Continue Statement</em>'.
+   * Returns a new object of class '<em>Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Continue Statement</em>'.
+   * @return a new object of class '<em>Expression</em>'.
    * @generated
    */
-  ContinueStatement createContinueStatement();
+  Expression createExpression();
 
   /**
-   * Returns a new object of class '<em>Compound Statement</em>'.
+   * Returns a new object of class '<em>Type Ref</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Compound Statement</em>'.
+   * @return a new object of class '<em>Type Ref</em>'.
    * @generated
    */
-  CompoundStatement createCompoundStatement();
+  TypeRef createTypeRef();
 
   /**
-   * Returns a new object of class '<em>Statements</em>'.
+   * Returns a new object of class '<em>Simple Type Ref</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Statements</em>'.
+   * @return a new object of class '<em>Simple Type Ref</em>'.
    * @generated
    */
-  Statements createStatements();
+  SimpleTypeRef createSimpleTypeRef();
 
   /**
-   * Returns a new object of class '<em>While Statement</em>'.
+   * Returns a new object of class '<em>Closure Type Ref</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>While Statement</em>'.
+   * @return a new object of class '<em>Closure Type Ref</em>'.
    * @generated
    */
-  WhileStatement createWhileStatement();
+  ClosureTypeRef createClosureTypeRef();
 
   /**
-   * Returns a new object of class '<em>Switch Statement</em>'.
+   * Returns a new object of class '<em>Rule Type Param</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Switch Statement</em>'.
+   * @return a new object of class '<em>Rule Type Param</em>'.
    * @generated
    */
-  SwitchStatement createSwitchStatement();
+  RuleTypeParam createRuleTypeParam();
 
   /**
-   * Returns a new object of class '<em>Case</em>'.
+   * Returns a new object of class '<em>Rule Type Ref Param</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Case</em>'.
+   * @return a new object of class '<em>Rule Type Ref Param</em>'.
    * @generated
    */
-  Case createCase();
+  RuleTypeRefParam createRuleTypeRefParam();
 
   /**
-   * Returns a new object of class '<em>For Statement</em>'.
+   * Returns a new object of class '<em>Wildcard Ref Param</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>For Statement</em>'.
+   * @return a new object of class '<em>Wildcard Ref Param</em>'.
    * @generated
    */
-  ForStatement createForStatement();
+  WildcardRefParam createWildcardRefParam();
 
   /**
-   * Returns a new object of class '<em>Do While Statement</em>'.
+   * Returns a new object of class '<em>Type Cast Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Do While Statement</em>'.
+   * @return a new object of class '<em>Type Cast Expression</em>'.
    * @generated
    */
-  DoWhileStatement createDoWhileStatement();
+  TypeCastExpression createTypeCastExpression();
 
   /**
-   * Returns a new object of class '<em>Return Statement</em>'.
+   * Returns a new object of class '<em>Unary Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Return Statement</em>'.
+   * @return a new object of class '<em>Unary Expression</em>'.
    * @generated
    */
-  ReturnStatement createReturnStatement();
+  UnaryExpression createUnaryExpression();
 
   /**
-   * Returns a new object of class '<em>Function Statement</em>'.
+   * Returns a new object of class '<em>Expresion</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Function Statement</em>'.
+   * @return a new object of class '<em>Expresion</em>'.
    * @generated
    */
-  FunctionStatement createFunctionStatement();
+  Expresion createExpresion();
 
   /**
-   * Returns a new object of class '<em>If Statement</em>'.
+   * Returns a new object of class '<em>Try Catch Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>If Statement</em>'.
+   * @return a new object of class '<em>Try Catch Expression</em>'.
    * @generated
    */
-  IfStatement createIfStatement();
-
-  /**
-   * Returns a new object of class '<em>Label Statement</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Label Statement</em>'.
-   * @generated
-   */
-  LabelStatement createLabelStatement();
-
-  /**
-   * Returns a new object of class '<em>Throw Statement</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Throw Statement</em>'.
-   * @generated
-   */
-  ThrowStatement createThrowStatement();
-
-  /**
-   * Returns a new object of class '<em>Try Catch Statement</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Try Catch Statement</em>'.
-   * @generated
-   */
-  TryCatchStatement createTryCatchStatement();
+  TryCatchExpression createTryCatchExpression();
 
   /**
    * Returns a new object of class '<em>Catch Block</em>'.
@@ -602,49 +638,112 @@ public interface BeeLangFactory extends EFactory
   FinallyBlock createFinallyBlock();
 
   /**
-   * Returns a new object of class '<em>With Statement</em>'.
+   * Returns a new object of class '<em>Switch Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>With Statement</em>'.
+   * @return a new object of class '<em>Switch Expression</em>'.
    * @generated
    */
-  WithStatement createWithStatement();
+  SwitchExpression createSwitchExpression();
 
   /**
-   * Returns a new object of class '<em>Var Expression List</em>'.
+   * Returns a new object of class '<em>Case</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Var Expression List</em>'.
+   * @return a new object of class '<em>Case</em>'.
    * @generated
    */
-  VarExpressionList createVarExpressionList();
+  Case createCase();
 
   /**
-   * Returns a new object of class '<em>Expression List</em>'.
+   * Returns a new object of class '<em>If Expression Tail</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Expression List</em>'.
+   * @return a new object of class '<em>If Expression Tail</em>'.
    * @generated
    */
-  ExpressionList createExpressionList();
+  IfExpressionTail createIfExpressionTail();
 
   /**
-   * Returns a new object of class '<em>Expression</em>'.
+   * Returns a new object of class '<em>Feature Call</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Expression</em>'.
+   * @return a new object of class '<em>Feature Call</em>'.
    * @generated
    */
-  Expression createExpression();
+  FeatureCall createFeatureCall();
 
   /**
-   * Returns a new object of class '<em>Unary Expression</em>'.
+   * Returns a new object of class '<em>Operation Call</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Unary Expression</em>'.
+   * @return a new object of class '<em>Operation Call</em>'.
    * @generated
    */
-  UnaryExpression createUnaryExpression();
+  OperationCall createOperationCall();
+
+  /**
+   * Returns a new object of class '<em>Context</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Context</em>'.
+   * @generated
+   */
+  Context createContext();
+
+  /**
+   * Returns a new object of class '<em>Context Selector</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Context Selector</em>'.
+   * @generated
+   */
+  ContextSelector createContextSelector();
+
+  /**
+   * Returns a new object of class '<em>Expression Selector</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Expression Selector</em>'.
+   * @generated
+   */
+  ExpressionSelector createExpressionSelector();
+
+  /**
+   * Returns a new object of class '<em>Unit Selector</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Unit Selector</em>'.
+   * @generated
+   */
+  UnitSelector createUnitSelector();
+
+  /**
+   * Returns a new object of class '<em>Context Block</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Context Block</em>'.
+   * @generated
+   */
+  ContextBlock createContextBlock();
+
+  /**
+   * Returns a new object of class '<em>Statment</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Statment</em>'.
+   * @generated
+   */
+  Statment createStatment();
+
+  /**
+   * Returns a new object of class '<em>Closure Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Closure Expression</em>'.
+   * @generated
+   */
+  ClosureExpression createClosureExpression();
 
   /**
    * Returns a new object of class '<em>Feature</em>'.
@@ -674,13 +773,40 @@ public interface BeeLangFactory extends EFactory
   VersionRange createVersionRange();
 
   /**
-   * Returns a new object of class '<em>Var Expression</em>'.
+   * Returns a new object of class '<em>Builder</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Var Expression</em>'.
+   * @return a new object of class '<em>Builder</em>'.
    * @generated
    */
-  VarExpression createVarExpression();
+  Builder createBuilder();
+
+  /**
+   * Returns a new object of class '<em>Vararg Parameter Declaration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Vararg Parameter Declaration</em>'.
+   * @generated
+   */
+  VarargParameterDeclaration createVarargParameterDeclaration();
+
+  /**
+   * Returns a new object of class '<em>Function</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Function</em>'.
+   * @generated
+   */
+  Function createFunction();
+
+  /**
+   * Returns a new object of class '<em>Return Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Return Expression</em>'.
+   * @generated
+   */
+  ReturnExpression createReturnExpression();
 
   /**
    * Returns a new object of class '<em>Assignment Operation</em>'.
@@ -692,13 +818,13 @@ public interface BeeLangFactory extends EFactory
   AssignmentOperation createAssignmentOperation();
 
   /**
-   * Returns a new object of class '<em>If Expression</em>'.
+   * Returns a new object of class '<em>Var Declaration</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>If Expression</em>'.
+   * @return a new object of class '<em>Var Declaration</em>'.
    * @generated
    */
-  IfExpression createIfExpression();
+  VarDeclaration createVarDeclaration();
 
   /**
    * Returns a new object of class '<em>Boolean Operation</em>'.
@@ -708,15 +834,6 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   BooleanOperation createBooleanOperation();
-
-  /**
-   * Returns a new object of class '<em>Operation Call</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Operation Call</em>'.
-   * @generated
-   */
-  OperationCall createOperationCall();
 
   /**
    * Returns a new object of class '<em>Relational Operation</em>'.
@@ -737,6 +854,15 @@ public interface BeeLangFactory extends EFactory
   SetOperationCall createSetOperationCall();
 
   /**
+   * Returns a new object of class '<em>Type Cast Operation</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Type Cast Operation</em>'.
+   * @generated
+   */
+  TypeCastOperation createTypeCastOperation();
+
+  /**
    * Returns a new object of class '<em>Unary Operation</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -755,13 +881,76 @@ public interface BeeLangFactory extends EFactory
   AtCall createAtCall();
 
   /**
-   * Returns a new object of class '<em>Feature Call</em>'.
+   * Returns a new object of class '<em>With Clause Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Feature Call</em>'.
+   * @return a new object of class '<em>With Clause Expression</em>'.
    * @generated
    */
-  FeatureCall createFeatureCall();
+  WithClauseExpression createWithClauseExpression();
+
+  /**
+   * Returns a new object of class '<em>With Context Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>With Context Expression</em>'.
+   * @generated
+   */
+  WithContextExpression createWithContextExpression();
+
+  /**
+   * Returns a new object of class '<em>Wildcard Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Wildcard Expression</em>'.
+   * @generated
+   */
+  WildcardExpression createWildcardExpression();
+
+  /**
+   * Returns a new object of class '<em>Throw Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Throw Expression</em>'.
+   * @generated
+   */
+  ThrowExpression createThrowExpression();
+
+  /**
+   * Returns a new object of class '<em>Block Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Block Expression</em>'.
+   * @generated
+   */
+  BlockExpression createBlockExpression();
+
+  /**
+   * Returns a new object of class '<em>If Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>If Expression</em>'.
+   * @generated
+   */
+  IfExpression createIfExpression();
+
+  /**
+   * Returns a new object of class '<em>Else If Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Else If Expression</em>'.
+   * @generated
+   */
+  ElseIfExpression createElseIfExpression();
+
+  /**
+   * Returns a new object of class '<em>Else Expression</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Else Expression</em>'.
+   * @generated
+   */
+  ElseExpression createElseExpression();
 
   /**
    * Returns a new object of class '<em>Property Value</em>'.
@@ -800,22 +989,40 @@ public interface BeeLangFactory extends EFactory
   CreatorCall createCreatorCall();
 
   /**
-   * Returns a new object of class '<em>Literal Array</em>'.
+   * Returns a new object of class '<em>Expression Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Literal Array</em>'.
+   * @return a new object of class '<em>Expression Statement</em>'.
    * @generated
    */
-  LiteralArray createLiteralArray();
+  ExpressionStatement createExpressionStatement();
 
   /**
-   * Returns a new object of class '<em>Literal Object</em>'.
+   * Returns a new object of class '<em>Properties Statement</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Literal Object</em>'.
+   * @return a new object of class '<em>Properties Statement</em>'.
    * @generated
    */
-  LiteralObject createLiteralObject();
+  PropertiesStatement createPropertiesStatement();
+
+  /**
+   * Returns a new object of class '<em>Literal List</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Literal List</em>'.
+   * @generated
+   */
+  LiteralList createLiteralList();
+
+  /**
+   * Returns a new object of class '<em>Literal Map</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Literal Map</em>'.
+   * @generated
+   */
+  LiteralMap createLiteralMap();
 
   /**
    * Returns a new object of class '<em>Literal Function</em>'.
@@ -854,13 +1061,22 @@ public interface BeeLangFactory extends EFactory
   NullLiteral createNullLiteral();
 
   /**
-   * Returns a new object of class '<em>Undefined Literal</em>'.
+   * Returns a new object of class '<em>This Literal</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Undefined Literal</em>'.
+   * @return a new object of class '<em>This Literal</em>'.
    * @generated
    */
-  UndefinedLiteral createUndefinedLiteral();
+  ThisLiteral createThisLiteral();
+
+  /**
+   * Returns a new object of class '<em>Super Literal</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Super Literal</em>'.
+   * @generated
+   */
+  SuperLiteral createSuperLiteral();
 
   /**
    * Returns a new object of class '<em>String Literal</em>'.

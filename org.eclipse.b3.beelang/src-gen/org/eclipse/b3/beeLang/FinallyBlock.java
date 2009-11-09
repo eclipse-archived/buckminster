@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.FinallyBlock#getFinallyBlock <em>Finally Block</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.FinallyBlock#getExpr <em>Expr</em>}</li>
  * </ul>
  * </p>
  *
@@ -26,29 +26,29 @@ import org.eclipse.emf.ecore.EObject;
 public interface FinallyBlock extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Finally Block</b></em>' containment reference.
+   * Returns the value of the '<em><b>Expr</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Finally Block</em>' containment reference isn't clear,
+   * If the meaning of the '<em>Expr</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Finally Block</em>' containment reference.
-   * @see #setFinallyBlock(CompoundStatement)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getFinallyBlock_FinallyBlock()
+   * @return the value of the '<em>Expr</em>' containment reference.
+   * @see #setExpr(Expression)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getFinallyBlock_Expr()
    * @model containment="true"
    * @generated
    */
-  CompoundStatement getFinallyBlock();
+  Expression getExpr();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.FinallyBlock#getFinallyBlock <em>Finally Block</em>}' containment reference.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.FinallyBlock#getExpr <em>Expr</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Finally Block</em>' containment reference.
-   * @see #getFinallyBlock()
+   * @param value the new value of the '<em>Expr</em>' containment reference.
+   * @see #getExpr()
    * @generated
    */
-  void setFinallyBlock(CompoundStatement value);
+  void setExpr(Expression value);
 
 } // FinallyBlock

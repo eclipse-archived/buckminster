@@ -25,7 +25,7 @@ public class BeeLangParser extends org.eclipse.xtext.parser.antlr.AbstractAntlrP
 	protected IParseResult parse(String ruleName, ANTLRInputStream in) {
 		org.eclipse.b3.parser.antlr.internal.InternalBeeLangLexer lexer = new org.eclipse.b3.parser.antlr.internal.InternalBeeLangLexer(in);
 		XtextTokenStream stream = new XtextTokenStream(lexer, antlrTokenDefProvider);
-		stream.setInitialHiddenTokens("RULE_WS", "RULE_ML_COMMENT", "RULE_SL_COMMENT");
+		stream.setInitialHiddenTokens();
 		org.eclipse.b3.parser.antlr.internal.InternalBeeLangParser parser = new org.eclipse.b3.parser.antlr.internal.InternalBeeLangParser(
 				stream, getElementFactory(), grammarAccess);
 		parser.setTokenTypeMap(antlrTokenDefProvider.getTokenDefMap());

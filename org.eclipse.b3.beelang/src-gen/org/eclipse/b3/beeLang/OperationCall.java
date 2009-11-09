@@ -7,8 +7,6 @@ package org.eclipse.b3.beeLang;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Operation Call</b></em>'.
@@ -20,7 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.b3.beeLang.OperationCall#getParams <em>Params</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.OperationCall#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.OperationCall#getPostTarget <em>Post Target</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.OperationCall#getTarget <em>Target</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.OperationCall#getParameters <em>Parameters</em>}</li>
  * </ul>
  * </p>
  *
@@ -28,11 +26,11 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface OperationCall extends Expression
+public interface OperationCall extends Expression, FeatureCall
 {
   /**
    * Returns the value of the '<em><b>Params</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.emf.ecore.EObject}.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Expression}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Params</em>' containment reference list isn't clear,
@@ -44,7 +42,7 @@ public interface OperationCall extends Expression
    * @model containment="true"
    * @generated
    */
-  EList<EObject> getParams();
+  EList<Expression> getParams();
 
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.
@@ -99,29 +97,29 @@ public interface OperationCall extends Expression
   void setPostTarget(Expression value);
 
   /**
-   * Returns the value of the '<em><b>Target</b></em>' containment reference.
+   * Returns the value of the '<em><b>Parameters</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Target</em>' containment reference isn't clear,
+   * If the meaning of the '<em>Parameters</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Target</em>' containment reference.
-   * @see #setTarget(Expression)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getOperationCall_Target()
+   * @return the value of the '<em>Parameters</em>' containment reference.
+   * @see #setParameters(ParameterList)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getOperationCall_Parameters()
    * @model containment="true"
    * @generated
    */
-  Expression getTarget();
+  ParameterList getParameters();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.OperationCall#getTarget <em>Target</em>}' containment reference.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.OperationCall#getParameters <em>Parameters</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Target</em>' containment reference.
-   * @see #getTarget()
+   * @param value the new value of the '<em>Parameters</em>' containment reference.
+   * @see #getParameters()
    * @generated
    */
-  void setTarget(Expression value);
+  void setParameters(ParameterList value);
 
 } // OperationCall

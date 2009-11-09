@@ -17,18 +17,21 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getDocumentation <em>Documentation</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getExecutionMode <em>Execution Mode</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getImplements <em>Implements</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getCompoundPropertyOperation <em>Compound Property Operation</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getDefaultProperties <em>Default Properties</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getProvidedCapabilities <em>Provided Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getRequiredCapabilities <em>Required Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getMetaRequiredCapabilities <em>Meta Required Capabilities</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getAdvice <em>Advice</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getConcerns <em>Concerns</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getSynchronizations <em>Synchronizations</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getBuildMethods <em>Build Methods</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getBuilders <em>Builders</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getMethods <em>Methods</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getRepositoryConfigurations <em>Repository Configurations</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getPropertySets <em>Property Sets</em>}</li>
  * </ul>
  * </p>
  *
@@ -38,6 +41,32 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface BuildUnit extends EObject
 {
+  /**
+   * Returns the value of the '<em><b>Documentation</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Documentation</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Documentation</em>' attribute.
+   * @see #setDocumentation(String)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Documentation()
+   * @model
+   * @generated
+   */
+  String getDocumentation();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.BuildUnit#getDocumentation <em>Documentation</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Documentation</em>' attribute.
+   * @see #getDocumentation()
+   * @generated
+   */
+  void setDocumentation(String value);
+
   /**
    * Returns the value of the '<em><b>Execution Mode</b></em>' attribute.
    * The literals are from the enumeration {@link org.eclipse.b3.beeLang.ExecutionMode}.
@@ -136,20 +165,30 @@ public interface BuildUnit extends EObject
   EList<String> getImplements();
 
   /**
-   * Returns the value of the '<em><b>Compound Property Operation</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.NamedProperties}.
+   * Returns the value of the '<em><b>Default Properties</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Compound Property Operation</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Default Properties</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Compound Property Operation</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_CompoundPropertyOperation()
+   * @return the value of the '<em>Default Properties</em>' containment reference.
+   * @see #setDefaultProperties(PropertyBody)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_DefaultProperties()
    * @model containment="true"
    * @generated
    */
-  EList<NamedProperties> getCompoundPropertyOperation();
+  PropertyBody getDefaultProperties();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.BuildUnit#getDefaultProperties <em>Default Properties</em>}' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Default Properties</em>' containment reference.
+   * @see #getDefaultProperties()
+   * @generated
+   */
+  void setDefaultProperties(PropertyBody value);
 
   /**
    * Returns the value of the '<em><b>Provided Capabilities</b></em>' containment reference list.
@@ -200,20 +239,20 @@ public interface BuildUnit extends EObject
   EList<RequiredCapability> getMetaRequiredCapabilities();
 
   /**
-   * Returns the value of the '<em><b>Advice</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.NamedAdvice}.
+   * Returns the value of the '<em><b>Concerns</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Concern}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Advice</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Concerns</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Advice</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Advice()
+   * @return the value of the '<em>Concerns</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Concerns()
    * @model containment="true"
    * @generated
    */
-  EList<NamedAdvice> getAdvice();
+  EList<Concern> getConcerns();
 
   /**
    * Returns the value of the '<em><b>Synchronizations</b></em>' containment reference list.
@@ -232,20 +271,36 @@ public interface BuildUnit extends EObject
   EList<Synchronization> getSynchronizations();
 
   /**
-   * Returns the value of the '<em><b>Build Methods</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.BuildMethod}.
+   * Returns the value of the '<em><b>Builders</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Statement}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Build Methods</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Builders</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Build Methods</em>' containment reference list.
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_BuildMethods()
+   * @return the value of the '<em>Builders</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Builders()
    * @model containment="true"
    * @generated
    */
-  EList<BuildMethod> getBuildMethods();
+  EList<Statement> getBuilders();
+
+  /**
+   * Returns the value of the '<em><b>Methods</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Statement}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Methods</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Methods</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Methods()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Statement> getMethods();
 
   /**
    * Returns the value of the '<em><b>Repository Configurations</b></em>' containment reference list.
@@ -262,5 +317,21 @@ public interface BuildUnit extends EObject
    * @generated
    */
   EList<RepositoryConfiguration> getRepositoryConfigurations();
+
+  /**
+   * Returns the value of the '<em><b>Property Sets</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.NamedProperties}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Property Sets</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Property Sets</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_PropertySets()
+   * @model containment="true"
+   * @generated
+   */
+  EList<NamedProperties> getPropertySets();
 
 } // BuildUnit

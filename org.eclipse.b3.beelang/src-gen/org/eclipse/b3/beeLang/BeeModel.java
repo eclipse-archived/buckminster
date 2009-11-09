@@ -18,6 +18,8 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.b3.beeLang.BeeModel#getImports <em>Imports</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BeeModel#getFunctions <em>Functions</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BeeModel#getConcern <em>Concern</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BeeModel#getBody <em>Body</em>}</li>
  * </ul>
  * </p>
@@ -43,6 +45,38 @@ public interface BeeModel extends EObject
    * @generated
    */
   EList<Import> getImports();
+
+  /**
+   * Returns the value of the '<em><b>Functions</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Statement}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Functions</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Functions</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBeeModel_Functions()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Statement> getFunctions();
+
+  /**
+   * Returns the value of the '<em><b>Concern</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Concern}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Concern</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Concern</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBeeModel_Concern()
+   * @model containment="true"
+   * @generated
+   */
+  EList<Concern> getConcern();
 
   /**
    * Returns the value of the '<em><b>Body</b></em>' containment reference.

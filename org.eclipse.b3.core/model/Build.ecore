@@ -65,8 +65,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IArtifactsPart" abstract="true" interface="true"
       eSuperTypes="#//IBuildPart">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="paths" eType="#//IPathGroup"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="paths" upperBound="-1"
+        eType="#//IPathGroup" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IActionPart" abstract="true" interface="true"
       eSuperTypes="#//IClosurePart">

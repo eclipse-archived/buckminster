@@ -6,7 +6,7 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.Filter;
+import org.eclipse.b3.beeLang.FilteredCapability;
 import org.eclipse.b3.beeLang.RequiredCapability;
 import org.eclipse.b3.beeLang.VersionRange;
 
@@ -26,9 +26,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.RequiredCapabilityImpl#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.RequiredCapabilityImpl#getInterface <em>Interface</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.RequiredCapabilityImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.RequiredCapabilityImpl#getCapability <em>Capability</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.RequiredCapabilityImpl#getRange <em>Range</em>}</li>
  * </ul>
  * </p>
@@ -38,54 +36,14 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container implements RequiredCapability
 {
   /**
-   * The cached value of the '{@link #getFilter() <em>Filter</em>}' containment reference.
+   * The cached value of the '{@link #getCapability() <em>Capability</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getFilter()
+   * @see #getCapability()
    * @generated
    * @ordered
    */
-  protected Filter filter;
-
-  /**
-   * The default value of the '{@link #getInterface() <em>Interface</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getInterface()
-   * @generated
-   * @ordered
-   */
-  protected static final String INTERFACE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getInterface() <em>Interface</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getInterface()
-   * @generated
-   * @ordered
-   */
-  protected String interface_ = INTERFACE_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
-  protected static final String NAME_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getName()
-   * @generated
-   * @ordered
-   */
-  protected String name = NAME_EDEFAULT;
+  protected FilteredCapability capability;
 
   /**
    * The cached value of the '{@link #getRange() <em>Range</em>}' containment reference.
@@ -123,9 +81,9 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public Filter getFilter()
+  public FilteredCapability getCapability()
   {
-    return filter;
+    return capability;
   }
 
   /**
@@ -133,13 +91,13 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetFilter(Filter newFilter, NotificationChain msgs)
+  public NotificationChain basicSetCapability(FilteredCapability newCapability, NotificationChain msgs)
   {
-    Filter oldFilter = filter;
-    filter = newFilter;
+    FilteredCapability oldCapability = capability;
+    capability = newCapability;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.REQUIRED_CAPABILITY__FILTER, oldFilter, newFilter);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.REQUIRED_CAPABILITY__CAPABILITY, oldCapability, newCapability);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -150,66 +108,20 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setFilter(Filter newFilter)
+  public void setCapability(FilteredCapability newCapability)
   {
-    if (newFilter != filter)
+    if (newCapability != capability)
     {
       NotificationChain msgs = null;
-      if (filter != null)
-        msgs = ((InternalEObject)filter).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REQUIRED_CAPABILITY__FILTER, null, msgs);
-      if (newFilter != null)
-        msgs = ((InternalEObject)newFilter).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REQUIRED_CAPABILITY__FILTER, null, msgs);
-      msgs = basicSetFilter(newFilter, msgs);
+      if (capability != null)
+        msgs = ((InternalEObject)capability).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REQUIRED_CAPABILITY__CAPABILITY, null, msgs);
+      if (newCapability != null)
+        msgs = ((InternalEObject)newCapability).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REQUIRED_CAPABILITY__CAPABILITY, null, msgs);
+      msgs = basicSetCapability(newCapability, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REQUIRED_CAPABILITY__FILTER, newFilter, newFilter));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getInterface()
-  {
-    return interface_;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setInterface(String newInterface)
-  {
-    String oldInterface = interface_;
-    interface_ = newInterface;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REQUIRED_CAPABILITY__INTERFACE, oldInterface, interface_));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String getName()
-  {
-    return name;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setName(String newName)
-  {
-    String oldName = name;
-    name = newName;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REQUIRED_CAPABILITY__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REQUIRED_CAPABILITY__CAPABILITY, newCapability, newCapability));
   }
 
   /**
@@ -270,8 +182,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case BeeLangPackage.REQUIRED_CAPABILITY__FILTER:
-        return basicSetFilter(null, msgs);
+      case BeeLangPackage.REQUIRED_CAPABILITY__CAPABILITY:
+        return basicSetCapability(null, msgs);
       case BeeLangPackage.REQUIRED_CAPABILITY__RANGE:
         return basicSetRange(null, msgs);
     }
@@ -288,12 +200,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case BeeLangPackage.REQUIRED_CAPABILITY__FILTER:
-        return getFilter();
-      case BeeLangPackage.REQUIRED_CAPABILITY__INTERFACE:
-        return getInterface();
-      case BeeLangPackage.REQUIRED_CAPABILITY__NAME:
-        return getName();
+      case BeeLangPackage.REQUIRED_CAPABILITY__CAPABILITY:
+        return getCapability();
       case BeeLangPackage.REQUIRED_CAPABILITY__RANGE:
         return getRange();
     }
@@ -310,14 +218,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case BeeLangPackage.REQUIRED_CAPABILITY__FILTER:
-        setFilter((Filter)newValue);
-        return;
-      case BeeLangPackage.REQUIRED_CAPABILITY__INTERFACE:
-        setInterface((String)newValue);
-        return;
-      case BeeLangPackage.REQUIRED_CAPABILITY__NAME:
-        setName((String)newValue);
+      case BeeLangPackage.REQUIRED_CAPABILITY__CAPABILITY:
+        setCapability((FilteredCapability)newValue);
         return;
       case BeeLangPackage.REQUIRED_CAPABILITY__RANGE:
         setRange((VersionRange)newValue);
@@ -336,14 +238,8 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case BeeLangPackage.REQUIRED_CAPABILITY__FILTER:
-        setFilter((Filter)null);
-        return;
-      case BeeLangPackage.REQUIRED_CAPABILITY__INTERFACE:
-        setInterface(INTERFACE_EDEFAULT);
-        return;
-      case BeeLangPackage.REQUIRED_CAPABILITY__NAME:
-        setName(NAME_EDEFAULT);
+      case BeeLangPackage.REQUIRED_CAPABILITY__CAPABILITY:
+        setCapability((FilteredCapability)null);
         return;
       case BeeLangPackage.REQUIRED_CAPABILITY__RANGE:
         setRange((VersionRange)null);
@@ -362,35 +258,12 @@ public class RequiredCapabilityImpl extends MinimalEObjectImpl.Container impleme
   {
     switch (featureID)
     {
-      case BeeLangPackage.REQUIRED_CAPABILITY__FILTER:
-        return filter != null;
-      case BeeLangPackage.REQUIRED_CAPABILITY__INTERFACE:
-        return INTERFACE_EDEFAULT == null ? interface_ != null : !INTERFACE_EDEFAULT.equals(interface_);
-      case BeeLangPackage.REQUIRED_CAPABILITY__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case BeeLangPackage.REQUIRED_CAPABILITY__CAPABILITY:
+        return capability != null;
       case BeeLangPackage.REQUIRED_CAPABILITY__RANGE:
         return range != null;
     }
     return super.eIsSet(featureID);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public String toString()
-  {
-    if (eIsProxy()) return super.toString();
-
-    StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (interface: ");
-    result.append(interface_);
-    result.append(", name: ");
-    result.append(name);
-    result.append(')');
-    return result.toString();
   }
 
 } //RequiredCapabilityImpl

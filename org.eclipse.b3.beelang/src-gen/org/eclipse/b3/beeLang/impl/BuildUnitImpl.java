@@ -8,14 +8,15 @@ package org.eclipse.b3.beeLang.impl;
 import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.BuildMethod;
 import org.eclipse.b3.beeLang.BuildUnit;
+import org.eclipse.b3.beeLang.Concern;
 import org.eclipse.b3.beeLang.ExecutionMode;
-import org.eclipse.b3.beeLang.NamedAdvice;
 import org.eclipse.b3.beeLang.NamedProperties;
+import org.eclipse.b3.beeLang.PropertyBody;
 import org.eclipse.b3.beeLang.ProvidedCapability;
 import org.eclipse.b3.beeLang.RepositoryConfiguration;
 import org.eclipse.b3.beeLang.RequiredCapability;
+import org.eclipse.b3.beeLang.Statement;
 import org.eclipse.b3.beeLang.Synchronization;
 import org.eclipse.b3.beeLang.Version;
 
@@ -41,18 +42,21 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getDocumentation <em>Documentation</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getExecutionMode <em>Execution Mode</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getImplements <em>Implements</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getCompoundPropertyOperation <em>Compound Property Operation</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getDefaultProperties <em>Default Properties</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getProvidedCapabilities <em>Provided Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getRequiredCapabilities <em>Required Capabilities</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getMetaRequiredCapabilities <em>Meta Required Capabilities</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getAdvice <em>Advice</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getConcerns <em>Concerns</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getSynchronizations <em>Synchronizations</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getBuildMethods <em>Build Methods</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getBuilders <em>Builders</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getMethods <em>Methods</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getRepositoryConfigurations <em>Repository Configurations</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getPropertySets <em>Property Sets</em>}</li>
  * </ul>
  * </p>
  *
@@ -60,6 +64,26 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class BuildUnitImpl extends MinimalEObjectImpl.Container implements BuildUnit
 {
+  /**
+   * The default value of the '{@link #getDocumentation() <em>Documentation</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDocumentation()
+   * @generated
+   * @ordered
+   */
+  protected static final String DOCUMENTATION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getDocumentation()
+   * @generated
+   * @ordered
+   */
+  protected String documentation = DOCUMENTATION_EDEFAULT;
+
   /**
    * The default value of the '{@link #getExecutionMode() <em>Execution Mode</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -121,14 +145,14 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
   protected EList<String> implements_;
 
   /**
-   * The cached value of the '{@link #getCompoundPropertyOperation() <em>Compound Property Operation</em>}' containment reference list.
+   * The cached value of the '{@link #getDefaultProperties() <em>Default Properties</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getCompoundPropertyOperation()
+   * @see #getDefaultProperties()
    * @generated
    * @ordered
    */
-  protected EList<NamedProperties> compoundPropertyOperation;
+  protected PropertyBody defaultProperties;
 
   /**
    * The cached value of the '{@link #getProvidedCapabilities() <em>Provided Capabilities</em>}' containment reference list.
@@ -161,14 +185,14 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
   protected EList<RequiredCapability> metaRequiredCapabilities;
 
   /**
-   * The cached value of the '{@link #getAdvice() <em>Advice</em>}' containment reference list.
+   * The cached value of the '{@link #getConcerns() <em>Concerns</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getAdvice()
+   * @see #getConcerns()
    * @generated
    * @ordered
    */
-  protected EList<NamedAdvice> advice;
+  protected EList<Concern> concerns;
 
   /**
    * The cached value of the '{@link #getSynchronizations() <em>Synchronizations</em>}' containment reference list.
@@ -181,14 +205,24 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
   protected EList<Synchronization> synchronizations;
 
   /**
-   * The cached value of the '{@link #getBuildMethods() <em>Build Methods</em>}' containment reference list.
+   * The cached value of the '{@link #getBuilders() <em>Builders</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getBuildMethods()
+   * @see #getBuilders()
    * @generated
    * @ordered
    */
-  protected EList<BuildMethod> buildMethods;
+  protected EList<Statement> builders;
+
+  /**
+   * The cached value of the '{@link #getMethods() <em>Methods</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMethods()
+   * @generated
+   * @ordered
+   */
+  protected EList<Statement> methods;
 
   /**
    * The cached value of the '{@link #getRepositoryConfigurations() <em>Repository Configurations</em>}' containment reference list.
@@ -199,6 +233,16 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * @ordered
    */
   protected EList<RepositoryConfiguration> repositoryConfigurations;
+
+  /**
+   * The cached value of the '{@link #getPropertySets() <em>Property Sets</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPropertySets()
+   * @generated
+   * @ordered
+   */
+  protected EList<NamedProperties> propertySets;
 
   /**
    * <!-- begin-user-doc -->
@@ -219,6 +263,29 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
   protected EClass eStaticClass()
   {
     return BeeLangPackage.Literals.BUILD_UNIT;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getDocumentation()
+  {
+    return documentation;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDocumentation(String newDocumentation)
+  {
+    String oldDocumentation = documentation;
+    documentation = newDocumentation;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_UNIT__DOCUMENTATION, oldDocumentation, documentation));
   }
 
   /**
@@ -334,13 +401,47 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<NamedProperties> getCompoundPropertyOperation()
+  public PropertyBody getDefaultProperties()
   {
-    if (compoundPropertyOperation == null)
+    return defaultProperties;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NotificationChain basicSetDefaultProperties(PropertyBody newDefaultProperties, NotificationChain msgs)
+  {
+    PropertyBody oldDefaultProperties = defaultProperties;
+    defaultProperties = newDefaultProperties;
+    if (eNotificationRequired())
     {
-      compoundPropertyOperation = new EObjectContainmentEList<NamedProperties>(NamedProperties.class, this, BeeLangPackage.BUILD_UNIT__COMPOUND_PROPERTY_OPERATION);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES, oldDefaultProperties, newDefaultProperties);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
     }
-    return compoundPropertyOperation;
+    return msgs;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setDefaultProperties(PropertyBody newDefaultProperties)
+  {
+    if (newDefaultProperties != defaultProperties)
+    {
+      NotificationChain msgs = null;
+      if (defaultProperties != null)
+        msgs = ((InternalEObject)defaultProperties).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES, null, msgs);
+      if (newDefaultProperties != null)
+        msgs = ((InternalEObject)newDefaultProperties).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES, null, msgs);
+      msgs = basicSetDefaultProperties(newDefaultProperties, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES, newDefaultProperties, newDefaultProperties));
   }
 
   /**
@@ -390,13 +491,13 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<NamedAdvice> getAdvice()
+  public EList<Concern> getConcerns()
   {
-    if (advice == null)
+    if (concerns == null)
     {
-      advice = new EObjectContainmentEList<NamedAdvice>(NamedAdvice.class, this, BeeLangPackage.BUILD_UNIT__ADVICE);
+      concerns = new EObjectContainmentEList<Concern>(Concern.class, this, BeeLangPackage.BUILD_UNIT__CONCERNS);
     }
-    return advice;
+    return concerns;
   }
 
   /**
@@ -418,13 +519,27 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<BuildMethod> getBuildMethods()
+  public EList<Statement> getBuilders()
   {
-    if (buildMethods == null)
+    if (builders == null)
     {
-      buildMethods = new EObjectContainmentEList<BuildMethod>(BuildMethod.class, this, BeeLangPackage.BUILD_UNIT__BUILD_METHODS);
+      builders = new EObjectContainmentEList<Statement>(Statement.class, this, BeeLangPackage.BUILD_UNIT__BUILDERS);
     }
-    return buildMethods;
+    return builders;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<Statement> getMethods()
+  {
+    if (methods == null)
+    {
+      methods = new EObjectContainmentEList<Statement>(Statement.class, this, BeeLangPackage.BUILD_UNIT__METHODS);
+    }
+    return methods;
   }
 
   /**
@@ -446,6 +561,20 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<NamedProperties> getPropertySets()
+  {
+    if (propertySets == null)
+    {
+      propertySets = new EObjectContainmentEList<NamedProperties>(NamedProperties.class, this, BeeLangPackage.BUILD_UNIT__PROPERTY_SETS);
+    }
+    return propertySets;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -453,22 +582,26 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
     {
       case BeeLangPackage.BUILD_UNIT__VERSION:
         return basicSetVersion(null, msgs);
-      case BeeLangPackage.BUILD_UNIT__COMPOUND_PROPERTY_OPERATION:
-        return ((InternalEList<?>)getCompoundPropertyOperation()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES:
+        return basicSetDefaultProperties(null, msgs);
       case BeeLangPackage.BUILD_UNIT__PROVIDED_CAPABILITIES:
         return ((InternalEList<?>)getProvidedCapabilities()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.BUILD_UNIT__REQUIRED_CAPABILITIES:
         return ((InternalEList<?>)getRequiredCapabilities()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.BUILD_UNIT__META_REQUIRED_CAPABILITIES:
         return ((InternalEList<?>)getMetaRequiredCapabilities()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.BUILD_UNIT__ADVICE:
-        return ((InternalEList<?>)getAdvice()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.BUILD_UNIT__CONCERNS:
+        return ((InternalEList<?>)getConcerns()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.BUILD_UNIT__SYNCHRONIZATIONS:
         return ((InternalEList<?>)getSynchronizations()).basicRemove(otherEnd, msgs);
-      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
-        return ((InternalEList<?>)getBuildMethods()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.BUILD_UNIT__BUILDERS:
+        return ((InternalEList<?>)getBuilders()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.BUILD_UNIT__METHODS:
+        return ((InternalEList<?>)getMethods()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         return ((InternalEList<?>)getRepositoryConfigurations()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
+        return ((InternalEList<?>)getPropertySets()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -483,6 +616,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
   {
     switch (featureID)
     {
+      case BeeLangPackage.BUILD_UNIT__DOCUMENTATION:
+        return getDocumentation();
       case BeeLangPackage.BUILD_UNIT__EXECUTION_MODE:
         return getExecutionMode();
       case BeeLangPackage.BUILD_UNIT__NAME:
@@ -491,22 +626,26 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return getVersion();
       case BeeLangPackage.BUILD_UNIT__IMPLEMENTS:
         return getImplements();
-      case BeeLangPackage.BUILD_UNIT__COMPOUND_PROPERTY_OPERATION:
-        return getCompoundPropertyOperation();
+      case BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES:
+        return getDefaultProperties();
       case BeeLangPackage.BUILD_UNIT__PROVIDED_CAPABILITIES:
         return getProvidedCapabilities();
       case BeeLangPackage.BUILD_UNIT__REQUIRED_CAPABILITIES:
         return getRequiredCapabilities();
       case BeeLangPackage.BUILD_UNIT__META_REQUIRED_CAPABILITIES:
         return getMetaRequiredCapabilities();
-      case BeeLangPackage.BUILD_UNIT__ADVICE:
-        return getAdvice();
+      case BeeLangPackage.BUILD_UNIT__CONCERNS:
+        return getConcerns();
       case BeeLangPackage.BUILD_UNIT__SYNCHRONIZATIONS:
         return getSynchronizations();
-      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
-        return getBuildMethods();
+      case BeeLangPackage.BUILD_UNIT__BUILDERS:
+        return getBuilders();
+      case BeeLangPackage.BUILD_UNIT__METHODS:
+        return getMethods();
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         return getRepositoryConfigurations();
+      case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
+        return getPropertySets();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -522,6 +661,9 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
   {
     switch (featureID)
     {
+      case BeeLangPackage.BUILD_UNIT__DOCUMENTATION:
+        setDocumentation((String)newValue);
+        return;
       case BeeLangPackage.BUILD_UNIT__EXECUTION_MODE:
         setExecutionMode((ExecutionMode)newValue);
         return;
@@ -535,9 +677,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         getImplements().clear();
         getImplements().addAll((Collection<? extends String>)newValue);
         return;
-      case BeeLangPackage.BUILD_UNIT__COMPOUND_PROPERTY_OPERATION:
-        getCompoundPropertyOperation().clear();
-        getCompoundPropertyOperation().addAll((Collection<? extends NamedProperties>)newValue);
+      case BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES:
+        setDefaultProperties((PropertyBody)newValue);
         return;
       case BeeLangPackage.BUILD_UNIT__PROVIDED_CAPABILITIES:
         getProvidedCapabilities().clear();
@@ -551,21 +692,29 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         getMetaRequiredCapabilities().clear();
         getMetaRequiredCapabilities().addAll((Collection<? extends RequiredCapability>)newValue);
         return;
-      case BeeLangPackage.BUILD_UNIT__ADVICE:
-        getAdvice().clear();
-        getAdvice().addAll((Collection<? extends NamedAdvice>)newValue);
+      case BeeLangPackage.BUILD_UNIT__CONCERNS:
+        getConcerns().clear();
+        getConcerns().addAll((Collection<? extends Concern>)newValue);
         return;
       case BeeLangPackage.BUILD_UNIT__SYNCHRONIZATIONS:
         getSynchronizations().clear();
         getSynchronizations().addAll((Collection<? extends Synchronization>)newValue);
         return;
-      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
-        getBuildMethods().clear();
-        getBuildMethods().addAll((Collection<? extends BuildMethod>)newValue);
+      case BeeLangPackage.BUILD_UNIT__BUILDERS:
+        getBuilders().clear();
+        getBuilders().addAll((Collection<? extends Statement>)newValue);
+        return;
+      case BeeLangPackage.BUILD_UNIT__METHODS:
+        getMethods().clear();
+        getMethods().addAll((Collection<? extends Statement>)newValue);
         return;
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         getRepositoryConfigurations().clear();
         getRepositoryConfigurations().addAll((Collection<? extends RepositoryConfiguration>)newValue);
+        return;
+      case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
+        getPropertySets().clear();
+        getPropertySets().addAll((Collection<? extends NamedProperties>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -581,6 +730,9 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
   {
     switch (featureID)
     {
+      case BeeLangPackage.BUILD_UNIT__DOCUMENTATION:
+        setDocumentation(DOCUMENTATION_EDEFAULT);
+        return;
       case BeeLangPackage.BUILD_UNIT__EXECUTION_MODE:
         setExecutionMode(EXECUTION_MODE_EDEFAULT);
         return;
@@ -593,8 +745,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
       case BeeLangPackage.BUILD_UNIT__IMPLEMENTS:
         getImplements().clear();
         return;
-      case BeeLangPackage.BUILD_UNIT__COMPOUND_PROPERTY_OPERATION:
-        getCompoundPropertyOperation().clear();
+      case BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES:
+        setDefaultProperties((PropertyBody)null);
         return;
       case BeeLangPackage.BUILD_UNIT__PROVIDED_CAPABILITIES:
         getProvidedCapabilities().clear();
@@ -605,17 +757,23 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
       case BeeLangPackage.BUILD_UNIT__META_REQUIRED_CAPABILITIES:
         getMetaRequiredCapabilities().clear();
         return;
-      case BeeLangPackage.BUILD_UNIT__ADVICE:
-        getAdvice().clear();
+      case BeeLangPackage.BUILD_UNIT__CONCERNS:
+        getConcerns().clear();
         return;
       case BeeLangPackage.BUILD_UNIT__SYNCHRONIZATIONS:
         getSynchronizations().clear();
         return;
-      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
-        getBuildMethods().clear();
+      case BeeLangPackage.BUILD_UNIT__BUILDERS:
+        getBuilders().clear();
+        return;
+      case BeeLangPackage.BUILD_UNIT__METHODS:
+        getMethods().clear();
         return;
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         getRepositoryConfigurations().clear();
+        return;
+      case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
+        getPropertySets().clear();
         return;
     }
     super.eUnset(featureID);
@@ -631,6 +789,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
   {
     switch (featureID)
     {
+      case BeeLangPackage.BUILD_UNIT__DOCUMENTATION:
+        return DOCUMENTATION_EDEFAULT == null ? documentation != null : !DOCUMENTATION_EDEFAULT.equals(documentation);
       case BeeLangPackage.BUILD_UNIT__EXECUTION_MODE:
         return executionMode != EXECUTION_MODE_EDEFAULT;
       case BeeLangPackage.BUILD_UNIT__NAME:
@@ -639,22 +799,26 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return version != null;
       case BeeLangPackage.BUILD_UNIT__IMPLEMENTS:
         return implements_ != null && !implements_.isEmpty();
-      case BeeLangPackage.BUILD_UNIT__COMPOUND_PROPERTY_OPERATION:
-        return compoundPropertyOperation != null && !compoundPropertyOperation.isEmpty();
+      case BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES:
+        return defaultProperties != null;
       case BeeLangPackage.BUILD_UNIT__PROVIDED_CAPABILITIES:
         return providedCapabilities != null && !providedCapabilities.isEmpty();
       case BeeLangPackage.BUILD_UNIT__REQUIRED_CAPABILITIES:
         return requiredCapabilities != null && !requiredCapabilities.isEmpty();
       case BeeLangPackage.BUILD_UNIT__META_REQUIRED_CAPABILITIES:
         return metaRequiredCapabilities != null && !metaRequiredCapabilities.isEmpty();
-      case BeeLangPackage.BUILD_UNIT__ADVICE:
-        return advice != null && !advice.isEmpty();
+      case BeeLangPackage.BUILD_UNIT__CONCERNS:
+        return concerns != null && !concerns.isEmpty();
       case BeeLangPackage.BUILD_UNIT__SYNCHRONIZATIONS:
         return synchronizations != null && !synchronizations.isEmpty();
-      case BeeLangPackage.BUILD_UNIT__BUILD_METHODS:
-        return buildMethods != null && !buildMethods.isEmpty();
+      case BeeLangPackage.BUILD_UNIT__BUILDERS:
+        return builders != null && !builders.isEmpty();
+      case BeeLangPackage.BUILD_UNIT__METHODS:
+        return methods != null && !methods.isEmpty();
       case BeeLangPackage.BUILD_UNIT__REPOSITORY_CONFIGURATIONS:
         return repositoryConfigurations != null && !repositoryConfigurations.isEmpty();
+      case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
+        return propertySets != null && !propertySets.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -670,7 +834,9 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (executionMode: ");
+    result.append(" (documentation: ");
+    result.append(documentation);
+    result.append(", executionMode: ");
     result.append(executionMode);
     result.append(", name: ");
     result.append(name);

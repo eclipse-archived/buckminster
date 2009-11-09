@@ -8,7 +8,7 @@ package beelangtypes.impl;
 import beelangtypes.BeelangtypesFactory;
 import beelangtypes.BeelangtypesPackage;
 
-import org.eclipse.b3.HexInteger;
+import org.eclipse.b3.RadixInteger;
 import org.eclipse.b3.RegularExpression;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
@@ -33,7 +33,7 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
    * <!-- end-user-doc -->
    * @generated
    */
-  private EDataType hexIntegerEDataType = null;
+  private EDataType radixIntegerEDataType = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -115,9 +115,9 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
    * <!-- end-user-doc -->
    * @generated
    */
-  public EDataType getHexInteger()
+  public EDataType getRadixInteger()
   {
-    return hexIntegerEDataType;
+    return radixIntegerEDataType;
   }
 
   /**
@@ -160,7 +160,7 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
     isCreated = true;
 
     // Create data types
-    hexIntegerEDataType = createEDataType(HEX_INTEGER);
+    radixIntegerEDataType = createEDataType(RADIX_INTEGER);
     regularExpressionEDataType = createEDataType(REGULAR_EXPRESSION);
   }
 
@@ -189,7 +189,7 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
     setNsURI(eNS_URI);
 
     // Initialize data types
-    initEDataType(hexIntegerEDataType, HexInteger.class, "HexInteger", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(radixIntegerEDataType, RadixInteger.class, "RadixInteger", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(regularExpressionEDataType, RegularExpression.class, "RegularExpression", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource

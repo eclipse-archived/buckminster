@@ -88,12 +88,12 @@ public interface RepositoryConfiguration extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Advice</em>' containment reference.
-   * @see #setAdvice(CompoundAdvice)
+   * @see #setAdvice(CompoundConcern)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getRepositoryConfiguration_Advice()
    * @model containment="true"
    * @generated
    */
-  CompoundAdvice getAdvice();
+  CompoundConcern getAdvice();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.RepositoryConfiguration#getAdvice <em>Advice</em>}' containment reference.
@@ -103,6 +103,6 @@ public interface RepositoryConfiguration extends EObject
    * @see #getAdvice()
    * @generated
    */
-  void setAdvice(CompoundAdvice value);
+  void setAdvice(CompoundConcern value);
 
 } // RepositoryConfiguration

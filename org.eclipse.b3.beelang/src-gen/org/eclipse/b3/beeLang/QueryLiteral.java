@@ -33,12 +33,12 @@ public interface QueryLiteral extends Expression
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Val</em>' containment reference.
-   * @see #setVal(AdvicePath)
+   * @see #setVal(Query)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getQueryLiteral_Val()
    * @model containment="true"
    * @generated
    */
-  AdvicePath getVal();
+  Query getVal();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.QueryLiteral#getVal <em>Val</em>}' containment reference.
@@ -48,6 +48,6 @@ public interface QueryLiteral extends Expression
    * @see #getVal()
    * @generated
    */
-  void setVal(AdvicePath value);
+  void setVal(Query value);
 
 } // QueryLiteral

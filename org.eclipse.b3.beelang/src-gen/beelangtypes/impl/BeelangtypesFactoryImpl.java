@@ -7,7 +7,7 @@ package beelangtypes.impl;
 
 import beelangtypes.*;
 
-import org.eclipse.b3.HexInteger;
+import org.eclipse.b3.RadixInteger;
 import org.eclipse.b3.RegularExpression;
 
 import org.eclipse.emf.ecore.EClass;
@@ -86,8 +86,8 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
   {
     switch (eDataType.getClassifierID())
     {
-      case BeelangtypesPackage.HEX_INTEGER:
-        return createHexIntegerFromString(eDataType, initialValue);
+      case BeelangtypesPackage.RADIX_INTEGER:
+        return createRadixIntegerFromString(eDataType, initialValue);
       case BeelangtypesPackage.REGULAR_EXPRESSION:
         return createRegularExpressionFromString(eDataType, initialValue);
       default:
@@ -105,8 +105,8 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
   {
     switch (eDataType.getClassifierID())
     {
-      case BeelangtypesPackage.HEX_INTEGER:
-        return convertHexIntegerToString(eDataType, instanceValue);
+      case BeelangtypesPackage.RADIX_INTEGER:
+        return convertRadixIntegerToString(eDataType, instanceValue);
       case BeelangtypesPackage.REGULAR_EXPRESSION:
         return convertRegularExpressionToString(eDataType, instanceValue);
       default:
@@ -119,9 +119,9 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
    * <!-- end-user-doc -->
    * @generated
    */
-  public HexInteger createHexIntegerFromString(EDataType eDataType, String initialValue)
+  public RadixInteger createRadixIntegerFromString(EDataType eDataType, String initialValue)
   {
-    return (HexInteger)super.createFromString(eDataType, initialValue);
+    return (RadixInteger)super.createFromString(eDataType, initialValue);
   }
 
   /**
@@ -129,7 +129,7 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
    * <!-- end-user-doc -->
    * @generated
    */
-  public String convertHexIntegerToString(EDataType eDataType, Object instanceValue)
+  public String convertRadixIntegerToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

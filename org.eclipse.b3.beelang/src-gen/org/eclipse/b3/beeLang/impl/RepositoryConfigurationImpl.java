@@ -6,7 +6,7 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.CompoundAdvice;
+import org.eclipse.b3.beeLang.CompoundConcern;
 import org.eclipse.b3.beeLang.RepositoryConfiguration;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -83,7 +83,7 @@ public class RepositoryConfigurationImpl extends MinimalEObjectImpl.Container im
    * @generated
    * @ordered
    */
-  protected CompoundAdvice advice;
+  protected CompoundConcern advice;
 
   /**
    * <!-- begin-user-doc -->
@@ -157,7 +157,7 @@ public class RepositoryConfigurationImpl extends MinimalEObjectImpl.Container im
    * <!-- end-user-doc -->
    * @generated
    */
-  public CompoundAdvice getAdvice()
+  public CompoundConcern getAdvice()
   {
     return advice;
   }
@@ -167,9 +167,9 @@ public class RepositoryConfigurationImpl extends MinimalEObjectImpl.Container im
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetAdvice(CompoundAdvice newAdvice, NotificationChain msgs)
+  public NotificationChain basicSetAdvice(CompoundConcern newAdvice, NotificationChain msgs)
   {
-    CompoundAdvice oldAdvice = advice;
+    CompoundConcern oldAdvice = advice;
     advice = newAdvice;
     if (eNotificationRequired())
     {
@@ -184,7 +184,7 @@ public class RepositoryConfigurationImpl extends MinimalEObjectImpl.Container im
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setAdvice(CompoundAdvice newAdvice)
+  public void setAdvice(CompoundConcern newAdvice)
   {
     if (newAdvice != advice)
     {
@@ -253,7 +253,7 @@ public class RepositoryConfigurationImpl extends MinimalEObjectImpl.Container im
         setResolverClass((String)newValue);
         return;
       case BeeLangPackage.REPOSITORY_CONFIGURATION__ADVICE:
-        setAdvice((CompoundAdvice)newValue);
+        setAdvice((CompoundConcern)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -276,7 +276,7 @@ public class RepositoryConfigurationImpl extends MinimalEObjectImpl.Container im
         setResolverClass(RESOLVER_CLASS_EDEFAULT);
         return;
       case BeeLangPackage.REPOSITORY_CONFIGURATION__ADVICE:
-        setAdvice((CompoundAdvice)null);
+        setAdvice((CompoundConcern)null);
         return;
     }
     super.eUnset(featureID);
