@@ -5,7 +5,7 @@
 «DEFINE main FOR BuildUnit-»
 «FILE "output.txt"-»
 «FOREACH this.builders AS p-»
-«p.name»
+«p.toString()»
 «ENDFOREACH-»
 «ENDFILE-»
 «ENDDEFINE»
