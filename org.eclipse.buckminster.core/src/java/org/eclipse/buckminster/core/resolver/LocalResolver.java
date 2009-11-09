@@ -499,6 +499,13 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			return nrs[0];
 
 		int top = nrs.length;
+		for(int idx = 0; idx < top; ++idx)
+		{
+			nr = nrs[idx];
+			if(qDep.equals(nr.getQuery().getQualifiedDependency()))
+				return nr;
+		}
+
 		boolean newRqOptional = request.isOptional();
 		boolean invalidateInfant = false;
 		for(int idx = 0; idx < top; ++idx)
