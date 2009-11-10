@@ -5,6 +5,7 @@
  */
 package org.eclipse.b3.beeLang;
 
+import java.net.URI;
 
 /**
  * <!-- begin-user-doc -->
@@ -14,8 +15,9 @@ package org.eclipse.b3.beeLang;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getDocumentation <em>Documentation</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getLocation <em>Location</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getResolverClass <em>Resolver Class</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getContext <em>Context</em>}</li>
  * </ul>
  * </p>
@@ -27,6 +29,32 @@ package org.eclipse.b3.beeLang;
 public interface RepositoryDeclaration extends RepositoryConfiguration
 {
   /**
+   * Returns the value of the '<em><b>Documentation</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Documentation</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Documentation</em>' attribute.
+   * @see #setDocumentation(String)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getRepositoryDeclaration_Documentation()
+   * @model
+   * @generated
+   */
+  String getDocumentation();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getDocumentation <em>Documentation</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Documentation</em>' attribute.
+   * @see #getDocumentation()
+   * @generated
+   */
+  void setDocumentation(String value);
+
+  /**
    * Returns the value of the '<em><b>Location</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
@@ -35,12 +63,12 @@ public interface RepositoryDeclaration extends RepositoryConfiguration
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Location</em>' attribute.
-   * @see #setLocation(String)
+   * @see #setLocation(URI)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getRepositoryDeclaration_Location()
-   * @model
+   * @model dataType="beelangtypes.URI"
    * @generated
    */
-  String getLocation();
+  URI getLocation();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getLocation <em>Location</em>}' attribute.
@@ -50,33 +78,33 @@ public interface RepositoryDeclaration extends RepositoryConfiguration
    * @see #getLocation()
    * @generated
    */
-  void setLocation(String value);
+  void setLocation(URI value);
 
   /**
-   * Returns the value of the '<em><b>Resolver Class</b></em>' attribute.
+   * Returns the value of the '<em><b>Type</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Resolver Class</em>' attribute isn't clear,
+   * If the meaning of the '<em>Type</em>' containment reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Resolver Class</em>' attribute.
-   * @see #setResolverClass(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getRepositoryDeclaration_ResolverClass()
-   * @model
+   * @return the value of the '<em>Type</em>' containment reference.
+   * @see #setType(TypeRef)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getRepositoryDeclaration_Type()
+   * @model containment="true"
    * @generated
    */
-  String getResolverClass();
+  TypeRef getType();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getResolverClass <em>Resolver Class</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getType <em>Type</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Resolver Class</em>' attribute.
-   * @see #getResolverClass()
+   * @param value the new value of the '<em>Type</em>' containment reference.
+   * @see #getType()
    * @generated
    */
-  void setResolverClass(String value);
+  void setType(TypeRef value);
 
   /**
    * Returns the value of the '<em><b>Context</b></em>' containment reference.

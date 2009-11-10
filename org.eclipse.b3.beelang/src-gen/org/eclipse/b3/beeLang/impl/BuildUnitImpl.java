@@ -10,6 +10,7 @@ import java.util.Collection;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.BuildUnit;
 import org.eclipse.b3.beeLang.Concern;
+import org.eclipse.b3.beeLang.ContainerConfiguration;
 import org.eclipse.b3.beeLang.ExecutionMode;
 import org.eclipse.b3.beeLang.NamedProperties;
 import org.eclipse.b3.beeLang.PropertyBody;
@@ -57,6 +58,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getMethods <em>Methods</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getRepositoryConfigurations <em>Repository Configurations</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getPropertySets <em>Property Sets</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.BuildUnitImpl#getContainers <em>Containers</em>}</li>
  * </ul>
  * </p>
  *
@@ -243,6 +245,16 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * @ordered
    */
   protected EList<NamedProperties> propertySets;
+
+  /**
+   * The cached value of the '{@link #getContainers() <em>Containers</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getContainers()
+   * @generated
+   * @ordered
+   */
+  protected EList<ContainerConfiguration> containers;
 
   /**
    * <!-- begin-user-doc -->
@@ -575,6 +587,20 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<ContainerConfiguration> getContainers()
+  {
+    if (containers == null)
+    {
+      containers = new EObjectContainmentEList<ContainerConfiguration>(ContainerConfiguration.class, this, BeeLangPackage.BUILD_UNIT__CONTAINERS);
+    }
+    return containers;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
   {
@@ -602,6 +628,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return ((InternalEList<?>)getRepositoryConfigurations()).basicRemove(otherEnd, msgs);
       case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
         return ((InternalEList<?>)getPropertySets()).basicRemove(otherEnd, msgs);
+      case BeeLangPackage.BUILD_UNIT__CONTAINERS:
+        return ((InternalEList<?>)getContainers()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -646,6 +674,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return getRepositoryConfigurations();
       case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
         return getPropertySets();
+      case BeeLangPackage.BUILD_UNIT__CONTAINERS:
+        return getContainers();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -716,6 +746,10 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         getPropertySets().clear();
         getPropertySets().addAll((Collection<? extends NamedProperties>)newValue);
         return;
+      case BeeLangPackage.BUILD_UNIT__CONTAINERS:
+        getContainers().clear();
+        getContainers().addAll((Collection<? extends ContainerConfiguration>)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -775,6 +809,9 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
       case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
         getPropertySets().clear();
         return;
+      case BeeLangPackage.BUILD_UNIT__CONTAINERS:
+        getContainers().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -819,6 +856,8 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return repositoryConfigurations != null && !repositoryConfigurations.isEmpty();
       case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
         return propertySets != null && !propertySets.isEmpty();
+      case BeeLangPackage.BUILD_UNIT__CONTAINERS:
+        return containers != null && !containers.isEmpty();
     }
     return super.eIsSet(featureID);
   }

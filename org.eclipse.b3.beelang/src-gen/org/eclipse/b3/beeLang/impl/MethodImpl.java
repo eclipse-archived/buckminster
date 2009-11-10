@@ -6,8 +6,8 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.Function;
 import org.eclipse.b3.beeLang.FunctionOrMethod;
+import org.eclipse.b3.beeLang.Method;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -19,35 +19,35 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Function</b></em>'.
+ * An implementation of the model object '<em><b>Method</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.FunctionImpl#getFunc <em>Func</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.MethodImpl#getMethod <em>Method</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class FunctionImpl extends StatmentImpl implements Function
+public class MethodImpl extends StatementImpl implements Method
 {
   /**
-   * The cached value of the '{@link #getFunc() <em>Func</em>}' containment reference.
+   * The cached value of the '{@link #getMethod() <em>Method</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getFunc()
+   * @see #getMethod()
    * @generated
    * @ordered
    */
-  protected FunctionOrMethod func;
+  protected FunctionOrMethod method;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected FunctionImpl()
+  protected MethodImpl()
   {
     super();
   }
@@ -60,7 +60,7 @@ public class FunctionImpl extends StatmentImpl implements Function
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.FUNCTION;
+    return BeeLangPackage.Literals.METHOD;
   }
 
   /**
@@ -68,9 +68,9 @@ public class FunctionImpl extends StatmentImpl implements Function
    * <!-- end-user-doc -->
    * @generated
    */
-  public FunctionOrMethod getFunc()
+  public FunctionOrMethod getMethod()
   {
-    return func;
+    return method;
   }
 
   /**
@@ -78,13 +78,13 @@ public class FunctionImpl extends StatmentImpl implements Function
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetFunc(FunctionOrMethod newFunc, NotificationChain msgs)
+  public NotificationChain basicSetMethod(FunctionOrMethod newMethod, NotificationChain msgs)
   {
-    FunctionOrMethod oldFunc = func;
-    func = newFunc;
+    FunctionOrMethod oldMethod = method;
+    method = newMethod;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.FUNCTION__FUNC, oldFunc, newFunc);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.METHOD__METHOD, oldMethod, newMethod);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -95,20 +95,20 @@ public class FunctionImpl extends StatmentImpl implements Function
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setFunc(FunctionOrMethod newFunc)
+  public void setMethod(FunctionOrMethod newMethod)
   {
-    if (newFunc != func)
+    if (newMethod != method)
     {
       NotificationChain msgs = null;
-      if (func != null)
-        msgs = ((InternalEObject)func).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.FUNCTION__FUNC, null, msgs);
-      if (newFunc != null)
-        msgs = ((InternalEObject)newFunc).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.FUNCTION__FUNC, null, msgs);
-      msgs = basicSetFunc(newFunc, msgs);
+      if (method != null)
+        msgs = ((InternalEObject)method).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.METHOD__METHOD, null, msgs);
+      if (newMethod != null)
+        msgs = ((InternalEObject)newMethod).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.METHOD__METHOD, null, msgs);
+      msgs = basicSetMethod(newMethod, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.FUNCTION__FUNC, newFunc, newFunc));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.METHOD__METHOD, newMethod, newMethod));
   }
 
   /**
@@ -121,8 +121,8 @@ public class FunctionImpl extends StatmentImpl implements Function
   {
     switch (featureID)
     {
-      case BeeLangPackage.FUNCTION__FUNC:
-        return basicSetFunc(null, msgs);
+      case BeeLangPackage.METHOD__METHOD:
+        return basicSetMethod(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -137,8 +137,8 @@ public class FunctionImpl extends StatmentImpl implements Function
   {
     switch (featureID)
     {
-      case BeeLangPackage.FUNCTION__FUNC:
-        return getFunc();
+      case BeeLangPackage.METHOD__METHOD:
+        return getMethod();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -153,8 +153,8 @@ public class FunctionImpl extends StatmentImpl implements Function
   {
     switch (featureID)
     {
-      case BeeLangPackage.FUNCTION__FUNC:
-        setFunc((FunctionOrMethod)newValue);
+      case BeeLangPackage.METHOD__METHOD:
+        setMethod((FunctionOrMethod)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -170,8 +170,8 @@ public class FunctionImpl extends StatmentImpl implements Function
   {
     switch (featureID)
     {
-      case BeeLangPackage.FUNCTION__FUNC:
-        setFunc((FunctionOrMethod)null);
+      case BeeLangPackage.METHOD__METHOD:
+        setMethod((FunctionOrMethod)null);
         return;
     }
     super.eUnset(featureID);
@@ -187,10 +187,10 @@ public class FunctionImpl extends StatmentImpl implements Function
   {
     switch (featureID)
     {
-      case BeeLangPackage.FUNCTION__FUNC:
-        return func != null;
+      case BeeLangPackage.METHOD__METHOD:
+        return method != null;
     }
     return super.eIsSet(featureID);
   }
 
-} //FunctionImpl
+} //MethodImpl

@@ -77,6 +77,16 @@ public interface BeelangtypesPackage extends EPackage
    */
   int REGULAR_EXPRESSION = 1;
 
+  /**
+   * The meta object id for the '<em>URI</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see java.net.URI
+   * @see beelangtypes.impl.BeelangtypesPackageImpl#getURI()
+   * @generated
+   */
+  int URI = 2;
+
 
   /**
    * Returns the meta object for data type '{@link org.eclipse.b3.RadixInteger <em>Radix Integer</em>}'.
@@ -99,6 +109,17 @@ public interface BeelangtypesPackage extends EPackage
    * @generated
    */
   EDataType getRegularExpression();
+
+  /**
+   * Returns the meta object for data type '{@link java.net.URI <em>URI</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>URI</em>'.
+   * @see java.net.URI
+   * @model instanceClass="java.net.URI"
+   * @generated
+   */
+  EDataType getURI();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -142,6 +163,16 @@ public interface BeelangtypesPackage extends EPackage
      * @generated
      */
     EDataType REGULAR_EXPRESSION = eINSTANCE.getRegularExpression();
+
+    /**
+     * The meta object literal for the '<em>URI</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see java.net.URI
+     * @see beelangtypes.impl.BeelangtypesPackageImpl#getURI()
+     * @generated
+     */
+    EDataType URI = eINSTANCE.getURI();
 
   }
 

@@ -7,6 +7,8 @@ package beelangtypes.impl;
 
 import beelangtypes.*;
 
+import java.net.URI;
+
 import org.eclipse.b3.RadixInteger;
 import org.eclipse.b3.RegularExpression;
 
@@ -90,6 +92,8 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
         return createRadixIntegerFromString(eDataType, initialValue);
       case BeelangtypesPackage.REGULAR_EXPRESSION:
         return createRegularExpressionFromString(eDataType, initialValue);
+      case BeelangtypesPackage.URI:
+        return createURIFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -109,6 +113,8 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
         return convertRadixIntegerToString(eDataType, instanceValue);
       case BeelangtypesPackage.REGULAR_EXPRESSION:
         return convertRegularExpressionToString(eDataType, instanceValue);
+      case BeelangtypesPackage.URI:
+        return convertURIToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -150,6 +156,26 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
    * @generated
    */
   public String convertRegularExpressionToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public URI createURIFromString(EDataType eDataType, String initialValue)
+  {
+    return (URI)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertURIToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

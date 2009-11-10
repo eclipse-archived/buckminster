@@ -12,7 +12,7 @@ import org.eclipse.b3.beeLang.BeeModel;
 import org.eclipse.b3.beeLang.BuildUnit;
 import org.eclipse.b3.beeLang.Concern;
 import org.eclipse.b3.beeLang.Import;
-import org.eclipse.b3.beeLang.Statement;
+import org.eclipse.b3.beeLang.Statment;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -64,7 +64,7 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
    * @generated
    * @ordered
    */
-  protected EList<Statement> functions;
+  protected EList<Statment> functions;
 
   /**
    * The cached value of the '{@link #getConcern() <em>Concern</em>}' containment reference list.
@@ -126,11 +126,11 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Statement> getFunctions()
+  public EList<Statment> getFunctions()
   {
     if (functions == null)
     {
-      functions = new EObjectContainmentEList<Statement>(Statement.class, this, BeeLangPackage.BEE_MODEL__FUNCTIONS);
+      functions = new EObjectContainmentEList<Statment>(Statment.class, this, BeeLangPackage.BEE_MODEL__FUNCTIONS);
     }
     return functions;
   }
@@ -258,7 +258,7 @@ public class BeeModelImpl extends MinimalEObjectImpl.Container implements BeeMod
         return;
       case BeeLangPackage.BEE_MODEL__FUNCTIONS:
         getFunctions().clear();
-        getFunctions().addAll((Collection<? extends Statement>)newValue);
+        getFunctions().addAll((Collection<? extends Statment>)newValue);
         return;
       case BeeLangPackage.BEE_MODEL__CONCERN:
         getConcern().clear();

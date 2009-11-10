@@ -43,6 +43,13 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
   private EDataType regularExpressionEDataType = null;
 
   /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType uriEDataType = null;
+
+  /**
    * Creates an instance of the model <b>Package</b>, registered with
    * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
    * package URI value.
@@ -135,6 +142,16 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getURI()
+  {
+    return uriEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public BeelangtypesFactory getBeelangtypesFactory()
   {
     return (BeelangtypesFactory)getEFactoryInstance();
@@ -162,6 +179,7 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
     // Create data types
     radixIntegerEDataType = createEDataType(RADIX_INTEGER);
     regularExpressionEDataType = createEDataType(REGULAR_EXPRESSION);
+    uriEDataType = createEDataType(URI);
   }
 
   /**
@@ -191,6 +209,7 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
     // Initialize data types
     initEDataType(radixIntegerEDataType, RadixInteger.class, "RadixInteger", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(regularExpressionEDataType, RegularExpression.class, "RegularExpression", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(uriEDataType, java.net.URI.class, "URI", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource
     createResource(eNS_URI);

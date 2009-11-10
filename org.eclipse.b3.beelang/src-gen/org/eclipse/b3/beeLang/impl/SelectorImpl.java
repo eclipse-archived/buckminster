@@ -5,9 +5,12 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
+import org.eclipse.b3.RegularExpression;
+
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.Expression;
 import org.eclipse.b3.beeLang.Selector;
+import org.eclipse.b3.beeLang.SelectorOperator;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -25,7 +28,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.SelectorImpl#getSelector <em>Selector</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.SelectorImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.SelectorImpl#getOp <em>Op</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.SelectorImpl#getPattern <em>Pattern</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.impl.SelectorImpl#getPredicate <em>Predicate</em>}</li>
  * </ul>
  * </p>
@@ -35,14 +40,64 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 public class SelectorImpl extends MinimalEObjectImpl.Container implements Selector
 {
   /**
-   * The cached value of the '{@link #getSelector() <em>Selector</em>}' containment reference.
+   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getSelector()
+   * @see #getName()
    * @generated
    * @ordered
    */
-  protected Selector selector;
+  protected static final String NAME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected String name = NAME_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getOp() <em>Op</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOp()
+   * @generated
+   * @ordered
+   */
+  protected static final SelectorOperator OP_EDEFAULT = SelectorOperator.THIS;
+
+  /**
+   * The cached value of the '{@link #getOp() <em>Op</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOp()
+   * @generated
+   * @ordered
+   */
+  protected SelectorOperator op = OP_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPattern()
+   * @generated
+   * @ordered
+   */
+  protected static final RegularExpression PATTERN_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPattern()
+   * @generated
+   * @ordered
+   */
+  protected RegularExpression pattern = PATTERN_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getPredicate() <em>Predicate</em>}' containment reference.
@@ -80,9 +135,9 @@ public class SelectorImpl extends MinimalEObjectImpl.Container implements Select
    * <!-- end-user-doc -->
    * @generated
    */
-  public Selector getSelector()
+  public String getName()
   {
-    return selector;
+    return name;
   }
 
   /**
@@ -90,16 +145,12 @@ public class SelectorImpl extends MinimalEObjectImpl.Container implements Select
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetSelector(Selector newSelector, NotificationChain msgs)
+  public void setName(String newName)
   {
-    Selector oldSelector = selector;
-    selector = newSelector;
+    String oldName = name;
+    name = newName;
     if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.SELECTOR__SELECTOR, oldSelector, newSelector);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.SELECTOR__NAME, oldName, name));
   }
 
   /**
@@ -107,20 +158,45 @@ public class SelectorImpl extends MinimalEObjectImpl.Container implements Select
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSelector(Selector newSelector)
+  public SelectorOperator getOp()
   {
-    if (newSelector != selector)
-    {
-      NotificationChain msgs = null;
-      if (selector != null)
-        msgs = ((InternalEObject)selector).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.SELECTOR__SELECTOR, null, msgs);
-      if (newSelector != null)
-        msgs = ((InternalEObject)newSelector).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.SELECTOR__SELECTOR, null, msgs);
-      msgs = basicSetSelector(newSelector, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.SELECTOR__SELECTOR, newSelector, newSelector));
+    return op;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setOp(SelectorOperator newOp)
+  {
+    SelectorOperator oldOp = op;
+    op = newOp == null ? OP_EDEFAULT : newOp;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.SELECTOR__OP, oldOp, op));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RegularExpression getPattern()
+  {
+    return pattern;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setPattern(RegularExpression newPattern)
+  {
+    RegularExpression oldPattern = pattern;
+    pattern = newPattern;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.SELECTOR__PATTERN, oldPattern, pattern));
   }
 
   /**
@@ -181,8 +257,6 @@ public class SelectorImpl extends MinimalEObjectImpl.Container implements Select
   {
     switch (featureID)
     {
-      case BeeLangPackage.SELECTOR__SELECTOR:
-        return basicSetSelector(null, msgs);
       case BeeLangPackage.SELECTOR__PREDICATE:
         return basicSetPredicate(null, msgs);
     }
@@ -199,8 +273,12 @@ public class SelectorImpl extends MinimalEObjectImpl.Container implements Select
   {
     switch (featureID)
     {
-      case BeeLangPackage.SELECTOR__SELECTOR:
-        return getSelector();
+      case BeeLangPackage.SELECTOR__NAME:
+        return getName();
+      case BeeLangPackage.SELECTOR__OP:
+        return getOp();
+      case BeeLangPackage.SELECTOR__PATTERN:
+        return getPattern();
       case BeeLangPackage.SELECTOR__PREDICATE:
         return getPredicate();
     }
@@ -217,8 +295,14 @@ public class SelectorImpl extends MinimalEObjectImpl.Container implements Select
   {
     switch (featureID)
     {
-      case BeeLangPackage.SELECTOR__SELECTOR:
-        setSelector((Selector)newValue);
+      case BeeLangPackage.SELECTOR__NAME:
+        setName((String)newValue);
+        return;
+      case BeeLangPackage.SELECTOR__OP:
+        setOp((SelectorOperator)newValue);
+        return;
+      case BeeLangPackage.SELECTOR__PATTERN:
+        setPattern((RegularExpression)newValue);
         return;
       case BeeLangPackage.SELECTOR__PREDICATE:
         setPredicate((Expression)newValue);
@@ -237,8 +321,14 @@ public class SelectorImpl extends MinimalEObjectImpl.Container implements Select
   {
     switch (featureID)
     {
-      case BeeLangPackage.SELECTOR__SELECTOR:
-        setSelector((Selector)null);
+      case BeeLangPackage.SELECTOR__NAME:
+        setName(NAME_EDEFAULT);
+        return;
+      case BeeLangPackage.SELECTOR__OP:
+        setOp(OP_EDEFAULT);
+        return;
+      case BeeLangPackage.SELECTOR__PATTERN:
+        setPattern(PATTERN_EDEFAULT);
         return;
       case BeeLangPackage.SELECTOR__PREDICATE:
         setPredicate((Expression)null);
@@ -257,12 +347,37 @@ public class SelectorImpl extends MinimalEObjectImpl.Container implements Select
   {
     switch (featureID)
     {
-      case BeeLangPackage.SELECTOR__SELECTOR:
-        return selector != null;
+      case BeeLangPackage.SELECTOR__NAME:
+        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case BeeLangPackage.SELECTOR__OP:
+        return op != OP_EDEFAULT;
+      case BeeLangPackage.SELECTOR__PATTERN:
+        return PATTERN_EDEFAULT == null ? pattern != null : !PATTERN_EDEFAULT.equals(pattern);
       case BeeLangPackage.SELECTOR__PREDICATE:
         return predicate != null;
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (name: ");
+    result.append(name);
+    result.append(", op: ");
+    result.append(op);
+    result.append(", pattern: ");
+    result.append(pattern);
+    result.append(')');
+    return result.toString();
   }
 
 } //SelectorImpl

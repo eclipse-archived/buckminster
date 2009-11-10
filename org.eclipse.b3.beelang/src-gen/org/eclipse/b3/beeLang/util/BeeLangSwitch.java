@@ -365,6 +365,13 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BeeLangPackage.CONTAINER_CONFIGURATION:
+      {
+        ContainerConfiguration containerConfiguration = (ContainerConfiguration)theEObject;
+        T result = caseContainerConfiguration(containerConfiguration);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BeeLangPackage.CONCERN:
       {
         Concern concern = (Concern)theEObject;
@@ -376,28 +383,6 @@ public class BeeLangSwitch<T>
       {
         ConcernBlock concernBlock = (ConcernBlock)theEObject;
         T result = caseConcernBlock(concernBlock);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.ADVICE:
-      {
-        Advice advice = (Advice)theEObject;
-        T result = caseAdvice(advice);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.COMPOUND_CONCERN:
-      {
-        CompoundConcern compoundConcern = (CompoundConcern)theEObject;
-        T result = caseCompoundConcern(compoundConcern);
-        if (result == null) result = caseAdvice(compoundConcern);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.ADVICE_STATEMENT:
-      {
-        AdviceStatement adviceStatement = (AdviceStatement)theEObject;
-        T result = caseAdviceStatement(adviceStatement);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -419,54 +404,6 @@ public class BeeLangSwitch<T>
       {
         Selector selector = (Selector)theEObject;
         T result = caseSelector(selector);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.NAME_SELECTOR:
-      {
-        NameSelector nameSelector = (NameSelector)theEObject;
-        T result = caseNameSelector(nameSelector);
-        if (result == null) result = caseSelector(nameSelector);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.THIS_SELECTOR:
-      {
-        ThisSelector thisSelector = (ThisSelector)theEObject;
-        T result = caseThisSelector(thisSelector);
-        if (result == null) result = caseSelector(thisSelector);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.PARENT_SELECTOR:
-      {
-        ParentSelector parentSelector = (ParentSelector)theEObject;
-        T result = caseParentSelector(parentSelector);
-        if (result == null) result = caseSelector(parentSelector);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.CHILDREN_SELECTOR:
-      {
-        ChildrenSelector childrenSelector = (ChildrenSelector)theEObject;
-        T result = caseChildrenSelector(childrenSelector);
-        if (result == null) result = caseSelector(childrenSelector);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.ANCESTOR_SELECTOR:
-      {
-        AncestorSelector ancestorSelector = (AncestorSelector)theEObject;
-        T result = caseAncestorSelector(ancestorSelector);
-        if (result == null) result = caseSelector(ancestorSelector);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.REGEXP_SELECTOR:
-      {
-        RegexpSelector regexpSelector = (RegexpSelector)theEObject;
-        T result = caseRegexpSelector(regexpSelector);
-        if (result == null) result = caseSelector(regexpSelector);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -502,6 +439,20 @@ public class BeeLangSwitch<T>
       {
         ExpressionList expressionList = (ExpressionList)theEObject;
         T result = caseExpressionList(expressionList);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.STATMENT:
+      {
+        Statment statment = (Statment)theEObject;
+        T result = caseStatment(statment);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.FUNCTION_OR_METHOD:
+      {
+        FunctionOrMethod functionOrMethod = (FunctionOrMethod)theEObject;
+        T result = caseFunctionOrMethod(functionOrMethod);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -692,13 +643,6 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.STATMENT:
-      {
-        Statment statment = (Statment)theEObject;
-        T result = caseStatment(statment);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case BeeLangPackage.CLOSURE_EXPRESSION:
       {
         ClosureExpression closureExpression = (ClosureExpression)theEObject;
@@ -747,7 +691,15 @@ public class BeeLangSwitch<T>
       {
         Function function = (Function)theEObject;
         T result = caseFunction(function);
-        if (result == null) result = caseStatement(function);
+        if (result == null) result = caseStatment(function);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.METHOD:
+      {
+        Method method = (Method)theEObject;
+        T result = caseMethod(method);
+        if (result == null) result = caseStatement(method);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1654,6 +1606,22 @@ public class BeeLangSwitch<T>
   }
 
   /**
+   * Returns the result of interpreting the object as an instance of '<em>Container Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Container Configuration</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseContainerConfiguration(ContainerConfiguration object)
+  {
+    return null;
+  }
+
+  /**
    * Returns the result of interpreting the object as an instance of '<em>Concern</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -1681,54 +1649,6 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseConcernBlock(ConcernBlock object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Advice</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Advice</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseAdvice(Advice object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Compound Concern</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Compound Concern</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseCompoundConcern(CompoundConcern object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Advice Statement</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Advice Statement</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseAdviceStatement(AdviceStatement object)
   {
     return null;
   }
@@ -1777,102 +1697,6 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseSelector(Selector object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Name Selector</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Name Selector</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseNameSelector(NameSelector object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>This Selector</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>This Selector</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseThisSelector(ThisSelector object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Parent Selector</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Parent Selector</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseParentSelector(ParentSelector object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Children Selector</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Children Selector</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseChildrenSelector(ChildrenSelector object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Ancestor Selector</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Ancestor Selector</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseAncestorSelector(AncestorSelector object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Regexp Selector</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Regexp Selector</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseRegexpSelector(RegexpSelector object)
   {
     return null;
   }
@@ -1953,6 +1777,38 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseExpressionList(ExpressionList object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Statment</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Statment</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseStatment(Statment object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Function Or Method</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Function Or Method</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseFunctionOrMethod(FunctionOrMethod object)
   {
     return null;
   }
@@ -2326,22 +2182,6 @@ public class BeeLangSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Statment</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Statment</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseStatment(Statment object)
-  {
-    return null;
-  }
-
-  /**
    * Returns the result of interpreting the object as an instance of '<em>Closure Expression</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
@@ -2449,6 +2289,22 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseFunction(Function object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Method</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Method</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseMethod(Method object)
   {
     return null;
   }

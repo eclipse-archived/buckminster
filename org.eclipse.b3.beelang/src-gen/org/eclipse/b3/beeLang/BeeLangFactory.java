@@ -359,6 +359,15 @@ public interface BeeLangFactory extends EFactory
   ResolutionStrategy createResolutionStrategy();
 
   /**
+   * Returns a new object of class '<em>Container Configuration</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Container Configuration</em>'.
+   * @generated
+   */
+  ContainerConfiguration createContainerConfiguration();
+
+  /**
    * Returns a new object of class '<em>Concern</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -375,33 +384,6 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   ConcernBlock createConcernBlock();
-
-  /**
-   * Returns a new object of class '<em>Advice</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Advice</em>'.
-   * @generated
-   */
-  Advice createAdvice();
-
-  /**
-   * Returns a new object of class '<em>Compound Concern</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Compound Concern</em>'.
-   * @generated
-   */
-  CompoundConcern createCompoundConcern();
-
-  /**
-   * Returns a new object of class '<em>Advice Statement</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Advice Statement</em>'.
-   * @generated
-   */
-  AdviceStatement createAdviceStatement();
 
   /**
    * Returns a new object of class '<em>Query</em>'.
@@ -429,60 +411,6 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   Selector createSelector();
-
-  /**
-   * Returns a new object of class '<em>Name Selector</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Name Selector</em>'.
-   * @generated
-   */
-  NameSelector createNameSelector();
-
-  /**
-   * Returns a new object of class '<em>This Selector</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>This Selector</em>'.
-   * @generated
-   */
-  ThisSelector createThisSelector();
-
-  /**
-   * Returns a new object of class '<em>Parent Selector</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Parent Selector</em>'.
-   * @generated
-   */
-  ParentSelector createParentSelector();
-
-  /**
-   * Returns a new object of class '<em>Children Selector</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Children Selector</em>'.
-   * @generated
-   */
-  ChildrenSelector createChildrenSelector();
-
-  /**
-   * Returns a new object of class '<em>Ancestor Selector</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Ancestor Selector</em>'.
-   * @generated
-   */
-  AncestorSelector createAncestorSelector();
-
-  /**
-   * Returns a new object of class '<em>Regexp Selector</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Regexp Selector</em>'.
-   * @generated
-   */
-  RegexpSelector createRegexpSelector();
 
   /**
    * Returns a new object of class '<em>Filter</em>'.
@@ -528,6 +456,24 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   ExpressionList createExpressionList();
+
+  /**
+   * Returns a new object of class '<em>Statment</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Statment</em>'.
+   * @generated
+   */
+  Statment createStatment();
+
+  /**
+   * Returns a new object of class '<em>Function Or Method</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Function Or Method</em>'.
+   * @generated
+   */
+  FunctionOrMethod createFunctionOrMethod();
 
   /**
    * Returns a new object of class '<em>Type Param Declaration</em>'.
@@ -737,15 +683,6 @@ public interface BeeLangFactory extends EFactory
   ContextBlock createContextBlock();
 
   /**
-   * Returns a new object of class '<em>Statment</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Statment</em>'.
-   * @generated
-   */
-  Statment createStatment();
-
-  /**
    * Returns a new object of class '<em>Closure Expression</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -807,6 +744,15 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   Function createFunction();
+
+  /**
+   * Returns a new object of class '<em>Method</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Method</em>'.
+   * @generated
+   */
+  Method createMethod();
 
   /**
    * Returns a new object of class '<em>Return Expression</em>'.

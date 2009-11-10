@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getMethods <em>Methods</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getRepositoryConfigurations <em>Repository Configurations</em>}</li>
  *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getPropertySets <em>Property Sets</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.BuildUnit#getContainers <em>Containers</em>}</li>
  * </ul>
  * </p>
  *
@@ -333,5 +334,21 @@ public interface BuildUnit extends EObject
    * @generated
    */
   EList<NamedProperties> getPropertySets();
+
+  /**
+   * Returns the value of the '<em><b>Containers</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.ContainerConfiguration}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Containers</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Containers</em>' containment reference list.
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuildUnit_Containers()
+   * @model containment="true"
+   * @generated
+   */
+  EList<ContainerConfiguration> getContainers();
 
 } // BuildUnit

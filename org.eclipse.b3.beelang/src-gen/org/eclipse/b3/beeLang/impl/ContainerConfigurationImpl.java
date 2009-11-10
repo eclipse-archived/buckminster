@@ -5,11 +5,9 @@
  */
 package org.eclipse.b3.beeLang.impl;
 
-import java.net.URI;
-
 import org.eclipse.b3.beeLang.BeeLangPackage;
+import org.eclipse.b3.beeLang.ContainerConfiguration;
 import org.eclipse.b3.beeLang.ContextBlock;
-import org.eclipse.b3.beeLang.RepositoryDeclaration;
 import org.eclipse.b3.beeLang.TypeRef;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -19,24 +17,25 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Repository Declaration</b></em>'.
+ * An implementation of the model object '<em><b>Container Configuration</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.RepositoryDeclarationImpl#getDocumentation <em>Documentation</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.RepositoryDeclarationImpl#getLocation <em>Location</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.RepositoryDeclarationImpl#getType <em>Type</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.RepositoryDeclarationImpl#getContext <em>Context</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ContainerConfigurationImpl#getDocumentation <em>Documentation</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ContainerConfigurationImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ContainerConfigurationImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.ContainerConfigurationImpl#getContextBlock <em>Context Block</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl implements RepositoryDeclaration
+public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container implements ContainerConfiguration
 {
   /**
    * The default value of the '{@link #getDocumentation() <em>Documentation</em>}' attribute.
@@ -59,24 +58,24 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
   protected String documentation = DOCUMENTATION_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getLocation() <em>Location</em>}' attribute.
+   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getLocation()
+   * @see #getName()
    * @generated
    * @ordered
    */
-  protected static final URI LOCATION_EDEFAULT = null;
+  protected static final String NAME_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getLocation() <em>Location</em>}' attribute.
+   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getLocation()
+   * @see #getName()
    * @generated
    * @ordered
    */
-  protected URI location = LOCATION_EDEFAULT;
+  protected String name = NAME_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
@@ -89,21 +88,21 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
   protected TypeRef type;
 
   /**
-   * The cached value of the '{@link #getContext() <em>Context</em>}' containment reference.
+   * The cached value of the '{@link #getContextBlock() <em>Context Block</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getContext()
+   * @see #getContextBlock()
    * @generated
    * @ordered
    */
-  protected ContextBlock context;
+  protected ContextBlock contextBlock;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected RepositoryDeclarationImpl()
+  protected ContainerConfigurationImpl()
   {
     super();
   }
@@ -116,7 +115,7 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.REPOSITORY_DECLARATION;
+    return BeeLangPackage.Literals.CONTAINER_CONFIGURATION;
   }
 
   /**
@@ -139,7 +138,7 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
     String oldDocumentation = documentation;
     documentation = newDocumentation;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REPOSITORY_DECLARATION__DOCUMENTATION, oldDocumentation, documentation));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CONTAINER_CONFIGURATION__DOCUMENTATION, oldDocumentation, documentation));
   }
 
   /**
@@ -147,9 +146,9 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public URI getLocation()
+  public String getName()
   {
-    return location;
+    return name;
   }
 
   /**
@@ -157,12 +156,12 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setLocation(URI newLocation)
+  public void setName(String newName)
   {
-    URI oldLocation = location;
-    location = newLocation;
+    String oldName = name;
+    name = newName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REPOSITORY_DECLARATION__LOCATION, oldLocation, location));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CONTAINER_CONFIGURATION__NAME, oldName, name));
   }
 
   /**
@@ -186,7 +185,7 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
     type = newType;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.REPOSITORY_DECLARATION__TYPE, oldType, newType);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.CONTAINER_CONFIGURATION__TYPE, oldType, newType);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -203,14 +202,14 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
     {
       NotificationChain msgs = null;
       if (type != null)
-        msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REPOSITORY_DECLARATION__TYPE, null, msgs);
+        msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CONTAINER_CONFIGURATION__TYPE, null, msgs);
       if (newType != null)
-        msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REPOSITORY_DECLARATION__TYPE, null, msgs);
+        msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CONTAINER_CONFIGURATION__TYPE, null, msgs);
       msgs = basicSetType(newType, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REPOSITORY_DECLARATION__TYPE, newType, newType));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CONTAINER_CONFIGURATION__TYPE, newType, newType));
   }
 
   /**
@@ -218,9 +217,9 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public ContextBlock getContext()
+  public ContextBlock getContextBlock()
   {
-    return context;
+    return contextBlock;
   }
 
   /**
@@ -228,13 +227,13 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetContext(ContextBlock newContext, NotificationChain msgs)
+  public NotificationChain basicSetContextBlock(ContextBlock newContextBlock, NotificationChain msgs)
   {
-    ContextBlock oldContext = context;
-    context = newContext;
+    ContextBlock oldContextBlock = contextBlock;
+    contextBlock = newContextBlock;
     if (eNotificationRequired())
     {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.REPOSITORY_DECLARATION__CONTEXT, oldContext, newContext);
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.CONTAINER_CONFIGURATION__CONTEXT_BLOCK, oldContextBlock, newContextBlock);
       if (msgs == null) msgs = notification; else msgs.add(notification);
     }
     return msgs;
@@ -245,20 +244,20 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setContext(ContextBlock newContext)
+  public void setContextBlock(ContextBlock newContextBlock)
   {
-    if (newContext != context)
+    if (newContextBlock != contextBlock)
     {
       NotificationChain msgs = null;
-      if (context != null)
-        msgs = ((InternalEObject)context).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REPOSITORY_DECLARATION__CONTEXT, null, msgs);
-      if (newContext != null)
-        msgs = ((InternalEObject)newContext).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.REPOSITORY_DECLARATION__CONTEXT, null, msgs);
-      msgs = basicSetContext(newContext, msgs);
+      if (contextBlock != null)
+        msgs = ((InternalEObject)contextBlock).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CONTAINER_CONFIGURATION__CONTEXT_BLOCK, null, msgs);
+      if (newContextBlock != null)
+        msgs = ((InternalEObject)newContextBlock).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.CONTAINER_CONFIGURATION__CONTEXT_BLOCK, null, msgs);
+      msgs = basicSetContextBlock(newContextBlock, msgs);
       if (msgs != null) msgs.dispatch();
     }
     else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.REPOSITORY_DECLARATION__CONTEXT, newContext, newContext));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.CONTAINER_CONFIGURATION__CONTEXT_BLOCK, newContextBlock, newContextBlock));
   }
 
   /**
@@ -271,10 +270,10 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
   {
     switch (featureID)
     {
-      case BeeLangPackage.REPOSITORY_DECLARATION__TYPE:
+      case BeeLangPackage.CONTAINER_CONFIGURATION__TYPE:
         return basicSetType(null, msgs);
-      case BeeLangPackage.REPOSITORY_DECLARATION__CONTEXT:
-        return basicSetContext(null, msgs);
+      case BeeLangPackage.CONTAINER_CONFIGURATION__CONTEXT_BLOCK:
+        return basicSetContextBlock(null, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -289,14 +288,14 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
   {
     switch (featureID)
     {
-      case BeeLangPackage.REPOSITORY_DECLARATION__DOCUMENTATION:
+      case BeeLangPackage.CONTAINER_CONFIGURATION__DOCUMENTATION:
         return getDocumentation();
-      case BeeLangPackage.REPOSITORY_DECLARATION__LOCATION:
-        return getLocation();
-      case BeeLangPackage.REPOSITORY_DECLARATION__TYPE:
+      case BeeLangPackage.CONTAINER_CONFIGURATION__NAME:
+        return getName();
+      case BeeLangPackage.CONTAINER_CONFIGURATION__TYPE:
         return getType();
-      case BeeLangPackage.REPOSITORY_DECLARATION__CONTEXT:
-        return getContext();
+      case BeeLangPackage.CONTAINER_CONFIGURATION__CONTEXT_BLOCK:
+        return getContextBlock();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -311,17 +310,17 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
   {
     switch (featureID)
     {
-      case BeeLangPackage.REPOSITORY_DECLARATION__DOCUMENTATION:
+      case BeeLangPackage.CONTAINER_CONFIGURATION__DOCUMENTATION:
         setDocumentation((String)newValue);
         return;
-      case BeeLangPackage.REPOSITORY_DECLARATION__LOCATION:
-        setLocation((URI)newValue);
+      case BeeLangPackage.CONTAINER_CONFIGURATION__NAME:
+        setName((String)newValue);
         return;
-      case BeeLangPackage.REPOSITORY_DECLARATION__TYPE:
+      case BeeLangPackage.CONTAINER_CONFIGURATION__TYPE:
         setType((TypeRef)newValue);
         return;
-      case BeeLangPackage.REPOSITORY_DECLARATION__CONTEXT:
-        setContext((ContextBlock)newValue);
+      case BeeLangPackage.CONTAINER_CONFIGURATION__CONTEXT_BLOCK:
+        setContextBlock((ContextBlock)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -337,17 +336,17 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
   {
     switch (featureID)
     {
-      case BeeLangPackage.REPOSITORY_DECLARATION__DOCUMENTATION:
+      case BeeLangPackage.CONTAINER_CONFIGURATION__DOCUMENTATION:
         setDocumentation(DOCUMENTATION_EDEFAULT);
         return;
-      case BeeLangPackage.REPOSITORY_DECLARATION__LOCATION:
-        setLocation(LOCATION_EDEFAULT);
+      case BeeLangPackage.CONTAINER_CONFIGURATION__NAME:
+        setName(NAME_EDEFAULT);
         return;
-      case BeeLangPackage.REPOSITORY_DECLARATION__TYPE:
+      case BeeLangPackage.CONTAINER_CONFIGURATION__TYPE:
         setType((TypeRef)null);
         return;
-      case BeeLangPackage.REPOSITORY_DECLARATION__CONTEXT:
-        setContext((ContextBlock)null);
+      case BeeLangPackage.CONTAINER_CONFIGURATION__CONTEXT_BLOCK:
+        setContextBlock((ContextBlock)null);
         return;
     }
     super.eUnset(featureID);
@@ -363,14 +362,14 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
   {
     switch (featureID)
     {
-      case BeeLangPackage.REPOSITORY_DECLARATION__DOCUMENTATION:
+      case BeeLangPackage.CONTAINER_CONFIGURATION__DOCUMENTATION:
         return DOCUMENTATION_EDEFAULT == null ? documentation != null : !DOCUMENTATION_EDEFAULT.equals(documentation);
-      case BeeLangPackage.REPOSITORY_DECLARATION__LOCATION:
-        return LOCATION_EDEFAULT == null ? location != null : !LOCATION_EDEFAULT.equals(location);
-      case BeeLangPackage.REPOSITORY_DECLARATION__TYPE:
+      case BeeLangPackage.CONTAINER_CONFIGURATION__NAME:
+        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case BeeLangPackage.CONTAINER_CONFIGURATION__TYPE:
         return type != null;
-      case BeeLangPackage.REPOSITORY_DECLARATION__CONTEXT:
-        return context != null;
+      case BeeLangPackage.CONTAINER_CONFIGURATION__CONTEXT_BLOCK:
+        return contextBlock != null;
     }
     return super.eIsSet(featureID);
   }
@@ -388,10 +387,10 @@ public class RepositoryDeclarationImpl extends RepositoryConfigurationImpl imple
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (documentation: ");
     result.append(documentation);
-    result.append(", location: ");
-    result.append(location);
+    result.append(", name: ");
+    result.append(name);
     result.append(')');
     return result.toString();
   }
 
-} //RepositoryDeclarationImpl
+} //ContainerConfigurationImpl

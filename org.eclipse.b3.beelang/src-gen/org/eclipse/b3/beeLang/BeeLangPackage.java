@@ -363,13 +363,22 @@ public interface BeeLangPackage extends EPackage
   int BUILD_UNIT__PROPERTY_SETS = 14;
 
   /**
+   * The feature id for the '<em><b>Containers</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int BUILD_UNIT__CONTAINERS = 15;
+
+  /**
    * The number of structural features of the '<em>Build Unit</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int BUILD_UNIT_FEATURE_COUNT = 15;
+  int BUILD_UNIT_FEATURE_COUNT = 16;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ProvidedCapabilityImpl <em>Provided Capability</em>}' class.
@@ -1420,22 +1429,31 @@ public interface BeeLangPackage extends EPackage
   int REPOSITORY_DECLARATION = 35;
 
   /**
+   * The feature id for the '<em><b>Documentation</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int REPOSITORY_DECLARATION__DOCUMENTATION = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 0;
+
+  /**
    * The feature id for the '<em><b>Location</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REPOSITORY_DECLARATION__LOCATION = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 0;
+  int REPOSITORY_DECLARATION__LOCATION = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 1;
 
   /**
-   * The feature id for the '<em><b>Resolver Class</b></em>' attribute.
+   * The feature id for the '<em><b>Type</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REPOSITORY_DECLARATION__RESOLVER_CLASS = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 1;
+  int REPOSITORY_DECLARATION__TYPE = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 2;
 
   /**
    * The feature id for the '<em><b>Context</b></em>' containment reference.
@@ -1444,7 +1462,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REPOSITORY_DECLARATION__CONTEXT = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 2;
+  int REPOSITORY_DECLARATION__CONTEXT = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 3;
 
   /**
    * The number of structural features of the '<em>Repository Declaration</em>' class.
@@ -1453,7 +1471,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REPOSITORY_DECLARATION_FEATURE_COUNT = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 3;
+  int REPOSITORY_DECLARATION_FEATURE_COUNT = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 4;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ResolutionStrategyImpl <em>Resolution Strategy</em>}' class.
@@ -1493,6 +1511,61 @@ public interface BeeLangPackage extends EPackage
   int RESOLUTION_STRATEGY_FEATURE_COUNT = REPOSITORY_CONFIGURATION_FEATURE_COUNT + 2;
 
   /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.ContainerConfigurationImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getContainerConfiguration()
+   * @generated
+   */
+  int CONTAINER_CONFIGURATION = 37;
+
+  /**
+   * The feature id for the '<em><b>Documentation</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTAINER_CONFIGURATION__DOCUMENTATION = 0;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTAINER_CONFIGURATION__NAME = 1;
+
+  /**
+   * The feature id for the '<em><b>Type</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTAINER_CONFIGURATION__TYPE = 2;
+
+  /**
+   * The feature id for the '<em><b>Context Block</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTAINER_CONFIGURATION__CONTEXT_BLOCK = 3;
+
+  /**
+   * The number of structural features of the '<em>Container Configuration</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONTAINER_CONFIGURATION_FEATURE_COUNT = 4;
+
+  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ConcernImpl <em>Concern</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1500,7 +1573,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getConcern()
    * @generated
    */
-  int CONCERN = 37;
+  int CONCERN = 38;
 
   /**
    * The feature id for the '<em><b>Documentation</b></em>' attribute.
@@ -1546,7 +1619,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getConcernBlock()
    * @generated
    */
-  int CONCERN_BLOCK = 38;
+  int CONCERN_BLOCK = 39;
 
   /**
    * The feature id for the '<em><b>Super Concerns</b></em>' attribute list.
@@ -1585,108 +1658,6 @@ public interface BeeLangPackage extends EPackage
   int CONCERN_BLOCK_FEATURE_COUNT = 3;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.AdviceImpl <em>Advice</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.AdviceImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdvice()
-   * @generated
-   */
-  int ADVICE = 39;
-
-  /**
-   * The number of structural features of the '<em>Advice</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ADVICE_FEATURE_COUNT = 0;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.CompoundConcernImpl <em>Compound Concern</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.CompoundConcernImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCompoundConcern()
-   * @generated
-   */
-  int COMPOUND_CONCERN = 40;
-
-  /**
-   * The feature id for the '<em><b>Advice</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int COMPOUND_CONCERN__ADVICE = ADVICE_FEATURE_COUNT + 0;
-
-  /**
-   * The number of structural features of the '<em>Compound Concern</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int COMPOUND_CONCERN_FEATURE_COUNT = ADVICE_FEATURE_COUNT + 1;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.AdviceStatementImpl <em>Advice Statement</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.AdviceStatementImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdviceStatement()
-   * @generated
-   */
-  int ADVICE_STATEMENT = 41;
-
-  /**
-   * The feature id for the '<em><b>Path</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ADVICE_STATEMENT__PATH = 0;
-
-  /**
-   * The feature id for the '<em><b>Op</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ADVICE_STATEMENT__OP = 1;
-
-  /**
-   * The feature id for the '<em><b>Value</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ADVICE_STATEMENT__VALUE = 2;
-
-  /**
-   * The feature id for the '<em><b>Advice</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ADVICE_STATEMENT__ADVICE = 3;
-
-  /**
-   * The number of structural features of the '<em>Advice Statement</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ADVICE_STATEMENT_FEATURE_COUNT = 4;
-
-  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.QueryImpl <em>Query</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1694,7 +1665,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getQuery()
    * @generated
    */
-  int QUERY = 42;
+  int QUERY = 40;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -1722,7 +1693,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getQueryPath()
    * @generated
    */
-  int QUERY_PATH = 43;
+  int QUERY_PATH = 41;
 
   /**
    * The feature id for the '<em><b>Absolute</b></em>' attribute.
@@ -1759,62 +1730,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSelector()
    * @generated
    */
-  int SELECTOR = 44;
-
-  /**
-   * The feature id for the '<em><b>Selector</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int SELECTOR__SELECTOR = 0;
-
-  /**
-   * The feature id for the '<em><b>Predicate</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int SELECTOR__PREDICATE = 1;
-
-  /**
-   * The number of structural features of the '<em>Selector</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int SELECTOR_FEATURE_COUNT = 2;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.NameSelectorImpl <em>Name Selector</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.NameSelectorImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNameSelector()
-   * @generated
-   */
-  int NAME_SELECTOR = 45;
-
-  /**
-   * The feature id for the '<em><b>Selector</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int NAME_SELECTOR__SELECTOR = SELECTOR__SELECTOR;
-
-  /**
-   * The feature id for the '<em><b>Predicate</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int NAME_SELECTOR__PREDICATE = SELECTOR__PREDICATE;
+  int SELECTOR = 42;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1823,192 +1739,16 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int NAME_SELECTOR__NAME = SELECTOR_FEATURE_COUNT + 0;
+  int SELECTOR__NAME = 0;
 
   /**
-   * The number of structural features of the '<em>Name Selector</em>' class.
+   * The feature id for the '<em><b>Op</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int NAME_SELECTOR_FEATURE_COUNT = SELECTOR_FEATURE_COUNT + 1;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ThisSelectorImpl <em>This Selector</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.ThisSelectorImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getThisSelector()
-   * @generated
-   */
-  int THIS_SELECTOR = 46;
-
-  /**
-   * The feature id for the '<em><b>Selector</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int THIS_SELECTOR__SELECTOR = SELECTOR__SELECTOR;
-
-  /**
-   * The feature id for the '<em><b>Predicate</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int THIS_SELECTOR__PREDICATE = SELECTOR__PREDICATE;
-
-  /**
-   * The number of structural features of the '<em>This Selector</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int THIS_SELECTOR_FEATURE_COUNT = SELECTOR_FEATURE_COUNT + 0;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ParentSelectorImpl <em>Parent Selector</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.ParentSelectorImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getParentSelector()
-   * @generated
-   */
-  int PARENT_SELECTOR = 47;
-
-  /**
-   * The feature id for the '<em><b>Selector</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PARENT_SELECTOR__SELECTOR = SELECTOR__SELECTOR;
-
-  /**
-   * The feature id for the '<em><b>Predicate</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PARENT_SELECTOR__PREDICATE = SELECTOR__PREDICATE;
-
-  /**
-   * The number of structural features of the '<em>Parent Selector</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int PARENT_SELECTOR_FEATURE_COUNT = SELECTOR_FEATURE_COUNT + 0;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ChildrenSelectorImpl <em>Children Selector</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.ChildrenSelectorImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getChildrenSelector()
-   * @generated
-   */
-  int CHILDREN_SELECTOR = 48;
-
-  /**
-   * The feature id for the '<em><b>Selector</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int CHILDREN_SELECTOR__SELECTOR = SELECTOR__SELECTOR;
-
-  /**
-   * The feature id for the '<em><b>Predicate</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int CHILDREN_SELECTOR__PREDICATE = SELECTOR__PREDICATE;
-
-  /**
-   * The number of structural features of the '<em>Children Selector</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int CHILDREN_SELECTOR_FEATURE_COUNT = SELECTOR_FEATURE_COUNT + 0;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.AncestorSelectorImpl <em>Ancestor Selector</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.AncestorSelectorImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAncestorSelector()
-   * @generated
-   */
-  int ANCESTOR_SELECTOR = 49;
-
-  /**
-   * The feature id for the '<em><b>Selector</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ANCESTOR_SELECTOR__SELECTOR = SELECTOR__SELECTOR;
-
-  /**
-   * The feature id for the '<em><b>Predicate</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ANCESTOR_SELECTOR__PREDICATE = SELECTOR__PREDICATE;
-
-  /**
-   * The number of structural features of the '<em>Ancestor Selector</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ANCESTOR_SELECTOR_FEATURE_COUNT = SELECTOR_FEATURE_COUNT + 0;
-
-  /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.RegexpSelectorImpl <em>Regexp Selector</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.RegexpSelectorImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRegexpSelector()
-   * @generated
-   */
-  int REGEXP_SELECTOR = 50;
-
-  /**
-   * The feature id for the '<em><b>Selector</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int REGEXP_SELECTOR__SELECTOR = SELECTOR__SELECTOR;
-
-  /**
-   * The feature id for the '<em><b>Predicate</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int REGEXP_SELECTOR__PREDICATE = SELECTOR__PREDICATE;
+  int SELECTOR__OP = 1;
 
   /**
    * The feature id for the '<em><b>Pattern</b></em>' attribute.
@@ -2017,16 +1757,25 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int REGEXP_SELECTOR__PATTERN = SELECTOR_FEATURE_COUNT + 0;
+  int SELECTOR__PATTERN = 2;
 
   /**
-   * The number of structural features of the '<em>Regexp Selector</em>' class.
+   * The feature id for the '<em><b>Predicate</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int REGEXP_SELECTOR_FEATURE_COUNT = SELECTOR_FEATURE_COUNT + 1;
+  int SELECTOR__PREDICATE = 3;
+
+  /**
+   * The number of structural features of the '<em>Selector</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SELECTOR_FEATURE_COUNT = 4;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.FilterImpl <em>Filter</em>}' class.
@@ -2036,7 +1785,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFilter()
    * @generated
    */
-  int FILTER = 51;
+  int FILTER = 43;
 
   /**
    * The feature id for the '<em><b>Predicate</b></em>' containment reference.
@@ -2064,7 +1813,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPreCondition()
    * @generated
    */
-  int PRE_CONDITION = 52;
+  int PRE_CONDITION = 44;
 
   /**
    * The feature id for the '<em><b>Asserts</b></em>' containment reference list.
@@ -2092,7 +1841,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPostCondition()
    * @generated
    */
-  int POST_CONDITION = 53;
+  int POST_CONDITION = 45;
 
   /**
    * The feature id for the '<em><b>Asserts</b></em>' containment reference list.
@@ -2120,7 +1869,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssertionExpression()
    * @generated
    */
-  int ASSERTION_EXPRESSION = 54;
+  int ASSERTION_EXPRESSION = 46;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -2157,7 +1906,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpressionList()
    * @generated
    */
-  int EXPRESSION_LIST = 55;
+  int EXPRESSION_LIST = 47;
 
   /**
    * The feature id for the '<em><b>Expressions</b></em>' containment reference list.
@@ -2178,6 +1927,143 @@ public interface BeeLangPackage extends EPackage
   int EXPRESSION_LIST_FEATURE_COUNT = 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.StatmentImpl <em>Statment</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.StatmentImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStatment()
+   * @generated
+   */
+  int STATMENT = 48;
+
+  /**
+   * The number of structural features of the '<em>Statment</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int STATMENT_FEATURE_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.FunctionOrMethodImpl <em>Function Or Method</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.FunctionOrMethodImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFunctionOrMethod()
+   * @generated
+   */
+  int FUNCTION_OR_METHOD = 49;
+
+  /**
+   * The feature id for the '<em><b>Documentation</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__DOCUMENTATION = 0;
+
+  /**
+   * The feature id for the '<em><b>Visibility</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__VISIBILITY = 1;
+
+  /**
+   * The feature id for the '<em><b>Execution Mode</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__EXECUTION_MODE = 2;
+
+  /**
+   * The feature id for the '<em><b>Final</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__FINAL = 3;
+
+  /**
+   * The feature id for the '<em><b>Cached</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__CACHED = 4;
+
+  /**
+   * The feature id for the '<em><b>Form</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__FORM = 5;
+
+  /**
+   * The feature id for the '<em><b>Type</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__TYPE = 6;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__NAME = 7;
+
+  /**
+   * The feature id for the '<em><b>Type Params</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__TYPE_PARAMS = 8;
+
+  /**
+   * The feature id for the '<em><b>Params</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__PARAMS = 9;
+
+  /**
+   * The feature id for the '<em><b>Body</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD__BODY = 10;
+
+  /**
+   * The number of structural features of the '<em>Function Or Method</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int FUNCTION_OR_METHOD_FEATURE_COUNT = 11;
+
+  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.TypeParamDeclarationImpl <em>Type Param Declaration</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2185,7 +2071,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTypeParamDeclaration()
    * @generated
    */
-  int TYPE_PARAM_DECLARATION = 56;
+  int TYPE_PARAM_DECLARATION = 50;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference list.
@@ -2222,7 +2108,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getIfExpressionTail()
    * @generated
    */
-  int IF_EXPRESSION_TAIL = 71;
+  int IF_EXPRESSION_TAIL = 65;
 
   /**
    * The number of structural features of the '<em>If Expression Tail</em>' class.
@@ -2241,7 +2127,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpression()
    * @generated
    */
-  int EXPRESSION = 57;
+  int EXPRESSION = 51;
 
   /**
    * The number of structural features of the '<em>Expression</em>' class.
@@ -2260,7 +2146,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRuleTypeParam()
    * @generated
    */
-  int RULE_TYPE_PARAM = 61;
+  int RULE_TYPE_PARAM = 55;
 
   /**
    * The number of structural features of the '<em>Rule Type Param</em>' class.
@@ -2279,7 +2165,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRuleTypeRefParam()
    * @generated
    */
-  int RULE_TYPE_REF_PARAM = 62;
+  int RULE_TYPE_REF_PARAM = 56;
 
   /**
    * The number of structural features of the '<em>Rule Type Ref Param</em>' class.
@@ -2298,7 +2184,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTypeRef()
    * @generated
    */
-  int TYPE_REF = 58;
+  int TYPE_REF = 52;
 
   /**
    * The number of structural features of the '<em>Type Ref</em>' class.
@@ -2317,7 +2203,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSimpleTypeRef()
    * @generated
    */
-  int SIMPLE_TYPE_REF = 59;
+  int SIMPLE_TYPE_REF = 53;
 
   /**
    * The feature id for the '<em><b>Type Name</b></em>' attribute list.
@@ -2354,7 +2240,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getClosureTypeRef()
    * @generated
    */
-  int CLOSURE_TYPE_REF = 60;
+  int CLOSURE_TYPE_REF = 54;
 
   /**
    * The feature id for the '<em><b>Parameter Types</b></em>' containment reference list.
@@ -2391,7 +2277,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getWildcardRefParam()
    * @generated
    */
-  int WILDCARD_REF_PARAM = 63;
+  int WILDCARD_REF_PARAM = 57;
 
   /**
    * The feature id for the '<em><b>Extends</b></em>' containment reference list.
@@ -2428,7 +2314,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getUnaryExpression()
    * @generated
    */
-  int UNARY_EXPRESSION = 64;
+  int UNARY_EXPRESSION = 58;
 
   /**
    * The number of structural features of the '<em>Unary Expression</em>' class.
@@ -2447,7 +2333,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpresion()
    * @generated
    */
-  int EXPRESION = 65;
+  int EXPRESION = 59;
 
   /**
    * The number of structural features of the '<em>Expresion</em>' class.
@@ -2466,7 +2352,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getTryCatchExpression()
    * @generated
    */
-  int TRY_CATCH_EXPRESSION = 66;
+  int TRY_CATCH_EXPRESSION = 60;
 
   /**
    * The feature id for the '<em><b>Try Block</b></em>' containment reference.
@@ -2512,7 +2398,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCatchBlock()
    * @generated
    */
-  int CATCH_BLOCK = 67;
+  int CATCH_BLOCK = 61;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2558,7 +2444,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFinallyBlock()
    * @generated
    */
-  int FINALLY_BLOCK = 68;
+  int FINALLY_BLOCK = 62;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -2586,7 +2472,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSwitchExpression()
    * @generated
    */
-  int SWITCH_EXPRESSION = 69;
+  int SWITCH_EXPRESSION = 63;
 
   /**
    * The feature id for the '<em><b>Switch Expr</b></em>' containment reference.
@@ -2623,7 +2509,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCase()
    * @generated
    */
-  int CASE = 70;
+  int CASE = 64;
 
   /**
    * The feature id for the '<em><b>Condition</b></em>' containment reference.
@@ -2660,7 +2546,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFeatureCall()
    * @generated
    */
-  int FEATURE_CALL = 72;
+  int FEATURE_CALL = 66;
 
   /**
    * The feature id for the '<em><b>Target</b></em>' containment reference.
@@ -2697,7 +2583,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getOperationCall()
    * @generated
    */
-  int OPERATION_CALL = 73;
+  int OPERATION_CALL = 67;
 
   /**
    * The feature id for the '<em><b>Target</b></em>' containment reference.
@@ -2770,7 +2656,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getContext()
    * @generated
    */
-  int CONTEXT = 74;
+  int CONTEXT = 68;
 
   /**
    * The feature id for the '<em><b>Selector</b></em>' containment reference.
@@ -2807,7 +2693,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getContextSelector()
    * @generated
    */
-  int CONTEXT_SELECTOR = 75;
+  int CONTEXT_SELECTOR = 69;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2835,7 +2721,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpressionSelector()
    * @generated
    */
-  int EXPRESSION_SELECTOR = 76;
+  int EXPRESSION_SELECTOR = 70;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2872,7 +2758,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getUnitSelector()
    * @generated
    */
-  int UNIT_SELECTOR = 77;
+  int UNIT_SELECTOR = 71;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -2936,7 +2822,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getContextBlock()
    * @generated
    */
-  int CONTEXT_BLOCK = 78;
+  int CONTEXT_BLOCK = 72;
 
   /**
    * The feature id for the '<em><b>Statements</b></em>' containment reference list.
@@ -2957,25 +2843,6 @@ public interface BeeLangPackage extends EPackage
   int CONTEXT_BLOCK_FEATURE_COUNT = 1;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.StatmentImpl <em>Statment</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.StatmentImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStatment()
-   * @generated
-   */
-  int STATMENT = 79;
-
-  /**
-   * The number of structural features of the '<em>Statment</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int STATMENT_FEATURE_COUNT = 0;
-
-  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ClosureExpressionImpl <em>Closure Expression</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -2983,7 +2850,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getClosureExpression()
    * @generated
    */
-  int CLOSURE_EXPRESSION = 80;
+  int CLOSURE_EXPRESSION = 73;
 
   /**
    * The feature id for the '<em><b>Parameters</b></em>' containment reference list.
@@ -3020,7 +2887,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFeature()
    * @generated
    */
-  int FEATURE = 81;
+  int FEATURE = 74;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -3057,7 +2924,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersion()
    * @generated
    */
-  int VERSION = 82;
+  int VERSION = 75;
 
   /**
    * The feature id for the '<em><b>Original</b></em>' attribute.
@@ -3085,7 +2952,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVersionRange()
    * @generated
    */
-  int VERSION_RANGE = 83;
+  int VERSION_RANGE = 76;
 
   /**
    * The feature id for the '<em><b>Min Limit</b></em>' attribute.
@@ -3140,7 +3007,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBuilder()
    * @generated
    */
-  int BUILDER = 84;
+  int BUILDER = 77;
 
   /**
    * The feature id for the '<em><b>Documentation</b></em>' attribute.
@@ -3285,7 +3152,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVarargParameterDeclaration()
    * @generated
    */
-  int VARARG_PARAMETER_DECLARATION = 85;
+  int VARARG_PARAMETER_DECLARATION = 78;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -3322,97 +3189,16 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFunction()
    * @generated
    */
-  int FUNCTION = 86;
+  int FUNCTION = 79;
 
   /**
-   * The feature id for the '<em><b>Documentation</b></em>' attribute.
+   * The feature id for the '<em><b>Func</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int FUNCTION__DOCUMENTATION = STATEMENT_FEATURE_COUNT + 0;
-
-  /**
-   * The feature id for the '<em><b>Visibility</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FUNCTION__VISIBILITY = STATEMENT_FEATURE_COUNT + 1;
-
-  /**
-   * The feature id for the '<em><b>Execution Mode</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FUNCTION__EXECUTION_MODE = STATEMENT_FEATURE_COUNT + 2;
-
-  /**
-   * The feature id for the '<em><b>Final</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FUNCTION__FINAL = STATEMENT_FEATURE_COUNT + 3;
-
-  /**
-   * The feature id for the '<em><b>Cached</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FUNCTION__CACHED = STATEMENT_FEATURE_COUNT + 4;
-
-  /**
-   * The feature id for the '<em><b>Type</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FUNCTION__TYPE = STATEMENT_FEATURE_COUNT + 5;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FUNCTION__NAME = STATEMENT_FEATURE_COUNT + 6;
-
-  /**
-   * The feature id for the '<em><b>Type Params</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FUNCTION__TYPE_PARAMS = STATEMENT_FEATURE_COUNT + 7;
-
-  /**
-   * The feature id for the '<em><b>Params</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FUNCTION__PARAMS = STATEMENT_FEATURE_COUNT + 8;
-
-  /**
-   * The feature id for the '<em><b>Body</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FUNCTION__BODY = STATEMENT_FEATURE_COUNT + 9;
+  int FUNCTION__FUNC = STATMENT_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>Function</em>' class.
@@ -3421,7 +3207,35 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int FUNCTION_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 10;
+  int FUNCTION_FEATURE_COUNT = STATMENT_FEATURE_COUNT + 1;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.MethodImpl <em>Method</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.MethodImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getMethod()
+   * @generated
+   */
+  int METHOD = 80;
+
+  /**
+   * The feature id for the '<em><b>Method</b></em>' containment reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int METHOD__METHOD = STATEMENT_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Method</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int METHOD_FEATURE_COUNT = STATEMENT_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.ReturnExpressionImpl <em>Return Expression</em>}' class.
@@ -3431,7 +3245,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getReturnExpression()
    * @generated
    */
-  int RETURN_EXPRESSION = 87;
+  int RETURN_EXPRESSION = 81;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -3459,7 +3273,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssignmentOperation()
    * @generated
    */
-  int ASSIGNMENT_OPERATION = 88;
+  int ASSIGNMENT_OPERATION = 82;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -3505,7 +3319,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVarDeclaration()
    * @generated
    */
-  int VAR_DECLARATION = 89;
+  int VAR_DECLARATION = 83;
 
   /**
    * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -3542,7 +3356,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBooleanOperation()
    * @generated
    */
-  int BOOLEAN_OPERATION = 90;
+  int BOOLEAN_OPERATION = 84;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -3588,7 +3402,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRelationalOperation()
    * @generated
    */
-  int RELATIONAL_OPERATION = 91;
+  int RELATIONAL_OPERATION = 85;
 
   /**
    * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -3634,7 +3448,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSetOperationCall()
    * @generated
    */
-  int SET_OPERATION_CALL = 92;
+  int SET_OPERATION_CALL = 86;
 
   /**
    * The feature id for the '<em><b>Params</b></em>' containment reference list.
@@ -3671,7 +3485,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getUnaryOperation()
    * @generated
    */
-  int UNARY_OPERATION = 93;
+  int UNARY_OPERATION = 87;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -3708,7 +3522,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAtCall()
    * @generated
    */
-  int AT_CALL = 94;
+  int AT_CALL = 88;
 
   /**
    * The feature id for the '<em><b>Target</b></em>' containment reference.
@@ -3754,7 +3568,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getWithClauseExpression()
    * @generated
    */
-  int WITH_CLAUSE_EXPRESSION = 95;
+  int WITH_CLAUSE_EXPRESSION = 89;
 
   /**
    * The feature id for the '<em><b>Withclause</b></em>' containment reference.
@@ -3791,7 +3605,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getWithContextExpression()
    * @generated
    */
-  int WITH_CONTEXT_EXPRESSION = 96;
+  int WITH_CONTEXT_EXPRESSION = 90;
 
   /**
    * The feature id for the '<em><b>Context</b></em>' containment reference.
@@ -3828,7 +3642,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getWildcardExpression()
    * @generated
    */
-  int WILDCARD_EXPRESSION = 97;
+  int WILDCARD_EXPRESSION = 91;
 
   /**
    * The number of structural features of the '<em>Wildcard Expression</em>' class.
@@ -3847,7 +3661,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getThrowExpression()
    * @generated
    */
-  int THROW_EXPRESSION = 98;
+  int THROW_EXPRESSION = 92;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference.
@@ -3875,7 +3689,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBlockExpression()
    * @generated
    */
-  int BLOCK_EXPRESSION = 99;
+  int BLOCK_EXPRESSION = 93;
 
   /**
    * The feature id for the '<em><b>Expr</b></em>' containment reference list.
@@ -3903,7 +3717,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getIfExpression()
    * @generated
    */
-  int IF_EXPRESSION = 100;
+  int IF_EXPRESSION = 94;
 
   /**
    * The feature id for the '<em><b>Cond</b></em>' containment reference.
@@ -3949,7 +3763,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getElseIfExpression()
    * @generated
    */
-  int ELSE_IF_EXPRESSION = 101;
+  int ELSE_IF_EXPRESSION = 95;
 
   /**
    * The feature id for the '<em><b>Condition</b></em>' containment reference.
@@ -3986,7 +3800,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getElseExpression()
    * @generated
    */
-  int ELSE_EXPRESSION = 102;
+  int ELSE_EXPRESSION = 96;
 
   /**
    * The feature id for the '<em><b>Value</b></em>' containment reference.
@@ -4014,7 +3828,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertyValue()
    * @generated
    */
-  int PROPERTY_VALUE = 103;
+  int PROPERTY_VALUE = 97;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -4042,7 +3856,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVariableValue()
    * @generated
    */
-  int VARIABLE_VALUE = 104;
+  int VARIABLE_VALUE = 98;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -4070,7 +3884,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getKeywordVariable()
    * @generated
    */
-  int KEYWORD_VARIABLE = 105;
+  int KEYWORD_VARIABLE = 99;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -4098,7 +3912,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCreatorCall()
    * @generated
    */
-  int CREATOR_CALL = 106;
+  int CREATOR_CALL = 100;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -4162,7 +3976,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExpressionStatement()
    * @generated
    */
-  int EXPRESSION_STATEMENT = 107;
+  int EXPRESSION_STATEMENT = 101;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' containment reference.
@@ -4190,7 +4004,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertiesStatement()
    * @generated
    */
-  int PROPERTIES_STATEMENT = 108;
+  int PROPERTIES_STATEMENT = 102;
 
   /**
    * The feature id for the '<em><b>Properties</b></em>' containment reference.
@@ -4218,7 +4032,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getLiteralList()
    * @generated
    */
-  int LITERAL_LIST = 109;
+  int LITERAL_LIST = 103;
 
   /**
    * The feature id for the '<em><b>Element</b></em>' containment reference list.
@@ -4255,7 +4069,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getLiteralMap()
    * @generated
    */
-  int LITERAL_MAP = 110;
+  int LITERAL_MAP = 104;
 
   /**
    * The feature id for the '<em><b>Features</b></em>' containment reference list.
@@ -4301,7 +4115,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getLiteralFunction()
    * @generated
    */
-  int LITERAL_FUNCTION = 111;
+  int LITERAL_FUNCTION = 105;
 
   /**
    * The feature id for the '<em><b>Closure</b></em>' containment reference.
@@ -4329,7 +4143,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getBooleanLiteral()
    * @generated
    */
-  int BOOLEAN_LITERAL = 112;
+  int BOOLEAN_LITERAL = 106;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4357,7 +4171,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getIntegerLiteral()
    * @generated
    */
-  int INTEGER_LITERAL = 113;
+  int INTEGER_LITERAL = 107;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4385,7 +4199,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNullLiteral()
    * @generated
    */
-  int NULL_LITERAL = 114;
+  int NULL_LITERAL = 108;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4413,7 +4227,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getThisLiteral()
    * @generated
    */
-  int THIS_LITERAL = 115;
+  int THIS_LITERAL = 109;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4441,7 +4255,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSuperLiteral()
    * @generated
    */
-  int SUPER_LITERAL = 116;
+  int SUPER_LITERAL = 110;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4469,7 +4283,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStringLiteral()
    * @generated
    */
-  int STRING_LITERAL = 117;
+  int STRING_LITERAL = 111;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4497,7 +4311,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRealLiteral()
    * @generated
    */
-  int REAL_LITERAL = 118;
+  int REAL_LITERAL = 112;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4525,7 +4339,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRegexpLiteral()
    * @generated
    */
-  int REGEXP_LITERAL = 119;
+  int REGEXP_LITERAL = 113;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4553,7 +4367,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getQueryLiteral()
    * @generated
    */
-  int QUERY_LITERAL = 120;
+  int QUERY_LITERAL = 114;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' containment reference.
@@ -4574,6 +4388,16 @@ public interface BeeLangPackage extends EPackage
   int QUERY_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.SelectorOperator <em>Selector Operator</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.SelectorOperator
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSelectorOperator()
+   * @generated
+   */
+  int SELECTOR_OPERATOR = 115;
+
+  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.AssignmentOperator <em>Assignment Operator</em>}' enum.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4581,7 +4405,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssignmentOperator()
    * @generated
    */
-  int ASSIGNMENT_OPERATOR = 121;
+  int ASSIGNMENT_OPERATOR = 116;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.RelationalOperator <em>Relational Operator</em>}' enum.
@@ -4591,7 +4415,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRelationalOperator()
    * @generated
    */
-  int RELATIONAL_OPERATOR = 122;
+  int RELATIONAL_OPERATOR = 117;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.SetOperator <em>Set Operator</em>}' enum.
@@ -4601,7 +4425,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSetOperator()
    * @generated
    */
-  int SET_OPERATOR = 123;
+  int SET_OPERATOR = 118;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.Visibility <em>Visibility</em>}' enum.
@@ -4611,7 +4435,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVisibility()
    * @generated
    */
-  int VISIBILITY = 124;
+  int VISIBILITY = 119;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}' enum.
@@ -4621,7 +4445,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExecutionMode()
    * @generated
    */
-  int EXECUTION_MODE = 125;
+  int EXECUTION_MODE = 120;
 
 
   /**
@@ -4937,6 +4761,17 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EReference getBuildUnit_PropertySets();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.BuildUnit#getContainers <em>Containers</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Containers</em>'.
+   * @see org.eclipse.b3.beeLang.BuildUnit#getContainers()
+   * @see #getBuildUnit()
+   * @generated
+   */
+  EReference getBuildUnit_Containers();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ProvidedCapability <em>Provided Capability</em>}'.
@@ -5821,6 +5656,17 @@ public interface BeeLangPackage extends EPackage
   EClass getRepositoryDeclaration();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getDocumentation <em>Documentation</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Documentation</em>'.
+   * @see org.eclipse.b3.beeLang.RepositoryDeclaration#getDocumentation()
+   * @see #getRepositoryDeclaration()
+   * @generated
+   */
+  EAttribute getRepositoryDeclaration_Documentation();
+
+  /**
    * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getLocation <em>Location</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -5832,15 +5678,15 @@ public interface BeeLangPackage extends EPackage
   EAttribute getRepositoryDeclaration_Location();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getResolverClass <em>Resolver Class</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getType <em>Type</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Resolver Class</em>'.
-   * @see org.eclipse.b3.beeLang.RepositoryDeclaration#getResolverClass()
+   * @return the meta object for the containment reference '<em>Type</em>'.
+   * @see org.eclipse.b3.beeLang.RepositoryDeclaration#getType()
    * @see #getRepositoryDeclaration()
    * @generated
    */
-  EAttribute getRepositoryDeclaration_ResolverClass();
+  EReference getRepositoryDeclaration_Type();
 
   /**
    * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.RepositoryDeclaration#getContext <em>Context</em>}'.
@@ -5884,6 +5730,60 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EReference getResolutionStrategy_RepositoryConfig();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ContainerConfiguration <em>Container Configuration</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Container Configuration</em>'.
+   * @see org.eclipse.b3.beeLang.ContainerConfiguration
+   * @generated
+   */
+  EClass getContainerConfiguration();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.ContainerConfiguration#getDocumentation <em>Documentation</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Documentation</em>'.
+   * @see org.eclipse.b3.beeLang.ContainerConfiguration#getDocumentation()
+   * @see #getContainerConfiguration()
+   * @generated
+   */
+  EAttribute getContainerConfiguration_Documentation();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.ContainerConfiguration#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.b3.beeLang.ContainerConfiguration#getName()
+   * @see #getContainerConfiguration()
+   * @generated
+   */
+  EAttribute getContainerConfiguration_Name();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.ContainerConfiguration#getType <em>Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Type</em>'.
+   * @see org.eclipse.b3.beeLang.ContainerConfiguration#getType()
+   * @see #getContainerConfiguration()
+   * @generated
+   */
+  EReference getContainerConfiguration_Type();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.ContainerConfiguration#getContextBlock <em>Context Block</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Context Block</em>'.
+   * @see org.eclipse.b3.beeLang.ContainerConfiguration#getContextBlock()
+   * @see #getContainerConfiguration()
+   * @generated
+   */
+  EReference getContainerConfiguration_ContextBlock();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Concern <em>Concern</em>}'.
@@ -5972,91 +5872,6 @@ public interface BeeLangPackage extends EPackage
   EReference getConcernBlock_Functions();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Advice <em>Advice</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Advice</em>'.
-   * @see org.eclipse.b3.beeLang.Advice
-   * @generated
-   */
-  EClass getAdvice();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.CompoundConcern <em>Compound Concern</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Compound Concern</em>'.
-   * @see org.eclipse.b3.beeLang.CompoundConcern
-   * @generated
-   */
-  EClass getCompoundConcern();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.CompoundConcern#getAdvice <em>Advice</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Advice</em>'.
-   * @see org.eclipse.b3.beeLang.CompoundConcern#getAdvice()
-   * @see #getCompoundConcern()
-   * @generated
-   */
-  EReference getCompoundConcern_Advice();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.AdviceStatement <em>Advice Statement</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Advice Statement</em>'.
-   * @see org.eclipse.b3.beeLang.AdviceStatement
-   * @generated
-   */
-  EClass getAdviceStatement();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.AdviceStatement#getPath <em>Path</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Path</em>'.
-   * @see org.eclipse.b3.beeLang.AdviceStatement#getPath()
-   * @see #getAdviceStatement()
-   * @generated
-   */
-  EReference getAdviceStatement_Path();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.AdviceStatement#getOp <em>Op</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Op</em>'.
-   * @see org.eclipse.b3.beeLang.AdviceStatement#getOp()
-   * @see #getAdviceStatement()
-   * @generated
-   */
-  EAttribute getAdviceStatement_Op();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.AdviceStatement#getValue <em>Value</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Value</em>'.
-   * @see org.eclipse.b3.beeLang.AdviceStatement#getValue()
-   * @see #getAdviceStatement()
-   * @generated
-   */
-  EReference getAdviceStatement_Value();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.AdviceStatement#getAdvice <em>Advice</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Advice</em>'.
-   * @see org.eclipse.b3.beeLang.AdviceStatement#getAdvice()
-   * @see #getAdviceStatement()
-   * @generated
-   */
-  EReference getAdviceStatement_Advice();
-
-  /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Query <em>Query</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -6120,15 +5935,37 @@ public interface BeeLangPackage extends EPackage
   EClass getSelector();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Selector#getSelector <em>Selector</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Selector#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Selector</em>'.
-   * @see org.eclipse.b3.beeLang.Selector#getSelector()
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.b3.beeLang.Selector#getName()
    * @see #getSelector()
    * @generated
    */
-  EReference getSelector_Selector();
+  EAttribute getSelector_Name();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Selector#getOp <em>Op</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Op</em>'.
+   * @see org.eclipse.b3.beeLang.Selector#getOp()
+   * @see #getSelector()
+   * @generated
+   */
+  EAttribute getSelector_Op();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Selector#getPattern <em>Pattern</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Pattern</em>'.
+   * @see org.eclipse.b3.beeLang.Selector#getPattern()
+   * @see #getSelector()
+   * @generated
+   */
+  EAttribute getSelector_Pattern();
 
   /**
    * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Selector#getPredicate <em>Predicate</em>}'.
@@ -6140,88 +5977,6 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EReference getSelector_Predicate();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.NameSelector <em>Name Selector</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Name Selector</em>'.
-   * @see org.eclipse.b3.beeLang.NameSelector
-   * @generated
-   */
-  EClass getNameSelector();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.NameSelector#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.b3.beeLang.NameSelector#getName()
-   * @see #getNameSelector()
-   * @generated
-   */
-  EAttribute getNameSelector_Name();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ThisSelector <em>This Selector</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>This Selector</em>'.
-   * @see org.eclipse.b3.beeLang.ThisSelector
-   * @generated
-   */
-  EClass getThisSelector();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ParentSelector <em>Parent Selector</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Parent Selector</em>'.
-   * @see org.eclipse.b3.beeLang.ParentSelector
-   * @generated
-   */
-  EClass getParentSelector();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ChildrenSelector <em>Children Selector</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Children Selector</em>'.
-   * @see org.eclipse.b3.beeLang.ChildrenSelector
-   * @generated
-   */
-  EClass getChildrenSelector();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.AncestorSelector <em>Ancestor Selector</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Ancestor Selector</em>'.
-   * @see org.eclipse.b3.beeLang.AncestorSelector
-   * @generated
-   */
-  EClass getAncestorSelector();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.RegexpSelector <em>Regexp Selector</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Regexp Selector</em>'.
-   * @see org.eclipse.b3.beeLang.RegexpSelector
-   * @generated
-   */
-  EClass getRegexpSelector();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.RegexpSelector#getPattern <em>Pattern</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Pattern</em>'.
-   * @see org.eclipse.b3.beeLang.RegexpSelector#getPattern()
-   * @see #getRegexpSelector()
-   * @generated
-   */
-  EAttribute getRegexpSelector_Pattern();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Filter <em>Filter</em>}'.
@@ -6338,6 +6093,147 @@ public interface BeeLangPackage extends EPackage
    * @generated
    */
   EReference getExpressionList_Expressions();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Statment <em>Statment</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Statment</em>'.
+   * @see org.eclipse.b3.beeLang.Statment
+   * @generated
+   */
+  EClass getStatment();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.FunctionOrMethod <em>Function Or Method</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Function Or Method</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod
+   * @generated
+   */
+  EClass getFunctionOrMethod();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.FunctionOrMethod#getDocumentation <em>Documentation</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Documentation</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#getDocumentation()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EAttribute getFunctionOrMethod_Documentation();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.FunctionOrMethod#getVisibility <em>Visibility</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Visibility</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#getVisibility()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EAttribute getFunctionOrMethod_Visibility();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.FunctionOrMethod#getExecutionMode <em>Execution Mode</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Execution Mode</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#getExecutionMode()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EAttribute getFunctionOrMethod_ExecutionMode();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.FunctionOrMethod#isFinal <em>Final</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Final</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#isFinal()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EAttribute getFunctionOrMethod_Final();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.FunctionOrMethod#isCached <em>Cached</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Cached</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#isCached()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EAttribute getFunctionOrMethod_Cached();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.FunctionOrMethod#getForm <em>Form</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Form</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#getForm()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EAttribute getFunctionOrMethod_Form();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.FunctionOrMethod#getType <em>Type</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Type</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#getType()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EReference getFunctionOrMethod_Type();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.FunctionOrMethod#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#getName()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EAttribute getFunctionOrMethod_Name();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.FunctionOrMethod#getTypeParams <em>Type Params</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Type Params</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#getTypeParams()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EReference getFunctionOrMethod_TypeParams();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.FunctionOrMethod#getParams <em>Params</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Params</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#getParams()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EReference getFunctionOrMethod_Params();
+
+  /**
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.FunctionOrMethod#getBody <em>Body</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference '<em>Body</em>'.
+   * @see org.eclipse.b3.beeLang.FunctionOrMethod#getBody()
+   * @see #getFunctionOrMethod()
+   * @generated
+   */
+  EReference getFunctionOrMethod_Body();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.TypeParamDeclaration <em>Type Param Declaration</em>}'.
@@ -6944,16 +6840,6 @@ public interface BeeLangPackage extends EPackage
   EReference getContextBlock_Statements();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Statment <em>Statment</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Statment</em>'.
-   * @see org.eclipse.b3.beeLang.Statment
-   * @generated
-   */
-  EClass getStatment();
-
-  /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ClosureExpression <em>Closure Expression</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -7277,114 +7163,36 @@ public interface BeeLangPackage extends EPackage
   EClass getFunction();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Function#getDocumentation <em>Documentation</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Function#getFunc <em>Func</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Documentation</em>'.
-   * @see org.eclipse.b3.beeLang.Function#getDocumentation()
+   * @return the meta object for the containment reference '<em>Func</em>'.
+   * @see org.eclipse.b3.beeLang.Function#getFunc()
    * @see #getFunction()
    * @generated
    */
-  EAttribute getFunction_Documentation();
+  EReference getFunction_Func();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Function#getVisibility <em>Visibility</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Method <em>Method</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Visibility</em>'.
-   * @see org.eclipse.b3.beeLang.Function#getVisibility()
-   * @see #getFunction()
+   * @return the meta object for class '<em>Method</em>'.
+   * @see org.eclipse.b3.beeLang.Method
    * @generated
    */
-  EAttribute getFunction_Visibility();
+  EClass getMethod();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Function#getExecutionMode <em>Execution Mode</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Method#getMethod <em>Method</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Execution Mode</em>'.
-   * @see org.eclipse.b3.beeLang.Function#getExecutionMode()
-   * @see #getFunction()
+   * @return the meta object for the containment reference '<em>Method</em>'.
+   * @see org.eclipse.b3.beeLang.Method#getMethod()
+   * @see #getMethod()
    * @generated
    */
-  EAttribute getFunction_ExecutionMode();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Function#isFinal <em>Final</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Final</em>'.
-   * @see org.eclipse.b3.beeLang.Function#isFinal()
-   * @see #getFunction()
-   * @generated
-   */
-  EAttribute getFunction_Final();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Function#isCached <em>Cached</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Cached</em>'.
-   * @see org.eclipse.b3.beeLang.Function#isCached()
-   * @see #getFunction()
-   * @generated
-   */
-  EAttribute getFunction_Cached();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Function#getType <em>Type</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Type</em>'.
-   * @see org.eclipse.b3.beeLang.Function#getType()
-   * @see #getFunction()
-   * @generated
-   */
-  EReference getFunction_Type();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Function#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.b3.beeLang.Function#getName()
-   * @see #getFunction()
-   * @generated
-   */
-  EAttribute getFunction_Name();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.Function#getTypeParams <em>Type Params</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Type Params</em>'.
-   * @see org.eclipse.b3.beeLang.Function#getTypeParams()
-   * @see #getFunction()
-   * @generated
-   */
-  EReference getFunction_TypeParams();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.Function#getParams <em>Params</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Params</em>'.
-   * @see org.eclipse.b3.beeLang.Function#getParams()
-   * @see #getFunction()
-   * @generated
-   */
-  EReference getFunction_Params();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.Function#getBody <em>Body</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Body</em>'.
-   * @see org.eclipse.b3.beeLang.Function#getBody()
-   * @see #getFunction()
-   * @generated
-   */
-  EReference getFunction_Body();
+  EReference getMethod_Method();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.ReturnExpression <em>Return Expression</em>}'.
@@ -8343,6 +8151,16 @@ public interface BeeLangPackage extends EPackage
   EReference getQueryLiteral_Val();
 
   /**
+   * Returns the meta object for enum '{@link org.eclipse.b3.beeLang.SelectorOperator <em>Selector Operator</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Selector Operator</em>'.
+   * @see org.eclipse.b3.beeLang.SelectorOperator
+   * @generated
+   */
+  EEnum getSelectorOperator();
+
+  /**
    * Returns the meta object for enum '{@link org.eclipse.b3.beeLang.AssignmentOperator <em>Assignment Operator</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -8656,6 +8474,14 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EReference BUILD_UNIT__PROPERTY_SETS = eINSTANCE.getBuildUnit_PropertySets();
+
+    /**
+     * The meta object literal for the '<em><b>Containers</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference BUILD_UNIT__CONTAINERS = eINSTANCE.getBuildUnit_Containers();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ProvidedCapabilityImpl <em>Provided Capability</em>}' class.
@@ -9384,6 +9210,14 @@ public interface BeeLangPackage extends EPackage
     EClass REPOSITORY_DECLARATION = eINSTANCE.getRepositoryDeclaration();
 
     /**
+     * The meta object literal for the '<em><b>Documentation</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute REPOSITORY_DECLARATION__DOCUMENTATION = eINSTANCE.getRepositoryDeclaration_Documentation();
+
+    /**
      * The meta object literal for the '<em><b>Location</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9392,12 +9226,12 @@ public interface BeeLangPackage extends EPackage
     EAttribute REPOSITORY_DECLARATION__LOCATION = eINSTANCE.getRepositoryDeclaration_Location();
 
     /**
-     * The meta object literal for the '<em><b>Resolver Class</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute REPOSITORY_DECLARATION__RESOLVER_CLASS = eINSTANCE.getRepositoryDeclaration_ResolverClass();
+    EReference REPOSITORY_DECLARATION__TYPE = eINSTANCE.getRepositoryDeclaration_Type();
 
     /**
      * The meta object literal for the '<em><b>Context</b></em>' containment reference feature.
@@ -9432,6 +9266,48 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EReference RESOLUTION_STRATEGY__REPOSITORY_CONFIG = eINSTANCE.getResolutionStrategy_RepositoryConfig();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.ContainerConfigurationImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getContainerConfiguration()
+     * @generated
+     */
+    EClass CONTAINER_CONFIGURATION = eINSTANCE.getContainerConfiguration();
+
+    /**
+     * The meta object literal for the '<em><b>Documentation</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CONTAINER_CONFIGURATION__DOCUMENTATION = eINSTANCE.getContainerConfiguration_Documentation();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute CONTAINER_CONFIGURATION__NAME = eINSTANCE.getContainerConfiguration_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CONTAINER_CONFIGURATION__TYPE = eINSTANCE.getContainerConfiguration_Type();
+
+    /**
+     * The meta object literal for the '<em><b>Context Block</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference CONTAINER_CONFIGURATION__CONTEXT_BLOCK = eINSTANCE.getContainerConfiguration_ContextBlock();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ConcernImpl <em>Concern</em>}' class.
@@ -9502,76 +9378,6 @@ public interface BeeLangPackage extends EPackage
     EReference CONCERN_BLOCK__FUNCTIONS = eINSTANCE.getConcernBlock_Functions();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.AdviceImpl <em>Advice</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.AdviceImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdvice()
-     * @generated
-     */
-    EClass ADVICE = eINSTANCE.getAdvice();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.CompoundConcernImpl <em>Compound Concern</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.CompoundConcernImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getCompoundConcern()
-     * @generated
-     */
-    EClass COMPOUND_CONCERN = eINSTANCE.getCompoundConcern();
-
-    /**
-     * The meta object literal for the '<em><b>Advice</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference COMPOUND_CONCERN__ADVICE = eINSTANCE.getCompoundConcern_Advice();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.AdviceStatementImpl <em>Advice Statement</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.AdviceStatementImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAdviceStatement()
-     * @generated
-     */
-    EClass ADVICE_STATEMENT = eINSTANCE.getAdviceStatement();
-
-    /**
-     * The meta object literal for the '<em><b>Path</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference ADVICE_STATEMENT__PATH = eINSTANCE.getAdviceStatement_Path();
-
-    /**
-     * The meta object literal for the '<em><b>Op</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute ADVICE_STATEMENT__OP = eINSTANCE.getAdviceStatement_Op();
-
-    /**
-     * The meta object literal for the '<em><b>Value</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference ADVICE_STATEMENT__VALUE = eINSTANCE.getAdviceStatement_Value();
-
-    /**
-     * The meta object literal for the '<em><b>Advice</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference ADVICE_STATEMENT__ADVICE = eINSTANCE.getAdviceStatement_Advice();
-
-    /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.QueryImpl <em>Query</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -9626,12 +9432,28 @@ public interface BeeLangPackage extends EPackage
     EClass SELECTOR = eINSTANCE.getSelector();
 
     /**
-     * The meta object literal for the '<em><b>Selector</b></em>' containment reference feature.
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference SELECTOR__SELECTOR = eINSTANCE.getSelector_Selector();
+    EAttribute SELECTOR__NAME = eINSTANCE.getSelector_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Op</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SELECTOR__OP = eINSTANCE.getSelector_Op();
+
+    /**
+     * The meta object literal for the '<em><b>Pattern</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SELECTOR__PATTERN = eINSTANCE.getSelector_Pattern();
 
     /**
      * The meta object literal for the '<em><b>Predicate</b></em>' containment reference feature.
@@ -9640,82 +9462,6 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EReference SELECTOR__PREDICATE = eINSTANCE.getSelector_Predicate();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.NameSelectorImpl <em>Name Selector</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.NameSelectorImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNameSelector()
-     * @generated
-     */
-    EClass NAME_SELECTOR = eINSTANCE.getNameSelector();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute NAME_SELECTOR__NAME = eINSTANCE.getNameSelector_Name();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ThisSelectorImpl <em>This Selector</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.ThisSelectorImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getThisSelector()
-     * @generated
-     */
-    EClass THIS_SELECTOR = eINSTANCE.getThisSelector();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ParentSelectorImpl <em>Parent Selector</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.ParentSelectorImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getParentSelector()
-     * @generated
-     */
-    EClass PARENT_SELECTOR = eINSTANCE.getParentSelector();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ChildrenSelectorImpl <em>Children Selector</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.ChildrenSelectorImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getChildrenSelector()
-     * @generated
-     */
-    EClass CHILDREN_SELECTOR = eINSTANCE.getChildrenSelector();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.AncestorSelectorImpl <em>Ancestor Selector</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.AncestorSelectorImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAncestorSelector()
-     * @generated
-     */
-    EClass ANCESTOR_SELECTOR = eINSTANCE.getAncestorSelector();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.RegexpSelectorImpl <em>Regexp Selector</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.RegexpSelectorImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRegexpSelector()
-     * @generated
-     */
-    EClass REGEXP_SELECTOR = eINSTANCE.getRegexpSelector();
-
-    /**
-     * The meta object literal for the '<em><b>Pattern</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute REGEXP_SELECTOR__PATTERN = eINSTANCE.getRegexpSelector_Pattern();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.FilterImpl <em>Filter</em>}' class.
@@ -9814,6 +9560,114 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EReference EXPRESSION_LIST__EXPRESSIONS = eINSTANCE.getExpressionList_Expressions();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.StatmentImpl <em>Statment</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.StatmentImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStatment()
+     * @generated
+     */
+    EClass STATMENT = eINSTANCE.getStatment();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.FunctionOrMethodImpl <em>Function Or Method</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.FunctionOrMethodImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getFunctionOrMethod()
+     * @generated
+     */
+    EClass FUNCTION_OR_METHOD = eINSTANCE.getFunctionOrMethod();
+
+    /**
+     * The meta object literal for the '<em><b>Documentation</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FUNCTION_OR_METHOD__DOCUMENTATION = eINSTANCE.getFunctionOrMethod_Documentation();
+
+    /**
+     * The meta object literal for the '<em><b>Visibility</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FUNCTION_OR_METHOD__VISIBILITY = eINSTANCE.getFunctionOrMethod_Visibility();
+
+    /**
+     * The meta object literal for the '<em><b>Execution Mode</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FUNCTION_OR_METHOD__EXECUTION_MODE = eINSTANCE.getFunctionOrMethod_ExecutionMode();
+
+    /**
+     * The meta object literal for the '<em><b>Final</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FUNCTION_OR_METHOD__FINAL = eINSTANCE.getFunctionOrMethod_Final();
+
+    /**
+     * The meta object literal for the '<em><b>Cached</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FUNCTION_OR_METHOD__CACHED = eINSTANCE.getFunctionOrMethod_Cached();
+
+    /**
+     * The meta object literal for the '<em><b>Form</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FUNCTION_OR_METHOD__FORM = eINSTANCE.getFunctionOrMethod_Form();
+
+    /**
+     * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference FUNCTION_OR_METHOD__TYPE = eINSTANCE.getFunctionOrMethod_Type();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute FUNCTION_OR_METHOD__NAME = eINSTANCE.getFunctionOrMethod_Name();
+
+    /**
+     * The meta object literal for the '<em><b>Type Params</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference FUNCTION_OR_METHOD__TYPE_PARAMS = eINSTANCE.getFunctionOrMethod_TypeParams();
+
+    /**
+     * The meta object literal for the '<em><b>Params</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference FUNCTION_OR_METHOD__PARAMS = eINSTANCE.getFunctionOrMethod_Params();
+
+    /**
+     * The meta object literal for the '<em><b>Body</b></em>' containment reference feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference FUNCTION_OR_METHOD__BODY = eINSTANCE.getFunctionOrMethod_Body();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.TypeParamDeclarationImpl <em>Type Param Declaration</em>}' class.
@@ -10318,16 +10172,6 @@ public interface BeeLangPackage extends EPackage
     EReference CONTEXT_BLOCK__STATEMENTS = eINSTANCE.getContextBlock_Statements();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.StatmentImpl <em>Statment</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.StatmentImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStatment()
-     * @generated
-     */
-    EClass STATMENT = eINSTANCE.getStatment();
-
-    /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ClosureExpressionImpl <em>Closure Expression</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -10582,84 +10426,30 @@ public interface BeeLangPackage extends EPackage
     EClass FUNCTION = eINSTANCE.getFunction();
 
     /**
-     * The meta object literal for the '<em><b>Documentation</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Func</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute FUNCTION__DOCUMENTATION = eINSTANCE.getFunction_Documentation();
+    EReference FUNCTION__FUNC = eINSTANCE.getFunction_Func();
 
     /**
-     * The meta object literal for the '<em><b>Visibility</b></em>' attribute feature.
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.MethodImpl <em>Method</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.MethodImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getMethod()
      * @generated
      */
-    EAttribute FUNCTION__VISIBILITY = eINSTANCE.getFunction_Visibility();
+    EClass METHOD = eINSTANCE.getMethod();
 
     /**
-     * The meta object literal for the '<em><b>Execution Mode</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Method</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute FUNCTION__EXECUTION_MODE = eINSTANCE.getFunction_ExecutionMode();
-
-    /**
-     * The meta object literal for the '<em><b>Final</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute FUNCTION__FINAL = eINSTANCE.getFunction_Final();
-
-    /**
-     * The meta object literal for the '<em><b>Cached</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute FUNCTION__CACHED = eINSTANCE.getFunction_Cached();
-
-    /**
-     * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference FUNCTION__TYPE = eINSTANCE.getFunction_Type();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute FUNCTION__NAME = eINSTANCE.getFunction_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Type Params</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference FUNCTION__TYPE_PARAMS = eINSTANCE.getFunction_TypeParams();
-
-    /**
-     * The meta object literal for the '<em><b>Params</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference FUNCTION__PARAMS = eINSTANCE.getFunction_Params();
-
-    /**
-     * The meta object literal for the '<em><b>Body</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference FUNCTION__BODY = eINSTANCE.getFunction_Body();
+    EReference METHOD__METHOD = eINSTANCE.getMethod_Method();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.ReturnExpressionImpl <em>Return Expression</em>}' class.
@@ -11448,6 +11238,16 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EReference QUERY_LITERAL__VAL = eINSTANCE.getQueryLiteral_Val();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.SelectorOperator <em>Selector Operator</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.SelectorOperator
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSelectorOperator()
+     * @generated
+     */
+    EEnum SELECTOR_OPERATOR = eINSTANCE.getSelectorOperator();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.AssignmentOperator <em>Assignment Operator</em>}' enum.

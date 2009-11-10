@@ -5,4 +5,5 @@
     nsURI="http://beelangtypes/1.0" nsPrefix="beelangtypes">
   <eClassifiers xsi:type="ecore:EDataType" name="RadixInteger" instanceClassName="org.eclipse.b3.RadixInteger"/>
   <eClassifiers xsi:type="ecore:EDataType" name="RegularExpression" instanceClassName="org.eclipse.b3.RegularExpression"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="URI" instanceClassName="java.net.URI"/>
 </ecore:EPackage>

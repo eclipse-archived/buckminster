@@ -105,25 +105,19 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.REPOSITORY_CONFIGURATION: return createRepositoryConfiguration();
       case BeeLangPackage.REPOSITORY_DECLARATION: return createRepositoryDeclaration();
       case BeeLangPackage.RESOLUTION_STRATEGY: return createResolutionStrategy();
+      case BeeLangPackage.CONTAINER_CONFIGURATION: return createContainerConfiguration();
       case BeeLangPackage.CONCERN: return createConcern();
       case BeeLangPackage.CONCERN_BLOCK: return createConcernBlock();
-      case BeeLangPackage.ADVICE: return createAdvice();
-      case BeeLangPackage.COMPOUND_CONCERN: return createCompoundConcern();
-      case BeeLangPackage.ADVICE_STATEMENT: return createAdviceStatement();
       case BeeLangPackage.QUERY: return createQuery();
       case BeeLangPackage.QUERY_PATH: return createQueryPath();
       case BeeLangPackage.SELECTOR: return createSelector();
-      case BeeLangPackage.NAME_SELECTOR: return createNameSelector();
-      case BeeLangPackage.THIS_SELECTOR: return createThisSelector();
-      case BeeLangPackage.PARENT_SELECTOR: return createParentSelector();
-      case BeeLangPackage.CHILDREN_SELECTOR: return createChildrenSelector();
-      case BeeLangPackage.ANCESTOR_SELECTOR: return createAncestorSelector();
-      case BeeLangPackage.REGEXP_SELECTOR: return createRegexpSelector();
       case BeeLangPackage.FILTER: return createFilter();
       case BeeLangPackage.PRE_CONDITION: return createPreCondition();
       case BeeLangPackage.POST_CONDITION: return createPostCondition();
       case BeeLangPackage.ASSERTION_EXPRESSION: return createAssertionExpression();
       case BeeLangPackage.EXPRESSION_LIST: return createExpressionList();
+      case BeeLangPackage.STATMENT: return createStatment();
+      case BeeLangPackage.FUNCTION_OR_METHOD: return createFunctionOrMethod();
       case BeeLangPackage.TYPE_PARAM_DECLARATION: return createTypeParamDeclaration();
       case BeeLangPackage.EXPRESSION: return createExpression();
       case BeeLangPackage.TYPE_REF: return createTypeRef();
@@ -147,7 +141,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.EXPRESSION_SELECTOR: return createExpressionSelector();
       case BeeLangPackage.UNIT_SELECTOR: return createUnitSelector();
       case BeeLangPackage.CONTEXT_BLOCK: return createContextBlock();
-      case BeeLangPackage.STATMENT: return createStatment();
       case BeeLangPackage.CLOSURE_EXPRESSION: return createClosureExpression();
       case BeeLangPackage.FEATURE: return createFeature();
       case BeeLangPackage.VERSION: return createVersion();
@@ -155,6 +148,7 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.BUILDER: return createBuilder();
       case BeeLangPackage.VARARG_PARAMETER_DECLARATION: return createVarargParameterDeclaration();
       case BeeLangPackage.FUNCTION: return createFunction();
+      case BeeLangPackage.METHOD: return createMethod();
       case BeeLangPackage.RETURN_EXPRESSION: return createReturnExpression();
       case BeeLangPackage.ASSIGNMENT_OPERATION: return createAssignmentOperation();
       case BeeLangPackage.VAR_DECLARATION: return createVarDeclaration();
@@ -204,6 +198,8 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     switch (eDataType.getClassifierID())
     {
+      case BeeLangPackage.SELECTOR_OPERATOR:
+        return createSelectorOperatorFromString(eDataType, initialValue);
       case BeeLangPackage.ASSIGNMENT_OPERATOR:
         return createAssignmentOperatorFromString(eDataType, initialValue);
       case BeeLangPackage.RELATIONAL_OPERATOR:
@@ -229,6 +225,8 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     switch (eDataType.getClassifierID())
     {
+      case BeeLangPackage.SELECTOR_OPERATOR:
+        return convertSelectorOperatorToString(eDataType, instanceValue);
       case BeeLangPackage.ASSIGNMENT_OPERATOR:
         return convertAssignmentOperatorToString(eDataType, instanceValue);
       case BeeLangPackage.RELATIONAL_OPERATOR:
@@ -656,6 +654,17 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
+  public ContainerConfiguration createContainerConfiguration()
+  {
+    ContainerConfigurationImpl containerConfiguration = new ContainerConfigurationImpl();
+    return containerConfiguration;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public Concern createConcern()
   {
     ConcernImpl concern = new ConcernImpl();
@@ -671,39 +680,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     ConcernBlockImpl concernBlock = new ConcernBlockImpl();
     return concernBlock;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Advice createAdvice()
-  {
-    AdviceImpl advice = new AdviceImpl();
-    return advice;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public CompoundConcern createCompoundConcern()
-  {
-    CompoundConcernImpl compoundConcern = new CompoundConcernImpl();
-    return compoundConcern;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public AdviceStatement createAdviceStatement()
-  {
-    AdviceStatementImpl adviceStatement = new AdviceStatementImpl();
-    return adviceStatement;
   }
 
   /**
@@ -737,72 +713,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     SelectorImpl selector = new SelectorImpl();
     return selector;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NameSelector createNameSelector()
-  {
-    NameSelectorImpl nameSelector = new NameSelectorImpl();
-    return nameSelector;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ThisSelector createThisSelector()
-  {
-    ThisSelectorImpl thisSelector = new ThisSelectorImpl();
-    return thisSelector;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ParentSelector createParentSelector()
-  {
-    ParentSelectorImpl parentSelector = new ParentSelectorImpl();
-    return parentSelector;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ChildrenSelector createChildrenSelector()
-  {
-    ChildrenSelectorImpl childrenSelector = new ChildrenSelectorImpl();
-    return childrenSelector;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public AncestorSelector createAncestorSelector()
-  {
-    AncestorSelectorImpl ancestorSelector = new AncestorSelectorImpl();
-    return ancestorSelector;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public RegexpSelector createRegexpSelector()
-  {
-    RegexpSelectorImpl regexpSelector = new RegexpSelectorImpl();
-    return regexpSelector;
   }
 
   /**
@@ -858,6 +768,28 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     ExpressionListImpl expressionList = new ExpressionListImpl();
     return expressionList;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Statment createStatment()
+  {
+    StatmentImpl statment = new StatmentImpl();
+    return statment;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public FunctionOrMethod createFunctionOrMethod()
+  {
+    FunctionOrMethodImpl functionOrMethod = new FunctionOrMethodImpl();
+    return functionOrMethod;
   }
 
   /**
@@ -1118,17 +1050,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Statment createStatment()
-  {
-    StatmentImpl statment = new StatmentImpl();
-    return statment;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public ClosureExpression createClosureExpression()
   {
     ClosureExpressionImpl closureExpression = new ClosureExpressionImpl();
@@ -1199,6 +1120,17 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     FunctionImpl function = new FunctionImpl();
     return function;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Method createMethod()
+  {
+    MethodImpl method = new MethodImpl();
+    return method;
   }
 
   /**
@@ -1573,6 +1505,28 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     QueryLiteralImpl queryLiteral = new QueryLiteralImpl();
     return queryLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public SelectorOperator createSelectorOperatorFromString(EDataType eDataType, String initialValue)
+  {
+    SelectorOperator result = SelectorOperator.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertSelectorOperatorToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
   }
 
   /**

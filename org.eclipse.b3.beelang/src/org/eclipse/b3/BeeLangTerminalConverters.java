@@ -1,5 +1,8 @@
 package org.eclipse.b3;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.eclipse.xtext.Grammar;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.IGrammarAccess;
@@ -177,4 +180,27 @@ public class BeeLangTerminalConverters extends  AbstractDeclarativeValueConverte
 
 		};
 	}
+	@ValueConverter(rule = "URI")
+	public IValueConverter<URI> URI() {
+		return new IValueConverter<URI>() {
+			
+			public URI toValue(String string, AbstractNode node) throws ValueConverterException
+			{
+				if (Strings.isEmpty(string))
+					throw new ValueConverterException("Can not convert empty string to URI", node, null);
+				try {
+					string = Strings.convertFromJavaString(string.substring(1, string.length() - 1));
+
+					return new URI(string);
+				} catch (URISyntaxException e) {
+					throw new ValueConverterException("Value'"+string+"' is not a valid URI :" +e.getMessage(), node, null);
+				}
+			}
+			public String toString(URI value) {
+				return '"' + value.toString()+'"';
+			}
+
+		};
+	}
+	
 }

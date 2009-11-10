@@ -45,6 +45,7 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 			//-- REPOSITORIES
 			| ('repositories' '{' (repositoryConfigurations+=RepositoryConfiguration)* '}' )
 			| ('properties'  propertySets += NamedPropertyBody)
+			| ('containers' '{' containers += ContainerConfiguration* '}' )
 		)*
 	'}';
 	
@@ -202,20 +203,23 @@ BuilderInput
 
 RepositoryConfiguration : RepositoryDeclaration | ResolutionStrategy ;
 
-// TODO: resolverClass should be same as for new
-RepositoryDeclaration 
-	: (location=URI | 'repository' resolverClass=QualifiedName ) (context=ContextBlock)?
+RepositoryDeclaration : 
+	(documentation = DOCUMENTATION)?
+	(location=URI | 'repository' type=TypeRef ) (context=ContextBlock)?
 	;
 
-ResolutionStrategy : strategy = ("select-first" | "select-best") 
+ResolutionStrategy : 
+	strategy = ("select-first" | "select-best") 
 	'{' (repositoryConfig += RepositoryConfiguration)* '}'
 	;
-/*
-** URI TODO: Would like to have better parsing of URL - don't know if possible to push this to lexer
-** as we may want to support namespaces (using 'ns:' prefix) (for importing b3 files, common advice, rules etc.).
-** The ':' clashes with 'scheme:' which is the only known Builder in an opaque URI. 
-*/
-URI : STRING
+
+ContainerConfiguration : 
+	(documentation=DOCUMENTATION)? 
+	"container" name=ID "agent" type=TypeRef (contextBlock = ContextBlock)? 
+	;
+	
+// URI TODO: validate as URI 
+URI returns types::URI: STRING
 	;
 
 Concern : (documentation = DOCUMENTATION)? "concern" name=ID concern = ConcernBlock ;
@@ -225,87 +229,34 @@ ConcernBlock :
 	'{' ((contexts+=Context) | (functions+=Function))* '}' 
 	;
 
-Advice : 'advice' CompoundConcern ;
-
-CompoundConcern : '{' (advice += AdviceStatement ';')* '}' ;
-
-AdviceStatement :  path = QueryPath ((op=AssignmentOperator value=Expression) | advice=CompoundConcern) ;
-
-Query : "query" ('{' selector=QueryPath '}') 
-	/* | ('traverse' selector=QueryExpressionPath "endquery")) */
-	;
-
-// a | ** | [foo==bar] | .. | a 
-// a:**:[foo==bar]:..:a
-	
+Query : "query" ('{' selector=QueryPath '}') ;	
 QueryPath : (absolute?=':')? selectors+=Selector (':' selectors+=Selector)* ;
-
 Selector returns Selector
-	: DiscriminatingSelector | MultiNodeSelector | NodeSelector 
+	: (name=QualifiedName | op=SelectorOperator | pattern=REGEX) ('[' predicate=Expression ']')? 
 	;
-MultiNodeSelector returns Selector
-	: NameSelector | ThisSelector | ChildrenSelector | AncestorSelector | RegexpSelector
-	;
-DiscriminatingSelector returns Selector
-	: selector=MultiNodeSelector '[' predicate=Expression ']' 
-	;
-NodeSelector returns Selector
-	: ParentSelector 
-	;
-
-	 
-NameSelector returns NameSelector: name=QualifiedName ;
-ThisSelector returns ThisSelector: {ThisSelector} '.' ;
-ParentSelector returns ParentSelector: {ParentSelector} '..' ;
-ChildrenSelector returns ChildrenSelector: {ChildrenSelector} '*' ;
-AncestorSelector returns AncestorSelector: {AncestorSelector} '**' ;
-RegexpSelector returns RegexpSelector: {RegexpSelector} pattern=REGEX ;
-
-// QE
-//QueryExpressionPath : (absolute?="root" "to")? selectors+=QESelector ("to" selectors+=QESelector)* ;
-//
-//QESelector returns QESelector
-//	: QEDiscriminatingSelector | QEMultiNodeSelector | QENodeSelector 
-//	;
-//QEMultiNodeSelector returns QESelector
-//	: QENameSelector | QEThisSelector | QEChildrenSelector | QEAncestorSelector | QERegexpSelector
-//	;
-//QEDiscriminatingSelector returns Selector
-//	: selector=QEMultiNodeSelector "where" predicate=Expression 
-//	;
-//QENodeSelector returns Selector
-//	: QEParentSelector 
-//	;
-//
-//	 
-//QENameSelector returns NameSelector: "feature" name=QualifiedName ;
-//QEThisSelector returns ThisSelector: {ThisSelector} "this" ;
-//QEParentSelector returns ParentSelector: {ParentSelector} "parent" ;
-//QEChildrenSelector returns ChildrenSelector: {ChildrenSelector} "children" ;
-//QEAncestorSelector returns AncestorSelector: {AncestorSelector} "ancestors" ;
-//QERegexpSelector returns RegexpSelector: {RegexpSelector} "pattern" pattern=REGEX ;
-
-
+enum SelectorOperator : THIS = '.' | PARENT = '..' | CHILDREN = '*' | ANSCESTORS = '**' ;
 
 Filter : '(' predicate = Expression ')' ;
 
-/* ASSERTS */
 PreCondition : "precondition" '{' (asserts += AssertionExpression)* '}' ;
 PostCondition : "postcondition" '{' (asserts += AssertionExpression)* '}' ;
+AssertionExpression : 'assert' expr=Expression (',' message=STRING)? ';' ;
 
-AssertionExpression : 'assert' expr=Expression (',' message=STRING)? ';' 
-;
-
-/* STATEMENTS */
 ExpressionList : (expressions += Expression ';')+ ;
 
-Function returns Statement : {Function}	
+// TODO: Function and method are the same except for the keyword - can perhaps be
+// handled a better way.
+
+Function returns Statment: {Function} func=FunctionOrMethod ;
+Method returns Statement: {Method} method=FunctionOrMethod ;
+
+FunctionOrMethod : 	
 	(documentation = DOCUMENTATION)?
    	(visibility = Visibility)?
     (executionMode = ExecutionMode)?	   	
    	(final ?= "final")?
    	(cached ?= "cached")?
-   	"function"
+   	form=("function"|"method")
    	(type = TypeRef)?
    	name=ID 
    	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
@@ -313,19 +264,19 @@ Function returns Statement : {Function}
    	((':' body=Expression ';') | (body=BlockExpression))
 	;
 
-Method returns Statement : {Function}	
-	(documentation = DOCUMENTATION)?
-   	(visibility = Visibility)?
-    (executionMode = ExecutionMode)?	   	
-   	(final ?= "final")?
-   	(cached ?= "cached")?
-   	"method"
-   	(type = TypeRef)?
-   	name=ID 
-   	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
-   	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
-   	((':' body=Expression ';') | (body=BlockExpression))
-	;
+//Method returns Statement : {Function}	
+//	(documentation = DOCUMENTATION)?
+//   	(visibility = Visibility)?
+//    (executionMode = ExecutionMode)?	   	
+//   	(final ?= "final")?
+//   	(cached ?= "cached")?
+//   	"method"
+//   	(type = TypeRef)?
+//   	name=ID 
+//   	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
+//   	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
+//   	((':' body=Expression ';') | (body=BlockExpression))
+//	;
 	
 TypeParamDeclaration 
 	: ID ( ("extends" type+= TypeRef ('&' type+=TypeRef)*) | ("super" superType=TypeRef))?
