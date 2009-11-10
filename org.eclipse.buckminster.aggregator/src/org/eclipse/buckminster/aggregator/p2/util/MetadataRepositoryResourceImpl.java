@@ -526,8 +526,10 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				: foundIUPath.toArray();
 	}
 
+	// each IU is located in the structured view twice 1) under Categories node, 2) under Features (Bundles, ..) node
+	// skipCategoriesSubTree filters out the Categories subtree
 	public TwoColumnMatrix<IUPresentation, Object[]> findIUPresentations(Pattern iuIdPattern,
-			VersionRange iuVersionRange)
+			VersionRange iuVersionRange, boolean skipCategoriesSubTree)
 	{
 		TwoColumnMatrix<IUPresentation, Object[]> found = new TwoColumnMatrix<IUPresentation, Object[]>();
 
@@ -540,7 +542,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			InstallableUnit iu = iup.getInstallableUnit();
 
 			if(iuIdPattern.matcher(iu.getId()).find() && iuVersionRange.isIncluded(iu.getVersion()))
-				found.add(iup, allIUPresentationMatrix.getValue(i));
+				if(!skipCategoriesSubTree || !(allIUPresentationMatrix.getValue(i)[2] instanceof Categories))
+					found.add(iup, allIUPresentationMatrix.getValue(i));
 		}
 
 		return found;

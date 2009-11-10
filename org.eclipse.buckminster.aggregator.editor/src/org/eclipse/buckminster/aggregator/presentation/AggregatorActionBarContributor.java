@@ -15,7 +15,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
@@ -28,6 +32,8 @@ import org.eclipse.buckminster.aggregator.engine.Engine;
 import org.eclipse.buckminster.aggregator.engine.Builder.ActionType;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
+import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.util.AddToCustomCategoryCommand;
@@ -37,6 +43,7 @@ import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
+import org.eclipse.buckminster.aggregator.util.TwoColumnMatrix;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -56,6 +63,7 @@ import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
+import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.ui.action.ControlAction;
@@ -64,6 +72,7 @@ import org.eclipse.emf.edit.ui.action.CreateSiblingAction;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.emf.edit.ui.action.LoadResourceAction;
 import org.eclipse.emf.edit.ui.action.ValidateAction;
+import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
@@ -76,15 +85,26 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.SubContributionItem;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.PopupDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreePath;
+import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.xml.sax.SAXException;
@@ -355,8 +375,6 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 	}
 
-	// TODO start here with Bug 293174
-
 	class ReloadRepoAction extends Action
 	{
 		private MetadataRepositoryReference m_metadataRepositoryReference;
@@ -381,6 +399,196 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		{
 			m_metadataRepositoryReference = metadataRepositoryReference;
 		}
+	}
+
+	class SelectMatchingIUAction extends Action
+	{
+		private RequiredCapability m_requiredCapability;
+
+		public SelectMatchingIUAction(RequiredCapability requiredCapability)
+		{
+			m_requiredCapability = requiredCapability;
+
+			setText(getString("_UI_Select_matching_IU_menu_item"));
+		}
+
+		@SuppressWarnings("restriction")
+		@Override
+		public void run()
+		{
+			if(activeEditorPart instanceof IViewerProvider)
+			{
+				final Viewer viewer = ((IViewerProvider)activeEditorPart).getViewer();
+				if(viewer != null)
+				{
+					Shell parent = activeEditorPart.getSite().getShell();
+					final EditingDomain editingDomain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
+
+					Pattern iuIdPattern = Pattern.compile("^" + Pattern.quote(m_requiredCapability.getName()) + "$");
+
+					final Map<MetadataRepositoryResourceImpl, TwoColumnMatrix<IUPresentation, Object[]>> foundIUs = new LinkedHashMap<MetadataRepositoryResourceImpl, TwoColumnMatrix<IUPresentation, Object[]>>();
+
+					for(Resource resource : editingDomain.getResourceSet().getResources())
+					{
+						if(!(resource instanceof MetadataRepositoryResourceImpl))
+							continue;
+
+						TwoColumnMatrix<IUPresentation, Object[]> result = ((MetadataRepositoryResourceImpl)resource).findIUPresentations(
+								iuIdPattern, m_requiredCapability.getRange(), true);
+
+						if(result != null && result.size() > 0)
+							foundIUs.put((MetadataRepositoryResourceImpl)resource, result);
+					}
+
+					if(foundIUs.size() == 0)
+					{
+						parent.getDisplay().beep();
+						MessageDialog.openWarning(parent, getString("_UI_Warning_windowTitle"),
+								getString("_UI_No_matching_IU_was_found"));
+					}
+					else if(foundIUs.size() == 1 && foundIUs.values().size() == 1)
+					{
+						TwoColumnMatrix<IUPresentation, Object[]> foundIU = foundIUs.values().iterator().next();
+
+						viewer.setSelection(new TreeSelection(
+								new TreePath(foundIU.getValue(0)).createChildPath(foundIU.getKey(0))), true);
+					}
+					else
+					{
+
+						final PopupDialog pppDialog = new PopupDialog(parent, PopupDialog.INFOPOPUP_SHELLSTYLE, true,
+								false, false, false, false, getString("_UI_More_matching_IUs_were_found"),
+								getString("_UI_select_IU"))
+						{
+							protected Control createDialogArea(Composite parent)
+							{
+								Composite composite = (Composite)super.createDialogArea(parent);
+								final TreeViewer treeViewer = new TreeViewer(composite, SWT.NO_FOCUS);
+								treeViewer.setLabelProvider(new LabelProvider()
+								{
+									public Image getImage(Object element)
+									{
+										if(element == null)
+											return null;
+
+										Object realElement = getRealElement(element);
+
+										if(realElement == null)
+											return null;
+
+										IItemLabelProvider labelProvider = (IItemLabelProvider)((AdapterFactoryEditingDomain)editingDomain).getAdapterFactory().adapt(
+												realElement, IItemLabelProvider.class);
+										if(labelProvider == null)
+											return null;
+										return ExtendedImageRegistry.getInstance().getImage(
+												labelProvider.getImage(realElement));
+									}
+
+									public String getText(Object element)
+									{
+										if(element == null)
+											return "";
+
+										Object realElement = getRealElement(element);
+
+										if(realElement == null)
+											return element.toString();
+
+										IItemLabelProvider labelProvider = (IItemLabelProvider)((AdapterFactoryEditingDomain)editingDomain).getAdapterFactory().adapt(
+												realElement, IItemLabelProvider.class);
+										if(labelProvider == null)
+											return realElement.toString();
+										return labelProvider.getText(realElement);
+									}
+
+									public boolean isLabelProperty(Object element, String property)
+									{
+										return false;
+									}
+
+									private Object getRealElement(Object element)
+									{
+										Object realElement = null;
+										if(element instanceof Entry<?, ?>)
+											realElement = ((Entry<?, ?>)element).getKey();
+										else if(element instanceof TwoColumnMatrix<?, ?>.MatrixEntry)
+											realElement = ((TwoColumnMatrix<?, ?>.MatrixEntry)element).getKey();
+
+										return realElement;
+									}
+								});
+
+								treeViewer.setContentProvider(new ITreeContentProvider()
+								{
+									public void dispose()
+									{
+									}
+
+									@SuppressWarnings("unchecked")
+									public Object[] getChildren(Object parentElement)
+									{
+										return ((Entry<MetadataRepositoryResourceImpl, TwoColumnMatrix<IUPresentation, Object[]>>)parentElement).getValue().getEntries().toArray();
+									}
+
+									public Object[] getElements(Object inputElement)
+									{
+										return ((Map<?, ?>)inputElement).entrySet().toArray();
+									}
+
+									public Object getParent(Object element)
+									{
+										return null;
+									}
+
+									public boolean hasChildren(Object element)
+									{
+										return element instanceof Entry<?, ?>;
+									}
+
+									public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
+									{
+									}
+								});
+								treeViewer.addSelectionChangedListener(new ISelectionChangedListener()
+								{
+									@SuppressWarnings("unchecked")
+									public void selectionChanged(SelectionChangedEvent event)
+									{
+										close();
+										Object selection = ((TreeSelection)event.getSelection()).getFirstElement();
+
+										TwoColumnMatrix<IUPresentation, Object[]>.MatrixEntry matrixEntry = null;
+
+										if(selection instanceof Entry<?, ?>)
+											matrixEntry = ((TwoColumnMatrix<IUPresentation, Object[]>)((Entry<?, ?>)selection).getValue()).getEntry(0);
+										else if(selection instanceof TwoColumnMatrix<?, ?>.MatrixEntry)
+											matrixEntry = (TwoColumnMatrix<IUPresentation, Object[]>.MatrixEntry)selection;
+
+										if(matrixEntry != null)
+											viewer.setSelection(
+													new TreeSelection(
+															new TreePath(matrixEntry.getValue()).createChildPath(matrixEntry.getKey())),
+													true);
+
+									}
+								});
+								treeViewer.setInput(foundIUs);
+								treeViewer.expandAll();
+								return composite;
+							}
+						};
+						pppDialog.open();
+					}
+				}
+			}
+		}
+	}
+
+	// TODO start here with Bug 293174
+
+	private static String getString(String key)
+	{
+		return AggregatorEditorPlugin.INSTANCE.getString(key);
 	}
 
 	/**
@@ -500,6 +708,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	protected List<IAction> m_addToCustomCategoriesActions = new ArrayList<IAction>();
 
+	protected IAction m_selectMatchingIUAction;
+
 	private Aggregator m_aggregator;
 
 	private IEditorPart m_lastActiveEditorPart;
@@ -596,6 +806,9 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			populateManager(submenuManager, m_addToCustomCategoriesActions, null);
 			menuManager.insertBefore("edit", submenuManager);
 		}
+
+		if(m_selectMatchingIUAction != null)
+			menuManager.insertBefore("edit", m_selectMatchingIUAction);
 
 		if(m_enabledStatusActionVisible)
 		{
@@ -753,6 +966,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		//
 		Collection<?> newChildDescriptors = null;
 		Collection<?> newSiblingDescriptors = null;
+		m_selectMatchingIUAction = null;
 
 		m_enabledStatusActionVisible = false;
 		m_reloadRepoActionVisible = false;
@@ -794,6 +1008,11 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				m_reloadRepoAction.setEnabled(metadataRepositoryReference.isBranchEnabled());
 				m_reloadRepoAction.setMetadataRepositoryReference(metadataRepositoryReference);
 				m_reloadRepoActionVisible = true;
+			}
+
+			if(object instanceof RequiredCapability)
+			{
+				m_selectMatchingIUAction = new SelectMatchingIUAction((RequiredCapability)object);
 			}
 		}
 

@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
  */
 public class TwoColumnMatrix<K, V>
 {
-	class MatrixEntry
+	public class MatrixEntry
 	{
 		K m_key;
 
@@ -167,6 +167,15 @@ public class TwoColumnMatrix<K, V>
 	{
 		m_keys.clear();
 		m_values.clear();
+	}
+
+	public List<MatrixEntry> getEntries()
+	{
+		List<MatrixEntry> entries = new ArrayList<MatrixEntry>(size());
+		for(int i = 0; i < size(); i++)
+			entries.add(getEntry(i));
+
+		return entries;
 	}
 
 	public MatrixEntry getEntry(int index)
