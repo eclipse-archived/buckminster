@@ -95,6 +95,9 @@ public class AddToParentRepositoryCommand extends AbstractCommand
 			MetadataRepository mdr = (MetadataRepository)((EObject)iu).eContainer();
 			MappedRepository mappedRepo = ItemUtils.findMappedRepository(m_aggregator, mdr);
 
+			if(mappedRepo == null)
+				continue;
+
 			m_mapIUMappedRepo.put(iu, mappedRepo);
 			someEnabled = someEnabled || mappedRepo.isBranchEnabled();
 		}
