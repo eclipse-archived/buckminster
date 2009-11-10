@@ -1692,7 +1692,9 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	protected void handleDeactivate()
 	{
 		AggregatorEditorPlugin.INSTANCE.setActiveEditingDomain(null);
-		((IContextService)getSite().getWorkbenchWindow().getWorkbench().getAdapter(IContextService.class)).deactivateContext(contextActivation);
+		
+		if(contextActivation != null)
+			((IContextService)getSite().getWorkbenchWindow().getWorkbench().getAdapter(IContextService.class)).deactivateContext(contextActivation);
 	}
 
 	/**
