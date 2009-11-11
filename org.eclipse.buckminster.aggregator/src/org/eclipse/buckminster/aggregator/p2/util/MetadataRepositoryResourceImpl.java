@@ -352,8 +352,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			List<Fragment> fragments = new ArrayList<Fragment>();
 
 			int idx = allIUMatrix.indexOf(category);
-			Object[] categoryTreePath = Arrays.copyOf(allIUMatrix.getValue(idx), allIUMatrix.getValue(idx).length + 1);
-			categoryTreePath[categoryTreePath.length - 1] = category;
+			Object[] oldTreePath = allIUMatrix.getValue(idx);
+			int len = oldTreePath.length;
+			Object[] categoryTreePath = new Object[len + 1];
+			System.arraycopy(oldTreePath, 0, categoryTreePath, 0, len);
+			categoryTreePath[len] = category;
 
 			for(IRequiredCapability requiredCapability : category.getInstallableUnit().getRequiredCapabilityList())
 			{
