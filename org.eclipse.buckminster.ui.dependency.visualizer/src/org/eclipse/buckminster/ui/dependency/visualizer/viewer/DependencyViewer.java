@@ -98,11 +98,14 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 				if(o instanceof BOMNode)
 				{
 					BOMNode node = (BOMNode)o;
-					// List<BOMNode> input = Collections.singletonList(node);
-					// setInput(input);
-					// labelProvider.setCurrentSelection(node, node);
-					DirtyViewCSpecAction action = new DirtyViewCSpecAction();
-					action.run(node.getResolution().getCSpec(), PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+
+					// Bug 291963 - NPE when clicking on an unresolved node
+					if(node.getResolution() != null && node.getResolution().getCSpec() != null)
+					{
+						DirtyViewCSpecAction action = new DirtyViewCSpecAction();
+						action.run(node.getResolution().getCSpec(),
+								PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+					}
 
 				}
 
