@@ -137,7 +137,8 @@ public class AddToCustomCategoryCommand extends AbstractCommand implements DragA
 
 			MappedRepository mappedRepo = ItemUtils.findMappedRepository(aggregator, mdr);
 
-			m_mapFeatureMappedRepo.put(feature, mappedRepo);
+			if(mappedRepo != null)
+				m_mapFeatureMappedRepo.put(feature, mappedRepo);
 		}
 
 		return m_customCategory != null && m_selectedFeatures != null && m_selectedFeatures.size() > 0 && isEnabled();
@@ -148,6 +149,9 @@ public class AddToCustomCategoryCommand extends AbstractCommand implements DragA
 		for(InstallableUnit feature : m_mapFeatureMappedRepo.keySet())
 		{
 			MappedRepository repo = m_mapFeatureMappedRepo.get(feature);
+
+			if(repo == null)
+				return false;
 
 			MappedUnit unit = ItemUtils.findMappedUnit(repo, feature);
 
