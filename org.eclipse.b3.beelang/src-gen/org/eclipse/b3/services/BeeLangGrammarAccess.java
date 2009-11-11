@@ -129,17 +129,17 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	public class JavaImporterElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "JavaImporter");
 		private final Assignment cNameAssignment = (Assignment)rule.eContents().get(1);
-		private final RuleCall cNameQualifiedNameParserRuleCall_0 = (RuleCall)cNameAssignment.eContents().get(0);
+		private final RuleCall cNameQIDParserRuleCall_0 = (RuleCall)cNameAssignment.eContents().get(0);
 		
 		//JavaImporter:
-		//  name=QualifiedName;
+		//  name=QID;
 		public ParserRule getRule() { return rule; }
 
-		//name=QualifiedName
+		//name=QID
 		public Assignment getNameAssignment() { return cNameAssignment; }
 
-		//QualifiedName
-		public RuleCall getNameQualifiedNameParserRuleCall_0() { return cNameQualifiedNameParserRuleCall_0; }
+		//QID
+		public RuleCall getNameQIDParserRuleCall_0() { return cNameQIDParserRuleCall_0; }
 	}
 
 	public class NativeImporterElements implements IParserRuleAccess {
@@ -861,15 +861,15 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Keyword cExtendsKeyword_0_0 = (Keyword)cGroup_0.eContents().get(0);
 		private final Assignment cExtendsAssignment_0_1 = (Assignment)cGroup_0.eContents().get(1);
 		private final CrossReference cExtendsNamedPropertySetCrossReference_0_1_0 = (CrossReference)cExtendsAssignment_0_1.eContents().get(0);
-		private final RuleCall cExtendsNamedPropertySetQualifiedNameParserRuleCall_0_1_0_1 = (RuleCall)cExtendsNamedPropertySetCrossReference_0_1_0.eContents().get(1);
+		private final RuleCall cExtendsNamedPropertySetQIDREFParserRuleCall_0_1_0_1 = (RuleCall)cExtendsNamedPropertySetCrossReference_0_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
 		private final Assignment cOperationsAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cOperationsPropertyOperationParserRuleCall_2_0 = (RuleCall)cOperationsAssignment_2.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//PropertySet:
-		//  ("extends" extends=[NamedPropertySet|QualifiedName])? "{" operations+=
-		//  PropertyOperation* "}"; 
+		//  ("extends" extends=[NamedPropertySet|QIDREF])? "{" operations+=PropertyOperation*
+		//  "}"; 
 		//
 		//// Sequence of possibly filtered property statements	
 		//    
@@ -879,24 +879,24 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//// For model generation, to get supertype correct
 		public ParserRule getRule() { return rule; }
 
-		//("extends" extends=[NamedPropertySet|QualifiedName])? "{" operations+=
-		//PropertyOperation* "}"
+		//("extends" extends=[NamedPropertySet|QIDREF])? "{" operations+=PropertyOperation*
+		//"}"
 		public Group getGroup() { return cGroup; }
 
-		//("extends" extends=[NamedPropertySet|QualifiedName])?
+		//("extends" extends=[NamedPropertySet|QIDREF])?
 		public Group getGroup_0() { return cGroup_0; }
 
 		//"extends"
 		public Keyword getExtendsKeyword_0_0() { return cExtendsKeyword_0_0; }
 
-		//extends=[NamedPropertySet|QualifiedName]
+		//extends=[NamedPropertySet|QIDREF]
 		public Assignment getExtendsAssignment_0_1() { return cExtendsAssignment_0_1; }
 
-		//[NamedPropertySet|QualifiedName]
+		//[NamedPropertySet|QIDREF]
 		public CrossReference getExtendsNamedPropertySetCrossReference_0_1_0() { return cExtendsNamedPropertySetCrossReference_0_1_0; }
 
-		//QualifiedName
-		public RuleCall getExtendsNamedPropertySetQualifiedNameParserRuleCall_0_1_0_1() { return cExtendsNamedPropertySetQualifiedNameParserRuleCall_0_1_0_1; }
+		//QIDREF
+		public RuleCall getExtendsNamedPropertySetQIDREFParserRuleCall_0_1_0_1() { return cExtendsNamedPropertySetQIDREFParserRuleCall_0_1_0_1; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
@@ -1388,20 +1388,20 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cSTRINGTerminalRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
 		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
 		private final Keyword cSolidusKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final RuleCall cQualifiedNameParserRuleCall_1_1 = (RuleCall)cGroup_1.eContents().get(1);
+		private final RuleCall cQIDParserRuleCall_1_1 = (RuleCall)cGroup_1.eContents().get(1);
 		private final Group cGroup_1_2 = (Group)cGroup_1.eContents().get(2);
 		private final Keyword cSolidusKeyword_1_2_0 = (Keyword)cGroup_1_2.eContents().get(0);
-		private final RuleCall cQualifiedNameParserRuleCall_1_2_1 = (RuleCall)cGroup_1_2.eContents().get(1);
+		private final RuleCall cQIDParserRuleCall_1_2_1 = (RuleCall)cGroup_1_2.eContents().get(1);
 		private final Keyword cSolidusKeyword_1_3 = (Keyword)cGroup_1.eContents().get(3);
 		private final RuleCall cHIDDENBUGParserRuleCall_1_4 = (RuleCall)cGroup_1.eContents().get(4);
 		
 		//Path returns ecore::EString hidden ( ):
-		//  STRING|"/"? QualifiedName ("/" QualifiedName)* "/"? HIDDENBUG; 
+		//  STRING|"/"? QID ("/" QID)* "/"? HIDDENBUG; 
 		//
 		//// A path can be written without quotes if it consists of safe chars
 		public ParserRule getRule() { return rule; }
 
-		//STRING|"/"? QualifiedName ("/" QualifiedName)* "/"? HIDDENBUG 
+		//STRING|"/"? QID ("/" QID)* "/"? HIDDENBUG 
 		//
 		//// A path can be written without quotes if it consists of safe chars
 		public Alternatives getAlternatives() { return cAlternatives; }
@@ -1409,23 +1409,23 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//STRING
 		public RuleCall getSTRINGTerminalRuleCall_0() { return cSTRINGTerminalRuleCall_0; }
 
-		//"/"? QualifiedName ("/" QualifiedName)* "/"? HIDDENBUG
+		//"/"? QID ("/" QID)* "/"? HIDDENBUG
 		public Group getGroup_1() { return cGroup_1; }
 
 		//"/"?
 		public Keyword getSolidusKeyword_1_0() { return cSolidusKeyword_1_0; }
 
-		//QualifiedName
-		public RuleCall getQualifiedNameParserRuleCall_1_1() { return cQualifiedNameParserRuleCall_1_1; }
+		//QID
+		public RuleCall getQIDParserRuleCall_1_1() { return cQIDParserRuleCall_1_1; }
 
-		//("/" QualifiedName)*
+		//("/" QID)*
 		public Group getGroup_1_2() { return cGroup_1_2; }
 
 		//"/"
 		public Keyword getSolidusKeyword_1_2_0() { return cSolidusKeyword_1_2_0; }
 
-		//QualifiedName
-		public RuleCall getQualifiedNameParserRuleCall_1_2_1() { return cQualifiedNameParserRuleCall_1_2_1; }
+		//QID
+		public RuleCall getQIDParserRuleCall_1_2_1() { return cQIDParserRuleCall_1_2_1; }
 
 		//"/"?
 		public Keyword getSolidusKeyword_1_3() { return cSolidusKeyword_1_3; }
@@ -1634,7 +1634,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Alternatives cAlternatives_0 = (Alternatives)cGroup.eContents().get(0);
 		private final Assignment cUnitAssignment_0_0 = (Assignment)cAlternatives_0.eContents().get(0);
-		private final RuleCall cUnitQualifiedNameParserRuleCall_0_0_0 = (RuleCall)cUnitAssignment_0_0.eContents().get(0);
+		private final RuleCall cUnitQIDParserRuleCall_0_0_0 = (RuleCall)cUnitAssignment_0_0.eContents().get(0);
 		private final Assignment cUnitAssignment_0_1 = (Assignment)cAlternatives_0.eContents().get(1);
 		private final Keyword cUnitUnitKeyword_0_1_0 = (Keyword)cUnitAssignment_0_1.eContents().get(0);
 		private final Keyword cNumberSignKeyword_1 = (Keyword)cGroup.eContents().get(1);
@@ -1644,20 +1644,20 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cParametersParameterListParserRuleCall_3_0 = (RuleCall)cParametersAssignment_3.eContents().get(0);
 		
 		//DirectPartReferemce:
-		//  (unit=QualifiedName|unit="unit")? "#" builder=PartName parameters=ParameterList?;
+		//  (unit=QID|unit="unit")? "#" builder=PartName parameters=ParameterList?;
 		public ParserRule getRule() { return rule; }
 
-		//(unit=QualifiedName|unit="unit")? "#" builder=PartName parameters=ParameterList?
+		//(unit=QID|unit="unit")? "#" builder=PartName parameters=ParameterList?
 		public Group getGroup() { return cGroup; }
 
-		//(unit=QualifiedName|unit="unit")?
+		//(unit=QID|unit="unit")?
 		public Alternatives getAlternatives_0() { return cAlternatives_0; }
 
-		//unit=QualifiedName
+		//unit=QID
 		public Assignment getUnitAssignment_0_0() { return cUnitAssignment_0_0; }
 
-		//QualifiedName
-		public RuleCall getUnitQualifiedNameParserRuleCall_0_0_0() { return cUnitQualifiedNameParserRuleCall_0_0_0; }
+		//QID
+		public RuleCall getUnitQIDParserRuleCall_0_0_0() { return cUnitQIDParserRuleCall_0_0_0; }
 
 		//unit="unit"
 		public Assignment getUnitAssignment_0_1() { return cUnitAssignment_0_1; }
@@ -2680,7 +2680,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Alternatives cAlternatives_0 = (Alternatives)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_0_0 = (Assignment)cAlternatives_0.eContents().get(0);
-		private final RuleCall cNameQualifiedNameParserRuleCall_0_0_0 = (RuleCall)cNameAssignment_0_0.eContents().get(0);
+		private final RuleCall cNameQIDParserRuleCall_0_0_0 = (RuleCall)cNameAssignment_0_0.eContents().get(0);
 		private final Assignment cOpAssignment_0_1 = (Assignment)cAlternatives_0.eContents().get(1);
 		private final RuleCall cOpSelectorOperatorEnumRuleCall_0_1_0 = (RuleCall)cOpAssignment_0_1.eContents().get(0);
 		private final Assignment cPatternAssignment_0_2 = (Assignment)cAlternatives_0.eContents().get(2);
@@ -2692,22 +2692,20 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Keyword cRightSquareBracketKeyword_1_2 = (Keyword)cGroup_1.eContents().get(2);
 		
 		//Selector:
-		//  (name=QualifiedName|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression
-		//  "]")?;
+		//  (name=QID|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression "]")?;
 		public ParserRule getRule() { return rule; }
 
-		//(name=QualifiedName|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression
-		//"]")?
+		//(name=QID|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression "]")?
 		public Group getGroup() { return cGroup; }
 
-		//name=QualifiedName|op=SelectorOperator|pattern=REGEX
+		//name=QID|op=SelectorOperator|pattern=REGEX
 		public Alternatives getAlternatives_0() { return cAlternatives_0; }
 
-		//name=QualifiedName
+		//name=QID
 		public Assignment getNameAssignment_0_0() { return cNameAssignment_0_0; }
 
-		//QualifiedName
-		public RuleCall getNameQualifiedNameParserRuleCall_0_0_0() { return cNameQualifiedNameParserRuleCall_0_0_0; }
+		//QID
+		public RuleCall getNameQIDParserRuleCall_0_0_0() { return cNameQIDParserRuleCall_0_0_0; }
 
 		//op=SelectorOperator
 		public Assignment getOpAssignment_0_1() { return cOpAssignment_0_1; }
@@ -5206,7 +5204,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cUnitKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cInterfaceAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cInterfaceQualifiedNameParserRuleCall_1_0 = (RuleCall)cInterfaceAssignment_1.eContents().get(0);
+		private final RuleCall cInterfaceQIDParserRuleCall_1_0 = (RuleCall)cInterfaceAssignment_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
 		private final Keyword cSolidusKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
 		private final Alternatives cAlternatives_2_1 = (Alternatives)cGroup_2.eContents().get(1);
@@ -5220,22 +5218,22 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cVersionRangeVersionRangeParserRuleCall_2_2_1_0 = (RuleCall)cVersionRangeAssignment_2_2_1.eContents().get(0);
 		
 		//UnitSelector:
-		//  "unit" interface=QualifiedName ("/" (name=UnitName|namePattern=REGEX) ("/"
-		//  versionRange=VersionRange)?)?;
+		//  "unit" interface=QID ("/" (name=UnitName|namePattern=REGEX) ("/" versionRange=
+		//  VersionRange)?)?;
 		public ParserRule getRule() { return rule; }
 
-		//"unit" interface=QualifiedName ("/" (name=UnitName|namePattern=REGEX) ("/"
-		//versionRange=VersionRange)?)?
+		//"unit" interface=QID ("/" (name=UnitName|namePattern=REGEX) ("/" versionRange=
+		//VersionRange)?)?
 		public Group getGroup() { return cGroup; }
 
 		//"unit"
 		public Keyword getUnitKeyword_0() { return cUnitKeyword_0; }
 
-		//interface=QualifiedName
+		//interface=QID
 		public Assignment getInterfaceAssignment_1() { return cInterfaceAssignment_1; }
 
-		//QualifiedName
-		public RuleCall getInterfaceQualifiedNameParserRuleCall_1_0() { return cInterfaceQualifiedNameParserRuleCall_1_0; }
+		//QID
+		public RuleCall getInterfaceQIDParserRuleCall_1_0() { return cInterfaceQIDParserRuleCall_1_0; }
 
 		//("/" (name=UnitName|namePattern=REGEX) ("/" versionRange=VersionRange)?)?
 		public Group getGroup_2() { return cGroup_2; }
@@ -6243,9 +6241,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//	      
 		//	
 		//
-		//// Qualified name
-		//// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
-		////
+		//// Reference to qualified named item, possibly in unit or this
 		public ParserRule getRule() { return rule; }
 
 		//("["|"(") (STRING|AlfanumSym) ("," (STRING|AlfanumSym))? ("]"|")")|(STRING|
@@ -6256,9 +6252,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//	      
 		//	
 		//
-		//// Qualified name
-		//// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
-		////
+		//// Reference to qualified named item, possibly in unit or this
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//("["|"(") (STRING|AlfanumSym) ("," (STRING|AlfanumSym))? ("]"|")")
@@ -6316,8 +6310,68 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		public RuleCall getAlfanumSymParserRuleCall_1_1() { return cAlfanumSymParserRuleCall_1_1; }
 	}
 
-	public class QualifiedNameElements implements IParserRuleAccess {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "QualifiedName");
+	public class QIDREFElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "QIDREF");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
+		private final Alternatives cAlternatives_0_0 = (Alternatives)cGroup_0.eContents().get(0);
+		private final Keyword cUnitKeyword_0_0_0 = (Keyword)cAlternatives_0_0.eContents().get(0);
+		private final Keyword cThisKeyword_0_0_1 = (Keyword)cAlternatives_0_0.eContents().get(1);
+		private final Group cGroup_0_1 = (Group)cGroup_0.eContents().get(1);
+		private final Keyword cFullStopKeyword_0_1_0 = (Keyword)cGroup_0_1.eContents().get(0);
+		private final RuleCall cQIDParserRuleCall_0_1_1 = (RuleCall)cGroup_0_1.eContents().get(1);
+		private final RuleCall cQIDParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		
+		//QIDREF returns ecore::EString:
+		//  ("unit"|"this") ("." QID)?|QID; 
+		//
+		//// Reference to qualified named item, possibly in unit or this
+		//                  
+		//
+		//// Qualified name
+		//// TODO: Needs to disallow white space between ID and '.', and no embedded comments. 
+		//// A bug in xtext prevents using hidden() here without the using the magic HIDDENBUG.
+		////
+		public ParserRule getRule() { return rule; }
+
+		//("unit"|"this") ("." QID)?|QID 
+		//
+		//// Reference to qualified named item, possibly in unit or this
+		//                  
+		//
+		//// Qualified name
+		//// TODO: Needs to disallow white space between ID and '.', and no embedded comments. 
+		//// A bug in xtext prevents using hidden() here without the using the magic HIDDENBUG.
+		////
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//("unit"|"this") ("." QID)?
+		public Group getGroup_0() { return cGroup_0; }
+
+		//"unit"|"this"
+		public Alternatives getAlternatives_0_0() { return cAlternatives_0_0; }
+
+		//"unit"
+		public Keyword getUnitKeyword_0_0_0() { return cUnitKeyword_0_0_0; }
+
+		//"this"
+		public Keyword getThisKeyword_0_0_1() { return cThisKeyword_0_0_1; }
+
+		//("." QID)?
+		public Group getGroup_0_1() { return cGroup_0_1; }
+
+		//"."
+		public Keyword getFullStopKeyword_0_1_0() { return cFullStopKeyword_0_1_0; }
+
+		//QID
+		public RuleCall getQIDParserRuleCall_0_1_1() { return cQIDParserRuleCall_0_1_1; }
+
+		//QID
+		public RuleCall getQIDParserRuleCall_1() { return cQIDParserRuleCall_1; }
+	}
+
+	public class QIDElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "QID");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cIDTerminalRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
 		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
@@ -6333,11 +6387,12 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cIDTerminalRuleCall_2_2_2 = (RuleCall)cAlternatives_2_2.eContents().get(2);
 		private final RuleCall cHIDDENBUGParserRuleCall_3 = (RuleCall)cGroup.eContents().get(3);
 		
-		//QualifiedName returns ecore::EString hidden ( ):
+		//QID returns ecore::EString hidden ( ):
 		//  ID (INT|HEX|ID)* ("." ID (INT|HEX|ID)*)* HIDDENBUG; 
 		//
 		//// Qualified name
-		//// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
+		//// TODO: Needs to disallow white space between ID and '.', and no embedded comments. 
+		//// A bug in xtext prevents using hidden() here without the using the magic HIDDENBUG.
 		////
 		public ParserRule getRule() { return rule; }
 
@@ -6413,28 +6468,28 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "EscapedQualifiedName");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final RuleCall cSTRINGTerminalRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
-		private final RuleCall cQualifiedNameParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cQIDParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		
 		//EscapedQualifiedName returns ecore::EString:
-		//  STRING|QualifiedName;
+		//  STRING|QID;
 		public ParserRule getRule() { return rule; }
 
-		//STRING|QualifiedName
+		//STRING|QID
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//STRING
 		public RuleCall getSTRINGTerminalRuleCall_0() { return cSTRINGTerminalRuleCall_0; }
 
-		//QualifiedName
-		public RuleCall getQualifiedNameParserRuleCall_1() { return cQualifiedNameParserRuleCall_1; }
+		//QID
+		public RuleCall getQIDParserRuleCall_1() { return cQIDParserRuleCall_1; }
 	}
 
 	public class InterfaceNameElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "InterfaceName");
-		private final RuleCall cQualifiedNameParserRuleCall = (RuleCall)rule.eContents().get(1);
+		private final RuleCall cQIDParserRuleCall = (RuleCall)rule.eContents().get(1);
 		
 		//InterfaceName returns ecore::EString:
-		//  QualifiedName; 
+		//  QID; 
 		//    
 		//
 		//// CompoundName (whitespace and comments allowed, as sequence can be very long. name parts
@@ -6442,8 +6497,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		////
 		public ParserRule getRule() { return rule; }
 
-		//QualifiedName
-		public RuleCall getQualifiedNameParserRuleCall() { return cQualifiedNameParserRuleCall; }
+		//QID
+		public RuleCall getQIDParserRuleCall() { return cQIDParserRuleCall; }
 	}
 
 	public class CompoundNameElements implements IParserRuleAccess {
@@ -7156,7 +7211,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	private VersionLiteralElements pVersionLiteral;
 	private VersionRangeElements pVersionRange;
 	private VersionRangeLiteralElements pVersionRangeLiteral;
-	private QualifiedNameElements pQualifiedName;
+	private QIDREFElements pQIDREF;
+	private QIDElements pQID;
 	private HIDDENBUGElements pHIDDENBUG;
 	private PropertyNameElements pPropertyName;
 	private EscapedQualifiedNameElements pEscapedQualifiedName;
@@ -7217,7 +7273,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//JavaImporter:
-	//  name=QualifiedName;
+	//  name=QID;
 	public JavaImporterElements getJavaImporterAccess() {
 		return (pJavaImporter != null) ? pJavaImporter : (pJavaImporter = new JavaImporterElements());
 	}
@@ -7348,8 +7404,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//PropertySet:
-	//  ("extends" extends=[NamedPropertySet|QualifiedName])? "{" operations+=
-	//  PropertyOperation* "}"; 
+	//  ("extends" extends=[NamedPropertySet|QIDREF])? "{" operations+=PropertyOperation*
+	//  "}"; 
 	//
 	//// Sequence of possibly filtered property statements	
 	//    
@@ -7497,7 +7553,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//Path returns ecore::EString hidden ( ):
-	//  STRING|"/"? QualifiedName ("/" QualifiedName)* "/"? HIDDENBUG; 
+	//  STRING|"/"? QID ("/" QID)* "/"? HIDDENBUG; 
 	//
 	//// A path can be written without quotes if it consists of safe chars
 	public PathElements getPathAccess() {
@@ -7552,7 +7608,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//DirectPartReferemce:
-	//  (unit=QualifiedName|unit="unit")? "#" builder=PartName parameters=ParameterList?;
+	//  (unit=QID|unit="unit")? "#" builder=PartName parameters=ParameterList?;
 	public DirectPartReferemceElements getDirectPartReferemceAccess() {
 		return (pDirectPartReferemce != null) ? pDirectPartReferemce : (pDirectPartReferemce = new DirectPartReferemceElements());
 	}
@@ -7784,8 +7840,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//Selector:
-	//  (name=QualifiedName|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression
-	//  "]")?;
+	//  (name=QID|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression "]")?;
 	public SelectorElements getSelectorAccess() {
 		return (pSelector != null) ? pSelector : (pSelector = new SelectorElements());
 	}
@@ -8475,8 +8530,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//UnitSelector:
-	//  "unit" interface=QualifiedName ("/" (name=UnitName|namePattern=REGEX) ("/"
-	//  versionRange=VersionRange)?)?;
+	//  "unit" interface=QID ("/" (name=UnitName|namePattern=REGEX) ("/" versionRange=
+	//  VersionRange)?)?;
 	public UnitSelectorElements getUnitSelectorAccess() {
 		return (pUnitSelector != null) ? pUnitSelector : (pUnitSelector = new UnitSelectorElements());
 	}
@@ -8777,9 +8832,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//	      
 	//	
 	//
-	//// Qualified name
-	//// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
-	////
+	//// Reference to qualified named item, possibly in unit or this
 	public VersionRangeLiteralElements getVersionRangeLiteralAccess() {
 		return (pVersionRangeLiteral != null) ? pVersionRangeLiteral : (pVersionRangeLiteral = new VersionRangeLiteralElements());
 	}
@@ -8788,18 +8841,37 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		return getVersionRangeLiteralAccess().getRule();
 	}
 
-	//QualifiedName returns ecore::EString hidden ( ):
+	//QIDREF returns ecore::EString:
+	//  ("unit"|"this") ("." QID)?|QID; 
+	//
+	//// Reference to qualified named item, possibly in unit or this
+	//                  
+	//
+	//// Qualified name
+	//// TODO: Needs to disallow white space between ID and '.', and no embedded comments. 
+	//// A bug in xtext prevents using hidden() here without the using the magic HIDDENBUG.
+	////
+	public QIDREFElements getQIDREFAccess() {
+		return (pQIDREF != null) ? pQIDREF : (pQIDREF = new QIDREFElements());
+	}
+	
+	public ParserRule getQIDREFRule() {
+		return getQIDREFAccess().getRule();
+	}
+
+	//QID returns ecore::EString hidden ( ):
 	//  ID (INT|HEX|ID)* ("." ID (INT|HEX|ID)*)* HIDDENBUG; 
 	//
 	//// Qualified name
-	//// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
+	//// TODO: Needs to disallow white space between ID and '.', and no embedded comments. 
+	//// A bug in xtext prevents using hidden() here without the using the magic HIDDENBUG.
 	////
-	public QualifiedNameElements getQualifiedNameAccess() {
-		return (pQualifiedName != null) ? pQualifiedName : (pQualifiedName = new QualifiedNameElements());
+	public QIDElements getQIDAccess() {
+		return (pQID != null) ? pQID : (pQID = new QIDElements());
 	}
 	
-	public ParserRule getQualifiedNameRule() {
-		return getQualifiedNameAccess().getRule();
+	public ParserRule getQIDRule() {
+		return getQIDAccess().getRule();
 	}
 
 	//HIDDENBUG returns ecore::EString hidden ( WS , SL_COMMENT , ML_COMMENT ):
@@ -8824,7 +8896,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//EscapedQualifiedName returns ecore::EString:
-	//  STRING|QualifiedName;
+	//  STRING|QID;
 	public EscapedQualifiedNameElements getEscapedQualifiedNameAccess() {
 		return (pEscapedQualifiedName != null) ? pEscapedQualifiedName : (pEscapedQualifiedName = new EscapedQualifiedNameElements());
 	}
@@ -8834,7 +8906,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//InterfaceName returns ecore::EString:
-	//  QualifiedName; 
+	//  QID; 
 	//    
 	//
 	//// CompoundName (whitespace and comments allowed, as sequence can be very long. name parts

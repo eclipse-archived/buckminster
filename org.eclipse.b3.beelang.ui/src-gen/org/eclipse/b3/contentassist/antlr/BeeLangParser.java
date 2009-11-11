@@ -100,8 +100,10 @@ public class BeeLangParser extends AbstractContentAssistParser {
 					put(grammarAccess.getVersionRangeLiteralAccess().getAlternatives_0_2_1(), "rule__VersionRangeLiteral__Alternatives_0_2_1");
 					put(grammarAccess.getVersionRangeLiteralAccess().getAlternatives_0_3(), "rule__VersionRangeLiteral__Alternatives_0_3");
 					put(grammarAccess.getVersionRangeLiteralAccess().getAlternatives_1(), "rule__VersionRangeLiteral__Alternatives_1");
-					put(grammarAccess.getQualifiedNameAccess().getAlternatives_1(), "rule__QualifiedName__Alternatives_1");
-					put(grammarAccess.getQualifiedNameAccess().getAlternatives_2_2(), "rule__QualifiedName__Alternatives_2_2");
+					put(grammarAccess.getQIDREFAccess().getAlternatives(), "rule__QIDREF__Alternatives");
+					put(grammarAccess.getQIDREFAccess().getAlternatives_0_0(), "rule__QIDREF__Alternatives_0_0");
+					put(grammarAccess.getQIDAccess().getAlternatives_1(), "rule__QID__Alternatives_1");
+					put(grammarAccess.getQIDAccess().getAlternatives_2_2(), "rule__QID__Alternatives_2_2");
 					put(grammarAccess.getEscapedQualifiedNameAccess().getAlternatives(), "rule__EscapedQualifiedName__Alternatives");
 					put(grammarAccess.getSeparatorAccess().getAlternatives(), "rule__Separator__Alternatives");
 					put(grammarAccess.getAlfanumSymAccess().getAlternatives_0(), "rule__AlfanumSym__Alternatives_0");
@@ -317,8 +319,10 @@ public class BeeLangParser extends AbstractContentAssistParser {
 					put(grammarAccess.getParanthesizedExpressionAccess().getGroup(), "rule__ParanthesizedExpression__Group__0");
 					put(grammarAccess.getVersionRangeLiteralAccess().getGroup_0(), "rule__VersionRangeLiteral__Group_0__0");
 					put(grammarAccess.getVersionRangeLiteralAccess().getGroup_0_2(), "rule__VersionRangeLiteral__Group_0_2__0");
-					put(grammarAccess.getQualifiedNameAccess().getGroup(), "rule__QualifiedName__Group__0");
-					put(grammarAccess.getQualifiedNameAccess().getGroup_2(), "rule__QualifiedName__Group_2__0");
+					put(grammarAccess.getQIDREFAccess().getGroup_0(), "rule__QIDREF__Group_0__0");
+					put(grammarAccess.getQIDREFAccess().getGroup_0_1(), "rule__QIDREF__Group_0_1__0");
+					put(grammarAccess.getQIDAccess().getGroup(), "rule__QID__Group__0");
+					put(grammarAccess.getQIDAccess().getGroup_2(), "rule__QID__Group_2__0");
 					put(grammarAccess.getCompoundNameAccess().getGroup(), "rule__CompoundName__Group__0");
 					put(grammarAccess.getAlfanumSymAccess().getGroup(), "rule__AlfanumSym__Group__0");
 					put(grammarAccess.getREALAccess().getGroup(), "rule__REAL__Group__0");

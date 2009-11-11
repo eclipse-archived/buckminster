@@ -629,11 +629,11 @@ protected class Import_SemicolonKeyword_4 extends KeywordToken  {
 /************ begin Rule JavaImporter ****************
  *
  * JavaImporter:
- *   name=QualifiedName;
+ *   name=QID;
  *
  **/
 
-// name=QualifiedName
+// name=QID
 protected class JavaImporter_NameAssignment extends AssignmentToken  {
 	
 	public JavaImporter_NameAssignment(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -659,7 +659,7 @@ protected class JavaImporter_NameAssignment extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("name");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getJavaImporterAccess().getNameQualifiedNameParserRuleCall_0();
+			element = grammarAccess.getJavaImporterAccess().getNameQIDParserRuleCall_0();
 			return obj;
 		}
 		return null;
@@ -3635,8 +3635,8 @@ protected class NamedPropertySet_BodyAssignment_1 extends AssignmentToken  {
 /************ begin Rule PropertySet ****************
  *
  * PropertySet:
- *   ("extends" extends=[NamedPropertySet|QualifiedName])? "{" operations+=
- *   PropertyOperation* "}"; 
+ *   ("extends" extends=[NamedPropertySet|QIDREF])? "{" operations+=PropertyOperation*
+ *   "}"; 
  * 
  * // Sequence of possibly filtered property statements	
  *     
@@ -3647,8 +3647,8 @@ protected class NamedPropertySet_BodyAssignment_1 extends AssignmentToken  {
  *
  **/
 
-// ("extends" extends=[NamedPropertySet|QualifiedName])? "{" operations+=
-// PropertyOperation* "}"
+// ("extends" extends=[NamedPropertySet|QIDREF])? "{" operations+=PropertyOperation*
+// "}"
 protected class PropertySet_Group extends GroupToken {
 	
 	public PropertySet_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -3672,7 +3672,7 @@ protected class PropertySet_Group extends GroupToken {
 	}
 }
 
-// ("extends" extends=[NamedPropertySet|QualifiedName])?
+// ("extends" extends=[NamedPropertySet|QIDREF])?
 protected class PropertySet_Group_0 extends GroupToken {
 	
 	public PropertySet_Group_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -3711,7 +3711,7 @@ protected class PropertySet_ExtendsKeyword_0_0 extends KeywordToken  {
 		
 }
 
-// extends=[NamedPropertySet|QualifiedName]
+// extends=[NamedPropertySet|QIDREF]
 protected class PropertySet_ExtendsAssignment_0_1 extends AssignmentToken  {
 	
 	public PropertySet_ExtendsAssignment_0_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -6506,11 +6506,11 @@ protected class PrerequisiteEntry_CompoundReferencesParserRuleCall_2 extends Rul
 /************ begin Rule DirectPartReferemce ****************
  *
  * DirectPartReferemce:
- *   (unit=QualifiedName|unit="unit")? "#" builder=PartName parameters=ParameterList?;
+ *   (unit=QID|unit="unit")? "#" builder=PartName parameters=ParameterList?;
  *
  **/
 
-// (unit=QualifiedName|unit="unit")? "#" builder=PartName parameters=ParameterList?
+// (unit=QID|unit="unit")? "#" builder=PartName parameters=ParameterList?
 protected class DirectPartReferemce_Group extends GroupToken {
 	
 	public DirectPartReferemce_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -6535,7 +6535,7 @@ protected class DirectPartReferemce_Group extends GroupToken {
 	}
 }
 
-// (unit=QualifiedName|unit="unit")?
+// (unit=QID|unit="unit")?
 protected class DirectPartReferemce_Alternatives_0 extends AlternativesToken {
 
 	public DirectPartReferemce_Alternatives_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -6556,7 +6556,7 @@ protected class DirectPartReferemce_Alternatives_0 extends AlternativesToken {
 		
 }
 
-// unit=QualifiedName
+// unit=QID
 protected class DirectPartReferemce_UnitAssignment_0_0 extends AssignmentToken  {
 	
 	public DirectPartReferemce_UnitAssignment_0_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -6578,7 +6578,7 @@ protected class DirectPartReferemce_UnitAssignment_0_0 extends AssignmentToken  
 		IInstanceDescription obj = current.cloneAndConsume("unit");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getDirectPartReferemceAccess().getUnitQualifiedNameParserRuleCall_0_0_0();
+			element = grammarAccess.getDirectPartReferemceAccess().getUnitQIDParserRuleCall_0_0_0();
 			return obj;
 		}
 		return null;
@@ -10923,13 +10923,11 @@ protected class QueryPath_SelectorsAssignment_2_1 extends AssignmentToken  {
 /************ begin Rule Selector ****************
  *
  * Selector:
- *   (name=QualifiedName|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression
- *   "]")?;
+ *   (name=QID|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression "]")?;
  *
  **/
 
-// (name=QualifiedName|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression
-// "]")?
+// (name=QID|op=SelectorOperator|pattern=REGEX) ("[" predicate=Expression "]")?
 protected class Selector_Group extends GroupToken {
 	
 	public Selector_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -10954,7 +10952,7 @@ protected class Selector_Group extends GroupToken {
 	}
 }
 
-// name=QualifiedName|op=SelectorOperator|pattern=REGEX
+// name=QID|op=SelectorOperator|pattern=REGEX
 protected class Selector_Alternatives_0 extends AlternativesToken {
 
 	public Selector_Alternatives_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -10976,7 +10974,7 @@ protected class Selector_Alternatives_0 extends AlternativesToken {
 		
 }
 
-// name=QualifiedName
+// name=QID
 protected class Selector_NameAssignment_0_0 extends AssignmentToken  {
 	
 	public Selector_NameAssignment_0_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -10998,7 +10996,7 @@ protected class Selector_NameAssignment_0_0 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("name");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getSelectorAccess().getNameQualifiedNameParserRuleCall_0_0_0();
+			element = grammarAccess.getSelectorAccess().getNameQIDParserRuleCall_0_0_0();
 			return obj;
 		}
 		return null;
@@ -21951,13 +21949,13 @@ protected class ExpressionSelector_ExprAssignment extends AssignmentToken  {
 /************ begin Rule UnitSelector ****************
  *
  * UnitSelector:
- *   "unit" interface=QualifiedName ("/" (name=UnitName|namePattern=REGEX) ("/"
- *   versionRange=VersionRange)?)?;
+ *   "unit" interface=QID ("/" (name=UnitName|namePattern=REGEX) ("/" versionRange=
+ *   VersionRange)?)?;
  *
  **/
 
-// "unit" interface=QualifiedName ("/" (name=UnitName|namePattern=REGEX) ("/"
-// versionRange=VersionRange)?)?
+// "unit" interface=QID ("/" (name=UnitName|namePattern=REGEX) ("/" versionRange=
+// VersionRange)?)?
 protected class UnitSelector_Group extends GroupToken {
 	
 	public UnitSelector_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -22001,7 +21999,7 @@ protected class UnitSelector_UnitKeyword_0 extends KeywordToken  {
 		
 }
 
-// interface=QualifiedName
+// interface=QID
 protected class UnitSelector_InterfaceAssignment_1 extends AssignmentToken  {
 	
 	public UnitSelector_InterfaceAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -22024,7 +22022,7 @@ protected class UnitSelector_InterfaceAssignment_1 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("interface");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getUnitSelectorAccess().getInterfaceQualifiedNameParserRuleCall_1_0();
+			element = grammarAccess.getUnitSelectorAccess().getInterfaceQIDParserRuleCall_1_0();
 			return obj;
 		}
 		return null;
@@ -26012,6 +26010,7 @@ protected class VersionRange_RangeAssignment extends AssignmentToken  {
 }
 
 /************ end Rule VersionRange ****************/
+
 
 
 

@@ -63,7 +63,7 @@ NamedPropertySet returns NamedPropertySet
 
 // Sequence of possibly filtered property statements	
 PropertySet returns PropertySet
-	:  ("extends" extends=[NamedPropertySet | QID])? '{' (operations += PropertyOperation)* '}'
+	:  ("extends" extends=[NamedPropertySet | QIDREF])? '{' (operations += PropertyOperation)* '}'
 	;
 
 // For model generation, to get supertype correct
@@ -473,6 +473,7 @@ ValueLiteral returns Expression
 	| QueryLiteral
 	| ThisLiteral
 	| SuperLiteral
+	| UnitLiteral
 	;
 	
 BooleanLiteral returns  Expression: {BooleanLiteral} val=("true" | "false");
@@ -480,6 +481,7 @@ IntegerLiteral returns  Expression: {IntegerLiteral} val= IntValue;
 NullLiteral	returns  Expression: {NullLiteral} val="null";
 ThisLiteral	returns  Expression: {ThisLiteral} val="this";
 SuperLiteral returns  Expression: {SuperLiteral} val="super";
+UnitLiteral returns  Expression: {UnitLiteral} val="unit";
 StringLiteral returns  Expression: {StringLiteral} val = STRING;
 RealLiteral	returns  Expression: {RealLiteral} val = RealValue;
 RealValue returns ecore::EDouble: REAL ;
@@ -514,6 +516,10 @@ VersionRangeLiteral returns types::VersionRange
 	: ('[' | '(') (STRING | AlfanumSym) (',' (STRING | AlfanumSym))? (']'|')')
 	| (STRING | AlfanumSym)
 	;
+
+// Reference to qualified named item, possibly in unit, this or super, or
+// this.super, or unit.super
+QIDREF : (("super" |(("unit" | "this") ('.' "super")?)) ('.' QID)?) | QID ;
 
 // Qualified name
 // TODO: Needs to disallow white space between ID and '.', and no embedded comments. 

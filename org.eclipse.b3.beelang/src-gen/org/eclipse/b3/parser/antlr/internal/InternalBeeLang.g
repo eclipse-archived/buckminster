@@ -301,9 +301,9 @@ ruleJavaImporter returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getJavaImporterAccess().getNameQualifiedNameParserRuleCall_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getJavaImporterAccess().getNameQIDParserRuleCall_0(), currentNode); 
 	    }
-	    lv_name_0=ruleQualifiedName 
+	    lv_name_0=ruleQID 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getJavaImporterRule().getType().getClassifier());
@@ -311,7 +311,7 @@ ruleJavaImporter returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "name", lv_name_0, "QualifiedName", currentNode);
+	       		set($current, "name", lv_name_0, "QID", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -1358,7 +1358,7 @@ rulePropertySet returns [EObject current=null]
 		{ 
 	        currentNode=createCompositeNode(grammarAccess.getPropertySetAccess().getExtendsNamedPropertySetCrossReference_0_1_0(), currentNode); 
 	    }
-		ruleQualifiedName		{ 
+		ruleQIDREF		{ 
 	        currentNode = currentNode.getParent();
 	    }
 
@@ -2290,10 +2290,10 @@ rulePath returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()]
     }
 )?
     { 
-        currentNode=createCompositeNode(grammarAccess.getPathAccess().getQualifiedNameParserRuleCall_1_1(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getPathAccess().getQIDParserRuleCall_1_1(), currentNode); 
     }
-    this_QualifiedName_2=ruleQualifiedName    {
-		$current.merge(this_QualifiedName_2);
+    this_QID_2=ruleQID    {
+		$current.merge(this_QID_2);
     }
 
     { 
@@ -2307,10 +2307,10 @@ rulePath returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()]
     }
 
     { 
-        currentNode=createCompositeNode(grammarAccess.getPathAccess().getQualifiedNameParserRuleCall_1_2_1(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getPathAccess().getQIDParserRuleCall_1_2_1(), currentNode); 
     }
-    this_QualifiedName_4=ruleQualifiedName    {
-		$current.merge(this_QualifiedName_4);
+    this_QID_4=ruleQID    {
+		$current.merge(this_QID_4);
     }
 
     { 
@@ -2666,9 +2666,9 @@ ruleDirectPartReferemce returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getDirectPartReferemceAccess().getUnitQualifiedNameParserRuleCall_0_0_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getDirectPartReferemceAccess().getUnitQIDParserRuleCall_0_0_0(), currentNode); 
 	    }
-	    lv_unit_0=ruleQualifiedName 
+	    lv_unit_0=ruleQID 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getDirectPartReferemceRule().getType().getClassifier());
@@ -2676,7 +2676,7 @@ ruleDirectPartReferemce returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "unit", lv_unit_0, "QualifiedName", currentNode);
+	       		set($current, "unit", lv_unit_0, "QID", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -4645,9 +4645,9 @@ ruleSelector returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getSelectorAccess().getNameQualifiedNameParserRuleCall_0_0_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getSelectorAccess().getNameQIDParserRuleCall_0_0_0(), currentNode); 
 	    }
-	    lv_name_0=ruleQualifiedName 
+	    lv_name_0=ruleQID 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getSelectorRule().getType().getClassifier());
@@ -4655,7 +4655,7 @@ ruleSelector returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "name", lv_name_0, "QualifiedName", currentNode);
+	       		set($current, "name", lv_name_0, "QID", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -9348,9 +9348,9 @@ ruleUnitSelector returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getUnitSelectorAccess().getInterfaceQualifiedNameParserRuleCall_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getUnitSelectorAccess().getInterfaceQIDParserRuleCall_1_0(), currentNode); 
 	    }
-	    lv_interface_1=ruleQualifiedName 
+	    lv_interface_1=ruleQID 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getUnitSelectorRule().getType().getClassifier());
@@ -9358,7 +9358,7 @@ ruleUnitSelector returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "interface", lv_interface_1, "QualifiedName", currentNode);
+	       		set($current, "interface", lv_interface_1, "QID", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -11292,16 +11292,81 @@ ruleVersionRangeLiteral returns [AntlrDatatypeRuleToken current=new AntlrDatatyp
 
 
 
-// Entry rule entryRuleQualifiedName
-entryRuleQualifiedName returns [String current=null] :
-	{ currentNode = createCompositeNode(grammarAccess.getQualifiedNameRule(), currentNode); } 
-	 iv_ruleQualifiedName=ruleQualifiedName 
-	 { $current=$iv_ruleQualifiedName.current.getText(); }  
+// Entry rule entryRuleQIDREF
+entryRuleQIDREF returns [String current=null] :
+	{ currentNode = createCompositeNode(grammarAccess.getQIDREFRule(), currentNode); } 
+	 iv_ruleQIDREF=ruleQIDREF 
+	 { $current=$iv_ruleQIDREF.current.getText(); }  
 	 EOF 
 ;
 
-// Rule QualifiedName
-ruleQualifiedName returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
+// Rule QIDREF
+ruleQIDREF returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
+    @init { setCurrentLookahead(); resetLookahead(); 
+    }
+    @after { resetLookahead(); 
+	    lastConsumedNode = currentNode;
+	    lastConsumedDatatypeToken = $current;
+    }:
+(((
+	kw='unit' 
+    {
+        $current.merge(kw);
+        createLeafNode(grammarAccess.getQIDREFAccess().getUnitKeyword_0_0_0(), null); 
+    }
+
+    |
+	kw='this' 
+    {
+        $current.merge(kw);
+        createLeafNode(grammarAccess.getQIDREFAccess().getThisKeyword_0_0_1(), null); 
+    }
+)(
+	kw='.' 
+    {
+        $current.merge(kw);
+        createLeafNode(grammarAccess.getQIDREFAccess().getFullStopKeyword_0_1_0(), null); 
+    }
+
+    { 
+        currentNode=createCompositeNode(grammarAccess.getQIDREFAccess().getQIDParserRuleCall_0_1_1(), currentNode); 
+    }
+    this_QID_3=ruleQID    {
+		$current.merge(this_QID_3);
+    }
+
+    { 
+        currentNode = currentNode.getParent();
+    }
+)?)
+    |
+    { 
+        currentNode=createCompositeNode(grammarAccess.getQIDREFAccess().getQIDParserRuleCall_1(), currentNode); 
+    }
+    this_QID_4=ruleQID    {
+		$current.merge(this_QID_4);
+    }
+
+    { 
+        currentNode = currentNode.getParent();
+    }
+)
+    ;
+
+
+
+
+
+// Entry rule entryRuleQID
+entryRuleQID returns [String current=null] :
+	{ currentNode = createCompositeNode(grammarAccess.getQIDRule(), currentNode); } 
+	 iv_ruleQID=ruleQID 
+	 { $current=$iv_ruleQID.current.getText(); }  
+	 EOF 
+;
+
+// Rule QID
+ruleQID returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
     @init { setCurrentLookahead(); resetLookahead(); 
 		HiddenTokens myHiddenTokenState = ((XtextTokenStream)input).setHiddenTokens();
     }
@@ -11315,14 +11380,14 @@ ruleQualifiedName returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleT
     }
 
     { 
-    createLeafNode(grammarAccess.getQualifiedNameAccess().getIDTerminalRuleCall_0(), null); 
+    createLeafNode(grammarAccess.getQIDAccess().getIDTerminalRuleCall_0(), null); 
     }
 (    this_INT_1=RULE_INT    {
 		$current.merge(this_INT_1);
     }
 
     { 
-    createLeafNode(grammarAccess.getQualifiedNameAccess().getINTTerminalRuleCall_1_0(), null); 
+    createLeafNode(grammarAccess.getQIDAccess().getINTTerminalRuleCall_1_0(), null); 
     }
 
     |    this_HEX_2=RULE_HEX    {
@@ -11330,7 +11395,7 @@ ruleQualifiedName returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleT
     }
 
     { 
-    createLeafNode(grammarAccess.getQualifiedNameAccess().getHEXTerminalRuleCall_1_1(), null); 
+    createLeafNode(grammarAccess.getQIDAccess().getHEXTerminalRuleCall_1_1(), null); 
     }
 
     |    this_ID_3=RULE_ID    {
@@ -11338,27 +11403,27 @@ ruleQualifiedName returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleT
     }
 
     { 
-    createLeafNode(grammarAccess.getQualifiedNameAccess().getIDTerminalRuleCall_1_2(), null); 
+    createLeafNode(grammarAccess.getQIDAccess().getIDTerminalRuleCall_1_2(), null); 
     }
 )*(
 	kw='.' 
     {
         $current.merge(kw);
-        createLeafNode(grammarAccess.getQualifiedNameAccess().getFullStopKeyword_2_0(), null); 
+        createLeafNode(grammarAccess.getQIDAccess().getFullStopKeyword_2_0(), null); 
     }
     this_ID_5=RULE_ID    {
 		$current.merge(this_ID_5);
     }
 
     { 
-    createLeafNode(grammarAccess.getQualifiedNameAccess().getIDTerminalRuleCall_2_1(), null); 
+    createLeafNode(grammarAccess.getQIDAccess().getIDTerminalRuleCall_2_1(), null); 
     }
 (    this_INT_6=RULE_INT    {
 		$current.merge(this_INT_6);
     }
 
     { 
-    createLeafNode(grammarAccess.getQualifiedNameAccess().getINTTerminalRuleCall_2_2_0(), null); 
+    createLeafNode(grammarAccess.getQIDAccess().getINTTerminalRuleCall_2_2_0(), null); 
     }
 
     |    this_HEX_7=RULE_HEX    {
@@ -11366,7 +11431,7 @@ ruleQualifiedName returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleT
     }
 
     { 
-    createLeafNode(grammarAccess.getQualifiedNameAccess().getHEXTerminalRuleCall_2_2_1(), null); 
+    createLeafNode(grammarAccess.getQIDAccess().getHEXTerminalRuleCall_2_2_1(), null); 
     }
 
     |    this_ID_8=RULE_ID    {
@@ -11374,11 +11439,11 @@ ruleQualifiedName returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleT
     }
 
     { 
-    createLeafNode(grammarAccess.getQualifiedNameAccess().getIDTerminalRuleCall_2_2_2(), null); 
+    createLeafNode(grammarAccess.getQIDAccess().getIDTerminalRuleCall_2_2_2(), null); 
     }
 )*)*
     { 
-        currentNode=createCompositeNode(grammarAccess.getQualifiedNameAccess().getHIDDENBUGParserRuleCall_3(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getQIDAccess().getHIDDENBUGParserRuleCall_3(), currentNode); 
     }
     this_HIDDENBUG_9=ruleHIDDENBUG    {
 		$current.merge(this_HIDDENBUG_9);
@@ -11481,10 +11546,10 @@ ruleEscapedQualifiedName returns [AntlrDatatypeRuleToken current=new AntlrDataty
 
     |
     { 
-        currentNode=createCompositeNode(grammarAccess.getEscapedQualifiedNameAccess().getQualifiedNameParserRuleCall_1(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getEscapedQualifiedNameAccess().getQIDParserRuleCall_1(), currentNode); 
     }
-    this_QualifiedName_1=ruleQualifiedName    {
-		$current.merge(this_QualifiedName_1);
+    this_QID_1=ruleQID    {
+		$current.merge(this_QID_1);
     }
 
     { 
@@ -11515,10 +11580,10 @@ ruleInterfaceName returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleT
     }:
 
     { 
-        currentNode=createCompositeNode(grammarAccess.getInterfaceNameAccess().getQualifiedNameParserRuleCall(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getInterfaceNameAccess().getQIDParserRuleCall(), currentNode); 
     }
-    this_QualifiedName_0=ruleQualifiedName    {
-		$current.merge(this_QualifiedName_0);
+    this_QID_0=ruleQID    {
+		$current.merge(this_QID_0);
     }
 
     { 
