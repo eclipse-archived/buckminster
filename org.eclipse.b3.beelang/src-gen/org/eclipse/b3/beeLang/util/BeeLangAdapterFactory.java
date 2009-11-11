@@ -123,14 +123,14 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
         return createCapabilityAdapter();
       }
       @Override
-      public Adapter caseNamedProperties(NamedProperties object)
+      public Adapter caseNamedPropertySet(NamedPropertySet object)
       {
-        return createNamedPropertiesAdapter();
+        return createNamedPropertySetAdapter();
       }
       @Override
-      public Adapter casePropertyBody(PropertyBody object)
+      public Adapter casePropertySet(PropertySet object)
       {
-        return createPropertyBodyAdapter();
+        return createPropertySetAdapter();
       }
       @Override
       public Adapter casePropertyOperation(PropertyOperation object)
@@ -810,31 +810,31 @@ public class BeeLangAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.NamedProperties <em>Named Properties</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.NamedPropertySet <em>Named Property Set</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.NamedProperties
+   * @see org.eclipse.b3.beeLang.NamedPropertySet
    * @generated
    */
-  public Adapter createNamedPropertiesAdapter()
+  public Adapter createNamedPropertySetAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.PropertyBody <em>Property Body</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.b3.beeLang.PropertySet <em>Property Set</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.b3.beeLang.PropertyBody
+   * @see org.eclipse.b3.beeLang.PropertySet
    * @generated
    */
-  public Adapter createPropertyBodyAdapter()
+  public Adapter createPropertySetAdapter()
   {
     return null;
   }

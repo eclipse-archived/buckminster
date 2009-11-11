@@ -279,9 +279,9 @@
       </tokens>
     </alternatives>
   </rules>
-  <rules xsi:type="xtext:ParserRule" name="NamedPropertyBody">
+  <rules xsi:type="xtext:ParserRule" name="NamedPropertySet">
     <type metamodel="//@metamodelDeclarations.2">
-      <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//NamedProperties"/>
+      <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//NamedPropertySet"/>
     </type>
     <alternatives xsi:type="xtext:Group">
       <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
@@ -292,15 +292,20 @@
       </tokens>
     </alternatives>
   </rules>
-  <rules xsi:type="xtext:ParserRule" name="PropertyBody">
+  <rules xsi:type="xtext:ParserRule" name="PropertySet">
     <type metamodel="//@metamodelDeclarations.2">
-      <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertyBody"/>
+      <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PropertySet"/>
     </type>
     <alternatives xsi:type="xtext:Group">
       <tokens xsi:type="xtext:Group" cardinality="?">
         <tokens xsi:type="xtext:Keyword" value="extends"/>
         <tokens xsi:type="xtext:Assignment" feature="extends" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="//@rules.62"/>
+          <terminal xsi:type="xtext:CrossReference">
+            <type metamodel="//@metamodelDeclarations.2">
+              <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//NamedPropertySet"/>
+            </type>
+            <terminal xsi:type="xtext:RuleCall" rule="//@rules.139"/>
+          </terminal>
         </tokens>
       </tokens>
       <tokens xsi:type="xtext:Keyword" value="{"/>

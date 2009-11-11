@@ -12,7 +12,7 @@ Import : (reexport ?='reexport')?
 		'import' importer=(JavaImporter | NativeImporter) ("as" nameSpace=ID)? ';' 
 	; 
 
-JavaImporter 	: name=QualifiedName ;
+JavaImporter 	: name=QID ;
 NativeImporter 	: uriString = STRING ;
 		
 Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
@@ -24,7 +24,7 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 		(	//-- PROPERTIES
 			// goes first, because they may be used in the other clauses.
 			//
-			  ('default' 'properties'  defaultProperties = PropertyBody)
+			  ('default' 'properties'  defaultProperties = PropertySet)
 		)?
 		( 	//-- PROVIDES
 			  ('provides' '{' (providedCapabilities += ProvidedCapability ';')+ '}')
@@ -44,7 +44,7 @@ Unit returns BuildUnit hidden(WS, ML_COMMENT, SL_COMMENT) :
 			| (methods += Method )			
 			//-- REPOSITORIES
 			| ('repositories' '{' (repositoryConfigurations+=RepositoryConfiguration)* '}' )
-			| ('properties'  propertySets += NamedPropertyBody)
+			| ('properties'  propertySets += NamedPropertySet)
 			| ('containers' '{' containers += ContainerConfiguration* '}' )
 		)*
 	'}';
@@ -57,13 +57,13 @@ FilteredCapability : ('when' filter=Filter)? capability = Capability ;
 Capability : interface=InterfaceName '/' name=UnitName ;
 
 // An optionally named sequence of property statements
-NamedPropertyBody returns NamedProperties
-	: name = ID body = PropertyBody 
+NamedPropertySet returns NamedPropertySet
+	: name = ID body = PropertySet 
 	;
 
 // Sequence of possibly filtered property statements	
-PropertyBody returns PropertyBody
-	:  ("extends" extends=Expression)? '{' (operations += PropertyOperation)* '}'
+PropertySet returns PropertySet
+	:  ("extends" extends=[NamedPropertySet | QID])? '{' (operations += PropertyOperation)* '}'
 	;
 
 // For model generation, to get supertype correct
@@ -71,12 +71,12 @@ PropertyOperation
 	: FilteredPropertyOperation 
 	| SetPropertyOperation 
 	| UnsetPropertyOperation 
-	| PropertyBody
+	| PropertySet
 	;
 
 FilteredPropertyOperation returns FilteredPropertyOperation
 	: 'when' filter=Filter
-		body=(SetPropertyOperation | UnsetPropertyOperation | PropertyBody) 
+		body=(SetPropertyOperation | UnsetPropertyOperation | PropertySet) 
 	;
 
 SetPropertyOperation returns SetPropertyOperation
@@ -96,7 +96,7 @@ SynchronizedPart
 	| PartName
 	;
 	
-PathGroup : paths+=PathVectorElement+ ('annotations' annotations = PropertyBody)? ;
+PathGroup : paths+=PathVectorElement+ ('annotations' annotations = PropertySet)? ;
 
 PathVectorElement returns PathVectorElement
 	: FilteredPathVector
@@ -121,7 +121,7 @@ CompoundPathVector returns CompoundPathVector: '{' body+=PathVectorElement* '}' 
 // A path can be written without quotes if it consists of safe chars 
 Path hidden()
 	: STRING
-	| ('/')? QualifiedName ('/' QualifiedName)* ('/')?  HIDDENBUG
+	| ('/')? QID ('/' QID)* ('/')?  HIDDENBUG
 	;
 
 Prerequisite : 
@@ -135,7 +135,7 @@ Prerequisite :
 WithClause : {WithClause}
 		'with'
 		( '(' references += Expression (',' references += Expression)* ')' )? 
-		(( 'properties' properties += PropertyBody ) 
+		(( 'properties' properties += PropertySet ) 
 		| ( 'concern' concern += ConcernBlock ))*
 		;
 			
@@ -145,7 +145,7 @@ PrerequisiteEntry
 	| CompoundReferences
 	;
 	
-DirectPartReferemce	: ((unit=QualifiedName)|(unit="unit"))? '#' builder=PartName  (parameters = ParameterList)?; 
+DirectPartReferemce	: ((unit=QID)|(unit="unit"))? '#' builder=PartName  (parameters = ParameterList)?; 
 	
 CapabilityReferencedPart : 
 	capability=Capability ('/' range=VersionRange)? ('#' partName=PartName) ?
@@ -169,7 +169,7 @@ Builder returns Statement : {Builder}
 	(preCondition = PreCondition)?
 	(postCondition = PostCondition)?
 	 '{'
-		('default' 'properties' properties = PropertyBody)?
+		('default' 'properties' properties = PropertySet)?
 	     ( input = BuilderInput )? 
 	     ( output = BuilderOutput )?
 	     (expressionList = ExpressionList)?
@@ -231,7 +231,7 @@ ConcernBlock :
 Query : "query" ('{' selector=QueryPath '}') ;	
 QueryPath : (absolute?=':')? selectors+=Selector (':' selectors+=Selector)* ;
 Selector returns Selector
-	: (name=QualifiedName | op=SelectorOperator | pattern=REGEX) ('[' predicate=Expression ']')? 
+	: (name=QID | op=SelectorOperator | pattern=REGEX) ('[' predicate=Expression ']')? 
 	;
 enum SelectorOperator : THIS = '.' | PARENT = '..' | CHILDREN = '*' | ANSCESTORS = '**' ;
 
@@ -427,7 +427,7 @@ ContextSelector : TypeRefSelector | ExpressionSelector | UnitSelector ;
 TypeRefSelector returns ContextSelector: type = TypeRef ;
 ExpressionSelector : expr = Expression ;
 UnitSelector : 
-	"unit" interface=QualifiedName 
+	"unit" interface=QID 
 	('/' (name=UnitName | namePattern = REGEX) ('/' versionRange=VersionRange)? )? 
 	;
 
@@ -438,7 +438,7 @@ ContextBlock : '{'  ((statements +=Method)
 					)* '}' ;
 					
 ExpressionStatement returns Statement : {ExpressionStatement} val=Expression ';' ;
-PropertiesStatement returns Statment : {PropertiesStatement} "properties" properties = NamedPropertyBody ;
+PropertiesStatement returns Statment : {PropertiesStatement} "properties" properties = NamedPropertySet ;
 
 Literal returns Expression
 	: ValueLiteral
@@ -516,14 +516,15 @@ VersionRangeLiteral returns types::VersionRange
 	;
 
 // Qualified name
-// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
+// TODO: Needs to disallow white space between ID and '.', and no embedded comments. 
+// A bug in xtext prevents using hidden() here without the using the magic HIDDENBUG.
 //
-QualifiedName hidden(): ID (INT|HEX|ID)* ('.' ID (INT|HEX|ID)*)* HIDDENBUG;
+QID hidden(): ID (INT|HEX|ID)* ('.' ID (INT|HEX|ID)*)* HIDDENBUG;
 HIDDENBUG hidden(WS, SL_COMMENT, ML_COMMENT): ('~~~~~')? ; // TODO: REPLACE HACK WHEN HIDDEN WORKS.
 
 PropertyName : PID ;
-EscapedQualifiedName:  STRING | QualifiedName;
-InterfaceName: QualifiedName ;
+EscapedQualifiedName:  STRING | QID;
+InterfaceName: QID ;
 
 // CompoundName (whitespace and comments allowed, as sequence can be very long. name parts
 // do not allow being broken across lines.

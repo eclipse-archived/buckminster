@@ -77,8 +77,8 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.REQUIRED_CAPABILITY: return createRequiredCapability();
       case BeeLangPackage.FILTERED_CAPABILITY: return createFilteredCapability();
       case BeeLangPackage.CAPABILITY: return createCapability();
-      case BeeLangPackage.NAMED_PROPERTIES: return createNamedProperties();
-      case BeeLangPackage.PROPERTY_BODY: return createPropertyBody();
+      case BeeLangPackage.NAMED_PROPERTY_SET: return createNamedPropertySet();
+      case BeeLangPackage.PROPERTY_SET: return createPropertySet();
       case BeeLangPackage.PROPERTY_OPERATION: return createPropertyOperation();
       case BeeLangPackage.FILTERED_PROPERTY_OPERATION: return createFilteredPropertyOperation();
       case BeeLangPackage.SET_PROPERTY_OPERATION: return createSetPropertyOperation();
@@ -346,10 +346,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public NamedProperties createNamedProperties()
+  public NamedPropertySet createNamedPropertySet()
   {
-    NamedPropertiesImpl namedProperties = new NamedPropertiesImpl();
-    return namedProperties;
+    NamedPropertySetImpl namedPropertySet = new NamedPropertySetImpl();
+    return namedPropertySet;
   }
 
   /**
@@ -357,10 +357,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public PropertyBody createPropertyBody()
+  public PropertySet createPropertySet()
   {
-    PropertyBodyImpl propertyBody = new PropertyBodyImpl();
-    return propertyBody;
+    PropertySetImpl propertySet = new PropertySetImpl();
+    return propertySet;
   }
 
   /**

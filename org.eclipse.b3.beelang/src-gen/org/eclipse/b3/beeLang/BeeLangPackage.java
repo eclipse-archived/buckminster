@@ -529,14 +529,14 @@ public interface BeeLangPackage extends EPackage
   int CAPABILITY_FEATURE_COUNT = 2;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.NamedPropertiesImpl <em>Named Properties</em>}' class.
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.NamedPropertySetImpl <em>Named Property Set</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.NamedPropertiesImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNamedProperties()
+   * @see org.eclipse.b3.beeLang.impl.NamedPropertySetImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNamedPropertySet()
    * @generated
    */
-  int NAMED_PROPERTIES = 9;
+  int NAMED_PROPERTY_SET = 9;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -545,7 +545,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int NAMED_PROPERTIES__NAME = 0;
+  int NAMED_PROPERTY_SET__NAME = 0;
 
   /**
    * The feature id for the '<em><b>Body</b></em>' containment reference.
@@ -554,16 +554,16 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int NAMED_PROPERTIES__BODY = 1;
+  int NAMED_PROPERTY_SET__BODY = 1;
 
   /**
-   * The number of structural features of the '<em>Named Properties</em>' class.
+   * The number of structural features of the '<em>Named Property Set</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int NAMED_PROPERTIES_FEATURE_COUNT = 2;
+  int NAMED_PROPERTY_SET_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.PropertyOperationImpl <em>Property Operation</em>}' class.
@@ -585,23 +585,23 @@ public interface BeeLangPackage extends EPackage
   int PROPERTY_OPERATION_FEATURE_COUNT = 0;
 
   /**
-   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.PropertyBodyImpl <em>Property Body</em>}' class.
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.PropertySetImpl <em>Property Set</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.b3.beeLang.impl.PropertyBodyImpl
-   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertyBody()
+   * @see org.eclipse.b3.beeLang.impl.PropertySetImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertySet()
    * @generated
    */
-  int PROPERTY_BODY = 10;
+  int PROPERTY_SET = 10;
 
   /**
-   * The feature id for the '<em><b>Extends</b></em>' containment reference.
+   * The feature id for the '<em><b>Extends</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PROPERTY_BODY__EXTENDS = PROPERTY_OPERATION_FEATURE_COUNT + 0;
+  int PROPERTY_SET__EXTENDS = PROPERTY_OPERATION_FEATURE_COUNT + 0;
 
   /**
    * The feature id for the '<em><b>Operations</b></em>' containment reference list.
@@ -610,16 +610,16 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int PROPERTY_BODY__OPERATIONS = PROPERTY_OPERATION_FEATURE_COUNT + 1;
+  int PROPERTY_SET__OPERATIONS = PROPERTY_OPERATION_FEATURE_COUNT + 1;
 
   /**
-   * The number of structural features of the '<em>Property Body</em>' class.
+   * The number of structural features of the '<em>Property Set</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int PROPERTY_BODY_FEATURE_COUNT = PROPERTY_OPERATION_FEATURE_COUNT + 2;
+  int PROPERTY_SET_FEATURE_COUNT = PROPERTY_OPERATION_FEATURE_COUNT + 2;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.FilteredPropertyOperationImpl <em>Filtered Property Operation</em>}' class.
@@ -4875,68 +4875,68 @@ public interface BeeLangPackage extends EPackage
   EAttribute getCapability_Name();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.NamedProperties <em>Named Properties</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.NamedPropertySet <em>Named Property Set</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Named Properties</em>'.
-   * @see org.eclipse.b3.beeLang.NamedProperties
+   * @return the meta object for class '<em>Named Property Set</em>'.
+   * @see org.eclipse.b3.beeLang.NamedPropertySet
    * @generated
    */
-  EClass getNamedProperties();
+  EClass getNamedPropertySet();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.NamedProperties#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.NamedPropertySet#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.b3.beeLang.NamedProperties#getName()
-   * @see #getNamedProperties()
+   * @see org.eclipse.b3.beeLang.NamedPropertySet#getName()
+   * @see #getNamedPropertySet()
    * @generated
    */
-  EAttribute getNamedProperties_Name();
+  EAttribute getNamedPropertySet_Name();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.NamedProperties#getBody <em>Body</em>}'.
+   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.NamedPropertySet#getBody <em>Body</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference '<em>Body</em>'.
-   * @see org.eclipse.b3.beeLang.NamedProperties#getBody()
-   * @see #getNamedProperties()
+   * @see org.eclipse.b3.beeLang.NamedPropertySet#getBody()
+   * @see #getNamedPropertySet()
    * @generated
    */
-  EReference getNamedProperties_Body();
+  EReference getNamedPropertySet_Body();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.PropertyBody <em>Property Body</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.PropertySet <em>Property Set</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Property Body</em>'.
-   * @see org.eclipse.b3.beeLang.PropertyBody
+   * @return the meta object for class '<em>Property Set</em>'.
+   * @see org.eclipse.b3.beeLang.PropertySet
    * @generated
    */
-  EClass getPropertyBody();
+  EClass getPropertySet();
 
   /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.PropertyBody#getExtends <em>Extends</em>}'.
+   * Returns the meta object for the reference '{@link org.eclipse.b3.beeLang.PropertySet#getExtends <em>Extends</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Extends</em>'.
-   * @see org.eclipse.b3.beeLang.PropertyBody#getExtends()
-   * @see #getPropertyBody()
+   * @return the meta object for the reference '<em>Extends</em>'.
+   * @see org.eclipse.b3.beeLang.PropertySet#getExtends()
+   * @see #getPropertySet()
    * @generated
    */
-  EReference getPropertyBody_Extends();
+  EReference getPropertySet_Extends();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.PropertyBody#getOperations <em>Operations</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.b3.beeLang.PropertySet#getOperations <em>Operations</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the containment reference list '<em>Operations</em>'.
-   * @see org.eclipse.b3.beeLang.PropertyBody#getOperations()
-   * @see #getPropertyBody()
+   * @see org.eclipse.b3.beeLang.PropertySet#getOperations()
+   * @see #getPropertySet()
    * @generated
    */
-  EReference getPropertyBody_Operations();
+  EReference getPropertySet_Operations();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.PropertyOperation <em>Property Operation</em>}'.
@@ -8528,14 +8528,14 @@ public interface BeeLangPackage extends EPackage
     EAttribute CAPABILITY__NAME = eINSTANCE.getCapability_Name();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.NamedPropertiesImpl <em>Named Properties</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.NamedPropertySetImpl <em>Named Property Set</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.NamedPropertiesImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNamedProperties()
+     * @see org.eclipse.b3.beeLang.impl.NamedPropertySetImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getNamedPropertySet()
      * @generated
      */
-    EClass NAMED_PROPERTIES = eINSTANCE.getNamedProperties();
+    EClass NAMED_PROPERTY_SET = eINSTANCE.getNamedPropertySet();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -8543,7 +8543,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute NAMED_PROPERTIES__NAME = eINSTANCE.getNamedProperties_Name();
+    EAttribute NAMED_PROPERTY_SET__NAME = eINSTANCE.getNamedPropertySet_Name();
 
     /**
      * The meta object literal for the '<em><b>Body</b></em>' containment reference feature.
@@ -8551,25 +8551,25 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference NAMED_PROPERTIES__BODY = eINSTANCE.getNamedProperties_Body();
+    EReference NAMED_PROPERTY_SET__BODY = eINSTANCE.getNamedPropertySet_Body();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.PropertyBodyImpl <em>Property Body</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.PropertySetImpl <em>Property Set</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.b3.beeLang.impl.PropertyBodyImpl
-     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertyBody()
+     * @see org.eclipse.b3.beeLang.impl.PropertySetImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getPropertySet()
      * @generated
      */
-    EClass PROPERTY_BODY = eINSTANCE.getPropertyBody();
+    EClass PROPERTY_SET = eINSTANCE.getPropertySet();
 
     /**
-     * The meta object literal for the '<em><b>Extends</b></em>' containment reference feature.
+     * The meta object literal for the '<em><b>Extends</b></em>' reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PROPERTY_BODY__EXTENDS = eINSTANCE.getPropertyBody_Extends();
+    EReference PROPERTY_SET__EXTENDS = eINSTANCE.getPropertySet_Extends();
 
     /**
      * The meta object literal for the '<em><b>Operations</b></em>' containment reference list feature.
@@ -8577,7 +8577,7 @@ public interface BeeLangPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference PROPERTY_BODY__OPERATIONS = eINSTANCE.getPropertyBody_Operations();
+    EReference PROPERTY_SET__OPERATIONS = eINSTANCE.getPropertySet_Operations();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.PropertyOperationImpl <em>Property Operation</em>}' class.

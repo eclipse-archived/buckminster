@@ -6,7 +6,7 @@
 package org.eclipse.b3.beeLang.impl;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.NamedProperties;
+import org.eclipse.b3.beeLang.NamedPropertySet;
 import org.eclipse.b3.beeLang.PropertiesStatement;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -40,7 +40,7 @@ public class PropertiesStatementImpl extends StatmentImpl implements PropertiesS
    * @generated
    * @ordered
    */
-  protected NamedProperties properties;
+  protected NamedPropertySet properties;
 
   /**
    * <!-- begin-user-doc -->
@@ -68,7 +68,7 @@ public class PropertiesStatementImpl extends StatmentImpl implements PropertiesS
    * <!-- end-user-doc -->
    * @generated
    */
-  public NamedProperties getProperties()
+  public NamedPropertySet getProperties()
   {
     return properties;
   }
@@ -78,9 +78,9 @@ public class PropertiesStatementImpl extends StatmentImpl implements PropertiesS
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetProperties(NamedProperties newProperties, NotificationChain msgs)
+  public NotificationChain basicSetProperties(NamedPropertySet newProperties, NotificationChain msgs)
   {
-    NamedProperties oldProperties = properties;
+    NamedPropertySet oldProperties = properties;
     properties = newProperties;
     if (eNotificationRequired())
     {
@@ -95,7 +95,7 @@ public class PropertiesStatementImpl extends StatmentImpl implements PropertiesS
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setProperties(NamedProperties newProperties)
+  public void setProperties(NamedPropertySet newProperties)
   {
     if (newProperties != properties)
     {
@@ -154,7 +154,7 @@ public class PropertiesStatementImpl extends StatmentImpl implements PropertiesS
     switch (featureID)
     {
       case BeeLangPackage.PROPERTIES_STATEMENT__PROPERTIES:
-        setProperties((NamedProperties)newValue);
+        setProperties((NamedPropertySet)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -171,7 +171,7 @@ public class PropertiesStatementImpl extends StatmentImpl implements PropertiesS
     switch (featureID)
     {
       case BeeLangPackage.PROPERTIES_STATEMENT__PROPERTIES:
-        setProperties((NamedProperties)null);
+        setProperties((NamedPropertySet)null);
         return;
     }
     super.eUnset(featureID);

@@ -10,7 +10,7 @@ import java.util.Collection;
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.PathGroup;
 import org.eclipse.b3.beeLang.PathVectorElement;
-import org.eclipse.b3.beeLang.PropertyBody;
+import org.eclipse.b3.beeLang.PropertySet;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -60,7 +60,7 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * @generated
    * @ordered
    */
-  protected PropertyBody annotations;
+  protected PropertySet annotations;
 
   /**
    * <!-- begin-user-doc -->
@@ -102,7 +102,7 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public PropertyBody getAnnotations()
+  public PropertySet getAnnotations()
   {
     return annotations;
   }
@@ -112,9 +112,9 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetAnnotations(PropertyBody newAnnotations, NotificationChain msgs)
+  public NotificationChain basicSetAnnotations(PropertySet newAnnotations, NotificationChain msgs)
   {
-    PropertyBody oldAnnotations = annotations;
+    PropertySet oldAnnotations = annotations;
     annotations = newAnnotations;
     if (eNotificationRequired())
     {
@@ -129,7 +129,7 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setAnnotations(PropertyBody newAnnotations)
+  public void setAnnotations(PropertySet newAnnotations)
   {
     if (newAnnotations != annotations)
     {
@@ -197,7 +197,7 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
         getPaths().addAll((Collection<? extends PathVectorElement>)newValue);
         return;
       case BeeLangPackage.PATH_GROUP__ANNOTATIONS:
-        setAnnotations((PropertyBody)newValue);
+        setAnnotations((PropertySet)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -217,7 +217,7 @@ public class PathGroupImpl extends MinimalEObjectImpl.Container implements PathG
         getPaths().clear();
         return;
       case BeeLangPackage.PATH_GROUP__ANNOTATIONS:
-        setAnnotations((PropertyBody)null);
+        setAnnotations((PropertySet)null);
         return;
     }
     super.eUnset(featureID);

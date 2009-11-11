@@ -33,7 +33,7 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="implements" unique="false"
         upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultProperties" eType="#//PropertyBody"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultProperties" eType="#//PropertySet"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="providedCapabilities" upperBound="-1"
         eType="#//ProvidedCapability" containment="true"/>
@@ -52,7 +52,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="repositoryConfigurations"
         upperBound="-1" eType="#//RepositoryConfiguration" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertySets" upperBound="-1"
-        eType="#//NamedProperties" containment="true"/>
+        eType="#//NamedPropertySet" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="containers" upperBound="-1"
         eType="#//ContainerConfiguration" containment="true"/>
   </eClassifiers>
@@ -78,14 +78,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="interface" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="NamedProperties">
+  <eClassifiers xsi:type="ecore:EClass" name="NamedPropertySet">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//PropertyBody"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//PropertySet"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PropertyBody" eSuperTypes="#//PropertyOperation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="extends" eType="#//Expression"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertySet" eSuperTypes="#//PropertyOperation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="extends" eType="#//NamedPropertySet"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="operations" upperBound="-1"
         eType="#//PropertyOperation" containment="true"/>
   </eClassifiers>
@@ -113,7 +112,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="PathGroup">
     <eStructuralFeatures xsi:type="ecore:EReference" name="paths" upperBound="-1"
         eType="#//PathVectorElement" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="annotations" eType="#//PropertyBody"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="annotations" eType="#//PropertySet"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PathVectorElement"/>
@@ -145,7 +144,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="references" upperBound="-1"
         eType="#//Expression" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
-        eType="#//PropertyBody" containment="true"/>
+        eType="#//PropertySet" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="concern" upperBound="-1"
         eType="#//ConcernBlock" containment="true"/>
   </eClassifiers>
@@ -467,7 +466,7 @@
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="postCondition" eType="#//PostCondition"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//PropertyBody"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//PropertySet"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="input" eType="#//BuilderInput"
         containment="true"/>
@@ -596,7 +595,7 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PropertiesStatement" eSuperTypes="#//Statment">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//NamedProperties"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//NamedPropertySet"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LiteralList" eSuperTypes="#//Expression">

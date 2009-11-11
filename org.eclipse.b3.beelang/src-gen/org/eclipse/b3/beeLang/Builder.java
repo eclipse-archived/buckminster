@@ -303,12 +303,12 @@ public interface Builder extends Statement
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Properties</em>' containment reference.
-   * @see #setProperties(PropertyBody)
+   * @see #setProperties(PropertySet)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getBuilder_Properties()
    * @model containment="true"
    * @generated
    */
-  PropertyBody getProperties();
+  PropertySet getProperties();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.Builder#getProperties <em>Properties</em>}' containment reference.
@@ -318,7 +318,7 @@ public interface Builder extends Statement
    * @see #getProperties()
    * @generated
    */
-  void setProperties(PropertyBody value);
+  void setProperties(PropertySet value);
 
   /**
    * Returns the value of the '<em><b>Input</b></em>' containment reference.

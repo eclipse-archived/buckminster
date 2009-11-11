@@ -9,22 +9,22 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Named Properties</b></em>'.
+ * A representation of the model object '<em><b>Named Property Set</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.NamedProperties#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.NamedProperties#getBody <em>Body</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.NamedPropertySet#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.NamedPropertySet#getBody <em>Body</em>}</li>
  * </ul>
  * </p>
  *
- * @see org.eclipse.b3.beeLang.BeeLangPackage#getNamedProperties()
+ * @see org.eclipse.b3.beeLang.BeeLangPackage#getNamedPropertySet()
  * @model
  * @generated
  */
-public interface NamedProperties extends EObject
+public interface NamedPropertySet extends EObject
 {
   /**
    * Returns the value of the '<em><b>Name</b></em>' attribute.
@@ -36,14 +36,14 @@ public interface NamedProperties extends EObject
    * <!-- end-user-doc -->
    * @return the value of the '<em>Name</em>' attribute.
    * @see #setName(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getNamedProperties_Name()
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getNamedPropertySet_Name()
    * @model
    * @generated
    */
   String getName();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.NamedProperties#getName <em>Name</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.NamedPropertySet#getName <em>Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Name</em>' attribute.
@@ -61,21 +61,21 @@ public interface NamedProperties extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Body</em>' containment reference.
-   * @see #setBody(PropertyBody)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getNamedProperties_Body()
+   * @see #setBody(PropertySet)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getNamedPropertySet_Body()
    * @model containment="true"
    * @generated
    */
-  PropertyBody getBody();
+  PropertySet getBody();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.NamedProperties#getBody <em>Body</em>}' containment reference.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.NamedPropertySet#getBody <em>Body</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Body</em>' containment reference.
    * @see #getBody()
    * @generated
    */
-  void setBody(PropertyBody value);
+  void setBody(PropertySet value);
 
-} // NamedProperties
+} // NamedPropertySet

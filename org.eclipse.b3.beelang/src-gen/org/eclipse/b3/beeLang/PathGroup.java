@@ -53,12 +53,12 @@ public interface PathGroup extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Annotations</em>' containment reference.
-   * @see #setAnnotations(PropertyBody)
+   * @see #setAnnotations(PropertySet)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getPathGroup_Annotations()
    * @model containment="true"
    * @generated
    */
-  PropertyBody getAnnotations();
+  PropertySet getAnnotations();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.PathGroup#getAnnotations <em>Annotations</em>}' containment reference.
@@ -68,6 +68,6 @@ public interface PathGroup extends EObject
    * @see #getAnnotations()
    * @generated
    */
-  void setAnnotations(PropertyBody value);
+  void setAnnotations(PropertySet value);
 
 } // PathGroup

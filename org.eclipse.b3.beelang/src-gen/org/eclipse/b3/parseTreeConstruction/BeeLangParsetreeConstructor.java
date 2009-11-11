@@ -41,8 +41,8 @@ protected class ThisRootNode extends RootToken {
 			case 6: return new RequiredCapability_Group(this, this, 6, inst);
 			case 7: return new FilteredCapability_Group(this, this, 7, inst);
 			case 8: return new Capability_Group(this, this, 8, inst);
-			case 9: return new NamedPropertyBody_Group(this, this, 9, inst);
-			case 10: return new PropertyBody_Group(this, this, 10, inst);
+			case 9: return new NamedPropertySet_Group(this, this, 9, inst);
+			case 10: return new PropertySet_Group(this, this, 10, inst);
 			case 11: return new PropertyOperation_Alternatives(this, this, 11, inst);
 			case 12: return new FilteredPropertyOperation_Group(this, this, 12, inst);
 			case 13: return new SetPropertyOperation_Group(this, this, 13, inst);
@@ -719,7 +719,7 @@ protected class NativeImporter_UriStringAssignment extends AssignmentToken  {
  * Unit returns BuildUnit hidden ( WS , ML_COMMENT , SL_COMMENT ):
  *   documentation=DOCUMENTATION? executionMode=ExecutionMode? "unit" name=UnitName? (
  *   "version" version=Version)? ("implements" implements+=InterfaceName ("," implements+=
- *   InterfaceName)*)? "{" ("default" "properties" defaultProperties=PropertyBody)? (
+ *   InterfaceName)*)? "{" ("default" "properties" defaultProperties=PropertySet)? (
  *   "provides" "{" (providedCapabilities+=ProvidedCapability ";")+ "}"|"provides"
  *   providedCapabilities+=ProvidedCapability ";"|"requires" "{" (requiredCapabilities+=
  *   RequiredCapability ";")+ "}"|"requires" requiredCapabilities+=RequiredCapability ";"
@@ -728,7 +728,7 @@ protected class NativeImporter_UriStringAssignment extends AssignmentToken  {
  *   "sequential" "{" synchronizations+=Synchronization+ "}"|"sequential"
  *   synchronizations+=Synchronization|builders+=Builder|methods+=Method|
  *   "repositories" "{" repositoryConfigurations+=RepositoryConfiguration* "}"|
- *   "properties" propertySets+=NamedPropertyBody|"containers" "{" containers+=
+ *   "properties" propertySets+=NamedPropertySet|"containers" "{" containers+=
  *   ContainerConfiguration* "}")* "}"; 
  * 		
  *             
@@ -764,7 +764,7 @@ protected class NativeImporter_UriStringAssignment extends AssignmentToken  {
 
 // documentation=DOCUMENTATION? executionMode=ExecutionMode? "unit" name=UnitName? (
 // "version" version=Version)? ("implements" implements+=InterfaceName ("," implements+=
-// InterfaceName)*)? "{" ("default" "properties" defaultProperties=PropertyBody)? (
+// InterfaceName)*)? "{" ("default" "properties" defaultProperties=PropertySet)? (
 // "provides" "{" (providedCapabilities+=ProvidedCapability ";")+ "}"|"provides"
 // providedCapabilities+=ProvidedCapability ";"|"requires" "{" (requiredCapabilities+=
 // RequiredCapability ";")+ "}"|"requires" requiredCapabilities+=RequiredCapability ";"
@@ -773,7 +773,7 @@ protected class NativeImporter_UriStringAssignment extends AssignmentToken  {
 // "sequential" "{" synchronizations+=Synchronization+ "}"|"sequential"
 // synchronizations+=Synchronization|builders+=Builder|methods+=Method|
 // "repositories" "{" repositoryConfigurations+=RepositoryConfiguration* "}"|
-// "properties" propertySets+=NamedPropertyBody|"containers" "{" containers+=
+// "properties" propertySets+=NamedPropertySet|"containers" "{" containers+=
 // ContainerConfiguration* "}")* "}" 
 // 	    
 // 	    
@@ -1193,7 +1193,7 @@ protected class Unit_LeftCurlyBracketKeyword_6 extends KeywordToken  {
 		
 }
 
-// ("default" "properties" defaultProperties=PropertyBody)?
+// ("default" "properties" defaultProperties=PropertySet)?
 protected class Unit_Group_7 extends GroupToken {
 	
 	public Unit_Group_7(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1253,7 +1253,7 @@ protected class Unit_PropertiesKeyword_7_1 extends KeywordToken  {
 		
 }
 
-// defaultProperties=PropertyBody
+// defaultProperties=PropertySet
 protected class Unit_DefaultPropertiesAssignment_7_2 extends AssignmentToken  {
 	
 	public Unit_DefaultPropertiesAssignment_7_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1266,7 +1266,7 @@ protected class Unit_DefaultPropertiesAssignment_7_2 extends AssignmentToken  {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_Group(this, this, 0, inst);
+			case 0: return new PropertySet_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -1276,9 +1276,9 @@ protected class Unit_DefaultPropertiesAssignment_7_2 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("defaultProperties");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getPropertyBodyRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getPropertySetRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getUnitAccess().getDefaultPropertiesPropertyBodyParserRuleCall_7_2_0(); 
+				element = grammarAccess.getUnitAccess().getDefaultPropertiesPropertySetParserRuleCall_7_2_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -1304,7 +1304,7 @@ protected class Unit_DefaultPropertiesAssignment_7_2 extends AssignmentToken  {
 // "sequential" "{" synchronizations+=Synchronization+ "}"|"sequential"
 // synchronizations+=Synchronization|builders+=Builder|methods+=Method|
 // "repositories" "{" repositoryConfigurations+=RepositoryConfiguration* "}"|
-// "properties" propertySets+=NamedPropertyBody|"containers" "{" containers+=
+// "properties" propertySets+=NamedPropertySet|"containers" "{" containers+=
 // ContainerConfiguration* "}")* 
 // 		 	 //-- PROVIDES
 // 			               
@@ -2681,7 +2681,7 @@ protected class Unit_RightCurlyBracketKeyword_8_11_3 extends KeywordToken  {
 }
 
 
-// "properties" propertySets+=NamedPropertyBody
+// "properties" propertySets+=NamedPropertySet
 protected class Unit_Group_8_12 extends GroupToken {
 	
 	public Unit_Group_8_12(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2723,7 +2723,7 @@ protected class Unit_PropertiesKeyword_8_12_0 extends KeywordToken  {
 		
 }
 
-// propertySets+=NamedPropertyBody
+// propertySets+=NamedPropertySet
 protected class Unit_PropertySetsAssignment_8_12_1 extends AssignmentToken  {
 	
 	public Unit_PropertySetsAssignment_8_12_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2736,7 +2736,7 @@ protected class Unit_PropertySetsAssignment_8_12_1 extends AssignmentToken  {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new NamedPropertyBody_Group(this, this, 0, inst);
+			case 0: return new NamedPropertySet_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2746,9 +2746,9 @@ protected class Unit_PropertySetsAssignment_8_12_1 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("propertySets");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getNamedPropertyBodyRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getNamedPropertySetRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getUnitAccess().getPropertySetsNamedPropertyBodyParserRuleCall_8_12_1_0(); 
+				element = grammarAccess.getUnitAccess().getPropertySetsNamedPropertySetParserRuleCall_8_12_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -3518,10 +3518,10 @@ protected class Capability_NameAssignment_2 extends AssignmentToken  {
 /************ end Rule Capability ****************/
 
 
-/************ begin Rule NamedPropertyBody ****************
+/************ begin Rule NamedPropertySet ****************
  *
- * NamedPropertyBody returns NamedProperties:
- *   name=ID body=PropertyBody; 
+ * NamedPropertySet:
+ *   name=ID body=PropertySet; 
  * 
  * // An optionally named sequence of property statements
  *     
@@ -3532,39 +3532,39 @@ protected class Capability_NameAssignment_2 extends AssignmentToken  {
  *
  **/
 
-// name=ID body=PropertyBody
-protected class NamedPropertyBody_Group extends GroupToken {
+// name=ID body=PropertySet
+protected class NamedPropertySet_Group extends GroupToken {
 	
-	public NamedPropertyBody_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public NamedPropertySet_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Group getGrammarElement() {
-		return grammarAccess.getNamedPropertyBodyAccess().getGroup();
+		return grammarAccess.getNamedPropertySetAccess().getGroup();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new NamedPropertyBody_BodyAssignment_1(parent, this, 0, inst);
+			case 0: return new NamedPropertySet_BodyAssignment_1(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
 		
 	public IInstanceDescription tryConsume() {
-		if(!current.isInstanceOf(grammarAccess.getNamedPropertyBodyRule().getType().getClassifier())) return null;
+		if(!current.isInstanceOf(grammarAccess.getNamedPropertySetRule().getType().getClassifier())) return null;
 		return tryConsumeVal();
 	}
 }
 
 // name=ID
-protected class NamedPropertyBody_NameAssignment_0 extends AssignmentToken  {
+protected class NamedPropertySet_NameAssignment_0 extends AssignmentToken  {
 	
-	public NamedPropertyBody_NameAssignment_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public NamedPropertySet_NameAssignment_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getNamedPropertyBodyAccess().getNameAssignment_0();
+		return grammarAccess.getNamedPropertySetAccess().getNameAssignment_0();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -3578,7 +3578,7 @@ protected class NamedPropertyBody_NameAssignment_0 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("name");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
 			type = AssignmentType.LRC;
-			element = grammarAccess.getNamedPropertyBodyAccess().getNameIDTerminalRuleCall_0_0();
+			element = grammarAccess.getNamedPropertySetAccess().getNameIDTerminalRuleCall_0_0();
 			return obj;
 		}
 		return null;
@@ -3586,20 +3586,20 @@ protected class NamedPropertyBody_NameAssignment_0 extends AssignmentToken  {
 
 }
 
-// body=PropertyBody
-protected class NamedPropertyBody_BodyAssignment_1 extends AssignmentToken  {
+// body=PropertySet
+protected class NamedPropertySet_BodyAssignment_1 extends AssignmentToken  {
 	
-	public NamedPropertyBody_BodyAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public NamedPropertySet_BodyAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getNamedPropertyBodyAccess().getBodyAssignment_1();
+		return grammarAccess.getNamedPropertySetAccess().getBodyAssignment_1();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_Group(this, this, 0, inst);
+			case 0: return new PropertySet_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -3609,9 +3609,9 @@ protected class NamedPropertyBody_BodyAssignment_1 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("body");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getPropertyBodyRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getPropertySetRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getNamedPropertyBodyAccess().getBodyPropertyBodyParserRuleCall_1_0(); 
+				element = grammarAccess.getNamedPropertySetAccess().getBodyPropertySetParserRuleCall_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -3622,68 +3622,70 @@ protected class NamedPropertyBody_BodyAssignment_1 extends AssignmentToken  {
 	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
 		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new NamedPropertyBody_NameAssignment_0(parent, next, actIndex, consumed);
+			case 0: return new NamedPropertySet_NameAssignment_0(parent, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	
 }
 
 
-/************ end Rule NamedPropertyBody ****************/
+/************ end Rule NamedPropertySet ****************/
 
 
-/************ begin Rule PropertyBody ****************
+/************ begin Rule PropertySet ****************
  *
- * PropertyBody:
- *   ("extends" extends=Expression)? "{" operations+=PropertyOperation* "}"; 
+ * PropertySet:
+ *   ("extends" extends=[NamedPropertySet|QualifiedName])? "{" operations+=
+ *   PropertyOperation* "}"; 
  * 
  * // Sequence of possibly filtered property statements	
  *     
- * 	               
+ * 	                   
  * 	
  * 
  * // For model generation, to get supertype correct
  *
  **/
 
-// ("extends" extends=Expression)? "{" operations+=PropertyOperation* "}"
-protected class PropertyBody_Group extends GroupToken {
+// ("extends" extends=[NamedPropertySet|QualifiedName])? "{" operations+=
+// PropertyOperation* "}"
+protected class PropertySet_Group extends GroupToken {
 	
-	public PropertyBody_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public PropertySet_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Group getGrammarElement() {
-		return grammarAccess.getPropertyBodyAccess().getGroup();
+		return grammarAccess.getPropertySetAccess().getGroup();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_RightCurlyBracketKeyword_3(parent, this, 0, inst);
+			case 0: return new PropertySet_RightCurlyBracketKeyword_3(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
 		
 	public IInstanceDescription tryConsume() {
-		if(!current.isInstanceOf(grammarAccess.getPropertyBodyRule().getType().getClassifier())) return null;
+		if(!current.isInstanceOf(grammarAccess.getPropertySetRule().getType().getClassifier())) return null;
 		return tryConsumeVal();
 	}
 }
 
-// ("extends" extends=Expression)?
-protected class PropertyBody_Group_0 extends GroupToken {
+// ("extends" extends=[NamedPropertySet|QualifiedName])?
+protected class PropertySet_Group_0 extends GroupToken {
 	
-	public PropertyBody_Group_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public PropertySet_Group_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Group getGrammarElement() {
-		return grammarAccess.getPropertyBodyAccess().getGroup_0();
+		return grammarAccess.getPropertySetAccess().getGroup_0();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_ExtendsAssignment_0_1(parent, this, 0, inst);
+			case 0: return new PropertySet_ExtendsAssignment_0_1(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -3691,14 +3693,14 @@ protected class PropertyBody_Group_0 extends GroupToken {
 }
 
 // "extends"
-protected class PropertyBody_ExtendsKeyword_0_0 extends KeywordToken  {
+protected class PropertySet_ExtendsKeyword_0_0 extends KeywordToken  {
 	
-	public PropertyBody_ExtendsKeyword_0_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public PropertySet_ExtendsKeyword_0_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getPropertyBodyAccess().getExtendsKeyword_0_0();
+		return grammarAccess.getPropertySetAccess().getExtendsKeyword_0_0();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -3709,20 +3711,20 @@ protected class PropertyBody_ExtendsKeyword_0_0 extends KeywordToken  {
 		
 }
 
-// extends=Expression
-protected class PropertyBody_ExtendsAssignment_0_1 extends AssignmentToken  {
+// extends=[NamedPropertySet|QualifiedName]
+protected class PropertySet_ExtendsAssignment_0_1 extends AssignmentToken  {
 	
-	public PropertyBody_ExtendsAssignment_0_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public PropertySet_ExtendsAssignment_0_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getPropertyBodyAccess().getExtendsAssignment_0_1();
+		return grammarAccess.getPropertySetAccess().getExtendsAssignment_0_1();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new Expression_Alternatives(this, this, 0, inst);
+			case 0: return new PropertySet_ExtendsKeyword_0_0(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -3730,42 +3732,34 @@ protected class PropertyBody_ExtendsAssignment_0_1 extends AssignmentToken  {
 	protected IInstanceDescription tryConsumeVal() {
 		if((value = current.getConsumable("extends",false)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("extends");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getExpressionRule().getType().getClassifier())) {
-				type = AssignmentType.PRC;
-				element = grammarAccess.getPropertyBodyAccess().getExtendsExpressionParserRuleCall_0_1_0(); 
-				consumed = obj;
-				return param;
+			if(param.isInstanceOf(grammarAccess.getPropertySetAccess().getExtendsNamedPropertySetCrossReference_0_1_0().getType().getClassifier())) {
+				type = AssignmentType.CR;
+				element = grammarAccess.getPropertySetAccess().getExtendsNamedPropertySetCrossReference_0_1_0(); 
+				return obj;
 			}
 		}
 		return null;
 	}
 
-	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
-		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
-		switch(index) {
-			case 0: return new PropertyBody_ExtendsKeyword_0_0(parent, next, actIndex, consumed);
-			default: return null;
-		}	
-	}	
 }
 
 
 // "{"
-protected class PropertyBody_LeftCurlyBracketKeyword_1 extends KeywordToken  {
+protected class PropertySet_LeftCurlyBracketKeyword_1 extends KeywordToken  {
 	
-	public PropertyBody_LeftCurlyBracketKeyword_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public PropertySet_LeftCurlyBracketKeyword_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getPropertyBodyAccess().getLeftCurlyBracketKeyword_1();
+		return grammarAccess.getPropertySetAccess().getLeftCurlyBracketKeyword_1();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_Group_0(parent, this, 0, inst);
+			case 0: return new PropertySet_Group_0(parent, this, 0, inst);
 			default: return parent.createParentFollower(this, index, index - 1, inst);
 		}	
 	}	
@@ -3773,14 +3767,14 @@ protected class PropertyBody_LeftCurlyBracketKeyword_1 extends KeywordToken  {
 }
 
 // operations+=PropertyOperation*
-protected class PropertyBody_OperationsAssignment_2 extends AssignmentToken  {
+protected class PropertySet_OperationsAssignment_2 extends AssignmentToken  {
 	
-	public PropertyBody_OperationsAssignment_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public PropertySet_OperationsAssignment_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getPropertyBodyAccess().getOperationsAssignment_2();
+		return grammarAccess.getPropertySetAccess().getOperationsAssignment_2();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -3797,7 +3791,7 @@ protected class PropertyBody_OperationsAssignment_2 extends AssignmentToken  {
 			IInstanceDescription param = getDescr((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getPropertyOperationRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getPropertyBodyAccess().getOperationsPropertyOperationParserRuleCall_2_0(); 
+				element = grammarAccess.getPropertySetAccess().getOperationsPropertyOperationParserRuleCall_2_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -3808,28 +3802,28 @@ protected class PropertyBody_OperationsAssignment_2 extends AssignmentToken  {
 	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
 		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new PropertyBody_OperationsAssignment_2(parent, next, actIndex, consumed);
-			case 1: return new PropertyBody_LeftCurlyBracketKeyword_1(parent, next, actIndex, consumed);
+			case 0: return new PropertySet_OperationsAssignment_2(parent, next, actIndex, consumed);
+			case 1: return new PropertySet_LeftCurlyBracketKeyword_1(parent, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	
 }
 
 // "}"
-protected class PropertyBody_RightCurlyBracketKeyword_3 extends KeywordToken  {
+protected class PropertySet_RightCurlyBracketKeyword_3 extends KeywordToken  {
 	
-	public PropertyBody_RightCurlyBracketKeyword_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public PropertySet_RightCurlyBracketKeyword_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getPropertyBodyAccess().getRightCurlyBracketKeyword_3();
+		return grammarAccess.getPropertySetAccess().getRightCurlyBracketKeyword_3();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_OperationsAssignment_2(parent, this, 0, inst);
-			case 1: return new PropertyBody_LeftCurlyBracketKeyword_1(parent, this, 1, inst);
+			case 0: return new PropertySet_OperationsAssignment_2(parent, this, 0, inst);
+			case 1: return new PropertySet_LeftCurlyBracketKeyword_1(parent, this, 1, inst);
 			default: return null;
 		}	
 	}	
@@ -3837,21 +3831,21 @@ protected class PropertyBody_RightCurlyBracketKeyword_3 extends KeywordToken  {
 }
 
 
-/************ end Rule PropertyBody ****************/
+/************ end Rule PropertySet ****************/
 
 
 /************ begin Rule PropertyOperation ****************
  *
  * PropertyOperation:
  *   FilteredPropertyOperation|SetPropertyOperation|UnsetPropertyOperation|
- *   PropertyBody; 
+ *   PropertySet; 
  * 
  * // For model generation, to get supertype correct
  *
  **/
 
 // FilteredPropertyOperation|SetPropertyOperation|UnsetPropertyOperation|
-// PropertyBody 
+// PropertySet 
 // 
 // // For model generation, to get supertype correct
 protected class PropertyOperation_Alternatives extends AlternativesToken {
@@ -3869,7 +3863,7 @@ protected class PropertyOperation_Alternatives extends AlternativesToken {
 			case 0: return new PropertyOperation_FilteredPropertyOperationParserRuleCall_0(parent, this, 0, inst);
 			case 1: return new PropertyOperation_SetPropertyOperationParserRuleCall_1(parent, this, 1, inst);
 			case 2: return new PropertyOperation_UnsetPropertyOperationParserRuleCall_2(parent, this, 2, inst);
-			case 3: return new PropertyOperation_PropertyBodyParserRuleCall_3(parent, this, 3, inst);
+			case 3: return new PropertyOperation_PropertySetParserRuleCall_3(parent, this, 3, inst);
 			default: return null;
 		}	
 	}	
@@ -3973,27 +3967,27 @@ protected class PropertyOperation_UnsetPropertyOperationParserRuleCall_2 extends
 	}	
 }
 
-// PropertyBody
-protected class PropertyOperation_PropertyBodyParserRuleCall_3 extends RuleCallToken {
+// PropertySet
+protected class PropertyOperation_PropertySetParserRuleCall_3 extends RuleCallToken {
 	
-	public PropertyOperation_PropertyBodyParserRuleCall_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public PropertyOperation_PropertySetParserRuleCall_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public RuleCall getGrammarElement() {
-		return grammarAccess.getPropertyOperationAccess().getPropertyBodyParserRuleCall_3();
+		return grammarAccess.getPropertyOperationAccess().getPropertySetParserRuleCall_3();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_Group(this, this, 0, inst);
+			case 0: return new PropertySet_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
 		
 	protected IInstanceDescription tryConsumeVal() {
-		if(checkForRecursion(PropertyBody_Group.class, current)) return null;
-		if(!current.isInstanceOf(grammarAccess.getPropertyBodyRule().getType().getClassifier())) return null;
+		if(checkForRecursion(PropertySet_Group.class, current)) return null;
+		if(!current.isInstanceOf(grammarAccess.getPropertySetRule().getType().getClassifier())) return null;
 		return current;
 	}
 	
@@ -4011,13 +4005,13 @@ protected class PropertyOperation_PropertyBodyParserRuleCall_3 extends RuleCallT
 /************ begin Rule FilteredPropertyOperation ****************
  *
  * FilteredPropertyOperation:
- *   "when" filter=Filter body=( SetPropertyOperation | UnsetPropertyOperation |
- *   PropertyBody );
+ *   "when" filter=Filter body=( SetPropertyOperation | UnsetPropertyOperation | PropertySet
+ *   );
  *
  **/
 
-// "when" filter=Filter body=( SetPropertyOperation | UnsetPropertyOperation |
-// PropertyBody )
+// "when" filter=Filter body=( SetPropertyOperation | UnsetPropertyOperation | PropertySet
+// )
 protected class FilteredPropertyOperation_Group extends GroupToken {
 	
 	public FilteredPropertyOperation_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -4102,7 +4096,7 @@ protected class FilteredPropertyOperation_FilterAssignment_1 extends AssignmentT
 	}	
 }
 
-// body=( SetPropertyOperation | UnsetPropertyOperation | PropertyBody )
+// body=( SetPropertyOperation | UnsetPropertyOperation | PropertySet )
 protected class FilteredPropertyOperation_BodyAssignment_2 extends AssignmentToken  {
 	
 	public FilteredPropertyOperation_BodyAssignment_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -4117,7 +4111,7 @@ protected class FilteredPropertyOperation_BodyAssignment_2 extends AssignmentTok
 		switch(index) {
 			case 0: return new SetPropertyOperation_Group(this, this, 0, inst);
 			case 1: return new UnsetPropertyOperation_Group(this, this, 1, inst);
-			case 2: return new PropertyBody_Group(this, this, 2, inst);
+			case 2: return new PropertySet_Group(this, this, 2, inst);
 			default: return null;
 		}	
 	}	
@@ -4145,9 +4139,9 @@ protected class FilteredPropertyOperation_BodyAssignment_2 extends AssignmentTok
 		}
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getPropertyBodyRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getPropertySetRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getFilteredPropertyOperationAccess().getBodyPropertyBodyParserRuleCall_2_0_2(); 
+				element = grammarAccess.getFilteredPropertyOperationAccess().getBodyPropertySetParserRuleCall_2_0_2(); 
 				consumed = obj;
 				return param;
 			}
@@ -4627,11 +4621,11 @@ protected class Synchronization_SemicolonKeyword_2 extends KeywordToken  {
 /************ begin Rule PathGroup ****************
  *
  * PathGroup:
- *   paths+=PathVectorElement+ ("annotations" annotations=PropertyBody)?;
+ *   paths+=PathVectorElement+ ("annotations" annotations=PropertySet)?;
  *
  **/
 
-// paths+=PathVectorElement+ ("annotations" annotations=PropertyBody)?
+// paths+=PathVectorElement+ ("annotations" annotations=PropertySet)?
 protected class PathGroup_Group extends GroupToken {
 	
 	public PathGroup_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -4698,7 +4692,7 @@ protected class PathGroup_PathsAssignment_0 extends AssignmentToken  {
 	}	
 }
 
-// ("annotations" annotations=PropertyBody)?
+// ("annotations" annotations=PropertySet)?
 protected class PathGroup_Group_1 extends GroupToken {
 	
 	public PathGroup_Group_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -4738,7 +4732,7 @@ protected class PathGroup_AnnotationsKeyword_1_0 extends KeywordToken  {
 		
 }
 
-// annotations=PropertyBody
+// annotations=PropertySet
 protected class PathGroup_AnnotationsAssignment_1_1 extends AssignmentToken  {
 	
 	public PathGroup_AnnotationsAssignment_1_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -4751,7 +4745,7 @@ protected class PathGroup_AnnotationsAssignment_1_1 extends AssignmentToken  {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_Group(this, this, 0, inst);
+			case 0: return new PropertySet_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -4761,9 +4755,9 @@ protected class PathGroup_AnnotationsAssignment_1_1 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("annotations");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getPropertyBodyRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getPropertySetRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getPathGroupAccess().getAnnotationsPropertyBodyParserRuleCall_1_1_0(); 
+				element = grammarAccess.getPathGroupAccess().getAnnotationsPropertySetParserRuleCall_1_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -5917,14 +5911,14 @@ protected class Prerequisite_SemicolonKeyword_4 extends KeywordToken  {
  *
  * WithClause:
  *   {WithClause} "with" ("(" references+=Expression ("," references+=Expression)* ")")? (
- *   "properties" properties+=PropertyBody|"concern" concern+=ConcernBlock)*; 
+ *   "properties" properties+=PropertySet|"concern" concern+=ConcernBlock)*; 
  * 
  * // Validation checks that there is at least one of references, properties or concern.
  *
  **/
 
 // {WithClause} "with" ("(" references+=Expression ("," references+=Expression)* ")")? (
-// "properties" properties+=PropertyBody|"concern" concern+=ConcernBlock)*
+// "properties" properties+=PropertySet|"concern" concern+=ConcernBlock)*
 protected class WithClause_Group extends GroupToken {
 	
 	public WithClause_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -6183,7 +6177,7 @@ protected class WithClause_RightParenthesisKeyword_2_3 extends KeywordToken  {
 }
 
 
-// ("properties" properties+=PropertyBody|"concern" concern+=ConcernBlock)*
+// ("properties" properties+=PropertySet|"concern" concern+=ConcernBlock)*
 protected class WithClause_Alternatives_3 extends AlternativesToken {
 
 	public WithClause_Alternatives_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -6204,7 +6198,7 @@ protected class WithClause_Alternatives_3 extends AlternativesToken {
 		
 }
 
-// "properties" properties+=PropertyBody
+// "properties" properties+=PropertySet
 protected class WithClause_Group_3_0 extends GroupToken {
 	
 	public WithClause_Group_3_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -6246,7 +6240,7 @@ protected class WithClause_PropertiesKeyword_3_0_0 extends KeywordToken  {
 		
 }
 
-// properties+=PropertyBody
+// properties+=PropertySet
 protected class WithClause_PropertiesAssignment_3_0_1 extends AssignmentToken  {
 	
 	public WithClause_PropertiesAssignment_3_0_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -6259,7 +6253,7 @@ protected class WithClause_PropertiesAssignment_3_0_1 extends AssignmentToken  {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_Group(this, this, 0, inst);
+			case 0: return new PropertySet_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -6269,9 +6263,9 @@ protected class WithClause_PropertiesAssignment_3_0_1 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("properties");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getPropertyBodyRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getPropertySetRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getWithClauseAccess().getPropertiesPropertyBodyParserRuleCall_3_0_1_0(); 
+				element = grammarAccess.getWithClauseAccess().getPropertiesPropertySetParserRuleCall_3_0_1_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -7126,7 +7120,7 @@ protected class CompoundReferences_RightCurlyBracketKeyword_2 extends KeywordTok
  *   ExecutionMode? final?="final"? cached?="cached"? "builder" name=PartName ("(" params=
  *   ParameterDeclarationList ")")? ("provides" providedCapabilities+=ProvidedCapability
  *   ("," providedCapabilities+=ProvidedCapability)*)? preCondition=PreCondition?
- *   postCondition=PostCondition? "{" ("default" "properties" properties=PropertyBody)?
+ *   postCondition=PostCondition? "{" ("default" "properties" properties=PropertySet)?
  *   input=BuilderInput? output=BuilderOutput? expressionList=ExpressionList? "}";
  *
  **/
@@ -7135,7 +7129,7 @@ protected class CompoundReferences_RightCurlyBracketKeyword_2 extends KeywordTok
 // ExecutionMode? final?="final"? cached?="cached"? "builder" name=PartName ("(" params=
 // ParameterDeclarationList ")")? ("provides" providedCapabilities+=ProvidedCapability
 // ("," providedCapabilities+=ProvidedCapability)*)? preCondition=PreCondition?
-// postCondition=PostCondition? "{" ("default" "properties" properties=PropertyBody)?
+// postCondition=PostCondition? "{" ("default" "properties" properties=PropertySet)?
 // input=BuilderInput? output=BuilderOutput? expressionList=ExpressionList? "}"
 protected class Builder_Group extends GroupToken {
 	
@@ -7792,7 +7786,7 @@ protected class Builder_LeftCurlyBracketKeyword_12 extends KeywordToken  {
 		
 }
 
-// ("default" "properties" properties=PropertyBody)?
+// ("default" "properties" properties=PropertySet)?
 protected class Builder_Group_13 extends GroupToken {
 	
 	public Builder_Group_13(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -7852,7 +7846,7 @@ protected class Builder_PropertiesKeyword_13_1 extends KeywordToken  {
 		
 }
 
-// properties=PropertyBody
+// properties=PropertySet
 protected class Builder_PropertiesAssignment_13_2 extends AssignmentToken  {
 	
 	public Builder_PropertiesAssignment_13_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -7865,7 +7859,7 @@ protected class Builder_PropertiesAssignment_13_2 extends AssignmentToken  {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new PropertyBody_Group(this, this, 0, inst);
+			case 0: return new PropertySet_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -7875,9 +7869,9 @@ protected class Builder_PropertiesAssignment_13_2 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("properties");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getPropertyBodyRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getPropertySetRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getBuilderAccess().getPropertiesPropertyBodyParserRuleCall_13_2_0(); 
+				element = grammarAccess.getBuilderAccess().getPropertiesPropertySetParserRuleCall_13_2_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -22650,11 +22644,11 @@ protected class ExpressionStatement_SemicolonKeyword_2 extends KeywordToken  {
 /************ begin Rule PropertiesStatement ****************
  *
  * PropertiesStatement returns Statment:
- *   {PropertiesStatement} "properties" properties=NamedPropertyBody;
+ *   {PropertiesStatement} "properties" properties=NamedPropertySet;
  *
  **/
 
-// {PropertiesStatement} "properties" properties=NamedPropertyBody
+// {PropertiesStatement} "properties" properties=NamedPropertySet
 protected class PropertiesStatement_Group extends GroupToken {
 	
 	public PropertiesStatement_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -22723,7 +22717,7 @@ protected class PropertiesStatement_PropertiesKeyword_1 extends KeywordToken  {
 		
 }
 
-// properties=NamedPropertyBody
+// properties=NamedPropertySet
 protected class PropertiesStatement_PropertiesAssignment_2 extends AssignmentToken  {
 	
 	public PropertiesStatement_PropertiesAssignment_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -22736,7 +22730,7 @@ protected class PropertiesStatement_PropertiesAssignment_2 extends AssignmentTok
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new NamedPropertyBody_Group(this, this, 0, inst);
+			case 0: return new NamedPropertySet_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -22746,9 +22740,9 @@ protected class PropertiesStatement_PropertiesAssignment_2 extends AssignmentTok
 		IInstanceDescription obj = current.cloneAndConsume("properties");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getNamedPropertyBodyRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getNamedPropertySetRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getPropertiesStatementAccess().getPropertiesNamedPropertyBodyParserRuleCall_2_0(); 
+				element = grammarAccess.getPropertiesStatementAccess().getPropertiesNamedPropertySetParserRuleCall_2_0(); 
 				consumed = obj;
 				return param;
 			}

@@ -66,7 +66,7 @@ import org.eclipse.b3.beeLang.LiteralFunction;
 import org.eclipse.b3.beeLang.LiteralList;
 import org.eclipse.b3.beeLang.LiteralMap;
 import org.eclipse.b3.beeLang.Method;
-import org.eclipse.b3.beeLang.NamedProperties;
+import org.eclipse.b3.beeLang.NamedPropertySet;
 import org.eclipse.b3.beeLang.NativeImporter;
 import org.eclipse.b3.beeLang.NullLiteral;
 import org.eclipse.b3.beeLang.OperationCall;
@@ -82,8 +82,8 @@ import org.eclipse.b3.beeLang.PreCondition;
 import org.eclipse.b3.beeLang.Prerequisite;
 import org.eclipse.b3.beeLang.PrerequisiteEntry;
 import org.eclipse.b3.beeLang.PropertiesStatement;
-import org.eclipse.b3.beeLang.PropertyBody;
 import org.eclipse.b3.beeLang.PropertyOperation;
+import org.eclipse.b3.beeLang.PropertySet;
 import org.eclipse.b3.beeLang.PropertyValue;
 import org.eclipse.b3.beeLang.ProvidedCapability;
 import org.eclipse.b3.beeLang.Query;
@@ -217,14 +217,14 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass namedPropertiesEClass = null;
+  private EClass namedPropertySetEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass propertyBodyEClass = null;
+  private EClass propertySetEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -1489,9 +1489,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getNamedProperties()
+  public EClass getNamedPropertySet()
   {
-    return namedPropertiesEClass;
+    return namedPropertySetEClass;
   }
 
   /**
@@ -1499,9 +1499,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getNamedProperties_Name()
+  public EAttribute getNamedPropertySet_Name()
   {
-    return (EAttribute)namedPropertiesEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)namedPropertySetEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1509,9 +1509,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getNamedProperties_Body()
+  public EReference getNamedPropertySet_Body()
   {
-    return (EReference)namedPropertiesEClass.getEStructuralFeatures().get(1);
+    return (EReference)namedPropertySetEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -1519,9 +1519,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getPropertyBody()
+  public EClass getPropertySet()
   {
-    return propertyBodyEClass;
+    return propertySetEClass;
   }
 
   /**
@@ -1529,9 +1529,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPropertyBody_Extends()
+  public EReference getPropertySet_Extends()
   {
-    return (EReference)propertyBodyEClass.getEStructuralFeatures().get(0);
+    return (EReference)propertySetEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1539,9 +1539,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getPropertyBody_Operations()
+  public EReference getPropertySet_Operations()
   {
-    return (EReference)propertyBodyEClass.getEStructuralFeatures().get(1);
+    return (EReference)propertySetEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -4645,13 +4645,13 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEAttribute(capabilityEClass, CAPABILITY__INTERFACE);
     createEAttribute(capabilityEClass, CAPABILITY__NAME);
 
-    namedPropertiesEClass = createEClass(NAMED_PROPERTIES);
-    createEAttribute(namedPropertiesEClass, NAMED_PROPERTIES__NAME);
-    createEReference(namedPropertiesEClass, NAMED_PROPERTIES__BODY);
+    namedPropertySetEClass = createEClass(NAMED_PROPERTY_SET);
+    createEAttribute(namedPropertySetEClass, NAMED_PROPERTY_SET__NAME);
+    createEReference(namedPropertySetEClass, NAMED_PROPERTY_SET__BODY);
 
-    propertyBodyEClass = createEClass(PROPERTY_BODY);
-    createEReference(propertyBodyEClass, PROPERTY_BODY__EXTENDS);
-    createEReference(propertyBodyEClass, PROPERTY_BODY__OPERATIONS);
+    propertySetEClass = createEClass(PROPERTY_SET);
+    createEReference(propertySetEClass, PROPERTY_SET__EXTENDS);
+    createEReference(propertySetEClass, PROPERTY_SET__OPERATIONS);
 
     propertyOperationEClass = createEClass(PROPERTY_OPERATION);
 
@@ -5094,7 +5094,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     // Set bounds for type parameters
 
     // Add supertypes to classes
-    propertyBodyEClass.getESuperTypes().add(this.getPropertyOperation());
+    propertySetEClass.getESuperTypes().add(this.getPropertyOperation());
     filteredPropertyOperationEClass.getESuperTypes().add(this.getPropertyOperation());
     setPropertyOperationEClass.getESuperTypes().add(this.getPropertyOperation());
     unsetPropertyOperationEClass.getESuperTypes().add(this.getPropertyOperation());
@@ -5183,7 +5183,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEAttribute(getBuildUnit_Name(), ecorePackage.getEString(), "name", null, 0, 1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Version(), this.getVersion(), null, "version", null, 0, 1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getBuildUnit_Implements(), ecorePackage.getEString(), "implements", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuildUnit_DefaultProperties(), this.getPropertyBody(), null, "defaultProperties", null, 0, 1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildUnit_DefaultProperties(), this.getPropertySet(), null, "defaultProperties", null, 0, 1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_ProvidedCapabilities(), this.getProvidedCapability(), null, "providedCapabilities", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_RequiredCapabilities(), this.getRequiredCapability(), null, "requiredCapabilities", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_MetaRequiredCapabilities(), this.getRequiredCapability(), null, "metaRequiredCapabilities", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5192,7 +5192,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getBuildUnit_Builders(), this.getStatement(), null, "builders", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Methods(), this.getStatement(), null, "methods", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_RepositoryConfigurations(), this.getRepositoryConfiguration(), null, "repositoryConfigurations", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuildUnit_PropertySets(), this.getNamedProperties(), null, "propertySets", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildUnit_PropertySets(), this.getNamedPropertySet(), null, "propertySets", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Containers(), this.getContainerConfiguration(), null, "containers", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(providedCapabilityEClass, ProvidedCapability.class, "ProvidedCapability", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -5211,13 +5211,13 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEAttribute(getCapability_Interface(), ecorePackage.getEString(), "interface", null, 0, 1, Capability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getCapability_Name(), ecorePackage.getEString(), "name", null, 0, 1, Capability.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(namedPropertiesEClass, NamedProperties.class, "NamedProperties", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getNamedProperties_Name(), ecorePackage.getEString(), "name", null, 0, 1, NamedProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getNamedProperties_Body(), this.getPropertyBody(), null, "body", null, 0, 1, NamedProperties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(namedPropertySetEClass, NamedPropertySet.class, "NamedPropertySet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getNamedPropertySet_Name(), ecorePackage.getEString(), "name", null, 0, 1, NamedPropertySet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getNamedPropertySet_Body(), this.getPropertySet(), null, "body", null, 0, 1, NamedPropertySet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(propertyBodyEClass, PropertyBody.class, "PropertyBody", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getPropertyBody_Extends(), this.getExpression(), null, "extends", null, 0, 1, PropertyBody.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPropertyBody_Operations(), this.getPropertyOperation(), null, "operations", null, 0, -1, PropertyBody.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(propertySetEClass, PropertySet.class, "PropertySet", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getPropertySet_Extends(), this.getNamedPropertySet(), null, "extends", null, 0, 1, PropertySet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPropertySet_Operations(), this.getPropertyOperation(), null, "operations", null, 0, -1, PropertySet.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(propertyOperationEClass, PropertyOperation.class, "PropertyOperation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -5239,7 +5239,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     initEClass(pathGroupEClass, PathGroup.class, "PathGroup", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getPathGroup_Paths(), this.getPathVectorElement(), null, "paths", null, 0, -1, PathGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getPathGroup_Annotations(), this.getPropertyBody(), null, "annotations", null, 0, 1, PathGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPathGroup_Annotations(), this.getPropertySet(), null, "annotations", null, 0, 1, PathGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(pathVectorElementEClass, PathVectorElement.class, "PathVectorElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -5262,7 +5262,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     initEClass(withClauseEClass, WithClause.class, "WithClause", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getWithClause_References(), this.getExpression(), null, "references", null, 0, -1, WithClause.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getWithClause_Properties(), this.getPropertyBody(), null, "properties", null, 0, -1, WithClause.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getWithClause_Properties(), this.getPropertySet(), null, "properties", null, 0, -1, WithClause.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getWithClause_Concern(), this.getConcernBlock(), null, "concern", null, 0, -1, WithClause.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(prerequisiteEntryEClass, PrerequisiteEntry.class, "PrerequisiteEntry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -5482,7 +5482,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getBuilder_ProvidedCapabilities(), this.getProvidedCapability(), null, "providedCapabilities", null, 0, -1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuilder_PreCondition(), this.getPreCondition(), null, "preCondition", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuilder_PostCondition(), this.getPostCondition(), null, "postCondition", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuilder_Properties(), this.getPropertyBody(), null, "properties", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuilder_Properties(), this.getPropertySet(), null, "properties", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuilder_Input(), this.getBuilderInput(), null, "input", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuilder_Output(), this.getBuilderOutput(), null, "output", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuilder_ExpressionList(), this.getExpressionList(), null, "expressionList", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5578,7 +5578,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getExpressionStatement_Val(), this.getExpression(), null, "val", null, 0, 1, ExpressionStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(propertiesStatementEClass, PropertiesStatement.class, "PropertiesStatement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getPropertiesStatement_Properties(), this.getNamedProperties(), null, "properties", null, 0, 1, PropertiesStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getPropertiesStatement_Properties(), this.getNamedPropertySet(), null, "properties", null, 0, 1, PropertiesStatement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(literalListEClass, LiteralList.class, "LiteralList", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getLiteralList_Element(), this.getExpression(), null, "element", null, 0, -1, LiteralList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

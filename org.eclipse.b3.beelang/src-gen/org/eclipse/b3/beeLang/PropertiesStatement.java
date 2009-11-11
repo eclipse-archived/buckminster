@@ -33,12 +33,12 @@ public interface PropertiesStatement extends Statment
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Properties</em>' containment reference.
-   * @see #setProperties(NamedProperties)
+   * @see #setProperties(NamedPropertySet)
    * @see org.eclipse.b3.beeLang.BeeLangPackage#getPropertiesStatement_Properties()
    * @model containment="true"
    * @generated
    */
-  NamedProperties getProperties();
+  NamedPropertySet getProperties();
 
   /**
    * Sets the value of the '{@link org.eclipse.b3.beeLang.PropertiesStatement#getProperties <em>Properties</em>}' containment reference.
@@ -48,6 +48,6 @@ public interface PropertiesStatement extends Statment
    * @see #getProperties()
    * @generated
    */
-  void setProperties(NamedProperties value);
+  void setProperties(NamedPropertySet value);
 
 } // PropertiesStatement

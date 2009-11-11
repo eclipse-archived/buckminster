@@ -47,7 +47,7 @@ public interface WithClause extends EObject
 
   /**
    * Returns the value of the '<em><b>Properties</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.PropertyBody}.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.PropertySet}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Properties</em>' containment reference list isn't clear,
@@ -59,7 +59,7 @@ public interface WithClause extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<PropertyBody> getProperties();
+  EList<PropertySet> getProperties();
 
   /**
    * Returns the value of the '<em><b>Concern</b></em>' containment reference list.

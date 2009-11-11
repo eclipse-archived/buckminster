@@ -103,13 +103,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Capability/interface"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Capability/name"/>
     </genClasses>
-    <genClasses ecoreClass="BeeLang.ecore#//NamedProperties">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//NamedProperties/name"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//NamedProperties/body"/>
+    <genClasses ecoreClass="BeeLang.ecore#//NamedPropertySet">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//NamedPropertySet/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//NamedPropertySet/body"/>
     </genClasses>
-    <genClasses ecoreClass="BeeLang.ecore#//PropertyBody">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//PropertyBody/extends"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//PropertyBody/operations"/>
+    <genClasses ecoreClass="BeeLang.ecore#//PropertySet">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference BeeLang.ecore#//PropertySet/extends"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//PropertySet/operations"/>
     </genClasses>
     <genClasses ecoreClass="BeeLang.ecore#//PropertyOperation"/>
     <genClasses ecoreClass="BeeLang.ecore#//FilteredPropertyOperation">

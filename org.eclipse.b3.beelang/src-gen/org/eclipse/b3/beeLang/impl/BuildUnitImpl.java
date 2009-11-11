@@ -12,8 +12,8 @@ import org.eclipse.b3.beeLang.BuildUnit;
 import org.eclipse.b3.beeLang.Concern;
 import org.eclipse.b3.beeLang.ContainerConfiguration;
 import org.eclipse.b3.beeLang.ExecutionMode;
-import org.eclipse.b3.beeLang.NamedProperties;
-import org.eclipse.b3.beeLang.PropertyBody;
+import org.eclipse.b3.beeLang.NamedPropertySet;
+import org.eclipse.b3.beeLang.PropertySet;
 import org.eclipse.b3.beeLang.ProvidedCapability;
 import org.eclipse.b3.beeLang.RepositoryConfiguration;
 import org.eclipse.b3.beeLang.RequiredCapability;
@@ -154,7 +154,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * @generated
    * @ordered
    */
-  protected PropertyBody defaultProperties;
+  protected PropertySet defaultProperties;
 
   /**
    * The cached value of the '{@link #getProvidedCapabilities() <em>Provided Capabilities</em>}' containment reference list.
@@ -244,7 +244,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * @generated
    * @ordered
    */
-  protected EList<NamedProperties> propertySets;
+  protected EList<NamedPropertySet> propertySets;
 
   /**
    * The cached value of the '{@link #getContainers() <em>Containers</em>}' containment reference list.
@@ -413,7 +413,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public PropertyBody getDefaultProperties()
+  public PropertySet getDefaultProperties()
   {
     return defaultProperties;
   }
@@ -423,9 +423,9 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetDefaultProperties(PropertyBody newDefaultProperties, NotificationChain msgs)
+  public NotificationChain basicSetDefaultProperties(PropertySet newDefaultProperties, NotificationChain msgs)
   {
-    PropertyBody oldDefaultProperties = defaultProperties;
+    PropertySet oldDefaultProperties = defaultProperties;
     defaultProperties = newDefaultProperties;
     if (eNotificationRequired())
     {
@@ -440,7 +440,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setDefaultProperties(PropertyBody newDefaultProperties)
+  public void setDefaultProperties(PropertySet newDefaultProperties)
   {
     if (newDefaultProperties != defaultProperties)
     {
@@ -573,11 +573,11 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<NamedProperties> getPropertySets()
+  public EList<NamedPropertySet> getPropertySets()
   {
     if (propertySets == null)
     {
-      propertySets = new EObjectContainmentEList<NamedProperties>(NamedProperties.class, this, BeeLangPackage.BUILD_UNIT__PROPERTY_SETS);
+      propertySets = new EObjectContainmentEList<NamedPropertySet>(NamedPropertySet.class, this, BeeLangPackage.BUILD_UNIT__PROPERTY_SETS);
     }
     return propertySets;
   }
@@ -708,7 +708,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         getImplements().addAll((Collection<? extends String>)newValue);
         return;
       case BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES:
-        setDefaultProperties((PropertyBody)newValue);
+        setDefaultProperties((PropertySet)newValue);
         return;
       case BeeLangPackage.BUILD_UNIT__PROVIDED_CAPABILITIES:
         getProvidedCapabilities().clear();
@@ -744,7 +744,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return;
       case BeeLangPackage.BUILD_UNIT__PROPERTY_SETS:
         getPropertySets().clear();
-        getPropertySets().addAll((Collection<? extends NamedProperties>)newValue);
+        getPropertySets().addAll((Collection<? extends NamedPropertySet>)newValue);
         return;
       case BeeLangPackage.BUILD_UNIT__CONTAINERS:
         getContainers().clear();
@@ -780,7 +780,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         getImplements().clear();
         return;
       case BeeLangPackage.BUILD_UNIT__DEFAULT_PROPERTIES:
-        setDefaultProperties((PropertyBody)null);
+        setDefaultProperties((PropertySet)null);
         return;
       case BeeLangPackage.BUILD_UNIT__PROVIDED_CAPABILITIES:
         getProvidedCapabilities().clear();

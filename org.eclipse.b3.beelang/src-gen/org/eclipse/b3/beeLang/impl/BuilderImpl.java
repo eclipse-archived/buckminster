@@ -16,7 +16,7 @@ import org.eclipse.b3.beeLang.ExpressionList;
 import org.eclipse.b3.beeLang.ParameterDeclarationList;
 import org.eclipse.b3.beeLang.PostCondition;
 import org.eclipse.b3.beeLang.PreCondition;
-import org.eclipse.b3.beeLang.PropertyBody;
+import org.eclipse.b3.beeLang.PropertySet;
 import org.eclipse.b3.beeLang.ProvidedCapability;
 import org.eclipse.b3.beeLang.Visibility;
 
@@ -229,7 +229,7 @@ public class BuilderImpl extends StatementImpl implements Builder
    * @generated
    * @ordered
    */
-  protected PropertyBody properties;
+  protected PropertySet properties;
 
   /**
    * The cached value of the '{@link #getInput() <em>Input</em>}' containment reference.
@@ -583,7 +583,7 @@ public class BuilderImpl extends StatementImpl implements Builder
    * <!-- end-user-doc -->
    * @generated
    */
-  public PropertyBody getProperties()
+  public PropertySet getProperties()
   {
     return properties;
   }
@@ -593,9 +593,9 @@ public class BuilderImpl extends StatementImpl implements Builder
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetProperties(PropertyBody newProperties, NotificationChain msgs)
+  public NotificationChain basicSetProperties(PropertySet newProperties, NotificationChain msgs)
   {
-    PropertyBody oldProperties = properties;
+    PropertySet oldProperties = properties;
     properties = newProperties;
     if (eNotificationRequired())
     {
@@ -610,7 +610,7 @@ public class BuilderImpl extends StatementImpl implements Builder
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setProperties(PropertyBody newProperties)
+  public void setProperties(PropertySet newProperties)
   {
     if (newProperties != properties)
     {
@@ -885,7 +885,7 @@ public class BuilderImpl extends StatementImpl implements Builder
         setPostCondition((PostCondition)newValue);
         return;
       case BeeLangPackage.BUILDER__PROPERTIES:
-        setProperties((PropertyBody)newValue);
+        setProperties((PropertySet)newValue);
         return;
       case BeeLangPackage.BUILDER__INPUT:
         setInput((BuilderInput)newValue);
@@ -941,7 +941,7 @@ public class BuilderImpl extends StatementImpl implements Builder
         setPostCondition((PostCondition)null);
         return;
       case BeeLangPackage.BUILDER__PROPERTIES:
-        setProperties((PropertyBody)null);
+        setProperties((PropertySet)null);
         return;
       case BeeLangPackage.BUILDER__INPUT:
         setInput((BuilderInput)null);

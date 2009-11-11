@@ -158,18 +158,18 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.NAMED_PROPERTIES:
+      case BeeLangPackage.NAMED_PROPERTY_SET:
       {
-        NamedProperties namedProperties = (NamedProperties)theEObject;
-        T result = caseNamedProperties(namedProperties);
+        NamedPropertySet namedPropertySet = (NamedPropertySet)theEObject;
+        T result = caseNamedPropertySet(namedPropertySet);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.PROPERTY_BODY:
+      case BeeLangPackage.PROPERTY_SET:
       {
-        PropertyBody propertyBody = (PropertyBody)theEObject;
-        T result = casePropertyBody(propertyBody);
-        if (result == null) result = casePropertyOperation(propertyBody);
+        PropertySet propertySet = (PropertySet)theEObject;
+        T result = casePropertySet(propertySet);
+        if (result == null) result = casePropertyOperation(propertySet);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1158,33 +1158,33 @@ public class BeeLangSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Named Properties</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Named Property Set</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Named Properties</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Named Property Set</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseNamedProperties(NamedProperties object)
+  public T caseNamedPropertySet(NamedPropertySet object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Property Body</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Property Set</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Property Body</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Property Set</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T casePropertyBody(PropertyBody object)
+  public T casePropertySet(PropertySet object)
   {
     return null;
   }

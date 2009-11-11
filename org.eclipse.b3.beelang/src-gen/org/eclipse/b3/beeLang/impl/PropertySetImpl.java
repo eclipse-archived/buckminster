@@ -8,9 +8,9 @@ package org.eclipse.b3.beeLang.impl;
 import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
-import org.eclipse.b3.beeLang.Expression;
-import org.eclipse.b3.beeLang.PropertyBody;
+import org.eclipse.b3.beeLang.NamedPropertySet;
 import org.eclipse.b3.beeLang.PropertyOperation;
+import org.eclipse.b3.beeLang.PropertySet;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -27,29 +27,29 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Property Body</b></em>'.
+ * An implementation of the model object '<em><b>Property Set</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyBodyImpl#getExtends <em>Extends</em>}</li>
- *   <li>{@link org.eclipse.b3.beeLang.impl.PropertyBodyImpl#getOperations <em>Operations</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.PropertySetImpl#getExtends <em>Extends</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.PropertySetImpl#getOperations <em>Operations</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyBody
+public class PropertySetImpl extends PropertyOperationImpl implements PropertySet
 {
   /**
-   * The cached value of the '{@link #getExtends() <em>Extends</em>}' containment reference.
+   * The cached value of the '{@link #getExtends() <em>Extends</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getExtends()
    * @generated
    * @ordered
    */
-  protected Expression extends_;
+  protected NamedPropertySet extends_;
 
   /**
    * The cached value of the '{@link #getOperations() <em>Operations</em>}' containment reference list.
@@ -66,7 +66,7 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
    * <!-- end-user-doc -->
    * @generated
    */
-  protected PropertyBodyImpl()
+  protected PropertySetImpl()
   {
     super();
   }
@@ -79,7 +79,7 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
   @Override
   protected EClass eStaticClass()
   {
-    return BeeLangPackage.Literals.PROPERTY_BODY;
+    return BeeLangPackage.Literals.PROPERTY_SET;
   }
 
   /**
@@ -87,7 +87,27 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
    * <!-- end-user-doc -->
    * @generated
    */
-  public Expression getExtends()
+  public NamedPropertySet getExtends()
+  {
+    if (extends_ != null && extends_.eIsProxy())
+    {
+      InternalEObject oldExtends = (InternalEObject)extends_;
+      extends_ = (NamedPropertySet)eResolveProxy(oldExtends);
+      if (extends_ != oldExtends)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, BeeLangPackage.PROPERTY_SET__EXTENDS, oldExtends, extends_));
+      }
+    }
+    return extends_;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public NamedPropertySet basicGetExtends()
   {
     return extends_;
   }
@@ -97,37 +117,12 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
    * <!-- end-user-doc -->
    * @generated
    */
-  public NotificationChain basicSetExtends(Expression newExtends, NotificationChain msgs)
+  public void setExtends(NamedPropertySet newExtends)
   {
-    Expression oldExtends = extends_;
+    NamedPropertySet oldExtends = extends_;
     extends_ = newExtends;
     if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BeeLangPackage.PROPERTY_BODY__EXTENDS, oldExtends, newExtends);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setExtends(Expression newExtends)
-  {
-    if (newExtends != extends_)
-    {
-      NotificationChain msgs = null;
-      if (extends_ != null)
-        msgs = ((InternalEObject)extends_).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PROPERTY_BODY__EXTENDS, null, msgs);
-      if (newExtends != null)
-        msgs = ((InternalEObject)newExtends).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - BeeLangPackage.PROPERTY_BODY__EXTENDS, null, msgs);
-      msgs = basicSetExtends(newExtends, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PROPERTY_BODY__EXTENDS, newExtends, newExtends));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.PROPERTY_SET__EXTENDS, oldExtends, extends_));
   }
 
   /**
@@ -139,7 +134,7 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
   {
     if (operations == null)
     {
-      operations = new EObjectContainmentEList<PropertyOperation>(PropertyOperation.class, this, BeeLangPackage.PROPERTY_BODY__OPERATIONS);
+      operations = new EObjectContainmentEList<PropertyOperation>(PropertyOperation.class, this, BeeLangPackage.PROPERTY_SET__OPERATIONS);
     }
     return operations;
   }
@@ -154,9 +149,7 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
   {
     switch (featureID)
     {
-      case BeeLangPackage.PROPERTY_BODY__EXTENDS:
-        return basicSetExtends(null, msgs);
-      case BeeLangPackage.PROPERTY_BODY__OPERATIONS:
+      case BeeLangPackage.PROPERTY_SET__OPERATIONS:
         return ((InternalEList<?>)getOperations()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -172,9 +165,10 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
   {
     switch (featureID)
     {
-      case BeeLangPackage.PROPERTY_BODY__EXTENDS:
-        return getExtends();
-      case BeeLangPackage.PROPERTY_BODY__OPERATIONS:
+      case BeeLangPackage.PROPERTY_SET__EXTENDS:
+        if (resolve) return getExtends();
+        return basicGetExtends();
+      case BeeLangPackage.PROPERTY_SET__OPERATIONS:
         return getOperations();
     }
     return super.eGet(featureID, resolve, coreType);
@@ -191,10 +185,10 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
   {
     switch (featureID)
     {
-      case BeeLangPackage.PROPERTY_BODY__EXTENDS:
-        setExtends((Expression)newValue);
+      case BeeLangPackage.PROPERTY_SET__EXTENDS:
+        setExtends((NamedPropertySet)newValue);
         return;
-      case BeeLangPackage.PROPERTY_BODY__OPERATIONS:
+      case BeeLangPackage.PROPERTY_SET__OPERATIONS:
         getOperations().clear();
         getOperations().addAll((Collection<? extends PropertyOperation>)newValue);
         return;
@@ -212,10 +206,10 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
   {
     switch (featureID)
     {
-      case BeeLangPackage.PROPERTY_BODY__EXTENDS:
-        setExtends((Expression)null);
+      case BeeLangPackage.PROPERTY_SET__EXTENDS:
+        setExtends((NamedPropertySet)null);
         return;
-      case BeeLangPackage.PROPERTY_BODY__OPERATIONS:
+      case BeeLangPackage.PROPERTY_SET__OPERATIONS:
         getOperations().clear();
         return;
     }
@@ -232,12 +226,12 @@ public class PropertyBodyImpl extends PropertyOperationImpl implements PropertyB
   {
     switch (featureID)
     {
-      case BeeLangPackage.PROPERTY_BODY__EXTENDS:
+      case BeeLangPackage.PROPERTY_SET__EXTENDS:
         return extends_ != null;
-      case BeeLangPackage.PROPERTY_BODY__OPERATIONS:
+      case BeeLangPackage.PROPERTY_SET__OPERATIONS:
         return operations != null && !operations.isEmpty();
     }
     return super.eIsSet(featureID);
   }
 
-} //PropertyBodyImpl
+} //PropertySetImpl
