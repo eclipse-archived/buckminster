@@ -21,6 +21,9 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model <b>Factory</b>.
@@ -94,6 +97,10 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
         return createRegularExpressionFromString(eDataType, initialValue);
       case BeelangtypesPackage.URI:
         return createURIFromString(eDataType, initialValue);
+      case BeelangtypesPackage.VERSION_RANGE:
+        return createVersionRangeFromString(eDataType, initialValue);
+      case BeelangtypesPackage.VERSION:
+        return createVersionFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -115,6 +122,10 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
         return convertRegularExpressionToString(eDataType, instanceValue);
       case BeelangtypesPackage.URI:
         return convertURIToString(eDataType, instanceValue);
+      case BeelangtypesPackage.VERSION_RANGE:
+        return convertVersionRangeToString(eDataType, instanceValue);
+      case BeelangtypesPackage.VERSION:
+        return convertVersionToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -176,6 +187,46 @@ public class BeelangtypesFactoryImpl extends EFactoryImpl implements Beelangtype
    * @generated
    */
   public String convertURIToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public VersionRange createVersionRangeFromString(EDataType eDataType, String initialValue)
+  {
+    return (VersionRange)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertVersionRangeToString(EDataType eDataType, Object instanceValue)
+  {
+    return super.convertToString(eDataType, instanceValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Version createVersionFromString(EDataType eDataType, String initialValue)
+  {
+    return (Version)super.createFromString(eDataType, initialValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertVersionToString(EDataType eDataType, Object instanceValue)
   {
     return super.convertToString(eDataType, instanceValue);
   }

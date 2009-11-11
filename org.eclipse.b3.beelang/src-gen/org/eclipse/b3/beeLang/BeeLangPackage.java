@@ -2927,13 +2927,13 @@ public interface BeeLangPackage extends EPackage
   int VERSION = 75;
 
   /**
-   * The feature id for the '<em><b>Original</b></em>' attribute.
+   * The feature id for the '<em><b>Version</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VERSION__ORIGINAL = 0;
+  int VERSION__VERSION = 0;
 
   /**
    * The number of structural features of the '<em>Version</em>' class.
@@ -2955,40 +2955,13 @@ public interface BeeLangPackage extends EPackage
   int VERSION_RANGE = 76;
 
   /**
-   * The feature id for the '<em><b>Min Limit</b></em>' attribute.
+   * The feature id for the '<em><b>Range</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VERSION_RANGE__MIN_LIMIT = 0;
-
-  /**
-   * The feature id for the '<em><b>Min</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_RANGE__MIN = 1;
-
-  /**
-   * The feature id for the '<em><b>Max</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_RANGE__MAX = 2;
-
-  /**
-   * The feature id for the '<em><b>Max Limit</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int VERSION_RANGE__MAX_LIMIT = 3;
+  int VERSION_RANGE__RANGE = 0;
 
   /**
    * The number of structural features of the '<em>Version Range</em>' class.
@@ -2997,7 +2970,7 @@ public interface BeeLangPackage extends EPackage
    * @generated
    * @ordered
    */
-  int VERSION_RANGE_FEATURE_COUNT = 4;
+  int VERSION_RANGE_FEATURE_COUNT = 1;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.BuilderImpl <em>Builder</em>}' class.
@@ -6914,15 +6887,15 @@ public interface BeeLangPackage extends EPackage
   EClass getVersion();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Version#getOriginal <em>Original</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.Version#getVersion <em>Version</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Original</em>'.
-   * @see org.eclipse.b3.beeLang.Version#getOriginal()
+   * @return the meta object for the attribute '<em>Version</em>'.
+   * @see org.eclipse.b3.beeLang.Version#getVersion()
    * @see #getVersion()
    * @generated
    */
-  EAttribute getVersion_Original();
+  EAttribute getVersion_Version();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.VersionRange <em>Version Range</em>}'.
@@ -6935,48 +6908,15 @@ public interface BeeLangPackage extends EPackage
   EClass getVersionRange();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.VersionRange#getMinLimit <em>Min Limit</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.VersionRange#getRange <em>Range</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Min Limit</em>'.
-   * @see org.eclipse.b3.beeLang.VersionRange#getMinLimit()
+   * @return the meta object for the attribute '<em>Range</em>'.
+   * @see org.eclipse.b3.beeLang.VersionRange#getRange()
    * @see #getVersionRange()
    * @generated
    */
-  EAttribute getVersionRange_MinLimit();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.VersionRange#getMin <em>Min</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Min</em>'.
-   * @see org.eclipse.b3.beeLang.VersionRange#getMin()
-   * @see #getVersionRange()
-   * @generated
-   */
-  EReference getVersionRange_Min();
-
-  /**
-   * Returns the meta object for the containment reference '{@link org.eclipse.b3.beeLang.VersionRange#getMax <em>Max</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference '<em>Max</em>'.
-   * @see org.eclipse.b3.beeLang.VersionRange#getMax()
-   * @see #getVersionRange()
-   * @generated
-   */
-  EReference getVersionRange_Max();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.VersionRange#getMaxLimit <em>Max Limit</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Max Limit</em>'.
-   * @see org.eclipse.b3.beeLang.VersionRange#getMaxLimit()
-   * @see #getVersionRange()
-   * @generated
-   */
-  EAttribute getVersionRange_MaxLimit();
+  EAttribute getVersionRange_Range();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.Builder <em>Builder</em>}'.
@@ -10234,12 +10174,12 @@ public interface BeeLangPackage extends EPackage
     EClass VERSION = eINSTANCE.getVersion();
 
     /**
-     * The meta object literal for the '<em><b>Original</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Version</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute VERSION__ORIGINAL = eINSTANCE.getVersion_Original();
+    EAttribute VERSION__VERSION = eINSTANCE.getVersion_Version();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.VersionRangeImpl <em>Version Range</em>}' class.
@@ -10252,36 +10192,12 @@ public interface BeeLangPackage extends EPackage
     EClass VERSION_RANGE = eINSTANCE.getVersionRange();
 
     /**
-     * The meta object literal for the '<em><b>Min Limit</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Range</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute VERSION_RANGE__MIN_LIMIT = eINSTANCE.getVersionRange_MinLimit();
-
-    /**
-     * The meta object literal for the '<em><b>Min</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference VERSION_RANGE__MIN = eINSTANCE.getVersionRange_Min();
-
-    /**
-     * The meta object literal for the '<em><b>Max</b></em>' containment reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference VERSION_RANGE__MAX = eINSTANCE.getVersionRange_Max();
-
-    /**
-     * The meta object literal for the '<em><b>Max Limit</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute VERSION_RANGE__MAX_LIMIT = eINSTANCE.getVersionRange_MaxLimit();
+    EAttribute VERSION_RANGE__RANGE = eINSTANCE.getVersionRange_Range();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.BuilderImpl <em>Builder</em>}' class.

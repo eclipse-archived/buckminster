@@ -20,6 +20,9 @@ import org.eclipse.emf.ecore.EPackage;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+
 /**
  * <!-- begin-user-doc -->
  * An implementation of the model <b>Package</b>.
@@ -48,6 +51,20 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
    * @generated
    */
   private EDataType uriEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType versionRangeEDataType = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EDataType versionEDataType = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -152,6 +169,26 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
    * <!-- end-user-doc -->
    * @generated
    */
+  public EDataType getVersionRange()
+  {
+    return versionRangeEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EDataType getVersion()
+  {
+    return versionEDataType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public BeelangtypesFactory getBeelangtypesFactory()
   {
     return (BeelangtypesFactory)getEFactoryInstance();
@@ -180,6 +217,8 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
     radixIntegerEDataType = createEDataType(RADIX_INTEGER);
     regularExpressionEDataType = createEDataType(REGULAR_EXPRESSION);
     uriEDataType = createEDataType(URI);
+    versionRangeEDataType = createEDataType(VERSION_RANGE);
+    versionEDataType = createEDataType(VERSION);
   }
 
   /**
@@ -210,6 +249,8 @@ public class BeelangtypesPackageImpl extends EPackageImpl implements Beelangtype
     initEDataType(radixIntegerEDataType, RadixInteger.class, "RadixInteger", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(regularExpressionEDataType, RegularExpression.class, "RegularExpression", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
     initEDataType(uriEDataType, java.net.URI.class, "URI", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(versionRangeEDataType, VersionRange.class, "VersionRange", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+    initEDataType(versionEDataType, Version.class, "Version", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
     // Create resource
     createResource(eNS_URI);

@@ -12,13 +12,15 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.conversion.impl.AbstractDeclarativeValueConverterService;
 import org.eclipse.xtext.conversion.impl.AbstractNullSafeConverter;
 import org.eclipse.xtext.parsetree.AbstractNode;
-import org.eclipse.xtext.util.Strings;
-
+import org.eclipse.xtext.util.Strings;// 
+import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
 import com.google.inject.Inject;
 
 /**
  * Converters for BeeLang terminals.
  */
+@SuppressWarnings("restriction")
 public class BeeLangTerminalConverters extends  AbstractDeclarativeValueConverterService {
 
 	private Grammar grammar;
@@ -202,5 +204,52 @@ public class BeeLangTerminalConverters extends  AbstractDeclarativeValueConverte
 
 		};
 	}
-	
+	@ValueConverter(rule = "VersionLiteral")
+	public IValueConverter<Version> Version() {
+		return new IValueConverter<Version>() {
+			
+			public Version toValue(String string, AbstractNode node) throws ValueConverterException
+			{
+				if (Strings.isEmpty(string))
+					throw new ValueConverterException("Can not convert empty string to Version", node, null);
+				try {
+					char c = string.charAt(0);
+					if(c == '"'||  c == '\"')
+						string = Strings.convertFromJavaString(string.substring(1, string.length() - 1));
+
+					return Version.create(string);
+				} catch (IllegalArgumentException e) {
+					throw new ValueConverterException("Version '"+string+"' is not a valid version: "+e.getMessage(), node, null);
+				}
+			}
+			public String toString(Version value) {
+				return value.toString();
+			}
+
+		};
+	}	
+	@ValueConverter(rule = "VersionRangeLiteral")
+	public IValueConverter<VersionRange> VersionRange() {
+		return new IValueConverter<VersionRange>() {
+			
+			public VersionRange toValue(String string, AbstractNode node) throws ValueConverterException
+			{
+				if (Strings.isEmpty(string))
+					throw new ValueConverterException("Can not convert empty string to VersionRange", node, null);
+				try {
+					char c = string.charAt(0);
+					if(c == '"'||  c == '\"')
+						string = Strings.convertFromJavaString(string.substring(1, string.length() - 1));
+
+					return new VersionRange(string);
+				} catch (IllegalArgumentException e) {
+					throw new ValueConverterException("VersionRange '"+string+"' is not a valid range: "+e.getMessage(), node, null);
+				}
+			}
+			public String toString(VersionRange value) {
+				return value.toString();
+			}
+
+		};
+	}	
 }

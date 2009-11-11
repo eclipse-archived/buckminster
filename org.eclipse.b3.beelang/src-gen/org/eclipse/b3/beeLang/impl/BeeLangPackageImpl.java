@@ -3379,7 +3379,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersion_Original()
+  public EAttribute getVersion_Version()
   {
     return (EAttribute)versionEClass.getEStructuralFeatures().get(0);
   }
@@ -3399,39 +3399,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getVersionRange_MinLimit()
+  public EAttribute getVersionRange_Range()
   {
     return (EAttribute)versionRangeEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getVersionRange_Min()
-  {
-    return (EReference)versionRangeEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getVersionRange_Max()
-  {
-    return (EReference)versionRangeEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getVersionRange_MaxLimit()
-  {
-    return (EAttribute)versionRangeEClass.getEStructuralFeatures().get(3);
   }
 
   /**
@@ -4930,13 +4900,10 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(featureEClass, FEATURE__VALUE);
 
     versionEClass = createEClass(VERSION);
-    createEAttribute(versionEClass, VERSION__ORIGINAL);
+    createEAttribute(versionEClass, VERSION__VERSION);
 
     versionRangeEClass = createEClass(VERSION_RANGE);
-    createEAttribute(versionRangeEClass, VERSION_RANGE__MIN_LIMIT);
-    createEReference(versionRangeEClass, VERSION_RANGE__MIN);
-    createEReference(versionRangeEClass, VERSION_RANGE__MAX);
-    createEAttribute(versionRangeEClass, VERSION_RANGE__MAX_LIMIT);
+    createEAttribute(versionRangeEClass, VERSION_RANGE__RANGE);
 
     builderEClass = createEClass(BUILDER);
     createEAttribute(builderEClass, BUILDER__DOCUMENTATION);
@@ -5499,13 +5466,10 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getFeature_Value(), this.getExpression(), null, "value", null, 0, 1, Feature.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(versionEClass, Version.class, "Version", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getVersion_Original(), ecorePackage.getEString(), "original", null, 0, 1, Version.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVersion_Version(), theBeelangtypesPackage.getVersion(), "version", null, 0, 1, Version.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(versionRangeEClass, VersionRange.class, "VersionRange", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getVersionRange_MinLimit(), ecorePackage.getEString(), "minLimit", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getVersionRange_Min(), this.getVersion(), null, "min", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getVersionRange_Max(), this.getVersion(), null, "max", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getVersionRange_MaxLimit(), ecorePackage.getEString(), "maxLimit", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getVersionRange_Range(), theBeelangtypesPackage.getVersionRange(), "range", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(builderEClass, Builder.class, "Builder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getBuilder_Documentation(), ecorePackage.getEString(), "documentation", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

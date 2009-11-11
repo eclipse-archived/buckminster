@@ -121,7 +121,7 @@ CompoundPathVector returns CompoundPathVector: '{' body+=PathVectorElement* '}' 
 // A path can be written without quotes if it consists of safe chars 
 Path hidden()
 	: STRING
-	| ('/')? QualifiedName ('/' QualifiedName)* ('/')? // HIDDENBUG
+	| ('/')? QualifiedName ('/' QualifiedName)* ('/')?  HIDDENBUG
 	;
 
 Prerequisite : 
@@ -131,8 +131,8 @@ Prerequisite :
 		("as" alias=ID)? ';'
 	;
 
-// TODO: Validation, must have at least one of references, properties or concern.
-WithClause : 
+// Validation checks that there is at least one of references, properties or concern.
+WithClause : {WithClause}
 		'with'
 		( '(' references += Expression (',' references += Expression)* ')' )? 
 		(( 'properties' properties += PropertyBody ) 
@@ -218,7 +218,6 @@ ContainerConfiguration :
 	"container" name=ID "agent" type=TypeRef (contextBlock = ContextBlock)? 
 	;
 	
-// URI TODO: validate as URI 
 URI returns types::URI: STRING
 	;
 
@@ -238,18 +237,17 @@ enum SelectorOperator : THIS = '.' | PARENT = '..' | CHILDREN = '*' | ANSCESTORS
 
 Filter : '(' predicate = Expression ')' ;
 
-PreCondition : "precondition" '{' (asserts += AssertionExpression)* '}' ;
-PostCondition : "postcondition" '{' (asserts += AssertionExpression)* '}' ;
-AssertionExpression : 'assert' expr=Expression (',' message=STRING)? ';' ;
+PreCondition : "precondition" '{' (asserts += AssertionExpression)+ '}' ;
+PostCondition : "postcondition" '{' (asserts += AssertionExpression)+ '}' ;
+AssertionExpression : 'assert' expr=Expression ',' message=STRING ';' ;
 
 ExpressionList : (expressions += Expression ';')+ ;
 
-// TODO: Function and method are the same except for the keyword - can perhaps be
-// handled a better way.
-
+// Validation makes sure a Function is stated with "function", and Method with "method"
 Function returns Statment: {Function} func=FunctionOrMethod ;
 Method returns Statement: {Method} method=FunctionOrMethod ;
 
+// Difference function/method handled as validation
 FunctionOrMethod : 	
 	(documentation = DOCUMENTATION)?
    	(visibility = Visibility)?
@@ -263,20 +261,6 @@ FunctionOrMethod :
    	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
    	((':' body=Expression ';') | (body=BlockExpression))
 	;
-
-//Method returns Statement : {Function}	
-//	(documentation = DOCUMENTATION)?
-//   	(visibility = Visibility)?
-//    (executionMode = ExecutionMode)?	   	
-//   	(final ?= "final")?
-//   	(cached ?= "cached")?
-//   	"method"
-//   	(type = TypeRef)?
-//   	name=ID 
-//   	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
-//   	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
-//   	((':' body=Expression ';') | (body=BlockExpression))
-//	;
 	
 TypeParamDeclaration 
 	: ID ( ("extends" type+= TypeRef ('&' type+=TypeRef)*) | ("super" superType=TypeRef))?
@@ -465,12 +449,12 @@ Literal returns Expression
 	;
 	
 LiteralList returns  Expression
-	: {LiteralList} '[' (element += Expression (',' element += Expression)* )? ']' 
-		('<' type=TypeRef '>')?
+	: {LiteralList} '[' element += Expression (',' element += Expression)*  ']' ('<' type=TypeRef '>')?
+	| {LiteralList} '[' ']' '<' type=TypeRef '>'
 	;
 LiteralMap returns  Expression
-	: {LiteralMap} '[' (features += Feature (',' features += Feature)* )? ']'
-		('<' keyType=TypeRef ',' valType=TypeRef '>')? 
+	: {LiteralMap} '[' features += Feature (',' features += Feature)* ']' ('<' keyType=TypeRef ',' valType=TypeRef '>')? 
+	| {LiteralMap} '[' ']' '<' keyType=TypeRef ',' valType=TypeRef '>'
 	;
 LiteralFunction returns Expression: {LiteralFunction} '{' closure = ClosureExpression '}' ;
 
@@ -492,7 +476,6 @@ ValueLiteral returns Expression
 	;
 	
 BooleanLiteral returns  Expression: {BooleanLiteral} val=("true" | "false");
-// TODO: Hex is a string until an int converter is written for it
 IntegerLiteral returns  Expression: {IntegerLiteral} val= IntValue;
 NullLiteral	returns  Expression: {NullLiteral} val="null";
 ThisLiteral	returns  Expression: {ThisLiteral} val="this";
@@ -509,9 +492,11 @@ ParanthesizedExpression returns Expression
 	:  "(" Expression ")"
 	;	
 
-Version returns Version
-	: original=STRING  
-	| original=AlfanumSym
+Version : version = VersionLiteral;
+
+VersionLiteral returns types::Version
+	: STRING  
+	| AlfanumSym
 	;
 
 /*
@@ -519,9 +504,15 @@ Version returns Version
 ** escaped with " ". Omni
 ** version uses version strings with \[ when a range is presented/parsed in string format.
 */
-VersionRange returns VersionRange
-	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
-	| min=Version
+//VersionRange returns VersionRange
+//	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
+//	| min=Version
+//	;
+VersionRange : range = VersionRangeLiteral ;
+
+VersionRangeLiteral returns types::VersionRange 
+	: ('[' | '(') (STRING | AlfanumSym) (',' (STRING | AlfanumSym))? (']'|')')
+	| (STRING | AlfanumSym)
 	;
 
 // Qualified name
@@ -548,7 +539,6 @@ enum ExecutionMode 	: parallel | sequential ;
 
 
 // Version, and VersionRange
-// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
 // TODO: uncertain if the set of allowed chars is definitive.
 //
 Separator : '.' | '-' | '!' | '@' | '$' | '%' | '&' |'+' | '=' | '*' | '<' | '>' | ':' | '?';
@@ -556,8 +546,8 @@ AlfanumSym : (ID | INT | HEX | EXT_INT) (Separator|ID|INT|HEX |EXT_INT)* ;
 
 // --TERMINALS
 
-// Redeclare the default ID without the ^ keyword escape mechanism
-terminal ID : (('a'..'z')|('A'..'Z')|'_') (('a'..'z')|('A'..'Z')|('0'..'9')|'_')* ;
+// Redeclare the default ID with ´ instead of ^ as escape mechanism
+terminal ID : ('^')?(('a'..'z')|('A'..'Z')|'_') (('a'..'z')|('A'..'Z')|('0'..'9')|'_')* ;
 
 // Property Names start with $ and are qualified. Must be handled by lexer as
 // a.b.c is otherwise ambigous in expressions.

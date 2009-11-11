@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.Version#getOriginal <em>Original</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.Version#getVersion <em>Version</em>}</li>
  * </ul>
  * </p>
  *
@@ -26,29 +26,29 @@ import org.eclipse.emf.ecore.EObject;
 public interface Version extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Original</b></em>' attribute.
+   * Returns the value of the '<em><b>Version</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Original</em>' attribute isn't clear,
+   * If the meaning of the '<em>Version</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Original</em>' attribute.
-   * @see #setOriginal(String)
-   * @see org.eclipse.b3.beeLang.BeeLangPackage#getVersion_Original()
-   * @model
+   * @return the value of the '<em>Version</em>' attribute.
+   * @see #setVersion(org.eclipse.equinox.internal.provisional.p2.core.Version)
+   * @see org.eclipse.b3.beeLang.BeeLangPackage#getVersion_Version()
+   * @model dataType="beelangtypes.Version"
    * @generated
    */
-  String getOriginal();
+  org.eclipse.equinox.internal.provisional.p2.core.Version getVersion();
 
   /**
-   * Sets the value of the '{@link org.eclipse.b3.beeLang.Version#getOriginal <em>Original</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.b3.beeLang.Version#getVersion <em>Version</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Original</em>' attribute.
-   * @see #getOriginal()
+   * @param value the new value of the '<em>Version</em>' attribute.
+   * @see #getVersion()
    * @generated
    */
-  void setOriginal(String value);
+  void setVersion(org.eclipse.equinox.internal.provisional.p2.core.Version value);
 
 } // Version

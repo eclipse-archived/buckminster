@@ -87,6 +87,26 @@ public interface BeelangtypesPackage extends EPackage
    */
   int URI = 2;
 
+  /**
+   * The meta object id for the '<em>Version Range</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.equinox.internal.provisional.p2.core.VersionRange
+   * @see beelangtypes.impl.BeelangtypesPackageImpl#getVersionRange()
+   * @generated
+   */
+  int VERSION_RANGE = 3;
+
+  /**
+   * The meta object id for the '<em>Version</em>' data type.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.equinox.internal.provisional.p2.core.Version
+   * @see beelangtypes.impl.BeelangtypesPackageImpl#getVersion()
+   * @generated
+   */
+  int VERSION = 4;
+
 
   /**
    * Returns the meta object for data type '{@link org.eclipse.b3.RadixInteger <em>Radix Integer</em>}'.
@@ -120,6 +140,28 @@ public interface BeelangtypesPackage extends EPackage
    * @generated
    */
   EDataType getURI();
+
+  /**
+   * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.core.VersionRange <em>Version Range</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Version Range</em>'.
+   * @see org.eclipse.equinox.internal.provisional.p2.core.VersionRange
+   * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.core.VersionRange"
+   * @generated
+   */
+  EDataType getVersionRange();
+
+  /**
+   * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.core.Version <em>Version</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for data type '<em>Version</em>'.
+   * @see org.eclipse.equinox.internal.provisional.p2.core.Version
+   * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.core.Version"
+   * @generated
+   */
+  EDataType getVersion();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -173,6 +215,26 @@ public interface BeelangtypesPackage extends EPackage
      * @generated
      */
     EDataType URI = eINSTANCE.getURI();
+
+    /**
+     * The meta object literal for the '<em>Version Range</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.equinox.internal.provisional.p2.core.VersionRange
+     * @see beelangtypes.impl.BeelangtypesPackageImpl#getVersionRange()
+     * @generated
+     */
+    EDataType VERSION_RANGE = eINSTANCE.getVersionRange();
+
+    /**
+     * The meta object literal for the '<em>Version</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.equinox.internal.provisional.p2.core.Version
+     * @see beelangtypes.impl.BeelangtypesPackageImpl#getVersion()
+     * @generated
+     */
+    EDataType VERSION = eINSTANCE.getVersion();
 
   }
 

@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.b3.beeLang.impl.VersionImpl#getOriginal <em>Original</em>}</li>
+ *   <li>{@link org.eclipse.b3.beeLang.impl.VersionImpl#getVersion <em>Version</em>}</li>
  * </ul>
  * </p>
  *
@@ -31,24 +31,24 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 public class VersionImpl extends MinimalEObjectImpl.Container implements Version
 {
   /**
-   * The default value of the '{@link #getOriginal() <em>Original</em>}' attribute.
+   * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getOriginal()
+   * @see #getVersion()
    * @generated
    * @ordered
    */
-  protected static final String ORIGINAL_EDEFAULT = null;
+  protected static final org.eclipse.equinox.internal.provisional.p2.core.Version VERSION_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getOriginal() <em>Original</em>}' attribute.
+   * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getOriginal()
+   * @see #getVersion()
    * @generated
    * @ordered
    */
-  protected String original = ORIGINAL_EDEFAULT;
+  protected org.eclipse.equinox.internal.provisional.p2.core.Version version = VERSION_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -76,9 +76,9 @@ public class VersionImpl extends MinimalEObjectImpl.Container implements Version
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getOriginal()
+  public org.eclipse.equinox.internal.provisional.p2.core.Version getVersion()
   {
-    return original;
+    return version;
   }
 
   /**
@@ -86,12 +86,12 @@ public class VersionImpl extends MinimalEObjectImpl.Container implements Version
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setOriginal(String newOriginal)
+  public void setVersion(org.eclipse.equinox.internal.provisional.p2.core.Version newVersion)
   {
-    String oldOriginal = original;
-    original = newOriginal;
+    org.eclipse.equinox.internal.provisional.p2.core.Version oldVersion = version;
+    version = newVersion;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.VERSION__ORIGINAL, oldOriginal, original));
+      eNotify(new ENotificationImpl(this, Notification.SET, BeeLangPackage.VERSION__VERSION, oldVersion, version));
   }
 
   /**
@@ -104,8 +104,8 @@ public class VersionImpl extends MinimalEObjectImpl.Container implements Version
   {
     switch (featureID)
     {
-      case BeeLangPackage.VERSION__ORIGINAL:
-        return getOriginal();
+      case BeeLangPackage.VERSION__VERSION:
+        return getVersion();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -120,8 +120,8 @@ public class VersionImpl extends MinimalEObjectImpl.Container implements Version
   {
     switch (featureID)
     {
-      case BeeLangPackage.VERSION__ORIGINAL:
-        setOriginal((String)newValue);
+      case BeeLangPackage.VERSION__VERSION:
+        setVersion((org.eclipse.equinox.internal.provisional.p2.core.Version)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -137,8 +137,8 @@ public class VersionImpl extends MinimalEObjectImpl.Container implements Version
   {
     switch (featureID)
     {
-      case BeeLangPackage.VERSION__ORIGINAL:
-        setOriginal(ORIGINAL_EDEFAULT);
+      case BeeLangPackage.VERSION__VERSION:
+        setVersion(VERSION_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -154,8 +154,8 @@ public class VersionImpl extends MinimalEObjectImpl.Container implements Version
   {
     switch (featureID)
     {
-      case BeeLangPackage.VERSION__ORIGINAL:
-        return ORIGINAL_EDEFAULT == null ? original != null : !ORIGINAL_EDEFAULT.equals(original);
+      case BeeLangPackage.VERSION__VERSION:
+        return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
     }
     return super.eIsSet(featureID);
   }
@@ -171,8 +171,8 @@ public class VersionImpl extends MinimalEObjectImpl.Container implements Version
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (original: ");
-    result.append(original);
+    result.append(" (version: ");
+    result.append(version);
     result.append(')');
     return result.toString();
   }

@@ -345,13 +345,10 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//Feature/value"/>
     </genClasses>
     <genClasses ecoreClass="BeeLang.ecore#//Version">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Version/original"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Version/version"/>
     </genClasses>
     <genClasses ecoreClass="BeeLang.ecore#//VersionRange">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//VersionRange/minLimit"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//VersionRange/min"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference BeeLang.ecore#//VersionRange/max"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//VersionRange/maxLimit"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//VersionRange/range"/>
     </genClasses>
     <genClasses ecoreClass="BeeLang.ecore#//Builder">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//Builder/documentation"/>

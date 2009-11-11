@@ -1387,29 +1387,23 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Keyword cSolidusKeyword_1_2_0 = (Keyword)cGroup_1_2.eContents().get(0);
 		private final RuleCall cQualifiedNameParserRuleCall_1_2_1 = (RuleCall)cGroup_1_2.eContents().get(1);
 		private final Keyword cSolidusKeyword_1_3 = (Keyword)cGroup_1.eContents().get(3);
+		private final RuleCall cHIDDENBUGParserRuleCall_1_4 = (RuleCall)cGroup_1.eContents().get(4);
 		
 		//Path returns ecore::EString hidden ( ):
-		//  STRING|"/"? QualifiedName ("/" QualifiedName)* "/"?; 
+		//  STRING|"/"? QualifiedName ("/" QualifiedName)* "/"? HIDDENBUG; 
 		//
-		//// A path can be written without quotes if it consists of safe chars 
-		//  
-		//	  
-		//	            // HIDDENBUG
+		//// A path can be written without quotes if it consists of safe chars
 		public ParserRule getRule() { return rule; }
 
-		//STRING|"/"? QualifiedName ("/" QualifiedName)* "/"? 
+		//STRING|"/"? QualifiedName ("/" QualifiedName)* "/"? HIDDENBUG 
 		//
-		//// A path can be written without quotes if it consists of safe chars 
-		//  
-		//	  
-		//	            // HIDDENBUG
+		//// A path can be written without quotes if it consists of safe chars
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//STRING
 		public RuleCall getSTRINGTerminalRuleCall_0() { return cSTRINGTerminalRuleCall_0; }
 
-		//"/"? QualifiedName ("/" QualifiedName)* "/"?   
-		//	            // HIDDENBUG
+		//"/"? QualifiedName ("/" QualifiedName)* "/"? HIDDENBUG
 		public Group getGroup_1() { return cGroup_1; }
 
 		//"/"?
@@ -1429,6 +1423,9 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 		//"/"?
 		public Keyword getSolidusKeyword_1_3() { return cSolidusKeyword_1_3; }
+
+		//HIDDENBUG
+		public RuleCall getHIDDENBUGParserRuleCall_1_4() { return cHIDDENBUGParserRuleCall_1_4; }
 	}
 
 	public class PrerequisiteElements implements IParserRuleAccess {
@@ -1459,7 +1456,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//		    
 		//	
 		//
-		//// TODO: Validation, must have at least one of references, properties or concern.
+		//// Validation checks that there is at least one of references, properties or concern.
 		public ParserRule getRule() { return rule; }
 
 		//("when" filter=Filter)? withClause=WithClause? partReference=PrerequisiteEntry ("as"
@@ -1509,93 +1506,97 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	public class WithClauseElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "WithClause");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cWithKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cLeftParenthesisKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cReferencesAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final RuleCall cReferencesExpressionParserRuleCall_1_1_0 = (RuleCall)cReferencesAssignment_1_1.eContents().get(0);
-		private final Group cGroup_1_2 = (Group)cGroup_1.eContents().get(2);
-		private final Keyword cCommaKeyword_1_2_0 = (Keyword)cGroup_1_2.eContents().get(0);
-		private final Assignment cReferencesAssignment_1_2_1 = (Assignment)cGroup_1_2.eContents().get(1);
-		private final RuleCall cReferencesExpressionParserRuleCall_1_2_1_0 = (RuleCall)cReferencesAssignment_1_2_1.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_1_3 = (Keyword)cGroup_1.eContents().get(3);
-		private final Alternatives cAlternatives_2 = (Alternatives)cGroup.eContents().get(2);
-		private final Group cGroup_2_0 = (Group)cAlternatives_2.eContents().get(0);
-		private final Keyword cPropertiesKeyword_2_0_0 = (Keyword)cGroup_2_0.eContents().get(0);
-		private final Assignment cPropertiesAssignment_2_0_1 = (Assignment)cGroup_2_0.eContents().get(1);
-		private final RuleCall cPropertiesPropertyBodyParserRuleCall_2_0_1_0 = (RuleCall)cPropertiesAssignment_2_0_1.eContents().get(0);
-		private final Group cGroup_2_1 = (Group)cAlternatives_2.eContents().get(1);
-		private final Keyword cConcernKeyword_2_1_0 = (Keyword)cGroup_2_1.eContents().get(0);
-		private final Assignment cConcernAssignment_2_1_1 = (Assignment)cGroup_2_1.eContents().get(1);
-		private final RuleCall cConcernConcernBlockParserRuleCall_2_1_1_0 = (RuleCall)cConcernAssignment_2_1_1.eContents().get(0);
+		private final Action cWithClauseAction_0 = (Action)cGroup.eContents().get(0);
+		private final Keyword cWithKeyword_1 = (Keyword)cGroup.eContents().get(1);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cLeftParenthesisKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cReferencesAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cReferencesExpressionParserRuleCall_2_1_0 = (RuleCall)cReferencesAssignment_2_1.eContents().get(0);
+		private final Group cGroup_2_2 = (Group)cGroup_2.eContents().get(2);
+		private final Keyword cCommaKeyword_2_2_0 = (Keyword)cGroup_2_2.eContents().get(0);
+		private final Assignment cReferencesAssignment_2_2_1 = (Assignment)cGroup_2_2.eContents().get(1);
+		private final RuleCall cReferencesExpressionParserRuleCall_2_2_1_0 = (RuleCall)cReferencesAssignment_2_2_1.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_2_3 = (Keyword)cGroup_2.eContents().get(3);
+		private final Alternatives cAlternatives_3 = (Alternatives)cGroup.eContents().get(3);
+		private final Group cGroup_3_0 = (Group)cAlternatives_3.eContents().get(0);
+		private final Keyword cPropertiesKeyword_3_0_0 = (Keyword)cGroup_3_0.eContents().get(0);
+		private final Assignment cPropertiesAssignment_3_0_1 = (Assignment)cGroup_3_0.eContents().get(1);
+		private final RuleCall cPropertiesPropertyBodyParserRuleCall_3_0_1_0 = (RuleCall)cPropertiesAssignment_3_0_1.eContents().get(0);
+		private final Group cGroup_3_1 = (Group)cAlternatives_3.eContents().get(1);
+		private final Keyword cConcernKeyword_3_1_0 = (Keyword)cGroup_3_1.eContents().get(0);
+		private final Assignment cConcernAssignment_3_1_1 = (Assignment)cGroup_3_1.eContents().get(1);
+		private final RuleCall cConcernConcernBlockParserRuleCall_3_1_1_0 = (RuleCall)cConcernAssignment_3_1_1.eContents().get(0);
 		
 		//WithClause:
-		//  "with" ("(" references+=Expression ("," references+=Expression)* ")")? ("properties"
-		//  properties+=PropertyBody|"concern" concern+=ConcernBlock)*; 
+		//  {WithClause} "with" ("(" references+=Expression ("," references+=Expression)* ")")? (
+		//  "properties" properties+=PropertyBody|"concern" concern+=ConcernBlock)*; 
 		//
-		//// TODO: Validation, must have at least one of references, properties or concern.
+		//// Validation checks that there is at least one of references, properties or concern.
 		public ParserRule getRule() { return rule; }
 
-		//"with" ("(" references+=Expression ("," references+=Expression)* ")")? ("properties"
-		//properties+=PropertyBody|"concern" concern+=ConcernBlock)*
+		//{WithClause} "with" ("(" references+=Expression ("," references+=Expression)* ")")? (
+		//"properties" properties+=PropertyBody|"concern" concern+=ConcernBlock)*
 		public Group getGroup() { return cGroup; }
 
+		//{WithClause}
+		public Action getWithClauseAction_0() { return cWithClauseAction_0; }
+
 		//"with"
-		public Keyword getWithKeyword_0() { return cWithKeyword_0; }
+		public Keyword getWithKeyword_1() { return cWithKeyword_1; }
 
 		//("(" references+=Expression ("," references+=Expression)* ")")?
-		public Group getGroup_1() { return cGroup_1; }
+		public Group getGroup_2() { return cGroup_2; }
 
 		//"("
-		public Keyword getLeftParenthesisKeyword_1_0() { return cLeftParenthesisKeyword_1_0; }
+		public Keyword getLeftParenthesisKeyword_2_0() { return cLeftParenthesisKeyword_2_0; }
 
 		//references+=Expression
-		public Assignment getReferencesAssignment_1_1() { return cReferencesAssignment_1_1; }
+		public Assignment getReferencesAssignment_2_1() { return cReferencesAssignment_2_1; }
 
 		//Expression
-		public RuleCall getReferencesExpressionParserRuleCall_1_1_0() { return cReferencesExpressionParserRuleCall_1_1_0; }
+		public RuleCall getReferencesExpressionParserRuleCall_2_1_0() { return cReferencesExpressionParserRuleCall_2_1_0; }
 
 		//("," references+=Expression)*
-		public Group getGroup_1_2() { return cGroup_1_2; }
+		public Group getGroup_2_2() { return cGroup_2_2; }
 
 		//","
-		public Keyword getCommaKeyword_1_2_0() { return cCommaKeyword_1_2_0; }
+		public Keyword getCommaKeyword_2_2_0() { return cCommaKeyword_2_2_0; }
 
 		//references+=Expression
-		public Assignment getReferencesAssignment_1_2_1() { return cReferencesAssignment_1_2_1; }
+		public Assignment getReferencesAssignment_2_2_1() { return cReferencesAssignment_2_2_1; }
 
 		//Expression
-		public RuleCall getReferencesExpressionParserRuleCall_1_2_1_0() { return cReferencesExpressionParserRuleCall_1_2_1_0; }
+		public RuleCall getReferencesExpressionParserRuleCall_2_2_1_0() { return cReferencesExpressionParserRuleCall_2_2_1_0; }
 
 		//")"
-		public Keyword getRightParenthesisKeyword_1_3() { return cRightParenthesisKeyword_1_3; }
+		public Keyword getRightParenthesisKeyword_2_3() { return cRightParenthesisKeyword_2_3; }
 
 		//("properties" properties+=PropertyBody|"concern" concern+=ConcernBlock)*
-		public Alternatives getAlternatives_2() { return cAlternatives_2; }
+		public Alternatives getAlternatives_3() { return cAlternatives_3; }
 
 		//"properties" properties+=PropertyBody
-		public Group getGroup_2_0() { return cGroup_2_0; }
+		public Group getGroup_3_0() { return cGroup_3_0; }
 
 		//"properties"
-		public Keyword getPropertiesKeyword_2_0_0() { return cPropertiesKeyword_2_0_0; }
+		public Keyword getPropertiesKeyword_3_0_0() { return cPropertiesKeyword_3_0_0; }
 
 		//properties+=PropertyBody
-		public Assignment getPropertiesAssignment_2_0_1() { return cPropertiesAssignment_2_0_1; }
+		public Assignment getPropertiesAssignment_3_0_1() { return cPropertiesAssignment_3_0_1; }
 
 		//PropertyBody
-		public RuleCall getPropertiesPropertyBodyParserRuleCall_2_0_1_0() { return cPropertiesPropertyBodyParserRuleCall_2_0_1_0; }
+		public RuleCall getPropertiesPropertyBodyParserRuleCall_3_0_1_0() { return cPropertiesPropertyBodyParserRuleCall_3_0_1_0; }
 
 		//"concern" concern+=ConcernBlock
-		public Group getGroup_2_1() { return cGroup_2_1; }
+		public Group getGroup_3_1() { return cGroup_3_1; }
 
 		//"concern"
-		public Keyword getConcernKeyword_2_1_0() { return cConcernKeyword_2_1_0; }
+		public Keyword getConcernKeyword_3_1_0() { return cConcernKeyword_3_1_0; }
 
 		//concern+=ConcernBlock
-		public Assignment getConcernAssignment_2_1_1() { return cConcernAssignment_2_1_1; }
+		public Assignment getConcernAssignment_3_1_1() { return cConcernAssignment_3_1_1; }
 
 		//ConcernBlock
-		public RuleCall getConcernConcernBlockParserRuleCall_2_1_1_0() { return cConcernConcernBlockParserRuleCall_2_1_1_0; }
+		public RuleCall getConcernConcernBlockParserRuleCall_3_1_1_0() { return cConcernConcernBlockParserRuleCall_3_1_1_0; }
 	}
 
 	public class PrerequisiteEntryElements implements IParserRuleAccess {
@@ -2424,14 +2425,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		
 		//ContainerConfiguration:
 		//  documentation=DOCUMENTATION? "container" name=ID "agent" type=TypeRef contextBlock=
-		//  ContextBlock?; 
-		//
-		//   
-		//	 
-		//	             
-		//	
-		//	
-		//// URI TODO: validate as URI
+		//  ContextBlock?;
 		public ParserRule getRule() { return rule; }
 
 		//documentation=DOCUMENTATION? "container" name=ID "agent" type=TypeRef contextBlock=
@@ -2474,9 +2468,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
 		
 		//URI returns types::URI:
-		//  STRING; 
-		//	
-		//// URI TODO: validate as URI
+		//  STRING;
 		public ParserRule getRule() { return rule; }
 
 		//STRING
@@ -2777,10 +2769,10 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Keyword cRightCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//PreCondition:
-		//  "precondition" "{" asserts+=AssertionExpression* "}";
+		//  "precondition" "{" asserts+=AssertionExpression+ "}";
 		public ParserRule getRule() { return rule; }
 
-		//"precondition" "{" asserts+=AssertionExpression* "}"
+		//"precondition" "{" asserts+=AssertionExpression+ "}"
 		public Group getGroup() { return cGroup; }
 
 		//"precondition"
@@ -2789,7 +2781,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
 
-		//asserts+=AssertionExpression*
+		//asserts+=AssertionExpression+
 		public Assignment getAssertsAssignment_2() { return cAssertsAssignment_2; }
 
 		//AssertionExpression
@@ -2809,10 +2801,10 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Keyword cRightCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//PostCondition:
-		//  "postcondition" "{" asserts+=AssertionExpression* "}";
+		//  "postcondition" "{" asserts+=AssertionExpression+ "}";
 		public ParserRule getRule() { return rule; }
 
-		//"postcondition" "{" asserts+=AssertionExpression* "}"
+		//"postcondition" "{" asserts+=AssertionExpression+ "}"
 		public Group getGroup() { return cGroup; }
 
 		//"postcondition"
@@ -2821,7 +2813,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
 
-		//asserts+=AssertionExpression*
+		//asserts+=AssertionExpression+
 		public Assignment getAssertsAssignment_2() { return cAssertsAssignment_2; }
 
 		//AssertionExpression
@@ -2837,17 +2829,16 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Keyword cAssertKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cExprAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cExprExpressionParserRuleCall_1_0 = (RuleCall)cExprAssignment_1.eContents().get(0);
-		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Keyword cCommaKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
-		private final Assignment cMessageAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
-		private final RuleCall cMessageSTRINGTerminalRuleCall_2_1_0 = (RuleCall)cMessageAssignment_2_1.eContents().get(0);
-		private final Keyword cSemicolonKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Keyword cCommaKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cMessageAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cMessageSTRINGTerminalRuleCall_3_0 = (RuleCall)cMessageAssignment_3.eContents().get(0);
+		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//AssertionExpression:
-		//  "assert" expr=Expression ("," message=STRING)? ";";
+		//  "assert" expr=Expression "," message=STRING ";";
 		public ParserRule getRule() { return rule; }
 
-		//"assert" expr=Expression ("," message=STRING)? ";"
+		//"assert" expr=Expression "," message=STRING ";"
 		public Group getGroup() { return cGroup; }
 
 		//"assert"
@@ -2859,20 +2850,17 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//Expression
 		public RuleCall getExprExpressionParserRuleCall_1_0() { return cExprExpressionParserRuleCall_1_0; }
 
-		//("," message=STRING)?
-		public Group getGroup_2() { return cGroup_2; }
-
 		//","
-		public Keyword getCommaKeyword_2_0() { return cCommaKeyword_2_0; }
+		public Keyword getCommaKeyword_2() { return cCommaKeyword_2; }
 
 		//message=STRING
-		public Assignment getMessageAssignment_2_1() { return cMessageAssignment_2_1; }
+		public Assignment getMessageAssignment_3() { return cMessageAssignment_3; }
 
 		//STRING
-		public RuleCall getMessageSTRINGTerminalRuleCall_2_1_0() { return cMessageSTRINGTerminalRuleCall_2_1_0; }
+		public RuleCall getMessageSTRINGTerminalRuleCall_3_0() { return cMessageSTRINGTerminalRuleCall_3_0; }
 
 		//";"
-		public Keyword getSemicolonKeyword_3() { return cSemicolonKeyword_3; }
+		public Keyword getSemicolonKeyword_4() { return cSemicolonKeyword_4; }
 	}
 
 	public class ExpressionListElements implements IParserRuleAccess {
@@ -2887,8 +2875,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//
 		//            
 		//
-		//// TODO: Function and method are the same except for the keyword - can perhaps be
-		//// handled a better way.
+		//// Validation makes sure a Function is stated with "function", and Method with "method"
 		public ParserRule getRule() { return rule; }
 
 		//(expressions+=Expression ";")+
@@ -2914,8 +2901,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//Function returns Statment:
 		//  {Function} func=FunctionOrMethod; 
 		//
-		//// TODO: Function and method are the same except for the keyword - can perhaps be
-		//// handled a better way.
+		//// Validation makes sure a Function is stated with "function", and Method with "method"
 		public ParserRule getRule() { return rule; }
 
 		//{Function} func=FunctionOrMethod
@@ -2939,7 +2925,10 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cMethodFunctionOrMethodParserRuleCall_1_0 = (RuleCall)cMethodAssignment_1.eContents().get(0);
 		
 		//Method returns Statement:
-		//  {Method} method=FunctionOrMethod;
+		//  {Method} method=FunctionOrMethod; 
+		//          
+		//
+		//// Difference function/method handled as validation
 		public ParserRule getRule() { return rule; }
 
 		//{Method} method=FunctionOrMethod
@@ -3011,33 +3000,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//  "(" (params+=ParameterDeclaration ("," params+=ParameterDeclaration)*)? ")")? (":"
 		//  body=Expression ";"|body=BlockExpression); 
 		//
-		//   	
-		//	    
-		//   	    
-		//        	   	
-		//   	    
-		//   	    
-		//   	
-		//   	    
-		//   	 
-		//   	            
-		//   	                  
-		//   	        
-		//	
-		//
-		////Method returns Statement : {Function}	
-		////	(documentation = DOCUMENTATION)?
-		////   	(visibility = Visibility)?
-		////    (executionMode = ExecutionMode)?	   	
-		////   	(final ?= "final")?
-		////   	(cached ?= "cached")?
-		////   	"method"
-		////   	(type = TypeRef)?
-		////   	name=ID 
-		////   	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
-		////   	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
-		////   	((':' body=Expression ';') | (body=BlockExpression))
-		////	;
+		//// Difference function/method handled as validation
 		public ParserRule getRule() { return rule; }
 
 		//documentation=DOCUMENTATION? visibility=Visibility? executionMode=ExecutionMode?
@@ -3203,20 +3166,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		
 		//TypeParamDeclaration:
 		//  ID ("extends" type+=TypeRef ("&" type+=TypeRef)*|"super" superType=TypeRef)?; 
-		//
-		////Method returns Statement : {Function}	
-		////	(documentation = DOCUMENTATION)?
-		////   	(visibility = Visibility)?
-		////    (executionMode = ExecutionMode)?	   	
-		////   	(final ?= "final")?
-		////   	(cached ?= "cached")?
-		////   	"method"
-		////   	(type = TypeRef)?
-		////   	name=ID 
-		////   	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
-		////   	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
-		////   	((':' body=Expression ';') | (body=BlockExpression))
-		////	;
 		//	
 		// 
 		//	                    
@@ -5465,162 +5414,240 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 	public class LiteralListElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LiteralList");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Action cLiteralListAction_0 = (Action)cGroup.eContents().get(0);
-		private final Keyword cLeftSquareBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Assignment cElementAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
-		private final RuleCall cElementExpressionParserRuleCall_2_0_0 = (RuleCall)cElementAssignment_2_0.eContents().get(0);
-		private final Group cGroup_2_1 = (Group)cGroup_2.eContents().get(1);
-		private final Keyword cCommaKeyword_2_1_0 = (Keyword)cGroup_2_1.eContents().get(0);
-		private final Assignment cElementAssignment_2_1_1 = (Assignment)cGroup_2_1.eContents().get(1);
-		private final RuleCall cElementExpressionParserRuleCall_2_1_1_0 = (RuleCall)cElementAssignment_2_1_1.eContents().get(0);
-		private final Keyword cRightSquareBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
-		private final Keyword cLessThanSignKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
-		private final Assignment cTypeAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
-		private final RuleCall cTypeTypeRefParserRuleCall_4_1_0 = (RuleCall)cTypeAssignment_4_1.eContents().get(0);
-		private final Keyword cGreaterThanSignKeyword_4_2 = (Keyword)cGroup_4.eContents().get(2);
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
+		private final Action cLiteralListAction_0_0 = (Action)cGroup_0.eContents().get(0);
+		private final Keyword cLeftSquareBracketKeyword_0_1 = (Keyword)cGroup_0.eContents().get(1);
+		private final Assignment cElementAssignment_0_2 = (Assignment)cGroup_0.eContents().get(2);
+		private final RuleCall cElementExpressionParserRuleCall_0_2_0 = (RuleCall)cElementAssignment_0_2.eContents().get(0);
+		private final Group cGroup_0_3 = (Group)cGroup_0.eContents().get(3);
+		private final Keyword cCommaKeyword_0_3_0 = (Keyword)cGroup_0_3.eContents().get(0);
+		private final Assignment cElementAssignment_0_3_1 = (Assignment)cGroup_0_3.eContents().get(1);
+		private final RuleCall cElementExpressionParserRuleCall_0_3_1_0 = (RuleCall)cElementAssignment_0_3_1.eContents().get(0);
+		private final Keyword cRightSquareBracketKeyword_0_4 = (Keyword)cGroup_0.eContents().get(4);
+		private final Group cGroup_0_5 = (Group)cGroup_0.eContents().get(5);
+		private final Keyword cLessThanSignKeyword_0_5_0 = (Keyword)cGroup_0_5.eContents().get(0);
+		private final Assignment cTypeAssignment_0_5_1 = (Assignment)cGroup_0_5.eContents().get(1);
+		private final RuleCall cTypeTypeRefParserRuleCall_0_5_1_0 = (RuleCall)cTypeAssignment_0_5_1.eContents().get(0);
+		private final Keyword cGreaterThanSignKeyword_0_5_2 = (Keyword)cGroup_0_5.eContents().get(2);
+		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
+		private final Action cLiteralListAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Keyword cLeftSquareBracketKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
+		private final Keyword cRightSquareBracketKeyword_1_2 = (Keyword)cGroup_1.eContents().get(2);
+		private final Keyword cLessThanSignKeyword_1_3 = (Keyword)cGroup_1.eContents().get(3);
+		private final Assignment cTypeAssignment_1_4 = (Assignment)cGroup_1.eContents().get(4);
+		private final RuleCall cTypeTypeRefParserRuleCall_1_4_0 = (RuleCall)cTypeAssignment_1_4.eContents().get(0);
+		private final Keyword cGreaterThanSignKeyword_1_5 = (Keyword)cGroup_1.eContents().get(5);
 		
 		//LiteralList returns Expression:
-		//  {LiteralList} "[" (element+=Expression ("," element+=Expression)*)? "]" ("<" type=
-		//  TypeRef ">")?;
+		//  {LiteralList} "[" element+=Expression ("," element+=Expression)* "]" ("<" type=TypeRef
+		//  ">")?|{LiteralList} "[" "]" "<" type=TypeRef ">";
 		public ParserRule getRule() { return rule; }
 
-		//{LiteralList} "[" (element+=Expression ("," element+=Expression)*)? "]" ("<" type=
-		//TypeRef ">")?
-		public Group getGroup() { return cGroup; }
+		//{LiteralList} "[" element+=Expression ("," element+=Expression)* "]" ("<" type=TypeRef
+		//">")?|{LiteralList} "[" "]" "<" type=TypeRef ">"
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//{LiteralList} "[" element+=Expression ("," element+=Expression)* "]" ("<" type=TypeRef
+		//">")?
+		public Group getGroup_0() { return cGroup_0; }
 
 		//{LiteralList}
-		public Action getLiteralListAction_0() { return cLiteralListAction_0; }
+		public Action getLiteralListAction_0_0() { return cLiteralListAction_0_0; }
 
 		//"["
-		public Keyword getLeftSquareBracketKeyword_1() { return cLeftSquareBracketKeyword_1; }
-
-		//(element+=Expression ("," element+=Expression)*)?
-		public Group getGroup_2() { return cGroup_2; }
+		public Keyword getLeftSquareBracketKeyword_0_1() { return cLeftSquareBracketKeyword_0_1; }
 
 		//element+=Expression
-		public Assignment getElementAssignment_2_0() { return cElementAssignment_2_0; }
+		public Assignment getElementAssignment_0_2() { return cElementAssignment_0_2; }
 
 		//Expression
-		public RuleCall getElementExpressionParserRuleCall_2_0_0() { return cElementExpressionParserRuleCall_2_0_0; }
+		public RuleCall getElementExpressionParserRuleCall_0_2_0() { return cElementExpressionParserRuleCall_0_2_0; }
 
 		//("," element+=Expression)*
-		public Group getGroup_2_1() { return cGroup_2_1; }
+		public Group getGroup_0_3() { return cGroup_0_3; }
 
 		//","
-		public Keyword getCommaKeyword_2_1_0() { return cCommaKeyword_2_1_0; }
+		public Keyword getCommaKeyword_0_3_0() { return cCommaKeyword_0_3_0; }
 
 		//element+=Expression
-		public Assignment getElementAssignment_2_1_1() { return cElementAssignment_2_1_1; }
+		public Assignment getElementAssignment_0_3_1() { return cElementAssignment_0_3_1; }
 
 		//Expression
-		public RuleCall getElementExpressionParserRuleCall_2_1_1_0() { return cElementExpressionParserRuleCall_2_1_1_0; }
+		public RuleCall getElementExpressionParserRuleCall_0_3_1_0() { return cElementExpressionParserRuleCall_0_3_1_0; }
 
 		//"]"
-		public Keyword getRightSquareBracketKeyword_3() { return cRightSquareBracketKeyword_3; }
+		public Keyword getRightSquareBracketKeyword_0_4() { return cRightSquareBracketKeyword_0_4; }
 
 		//("<" type=TypeRef ">")?
-		public Group getGroup_4() { return cGroup_4; }
+		public Group getGroup_0_5() { return cGroup_0_5; }
 
 		//"<"
-		public Keyword getLessThanSignKeyword_4_0() { return cLessThanSignKeyword_4_0; }
+		public Keyword getLessThanSignKeyword_0_5_0() { return cLessThanSignKeyword_0_5_0; }
 
 		//type=TypeRef
-		public Assignment getTypeAssignment_4_1() { return cTypeAssignment_4_1; }
+		public Assignment getTypeAssignment_0_5_1() { return cTypeAssignment_0_5_1; }
 
 		//TypeRef
-		public RuleCall getTypeTypeRefParserRuleCall_4_1_0() { return cTypeTypeRefParserRuleCall_4_1_0; }
+		public RuleCall getTypeTypeRefParserRuleCall_0_5_1_0() { return cTypeTypeRefParserRuleCall_0_5_1_0; }
 
 		//">"
-		public Keyword getGreaterThanSignKeyword_4_2() { return cGreaterThanSignKeyword_4_2; }
+		public Keyword getGreaterThanSignKeyword_0_5_2() { return cGreaterThanSignKeyword_0_5_2; }
+
+		//{LiteralList} "[" "]" "<" type=TypeRef ">"
+		public Group getGroup_1() { return cGroup_1; }
+
+		//{LiteralList}
+		public Action getLiteralListAction_1_0() { return cLiteralListAction_1_0; }
+
+		//"["
+		public Keyword getLeftSquareBracketKeyword_1_1() { return cLeftSquareBracketKeyword_1_1; }
+
+		//"]"
+		public Keyword getRightSquareBracketKeyword_1_2() { return cRightSquareBracketKeyword_1_2; }
+
+		//"<"
+		public Keyword getLessThanSignKeyword_1_3() { return cLessThanSignKeyword_1_3; }
+
+		//type=TypeRef
+		public Assignment getTypeAssignment_1_4() { return cTypeAssignment_1_4; }
+
+		//TypeRef
+		public RuleCall getTypeTypeRefParserRuleCall_1_4_0() { return cTypeTypeRefParserRuleCall_1_4_0; }
+
+		//">"
+		public Keyword getGreaterThanSignKeyword_1_5() { return cGreaterThanSignKeyword_1_5; }
 	}
 
 	public class LiteralMapElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "LiteralMap");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Action cLiteralMapAction_0 = (Action)cGroup.eContents().get(0);
-		private final Keyword cLeftSquareBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
-		private final Assignment cFeaturesAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
-		private final RuleCall cFeaturesFeatureParserRuleCall_2_0_0 = (RuleCall)cFeaturesAssignment_2_0.eContents().get(0);
-		private final Group cGroup_2_1 = (Group)cGroup_2.eContents().get(1);
-		private final Keyword cCommaKeyword_2_1_0 = (Keyword)cGroup_2_1.eContents().get(0);
-		private final Assignment cFeaturesAssignment_2_1_1 = (Assignment)cGroup_2_1.eContents().get(1);
-		private final RuleCall cFeaturesFeatureParserRuleCall_2_1_1_0 = (RuleCall)cFeaturesAssignment_2_1_1.eContents().get(0);
-		private final Keyword cRightSquareBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
-		private final Keyword cLessThanSignKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
-		private final Assignment cKeyTypeAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
-		private final RuleCall cKeyTypeTypeRefParserRuleCall_4_1_0 = (RuleCall)cKeyTypeAssignment_4_1.eContents().get(0);
-		private final Keyword cCommaKeyword_4_2 = (Keyword)cGroup_4.eContents().get(2);
-		private final Assignment cValTypeAssignment_4_3 = (Assignment)cGroup_4.eContents().get(3);
-		private final RuleCall cValTypeTypeRefParserRuleCall_4_3_0 = (RuleCall)cValTypeAssignment_4_3.eContents().get(0);
-		private final Keyword cGreaterThanSignKeyword_4_4 = (Keyword)cGroup_4.eContents().get(4);
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
+		private final Action cLiteralMapAction_0_0 = (Action)cGroup_0.eContents().get(0);
+		private final Keyword cLeftSquareBracketKeyword_0_1 = (Keyword)cGroup_0.eContents().get(1);
+		private final Assignment cFeaturesAssignment_0_2 = (Assignment)cGroup_0.eContents().get(2);
+		private final RuleCall cFeaturesFeatureParserRuleCall_0_2_0 = (RuleCall)cFeaturesAssignment_0_2.eContents().get(0);
+		private final Group cGroup_0_3 = (Group)cGroup_0.eContents().get(3);
+		private final Keyword cCommaKeyword_0_3_0 = (Keyword)cGroup_0_3.eContents().get(0);
+		private final Assignment cFeaturesAssignment_0_3_1 = (Assignment)cGroup_0_3.eContents().get(1);
+		private final RuleCall cFeaturesFeatureParserRuleCall_0_3_1_0 = (RuleCall)cFeaturesAssignment_0_3_1.eContents().get(0);
+		private final Keyword cRightSquareBracketKeyword_0_4 = (Keyword)cGroup_0.eContents().get(4);
+		private final Group cGroup_0_5 = (Group)cGroup_0.eContents().get(5);
+		private final Keyword cLessThanSignKeyword_0_5_0 = (Keyword)cGroup_0_5.eContents().get(0);
+		private final Assignment cKeyTypeAssignment_0_5_1 = (Assignment)cGroup_0_5.eContents().get(1);
+		private final RuleCall cKeyTypeTypeRefParserRuleCall_0_5_1_0 = (RuleCall)cKeyTypeAssignment_0_5_1.eContents().get(0);
+		private final Keyword cCommaKeyword_0_5_2 = (Keyword)cGroup_0_5.eContents().get(2);
+		private final Assignment cValTypeAssignment_0_5_3 = (Assignment)cGroup_0_5.eContents().get(3);
+		private final RuleCall cValTypeTypeRefParserRuleCall_0_5_3_0 = (RuleCall)cValTypeAssignment_0_5_3.eContents().get(0);
+		private final Keyword cGreaterThanSignKeyword_0_5_4 = (Keyword)cGroup_0_5.eContents().get(4);
+		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
+		private final Action cLiteralMapAction_1_0 = (Action)cGroup_1.eContents().get(0);
+		private final Keyword cLeftSquareBracketKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
+		private final Keyword cRightSquareBracketKeyword_1_2 = (Keyword)cGroup_1.eContents().get(2);
+		private final Keyword cLessThanSignKeyword_1_3 = (Keyword)cGroup_1.eContents().get(3);
+		private final Assignment cKeyTypeAssignment_1_4 = (Assignment)cGroup_1.eContents().get(4);
+		private final RuleCall cKeyTypeTypeRefParserRuleCall_1_4_0 = (RuleCall)cKeyTypeAssignment_1_4.eContents().get(0);
+		private final Keyword cCommaKeyword_1_5 = (Keyword)cGroup_1.eContents().get(5);
+		private final Assignment cValTypeAssignment_1_6 = (Assignment)cGroup_1.eContents().get(6);
+		private final RuleCall cValTypeTypeRefParserRuleCall_1_6_0 = (RuleCall)cValTypeAssignment_1_6.eContents().get(0);
+		private final Keyword cGreaterThanSignKeyword_1_7 = (Keyword)cGroup_1.eContents().get(7);
 		
 		//LiteralMap returns Expression:
-		//  {LiteralMap} "[" (features+=Feature ("," features+=Feature)*)? "]" ("<" keyType=TypeRef
-		//  "," valType=TypeRef ">")?;
+		//  {LiteralMap} "[" features+=Feature ("," features+=Feature)* "]" ("<" keyType=TypeRef ","
+		//  valType=TypeRef ">")?|{LiteralMap} "[" "]" "<" keyType=TypeRef "," valType=TypeRef ">";
 		public ParserRule getRule() { return rule; }
 
-		//{LiteralMap} "[" (features+=Feature ("," features+=Feature)*)? "]" ("<" keyType=TypeRef
-		//"," valType=TypeRef ">")?
-		public Group getGroup() { return cGroup; }
+		//{LiteralMap} "[" features+=Feature ("," features+=Feature)* "]" ("<" keyType=TypeRef ","
+		//valType=TypeRef ">")?|{LiteralMap} "[" "]" "<" keyType=TypeRef "," valType=TypeRef ">"
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//{LiteralMap} "[" features+=Feature ("," features+=Feature)* "]" ("<" keyType=TypeRef ","
+		//valType=TypeRef ">")?
+		public Group getGroup_0() { return cGroup_0; }
 
 		//{LiteralMap}
-		public Action getLiteralMapAction_0() { return cLiteralMapAction_0; }
+		public Action getLiteralMapAction_0_0() { return cLiteralMapAction_0_0; }
 
 		//"["
-		public Keyword getLeftSquareBracketKeyword_1() { return cLeftSquareBracketKeyword_1; }
-
-		//(features+=Feature ("," features+=Feature)*)?
-		public Group getGroup_2() { return cGroup_2; }
+		public Keyword getLeftSquareBracketKeyword_0_1() { return cLeftSquareBracketKeyword_0_1; }
 
 		//features+=Feature
-		public Assignment getFeaturesAssignment_2_0() { return cFeaturesAssignment_2_0; }
+		public Assignment getFeaturesAssignment_0_2() { return cFeaturesAssignment_0_2; }
 
 		//Feature
-		public RuleCall getFeaturesFeatureParserRuleCall_2_0_0() { return cFeaturesFeatureParserRuleCall_2_0_0; }
+		public RuleCall getFeaturesFeatureParserRuleCall_0_2_0() { return cFeaturesFeatureParserRuleCall_0_2_0; }
 
 		//("," features+=Feature)*
-		public Group getGroup_2_1() { return cGroup_2_1; }
+		public Group getGroup_0_3() { return cGroup_0_3; }
 
 		//","
-		public Keyword getCommaKeyword_2_1_0() { return cCommaKeyword_2_1_0; }
+		public Keyword getCommaKeyword_0_3_0() { return cCommaKeyword_0_3_0; }
 
 		//features+=Feature
-		public Assignment getFeaturesAssignment_2_1_1() { return cFeaturesAssignment_2_1_1; }
+		public Assignment getFeaturesAssignment_0_3_1() { return cFeaturesAssignment_0_3_1; }
 
 		//Feature
-		public RuleCall getFeaturesFeatureParserRuleCall_2_1_1_0() { return cFeaturesFeatureParserRuleCall_2_1_1_0; }
+		public RuleCall getFeaturesFeatureParserRuleCall_0_3_1_0() { return cFeaturesFeatureParserRuleCall_0_3_1_0; }
 
 		//"]"
-		public Keyword getRightSquareBracketKeyword_3() { return cRightSquareBracketKeyword_3; }
+		public Keyword getRightSquareBracketKeyword_0_4() { return cRightSquareBracketKeyword_0_4; }
 
 		//("<" keyType=TypeRef "," valType=TypeRef ">")?
-		public Group getGroup_4() { return cGroup_4; }
+		public Group getGroup_0_5() { return cGroup_0_5; }
 
 		//"<"
-		public Keyword getLessThanSignKeyword_4_0() { return cLessThanSignKeyword_4_0; }
+		public Keyword getLessThanSignKeyword_0_5_0() { return cLessThanSignKeyword_0_5_0; }
 
 		//keyType=TypeRef
-		public Assignment getKeyTypeAssignment_4_1() { return cKeyTypeAssignment_4_1; }
+		public Assignment getKeyTypeAssignment_0_5_1() { return cKeyTypeAssignment_0_5_1; }
 
 		//TypeRef
-		public RuleCall getKeyTypeTypeRefParserRuleCall_4_1_0() { return cKeyTypeTypeRefParserRuleCall_4_1_0; }
+		public RuleCall getKeyTypeTypeRefParserRuleCall_0_5_1_0() { return cKeyTypeTypeRefParserRuleCall_0_5_1_0; }
 
 		//","
-		public Keyword getCommaKeyword_4_2() { return cCommaKeyword_4_2; }
+		public Keyword getCommaKeyword_0_5_2() { return cCommaKeyword_0_5_2; }
 
 		//valType=TypeRef
-		public Assignment getValTypeAssignment_4_3() { return cValTypeAssignment_4_3; }
+		public Assignment getValTypeAssignment_0_5_3() { return cValTypeAssignment_0_5_3; }
 
 		//TypeRef
-		public RuleCall getValTypeTypeRefParserRuleCall_4_3_0() { return cValTypeTypeRefParserRuleCall_4_3_0; }
+		public RuleCall getValTypeTypeRefParserRuleCall_0_5_3_0() { return cValTypeTypeRefParserRuleCall_0_5_3_0; }
 
 		//">"
-		public Keyword getGreaterThanSignKeyword_4_4() { return cGreaterThanSignKeyword_4_4; }
+		public Keyword getGreaterThanSignKeyword_0_5_4() { return cGreaterThanSignKeyword_0_5_4; }
+
+		//{LiteralMap} "[" "]" "<" keyType=TypeRef "," valType=TypeRef ">"
+		public Group getGroup_1() { return cGroup_1; }
+
+		//{LiteralMap}
+		public Action getLiteralMapAction_1_0() { return cLiteralMapAction_1_0; }
+
+		//"["
+		public Keyword getLeftSquareBracketKeyword_1_1() { return cLeftSquareBracketKeyword_1_1; }
+
+		//"]"
+		public Keyword getRightSquareBracketKeyword_1_2() { return cRightSquareBracketKeyword_1_2; }
+
+		//"<"
+		public Keyword getLessThanSignKeyword_1_3() { return cLessThanSignKeyword_1_3; }
+
+		//keyType=TypeRef
+		public Assignment getKeyTypeAssignment_1_4() { return cKeyTypeAssignment_1_4; }
+
+		//TypeRef
+		public RuleCall getKeyTypeTypeRefParserRuleCall_1_4_0() { return cKeyTypeTypeRefParserRuleCall_1_4_0; }
+
+		//","
+		public Keyword getCommaKeyword_1_5() { return cCommaKeyword_1_5; }
+
+		//valType=TypeRef
+		public Assignment getValTypeAssignment_1_6() { return cValTypeAssignment_1_6; }
+
+		//TypeRef
+		public RuleCall getValTypeTypeRefParserRuleCall_1_6_0() { return cValTypeTypeRefParserRuleCall_1_6_0; }
+
+		//">"
+		public Keyword getGreaterThanSignKeyword_1_7() { return cGreaterThanSignKeyword_1_7; }
 	}
 
 	public class LiteralFunctionElements implements IParserRuleAccess {
@@ -5813,10 +5840,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Keyword cValFalseKeyword_1_0_1 = (Keyword)cValAlternatives_1_0.eContents().get(1);
 		
 		//BooleanLiteral returns Expression:
-		//  {BooleanLiteral} val=( "true" | "false" ); 
-		//	
-		//             
-		//// TODO: Hex is a string until an int converter is written for it
+		//  {BooleanLiteral} val=( "true" | "false" );
 		public ParserRule getRule() { return rule; }
 
 		//{BooleanLiteral} val=( "true" | "false" )
@@ -5846,8 +5870,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cValIntValueParserRuleCall_1_0 = (RuleCall)cValAssignment_1.eContents().get(0);
 		
 		//IntegerLiteral returns Expression:
-		//  {IntegerLiteral} val=IntValue; 
-		//// TODO: Hex is a string until an int converter is written for it
+		//  {IntegerLiteral} val=IntValue;
 		public ParserRule getRule() { return rule; }
 
 		//{IntegerLiteral} val=IntValue
@@ -6093,28 +6116,28 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 	public class VersionElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Version");
-		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final Assignment cOriginalAssignment_0 = (Assignment)cAlternatives.eContents().get(0);
-		private final RuleCall cOriginalSTRINGTerminalRuleCall_0_0 = (RuleCall)cOriginalAssignment_0.eContents().get(0);
-		private final Assignment cOriginalAssignment_1 = (Assignment)cAlternatives.eContents().get(1);
-		private final RuleCall cOriginalAlfanumSymParserRuleCall_1_0 = (RuleCall)cOriginalAssignment_1.eContents().get(0);
+		private final Assignment cVersionAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cVersionVersionLiteralParserRuleCall_0 = (RuleCall)cVersionAssignment.eContents().get(0);
 		
 		//Version:
-		//  original=STRING|original=AlfanumSym; 	
-		//
-		//    
-		//	    
-		//	  
-		//	
-		//
-		/// *
-		// ** VersionRange TODO: Uses two instances of Version. This works because use of [ ]  ( ) in Version must be 
-		// ** escaped with " ". Omni
-		// ** version uses version strings with \[ when a range is presented/parsed in string format.
-		// * /
+		//  version=VersionLiteral;
 		public ParserRule getRule() { return rule; }
 
-		//original=STRING|original=AlfanumSym 	
+		//version=VersionLiteral
+		public Assignment getVersionAssignment() { return cVersionAssignment; }
+
+		//VersionLiteral
+		public RuleCall getVersionVersionLiteralParserRuleCall_0() { return cVersionVersionLiteralParserRuleCall_0; }
+	}
+
+	public class VersionLiteralElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "VersionLiteral");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cSTRINGTerminalRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cAlfanumSymParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		
+		//VersionLiteral returns types::Version:
+		//  STRING|AlfanumSym; 
 		//
 		//    
 		//	    
@@ -6126,53 +6149,92 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		// ** escaped with " ". Omni
 		// ** version uses version strings with \[ when a range is presented/parsed in string format.
 		// * /
+		////VersionRange returns VersionRange
+		////	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
+		////	| min=Version
+		////	;
+		public ParserRule getRule() { return rule; }
+
+		//STRING|AlfanumSym 
+		//
+		//    
+		//	    
+		//	  
+		//	
+		//
+		/// *
+		// ** VersionRange TODO: Uses two instances of Version. This works because use of [ ]  ( ) in Version must be 
+		// ** escaped with " ". Omni
+		// ** version uses version strings with \[ when a range is presented/parsed in string format.
+		// * /
+		////VersionRange returns VersionRange
+		////	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
+		////	| min=Version
+		////	;
 		public Alternatives getAlternatives() { return cAlternatives; }
 
-		//original=STRING
-		public Assignment getOriginalAssignment_0() { return cOriginalAssignment_0; }
-
 		//STRING
-		public RuleCall getOriginalSTRINGTerminalRuleCall_0_0() { return cOriginalSTRINGTerminalRuleCall_0_0; }
-
-		//original=AlfanumSym
-		public Assignment getOriginalAssignment_1() { return cOriginalAssignment_1; }
+		public RuleCall getSTRINGTerminalRuleCall_0() { return cSTRINGTerminalRuleCall_0; }
 
 		//AlfanumSym
-		public RuleCall getOriginalAlfanumSymParserRuleCall_1_0() { return cOriginalAlfanumSymParserRuleCall_1_0; }
+		public RuleCall getAlfanumSymParserRuleCall_1() { return cAlfanumSymParserRuleCall_1; }
 	}
 
 	public class VersionRangeElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "VersionRange");
-		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
-		private final Assignment cMinLimitAssignment_0_0 = (Assignment)cGroup_0.eContents().get(0);
-		private final Alternatives cMinLimitAlternatives_0_0_0 = (Alternatives)cMinLimitAssignment_0_0.eContents().get(0);
-		private final Keyword cMinLimitLeftSquareBracketKeyword_0_0_0_0 = (Keyword)cMinLimitAlternatives_0_0_0.eContents().get(0);
-		private final Keyword cMinLimitLeftParenthesisKeyword_0_0_0_1 = (Keyword)cMinLimitAlternatives_0_0_0.eContents().get(1);
-		private final Assignment cMinAssignment_0_1 = (Assignment)cGroup_0.eContents().get(1);
-		private final RuleCall cMinVersionParserRuleCall_0_1_0 = (RuleCall)cMinAssignment_0_1.eContents().get(0);
-		private final Group cGroup_0_2 = (Group)cGroup_0.eContents().get(2);
-		private final Keyword cCommaKeyword_0_2_0 = (Keyword)cGroup_0_2.eContents().get(0);
-		private final Assignment cMaxAssignment_0_2_1 = (Assignment)cGroup_0_2.eContents().get(1);
-		private final RuleCall cMaxVersionParserRuleCall_0_2_1_0 = (RuleCall)cMaxAssignment_0_2_1.eContents().get(0);
-		private final Assignment cMaxLimitAssignment_0_3 = (Assignment)cGroup_0.eContents().get(3);
-		private final Alternatives cMaxLimitAlternatives_0_3_0 = (Alternatives)cMaxLimitAssignment_0_3.eContents().get(0);
-		private final Keyword cMaxLimitRightSquareBracketKeyword_0_3_0_0 = (Keyword)cMaxLimitAlternatives_0_3_0.eContents().get(0);
-		private final Keyword cMaxLimitRightParenthesisKeyword_0_3_0_1 = (Keyword)cMaxLimitAlternatives_0_3_0.eContents().get(1);
-		private final Assignment cMinAssignment_1 = (Assignment)cAlternatives.eContents().get(1);
-		private final RuleCall cMinVersionParserRuleCall_1_0 = (RuleCall)cMinAssignment_1.eContents().get(0);
+		private final Assignment cRangeAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cRangeVersionRangeLiteralParserRuleCall_0 = (RuleCall)cRangeAssignment.eContents().get(0);
 		
 		//VersionRange:
-		//  minLimit=( "[" | "(" ) min=Version ("," max=Version)? maxLimit=( "]" | ")" )|min=Version; 
+		//  range=VersionRangeLiteral; 
 		//
 		/// *
 		// ** VersionRange TODO: Uses two instances of Version. This works because use of [ ]  ( ) in Version must be 
 		// ** escaped with " ". Omni
 		// ** version uses version strings with \[ when a range is presented/parsed in string format.
 		// * /
-		//    
-		//	              
-		//	  
+		////VersionRange returns VersionRange
+		////	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
+		////	| min=Version
+		////	;
+		public ParserRule getRule() { return rule; }
+
+		//range=VersionRangeLiteral
+		public Assignment getRangeAssignment() { return cRangeAssignment; }
+
+		//VersionRangeLiteral
+		public RuleCall getRangeVersionRangeLiteralParserRuleCall_0() { return cRangeVersionRangeLiteralParserRuleCall_0; }
+	}
+
+	public class VersionRangeLiteralElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "VersionRangeLiteral");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
+		private final Alternatives cAlternatives_0_0 = (Alternatives)cGroup_0.eContents().get(0);
+		private final Keyword cLeftSquareBracketKeyword_0_0_0 = (Keyword)cAlternatives_0_0.eContents().get(0);
+		private final Keyword cLeftParenthesisKeyword_0_0_1 = (Keyword)cAlternatives_0_0.eContents().get(1);
+		private final Alternatives cAlternatives_0_1 = (Alternatives)cGroup_0.eContents().get(1);
+		private final RuleCall cSTRINGTerminalRuleCall_0_1_0 = (RuleCall)cAlternatives_0_1.eContents().get(0);
+		private final RuleCall cAlfanumSymParserRuleCall_0_1_1 = (RuleCall)cAlternatives_0_1.eContents().get(1);
+		private final Group cGroup_0_2 = (Group)cGroup_0.eContents().get(2);
+		private final Keyword cCommaKeyword_0_2_0 = (Keyword)cGroup_0_2.eContents().get(0);
+		private final Alternatives cAlternatives_0_2_1 = (Alternatives)cGroup_0_2.eContents().get(1);
+		private final RuleCall cSTRINGTerminalRuleCall_0_2_1_0 = (RuleCall)cAlternatives_0_2_1.eContents().get(0);
+		private final RuleCall cAlfanumSymParserRuleCall_0_2_1_1 = (RuleCall)cAlternatives_0_2_1.eContents().get(1);
+		private final Alternatives cAlternatives_0_3 = (Alternatives)cGroup_0.eContents().get(3);
+		private final Keyword cRightSquareBracketKeyword_0_3_0 = (Keyword)cAlternatives_0_3.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_0_3_1 = (Keyword)cAlternatives_0_3.eContents().get(1);
+		private final Alternatives cAlternatives_1 = (Alternatives)cAlternatives.eContents().get(1);
+		private final RuleCall cSTRINGTerminalRuleCall_1_0 = (RuleCall)cAlternatives_1.eContents().get(0);
+		private final RuleCall cAlfanumSymParserRuleCall_1_1 = (RuleCall)cAlternatives_1.eContents().get(1);
+		
+		//VersionRangeLiteral returns types::VersionRange:
+		//  ("["|"(") (STRING|AlfanumSym) ("," (STRING|AlfanumSym))? ("]"|")")|(STRING|
+		//  AlfanumSym); 
+		//
+		//     
+		//	                      
+		//	      
 		//	
 		//
 		//// Qualified name
@@ -6180,16 +6242,12 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		////
 		public ParserRule getRule() { return rule; }
 
-		//minLimit=( "[" | "(" ) min=Version ("," max=Version)? maxLimit=( "]" | ")" )|min=Version 
+		//("["|"(") (STRING|AlfanumSym) ("," (STRING|AlfanumSym))? ("]"|")")|(STRING|
+		//AlfanumSym) 
 		//
-		/// *
-		// ** VersionRange TODO: Uses two instances of Version. This works because use of [ ]  ( ) in Version must be 
-		// ** escaped with " ". Omni
-		// ** version uses version strings with \[ when a range is presented/parsed in string format.
-		// * /
-		//    
-		//	              
-		//	  
+		//     
+		//	                      
+		//	      
 		//	
 		//
 		//// Qualified name
@@ -6197,56 +6255,59 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		////
 		public Alternatives getAlternatives() { return cAlternatives; }
 
-		//minLimit=( "[" | "(" ) min=Version ("," max=Version)? maxLimit=( "]" | ")" )
+		//("["|"(") (STRING|AlfanumSym) ("," (STRING|AlfanumSym))? ("]"|")")
 		public Group getGroup_0() { return cGroup_0; }
 
-		//minLimit=( "[" | "(" )
-		public Assignment getMinLimitAssignment_0_0() { return cMinLimitAssignment_0_0; }
-
 		//"["|"("
-		public Alternatives getMinLimitAlternatives_0_0_0() { return cMinLimitAlternatives_0_0_0; }
+		public Alternatives getAlternatives_0_0() { return cAlternatives_0_0; }
 
 		//"["
-		public Keyword getMinLimitLeftSquareBracketKeyword_0_0_0_0() { return cMinLimitLeftSquareBracketKeyword_0_0_0_0; }
+		public Keyword getLeftSquareBracketKeyword_0_0_0() { return cLeftSquareBracketKeyword_0_0_0; }
 
 		//"("
-		public Keyword getMinLimitLeftParenthesisKeyword_0_0_0_1() { return cMinLimitLeftParenthesisKeyword_0_0_0_1; }
+		public Keyword getLeftParenthesisKeyword_0_0_1() { return cLeftParenthesisKeyword_0_0_1; }
 
-		//min=Version
-		public Assignment getMinAssignment_0_1() { return cMinAssignment_0_1; }
+		//STRING|AlfanumSym
+		public Alternatives getAlternatives_0_1() { return cAlternatives_0_1; }
 
-		//Version
-		public RuleCall getMinVersionParserRuleCall_0_1_0() { return cMinVersionParserRuleCall_0_1_0; }
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall_0_1_0() { return cSTRINGTerminalRuleCall_0_1_0; }
 
-		//("," max=Version)?
+		//AlfanumSym
+		public RuleCall getAlfanumSymParserRuleCall_0_1_1() { return cAlfanumSymParserRuleCall_0_1_1; }
+
+		//("," (STRING|AlfanumSym))?
 		public Group getGroup_0_2() { return cGroup_0_2; }
 
 		//","
 		public Keyword getCommaKeyword_0_2_0() { return cCommaKeyword_0_2_0; }
 
-		//max=Version
-		public Assignment getMaxAssignment_0_2_1() { return cMaxAssignment_0_2_1; }
+		//STRING|AlfanumSym
+		public Alternatives getAlternatives_0_2_1() { return cAlternatives_0_2_1; }
 
-		//Version
-		public RuleCall getMaxVersionParserRuleCall_0_2_1_0() { return cMaxVersionParserRuleCall_0_2_1_0; }
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall_0_2_1_0() { return cSTRINGTerminalRuleCall_0_2_1_0; }
 
-		//maxLimit=( "]" | ")" )
-		public Assignment getMaxLimitAssignment_0_3() { return cMaxLimitAssignment_0_3; }
+		//AlfanumSym
+		public RuleCall getAlfanumSymParserRuleCall_0_2_1_1() { return cAlfanumSymParserRuleCall_0_2_1_1; }
 
 		//"]"|")"
-		public Alternatives getMaxLimitAlternatives_0_3_0() { return cMaxLimitAlternatives_0_3_0; }
+		public Alternatives getAlternatives_0_3() { return cAlternatives_0_3; }
 
 		//"]"
-		public Keyword getMaxLimitRightSquareBracketKeyword_0_3_0_0() { return cMaxLimitRightSquareBracketKeyword_0_3_0_0; }
+		public Keyword getRightSquareBracketKeyword_0_3_0() { return cRightSquareBracketKeyword_0_3_0; }
 
 		//")"
-		public Keyword getMaxLimitRightParenthesisKeyword_0_3_0_1() { return cMaxLimitRightParenthesisKeyword_0_3_0_1; }
+		public Keyword getRightParenthesisKeyword_0_3_1() { return cRightParenthesisKeyword_0_3_1; }
 
-		//min=Version
-		public Assignment getMinAssignment_1() { return cMinAssignment_1; }
+		//STRING|AlfanumSym
+		public Alternatives getAlternatives_1() { return cAlternatives_1; }
 
-		//Version
-		public RuleCall getMinVersionParserRuleCall_1_0() { return cMinVersionParserRuleCall_1_0; }
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall_1_0() { return cSTRINGTerminalRuleCall_1_0; }
+
+		//AlfanumSym
+		public RuleCall getAlfanumSymParserRuleCall_1_1() { return cAlfanumSymParserRuleCall_1_1; }
 	}
 
 	public class QualifiedNameElements implements IParserRuleAccess {
@@ -6459,7 +6520,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//
 		//
 		//// Version, and VersionRange
-		//// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
 		//// TODO: uncertain if the set of allowed chars is definitive.
 		////
 		public ParserRule getRule() { return rule; }
@@ -6468,7 +6528,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//
 		//
 		//// Version, and VersionRange
-		//// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
 		//// TODO: uncertain if the set of allowed chars is definitive.
 		////
 		public Alternatives getAlternatives() { return cAlternatives; }
@@ -6537,7 +6596,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//
 		//// --TERMINALS
 		//
-		//// Redeclare the default ID without the ^ keyword escape mechanism
+		//// Redeclare the default ID with ´ instead of ^ as escape mechanism
 		public ParserRule getRule() { return rule; }
 
 		//(ID|INT|HEX|EXT_INT) (Separator|ID|INT|HEX|EXT_INT)*
@@ -6926,7 +6985,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//
 		//
 		//// Version, and VersionRange
-		//// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
 		//// TODO: uncertain if the set of allowed chars is definitive.
 		////
 		public EnumRule getRule() { return rule; }
@@ -6936,7 +6994,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//
 		//
 		//// Version, and VersionRange
-		//// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
 		//// TODO: uncertain if the set of allowed chars is definitive.
 		////
 		public Alternatives getAlternatives() { return cAlternatives; }
@@ -7090,7 +7147,9 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	private QueryLiteralElements pQueryLiteral;
 	private ParanthesizedExpressionElements pParanthesizedExpression;
 	private VersionElements pVersion;
+	private VersionLiteralElements pVersionLiteral;
 	private VersionRangeElements pVersionRange;
+	private VersionRangeLiteralElements pVersionRangeLiteral;
 	private QualifiedNameElements pQualifiedName;
 	private HIDDENBUGElements pHIDDENBUG;
 	private PropertyNameElements pPropertyName;
@@ -7431,12 +7490,9 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//Path returns ecore::EString hidden ( ):
-	//  STRING|"/"? QualifiedName ("/" QualifiedName)* "/"?; 
+	//  STRING|"/"? QualifiedName ("/" QualifiedName)* "/"? HIDDENBUG; 
 	//
-	//// A path can be written without quotes if it consists of safe chars 
-	//  
-	//	  
-	//	            // HIDDENBUG
+	//// A path can be written without quotes if it consists of safe chars
 	public PathElements getPathAccess() {
 		return (pPath != null) ? pPath : (pPath = new PathElements());
 	}
@@ -7456,7 +7512,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//		    
 	//	
 	//
-	//// TODO: Validation, must have at least one of references, properties or concern.
+	//// Validation checks that there is at least one of references, properties or concern.
 	public PrerequisiteElements getPrerequisiteAccess() {
 		return (pPrerequisite != null) ? pPrerequisite : (pPrerequisite = new PrerequisiteElements());
 	}
@@ -7466,10 +7522,10 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//WithClause:
-	//  "with" ("(" references+=Expression ("," references+=Expression)* ")")? ("properties"
-	//  properties+=PropertyBody|"concern" concern+=ConcernBlock)*; 
+	//  {WithClause} "with" ("(" references+=Expression ("," references+=Expression)* ")")? (
+	//  "properties" properties+=PropertyBody|"concern" concern+=ConcernBlock)*; 
 	//
-	//// TODO: Validation, must have at least one of references, properties or concern.
+	//// Validation checks that there is at least one of references, properties or concern.
 	public WithClauseElements getWithClauseAccess() {
 		return (pWithClause != null) ? pWithClause : (pWithClause = new WithClauseElements());
 	}
@@ -7660,14 +7716,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 	//ContainerConfiguration:
 	//  documentation=DOCUMENTATION? "container" name=ID "agent" type=TypeRef contextBlock=
-	//  ContextBlock?; 
-	//
-	//   
-	//	 
-	//	             
-	//	
-	//	
-	//// URI TODO: validate as URI
+	//  ContextBlock?;
 	public ContainerConfigurationElements getContainerConfigurationAccess() {
 		return (pContainerConfiguration != null) ? pContainerConfiguration : (pContainerConfiguration = new ContainerConfigurationElements());
 	}
@@ -7677,9 +7726,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//URI returns types::URI:
-	//  STRING; 
-	//	
-	//// URI TODO: validate as URI
+	//  STRING;
 	public URIElements getURIAccess() {
 		return (pURI != null) ? pURI : (pURI = new URIElements());
 	}
@@ -7761,7 +7808,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//PreCondition:
-	//  "precondition" "{" asserts+=AssertionExpression* "}";
+	//  "precondition" "{" asserts+=AssertionExpression+ "}";
 	public PreConditionElements getPreConditionAccess() {
 		return (pPreCondition != null) ? pPreCondition : (pPreCondition = new PreConditionElements());
 	}
@@ -7771,7 +7818,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//PostCondition:
-	//  "postcondition" "{" asserts+=AssertionExpression* "}";
+	//  "postcondition" "{" asserts+=AssertionExpression+ "}";
 	public PostConditionElements getPostConditionAccess() {
 		return (pPostCondition != null) ? pPostCondition : (pPostCondition = new PostConditionElements());
 	}
@@ -7781,7 +7828,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//AssertionExpression:
-	//  "assert" expr=Expression ("," message=STRING)? ";";
+	//  "assert" expr=Expression "," message=STRING ";";
 	public AssertionExpressionElements getAssertionExpressionAccess() {
 		return (pAssertionExpression != null) ? pAssertionExpression : (pAssertionExpression = new AssertionExpressionElements());
 	}
@@ -7795,8 +7842,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//
 	//            
 	//
-	//// TODO: Function and method are the same except for the keyword - can perhaps be
-	//// handled a better way.
+	//// Validation makes sure a Function is stated with "function", and Method with "method"
 	public ExpressionListElements getExpressionListAccess() {
 		return (pExpressionList != null) ? pExpressionList : (pExpressionList = new ExpressionListElements());
 	}
@@ -7808,8 +7854,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//Function returns Statment:
 	//  {Function} func=FunctionOrMethod; 
 	//
-	//// TODO: Function and method are the same except for the keyword - can perhaps be
-	//// handled a better way.
+	//// Validation makes sure a Function is stated with "function", and Method with "method"
 	public FunctionElements getFunctionAccess() {
 		return (pFunction != null) ? pFunction : (pFunction = new FunctionElements());
 	}
@@ -7819,7 +7864,10 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//Method returns Statement:
-	//  {Method} method=FunctionOrMethod;
+	//  {Method} method=FunctionOrMethod; 
+	//          
+	//
+	//// Difference function/method handled as validation
 	public MethodElements getMethodAccess() {
 		return (pMethod != null) ? pMethod : (pMethod = new MethodElements());
 	}
@@ -7835,33 +7883,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//  "(" (params+=ParameterDeclaration ("," params+=ParameterDeclaration)*)? ")")? (":"
 	//  body=Expression ";"|body=BlockExpression); 
 	//
-	//   	
-	//	    
-	//   	    
-	//        	   	
-	//   	    
-	//   	    
-	//   	
-	//   	    
-	//   	 
-	//   	            
-	//   	                  
-	//   	        
-	//	
-	//
-	////Method returns Statement : {Function}	
-	////	(documentation = DOCUMENTATION)?
-	////   	(visibility = Visibility)?
-	////    (executionMode = ExecutionMode)?	   	
-	////   	(final ?= "final")?
-	////   	(cached ?= "cached")?
-	////   	"method"
-	////   	(type = TypeRef)?
-	////   	name=ID 
-	////   	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
-	////   	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
-	////   	((':' body=Expression ';') | (body=BlockExpression))
-	////	;
+	//// Difference function/method handled as validation
 	public FunctionOrMethodElements getFunctionOrMethodAccess() {
 		return (pFunctionOrMethod != null) ? pFunctionOrMethod : (pFunctionOrMethod = new FunctionOrMethodElements());
 	}
@@ -7872,20 +7894,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 	//TypeParamDeclaration:
 	//  ID ("extends" type+=TypeRef ("&" type+=TypeRef)*|"super" superType=TypeRef)?; 
-	//
-	////Method returns Statement : {Function}	
-	////	(documentation = DOCUMENTATION)?
-	////   	(visibility = Visibility)?
-	////    (executionMode = ExecutionMode)?	   	
-	////   	(final ?= "final")?
-	////   	(cached ?= "cached")?
-	////   	"method"
-	////   	(type = TypeRef)?
-	////   	name=ID 
-	////   	( '<' typeParams+= TypeParamDeclaration (',' typeParams+=TypeParamDeclaration)* '>')?
-	////   	('(' (params += ParameterDeclaration (',' params += ParameterDeclaration)*)? ')' )?
-	////   	((':' body=Expression ';') | (body=BlockExpression))
-	////	;
 	//	
 	// 
 	//	                    
@@ -8512,8 +8520,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//LiteralList returns Expression:
-	//  {LiteralList} "[" (element+=Expression ("," element+=Expression)*)? "]" ("<" type=
-	//  TypeRef ">")?;
+	//  {LiteralList} "[" element+=Expression ("," element+=Expression)* "]" ("<" type=TypeRef
+	//  ">")?|{LiteralList} "[" "]" "<" type=TypeRef ">";
 	public LiteralListElements getLiteralListAccess() {
 		return (pLiteralList != null) ? pLiteralList : (pLiteralList = new LiteralListElements());
 	}
@@ -8523,8 +8531,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//LiteralMap returns Expression:
-	//  {LiteralMap} "[" (features+=Feature ("," features+=Feature)*)? "]" ("<" keyType=TypeRef
-	//  "," valType=TypeRef ">")?;
+	//  {LiteralMap} "[" features+=Feature ("," features+=Feature)* "]" ("<" keyType=TypeRef ","
+	//  valType=TypeRef ">")?|{LiteralMap} "[" "]" "<" keyType=TypeRef "," valType=TypeRef ">";
 	public LiteralMapElements getLiteralMapAccess() {
 		return (pLiteralMap != null) ? pLiteralMap : (pLiteralMap = new LiteralMapElements());
 	}
@@ -8576,10 +8584,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//BooleanLiteral returns Expression:
-	//  {BooleanLiteral} val=( "true" | "false" ); 
-	//	
-	//             
-	//// TODO: Hex is a string until an int converter is written for it
+	//  {BooleanLiteral} val=( "true" | "false" );
 	public BooleanLiteralElements getBooleanLiteralAccess() {
 		return (pBooleanLiteral != null) ? pBooleanLiteral : (pBooleanLiteral = new BooleanLiteralElements());
 	}
@@ -8589,8 +8594,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//IntegerLiteral returns Expression:
-	//  {IntegerLiteral} val=IntValue; 
-	//// TODO: Hex is a string until an int converter is written for it
+	//  {IntegerLiteral} val=IntValue;
 	public IntegerLiteralElements getIntegerLiteralAccess() {
 		return (pIntegerLiteral != null) ? pIntegerLiteral : (pIntegerLiteral = new IntegerLiteralElements());
 	}
@@ -8703,7 +8707,17 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//Version:
-	//  original=STRING|original=AlfanumSym; 	
+	//  version=VersionLiteral;
+	public VersionElements getVersionAccess() {
+		return (pVersion != null) ? pVersion : (pVersion = new VersionElements());
+	}
+	
+	public ParserRule getVersionRule() {
+		return getVersionAccess().getRule();
+	}
+
+	//VersionLiteral returns types::Version:
+	//  STRING|AlfanumSym; 
 	//
 	//    
 	//	    
@@ -8715,36 +8729,56 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	// ** escaped with " ". Omni
 	// ** version uses version strings with \[ when a range is presented/parsed in string format.
 	// * /
-	public VersionElements getVersionAccess() {
-		return (pVersion != null) ? pVersion : (pVersion = new VersionElements());
+	////VersionRange returns VersionRange
+	////	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
+	////	| min=Version
+	////	;
+	public VersionLiteralElements getVersionLiteralAccess() {
+		return (pVersionLiteral != null) ? pVersionLiteral : (pVersionLiteral = new VersionLiteralElements());
 	}
 	
-	public ParserRule getVersionRule() {
-		return getVersionAccess().getRule();
+	public ParserRule getVersionLiteralRule() {
+		return getVersionLiteralAccess().getRule();
 	}
 
 	//VersionRange:
-	//  minLimit=( "[" | "(" ) min=Version ("," max=Version)? maxLimit=( "]" | ")" )|min=Version; 
+	//  range=VersionRangeLiteral; 
 	//
 	/// *
 	// ** VersionRange TODO: Uses two instances of Version. This works because use of [ ]  ( ) in Version must be 
 	// ** escaped with " ". Omni
 	// ** version uses version strings with \[ when a range is presented/parsed in string format.
 	// * /
-	//    
-	//	              
-	//	  
-	//	
-	//
-	//// Qualified name
-	//// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
-	////
+	////VersionRange returns VersionRange
+	////	: minLimit=('[' | '(') min=Version (',' max=Version)? maxLimit=(']'|')')
+	////	| min=Version
+	////	;
 	public VersionRangeElements getVersionRangeAccess() {
 		return (pVersionRange != null) ? pVersionRange : (pVersionRange = new VersionRangeElements());
 	}
 	
 	public ParserRule getVersionRangeRule() {
 		return getVersionRangeAccess().getRule();
+	}
+
+	//VersionRangeLiteral returns types::VersionRange:
+	//  ("["|"(") (STRING|AlfanumSym) ("," (STRING|AlfanumSym))? ("]"|")")|(STRING|
+	//  AlfanumSym); 
+	//
+	//     
+	//	                      
+	//	      
+	//	
+	//
+	//// Qualified name
+	//// TODO: Needs to disallow whie space between ID and '.', and no embedded comments. A bug in xtext prevents using hidden() here.
+	////
+	public VersionRangeLiteralElements getVersionRangeLiteralAccess() {
+		return (pVersionRangeLiteral != null) ? pVersionRangeLiteral : (pVersionRangeLiteral = new VersionRangeLiteralElements());
+	}
+	
+	public ParserRule getVersionRangeLiteralRule() {
+		return getVersionRangeLiteralAccess().getRule();
 	}
 
 	//QualifiedName returns ecore::EString hidden ( ):
@@ -8862,7 +8896,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//
 	//
 	//// Version, and VersionRange
-	//// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
 	//// TODO: uncertain if the set of allowed chars is definitive.
 	////
 	public ExecutionModeElements getExecutionModeAccess() {
@@ -8878,7 +8911,6 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//
 	//
 	//// Version, and VersionRange
-	//// TODO: make it into a datatype and have better rules, syntax coloring (now integer parts are colored grey, other parts are not colored), etc.
 	//// TODO: uncertain if the set of allowed chars is definitive.
 	////
 	public SeparatorElements getSeparatorAccess() {
@@ -8895,7 +8927,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//
 	//// --TERMINALS
 	//
-	//// Redeclare the default ID without the ^ keyword escape mechanism
+	//// Redeclare the default ID with ´ instead of ^ as escape mechanism
 	public AlfanumSymElements getAlfanumSymAccess() {
 		return (pAlfanumSym != null) ? pAlfanumSym : (pAlfanumSym = new AlfanumSymElements());
 	}
@@ -8905,11 +8937,11 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//terminal ID:
-	//  ("a".."z" | "A".."Z" | "_") ("a".."z" | "A".."Z" | "0".."9" | "_")*; 
+	//  "^"? ("a".."z" | "A".."Z" | "_") ("a".."z" | "A".."Z" | "0".."9" | "_")*; 
 	//
 	//// --TERMINALS
 	//
-	//// Redeclare the default ID without the ^ keyword escape mechanism
+	//// Redeclare the default ID with ´ instead of ^ as escape mechanism
 	//          
 	//
 	//// Property Names start with $ and are qualified. Must be handled by lexer as

@@ -6,4 +6,6 @@
   <eClassifiers xsi:type="ecore:EDataType" name="RadixInteger" instanceClassName="org.eclipse.b3.RadixInteger"/>
   <eClassifiers xsi:type="ecore:EDataType" name="RegularExpression" instanceClassName="org.eclipse.b3.RegularExpression"/>
   <eClassifiers xsi:type="ecore:EDataType" name="URI" instanceClassName="java.net.URI"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="VersionRange" instanceClassName="org.eclipse.equinox.internal.provisional.p2.core.VersionRange"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Version" instanceClassName="org.eclipse.equinox.internal.provisional.p2.core.Version"/>
 </ecore:EPackage>
