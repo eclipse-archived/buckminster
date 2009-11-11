@@ -96,7 +96,7 @@ SynchronizedPart
 	| PartName
 	;
 	
-PathGroup : paths+=PathVectorElement* ('annotations' annotations = PropertyBody)? ;
+PathGroup : paths+=PathVectorElement+ ('annotations' annotations = PropertyBody)? ;
 
 PathVectorElement returns PathVectorElement
 	: FilteredPathVector
@@ -192,13 +192,13 @@ InputKeyword : 'input' ;
 OutputKeyword : 'output'; 
 	
 BuilderOutput returns BuilderOutput
-	: OutputKeyword '{' (body = PathGroup)? '}' 
+	: OutputKeyword '{' body = PathGroup '}' 
 	;
 	
 
 BuilderInput
 	: InputKeyword (preCondition = PreCondition)? (postCondition = PostCondition)?	 
-		'{' (prerequisites += Prerequisite)* '}'
+		'{' (prerequisites += Prerequisite)+ '}'
 	;
 
 RepositoryConfiguration : RepositoryDeclaration | ResolutionStrategy ;

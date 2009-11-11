@@ -4627,11 +4627,11 @@ protected class Synchronization_SemicolonKeyword_2 extends KeywordToken  {
 /************ begin Rule PathGroup ****************
  *
  * PathGroup:
- *   paths+=PathVectorElement* ("annotations" annotations=PropertyBody)?;
+ *   paths+=PathVectorElement+ ("annotations" annotations=PropertyBody)?;
  *
  **/
 
-// paths+=PathVectorElement* ("annotations" annotations=PropertyBody)?
+// paths+=PathVectorElement+ ("annotations" annotations=PropertyBody)?
 protected class PathGroup_Group extends GroupToken {
 	
 	public PathGroup_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -4656,7 +4656,7 @@ protected class PathGroup_Group extends GroupToken {
 	}
 }
 
-// paths+=PathVectorElement*
+// paths+=PathVectorElement+
 protected class PathGroup_PathsAssignment_0 extends AssignmentToken  {
 	
 	public PathGroup_PathsAssignment_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -4675,7 +4675,7 @@ protected class PathGroup_PathsAssignment_0 extends AssignmentToken  {
 	}	
 		
 	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("paths",false)) == null) return null;
+		if((value = current.getConsumable("paths",true)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("paths");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
@@ -4732,7 +4732,7 @@ protected class PathGroup_AnnotationsKeyword_1_0 extends KeywordToken  {
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
 			case 0: return new PathGroup_PathsAssignment_0(parent, this, 0, inst);
-			default: return parent.createParentFollower(this, index, index - 1, inst);
+			default: return null;
 		}	
 	}	
 		
@@ -9005,11 +9005,11 @@ protected class ParameterDeclarationEllipse_NameAssignment_3 extends AssignmentT
 /************ begin Rule BuilderOutput ****************
  *
  * BuilderOutput:
- *   OutputKeyword "{" body=PathGroup? "}";
+ *   OutputKeyword "{" body=PathGroup "}";
  *
  **/
 
-// OutputKeyword "{" body=PathGroup? "}"
+// OutputKeyword "{" body=PathGroup "}"
 protected class BuilderOutput_Group extends GroupToken {
 	
 	public BuilderOutput_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -9072,7 +9072,7 @@ protected class BuilderOutput_LeftCurlyBracketKeyword_1 extends KeywordToken  {
 		
 }
 
-// body=PathGroup?
+// body=PathGroup
 protected class BuilderOutput_BodyAssignment_2 extends AssignmentToken  {
 	
 	public BuilderOutput_BodyAssignment_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -9091,7 +9091,7 @@ protected class BuilderOutput_BodyAssignment_2 extends AssignmentToken  {
 	}	
 		
 	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("body",false)) == null) return null;
+		if((value = current.getConsumable("body",true)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("body");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
@@ -9128,7 +9128,6 @@ protected class BuilderOutput_RightCurlyBracketKeyword_3 extends KeywordToken  {
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
 			case 0: return new BuilderOutput_BodyAssignment_2(parent, this, 0, inst);
-			case 1: return new BuilderOutput_LeftCurlyBracketKeyword_1(parent, this, 1, inst);
 			default: return null;
 		}	
 	}	
@@ -9143,12 +9142,12 @@ protected class BuilderOutput_RightCurlyBracketKeyword_3 extends KeywordToken  {
  *
  * BuilderInput:
  *   InputKeyword preCondition=PreCondition? postCondition=PostCondition? "{"
- *   prerequisites+=Prerequisite* "}";
+ *   prerequisites+=Prerequisite+ "}";
  *
  **/
 
 // InputKeyword preCondition=PreCondition? postCondition=PostCondition? "{"
-// prerequisites+=Prerequisite* "}"
+// prerequisites+=Prerequisite+ "}"
 protected class BuilderInput_Group extends GroupToken {
 	
 	public BuilderInput_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -9298,7 +9297,7 @@ protected class BuilderInput_LeftCurlyBracketKeyword_3 extends KeywordToken  {
 		
 }
 
-// prerequisites+=Prerequisite*
+// prerequisites+=Prerequisite+
 protected class BuilderInput_PrerequisitesAssignment_4 extends AssignmentToken  {
 	
 	public BuilderInput_PrerequisitesAssignment_4(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -9317,7 +9316,7 @@ protected class BuilderInput_PrerequisitesAssignment_4 extends AssignmentToken  
 	}	
 		
 	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("prerequisites",false)) == null) return null;
+		if((value = current.getConsumable("prerequisites",true)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("prerequisites");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
@@ -9355,7 +9354,6 @@ protected class BuilderInput_RightCurlyBracketKeyword_5 extends KeywordToken  {
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
 			case 0: return new BuilderInput_PrerequisitesAssignment_4(parent, this, 0, inst);
-			case 1: return new BuilderInput_LeftCurlyBracketKeyword_3(parent, this, 1, inst);
 			default: return null;
 		}	
 	}	

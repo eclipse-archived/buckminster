@@ -1874,7 +1874,7 @@ rulePathGroup returns [EObject current=null]
 	        currentNode = currentNode.getParent();
 	    }
 	
-)*('annotations' 
+)+('annotations' 
     {
         createLeafNode(grammarAccess.getPathGroupAccess().getAnnotationsKeyword_1_0(), null); 
     }
@@ -3811,7 +3811,7 @@ ruleBuilderOutput returns [EObject current=null]
 	        currentNode = currentNode.getParent();
 	    }
 	
-)?'}' 
+)'}' 
     {
         createLeafNode(grammarAccess.getBuilderOutputAccess().getRightCurlyBracketKeyword_3(), null); 
     }
@@ -3903,7 +3903,7 @@ ruleBuilderInput returns [EObject current=null]
 	        currentNode = currentNode.getParent();
 	    }
 	
-)*'}' 
+)+'}' 
     {
         createLeafNode(grammarAccess.getBuilderInputAccess().getRightCurlyBracketKeyword_5(), null); 
     }

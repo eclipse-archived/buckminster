@@ -1151,13 +1151,13 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cAnnotationsPropertyBodyParserRuleCall_1_1_0 = (RuleCall)cAnnotationsAssignment_1_1.eContents().get(0);
 		
 		//PathGroup:
-		//  paths+=PathVectorElement* ("annotations" annotations=PropertyBody)?;
+		//  paths+=PathVectorElement+ ("annotations" annotations=PropertyBody)?;
 		public ParserRule getRule() { return rule; }
 
-		//paths+=PathVectorElement* ("annotations" annotations=PropertyBody)?
+		//paths+=PathVectorElement+ ("annotations" annotations=PropertyBody)?
 		public Group getGroup() { return cGroup; }
 
-		//paths+=PathVectorElement*
+		//paths+=PathVectorElement+
 		public Assignment getPathsAssignment_0() { return cPathsAssignment_0; }
 
 		//PathVectorElement
@@ -2213,10 +2213,10 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Keyword cRightCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//BuilderOutput:
-		//  OutputKeyword "{" body=PathGroup? "}";
+		//  OutputKeyword "{" body=PathGroup "}";
 		public ParserRule getRule() { return rule; }
 
-		//OutputKeyword "{" body=PathGroup? "}"
+		//OutputKeyword "{" body=PathGroup "}"
 		public Group getGroup() { return cGroup; }
 
 		//OutputKeyword
@@ -2225,7 +2225,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
 
-		//body=PathGroup?
+		//body=PathGroup
 		public Assignment getBodyAssignment_2() { return cBodyAssignment_2; }
 
 		//PathGroup
@@ -2250,11 +2250,11 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		
 		//BuilderInput:
 		//  InputKeyword preCondition=PreCondition? postCondition=PostCondition? "{"
-		//  prerequisites+=Prerequisite* "}";
+		//  prerequisites+=Prerequisite+ "}";
 		public ParserRule getRule() { return rule; }
 
 		//InputKeyword preCondition=PreCondition? postCondition=PostCondition? "{"
-		//prerequisites+=Prerequisite* "}"
+		//prerequisites+=Prerequisite+ "}"
 		public Group getGroup() { return cGroup; }
 
 		//InputKeyword
@@ -2275,7 +2275,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
 
-		//prerequisites+=Prerequisite*
+		//prerequisites+=Prerequisite+
 		public Assignment getPrerequisitesAssignment_4() { return cPrerequisitesAssignment_4; }
 
 		//Prerequisite
@@ -7426,7 +7426,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//PathGroup:
-	//  paths+=PathVectorElement* ("annotations" annotations=PropertyBody)?;
+	//  paths+=PathVectorElement+ ("annotations" annotations=PropertyBody)?;
 	public PathGroupElements getPathGroupAccess() {
 		return (pPathGroup != null) ? pPathGroup : (pPathGroup = new PathGroupElements());
 	}
@@ -7662,7 +7662,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//BuilderOutput:
-	//  OutputKeyword "{" body=PathGroup? "}";
+	//  OutputKeyword "{" body=PathGroup "}";
 	public BuilderOutputElements getBuilderOutputAccess() {
 		return (pBuilderOutput != null) ? pBuilderOutput : (pBuilderOutput = new BuilderOutputElements());
 	}
@@ -7673,7 +7673,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 	//BuilderInput:
 	//  InputKeyword preCondition=PreCondition? postCondition=PostCondition? "{"
-	//  prerequisites+=Prerequisite* "}";
+	//  prerequisites+=Prerequisite+ "}";
 	public BuilderInputElements getBuilderInputAccess() {
 		return (pBuilderInput != null) ? pBuilderInput : (pBuilderInput = new BuilderInputElements());
 	}

@@ -408,7 +408,7 @@
       <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//PathGroup"/>
     </type>
     <alternatives xsi:type="xtext:Group">
-      <tokens xsi:type="xtext:Assignment" cardinality="*" feature="paths" operator="+=">
+      <tokens xsi:type="xtext:Assignment" cardinality="+" feature="paths" operator="+=">
         <terminal xsi:type="xtext:RuleCall" rule="//@rules.18"/>
       </tokens>
       <tokens xsi:type="xtext:Group" cardinality="?">
@@ -842,7 +842,7 @@
     <alternatives xsi:type="xtext:Group">
       <tokens xsi:type="xtext:RuleCall" rule="//@rules.37"/>
       <tokens xsi:type="xtext:Keyword" value="{"/>
-      <tokens xsi:type="xtext:Assignment" cardinality="?" feature="body" operator="=">
+      <tokens xsi:type="xtext:Assignment" feature="body" operator="=">
         <terminal xsi:type="xtext:RuleCall" rule="//@rules.17"/>
       </tokens>
       <tokens xsi:type="xtext:Keyword" value="}"/>
@@ -861,7 +861,7 @@
         <terminal xsi:type="xtext:RuleCall" rule="//@rules.53"/>
       </tokens>
       <tokens xsi:type="xtext:Keyword" value="{"/>
-      <tokens xsi:type="xtext:Assignment" cardinality="*" feature="prerequisites" operator="+=">
+      <tokens xsi:type="xtext:Assignment" cardinality="+" feature="prerequisites" operator="+=">
         <terminal xsi:type="xtext:RuleCall" rule="//@rules.24"/>
       </tokens>
       <tokens xsi:type="xtext:Keyword" value="}"/>
