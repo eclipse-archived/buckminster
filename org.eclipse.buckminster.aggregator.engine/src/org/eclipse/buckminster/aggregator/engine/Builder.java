@@ -938,15 +938,31 @@ public class Builder extends AbstractCommand implements IApplication
 	@SuppressWarnings("unchecked")
 	public Object start(IApplicationContext context) throws Exception
 	{
+		String logLevel = null;
+		int pos = 0;
 		String[] args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
-		String[] allArgs = new String[args.length + 1];
-		allArgs[0] = "aggregate";
-		System.arraycopy(args, 0, allArgs, 1, args.length);
+		for(int idx = 1; idx < args.length; ++idx)
+		{
+			if(("-loglevel".equalsIgnoreCase(args[idx]) || "--loglevel".equalsIgnoreCase(args[idx]))
+					&& idx + 1 < args.length)
+			{
+				logLevel = args[idx + 1];
+				pos = 2;
+			}
+		}
+		String[] allArgs = new String[args.length + pos + 1];
+		if(logLevel != null)
+		{
+			allArgs[0] = "--loglevel";
+			allArgs[1] = logLevel;
+		}
+		allArgs[pos++] = "aggregate";
+		System.arraycopy(args, 0, allArgs, pos, args.length);
 		List<OptionDescriptor> opts = new ArrayList<OptionDescriptor>();
 		getOptionDescriptors(opts);
-		for(int idx = 1; idx < allArgs.length; ++idx)
+		for(; pos < allArgs.length; ++pos)
 		{
-			String arg = allArgs[idx];
+			String arg = allArgs[pos];
 			if(arg.length() > 2 && arg.charAt(0) == '-' && arg.charAt(1) != '-')
 			{
 				// It's likely that this is an old style option, i.e. -buildModel
@@ -957,7 +973,7 @@ public class Builder extends AbstractCommand implements IApplication
 					if(opt.getLongName().equalsIgnoreCase(arg))
 					{
 						// Yepp. There it was. So let's replace it
-						allArgs[idx] = "--" + arg;
+						allArgs[pos] = "--" + arg;
 						break;
 					}
 			}
