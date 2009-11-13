@@ -9,8 +9,6 @@
  */
 package org.eclipse.buckminster.aggregator;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Description Provider</b></em>'. <!--
  * end-user-doc -->
@@ -26,7 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface DescriptionProvider extends EObject
+public interface DescriptionProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Description</b></em>' attribute. The default value is <code>""</code>. <!--

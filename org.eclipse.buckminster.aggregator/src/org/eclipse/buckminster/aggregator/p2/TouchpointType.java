@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 
 /**
@@ -18,6 +16,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.ITouchpointType"
  * @generated
  */
-public interface TouchpointType extends EObject, ITouchpointType
+public interface TouchpointType extends ITouchpointType
 {
 } // TouchpointType

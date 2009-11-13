@@ -9,7 +9,6 @@ package org.eclipse.buckminster.aggregator.p2;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -568,14 +567,6 @@ public interface P2Package extends EPackage
 		EReference INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST = eINSTANCE.getInstallableUnit_TouchpointDataList();
 
 		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute INSTALLABLE_UNIT__TYPE = eINSTANCE.getInstallableUnit_Type();
-
-		/**
 		 * The meta object literal for the '
 		 * {@link org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitFragmentImpl
 		 * <em>Installable Unit Fragment</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -863,16 +854,6 @@ public interface P2Package extends EPackage
 		 * @generated
 		 */
 		EClass IADAPTABLE = eINSTANCE.getIAdaptable();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType
-		 * <em>Installable Unit Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @see org.eclipse.buckminster.aggregator.p2.InstallableUnitType
-		 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getInstallableUnitType()
-		 * @generated
-		 */
-		EEnum INSTALLABLE_UNIT_TYPE = eINSTANCE.getInstallableUnitType();
 
 		/**
 		 * The meta object literal for the '<em>Version</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2024,14 +2005,6 @@ public interface P2Package extends EPackage
 	int INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST = IINSTALLABLE_UNIT_FEATURE_COUNT + 5;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int INSTALLABLE_UNIT__TYPE = IINSTALLABLE_UNIT_FEATURE_COUNT + 6;
-
-	/**
 	 * The number of structural features of the '<em>Installable Unit</em>' class. <!-- begin-user-doc --> <!-- =======
 	 * The number of structural features of the '<em>Installable Unit</em>' class. <!-- begin-user-doc --> <!-- >>>>>>>
 	 * .r10620 end-user-doc -->
@@ -2039,7 +2012,7 @@ public interface P2Package extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int INSTALLABLE_UNIT_FEATURE_COUNT = IINSTALLABLE_UNIT_FEATURE_COUNT + 7;
+	int INSTALLABLE_UNIT_FEATURE_COUNT = IINSTALLABLE_UNIT_FEATURE_COUNT + 6;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitFragmentImpl
@@ -2181,14 +2154,6 @@ public interface P2Package extends EPackage
 	int INSTALLABLE_UNIT_FRAGMENT__TOUCHPOINT_DATA_LIST = INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int INSTALLABLE_UNIT_FRAGMENT__TYPE = INSTALLABLE_UNIT__TYPE;
-
-	/**
 	 * The feature id for the '<em><b>Host List</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -2283,21 +2248,13 @@ public interface P2Package extends EPackage
 	int PROVIDED_CAPABILITY__VERSION = IPROVIDED_CAPABILITY__VERSION;
 
 	/**
-	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int PROVIDED_CAPABILITY__LABEL = IPROVIDED_CAPABILITY_FEATURE_COUNT + 0;
-
-	/**
 	 * The number of structural features of the '<em>Provided Capability</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDED_CAPABILITY_FEATURE_COUNT = IPROVIDED_CAPABILITY_FEATURE_COUNT + 1;
+	int PROVIDED_CAPABILITY_FEATURE_COUNT = IPROVIDED_CAPABILITY_FEATURE_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl
@@ -2383,21 +2340,13 @@ public interface P2Package extends EPackage
 	int REQUIRED_CAPABILITY__GREEDY = IREQUIRED_CAPABILITY__GREEDY;
 
 	/**
-	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int REQUIRED_CAPABILITY__LABEL = IREQUIRED_CAPABILITY_FEATURE_COUNT + 0;
-
-	/**
 	 * The number of structural features of the '<em>Required Capability</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int REQUIRED_CAPABILITY_FEATURE_COUNT = IREQUIRED_CAPABILITY_FEATURE_COUNT + 1;
+	int REQUIRED_CAPABILITY_FEATURE_COUNT = IREQUIRED_CAPABILITY_FEATURE_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.impl.TouchpointDataImpl
@@ -2764,23 +2713,13 @@ public interface P2Package extends EPackage
 	int REPOSITORY_REFERENCE_FEATURE_COUNT = 4;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType
-	 * <em>Installable Unit Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.aggregator.p2.InstallableUnitType
-	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getInstallableUnitType()
-	 * @generated
-	 */
-	int INSTALLABLE_UNIT_TYPE = 30;
-
-	/**
 	 * The meta object id for the '<em>Version</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.Version
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getVersion()
 	 * @generated
 	 */
-	int VERSION = 31;
+	int VERSION = 30;
 
 	/**
 	 * The meta object id for the '<em>Version Range</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2789,7 +2728,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getVersionRange()
 	 * @generated
 	 */
-	int VERSION_RANGE = 32;
+	int VERSION_RANGE = 31;
 
 	/**
 	 * The meta object id for the '<em>IInstallable Unit Array</em>' data type. <!-- begin-user-doc --> <!--
@@ -2798,7 +2737,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIInstallableUnitArray()
 	 * @generated
 	 */
-	int IINSTALLABLE_UNIT_ARRAY = 33;
+	int IINSTALLABLE_UNIT_ARRAY = 32;
 
 	/**
 	 * The meta object id for the '<em>IRequired Capability Array</em>' data type. <!-- begin-user-doc --> <!--
@@ -2807,7 +2746,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIRequiredCapabilityArray()
 	 * @generated
 	 */
-	int IREQUIRED_CAPABILITY_ARRAY = 34;
+	int IREQUIRED_CAPABILITY_ARRAY = 33;
 
 	/**
 	 * The meta object id for the '<em>IProvided Capability Array</em>' data type. <!-- begin-user-doc --> <!--
@@ -2816,7 +2755,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIProvidedCapabilityArray()
 	 * @generated
 	 */
-	int IPROVIDED_CAPABILITY_ARRAY = 35;
+	int IPROVIDED_CAPABILITY_ARRAY = 34;
 
 	/**
 	 * The meta object id for the '<em>IInstallable Unit Fragment Array</em>' data type. <!-- begin-user-doc --> <!--
@@ -2825,7 +2764,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIInstallableUnitFragmentArray()
 	 * @generated
 	 */
-	int IINSTALLABLE_UNIT_FRAGMENT_ARRAY = 36;
+	int IINSTALLABLE_UNIT_FRAGMENT_ARRAY = 35;
 
 	/**
 	 * The meta object id for the '<em>IArtifact Key Array</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc
@@ -2834,7 +2773,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIArtifactKeyArray()
 	 * @generated
 	 */
-	int IARTIFACT_KEY_ARRAY = 37;
+	int IARTIFACT_KEY_ARRAY = 36;
 
 	/**
 	 * The meta object id for the '<em>ITouchpoint Data Array</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc
@@ -2843,7 +2782,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getITouchpointDataArray()
 	 * @generated
 	 */
-	int ITOUCHPOINT_DATA_ARRAY = 38;
+	int ITOUCHPOINT_DATA_ARRAY = 37;
 
 	/**
 	 * The meta object id for the '<em>String Array</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2851,7 +2790,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getStringArray()
 	 * @generated
 	 */
-	int STRING_ARRAY = 39;
+	int STRING_ARRAY = 38;
 
 	/**
 	 * The meta object id for the '<em>Untyped Map</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2860,7 +2799,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getUntypedMap()
 	 * @generated
 	 */
-	int UNTYPED_MAP = 40;
+	int UNTYPED_MAP = 39;
 
 	/**
 	 * The meta object id for the '<em>Query</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2869,7 +2808,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getQuery()
 	 * @generated
 	 */
-	int QUERY = 41;
+	int QUERY = 40;
 
 	/**
 	 * The meta object id for the '<em>Collector</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2878,7 +2817,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getCollector()
 	 * @generated
 	 */
-	int COLLECTOR = 42;
+	int COLLECTOR = 41;
 
 	/**
 	 * The meta object id for the '<em>IProgress Monitor</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2887,7 +2826,7 @@ public interface P2Package extends EPackage
 	 * @see org.eclipse.buckminster.aggregator.p2.impl.P2PackageImpl#getIProgressMonitor()
 	 * @generated
 	 */
-	int IPROGRESS_MONITOR = 43;
+	int IPROGRESS_MONITOR = 42;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2.ArtifactKey
@@ -3319,17 +3258,6 @@ public interface P2Package extends EPackage
 	EReference getInstallableUnit_TouchpointDataList();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.aggregator.p2.InstallableUnit#getType
-	 * <em>Type</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Type</em>'.
-	 * @see org.eclipse.buckminster.aggregator.p2.InstallableUnit#getType()
-	 * @see #getInstallableUnit()
-	 * @generated
-	 */
-	EAttribute getInstallableUnit_Type();
-
-	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment
 	 * <em>Installable Unit Fragment</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -3350,16 +3278,6 @@ public interface P2Package extends EPackage
 	 * @generated
 	 */
 	EReference getInstallableUnitFragment_HostList();
-
-	/**
-	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType
-	 * <em>Installable Unit Type</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for enum '<em>Installable Unit Type</em>'.
-	 * @see org.eclipse.buckminster.aggregator.p2.InstallableUnitType
-	 * @generated
-	 */
-	EEnum getInstallableUnitType();
 
 	/**
 	 * Returns the meta object for class '{@link java.util.Map.Entry <em>Instruction Map</em>}'. <!-- begin-user-doc -->

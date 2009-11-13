@@ -328,7 +328,7 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public Bundles getBundleContainer()
 	{
-		if(bundleContainer != null && bundleContainer.eIsProxy())
+		if(bundleContainer != null && ((EObject)bundleContainer).eIsProxy())
 		{
 			InternalEObject oldBundleContainer = (InternalEObject)bundleContainer;
 			bundleContainer = (Bundles)eResolveProxy(oldBundleContainer);
@@ -349,7 +349,7 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public Categories getCategoryContainer()
 	{
-		if(categoryContainer != null && categoryContainer.eIsProxy())
+		if(categoryContainer != null && ((EObject)categoryContainer).eIsProxy())
 		{
 			InternalEObject oldCategoryContainer = (InternalEObject)categoryContainer;
 			categoryContainer = (Categories)eResolveProxy(oldCategoryContainer);
@@ -373,12 +373,12 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	{
 		EList<EObject> children = new BasicEList<EObject>();
 
-		children.add(getCategoryContainer());
-		children.add(getFeatureContainer());
-		children.add(getProductContainer());
-		children.add(getBundleContainer());
-		children.add(getFragmentContainer());
-		children.add(getMiscellaneousContainer());
+		children.add((EObject)getCategoryContainer());
+		children.add((EObject)getFeatureContainer());
+		children.add((EObject)getProductContainer());
+		children.add((EObject)getBundleContainer());
+		children.add((EObject)getFragmentContainer());
+		children.add((EObject)getMiscellaneousContainer());
 
 		return children;
 	}
@@ -390,7 +390,7 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public Features getFeatureContainer()
 	{
-		if(featureContainer != null && featureContainer.eIsProxy())
+		if(featureContainer != null && ((EObject)featureContainer).eIsProxy())
 		{
 			InternalEObject oldFeatureContainer = (InternalEObject)featureContainer;
 			featureContainer = (Features)eResolveProxy(oldFeatureContainer);
@@ -411,7 +411,7 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public Fragments getFragmentContainer()
 	{
-		if(fragmentContainer != null && fragmentContainer.eIsProxy())
+		if(fragmentContainer != null && ((EObject)fragmentContainer).eIsProxy())
 		{
 			InternalEObject oldFragmentContainer = (InternalEObject)fragmentContainer;
 			fragmentContainer = (Fragments)eResolveProxy(oldFragmentContainer);
@@ -433,7 +433,7 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public Miscellaneous getMiscellaneousContainer()
 	{
-		if(miscellaneousContainer != null && miscellaneousContainer.eIsProxy())
+		if(miscellaneousContainer != null && ((EObject)miscellaneousContainer).eIsProxy())
 		{
 			InternalEObject oldMiscellaneousContainer = (InternalEObject)miscellaneousContainer;
 			miscellaneousContainer = (Miscellaneous)eResolveProxy(oldMiscellaneousContainer);
@@ -533,7 +533,7 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	 */
 	public Products getProductContainer()
 	{
-		if(productContainer != null && productContainer.eIsProxy())
+		if(productContainer != null && ((EObject)productContainer).eIsProxy())
 		{
 			InternalEObject oldProductContainer = (InternalEObject)productContainer;
 			productContainer = (Products)eResolveProxy(oldProductContainer);

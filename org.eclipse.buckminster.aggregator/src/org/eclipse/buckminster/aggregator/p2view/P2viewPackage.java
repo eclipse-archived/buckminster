@@ -10,6 +10,7 @@
 package org.eclipse.buckminster.aggregator.p2view;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -650,6 +651,44 @@ public interface P2viewPackage extends EPackage
 		 * @generated
 		 */
 		EReference IU_DETAILS__LICENSE = eINSTANCE.getIUDetails_License();
+
+		/**
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.aggregator.p2view.impl.RequiredCapabilityWrapperImpl
+		 * <em>Required Capability Wrapper</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.RequiredCapabilityWrapperImpl
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getRequiredCapabilityWrapper()
+		 * @generated
+		 */
+		EClass REQUIRED_CAPABILITY_WRAPPER = eINSTANCE.getRequiredCapabilityWrapper();
+
+		/**
+		 * The meta object literal for the '<em><b>Genuine</b></em>' reference feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference REQUIRED_CAPABILITY_WRAPPER__GENUINE = eINSTANCE.getRequiredCapabilityWrapper_Genuine();
+
+		/**
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.aggregator.p2view.impl.ProvidedCapabilityWrapperImpl
+		 * <em>Provided Capability Wrapper</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.ProvidedCapabilityWrapperImpl
+		 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProvidedCapabilityWrapper()
+		 * @generated
+		 */
+		EClass PROVIDED_CAPABILITY_WRAPPER = eINSTANCE.getProvidedCapabilityWrapper();
+
+		/**
+		 * The meta object literal for the '<em><b>Genuine</b></em>' reference feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference PROVIDED_CAPABILITY_WRAPPER__GENUINE = eINSTANCE.getProvidedCapabilityWrapper_Genuine();
 
 	}
 
@@ -2371,6 +2410,173 @@ public interface P2viewPackage extends EPackage
 	int IU_DETAILS_FEATURE_COUNT = 7;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.RequiredCapabilityWrapperImpl
+	 * <em>Required Capability Wrapper</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.RequiredCapabilityWrapperImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getRequiredCapabilityWrapper()
+	 * @generated
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER = 21;
+
+	/**
+	 * The feature id for the '<em><b>Filter</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__FILTER = P2Package.IREQUIRED_CAPABILITY__FILTER;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__NAME = P2Package.IREQUIRED_CAPABILITY__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Namespace</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__NAMESPACE = P2Package.IREQUIRED_CAPABILITY__NAMESPACE;
+
+	/**
+	 * The feature id for the '<em><b>Range</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__RANGE = P2Package.IREQUIRED_CAPABILITY__RANGE;
+
+	/**
+	 * The feature id for the '<em><b>Negation</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__NEGATION = P2Package.IREQUIRED_CAPABILITY__NEGATION;
+
+	/**
+	 * The feature id for the '<em><b>Selector List</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__SELECTOR_LIST = P2Package.IREQUIRED_CAPABILITY__SELECTOR_LIST;
+
+	/**
+	 * The feature id for the '<em><b>Multiple</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__MULTIPLE = P2Package.IREQUIRED_CAPABILITY__MULTIPLE;
+
+	/**
+	 * The feature id for the '<em><b>Optional</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__OPTIONAL = P2Package.IREQUIRED_CAPABILITY__OPTIONAL;
+
+	/**
+	 * The feature id for the '<em><b>Greedy</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__GREEDY = P2Package.IREQUIRED_CAPABILITY__GREEDY;
+
+	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__LABEL = P2Package.IREQUIRED_CAPABILITY_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Genuine</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER__GENUINE = P2Package.IREQUIRED_CAPABILITY_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Required Capability Wrapper</em>' class. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int REQUIRED_CAPABILITY_WRAPPER_FEATURE_COUNT = P2Package.IREQUIRED_CAPABILITY_FEATURE_COUNT + 2;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.p2view.impl.ProvidedCapabilityWrapperImpl
+	 * <em>Provided Capability Wrapper</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.ProvidedCapabilityWrapperImpl
+	 * @see org.eclipse.buckminster.aggregator.p2view.impl.P2viewPackageImpl#getProvidedCapabilityWrapper()
+	 * @generated
+	 */
+	int PROVIDED_CAPABILITY_WRAPPER = 22;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDED_CAPABILITY_WRAPPER__NAME = P2Package.IPROVIDED_CAPABILITY__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Namespace</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDED_CAPABILITY_WRAPPER__NAMESPACE = P2Package.IPROVIDED_CAPABILITY__NAMESPACE;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDED_CAPABILITY_WRAPPER__VERSION = P2Package.IPROVIDED_CAPABILITY__VERSION;
+
+	/**
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDED_CAPABILITY_WRAPPER__LABEL = P2Package.IPROVIDED_CAPABILITY_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Genuine</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDED_CAPABILITY_WRAPPER__GENUINE = P2Package.IPROVIDED_CAPABILITY_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Provided Capability Wrapper</em>' class. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDED_CAPABILITY_WRAPPER_FEATURE_COUNT = P2Package.IPROVIDED_CAPABILITY_FEATURE_COUNT + 2;
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.Bundle <em>Bundle</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -3122,6 +3328,28 @@ public interface P2viewPackage extends EPackage
 	EReference getProvidedCapabilities_ProvidedCapabilities();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper
+	 * <em>Provided Capability Wrapper</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Provided Capability Wrapper</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper
+	 * @generated
+	 */
+	EClass getProvidedCapabilityWrapper();
+
+	/**
+	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper#getGenuine <em>Genuine</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Genuine</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper#getGenuine()
+	 * @see #getProvidedCapabilityWrapper()
+	 * @generated
+	 */
+	EReference getProvidedCapabilityWrapper_Genuine();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities
 	 * <em>Required Capabilities</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -3142,6 +3370,28 @@ public interface P2viewPackage extends EPackage
 	 * @generated
 	 */
 	EReference getRequiredCapabilities_RequiredCapabilities();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper
+	 * <em>Required Capability Wrapper</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Required Capability Wrapper</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper
+	 * @generated
+	 */
+	EClass getRequiredCapabilityWrapper();
+
+	/**
+	 * Returns the meta object for the reference '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper#getGenuine <em>Genuine</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Genuine</em>'.
+	 * @see org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper#getGenuine()
+	 * @see #getRequiredCapabilityWrapper()
+	 * @generated
+	 */
+	EReference getRequiredCapabilityWrapper_Genuine();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.p2view.Touchpoints

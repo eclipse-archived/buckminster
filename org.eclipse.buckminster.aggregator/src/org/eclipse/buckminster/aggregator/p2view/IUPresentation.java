@@ -9,13 +9,11 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import java.util.Comparator;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
-import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 
@@ -39,7 +37,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
  * @model abstract="true"
  * @generated
  */
-public interface IUPresentation extends EObject
+public interface IUPresentation
 {
 	// Compares IU presentation by id (ascending) and version (descending)
 	static class IUPresentationComparator implements Comparator<IUPresentation>
@@ -139,14 +137,14 @@ public interface IUPresentation extends EObject
 
 	/**
 	 * Returns the value of the '<em><b>Type</b></em>' attribute. The default value is <code>""</code>. The literals are
-	 * from the enumeration {@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType}. <!-- begin-user-doc -->
+	 * from the enumeration {@link org.eclipse.buckminster.aggregator.InstallableUnitType}. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Type</em>' attribute isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Type</em>' attribute.
-	 * @see org.eclipse.buckminster.aggregator.p2.InstallableUnitType
+	 * @see org.eclipse.buckminster.aggregator.InstallableUnitType
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUPresentation_Type()
 	 * @model default="" required="true" changeable="false" volatile="true"
 	 * @generated

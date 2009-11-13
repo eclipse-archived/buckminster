@@ -12,6 +12,7 @@ package org.eclipse.buckminster.aggregator.p2view.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
@@ -25,6 +26,7 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -102,6 +104,7 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 		{
 			super.getPropertyDescriptors(object);
 
+			addChildrenPropertyDescriptor(object);
 			addNamePropertyDescriptor(object);
 			addInstallableUnitListPropertyDescriptor(object);
 			addPropertiesPropertyDescriptor(object);
@@ -153,7 +156,7 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 		if(notification.getFeatureID(MetadataRepositoryStructuredView.class) == P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW__LOADED)
 		{
 			MetadataRepositoryStructuredView mdrView = (MetadataRepositoryStructuredView)notification.getNotifier();
-			Aggregator aggregator = ResourceUtils.getAggregator(mdrView.eResource().getResourceSet());
+			Aggregator aggregator = ResourceUtils.getAggregator(((EObject)mdrView).eResource().getResourceSet());
 
 			if(aggregator != null)
 				fireNotifyChanged(new ViewerNotification(notification, aggregator, true, true));
@@ -184,6 +187,20 @@ public class MetadataRepositoryStructuredViewItemProvider extends AggregatorItem
 			return;
 		}
 		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Children feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addChildrenPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_ChildrenProvider_children_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_ChildrenProvider_children_feature", "_UI_ChildrenProvider_type"),
+				AggregatorPackage.Literals.CHILDREN_PROVIDER__CHILDREN, false, false, false, null, null, null));
 	}
 
 	/**

@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Configuration</b></em>'. <!-- end-user-doc -->
  * 
@@ -24,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Configuration extends EObject
+public interface Configuration
 {
 	/**
 	 * Returns the value of the '<em><b>Architecture</b></em>' attribute. The literals are from the enumeration

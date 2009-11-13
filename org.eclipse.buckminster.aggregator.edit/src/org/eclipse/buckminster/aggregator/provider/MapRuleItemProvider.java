@@ -17,6 +17,7 @@ import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
@@ -146,7 +147,7 @@ public class MapRuleItemProvider extends InstallableUnitReferenceItemProvider im
 			@Override
 			public boolean isMatch(Object candidate)
 			{
-				switch(((InstallableUnit)candidate).getType())
+				switch(InstallableUnitUtils.getType((InstallableUnit)candidate))
 				{
 				case PRODUCT:
 				case FEATURE:

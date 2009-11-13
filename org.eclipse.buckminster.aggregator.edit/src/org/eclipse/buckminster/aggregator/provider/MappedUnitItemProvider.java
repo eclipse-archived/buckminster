@@ -125,7 +125,7 @@ public class MappedUnitItemProvider extends InstallableUnitReferenceItemProvider
 			// And now, find all categories which may contain the feature just being enabled/disabled
 			if(notification.getNotifier() instanceof Feature)
 				for(CustomCategory category : ((Feature)notification.getNotifier()).getCategories())
-					affectedNodes.add(category);
+					affectedNodes.add((EObject)category);
 
 			for(EObject affectedNode : affectedNodes)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));

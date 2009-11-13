@@ -11,8 +11,6 @@ package org.eclipse.buckminster.aggregator.p2;
 
 import java.net.URI;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Repository Reference</b></em>'. <!--
  * end-user-doc -->
@@ -31,7 +29,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface RepositoryReference extends EObject
+public interface RepositoryReference
 {
 	/**
 	 * Returns the value of the '<em><b>Location</b></em>' attribute. <!-- begin-user-doc -->

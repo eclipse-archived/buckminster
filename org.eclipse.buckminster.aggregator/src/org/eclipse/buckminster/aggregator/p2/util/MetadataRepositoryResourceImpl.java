@@ -16,10 +16,10 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.ChildrenProvider;
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Property;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
@@ -35,6 +35,7 @@ import org.eclipse.buckminster.aggregator.p2view.OtherIU;
 import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
 import org.eclipse.buckminster.aggregator.p2view.Product;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
+import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.aggregator.util.TwoColumnMatrix;
@@ -208,7 +209,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			{
 				IUPresentation iuPresentation;
 
-				switch(iu.getType())
+				switch(InstallableUnitUtils.getType(iu))
 				{
 				case CATEGORY:
 					iuPresentation = P2viewFactory.eINSTANCE.createCategory(iu);
@@ -248,12 +249,12 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				if(name != null && name.startsWith("%"))
 					name = null;
 
-				if(iu.getType() == InstallableUnitType.CATEGORY || iu.getVersion() == null)
+				if(InstallableUnitUtils.getType(iu) == InstallableUnitType.CATEGORY || iu.getVersion() == null)
 					iuPresentation.setLabel(name != null && name.length() > 0
 							? name
 							: iu.getId());
 				else
-					iuPresentation.setLabel(iu.getId() + " / " + iu.getVersion().toString()
+					iuPresentation.setLabel(iu.getId() + " / " + GeneralUtils.stringifyVersion(iu.getVersion())
 							+ (name != null && name.length() > 0
 									? " (" + name + ")"
 									: ""));
@@ -324,7 +325,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 			}
 
 			repoView.setLoaded(true);
-			getContents().add(repoView);
+			getContents().add((EObject)repoView);
 
 			Aggregator aggregator = ResourceUtils.getAggregator(getResourceSet());
 			if(aggregator != null)
@@ -427,7 +428,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 	public static Resource getResourceForLocation(String repositoryLocation, Aggregator aggregator)
 	{
-		ResourceSet topSet = aggregator.eResource().getResourceSet();
+		ResourceSet topSet = ((EObject)aggregator).eResource().getResourceSet();
 		char c;
 		if((c = repositoryLocation.charAt(repositoryLocation.length() - 1)) == '/' || c == '\\')
 			repositoryLocation = repositoryLocation.substring(0, repositoryLocation.length() - 1);

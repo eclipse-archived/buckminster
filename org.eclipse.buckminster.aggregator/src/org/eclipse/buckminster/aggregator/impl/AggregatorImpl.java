@@ -25,6 +25,7 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
@@ -588,7 +589,7 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	 */
 	public Contact getBuildmaster()
 	{
-		if(buildmaster != null && buildmaster.eIsProxy())
+		if(buildmaster != null && ((EObject)buildmaster).eIsProxy())
 		{
 			InternalEObject oldBuildmaster = (InternalEObject)buildmaster;
 			buildmaster = (Contact)eResolveProxy(oldBuildmaster);

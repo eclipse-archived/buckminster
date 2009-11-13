@@ -10,7 +10,7 @@
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.Bundles;
 import org.eclipse.buckminster.aggregator.p2view.Categories;
 import org.eclipse.buckminster.aggregator.p2view.Category;
@@ -24,6 +24,7 @@ import org.eclipse.buckminster.aggregator.p2view.Products;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -308,7 +309,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 */
 	public Bundles getBundleContainer()
 	{
-		if(bundleContainer != null && bundleContainer.eIsProxy())
+		if(bundleContainer != null && ((EObject)bundleContainer).eIsProxy())
 		{
 			InternalEObject oldBundleContainer = (InternalEObject)bundleContainer;
 			bundleContainer = (Bundles)eResolveProxy(oldBundleContainer);
@@ -329,7 +330,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 */
 	public Categories getCategoryContainer()
 	{
-		if(categoryContainer != null && categoryContainer.eIsProxy())
+		if(categoryContainer != null && ((EObject)categoryContainer).eIsProxy())
 		{
 			InternalEObject oldCategoryContainer = (InternalEObject)categoryContainer;
 			categoryContainer = (Categories)eResolveProxy(oldCategoryContainer);
@@ -350,7 +351,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 */
 	public Features getFeatureContainer()
 	{
-		if(featureContainer != null && featureContainer.eIsProxy())
+		if(featureContainer != null && ((EObject)featureContainer).eIsProxy())
 		{
 			InternalEObject oldFeatureContainer = (InternalEObject)featureContainer;
 			featureContainer = (Features)eResolveProxy(oldFeatureContainer);
@@ -371,7 +372,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 */
 	public Fragments getFragmentContainer()
 	{
-		if(fragmentContainer != null && fragmentContainer.eIsProxy())
+		if(fragmentContainer != null && ((EObject)fragmentContainer).eIsProxy())
 		{
 			InternalEObject oldFragmentContainer = (InternalEObject)fragmentContainer;
 			fragmentContainer = (Fragments)eResolveProxy(oldFragmentContainer);
@@ -470,7 +471,7 @@ public class CategoryImpl extends IUPresentationImpl implements Category
 	 */
 	public Products getProductContainer()
 	{
-		if(productContainer != null && productContainer.eIsProxy())
+		if(productContainer != null && ((EObject)productContainer).eIsProxy())
 		{
 			InternalEObject oldProductContainer = (InternalEObject)productContainer;
 			productContainer = (Products)eResolveProxy(oldProductContainer);

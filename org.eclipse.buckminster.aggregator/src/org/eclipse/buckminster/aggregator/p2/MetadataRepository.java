@@ -10,7 +10,6 @@ import java.net.URI;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
 
 /**
@@ -30,7 +29,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadata
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.IQueryable"
  * @generated
  */
-public interface MetadataRepository extends EObject, IMetadataRepository
+public interface MetadataRepository extends IMetadataRepository
 {
 	/**
 	 * Returns the value of the '<em><b>Installable Units</b></em>' containment reference list. The list contents are of

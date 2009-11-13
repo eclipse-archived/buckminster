@@ -761,6 +761,16 @@ public interface AggregatorPackage extends EPackage
 		EEnum PACKED_STRATEGY = eINSTANCE.getPackedStrategy();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.InstallableUnitType
+		 * <em>Installable Unit Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.aggregator.InstallableUnitType
+		 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getInstallableUnitType()
+		 * @generated
+		 */
+		EEnum INSTALLABLE_UNIT_TYPE = eINSTANCE.getInstallableUnitType();
+
+		/**
 		 * The meta object literal for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @see java.net.URI
@@ -1991,13 +2001,23 @@ public interface AggregatorPackage extends EPackage
 	int PACKED_STRATEGY = 29;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.InstallableUnitType
+	 * <em>Installable Unit Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.aggregator.InstallableUnitType
+	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getInstallableUnitType()
+	 * @generated
+	 */
+	int INSTALLABLE_UNIT_TYPE = 30;
+
+	/**
 	 * The meta object id for the '<em>URI</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see java.net.URI
 	 * @see org.eclipse.buckminster.aggregator.impl.AggregatorPackageImpl#getURI()
 	 * @generated
 	 */
-	int URI = 30;
+	int URI = 31;
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.AggregateType
@@ -2551,6 +2571,16 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EReference getInstallableUnitReference_InstallableUnit();
+
+	/**
+	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.InstallableUnitType
+	 * <em>Installable Unit Type</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for enum '<em>Installable Unit Type</em>'.
+	 * @see org.eclipse.buckminster.aggregator.InstallableUnitType
+	 * @generated
+	 */
+	EEnum getInstallableUnitType();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.aggregator.LabelProvider

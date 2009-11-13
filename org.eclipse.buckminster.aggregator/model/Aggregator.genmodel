@@ -4,9 +4,9 @@
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright (c) 2006-2009, Cloudsmith Inc.&#xA;The code, documentation and other materials contained herein have been&#xA;licensed under the Eclipse Public License - v 1.0 by the copyright holder&#xA;listed above, as the Initial Contributor under such license. The text of&#xA;such license is available at www.eclipse.org."
     modelDirectory="/org.eclipse.buckminster.aggregator/src" modelPluginID="org.eclipse.buckminster.aggregator"
     modelName="Aggregator" modelPluginClass="org.eclipse.buckminster.aggregator.AggregatorPlugin"
-    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" booleanFlagsField="eFlags"
-    importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
-    providerRootExtendsClass="org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter"
+    rootExtendsInterface="" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    rootImplementsInterface="" booleanFlagsField="eFlags" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="5.0" copyrightFields="false" providerRootExtendsClass="org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter"
     colorProviders="true" fontProviders="true" language="" packedEnums="true" classNamePattern="">
   <foreignModel>Aggregator.ecore</foreignModel>
   <genPackages prefix="Aggregator" basePackage="org.eclipse.buckminster" resource="XMI"
@@ -42,6 +42,14 @@
       <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//PackedStrategy/UnpackAsSibling"/>
       <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//PackedStrategy/Unpack"/>
       <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//PackedStrategy/Skip"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Aggregator.ecore#//InstallableUnitType">
+      <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//InstallableUnitType/BUNDLE"/>
+      <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//InstallableUnitType/FEATURE"/>
+      <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//InstallableUnitType/PRODUCT"/>
+      <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//InstallableUnitType/CATEGORY"/>
+      <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//InstallableUnitType/FRAGMENT"/>
+      <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//InstallableUnitType/OTHER"/>
     </genEnums>
     <genDataTypes ecoreDataType="Aggregator.ecore#//URI"/>
     <genClasses ecoreClass="Aggregator.ecore#//Aggregator" labelFeature="#//aggregator/Aggregator/label">
@@ -181,16 +189,12 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MavenItem/groupId"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MavenItem/artifactId"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="Aggregator.ecore#//ChildrenProvider">
+      <genTypeParameters ecoreTypeParameter="Aggregator.ecore#//ChildrenProvider/T"/>
+      <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//ChildrenProvider/children"/>
+    </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" multipleEditorPages="false"
         generateModelWizard="false" ecorePackage="Aggregator.ecore#//p2">
-      <genEnums typeSafeEnumCompatible="false" ecoreEnum="Aggregator.ecore#//p2/InstallableUnitType">
-        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/BUNDLE"/>
-        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/FEATURE"/>
-        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/PRODUCT"/>
-        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/CATEGORY"/>
-        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/FRAGMENT"/>
-        <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//p2/InstallableUnitType/OTHER"/>
-      </genEnums>
       <genDataTypes ecoreDataType="Aggregator.ecore#//p2/Version"/>
       <genDataTypes ecoreDataType="Aggregator.ecore#//p2/VersionRange"/>
       <genDataTypes ecoreDataType="Aggregator.ecore#//p2/IInstallableUnitArray"/>
@@ -261,6 +265,7 @@
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/name"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/namespace"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/range"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/negation"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/selectorList"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/multiple"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IRequiredCapability/optional"/>
@@ -268,6 +273,9 @@
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IRequiredCapability/getSelectors"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/IRequiredCapability/setSelectors">
           <genParameters ecoreParameter="Aggregator.ecore#//p2/IRequiredCapability/setSelectors/selectors"/>
+        </genOperations>
+        <genOperations ecoreOperation="Aggregator.ecore#//p2/IRequiredCapability/satisfiedBy">
+          <genParameters ecoreParameter="Aggregator.ecore#//p2/IRequiredCapability/satisfiedBy/capability"/>
         </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/ITouchpointData">
@@ -310,7 +318,6 @@
         <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/metaRequiredCapabilityList"/>
         <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/propertyMap"/>
         <genFeatures property="Readonly" children="true" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2/InstallableUnit/touchpointDataList"/>
-        <genFeatures property="Readonly" createChild="false" propertyCategory="" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/InstallableUnit/type"/>
         <genOperations ecoreOperation="Aggregator.ecore#//p2/InstallableUnit/compareTo">
           <genParameters ecoreParameter="Aggregator.ecore#//p2/InstallableUnit/compareTo/other"/>
         </genOperations>
@@ -531,6 +538,12 @@
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUDetails/copyright"/>
         <genFeatures property="Readonly" notify="false" children="true" createChild="false"
             propertySortChoices="true" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/IUDetails/license"/>
+      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2view/RequiredCapabilityWrapper">
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/RequiredCapabilityWrapper/genuine"/>
+      </genClasses>
+      <genClasses ecoreClass="Aggregator.ecore#//p2view/ProvidedCapabilityWrapper">
+        <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//p2view/ProvidedCapabilityWrapper/genuine"/>
       </genClasses>
     </nestedGenPackages>
   </genPackages>

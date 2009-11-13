@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstruction;
 
 /**
@@ -19,6 +17,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointInstructi
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.ITouchpointInstruction"
  * @generated
  */
-public interface TouchpointInstruction extends EObject, ITouchpointInstruction
+public interface TouchpointInstruction extends ITouchpointInstruction
 {
 } // TouchpointInstruction

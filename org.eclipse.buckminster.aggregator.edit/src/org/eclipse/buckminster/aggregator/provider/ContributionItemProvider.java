@@ -91,7 +91,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 					MappedRepository mappedRepository = findMappedRepository(object);
 					if(mappedRepository != null)
 					{
-						Contribution contribution = (Contribution)mappedRepository.eContainer();
+						Contribution contribution = (Contribution)((EObject)mappedRepository).eContainer();
 
 						if(contribution.isEnabled())
 						{
@@ -294,7 +294,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 
 			if(!newValue)
-				ResourceUtils.cleanUpResources((Aggregator)((Contribution)notification.getNotifier()).eContainer());
+				ResourceUtils.cleanUpResources((Aggregator)((EObject)notification.getNotifier()).eContainer());
 		}
 		// If a repository is removed, update possible warning overlays
 		else if(notification.getEventType() == Notification.REMOVE
@@ -318,7 +318,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 					for(CustomCategory category : mappedFeature.getCategories())
 						affectedNodes.add(category);
 
-				ResourceUtils.cleanUpResources((Aggregator)((Contribution)notification.getNotifier()).eContainer());
+				ResourceUtils.cleanUpResources((Aggregator)((EObject)notification.getNotifier()).eContainer());
 			}
 
 			for(Object affectedNode : affectedNodes)

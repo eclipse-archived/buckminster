@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Contact</b></em>'. <!-- end-user-doc -->
  * 
@@ -24,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Contact extends EObject
+public interface Contact
 {
 	/**
 	 * Returns the value of the '<em><b>Aggregator</b></em>' container reference. It is bidirectional and its opposite

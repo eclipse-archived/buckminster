@@ -21,12 +21,13 @@ import org.eclipse.buckminster.aggregator.Category;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
+import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
@@ -167,7 +168,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 							// We assume that all groups that are not categories are either products or
 							// features.
 							//
-							InstallableUnitType riuType = riu.getType();
+							InstallableUnitType riuType = InstallableUnitUtils.getType(riu);
 							if(riuType == InstallableUnitType.PRODUCT || riuType == InstallableUnitType.FEATURE)
 							{
 								Filter filter = null;

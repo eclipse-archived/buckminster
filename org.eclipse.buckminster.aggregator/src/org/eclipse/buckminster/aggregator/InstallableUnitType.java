@@ -7,7 +7,7 @@
  *
  * $Id$
  */
-package org.eclipse.buckminster.aggregator.p2;
+package org.eclipse.buckminster.aggregator;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +19,7 @@ import org.eclipse.emf.common.util.Enumerator;
  * <!-- begin-user-doc --> A representation of the literals of the enumeration '<em><b>Installable Unit Type</b></em>',
  * and utility methods for working with them. <!-- end-user-doc -->
  * 
- * @see org.eclipse.buckminster.aggregator.p2.P2Package#getInstallableUnitType()
+ * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getInstallableUnitType()
  * @model
  * @generated
  */
@@ -68,9 +68,10 @@ public enum InstallableUnitType implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	FRAGMENT(4, "FRAGMENT", "fragment"), /**
-	 * The '<em><b>OTHER</b></em>' literal object. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	FRAGMENT(4, "FRAGMENT", "fragment"),
+
+	/**
+	 * The '<em><b>OTHER</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #OTHER_VALUE
 	 * @generated

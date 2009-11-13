@@ -350,7 +350,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 			EStructuralFeature feature, Collection<?> collection)
 	{
 		List<Command> commands = new ArrayList<Command>();
-		commands.add(new RemoveCommand(domain, mappedRepository, feature, collection));
+		commands.add(new RemoveCommand(domain, (EObject)mappedRepository, feature, collection));
 
 		if(feature.getFeatureID() == AggregatorPackage.MAPPED_REPOSITORY__FEATURES)
 		{

@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.ILicense;
 
 /**
@@ -18,6 +16,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ILicense;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.ILicense"
  * @generated
  */
-public interface License extends EObject, ILicense
+public interface License extends ILicense
 {
 } // License

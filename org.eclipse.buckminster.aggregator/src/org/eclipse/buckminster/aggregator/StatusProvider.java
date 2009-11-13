@@ -9,8 +9,6 @@
  */
 package org.eclipse.buckminster.aggregator;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Status Provider</b></em>'. <!-- end-user-doc -->
  * 
@@ -19,7 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model interface="true" abstract="true"
  * @generated
  */
-public interface StatusProvider extends EObject
+public interface StatusProvider
 {
 	public static final int OK = 0;
 

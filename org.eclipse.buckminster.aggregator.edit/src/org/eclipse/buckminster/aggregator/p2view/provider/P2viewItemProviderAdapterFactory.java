@@ -224,6 +224,24 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 	protected IUDetailsItemProvider iuDetailsItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper} instances. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected RequiredCapabilityWrapperItemProvider requiredCapabilityWrapperItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper} instances. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ProvidedCapabilityWrapperItemProvider providedCapabilityWrapperItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -571,6 +589,23 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 	}
 
 	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createProvidedCapabilityWrapperAdapter()
+	{
+		if(providedCapabilityWrapperItemProvider == null)
+		{
+			providedCapabilityWrapperItemProvider = new ProvidedCapabilityWrapperItemProvider(this);
+		}
+
+		return providedCapabilityWrapperItemProvider;
+	}
+
+	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities}. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -585,6 +620,23 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 		}
 
 		return requiredCapabilitiesItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createRequiredCapabilityWrapperAdapter()
+	{
+		if(requiredCapabilityWrapperItemProvider == null)
+		{
+			requiredCapabilityWrapperItemProvider = new RequiredCapabilityWrapperItemProvider(this);
+		}
+
+		return requiredCapabilityWrapperItemProvider;
 	}
 
 	/**
@@ -649,6 +701,10 @@ public class P2viewItemProviderAdapterFactory extends P2viewAdapterFactory imple
 			touchpointsItemProvider.dispose();
 		if(iuDetailsItemProvider != null)
 			iuDetailsItemProvider.dispose();
+		if(requiredCapabilityWrapperItemProvider != null)
+			requiredCapabilityWrapperItemProvider.dispose();
+		if(providedCapabilityWrapperItemProvider != null)
+			providedCapabilityWrapperItemProvider.dispose();
 	}
 
 	/**

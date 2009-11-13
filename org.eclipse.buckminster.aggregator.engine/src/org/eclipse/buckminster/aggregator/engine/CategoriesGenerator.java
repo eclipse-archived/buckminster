@@ -28,6 +28,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
@@ -330,7 +331,7 @@ public class CategoriesGenerator extends BuilderPhase
 	private void tossCategory(InstallableUnit category)
 	{
 		Logger log = Buckminster.getLogger();
-		MetadataRepository parent = (MetadataRepository)category.eContainer();
+		MetadataRepository parent = (MetadataRepository)((EObject)category).eContainer();
 		Builder builder = getBuilder();
 		for(Contribution contrib : builder.getAggregator().getContributions(true))
 		{

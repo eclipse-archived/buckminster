@@ -11,7 +11,6 @@ package org.eclipse.buckminster.aggregator.p2view;
 
 import org.eclipse.buckminster.aggregator.Property;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Properties</b></em>'. <!-- end-user-doc -->
@@ -27,7 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Properties extends EObject
+public interface Properties
 {
 	/**
 	 * Returns the value of the '<em><b>Property List</b></em>' reference list. The list contents are of type

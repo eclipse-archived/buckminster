@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
 
 /**
@@ -19,6 +17,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.IUpdateDescriptor"
  * @generated
  */
-public interface UpdateDescriptor extends EObject, IUpdateDescriptor
+public interface UpdateDescriptor extends IUpdateDescriptor
 {
 } // UpdateDescriptor

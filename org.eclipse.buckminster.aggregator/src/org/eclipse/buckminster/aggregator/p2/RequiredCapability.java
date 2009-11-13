@@ -6,7 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 
 /**
@@ -18,6 +17,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.IRequiredCapability"
  * @generated
  */
-public interface RequiredCapability extends IRequiredCapability, LabelProvider
+public interface RequiredCapability extends IRequiredCapability
 {
 } // RequiredCapability

@@ -24,6 +24,7 @@ import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
@@ -330,6 +331,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	private EEnum installableUnitTypeEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private EDataType uriEDataType = null;
 
 	/**
@@ -492,6 +500,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		windowSystemEEnum = createEEnum(WINDOW_SYSTEM);
 		architectureEEnum = createEEnum(ARCHITECTURE);
 		packedStrategyEEnum = createEEnum(PACKED_STRATEGY);
+		installableUnitTypeEEnum = createEEnum(INSTALLABLE_UNIT_TYPE);
 
 		// Create data types
 		uriEDataType = createEDataType(URI);
@@ -995,6 +1004,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	public EReference getInstallableUnitReference_InstallableUnit()
 	{
 		return (EReference)installableUnitReferenceEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EEnum getInstallableUnitType()
+	{
+		return installableUnitTypeEEnum;
 	}
 
 	/**
@@ -1679,7 +1698,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				IS_GENERATED_INSTANCE_CLASS);
 		g1 = createEGenericType(childrenProviderEClass_T);
 		initEReference(getChildrenProvider_Children(), g1, null, "children", null, 0, -1, ChildrenProvider.class,
-				!IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
@@ -1713,6 +1732,14 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		addEEnumLiteral(packedStrategyEEnum, PackedStrategy.UNPACK_AS_SIBLING);
 		addEEnumLiteral(packedStrategyEEnum, PackedStrategy.UNPACK);
 		addEEnumLiteral(packedStrategyEEnum, PackedStrategy.SKIP);
+
+		initEEnum(installableUnitTypeEEnum, InstallableUnitType.class, "InstallableUnitType");
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.BUNDLE);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.FEATURE);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.PRODUCT);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.CATEGORY);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.FRAGMENT);
+		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.OTHER);
 
 		// Initialize data types
 		initEDataType(uriEDataType, java.net.URI.class, "URI", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

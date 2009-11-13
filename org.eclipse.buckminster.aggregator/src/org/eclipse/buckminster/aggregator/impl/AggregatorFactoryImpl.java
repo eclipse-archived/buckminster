@@ -22,6 +22,7 @@ import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MavenItem;
 import org.eclipse.buckminster.aggregator.MavenMapping;
@@ -35,6 +36,7 @@ import org.eclipse.buckminster.aggregator.WindowSystem;
 import org.eclipse.buckminster.aggregator.*;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
@@ -122,6 +124,18 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	 * 
 	 * @generated
 	 */
+	public String convertInstallableUnitTypeToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public String convertOperatingSystemToString(EDataType eDataType, Object instanceValue)
 	{
 		return instanceValue == null
@@ -161,6 +175,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return convertArchitectureToString(eDataType, instanceValue);
 		case AggregatorPackage.PACKED_STRATEGY:
 			return convertPackedStrategyToString(eDataType, instanceValue);
+		case AggregatorPackage.INSTALLABLE_UNIT_TYPE:
+			return convertInstallableUnitTypeToString(eDataType, instanceValue);
 		case AggregatorPackage.URI:
 			return convertURIToString(eDataType, instanceValue);
 		default:
@@ -201,39 +217,39 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 		switch(eClass.getClassifierID())
 		{
 		case AggregatorPackage.AGGREGATOR:
-			return createAggregator();
+			return (EObject)createAggregator();
 		case AggregatorPackage.MAPPED_REPOSITORY:
-			return createMappedRepository();
+			return (EObject)createMappedRepository();
 		case AggregatorPackage.CONFIGURATION:
-			return createConfiguration();
+			return (EObject)createConfiguration();
 		case AggregatorPackage.CONTRIBUTION:
-			return createContribution();
+			return (EObject)createContribution();
 		case AggregatorPackage.CONTACT:
-			return createContact();
+			return (EObject)createContact();
 		case AggregatorPackage.FEATURE:
-			return createFeature();
+			return (EObject)createFeature();
 		case AggregatorPackage.BUNDLE:
-			return createBundle();
+			return (EObject)createBundle();
 		case AggregatorPackage.PRODUCT:
-			return createProduct();
+			return (EObject)createProduct();
 		case AggregatorPackage.PROPERTY:
-			return createProperty();
+			return (EObject)createProperty();
 		case AggregatorPackage.CATEGORY:
-			return createCategory();
+			return (EObject)createCategory();
 		case AggregatorPackage.CUSTOM_CATEGORY:
-			return createCustomCategory();
+			return (EObject)createCustomCategory();
 		case AggregatorPackage.EXCLUSION_RULE:
-			return createExclusionRule();
+			return (EObject)createExclusionRule();
 		case AggregatorPackage.VALID_CONFIGURATIONS_RULE:
-			return createValidConfigurationsRule();
+			return (EObject)createValidConfigurationsRule();
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE:
-			return createMetadataRepositoryReference();
+			return (EObject)createMetadataRepositoryReference();
 		case AggregatorPackage.DESCRIPTION_PROVIDER:
-			return createDescriptionProvider();
+			return (EObject)createDescriptionProvider();
 		case AggregatorPackage.MAVEN_MAPPING:
-			return createMavenMapping();
+			return (EObject)createMavenMapping();
 		case AggregatorPackage.MAVEN_ITEM:
-			return createMavenItem();
+			return (EObject)createMavenItem();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -397,11 +413,27 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return createArchitectureFromString(eDataType, initialValue);
 		case AggregatorPackage.PACKED_STRATEGY:
 			return createPackedStrategyFromString(eDataType, initialValue);
+		case AggregatorPackage.INSTALLABLE_UNIT_TYPE:
+			return createInstallableUnitTypeFromString(eDataType, initialValue);
 		case AggregatorPackage.URI:
 			return createURIFromString(eDataType, initialValue);
 		default:
 			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public InstallableUnitType createInstallableUnitTypeFromString(EDataType eDataType, String initialValue)
+	{
+		InstallableUnitType result = InstallableUnitType.get(initialValue);
+		if(result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
+					+ eDataType.getName() + "'");
+		return result;
 	}
 
 	/**
@@ -438,7 +470,7 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	{
 		MappedUnit mu = null;
 
-		switch(iu.getType())
+		switch(InstallableUnitUtils.getType(iu))
 		{
 		case FEATURE:
 			mu = createFeature();

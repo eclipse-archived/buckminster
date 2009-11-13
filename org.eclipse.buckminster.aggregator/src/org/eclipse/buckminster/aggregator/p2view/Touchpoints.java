@@ -12,7 +12,6 @@ package org.eclipse.buckminster.aggregator.p2view;
 import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 
 /**
@@ -31,7 +30,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
  * @model
  * @generated
  */
-public interface Touchpoints extends EObject
+public interface Touchpoints
 {
 	/**
 	 * Returns the value of the '<em><b>Touchpoint Data List</b></em>' reference list. The list contents are of type

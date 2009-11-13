@@ -9,8 +9,6 @@
  */
 package org.eclipse.buckminster.aggregator;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Enabled Status Provider</b></em>'. <!--
  * end-user-doc -->
@@ -26,7 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model interface="true" abstract="true"
  * @generated
  */
-public interface EnabledStatusProvider extends EObject
+public interface EnabledStatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Enabled</b></em>' attribute. The default value is <code>"true"</code>. <!--

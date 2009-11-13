@@ -17,6 +17,7 @@ import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.emf.common.command.AbstractCommand;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.command.DragAndDropFeedback;
 
 /**
@@ -72,7 +73,7 @@ public class MapToMappedRepositoryCommand extends AbstractCommand implements Dra
 	{
 		for(MappedUnit unit : m_addedMappedUnits)
 		{
-			MappedRepository repo = (MappedRepository)unit.eContainer();
+			MappedRepository repo = (MappedRepository)((EObject)unit).eContainer();
 			repo.removeUnit(unit);
 		}
 	}

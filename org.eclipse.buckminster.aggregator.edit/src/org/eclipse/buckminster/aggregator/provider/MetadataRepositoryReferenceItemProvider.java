@@ -142,7 +142,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 			String name;
 			URI location;
 
-			if(!mdr.eIsProxy())
+			if(!((EObject)mdr).eIsProxy())
 			{
 				name = mdr.getName();
 				location = mdr.getLocation();
@@ -213,8 +213,8 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 			affectedNodeLabels.add(repoRef);
 
 			// Go through all direct ancestors first
-			EObject container = repoRef.eContainer();
-			affectedNodeLabels.add(repoRef.eResource());
+			EObject container = ((EObject)repoRef).eContainer();
+			affectedNodeLabels.add(((EObject)repoRef).eResource());
 			while(container != null)
 			{
 				affectedNodeLabels.add(container);
@@ -227,11 +227,11 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 				Set<EObject> affectedNodes = new HashSet<EObject>();
 				for(MappedUnit unit : ((MappedRepository)repoRef).getUnits(true))
 				{
-					affectedNodes.add(unit);
+					affectedNodes.add((EObject)unit);
 					// And now, find all categories which may contain the feature just being enabled/disabled
 					if(unit instanceof Feature)
 						for(CustomCategory category : ((Feature)unit).getCategories())
-							affectedNodes.add(category);
+							affectedNodes.add((EObject)category);
 				}
 				for(EObject affectedNode : affectedNodes)
 					fireNotifyChanged(new ViewerNotification(notification, affectedNode, true, true));

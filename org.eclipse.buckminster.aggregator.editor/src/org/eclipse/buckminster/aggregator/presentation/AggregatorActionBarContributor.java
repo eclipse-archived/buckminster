@@ -32,9 +32,9 @@ import org.eclipse.buckminster.aggregator.engine.Engine;
 import org.eclipse.buckminster.aggregator.engine.Builder.ActionType;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
+import org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.util.AddToCustomCategoryCommand;
 import org.eclipse.buckminster.aggregator.util.AddToParentRepositoryCommand;
@@ -403,11 +403,11 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	class SelectMatchingIUAction extends Action
 	{
-		private RequiredCapability m_requiredCapability;
+		private RequiredCapabilityWrapper m_requiredCapabilityWrapper;
 
-		public SelectMatchingIUAction(RequiredCapability requiredCapability)
+		public SelectMatchingIUAction(RequiredCapabilityWrapper requiredCapabilityWrapper)
 		{
-			m_requiredCapability = requiredCapability;
+			m_requiredCapabilityWrapper = requiredCapabilityWrapper;
 
 			setText(getString("_UI_Select_matching_IU_menu_item"));
 		}
@@ -424,7 +424,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 					Shell parent = activeEditorPart.getSite().getShell();
 					final EditingDomain editingDomain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
 
-					Pattern iuIdPattern = Pattern.compile("^" + Pattern.quote(m_requiredCapability.getName()) + "$");
+					Pattern iuIdPattern = Pattern.compile("^" + Pattern.quote(m_requiredCapabilityWrapper.getName())
+							+ "$");
 
 					final Map<MetadataRepositoryResourceImpl, TwoColumnMatrix<IUPresentation, Object[]>> foundIUs = new LinkedHashMap<MetadataRepositoryResourceImpl, TwoColumnMatrix<IUPresentation, Object[]>>();
 
@@ -434,7 +435,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 							continue;
 
 						TwoColumnMatrix<IUPresentation, Object[]> result = ((MetadataRepositoryResourceImpl)resource).findIUPresentations(
-								iuIdPattern, m_requiredCapability.getRange(), true);
+								iuIdPattern, m_requiredCapabilityWrapper.getRange(), true);
 
 						if(result != null && result.size() > 0)
 							foundIUs.put((MetadataRepositoryResourceImpl)resource, result);
@@ -1010,9 +1011,9 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				m_reloadRepoActionVisible = true;
 			}
 
-			if(object instanceof RequiredCapability)
+			if(object instanceof RequiredCapabilityWrapper)
 			{
-				m_selectMatchingIUAction = new SelectMatchingIUAction((RequiredCapability)object);
+				m_selectMatchingIUAction = new SelectMatchingIUAction((RequiredCapabilityWrapper)object);
 			}
 		}
 

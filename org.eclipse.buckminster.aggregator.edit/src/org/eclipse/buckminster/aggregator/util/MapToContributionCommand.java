@@ -109,7 +109,7 @@ public class MapToContributionCommand extends AbstractCommand implements DragAnd
 	{
 		for(MappedUnit unit : m_addedMappedUnits)
 		{
-			MappedRepository repo = (MappedRepository)unit.eContainer();
+			MappedRepository repo = (MappedRepository)((EObject)unit).eContainer();
 			repo.removeUnit(unit);
 		}
 

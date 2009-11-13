@@ -11,8 +11,6 @@ package org.eclipse.buckminster.aggregator;
 
 import java.util.Comparator;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Label Provider</b></em>'. <!-- end-user-doc -->
  * 
@@ -27,7 +25,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model interface="true" abstract="true"
  * @generated
  */
-public interface LabelProvider extends EObject
+public interface LabelProvider
 {
 
 	static class LabelProviderComparator implements Comparator<LabelProvider>

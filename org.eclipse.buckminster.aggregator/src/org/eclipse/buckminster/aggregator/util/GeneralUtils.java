@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.aggregator.util;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 
 /**
  * @author Karel Brezina
@@ -31,6 +32,16 @@ public class GeneralUtils
 		}
 
 		return value;
+	}
+
+	public static String stringifyVersion(Version version)
+	{
+		String result = version.getOriginal();
+
+		if(result == null)
+			result = version.toString();
+
+		return result;
 	}
 
 	public static String trimmedOrNull(String str)

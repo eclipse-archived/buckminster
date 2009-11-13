@@ -11,11 +11,10 @@ package org.eclipse.buckminster.aggregator.p2view.impl;
 
 import java.util.Collection;
 
-import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
-
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 import org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilities;
 
+import org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -56,7 +55,7 @@ public class ProvidedCapabilitiesImpl extends MinimalEObjectImpl.Container imple
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ProvidedCapability> providedCapabilities;
+	protected EList<ProvidedCapabilityWrapper> providedCapabilities;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -113,7 +112,7 @@ public class ProvidedCapabilitiesImpl extends MinimalEObjectImpl.Container imple
 		{
 		case P2viewPackage.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES:
 			getProvidedCapabilities().clear();
-			getProvidedCapabilities().addAll((Collection<? extends ProvidedCapability>)newValue);
+			getProvidedCapabilities().addAll((Collection<? extends ProvidedCapabilityWrapper>)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -141,12 +140,12 @@ public class ProvidedCapabilitiesImpl extends MinimalEObjectImpl.Container imple
 	 * 
 	 * @generated
 	 */
-	public EList<ProvidedCapability> getProvidedCapabilities()
+	public EList<ProvidedCapabilityWrapper> getProvidedCapabilities()
 	{
 		if(providedCapabilities == null)
 		{
-			providedCapabilities = new EObjectResolvingEList<ProvidedCapability>(ProvidedCapability.class, this,
-					P2viewPackage.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES);
+			providedCapabilities = new EObjectResolvingEList<ProvidedCapabilityWrapper>(
+					ProvidedCapabilityWrapper.class, this, P2viewPackage.PROVIDED_CAPABILITIES__PROVIDED_CAPABILITIES);
 		}
 		return providedCapabilities;
 	}

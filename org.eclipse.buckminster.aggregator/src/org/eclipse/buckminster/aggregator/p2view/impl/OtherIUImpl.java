@@ -10,7 +10,7 @@
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.OtherIU;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 import org.eclipse.emf.ecore.EClass;

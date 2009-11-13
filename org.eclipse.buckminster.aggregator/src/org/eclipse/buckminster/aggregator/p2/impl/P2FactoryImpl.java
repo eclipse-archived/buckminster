@@ -114,18 +114,6 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	 * 
 	 * @generated
 	 */
-	public String convertInstallableUnitTypeToString(EDataType eDataType, Object instanceValue)
-	{
-		return instanceValue == null
-				? null
-				: instanceValue.toString();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public String convertIProvidedCapabilityArrayToString(EDataType eDataType, Object instanceValue)
 	{
 		return super.convertToString(instanceValue);
@@ -171,8 +159,6 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	{
 		switch(eDataType.getClassifierID())
 		{
-		case P2Package.INSTALLABLE_UNIT_TYPE:
-			return convertInstallableUnitTypeToString(eDataType, instanceValue);
 		case P2Package.VERSION:
 			return convertVersionToString(eDataType, instanceValue);
 		case P2Package.VERSION_RANGE:
@@ -239,35 +225,35 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 		switch(eClass.getClassifierID())
 		{
 		case P2Package.ARTIFACT_KEY:
-			return createArtifactKey();
+			return (EObject)createArtifactKey();
 		case P2Package.COPYRIGHT:
-			return createCopyright();
+			return (EObject)createCopyright();
 		case P2Package.METADATA_REPOSITORY:
-			return createMetadataRepository();
+			return (EObject)createMetadataRepository();
 		case P2Package.INSTALLABLE_UNIT:
-			return createInstallableUnit();
+			return (EObject)createInstallableUnit();
 		case P2Package.INSTALLABLE_UNIT_FRAGMENT:
-			return createInstallableUnitFragment();
+			return (EObject)createInstallableUnitFragment();
 		case P2Package.LICENSE:
-			return createLicense();
+			return (EObject)createLicense();
 		case P2Package.PROVIDED_CAPABILITY:
-			return createProvidedCapability();
+			return (EObject)createProvidedCapability();
 		case P2Package.REQUIRED_CAPABILITY:
-			return createRequiredCapability();
+			return (EObject)createRequiredCapability();
 		case P2Package.TOUCHPOINT_DATA:
-			return createTouchpointData();
+			return (EObject)createTouchpointData();
 		case P2Package.TOUCHPOINT_INSTRUCTION:
-			return createTouchpointInstruction();
+			return (EObject)createTouchpointInstruction();
 		case P2Package.TOUCHPOINT_TYPE:
-			return createTouchpointType();
+			return (EObject)createTouchpointType();
 		case P2Package.UPDATE_DESCRIPTOR:
-			return createUpdateDescriptor();
+			return (EObject)createUpdateDescriptor();
 		case P2Package.PROPERTY:
 			return (EObject)createProperty();
 		case P2Package.INSTRUCTION_MAP:
 			return (EObject)createInstructionMap();
 		case P2Package.REPOSITORY_REFERENCE:
-			return createRepositoryReference();
+			return (EObject)createRepositoryReference();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -305,8 +291,6 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	{
 		switch(eDataType.getClassifierID())
 		{
-		case P2Package.INSTALLABLE_UNIT_TYPE:
-			return createInstallableUnitTypeFromString(eDataType, initialValue);
 		case P2Package.VERSION:
 			return createVersionFromString(eDataType, initialValue);
 		case P2Package.VERSION_RANGE:
@@ -397,20 +381,6 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 		installableUnit.eSetProxyURI(proxyURI);
 
 		return installableUnit;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public InstallableUnitType createInstallableUnitTypeFromString(EDataType eDataType, String initialValue)
-	{
-		InstallableUnitType result = InstallableUnitType.get(initialValue);
-		if(result == null)
-			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
-					+ eDataType.getName() + "'");
-		return result;
 	}
 
 	/**

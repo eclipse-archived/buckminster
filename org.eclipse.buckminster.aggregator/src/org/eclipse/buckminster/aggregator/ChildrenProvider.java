@@ -11,8 +11,6 @@ package org.eclipse.buckminster.aggregator;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Children Provider</b></em>'. <!-- end-user-doc
  * -->
@@ -28,7 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model interface="true" abstract="true"
  * @generated
  */
-public interface ChildrenProvider<T> extends EObject
+public interface ChildrenProvider<T>
 {
 	/**
 	 * Returns the value of the '<em><b>Children</b></em>' reference list. The list contents are of type {@link T}. <!--

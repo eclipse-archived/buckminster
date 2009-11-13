@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2view.Feature;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
@@ -58,11 +58,11 @@ public class ItemSorter
 			{
 				InstallableUnit iu = (InstallableUnit)item;
 				if(((EObject)iu).eContainer() instanceof MetadataRepository
-						&& iu.getType() != InstallableUnitType.OTHER)
+						&& InstallableUnitUtils.getType(iu) != InstallableUnitType.OTHER)
 				{
 					ius.add(iu);
 
-					if(iu.getType() == InstallableUnitType.FEATURE)
+					if(InstallableUnitUtils.getType(iu) == InstallableUnitType.FEATURE)
 						features.add(iu);
 				}
 				else

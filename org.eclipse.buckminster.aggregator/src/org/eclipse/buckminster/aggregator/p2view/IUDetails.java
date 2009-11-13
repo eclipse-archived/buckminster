@@ -9,7 +9,6 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ICopyright;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ILicense;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
@@ -37,7 +36,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
  * @model
  * @generated
  */
-public interface IUDetails extends EObject
+public interface IUDetails
 {
 	/**
 	 * Returns the value of the '<em><b>Copyright</b></em>' reference. <!-- begin-user-doc -->

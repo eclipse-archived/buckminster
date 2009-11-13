@@ -11,11 +11,10 @@ package org.eclipse.buckminster.aggregator.p2view.impl;
 
 import java.util.Collection;
 
-import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
-
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 import org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities;
 
+import org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
@@ -56,7 +55,7 @@ public class RequiredCapabilitiesImpl extends MinimalEObjectImpl.Container imple
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<RequiredCapability> requiredCapabilities;
+	protected EList<RequiredCapabilityWrapper> requiredCapabilities;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -113,7 +112,7 @@ public class RequiredCapabilitiesImpl extends MinimalEObjectImpl.Container imple
 		{
 		case P2viewPackage.REQUIRED_CAPABILITIES__REQUIRED_CAPABILITIES:
 			getRequiredCapabilities().clear();
-			getRequiredCapabilities().addAll((Collection<? extends RequiredCapability>)newValue);
+			getRequiredCapabilities().addAll((Collection<? extends RequiredCapabilityWrapper>)newValue);
 			return;
 		}
 		super.eSet(featureID, newValue);
@@ -141,12 +140,12 @@ public class RequiredCapabilitiesImpl extends MinimalEObjectImpl.Container imple
 	 * 
 	 * @generated
 	 */
-	public EList<RequiredCapability> getRequiredCapabilities()
+	public EList<RequiredCapabilityWrapper> getRequiredCapabilities()
 	{
 		if(requiredCapabilities == null)
 		{
-			requiredCapabilities = new EObjectResolvingEList<RequiredCapability>(RequiredCapability.class, this,
-					P2viewPackage.REQUIRED_CAPABILITIES__REQUIRED_CAPABILITIES);
+			requiredCapabilities = new EObjectResolvingEList<RequiredCapabilityWrapper>(
+					RequiredCapabilityWrapper.class, this, P2viewPackage.REQUIRED_CAPABILITIES__REQUIRED_CAPABILITIES);
 		}
 		return requiredCapabilities;
 	}

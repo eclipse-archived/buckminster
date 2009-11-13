@@ -9,9 +9,20 @@ package org.eclipse.buckminster.aggregator.p2.util;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.aggregator.LabelProvider;
-import org.eclipse.buckminster.aggregator.StatusProvider;
-import org.eclipse.buckminster.aggregator.p2.*;
+import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
+import org.eclipse.buckminster.aggregator.p2.Copyright;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment;
+import org.eclipse.buckminster.aggregator.p2.License;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.P2Package;
+import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
+import org.eclipse.buckminster.aggregator.p2.RepositoryReference;
+import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
+import org.eclipse.buckminster.aggregator.p2.TouchpointData;
+import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
+import org.eclipse.buckminster.aggregator.p2.TouchpointType;
+import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -374,22 +385,6 @@ public class P2Switch<T>
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Label Provider</em>'. <!-- begin-user-doc
-	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
-	 * -->
-	 * 
-	 * @param object
-	 *            the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Label Provider</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseLabelProvider(LabelProvider object)
-	{
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>License</em>'. <!-- begin-user-doc --> This
 	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -479,22 +474,6 @@ public class P2Switch<T>
 	 * @generated
 	 */
 	public T caseRequiredCapability(RequiredCapability object)
-	{
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Status Provider</em>'. <!-- begin-user-doc
-	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
-	 * -->
-	 * 
-	 * @param object
-	 *            the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Status Provider</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseStatusProvider(StatusProvider object)
 	{
 		return null;
 	}
@@ -667,8 +646,6 @@ public class P2Switch<T>
 			if(result == null)
 				result = caseIInstallableUnit(installableUnit);
 			if(result == null)
-				result = caseStatusProvider(installableUnit);
-			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -682,8 +659,6 @@ public class P2Switch<T>
 				result = caseIInstallableUnitFragment(installableUnitFragment);
 			if(result == null)
 				result = caseIInstallableUnit(installableUnitFragment);
-			if(result == null)
-				result = caseStatusProvider(installableUnitFragment);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -705,8 +680,6 @@ public class P2Switch<T>
 			if(result == null)
 				result = caseIProvidedCapability(providedCapability);
 			if(result == null)
-				result = caseLabelProvider(providedCapability);
-			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -716,8 +689,6 @@ public class P2Switch<T>
 			T result = caseRequiredCapability(requiredCapability);
 			if(result == null)
 				result = caseIRequiredCapability(requiredCapability);
-			if(result == null)
-				result = caseLabelProvider(requiredCapability);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

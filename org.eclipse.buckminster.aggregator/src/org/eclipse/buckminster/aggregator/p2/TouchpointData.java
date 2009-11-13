@@ -8,8 +8,6 @@ package org.eclipse.buckminster.aggregator.p2;
 
 import org.eclipse.emf.common.util.EMap;
 
-import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
 
 /**
@@ -26,7 +24,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.ITouchpointData"
  * @generated
  */
-public interface TouchpointData extends EObject, ITouchpointData
+public interface TouchpointData extends ITouchpointData
 {
 	/**
 	 * Returns the value of the '<em><b>Instruction Map</b></em>' map. The key is of type {@link java.lang.String}, and

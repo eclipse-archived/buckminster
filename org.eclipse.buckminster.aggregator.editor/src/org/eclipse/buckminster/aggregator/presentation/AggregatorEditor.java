@@ -30,6 +30,7 @@ import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
 import org.eclipse.buckminster.aggregator.util.OverlaidImage;
+import org.eclipse.buckminster.aggregator.util.StatusProviderAdapterFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -380,7 +381,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 		public void partDeactivated(IWorkbenchPart p)
 		{
-			handleDeactivate();
+			// Ignore.
 		}
 
 		public void partOpened(IWorkbenchPart p)
@@ -1638,10 +1639,6 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			changedResources.clear();
 			savedResources.clear();
 		}
-
-		AggregatorEditorPlugin.INSTANCE.setActiveEditingDomain(editingDomain);
-		contextActivation = ((IContextService)getSite().getWorkbenchWindow().getWorkbench().getAdapter(
-				IContextService.class)).activateContext(AGGREGATOR_EDITOR_SCOPE);
 	}
 
 	/**
@@ -1692,7 +1689,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	protected void handleDeactivate()
 	{
 		AggregatorEditorPlugin.INSTANCE.setActiveEditingDomain(null);
-		
+
 		if(contextActivation != null)
 			((IContextService)getSite().getWorkbenchWindow().getWorkbench().getAdapter(IContextService.class)).deactivateContext(contextActivation);
 	}
@@ -1845,6 +1842,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				return new ResourceItemProviderWithFontSupport(this);
 			}
 		});
+		adapterFactory.addAdapterFactory(new StatusProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new AggregatorItemProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new P2ItemProviderAdapterFactory());
 		adapterFactory.addAdapterFactory(new P2viewItemProviderAdapterFactory());

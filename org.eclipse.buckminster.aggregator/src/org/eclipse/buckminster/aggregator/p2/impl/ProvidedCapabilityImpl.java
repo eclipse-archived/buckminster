@@ -6,18 +6,12 @@
  */
 package org.eclipse.buckminster.aggregator.p2.impl;
 
-import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
@@ -31,7 +25,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.ProvidedCapabilityImpl#getName <em>Name</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.ProvidedCapabilityImpl#getNamespace <em>Namespace</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.ProvidedCapabilityImpl#getVersion <em>Version</em>}</li>
- * <li>{@link org.eclipse.buckminster.aggregator.p2.impl.ProvidedCapabilityImpl#getLabel <em>Label</em>}</li>
  * </ul>
  * </p>
  * 
@@ -109,26 +102,6 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected Version version = VERSION_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getLabel()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String LABEL_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @see #getLabel()
-	 * @generated
-	 * @ordered
-	 */
-	protected String label = LABEL_EDEFAULT;
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -136,48 +109,6 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 	protected ProvidedCapabilityImpl()
 	{
 		super();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
-	{
-		if(baseClass == LabelProvider.class)
-		{
-			switch(derivedFeatureID)
-			{
-			case P2Package.PROVIDED_CAPABILITY__LABEL:
-				return AggregatorPackage.LABEL_PROVIDER__LABEL;
-			default:
-				return -1;
-			}
-		}
-		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
-	{
-		if(baseClass == LabelProvider.class)
-		{
-			switch(baseFeatureID)
-			{
-			case AggregatorPackage.LABEL_PROVIDER__LABEL:
-				return P2Package.PROVIDED_CAPABILITY__LABEL;
-			default:
-				return -1;
-			}
-		}
-		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
 	}
 
 	/**
@@ -196,8 +127,6 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return getNamespace();
 		case P2Package.PROVIDED_CAPABILITY__VERSION:
 			return getVersion();
-		case P2Package.PROVIDED_CAPABILITY__LABEL:
-			return getLabel();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -224,10 +153,6 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 			return VERSION_EDEFAULT == null
 					? version != null
 					: !VERSION_EDEFAULT.equals(version);
-		case P2Package.PROVIDED_CAPABILITY__LABEL:
-			return LABEL_EDEFAULT == null
-					? label != null
-					: !LABEL_EDEFAULT.equals(label);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -265,9 +190,6 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		case P2Package.PROVIDED_CAPABILITY__VERSION:
 			setVersion((Version)newValue);
 			return;
-		case P2Package.PROVIDED_CAPABILITY__LABEL:
-			setLabel((String)newValue);
-			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -291,21 +213,8 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		case P2Package.PROVIDED_CAPABILITY__VERSION:
 			setVersion(VERSION_EDEFAULT);
 			return;
-		case P2Package.PROVIDED_CAPABILITY__LABEL:
-			setLabel(LABEL_EDEFAULT);
-			return;
 		}
 		super.eUnset(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public String getLabel()
-	{
-		return label;
 	}
 
 	/**
@@ -355,19 +264,6 @@ public class ProvidedCapabilityImpl extends MinimalEObjectImpl.Container impleme
 		if(getNamespace() == null || !getNamespace().equals(candidate.getNamespace()))
 			return false;
 		return candidate.getRange().isIncluded(version);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setLabel(String newLabel)
-	{
-		String oldLabel = label;
-		label = newLabel;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, P2Package.PROVIDED_CAPABILITY__LABEL, oldLabel, label));
 	}
 
 	/**

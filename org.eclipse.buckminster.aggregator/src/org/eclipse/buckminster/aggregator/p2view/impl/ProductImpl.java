@@ -10,7 +10,7 @@
 package org.eclipse.buckminster.aggregator.p2view.impl;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2view.Bundles;
 import org.eclipse.buckminster.aggregator.p2view.Features;
 import org.eclipse.buckminster.aggregator.p2view.Fragments;
@@ -21,6 +21,7 @@ import org.eclipse.buckminster.aggregator.p2view.Product;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -221,7 +222,7 @@ public class ProductImpl extends IUPresentationWithDetailsImpl implements Produc
 	 */
 	public Bundles getBundleContainer()
 	{
-		if(bundleContainer != null && bundleContainer.eIsProxy())
+		if(bundleContainer != null && ((EObject)bundleContainer).eIsProxy())
 		{
 			InternalEObject oldBundleContainer = (InternalEObject)bundleContainer;
 			bundleContainer = (Bundles)eResolveProxy(oldBundleContainer);
@@ -242,7 +243,7 @@ public class ProductImpl extends IUPresentationWithDetailsImpl implements Produc
 	 */
 	public Features getFeatureContainer()
 	{
-		if(featureContainer != null && featureContainer.eIsProxy())
+		if(featureContainer != null && ((EObject)featureContainer).eIsProxy())
 		{
 			InternalEObject oldFeatureContainer = (InternalEObject)featureContainer;
 			featureContainer = (Features)eResolveProxy(oldFeatureContainer);
@@ -263,7 +264,7 @@ public class ProductImpl extends IUPresentationWithDetailsImpl implements Produc
 	 */
 	public Fragments getFragmentContainer()
 	{
-		if(fragmentContainer != null && fragmentContainer.eIsProxy())
+		if(fragmentContainer != null && ((EObject)fragmentContainer).eIsProxy())
 		{
 			InternalEObject oldFragmentContainer = (InternalEObject)fragmentContainer;
 			fragmentContainer = (Fragments)eResolveProxy(oldFragmentContainer);

@@ -9,11 +9,7 @@
  */
 package org.eclipse.buckminster.aggregator.p2view;
 
-import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
-
 import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Required Capabilities</b></em>'. <!--
@@ -31,11 +27,11 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface RequiredCapabilities extends EObject
+public interface RequiredCapabilities
 {
 	/**
 	 * Returns the value of the '<em><b>Required Capabilities</b></em>' reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.aggregator.p2.RequiredCapability}. <!-- begin-user-doc -->
+	 * {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper}. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Required Capabilities</em>' reference list isn't clear, there really should be more of
 	 * a description here...
@@ -47,6 +43,6 @@ public interface RequiredCapabilities extends EObject
 	 * @model
 	 * @generated
 	 */
-	EList<RequiredCapability> getRequiredCapabilities();
+	EList<RequiredCapabilityWrapper> getRequiredCapabilities();
 
 } // RequiredCapabilities

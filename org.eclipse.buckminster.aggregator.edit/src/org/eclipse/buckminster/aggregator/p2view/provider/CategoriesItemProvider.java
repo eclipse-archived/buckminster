@@ -12,6 +12,7 @@ package org.eclipse.buckminster.aggregator.p2view.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
 
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
@@ -95,6 +96,7 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 		{
 			super.getPropertyDescriptors(object);
 
+			addChildrenPropertyDescriptor(object);
 			addCategoriesPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -148,6 +150,20 @@ public class CategoriesItemProvider extends AggregatorItemProviderAdapter implem
 				getString("_UI_Categories_categories_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_Categories_categories_feature", "_UI_Categories_type"),
 				P2viewPackage.Literals.CATEGORIES__CATEGORIES, false, false, true, null, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Children feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addChildrenPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_ChildrenProvider_children_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_ChildrenProvider_children_feature", "_UI_ChildrenProvider_type"),
+				AggregatorPackage.Literals.CHILDREN_PROVIDER__CHILDREN, false, false, false, null, null, null));
 	}
 
 	/**

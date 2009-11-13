@@ -95,43 +95,47 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 		switch(eClass.getClassifierID())
 		{
 		case P2viewPackage.METADATA_REPOSITORY_STRUCTURED_VIEW:
-			return createMetadataRepositoryStructuredView();
+			return (EObject)createMetadataRepositoryStructuredView();
 		case P2viewPackage.INSTALLABLE_UNITS:
-			return createInstallableUnits();
+			return (EObject)createInstallableUnits();
 		case P2viewPackage.CATEGORIES:
-			return createCategories();
+			return (EObject)createCategories();
 		case P2viewPackage.FEATURES:
-			return createFeatures();
+			return (EObject)createFeatures();
 		case P2viewPackage.PRODUCTS:
-			return createProducts();
+			return (EObject)createProducts();
 		case P2viewPackage.BUNDLES:
-			return createBundles();
+			return (EObject)createBundles();
 		case P2viewPackage.FRAGMENTS:
-			return createFragments();
+			return (EObject)createFragments();
 		case P2viewPackage.MISCELLANEOUS:
-			return createMiscellaneous();
+			return (EObject)createMiscellaneous();
 		case P2viewPackage.CATEGORY:
-			return createCategory();
+			return (EObject)createCategory();
 		case P2viewPackage.FEATURE:
-			return createFeature();
+			return (EObject)createFeature();
 		case P2viewPackage.PRODUCT:
-			return createProduct();
+			return (EObject)createProduct();
 		case P2viewPackage.BUNDLE:
-			return createBundle();
+			return (EObject)createBundle();
 		case P2viewPackage.FRAGMENT:
-			return createFragment();
+			return (EObject)createFragment();
 		case P2viewPackage.OTHER_IU:
-			return createOtherIU();
+			return (EObject)createOtherIU();
 		case P2viewPackage.PROPERTIES:
-			return createProperties();
+			return (EObject)createProperties();
 		case P2viewPackage.REQUIRED_CAPABILITIES:
-			return createRequiredCapabilities();
+			return (EObject)createRequiredCapabilities();
 		case P2viewPackage.PROVIDED_CAPABILITIES:
-			return createProvidedCapabilities();
+			return (EObject)createProvidedCapabilities();
 		case P2viewPackage.TOUCHPOINTS:
-			return createTouchpoints();
+			return (EObject)createTouchpoints();
 		case P2viewPackage.IU_DETAILS:
-			return createIUDetails();
+			return (EObject)createIUDetails();
+		case P2viewPackage.REQUIRED_CAPABILITY_WRAPPER:
+			return (EObject)createRequiredCapabilityWrapper();
+		case P2viewPackage.PROVIDED_CAPABILITY_WRAPPER:
+			return (EObject)createProvidedCapabilityWrapper();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -293,52 +297,50 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 
 	public IUDetails createIUDetails(InstallableUnit iu)
 	{
-		IUDetailsImpl iuDetails = new IUDetailsImpl();
+		IUDetails iuDetails = createIUDetails();
 
-		List<RequiredCapability> rcList = new ArrayList<RequiredCapability>();
+		List<RequiredCapabilityWrapper> rcwList = new ArrayList<RequiredCapabilityWrapper>();
 		for(RequiredCapability rc : iu.getRequiredCapabilityList())
 		{
-			if(rc.getLabel() == null)
-			{
-				CapabilityNamespace cn = CapabilityNamespace.byId(rc.getNamespace());
+			RequiredCapabilityWrapper rcw = createRequiredCapabilityWrapper(rc);
 
-				if(cn == CapabilityNamespace.UNKNOWN)
-					rc.setLabel(rc.getNamespace() + ":" + " " + rc.getName());
-				else
-					rc.setLabel(cn.getLabel() + " " + rc.getName());
-			}
+			CapabilityNamespace cn = CapabilityNamespace.byId(rc.getNamespace());
 
-			rcList.add(rc);
+			if(cn == CapabilityNamespace.UNKNOWN)
+				rcw.setLabel(rc.getNamespace() + ":" + " " + rc.getName());
+			else
+				rcw.setLabel(cn.getLabel() + " " + rc.getName());
+
+			rcwList.add(rcw);
 		}
 
-		if(rcList.size() > 0)
+		if(rcwList.size() > 0)
 		{
 			iuDetails.setRequiredCapabilitiesContainer(createRequiredCapabilities());
-			Collections.sort(rcList, LabelProvider.COMPARATOR);
-			iuDetails.getRequiredCapabilitiesContainer().getRequiredCapabilities().addAll(rcList);
+			Collections.sort(rcwList, LabelProvider.COMPARATOR);
+			iuDetails.getRequiredCapabilitiesContainer().getRequiredCapabilities().addAll(rcwList);
 		}
 
-		List<ProvidedCapability> pcList = new ArrayList<ProvidedCapability>();
+		List<ProvidedCapabilityWrapper> pcwList = new ArrayList<ProvidedCapabilityWrapper>();
 		for(ProvidedCapability pc : iu.getProvidedCapabilityList())
 		{
-			if(pc.getLabel() == null)
-			{
-				CapabilityNamespace cn = CapabilityNamespace.byId(pc.getNamespace());
+			ProvidedCapabilityWrapper pcw = createProvidedCapabilityWrapper(pc);
 
-				if(cn == CapabilityNamespace.UNKNOWN)
-					pc.setLabel(pc.getNamespace() + ":" + " " + pc.getName());
-				else
-					pc.setLabel(cn.getLabel() + " " + pc.getName());
-			}
+			CapabilityNamespace cn = CapabilityNamespace.byId(pc.getNamespace());
 
-			pcList.add(pc);
+			if(cn == CapabilityNamespace.UNKNOWN)
+				pcw.setLabel(pc.getNamespace() + ":" + " " + pc.getName());
+			else
+				pcw.setLabel(cn.getLabel() + " " + pc.getName());
+
+			pcwList.add(pcw);
 		}
 
-		if(pcList.size() > 0)
+		if(pcwList.size() > 0)
 		{
 			iuDetails.setProvidedCapabilitiesContainer(createProvidedCapabilities());
-			Collections.sort(pcList, LabelProvider.COMPARATOR);
-			iuDetails.getProvidedCapabilitiesContainer().getProvidedCapabilities().addAll(pcList);
+			Collections.sort(pcwList, LabelProvider.COMPARATOR);
+			iuDetails.getProvidedCapabilitiesContainer().getProvidedCapabilities().addAll(pcwList);
 		}
 
 		List<Property> propList = new ArrayList<Property>();
@@ -490,10 +492,44 @@ public class P2viewFactoryImpl extends EFactoryImpl implements P2viewFactory
 	 * 
 	 * @generated
 	 */
+	public ProvidedCapabilityWrapper createProvidedCapabilityWrapper()
+	{
+		ProvidedCapabilityWrapperImpl providedCapabilityWrapper = new ProvidedCapabilityWrapperImpl();
+		return providedCapabilityWrapper;
+	}
+
+	public ProvidedCapabilityWrapper createProvidedCapabilityWrapper(ProvidedCapability pc)
+	{
+		ProvidedCapabilityWrapperImpl providedCapabilityWrapper = new ProvidedCapabilityWrapperImpl(pc);
+		return providedCapabilityWrapper;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public RequiredCapabilities createRequiredCapabilities()
 	{
 		RequiredCapabilitiesImpl requiredCapabilities = new RequiredCapabilitiesImpl();
 		return requiredCapabilities;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public RequiredCapabilityWrapper createRequiredCapabilityWrapper()
+	{
+		RequiredCapabilityWrapperImpl requiredCapabilityWrapper = new RequiredCapabilityWrapperImpl();
+		return requiredCapabilityWrapper;
+	}
+
+	public RequiredCapabilityWrapper createRequiredCapabilityWrapper(RequiredCapability rc)
+	{
+		RequiredCapabilityWrapperImpl requiredCapabilityWrapper = new RequiredCapabilityWrapperImpl(rc);
+		return requiredCapabilityWrapper;
 	}
 
 	/**

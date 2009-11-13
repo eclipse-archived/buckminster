@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.ICopyright;
 
 /**
@@ -18,6 +16,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.ICopyright;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.ICopyright"
  * @generated
  */
-public interface Copyright extends EObject, ICopyright
+public interface Copyright extends ICopyright
 {
 } // Copyright

@@ -11,15 +11,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.eclipse.buckminster.aggregator.IAggregatorConstants;
-import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.Copyright;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.p2.License;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
@@ -29,12 +23,12 @@ import org.eclipse.buckminster.aggregator.p2.TouchpointData;
 import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
 import org.eclipse.buckminster.aggregator.p2.TouchpointType;
 import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
+import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -335,6 +329,95 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 */
 	protected static final int SINGLETON_EFLAG = 1 << 1;
 
+	public static ArtifactKey importToModel(IArtifactKey key)
+	{
+		if(key == null)
+			return null;
+		ArtifactKeyImpl mkey = (ArtifactKeyImpl)P2Factory.eINSTANCE.createArtifactKey();
+		mkey.setClassifier(key.getClassifier());
+		mkey.setId(key.getId());
+		mkey.setVersion(key.getVersion());
+		return mkey;
+	}
+
+	public static InstallableUnit importToModel(IInstallableUnit iu)
+	{
+		if(iu == null)
+			return null;
+
+		P2Factory factory = P2Factory.eINSTANCE;
+		InstallableUnitImpl miu;
+		if(iu instanceof IInstallableUnitFragment)
+		{
+			InstallableUnitFragmentImpl miuf = (InstallableUnitFragmentImpl)factory.createInstallableUnitFragment();
+			List<RequiredCapability> mhosts = miuf.getHostList();
+			for(IRequiredCapability host : ((IInstallableUnitFragment)iu).getHost())
+				mhosts.add(importToModel(host));
+			miu = miuf;
+		}
+		else
+			miu = (InstallableUnitImpl)factory.createInstallableUnit();
+
+		miu.setCopyright(importToModel(iu.getCopyright()));
+		miu.setFilter(iu.getFilter());
+		miu.setId(iu.getId());
+		miu.setLicense(importToModel(iu.getLicense()));
+		miu.setResolved(iu.isResolved());
+		miu.setSingleton(iu.isSingleton());
+		miu.setTouchpointType(importToModel(iu.getTouchpointType()));
+		miu.setUpdateDescriptor(importToModel(iu.getUpdateDescriptor()));
+		miu.setVersion(iu.getVersion());
+
+		@SuppressWarnings("unchecked")
+		Map<String, String> props = iu.getProperties();
+		if(props.size() > 0)
+			miu.getPropertyMap().putAll(props);
+
+		List<ArtifactKey> keys = miu.getArtifactList();
+		for(IArtifactKey key : iu.getArtifacts())
+			keys.add(importToModel(key));
+
+		List<RequiredCapability> rcs = miu.getMetaRequiredCapabilityList();
+		for(IRequiredCapability rc : iu.getMetaRequiredCapabilities())
+			rcs.add(importToModel(rc));
+
+		rcs = miu.getRequiredCapabilityList();
+		for(IRequiredCapability rc : iu.getRequiredCapabilities())
+			rcs.add(importToModel(rc));
+
+		List<ProvidedCapability> pcs = miu.getProvidedCapabilityList();
+		for(IProvidedCapability pc : iu.getProvidedCapabilities())
+			pcs.add(importToModel(pc));
+
+		List<TouchpointData> tds = miu.getTouchpointDataList();
+		for(ITouchpointData td : iu.getTouchpointData())
+			tds.add(importToModel(td));
+
+		return miu;
+	}
+
+	public static TouchpointType importToModel(ITouchpointType tpt)
+	{
+		if(tpt == null)
+			return null;
+		TouchpointTypeImpl mtpt = (TouchpointTypeImpl)P2Factory.eINSTANCE.createTouchpointType();
+		mtpt.setId(tpt.getId());
+		mtpt.setVersion(tpt.getVersion());
+		return mtpt;
+	}
+
+	public static UpdateDescriptor importToModel(IUpdateDescriptor ud)
+	{
+		if(ud == null)
+			return null;
+		UpdateDescriptorImpl mud = (UpdateDescriptorImpl)P2Factory.eINSTANCE.createUpdateDescriptor();
+		mud.setDescription(ud.getDescription());
+		mud.setId(ud.getId());
+		mud.setRange(ud.getRange());
+		mud.setSeverity(ud.getSeverity());
+		return mud;
+	}
+
 	/**
 	 * The cached value of the '{@link #getUpdateDescriptor() <em>Update Descriptor</em>}' containment reference. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -424,107 +507,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	 * @ordered
 	 */
 	protected EList<TouchpointData> touchpointDataList;
-
-	/**
-	 * The default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @see #getType()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final InstallableUnitType TYPE_EDEFAULT = InstallableUnitType.BUNDLE;
-
-	private static final Pattern proxyFragmentPattern = Pattern.compile("^//@metadataRepository/@installableUnits\\[id='([^']*)',version='([^']*)'\\]$");
-
-	public static ArtifactKey importToModel(IArtifactKey key)
-	{
-		if(key == null)
-			return null;
-		ArtifactKeyImpl mkey = (ArtifactKeyImpl)P2Factory.eINSTANCE.createArtifactKey();
-		mkey.setClassifier(key.getClassifier());
-		mkey.setId(key.getId());
-		mkey.setVersion(key.getVersion());
-		return mkey;
-	}
-
-	public static InstallableUnit importToModel(IInstallableUnit iu)
-	{
-		if(iu == null)
-			return null;
-
-		P2Factory factory = P2Factory.eINSTANCE;
-		InstallableUnitImpl miu;
-		if(iu instanceof IInstallableUnitFragment)
-		{
-			InstallableUnitFragmentImpl miuf = (InstallableUnitFragmentImpl)factory.createInstallableUnitFragment();
-			List<RequiredCapability> mhosts = miuf.getHostList();
-			for(IRequiredCapability host : ((IInstallableUnitFragment)iu).getHost())
-				mhosts.add(importToModel(host));
-			miu = miuf;
-		}
-		else
-			miu = (InstallableUnitImpl)factory.createInstallableUnit();
-
-		miu.setCopyright(importToModel(iu.getCopyright()));
-		miu.setFilter(iu.getFilter());
-		miu.setId(iu.getId());
-		miu.setLicense(importToModel(iu.getLicense()));
-		miu.setResolved(iu.isResolved());
-		miu.setSingleton(iu.isSingleton());
-		miu.setTouchpointType(importToModel(iu.getTouchpointType()));
-		miu.setUpdateDescriptor(importToModel(iu.getUpdateDescriptor()));
-		miu.setVersion(iu.getVersion());
-
-		@SuppressWarnings("unchecked")
-		Map<String, String> props = iu.getProperties();
-		if(props.size() > 0)
-			miu.getPropertyMap().putAll(props);
-
-		List<ArtifactKey> keys = miu.getArtifactList();
-		for(IArtifactKey key : iu.getArtifacts())
-			keys.add(importToModel(key));
-
-		List<RequiredCapability> rcs = miu.getMetaRequiredCapabilityList();
-		for(IRequiredCapability rc : iu.getMetaRequiredCapabilities())
-			rcs.add(importToModel(rc));
-
-		rcs = miu.getRequiredCapabilityList();
-		for(IRequiredCapability rc : iu.getRequiredCapabilities())
-			rcs.add(importToModel(rc));
-
-		List<ProvidedCapability> pcs = miu.getProvidedCapabilityList();
-		for(IProvidedCapability pc : iu.getProvidedCapabilities())
-			pcs.add(importToModel(pc));
-
-		List<TouchpointData> tds = miu.getTouchpointDataList();
-		for(ITouchpointData td : iu.getTouchpointData())
-			tds.add(importToModel(td));
-
-		return miu;
-	}
-
-	public static TouchpointType importToModel(ITouchpointType tpt)
-	{
-		if(tpt == null)
-			return null;
-		TouchpointTypeImpl mtpt = (TouchpointTypeImpl)P2Factory.eINSTANCE.createTouchpointType();
-		mtpt.setId(tpt.getId());
-		mtpt.setVersion(tpt.getVersion());
-		return mtpt;
-	}
-
-	public static UpdateDescriptor importToModel(IUpdateDescriptor ud)
-	{
-		if(ud == null)
-			return null;
-		UpdateDescriptorImpl mud = (UpdateDescriptorImpl)P2Factory.eINSTANCE.createUpdateDescriptor();
-		mud.setDescription(ud.getDescription());
-		mud.setId(ud.getId());
-		mud.setRange(ud.getRange());
-		mud.setSeverity(ud.getSeverity());
-		return mud;
-	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -680,8 +662,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 				return getPropertyMap().map();
 		case P2Package.INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST:
 			return getTouchpointDataList();
-		case P2Package.INSTALLABLE_UNIT__TYPE:
-			return getType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -766,8 +746,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 			return propertyMap != null && !propertyMap.isEmpty();
 		case P2Package.INSTALLABLE_UNIT__TOUCHPOINT_DATA_LIST:
 			return touchpointDataList != null && !touchpointDataList.isEmpty();
-		case P2Package.INSTALLABLE_UNIT__TYPE:
-			return getType() != TYPE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -796,8 +774,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 
 			if(other instanceof InstallableUnitImpl)
 			{
-				VersionedId thisVn = getVersionedNameFromProxy();
-				VersionedId otherVn = ((InstallableUnit)other).getVersionedNameFromProxy();
+				VersionedId thisVn = InstallableUnitUtils.getVersionedNameFromProxy(this);
+				VersionedId otherVn = InstallableUnitUtils.getVersionedNameFromProxy((InstallableUnit)other);
 
 				if(thisVn == null)
 				{
@@ -1146,13 +1124,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 		return requiredCapabilityList;
 	}
 
-	synchronized public int getStatus()
-	{
-		return Trivial.trim(getId()) != null
-				? StatusProvider.OK
-				: StatusProvider.BROKEN;
-	}
-
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1196,26 +1167,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
-	 */
-	public InstallableUnitType getType()
-	{
-		if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_CATEGORY)))
-			return InstallableUnitType.CATEGORY;
-		if(getId().endsWith(IAggregatorConstants.FEATURE_SUFFIX))
-			return InstallableUnitType.FEATURE;
-		if("true".equalsIgnoreCase(getProperty(IInstallableUnit.PROP_TYPE_GROUP)))
-			return InstallableUnitType.PRODUCT;
-		if(isOSGiFragment())
-			return InstallableUnitType.FRAGMENT;
-		if(isOSGiBundle())
-			return InstallableUnitType.BUNDLE;
-		return InstallableUnitType.OTHER;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public IUpdateDescriptor getUpdateDescriptor()
@@ -1231,30 +1182,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	public Version getVersion()
 	{
 		return version;
-	}
-
-	public VersionedId getVersionedName()
-	{
-		if(eIsProxy())
-			return getVersionedNameFromProxy();
-		else
-			return new VersionedId(getId(), getVersion());
-	}
-
-	public VersionedId getVersionedNameFromProxy()
-	{
-		URI uri = eProxyURI();
-		if(uri == null)
-			return null;
-
-		String frag = uri.fragment();
-		if(frag == null)
-			return null;
-
-		Matcher m = proxyFragmentPattern.matcher(frag);
-		return m.matches()
-				? new VersionedId(m.group(1), m.group(2))
-				: null;
 	}
 
 	public int hashCode()
@@ -1532,23 +1459,6 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	protected EClass eStaticClass()
 	{
 		return P2Package.Literals.INSTALLABLE_UNIT;
-	}
-
-	private boolean isOSGiBundle()
-	{
-		for(IProvidedCapability rc : getProvidedCapabilityList())
-			if(IAggregatorConstants.NAMESPACE_TYPE.equals(rc.getNamespace())
-					&& (IAggregatorConstants.CAPABILITY_TYPE_BUNDLE.equals(rc.getName()) || IAggregatorConstants.CAPABILITY_TYPE_SOURCE.equals(rc.getName())))
-				return true;
-		return false;
-	}
-
-	private boolean isOSGiFragment()
-	{
-		for(IProvidedCapability rc : getProvidedCapabilityList())
-			if(IAggregatorConstants.NAMESPACE_OSGI_FRAGMENT.equals(rc.getNamespace()))
-				return true;
-		return false;
 	}
 
 } // InstallableUnitImpl

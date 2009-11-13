@@ -12,10 +12,13 @@ package org.eclipse.buckminster.aggregator.p2view.util;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.ChildrenProvider;
+import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.p2view.*;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 
 /**
  * <!-- begin-user-doc --> The <b>Switch</b> for the model's inheritance hierarchy. It supports the call
@@ -201,6 +204,38 @@ public class P2viewSwitch<T1>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>IProvided Capability</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>IProvided Capability</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseIProvidedCapability(IProvidedCapability object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>IRequired Capability</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>IRequired Capability</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseIRequiredCapability(IRequiredCapability object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>IU Details</em>'. <!-- begin-user-doc -->
 	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -243,6 +278,22 @@ public class P2viewSwitch<T1>
 	 * @generated
 	 */
 	public T1 caseIUPresentationWithDetails(IUPresentationWithDetails object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Label Provider</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Label Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseLabelProvider(LabelProvider object)
 	{
 		return null;
 	}
@@ -355,6 +406,22 @@ public class P2viewSwitch<T1>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Provided Capability Wrapper</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Provided Capability Wrapper</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseProvidedCapabilityWrapper(ProvidedCapabilityWrapper object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Required Capabilities</em>'. <!--
 	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
 	 * end-user-doc -->
@@ -366,6 +433,22 @@ public class P2viewSwitch<T1>
 	 * @generated
 	 */
 	public T1 caseRequiredCapabilities(RequiredCapabilities object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Required Capability Wrapper</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Required Capability Wrapper</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseRequiredCapabilityWrapper(RequiredCapabilityWrapper object)
 	{
 		return null;
 	}
@@ -664,6 +747,30 @@ public class P2viewSwitch<T1>
 		{
 			IUDetails iuDetails = (IUDetails)theEObject;
 			T1 result = caseIUDetails(iuDetails);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case P2viewPackage.REQUIRED_CAPABILITY_WRAPPER:
+		{
+			RequiredCapabilityWrapper requiredCapabilityWrapper = (RequiredCapabilityWrapper)theEObject;
+			T1 result = caseRequiredCapabilityWrapper(requiredCapabilityWrapper);
+			if(result == null)
+				result = caseIRequiredCapability(requiredCapabilityWrapper);
+			if(result == null)
+				result = caseLabelProvider(requiredCapabilityWrapper);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case P2viewPackage.PROVIDED_CAPABILITY_WRAPPER:
+		{
+			ProvidedCapabilityWrapper providedCapabilityWrapper = (ProvidedCapabilityWrapper)theEObject;
+			T1 result = caseProvidedCapabilityWrapper(providedCapabilityWrapper);
+			if(result == null)
+				result = caseIProvidedCapability(providedCapabilityWrapper);
+			if(result == null)
+				result = caseLabelProvider(providedCapabilityWrapper);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

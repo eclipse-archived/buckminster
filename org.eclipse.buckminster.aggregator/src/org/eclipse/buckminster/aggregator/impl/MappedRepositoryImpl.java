@@ -26,11 +26,13 @@ import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
+import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
@@ -544,7 +546,7 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 		if(isBranchEnabled())
 		{
 			// status is ok only if MDR is not null and is resolvable
-			if(getMetadataRepository() != null && !getMetadataRepository().eIsProxy())
+			if(getMetadataRepository() != null && !((EObject)getMetadataRepository()).eIsProxy())
 			{
 				for(MappedUnit unit : getEnabledUnits())
 					if(unit.getStatus() != StatusProvider.OK)
@@ -647,7 +649,7 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 			if(oldIU != null)
 				newIU = P2Factory.eINSTANCE.createInstallableUnitProxy(repo != null
 						? repo.getLocation().toString()
-						: "", oldIU.getVersionedName());
+						: "", InstallableUnitUtils.getVersionedName(oldIU));
 
 			iuRef.setInstallableUnit(newIU);
 		}

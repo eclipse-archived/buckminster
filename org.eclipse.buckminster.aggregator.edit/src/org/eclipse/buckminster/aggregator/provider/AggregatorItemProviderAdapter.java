@@ -17,10 +17,11 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 	{
 		image = super.overlayImage(object, image);
 
-		if(object instanceof StatusProvider)
+		StatusProvider sp = (StatusProvider)getRootAdapterFactory().adapt(object, StatusProvider.class);
+
+		if(sp != null)
 		{
-			StatusProvider status = ((StatusProvider)object);
-			if(status.getStatus() == StatusProvider.BROKEN_CHILD || status.getStatus() == StatusProvider.WAITING)
+			if(sp.getStatus() == StatusProvider.BROKEN_CHILD || sp.getStatus() == StatusProvider.WAITING)
 			{
 				Object[] images = new Object[2];
 				int[] positions = new int[2];
@@ -28,7 +29,7 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 				images[0] = image;
 				positions[0] = OverlaidImage.BASIC;
 
-				if(status.getStatus() == StatusProvider.WAITING)
+				if(sp.getStatus() == StatusProvider.WAITING)
 				{
 					images[1] = getResourceLocator().getImage("full/ovr16/Loading");
 				}

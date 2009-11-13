@@ -7,20 +7,28 @@
  *
  * $Id$
  */
-package org.eclipse.buckminster.aggregator.provider;
+package org.eclipse.buckminster.aggregator.p2view.provider;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.MavenMapping;
+import org.eclipse.buckminster.aggregator.LabelProvider;
+
+import org.eclipse.buckminster.aggregator.p2.P2Package;
+
+import org.eclipse.buckminster.aggregator.p2view.P2viewPackage;
+import org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper;
+
+import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
+import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
+import org.eclipse.buckminster.aggregator.util.CapabilityNamespaceImageProvider;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
@@ -34,34 +42,40 @@ import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.MavenMapping} object. <!--
- * begin-user-doc --> <!-- end-user-doc -->
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper}
+ * object. <!-- begin-user-doc --> <!-- end-user-doc -->
  * 
  * @generated
  */
-public class MavenMappingItemProvider extends AggregatorItemProviderAdapter implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
-		IItemColorProvider, IItemFontProvider
+public class ProvidedCapabilityWrapperItemProvider extends AggregatorItemProviderAdapter implements
+		IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider,
+		IItemPropertySource, IItemColorProvider, IItemFontProvider
 {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public MavenMappingItemProvider(AdapterFactory adapterFactory)
+	public ProvidedCapabilityWrapperItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
 	}
 
 	/**
-	 * This returns MavenMapping.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns ProvidedCapabilityWrapper.gif.
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/MavenMapping"));
+		ProvidedCapabilityWrapper pcw = (ProvidedCapabilityWrapper)object;
+
+		Object image = CapabilityNamespaceImageProvider.getImage(pcw.getNamespace());
+		if(image == null)
+			image = getResourceLocator().getImage("full/obj16/ProvidedCapability");
+
+		return overlayImage(object, image);
 	}
 
 	/**
@@ -76,9 +90,10 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 		{
 			super.getPropertyDescriptors(object);
 
-			addNamePatternPropertyDescriptor(object);
-			addGroupIdPropertyDescriptor(object);
-			addArtifactIdPropertyDescriptor(object);
+			addNamePropertyDescriptor(object);
+			addNamespacePropertyDescriptor(object);
+			addVersionPropertyDescriptor(object);
+			addLabelPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -102,37 +117,7 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 	@Override
 	public String getText(Object object)
 	{
-		String label = getString("_UI_MavenMapping_type");
-		String namePattern = ((MavenMapping)object).getNamePattern();
-		String groupId = ((MavenMapping)object).getGroupId();
-		String artifactId = ((MavenMapping)object).getArtifactId();
-
-		if(namePattern == null)
-			namePattern = "";
-
-		if(groupId == null)
-			groupId = "";
-
-		if(artifactId == null)
-			artifactId = "";
-
-		return label + " ['" + namePattern + "' => '" + groupId + "/" + artifactId + "']";
-	}
-
-	@Override
-	public void notifyChanged(Notification notification)
-	{
-		notifyChangedGen(notification);
-
-		// Go through all ancestors and update labels
-		MavenMapping mapping = (MavenMapping)notification.getNotifier();
-		fireNotifyChanged(new ViewerNotification(notification, ((EObject)mapping).eResource(), false, true));
-		EObject container = ((EObject)mapping).eContainer();
-		while(container != null)
-		{
-			fireNotifyChanged(new ViewerNotification(notification, container, false, true));
-			container = container.eContainer();
-		}
+		return ((LabelProvider)object).getLabel();
 	}
 
 	/**
@@ -142,15 +127,17 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 	 * 
 	 * @generated
 	 */
-	public void notifyChangedGen(Notification notification)
+	@Override
+	public void notifyChanged(Notification notification)
 	{
 		updateChildren(notification);
 
-		switch(notification.getFeatureID(MavenMapping.class))
+		switch(notification.getFeatureID(ProvidedCapabilityWrapper.class))
 		{
-		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
-		case AggregatorPackage.MAVEN_MAPPING__GROUP_ID:
-		case AggregatorPackage.MAVEN_MAPPING__ARTIFACT_ID:
+		case P2viewPackage.PROVIDED_CAPABILITY_WRAPPER__NAME:
+		case P2viewPackage.PROVIDED_CAPABILITY_WRAPPER__NAMESPACE:
+		case P2viewPackage.PROVIDED_CAPABILITY_WRAPPER__VERSION:
+		case P2viewPackage.PROVIDED_CAPABILITY_WRAPPER__LABEL:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		}
@@ -158,47 +145,62 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 	}
 
 	/**
-	 * This adds a property descriptor for the Artifact Id feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Label feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addArtifactIdPropertyDescriptor(Object object)
+	protected void addLabelPropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MavenMapping_artifactId_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MavenMapping_artifactId_feature", "_UI_MavenMapping_type"),
-				AggregatorPackage.Literals.MAVEN_MAPPING__ARTIFACT_ID, true, false, false,
+				getString("_UI_LabelProvider_label_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_LabelProvider_label_feature", "_UI_LabelProvider_type"),
+				AggregatorPackage.Literals.LABEL_PROVIDER__LABEL, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Group Id feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Name feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addGroupIdPropertyDescriptor(Object object)
+	protected void addNamePropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MavenMapping_groupId_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MavenMapping_groupId_feature", "_UI_MavenMapping_type"),
-				AggregatorPackage.Literals.MAVEN_MAPPING__GROUP_ID, true, false, false,
+				getString("_UI_IProvidedCapability_name_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IProvidedCapability_name_feature", "_UI_IProvidedCapability_type"),
+				P2Package.Literals.IPROVIDED_CAPABILITY__NAME, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Name Pattern feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Namespace feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addNamePatternPropertyDescriptor(Object object)
+	protected void addNamespacePropertyDescriptor(Object object)
 	{
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_MavenMapping_namePattern_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MavenMapping_namePattern_feature", "_UI_MavenMapping_type"),
-				AggregatorPackage.Literals.MAVEN_MAPPING__NAME_PATTERN, true, false, false,
+				getString("_UI_IProvidedCapability_namespace_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IProvidedCapability_namespace_feature", "_UI_IProvidedCapability_type"),
+				P2Package.Literals.IPROVIDED_CAPABILITY__NAMESPACE, false, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Version feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addVersionPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_IProvidedCapability_version_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_IProvidedCapability_version_feature", "_UI_IProvidedCapability_type"),
+				P2Package.Literals.IPROVIDED_CAPABILITY__VERSION, false, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 

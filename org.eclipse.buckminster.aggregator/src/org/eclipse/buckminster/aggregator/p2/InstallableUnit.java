@@ -6,11 +6,9 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Installable Unit</b></em>'.
@@ -37,7 +35,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.IInstallableUnit"
  * @generated
  */
-public interface InstallableUnit extends IInstallableUnit, StatusProvider
+public interface InstallableUnit extends IInstallableUnit
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -143,32 +141,5 @@ public interface InstallableUnit extends IInstallableUnit, StatusProvider
 	 * @generated
 	 */
 	EList<TouchpointData> getTouchpointDataList();
-
-	/**
-	 * Returns the value of the '<em><b>Type</b></em>' attribute. The default value is <code>""</code>. The literals are
-	 * from the enumeration {@link org.eclipse.buckminster.aggregator.p2.InstallableUnitType}. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Type</em>' attribute isn't clear, there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Type</em>' attribute.
-	 * @see org.eclipse.buckminster.aggregator.p2.InstallableUnitType
-	 * @see org.eclipse.buckminster.aggregator.p2.P2Package#getInstallableUnit_Type()
-	 * @model default="" required="true" changeable="false" volatile="true"
-	 * @generated
-	 */
-	InstallableUnitType getType();
-
-	/**
-	 * Obtains the name and version information either from the proxy URI fragment or from attributes. So, it works for
-	 * both genuine instance or proxy.
-	 */
-	VersionedId getVersionedName();
-
-	/**
-	 * Obtains the name and version information from the proxy URI fragment
-	 */
-	VersionedId getVersionedNameFromProxy();
 
 } // InstallableUnit

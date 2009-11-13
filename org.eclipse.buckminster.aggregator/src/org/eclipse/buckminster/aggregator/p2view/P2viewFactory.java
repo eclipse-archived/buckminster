@@ -11,6 +11,8 @@ package org.eclipse.buckminster.aggregator.p2view;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
+import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
 import org.eclipse.emf.ecore.EFactory;
 
 /**
@@ -232,12 +234,34 @@ public interface P2viewFactory extends EFactory
 	ProvidedCapabilities createProvidedCapabilities();
 
 	/**
+	 * Returns a new object of class '<em>Provided Capability Wrapper</em>'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return a new object of class '<em>Provided Capability Wrapper</em>'.
+	 * @generated
+	 */
+	ProvidedCapabilityWrapper createProvidedCapabilityWrapper();
+
+	ProvidedCapabilityWrapper createProvidedCapabilityWrapper(ProvidedCapability pc);
+
+	/**
 	 * Returns a new object of class '<em>Required Capabilities</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Required Capabilities</em>'.
 	 * @generated
 	 */
 	RequiredCapabilities createRequiredCapabilities();
+
+	/**
+	 * Returns a new object of class '<em>Required Capability Wrapper</em>'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return a new object of class '<em>Required Capability Wrapper</em>'.
+	 * @generated
+	 */
+	RequiredCapabilityWrapper createRequiredCapabilityWrapper();
+
+	RequiredCapabilityWrapper createRequiredCapabilityWrapper(RequiredCapability rc);
 
 	/**
 	 * Returns a new object of class '<em>Touchpoints</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->

@@ -1232,7 +1232,7 @@ public class Builder extends AbstractCommand implements IApplication
 						Integer.valueOf(content.size()));
 
 			aggregator = (Aggregator)content.get(0);
-			Diagnostic diag = Diagnostician.INSTANCE.validate(aggregator);
+			Diagnostic diag = Diagnostician.INSTANCE.validate((EObject)aggregator);
 			if(diag.getSeverity() == Diagnostic.ERROR)
 			{
 				Logger log = Buckminster.getLogger();

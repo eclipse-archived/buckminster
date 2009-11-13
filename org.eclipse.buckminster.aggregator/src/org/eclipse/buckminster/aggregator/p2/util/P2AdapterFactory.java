@@ -8,9 +8,20 @@ package org.eclipse.buckminster.aggregator.p2.util;
 
 import java.util.Map;
 
-import org.eclipse.buckminster.aggregator.LabelProvider;
-import org.eclipse.buckminster.aggregator.StatusProvider;
-import org.eclipse.buckminster.aggregator.p2.*;
+import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
+import org.eclipse.buckminster.aggregator.p2.Copyright;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.p2.InstallableUnitFragment;
+import org.eclipse.buckminster.aggregator.p2.License;
+import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.p2.P2Package;
+import org.eclipse.buckminster.aggregator.p2.ProvidedCapability;
+import org.eclipse.buckminster.aggregator.p2.RepositoryReference;
+import org.eclipse.buckminster.aggregator.p2.RequiredCapability;
+import org.eclipse.buckminster.aggregator.p2.TouchpointData;
+import org.eclipse.buckminster.aggregator.p2.TouchpointInstruction;
+import org.eclipse.buckminster.aggregator.p2.TouchpointType;
+import org.eclipse.buckminster.aggregator.p2.UpdateDescriptor;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
@@ -175,12 +186,6 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
-		public Adapter caseLabelProvider(LabelProvider object)
-		{
-			return createLabelProviderAdapter();
-		}
-
-		@Override
 		public Adapter caseLicense(License object)
 		{
 			return createLicenseAdapter();
@@ -214,12 +219,6 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 		public Adapter caseRequiredCapability(RequiredCapability object)
 		{
 			return createRequiredCapabilityAdapter();
-		}
-
-		@Override
-		public Adapter caseStatusProvider(StatusProvider object)
-		{
-			return createStatusProviderAdapter();
 		}
 
 		@Override
@@ -594,21 +593,6 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.LabelProvider
-	 * <em>Label Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
-	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
-	 * -->
-	 * 
-	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.aggregator.LabelProvider
-	 * @generated
-	 */
-	public Adapter createLabelProviderAdapter()
-	{
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.p2.License
 	 * <em>License</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore
 	 * cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
@@ -692,21 +676,6 @@ public class P2AdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createRequiredCapabilityAdapter()
-	{
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.StatusProvider
-	 * <em>Status Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can
-	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
-	 * end-user-doc -->
-	 * 
-	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.aggregator.StatusProvider
-	 * @generated
-	 */
-	public Adapter createStatusProviderAdapter()
 	{
 		return null;
 	}

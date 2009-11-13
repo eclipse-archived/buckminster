@@ -10,9 +10,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
+import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.p2.InstallableUnitType;
+import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -128,7 +129,7 @@ public class ProductItemProvider extends MappedUnitItemProvider implements IEdit
 			@Override
 			public boolean isMatch(Object candidate)
 			{
-				return ((InstallableUnit)candidate).getType() == InstallableUnitType.PRODUCT;
+				return InstallableUnitUtils.getType((InstallableUnit)candidate) == InstallableUnitType.PRODUCT;
 			}
 		};
 	}

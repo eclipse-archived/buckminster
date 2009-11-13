@@ -6,8 +6,6 @@
  */
 package org.eclipse.buckminster.aggregator.p2;
 
-import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 
 /**
@@ -18,6 +16,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
  * @model superTypes="org.eclipse.buckminster.aggregator.p2.IArtifactKey"
  * @generated
  */
-public interface ArtifactKey extends EObject, IArtifactKey
+public interface ArtifactKey extends IArtifactKey
 {
 } // ArtifactKey

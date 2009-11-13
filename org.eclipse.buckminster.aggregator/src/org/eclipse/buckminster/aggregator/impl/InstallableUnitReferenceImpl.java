@@ -15,14 +15,12 @@ import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.StatusProvider;
-
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-
+import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
@@ -176,7 +174,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 */
 	public InstallableUnit getInstallableUnitGen()
 	{
-		if(installableUnit != null && installableUnit.eIsProxy())
+		if(installableUnit != null && ((EObject)installableUnit).eIsProxy())
 		{
 			InternalEObject oldInstallableUnit = (InternalEObject)installableUnit;
 			installableUnit = (InstallableUnit)eResolveProxy(oldInstallableUnit);
@@ -202,7 +200,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 			return StatusProvider.BROKEN_CHILD;
 
 		if(isBranchEnabled() && getInstallableUnit() != null
-				&& getInstallableUnit().getStatus() == StatusProvider.BROKEN)
+				&& InstallableUnitUtils.getStatus(getInstallableUnit()) == StatusProvider.BROKEN)
 			return StatusProvider.BROKEN_CHILD;
 
 		return StatusProvider.OK;
@@ -227,7 +225,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 		if(!mappedRepository.isEnabled())
 			return false;
 
-		Contribution contribution = (Contribution)mappedRepository.eContainer();
+		Contribution contribution = (Contribution)((EObject)mappedRepository).eContainer();
 		if(contribution != null && !contribution.isEnabled())
 			return false;
 

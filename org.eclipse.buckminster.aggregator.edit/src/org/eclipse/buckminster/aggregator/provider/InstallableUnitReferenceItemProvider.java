@@ -22,10 +22,12 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
+import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
@@ -156,7 +158,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 			public Collection<?> getChoiceOfValues(Object object)
 			{
 				InstallableUnitReference self = (InstallableUnitReference)object;
-				MappedRepository container = (MappedRepository)self.eContainer();
+				MappedRepository container = (MappedRepository)((EObject)self).eContainer();
 				MetadataRepository repo = container.getMetadataRepository();
 				if(repo == null)
 					return Collections.singleton(null);
@@ -213,7 +215,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 			id = Trivial.trim(iu.getId());
 			if(id == null)
 			{
-				VersionedId vn = iu.getVersionedNameFromProxy();
+				VersionedId vn = InstallableUnitUtils.getVersionedNameFromProxy(iu);
 				if(vn != null)
 				{
 					id = vn.getId();
@@ -242,7 +244,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 			id = id.substring(0, id.length() - IAggregatorConstants.FEATURE_SUFFIX.length());
 		bld.append(id);
 		bld.append(" / ");
-		bld.append(version);
+		bld.append(GeneralUtils.stringifyVersion(version));
 		if(name != null)
 		{
 			bld.append(" (");

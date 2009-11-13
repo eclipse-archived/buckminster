@@ -24,6 +24,7 @@ import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
@@ -41,7 +42,7 @@ public class ResourceUtils
 	 */
 	public static void cleanUpResources(Aggregator aggregator)
 	{
-		Resource topResource = aggregator.eResource();
+		Resource topResource = ((EObject)aggregator).eResource();
 		ResourceSet topSet = topResource.getResourceSet();
 
 		synchronized(topSet)
@@ -67,9 +68,10 @@ public class ResourceUtils
 						{
 							InstallableUnit originalIU = unit.getInstallableUnit(false);
 
-							if(!originalIU.eIsProxy())
+							if(!((EObject)originalIU).eIsProxy())
 								unit.setInstallableUnit(P2Factory.eINSTANCE.createInstallableUnitProxy(
-										mappedRepository.getLocation(), originalIU.getVersionedName()));
+										mappedRepository.getLocation(),
+										InstallableUnitUtils.getVersionedName(originalIU)));
 						}
 
 						// avoid notification recursion - set to null only if it not null yet
@@ -141,7 +143,7 @@ public class ResourceUtils
 
 		if(mdr == null)
 		{
-			Resource resource = repoRef.eResource();
+			Resource resource = ((EObject)repoRef).eResource();
 			if(resource != null && resource instanceof MetadataRepositoryResourceImpl
 					&& ((MetadataRepositoryResourceImpl)resource).getLastException() != null)
 				throw BuckminsterException.wrap(((MetadataRepositoryResourceImpl)resource).getLastException());

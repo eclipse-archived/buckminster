@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -184,6 +185,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * 
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
@@ -278,7 +280,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 */
 	public MetadataRepository getMetadataRepositoryGen()
 	{
-		if(metadataRepository != null && metadataRepository.eIsProxy())
+		if(metadataRepository != null && ((EObject)metadataRepository).eIsProxy())
 		{
 			InternalEObject oldMetadataRepository = (InternalEObject)metadataRepository;
 			metadataRepository = (MetadataRepository)eResolveProxy(oldMetadataRepository);
@@ -339,7 +341,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		if(colonIdx <= 0)
 		{
 			// Not a valid scheme so assume relative path
-			URI base = getAggregator().eResource().getURI();
+			URI base = ((EObject)getAggregator()).eResource().getURI();
 			if(base != null)
 				location = base.trimSegments(1).appendSegments(StringHelper.getArrayFromString(location, '/')).toString();
 		}
@@ -357,7 +359,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		if(isBranchEnabled())
 		{
 			// status is ok only if MDR is not null and is resolvable
-			if(getMetadataRepository() != null && !getMetadataRepository().eIsProxy())
+			if(getMetadataRepository() != null && !((EObject)getMetadataRepository()).eIsProxy())
 				return StatusProvider.OK;
 			else
 			{

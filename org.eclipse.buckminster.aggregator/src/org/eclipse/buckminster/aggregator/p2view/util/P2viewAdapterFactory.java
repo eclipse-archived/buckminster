@@ -10,6 +10,7 @@
 package org.eclipse.buckminster.aggregator.p2view.util;
 
 import org.eclipse.buckminster.aggregator.ChildrenProvider;
+import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.p2view.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -18,6 +19,8 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 
 /**
  * <!-- begin-user-doc --> The <b>Adapter Factory</b> for the model. It provides an adapter <code>createXXX</code>
@@ -103,6 +106,18 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
+		public Adapter caseIProvidedCapability(IProvidedCapability object)
+		{
+			return createIProvidedCapabilityAdapter();
+		}
+
+		@Override
+		public Adapter caseIRequiredCapability(IRequiredCapability object)
+		{
+			return createIRequiredCapabilityAdapter();
+		}
+
+		@Override
 		public Adapter caseIUDetails(IUDetails object)
 		{
 			return createIUDetailsAdapter();
@@ -118,6 +133,12 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseIUPresentationWithDetails(IUPresentationWithDetails object)
 		{
 			return createIUPresentationWithDetailsAdapter();
+		}
+
+		@Override
+		public Adapter caseLabelProvider(LabelProvider object)
+		{
+			return createLabelProviderAdapter();
 		}
 
 		@Override
@@ -163,9 +184,21 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
+		public Adapter caseProvidedCapabilityWrapper(ProvidedCapabilityWrapper object)
+		{
+			return createProvidedCapabilityWrapperAdapter();
+		}
+
+		@Override
 		public Adapter caseRequiredCapabilities(RequiredCapabilities object)
 		{
 			return createRequiredCapabilitiesAdapter();
+		}
+
+		@Override
+		public Adapter caseRequiredCapabilityWrapper(RequiredCapabilityWrapper object)
+		{
+			return createRequiredCapabilityWrapperAdapter();
 		}
 
 		@Override
@@ -368,6 +401,36 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability <em>IProvided Capability</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful
+	 * to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability
+	 * @generated
+	 */
+	public Adapter createIProvidedCapabilityAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability <em>IRequired Capability</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful
+	 * to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability
+	 * @generated
+	 */
+	public Adapter createIRequiredCapabilityAdapter()
+	{
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.p2view.IUDetails
 	 * <em>IU Details</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
 	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
@@ -408,6 +471,21 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createIUPresentationWithDetailsAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.LabelProvider
+	 * <em>Label Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.LabelProvider
+	 * @generated
+	 */
+	public Adapter createLabelProviderAdapter()
 	{
 		return null;
 	}
@@ -519,6 +597,21 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 
 	/**
 	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper <em>Provided Capability Wrapper</em>}
+	 * '. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.p2view.ProvidedCapabilityWrapper
+	 * @generated
+	 */
+	public Adapter createProvidedCapabilityWrapperAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
 	 * {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilities <em>Required Capabilities</em>}'. <!--
 	 * begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful to
 	 * ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
@@ -528,6 +621,21 @@ public class P2viewAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createRequiredCapabilitiesAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper <em>Required Capability Wrapper</em>}
+	 * '. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper
+	 * @generated
+	 */
+	public Adapter createRequiredCapabilityWrapperAdapter()
 	{
 		return null;
 	}

@@ -15,6 +15,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
@@ -288,7 +289,7 @@ public class ContactImpl extends MinimalEObjectImpl.Container implements Contact
 		if(newAggregator != eInternalContainer()
 				|| (eContainerFeatureID() != AggregatorPackage.CONTACT__AGGREGATOR && newAggregator != null))
 		{
-			if(EcoreUtil.isAncestor(this, newAggregator))
+			if(EcoreUtil.isAncestor(this, (EObject)newAggregator))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
 			if(eInternalContainer() != null)
