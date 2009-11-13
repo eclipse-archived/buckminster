@@ -373,12 +373,18 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 	{
 		EList<EObject> children = new BasicEList<EObject>();
 
-		children.add((EObject)getCategoryContainer());
-		children.add((EObject)getFeatureContainer());
-		children.add((EObject)getProductContainer());
-		children.add((EObject)getBundleContainer());
-		children.add((EObject)getFragmentContainer());
-		children.add((EObject)getMiscellaneousContainer());
+		if(getCategoryContainer() != null)
+			children.add((EObject)getCategoryContainer());
+		if(getFeatureContainer() != null)		
+			children.add((EObject)getFeatureContainer());
+		if(getProductContainer() != null)		
+			children.add((EObject)getProductContainer());
+		if(getBundleContainer() != null)		
+			children.add((EObject)getBundleContainer());
+		if(getFragmentContainer() != null)		
+			children.add((EObject)getFragmentContainer());
+		if(getMiscellaneousContainer() != null)		
+			children.add((EObject)getMiscellaneousContainer());
 
 		return children;
 	}

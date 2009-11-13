@@ -18,6 +18,7 @@ import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
+import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -185,7 +186,6 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
@@ -469,8 +469,12 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 */
 	public void startRepositoryLoad(final boolean forceReload)
 	{
-		if(getLocation() == null)
+		if(GeneralUtils.trimmedOrNull(getLocation()) == null)
+		{
+			setMetadataRepository(null);
+			onRepositoryLoad();
 			return;
+		}
 
 		final String resolvedLocation = getResolvedLocation();
 		final Aggregator aggregator = getAggregator();
