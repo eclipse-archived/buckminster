@@ -340,7 +340,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	/**
 	 * This listens for when the outline becomes active <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	protected IPartListener partListener = new IPartListener()
 	{
@@ -381,7 +381,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 		public void partDeactivated(IWorkbenchPart p)
 		{
-			// Ignore.
+			handleDeactivate();
 		}
 
 		public void partOpened(IWorkbenchPart p)
@@ -1604,7 +1604,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	/**
 	 * Handles activation of the editor or it's associated views. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	protected void handleActivate()
 	{
@@ -1639,6 +1639,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			changedResources.clear();
 			savedResources.clear();
 		}
+
+		AggregatorEditorPlugin.INSTANCE.setActiveEditingDomain(editingDomain);
+		contextActivation = ((IContextService)getSite().getWorkbenchWindow().getWorkbench().getAdapter(
+				IContextService.class)).activateContext(AGGREGATOR_EDITOR_SCOPE);
 	}
 
 	/**
