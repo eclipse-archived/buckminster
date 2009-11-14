@@ -4,7 +4,7 @@ Bundle-Name: Core
 Bundle-SymbolicName: org.eclipse.b3.core
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.b3.internal.core.BuildBundle
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.buckminster.runtime;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
