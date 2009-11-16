@@ -375,15 +375,15 @@ public class InstallableUnitsImpl extends MinimalEObjectImpl.Container implement
 
 		if(getCategoryContainer() != null)
 			children.add((EObject)getCategoryContainer());
-		if(getFeatureContainer() != null)		
+		if(getFeatureContainer() != null)
 			children.add((EObject)getFeatureContainer());
-		if(getProductContainer() != null)		
+		if(getProductContainer() != null)
 			children.add((EObject)getProductContainer());
-		if(getBundleContainer() != null)		
+		if(getBundleContainer() != null)
 			children.add((EObject)getBundleContainer());
-		if(getFragmentContainer() != null)		
+		if(getFragmentContainer() != null)
 			children.add((EObject)getFragmentContainer());
-		if(getMiscellaneousContainer() != null)		
+		if(getMiscellaneousContainer() != null)
 			children.add((EObject)getMiscellaneousContainer());
 
 		return children;

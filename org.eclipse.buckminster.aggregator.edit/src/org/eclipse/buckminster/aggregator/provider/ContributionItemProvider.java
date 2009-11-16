@@ -64,7 +64,7 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource,
 		IItemColorProvider, IItemFontProvider
 {
-	static class DynamicItemPropertyDescriptor extends ItemPropertyDescriptor
+	static class DynamicItemPropertyDescriptor extends AggregatorItemPropertyDescriptor
 	{
 
 		public DynamicItemPropertyDescriptor(AdapterFactory adapterFactory, ResourceLocator resourceLocator,
