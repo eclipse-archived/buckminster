@@ -76,7 +76,6 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 		{
 			super.getPropertyDescriptors(object);
 
-			addStatusPropertyDescriptor(object);
 			addNamePatternPropertyDescriptor(object);
 			addGroupIdPropertyDescriptor(object);
 			addArtifactIdPropertyDescriptor(object);
@@ -201,20 +200,6 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 						"_UI_MavenMapping_namePattern_feature", "_UI_MavenMapping_type"),
 				AggregatorPackage.Literals.MAVEN_MAPPING__NAME_PATTERN, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Status feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addStatusPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_StatusProvider_status_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_StatusProvider_status_feature", "_UI_StatusProvider_type"),
-				AggregatorPackage.Literals.STATUS_PROVIDER__STATUS, true, false, true, null, null, null));
 	}
 
 	/**

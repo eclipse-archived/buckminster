@@ -91,7 +91,6 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 		{
 			super.getPropertyDescriptors(object);
 
-			addStatusPropertyDescriptor(object);
 			addInstallableUnitPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -203,20 +202,6 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 				return result;
 			}
 		});
-	}
-
-	/**
-	 * This adds a property descriptor for the Status feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addStatusPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_StatusProvider_status_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_StatusProvider_status_feature", "_UI_StatusProvider_type"),
-				AggregatorPackage.Literals.STATUS_PROVIDER__STATUS, true, false, true, null, null, null));
 	}
 
 	protected boolean appendIUText(Object iuRef, StringBuilder bld)

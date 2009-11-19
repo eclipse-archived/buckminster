@@ -60,7 +60,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	/**
 	 * This looks up a string in the plugin's plugin.properties file. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	private static String getString(String key)
 	{
@@ -95,16 +95,6 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * @ordered
 	 */
 	protected static final int ENABLED_EFLAG = 1 << 0;
-
-	/**
-	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getStatus()
-	 * @generated
-	 * @ordered
-	 */
-	protected Status status;
 
 	/**
 	 * The cached value of the '{@link #getMetadataRepository() <em>Metadata Repository</em>}' reference. <!--
@@ -166,16 +156,6 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * 
 	 * @generated
 	 */
-	public Status basicGetStatus()
-	{
-		return status;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
 	{
@@ -226,9 +206,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
 			return isEnabled();
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__STATUS:
-			if(resolve)
-				return getStatus();
-			return basicGetStatus();
+			return getStatus();
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY:
 			if(resolve)
 				return getMetadataRepository();
@@ -252,7 +230,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
 			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__STATUS:
-			return status != null;
+			return getStatus() != null;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY:
 			return metadataRepository != null;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:

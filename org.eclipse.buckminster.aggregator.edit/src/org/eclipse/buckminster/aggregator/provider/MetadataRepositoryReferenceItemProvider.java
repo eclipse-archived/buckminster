@@ -113,7 +113,6 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 			super.getPropertyDescriptors(object);
 
 			addEnabledPropertyDescriptor(object);
-			addStatusPropertyDescriptor(object);
 			addLocationPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -361,20 +360,6 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 				return repos;
 			}
 		});
-	}
-
-	/**
-	 * This adds a property descriptor for the Status feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addStatusPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_StatusProvider_status_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_StatusProvider_status_feature", "_UI_StatusProvider_type"),
-				AggregatorPackage.Literals.STATUS_PROVIDER__STATUS, true, false, true, null, null, null));
 	}
 
 	/**

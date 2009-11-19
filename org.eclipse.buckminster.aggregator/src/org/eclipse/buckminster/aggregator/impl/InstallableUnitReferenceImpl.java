@@ -54,7 +54,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	/**
 	 * This looks up a string in the plugin's plugin.properties file. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	private static String getString(String key)
 	{
@@ -69,16 +69,6 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 * @ordered
 	 */
 	protected int eFlags = 0;
-
-	/**
-	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getStatus()
-	 * @generated
-	 * @ordered
-	 */
-	protected Status status;
 
 	/**
 	 * The cached value of the '{@link #getInstallableUnit() <em>Installable Unit</em>}' reference. <!-- begin-user-doc
@@ -115,25 +105,13 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 * 
 	 * @generated
 	 */
-	public Status basicGetStatus()
-	{
-		return status;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__STATUS:
-			if(resolve)
-				return getStatus();
-			return basicGetStatus();
+			return getStatus();
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
 			if(resolve)
 				return getInstallableUnit();
@@ -153,7 +131,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 		switch(featureID)
 		{
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__STATUS:
-			return status != null;
+			return getStatus() != null;
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
 			return installableUnit != null;
 		}

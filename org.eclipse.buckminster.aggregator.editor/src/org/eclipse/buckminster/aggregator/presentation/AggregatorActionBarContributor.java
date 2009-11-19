@@ -101,11 +101,17 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.xml.sax.SAXException;
@@ -546,6 +552,49 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 								false, false, false, false, getString("_UI_More_matching_IUs_were_found"),
 								getString("_UI_select_IU"))
 						{
+							class MouseListener extends MouseTrackAdapter implements MouseMoveListener
+							{
+								private Tree m_tree;
+
+								private TreeItem m_lastSelectedTreeItem;
+
+								public MouseListener(Tree tree)
+								{
+									m_tree = tree;
+								}
+
+								@Override
+								public void mouseExit(MouseEvent e)
+								{
+									if(m_lastSelectedTreeItem != null)
+									{
+										m_lastSelectedTreeItem.setBackground(null);
+										m_lastSelectedTreeItem = null;
+									}
+								}
+
+								public void mouseMove(MouseEvent e)
+								{
+									TreeItem item = m_tree.getItem(new Point(e.x, e.y));
+
+									// only IU can be selected - MDR selects its first child
+									if(item != null && item.getItemCount() > 0)
+										item = item.getItem(0);
+
+									if(item == m_lastSelectedTreeItem)
+										return;
+
+									if(m_lastSelectedTreeItem != null)
+										m_lastSelectedTreeItem.setBackground(null);
+
+									if(item != null)
+										item.setBackground(m_tree.getDisplay().getSystemColor(
+												SWT.COLOR_WIDGET_LIGHT_SHADOW));
+
+									m_lastSelectedTreeItem = item;
+								}
+							}
+
 							protected Control createDialogArea(Composite parent)
 							{
 								Composite composite = (Composite)super.createDialogArea(parent);
@@ -658,6 +707,11 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 									}
 								});
+
+								MouseListener ml = new MouseListener(treeViewer.getTree());
+								treeViewer.getTree().addMouseTrackListener(ml);
+								treeViewer.getTree().addMouseMoveListener(ml);
+
 								treeViewer.setInput(foundIUs);
 								treeViewer.expandAll();
 								return composite;

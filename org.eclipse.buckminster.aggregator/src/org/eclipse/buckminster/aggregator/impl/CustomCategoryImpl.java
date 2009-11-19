@@ -51,16 +51,6 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	protected int eFlags = 0;
 
 	/**
-	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getStatus()
-	 * @generated
-	 * @ordered
-	 */
-	protected Status status;
-
-	/**
 	 * The default value of the '{@link #getIdentifier() <em>Identifier</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -145,25 +135,13 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	 * 
 	 * @generated
 	 */
-	public Status basicGetStatus()
-	{
-		return status;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
 		case AggregatorPackage.CUSTOM_CATEGORY__STATUS:
-			if(resolve)
-				return getStatus();
-			return basicGetStatus();
+			return getStatus();
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 			return getIdentifier();
 		case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
@@ -220,7 +198,7 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 		switch(featureID)
 		{
 		case AggregatorPackage.CUSTOM_CATEGORY__STATUS:
-			return status != null;
+			return getStatus() != null;
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 			return IDENTIFIER_EDEFAULT == null
 					? identifier != null

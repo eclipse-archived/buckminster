@@ -51,6 +51,11 @@
       <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//InstallableUnitType/FRAGMENT"/>
       <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//InstallableUnitType/OTHER"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Aggregator.ecore#//StatusCode">
+      <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//StatusCode/OK"/>
+      <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//StatusCode/BROKEN"/>
+      <genEnumLiterals ecoreEnumLiteral="Aggregator.ecore#//StatusCode/WAITING"/>
+    </genEnums>
     <genDataTypes ecoreDataType="Aggregator.ecore#//URI"/>
     <genClasses ecoreClass="Aggregator.ecore#//Aggregator" labelFeature="#//aggregator/Aggregator/label">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Aggregator.ecore#//Aggregator/configurations"/>
@@ -165,9 +170,6 @@
       </genOperations>
       <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/onRepositoryLoad"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="Aggregator.ecore#//StatusProvider">
-      <genOperations ecoreOperation="Aggregator.ecore#//StatusProvider/getStatus"/>
-    </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Comparable">
       <genTypeParameters ecoreTypeParameter="Aggregator.ecore#//Comparable/T"/>
     </genClasses>
@@ -192,6 +194,13 @@
     <genClasses image="false" ecoreClass="Aggregator.ecore#//ChildrenProvider">
       <genTypeParameters ecoreTypeParameter="Aggregator.ecore#//ChildrenProvider/T"/>
       <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//ChildrenProvider/children"/>
+    </genClasses>
+    <genClasses ecoreClass="Aggregator.ecore#//Status">
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Status/code"/>
+      <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//Status/message"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="Aggregator.ecore#//StatusProvider">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//StatusProvider/status"/>
     </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" multipleEditorPages="false"
         generateModelWizard="false" ecorePackage="Aggregator.ecore#//p2">

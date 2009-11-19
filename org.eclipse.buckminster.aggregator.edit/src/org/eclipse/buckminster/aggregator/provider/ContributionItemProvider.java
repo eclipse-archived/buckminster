@@ -207,7 +207,6 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 
 			addEnabledPropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
-			addStatusPropertyDescriptor(object);
 			addLabelPropertyDescriptor(object);
 			addContactsPropertyDescriptor(object);
 			addMavenMappingsPropertyDescriptor(object);
@@ -444,20 +443,6 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 				getString("_UI_Contribution_mavenMappings_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_Contribution_mavenMappings_feature", "_UI_Contribution_type"),
 				AggregatorPackage.Literals.CONTRIBUTION__MAVEN_MAPPINGS, true, false, true, null, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Status feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addStatusPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_StatusProvider_status_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_StatusProvider_status_feature", "_UI_StatusProvider_type"),
-				AggregatorPackage.Literals.STATUS_PROVIDER__STATUS, true, false, true, null, null, null));
 	}
 
 	/**

@@ -100,16 +100,6 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	protected String description = DESCRIPTION_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getStatus()
-	 * @generated
-	 * @ordered
-	 */
-	protected Status status;
-
-	/**
 	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -168,16 +158,6 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	{
 		super();
 		eFlags |= ENABLED_EFLAG;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Status basicGetStatus()
-	{
-		return status;
 	}
 
 	/**
@@ -257,9 +237,7 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
 			return getDescription();
 		case AggregatorPackage.CONTRIBUTION__STATUS:
-			if(resolve)
-				return getStatus();
-			return basicGetStatus();
+			return getStatus();
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			return getLabel();
 		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
@@ -307,7 +285,7 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 					? description != null
 					: !DESCRIPTION_EDEFAULT.equals(description);
 		case AggregatorPackage.CONTRIBUTION__STATUS:
-			return status != null;
+			return getStatus() != null;
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			return LABEL_EDEFAULT == null
 					? label != null

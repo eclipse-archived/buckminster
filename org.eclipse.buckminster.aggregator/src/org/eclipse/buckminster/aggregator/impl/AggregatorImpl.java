@@ -63,16 +63,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
 public class AggregatorImpl extends DescriptionProviderImpl implements Aggregator
 {
 	/**
-	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getStatus()
-	 * @generated
-	 * @ordered
-	 */
-	protected Status status;
-
-	/**
 	 * The cached value of the '{@link #getConfigurations() <em>Configurations</em>}' containment reference list. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -341,16 +331,6 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	 * 
 	 * @generated
 	 */
-	public Status basicGetStatus()
-	{
-		return status;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
 	{
@@ -399,9 +379,7 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		switch(featureID)
 		{
 		case AggregatorPackage.AGGREGATOR__STATUS:
-			if(resolve)
-				return getStatus();
-			return basicGetStatus();
+			return getStatus();
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			return getConfigurations();
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
@@ -488,7 +466,7 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		switch(featureID)
 		{
 		case AggregatorPackage.AGGREGATOR__STATUS:
-			return status != null;
+			return getStatus() != null;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			return configurations != null && !configurations.isEmpty();
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:

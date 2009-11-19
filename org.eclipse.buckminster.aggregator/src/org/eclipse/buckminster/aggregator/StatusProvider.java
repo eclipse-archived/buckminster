@@ -30,7 +30,7 @@ public interface StatusProvider
 	 * 
 	 * @return the value of the '<em>Status</em>' reference.
 	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getStatusProvider_Status()
-	 * @model required="true" transient="true" changeable="false"
+	 * @model resolveProxies="false" required="true" transient="true" changeable="false" volatile="true"
 	 * @generated
 	 */
 	Status getStatus();

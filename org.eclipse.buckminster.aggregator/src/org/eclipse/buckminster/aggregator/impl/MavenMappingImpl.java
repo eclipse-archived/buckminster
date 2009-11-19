@@ -53,16 +53,6 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	protected int eFlags = 0;
 
 	/**
-	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see #getStatus()
-	 * @generated
-	 * @ordered
-	 */
-	protected Status status;
-
-	/**
 	 * The default value of the '{@link #getNamePattern() <em>Name Pattern</em>}' attribute. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
@@ -144,25 +134,13 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	 * 
 	 * @generated
 	 */
-	public Status basicGetStatus()
-	{
-		return status;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
 		case AggregatorPackage.MAVEN_MAPPING__STATUS:
-			if(resolve)
-				return getStatus();
-			return basicGetStatus();
+			return getStatus();
 		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
 			return getNamePattern();
 		case AggregatorPackage.MAVEN_MAPPING__GROUP_ID:
@@ -184,7 +162,7 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 		switch(featureID)
 		{
 		case AggregatorPackage.MAVEN_MAPPING__STATUS:
-			return status != null;
+			return getStatus() != null;
 		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
 			return NAME_PATTERN_EDEFAULT == null
 					? namePattern != null

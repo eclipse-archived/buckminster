@@ -54,6 +54,17 @@ public class StatusItemProvider extends AggregatorItemProviderAdapter implements
 	}
 
 	/**
+	 * This returns Status.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Object getImage(Object object)
+	{
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/Status"));
+	}
+
+	/**
 	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
