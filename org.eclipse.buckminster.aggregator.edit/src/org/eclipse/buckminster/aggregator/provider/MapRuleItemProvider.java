@@ -10,16 +10,20 @@
 package org.eclipse.buckminster.aggregator.provider;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.MapRule;
+import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
+import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemColorProvider;
@@ -86,14 +90,47 @@ public class MapRuleItemProvider extends InstallableUnitReferenceItemProvider im
 	}
 
 	/**
+	 * 
+	 * @generated NOT
+	 */
+	@Override
+	public void notifyChanged(Notification notification)
+	{
+		notifyChangedGen(notification);
+
+		if(notification.getEventType() != Notification.SET)
+			return;
+		MapRule notifier = ((MapRule)notification.getNotifier());
+		switch(notification.getFeatureID(ExclusionRule.class))
+		{
+		case AggregatorPackage.EXCLUSION_RULE__INSTALLABLE_UNIT:
+			fireNotifyChanged(new ViewerNotification(notification, notifier, true, false));
+
+			Set<Object> affectedNodes = new HashSet<Object>();
+			affectedNodes.add(notifier);
+
+			// Go through all direct ancestors first
+			EObject container = ((EObject)notifier).eContainer();
+			affectedNodes.add(((EObject)notifier).eResource());
+			while(container != null)
+			{
+				affectedNodes.add(container);
+				container = container.eContainer();
+			}
+			for(Object affectedNode : affectedNodes)
+				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
+			return;
+		}
+	}
+
+	/**
 	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 */
-	@Override
-	public void notifyChanged(Notification notification)
+	public void notifyChangedGen(Notification notification)
 	{
 		updateChildren(notification);
 		switch(notification.getFeatureID(MapRule.class))

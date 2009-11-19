@@ -112,10 +112,11 @@ public class MappedUnitItemProvider extends InstallableUnitReferenceItemProvider
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), updateContent,
 					updateLabel));
 
-			Set<EObject> affectedNodes = new HashSet<EObject>();
+			Set<Object> affectedNodes = new HashSet<Object>();
 
 			// Go through all direct ancestors first
 			EObject container = ((EObject)notification.getNotifier()).eContainer();
+			affectedNodes.add(((EObject)notification.getNotifier()).eResource());
 			while(container != null)
 			{
 				affectedNodes.add(container);
@@ -125,9 +126,9 @@ public class MappedUnitItemProvider extends InstallableUnitReferenceItemProvider
 			// And now, find all categories which may contain the feature just being enabled/disabled
 			if(notification.getNotifier() instanceof Feature)
 				for(CustomCategory category : ((Feature)notification.getNotifier()).getCategories())
-					affectedNodes.add((EObject)category);
+					affectedNodes.add(category);
 
-			for(EObject affectedNode : affectedNodes)
+			for(Object affectedNode : affectedNodes)
 				fireNotifyChanged(new ViewerNotification(notification, affectedNode, false, true));
 
 			return;
