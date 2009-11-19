@@ -53,6 +53,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.emf.common.command.CompoundCommand;
 import org.eclipse.emf.common.ui.viewer.IViewerProvider;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -317,33 +318,117 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	class EnabledStatusAction extends Action
 	{
-		private EnabledStatusProvider m_ref;
+		public static final int ENABLE = 0;
+
+		public static final int DISABLE = 1;
+
+		public static final int BOTH = 2;
+
+		private List<EnabledStatusProvider> m_refs;
+
+		private boolean m_enableState;
+
+		public EnabledStatusAction(boolean enableState)
+		{
+			m_enableState = enableState;
+		}
+
+		public int determineStatus(List<EnabledStatusProvider> selectedItems)
+		{
+			for(EnabledStatusProvider enabledStatusProvider : selectedItems)
+			{
+				if(enabledStatusProvider.isEnabled() != selectedItems.get(0).isEnabled())
+					return EnabledStatusAction.BOTH;
+			}
+			return selectedItems.get(0).isEnabled()
+					? EnabledStatusAction.ENABLE
+					: EnabledStatusAction.DISABLE;
+		}
+
+		public List<EnabledStatusProvider> getRefs()
+		{
+			return m_refs;
+		}
 
 		@Override
 		public String getText()
 		{
-			if(m_ref == null)
+			if(m_refs == null)
 				return null;
+			return isEnableState()
+					? AggregatorEditorPlugin.INSTANCE.getString("_UI_Enable_menu_item")
+					: AggregatorEditorPlugin.INSTANCE.getString("_UI_Disable_menu_item");
+		}
 
-			return m_ref.isEnabled()
-					? AggregatorEditorPlugin.INSTANCE.getString("_UI_Disable_menu_item")
-					: AggregatorEditorPlugin.INSTANCE.getString("_UI_Enable_menu_item");
+		public void initialize(List<EnabledStatusProvider> selectedItems, EditingDomain domain)
+		{
+			for(EnabledStatusProvider enabledStatusProvider : selectedItems)
+			{
+				IEditingDomainItemProvider itemProvider = (IEditingDomainItemProvider)((AdapterFactoryEditingDomain)domain).getAdapterFactory().adapt(
+						enabledStatusProvider, IEditingDomainItemProvider.class);
+				if(itemProvider instanceof ItemProviderAdapter)
+				{
+					ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter)itemProvider;
+					IItemPropertyDescriptor itemPropertyDescriptor = itemProviderAdapter.getPropertyDescriptor(
+							enabledStatusProvider,
+							AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED.getName());
+					setEnabled(itemPropertyDescriptor.canSetProperty(enabledStatusProvider));
+					return;
+				}
+				else
+				{
+					setEnabled(false);
+					return;
+				}
+
+			}
+			setEnabled(false);
+		}
+
+		public boolean isEnableState()
+		{
+			return m_enableState;
+		}
+
+		public boolean isSupportedFor(List<Object> items)
+		{
+			for(Object object : items)
+			{
+				if(!(object instanceof EnabledStatusProvider))
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		@Override
 		public void run()
 		{
-			EStructuralFeature feature = ((EObject)m_ref).eClass().getEStructuralFeature("enabled");
+			CompoundCommand compoundCommand = new CompoundCommand();
 			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
-			SetCommand command = (SetCommand)SetCommand.create(domain, m_ref, feature,
-					Boolean.valueOf(!m_ref.isEnabled()));
-			command.setLabel(getText());
-			domain.getCommandStack().execute(command);
+
+			for(EnabledStatusProvider ref : m_refs)
+			{
+				EStructuralFeature feature = ((EObject)ref).eClass().getEStructuralFeature("enabled");
+
+				SetCommand command = (SetCommand)SetCommand.create(domain, ref, feature,
+						Boolean.valueOf(isEnableState()));
+				compoundCommand.append(command);
+			}
+
+			compoundCommand.setLabel(getText());
+			domain.getCommandStack().execute(compoundCommand);
 		}
 
-		public void setReference(EnabledStatusProvider ref)
+		public void setReference(List<EnabledStatusProvider> refs)
 		{
-			m_ref = ref;
+			m_refs = refs;
+		}
+
+		public void setRefs(List<EnabledStatusProvider> refs)
+		{
+			m_refs = refs;
 		}
 	}
 
@@ -689,9 +774,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	 */
 	protected IMenuManager createSiblingMenuManager;
 
-	protected boolean m_enabledStatusActionVisible;
-
-	protected EnabledStatusAction m_enabledStatusAction;
+	protected Map<EnabledStatusAction, Boolean> enabledStatusActionVisibility;
 
 	protected boolean m_reloadRepoActionVisible;
 
@@ -726,8 +809,9 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		loadResourceAction = new LoadResourceAction();
 		validateAction = new ValidateAction();
 		controlAction = new ControlAction();
-		m_enabledStatusAction = new EnabledStatusAction();
-		m_enabledStatusActionVisible = false;
+		enabledStatusActionVisibility = new LinkedHashMap<EnabledStatusAction, Boolean>();
+		enabledStatusActionVisibility.put(new EnabledStatusAction(true), Boolean.FALSE);
+		enabledStatusActionVisibility.put(new EnabledStatusAction(false), Boolean.FALSE);
 		m_reloadRepoAction = new ReloadRepoAction();
 		m_reloadRepoActionVisible = false;
 		m_cleanRepoAction = new BuildRepoAction(ActionType.CLEAN);
@@ -811,21 +895,23 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		if(m_selectMatchingIUAction != null)
 			menuManager.insertBefore("edit", m_selectMatchingIUAction);
 
-		if(m_enabledStatusActionVisible)
+		for(Map.Entry<EnabledStatusAction, Boolean> entry : enabledStatusActionVisibility.entrySet())
 		{
-			depopulateManager(menuManager, Collections.singleton(m_enabledStatusAction));
-			IContributionItem item = new ActionContributionItem(m_enabledStatusAction)
+			if(entry.getValue())
 			{
-
-				// force updating the text immediately
-				public boolean isDynamic()
+				depopulateManager(menuManager, Collections.singleton(entry.getKey()));
+				IContributionItem item = new ActionContributionItem(entry.getKey())
 				{
-					return true;
-				}
-			};
-			menuManager.insertBefore("edit", item);
-		}
 
+					// force updating the text immediately
+					public boolean isDynamic()
+					{
+						return true;
+					}
+				};
+				menuManager.insertBefore("edit", item);
+			}
+		}
 		if(m_reloadRepoActionVisible)
 			menuManager.insertBefore("edit", m_reloadRepoAction);
 	}
@@ -950,6 +1036,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void updateContextMenu(ISelection selection)
 	{
 		// Remove any menu items for old selection.
@@ -969,51 +1056,65 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		Collection<?> newSiblingDescriptors = null;
 		m_selectMatchingIUAction = null;
 
-		m_enabledStatusActionVisible = false;
 		m_reloadRepoActionVisible = false;
 
-		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() == 1)
+		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() >= 1)
 		{
-			Object object = ((IStructuredSelection)selection).getFirstElement();
-
 			EditingDomain domain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
+			List<Object> selectedItems = ((IStructuredSelection)selection).toList();
 
-			newChildDescriptors = domain.getNewChildDescriptors(object, null);
-			newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
-
-			if(object instanceof EnabledStatusProvider)
+			int state = -1;
+			boolean first = true;
+			for(Map.Entry<EnabledStatusAction, Boolean> sa : enabledStatusActionVisibility.entrySet())
 			{
-				EnabledStatusProvider item = (EnabledStatusProvider)object;
-				m_enabledStatusAction.setReference(item);
-
-				// Check if the Enabled property can be set at the moment
-				//
-				IEditingDomainItemProvider itemProvider = (IEditingDomainItemProvider)((AdapterFactoryEditingDomain)domain).getAdapterFactory().adapt(
-						object, IEditingDomainItemProvider.class);
-				if(itemProvider instanceof ItemProviderAdapter)
+				sa.setValue(false);
+				if(sa.getKey().isSupportedFor(selectedItems))
 				{
-					ItemProviderAdapter itemProviderAdapter = (ItemProviderAdapter)itemProvider;
-					IItemPropertyDescriptor itemPropertyDescriptor = itemProviderAdapter.getPropertyDescriptor(object,
-							AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED.getName());
-					m_enabledStatusAction.setEnabled(itemPropertyDescriptor.canSetProperty(object));
+					List<EnabledStatusProvider> items = new ArrayList<EnabledStatusProvider>();
+					for(Object obj : selectedItems)
+						items.add((EnabledStatusProvider)obj);
+
+					sa.getKey().setReference(items);
+
+					sa.getKey().initialize(items, domain);
+					if(first)
+					{
+						state = sa.getKey().determineStatus(items);
+						first = false;
+					}
+
+					if((state == EnabledStatusAction.DISABLE || state == EnabledStatusAction.BOTH)
+							&& sa.getKey().isEnableState())
+					{
+						sa.setValue(Boolean.TRUE);
+					}
+					if((state == EnabledStatusAction.ENABLE || state == EnabledStatusAction.BOTH)
+							&& !sa.getKey().isEnableState())
+					{
+						sa.setValue(Boolean.TRUE);
+					}
 				}
-				else
-					m_enabledStatusAction.setEnabled(false);
-
-				m_enabledStatusActionVisible = true;
 			}
 
-			if(object instanceof MetadataRepositoryReference)
+			if(((IStructuredSelection)selection).size() == 1)
 			{
-				MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)object;
-				m_reloadRepoAction.setEnabled(metadataRepositoryReference.isBranchEnabled());
-				m_reloadRepoAction.setMetadataRepositoryReference(metadataRepositoryReference);
-				m_reloadRepoActionVisible = true;
-			}
+				Object object = ((IStructuredSelection)selection).getFirstElement();
 
-			if(object instanceof RequiredCapabilityWrapper)
-			{
-				m_selectMatchingIUAction = new SelectMatchingIUAction((RequiredCapabilityWrapper)object);
+				newChildDescriptors = domain.getNewChildDescriptors(object, null);
+				newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
+
+				if(object instanceof MetadataRepositoryReference)
+				{
+					MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)object;
+					m_reloadRepoAction.setEnabled(metadataRepositoryReference.isBranchEnabled());
+					m_reloadRepoAction.setMetadataRepositoryReference(metadataRepositoryReference);
+					m_reloadRepoActionVisible = true;
+				}
+
+				if(object instanceof RequiredCapabilityWrapper)
+				{
+					m_selectMatchingIUAction = new SelectMatchingIUAction((RequiredCapabilityWrapper)object);
+				}
 			}
 		}
 

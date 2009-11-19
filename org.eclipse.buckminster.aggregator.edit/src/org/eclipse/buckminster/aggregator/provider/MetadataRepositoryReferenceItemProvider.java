@@ -88,12 +88,16 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 	/**
 	 * This returns MetadataRepositoryReference.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/MetadataRepositoryReference"));
+		return overlayImage(object, getResourceLocator().getImage(
+				"full/obj16/MetadataRepositoryReference" + (((MetadataRepositoryReference)object).isBranchEnabled()
+						? ""
+						: "Disabled")));
+
 	}
 
 	/**

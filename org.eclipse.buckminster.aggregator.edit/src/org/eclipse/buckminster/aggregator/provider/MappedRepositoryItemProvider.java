@@ -96,10 +96,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage(
-				"full/obj16/MappedRepository" + (((MappedRepository)object).isBranchEnabled()
-						? ""
-						: "Disabled")));
+		return super.getImage(object);
 	}
 
 	/**
