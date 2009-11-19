@@ -13,8 +13,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.AggregatorPlugin;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
@@ -22,7 +26,6 @@ import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
@@ -42,6 +45,7 @@ import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
  * The following features are implemented:
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#isEnabled <em>Enabled</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getStatus <em>Status</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getMetadataRepository <em>Metadata
  * Repository</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getLocation <em>Location</em>}</li>
@@ -53,6 +57,16 @@ import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Container implements
 		MetadataRepositoryReference
 {
+	/**
+	 * This looks up a string in the plugin's plugin.properties file. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private static String getString(String key)
+	{
+		return AggregatorPlugin.INSTANCE.getString(key);
+	}
+
 	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -81,6 +95,16 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * @ordered
 	 */
 	protected static final int ENABLED_EFLAG = 1 << 0;
+
+	/**
+	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getStatus()
+	 * @generated
+	 * @ordered
+	 */
+	protected Status status;
 
 	/**
 	 * The cached value of the '{@link #getMetadataRepository() <em>Metadata Repository</em>}' reference. <!--
@@ -142,6 +166,58 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * 
 	 * @generated
 	 */
+	public Status basicGetStatus()
+	{
+		return status;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == StatusProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__STATUS:
+				return AggregatorPackage.STATUS_PROVIDER__STATUS;
+			default:
+				return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == StatusProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.STATUS_PROVIDER__STATUS:
+				return AggregatorPackage.METADATA_REPOSITORY_REFERENCE__STATUS;
+			default:
+				return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
@@ -149,6 +225,10 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		{
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
 			return isEnabled();
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__STATUS:
+			if(resolve)
+				return getStatus();
+			return basicGetStatus();
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY:
 			if(resolve)
 				return getMetadataRepository();
@@ -171,6 +251,8 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		{
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
 			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__STATUS:
+			return status != null;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY:
 			return metadataRepository != null;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
@@ -354,31 +436,33 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * 
 	 * @generated NOT
 	 */
-	public int getStatus()
+	public Status getStatus()
 	{
 		if(isBranchEnabled())
 		{
 			// status is ok only if MDR is not null and is resolvable
 			if(getMetadataRepository() != null && !((EObject)getMetadataRepository()).eIsProxy())
-				return StatusProvider.OK;
+				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 			else
 			{
 				String location = getResolvedLocation();
 				if(location == null)
 					// Node is incomplete and doesn't appoint a repository just yet.
-					return StatusProvider.BROKEN_CHILD;
+					return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
+							getString("_UI_ErrorMessage_RepositoryIsNotSet"));
 
 				ResourceImpl res = (ResourceImpl)MetadataRepositoryResourceImpl.getResourceForLocation(location,
 						getAggregator());
 				if(res.isLoading() || !res.isLoaded())
 				{
-					return StatusProvider.WAITING;
+					return AggregatorFactory.eINSTANCE.createStatus(StatusCode.WAITING);
 				}
 
-				return StatusProvider.BROKEN_CHILD;
+				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
+						getString("_UI_ErrorMessage_RepositoryIsNotAvailable"));
 			}
 		}
-		return StatusProvider.OK;
+		return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 	}
 
 	/**
@@ -510,14 +594,14 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 							aggregator, forceReload);
 
 					if(m_cancelledLoaderJobs.contains(this))
-						return Status.CANCEL_STATUS;
+						return org.eclipse.core.runtime.Status.CANCEL_STATUS;
 
-					IStatus status = Status.OK_STATUS;
+					IStatus status = org.eclipse.core.runtime.Status.OK_STATUS;
 
 					if(monitor.isCanceled())
 					{
 						// cancelled by user
-						status = Status.CANCEL_STATUS;
+						status = org.eclipse.core.runtime.Status.CANCEL_STATUS;
 						mdr = null;
 					}
 

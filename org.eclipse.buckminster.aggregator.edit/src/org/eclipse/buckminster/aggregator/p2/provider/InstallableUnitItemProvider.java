@@ -9,12 +9,10 @@ package org.eclipse.buckminster.aggregator.p2.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
-
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
-
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
@@ -23,12 +21,10 @@ import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -100,9 +96,9 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 	@Override
 	public Object getImage(Object object)
 	{
-		int status = InstallableUnitUtils.getStatus((InstallableUnit)object);
+		StatusCode statusCode = InstallableUnitUtils.getStatus((InstallableUnit)object).getCode();
 		Object image;
-		if(status == StatusProvider.BROKEN)
+		if(statusCode == StatusCode.BROKEN)
 			image = getResourceLocator().getImage("full/obj16/Error");
 		else
 			image = getResourceLocator().getImage("full/obj16/InstallableUnit");

@@ -23,6 +23,7 @@ import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
@@ -68,7 +69,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 	@Override
 	public Object getFont(Object object)
 	{
-		return ((MetadataRepositoryReference)object).getStatus() == StatusProvider.WAITING
+		return ((StatusProvider)object).getStatus().getCode() == StatusCode.WAITING
 				? IItemFontProvider.ITALIC_FONT
 				: null;
 	}
@@ -108,6 +109,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 			super.getPropertyDescriptors(object);
 
 			addEnabledPropertyDescriptor(object);
+			addStatusPropertyDescriptor(object);
 			addLocationPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -355,6 +357,20 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 				return repos;
 			}
 		});
+	}
+
+	/**
+	 * This adds a property descriptor for the Status feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addStatusPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_StatusProvider_status_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_StatusProvider_status_feature", "_UI_StatusProvider_type"),
+				AggregatorPackage.Literals.STATUS_PROVIDER__STATUS, true, false, true, null, null, null));
 	}
 
 	/**

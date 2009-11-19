@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Bundle;
 import org.eclipse.buckminster.aggregator.Category;
@@ -22,7 +23,8 @@ import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.Product;
-import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
@@ -541,7 +543,7 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 	 * @generated NOT
 	 */
 	@Override
-	synchronized public int getStatus()
+	synchronized public Status getStatus()
 	{
 		if(isBranchEnabled())
 		{
@@ -549,17 +551,17 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 			if(getMetadataRepository() != null && !((EObject)getMetadataRepository()).eIsProxy())
 			{
 				for(MappedUnit unit : getEnabledUnits())
-					if(unit.getStatus() != StatusProvider.OK)
-						return StatusProvider.BROKEN_CHILD;
+					if(unit.getStatus().getCode() != StatusCode.OK)
+						return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 				for(MapRule rule : getMapRules())
-					if(rule.getStatus() != StatusProvider.OK)
-						return StatusProvider.BROKEN_CHILD;
+					if(rule.getStatus().getCode() != StatusCode.OK)
+						return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 			}
 			else
 				return super.getStatus();
 		}
 
-		return StatusProvider.OK;
+		return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 	}
 
 	/**

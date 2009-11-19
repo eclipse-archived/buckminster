@@ -17,13 +17,11 @@ import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.MavenItem;
 import org.eclipse.buckminster.aggregator.MavenMapping;
-import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
@@ -32,6 +30,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getStatus <em>Status</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getNamePattern <em>Name Pattern</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getGroupId <em>Group Id</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getArtifactId <em>Artifact Id</em>}</li>
@@ -52,6 +51,16 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	 * @ordered
 	 */
 	protected int eFlags = 0;
+
+	/**
+	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getStatus()
+	 * @generated
+	 * @ordered
+	 */
+	protected Status status;
 
 	/**
 	 * The default value of the '{@link #getNamePattern() <em>Name Pattern</em>}' attribute. <!-- begin-user-doc -->
@@ -135,11 +144,25 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	 * 
 	 * @generated
 	 */
+	public Status basicGetStatus()
+	{
+		return status;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAVEN_MAPPING__STATUS:
+			if(resolve)
+				return getStatus();
+			return basicGetStatus();
 		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
 			return getNamePattern();
 		case AggregatorPackage.MAVEN_MAPPING__GROUP_ID:
@@ -160,6 +183,8 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAVEN_MAPPING__STATUS:
+			return status != null;
 		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
 			return NAME_PATTERN_EDEFAULT == null
 					? namePattern != null
@@ -257,26 +282,26 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	 * 
 	 * @generated NOT
 	 */
-	public int getStatus()
+	public Status getStatus()
 	{
 		try
 		{
 			String pattern = GeneralUtils.trimmedOrNull(getNamePattern());
 			if(pattern == null || GeneralUtils.trimmedOrNull(getGroupId()) == null
 					|| GeneralUtils.trimmedOrNull(getArtifactId()) == null)
-				return StatusProvider.BROKEN_CHILD;
+				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 
 			compiledPattern = Pattern.compile(pattern);
 			checkReplacements(compiledPattern, getGroupId(), getArtifactId());
-			return StatusProvider.OK;
+			return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 		}
 		catch(PatternSyntaxException e)
 		{
-			return StatusProvider.BROKEN_CHILD;
+			return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
 		catch(IndexOutOfBoundsException e)
 		{
-			return StatusProvider.BROKEN_CHILD;
+			return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
 	}
 

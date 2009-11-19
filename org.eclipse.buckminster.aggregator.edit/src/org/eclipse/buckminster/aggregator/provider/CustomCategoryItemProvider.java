@@ -98,6 +98,7 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 		{
 			super.getPropertyDescriptors(object);
 
+			addStatusPropertyDescriptor(object);
 			addIdentifierPropertyDescriptor(object);
 			addLabelPropertyDescriptor(object);
 			addDescriptionPropertyDescriptor(object);
@@ -214,6 +215,20 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 						"_UI_CustomCategory_label_feature", "_UI_CustomCategory_type"),
 				AggregatorPackage.Literals.CUSTOM_CATEGORY__LABEL, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Status feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addStatusPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_StatusProvider_status_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_StatusProvider_status_feature", "_UI_StatusProvider_type"),
+				AggregatorPackage.Literals.STATUS_PROVIDER__STATUS, true, false, true, null, null, null));
 	}
 
 	/**

@@ -8,31 +8,6 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import java.net.URI;
 
-import org.eclipse.buckminster.aggregator.AggregateType;
-import org.eclipse.buckminster.aggregator.Aggregator;
-import org.eclipse.buckminster.aggregator.AggregatorFactory;
-import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.Architecture;
-import org.eclipse.buckminster.aggregator.Bundle;
-import org.eclipse.buckminster.aggregator.Category;
-import org.eclipse.buckminster.aggregator.Configuration;
-import org.eclipse.buckminster.aggregator.Contact;
-import org.eclipse.buckminster.aggregator.Contribution;
-import org.eclipse.buckminster.aggregator.CustomCategory;
-import org.eclipse.buckminster.aggregator.DescriptionProvider;
-import org.eclipse.buckminster.aggregator.ExclusionRule;
-import org.eclipse.buckminster.aggregator.Feature;
-import org.eclipse.buckminster.aggregator.InstallableUnitType;
-import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.MavenItem;
-import org.eclipse.buckminster.aggregator.MavenMapping;
-import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
-import org.eclipse.buckminster.aggregator.OperatingSystem;
-import org.eclipse.buckminster.aggregator.PackedStrategy;
-import org.eclipse.buckminster.aggregator.Product;
-import org.eclipse.buckminster.aggregator.Property;
-import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
-import org.eclipse.buckminster.aggregator.WindowSystem;
 import org.eclipse.buckminster.aggregator.*;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
@@ -160,6 +135,18 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	 * 
 	 * @generated
 	 */
+	public String convertStatusCodeToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue)
 	{
@@ -177,6 +164,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return convertPackedStrategyToString(eDataType, instanceValue);
 		case AggregatorPackage.INSTALLABLE_UNIT_TYPE:
 			return convertInstallableUnitTypeToString(eDataType, instanceValue);
+		case AggregatorPackage.STATUS_CODE:
+			return convertStatusCodeToString(eDataType, instanceValue);
 		case AggregatorPackage.URI:
 			return convertURIToString(eDataType, instanceValue);
 		default:
@@ -250,6 +239,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return (EObject)createMavenMapping();
 		case AggregatorPackage.MAVEN_ITEM:
 			return (EObject)createMavenItem();
+		case AggregatorPackage.STATUS:
+			return (EObject)createStatus();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -415,6 +406,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return createPackedStrategyFromString(eDataType, initialValue);
 		case AggregatorPackage.INSTALLABLE_UNIT_TYPE:
 			return createInstallableUnitTypeFromString(eDataType, initialValue);
+		case AggregatorPackage.STATUS_CODE:
+			return createStatusCodeFromString(eDataType, initialValue);
 		case AggregatorPackage.URI:
 			return createURIFromString(eDataType, initialValue);
 		default:
@@ -586,6 +579,41 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 	{
 		PropertyImpl property = new PropertyImpl(key, value);
 		return property;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Status createStatus()
+	{
+		StatusImpl status = new StatusImpl();
+		return status;
+	}
+
+	public Status createStatus(StatusCode statusCode)
+	{
+		return StatusImpl.createStatus(statusCode);
+	}
+
+	public Status createStatus(StatusCode statusCode, String message)
+	{
+		return StatusImpl.createStatus(statusCode, message);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public StatusCode createStatusCodeFromString(EDataType eDataType, String initialValue)
+	{
+		StatusCode result = StatusCode.get(initialValue);
+		if(result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
+					+ eDataType.getName() + "'");
+		return result;
 	}
 
 	/**

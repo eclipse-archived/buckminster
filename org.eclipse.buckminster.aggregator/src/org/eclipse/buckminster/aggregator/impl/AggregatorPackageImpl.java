@@ -36,6 +36,8 @@ import org.eclipse.buckminster.aggregator.OperatingSystem;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.Property;
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
 import org.eclipse.buckminster.aggregator.WindowSystem;
@@ -296,6 +298,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	private EClass statusEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private EEnum aggregateTypeEEnum = null;
 
 	/**
@@ -332,6 +341,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * @generated
 	 */
 	private EEnum installableUnitTypeEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EEnum statusCodeEEnum = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -472,8 +488,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		createEReference(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY);
 		createEAttribute(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__LOCATION);
 
-		statusProviderEClass = createEClass(STATUS_PROVIDER);
-
 		comparableEClass = createEClass(COMPARABLE);
 
 		labelProviderEClass = createEClass(LABEL_PROVIDER);
@@ -494,6 +508,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		childrenProviderEClass = createEClass(CHILDREN_PROVIDER);
 		createEReference(childrenProviderEClass, CHILDREN_PROVIDER__CHILDREN);
 
+		statusEClass = createEClass(STATUS);
+		createEAttribute(statusEClass, STATUS__CODE);
+		createEAttribute(statusEClass, STATUS__MESSAGE);
+
+		statusProviderEClass = createEClass(STATUS_PROVIDER);
+		createEReference(statusProviderEClass, STATUS_PROVIDER__STATUS);
+
 		// Create enums
 		aggregateTypeEEnum = createEEnum(AGGREGATE_TYPE);
 		operatingSystemEEnum = createEEnum(OPERATING_SYSTEM);
@@ -501,6 +522,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		architectureEEnum = createEEnum(ARCHITECTURE);
 		packedStrategyEEnum = createEEnum(PACKED_STRATEGY);
 		installableUnitTypeEEnum = createEEnum(INSTALLABLE_UNIT_TYPE);
+		statusCodeEEnum = createEEnum(STATUS_CODE);
 
 		// Create data types
 		uriEDataType = createEDataType(URI);
@@ -1311,9 +1333,59 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	public EClass getStatus()
+	{
+		return statusEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getStatus_Code()
+	{
+		return (EAttribute)statusEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getStatus_Message()
+	{
+		return (EAttribute)statusEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EEnum getStatusCode()
+	{
+		return statusCodeEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EClass getStatusProvider()
 	{
 		return statusProviderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getStatusProvider_Status()
+	{
+		return (EReference)statusProviderEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1653,11 +1725,6 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 
 		addEOperation(metadataRepositoryReferenceEClass, null, "onRepositoryLoad", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(statusProviderEClass, StatusProvider.class, "StatusProvider", IS_ABSTRACT, IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-
-		addEOperation(statusProviderEClass, theXMLTypePackage.getInt(), "getStatus", 0, 1, IS_UNIQUE, IS_ORDERED);
-
 		initEClass(comparableEClass, Comparable.class, "Comparable", IS_ABSTRACT, IS_INTERFACE,
 				!IS_GENERATED_INSTANCE_CLASS);
 
@@ -1701,6 +1768,18 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 				IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(statusEClass, Status.class, "Status", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getStatus_Code(), this.getStatusCode(), "code", "", 1, 1, Status.class, !IS_TRANSIENT,
+				!IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStatus_Message(), theXMLTypePackage.getString(), "message", "", 0, 1, Status.class,
+				!IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(statusProviderEClass, StatusProvider.class, "StatusProvider", IS_ABSTRACT, IS_INTERFACE,
+				IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getStatusProvider_Status(), this.getStatus(), null, "status", null, 1, 1, StatusProvider.class,
+				IS_TRANSIENT, !IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		// Initialize enums and add enum literals
 		initEEnum(aggregateTypeEEnum, AggregateType.class, "AggregateType");
 		addEEnumLiteral(aggregateTypeEEnum, AggregateType.STABLE);
@@ -1740,6 +1819,11 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.CATEGORY);
 		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.FRAGMENT);
 		addEEnumLiteral(installableUnitTypeEEnum, InstallableUnitType.OTHER);
+
+		initEEnum(statusCodeEEnum, StatusCode.class, "StatusCode");
+		addEEnumLiteral(statusCodeEEnum, StatusCode.OK);
+		addEEnumLiteral(statusCodeEEnum, StatusCode.BROKEN);
+		addEEnumLiteral(statusCodeEEnum, StatusCode.WAITING);
 
 		// Initialize data types
 		initEDataType(uriEDataType, java.net.URI.class, "URI", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

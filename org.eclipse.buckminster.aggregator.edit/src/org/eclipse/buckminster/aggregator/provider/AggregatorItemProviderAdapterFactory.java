@@ -201,9 +201,17 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	protected DescriptionProviderItemProvider descriptionProviderItemProvider;
 
 	/**
-	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.aggregator.Status} instances.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
+	 */
+	protected StatusItemProvider statusItemProvider;
+
+	/**
+	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
 	 */
 	public AggregatorItemProviderAdapterFactory()
 	{
@@ -213,6 +221,7 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 		supportedTypes.add(IItemLabelProvider.class);
 		supportedTypes.add(IItemPropertySource.class);
 		supportedTypes.add(IItemColorProvider.class);
+		supportedTypes.add(IItemFontProvider.class);
 		supportedTypes.add(IItemFontProvider.class);
 	}
 
@@ -531,6 +540,23 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 	}
 
 	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.Status}. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createStatusAdapter()
+	{
+		if(statusItemProvider == null)
+		{
+			statusItemProvider = new StatusItemProvider(this);
+		}
+
+		return statusItemProvider;
+	}
+
+	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.aggregator.ValidConfigurationsRule}. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -588,6 +614,8 @@ public class AggregatorItemProviderAdapterFactory extends AggregatorAdapterFacto
 			mavenMappingItemProvider.dispose();
 		if(mavenItemItemProvider != null)
 			mavenItemItemProvider.dispose();
+		if(statusItemProvider != null)
+			statusItemProvider.dispose();
 	}
 
 	/**

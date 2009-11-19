@@ -99,6 +99,7 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 		{
 			super.getPropertyDescriptors(object);
 
+			addStatusPropertyDescriptor(object);
 			addBuildmasterPropertyDescriptor(object);
 			addLabelPropertyDescriptor(object);
 			addBuildRootPropertyDescriptor(object);
@@ -291,6 +292,20 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 						"_UI_Aggregator_sendmail_feature", "_UI_Aggregator_type"),
 				AggregatorPackage.Literals.AGGREGATOR__SENDMAIL, true, false, false,
 				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Status feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addStatusPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_StatusProvider_status_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_StatusProvider_status_feature", "_UI_StatusProvider_type"),
+				AggregatorPackage.Literals.STATUS_PROVIDER__STATUS, true, false, true, null, null, null));
 	}
 
 	/**

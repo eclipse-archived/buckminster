@@ -11,9 +11,11 @@ package org.eclipse.buckminster.aggregator.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.IAggregatorConstants;
 import org.eclipse.buckminster.aggregator.InstallableUnitType;
-import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.util.URI;
@@ -31,13 +33,13 @@ public class InstallableUnitUtils
 {
 	private static final Pattern proxyFragmentPattern = Pattern.compile("^//@metadataRepository/@installableUnits\\[id='([^']*)',version='([^']*)'\\]$");
 
-	public static int getStatus(InstallableUnit iu)
+	public static Status getStatus(InstallableUnit iu)
 	{
 		synchronized(iu)
 		{
 			return Trivial.trim(iu.getId()) != null
-					? StatusProvider.OK
-					: StatusProvider.BROKEN;
+					? AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK)
+					: AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
 	}
 

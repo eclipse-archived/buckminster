@@ -8,21 +8,18 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import java.util.Collection;
 
-import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
-import org.eclipse.buckminster.aggregator.StatusProvider;
-
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -32,6 +29,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getStatus <em>Status</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getIdentifier <em>Identifier</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getLabel <em>Label</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getDescription <em>Description</em>}</li>
@@ -51,6 +49,16 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	 * @ordered
 	 */
 	protected int eFlags = 0;
+
+	/**
+	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getStatus()
+	 * @generated
+	 * @ordered
+	 */
+	protected Status status;
 
 	/**
 	 * The default value of the '{@link #getIdentifier() <em>Identifier</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -137,11 +145,25 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	 * 
 	 * @generated
 	 */
+	public Status basicGetStatus()
+	{
+		return status;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.CUSTOM_CATEGORY__STATUS:
+			if(resolve)
+				return getStatus();
+			return basicGetStatus();
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 			return getIdentifier();
 		case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
@@ -197,6 +219,8 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.CUSTOM_CATEGORY__STATUS:
+			return status != null;
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 			return IDENTIFIER_EDEFAULT == null
 					? identifier != null
@@ -314,16 +338,16 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 		return label;
 	}
 
-	synchronized public int getStatus()
+	synchronized public Status getStatus()
 	{
-		int status;
+		StatusCode statusCode;
 		for(Feature feature : getFeatures())
 		{
-			if(feature.isEnabled() && (status = feature.getStatus()) != StatusProvider.OK
-					&& status != StatusProvider.WAITING)
-				return StatusProvider.BROKEN_CHILD;
+			if(feature.isEnabled() && (statusCode = feature.getStatus().getCode()) != StatusCode.OK
+					&& statusCode != StatusCode.WAITING)
+				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
-		return StatusProvider.OK;
+		return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 	}
 
 	/**

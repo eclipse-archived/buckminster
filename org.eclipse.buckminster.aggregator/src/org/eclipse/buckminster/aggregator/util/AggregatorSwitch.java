@@ -31,6 +31,7 @@ import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.Property;
+import org.eclipse.buckminster.aggregator.Status;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
 import org.eclipse.emf.ecore.EClass;
@@ -422,6 +423,21 @@ public class AggregatorSwitch<T1>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Status</em>'. <!-- begin-user-doc --> This
+	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Status</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseStatus(Status object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Status Provider</em>'. <!-- begin-user-doc
 	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
 	 * -->
@@ -746,14 +762,6 @@ public class AggregatorSwitch<T1>
 				result = defaultCase(theEObject);
 			return result;
 		}
-		case AggregatorPackage.STATUS_PROVIDER:
-		{
-			StatusProvider statusProvider = (StatusProvider)theEObject;
-			T1 result = caseStatusProvider(statusProvider);
-			if(result == null)
-				result = defaultCase(theEObject);
-			return result;
-		}
 		case AggregatorPackage.LABEL_PROVIDER:
 		{
 			LabelProvider labelProvider = (LabelProvider)theEObject;
@@ -792,6 +800,22 @@ public class AggregatorSwitch<T1>
 		{
 			ChildrenProvider<?> childrenProvider = (ChildrenProvider<?>)theEObject;
 			T1 result = caseChildrenProvider(childrenProvider);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.STATUS:
+		{
+			Status status = (Status)theEObject;
+			T1 result = caseStatus(status);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.STATUS_PROVIDER:
+		{
+			StatusProvider statusProvider = (StatusProvider)theEObject;
+			T1 result = caseStatusProvider(statusProvider);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

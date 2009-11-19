@@ -22,12 +22,13 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
-import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.provider.P2viewItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapterFactory;
+import org.eclipse.buckminster.aggregator.provider.TooltipTextProvider;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
 import org.eclipse.buckminster.aggregator.util.OverlaidImage;
 import org.eclipse.buckminster.aggregator.util.StatusProviderAdapterFactory;
@@ -71,6 +72,7 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.AdapterFactoryItemDelegator;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemFontProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
@@ -116,10 +118,13 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -814,6 +819,34 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					selectionViewer.collapseToLevel(path, 1);
 				else
 					selectionViewer.expandToLevel(path, 1);
+			}
+		});
+
+		selectionViewer.getTree().addMouseMoveListener(new MouseMoveListener()
+		{
+			private TreeItem m_lastTreeItem;
+
+			public void mouseMove(MouseEvent e)
+			{
+				TreeItem item = selectionViewer.getTree().getItem(new Point(e.x, e.y));
+
+				if(item == m_lastTreeItem)
+					return;
+
+				String toolTipText = null;
+
+				if(item != null && item.getData() != null)
+				{
+					IEditingDomainItemProvider provider = (IEditingDomainItemProvider)adapterFactory.getRootAdapterFactory().adapt(
+							item.getData(), IEditingDomainItemProvider.class);
+
+					if(provider != null && provider instanceof TooltipTextProvider)
+						toolTipText = ((TooltipTextProvider)provider).getTooltipText(item.getData());
+				}
+
+				selectionViewer.getTree().setToolTipText(toolTipText);
+
+				m_lastTreeItem = item;
 			}
 		});
 	}
@@ -1779,7 +1812,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 						{
 							AggregatorResourceImpl res = (AggregatorResourceImpl)object;
 
-							if(((Aggregator)res.getContents().get(0)).getStatus() != StatusProvider.OK)
+							if(((Aggregator)res.getContents().get(0)).getStatus().getCode() != StatusCode.OK)
 								overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Error");
 						}
 					}

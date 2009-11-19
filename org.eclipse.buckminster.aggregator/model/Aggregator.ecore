@@ -186,9 +186,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="StatusProvider" abstract="true" interface="true">
-    <eOperations name="getStatus" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Int"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Comparable" instanceClassName="java.lang.Comparable"
       abstract="true" interface="true">
     <eTypeParameters name="T"/>
@@ -226,6 +223,21 @@
     <eLiterals name="CATEGORY" value="3" literal="category"/>
     <eLiterals name="FRAGMENT" value="4" literal="fragment"/>
     <eLiterals name="OTHER" value="5" literal="other"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="StatusCode">
+    <eLiterals name="OK" literal="ok"/>
+    <eLiterals name="BROKEN" value="1" literal="broken"/>
+    <eLiterals name="WAITING" value="2" literal="waiting"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Status">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="code" lowerBound="1" eType="#//StatusCode"
+        changeable="false" defaultValueLiteral=""/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"
+        changeable="false" defaultValueLiteral=""/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StatusProvider" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="status" lowerBound="1"
+        eType="#//Status" changeable="false" transient="true"/>
   </eClassifiers>
   <eSubpackages name="p2" nsURI="http://www.eclipse.org/buckminster/2009/p2" nsPrefix="p2">
     <eClassifiers xsi:type="ecore:EClass" name="IArtifactKey" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey"

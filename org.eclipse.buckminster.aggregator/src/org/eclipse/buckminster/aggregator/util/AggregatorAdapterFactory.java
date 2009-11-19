@@ -29,6 +29,7 @@ import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.Property;
+import org.eclipse.buckminster.aggregator.Status;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
 import org.eclipse.emf.common.notify.Adapter;
@@ -195,6 +196,12 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseProperty(Property object)
 		{
 			return createPropertyAdapter();
+		}
+
+		@Override
+		public Adapter caseStatus(Status object)
+		{
+			return createStatusAdapter();
 		}
 
 		@Override
@@ -591,6 +598,20 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createPropertyAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.Status <em>Status</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful
+	 * to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.Status
+	 * @generated
+	 */
+	public Adapter createStatusAdapter()
 	{
 		return null;
 	}

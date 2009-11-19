@@ -9,26 +9,24 @@ package org.eclipse.buckminster.aggregator.impl;
 import java.util.Collection;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MavenMapping;
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -40,6 +38,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#isEnabled <em>Enabled</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getDescription <em>Description</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getStatus <em>Status</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getLabel <em>Label</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getRepositories <em>Repositories</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getContacts <em>Contacts</em>}</li>
@@ -99,6 +98,16 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 * @ordered
 	 */
 	protected String description = DESCRIPTION_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getStatus()
+	 * @generated
+	 * @ordered
+	 */
+	protected Status status;
 
 	/**
 	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -166,6 +175,16 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 * 
 	 * @generated
 	 */
+	public Status basicGetStatus()
+	{
+		return status;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
 	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
 	{
@@ -183,6 +202,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		{
 			switch(derivedFeatureID)
 			{
+			case AggregatorPackage.CONTRIBUTION__STATUS:
+				return AggregatorPackage.STATUS_PROVIDER__STATUS;
 			default:
 				return -1;
 			}
@@ -212,6 +233,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		{
 			switch(baseFeatureID)
 			{
+			case AggregatorPackage.STATUS_PROVIDER__STATUS:
+				return AggregatorPackage.CONTRIBUTION__STATUS;
 			default:
 				return -1;
 			}
@@ -233,6 +256,10 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			return isEnabled();
 		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
 			return getDescription();
+		case AggregatorPackage.CONTRIBUTION__STATUS:
+			if(resolve)
+				return getStatus();
+			return basicGetStatus();
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			return getLabel();
 		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
@@ -279,6 +306,8 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			return DESCRIPTION_EDEFAULT == null
 					? description != null
 					: !DESCRIPTION_EDEFAULT.equals(description);
+		case AggregatorPackage.CONTRIBUTION__STATUS:
+			return status != null;
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			return LABEL_EDEFAULT == null
 					? label != null
@@ -476,21 +505,21 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		return repos;
 	}
 
-	synchronized public int getStatus()
+	synchronized public Status getStatus()
 	{
-		int status;
+		StatusCode statusCode;
 
 		for(MappedRepository repo : getRepositories())
 		{
-			if((status = repo.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
-				return StatusProvider.BROKEN_CHILD;
+			if((statusCode = repo.getStatus().getCode()) != StatusCode.OK && statusCode != StatusCode.WAITING)
+				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
 		for(MavenMapping mapping : getMavenMappings())
 		{
-			if((status = mapping.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
-				return StatusProvider.BROKEN_CHILD;
+			if((statusCode = mapping.getStatus().getCode()) != StatusCode.OK && statusCode != StatusCode.WAITING)
+				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
-		return StatusProvider.OK;
+		return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 	}
 
 	/**

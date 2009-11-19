@@ -12,6 +12,12 @@ package org.eclipse.buckminster.aggregator;
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Status Provider</b></em>'. <!-- end-user-doc -->
  * 
+ * <p>
+ * The following features are supported:
+ * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.StatusProvider#getStatus <em>Status</em>}</li>
+ * </ul>
+ * </p>
  * 
  * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getStatusProvider()
  * @model interface="true" abstract="true"
@@ -19,20 +25,14 @@ package org.eclipse.buckminster.aggregator;
  */
 public interface StatusProvider
 {
-	public static final int OK = 0;
-
-	public static final int BROKEN = 1;
-
-	public static final int BROKEN_CHILD = 2;
-
-	public static final int WAITING = 3;
-
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the value of the '<em><b>Status</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @model kind="operation" dataType="org.eclipse.emf.ecore.xml.type.Int"
+	 * @return the value of the '<em>Status</em>' reference.
+	 * @see org.eclipse.buckminster.aggregator.AggregatorPackage#getStatusProvider_Status()
+	 * @model required="true" transient="true" changeable="false"
 	 * @generated
 	 */
-	int getStatus();
+	Status getStatus();
 
 } // IStatusProvider

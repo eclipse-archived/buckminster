@@ -1,5 +1,7 @@
 package org.eclipse.buckminster.aggregator.provider;
 
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.ResourceLocator;
@@ -9,7 +11,7 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.buckminster.aggregator.util.OverlaidImage;
 import org.eclipse.buckminster.runtime.Trivial;
 
-public class AggregatorItemProviderAdapter extends ItemProviderAdapter
+public class AggregatorItemProviderAdapter extends ItemProviderAdapter implements TooltipTextProvider
 {
 	static class AggregatorItemPropertyDescriptor extends ItemPropertyDescriptor
 	{
@@ -37,6 +39,30 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 		super(adapterFactory);
 	}
 
+	// default implementation
+	public String getTooltipText(Object object)
+	{
+		if(!(object instanceof StatusProvider))
+			return null;
+
+		Status status = ((StatusProvider)object).getStatus();
+
+		if(status.getMessage() == null)
+			return null;
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(getString("_UI_Structured_Tooltip_Label"));
+		sb.append(" ");
+		sb.append(getText(object));
+		sb.append("\n");
+		sb.append(getString("_UI_Structured_Tooltip_ErrorMessage"));
+		sb.append(" ");
+		sb.append(status.getMessage());
+
+		return sb.toString();
+	}
+
 	@Override
 	protected ItemPropertyDescriptor createItemPropertyDescriptor(AdapterFactory adapterFactory,
 			ResourceLocator resourceLocator, String displayName, String description, EStructuralFeature feature,
@@ -56,7 +82,9 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 
 		if(sp != null)
 		{
-			if(sp.getStatus() == StatusProvider.BROKEN_CHILD || sp.getStatus() == StatusProvider.WAITING)
+			StatusCode sc = sp.getStatus().getCode();
+
+			if(sc == StatusCode.BROKEN || sc == StatusCode.WAITING)
 			{
 				Object[] images = new Object[2];
 				int[] positions = new int[2];
@@ -64,7 +92,7 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 				images[0] = image;
 				positions[0] = OverlaidImage.BASIC;
 
-				if(sp.getStatus() == StatusProvider.WAITING)
+				if(sc == StatusCode.WAITING)
 				{
 					images[1] = getResourceLocator().getImage("full/ovr16/Loading");
 				}
@@ -80,4 +108,5 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter
 
 		return image;
 	}
+
 }

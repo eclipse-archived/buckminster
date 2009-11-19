@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.MavenItem;
 import org.eclipse.buckminster.aggregator.MavenMapping;
-import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.DependenciesType;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.Dependency;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.License;
@@ -30,8 +30,6 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
 import org.eclipse.equinox.internal.p2.metadata.RequiredCapability;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ICopyright;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
@@ -42,6 +40,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointData;
 import org.eclipse.equinox.internal.provisional.p2.metadata.ITouchpointType;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IUpdateDescriptor;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 
 /**
  * @author Filip Hrbek (filip.hrbek@cloudsmith.com)
@@ -117,7 +117,7 @@ public class InstallableUnitMapping implements IInstallableUnit
 		m_mappings.add(MavenMapping.DEFAULT_MAPPING);
 
 		for(MavenMapping mapping : m_mappings)
-			if(mapping.getStatus() != StatusProvider.OK)
+			if(mapping.getStatus().getCode() != StatusCode.OK)
 				throw new RuntimeException("Invalid maven mapping: " + mapping.toString());
 
 		switch(iu.getArtifacts().length)

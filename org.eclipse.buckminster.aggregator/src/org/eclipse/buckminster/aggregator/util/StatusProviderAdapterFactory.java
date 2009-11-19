@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.aggregator.util;
 
+import org.eclipse.buckminster.aggregator.Status;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.emf.common.notify.Adapter;
@@ -24,7 +25,7 @@ public class StatusProviderAdapterFactory extends AdapterFactoryImpl
 {
 	static class StatusProviderAdapter extends AdapterImpl implements StatusProvider
 	{
-		public int getStatus()
+		public Status getStatus()
 		{
 			synchronized(getTarget())
 			{

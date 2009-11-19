@@ -9,20 +9,30 @@
  */
 package org.eclipse.buckminster.aggregator.impl;
 
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.AggregatorPlugin;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.CompositeQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
+import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Installable Unit Reference</b></em>'. <!--
@@ -30,6 +40,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl#getStatus <em>Status</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl#getInstallableUnit <em>Installable
  * Unit</em>}</li>
  * </ul>
@@ -41,6 +52,16 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 		InstallableUnitReference
 {
 	/**
+	 * This looks up a string in the plugin's plugin.properties file. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private static String getString(String key)
+	{
+		return AggregatorPlugin.INSTANCE.getString(key);
+	}
+
+	/**
 	 * A set of bit flags representing the values of boolean attributes and whether unsettable features have been set.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -48,6 +69,16 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 * @ordered
 	 */
 	protected int eFlags = 0;
+
+	/**
+	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getStatus()
+	 * @generated
+	 * @ordered
+	 */
+	protected Status status;
 
 	/**
 	 * The cached value of the '{@link #getInstallableUnit() <em>Installable Unit</em>}' reference. <!-- begin-user-doc
@@ -84,11 +115,25 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 * 
 	 * @generated
 	 */
+	public Status basicGetStatus()
+	{
+		return status;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__STATUS:
+			if(resolve)
+				return getStatus();
+			return basicGetStatus();
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
 			if(resolve)
 				return getInstallableUnit();
@@ -107,6 +152,8 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__STATUS:
+			return status != null;
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
 			return installableUnit != null;
 		}
@@ -194,16 +241,44 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 * 
 	 * @generated NOT
 	 */
-	synchronized public int getStatus()
+	synchronized public Status getStatus()
 	{
 		if(isMappedRepositoryBroken())
-			return StatusProvider.BROKEN_CHILD;
+			return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
+					((MappedRepository)eContainer()).getLocation() != null
+							? getString("_UI_ErrorMessage_RepositoryIsNotAvailable")
+							: getString("_UI_ErrorMessage_RepositoryIsNotSet"));
 
-		if(isBranchEnabled() && getInstallableUnit() != null
-				&& InstallableUnitUtils.getStatus(getInstallableUnit()) == StatusProvider.BROKEN)
-			return StatusProvider.BROKEN_CHILD;
+		if(isBranchEnabled() && getInstallableUnit() != null)
+			if(InstallableUnitUtils.getStatus(getInstallableUnit()).getCode() == StatusCode.BROKEN)
+			{
+				VersionedId versionedName = InstallableUnitUtils.getVersionedName(getInstallableUnit());
 
-		return StatusProvider.OK;
+				Query query = new InstallableUnitQuery(versionedName.getId());
+
+				Collector ius = ((MappedRepository)eContainer()).getMetadataRepository().query(
+						new CompositeQuery(new Query[] { query, new LatestIUVersionQuery() }), new Collector(),
+						new NullProgressMonitor());
+
+				if(ius.size() <= 0)
+				{
+					ius = ((MappedRepository)eContainer()).getMetadataRepository().query(query, new Collector(),
+							new NullProgressMonitor());
+				}
+
+				if(ius.size() > 0)
+				{
+					InstallableUnit iu = (InstallableUnit)ius.toArray(InstallableUnit.class)[0];
+					return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
+							getString("_UI_ErrorMessage_InstallableUnitIsAvailableInVersion") + " "
+									+ iu.getVersion().toString());
+				}
+				else
+					return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
+							getString("_UI_ErrorMessage_InstallableUnitIsNotAvailable"));
+			}
+
+		return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 	}
 
 	/**

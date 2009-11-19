@@ -10,6 +10,7 @@ import java.util.Collection;
 
 import org.eclipse.buckminster.aggregator.AggregateType;
 import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
@@ -19,6 +20,8 @@ import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -37,6 +40,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getStatus <em>Status</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getConfigurations <em>Configurations</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContributions <em>Contributions</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildmaster <em>Buildmaster</em>}</li>
@@ -58,6 +62,16 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class AggregatorImpl extends DescriptionProviderImpl implements Aggregator
 {
+	/**
+	 * The cached value of the '{@link #getStatus() <em>Status</em>}' reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getStatus()
+	 * @generated
+	 * @ordered
+	 */
+	protected Status status;
+
 	/**
 	 * The cached value of the '{@link #getConfigurations() <em>Configurations</em>}' containment reference list. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -327,11 +341,67 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	 * 
 	 * @generated
 	 */
+	public Status basicGetStatus()
+	{
+		return status;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == StatusProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.AGGREGATOR__STATUS:
+				return AggregatorPackage.STATUS_PROVIDER__STATUS;
+			default:
+				return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == StatusProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.STATUS_PROVIDER__STATUS:
+				return AggregatorPackage.AGGREGATOR__STATUS;
+			default:
+				return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.AGGREGATOR__STATUS:
+			if(resolve)
+				return getStatus();
+			return basicGetStatus();
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			return getConfigurations();
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
@@ -417,6 +487,8 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.AGGREGATOR__STATUS:
+			return status != null;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			return configurations != null && !configurations.isEmpty();
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
@@ -743,25 +815,25 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		return PACKED_STRATEGY_EFLAG_VALUES[(eFlags & PACKED_STRATEGY_EFLAG) >>> PACKED_STRATEGY_EFLAG_OFFSET];
 	}
 
-	synchronized public int getStatus()
+	synchronized public Status getStatus()
 	{
-		int status;
+		StatusCode statusCode;
 		for(Contribution contribution : getContributions())
 		{
-			if((status = contribution.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
-				return StatusProvider.BROKEN_CHILD;
+			if((statusCode = contribution.getStatus().getCode()) != StatusCode.OK && statusCode != StatusCode.WAITING)
+				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
 		for(MetadataRepositoryReference repo : getValidationRepositories(true))
 		{
-			if((status = repo.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
-				return StatusProvider.BROKEN_CHILD;
+			if((statusCode = repo.getStatus().getCode()) != StatusCode.OK && statusCode != StatusCode.WAITING)
+				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
 		for(MavenMapping mapping : getMavenMappings())
 		{
-			if((status = mapping.getStatus()) != StatusProvider.OK && status != StatusProvider.WAITING)
-				return StatusProvider.BROKEN_CHILD;
+			if((statusCode = mapping.getStatus().getCode()) != StatusCode.OK && statusCode != StatusCode.WAITING)
+				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
-		return StatusProvider.OK;
+		return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 	}
 
 	/**

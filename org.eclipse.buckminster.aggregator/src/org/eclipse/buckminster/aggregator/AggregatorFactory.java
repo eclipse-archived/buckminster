@@ -180,6 +180,30 @@ public interface AggregatorFactory extends EFactory
 	Property createProperty(String key, String value);
 
 	/**
+	 * Returns a new object of class '<em>Status</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Status</em>'.
+	 * @generated
+	 */
+	Status createStatus();
+
+	/**
+	 * Returns a new object of class '<em>Status</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Status</em>'.
+	 * @generated NOT
+	 */
+	Status createStatus(StatusCode statusCode);
+
+	/**
+	 * Returns a new object of class '<em>Status</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Status</em>'.
+	 * @generated NOT
+	 */
+	Status createStatus(StatusCode statusCode, String message);
+
+	/**
 	 * Returns a new object of class '<em>Valid Configurations Rule</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Valid Configurations Rule</em>'.
