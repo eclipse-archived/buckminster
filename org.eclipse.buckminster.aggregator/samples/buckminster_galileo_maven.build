@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aggregator:Aggregator xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aggregator="http://www.eclipse.org/buckminster/2009/aggregator" label="Galileo + Buckminster for Subversive" buildRoot="${user.home}/buckminster_subversive_mirror" mavenResult="true">
+  <configurations/>
+  <configurations operatingSystem="linux" windowSystem="gtk"/>
+  <configurations operatingSystem="macosx" windowSystem="cocoa"/>
+  <contributions label="Galileo 3.5">
+    <repositories location="http://download.eclipse.org/releases/galileo/">
+      <metadataRepository href="p2:http://download.eclipse.org/releases/galileo/#//@metadataRepository"/>
+    </repositories>
+  </contributions>
+  <contributions label="Subversive SVN Connectors">
+    <repositories location="http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site/" description="Complete set of Subversive SVN Connectors provided by Polarion" categoryPrefix="Subversive SVN Connectors (Polarion) - ">
+      <metadataRepository href="p2:http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site/#//@metadataRepository"/>
+      <mapRules xsi:type="aggregator:ValidConfigurationsRule" validConfigurations="//@configurations.0">
+        <installableUnit href="p2:http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site/#//@metadataRepository/@installableUnits[id='org.polarion.eclipse.team.svn.connector.javahl.win32.feature.group',version='2.2.1.I20091009-1900']"/>
+      </mapRules>
+      <mapRules xsi:type="aggregator:ValidConfigurationsRule" validConfigurations="//@configurations.0">
+        <installableUnit href="p2:http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site/#//@metadataRepository/@installableUnits[id='org.polarion.eclipse.team.svn.connector.javahl15.win32.feature.group',version='2.2.1.I20091009-1900']"/>
+      </mapRules>
+      <mapRules xsi:type="aggregator:ValidConfigurationsRule" validConfigurations="//@configurations.0">
+        <installableUnit href="p2:http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site/#//@metadataRepository/@installableUnits[id='org.polarion.eclipse.team.svn.connector.javahl16.win32.feature.group',version='2.2.1.I20091009-1900']"/>
+      </mapRules>
+    </repositories>
+  </contributions>
+  <contributions label="Buckminster (latest)">
+    <repositories location="http://download.eclipse.org/tools/buckminster/updates-3.5" description="Latest Buckminster" categoryPrefix="Buckminster - ">
+      <metadataRepository href="p2:http://download.eclipse.org/tools/buckminster/updates-3.5#//@metadataRepository"/>
+      <mapRules xsi:type="aggregator:ExclusionRule">
+        <installableUnit href="p2:http://download.eclipse.org/tools/buckminster/updates-3.5#//@metadataRepository/@installableUnits[id='org.eclipse.buckminster.subclipse.feature.feature.group',version='1.0.0.r10759']"/>
+      </mapRules>
+      <mapRules xsi:type="aggregator:ExclusionRule">
+        <installableUnit href="p2:http://download.eclipse.org/tools/buckminster/updates-3.5#//@metadataRepository/@installableUnits[id='org.eclipse.buckminster.subclipse.source.feature.feature.group',version='1.0.0.r10759']"/>
+      </mapRules>
+    </repositories>
+  </contributions>
+</aggregator:Aggregator>
