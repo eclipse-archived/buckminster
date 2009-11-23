@@ -27,6 +27,8 @@ import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFacto
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.provider.P2viewItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
+import org.eclipse.buckminster.aggregator.provider.AggregatorItemProvider;
+import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.provider.TooltipTextProvider;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
@@ -1777,7 +1779,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		// Assign specific images to resources
 		adapterFactory.addAdapterFactory(new ResourceItemProviderAdapterFactory()
 		{
-			class ResourceItemProviderWithFontSupport extends ResourceItemProvider implements IItemFontProvider
+			class ResourceItemProviderWithFontSupport extends ResourceItemProvider implements IItemFontProvider,
+					TooltipTextProvider
 			{
 				ResourceItemProviderWithFontSupport(AdapterFactory adapterFactory)
 				{
@@ -1848,6 +1851,11 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					}
 
 					return super.getImage(object);
+				}
+
+				public String getTooltipText(Object object)
+				{
+					return AggregatorItemProviderAdapter.getTooltipText(object, this);
 				}
 
 				@Override

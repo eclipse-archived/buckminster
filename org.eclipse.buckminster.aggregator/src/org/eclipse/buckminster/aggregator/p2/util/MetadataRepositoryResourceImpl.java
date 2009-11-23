@@ -19,6 +19,9 @@ import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Property;
+import org.eclipse.buckminster.aggregator.Status;
+import org.eclipse.buckminster.aggregator.StatusCode;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
@@ -45,7 +48,6 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
@@ -66,7 +68,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
 
-public class MetadataRepositoryResourceImpl extends ResourceImpl
+public class MetadataRepositoryResourceImpl extends ResourceImpl implements StatusProvider
 {
 	class RepositoryLoaderJob extends Job
 	{
@@ -177,7 +179,7 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 				bucky.ungetService(mdrMgr);
 				MonitorUtils.done(subMon);
 			}
-			return Status.OK_STATUS;
+			return org.eclipse.core.runtime.Status.OK_STATUS;
 		}
 
 		private void addIUsToMap(Object container, List<? extends IUPresentation> iuPresentations)
@@ -448,21 +450,28 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 
 	public static MetadataRepository loadRepository(String repositoryURI, Aggregator aggregator, boolean force)
 	{
-		Resource mdr = getResourceForLocation(repositoryURI, aggregator);
+		MetadataRepositoryResourceImpl mdrResource = (MetadataRepositoryResourceImpl)getResourceForLocation(
+				repositoryURI, aggregator);
+		Exception loadException = null;
 
 		try
 		{
-			if(mdr != null)
+			if(mdrResource != null)
 			{
+				mdrResource.setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.WAITING));
+
 				if(force)
 				{
-					mdr.unload();
-					mdr.load(Collections.emptyMap());
+					mdrResource.unload();
+					mdrResource.load(Collections.emptyMap());
 				}
-				else if(!mdr.isLoaded())
-					mdr.load(Collections.emptyMap());
+				else if(!mdrResource.isLoaded())
+					mdrResource.load(Collections.emptyMap());
 
-				List<EObject> contents = mdr.getContents();
+				if(mdrResource.getLastException() != null)
+					throw mdrResource.getLastException();
+
+				List<EObject> contents = mdrResource.getContents();
 				if(contents.size() != 1
 						|| ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository().getLocation() == null)
 					throw new Exception(String.format("Unable to load repository %s", repositoryURI));
@@ -474,7 +483,17 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 		}
 		catch(Exception e)
 		{
+			loadException = e;
 			return null;
+		}
+		finally
+		{
+			if(mdrResource != null)
+				if(loadException != null)
+					mdrResource.setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
+							loadException.getMessage()));
+				else
+					mdrResource.setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK));
 		}
 	}
 
@@ -485,6 +504,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	private Exception m_lastException = null;
 
 	private boolean m_forceReload = false;
+
+	private Status m_status = AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 
 	public static final Query QUERY_ALL_IUS = new MatchQuery()
 	{
@@ -556,6 +577,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 	public Exception getLastException()
 	{
 		return m_lastException;
+	}
+
+	public Status getStatus()
+	{
+		return m_status;
 	}
 
 	public void load(Map<?, ?> options) throws IOException
@@ -783,5 +809,10 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl
 					? parentPath
 					: null;
 		}
+	}
+
+	private void setStatus(Status status)
+	{
+		m_status = status;
 	}
 }

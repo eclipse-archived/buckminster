@@ -34,13 +34,7 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter implement
 		}
 	}
 
-	public AggregatorItemProviderAdapter(AdapterFactory adapterFactory)
-	{
-		super(adapterFactory);
-	}
-
-	// default implementation
-	public String getTooltipText(Object object)
+	public static String getTooltipText(Object object, ItemProviderAdapter itemProvider)
 	{
 		if(!(object instanceof StatusProvider))
 			return null;
@@ -52,15 +46,26 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter implement
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(getString("_UI_Structured_Tooltip_Label"));
+		sb.append(AggregatorEditPlugin.INSTANCE.getString("_UI_Structured_Tooltip_Label"));
 		sb.append(" ");
-		sb.append(getText(object));
+		sb.append(itemProvider.getText(object));
 		sb.append("\n");
-		sb.append(getString("_UI_Structured_Tooltip_ErrorMessage"));
+		sb.append(AggregatorEditPlugin.INSTANCE.getString("_UI_Structured_Tooltip_ErrorMessage"));
 		sb.append(" ");
 		sb.append(status.getMessage());
 
 		return sb.toString();
+	}
+
+	public AggregatorItemProviderAdapter(AdapterFactory adapterFactory)
+	{
+		super(adapterFactory);
+	}
+
+	// default implementation
+	public String getTooltipText(Object object)
+	{
+		return getTooltipText(object, this);
 	}
 
 	@Override

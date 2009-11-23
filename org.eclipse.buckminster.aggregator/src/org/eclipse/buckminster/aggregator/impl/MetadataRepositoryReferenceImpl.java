@@ -35,7 +35,6 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 
 /**
@@ -429,12 +428,11 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 					return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
 							getString("_UI_ErrorMessage_RepositoryIsNotSet"));
 
-				ResourceImpl res = (ResourceImpl)MetadataRepositoryResourceImpl.getResourceForLocation(location,
-						getAggregator());
-				if(res.isLoading() || !res.isLoaded())
-				{
-					return AggregatorFactory.eINSTANCE.createStatus(StatusCode.WAITING);
-				}
+				MetadataRepositoryResourceImpl res = (MetadataRepositoryResourceImpl)MetadataRepositoryResourceImpl.getResourceForLocation(
+						location, getAggregator());
+
+				if(res != null)
+					return res.getStatus();
 
 				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
 						getString("_UI_ErrorMessage_RepositoryIsNotAvailable"));
