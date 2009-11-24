@@ -95,7 +95,7 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.DIRECT_PART_REFEREMCE: return createDirectPartReferemce();
       case BeeLangPackage.CAPABILITY_REFERENCED_PART: return createCapabilityReferencedPart();
       case BeeLangPackage.COMPOUND_REFERENCES: return createCompoundReferences();
-      case BeeLangPackage.STATEMENT: return createStatement();
+      case BeeLangPackage.BUILDER: return createBuilder();
       case BeeLangPackage.PARAMETER: return createParameter();
       case BeeLangPackage.PARAMETER_LIST: return createParameterList();
       case BeeLangPackage.PARAMETER_DECLARATION_LIST: return createParameterDeclarationList();
@@ -117,6 +117,7 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.ASSERTION_EXPRESSION: return createAssertionExpression();
       case BeeLangPackage.EXPRESSION_LIST: return createExpressionList();
       case BeeLangPackage.STATMENT: return createStatment();
+      case BeeLangPackage.STATEMENT: return createStatement();
       case BeeLangPackage.FUNCTION_OR_METHOD: return createFunctionOrMethod();
       case BeeLangPackage.TYPE_PARAM_DECLARATION: return createTypeParamDeclaration();
       case BeeLangPackage.EXPRESSION: return createExpression();
@@ -145,7 +146,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.FEATURE: return createFeature();
       case BeeLangPackage.VERSION: return createVersion();
       case BeeLangPackage.VERSION_RANGE: return createVersionRange();
-      case BeeLangPackage.BUILDER: return createBuilder();
       case BeeLangPackage.VARARG_PARAMETER_DECLARATION: return createVarargParameterDeclaration();
       case BeeLangPackage.FUNCTION: return createFunction();
       case BeeLangPackage.METHOD: return createMethod();
@@ -545,10 +545,10 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public Statement createStatement()
+  public Builder createBuilder()
   {
-    StatementImpl statement = new StatementImpl();
-    return statement;
+    BuilderImpl builder = new BuilderImpl();
+    return builder;
   }
 
   /**
@@ -780,6 +780,17 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     StatmentImpl statment = new StatmentImpl();
     return statment;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public Statement createStatement()
+  {
+    StatementImpl statement = new StatementImpl();
+    return statement;
   }
 
   /**
@@ -1088,17 +1099,6 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     VersionRangeImpl versionRange = new VersionRangeImpl();
     return versionRange;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Builder createBuilder()
-  {
-    BuilderImpl builder = new BuilderImpl();
-    return builder;
   }
 
   /**

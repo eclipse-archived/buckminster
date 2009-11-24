@@ -273,7 +273,7 @@ public interface BuildUnit extends EObject
 
   /**
    * Returns the value of the '<em><b>Builders</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.b3.beeLang.Statement}.
+   * The list contents are of type {@link org.eclipse.b3.beeLang.Builder}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Builders</em>' containment reference list isn't clear,
@@ -285,7 +285,7 @@ public interface BuildUnit extends EObject
    * @model containment="true"
    * @generated
    */
-  EList<Statement> getBuilders();
+  EList<Builder> getBuilders();
 
   /**
    * Returns the value of the '<em><b>Methods</b></em>' containment reference list.

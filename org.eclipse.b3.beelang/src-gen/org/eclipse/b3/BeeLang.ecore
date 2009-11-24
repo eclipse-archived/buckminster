@@ -46,7 +46,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="synchronizations" upperBound="-1"
         eType="#//Synchronization" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="builders" upperBound="-1"
-        eType="#//Statement" containment="true"/>
+        eType="#//Builder" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="methods" upperBound="-1"
         eType="#//Statement" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="repositoryConfigurations"
@@ -168,7 +168,30 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="prerequisites" upperBound="-1"
         eType="#//Prerequisite" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Statement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Builder">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="documentation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibility" eType="#//Visibility"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="executionMode" eType="#//ExecutionMode"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="final" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cached" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="params" eType="#//ParameterDeclarationList"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="providedCapabilities" upperBound="-1"
+        eType="#//ProvidedCapability" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="preCondition" eType="#//PreCondition"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="postCondition" eType="#//PostCondition"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//PropertySet"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="input" eType="#//BuilderInput"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="output" eType="#//BuilderOutput"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expressionList" eType="#//ExpressionList"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Parameter">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="val" eType="#//Expression"
@@ -279,6 +302,7 @@
         eType="#//Expression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Statment"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Statement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionOrMethod">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="documentation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibility" eType="#//Visibility"/>
@@ -450,30 +474,6 @@
   <eClassifiers xsi:type="ecore:EEnum" name="ExecutionMode">
     <eLiterals name="parallel" literal="parallel"/>
     <eLiterals name="sequential" value="1" literal="sequential"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Builder" eSuperTypes="#//Statement">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="documentation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibility" eType="#//Visibility"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="executionMode" eType="#//ExecutionMode"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="final" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cached" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="params" eType="#//ParameterDeclarationList"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="providedCapabilities" upperBound="-1"
-        eType="#//ProvidedCapability" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="preCondition" eType="#//PreCondition"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="postCondition" eType="#//PostCondition"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" eType="#//PropertySet"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="input" eType="#//BuilderInput"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="output" eType="#//BuilderOutput"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expressionList" eType="#//ExpressionList"
-        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="VarargParameterDeclaration" eSuperTypes="#//ParameterDeclaration"/>
   <eClassifiers xsi:type="ecore:EClass" name="Function" eSuperTypes="#//Statment">

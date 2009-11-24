@@ -293,10 +293,10 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case BeeLangPackage.STATEMENT:
+      case BeeLangPackage.BUILDER:
       {
-        Statement statement = (Statement)theEObject;
-        T result = caseStatement(statement);
+        Builder builder = (Builder)theEObject;
+        T result = caseBuilder(builder);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -446,6 +446,13 @@ public class BeeLangSwitch<T>
       {
         Statment statment = (Statment)theEObject;
         T result = caseStatment(statment);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case BeeLangPackage.STATEMENT:
+      {
+        Statement statement = (Statement)theEObject;
+        T result = caseStatement(statement);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -668,14 +675,6 @@ public class BeeLangSwitch<T>
       {
         VersionRange versionRange = (VersionRange)theEObject;
         T result = caseVersionRange(versionRange);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
-      case BeeLangPackage.BUILDER:
-      {
-        Builder builder = (Builder)theEObject;
-        T result = caseBuilder(builder);
-        if (result == null) result = caseStatement(builder);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -1455,17 +1454,17 @@ public class BeeLangSwitch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Statement</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Builder</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Statement</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Builder</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseStatement(Statement object)
+  public T caseBuilder(Builder object)
   {
     return null;
   }
@@ -1802,6 +1801,22 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseStatment(Statment object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Statement</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Statement</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseStatement(Statement object)
   {
     return null;
   }
@@ -2250,22 +2265,6 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseVersionRange(VersionRange object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Builder</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Builder</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseBuilder(Builder object)
   {
     return null;
   }

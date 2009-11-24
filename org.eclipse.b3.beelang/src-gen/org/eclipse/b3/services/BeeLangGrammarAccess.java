@@ -1819,7 +1819,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cExpressionListExpressionListParserRuleCall_16_0 = (RuleCall)cExpressionListAssignment_16.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_17 = (Keyword)cGroup.eContents().get(17);
 		
-		//Builder returns Statement:
+		//Builder:
 		//  {Builder} documentation=DOCUMENTATION? visibility=Visibility? executionMode=
 		//  ExecutionMode? final?="final"? cached?="cached"? "builder" name=PartName ("(" params=
 		//  ParameterDeclarationList ")")? ("provides" providedCapabilities+=ProvidedCapability
@@ -7758,7 +7758,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		return getCompoundReferencesAccess().getRule();
 	}
 
-	//Builder returns Statement:
+	//Builder:
 	//  {Builder} documentation=DOCUMENTATION? visibility=Visibility? executionMode=
 	//  ExecutionMode? final?="final"? cached?="cached"? "builder" name=PartName ("(" params=
 	//  ParameterDeclarationList ")")? ("provides" providedCapabilities+=ProvidedCapability

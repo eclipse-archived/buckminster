@@ -269,13 +269,13 @@ public interface BeeLangFactory extends EFactory
   CompoundReferences createCompoundReferences();
 
   /**
-   * Returns a new object of class '<em>Statement</em>'.
+   * Returns a new object of class '<em>Builder</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Statement</em>'.
+   * @return a new object of class '<em>Builder</em>'.
    * @generated
    */
-  Statement createStatement();
+  Builder createBuilder();
 
   /**
    * Returns a new object of class '<em>Parameter</em>'.
@@ -465,6 +465,15 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   Statment createStatment();
+
+  /**
+   * Returns a new object of class '<em>Statement</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Statement</em>'.
+   * @generated
+   */
+  Statement createStatement();
 
   /**
    * Returns a new object of class '<em>Function Or Method</em>'.
@@ -717,15 +726,6 @@ public interface BeeLangFactory extends EFactory
    * @generated
    */
   VersionRange createVersionRange();
-
-  /**
-   * Returns a new object of class '<em>Builder</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>Builder</em>'.
-   * @generated
-   */
-  Builder createBuilder();
 
   /**
    * Returns a new object of class '<em>Vararg Parameter Declaration</em>'.

@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -59,7 +60,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *
  * @generated
  */
-public class BuilderImpl extends StatementImpl implements Builder
+public class BuilderImpl extends MinimalEObjectImpl.Container implements Builder
 {
   /**
    * The default value of the '{@link #getDocumentation() <em>Documentation</em>}' attribute.

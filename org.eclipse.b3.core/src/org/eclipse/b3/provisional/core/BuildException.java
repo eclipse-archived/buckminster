@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -45,7 +46,7 @@ public abstract class BuildException extends CoreException {
 	public static IStatus createStatus(Throwable cause, String message, Object... args)
 	{
 		if(args.length > 0)
-			message = String.format(message, args);
+			message = NLS.bind(message, args);
 		return new Status(IStatus.ERROR, BuildBundle.PLUGIN_ID, IStatus.OK, message, cause);
 	}
 

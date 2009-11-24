@@ -9,6 +9,7 @@ import java.util.Collection;
 
 import org.eclipse.b3.beeLang.BeeLangPackage;
 import org.eclipse.b3.beeLang.BuildUnit;
+import org.eclipse.b3.beeLang.Builder;
 import org.eclipse.b3.beeLang.Concern;
 import org.eclipse.b3.beeLang.ContainerConfiguration;
 import org.eclipse.b3.beeLang.ExecutionMode;
@@ -214,7 +215,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * @generated
    * @ordered
    */
-  protected EList<Statement> builders;
+  protected EList<Builder> builders;
 
   /**
    * The cached value of the '{@link #getMethods() <em>Methods</em>}' containment reference list.
@@ -531,11 +532,11 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<Statement> getBuilders()
+  public EList<Builder> getBuilders()
   {
     if (builders == null)
     {
-      builders = new EObjectContainmentEList<Statement>(Statement.class, this, BeeLangPackage.BUILD_UNIT__BUILDERS);
+      builders = new EObjectContainmentEList<Builder>(Builder.class, this, BeeLangPackage.BUILD_UNIT__BUILDERS);
     }
     return builders;
   }
@@ -732,7 +733,7 @@ public class BuildUnitImpl extends MinimalEObjectImpl.Container implements Build
         return;
       case BeeLangPackage.BUILD_UNIT__BUILDERS:
         getBuilders().clear();
-        getBuilders().addAll((Collection<? extends Statement>)newValue);
+        getBuilders().addAll((Collection<? extends Builder>)newValue);
         return;
       case BeeLangPackage.BUILD_UNIT__METHODS:
         getMethods().clear();

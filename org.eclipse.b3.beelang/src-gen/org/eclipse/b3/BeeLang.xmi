@@ -660,7 +660,7 @@
   </rules>
   <rules xsi:type="xtext:ParserRule" name="Builder">
     <type metamodel="//@metamodelDeclarations.2">
-      <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Statement"/>
+      <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/b3/BeeLang#//Builder"/>
     </type>
     <alternatives xsi:type="xtext:Group">
       <tokens xsi:type="xtext:Action">

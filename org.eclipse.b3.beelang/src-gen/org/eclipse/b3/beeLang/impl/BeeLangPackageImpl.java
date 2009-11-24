@@ -344,7 +344,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass statementEClass = null;
+  private EClass builderEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -492,6 +492,13 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass statmentEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass statementEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -688,13 +695,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass versionRangeEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass builderEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -2017,9 +2017,149 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getStatement()
+  public EClass getBuilder()
   {
-    return statementEClass;
+    return builderEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBuilder_Documentation()
+  {
+    return (EAttribute)builderEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBuilder_Visibility()
+  {
+    return (EAttribute)builderEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBuilder_ExecutionMode()
+  {
+    return (EAttribute)builderEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBuilder_Final()
+  {
+    return (EAttribute)builderEClass.getEStructuralFeatures().get(3);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBuilder_Cached()
+  {
+    return (EAttribute)builderEClass.getEStructuralFeatures().get(4);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getBuilder_Name()
+  {
+    return (EAttribute)builderEClass.getEStructuralFeatures().get(5);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getBuilder_Params()
+  {
+    return (EReference)builderEClass.getEStructuralFeatures().get(6);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getBuilder_ProvidedCapabilities()
+  {
+    return (EReference)builderEClass.getEStructuralFeatures().get(7);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getBuilder_PreCondition()
+  {
+    return (EReference)builderEClass.getEStructuralFeatures().get(8);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getBuilder_PostCondition()
+  {
+    return (EReference)builderEClass.getEStructuralFeatures().get(9);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getBuilder_Properties()
+  {
+    return (EReference)builderEClass.getEStructuralFeatures().get(10);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getBuilder_Input()
+  {
+    return (EReference)builderEClass.getEStructuralFeatures().get(11);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getBuilder_Output()
+  {
+    return (EReference)builderEClass.getEStructuralFeatures().get(12);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getBuilder_ExpressionList()
+  {
+    return (EReference)builderEClass.getEStructuralFeatures().get(13);
   }
 
   /**
@@ -2620,6 +2760,16 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
   public EClass getStatment()
   {
     return statmentEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getStatement()
+  {
+    return statementEClass;
   }
 
   /**
@@ -3410,156 +3560,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
   public EAttribute getVersionRange_Range()
   {
     return (EAttribute)versionRangeEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getBuilder()
-  {
-    return builderEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getBuilder_Documentation()
-  {
-    return (EAttribute)builderEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getBuilder_Visibility()
-  {
-    return (EAttribute)builderEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getBuilder_ExecutionMode()
-  {
-    return (EAttribute)builderEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getBuilder_Final()
-  {
-    return (EAttribute)builderEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getBuilder_Cached()
-  {
-    return (EAttribute)builderEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getBuilder_Name()
-  {
-    return (EAttribute)builderEClass.getEStructuralFeatures().get(5);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getBuilder_Params()
-  {
-    return (EReference)builderEClass.getEStructuralFeatures().get(6);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getBuilder_ProvidedCapabilities()
-  {
-    return (EReference)builderEClass.getEStructuralFeatures().get(7);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getBuilder_PreCondition()
-  {
-    return (EReference)builderEClass.getEStructuralFeatures().get(8);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getBuilder_PostCondition()
-  {
-    return (EReference)builderEClass.getEStructuralFeatures().get(9);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getBuilder_Properties()
-  {
-    return (EReference)builderEClass.getEStructuralFeatures().get(10);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getBuilder_Input()
-  {
-    return (EReference)builderEClass.getEStructuralFeatures().get(11);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getBuilder_Output()
-  {
-    return (EReference)builderEClass.getEStructuralFeatures().get(12);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getBuilder_ExpressionList()
-  {
-    return (EReference)builderEClass.getEStructuralFeatures().get(13);
   }
 
   /**
@@ -4743,7 +4743,21 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     compoundReferencesEClass = createEClass(COMPOUND_REFERENCES);
     createEReference(compoundReferencesEClass, COMPOUND_REFERENCES__PREREQUISITES);
 
-    statementEClass = createEClass(STATEMENT);
+    builderEClass = createEClass(BUILDER);
+    createEAttribute(builderEClass, BUILDER__DOCUMENTATION);
+    createEAttribute(builderEClass, BUILDER__VISIBILITY);
+    createEAttribute(builderEClass, BUILDER__EXECUTION_MODE);
+    createEAttribute(builderEClass, BUILDER__FINAL);
+    createEAttribute(builderEClass, BUILDER__CACHED);
+    createEAttribute(builderEClass, BUILDER__NAME);
+    createEReference(builderEClass, BUILDER__PARAMS);
+    createEReference(builderEClass, BUILDER__PROVIDED_CAPABILITIES);
+    createEReference(builderEClass, BUILDER__PRE_CONDITION);
+    createEReference(builderEClass, BUILDER__POST_CONDITION);
+    createEReference(builderEClass, BUILDER__PROPERTIES);
+    createEReference(builderEClass, BUILDER__INPUT);
+    createEReference(builderEClass, BUILDER__OUTPUT);
+    createEReference(builderEClass, BUILDER__EXPRESSION_LIST);
 
     parameterEClass = createEClass(PARAMETER);
     createEAttribute(parameterEClass, PARAMETER__NAME);
@@ -4825,6 +4839,8 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     createEReference(expressionListEClass, EXPRESSION_LIST__EXPRESSIONS);
 
     statmentEClass = createEClass(STATMENT);
+
+    statementEClass = createEClass(STATEMENT);
 
     functionOrMethodEClass = createEClass(FUNCTION_OR_METHOD);
     createEAttribute(functionOrMethodEClass, FUNCTION_OR_METHOD__DOCUMENTATION);
@@ -4932,22 +4948,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     versionRangeEClass = createEClass(VERSION_RANGE);
     createEAttribute(versionRangeEClass, VERSION_RANGE__RANGE);
-
-    builderEClass = createEClass(BUILDER);
-    createEAttribute(builderEClass, BUILDER__DOCUMENTATION);
-    createEAttribute(builderEClass, BUILDER__VISIBILITY);
-    createEAttribute(builderEClass, BUILDER__EXECUTION_MODE);
-    createEAttribute(builderEClass, BUILDER__FINAL);
-    createEAttribute(builderEClass, BUILDER__CACHED);
-    createEAttribute(builderEClass, BUILDER__NAME);
-    createEReference(builderEClass, BUILDER__PARAMS);
-    createEReference(builderEClass, BUILDER__PROVIDED_CAPABILITIES);
-    createEReference(builderEClass, BUILDER__PRE_CONDITION);
-    createEReference(builderEClass, BUILDER__POST_CONDITION);
-    createEReference(builderEClass, BUILDER__PROPERTIES);
-    createEReference(builderEClass, BUILDER__INPUT);
-    createEReference(builderEClass, BUILDER__OUTPUT);
-    createEReference(builderEClass, BUILDER__EXPRESSION_LIST);
 
     varargParameterDeclarationEClass = createEClass(VARARG_PARAMETER_DECLARATION);
 
@@ -5151,7 +5151,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     operationCallEClass.getESuperTypes().add(this.getFeatureCall());
     expressionSelectorEClass.getESuperTypes().add(this.getContextSelector());
     unitSelectorEClass.getESuperTypes().add(this.getContextSelector());
-    builderEClass.getESuperTypes().add(this.getStatement());
     varargParameterDeclarationEClass.getESuperTypes().add(this.getParameterDeclaration());
     functionEClass.getESuperTypes().add(this.getStatment());
     methodEClass.getESuperTypes().add(this.getStatement());
@@ -5221,7 +5220,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getBuildUnit_MetaRequiredCapabilities(), this.getRequiredCapability(), null, "metaRequiredCapabilities", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Concerns(), this.getConcern(), null, "concerns", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Synchronizations(), this.getSynchronization(), null, "synchronizations", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuildUnit_Builders(), this.getStatement(), null, "builders", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuildUnit_Builders(), this.getBuilder(), null, "builders", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_Methods(), this.getStatement(), null, "methods", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_RepositoryConfigurations(), this.getRepositoryConfiguration(), null, "repositoryConfigurations", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getBuildUnit_PropertySets(), this.getNamedPropertySet(), null, "propertySets", null, 0, -1, BuildUnit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5313,7 +5312,21 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEClass(compoundReferencesEClass, CompoundReferences.class, "CompoundReferences", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCompoundReferences_Prerequisites(), this.getPrerequisite(), null, "prerequisites", null, 0, -1, CompoundReferences.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(statementEClass, Statement.class, "Statement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEClass(builderEClass, Builder.class, "Builder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getBuilder_Documentation(), ecorePackage.getEString(), "documentation", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBuilder_Visibility(), this.getVisibility(), "visibility", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBuilder_ExecutionMode(), this.getExecutionMode(), "executionMode", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBuilder_Final(), ecorePackage.getEBoolean(), "final", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBuilder_Cached(), ecorePackage.getEBoolean(), "cached", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getBuilder_Name(), ecorePackage.getEString(), "name", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuilder_Params(), this.getParameterDeclarationList(), null, "params", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuilder_ProvidedCapabilities(), this.getProvidedCapability(), null, "providedCapabilities", null, 0, -1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuilder_PreCondition(), this.getPreCondition(), null, "preCondition", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuilder_PostCondition(), this.getPostCondition(), null, "postCondition", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuilder_Properties(), this.getPropertySet(), null, "properties", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuilder_Input(), this.getBuilderInput(), null, "input", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuilder_Output(), this.getBuilderOutput(), null, "output", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getBuilder_ExpressionList(), this.getExpressionList(), null, "expressionList", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(parameterEClass, Parameter.class, "Parameter", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getParameter_Name(), ecorePackage.getEString(), "name", null, 0, 1, Parameter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5395,6 +5408,8 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     initEReference(getExpressionList_Expressions(), this.getExpression(), null, "expressions", null, 0, -1, ExpressionList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(statmentEClass, Statment.class, "Statment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+    initEClass(statementEClass, Statement.class, "Statement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(functionOrMethodEClass, FunctionOrMethod.class, "FunctionOrMethod", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getFunctionOrMethod_Documentation(), ecorePackage.getEString(), "documentation", null, 0, 1, FunctionOrMethod.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -5502,22 +5517,6 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     initEClass(versionRangeEClass, VersionRange.class, "VersionRange", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getVersionRange_Range(), theBeelangtypesPackage.getVersionRange(), "range", null, 0, 1, VersionRange.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(builderEClass, Builder.class, "Builder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getBuilder_Documentation(), ecorePackage.getEString(), "documentation", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getBuilder_Visibility(), this.getVisibility(), "visibility", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getBuilder_ExecutionMode(), this.getExecutionMode(), "executionMode", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getBuilder_Final(), ecorePackage.getEBoolean(), "final", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getBuilder_Cached(), ecorePackage.getEBoolean(), "cached", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getBuilder_Name(), ecorePackage.getEString(), "name", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuilder_Params(), this.getParameterDeclarationList(), null, "params", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuilder_ProvidedCapabilities(), this.getProvidedCapability(), null, "providedCapabilities", null, 0, -1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuilder_PreCondition(), this.getPreCondition(), null, "preCondition", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuilder_PostCondition(), this.getPostCondition(), null, "postCondition", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuilder_Properties(), this.getPropertySet(), null, "properties", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuilder_Input(), this.getBuilderInput(), null, "input", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuilder_Output(), this.getBuilderOutput(), null, "output", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getBuilder_ExpressionList(), this.getExpressionList(), null, "expressionList", null, 0, 1, Builder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(varargParameterDeclarationEClass, VarargParameterDeclaration.class, "VarargParameterDeclaration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

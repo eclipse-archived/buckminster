@@ -7116,7 +7116,7 @@ protected class CompoundReferences_RightCurlyBracketKeyword_2 extends KeywordTok
 
 /************ begin Rule Builder ****************
  *
- * Builder returns Statement:
+ * Builder:
  *   {Builder} documentation=DOCUMENTATION? visibility=Visibility? executionMode=
  *   ExecutionMode? final?="final"? cached?="cached"? "builder" name=PartName ("(" params=
  *   ParameterDeclarationList ")")? ("provides" providedCapabilities+=ProvidedCapability

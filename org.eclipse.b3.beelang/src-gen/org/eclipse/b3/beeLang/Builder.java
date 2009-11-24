@@ -7,6 +7,8 @@ package org.eclipse.b3.beeLang;
 
 import org.eclipse.emf.common.util.EList;
 
+import org.eclipse.emf.ecore.EObject;
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Builder</b></em>'.
@@ -36,7 +38,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface Builder extends Statement
+public interface Builder extends EObject
 {
   /**
    * Returns the value of the '<em><b>Documentation</b></em>' attribute.
