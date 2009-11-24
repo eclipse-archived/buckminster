@@ -1,15 +1,15 @@
-ÇIMPORT beeLangÈ
-ÇIMPORT parsetreeÈ
-ÇEXTENSION templates::ExtensionsÈ
+Â«IMPORT beeLangÂ»
+Â«IMPORT parsetreeÂ»
+Â«EXTENSION templates::ExtensionsÂ»
 
-ÇDEFINE main FOR BuildUnit-È
-ÇFILE "output.graph"-È
+Â«DEFINE main FOR BuildUnit-Â»
+Â«FILE "output.graph"-Â»
 digraph G  {
 compound=true;
-unit_ÇnameÈ ;
-ÇREMÈÇFOREACH typeSelect(parsetree::AbstractNode) AS n-È
+unit_Â«nameÂ» ;
+Â«REMÂ»Â«FOREACH typeSelect(parsetree::AbstractNode) AS n-Â»
 n.
-ÇENDFOREACH-È
-commentÇENDREMÈ
-ÇENDFILE-È
-ÇENDDEFINEÈ
+Â«ENDFOREACH-Â»
+commentÂ«ENDREMÂ»
+Â«ENDFILE-Â»
+Â«ENDDEFINEÂ»

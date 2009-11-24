@@ -1,11 +1,11 @@
-ÇIMPORT beeLangÈ;
+Â«IMPORT beeLangÂ»;
 
-ÇEXTENSION templates::ExtensionsÈ
+Â«EXTENSION templates::ExtensionsÂ»
 
-ÇDEFINE main FOR BuildUnit-È
-ÇFILE "output.txt"-È
-ÇFOREACH this.builders AS p-È
-Çp.toString()È
-ÇENDFOREACH-È
-ÇENDFILE-È
-ÇENDDEFINEÈ
+Â«DEFINE main FOR BuildUnit-Â»
+Â«FILE "output.txt"-Â»
+Â«FOREACH this.builders AS p-Â»
+Â«p.toString()Â»
+Â«ENDFOREACH-Â»
+Â«ENDFILE-Â»
+Â«ENDDEFINEÂ»
