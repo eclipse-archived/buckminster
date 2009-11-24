@@ -413,8 +413,9 @@ FeatureCall:
 	OperationCall
 	;
 	
-OperationCall 
+OperationCall returns OperationCall
 	: name=(ID|PID) '(' (parameters = ParameterList)? ')' 
+	| target= SuperLiteral '.' name=ID '(' (parameters = ParameterList)? ')'
 	;
 
 ConstructorCallExpression returns Expression
@@ -472,7 +473,7 @@ ValueLiteral returns Expression
 	| RealLiteral
 	| QueryLiteral
 	| ThisLiteral
-	| SuperLiteral
+//	| SuperLiteral
 	| UnitLiteral
 	;
 	

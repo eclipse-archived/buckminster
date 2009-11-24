@@ -119,6 +119,7 @@ import org.eclipse.b3.beeLang.TypeParamDeclaration;
 import org.eclipse.b3.beeLang.TypeRef;
 import org.eclipse.b3.beeLang.UnaryExpression;
 import org.eclipse.b3.beeLang.UnaryOperation;
+import org.eclipse.b3.beeLang.UnitLiteral;
 import org.eclipse.b3.beeLang.UnitSelector;
 import org.eclipse.b3.beeLang.UnsetPropertyOperation;
 import org.eclipse.b3.beeLang.VarDeclaration;
@@ -925,6 +926,13 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * @generated
    */
   private EClass superLiteralEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass unitLiteralEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -4429,6 +4437,26 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EClass getUnitLiteral()
+  {
+    return unitLiteralEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getUnitLiteral_Val()
+  {
+    return (EAttribute)unitLiteralEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getStringLiteral()
   {
     return stringLiteralEClass;
@@ -5041,6 +5069,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     superLiteralEClass = createEClass(SUPER_LITERAL);
     createEAttribute(superLiteralEClass, SUPER_LITERAL__VAL);
 
+    unitLiteralEClass = createEClass(UNIT_LITERAL);
+    createEAttribute(unitLiteralEClass, UNIT_LITERAL__VAL);
+
     stringLiteralEClass = createEClass(STRING_LITERAL);
     createEAttribute(stringLiteralEClass, STRING_LITERAL__VAL);
 
@@ -5154,6 +5185,7 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
     nullLiteralEClass.getESuperTypes().add(this.getExpression());
     thisLiteralEClass.getESuperTypes().add(this.getExpression());
     superLiteralEClass.getESuperTypes().add(this.getExpression());
+    unitLiteralEClass.getESuperTypes().add(this.getExpression());
     stringLiteralEClass.getESuperTypes().add(this.getExpression());
     realLiteralEClass.getESuperTypes().add(this.getExpression());
     regexpLiteralEClass.getESuperTypes().add(this.getExpression());
@@ -5606,6 +5638,9 @@ public class BeeLangPackageImpl extends EPackageImpl implements BeeLangPackage
 
     initEClass(superLiteralEClass, SuperLiteral.class, "SuperLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getSuperLiteral_Val(), ecorePackage.getEString(), "val", null, 0, 1, SuperLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(unitLiteralEClass, UnitLiteral.class, "UnitLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getUnitLiteral_Val(), ecorePackage.getEString(), "val", null, 0, 1, UnitLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(stringLiteralEClass, StringLiteral.class, "StringLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getStringLiteral_Val(), ecorePackage.getEString(), "val", null, 0, 1, StringLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

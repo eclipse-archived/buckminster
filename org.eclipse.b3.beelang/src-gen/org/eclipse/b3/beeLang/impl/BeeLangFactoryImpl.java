@@ -179,6 +179,7 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
       case BeeLangPackage.NULL_LITERAL: return createNullLiteral();
       case BeeLangPackage.THIS_LITERAL: return createThisLiteral();
       case BeeLangPackage.SUPER_LITERAL: return createSuperLiteral();
+      case BeeLangPackage.UNIT_LITERAL: return createUnitLiteral();
       case BeeLangPackage.STRING_LITERAL: return createStringLiteral();
       case BeeLangPackage.REAL_LITERAL: return createRealLiteral();
       case BeeLangPackage.REGEXP_LITERAL: return createRegexpLiteral();
@@ -1461,6 +1462,17 @@ public class BeeLangFactoryImpl extends EFactoryImpl implements BeeLangFactory
   {
     SuperLiteralImpl superLiteral = new SuperLiteralImpl();
     return superLiteral;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public UnitLiteral createUnitLiteral()
+  {
+    UnitLiteralImpl unitLiteral = new UnitLiteralImpl();
+    return unitLiteral;
   }
 
   /**

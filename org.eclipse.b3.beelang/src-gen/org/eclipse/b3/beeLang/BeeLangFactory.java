@@ -1025,6 +1025,15 @@ public interface BeeLangFactory extends EFactory
   SuperLiteral createSuperLiteral();
 
   /**
+   * Returns a new object of class '<em>Unit Literal</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Unit Literal</em>'.
+   * @generated
+   */
+  UnitLiteral createUnitLiteral();
+
+  /**
    * Returns a new object of class '<em>String Literal</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

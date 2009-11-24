@@ -973,6 +973,15 @@ public class BeeLangSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case BeeLangPackage.UNIT_LITERAL:
+      {
+        UnitLiteral unitLiteral = (UnitLiteral)theEObject;
+        T result = caseUnitLiteral(unitLiteral);
+        if (result == null) result = caseExpression(unitLiteral);
+        if (result == null) result = caseIfExpressionTail(unitLiteral);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case BeeLangPackage.STRING_LITERAL:
       {
         StringLiteral stringLiteral = (StringLiteral)theEObject;
@@ -2785,6 +2794,22 @@ public class BeeLangSwitch<T>
    * @generated
    */
   public T caseSuperLiteral(SuperLiteral object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Unit Literal</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Unit Literal</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseUnitLiteral(UnitLiteral object)
   {
     return null;
   }

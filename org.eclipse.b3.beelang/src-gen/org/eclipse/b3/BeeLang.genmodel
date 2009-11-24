@@ -484,6 +484,9 @@
     <genClasses ecoreClass="BeeLang.ecore#//SuperLiteral">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//SuperLiteral/val"/>
     </genClasses>
+    <genClasses ecoreClass="BeeLang.ecore#//UnitLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//UnitLiteral/val"/>
+    </genClasses>
     <genClasses ecoreClass="BeeLang.ecore#//StringLiteral">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute BeeLang.ecore#//StringLiteral/val"/>
     </genClasses>

@@ -4249,6 +4249,34 @@ public interface BeeLangPackage extends EPackage
   int SUPER_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
 
   /**
+   * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.UnitLiteralImpl <em>Unit Literal</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.b3.beeLang.impl.UnitLiteralImpl
+   * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getUnitLiteral()
+   * @generated
+   */
+  int UNIT_LITERAL = 111;
+
+  /**
+   * The feature id for the '<em><b>Val</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNIT_LITERAL__VAL = EXPRESSION_FEATURE_COUNT + 0;
+
+  /**
+   * The number of structural features of the '<em>Unit Literal</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int UNIT_LITERAL_FEATURE_COUNT = EXPRESSION_FEATURE_COUNT + 1;
+
+  /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.impl.StringLiteralImpl <em>String Literal</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -4256,7 +4284,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getStringLiteral()
    * @generated
    */
-  int STRING_LITERAL = 111;
+  int STRING_LITERAL = 112;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4284,7 +4312,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRealLiteral()
    * @generated
    */
-  int REAL_LITERAL = 112;
+  int REAL_LITERAL = 113;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4312,7 +4340,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRegexpLiteral()
    * @generated
    */
-  int REGEXP_LITERAL = 113;
+  int REGEXP_LITERAL = 114;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' attribute.
@@ -4340,7 +4368,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getQueryLiteral()
    * @generated
    */
-  int QUERY_LITERAL = 114;
+  int QUERY_LITERAL = 115;
 
   /**
    * The feature id for the '<em><b>Val</b></em>' containment reference.
@@ -4368,7 +4396,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSelectorOperator()
    * @generated
    */
-  int SELECTOR_OPERATOR = 115;
+  int SELECTOR_OPERATOR = 116;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.AssignmentOperator <em>Assignment Operator</em>}' enum.
@@ -4378,7 +4406,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getAssignmentOperator()
    * @generated
    */
-  int ASSIGNMENT_OPERATOR = 116;
+  int ASSIGNMENT_OPERATOR = 117;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.RelationalOperator <em>Relational Operator</em>}' enum.
@@ -4388,7 +4416,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getRelationalOperator()
    * @generated
    */
-  int RELATIONAL_OPERATOR = 117;
+  int RELATIONAL_OPERATOR = 118;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.SetOperator <em>Set Operator</em>}' enum.
@@ -4398,7 +4426,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getSetOperator()
    * @generated
    */
-  int SET_OPERATOR = 118;
+  int SET_OPERATOR = 119;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.Visibility <em>Visibility</em>}' enum.
@@ -4408,7 +4436,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getVisibility()
    * @generated
    */
-  int VISIBILITY = 119;
+  int VISIBILITY = 120;
 
   /**
    * The meta object id for the '{@link org.eclipse.b3.beeLang.ExecutionMode <em>Execution Mode</em>}' enum.
@@ -4418,7 +4446,7 @@ public interface BeeLangPackage extends EPackage
    * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getExecutionMode()
    * @generated
    */
-  int EXECUTION_MODE = 120;
+  int EXECUTION_MODE = 121;
 
 
   /**
@@ -8007,6 +8035,27 @@ public interface BeeLangPackage extends EPackage
   EAttribute getSuperLiteral_Val();
 
   /**
+   * Returns the meta object for class '{@link org.eclipse.b3.beeLang.UnitLiteral <em>Unit Literal</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Unit Literal</em>'.
+   * @see org.eclipse.b3.beeLang.UnitLiteral
+   * @generated
+   */
+  EClass getUnitLiteral();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.b3.beeLang.UnitLiteral#getVal <em>Val</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Val</em>'.
+   * @see org.eclipse.b3.beeLang.UnitLiteral#getVal()
+   * @see #getUnitLiteral()
+   * @generated
+   */
+  EAttribute getUnitLiteral_Val();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.b3.beeLang.StringLiteral <em>String Literal</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -11082,6 +11131,24 @@ public interface BeeLangPackage extends EPackage
      * @generated
      */
     EAttribute SUPER_LITERAL__VAL = eINSTANCE.getSuperLiteral_Val();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.UnitLiteralImpl <em>Unit Literal</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.b3.beeLang.impl.UnitLiteralImpl
+     * @see org.eclipse.b3.beeLang.impl.BeeLangPackageImpl#getUnitLiteral()
+     * @generated
+     */
+    EClass UNIT_LITERAL = eINSTANCE.getUnitLiteral();
+
+    /**
+     * The meta object literal for the '<em><b>Val</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute UNIT_LITERAL__VAL = eINSTANCE.getUnitLiteral_Val();
 
     /**
      * The meta object literal for the '{@link org.eclipse.b3.beeLang.impl.StringLiteralImpl <em>String Literal</em>}' class.

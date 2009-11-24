@@ -4991,46 +4991,92 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 	public class OperationCallElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "OperationCall");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final Alternatives cNameAlternatives_0_0 = (Alternatives)cNameAssignment_0.eContents().get(0);
-		private final RuleCall cNameIDTerminalRuleCall_0_0_0 = (RuleCall)cNameAlternatives_0_0.eContents().get(0);
-		private final RuleCall cNamePIDTerminalRuleCall_0_0_1 = (RuleCall)cNameAlternatives_0_0.eContents().get(1);
-		private final Keyword cLeftParenthesisKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cParametersAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cParametersParameterListParserRuleCall_2_0 = (RuleCall)cParametersAssignment_2.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
+		private final Assignment cNameAssignment_0_0 = (Assignment)cGroup_0.eContents().get(0);
+		private final Alternatives cNameAlternatives_0_0_0 = (Alternatives)cNameAssignment_0_0.eContents().get(0);
+		private final RuleCall cNameIDTerminalRuleCall_0_0_0_0 = (RuleCall)cNameAlternatives_0_0_0.eContents().get(0);
+		private final RuleCall cNamePIDTerminalRuleCall_0_0_0_1 = (RuleCall)cNameAlternatives_0_0_0.eContents().get(1);
+		private final Keyword cLeftParenthesisKeyword_0_1 = (Keyword)cGroup_0.eContents().get(1);
+		private final Assignment cParametersAssignment_0_2 = (Assignment)cGroup_0.eContents().get(2);
+		private final RuleCall cParametersParameterListParserRuleCall_0_2_0 = (RuleCall)cParametersAssignment_0_2.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_0_3 = (Keyword)cGroup_0.eContents().get(3);
+		private final Group cGroup_1 = (Group)cAlternatives.eContents().get(1);
+		private final Assignment cTargetAssignment_1_0 = (Assignment)cGroup_1.eContents().get(0);
+		private final RuleCall cTargetSuperLiteralParserRuleCall_1_0_0 = (RuleCall)cTargetAssignment_1_0.eContents().get(0);
+		private final Keyword cFullStopKeyword_1_1 = (Keyword)cGroup_1.eContents().get(1);
+		private final Assignment cNameAssignment_1_2 = (Assignment)cGroup_1.eContents().get(2);
+		private final RuleCall cNameIDTerminalRuleCall_1_2_0 = (RuleCall)cNameAssignment_1_2.eContents().get(0);
+		private final Keyword cLeftParenthesisKeyword_1_3 = (Keyword)cGroup_1.eContents().get(3);
+		private final Assignment cParametersAssignment_1_4 = (Assignment)cGroup_1.eContents().get(4);
+		private final RuleCall cParametersParameterListParserRuleCall_1_4_0 = (RuleCall)cParametersAssignment_1_4.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_1_5 = (Keyword)cGroup_1.eContents().get(5);
 		
 		//OperationCall:
-		//  name=( ID | PID ) "(" parameters=ParameterList? ")";
+		//  name=( ID | PID ) "(" parameters=ParameterList? ")"|target=SuperLiteral "." name=ID "("
+		//  parameters=ParameterList? ")";
 		public ParserRule getRule() { return rule; }
 
+		//name=( ID | PID ) "(" parameters=ParameterList? ")"|target=SuperLiteral "." name=ID "("
+		//parameters=ParameterList? ")"
+		public Alternatives getAlternatives() { return cAlternatives; }
+
 		//name=( ID | PID ) "(" parameters=ParameterList? ")"
-		public Group getGroup() { return cGroup; }
+		public Group getGroup_0() { return cGroup_0; }
 
 		//name=( ID | PID )
-		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
+		public Assignment getNameAssignment_0_0() { return cNameAssignment_0_0; }
 
 		//ID|PID
-		public Alternatives getNameAlternatives_0_0() { return cNameAlternatives_0_0; }
+		public Alternatives getNameAlternatives_0_0_0() { return cNameAlternatives_0_0_0; }
 
 		//ID
-		public RuleCall getNameIDTerminalRuleCall_0_0_0() { return cNameIDTerminalRuleCall_0_0_0; }
+		public RuleCall getNameIDTerminalRuleCall_0_0_0_0() { return cNameIDTerminalRuleCall_0_0_0_0; }
 
 		//PID
-		public RuleCall getNamePIDTerminalRuleCall_0_0_1() { return cNamePIDTerminalRuleCall_0_0_1; }
+		public RuleCall getNamePIDTerminalRuleCall_0_0_0_1() { return cNamePIDTerminalRuleCall_0_0_0_1; }
 
 		//"("
-		public Keyword getLeftParenthesisKeyword_1() { return cLeftParenthesisKeyword_1; }
+		public Keyword getLeftParenthesisKeyword_0_1() { return cLeftParenthesisKeyword_0_1; }
 
 		//parameters=ParameterList?
-		public Assignment getParametersAssignment_2() { return cParametersAssignment_2; }
+		public Assignment getParametersAssignment_0_2() { return cParametersAssignment_0_2; }
 
 		//ParameterList
-		public RuleCall getParametersParameterListParserRuleCall_2_0() { return cParametersParameterListParserRuleCall_2_0; }
+		public RuleCall getParametersParameterListParserRuleCall_0_2_0() { return cParametersParameterListParserRuleCall_0_2_0; }
 
 		//")"
-		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
+		public Keyword getRightParenthesisKeyword_0_3() { return cRightParenthesisKeyword_0_3; }
+
+		//target=SuperLiteral "." name=ID "(" parameters=ParameterList? ")"
+		public Group getGroup_1() { return cGroup_1; }
+
+		//target=SuperLiteral
+		public Assignment getTargetAssignment_1_0() { return cTargetAssignment_1_0; }
+
+		//SuperLiteral
+		public RuleCall getTargetSuperLiteralParserRuleCall_1_0_0() { return cTargetSuperLiteralParserRuleCall_1_0_0; }
+
+		//"."
+		public Keyword getFullStopKeyword_1_1() { return cFullStopKeyword_1_1; }
+
+		//name=ID
+		public Assignment getNameAssignment_1_2() { return cNameAssignment_1_2; }
+
+		//ID
+		public RuleCall getNameIDTerminalRuleCall_1_2_0() { return cNameIDTerminalRuleCall_1_2_0; }
+
+		//"("
+		public Keyword getLeftParenthesisKeyword_1_3() { return cLeftParenthesisKeyword_1_3; }
+
+		//parameters=ParameterList?
+		public Assignment getParametersAssignment_1_4() { return cParametersAssignment_1_4; }
+
+		//ParameterList
+		public RuleCall getParametersParameterListParserRuleCall_1_4_0() { return cParametersParameterListParserRuleCall_1_4_0; }
+
+		//")"
+		public Keyword getRightParenthesisKeyword_1_5() { return cRightParenthesisKeyword_1_5; }
 	}
 
 	public class ConstructorCallExpressionElements implements IParserRuleAccess {
@@ -5798,15 +5844,35 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final RuleCall cRealLiteralParserRuleCall_4 = (RuleCall)cAlternatives.eContents().get(4);
 		private final RuleCall cQueryLiteralParserRuleCall_5 = (RuleCall)cAlternatives.eContents().get(5);
 		private final RuleCall cThisLiteralParserRuleCall_6 = (RuleCall)cAlternatives.eContents().get(6);
-		private final RuleCall cSuperLiteralParserRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
+		private final RuleCall cUnitLiteralParserRuleCall_7 = (RuleCall)cAlternatives.eContents().get(7);
 		
 		//ValueLiteral returns Expression:
 		//  BooleanLiteral|IntegerLiteral|NullLiteral|StringLiteral|RealLiteral|QueryLiteral
-		//  |ThisLiteral|SuperLiteral;
+		//  |ThisLiteral|UnitLiteral; 
+		//
+		//    
+		//	   
+		//	   
+		//	   
+		//	  
+		//	  
+		//	  
+		//	  
+		////	| SuperLiteral
 		public ParserRule getRule() { return rule; }
 
 		//BooleanLiteral|IntegerLiteral|NullLiteral|StringLiteral|RealLiteral|QueryLiteral
-		//|ThisLiteral|SuperLiteral
+		//|ThisLiteral|UnitLiteral 
+		//
+		//    
+		//	   
+		//	   
+		//	   
+		//	  
+		//	  
+		//	  
+		//	  
+		////	| SuperLiteral
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//BooleanLiteral
@@ -5827,11 +5893,12 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//QueryLiteral
 		public RuleCall getQueryLiteralParserRuleCall_5() { return cQueryLiteralParserRuleCall_5; }
 
-		//ThisLiteral
+		//ThisLiteral   
+		////	| SuperLiteral
 		public RuleCall getThisLiteralParserRuleCall_6() { return cThisLiteralParserRuleCall_6; }
 
-		//SuperLiteral
-		public RuleCall getSuperLiteralParserRuleCall_7() { return cSuperLiteralParserRuleCall_7; }
+		//UnitLiteral
+		public RuleCall getUnitLiteralParserRuleCall_7() { return cUnitLiteralParserRuleCall_7; }
 	}
 
 	public class BooleanLiteralElements implements IParserRuleAccess {
@@ -5960,6 +6027,30 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 		//"super"
 		public Keyword getValSuperKeyword_1_0() { return cValSuperKeyword_1_0; }
+	}
+
+	public class UnitLiteralElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "UnitLiteral");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Action cUnitLiteralAction_0 = (Action)cGroup.eContents().get(0);
+		private final Assignment cValAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final Keyword cValUnitKeyword_1_0 = (Keyword)cValAssignment_1.eContents().get(0);
+		
+		//UnitLiteral returns Expression:
+		//  {UnitLiteral} val="unit";
+		public ParserRule getRule() { return rule; }
+
+		//{UnitLiteral} val="unit"
+		public Group getGroup() { return cGroup; }
+
+		//{UnitLiteral}
+		public Action getUnitLiteralAction_0() { return cUnitLiteralAction_0; }
+
+		//val="unit"
+		public Assignment getValAssignment_1() { return cValAssignment_1; }
+
+		//"unit"
+		public Keyword getValUnitKeyword_1_0() { return cValUnitKeyword_1_0; }
 	}
 
 	public class StringLiteralElements implements IParserRuleAccess {
@@ -6241,7 +6332,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//	      
 		//	
 		//
-		//// Reference to qualified named item, possibly in unit or this
+		//// Reference to qualified named item, possibly in unit, this or super, or
+		//// this.super, or unit.super
 		public ParserRule getRule() { return rule; }
 
 		//("["|"(") (STRING|AlfanumSym) ("," (STRING|AlfanumSym))? ("]"|")")|(STRING|
@@ -6252,7 +6344,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		//	      
 		//	
 		//
-		//// Reference to qualified named item, possibly in unit or this
+		//// Reference to qualified named item, possibly in unit, this or super, or
+		//// this.super, or unit.super
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//("["|"(") (STRING|AlfanumSym) ("," (STRING|AlfanumSym))? ("]"|")")
@@ -6315,18 +6408,25 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final Group cGroup_0 = (Group)cAlternatives.eContents().get(0);
 		private final Alternatives cAlternatives_0_0 = (Alternatives)cGroup_0.eContents().get(0);
-		private final Keyword cUnitKeyword_0_0_0 = (Keyword)cAlternatives_0_0.eContents().get(0);
-		private final Keyword cThisKeyword_0_0_1 = (Keyword)cAlternatives_0_0.eContents().get(1);
+		private final Keyword cSuperKeyword_0_0_0 = (Keyword)cAlternatives_0_0.eContents().get(0);
+		private final Group cGroup_0_0_1 = (Group)cAlternatives_0_0.eContents().get(1);
+		private final Alternatives cAlternatives_0_0_1_0 = (Alternatives)cGroup_0_0_1.eContents().get(0);
+		private final Keyword cUnitKeyword_0_0_1_0_0 = (Keyword)cAlternatives_0_0_1_0.eContents().get(0);
+		private final Keyword cThisKeyword_0_0_1_0_1 = (Keyword)cAlternatives_0_0_1_0.eContents().get(1);
+		private final Group cGroup_0_0_1_1 = (Group)cGroup_0_0_1.eContents().get(1);
+		private final Keyword cFullStopKeyword_0_0_1_1_0 = (Keyword)cGroup_0_0_1_1.eContents().get(0);
+		private final Keyword cSuperKeyword_0_0_1_1_1 = (Keyword)cGroup_0_0_1_1.eContents().get(1);
 		private final Group cGroup_0_1 = (Group)cGroup_0.eContents().get(1);
 		private final Keyword cFullStopKeyword_0_1_0 = (Keyword)cGroup_0_1.eContents().get(0);
 		private final RuleCall cQIDParserRuleCall_0_1_1 = (RuleCall)cGroup_0_1.eContents().get(1);
 		private final RuleCall cQIDParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		
 		//QIDREF returns ecore::EString:
-		//  ("unit"|"this") ("." QID)?|QID; 
+		//  ("super"|("unit"|"this") ("." "super")?) ("." QID)?|QID; 
 		//
-		//// Reference to qualified named item, possibly in unit or this
-		//                  
+		//// Reference to qualified named item, possibly in unit, this or super, or
+		//// this.super, or unit.super
+		//                        
 		//
 		//// Qualified name
 		//// TODO: Needs to disallow white space between ID and '.', and no embedded comments. 
@@ -6334,10 +6434,11 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		////
 		public ParserRule getRule() { return rule; }
 
-		//("unit"|"this") ("." QID)?|QID 
+		//("super"|("unit"|"this") ("." "super")?) ("." QID)?|QID 
 		//
-		//// Reference to qualified named item, possibly in unit or this
-		//                  
+		//// Reference to qualified named item, possibly in unit, this or super, or
+		//// this.super, or unit.super
+		//                        
 		//
 		//// Qualified name
 		//// TODO: Needs to disallow white space between ID and '.', and no embedded comments. 
@@ -6345,17 +6446,35 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 		////
 		public Alternatives getAlternatives() { return cAlternatives; }
 
-		//("unit"|"this") ("." QID)?
+		//("super"|("unit"|"this") ("." "super")?) ("." QID)?
 		public Group getGroup_0() { return cGroup_0; }
 
-		//"unit"|"this"
+		//"super"|("unit"|"this") ("." "super")?
 		public Alternatives getAlternatives_0_0() { return cAlternatives_0_0; }
 
+		//"super"
+		public Keyword getSuperKeyword_0_0_0() { return cSuperKeyword_0_0_0; }
+
+		//("unit"|"this") ("." "super")?
+		public Group getGroup_0_0_1() { return cGroup_0_0_1; }
+
+		//"unit"|"this"
+		public Alternatives getAlternatives_0_0_1_0() { return cAlternatives_0_0_1_0; }
+
 		//"unit"
-		public Keyword getUnitKeyword_0_0_0() { return cUnitKeyword_0_0_0; }
+		public Keyword getUnitKeyword_0_0_1_0_0() { return cUnitKeyword_0_0_1_0_0; }
 
 		//"this"
-		public Keyword getThisKeyword_0_0_1() { return cThisKeyword_0_0_1; }
+		public Keyword getThisKeyword_0_0_1_0_1() { return cThisKeyword_0_0_1_0_1; }
+
+		//("." "super")?
+		public Group getGroup_0_0_1_1() { return cGroup_0_0_1_1; }
+
+		//"."
+		public Keyword getFullStopKeyword_0_0_1_1_0() { return cFullStopKeyword_0_0_1_1_0; }
+
+		//"super"
+		public Keyword getSuperKeyword_0_0_1_1_1() { return cSuperKeyword_0_0_1_1_1; }
 
 		//("." QID)?
 		public Group getGroup_0_1() { return cGroup_0_1; }
@@ -7200,6 +7319,7 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	private NullLiteralElements pNullLiteral;
 	private ThisLiteralElements pThisLiteral;
 	private SuperLiteralElements pSuperLiteral;
+	private UnitLiteralElements pUnitLiteral;
 	private StringLiteralElements pStringLiteral;
 	private RealLiteralElements pRealLiteral;
 	private RealValueElements pRealValue;
@@ -8469,7 +8589,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//OperationCall:
-	//  name=( ID | PID ) "(" parameters=ParameterList? ")";
+	//  name=( ID | PID ) "(" parameters=ParameterList? ")"|target=SuperLiteral "." name=ID "("
+	//  parameters=ParameterList? ")";
 	public OperationCallElements getOperationCallAccess() {
 		return (pOperationCall != null) ? pOperationCall : (pOperationCall = new OperationCallElements());
 	}
@@ -8636,7 +8757,17 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 
 	//ValueLiteral returns Expression:
 	//  BooleanLiteral|IntegerLiteral|NullLiteral|StringLiteral|RealLiteral|QueryLiteral
-	//  |ThisLiteral|SuperLiteral;
+	//  |ThisLiteral|UnitLiteral; 
+	//
+	//    
+	//	   
+	//	   
+	//	   
+	//	  
+	//	  
+	//	  
+	//	  
+	////	| SuperLiteral
 	public ValueLiteralElements getValueLiteralAccess() {
 		return (pValueLiteral != null) ? pValueLiteral : (pValueLiteral = new ValueLiteralElements());
 	}
@@ -8693,6 +8824,16 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	
 	public ParserRule getSuperLiteralRule() {
 		return getSuperLiteralAccess().getRule();
+	}
+
+	//UnitLiteral returns Expression:
+	//  {UnitLiteral} val="unit";
+	public UnitLiteralElements getUnitLiteralAccess() {
+		return (pUnitLiteral != null) ? pUnitLiteral : (pUnitLiteral = new UnitLiteralElements());
+	}
+	
+	public ParserRule getUnitLiteralRule() {
+		return getUnitLiteralAccess().getRule();
 	}
 
 	//StringLiteral returns Expression:
@@ -8832,7 +8973,8 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	//	      
 	//	
 	//
-	//// Reference to qualified named item, possibly in unit or this
+	//// Reference to qualified named item, possibly in unit, this or super, or
+	//// this.super, or unit.super
 	public VersionRangeLiteralElements getVersionRangeLiteralAccess() {
 		return (pVersionRangeLiteral != null) ? pVersionRangeLiteral : (pVersionRangeLiteral = new VersionRangeLiteralElements());
 	}
@@ -8842,10 +8984,11 @@ public class BeeLangGrammarAccess implements IGrammarAccess {
 	}
 
 	//QIDREF returns ecore::EString:
-	//  ("unit"|"this") ("." QID)?|QID; 
+	//  ("super"|("unit"|"this") ("." "super")?) ("." QID)?|QID; 
 	//
-	//// Reference to qualified named item, possibly in unit or this
-	//                  
+	//// Reference to qualified named item, possibly in unit, this or super, or
+	//// this.super, or unit.super
+	//                        
 	//
 	//// Qualified name
 	//// TODO: Needs to disallow white space between ID and '.', and no embedded comments. 
