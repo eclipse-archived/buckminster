@@ -508,7 +508,9 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 		}
 		catch(CoreException e)
 		{
-			throw new IOException(e.getMessage(), e);
+			IOException ioe = new IOException(e.getMessage());
+			ioe.initCause(e);
+			throw ioe;
 		}
 
 		TouchpointTypeImpl touchpointType = (TouchpointTypeImpl)P2Factory.eINSTANCE.createTouchpointType();

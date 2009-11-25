@@ -64,12 +64,15 @@ public class XMLResourceImplWithCheck extends XMLResourceImpl
 
 				return new ByteArrayInputStream(content);
 			}
+			catch(IOException e)
+			{
+				throw e;
+			}
 			catch(Exception e)
 			{
-				if(e instanceof IOException)
-					throw (IOException)e;
-
-				throw new IOException(e.getMessage(), e);
+				IOException ioe = new IOException(e.getMessage());
+				ioe.initCause(e);
+				throw ioe;
 			}
 		}
 
