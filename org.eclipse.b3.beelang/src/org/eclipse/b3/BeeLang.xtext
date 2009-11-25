@@ -244,8 +244,8 @@ AssertionExpression : 'assert' expr=Expression ',' message=STRING ';' ;
 ExpressionList : (expressions += Expression ';')+ ;
 
 // Validation makes sure a Function is stated with "function", and Method with "method"
-Function returns Statment: {Function} func=FunctionOrMethod ;
-Method returns Statement: {Method} method=FunctionOrMethod ;
+Function returns Function: {Function} func=FunctionOrMethod ;
+Method returns Method: {Method} method=FunctionOrMethod ;
 
 // Difference function/method handled as validation
 FunctionOrMethod : 	
@@ -432,14 +432,16 @@ UnitSelector :
 	('/' (name=UnitName | namePattern = REGEX) ('/' versionRange=VersionRange)? )? 
 	;
 
-ContextBlock : '{'  ((statements +=Method) 
-					| (statements+=Builder)
+ContextBlock : '{'  ((statements +=FunctionStatment) 
+					| (statements+=BuilderStatement)
 					| (statements+=ExpressionStatement)
 					| (statements+=PropertiesStatement)
 					)* '}' ;
 					
 ExpressionStatement returns Statement : {ExpressionStatement} val=Expression ';' ;
-PropertiesStatement returns Statment : {PropertiesStatement} "properties" properties = NamedPropertySet ;
+PropertiesStatement returns Statement : {PropertiesStatement} "properties" properties = NamedPropertySet ;
+FunctionStatement returns Statement : {FunctionStatement} function = Function;
+BuilderStatement returns Statement : {BuilderStatement} builder = Builder;
 
 Literal returns Expression
 	: ValueLiteral
@@ -554,7 +556,7 @@ AlfanumSym : (ID | INT | HEX | EXT_INT) (Separator|ID|INT|HEX |EXT_INT)* ;
 
 // --TERMINALS
 
-// Redeclare the default ID with ´ instead of ^ as escape mechanism
+// Redeclare the default ID with ï¿½ instead of ^ as escape mechanism
 terminal ID : ('^')?(('a'..'z')|('A'..'Z')|'_') (('a'..'z')|('A'..'Z')|('0'..'9')|'_')* ;
 
 // Property Names start with $ and are qualified. Must be handled by lexer as
