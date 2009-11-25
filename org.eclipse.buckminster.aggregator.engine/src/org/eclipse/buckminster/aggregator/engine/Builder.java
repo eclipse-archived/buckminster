@@ -543,7 +543,7 @@ public class Builder extends AbstractCommand implements IApplication
 	public boolean isMapVerbatim(MappedRepository repo)
 	{
 		return !(repo.isMapExclusive() || repo.isMirrorArtifacts()) && Trivial.trim(repo.getCategoryPrefix()) == null
-				&& !(exclusions != null && exclusions.containsKey(repo));
+				&& !(exclusions != null && exclusions.containsKey(repo) && "p2".equals(repo.getNature()));
 	}
 
 	public boolean isMatchedReference(String reference)

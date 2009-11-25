@@ -55,4 +55,42 @@ public class GeneralUtils
 
 		return str;
 	}
+	
+	public static String encodeFilterValue(String value)
+	{
+		boolean encoded = false;
+		int inlen = value.length();
+		int outlen = inlen << 1; /* inlen * 2 */
+
+		char[] output = new char[outlen];
+		value.getChars(0, inlen, output, inlen);
+
+		int cursor = 0;
+		for(int i = inlen; i < outlen; i++)
+		{
+			char c = output[i];
+
+			switch(c)
+			{
+			case '(':
+			case '*':
+			case ')':
+			case '\\':
+			{
+				output[cursor] = '\\';
+				cursor++;
+				encoded = true;
+
+				break;
+			}
+			}
+
+			output[cursor] = c;
+			cursor++;
+		}
+
+		return encoded
+				? new String(output, 0, cursor)
+				: value;
+	}
 }

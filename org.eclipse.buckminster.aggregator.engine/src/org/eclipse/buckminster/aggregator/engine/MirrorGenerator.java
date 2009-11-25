@@ -11,12 +11,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MavenMapping;
+import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.engine.maven.InstallableUnitMapping;
 import org.eclipse.buckminster.aggregator.engine.maven.MavenManager;
@@ -26,6 +26,7 @@ import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.RepositoryReference;
+import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.aggregator.util.RepositoryLoaderUtils;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.TimeUtils;
@@ -417,6 +418,8 @@ public class MirrorGenerator extends BuilderPhase
 
 	private IArtifactRepositoryManager arMgr = null;
 
+	private Map<MetadataRepositoryReference, IArtifactRepository> arCache;
+
 	public MirrorGenerator(Builder builder)
 	{
 		super(builder);
@@ -496,6 +499,7 @@ public class MirrorGenerator extends BuilderPhase
 
 		mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 		arMgr = bucky.getService(IArtifactRepositoryManager.class);
+		arCache = null;
 		SubMonitor subMon = SubMonitor.convert(monitor, 1000);
 		boolean artifactErrors = false;
 		try
@@ -645,7 +649,8 @@ public class MirrorGenerator extends BuilderPhase
 			}
 			else
 			{
-				Map<String, List<IInstallableUnit>> mappingRulesMap = new TreeMap<String, List<IInstallableUnit>>();
+				List<String[]> mappingRules = new ArrayList<String[]>();
+				List<ArtifactDescriptor> referencedArtifacts = new ArrayList<ArtifactDescriptor>();
 				for(Contribution contrib : contribs)
 				{
 					SubMonitor contribMonitor = childMonitor.newChild(10);
@@ -654,34 +659,80 @@ public class MirrorGenerator extends BuilderPhase
 					MonitorUtils.begin(contribMonitor, repos.size() * 100);
 					for(MappedRepository repo : repos)
 					{
-						// Create rules only if the artifacts are mirrored and are mapped from a non-p2 repository
-						if(!repo.isMirrorArtifacts() || "p2".equals(repo.getNature()))
+						int ticksRemaining = 100;
+
+						// Create rules only if the artifacts are mapped from a non-p2 repository
+						if("p2".equals(repo.getNature()))
 						{
 							MonitorUtils.worked(contribMonitor, 100);
 							continue;
 						}
 
 						MetadataRepository childMdr = ResourceUtils.getMetadataRepository(repo);
-						ArrayList<InstallableUnit> iusToMirror = null;
+						ArrayList<InstallableUnit> iusToRefer = null;
 						for(InstallableUnit iu : childMdr.getInstallableUnits())
 						{
 							if(!unitsToAggregate.contains(iu))
 								continue;
 
-							if(iusToMirror == null)
-								iusToMirror = new ArrayList<InstallableUnit>();
-							iusToMirror.add(iu);
+							if(iusToRefer == null)
+								iusToRefer = new ArrayList<InstallableUnit>();
+							iusToRefer.add(iu);
 						}
 
-						if(iusToMirror != null)
+						IArtifactRepository ar;
+						if(iusToRefer != null)
 						{
-							List<IInstallableUnit> iusForNature = mappingRulesMap.get(repo.getNature());
-							if(iusForNature == null)
-								mappingRulesMap.put(repo.getNature(), iusForNature = new ArrayList<IInstallableUnit>());
-							iusForNature.addAll(iusToMirror);
+							int ticks = 50;
+							ar = getArtifactRepository(repo, contribMonitor.newChild(ticks));
+							ticksRemaining -= ticks;
+							for(IInstallableUnit iu : iusToRefer)
+							{
+								String versionString = iu.getVersion().getOriginal();
+								if(versionString == null)
+									versionString = iu.getVersion().toString();
+								String originalPath = iu.getProperty(IRepositoryLoader.ORIGINAL_PATH_PROPERTY);
+								String originalId = iu.getProperty(IRepositoryLoader.ORIGINAL_ID_PROPERTY);
+								if(originalId == null)
+									originalId = iu.getId();
+
+								for(IArtifactKey key : iu.getArtifacts())
+								{
+									String location = null;
+
+									if(repo.isMirrorArtifacts())
+										location = "${repoUrl}/non-p2/" + repo.getNature() + '/' + key.getClassifier()
+												+ '/' + (originalPath != null
+														? (originalPath + '/')
+														: "") + originalId + '_' + versionString + '.'
+												+ key.getClassifier();
+									else
+									{
+										for(IArtifactDescriptor desc : ar.getArtifactDescriptors(key))
+										{
+											// Take the first reference
+											if(location == null)
+											{
+												String ref = ((ArtifactDescriptor)desc).getRepositoryProperty(ArtifactDescriptor.ARTIFACT_REFERENCE);
+												if(ref != null)
+													location = ref;
+											}
+											referencedArtifacts.add(new ArtifactDescriptor(desc));
+										}
+									}
+
+									if(location != null)
+										mappingRules.add(new String[] {
+												"(& (classifier=" + GeneralUtils.encodeFilterValue(key.getClassifier())
+														+ ") (id=" + GeneralUtils.encodeFilterValue(key.getId())
+														+ ") (version="
+														+ GeneralUtils.encodeFilterValue(iu.getVersion().toString())
+														+ "))", location });
+								}
+							}
 						}
 
-						MonitorUtils.worked(contribMonitor, 100);
+						MonitorUtils.worked(contribMonitor, ticksRemaining);
 					}
 					if(errors.size() > 0)
 					{
@@ -695,31 +746,13 @@ public class MirrorGenerator extends BuilderPhase
 				{
 					SimpleArtifactRepository simpleAr = ((SimpleArtifactRepository)aggregateAr);
 					List<String[]> ruleList = new ArrayList<String[]>(Arrays.asList(simpleAr.getRules()));
-					for(Map.Entry<String, List<IInstallableUnit>> entry : mappingRulesMap.entrySet())
-					{
-						String repoNature = entry.getKey();
-						for(IInstallableUnit iu : entry.getValue())
-						{
-							String versionString = iu.getVersion().getOriginal();
-							if(versionString == null)
-								versionString = iu.getVersion().toString();
-							String originalPath = iu.getProperty(IRepositoryLoader.ORIGINAL_PATH_PROPERTY);
-							String originalId = iu.getProperty(IRepositoryLoader.ORIGINAL_ID_PROPERTY);
-							if(originalId == null)
-								originalId = iu.getId();
-
-							for(IArtifactKey key : iu.getArtifacts())
-								ruleList.add(new String[] {
-										"(& (classifier=" + key.getClassifier() + ") (id=" + key.getId() + "))",
-										"${repoUrl}/non-p2/" + repoNature + '/' + key.getClassifier() + '/'
-												+ (originalPath != null
-														? (originalPath + '/')
-														: "") + originalId + '_' + versionString + '.'
-												+ key.getClassifier() });
-						}
-					}
+					ruleList.addAll(mappingRules);
 					simpleAr.setRules(ruleList.toArray(new String[ruleList.size()][]));
 					simpleAr.initializeAfterLoad(aggregateURI);
+					for(IArtifactDescriptor ad : referencedArtifacts)
+						simpleAr.addDescriptor(ad);
+					simpleAr.save();
+					aggregatedArIsEmpty = false;
 				}
 				else
 					throw BuckminsterException.fromMessage(
@@ -783,13 +816,8 @@ public class MirrorGenerator extends BuilderPhase
 						String msg = format("Mirroring artifacts from from %s", childMdr.getLocation());
 						log.info(msg);
 						contribMonitor.subTask(msg);
-						IConfigurationElement config = RepositoryLoaderUtils.getLoaderFor(repo.getNature());
-						if(config == null)
-							throw BuckminsterException.fromMessage("No loader for %s", repo.getNature());
-						IRepositoryLoader repoLoader = (IRepositoryLoader)config.createExecutableExtension("class");
-						IArtifactRepository childAr = repoLoader.getArtifactRepository(childMdr,
-								contribMonitor.newChild(1, SubMonitor.SUPPRESS_BEGINTASK
-										| SubMonitor.SUPPRESS_SETTASKNAME));
+						IArtifactRepository childAr = getArtifactRepository(repo, contribMonitor.newChild(1,
+								SubMonitor.SUPPRESS_BEGINTASK | SubMonitor.SUPPRESS_SETTASKNAME));
 						mirror(keysToMirror, tempAr, childAr, aggregateAr, packedStrategy, errors,
 								contribMonitor.newChild(94, SubMonitor.SUPPRESS_BEGINTASK
 										| SubMonitor.SUPPRESS_SETTASKNAME));
@@ -831,7 +859,7 @@ public class MirrorGenerator extends BuilderPhase
 						reposWithReferencedArtifacts.add(repo);
 						reposWithReferencedMetadata.add(repo);
 					}
-					else if(!repo.isMirrorArtifacts())
+					else if(!repo.isMirrorArtifacts() && "p2".equals(repo.getNature()))
 						reposWithReferencedArtifacts.add(repo);
 				}
 			}
@@ -870,7 +898,7 @@ public class MirrorGenerator extends BuilderPhase
 				CompositeMetadataRepository compositeMdr = (CompositeMetadataRepository)mdrMgr.createRepository(
 						finalURI, name, Builder.COMPOSITE_METADATA_TYPE, properties);
 
-				for(MappedRepository referenced : reposWithReferencedArtifacts)
+				for(MappedRepository referenced : reposWithReferencedMetadata)
 					compositeMdr.addChild(referenced.getMetadataRepository().getLocation());
 
 				if(aggregatedMdrIsEmpty)
@@ -951,6 +979,24 @@ public class MirrorGenerator extends BuilderPhase
 			throw BuckminsterException.fromMessage("Not all artifacts could be mirrored, see log for details");
 	}
 
+	private IArtifactRepository getArtifactRepository(MetadataRepositoryReference repo, IProgressMonitor monitor)
+			throws CoreException
+	{
+		if(arCache == null)
+			arCache = new HashMap<MetadataRepositoryReference, IArtifactRepository>();
+		IArtifactRepository ar = arCache.get(repo);
+		if(ar == null)
+		{
+			IConfigurationElement config = RepositoryLoaderUtils.getLoaderFor(repo.getNature());
+			if(config == null)
+				throw BuckminsterException.fromMessage("No loader for %s", repo.getNature());
+			IRepositoryLoader repoLoader = (IRepositoryLoader)config.createExecutableExtension("class");
+			arCache.put(repo, ar = repoLoader.getArtifactRepository(ResourceUtils.getMetadataRepository(repo), monitor));
+		}
+
+		return ar;
+	}
+
 	private void mirror(List<InstallableUnit> iusToMirror, MetadataRepository source, final IMetadataRepository dest,
 			IProgressMonitor monitor) throws CoreException
 	{
@@ -981,4 +1027,5 @@ public class MirrorGenerator extends BuilderPhase
 			}
 		}
 	}
+
 }

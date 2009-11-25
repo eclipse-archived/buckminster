@@ -24,14 +24,15 @@ import org.eclipse.buckminster.aggregator.engine.maven.metadata.MetaData;
 import org.eclipse.buckminster.aggregator.engine.maven.metadata.MetadataFactory;
 import org.eclipse.buckminster.aggregator.engine.maven.metadata.Versioning;
 import org.eclipse.buckminster.aggregator.engine.maven.metadata.Versions;
+import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 
 /**
  * @author Filip Hrbek (filip.hrbek@cloudsmith.com)
@@ -237,7 +238,9 @@ public class MavenManager
 		{
 			IArtifactKey artifact = iu.getMainArtifact();
 			mappingRulesList.add(new String[] {
-					"(& (classifier=" + artifact.getClassifier() + ")(id=" + artifact.getId() + "))",
+					"(& (classifier=" + GeneralUtils.encodeFilterValue(artifact.getClassifier()) + ")(id="
+							+ GeneralUtils.encodeFilterValue(artifact.getId()) + ")(version="
+							+ GeneralUtils.encodeFilterValue(iu.getVersion().toString()) + ")",
 					"${repoUrl}/" + iu.getRelativeFullPath() });
 		}
 	}
