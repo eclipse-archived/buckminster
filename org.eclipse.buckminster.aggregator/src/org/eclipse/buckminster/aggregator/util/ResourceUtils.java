@@ -58,7 +58,7 @@ public class ResourceUtils
 						if(mappedRepository.getResolvedLocation() != null)
 						{
 							org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI(
-									"p2", mappedRepository.getResolvedLocation(), null);
+									mappedRepository.getNature(), mappedRepository.getResolvedLocation(), null);
 							referencedResources.add(topSet.getResource(repoURI, false));
 						}
 					}
@@ -68,9 +68,9 @@ public class ResourceUtils
 						{
 							InstallableUnit originalIU = unit.getInstallableUnit(false);
 
-							if(!((EObject)originalIU).eIsProxy())
+							if(originalIU != null && !((EObject)originalIU).eIsProxy())
 								unit.setInstallableUnit(P2Factory.eINSTANCE.createInstallableUnitProxy(
-										mappedRepository.getLocation(),
+										mappedRepository.getNature(), mappedRepository.getLocation(),
 										InstallableUnitUtils.getVersionedName(originalIU)));
 						}
 
@@ -87,7 +87,7 @@ public class ResourceUtils
 					if(repoRef.getResolvedLocation() != null)
 					{
 						org.eclipse.emf.common.util.URI repoURI = org.eclipse.emf.common.util.URI.createGenericURI(
-								"p2", repoRef.getResolvedLocation(), null);
+								repoRef.getNature(), repoRef.getResolvedLocation(), null);
 						referencedResources.add(topSet.getResource(repoURI, false));
 					}
 				}
@@ -100,8 +100,13 @@ public class ResourceUtils
 
 			while(allResources.hasNext())
 			{
-				if(!referencedResources.contains(allResources.next()))
+				Resource res = allResources.next();
+				if(!referencedResources.contains(res))
+				{
+					if(res instanceof MetadataRepositoryResourceImpl)
+						((MetadataRepositoryResourceImpl)res).cancelLoadingJob();
 					allResources.remove();
+				}
 			}
 		}
 	}

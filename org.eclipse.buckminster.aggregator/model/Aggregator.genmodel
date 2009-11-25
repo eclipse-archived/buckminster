@@ -159,6 +159,7 @@
       <genFeatures property="None" notify="false" createChild="false" propertySortChoices="true"
           ecoreFeature="ecore:EReference Aggregator.ecore#//MetadataRepositoryReference/metadataRepository"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MetadataRepositoryReference/location"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//MetadataRepositoryReference/nature"/>
       <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/getAggregator"/>
       <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/getMetadataRepository">
         <genParameters ecoreParameter="Aggregator.ecore#//MetadataRepositoryReference/getMetadataRepository/forceResolve"/>
@@ -225,7 +226,8 @@
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/ICopyright">
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ICopyright/location"/>
-        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ICopyright/body"/>
+        <genFeatures property="Readonly" createChild="false" propertyMultiLine="true"
+            ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ICopyright/body"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IInstallableUnit">
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/IInstallableUnit/filter"/>
@@ -258,7 +260,8 @@
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/ILicense">
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/location"/>
-        <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/body"/>
+        <genFeatures property="Readonly" createChild="false" propertyMultiLine="true"
+            ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/body"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute Aggregator.ecore#//p2/ILicense/digest"/>
       </genClasses>
       <genClasses image="false" ecoreClass="Aggregator.ecore#//p2/IProvidedCapability">

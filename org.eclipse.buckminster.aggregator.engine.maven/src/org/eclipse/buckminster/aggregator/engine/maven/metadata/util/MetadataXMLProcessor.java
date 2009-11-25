@@ -9,11 +9,8 @@ package org.eclipse.buckminster.aggregator.engine.maven.metadata.util;
 import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.engine.maven.metadata.MetadataPackage;
-
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.resource.Resource;
-
 import org.eclipse.emf.ecore.xmi.util.XMLProcessor;
 
 /**

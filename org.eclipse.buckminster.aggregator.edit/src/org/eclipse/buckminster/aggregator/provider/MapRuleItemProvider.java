@@ -133,13 +133,13 @@ public class MapRuleItemProvider extends InstallableUnitReferenceItemProvider im
 	public void notifyChangedGen(Notification notification)
 	{
 		updateChildren(notification);
+
 		switch(notification.getFeatureID(MapRule.class))
 		{
 		case AggregatorPackage.MAP_RULE__DESCRIPTION:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		}
-
 		super.notifyChanged(notification);
 	}
 

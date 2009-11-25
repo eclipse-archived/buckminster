@@ -210,12 +210,20 @@ public class TouchpointsImpl extends MinimalEObjectImpl.Container implements Tou
 		return touchpointType;
 	}
 
+	public void setTouchpointType(ITouchpointType newTouchpointType)
+	{
+		if(newTouchpointType == ITouchpointType.NONE)
+			setTouchpointTypeGen(null);
+		else
+			setTouchpointTypeGen(newTouchpointType);
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void setTouchpointType(ITouchpointType newTouchpointType)
+	public void setTouchpointTypeGen(ITouchpointType newTouchpointType)
 	{
 		ITouchpointType oldTouchpointType = touchpointType;
 		touchpointType = newTouchpointType;

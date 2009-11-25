@@ -2,6 +2,9 @@ package org.eclipse.buckminster.aggregator.engine;
 
 import java.io.File;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +25,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository;
+import org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
 import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
@@ -76,6 +81,11 @@ public class SourceCompositeGenerator extends BuilderPhase
 				{
 					URI childLocation = mdr.getLocation();
 					log.info("Adding child meta-data repository %s", childLocation);
+
+					// if the original repository is not p2 compatible, persist its virtual metadata as a local p2
+					// repository
+					if(!"p2".equals(repo.getNature()))
+						childLocation = createLocalMdr(locationURI, mdr).getLocation();
 					compositeMdr.addChild(childLocation);
 				}
 				catch(Exception e)
@@ -98,6 +108,29 @@ public class SourceCompositeGenerator extends BuilderPhase
 		MonitorUtils.done(subMon);
 		log.info("Done. Took %s", TimeUtils.getFormattedDuration(start)); //$NON-NLS-1$
 		if(errorsFound)
-			throw BuckminsterException.fromMessage("CompositeRepository generation was not succesful");
+			throw BuckminsterException.fromMessage("CompositeRepository generation was not successful");
+	}
+
+	private IRepository createLocalMdr(URI locationBase, MetadataRepository mdr) throws URISyntaxException,
+			NoSuchAlgorithmException
+	{
+		URI location = new URI(locationBase.toString() + "/transformed/" + encode(mdr.getLocation().toString()));
+		LocalMetadataRepository localMdr = new LocalMetadataRepository(location, mdr.getName(), mdr.getProperties());
+		localMdr.setDescription(mdr.getDescription());
+		localMdr.setProvider(mdr.getProvider());
+		localMdr.addInstallableUnits(mdr.getInstallableUnits().toArray(
+				new IInstallableUnit[mdr.getInstallableUnits().size()]));
+		localMdr.setProperty(IRepository.PROP_COMPRESSED, "true");
+		return localMdr;
+	}
+
+	private String encode(String location) throws NoSuchAlgorithmException
+	{
+		MessageDigest digest = MessageDigest.getInstance("MD5");
+		StringBuilder encoded = new StringBuilder();
+		for(byte b : digest.digest(location.getBytes()))
+			encoded.append(String.format("%02x", Byte.valueOf(b)));
+
+		return encoded.toString();
 	}
 }

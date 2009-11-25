@@ -6,17 +6,16 @@
  */
 package org.eclipse.buckminster.aggregator.engine.maven.pom.util;
 
+import org.eclipse.buckminster.aggregator.engine.maven.util.XMLResourceImplWithCheck;
 import org.eclipse.emf.common.util.URI;
-
-import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
 
 /**
  * <!-- begin-user-doc --> The <b>Resource </b> associated with the package. <!-- end-user-doc -->
  * 
  * @see org.eclipse.buckminster.aggregator.engine.maven.pom.util.PomResourceFactoryImpl
- * @generated
+ * @generated NOT
  */
-public class PomResourceImpl extends XMLResourceImpl
+public class PomResourceImpl extends XMLResourceImplWithCheck
 {
 	/**
 	 * Creates an instance of the resource. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -28,7 +27,6 @@ public class PomResourceImpl extends XMLResourceImpl
 	public PomResourceImpl(URI uri)
 	{
 		super(uri);
-		setEncoding("UTF-8");
 	}
 
 } // PomResourceImpl

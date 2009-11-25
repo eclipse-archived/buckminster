@@ -195,7 +195,7 @@ public interface MetadataPackage extends EPackage
 	 * 
 	 * @generated
 	 */
-	String eNS_URI = "http://maven.apache.org/maven-metadata/1.0.0";
+	String eNS_URI = "http://maven.apache.org/METADATA/1.0.0";
 
 	/**
 	 * The package namespace name. <!-- begin-user-doc --> <!-- end-user-doc -->

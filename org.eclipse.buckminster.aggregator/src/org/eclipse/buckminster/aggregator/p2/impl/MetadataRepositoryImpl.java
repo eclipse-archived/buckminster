@@ -269,7 +269,7 @@ public class MetadataRepositoryImpl extends MinimalEObjectImpl.Container impleme
 
 	private static final Pattern categoryRefPattern = Pattern.compile("^(@installableUnits\\[id='.*'),version='0\\.0\\.0\\.[0-9]{14}'\\]$");
 
-	private static final Pattern proxyFragmentPattern = Pattern.compile("^p2:(.*)#\\/\\/@metadataRepository$");
+	private static final Pattern proxyFragmentPattern = Pattern.compile("^[^:]+:(.*)#\\/\\/@metadataRepository$");
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

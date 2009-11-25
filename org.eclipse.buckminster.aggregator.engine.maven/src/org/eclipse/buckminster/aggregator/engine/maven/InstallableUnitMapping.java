@@ -194,8 +194,7 @@ public class InstallableUnitMapping implements IInstallableUnit
 			model.setPackaging("pom");
 
 		if(getVersion() != null && !getVersion().equals(Version.emptyVersion))
-			// TODO When version enables "maven-compatible-tostring", use that one instead!
-			model.setVersion(getVersion().toString());
+			model.setVersion(getVersionString());
 
 		IRequiredCapability[] requiredCapabilities = getRequiredCapabilities();
 		if(requiredCapabilities.length > 0)
@@ -216,8 +215,29 @@ public class InstallableUnitMapping implements IInstallableUnit
 
 					if(requiredCapability.getRange() != null
 							&& !requiredCapability.getRange().equals(VersionRange.emptyRange))
-						// TODO When version enables "maven-compatible-tostring", use that one instead!
-						dependency.setVersion(requiredCapability.getRange().toString());
+					{
+						StringBuilder versionRangeString = new StringBuilder();
+						Version low = requiredCapability.getRange().getMinimum();
+						Version high = requiredCapability.getRange().getMaximum();
+						if(requiredCapability.getRange().getIncludeMinimum() && Version.MAX_VERSION.equals(high))
+						{
+							versionRangeString.append(MavenManager.getVersionString(low));
+						}
+						else
+						{
+							versionRangeString.append(requiredCapability.getRange().getIncludeMinimum()
+									? '['
+									: '(');
+							versionRangeString.append(MavenManager.getVersionString(low));
+							versionRangeString.append(',');
+							versionRangeString.append(MavenManager.getVersionString(high));
+							versionRangeString.append(requiredCapability.getRange().getIncludeMaximum()
+									? ']'
+									: ')');
+						}
+
+						dependency.setVersion(versionRangeString.toString());
+					}
 
 					if(requiredCapability.isOptional())
 						dependency.setOptional(true);
@@ -383,8 +403,7 @@ public class InstallableUnitMapping implements IInstallableUnit
 
 	public String getRelativePath() throws CoreException
 	{
-		// TODO Use mavenized toString
-		return map().getGroupId().replace('.', '/') + "/" + map().getArtifactId() + "/" + getVersion().toString();
+		return map().getGroupId().replace('.', '/') + "/" + map().getArtifactId() + "/" + getVersionString();
 	}
 
 	public IRequiredCapability[] getRequiredCapabilities()
@@ -431,6 +450,11 @@ public class InstallableUnitMapping implements IInstallableUnit
 	public Version getVersion()
 	{
 		return m_installableUnit.getVersion();
+	}
+
+	public String getVersionString()
+	{
+		return MavenManager.getVersionString(getVersion());
 	}
 
 	public boolean isFragment()
@@ -512,8 +536,7 @@ public class InstallableUnitMapping implements IInstallableUnit
 		String fileId = getId();
 		StringBuilder fileName = new StringBuilder(fileId);
 		fileName.append('-');
-		// TODO Use mavenized toString
-		fileName.append(getVersion().toString());
+		fileName.append(getVersionString());
 
 		if(extension == null)
 		{

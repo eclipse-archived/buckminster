@@ -6,9 +6,8 @@
  */
 package org.eclipse.buckminster.aggregator.engine.maven.metadata.util;
 
+import org.eclipse.buckminster.aggregator.engine.maven.util.XMLResourceImplWithCheck;
 import org.eclipse.emf.common.util.URI;
-
-import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
 
 /**
  * <!-- begin-user-doc --> The <b>Resource </b> associated with the package. <!-- end-user-doc -->
@@ -16,7 +15,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
  * @see org.eclipse.buckminster.aggregator.engine.maven.metadata.util.MetadataResourceFactoryImpl
  * @generated
  */
-public class MetadataResourceImpl extends XMLResourceImpl
+public class MetadataResourceImpl extends XMLResourceImplWithCheck
 {
 	/**
 	 * Creates an instance of the resource. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -28,7 +27,6 @@ public class MetadataResourceImpl extends XMLResourceImpl
 	public MetadataResourceImpl(URI uri)
 	{
 		super(uri);
-		setEncoding("UTF-8");
 	}
 
 } // MetadataResourceImpl

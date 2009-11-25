@@ -9,6 +9,7 @@
 -->
 
 <plugin>
+   <extension-point id="loader" name="Repository Loader" schema="schema/loader.exsd"/>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
@@ -23,11 +24,10 @@
             class="org.eclipse.buckminster.aggregator.util.AggregatorResourceFactoryImpl"/>
    </extension>
    <extension
-         point="org.eclipse.emf.ecore.protocol_parser">
-      <parser
-            class="org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceFactoryImpl"
-            protocolName="p2">
-      </parser>
+         point="org.eclipse.buckminster.aggregator.loader">
+      <loader
+      		nature="p2"
+            class="org.eclipse.buckminster.aggregator.p2.util.P2RepositoryLoader"/>
    </extension>
 
 </plugin>

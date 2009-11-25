@@ -14,6 +14,7 @@ import java.util.Collections;
 import org.eclipse.buckminster.aggregator.engine.maven.metadata.DocumentRoot;
 import org.eclipse.buckminster.aggregator.engine.maven.metadata.MetaData;
 import org.eclipse.buckminster.aggregator.engine.maven.metadata.MetadataFactory;
+import org.eclipse.buckminster.aggregator.engine.maven.metadata.util.MetadataResourceFactoryImpl;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -24,6 +25,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceFactoryRegistryImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.Diagnostician;
 
@@ -43,8 +45,7 @@ public class MavenMetadata
 
 	public MavenMetadata(URI uri) throws CoreException
 	{
-		ResourceSet resourceSet = new ResourceSetImpl();
-		Resource resource = resourceSet.getResource(uri, true);
+		Resource resource = getResourceSet().getResource(uri, true);
 		EList<EObject> content = resource.getContents();
 		if(content.size() != 1)
 			throw BuckminsterException.fromMessage("ECore Resource did not contain one resource. It had %d",
@@ -99,7 +100,26 @@ public class MavenMetadata
 
 	public void save(URI uri) throws CoreException
 	{
+		save(getResourceSet().createResource(uri));
+	}
+
+	private ResourceSet getResourceSet()
+	{
 		ResourceSet resourceSet = new ResourceSetImpl();
-		save(resourceSet.createResource(uri));
+		resourceSet.setResourceFactoryRegistry(new ResourceFactoryRegistryImpl()
+		{
+			public Resource.Factory getFactory(URI uri)
+			{
+				return new MetadataResourceFactoryImpl();
+			}
+
+			@Override
+			public Resource.Factory getFactory(URI uri, String contentType)
+			{
+				return getFactory(uri);
+			}
+		});
+
+		return resourceSet;
 	}
 }

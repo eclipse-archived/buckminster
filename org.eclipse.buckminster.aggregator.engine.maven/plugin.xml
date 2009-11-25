@@ -30,10 +30,12 @@
             class="org.eclipse.buckminster.aggregator.engine.maven.pom.util.PomResourceFactoryImpl"/>
    </extension>
 
-   <extension point="org.eclipse.emf.ecore.extension_parser">
-      <parser
-            type="xml"
-            class="org.eclipse.buckminster.aggregator.engine.maven.metadata.util.MetadataResourceFactoryImpl"/>
+   <extension
+         point="org.eclipse.buckminster.aggregator.loader">
+      <loader
+            class="org.eclipse.buckminster.aggregator.engine.maven.loader.Maven2RepositoryLoader"
+            nature="maven2">
+      </loader>
    </extension>
 
 </plugin>

@@ -487,6 +487,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		metadataRepositoryReferenceEClass = createEClass(METADATA_REPOSITORY_REFERENCE);
 		createEReference(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY);
 		createEAttribute(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__LOCATION);
+		createEAttribute(metadataRepositoryReferenceEClass, METADATA_REPOSITORY_REFERENCE__NATURE);
 
 		comparableEClass = createEClass(COMPARABLE);
 
@@ -1273,6 +1274,16 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	public EAttribute getMetadataRepositoryReference_Nature()
+	{
+		return (EAttribute)metadataRepositoryReferenceEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EEnum getOperatingSystem()
 	{
 		return operatingSystemEEnum;
@@ -1706,6 +1717,9 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		initEAttribute(getMetadataRepositoryReference_Location(), ecorePackage.getEString(), "location", null, 1, 1,
 				MetadataRepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMetadataRepositoryReference_Nature(), ecorePackage.getEString(), "nature", "p2", 1, 1,
+				MetadataRepositoryReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		addEOperation(metadataRepositoryReferenceEClass, this.getAggregator(), "getAggregator", 0, 1, IS_UNIQUE,
 				IS_ORDERED);
@@ -1722,6 +1736,8 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 
 		op = addEOperation(metadataRepositoryReferenceEClass, null, "startRepositoryLoad", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEBoolean(), "forceReload", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(metadataRepositoryReferenceEClass, null, "cancelRepositoryLoad", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(metadataRepositoryReferenceEClass, null, "onRepositoryLoad", 0, 1, IS_UNIQUE, IS_ORDERED);
 

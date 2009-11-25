@@ -577,6 +577,14 @@ public interface AggregatorPackage extends EPackage
 		EAttribute METADATA_REPOSITORY_REFERENCE__LOCATION = eINSTANCE.getMetadataRepositoryReference_Location();
 
 		/**
+		 * The meta object literal for the '<em><b>Nature</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute METADATA_REPOSITORY_REFERENCE__NATURE = eINSTANCE.getMetadataRepositoryReference_Nature();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.aggregator.StatusProvider
 		 * <em>Status Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -1096,13 +1104,21 @@ public interface AggregatorPackage extends EPackage
 	int METADATA_REPOSITORY_REFERENCE__LOCATION = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Nature</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int METADATA_REPOSITORY_REFERENCE__NATURE = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Metadata Repository Reference</em>' class. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 3;
+	int METADATA_REPOSITORY_REFERENCE_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.MappedRepositoryImpl
@@ -1146,6 +1162,14 @@ public interface AggregatorPackage extends EPackage
 	 * @ordered
 	 */
 	int MAPPED_REPOSITORY__LOCATION = METADATA_REPOSITORY_REFERENCE__LOCATION;
+
+	/**
+	 * The feature id for the '<em><b>Nature</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPED_REPOSITORY__NATURE = METADATA_REPOSITORY_REFERENCE__NATURE;
 
 	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -3053,6 +3077,18 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 */
 	EReference getMetadataRepositoryReference_MetadataRepository();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.aggregator.MetadataRepositoryReference#getNature <em>Nature</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Nature</em>'.
+	 * @see org.eclipse.buckminster.aggregator.MetadataRepositoryReference#getNature()
+	 * @see #getMetadataRepositoryReference()
+	 * @generated
+	 */
+	EAttribute getMetadataRepositoryReference_Nature();
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.aggregator.OperatingSystem

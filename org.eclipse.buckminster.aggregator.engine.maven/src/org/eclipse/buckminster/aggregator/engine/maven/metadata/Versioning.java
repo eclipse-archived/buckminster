@@ -46,7 +46,7 @@ public interface Versioning extends EObject
 	 * @return the value of the '<em>Last Updated</em>' attribute.
 	 * @see #setLastUpdated(String)
 	 * @see org.eclipse.buckminster.aggregator.engine.maven.metadata.MetadataPackage#getVersioning_LastUpdated()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
 	 *        extendedMetaData="kind='element' name='lastUpdated' namespace='##targetNamespace'"
 	 * @generated
 	 */

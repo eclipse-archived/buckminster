@@ -35,6 +35,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 
 /**
@@ -48,6 +49,7 @@ import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getMetadataRepository <em>Metadata
  * Repository</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getLocation <em>Location</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getNature <em>Nature</em>}</li>
  * </ul>
  * </p>
  * 
@@ -125,6 +127,26 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 */
 	protected String location = LOCATION_EDEFAULT;
 
+	/**
+	 * The default value of the '{@link #getNature() <em>Nature</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getNature()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String NATURE_EDEFAULT = "p2";
+
+	/**
+	 * The cached value of the '{@link #getNature() <em>Nature</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getNature()
+	 * @generated
+	 * @ordered
+	 */
+	protected String nature = NATURE_EDEFAULT;
+
 	private Set<Job> m_currentLoaderJobs = new HashSet<Job>();
 
 	private Set<Job> m_cancelledLoaderJobs = new HashSet<Job>();
@@ -148,6 +170,12 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	public MetadataRepository basicGetMetadataRepository()
 	{
 		return metadataRepository;
+	}
+
+	synchronized public void cancelRepositoryLoad()
+	{
+		for(Job job : m_currentLoaderJobs)
+			job.cancel();
 	}
 
 	/**
@@ -212,6 +240,8 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			return basicGetMetadataRepository();
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
 			return getLocation();
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__NATURE:
+			return getNature();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -236,6 +266,10 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			return LOCATION_EDEFAULT == null
 					? location != null
 					: !LOCATION_EDEFAULT.equals(location);
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__NATURE:
+			return NATURE_EDEFAULT == null
+					? nature != null
+					: !NATURE_EDEFAULT.equals(nature);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -259,6 +293,9 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
 			setLocation((String)newValue);
 			return;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__NATURE:
+			setNature((String)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -281,6 +318,9 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			return;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
 			setLocation(LOCATION_EDEFAULT);
+			return;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__NATURE:
+			setNature(NATURE_EDEFAULT);
 			return;
 		}
 		super.eUnset(featureID);
@@ -357,6 +397,16 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated
+	 */
+	public String getNature()
+	{
+		return nature;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated NOT
 	 */
 	public String getResolvedLocation()
@@ -422,14 +472,15 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 			else
 			{
+				String nature = getNature();
 				String location = getResolvedLocation();
-				if(location == null)
+				if(nature == null || location == null)
 					// Node is incomplete and doesn't appoint a repository just yet.
 					return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
 							getString("_UI_ErrorMessage_RepositoryIsNotSet"));
 
-				MetadataRepositoryResourceImpl res = (MetadataRepositoryResourceImpl)MetadataRepositoryResourceImpl.getResourceForLocation(
-						location, getAggregator());
+				MetadataRepositoryResourceImpl res = (MetadataRepositoryResourceImpl)MetadataRepositoryResourceImpl.getResourceForNatureAndLocation(
+						nature, location, getAggregator());
 
 				if(res != null)
 					return res.getStatus();
@@ -525,9 +576,23 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated
+	 */
+	public void setNature(String newNature)
+	{
+		String oldNature = nature;
+		nature = newNature;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET,
+					AggregatorPackage.METADATA_REPOSITORY_REFERENCE__NATURE, oldNature, nature));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated NOT
 	 */
-	public void startRepositoryLoad(final boolean forceReload)
+	synchronized public void startRepositoryLoad(final boolean forceReload)
 	{
 		if(GeneralUtils.trimmedOrNull(getLocation()) == null)
 		{
@@ -536,10 +601,12 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			return;
 		}
 
+		final String nature = getNature();
 		final String resolvedLocation = getResolvedLocation();
 		final Aggregator aggregator = getAggregator();
-		Resource res = MetadataRepositoryResourceImpl.getResourceForLocation(resolvedLocation, aggregator);
-		if(res.isLoaded())
+		Resource res = MetadataRepositoryResourceImpl.getResourceForNatureAndLocation(nature, resolvedLocation,
+				aggregator);
+		if(res != null && res.isLoaded() && !((ResourceImpl)res).isLoading())
 		{
 			if(forceReload || ((MetadataRepositoryResourceImpl)res).getLastException() != null)
 				res.unload();
@@ -547,7 +614,8 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			{
 				synchronized(this)
 				{
-					setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(resolvedLocation, aggregator));
+					setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(nature, resolvedLocation,
+							aggregator));
 					onRepositoryLoad();
 					return;
 				}
@@ -558,15 +626,58 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 
 		cancelCurrentLoaderJobs();
 
+		if(res == null)
+		{
+			onRepositoryLoad();
+			return;
+		}
+
 		Job asynchronousLoader = new Job("Loading " + getResolvedLocation())
 		{
 
 			@Override
-			protected IStatus run(IProgressMonitor monitor)
+			protected IStatus run(final IProgressMonitor monitor)
 			{
+				class MonitorWatchDog extends Thread
+				{
+					private boolean m_done;
+
+					@Override
+					public void run()
+					{
+						while(!m_done)
+						{
+							if(monitor.isCanceled())
+							{
+								MetadataRepositoryResourceImpl.cancelLoadRepository(nature, resolvedLocation,
+										aggregator);
+								break;
+							}
+
+							try
+							{
+								Thread.sleep(100);
+							}
+							catch(InterruptedException e)
+							{
+								// ignore
+							}
+						}
+					}
+
+					public void setDone()
+					{
+						m_done = true;
+					}
+				}
+
+				MonitorWatchDog watchDog = new MonitorWatchDog();
+
 				try
 				{
-					MetadataRepository mdr = MetadataRepositoryResourceImpl.loadRepository(resolvedLocation,
+					watchDog.start();
+
+					MetadataRepository mdr = MetadataRepositoryResourceImpl.loadRepository(nature, resolvedLocation,
 							aggregator, forceReload);
 
 					if(m_cancelledLoaderJobs.contains(this))
@@ -592,6 +703,8 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 				finally
 				{
 					removeCurrentLoaderJob(this);
+					monitor.done();
+					watchDog.setDone();
 				}
 			}
 
@@ -618,6 +731,8 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		result.append((eFlags & ENABLED_EFLAG) != 0);
 		result.append(", location: ");
 		result.append(location);
+		result.append(", nature: ");
+		result.append(nature);
 		result.append(')');
 		return result.toString();
 	}

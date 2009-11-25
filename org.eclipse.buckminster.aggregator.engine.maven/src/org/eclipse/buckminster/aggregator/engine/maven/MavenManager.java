@@ -118,7 +118,44 @@ public class MavenManager
 		}
 	}
 
-	private static final String[] CHECK_SUM_ALGORITHMS = { "MD5", "SHA1" };
+	public static final MessageDigest[] MESSAGE_DIGESTERS;
+
+	static
+	{
+		String[] algorithms = { "MD5", "SHA1" };
+		MESSAGE_DIGESTERS = new MessageDigest[algorithms.length];
+		int i = 0;
+		for(String checkSumAlgorithm : algorithms)
+			try
+			{
+				MESSAGE_DIGESTERS[i++] = MessageDigest.getInstance(checkSumAlgorithm);
+			}
+			catch(NoSuchAlgorithmException e)
+			{
+				throw new RuntimeException("Unable to create checksum algorithm for " + checkSumAlgorithm + ": "
+						+ e.getMessage());
+			}
+	}
+
+	public static String[] createCheckSum(byte[] content, MessageDigest[] digests)
+	{
+		String[] result = new String[digests.length];
+
+		int i = 0;
+		StringBuilder checkSumStr = new StringBuilder(32);
+		for(MessageDigest digest : digests)
+		{
+			digest.reset();
+			byte[] checkSum = digest.digest(content);
+			checkSumStr.setLength(0);
+			for(byte b : checkSum)
+				checkSumStr.append(String.format("%02x", Byte.valueOf(b)));
+
+			result[i++] = checkSumStr.toString();
+		}
+
+		return result;
+	}
 
 	public static MavenRepositoryHelper createMavenStructure(List<InstallableUnitMapping> ius) throws CoreException
 	{
@@ -175,26 +212,23 @@ public class MavenManager
 		return new MavenRepositoryHelper(top, mappingRulesList.toArray(new String[mappingRulesList.size()][]));
 	}
 
+	public static String getVersionString(Version version)
+	{
+		String versionString = version.getOriginal();
+		if(versionString == null)
+			versionString = version.toString();
+
+		return versionString;
+	}
+
 	public static void saveMetadata(URI root, InstallableUnitMapping iu) throws CoreException
 	{
-		MessageDigest[] digests = new MessageDigest[CHECK_SUM_ALGORITHMS.length];
-		int i = 0;
-		for(String checkSumAlgorithm : CHECK_SUM_ALGORITHMS)
-			try
-			{
-				digests[i++] = MessageDigest.getInstance(checkSumAlgorithm);
-			}
-			catch(NoSuchAlgorithmException e)
-			{
-				throw BuckminsterException.fromMessage(e, "Unable to create checksum algorithm for ", checkSumAlgorithm);
-			}
-
 		ResourceSet resourceSet = new ResourceSetImpl();
 		URIConverter uriConverter = resourceSet.getURIConverter();
 		Map<String, MavenMetadataHelper> metadataCollector = new HashMap<String, MavenMetadataHelper>();
 
-		savePOMs(root, iu, uriConverter, digests, metadataCollector);
-		saveXMLs(root, uriConverter, digests, metadataCollector);
+		savePOMs(root, iu, uriConverter, MESSAGE_DIGESTERS, metadataCollector);
+		saveXMLs(root, uriConverter, MESSAGE_DIGESTERS, metadataCollector);
 	}
 
 	private static void addMappingRule(List<String[]> mappingRulesList, InstallableUnitMapping iu) throws CoreException
@@ -316,14 +350,12 @@ public class MavenManager
 			Versioning versioning = MetadataFactory.eINSTANCE.createVersioning();
 			md.setVersioning(versioning);
 			versioning.setLastUpdated(timestamp);
-			// TODO Use mavenized toString
-			versioning.setRelease(mdh.getRelease().toString());
+			versioning.setRelease(getVersionString(mdh.getRelease()));
 			Versions versions = MetadataFactory.eINSTANCE.createVersions();
 			versioning.setVersions(versions);
 			List<String> versionList = versions.getVersion();
 			for(Version version : mdh.getVersions())
-				// TODO Use mavenized toString
-				versionList.add(version.toString());
+				versionList.add(getVersionString(version));
 
 			URI xmlUri = createXmlURI(root, mdh);
 			mdConainter.save(xmlUri);

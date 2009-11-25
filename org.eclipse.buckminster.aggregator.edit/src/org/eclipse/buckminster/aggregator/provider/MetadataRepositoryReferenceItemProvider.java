@@ -10,13 +10,16 @@
 package org.eclipse.buckminster.aggregator.provider;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.AggregatorPlugin;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
@@ -114,6 +117,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 
 			addEnabledPropertyDescriptor(object);
 			addLocationPropertyDescriptor(object);
+			addNaturePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -145,6 +149,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		if(mdr != null)
 		{
 			String name;
+			String nature = repoRef.getNature();
 			URI location;
 
 			if(!((EObject)mdr).eIsProxy())
@@ -159,7 +164,11 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 			}
 
 			if(location != null)
+			{
+				bld.append(nature);
+				bld.append(':');
 				bld.append(location);
+			}
 			else
 				bld.append("no location");
 
@@ -173,7 +182,11 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		else
 		{
 			if(repoRef.getLocation() != null)
+			{
+				bld.append(repoRef.getNature());
+				bld.append(':');
 				bld.append(repoRef.getLocation());
+			}
 			else
 				bld.append("no location");
 		}
@@ -197,6 +210,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		MetadataRepositoryReference repoRef = (MetadataRepositoryReference)notification.getNotifier();
 		switch(notification.getFeatureID(MetadataRepositoryReference.class))
 		{
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__NATURE:
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
 			if(notification.getNewStringValue() != null
 					&& !notification.getNewStringValue().equals(notification.getOldStringValue())
@@ -276,6 +290,7 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		{
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__NATURE:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		}
@@ -358,6 +373,41 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 						repos.remove(repo);
 				}
 				return repos;
+			}
+		});
+	}
+
+	/**
+	 * This adds a property descriptor for the Nature feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	protected void addNaturePropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(new ItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_MetadataRepositoryReference_nature_feature"), getString(
+						"_UI_PropertyDescriptor_description", "_UI_MetadataRepositoryReference_nature_feature",
+						"_UI_MetadataRepositoryReference_type"),
+				AggregatorPackage.Literals.METADATA_REPOSITORY_REFERENCE__NATURE, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null)
+		{
+			@Override
+			public Collection<?> getChoiceOfValues(Object object)
+			{
+				MappedRepository repo = (MappedRepository)object;
+				String currentValue = repo.getNature();
+				List<String> supportedValues = AggregatorPlugin.getPlugin().getSupportedRepositoryNatureList();
+				if(!supportedValues.contains(currentValue))
+				{
+					List<String> globallySupportedValues = supportedValues;
+					supportedValues = new ArrayList<String>(globallySupportedValues.size() + 1);
+					supportedValues.addAll(globallySupportedValues);
+					supportedValues.add(currentValue);
+					Collections.sort(supportedValues);
+				}
+
+				return supportedValues;
 			}
 		});
 	}

@@ -218,7 +218,9 @@ public class VersionSuffixGenerator
 			minorSum += version.getMinor();
 			serviceSum += version.getMicro();
 
-			String qualifier = version.getQualifier();
+			String qualifier = version.isOSGiCompatible()
+					? version.getQualifier()
+					: null;
 			if(qualifier != null && qualifier.endsWith(VERSION_QUALIFIER))
 			{
 				int resultingLength = qualifier.length() - VERSION_QUALIFIER.length();

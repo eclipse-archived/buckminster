@@ -44,7 +44,7 @@ public class MetadataFactoryImpl extends EFactoryImpl implements MetadataFactory
 	{
 		try
 		{
-			MetadataFactory theMetadataFactory = (MetadataFactory)EPackage.Registry.INSTANCE.getEFactory("http://maven.apache.org/maven-metadata/1.0.0");
+			MetadataFactory theMetadataFactory = (MetadataFactory)EPackage.Registry.INSTANCE.getEFactory("http://maven.apache.org/METADATA/1.0.0");
 			if(theMetadataFactory != null)
 			{
 				return theMetadataFactory;

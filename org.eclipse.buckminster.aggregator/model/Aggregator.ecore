@@ -181,10 +181,13 @@
     <eOperations name="startRepositoryLoad">
       <eParameters name="forceReload" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eOperations>
+    <eOperations name="cancelRepositoryLoad"/>
     <eOperations name="onRepositoryLoad"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="metadataRepository" eType="#//p2/MetadataRepository"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nature" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" defaultValueLiteral="p2"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Comparable" instanceClassName="java.lang.Comparable"
       abstract="true" interface="true">

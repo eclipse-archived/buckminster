@@ -27,7 +27,6 @@ import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFacto
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.provider.P2viewItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
-import org.eclipse.buckminster.aggregator.provider.AggregatorItemProvider;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.provider.TooltipTextProvider;
@@ -662,8 +661,12 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 				// initialize item providers for all MDR references so that they could handle notifications from
 				// repository loaders
+				// + set all proxies to null so that no one tries to resolve them (the MDR's will be set by loaders)
 				for(MetadataRepositoryReference mdrReference : aggregator.getAllMetadataRepositoryReferences(false))
+				{
+					mdrReference.setMetadataRepository(null);
 					adapterFactory.adapt(mdrReference, IItemLabelProvider.class);
+				}
 
 				final List<MetadataRepositoryReference> repositoriesToLoad = aggregator.getAllMetadataRepositoryReferences(true);
 
@@ -674,84 +677,37 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					{
 						try
 						{
-							IProgressMonitor progressGroup = Job.getJobManager().createProgressGroup();
-							progressGroup.beginTask("Loading repositories...", repositoriesToLoad.size());
-
-							try
+							Collections.sort(repositoriesToLoad, new Comparator<MetadataRepositoryReference>()
 							{
-								List<Job> jobsToJoin = new ArrayList<Job>(repositoriesToLoad.size());
-								Collections.sort(repositoriesToLoad, new Comparator<MetadataRepositoryReference>()
+
+								public int compare(MetadataRepositoryReference mdr1, MetadataRepositoryReference mdr2)
 								{
+									String location1 = mdr1 != null
+											? mdr1.getResolvedLocation()
+											: null;
+									if(location1 == null)
+										location1 = "";
+									String location2 = mdr2 != null
+											? mdr2.getResolvedLocation()
+											: null;
+									if(location2 == null)
+										location2 = "";
 
-									public int compare(MetadataRepositoryReference mdr1,
-											MetadataRepositoryReference mdr2)
-									{
-										String location1 = mdr1 != null
-												? mdr1.getResolvedLocation()
-												: null;
-										if(location1 == null)
-											location1 = "";
-										String location2 = mdr2 != null
-												? mdr2.getResolvedLocation()
-												: null;
-										if(location2 == null)
-											location2 = "";
-
-										return location1.compareTo(location2);
-									}
-
-								});
-
-								// initialize all resources in alphabetical order
-								for(MetadataRepositoryReference repo : repositoriesToLoad)
-									MetadataRepositoryResourceImpl.getResourceForLocation(repo.getResolvedLocation(),
-											repo.getAggregator());
-
-								for(final MetadataRepositoryReference repo : repositoriesToLoad)
-								{
-									if(monitor.isCanceled() || progressGroup.isCanceled())
-										break;
-
-									Job repoJob = new Job("Loading " + repo.getLocation() + "...")
-									{
-										@Override
-										protected IStatus run(IProgressMonitor monitor)
-										{
-											monitor.beginTask("Loading " + repo.getLocation(), 1);
-											try
-											{
-												repo.setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(
-														repo.getResolvedLocation(), repo.getAggregator()));
-											}
-											finally
-											{
-												monitor.worked(1);
-												monitor.done();
-											}
-											return Status.OK_STATUS;
-										}
-
-									};
-									repoJob.setProgressGroup(progressGroup, 1);
-									repoJob.setUser(false);
-									repoJob.setSystem(true);
-									repoJob.schedule();
-									jobsToJoin.add(repoJob);
+									return location1.compareTo(location2);
 								}
 
-								for(Job job : jobsToJoin)
-									try
-									{
-										job.join();
-									}
-									catch(InterruptedException e)
-									{
-										// ignore
-									}
-							}
-							finally
+							});
+
+							// initialize all resources in alphabetical order
+							for(MetadataRepositoryReference repo : repositoriesToLoad)
+								MetadataRepositoryResourceImpl.getResourceForNatureAndLocation(repo.getNature(),
+										repo.getResolvedLocation(), repo.getAggregator());
+
+							for(final MetadataRepositoryReference repo : repositoriesToLoad)
 							{
-								progressGroup.done();
+								if(monitor.isCanceled())
+									break;
+								repo.startRepositoryLoad(false);
 							}
 							return Status.OK_STATUS;
 						}

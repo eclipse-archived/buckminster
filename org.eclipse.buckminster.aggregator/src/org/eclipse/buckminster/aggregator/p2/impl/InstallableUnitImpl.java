@@ -1353,9 +1353,21 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public void setTouchpointType(ITouchpointType newTouchpointType)
+	{
+		if(newTouchpointType == ITouchpointType.NONE)
+			newTouchpointType = null;
+		setTouchpointTypeGen(newTouchpointType);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setTouchpointTypeGen(ITouchpointType newTouchpointType)
 	{
 		if(newTouchpointType != touchpointType)
 		{

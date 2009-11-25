@@ -146,7 +146,7 @@ public class LicenseItemProvider extends AggregatorItemProviderAdapter implement
 				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
 				getString("_UI_ILicense_body_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_ILicense_body_feature", "_UI_ILicense_type"), P2Package.Literals.ILICENSE__BODY, false,
-				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				true, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

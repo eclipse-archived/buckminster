@@ -27,6 +27,7 @@ import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
+import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.engine.Builder;
 import org.eclipse.buckminster.aggregator.engine.Engine;
 import org.eclipse.buckminster.aggregator.engine.Builder.ActionType;
@@ -466,24 +467,58 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 	}
 
-	class ReloadRepoAction extends Action
+	class ReloadOrCancelRepoAction extends Action
 	{
 		private MetadataRepositoryReference m_metadataRepositoryReference;
 
-		public ReloadRepoAction()
+		private ImageDescriptor m_reloadImageDescriptor;
+
+		private ImageDescriptor m_cancelImageDescriptor;
+
+		private boolean m_nextActionIsLoad;
+
+		public ReloadOrCancelRepoAction()
 		{
-			setText("Reload Repository");
 			Object imageURL = AggregatorEditorPlugin.INSTANCE.getImage("full/obj16/refresh.gif");
 
 			if(imageURL != null && imageURL instanceof URL)
-				setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
+				m_reloadImageDescriptor = ImageDescriptor.createFromURL((URL)imageURL);
+
+			imageURL = AggregatorEditorPlugin.INSTANCE.getImage("full/obj16/progress_stop.gif");
+
+			if(imageURL != null && imageURL instanceof URL)
+				m_cancelImageDescriptor = ImageDescriptor.createFromURL((URL)imageURL);
+		}
+
+		public ImageDescriptor getImageDescriptor()
+		{
+			return m_nextActionIsLoad
+					? m_reloadImageDescriptor
+					: m_cancelImageDescriptor;
+		}
+
+		public String getText()
+		{
+			// the getText() is the first thing to be called when opening the menu - let's set the next action here
+			m_nextActionIsLoad = !isLoading();
+			return m_nextActionIsLoad
+					? "Reload Repository"
+					: "Cancel loading";
+		}
+
+		public boolean isLoading()
+		{
+			return m_metadataRepositoryReference.getStatus().getCode() == StatusCode.WAITING;
 		}
 
 		@Override
 		public void run()
 		{
 			if(m_metadataRepositoryReference != null && m_metadataRepositoryReference.isBranchEnabled())
-				m_metadataRepositoryReference.startRepositoryLoad(true);
+				if(m_nextActionIsLoad)
+					m_metadataRepositoryReference.startRepositoryLoad(true);
+				else
+					m_metadataRepositoryReference.cancelRepositoryLoad();
 		}
 
 		public void setMetadataRepositoryReference(MetadataRepositoryReference metadataRepositoryReference)
@@ -724,8 +759,6 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		}
 	}
 
-	// TODO start here with Bug 293174
-
 	private static String getString(String key)
 	{
 		return AggregatorEditorPlugin.INSTANCE.getString(key);
@@ -830,9 +863,9 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	protected Map<EnabledStatusAction, Boolean> enabledStatusActionVisibility;
 
-	protected boolean m_reloadRepoActionVisible;
+	protected boolean m_reloadOrCancelRepoActionVisible;
 
-	protected ReloadRepoAction m_reloadRepoAction;
+	protected ReloadOrCancelRepoAction m_reloadOrCancelRepoAction;
 
 	protected BuildRepoAction m_cleanRepoAction;
 
@@ -866,8 +899,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		enabledStatusActionVisibility = new LinkedHashMap<EnabledStatusAction, Boolean>();
 		enabledStatusActionVisibility.put(new EnabledStatusAction(true), Boolean.FALSE);
 		enabledStatusActionVisibility.put(new EnabledStatusAction(false), Boolean.FALSE);
-		m_reloadRepoAction = new ReloadRepoAction();
-		m_reloadRepoActionVisible = false;
+		m_reloadOrCancelRepoAction = new ReloadOrCancelRepoAction();
+		m_reloadOrCancelRepoActionVisible = false;
 		m_cleanRepoAction = new BuildRepoAction(ActionType.CLEAN);
 		m_verifyRepoAction = new BuildRepoAction(ActionType.VERIFY);
 		m_buildRepoAction = new BuildRepoAction(ActionType.BUILD);
@@ -954,20 +987,21 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			if(entry.getValue())
 			{
 				depopulateManager(menuManager, Collections.singleton(entry.getKey()));
-				IContributionItem item = new ActionContributionItem(entry.getKey())
-				{
-
-					// force updating the text immediately
-					public boolean isDynamic()
-					{
-						return true;
-					}
-				};
-				menuManager.insertBefore("edit", item);
+				menuManager.insertBefore("edit", entry.getKey());
 			}
 		}
-		if(m_reloadRepoActionVisible)
-			menuManager.insertBefore("edit", m_reloadRepoAction);
+		if(m_reloadOrCancelRepoActionVisible)
+		{
+			depopulateManager(menuManager, Collections.singleton(m_reloadOrCancelRepoAction));
+			menuManager.insertBefore("edit", new ActionContributionItem(m_reloadOrCancelRepoAction)
+			{
+				// force updating the text and image immediately
+				public boolean isDynamic()
+				{
+					return true;
+				}
+			});
+		}
 	}
 
 	/**
@@ -1110,7 +1144,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 		Collection<?> newSiblingDescriptors = null;
 		m_selectMatchingIUAction = null;
 
-		m_reloadRepoActionVisible = false;
+		m_reloadOrCancelRepoActionVisible = false;
 
 		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() >= 1)
 		{
@@ -1156,13 +1190,12 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 				newChildDescriptors = domain.getNewChildDescriptors(object, null);
 				newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
-
 				if(object instanceof MetadataRepositoryReference)
 				{
 					MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)object;
-					m_reloadRepoAction.setEnabled(metadataRepositoryReference.isBranchEnabled());
-					m_reloadRepoAction.setMetadataRepositoryReference(metadataRepositoryReference);
-					m_reloadRepoActionVisible = true;
+					m_reloadOrCancelRepoAction.setEnabled(metadataRepositoryReference.isBranchEnabled());
+					m_reloadOrCancelRepoAction.setMetadataRepositoryReference(metadataRepositoryReference);
+					m_reloadOrCancelRepoActionVisible = true;
 				}
 
 				if(object instanceof RequiredCapabilityWrapper)

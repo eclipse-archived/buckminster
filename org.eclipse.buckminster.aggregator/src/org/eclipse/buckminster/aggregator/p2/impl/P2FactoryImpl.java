@@ -33,7 +33,7 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
  */
 public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 {
-	private static final String PROXY_URI_FORMATTER = "p2:%s#//@metadataRepository/@installableUnits[id='%s',version='%s']";
+	private static final String PROXY_URI_FORMATTER = "%s:%s#//@metadataRepository/@installableUnits[id='%s',version='%s']";
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -374,10 +374,11 @@ public class P2FactoryImpl extends EFactoryImpl implements P2Factory
 	 * 
 	 * @generated NOT
 	 */
-	public InstallableUnit createInstallableUnitProxy(String repoLocation, VersionedId iuVN)
+	public InstallableUnit createInstallableUnitProxy(String repoNature, String repoLocation, VersionedId iuVN)
 	{
 		InstallableUnitImpl installableUnit = new InstallableUnitImpl();
-		URI proxyURI = URI.createURI(String.format(PROXY_URI_FORMATTER, repoLocation, iuVN.getId(), iuVN.getVersion()));
+		URI proxyURI = URI.createURI(String.format(PROXY_URI_FORMATTER, repoNature, repoLocation, iuVN.getId(),
+				iuVN.getVersion()));
 		installableUnit.eSetProxyURI(proxyURI);
 
 		return installableUnit;
