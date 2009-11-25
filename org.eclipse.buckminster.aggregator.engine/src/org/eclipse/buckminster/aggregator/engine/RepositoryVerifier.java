@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,6 +56,7 @@ import org.eclipse.equinox.internal.provisional.p2.engine.InstallableUnitOperand
 import org.eclipse.equinox.internal.provisional.p2.engine.Operand;
 import org.eclipse.equinox.internal.provisional.p2.engine.ProvisioningContext;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnitPatch;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
@@ -70,6 +72,44 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadata
 
 public class RepositoryVerifier extends BuilderPhase
 {
+	static class AllPatchesQuery extends MatchQuery
+	{
+		@Override
+		public boolean isMatch(Object candidate)
+		{
+			return candidate instanceof IInstallableUnitPatch;
+		}
+	}
+
+	static class PatchApplicabilityQuery extends MatchQuery
+	{
+		private final IInstallableUnitPatch patch;
+
+		PatchApplicabilityQuery(IInstallableUnitPatch patch)
+		{
+			this.patch = patch;
+		}
+
+		@Override
+		public boolean isMatch(Object candidate)
+		{
+			if(!(candidate instanceof IInstallableUnit))
+				return false;
+
+			IInstallableUnit iu = (IInstallableUnit)candidate;
+			for(IRequiredCapability[] rqs : patch.getApplicabilityScope())
+			{
+				int idx = rqs.length;
+				while(--idx >= 0)
+					if(!iu.satisfies(rqs[idx]))
+						break;
+				if(idx < 0)
+					return true;
+			}
+			return false;
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private static Set<Explanation> getExplanations(RequestStatus requestStatus)
 	{
@@ -117,8 +157,24 @@ public class RepositoryVerifier extends BuilderPhase
 		IProfileRegistry profileRegistry = bucky.getService(IProfileRegistry.class);
 		IPlanner planner = bucky.getService(IPlanner.class);
 		URI repoLocation = builder.getSourceCompositeURI();
+		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
 		try
 		{
+			Set<InstallableUnit> validationOnlyIUs = null;
+			List<MetadataRepositoryReference> validationRepos = aggregator.getValidationRepositories();
+			for(MetadataRepositoryReference validationRepo : validationRepos)
+			{
+				if(validationRepo.isEnabled())
+				{
+					if(validationOnlyIUs == null)
+						validationOnlyIUs = new HashSet<InstallableUnit>();
+					validationOnlyIUs.addAll(validationRepo.getMetadataRepository().getInstallableUnits());
+				}
+			}
+			if(validationOnlyIUs == null)
+				validationOnlyIUs = Collections.emptySet();
+
+			IMetadataRepository sourceRepo = mdrMgr.loadRepository(repoLocation, subMon.newChild(1));
 			for(int configIdx = 0; configIdx < configCount; ++configIdx)
 			{
 				Configuration config = configs.get(configIdx);
@@ -154,8 +210,9 @@ public class RepositoryVerifier extends BuilderPhase
 				while(hadPartials)
 				{
 					hadPartials = false;
-					ProvisioningPlan plan = planner.getProvisioningPlan(request, createContext(repoLocation),
-							subMon.newChild(80, SubMonitor.SUPPRESS_BEGINTASK | SubMonitor.SUPPRESS_SETTASKNAME));
+					ProvisioningContext context = createContext(repoLocation);
+					ProvisioningPlan plan = planner.getProvisioningPlan(request, context, subMon.newChild(80,
+							SubMonitor.SUPPRESS_BEGINTASK | SubMonitor.SUPPRESS_SETTASKNAME));
 
 					IStatus status = plan.getStatus();
 					if(status.getSeverity() == IStatus.ERROR)
@@ -164,20 +221,6 @@ public class RepositoryVerifier extends BuilderPhase
 						log.info("Done. Took %s", TimeUtils.getFormattedDuration(start)); //$NON-NLS-1$
 						throw new CoreException(status);
 					}
-
-					Set<InstallableUnit> validationOnlyIUs = null;
-					List<MetadataRepositoryReference> validationRepos = aggregator.getValidationRepositories();
-					for(MetadataRepositoryReference validationRepo : validationRepos)
-					{
-						if(validationRepo.isEnabled())
-						{
-							if(validationOnlyIUs == null)
-								validationOnlyIUs = new HashSet<InstallableUnit>();
-							validationOnlyIUs.addAll(validationRepo.getMetadataRepository().getInstallableUnits());
-						}
-					}
-					if(validationOnlyIUs == null)
-						validationOnlyIUs = Collections.emptySet();
 
 					Set<IInstallableUnit> suspectedValidationOnlyIUs = null;
 					Operand[] ops = plan.getOperands();
@@ -217,55 +260,79 @@ public class RepositoryVerifier extends BuilderPhase
 						}
 					}
 
+					@SuppressWarnings("unchecked")
+					Iterator<IInstallableUnitPatch> itor = sourceRepo.query(new AllPatchesQuery(), new Collector(),
+							subMon.newChild(1)).iterator();
+
+					while(itor.hasNext())
+					{
+						Set<IInstallableUnit> units = getUnpatchedTransitiveScope(itor.next(), profile, planner,
+								repoLocation, subMon.newChild(1));
+						for(IInstallableUnit iu : units)
+						{
+							if(validationOnlyIUs.contains(iu))
+							{
+								// This IU should not be included unless it is also included in one of
+								// the contributed repositories
+								if(suspectedValidationOnlyIUs == null)
+									suspectedValidationOnlyIUs = new HashSet<IInstallableUnit>();
+								suspectedValidationOnlyIUs.add(iu);
+							}
+							else
+							{
+								if(!unitsToAggregate.contains(iu))
+								{
+									if(Boolean.valueOf(iu.getProperty(IInstallableUnit.PROP_PARTIAL_IU)).booleanValue())
+									{
+										iu = resolvePartialIU(iu, subMon.newChild(1));
+										hadPartials = true;
+									}
+									unitsToAggregate.add(iu);
+								}
+							}
+						}
+					}
+
 					if(suspectedValidationOnlyIUs != null)
 					{
 						// Prune the set of IU's that we suspect are there for validation
 						// purposes only using the source repository
 						//
 						final Set<IInstallableUnit> candidates = suspectedValidationOnlyIUs;
-						IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
-						try
+						final boolean hadPartialsHolder[] = new boolean[] { false };
+						sourceRepo.query(new MatchQuery()
 						{
-							final boolean hadPartialsHolder[] = new boolean[] { false };
-							IMetadataRepository sourceRepo = mdrMgr.loadRepository(repoLocation, subMon.newChild(1));
-							sourceRepo.query(new MatchQuery()
+							@Override
+							public boolean isMatch(Object obj)
 							{
-								@Override
-								public boolean isMatch(Object obj)
+								if(obj instanceof InstallableUnit)
 								{
-									if(obj instanceof InstallableUnit)
+									InstallableUnit iu = (InstallableUnit)obj;
+									if(candidates.contains(iu) && !unitsToAggregate.contains(iu))
 									{
-										InstallableUnit iu = (InstallableUnit)obj;
-										if(candidates.contains(iu) && !unitsToAggregate.contains(iu))
+										try
 										{
-											try
+											if(Boolean.valueOf(iu.getProperty(IInstallableUnit.PROP_PARTIAL_IU)).booleanValue())
 											{
-												if(Boolean.valueOf(iu.getProperty(IInstallableUnit.PROP_PARTIAL_IU)).booleanValue())
-												{
-													iu = resolvePartialIU(iu,
-															SubMonitor.convert(new NullProgressMonitor()));
-													hadPartialsHolder[0] = true;
-												}
+												iu = resolvePartialIU(iu, SubMonitor.convert(new NullProgressMonitor()));
+												hadPartialsHolder[0] = true;
 											}
-											catch(CoreException e)
-											{
-												throw new RuntimeException(e);
-											}
-											unitsToAggregate.add(iu);
 										}
+										catch(CoreException e)
+										{
+											throw new RuntimeException(e);
+										}
+										unitsToAggregate.add(iu);
 									}
-									return false; // Since we don't use the Collector
 								}
-							}, null, subMon.newChild(1));
-						}
-						finally
-						{
-							bucky.ungetService(mdrMgr);
-						}
+								return false; // Since we don't use the Collector
+							}
+						}, null, subMon.newChild(1));
 					}
+
 					if(hadPartials)
 						// Rerun the validation
-						log.info("Partial IU's encountered. Verifying %s again...", configName); //$NON-NLS-1$					}
+						log.info("Partial IU's encountered. Verifying %s again...", configName); //$NON-NLS-1$
 				}
 			}
 		}
@@ -278,6 +345,7 @@ public class RepositoryVerifier extends BuilderPhase
 			MonitorUtils.done(subMon);
 			bucky.ungetService(profileRegistry);
 			bucky.ungetService(planner);
+			bucky.ungetService(mdrMgr);
 		}
 	}
 
@@ -480,6 +548,49 @@ public class RepositoryVerifier extends BuilderPhase
 					if(componentId.equals(mu.getInstallableUnit().getId()))
 						return contrib;
 		return null;
+	}
+
+	private Set<IInstallableUnit> getUnpatchedTransitiveScope(IInstallableUnitPatch patch, IProfile profile,
+			IPlanner planner, URI repoLocation, SubMonitor monitor) throws CoreException
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		IMetadataRepositoryManager mdrMgr = bucky.getService(IMetadataRepositoryManager.class);
+		try
+		{
+			monitor.beginTask(null, 10);
+			IMetadataRepository sourceRepo = mdrMgr.loadRepository(repoLocation, monitor.newChild(1));
+			PatchApplicabilityQuery query = new PatchApplicabilityQuery(patch);
+			Collector c = sourceRepo.query(query, new Collector(), monitor.newChild(1));
+
+			IInstallableUnit[] rootArr = (IInstallableUnit[])c.toArray(IInstallableUnit.class);
+			// Add as root IU's to a request
+			ProfileChangeRequest request = new ProfileChangeRequest(profile);
+			for(IInstallableUnit rootIU : rootArr)
+				request.setInstallableUnitProfileProperty(rootIU, IInstallableUnit.PROP_PROFILE_ROOT_IU,
+						Boolean.TRUE.toString());
+			request.addInstallableUnits(rootArr);
+			ProvisioningPlan plan = planner.getProvisioningPlan(request, new ProvisioningContext(
+					new URI[] { repoLocation }), monitor.newChild(8));
+
+			HashSet<IInstallableUnit> units = new HashSet<IInstallableUnit>();
+			units.add(patch);
+			Operand[] ops = plan.getOperands();
+			for(Operand op : ops)
+			{
+				if(!(op instanceof InstallableUnitOperand))
+					continue;
+
+				InstallableUnitOperand iuOp = (InstallableUnitOperand)op;
+				IInstallableUnit iu = iuOp.second();
+				if(iu != null)
+					units.add(iu);
+			}
+			return units;
+		}
+		finally
+		{
+			bucky.ungetService(mdrMgr);
+		}
 	}
 
 	private void sendEmails(RequestStatus requestStatus)
