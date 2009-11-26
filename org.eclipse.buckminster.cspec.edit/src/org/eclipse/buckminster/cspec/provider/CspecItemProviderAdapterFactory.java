@@ -151,14 +151,6 @@ public class CspecItemProviderAdapterFactory extends CspecAdapterFactory impleme
 	protected AlterActionItemProvider alterActionItemProvider;
 
 	/**
-	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.cspec.RemovePath} instances. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected RemovePathItemProvider removePathItemProvider;
-
-	/**
 	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.cspec.Rename} instances. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -181,6 +173,14 @@ public class CspecItemProviderAdapterFactory extends CspecAdapterFactory impleme
 	 * @generated
 	 */
 	protected CSpecExtensionItemProvider cSpecExtensionItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.cspec.SelfArtifact} instances.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected SelfArtifactItemProvider selfArtifactItemProvider;
 
 	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -460,23 +460,6 @@ public class CspecItemProviderAdapterFactory extends CspecAdapterFactory impleme
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.buckminster.cspec.RemovePath}. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Adapter createRemovePathAdapter()
-	{
-		if(removePathItemProvider == null)
-		{
-			removePathItemProvider = new RemovePathItemProvider(this);
-		}
-
-		return removePathItemProvider;
-	}
-
-	/**
 	 * This creates an adapter for a {@link org.eclipse.buckminster.cspec.Rename}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -491,6 +474,23 @@ public class CspecItemProviderAdapterFactory extends CspecAdapterFactory impleme
 		}
 
 		return renameItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.cspec.SelfArtifact}. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createSelfArtifactAdapter()
+	{
+		if(selfArtifactItemProvider == null)
+		{
+			selfArtifactItemProvider = new SelfArtifactItemProvider(this);
+		}
+
+		return selfArtifactItemProvider;
 	}
 
 	/**
@@ -522,14 +522,14 @@ public class CspecItemProviderAdapterFactory extends CspecAdapterFactory impleme
 			alterGroupItemProvider.dispose();
 		if(alterActionItemProvider != null)
 			alterActionItemProvider.dispose();
-		if(removePathItemProvider != null)
-			removePathItemProvider.dispose();
 		if(renameItemProvider != null)
 			renameItemProvider.dispose();
 		if(removeItemProvider != null)
 			removeItemProvider.dispose();
 		if(cSpecExtensionItemProvider != null)
 			cSpecExtensionItemProvider.dispose();
+		if(selfArtifactItemProvider != null)
+			selfArtifactItemProvider.dispose();
 	}
 
 	/**

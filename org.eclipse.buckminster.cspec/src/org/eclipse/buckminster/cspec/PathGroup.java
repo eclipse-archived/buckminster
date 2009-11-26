@@ -62,6 +62,14 @@ public interface PathGroup extends EObject
 	EList<IPath> getPaths();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model pathDataType="org.eclipse.buckminster.cspec.IPath"
+	 * @generated
+	 */
+	PathGroup resolve(IPath path);
+
+	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.PathGroup#getBase <em>Base</em>}' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 

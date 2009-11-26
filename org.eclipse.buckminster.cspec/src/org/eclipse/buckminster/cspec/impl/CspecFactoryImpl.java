@@ -142,14 +142,14 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 			return createAlterGroup();
 		case CspecPackage.ALTER_ACTION:
 			return createAlterAction();
-		case CspecPackage.REMOVE_PATH:
-			return createRemovePath();
 		case CspecPackage.RENAME:
 			return createRename();
 		case CspecPackage.REMOVE:
 			return createRemove();
 		case CspecPackage.CSPEC_EXTENSION:
 			return createCSpecExtension();
+		case CspecPackage.SELF_ARTIFACT:
+			return createSelfArtifact();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -332,10 +332,10 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public RemovePath createRemovePath()
+	public Rename createRename()
 	{
-		RemovePathImpl removePath = new RemovePathImpl();
-		return removePath;
+		RenameImpl rename = new RenameImpl();
+		return rename;
 	}
 
 	/**
@@ -343,10 +343,10 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public Rename createRename()
+	public SelfArtifact createSelfArtifact()
 	{
-		RenameImpl rename = new RenameImpl();
-		return rename;
+		SelfArtifactImpl selfArtifact = new SelfArtifactImpl();
+		return selfArtifact;
 	}
 
 	/**

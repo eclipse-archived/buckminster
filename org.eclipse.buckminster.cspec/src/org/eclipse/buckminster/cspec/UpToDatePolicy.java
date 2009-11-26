@@ -74,7 +74,15 @@ public enum UpToDatePolicy implements Enumerator
 	 * @generated
 	 * @ordered
 	 */
-	NEVER(5, "NEVER", "NEVER");
+	NEVER(5, "NEVER", "NEVER"), /**
+	 * The '<em><b>EEnum Literal0</b></em>' literal object. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #EENUM_LITERAL0_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	EENUM_LITERAL0(6, "EEnumLiteral0", "EEnumLiteral0");
 
 	/**
 	 * The '<em><b>DEFAULT</b></em>' literal value. <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc
@@ -147,13 +155,28 @@ public enum UpToDatePolicy implements Enumerator
 	public static final int NEVER_VALUE = 5;
 
 	/**
+	 * The '<em><b>EEnum Literal0</b></em>' literal value. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>EEnum Literal0</b></em>' literal object isn't clear, there really should be more of a
+	 * description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @see #EENUM_LITERAL0
+	 * @model name="EEnumLiteral0"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int EENUM_LITERAL0_VALUE = 6;
+
+	/**
 	 * An array of all the '<em><b>Up To Date Policy</b></em>' enumerators. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 */
 	private static final UpToDatePolicy[] VALUES_ARRAY = new UpToDatePolicy[] { DEFAULT, ACTOR, COUNT, MAPPER,
-			NOT_EMPTY, NEVER, };
+			NOT_EMPTY, NEVER, EENUM_LITERAL0, };
 
 	/**
 	 * A public read-only list of all the '<em><b>Up To Date Policy</b></em>' enumerators. <!-- begin-user-doc --> <!--
@@ -185,6 +208,8 @@ public enum UpToDatePolicy implements Enumerator
 			return NOT_EMPTY;
 		case NEVER_VALUE:
 			return NEVER;
+		case EENUM_LITERAL0_VALUE:
+			return EENUM_LITERAL0;
 		}
 		return null;
 	}

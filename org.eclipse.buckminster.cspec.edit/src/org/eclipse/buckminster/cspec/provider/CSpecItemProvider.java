@@ -154,6 +154,7 @@ public class CSpecItemProvider extends ComponentIdentifierItemProvider implement
 			addShortDescPropertyDescriptor(object);
 			addFilterPropertyDescriptor(object);
 			addProjectInfoPropertyDescriptor(object);
+			addSelfPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -252,6 +253,20 @@ public class CSpecItemProvider extends ComponentIdentifierItemProvider implement
 				getString("_UI_CSpec_projectInfo_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_CSpec_projectInfo_feature", "_UI_CSpec_type"), CspecPackage.Literals.CSPEC__PROJECT_INFO,
 				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Self feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addSelfPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_CSpec_self_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_CSpec_self_feature", "_UI_CSpec_type"), CspecPackage.Literals.CSPEC__SELF, true, false,
+				true, null, null, null));
 	}
 
 	/**

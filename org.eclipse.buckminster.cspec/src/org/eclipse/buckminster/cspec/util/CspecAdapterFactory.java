@@ -121,6 +121,12 @@ public class CspecAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
+		public Adapter caseIContext(IContext object)
+		{
+			return createIContextAdapter();
+		}
+
+		@Override
 		public Adapter caseIVersionedId(IVersionedId object)
 		{
 			return createIVersionedIdAdapter();
@@ -145,15 +151,15 @@ public class CspecAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
-		public Adapter caseRemovePath(RemovePath object)
-		{
-			return createRemovePathAdapter();
-		}
-
-		@Override
 		public Adapter caseRename(Rename object)
 		{
 			return createRenameAdapter();
+		}
+
+		@Override
+		public Adapter caseSelfArtifact(SelfArtifact object)
+		{
+			return createSelfArtifactAdapter();
 		}
 
 		@Override
@@ -392,6 +398,20 @@ public class CspecAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.cspec.IContext <em>IContext</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful
+	 * to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.cspec.IContext
+	 * @generated
+	 */
+	public Adapter createIContextAdapter()
+	{
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '
 	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId <em>IVersioned Id</em>}'. <!--
 	 * begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful to
@@ -450,21 +470,6 @@ public class CspecAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.cspec.RemovePath
-	 * <em>Remove Path</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
-	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
-	 * -->
-	 * 
-	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.cspec.RemovePath
-	 * @generated
-	 */
-	public Adapter createRemovePathAdapter()
-	{
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.cspec.Rename <em>Rename</em>}'. <!--
 	 * begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful to
 	 * ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
@@ -474,6 +479,21 @@ public class CspecAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createRenameAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.cspec.SelfArtifact
+	 * <em>Self Artifact</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.cspec.SelfArtifact
+	 * @generated
+	 */
+	public Adapter createSelfArtifactAdapter()
 	{
 		return null;
 	}

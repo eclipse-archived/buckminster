@@ -10,6 +10,7 @@ import org.eclipse.buckminster.cspec.Attribute;
 import org.eclipse.buckminster.cspec.CSpec;
 import org.eclipse.buckminster.cspec.CspecPackage;
 
+import org.eclipse.buckminster.cspec.IContext;
 import org.eclipse.buckminster.model.common.Documentation;
 
 import org.eclipse.buckminster.osgi.filter.Filter;
@@ -356,6 +357,16 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	public String getName()
 	{
 		return name;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isDerived(IContext context)
+	{
+		return false;
 	}
 
 	/**

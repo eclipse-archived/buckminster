@@ -8,19 +8,18 @@ package org.eclipse.buckminster.cspec.impl;
 
 import java.util.Collection;
 
+import org.eclipse.buckminster.cspec.Attribute;
+import org.eclipse.buckminster.cspec.CSpec;
 import org.eclipse.buckminster.cspec.CspecPackage;
 import org.eclipse.buckminster.cspec.Group;
+import org.eclipse.buckminster.cspec.IContext;
 import org.eclipse.buckminster.cspec.Prerequisite;
-
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -198,6 +197,26 @@ public class GroupImpl extends AttributeImpl implements Group
 	public IPath getRebase()
 	{
 		return rebase;
+	}
+
+	@Override
+	public boolean isDerived(IContext context)
+	{
+		for(Prerequisite preq : getPrerequisites())
+		{
+			Attribute attr = null;
+			if(preq.getComponent() == null)
+				attr = getCspec().getAttribute(preq.getAttribute());
+			else
+			{
+				CSpec referenced = context.findBestMatch(preq.getComponent());
+				if(referenced != null)
+					attr = referenced.getAttribute(preq.getAttribute());
+			}
+			if(attr != null && attr.isDerived(context))
+				return true;
+		}
+		return false;
 	}
 
 	/**

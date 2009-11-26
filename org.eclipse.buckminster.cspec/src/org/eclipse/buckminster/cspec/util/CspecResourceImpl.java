@@ -23,7 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- begin-user-doc --> The <b>Resource </b> associated with the package. <!-- end-user-doc -->
  * 
  * @see org.eclipse.buckminster.cspec.util.CspecResourceFactoryImpl
- * @generated
+ * @generated NOT
  */
 public class CspecResourceImpl extends CSpecXMLResourceImpl
 {

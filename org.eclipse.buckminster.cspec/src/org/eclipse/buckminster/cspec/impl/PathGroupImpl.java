@@ -183,6 +183,22 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public PathGroup resolve(IPath path)
+	{
+		if(base.isAbsolute())
+			return this;
+
+		PathGroup resolved = new PathGroupImpl();
+		resolved.setBase(path.append(base));
+		resolved.getPaths().addAll(getPaths());
+		return resolved;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setBase(IPath newBase)

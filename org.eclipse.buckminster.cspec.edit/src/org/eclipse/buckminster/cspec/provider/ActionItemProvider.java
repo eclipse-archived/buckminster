@@ -311,6 +311,9 @@ public class ActionItemProvider extends GroupItemProvider implements IEditingDom
 		newChildDescriptors.add(createChildParameter(CspecPackage.Literals.ACTION__PRODUCT,
 				CspecFactory.eINSTANCE.createAlterArtifact()));
 
+		newChildDescriptors.add(createChildParameter(CspecPackage.Literals.ACTION__PRODUCT,
+				CspecFactory.eINSTANCE.createSelfArtifact()));
+
 		newChildDescriptors.add(createChildParameter(CspecPackage.Literals.ACTION__PREREQUISITES_REBASE,
 				CspecFactory.eINSTANCE.createFromString(CspecPackage.Literals.IPATH, null))); // TODO: ensure this is a
 																								// valid literal value

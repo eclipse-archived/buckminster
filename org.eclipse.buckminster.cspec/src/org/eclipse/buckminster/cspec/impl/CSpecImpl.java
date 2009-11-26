@@ -7,31 +7,25 @@
 package org.eclipse.buckminster.cspec.impl;
 
 import java.net.URL;
-
 import java.util.Collection;
 
 import org.eclipse.buckminster.cspec.Attribute;
 import org.eclipse.buckminster.cspec.CSpec;
 import org.eclipse.buckminster.cspec.CspecPackage;
 import org.eclipse.buckminster.cspec.Generator;
-
+import org.eclipse.buckminster.cspec.IContext;
+import org.eclipse.buckminster.cspec.SelfArtifact;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Documentation;
-
 import org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl;
-
 import org.eclipse.buckminster.osgi.filter.Filter;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
+import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -48,6 +42,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <li>{@link org.eclipse.buckminster.cspec.impl.CSpecImpl#getShortDesc <em>Short Desc</em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.impl.CSpecImpl#getFilter <em>Filter</em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.impl.CSpecImpl#getProjectInfo <em>Project Info</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.CSpecImpl#getSelf <em>Self</em>}</li>
  * </ul>
  * </p>
  * 
@@ -210,6 +205,8 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec
 			return getFilter();
 		case CspecPackage.CSPEC__PROJECT_INFO:
 			return getProjectInfo();
+		case CspecPackage.CSPEC__SELF:
+			return getSelf();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -285,6 +282,8 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec
 			return PROJECT_INFO_EDEFAULT == null
 					? projectInfo != null
 					: !PROJECT_INFO_EDEFAULT.equals(projectInfo);
+		case CspecPackage.CSPEC__SELF:
+			return isSetSelf();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -366,6 +365,19 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public Attribute getAttribute(String name)
+	{
+		for(Attribute attr : getAttributes())
+			if(name.equals(attr.getName()))
+				return attr;
+		return null;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<Attribute> getAttributes()
@@ -391,6 +403,20 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec
 					CspecPackage.CSPEC__DEPENDENCIES);
 		}
 		return dependencies;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<Attribute> getDerivedAttributes(IContext context, boolean includePrivate)
+	{
+		EList<Attribute> attributes = new BasicEList<Attribute>();
+		for(Attribute ag : getAttributes())
+			if((includePrivate || ag.isPublic()) && ag.isDerived(context))
+				attributes.add(ag);
+		return attributes;
 	}
 
 	/**
@@ -441,11 +467,31 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public SelfArtifact getSelf()
+	{
+		return (SelfArtifact)getAttribute(SELF_ARTIFACT);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getShortDesc()
 	{
 		return shortDesc;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isSetSelf()
+	{
+		return getAttribute(SELF_ARTIFACT) != null;
 	}
 
 	/**

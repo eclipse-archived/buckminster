@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.cspec.Action;
 import org.eclipse.buckminster.cspec.ActionAttribute;
 import org.eclipse.buckminster.cspec.CspecPackage;
+import org.eclipse.buckminster.cspec.IContext;
 import org.eclipse.buckminster.cspec.PathGroup;
 import org.eclipse.buckminster.cspec.UpToDatePolicy;
 
@@ -651,6 +652,12 @@ public class ActionImpl extends GroupImpl implements Action
 	public UpToDatePolicy getUpToDatePolicy()
 	{
 		return upToDatePolicy;
+	}
+
+	@Override
+	public boolean isDerived(IContext context)
+	{
+		return true;
 	}
 
 	/**

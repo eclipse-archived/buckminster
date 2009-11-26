@@ -62,6 +62,7 @@ public class ImportCSpexXML
 		m_cspec.setFilter(xmlSpec.getFilter());
 		m_cspec.setShortDesc(xmlSpec.getShortDesc());
 		m_cspec.setProjectInfo(xmlSpec.getProjectInfo());
+		m_cspec.getAttributes().add(CspecFactory.eINSTANCE.createSelfArtifact());
 		copyDependencies();
 		copyGenerators();
 		copyArtifacts();

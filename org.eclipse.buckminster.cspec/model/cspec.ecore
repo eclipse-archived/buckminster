@@ -4,6 +4,13 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="cspec"
     nsURI="http://www.eclipse.org/buckminster/CSpec-2.0" nsPrefix="cs">
   <eClassifiers xsi:type="ecore:EClass" name="CSpec" eSuperTypes="../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentIdentifier">
+    <eOperations name="getDerivedAttributes" upperBound="-1" eType="#//Attribute">
+      <eParameters name="context" eType="#//IContext"/>
+      <eParameters name="includePrivate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eOperations>
+    <eOperations name="getAttribute" eType="#//Attribute">
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
         eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentRequest"
         containment="true"/>
@@ -16,8 +23,14 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="shortDesc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//Filter"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="projectInfo" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//URL"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="self" lowerBound="1" eType="#//SelfArtifact"
+        changeable="false" volatile="true" transient="true" unsettable="true" derived="true"
+        resolveProxies="false"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Attribute" abstract="true">
+    <eOperations name="isDerived" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="context" eType="#//IContext"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         iD="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="public" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
@@ -73,6 +86,9 @@
         eType="#//Action" eOpposite="#//Action/products"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PathGroup">
+    <eOperations name="resolve" eType="#//PathGroup">
+      <eParameters name="path" eType="#//IPath"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="base" lowerBound="1" eType="#//IPath"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="paths" upperBound="-1"
         eType="#//IPath"/>
@@ -175,4 +191,10 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="IPath" instanceClassName="org.eclipse.core.runtime.IPath"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IContext" abstract="true" interface="true">
+    <eOperations name="findBestMatch" eType="#//CSpec">
+      <eParameters name="request" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentRequest"/>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SelfArtifact" eSuperTypes="#//Artifact"/>
 </ecore:EPackage>

@@ -29,6 +29,7 @@ import org.eclipse.emf.common.util.EList;
  * <li>{@link org.eclipse.buckminster.cspec.CSpec#getShortDesc <em>Short Desc</em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.CSpec#getFilter <em>Filter</em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.CSpec#getProjectInfo <em>Project Info</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.CSpec#getSelf <em>Self</em>}</li>
  * </ul>
  * </p>
  * 
@@ -38,6 +39,16 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface CSpec extends ComponentIdentifier
 {
+	public static final String SELF_ARTIFACT = "buckminster.component.self"; //$NON-NLS-1$
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	Attribute getAttribute(String name);
+
 	/**
 	 * Returns the value of the '<em><b>Attributes</b></em>' containment reference list. The list contents are of type
 	 * {@link org.eclipse.buckminster.cspec.Attribute}. It is bidirectional and its opposite is '
@@ -71,6 +82,14 @@ public interface CSpec extends ComponentIdentifier
 	 * @generated
 	 */
 	EList<ComponentRequest> getDependencies();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	EList<Attribute> getDerivedAttributes(IContext context, boolean includePrivate);
 
 	/**
 	 * Returns the value of the '<em><b>Documentation</b></em>' containment reference. <!-- begin-user-doc -->
@@ -139,6 +158,22 @@ public interface CSpec extends ComponentIdentifier
 	URL getProjectInfo();
 
 	/**
+	 * Returns the value of the '<em><b>Self</b></em>' reference. <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Self</em>' reference isn't clear, there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Self</em>' reference.
+	 * @see #isSetSelf()
+	 * @see org.eclipse.buckminster.cspec.CspecPackage#getCSpec_Self()
+	 * @model resolveProxies="false" unsettable="true" required="true" transient="true" changeable="false"
+	 *        volatile="true" derived="true"
+	 * @generated
+	 */
+	SelfArtifact getSelf();
+
+	/**
 	 * Returns the value of the '<em><b>Short Desc</b></em>' attribute. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Short Desc</em>' attribute isn't clear, there really should be more of a description
@@ -153,6 +188,16 @@ public interface CSpec extends ComponentIdentifier
 	 * @generated
 	 */
 	String getShortDesc();
+
+	/**
+	 * Returns whether the value of the '{@link org.eclipse.buckminster.cspec.CSpec#getSelf <em>Self</em>}' reference is
+	 * set. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return whether the value of the '<em>Self</em>' reference is set.
+	 * @see #getSelf()
+	 * @generated
+	 */
+	boolean isSetSelf();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.CSpec#getDocumentation <em>Documentation</em>}'

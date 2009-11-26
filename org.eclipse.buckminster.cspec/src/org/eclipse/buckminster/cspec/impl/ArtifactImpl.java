@@ -231,6 +231,18 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * 
 	 * @generated
 	 */
+	public PathGroup resolve(IPath path)
+	{
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public void setBase(IPath newBase)
 	{
 		IPath oldBase = base;

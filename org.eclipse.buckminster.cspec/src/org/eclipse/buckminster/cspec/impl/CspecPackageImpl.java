@@ -20,11 +20,12 @@ import org.eclipse.buckminster.cspec.CspecFactory;
 import org.eclipse.buckminster.cspec.CspecPackage;
 import org.eclipse.buckminster.cspec.Generator;
 import org.eclipse.buckminster.cspec.Group;
+import org.eclipse.buckminster.cspec.IContext;
 import org.eclipse.buckminster.cspec.PathGroup;
 import org.eclipse.buckminster.cspec.Prerequisite;
 import org.eclipse.buckminster.cspec.Remove;
-import org.eclipse.buckminster.cspec.RemovePath;
 import org.eclipse.buckminster.cspec.Rename;
+import org.eclipse.buckminster.cspec.SelfArtifact;
 import org.eclipse.buckminster.cspec.UpToDatePolicy;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
@@ -35,6 +36,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -185,13 +187,6 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	private EClass removePathEClass = null;
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	private EClass renameEClass = null;
 
 	/**
@@ -207,6 +202,20 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * @generated
 	 */
 	private EClass cSpecExtensionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass iContextEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass selfArtifactEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -282,6 +291,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 		createEAttribute(cSpecEClass, CSPEC__SHORT_DESC);
 		createEAttribute(cSpecEClass, CSPEC__FILTER);
 		createEAttribute(cSpecEClass, CSPEC__PROJECT_INFO);
+		createEReference(cSpecEClass, CSPEC__SELF);
 
 		attributeEClass = createEClass(ATTRIBUTE);
 		createEAttribute(attributeEClass, ATTRIBUTE__NAME);
@@ -352,9 +362,6 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 		createEReference(alterActionEClass, ALTER_ACTION__REMOVE_PRODUCTS);
 		createEReference(alterActionEClass, ALTER_ACTION__REMOVE_PATHS);
 
-		removePathEClass = createEClass(REMOVE_PATH);
-		createEAttribute(removePathEClass, REMOVE_PATH__PATH);
-
 		renameEClass = createEClass(RENAME);
 		createEAttribute(renameEClass, RENAME__OLD_NAME);
 		createEAttribute(renameEClass, RENAME__NEW_NAME);
@@ -369,6 +376,10 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 		createEReference(cSpecExtensionEClass, CSPEC_EXTENSION__REMOVE_GENERATORS);
 		createEReference(cSpecExtensionEClass, CSPEC_EXTENSION__REPLACE_GENERATORS);
 		createEReference(cSpecExtensionEClass, CSPEC_EXTENSION__REPLACE_DEPENDENCIES);
+
+		iContextEClass = createEClass(ICONTEXT);
+
+		selfArtifactEClass = createEClass(SELF_ARTIFACT);
 
 		// Create enums
 		upToDatePolicyEEnum = createEEnum(UP_TO_DATE_POLICY);
@@ -822,6 +833,16 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
+	public EReference getCSpec_Self()
+	{
+		return (EReference)cSpecEClass.getEStructuralFeatures().get(7);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EAttribute getCSpec_ShortDesc()
 	{
 		return (EAttribute)cSpecEClass.getEStructuralFeatures().get(4);
@@ -992,6 +1013,16 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
+	public EClass getIContext()
+	{
+		return iContextEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EDataType getIPath()
 	{
 		return iPathEDataType;
@@ -1142,26 +1173,6 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getRemovePath()
-	{
-		return removePathEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EAttribute getRemovePath_Path()
-	{
-		return (EAttribute)removePathEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	public EClass getRename()
 	{
 		return renameEClass;
@@ -1185,6 +1196,16 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	public EAttribute getRename_OldName()
 	{
 		return (EAttribute)renameEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getSelfArtifact()
+	{
+		return selfArtifactEClass;
 	}
 
 	/**
@@ -1235,6 +1256,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 		alterActionEClass.getESuperTypes().add(this.getAction());
 		alterActionEClass.getESuperTypes().add(this.getAlterGroup());
 		cSpecExtensionEClass.getESuperTypes().add(this.getCSpec());
+		selfArtifactEClass.getESuperTypes().add(this.getArtifact());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(cSpecEClass, CSpec.class, "CSpec", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1256,6 +1278,17 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCSpec_ProjectInfo(), theCommonPackage.getURL(), "projectInfo", null, 0, 1, CSpec.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpec_Self(), this.getSelfArtifact(), null, "self", null, 1, 1, CSpec.class, IS_TRANSIENT,
+				IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
+				IS_ORDERED);
+
+		EOperation op = addEOperation(cSpecEClass, this.getAttribute(), "getDerivedAttributes", 0, -1, IS_UNIQUE,
+				IS_ORDERED);
+		addEParameter(op, this.getIContext(), "context", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEBoolean(), "includePrivate", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(cSpecEClass, this.getAttribute(), "getAttribute", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(attributeEClass, Attribute.class, "Attribute", IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
@@ -1271,6 +1304,9 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 		initEReference(getAttribute_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null,
 				0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		op = addEOperation(attributeEClass, ecorePackage.getEBoolean(), "isDerived", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getIContext(), "context", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(groupEClass, Group.class, "Group", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getGroup_Prerequisites(), this.getPrerequisite(), null, "prerequisites", null, 0, -1,
@@ -1357,6 +1393,9 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 		initEAttribute(getPathGroup_Paths(), this.getIPath(), "paths", null, 0, -1, PathGroup.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		op = addEOperation(pathGroupEClass, this.getPathGroup(), "resolve", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getIPath(), "path", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(generatorEClass, Generator.class, "Generator", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getGenerator_Attribute(), ecorePackage.getEString(), "attribute", null, 1, 1, Generator.class,
@@ -1414,11 +1453,6 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 				AlterAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(removePathEClass, RemovePath.class, "RemovePath", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getRemovePath_Path(), ecorePackage.getEString(), "path", null, 1, 1, RemovePath.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(renameEClass, Rename.class, "Rename", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getRename_OldName(), ecorePackage.getEString(), "oldName", null, 1, 1, Rename.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1451,6 +1485,14 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 				"replaceDependencies", null, 0, -1, CSpecExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
 				IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(iContextEClass, IContext.class, "IContext", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		op = addEOperation(iContextEClass, this.getCSpec(), "findBestMatch", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentRequest(), "request", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(selfArtifactEClass, SelfArtifact.class, "SelfArtifact", !IS_ABSTRACT, !IS_INTERFACE,
+				IS_GENERATED_INSTANCE_CLASS);
+
 		// Initialize enums and add enum literals
 		initEEnum(upToDatePolicyEEnum, UpToDatePolicy.class, "UpToDatePolicy");
 		addEEnumLiteral(upToDatePolicyEEnum, UpToDatePolicy.DEFAULT);
@@ -1459,6 +1501,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 		addEEnumLiteral(upToDatePolicyEEnum, UpToDatePolicy.MAPPER);
 		addEEnumLiteral(upToDatePolicyEEnum, UpToDatePolicy.NOT_EMPTY);
 		addEEnumLiteral(upToDatePolicyEEnum, UpToDatePolicy.NEVER);
+		addEEnumLiteral(upToDatePolicyEEnum, UpToDatePolicy.EENUM_LITERAL0);
 
 		// Initialize data types
 		initEDataType(iPathEDataType, IPath.class, "IPath", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

@@ -112,6 +112,14 @@ public interface CspecPackage extends EPackage
 		EAttribute CSPEC__PROJECT_INFO = eINSTANCE.getCSpec_ProjectInfo();
 
 		/**
+		 * The meta object literal for the '<em><b>Self</b></em>' reference feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference CSPEC__SELF = eINSTANCE.getCSpec_Self();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.cspec.impl.AttributeImpl <em>Attribute</em>}'
 		 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -602,24 +610,6 @@ public interface CspecPackage extends EPackage
 		EReference ALTER_ACTION__REMOVE_PATHS = eINSTANCE.getAlterAction_RemovePaths();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.cspec.impl.RemovePathImpl
-		 * <em>Remove Path</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @see org.eclipse.buckminster.cspec.impl.RemovePathImpl
-		 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getRemovePath()
-		 * @generated
-		 */
-		EClass REMOVE_PATH = eINSTANCE.getRemovePath();
-
-		/**
-		 * The meta object literal for the '<em><b>Path</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute REMOVE_PATH__PATH = eINSTANCE.getRemovePath_Path();
-
-		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.cspec.impl.RenameImpl <em>Rename</em>}'
 		 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -720,6 +710,26 @@ public interface CspecPackage extends EPackage
 		 * @generated
 		 */
 		EReference CSPEC_EXTENSION__REPLACE_DEPENDENCIES = eINSTANCE.getCSpecExtension_ReplaceDependencies();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.cspec.IContext <em>IContext</em>}' class.
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.cspec.IContext
+		 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getIContext()
+		 * @generated
+		 */
+		EClass ICONTEXT = eINSTANCE.getIContext();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.cspec.impl.SelfArtifactImpl
+		 * <em>Self Artifact</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.cspec.impl.SelfArtifactImpl
+		 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getSelfArtifact()
+		 * @generated
+		 */
+		EClass SELF_ARTIFACT = eINSTANCE.getSelfArtifact();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.cspec.UpToDatePolicy
@@ -857,12 +867,20 @@ public interface CspecPackage extends EPackage
 	int CSPEC__PROJECT_INFO = CommonPackage.COMPONENT_IDENTIFIER_FEATURE_COUNT + 6;
 
 	/**
+	 * The feature id for the '<em><b>Self</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CSPEC__SELF = CommonPackage.COMPONENT_IDENTIFIER_FEATURE_COUNT + 7;
+
+	/**
 	 * The number of structural features of the '<em>CSpec</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CSPEC_FEATURE_COUNT = CommonPackage.COMPONENT_IDENTIFIER_FEATURE_COUNT + 7;
+	int CSPEC_FEATURE_COUNT = CommonPackage.COMPONENT_IDENTIFIER_FEATURE_COUNT + 8;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.cspec.impl.AttributeImpl <em>Attribute</em>}' class.
@@ -1477,7 +1495,7 @@ public interface CspecPackage extends EPackage
 	 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getIPath()
 	 * @generated
 	 */
-	int IPATH = 18;
+	int IPATH = 19;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.cspec.impl.GeneratorImpl <em>Generator</em>}' class.
@@ -2023,33 +2041,6 @@ public interface CspecPackage extends EPackage
 	int ALTER_ACTION_FEATURE_COUNT = ACTION_FEATURE_COUNT + 9;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.cspec.impl.RemovePathImpl <em>Remove Path</em>}'
-	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.cspec.impl.RemovePathImpl
-	 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getRemovePath()
-	 * @generated
-	 */
-	int REMOVE_PATH = 13;
-
-	/**
-	 * The feature id for the '<em><b>Path</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int REMOVE_PATH__PATH = 0;
-
-	/**
-	 * The number of structural features of the '<em>Remove Path</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int REMOVE_PATH_FEATURE_COUNT = 1;
-
-	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.cspec.impl.RenameImpl <em>Rename</em>}' class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -2057,7 +2048,7 @@ public interface CspecPackage extends EPackage
 	 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getRename()
 	 * @generated
 	 */
-	int RENAME = 14;
+	int RENAME = 13;
 
 	/**
 	 * The feature id for the '<em><b>Old Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2091,7 +2082,7 @@ public interface CspecPackage extends EPackage
 	 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getRemove()
 	 * @generated
 	 */
-	int REMOVE = 15;
+	int REMOVE = 14;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2117,7 +2108,7 @@ public interface CspecPackage extends EPackage
 	 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getCSpecExtension()
 	 * @generated
 	 */
-	int CSPEC_EXTENSION = 16;
+	int CSPEC_EXTENSION = 15;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2205,6 +2196,14 @@ public interface CspecPackage extends EPackage
 	int CSPEC_EXTENSION__PROJECT_INFO = CSPEC__PROJECT_INFO;
 
 	/**
+	 * The feature id for the '<em><b>Self</b></em>' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CSPEC_EXTENSION__SELF = CSPEC__SELF;
+
+	/**
 	 * The feature id for the '<em><b>Attribute Alterations</b></em>' containment reference list. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
@@ -2268,6 +2267,100 @@ public interface CspecPackage extends EPackage
 	int CSPEC_EXTENSION_FEATURE_COUNT = CSPEC_FEATURE_COUNT + 6;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.cspec.IContext <em>IContext</em>}' class. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.cspec.IContext
+	 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getIContext()
+	 * @generated
+	 */
+	int ICONTEXT = 16;
+
+	/**
+	 * The number of structural features of the '<em>IContext</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int ICONTEXT_FEATURE_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.cspec.impl.SelfArtifactImpl <em>Self Artifact</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.cspec.impl.SelfArtifactImpl
+	 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getSelfArtifact()
+	 * @generated
+	 */
+	int SELF_ARTIFACT = 17;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SELF_ARTIFACT__NAME = ARTIFACT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Public</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SELF_ARTIFACT__PUBLIC = ARTIFACT__PUBLIC;
+
+	/**
+	 * The feature id for the '<em><b>Filter</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SELF_ARTIFACT__FILTER = ARTIFACT__FILTER;
+
+	/**
+	 * The feature id for the '<em><b>Cspec</b></em>' container reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SELF_ARTIFACT__CSPEC = ARTIFACT__CSPEC;
+
+	/**
+	 * The feature id for the '<em><b>Documentation</b></em>' containment reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SELF_ARTIFACT__DOCUMENTATION = ARTIFACT__DOCUMENTATION;
+
+	/**
+	 * The feature id for the '<em><b>Base</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SELF_ARTIFACT__BASE = ARTIFACT__BASE;
+
+	/**
+	 * The feature id for the '<em><b>Paths</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SELF_ARTIFACT__PATHS = ARTIFACT__PATHS;
+
+	/**
+	 * The number of structural features of the '<em>Self Artifact</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SELF_ARTIFACT_FEATURE_COUNT = ARTIFACT_FEATURE_COUNT + 0;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.cspec.UpToDatePolicy <em>Up To Date Policy</em>}'
 	 * enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -2275,7 +2368,7 @@ public interface CspecPackage extends EPackage
 	 * @see org.eclipse.buckminster.cspec.impl.CspecPackageImpl#getUpToDatePolicy()
 	 * @generated
 	 */
-	int UP_TO_DATE_POLICY = 17;
+	int UP_TO_DATE_POLICY = 18;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.cspec.Action <em>Action</em>}'. <!--
@@ -2771,6 +2864,17 @@ public interface CspecPackage extends EPackage
 	EAttribute getCSpec_ProjectInfo();
 
 	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.buckminster.cspec.CSpec#getSelf <em>Self</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the reference '<em>Self</em>'.
+	 * @see org.eclipse.buckminster.cspec.CSpec#getSelf()
+	 * @see #getCSpec()
+	 * @generated
+	 */
+	EReference getCSpec_Self();
+
+	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.cspec.CSpec#getShortDesc
 	 * <em>Short Desc</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -2960,6 +3064,16 @@ public interface CspecPackage extends EPackage
 	EAttribute getGroup_Rebase();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.cspec.IContext <em>IContext</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>IContext</em>'.
+	 * @see org.eclipse.buckminster.cspec.IContext
+	 * @generated
+	 */
+	EClass getIContext();
+
+	/**
 	 * Returns the meta object for data type '{@link org.eclipse.core.runtime.IPath <em>IPath</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -3122,27 +3236,6 @@ public interface CspecPackage extends EPackage
 	EAttribute getRemove_Name();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.cspec.RemovePath <em>Remove Path</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for class '<em>Remove Path</em>'.
-	 * @see org.eclipse.buckminster.cspec.RemovePath
-	 * @generated
-	 */
-	EClass getRemovePath();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.cspec.RemovePath#getPath <em>Path</em>}
-	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Path</em>'.
-	 * @see org.eclipse.buckminster.cspec.RemovePath#getPath()
-	 * @see #getRemovePath()
-	 * @generated
-	 */
-	EAttribute getRemovePath_Path();
-
-	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.cspec.Rename <em>Rename</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -3173,6 +3266,16 @@ public interface CspecPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getRename_OldName();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.cspec.SelfArtifact <em>Self Artifact</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Self Artifact</em>'.
+	 * @see org.eclipse.buckminster.cspec.SelfArtifact
+	 * @generated
+	 */
+	EClass getSelfArtifact();
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.buckminster.cspec.UpToDatePolicy <em>Up To Date Policy</em>}

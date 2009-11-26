@@ -129,20 +129,20 @@ public interface CspecFactory extends EFactory
 	Remove createRemove();
 
 	/**
-	 * Returns a new object of class '<em>Remove Path</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return a new object of class '<em>Remove Path</em>'.
-	 * @generated
-	 */
-	RemovePath createRemovePath();
-
-	/**
 	 * Returns a new object of class '<em>Rename</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Rename</em>'.
 	 * @generated
 	 */
 	Rename createRename();
+
+	/**
+	 * Returns a new object of class '<em>Self Artifact</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Self Artifact</em>'.
+	 * @generated
+	 */
+	SelfArtifact createSelfArtifact();
 
 	/**
 	 * Returns the package supported by this factory. <!-- begin-user-doc --> <!-- end-user-doc -->

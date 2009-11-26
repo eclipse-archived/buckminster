@@ -98,6 +98,14 @@ public interface Attribute extends EObject
 	String getName();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	boolean isDerived(IContext context);
+
+	/**
 	 * Returns the value of the '<em><b>Public</b></em>' attribute. The default value is <code>"true"</code>. <!--
 	 * begin-user-doc -->
 	 * <p>

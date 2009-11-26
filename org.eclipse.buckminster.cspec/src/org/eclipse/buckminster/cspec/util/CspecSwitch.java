@@ -249,6 +249,21 @@ public class CspecSwitch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>IContext</em>'. <!-- begin-user-doc --> This
+	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>IContext</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIContext(IContext object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>IVersioned Id</em>'. <!-- begin-user-doc -->
 	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -309,21 +324,6 @@ public class CspecSwitch<T>
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Remove Path</em>'. <!-- begin-user-doc -->
-	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
-	 * 
-	 * @param object
-	 *            the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Remove Path</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseRemovePath(RemovePath object)
-	{
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Rename</em>'. <!-- begin-user-doc --> This
 	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -334,6 +334,21 @@ public class CspecSwitch<T>
 	 * @generated
 	 */
 	public T caseRename(Rename object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Self Artifact</em>'. <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Self Artifact</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseSelfArtifact(SelfArtifact object)
 	{
 		return null;
 	}
@@ -547,14 +562,6 @@ public class CspecSwitch<T>
 				result = defaultCase(theEObject);
 			return result;
 		}
-		case CspecPackage.REMOVE_PATH:
-		{
-			RemovePath removePath = (RemovePath)theEObject;
-			T result = caseRemovePath(removePath);
-			if(result == null)
-				result = defaultCase(theEObject);
-			return result;
-		}
 		case CspecPackage.RENAME:
 		{
 			Rename rename = (Rename)theEObject;
@@ -581,6 +588,28 @@ public class CspecSwitch<T>
 				result = caseComponentIdentifier(cSpecExtension);
 			if(result == null)
 				result = caseIVersionedId(cSpecExtension);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case CspecPackage.ICONTEXT:
+		{
+			IContext iContext = (IContext)theEObject;
+			T result = caseIContext(iContext);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case CspecPackage.SELF_ARTIFACT:
+		{
+			SelfArtifact selfArtifact = (SelfArtifact)theEObject;
+			T result = caseSelfArtifact(selfArtifact);
+			if(result == null)
+				result = caseArtifact(selfArtifact);
+			if(result == null)
+				result = caseAttribute(selfArtifact);
+			if(result == null)
+				result = casePathGroup(selfArtifact);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

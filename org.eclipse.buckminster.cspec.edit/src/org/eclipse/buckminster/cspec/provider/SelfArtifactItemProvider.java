@@ -9,32 +9,25 @@ package org.eclipse.buckminster.cspec.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.cspec.CspecPackage;
-import org.eclipse.buckminster.cspec.RemovePath;
+import org.eclipse.buckminster.cspec.SelfArtifact;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
-
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
-import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.cspec.RemovePath} object. <!-- begin-user-doc
- * --> <!-- end-user-doc -->
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.cspec.SelfArtifact} object. <!--
+ * begin-user-doc --> <!-- end-user-doc -->
  * 
  * @generated
  */
-public class RemovePathItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
+public class SelfArtifactItemProvider extends ArtifactItemProvider implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
 	/**
@@ -42,20 +35,20 @@ public class RemovePathItemProvider extends ItemProviderAdapter implements IEdit
 	 * 
 	 * @generated
 	 */
-	public RemovePathItemProvider(AdapterFactory adapterFactory)
+	public SelfArtifactItemProvider(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
 	}
 
 	/**
-	 * This returns RemovePath.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns SelfArtifact.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/RemovePath"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/SelfArtifact"));
 	}
 
 	/**
@@ -70,20 +63,8 @@ public class RemovePathItemProvider extends ItemProviderAdapter implements IEdit
 		{
 			super.getPropertyDescriptors(object);
 
-			addPathPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator()
-	{
-		return CspecEditPlugin.INSTANCE;
 	}
 
 	/**
@@ -94,10 +75,10 @@ public class RemovePathItemProvider extends ItemProviderAdapter implements IEdit
 	@Override
 	public String getText(Object object)
 	{
-		String label = ((RemovePath)object).getPath();
+		String label = ((SelfArtifact)object).getName();
 		return label == null || label.length() == 0
-				? getString("_UI_RemovePath_type")
-				: getString("_UI_RemovePath_type") + " " + label;
+				? getString("_UI_SelfArtifact_type")
+				: getString("_UI_SelfArtifact_type") + " " + label;
 	}
 
 	/**
@@ -111,28 +92,7 @@ public class RemovePathItemProvider extends ItemProviderAdapter implements IEdit
 	public void notifyChanged(Notification notification)
 	{
 		updateChildren(notification);
-
-		switch(notification.getFeatureID(RemovePath.class))
-		{
-		case CspecPackage.REMOVE_PATH__PATH:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-			return;
-		}
 		super.notifyChanged(notification);
-	}
-
-	/**
-	 * This adds a property descriptor for the Path feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addPathPropertyDescriptor(Object object)
-	{
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(
-				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-				getString("_UI_RemovePath_path_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_RemovePath_path_feature", "_UI_RemovePath_type"), CspecPackage.Literals.REMOVE_PATH__PATH,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

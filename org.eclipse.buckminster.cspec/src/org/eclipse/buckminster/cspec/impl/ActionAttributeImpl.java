@@ -9,6 +9,7 @@ package org.eclipse.buckminster.cspec.impl;
 import org.eclipse.buckminster.cspec.Action;
 import org.eclipse.buckminster.cspec.ActionAttribute;
 import org.eclipse.buckminster.cspec.CspecPackage;
+import org.eclipse.buckminster.cspec.IContext;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -247,6 +248,12 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	public String getAlias()
 	{
 		return alias;
+	}
+
+	@Override
+	public boolean isDerived(IContext context)
+	{
+		return true;
 	}
 
 	/**
