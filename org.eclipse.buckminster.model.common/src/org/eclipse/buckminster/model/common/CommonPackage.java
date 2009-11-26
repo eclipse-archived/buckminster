@@ -545,6 +545,92 @@ public interface CommonPackage extends EPackage
 		EReference DOCUMENT_ROOT__BASIC_PROPERTY = eINSTANCE.getDocumentRoot_BasicProperty();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId
+		 * <em>IVersioned Id</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIVersionedId()
+		 * @generated
+		 */
+		EClass IVERSIONED_ID = eINSTANCE.getIVersionedId();
+
+		/**
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute IVERSIONED_ID__ID = eINSTANCE.getIVersionedId_Id();
+
+		/**
+		 * The meta object literal for the '<em><b>Version</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute IVERSIONED_ID__VERSION = eINSTANCE.getIVersionedId_Version();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl
+		 * <em>Component Request</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.model.common.impl.ComponentRequestImpl
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getComponentRequest()
+		 * @generated
+		 */
+		EClass COMPONENT_REQUEST = eINSTANCE.getComponentRequest();
+
+		/**
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute COMPONENT_REQUEST__ID = eINSTANCE.getComponentRequest_Id();
+
+		/**
+		 * The meta object literal for the '<em><b>Range</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute COMPONENT_REQUEST__RANGE = eINSTANCE.getComponentRequest_Range();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute COMPONENT_REQUEST__TYPE = eINSTANCE.getComponentRequest_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Filter</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute COMPONENT_REQUEST__FILTER = eINSTANCE.getComponentRequest_Filter();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl
+		 * <em>Component Identifier</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getComponentIdentifier()
+		 * @generated
+		 */
+		EClass COMPONENT_IDENTIFIER = eINSTANCE.getComponentIdentifier();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute COMPONENT_IDENTIFIER__TYPE = eINSTANCE.getComponentIdentifier_Type();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.model.common.SplitType <em>Split Type</em>}'
 		 * enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -590,6 +676,34 @@ public interface CommonPackage extends EPackage
 		 * @generated
 		 */
 		EDataType FILTER = eINSTANCE.getFilter();
+
+		/**
+		 * The meta object literal for the '<em>Version</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.equinox.internal.provisional.p2.metadata.Version
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getVersion()
+		 * @generated
+		 */
+		EDataType VERSION = eINSTANCE.getVersion();
+
+		/**
+		 * The meta object literal for the '<em>Version Range</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc
+		 * -->
+		 * 
+		 * @see org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getVersionRange()
+		 * @generated
+		 */
+		EDataType VERSION_RANGE = eINSTANCE.getVersionRange();
+
+		/**
+		 * The meta object literal for the '<em>URL</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see java.net.URL
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getURL()
+		 * @generated
+		 */
+		EDataType URL = eINSTANCE.getURL();
 
 	}
 
@@ -1661,6 +1775,137 @@ public interface CommonPackage extends EPackage
 	int DOCUMENT_ROOT_FEATURE_COUNT = 2;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId
+	 * <em>IVersioned Id</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIVersionedId()
+	 * @generated
+	 */
+	int IVERSIONED_ID = 17;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IVERSIONED_ID__ID = 0;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IVERSIONED_ID__VERSION = 1;
+
+	/**
+	 * The number of structural features of the '<em>IVersioned Id</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IVERSIONED_ID_FEATURE_COUNT = 2;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl
+	 * <em>Component Request</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.model.common.impl.ComponentRequestImpl
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getComponentRequest()
+	 * @generated
+	 */
+	int COMPONENT_REQUEST = 18;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_REQUEST__ID = 0;
+
+	/**
+	 * The feature id for the '<em><b>Range</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_REQUEST__RANGE = 1;
+
+	/**
+	 * The feature id for the '<em><b>Filter</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_REQUEST__FILTER = 2;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_REQUEST__TYPE = 3;
+
+	/**
+	 * The number of structural features of the '<em>Component Request</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_REQUEST_FEATURE_COUNT = 4;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl
+	 * <em>Component Identifier</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getComponentIdentifier()
+	 * @generated
+	 */
+	int COMPONENT_IDENTIFIER = 19;
+
+	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_IDENTIFIER__ID = IVERSIONED_ID__ID;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_IDENTIFIER__VERSION = IVERSIONED_ID__VERSION;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_IDENTIFIER__TYPE = IVERSIONED_ID_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Component Identifier</em>' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_IDENTIFIER_FEATURE_COUNT = IVERSIONED_ID_FEATURE_COUNT + 1;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.model.common.SplitType <em>Split Type</em>}' enum.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1668,7 +1913,7 @@ public interface CommonPackage extends EPackage
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getSplitType()
 	 * @generated
 	 */
-	int SPLIT_TYPE = 17;
+	int SPLIT_TYPE = 20;
 
 	/**
 	 * The meta object id for the '<em>Property Key</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1677,7 +1922,7 @@ public interface CommonPackage extends EPackage
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPropertyKey()
 	 * @generated
 	 */
-	int PROPERTY_KEY = 18;
+	int PROPERTY_KEY = 21;
 
 	/**
 	 * The meta object id for the '<em>Uuid</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1686,7 +1931,7 @@ public interface CommonPackage extends EPackage
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getUuid()
 	 * @generated
 	 */
-	int UUID = 19;
+	int UUID = 22;
 
 	/**
 	 * The meta object id for the '<em>Pattern</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1695,7 +1940,7 @@ public interface CommonPackage extends EPackage
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPattern()
 	 * @generated
 	 */
-	int PATTERN = 20;
+	int PATTERN = 23;
 
 	/**
 	 * The meta object id for the '<em>Filter</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1704,7 +1949,34 @@ public interface CommonPackage extends EPackage
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getFilter()
 	 * @generated
 	 */
-	int FILTER = 21;
+	int FILTER = 24;
+
+	/**
+	 * The meta object id for the '<em>Version</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.Version
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getVersion()
+	 * @generated
+	 */
+	int VERSION = 25;
+
+	/**
+	 * The meta object id for the '<em>Version Range</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getVersionRange()
+	 * @generated
+	 */
+	int VERSION_RANGE = 26;
+
+	/**
+	 * The meta object id for the '<em>URL</em>' data type. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see java.net.URL
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getURL()
+	 * @generated
+	 */
+	int URL = 27;
 
 	/**
 	 * Returns the factory that creates the instances of the model. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1713,6 +1985,83 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 */
 	CommonFactory getCommonFactory();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.model.common.ComponentIdentifier
+	 * <em>Component Identifier</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Component Identifier</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentIdentifier
+	 * @generated
+	 */
+	EClass getComponentIdentifier();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.model.common.ComponentIdentifier#getType <em>Type</em>}'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentIdentifier#getType()
+	 * @see #getComponentIdentifier()
+	 * @generated
+	 */
+	EAttribute getComponentIdentifier_Type();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.model.common.ComponentRequest
+	 * <em>Component Request</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Component Request</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentRequest
+	 * @generated
+	 */
+	EClass getComponentRequest();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getFilter <em>Filter</em>}'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Filter</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentRequest#getFilter()
+	 * @see #getComponentRequest()
+	 * @generated
+	 */
+	EAttribute getComponentRequest_Filter();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.model.common.ComponentRequest#getId
+	 * <em>Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentRequest#getId()
+	 * @see #getComponentRequest()
+	 * @generated
+	 */
+	EAttribute getComponentRequest_Id();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.model.common.ComponentRequest#getRange
+	 * <em>Range</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Range</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentRequest#getRange()
+	 * @see #getComponentRequest()
+	 * @generated
+	 */
+	EAttribute getComponentRequest_Range();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.model.common.ComponentRequest#getType
+	 * <em>Type</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentRequest#getType()
+	 * @see #getComponentRequest()
+	 * @generated
+	 */
+	EAttribute getComponentRequest_Type();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.model.common.Constant <em>Constant</em>}'. <!--
@@ -1844,6 +2193,41 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 */
 	EAttribute getFormat_Format();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId
+	 * <em>IVersioned Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>IVersioned Id</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId"
+	 * @generated
+	 */
+	EClass getIVersionedId();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId#getId <em>Id</em>}'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId#getId()
+	 * @see #getIVersionedId()
+	 * @generated
+	 */
+	EAttribute getIVersionedId_Id();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId#getVersion <em>Version</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Version</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId#getVersion()
+	 * @see #getIVersionedId()
+	 * @generated
+	 */
+	EAttribute getIVersionedId_Version();
 
 	/**
 	 * Returns the meta object for class ' {@link org.eclipse.buckminster.model.common.Match <em>Match</em>}'. <!--
@@ -2305,6 +2689,17 @@ public interface CommonPackage extends EPackage
 	EClass getToUpper();
 
 	/**
+	 * Returns the meta object for data type '{@link java.net.URL <em>URL</em>}'. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the meta object for data type '<em>URL</em>'.
+	 * @see java.net.URL
+	 * @model instanceClass="java.net.URL"
+	 * @generated
+	 */
+	EDataType getURL();
+
+	/**
 	 * Returns the meta object for data type '{@link java.util.UUID <em>Uuid</em>}'. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
@@ -2408,5 +2803,27 @@ public interface CommonPackage extends EPackage
 	 * @generated
 	 */
 	EReference getValueFilter_ToUppers();
+
+	/**
+	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.metadata.Version
+	 * <em>Version</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for data type '<em>Version</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.Version
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.metadata.Version"
+	 * @generated
+	 */
+	EDataType getVersion();
+
+	/**
+	 * Returns the meta object for data type '{@link org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange
+	 * <em>Version Range</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for data type '<em>Version Range</em>'.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange
+	 * @model instanceClass="org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange"
+	 * @generated
+	 */
+	EDataType getVersionRange();
 
 } // CommonPackage

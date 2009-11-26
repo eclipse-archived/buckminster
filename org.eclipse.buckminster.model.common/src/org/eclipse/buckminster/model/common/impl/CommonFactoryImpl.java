@@ -6,25 +6,41 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
-
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.model.common.*;
-
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.CommonPackage;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
+import org.eclipse.buckminster.model.common.Constant;
+import org.eclipse.buckminster.model.common.Documentation;
+import org.eclipse.buckminster.model.common.Format;
+import org.eclipse.buckminster.model.common.Match;
+import org.eclipse.buckminster.model.common.PropertyConstant;
+import org.eclipse.buckminster.model.common.PropertyElement;
+import org.eclipse.buckminster.model.common.PropertyRef;
+import org.eclipse.buckminster.model.common.Replace;
+import org.eclipse.buckminster.model.common.RxGroup;
+import org.eclipse.buckminster.model.common.RxPattern;
+import org.eclipse.buckminster.model.common.Split;
+import org.eclipse.buckminster.model.common.SplitType;
+import org.eclipse.buckminster.model.common.ToLower;
+import org.eclipse.buckminster.model.common.ToUpper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -144,6 +160,12 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 			return convertPatternToString(eDataType, instanceValue);
 		case CommonPackage.FILTER:
 			return convertFilterToString(eDataType, instanceValue);
+		case CommonPackage.VERSION:
+			return convertVersionToString(eDataType, instanceValue);
+		case CommonPackage.VERSION_RANGE:
+			return convertVersionRangeToString(eDataType, instanceValue);
+		case CommonPackage.URL:
+			return convertURLToString(eDataType, instanceValue);
 		default:
 			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -154,7 +176,43 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 	 * 
 	 * @generated NOT
 	 */
+	public String convertURLToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public String convertUuidToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public String convertVersionRangeToString(EDataType eDataType, Object instanceValue)
+	{
+		return instanceValue == null
+				? null
+				: instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public String convertVersionToString(EDataType eDataType, Object instanceValue)
 	{
 		return instanceValue == null
 				? null
@@ -199,9 +257,35 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 			return createToUpper();
 		case CommonPackage.DOCUMENT_ROOT:
 			return createDocumentRoot();
+		case CommonPackage.COMPONENT_REQUEST:
+			return createComponentRequest();
+		case CommonPackage.COMPONENT_IDENTIFIER:
+			return createComponentIdentifier();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public ComponentIdentifier createComponentIdentifier()
+	{
+		ComponentIdentifierImpl componentIdentifier = new ComponentIdentifierImpl();
+		return componentIdentifier;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public ComponentRequest createComponentRequest()
+	{
+		ComponentRequestImpl componentRequest = new ComponentRequestImpl();
+		return componentRequest;
 	}
 
 	/**
@@ -287,6 +371,12 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 			return createPatternFromString(eDataType, initialValue);
 		case CommonPackage.FILTER:
 			return createFilterFromString(eDataType, initialValue);
+		case CommonPackage.VERSION:
+			return createVersionFromString(eDataType, initialValue);
+		case CommonPackage.VERSION_RANGE:
+			return createVersionRangeFromString(eDataType, initialValue);
+		case CommonPackage.URL:
+			return createURLFromString(eDataType, initialValue);
 		default:
 			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -441,11 +531,52 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 	 * 
 	 * @generated NOT
 	 */
+	public URL createURLFromString(EDataType eDataType, String initialValue)
+	{
+		try
+		{
+			return initialValue == null
+					? null
+					: new URL(initialValue);
+		}
+		catch(MalformedURLException e)
+		{
+			throw new IllegalArgumentException(e.getMessage());
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public UUID createUuidFromString(EDataType eDataType, String initialValue)
 	{
 		return initialValue == null
 				? null
 				: UUID.fromString(initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public Version createVersionFromString(EDataType eDataType, String initialValue)
+	{
+		return Version.create(initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public VersionRange createVersionRangeFromString(EDataType eDataType, String initialValue)
+	{
+		return initialValue == null
+				? null
+				: new VersionRange(initialValue);
 	}
 
 	/**

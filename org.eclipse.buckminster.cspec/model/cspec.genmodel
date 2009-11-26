@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.cspec/src"
+    creationIcons="false" modelPluginID="org.eclipse.buckminster.cspec" modelName="Cspec"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
+    usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common">
+  <foreignModel>cspec.ecore</foreignModel>
+  <genPackages prefix="Cspec" basePackage="org.eclipse.buckminster" resource="Basic"
+      disposableProviderFactory="true" multipleEditorPages="false" fileExtensions=""
+      ecorePackage="cspec.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="cspec.ecore#//UpToDatePolicy">
+      <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/DEFAULT"/>
+      <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/ACTOR"/>
+      <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/COUNT"/>
+      <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/MAPPER"/>
+      <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/NOT_EMPTY"/>
+      <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/NEVER"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="cspec.ecore#//IPath"/>
+    <genClasses ecoreClass="cspec.ecore#//CSpec">
+      <genFeatures property="None" children="true" createChild="false" propertyCategory=""
+          propertyDescription="Dependencies on other components" ecoreFeature="ecore:EReference cspec.ecore#//CSpec/dependencies"/>
+      <genFeatures property="None" children="true" createChild="false" propertyCategory=""
+          ecoreFeature="ecore:EReference cspec.ecore#//CSpec/generators"/>
+      <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EReference cspec.ecore#//CSpec/attributes"/>
+      <genFeatures createChild="false" propertyCategory="" propertyMultiLine="true"
+          ecoreFeature="ecore:EReference cspec.ecore#//CSpec/documentation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//CSpec/shortDesc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//CSpec/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//CSpec/projectInfo"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="cspec.ecore#//Attribute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Attribute/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Attribute/public"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Attribute/filter"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspec.ecore#//Attribute/cspec"/>
+      <genFeatures createChild="false" propertyCategory="" ecoreFeature="ecore:EReference cspec.ecore#//Attribute/documentation"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//Group">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//Group/prerequisites"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspec.ecore#//Group/rebase"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//Prerequisite">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cspec.ecore#//Prerequisite/component"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Prerequisite/attribute"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Prerequisite/alias"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Prerequisite/contributor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Prerequisite/optional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Prerequisite/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Prerequisite/includePattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Prerequisite/excludePattern"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//Action">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//Action/properties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//Action/actorProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspec.ecore#//Action/actor"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//Action/product"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cspec.ecore#//Action/products"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Action/prerequisitesAlias"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspec.ecore#//Action/prerequisitesRebase"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Action/productAlias"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Action/upToDatePolicy"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Action/productFileCount"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Action/pattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Action/replacement"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//Artifact"/>
+    <genClasses ecoreClass="cspec.ecore#//ActionAttribute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//ActionAttribute/alias"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cspec.ecore#//ActionAttribute/action"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//PathGroup">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//PathGroup/base"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//PathGroup/paths"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//Generator">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Generator/attribute"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference cspec.ecore#//Generator/component"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//Generator/generates"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspec.ecore#//Generator/cspec"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="cspec.ecore#//AlterAttribute">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspec.ecore#//AlterAttribute/cspecext"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//AlterArtifact">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterArtifact/removePaths"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//AlterGroup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterGroup/replacePrerequisites"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterGroup/removePrerequisites"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//AlterAction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterAction/replaceProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterAction/replaceActorProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterAction/removeProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterAction/removeActorProperties"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterAction/removeProducts"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterAction/removePaths"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//RemovePath">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//RemovePath/path"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//Rename">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Rename/oldName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Rename/newName"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//Remove">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Remove/name"/>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//CSpecExtension">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//CSpecExtension/attributeAlterations"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//CSpecExtension/renameAttributes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//CSpecExtension/removeDependencies"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//CSpecExtension/removeGenerators"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//CSpecExtension/replaceGenerators"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//CSpecExtension/replaceDependencies"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

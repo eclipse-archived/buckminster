@@ -7,13 +7,13 @@
 package org.eclipse.buckminster.model.common.util;
 
 import org.eclipse.buckminster.model.common.*;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId;
 
 /**
  * <!-- begin-user-doc --> The <b>Adapter Factory</b> for the model. It provides an adapter <code>createXXX</code>
@@ -39,6 +39,18 @@ public class CommonAdapterFactory extends AdapterFactoryImpl
 	protected CommonSwitch<Adapter> modelSwitch = new CommonSwitch<Adapter>()
 	{
 		@Override
+		public Adapter caseComponentIdentifier(ComponentIdentifier object)
+		{
+			return createComponentIdentifierAdapter();
+		}
+
+		@Override
+		public Adapter caseComponentRequest(ComponentRequest object)
+		{
+			return createComponentRequestAdapter();
+		}
+
+		@Override
 		public Adapter caseConstant(Constant object)
 		{
 			return createConstantAdapter();
@@ -60,6 +72,12 @@ public class CommonAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseFormat(Format object)
 		{
 			return createFormatAdapter();
+		}
+
+		@Override
+		public Adapter caseIVersionedId(IVersionedId object)
+		{
+			return createIVersionedIdAdapter();
 		}
 
 		@Override
@@ -175,6 +193,36 @@ public class CommonAdapterFactory extends AdapterFactoryImpl
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.model.common.ComponentIdentifier
+	 * <em>Component Identifier</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.ComponentIdentifier
+	 * @generated
+	 */
+	public Adapter createComponentIdentifierAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.model.common.ComponentRequest
+	 * <em>Component Request</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can
+	 * easily ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.ComponentRequest
+	 * @generated
+	 */
+	public Adapter createComponentRequestAdapter()
+	{
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class ' {@link org.eclipse.buckminster.model.common.Constant
 	 * <em>Constant</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
 	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
@@ -240,6 +288,21 @@ public class CommonAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createFormatAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId <em>IVersioned Id</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful to
+	 * ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId
+	 * @generated
+	 */
+	public Adapter createIVersionedIdAdapter()
 	{
 		return null;
 	}

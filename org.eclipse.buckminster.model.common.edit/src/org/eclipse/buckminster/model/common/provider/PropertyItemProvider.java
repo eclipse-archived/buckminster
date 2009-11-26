@@ -38,6 +38,50 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
 public class PropertyItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
 		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
 {
+	protected static void appendSanitized(StringBuilder bld, String str)
+	{
+		if(str == null)
+		{
+			bld.append("<null>");
+			return;
+		}
+		boolean truncated = false;
+		int top = str.length();
+		if(top > 40)
+		{
+			top = 37;
+			truncated = true;
+		}
+
+		for(int idx = 0; idx < top; ++idx)
+		{
+			char c = str.charAt(idx);
+			switch(c)
+			{
+			case '\n':
+				bld.append("\\n");
+				continue;
+			case '\r':
+				bld.append("\\r");
+				continue;
+			case '\t':
+				bld.append("\\t");
+				continue;
+			case ' ':
+				break;
+			default:
+				if(Character.isWhitespace(c) || Character.isISOControl(c))
+				{
+					bld.append(String.format("\\u%04x", Character.valueOf(c)));
+					continue;
+				}
+			}
+			bld.append(c);
+		}
+		if(truncated)
+			bld.append("...");
+	}
+
 	/**
 	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -150,50 +194,6 @@ public class PropertyItemProvider extends ItemProviderAdapter implements IEditin
 				getString("_UI_Property_mutable_feature"), getString("_UI_PropertyDescriptor_description",
 						"_UI_Property_mutable_feature", "_UI_Property_type"), CommonPackage.Literals.PROPERTY__MUTABLE,
 				true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
-	}
-
-	protected static void appendSanitized(StringBuilder bld, String str)
-	{
-		if(str == null)
-		{
-			bld.append("<null>");
-			return;
-		}
-		boolean truncated = false;
-		int top = str.length();
-		if(top > 40)
-		{
-			top = 37;
-			truncated = true;
-		}
-
-		for(int idx = 0; idx < top; ++idx)
-		{
-			char c = str.charAt(idx);
-			switch(c)
-			{
-			case '\n':
-				bld.append("\\n");
-				continue;
-			case '\r':
-				bld.append("\\r");
-				continue;
-			case '\t':
-				bld.append("\\t");
-				continue;
-			case ' ':
-				break;
-			default:
-				if(Character.isWhitespace(c) || Character.isISOControl(c))
-				{
-					bld.append(String.format("\\u%04x", Character.valueOf(c)));
-					continue;
-				}
-			}				
-			bld.append(c);
-		}
-		if(truncated)
-			bld.append("...");
 	}
 
 	/**

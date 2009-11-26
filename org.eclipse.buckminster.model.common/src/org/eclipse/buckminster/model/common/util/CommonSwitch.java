@@ -9,9 +9,9 @@ package org.eclipse.buckminster.model.common.util;
 import java.util.List;
 
 import org.eclipse.buckminster.model.common.*;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId;
 
 /**
  * <!-- begin-user-doc --> The <b>Switch</b> for the model's inheritance hierarchy. It supports the call
@@ -42,6 +42,38 @@ public class CommonSwitch<T>
 		{
 			modelPackage = CommonPackage.eINSTANCE;
 		}
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Component Identifier</em>'. <!--
+	 * begin-user-doc --> This implementation returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Component Identifier</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseComponentIdentifier(ComponentIdentifier object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Component Request</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Component Request</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseComponentRequest(ComponentRequest object)
+	{
+		return null;
 	}
 
 	/**
@@ -102,6 +134,21 @@ public class CommonSwitch<T>
 	 * @generated
 	 */
 	public T caseFormat(Format object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>IVersioned Id</em>'. <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>IVersioned Id</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseIVersionedId(IVersionedId object)
 	{
 		return null;
 	}
@@ -514,6 +561,24 @@ public class CommonSwitch<T>
 		{
 			EObject documentRoot = theEObject;
 			T result = caseDocumentRoot(documentRoot);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case CommonPackage.COMPONENT_REQUEST:
+		{
+			ComponentRequest componentRequest = (ComponentRequest)theEObject;
+			T result = caseComponentRequest(componentRequest);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case CommonPackage.COMPONENT_IDENTIFIER:
+		{
+			ComponentIdentifier componentIdentifier = (ComponentIdentifier)theEObject;
+			T result = caseComponentIdentifier(componentIdentifier);
+			if(result == null)
+				result = caseIVersionedId(componentIdentifier);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

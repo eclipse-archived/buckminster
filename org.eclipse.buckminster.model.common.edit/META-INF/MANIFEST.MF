@@ -12,5 +12,6 @@ Export-Package: org.eclipse.buckminster.model.common.provider,
  org.eclipse.buckminster.model.common.provider.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.model.common;visibility:=reexport,
- org.eclipse.emf.edit;visibility:=reexport
+ org.eclipse.emf.edit;visibility:=reexport,
+ org.eclipse.equinox.p2.metadata;bundle-version="1.0.100"
 Bundle-ActivationPolicy: lazy

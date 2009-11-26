@@ -189,6 +189,22 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	protected DocumentRootItemProvider documentRootItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.model.common.ComponentRequest}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ComponentRequestItemProvider componentRequestItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.model.common.ComponentIdentifier}
+	 * instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ComponentIdentifierItemProvider componentIdentifierItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -242,6 +258,40 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	public void addListener(INotifyChangedListener notifyChangedListener)
 	{
 		changeNotifier.addListener(notifyChangedListener);
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.model.common.ComponentIdentifier}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createComponentIdentifierAdapter()
+	{
+		if(componentIdentifierItemProvider == null)
+		{
+			componentIdentifierItemProvider = new ComponentIdentifierItemProvider(this);
+		}
+
+		return componentIdentifierItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.model.common.ComponentRequest}. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createComponentRequestAdapter()
+	{
+		if(componentRequestItemProvider == null)
+		{
+			componentRequestItemProvider = new ComponentRequestItemProvider(this);
+		}
+
+		return componentRequestItemProvider;
 	}
 
 	/**
@@ -517,6 +567,10 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 			toUpperItemProvider.dispose();
 		if(documentRootItemProvider != null)
 			documentRootItemProvider.dispose();
+		if(componentRequestItemProvider != null)
+			componentRequestItemProvider.dispose();
+		if(componentIdentifierItemProvider != null)
+			componentIdentifierItemProvider.dispose();
 	}
 
 	/**

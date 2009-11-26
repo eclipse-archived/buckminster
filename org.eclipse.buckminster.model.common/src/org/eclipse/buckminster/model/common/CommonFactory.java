@@ -26,6 +26,22 @@ public interface CommonFactory extends EFactory
 	CommonFactory eINSTANCE = org.eclipse.buckminster.model.common.impl.CommonFactoryImpl.init();
 
 	/**
+	 * Returns a new object of class '<em>Component Identifier</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Component Identifier</em>'.
+	 * @generated
+	 */
+	ComponentIdentifier createComponentIdentifier();
+
+	/**
+	 * Returns a new object of class '<em>Component Request</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Component Request</em>'.
+	 * @generated
+	 */
+	ComponentRequest createComponentRequest();
+
+	/**
 	 * Returns a new object of class '<em>Constant</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Constant</em>'.

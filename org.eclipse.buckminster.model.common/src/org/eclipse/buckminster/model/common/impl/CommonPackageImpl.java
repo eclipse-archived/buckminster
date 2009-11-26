@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.Format;
@@ -35,11 +37,15 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EValidator;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
@@ -172,6 +178,27 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * 
 	 * @generated
 	 */
+	private EClass iVersionedIdEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass componentRequestEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass componentIdentifierEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private EEnum splitTypeEEnum = null;
 
 	/**
@@ -201,6 +228,27 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * @generated
 	 */
 	private EDataType filterEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EDataType versionEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EDataType versionRangeEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EDataType urlEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -377,6 +425,19 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		createEReference(documentRootEClass, DOCUMENT_ROOT__RX_PART);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__BASIC_PROPERTY);
 
+		iVersionedIdEClass = createEClass(IVERSIONED_ID);
+		createEAttribute(iVersionedIdEClass, IVERSIONED_ID__ID);
+		createEAttribute(iVersionedIdEClass, IVERSIONED_ID__VERSION);
+
+		componentRequestEClass = createEClass(COMPONENT_REQUEST);
+		createEAttribute(componentRequestEClass, COMPONENT_REQUEST__ID);
+		createEAttribute(componentRequestEClass, COMPONENT_REQUEST__RANGE);
+		createEAttribute(componentRequestEClass, COMPONENT_REQUEST__FILTER);
+		createEAttribute(componentRequestEClass, COMPONENT_REQUEST__TYPE);
+
+		componentIdentifierEClass = createEClass(COMPONENT_IDENTIFIER);
+		createEAttribute(componentIdentifierEClass, COMPONENT_IDENTIFIER__TYPE);
+
 		// Create enums
 		splitTypeEEnum = createEEnum(SPLIT_TYPE);
 
@@ -385,6 +446,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		uuidEDataType = createEDataType(UUID);
 		patternEDataType = createEDataType(PATTERN);
 		filterEDataType = createEDataType(FILTER);
+		versionEDataType = createEDataType(VERSION);
+		versionRangeEDataType = createEDataType(VERSION_RANGE);
+		urlEDataType = createEDataType(URL);
 	}
 
 	/**
@@ -395,6 +459,76 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	public CommonFactory getCommonFactory()
 	{
 		return (CommonFactory)getEFactoryInstance();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getComponentIdentifier()
+	{
+		return componentIdentifierEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getComponentIdentifier_Type()
+	{
+		return (EAttribute)componentIdentifierEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getComponentRequest()
+	{
+		return componentRequestEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getComponentRequest_Filter()
+	{
+		return (EAttribute)componentRequestEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getComponentRequest_Id()
+	{
+		return (EAttribute)componentRequestEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getComponentRequest_Range()
+	{
+		return (EAttribute)componentRequestEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getComponentRequest_Type()
+	{
+		return (EAttribute)componentRequestEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -515,6 +649,36 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	public EAttribute getFormat_Format()
 	{
 		return (EAttribute)formatEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getIVersionedId()
+	{
+		return iVersionedIdEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getIVersionedId_Id()
+	{
+		return (EAttribute)iVersionedIdEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getIVersionedId_Version()
+	{
+		return (EAttribute)iVersionedIdEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -942,6 +1106,16 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	 * 
 	 * @generated
 	 */
+	public EDataType getURL()
+	{
+		return urlEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EDataType getUuid()
 	{
 		return uuidEDataType;
@@ -1028,6 +1202,26 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EDataType getVersion()
+	{
+		return versionEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EDataType getVersionRange()
+	{
+		return versionRangeEDataType;
+	}
+
+	/**
 	 * Complete the initialization of the package and its meta-model. This method is guarded to have no affect on any
 	 * invocation but its first. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1058,6 +1252,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		splitEClass.getESuperTypes().add(this.getValueFilter());
 		toLowerEClass.getESuperTypes().add(this.getValueFilter());
 		toUpperEClass.getESuperTypes().add(this.getValueFilter());
+		componentIdentifierEClass.getESuperTypes().add(this.getIVersionedId());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(constantEClass, Constant.class, "Constant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1205,6 +1400,36 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 				IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
 				IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
+		initEClass(iVersionedIdEClass, IVersionedId.class, "IVersionedId", IS_ABSTRACT, IS_INTERFACE,
+				!IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIVersionedId_Id(), ecorePackage.getEString(), "id", null, 0, 1, IVersionedId.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIVersionedId_Version(), this.getVersion(), "version", null, 0, 1, IVersionedId.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(componentRequestEClass, ComponentRequest.class, "ComponentRequest", !IS_ABSTRACT, !IS_INTERFACE,
+				IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getComponentRequest_Id(), ecorePackage.getEString(), "id", null, 0, 1, ComponentRequest.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getComponentRequest_Range(), this.getVersionRange(), "range", null, 0, 1,
+				ComponentRequest.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
+		initEAttribute(getComponentRequest_Filter(), this.getFilter(), "filter", null, 0, 1, ComponentRequest.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getComponentRequest_Type(), ecorePackage.getEString(), "type", null, 0, 1,
+				ComponentRequest.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
+
+		EOperation op = addEOperation(componentRequestEClass, ecorePackage.getEBoolean(), "designates", 0, 1,
+				IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getComponentIdentifier(), "cid", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(componentIdentifierEClass, ComponentIdentifier.class, "ComponentIdentifier", !IS_ABSTRACT,
+				!IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getComponentIdentifier_Type(), ecorePackage.getEString(), "type", null, 0, 1,
+				ComponentIdentifier.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		// Initialize enums and add enum literals
 		initEEnum(splitTypeEEnum, SplitType.class, "SplitType");
 		addEEnumLiteral(splitTypeEEnum, SplitType.QUOTED);
@@ -1216,6 +1441,10 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage
 		initEDataType(uuidEDataType, java.util.UUID.class, "Uuid", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(patternEDataType, Pattern.class, "Pattern", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(filterEDataType, Filter.class, "Filter", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(versionEDataType, Version.class, "Version", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(versionRangeEDataType, VersionRange.class, "VersionRange", IS_SERIALIZABLE,
+				!IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(urlEDataType, java.net.URL.class, "URL", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
