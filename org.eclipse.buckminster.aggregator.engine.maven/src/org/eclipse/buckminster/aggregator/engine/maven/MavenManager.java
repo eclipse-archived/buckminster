@@ -240,7 +240,7 @@ public class MavenManager
 			mappingRulesList.add(new String[] {
 					"(& (classifier=" + GeneralUtils.encodeFilterValue(artifact.getClassifier()) + ")(id="
 							+ GeneralUtils.encodeFilterValue(artifact.getId()) + ")(version="
-							+ GeneralUtils.encodeFilterValue(iu.getVersion().toString()) + ")",
+							+ GeneralUtils.encodeFilterValue(iu.getVersion().toString()) + "))",
 					"${repoUrl}/" + iu.getRelativeFullPath() });
 		}
 	}
