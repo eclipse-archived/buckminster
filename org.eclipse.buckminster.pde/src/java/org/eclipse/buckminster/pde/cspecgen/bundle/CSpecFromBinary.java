@@ -120,7 +120,7 @@ public class CSpecFromBinary extends CSpecGenerator
 			//
 			cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
 			ArtifactBuilder pluginExport = cspec.addArtifact(ATTRIBUTE_BUNDLE_JAR, true, null);
-			pluginExport.addPath(new Path(buildArtifactName(true)));
+			pluginExport.addPath(Path.fromOSString(locationFile.getName()));
 			pluginExport.setBase(parentDir); // we want the site/plugins folder, i.e. the parent of the jar
 			classpath.addLocalPrerequisite(pluginExport);
 			bundleAndFragments.addLocalPrerequisite(pluginExport);
@@ -140,7 +140,7 @@ public class CSpecFromBinary extends CSpecGenerator
 					try
 					{
 						input = new BufferedInputStream(new FileInputStream(new File(locationFile, BUNDLE_FILE)));
-						ExternalBundleModel ebm = new ExternalBundleModel();
+						ExternalBundleModel ebm = new ExternalBundleModel(locationFile);
 						ebm.load(input, false);
 						bundle = ebm.getBundle();
 					}

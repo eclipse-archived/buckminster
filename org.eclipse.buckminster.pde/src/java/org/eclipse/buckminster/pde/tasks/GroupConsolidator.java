@@ -197,72 +197,84 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 			InputStream input = null;
 			try
 			{
-				try
+				input = getInput(featureOrBundle, FEATURE_FILE);
+				IFeatureModel model = FeatureModelReader.readFeatureModel(input);
+				IFeature feature = model.getFeature();
+				String id = feature.getId();
+				String version = feature.getVersion();
+
+				int ctxQualLen = -1;
+				if(version.indexOf('-') > 0)
 				{
+					IOUtils.close(input);
 					input = getInput(featureOrBundle, FEATURE_FILE);
-					IFeatureModel model = FeatureModelReader.readFeatureModel(input);
-					IFeature feature = model.getFeature();
-					String id = feature.getId();
-					String version = feature.getVersion();
+					ctxQualLen = EditableFeatureModel.getContextQualifierLength(input);
+				}
+				if(m_suffixGenerator != null)
+					m_suffixGenerator.addContextQualifierLength(id, ctxQualLen);
+				addVersion(m_featureVersions, id, version);
+				continue;
+			}
+			catch(FileNotFoundException e)
+			{
+			}
+			finally
+			{
+				IOUtils.close(input);
+				input = null;
+			}
+			try
+			{
+				input = getInput(featureOrBundle, BUNDLE_FILE);
+				ExternalBundleModel model = new ExternalBundleModel(featureOrBundle);
+				model.load(input, true);
+				IBundlePluginModelBase bmodel = model.isFragmentModel()
+						? new BundleFragmentModel()
+						: new BundlePluginModel();
 
-					int ctxQualLen = -1;
-					if(version.indexOf('-') > 0)
-					{
-						IOUtils.close(input);
-						input = getInput(featureOrBundle, FEATURE_FILE);
-						ctxQualLen = EditableFeatureModel.getContextQualifierLength(input);
-					}
-					if(m_suffixGenerator != null)
-						m_suffixGenerator.addContextQualifierLength(id, ctxQualLen);
-					addVersion(m_featureVersions, id, version);
-					continue;
-				}
-				catch(FileNotFoundException e)
-				{
-				}
-				try
-				{
-					input = getInput(featureOrBundle, BUNDLE_FILE);
-					ExternalBundleModel model = new ExternalBundleModel();
-					model.load(input, true);
-					IBundlePluginModelBase bmodel = model.isFragmentModel()
-							? new BundleFragmentModel()
-							: new BundlePluginModel();
+				bmodel.setEnabled(true);
+				bmodel.setBundleModel(model);
+				IPluginBase pb = bmodel.getPluginBase();
 
-					bmodel.setEnabled(true);
-					bmodel.setBundleModel(model);
-					IPluginBase pb = bmodel.getPluginBase();
-
-					addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
-					continue;
-				}
-				catch(FileNotFoundException e)
-				{
-				}
-				try
-				{
-					input = getInput(featureOrBundle, PLUGIN_FILE);
-					ExternalPluginModel model = new ExternalPluginModel();
-					model.load(input, true);
-					IPluginBase pb = model.getPluginBase();
-					addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
-					continue;
-				}
-				catch(FileNotFoundException e)
-				{
-				}
-				try
-				{
-					input = getInput(featureOrBundle, FRAGMENT_FILE);
-					ExternalFragmentModel model = new ExternalFragmentModel();
-					model.load(input, true);
-					IPluginBase pb = model.getPluginBase();
-					addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
-					continue;
-				}
-				catch(FileNotFoundException e)
-				{
-				}
+				addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
+				continue;
+			}
+			catch(FileNotFoundException e)
+			{
+			}
+			finally
+			{
+				IOUtils.close(input);
+				input = null;
+			}
+			try
+			{
+				input = getInput(featureOrBundle, PLUGIN_FILE);
+				ExternalPluginModel model = new ExternalPluginModel();
+				model.load(input, true);
+				IPluginBase pb = model.getPluginBase();
+				addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
+				continue;
+			}
+			catch(FileNotFoundException e)
+			{
+			}
+			finally
+			{
+				IOUtils.close(input);
+				input = null;
+			}
+			try
+			{
+				input = getInput(featureOrBundle, FRAGMENT_FILE);
+				ExternalFragmentModel model = new ExternalFragmentModel();
+				model.load(input, true);
+				IPluginBase pb = model.getPluginBase();
+				addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
+				continue;
+			}
+			catch(FileNotFoundException e)
+			{
 			}
 			finally
 			{

@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.pde.internal.model;
 
+import java.io.File;
+
 import org.eclipse.pde.internal.core.bundle.BundleModel;
 import org.eclipse.pde.internal.core.ibundle.IBundleModelFactory;
 import org.eclipse.pde.internal.core.text.bundle.BundleModelFactory;
@@ -24,9 +26,24 @@ public class ExternalBundleModel extends BundleModel
 {
 	private static final long serialVersionUID = 6529464212517724764L;
 
+	private final File m_installLocation;
+
+	public ExternalBundleModel(File installLocation)
+	{
+		m_installLocation = installLocation;
+	}
+
 	public IBundleModelFactory getFactory()
 	{
 		return new BundleModelFactory(this);
+	}
+
+	@Override
+	public String getInstallLocation()
+	{
+		return m_installLocation == null
+				? null
+				: m_installLocation.getAbsolutePath();
 	}
 
 	public boolean isEditable()

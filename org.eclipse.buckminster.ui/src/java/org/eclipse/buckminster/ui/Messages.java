@@ -672,6 +672,12 @@ public class Messages extends NLS
 
 	public static String console_buffer_size_bracket_characters_bracket_with_colon;
 
+	public static String generatesName;
+
+	public static String generatesType;
+
+	public static String generatesVersion;
+
 	static
 	{
 		// initialize resource bundle

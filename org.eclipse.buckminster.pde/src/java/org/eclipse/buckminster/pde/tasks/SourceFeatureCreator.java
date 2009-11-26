@@ -118,7 +118,7 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 			try
 			{
 				input = FeatureConsolidator.getInput(featureOrBundle, BUNDLE_FILE);
-				ExternalBundleModel model = new ExternalBundleModel();
+				ExternalBundleModel model = new ExternalBundleModel(featureOrBundle);
 				model.load(input, true);
 				IBundlePluginModelBase bmodel = model.isFragmentModel()
 						? new BundleFragmentModel()

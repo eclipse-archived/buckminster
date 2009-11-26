@@ -133,7 +133,7 @@ public class InvokeActionDialog extends FilteredItemsSelectionDialog
 		protected Object restoreItemFromMemento(IMemento element)
 		{
 			String attributeName = element.getString("attribute"); //$NON-NLS-1$ 
-			if(attributeName == null)
+			if(attributeName == null || attributes == null)
 				return null;
 			for(Attribute attribute : attributes)
 			{

@@ -10,6 +10,7 @@ package org.eclipse.buckminster.pde.cspecgen.feature;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -18,6 +19,9 @@ import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.PropertiesParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
+import org.eclipse.buckminster.core.reader.URLFileReader;
+import org.eclipse.buckminster.core.reader.ZipArchiveReader;
+import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
@@ -84,23 +88,33 @@ public class FeatureBuilder extends PDEBuilder
 			throw BuckminsterException.wrap(e);
 		}
 
-		Map<String, String> buildProperties = null;
-		if(!forResolutionAidOnly)
+		CSpecGenerator generator;
+		if(reader instanceof ZipArchiveReader && ((ZipArchiveReader)reader).getFileReader() instanceof URLFileReader)
 		{
-			try
-			{
-				buildProperties = reader.readFile("build.properties", new PropertiesParser(), MonitorUtils.subMonitor( //$NON-NLS-1$
-						monitor, 40));
-			}
-			catch(FileNotFoundException e)
-			{
-			}
-			catch(IOException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
+			URI uri = ((URLFileReader)((ZipArchiveReader)reader).getFileReader()).getURI();
+			generator = new CSpecFromBinary(cspecBuilder, reader, feature, uri);
 		}
-		CSpecFromSource generator = new CSpecFromSource(cspecBuilder, reader, feature, buildProperties);
+		else
+		{
+			Map<String, String> buildProperties = null;
+			if(!forResolutionAidOnly)
+			{
+				try
+				{
+					buildProperties = reader.readFile(
+							"build.properties", new PropertiesParser(), MonitorUtils.subMonitor( //$NON-NLS-1$
+									monitor, 40));
+				}
+				catch(FileNotFoundException e)
+				{
+				}
+				catch(IOException e)
+				{
+					throw BuckminsterException.wrap(e);
+				}
+			}
+			generator = new CSpecFromSource(cspecBuilder, reader, feature, buildProperties);
+		}
 		generator.generate(MonitorUtils.subMonitor(monitor, 20));
 		monitor.done();
 	}

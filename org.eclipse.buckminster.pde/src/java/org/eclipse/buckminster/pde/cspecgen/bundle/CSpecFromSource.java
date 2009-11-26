@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
+import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
@@ -554,6 +555,12 @@ public class CSpecFromSource extends CSpecGenerator
 			sourceBundleAction.setProductAlias(ALIAS_OUTPUT);
 			sourceBundleAction.setProductBase(OUTPUT_DIR_SOURCE_JAR);
 			bundleAndFragmentsSource.addLocalPrerequisite(sourceBundleAction);
+
+			GeneratorBuilder genBld = cspec.createGeneratorBuilder();
+			genBld.setAttribute(ATTRIBUTE_SOURCE_BUNDLE_JAR);
+			genBld.setGeneratesType(IComponentType.OSGI_BUNDLE);
+			genBld.setName(cspec.getName() + ".source"); //$NON-NLS-1$
+			cspec.addGenerator(genBld);
 		}
 		else
 		{

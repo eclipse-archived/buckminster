@@ -13,6 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -24,6 +27,8 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.reader.LocalReaderType;
+import org.eclipse.buckminster.core.reader.URLFileReader;
+import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -38,6 +43,7 @@ import org.eclipse.buckminster.pde.internal.model.ExternalExtensionsModel;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -68,6 +74,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly,
 			IProgressMonitor monitor) throws CoreException
 	{
+		File locationFile = null;
 		if(reader instanceof EclipsePlatformReader)
 		{
 			MonitorUtils.complete(monitor);
@@ -84,7 +91,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				if(s_platformPluginsFolder.isPrefixOf(Path.fromOSString(location)))
 					return pluginModelBase;
 
-				File locationFile = new File(location);
+				locationFile = new File(location);
 				if(locationFile.isFile())
 					return pluginModelBase;
 
@@ -114,8 +121,31 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			//
 			try
 			{
+				if(locationFile == null)
+				{
+					if(reader instanceof ZipArchiveReader)
+					{
+						IComponentReader fr = ((ZipArchiveReader)reader).getFileReader();
+						if(fr instanceof URLFileReader)
+						{
+							URI uri = ((URLFileReader)fr).getURI();
+							try
+							{
+								URL url = FileLocator.resolve(uri.toURL());
+								if("file".equalsIgnoreCase(url.getProtocol())) //$NON-NLS-1$
+									locationFile = new File(url.toURI());
+							}
+							catch(IOException e)
+							{
+							}
+							catch(URISyntaxException e)
+							{
+							}
+						}
+					}
+				}
 				boolean fragment = false;
-				BundleModel model = new ExternalBundleModel();
+				BundleModel model = new ExternalBundleModel(locationFile);
 				loadModel(reader, BUNDLE_FILE, model, MonitorUtils.subMonitor(monitor, 1000));
 				if(model.getBundle().getHeader(Constants.BUNDLE_SYMBOLICNAME) == null)
 					throw new FileNotFoundException(Messages.not_an_OSGi_manifest);

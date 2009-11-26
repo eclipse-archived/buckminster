@@ -820,11 +820,11 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 		try
 		{
-			Map<String, GeneratorBuilder> generatorsMap = m_cspec.getGenerators();
+			Collection<GeneratorBuilder> generators = m_cspec.getGeneratorList();
 
-			if(generatorsMap != null)
+			if(generators.size() > 0)
 			{
-				generatorsMap.clear();
+				generators.clear();
 			}
 
 			for(GeneratorBuilder generator : m_generatorBuilders)
@@ -1179,10 +1179,10 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			}
 
 			m_generatorBuilders.clear();
-			Map<String, GeneratorBuilder> generatorsMap = m_cspec.getGenerators();
-			if(generatorsMap != null)
+			Collection<GeneratorBuilder> generatorsSet = m_cspec.getGeneratorList();
+			if(generatorsSet != null)
 			{
-				GeneratorBuilder[] generators = generatorsMap.values().toArray(new GeneratorBuilder[0]);
+				GeneratorBuilder[] generators = generatorsSet.toArray(new GeneratorBuilder[0]);
 				Arrays.sort(generators, CSpecEditorUtils.getCSpecElementComparator());
 				for(GeneratorBuilder generator : generators)
 				{
