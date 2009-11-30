@@ -27,11 +27,6 @@ public class UriIterator implements Iterator<URI>
 		positionNext();
 	}
 
-	public int size()
-	{
-		return m_uris.length;
-	}
-
 	public UriIterator(URI root, Pattern excludePattern, URI[] uris)
 	{
 		m_uris = uris;
@@ -69,6 +64,11 @@ public class UriIterator implements Iterator<URI>
 	public void remove()
 	{
 		throw new UnsupportedOperationException();
+	}
+
+	public int size()
+	{
+		return m_uris.length;
 	}
 
 	private void positionNext()

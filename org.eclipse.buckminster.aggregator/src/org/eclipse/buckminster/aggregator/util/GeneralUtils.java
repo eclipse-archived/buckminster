@@ -18,44 +18,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 public class GeneralUtils
 {
 
-	public static String getLocalizedProperty(InstallableUnit iu, String key)
-	{
-		String value = iu.getProperty(key);
-
-		if(value != null && value.startsWith("%"))
-		{
-			String localizedKey = "df_LT." + value.substring(1);
-			String localizedValue = iu.getProperty(localizedKey);
-
-			if(localizedValue != null)
-				value = localizedValue;
-		}
-
-		return value;
-	}
-
-	public static String stringifyVersion(Version version)
-	{
-		String result = version.getOriginal();
-
-		if(result == null)
-			result = version.toString();
-
-		return result;
-	}
-
-	public static String trimmedOrNull(String str)
-	{
-		if(str == null)
-			return null;
-
-		str = str.trim();
-		if(str.length() == 0)
-			return null;
-
-		return str;
-	}
-	
 	public static String encodeFilterValue(String value)
 	{
 		boolean encoded = false;
@@ -92,5 +54,43 @@ public class GeneralUtils
 		return encoded
 				? new String(output, 0, cursor)
 				: value;
+	}
+
+	public static String getLocalizedProperty(InstallableUnit iu, String key)
+	{
+		String value = iu.getProperty(key);
+
+		if(value != null && value.startsWith("%"))
+		{
+			String localizedKey = "df_LT." + value.substring(1);
+			String localizedValue = iu.getProperty(localizedKey);
+
+			if(localizedValue != null)
+				value = localizedValue;
+		}
+
+		return value;
+	}
+
+	public static String stringifyVersion(Version version)
+	{
+		String result = version.getOriginal();
+
+		if(result == null)
+			result = version.toString();
+
+		return result;
+	}
+
+	public static String trimmedOrNull(String str)
+	{
+		if(str == null)
+			return null;
+
+		str = str.trim();
+		if(str.length() == 0)
+			return null;
+
+		return str;
 	}
 }
