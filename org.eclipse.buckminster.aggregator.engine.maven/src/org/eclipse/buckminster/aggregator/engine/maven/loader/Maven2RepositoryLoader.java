@@ -394,12 +394,12 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 			pom = POM.getPOM(m_location.toString(), versionEntry.groupId, versionEntry.artifactId,
 					versionEntry.version.getOriginal());
 
-			if(!versionEntry.groupId.equals(pom.obtainGroupId()))
+			if(!versionEntry.groupId.equals(pom.getGroupId()))
 				throw new IOException(String.format("Bad groupId in POM: expected %s, found %s", versionEntry.groupId,
-						pom.obtainGroupId()));
-			if(!versionEntry.artifactId.equals(pom.obtainArtifactId()))
+						pom.getGroupId()));
+			if(!versionEntry.artifactId.equals(pom.getArtifactId()))
 				throw new IOException(String.format("Bad artifactId in POM: expected %s, found %s",
-						versionEntry.artifactId, pom.obtainArtifactId()));
+						versionEntry.artifactId, pom.getArtifactId()));
 
 			model = pom.getProject();
 
@@ -409,7 +409,7 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 				{
 					// TODO What about the namespace ?
 					String namespace = dependency.isSetType()
-							? POM.expandProperties(dependency.getType(), pom.getFullPropertyMap())
+							? POM.expandProperties(dependency.getType(), pom.getProperties())
 							: "jar";
 
 					// TODO What about the groupId ?
@@ -417,9 +417,9 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 					// No, don't include: good for "mavenized" p2, but not for native maven (may lead to duplicities)
 					// For now: include if artifactId is not equals to groupId or does not start with groupId followed
 					// by a dot
-					String groupId = POM.expandProperties(dependency.getGroupId(), pom.getFullPropertyMap());
-					String artifactId = POM.expandProperties(dependency.getArtifactId(), pom.getFullPropertyMap());
-					String versionRange = POM.expandProperties(dependency.getVersion(), pom.getFullPropertyMap());
+					String groupId = POM.expandProperties(dependency.getGroupId(), pom.getProperties());
+					String artifactId = POM.expandProperties(dependency.getArtifactId(), pom.getProperties());
+					String versionRange = POM.expandProperties(dependency.getVersion(), pom.getProperties());
 					if(versionRange == null)
 						versionRange = MAVEN_EMPTY_RANGE_STRING;
 					RequiredCapabilityImpl rc = (RequiredCapabilityImpl)P2Factory.eINSTANCE.createRequiredCapability();
@@ -443,7 +443,7 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 
 			// Add 2 provided capabilities - one for an IU, another one for packaging
 			ProvidedCapabilityImpl pc = (ProvidedCapabilityImpl)P2Factory.eINSTANCE.createProvidedCapability();
-			String version = pom.obtainVersion();
+			String version = pom.getVersion();
 
 			pc.setNamespace(IInstallableUnit.NAMESPACE_IU_ID);
 			pc.setName(iu.getId());

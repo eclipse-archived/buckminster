@@ -19,7 +19,7 @@ import org.eclipse.buckminster.aggregator.engine.maven.pom.Model;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.Parent;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.PomFactory;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.PomPackage;
-import org.eclipse.buckminster.aggregator.engine.maven.pom.PropertiesType;
+import org.eclipse.buckminster.aggregator.engine.maven.pom.impl.ModelImpl;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.util.PomResourceFactoryImpl;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -35,9 +35,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceFactoryRegistryImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.Diagnostician;
-import org.eclipse.emf.ecore.util.FeatureMap;
-import org.eclipse.emf.ecore.util.FeatureMap.Entry;
-import org.eclipse.emf.ecore.xml.type.impl.AnyTypeImpl;
 
 /**
  * @author Filip Hrbek (filip.hrbek@cloudsmith.com)
@@ -102,7 +99,7 @@ public class POM
 		if(pom != null)
 			return pom;
 
-		s_pomCacheLRU.put(uri, pom = new POM(uri));
+		s_pomCacheLRU.put(uri, pom = new POM(uri, repoLocation));
 
 		return pom;
 	}
@@ -119,11 +116,9 @@ public class POM
 
 	private String m_repoRoot;
 
+	private ResolvedModel m_resolvedModel;
+
 	private DocumentRoot m_documentRoot;
-
-	private Map<String, String> m_propertyMap;
-
-	private Map<String, String> m_fullPropertyMap;
 
 	private POM m_parentPOM;
 
@@ -134,7 +129,7 @@ public class POM
 		m_documentRoot.setProject(PomFactory.eINSTANCE.createModel());
 	}
 
-	private POM(URI uri) throws CoreException
+	private POM(URI uri, String repoRoot) throws CoreException
 	{
 		Resource resource = getResourceSet().getResource(uri, true);
 		EList<EObject> content = resource.getContents();
@@ -165,34 +160,24 @@ public class POM
 		if(modifiedSeverity >= Diagnostic.ERROR)
 			throw BuckminsterException.fromMessage("Maven POM model validation failed: %s", diag.getMessage());
 
-		Model model = getProject();
-		String relativePath = "/" + createRelativePath(model.getGroupId(), model.getArtifactId(), model.getVersion());
+		m_repoRoot = repoRoot;
+		Model resolvedModel = getResolvedProject();
+		String relativePath = "/"
+				+ createRelativePath(resolvedModel.getGroupId(), resolvedModel.getArtifactId(),
+						resolvedModel.getVersion());
 		String uriStr = uri.toString();
-		if(uriStr.endsWith(relativePath))
-			m_repoRoot = uriStr.substring(0, uriStr.length() - relativePath.length());
-		else
+		if(!uriStr.endsWith(relativePath))
 			throw BuckminsterException.fromMessage("Invalid path, %s should end with %s", uriStr, relativePath);
-
-		m_propertyMap = null;
-		m_fullPropertyMap = null;
 	}
 
-	public Map<String, String> getFullPropertyMap() throws CoreException
+	public String getArtifactId() throws CoreException
 	{
-		if(m_fullPropertyMap == null)
-		{
-			m_fullPropertyMap = new HashMap<String, String>();
-			m_fullPropertyMap.put("pom.version", getProject().getVersion());
+		return getResolvedProject().getArtifactId();
+	}
 
-			POM pom = this;
-			do
-			{
-				m_fullPropertyMap.putAll(pom.getPropertyMap());
-				pom = pom.getParentPOM();
-			} while(pom != null);
-		}
-
-		return m_fullPropertyMap;
+	public String getGroupId() throws CoreException
+	{
+		return getResolvedProject().getGroupId();
 	}
 
 	public POM getParentPOM() throws CoreException
@@ -216,86 +201,22 @@ public class POM
 		return m_documentRoot.getProject();
 	}
 
-	public Map<String, String> getPropertyMap() throws CoreException
+	public Map<String, String> getProperties() throws CoreException
 	{
-		if(m_propertyMap == null)
-		{
-			m_propertyMap = new HashMap<String, String>();
-			PropertiesType propertiesType = getProject().getProperties();
-			if(propertiesType != null)
-			{
-				FeatureMap properties = getProject().getProperties().getAny();
-				for(int i = properties.size() - 1; i >= 0; i--)
-				{
-					Entry entry = properties.get(i);
-					FeatureMap valueMap = ((AnyTypeImpl)entry.getValue()).getMixed();
-					String value;
-					switch(valueMap.size())
-					{
-					case 0:
-						value = null;
-						break;
-					case 1:
-						value = (String)((AnyTypeImpl)entry.getValue()).getMixed().getValue(0);
-						break;
-					default:
-						throw BuckminsterException.fromMessage("Unexpected property map size: %d", valueMap.size());
-					}
-
-					m_propertyMap.put(entry.getEStructuralFeature().getName(), value);
-				}
-			}
-		}
-
-		return m_propertyMap;
+		return getResolvedProject().getPropertyMap();
 	}
 
-	public String obtainArtifactId() throws CoreException
+	public ResolvedModel getResolvedProject() throws CoreException
 	{
-		String artifactId = GeneralUtils.trimmedOrNull(getProject().getArtifactId());
-		if(artifactId == null)
-		{
-			POM parent = getParentPOM();
-			if(parent != null)
-				artifactId = parent.getProject().getArtifactId();
-		}
+		if(m_resolvedModel == null)
+			m_resolvedModel = new ResolvedModel(m_repoRoot, (ModelImpl)getProject());
 
-		if(artifactId != null)
-			artifactId = expandProperties(artifactId, getFullPropertyMap());
-
-		return artifactId;
+		return m_resolvedModel;
 	}
 
-	public String obtainGroupId() throws CoreException
+	public String getVersion() throws CoreException
 	{
-		String groupId = GeneralUtils.trimmedOrNull(getProject().getGroupId());
-		if(groupId == null)
-		{
-			POM parent = getParentPOM();
-			if(parent != null)
-				groupId = parent.getProject().getGroupId();
-		}
-
-		if(groupId != null)
-			groupId = expandProperties(groupId, getFullPropertyMap());
-
-		return groupId;
-	}
-
-	public String obtainVersion() throws CoreException
-	{
-		String version = GeneralUtils.trimmedOrNull(getProject().getVersion());
-		if(version == null)
-		{
-			POM parent = getParentPOM();
-			if(parent != null)
-				version = parent.getProject().getVersion();
-		}
-
-		if(version != null)
-			version = expandProperties(version, getFullPropertyMap());
-
-		return version;
+		return getResolvedProject().getVersion();
 	}
 
 	public void save() throws CoreException
