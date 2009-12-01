@@ -29,7 +29,6 @@ import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
-import org.eclipse.buckminster.aggregator.util.AggregatorResource;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 
 import org.eclipse.emf.common.notify.AdapterFactory;

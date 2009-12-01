@@ -306,7 +306,8 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	{
 		errors = new BasicEList<String>();
 
-		if(getInstallableUnit() != null && Trivial.trim(getInstallableUnit().getId()) == null || getInstallableUnit() == null)
+		if(getInstallableUnit() != null && Trivial.trim(getInstallableUnit().getId()) == null
+				|| getInstallableUnit() == null)
 			errors.add(getString("_UI_ErrorMessage_InstallableUnitIsNotAvailable"));
 
 		return errors;
@@ -325,12 +326,12 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 		{
 			VersionedId versionedName = InstallableUnitUtils.getVersionedName(getInstallableUnit());
 			Version latestVersion = getLatestVersion();
-	
+
 			if(latestVersion != null && latestVersion.compareTo(versionedName.getVersion()) > 0)
 				infos.add(getString("_UI_InfoMessage_InstallableUnitIsAvailableInVersion") + " "
 						+ GeneralUtils.stringifyVersion(latestVersion));
 		}
-		
+
 		return infos;
 	}
 

@@ -9,7 +9,6 @@ package org.eclipse.buckminster.aggregator.p2.provider;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.P2Package;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;

@@ -549,7 +549,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	protected EContentAdapter problemIndicationAdapter = new EContentAdapter()
 	{
 		private boolean analysisStarted = false;
-		
+
 		@Override
 		public void notifyChanged(Notification notification)
 		{
@@ -568,11 +568,11 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				case Resource.RESOURCE__WARNINGS:
 				{
 					Resource resource = (Resource)notification.getNotifier();
-					
-					// filter out notifications when analysing aggregator repository 
+
+					// filter out notifications when analysing aggregator repository
 					if(resource instanceof AggregatorResourceImpl && analysisStarted)
 						return;
-					
+
 					if(resource instanceof AggregatorResourceImpl)
 					{
 						Diagnostic diagnostic = analyzeResourceProblems(resource, null);
@@ -800,10 +800,11 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 								? (Object)resource
 								: exception });
 				Diagnostic diagnostic = computeDiagnostic(resource, true, true, managedProblems);
-				
-				if(diagnostic.getSeverity() == Diagnostic.OK && (diagnostic.getChildren() == null || diagnostic.getChildren().size() == 0))
+
+				if(diagnostic.getSeverity() == Diagnostic.OK
+						&& (diagnostic.getChildren() == null || diagnostic.getChildren().size() == 0))
 					return Diagnostic.OK_INSTANCE;
-				
+
 				basicDiagnostic.merge(diagnostic);
 				return basicDiagnostic;
 			}
@@ -1474,18 +1475,6 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		}
 	}
 
-	private Resource findResource(URI uri)
-	{
-		if(uri == null)
-			return null;
-		
-		for(Resource resource : editingDomain.getResourceSet().getResources())
-			if(uri.equals(resource.getURI()))
-				return resource;
-		
-		return null;
-	}
-	
 	/**
 	 * This deals with how we want selection in the outliner to affect the other views. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
@@ -2227,7 +2216,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		}
 	}
 
-	private Diagnostic computeDiagnostic(Resource resource, boolean includeWarnings, boolean includeInfos, boolean managedProblems)
+	private Diagnostic computeDiagnostic(Resource resource, boolean includeWarnings, boolean includeInfos,
+			boolean managedProblems)
 	{
 		if(resource.getErrors().isEmpty() && (!includeWarnings || resource.getWarnings().isEmpty()))
 		{
@@ -2257,10 +2247,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				else
 				{
 					String messagePrefix = "";
-					
+
 					if(resourceDiagnostic instanceof ResourceDiagnosticImpl)
 						messagePrefix = getLabelPrefix(resourceDiagnostic.getLocation());
-					
+
 					diagnostic = new BasicDiagnostic(Diagnostic.ERROR, "org.eclipse.emf.ecore.resource", 0,
 							messagePrefix + resourceDiagnostic.getMessage(), new Object[] { resourceDiagnostic });
 				}
@@ -2290,10 +2280,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					else
 					{
 						String messagePrefix = "";
-						
+
 						if(resourceDiagnostic instanceof ResourceDiagnosticImpl)
 							messagePrefix = getLabelPrefix(resourceDiagnostic.getLocation());
-						
+
 						diagnostic = new BasicDiagnostic(Diagnostic.WARNING, "org.eclipse.emf.ecore.resource", 0,
 								messagePrefix + resourceDiagnostic.getMessage(), new Object[] { resourceDiagnostic });
 					}
@@ -2324,10 +2314,10 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					else
 					{
 						String messagePrefix = "";
-						
+
 						if(resourceDiagnostic instanceof ResourceDiagnosticImpl)
 							messagePrefix = getLabelPrefix(resourceDiagnostic.getLocation());
-						
+
 						diagnostic = new BasicDiagnostic(Diagnostic.INFO, "org.eclipse.emf.ecore.resource", 0,
 								messagePrefix + resourceDiagnostic.getMessage(), new Object[] { resourceDiagnostic });
 					}
@@ -2337,6 +2327,18 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 			return basicDiagnostic;
 		}
+	}
+
+	private Resource findResource(URI uri)
+	{
+		if(uri == null)
+			return null;
+
+		for(Resource resource : editingDomain.getResourceSet().getResources())
+			if(uri.equals(resource.getURI()))
+				return resource;
+
+		return null;
 	}
 
 	private String getLabelPrefix(String location)

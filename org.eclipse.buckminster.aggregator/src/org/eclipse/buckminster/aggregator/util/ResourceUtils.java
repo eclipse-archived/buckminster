@@ -109,7 +109,7 @@ public class ResourceUtils
 				}
 			}
 		}
-		
+
 		((AggregatorResourceImpl)topResource).analyzeResource();
 	}
 

@@ -28,26 +28,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
  */
 public class AggregatorResourceImpl extends XMIResourceImpl implements AggregatorResource
 {
-	class NotifyAnalyzeResourceStarted extends NotificationImpl
-	{
-		public NotifyAnalyzeResourceStarted()
-		{
-			super(Notification.SET, true, false);
-		}
-
-		@Override
-		public Object getNotifier()
-		{
-			return AggregatorResourceImpl.this;
-		}
-
-		@Override
-		public int getFeatureID(Class<?> expectedClass)
-		{
-			return RESOURCE__ANALYSIS_STARTED;
-		}
-	}
-        
 	class NotifyAnalyzeResourceFinished extends NotificationImpl
 	{
 		public NotifyAnalyzeResourceFinished()
@@ -56,18 +36,38 @@ public class AggregatorResourceImpl extends XMIResourceImpl implements Aggregato
 		}
 
 		@Override
+		public int getFeatureID(Class<?> expectedClass)
+		{
+			return RESOURCE__ANALYSIS_FINISHED;
+		}
+
+		@Override
 		public Object getNotifier()
 		{
 			return AggregatorResourceImpl.this;
+		}
+	}
+
+	class NotifyAnalyzeResourceStarted extends NotificationImpl
+	{
+		public NotifyAnalyzeResourceStarted()
+		{
+			super(Notification.SET, true, false);
 		}
 
 		@Override
 		public int getFeatureID(Class<?> expectedClass)
 		{
-			return RESOURCE__ANALYSIS_FINISHED;
+			return RESOURCE__ANALYSIS_STARTED;
+		}
+
+		@Override
+		public Object getNotifier()
+		{
+			return AggregatorResourceImpl.this;
 		}
 	}
-        
+
 	/**
 	 * The infos.
 	 * 
@@ -79,7 +79,6 @@ public class AggregatorResourceImpl extends XMIResourceImpl implements Aggregato
 
 	private boolean analysisIsRunning;
 
-	
 	/**
 	 * Creates an instance of the resource. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -90,36 +89,6 @@ public class AggregatorResourceImpl extends XMIResourceImpl implements Aggregato
 	public AggregatorResourceImpl(URI uri)
 	{
 		super(uri);
-	}
-
-	public EList<Diagnostic> getInfos()
-	{
-		if(infos == null)
-		{
-			infos = new NotifyingListImpl<Diagnostic>()
-			{
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				protected boolean isNotificationRequired()
-				{
-					return AggregatorResourceImpl.this.eNotificationRequired();
-				}
-
-				@Override
-				public Object getNotifier()
-				{
-					return AggregatorResourceImpl.this;
-				}
-
-				@Override
-				public int getFeatureID()
-				{
-					return RESOURCE__INFOS;
-				}
-			};
-		}
-		return infos;
 	}
 
 	/*
@@ -192,12 +161,42 @@ public class AggregatorResourceImpl extends XMIResourceImpl implements Aggregato
 
 		new Thread(runnable).start();
 	}
-	
+
+	public EList<Diagnostic> getInfos()
+	{
+		if(infos == null)
+		{
+			infos = new NotifyingListImpl<Diagnostic>()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public int getFeatureID()
+				{
+					return RESOURCE__INFOS;
+				}
+
+				@Override
+				public Object getNotifier()
+				{
+					return AggregatorResourceImpl.this;
+				}
+
+				@Override
+				protected boolean isNotificationRequired()
+				{
+					return AggregatorResourceImpl.this.eNotificationRequired();
+				}
+			};
+		}
+		return infos;
+	}
+
 	private void analyze(EObject object)
 	{
 		if(object instanceof EnabledStatusProvider && !((EnabledStatusProvider)object).isEnabled())
 			return;
-		
+
 		if(object instanceof InfosProvider)
 		{
 			InfosProvider iProvider = (InfosProvider)object;
@@ -211,10 +210,10 @@ public class AggregatorResourceImpl extends XMIResourceImpl implements Aggregato
 			for(String info : iProvider.getInfos())
 				getInfos().add(new ResourceDiagnosticImpl(info, EcoreUtil.getURI(object).toString()));
 		}
-		
+
 		if(object.eContents() == null)
 			return;
-		
+
 		for(EObject childObject : object.eContents())
 			analyze(childObject);
 	}

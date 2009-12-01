@@ -29,6 +29,11 @@ public interface AggregatorResource extends XMIResource
 	int RESOURCE__ANALYSIS_FINISHED = 1003;
 
 	/**
+	 * Analysis aggregator errors, warnings & infos
+	 */
+	void analyzeResource();
+
+	/**
 	 * Returns a list of the infos in the resource; each error will be of type
 	 * {@link org.eclipse.emf.ecore.resource.Resource.Diagnostic}.
 	 * 
@@ -36,9 +41,4 @@ public interface AggregatorResource extends XMIResource
 	 * @see #load(Map)
 	 */
 	EList<Diagnostic> getInfos();
-	
-	/**
-	 * Analysis aggregator errors, warnings & infos
-	 */
-	void analyzeResource();
 }
