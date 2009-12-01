@@ -645,13 +645,13 @@ public class MappedRepositoryImpl extends MetadataRepositoryReferenceImpl implem
 
 		for(InstallableUnitReference iuRef : iuRefs)
 		{
-			InstallableUnit oldIU = iuRef.getInstallableUnit();
+			InstallableUnit oldIU = iuRef.getInstallableUnit(false);
 			InstallableUnit newIU = null;
 
 			if(oldIU != null)
 				newIU = P2Factory.eINSTANCE.createInstallableUnitProxy(getNature(), repo != null
 						? repo.getLocation().toString()
-						: "", InstallableUnitUtils.getVersionedName(oldIU));
+						: getLocation(), InstallableUnitUtils.getVersionedName(oldIU));
 
 			iuRef.setInstallableUnit(newIU);
 		}
