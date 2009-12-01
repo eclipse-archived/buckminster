@@ -9,8 +9,10 @@
  */
 package org.eclipse.buckminster.aggregator.impl;
 
+import java.util.Collection;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.AggregatorPlugin;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
@@ -19,14 +21,20 @@ import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.Status;
 import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
+import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.CompositeQuery;
@@ -41,6 +49,9 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
  * The following features are implemented:
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl#getStatus <em>Status</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl#getErrors <em>Errors</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl#getWarnings <em>Warnings</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl#getInfos <em>Infos</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.InstallableUnitReferenceImpl#getInstallableUnit <em>Installable
  * Unit</em>}</li>
  * </ul>
@@ -69,6 +80,36 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 * @ordered
 	 */
 	protected int eFlags = 0;
+
+	/**
+	 * The cached value of the '{@link #getErrors() <em>Errors</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getErrors()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> errors;
+
+	/**
+	 * The cached value of the '{@link #getWarnings() <em>Warnings</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getWarnings()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> warnings;
+
+	/**
+	 * The cached value of the '{@link #getInfos() <em>Infos</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getInfos()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> infos;
 
 	/**
 	 * The cached value of the '{@link #getInstallableUnit() <em>Installable Unit</em>}' reference. <!-- begin-user-doc
@@ -106,12 +147,68 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 * @generated
 	 */
 	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == InfosProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__ERRORS:
+				return AggregatorPackage.INFOS_PROVIDER__ERRORS;
+			case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__WARNINGS:
+				return AggregatorPackage.INFOS_PROVIDER__WARNINGS;
+			case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INFOS:
+				return AggregatorPackage.INFOS_PROVIDER__INFOS;
+			default:
+				return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == InfosProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.INFOS_PROVIDER__ERRORS:
+				return AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__ERRORS;
+			case AggregatorPackage.INFOS_PROVIDER__WARNINGS:
+				return AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__WARNINGS;
+			case AggregatorPackage.INFOS_PROVIDER__INFOS:
+				return AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INFOS;
+			default:
+				return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__STATUS:
 			return getStatus();
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__ERRORS:
+			return getErrors();
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__WARNINGS:
+			return getWarnings();
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INFOS:
+			return getInfos();
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
 			if(resolve)
 				return getInstallableUnit();
@@ -132,6 +229,12 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 		{
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__STATUS:
 			return getStatus() != null;
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__ERRORS:
+			return errors != null && !errors.isEmpty();
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__WARNINGS:
+			return warnings != null && !warnings.isEmpty();
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INFOS:
+			return infos != null && !infos.isEmpty();
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
 			return installableUnit != null;
 		}
@@ -143,11 +246,24 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 * 
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__ERRORS:
+			getErrors().clear();
+			getErrors().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__WARNINGS:
+			getWarnings().clear();
+			getWarnings().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INFOS:
+			getInfos().clear();
+			getInfos().addAll((Collection<? extends String>)newValue);
+			return;
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
 			setInstallableUnit((InstallableUnit)newValue);
 			return;
@@ -165,11 +281,57 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__ERRORS:
+			getErrors().clear();
+			return;
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__WARNINGS:
+			getWarnings().clear();
+			return;
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INFOS:
+			getInfos().clear();
+			return;
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
 			setInstallableUnit((InstallableUnit)null);
 			return;
 		}
 		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<String> getErrors()
+	{
+		errors = new BasicEList<String>();
+
+		if(getInstallableUnit() != null && Trivial.trim(getInstallableUnit().getId()) == null || getInstallableUnit() == null)
+			errors.add(getString("_UI_ErrorMessage_InstallableUnitIsNotAvailable"));
+
+		return errors;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<String> getInfos()
+	{
+		infos = new BasicEList<String>();
+
+		if(getInstallableUnit() != null)
+		{
+			VersionedId versionedName = InstallableUnitUtils.getVersionedName(getInstallableUnit());
+			Version latestVersion = getLatestVersion();
+	
+			if(latestVersion != null && latestVersion.compareTo(versionedName.getVersion()) > 0)
+				infos.add(getString("_UI_InfoMessage_InstallableUnitIsAvailableInVersion") + " "
+						+ GeneralUtils.stringifyVersion(latestVersion));
+		}
+		
+		return infos;
 	}
 
 	public InstallableUnit getInstallableUnit()
@@ -214,6 +376,31 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 		return installableUnit;
 	}
 
+	public Version getLatestVersion()
+	{
+		VersionedId versionedName = InstallableUnitUtils.getVersionedName(getInstallableUnit());
+
+		Query query = new InstallableUnitQuery(versionedName.getId());
+
+		Collector ius = ((MappedRepository)eContainer()).getMetadataRepository().query(
+				new CompositeQuery(new Query[] { query, new LatestIUVersionQuery() }), new Collector(),
+				new NullProgressMonitor());
+
+		if(ius.size() <= 0)
+		{
+			ius = ((MappedRepository)eContainer()).getMetadataRepository().query(query, new Collector(),
+					new NullProgressMonitor());
+		}
+
+		if(ius.size() > 0)
+		{
+			InstallableUnit iu = (InstallableUnit)ius.toArray(InstallableUnit.class)[0];
+			return iu.getVersion();
+		}
+		else
+			return null;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -230,26 +417,13 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 		if(isBranchEnabled() && getInstallableUnit() != null)
 			if(InstallableUnitUtils.getStatus(getInstallableUnit()).getCode() == StatusCode.BROKEN)
 			{
-				VersionedId versionedName = InstallableUnitUtils.getVersionedName(getInstallableUnit());
+				Version latestVersion = getLatestVersion();
 
-				Query query = new InstallableUnitQuery(versionedName.getId());
-
-				Collector ius = ((MappedRepository)eContainer()).getMetadataRepository().query(
-						new CompositeQuery(new Query[] { query, new LatestIUVersionQuery() }), new Collector(),
-						new NullProgressMonitor());
-
-				if(ius.size() <= 0)
+				if(latestVersion != null)
 				{
-					ius = ((MappedRepository)eContainer()).getMetadataRepository().query(query, new Collector(),
-							new NullProgressMonitor());
-				}
-
-				if(ius.size() > 0)
-				{
-					InstallableUnit iu = (InstallableUnit)ius.toArray(InstallableUnit.class)[0];
 					return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
-							getString("_UI_ErrorMessage_InstallableUnitIsAvailableInVersion") + " "
-									+ iu.getVersion().toString());
+							getString("_UI_InfoMessage_InstallableUnitIsAvailableInVersion") + " "
+									+ GeneralUtils.stringifyVersion(latestVersion));
 				}
 				else
 					return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
@@ -257,6 +431,21 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 			}
 
 		return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getWarnings()
+	{
+		if(warnings == null)
+		{
+			warnings = new EDataTypeUniqueEList<String>(String.class, this,
+					AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__WARNINGS);
+		}
+		return warnings;
 	}
 
 	/**
@@ -308,6 +497,28 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET,
 					AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT, oldInstallableUnit, installableUnit));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public String toString()
+	{
+		if(eIsProxy())
+			return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (errors: ");
+		result.append(errors);
+		result.append(", warnings: ");
+		result.append(warnings);
+		result.append(", infos: ");
+		result.append(infos);
+		result.append(')');
+		return result.toString();
 	}
 
 	/**

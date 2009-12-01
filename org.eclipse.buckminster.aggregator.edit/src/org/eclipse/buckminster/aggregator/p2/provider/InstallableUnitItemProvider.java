@@ -91,19 +91,12 @@ public class InstallableUnitItemProvider extends AggregatorItemProviderAdapter i
 	/**
 	 * This returns InstallableUnit.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		StatusCode statusCode = InstallableUnitUtils.getStatus((InstallableUnit)object).getCode();
-		Object image;
-		if(statusCode == StatusCode.BROKEN)
-			image = getResourceLocator().getImage("full/obj16/Error");
-		else
-			image = getResourceLocator().getImage("full/obj16/InstallableUnit");
-
-		return overlayImage(object, image);
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/InstallableUnit"));
 	}
 
 	/**

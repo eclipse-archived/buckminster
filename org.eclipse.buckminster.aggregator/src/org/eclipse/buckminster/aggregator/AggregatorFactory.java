@@ -107,6 +107,14 @@ public interface AggregatorFactory extends EFactory
 	Feature createFeature();
 
 	/**
+	 * Returns a new object of class '<em>Infos Provider</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Infos Provider</em>'.
+	 * @generated
+	 */
+	InfosProvider createInfosProvider();
+
+	/**
 	 * Returns a new object of class '<em>Mapped Repository</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Mapped Repository</em>'.

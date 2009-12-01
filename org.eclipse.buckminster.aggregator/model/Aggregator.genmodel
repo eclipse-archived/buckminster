@@ -169,6 +169,7 @@
       <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/startRepositoryLoad">
         <genParameters ecoreParameter="Aggregator.ecore#//MetadataRepositoryReference/startRepositoryLoad/forceReload"/>
       </genOperations>
+      <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/cancelRepositoryLoad"/>
       <genOperations ecoreOperation="Aggregator.ecore#//MetadataRepositoryReference/onRepositoryLoad"/>
     </genClasses>
     <genClasses ecoreClass="Aggregator.ecore#//Comparable">
@@ -202,6 +203,14 @@
     </genClasses>
     <genClasses image="false" ecoreClass="Aggregator.ecore#//StatusProvider">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference Aggregator.ecore#//StatusProvider/status"/>
+    </genClasses>
+    <genClasses provider="None" ecoreClass="Aggregator.ecore#//InfosProvider">
+      <genFeatures property="None" notify="false" createChild="false" propertyCategory=""
+          propertyDescription="" ecoreFeature="ecore:EAttribute Aggregator.ecore#//InfosProvider/errors"/>
+      <genFeatures property="None" notify="false" createChild="false" propertyCategory=""
+          ecoreFeature="ecore:EAttribute Aggregator.ecore#//InfosProvider/warnings"/>
+      <genFeatures property="None" notify="false" createChild="false" propertyDescription=""
+          ecoreFeature="ecore:EAttribute Aggregator.ecore#//InfosProvider/infos"/>
     </genClasses>
     <nestedGenPackages prefix="P2" disposableProviderFactory="true" multipleEditorPages="false"
         generateModelWizard="false" ecorePackage="Aggregator.ecore#//p2">

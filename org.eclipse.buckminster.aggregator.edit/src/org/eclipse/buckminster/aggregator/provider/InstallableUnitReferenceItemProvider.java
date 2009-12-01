@@ -21,6 +21,7 @@ import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.impl.InstallableUnitImpl;
+import org.eclipse.buckminster.aggregator.util.AggregatorResource;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -123,7 +124,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public void notifyChanged(Notification notification)
@@ -133,6 +134,10 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 		switch(notification.getFeatureID(InstallableUnitReference.class))
 		{
 		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INSTALLABLE_UNIT:
+			((AggregatorResource)((EObject)notification.getNotifier()).eResource()).analyzeResource();
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__ERRORS:
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__WARNINGS:
+		case AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__INFOS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 			return;
 		}

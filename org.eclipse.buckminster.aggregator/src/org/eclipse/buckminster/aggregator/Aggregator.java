@@ -34,7 +34,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface Aggregator extends DescriptionProvider, StatusProvider
+public interface Aggregator extends DescriptionProvider, StatusProvider, InfosProvider
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

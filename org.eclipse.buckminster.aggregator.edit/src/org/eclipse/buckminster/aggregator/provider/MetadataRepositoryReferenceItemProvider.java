@@ -29,6 +29,7 @@ import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
+import org.eclipse.buckminster.aggregator.util.AggregatorResource;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -289,6 +290,9 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		switch(notification.getFeatureID(MetadataRepositoryReference.class))
 		{
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ERRORS:
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__WARNINGS:
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__INFOS:
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__NATURE:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

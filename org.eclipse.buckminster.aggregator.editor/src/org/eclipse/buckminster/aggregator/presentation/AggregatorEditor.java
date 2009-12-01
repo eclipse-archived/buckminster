@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFactory;
@@ -30,8 +32,10 @@ import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.provider.TooltipTextProvider;
+import org.eclipse.buckminster.aggregator.util.AggregatorResource;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
 import org.eclipse.buckminster.aggregator.util.OverlaidImage;
+import org.eclipse.buckminster.aggregator.util.ResourceDiagnosticImpl;
 import org.eclipse.buckminster.aggregator.util.StatusProviderAdapterFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -73,13 +77,17 @@ import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
 import org.eclipse.emf.edit.provider.AdapterFactoryItemDelegator;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.emf.edit.provider.IChangeNotifier;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemFontProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
+import org.eclipse.emf.edit.provider.INotifyChangedListener;
+import org.eclipse.emf.edit.provider.IViewerNotification;
 import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProvider;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
+import org.eclipse.emf.edit.ui.EMFEditUIPlugin;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.emf.edit.ui.celleditor.AdapterFactoryTreeEditor;
 import org.eclipse.emf.edit.ui.dnd.EditingDomainViewerDropAdapter;
@@ -88,6 +96,7 @@ import org.eclipse.emf.edit.ui.dnd.ViewerDragAdapter;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.edit.ui.provider.UnwrappingSelectionProvider;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider.ViewerRefresh;
 import org.eclipse.emf.edit.ui.util.EditUIMarkerHelper;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
 import org.eclipse.emf.edit.ui.view.ExtendedPropertySheetPage;
@@ -152,7 +161,7 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
  * 
  * @generated
  */
-@SuppressWarnings("restriction")
+@SuppressWarnings( { "restriction", "unused" })
 public class AggregatorEditor extends MultiPageEditorPart implements IEditingDomainProvider, ISelectionProvider,
 		IMenuListener, IViewerProvider, IGotoMarker
 {
@@ -225,7 +234,96 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		}
 	}
 
-	private static final String AGGREGATOR_EDITOR_SCOPE = "org.eclipse.buckminster.aggregator.presentation.aggregatorEditorScope";
+	class AggregatorMarkerHelper extends EditUIMarkerHelper
+	{
+		public void createMarkers(Resource markerResource, Diagnostic diagnostic) throws CoreException
+		{
+			if(diagnostic.getChildren().isEmpty())
+			{
+				if(diagnostic.getSeverity() != Diagnostic.OK)
+					createMarkers(getFile(markerResource), diagnostic, null);
+			}
+			else if(diagnostic.getMessage() == null)
+			{
+				for(Diagnostic childDiagnostic : diagnostic.getChildren())
+				{
+					createMarkers(markerResource, childDiagnostic);
+				}
+			}
+			else
+			{
+				for(Diagnostic childDiagnostic : diagnostic.getChildren())
+				{
+					createMarkers(getFile(markerResource), childDiagnostic, diagnostic);
+				}
+			}
+		}
+
+		@Override
+		protected void adjustMarker(IMarker marker, Diagnostic diagnostic, Diagnostic parentDiagnostic)
+				throws CoreException
+		{
+			List<?> data = diagnostic.getData();
+			StringBuilder relatedURIs = new StringBuilder();
+			boolean first = true;
+
+			for(Object object : data)
+			{
+				String uriString = null;
+
+				if(object instanceof Resource.Diagnostic)
+					uriString = ((Resource.Diagnostic)object).getLocation();
+				else
+				{
+					URI uri = null;
+
+					if(object instanceof EObject)
+						uri = EcoreUtil.getURI((EObject)object);
+					else if(object instanceof Resource)
+						uri = ((Resource)object).getURI();
+
+					if(uri != null)
+						uriString = uri.toString();
+				}
+
+				if(uriString != null)
+				{
+					if(first)
+					{
+						first = false;
+						marker.setAttribute(EValidator.URI_ATTRIBUTE, uriString);
+					}
+					else
+					{
+						if(relatedURIs.length() != 0)
+						{
+							relatedURIs.append(' ');
+						}
+						relatedURIs.append(URI.encodeFragment(uriString, false));
+					}
+				}
+			}
+
+			if(relatedURIs.length() > 0)
+			{
+				marker.setAttribute(EValidator.RELATED_URIS_ATTRIBUTE, relatedURIs.toString());
+			}
+		}
+
+		@Override
+		protected String getMarkerID()
+		{
+			return AGGREGATOR_NONPERSISTENT_PROBLEM_MARKER;
+		}
+	}
+
+	public static final String AGGREGATOR_EDITOR_SCOPE = "org.eclipse.buckminster.aggregator.presentation.aggregatorEditorScope";
+
+	public static final String AGGREGATOR_PROBLEM_MARKER = "org.eclipse.buckminster.aggregator.editor.diagnostic";
+
+	public static final String AGGREGATOR_PERSISTENT_PROBLEM_MARKER = "org.eclipse.buckminster.aggregator.editor.diagnostic.persistent";
+
+	public static final String AGGREGATOR_NONPERSISTENT_PROBLEM_MARKER = "org.eclipse.buckminster.aggregator.editor.diagnostic.nonpersistent";
 
 	/**
 	 * This looks up a string in the plugin's plugin.properties file. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -335,9 +433,18 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	 * The MarkerHelper is responsible for creating workspace resource markers presented in Eclipse's Problems View.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	protected MarkerHelper markerHelper = new EditUIMarkerHelper();
+	protected MarkerHelper markerHelper = new EditUIMarkerHelper()
+	{
+		@Override
+		protected String getMarkerID()
+		{
+			return AGGREGATOR_PROBLEM_MARKER;
+		}
+	};
+
+	protected AggregatorMarkerHelper managedMarkerHelper = new AggregatorMarkerHelper();
 
 	private Pattern findIUIdPattern;
 
@@ -424,6 +531,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	 */
 	protected Map<Resource, Diagnostic> resourceToDiagnosticMap = new LinkedHashMap<Resource, Diagnostic>();
 
+	protected Map<Resource, Diagnostic> managedResourceToDiagnosticMap = new LinkedHashMap<Resource, Diagnostic>();
+
 	/**
 	 * Controls whether the problem indication should be updated. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -435,10 +544,12 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	 * Adapter used to update the problem indication when resources are demanded loaded. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	protected EContentAdapter problemIndicationAdapter = new EContentAdapter()
 	{
+		private boolean analysisStarted = false;
+		
 		@Override
 		public void notifyChanged(Notification notification)
 		{
@@ -446,30 +557,83 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			{
 				switch(notification.getFeatureID(Resource.class))
 				{
+				case AggregatorResource.RESOURCE__ANALYSIS_STARTED:
+					analysisStarted = true;
+					break;
+				case AggregatorResource.RESOURCE__ANALYSIS_FINISHED:
+					analysisStarted = false;
+				case Resource.RESOURCE__RESOURCE_SET:
 				case Resource.RESOURCE__IS_LOADED:
 				case Resource.RESOURCE__ERRORS:
 				case Resource.RESOURCE__WARNINGS:
 				{
 					Resource resource = (Resource)notification.getNotifier();
-					Diagnostic diagnostic = analyzeResourceProblems(resource, null);
-					if(diagnostic.getSeverity() != Diagnostic.OK)
+					
+					// filter out notifications when analysing aggregator repository 
+					if(resource instanceof AggregatorResourceImpl && analysisStarted)
+						return;
+					
+					if(resource instanceof AggregatorResourceImpl)
 					{
-						resourceToDiagnosticMap.put(resource, diagnostic);
-					}
-					else
-					{
-						resourceToDiagnosticMap.remove(resource);
+						Diagnostic diagnostic = analyzeResourceProblems(resource, null);
+
+						if(diagnostic.getSeverity() != Diagnostic.OK)
+						{
+							resourceToDiagnosticMap.put(resource, diagnostic);
+						}
+						else
+						{
+							resourceToDiagnosticMap.remove(resource);
+						}
+
+						if(updateProblemIndication)
+						{
+							getSite().getShell().getDisplay().asyncExec(new Runnable()
+							{
+								public void run()
+								{
+									updateProblemIndication();
+								}
+							});
+						}
 					}
 
-					if(updateProblemIndication)
+					if(resource.getResourceSet() == null)
+						managedResourceToDiagnosticMap.remove(resource);
+					else
 					{
-						getSite().getShell().getDisplay().asyncExec(new Runnable()
+						Diagnostic diagnostic = analyzeResourceProblems(resource, null, true);
+
+						if(diagnostic.getSeverity() != Diagnostic.OK)
+							managedResourceToDiagnosticMap.put(resource, diagnostic);
+						else
+							managedResourceToDiagnosticMap.remove(resource);
+					}
+
+					// only aggregatorResource is a file and can be used for markers
+					Resource aggregatorResource = editingDomain.getResourceSet().getResources().get(0);
+					BasicDiagnostic basicDiagnostic = new BasicDiagnostic(Diagnostic.OK,
+							"org.eclipse.buckminster.aggregator.editor", 0, null, null);
+
+					for(Resource rsrc : editingDomain.getResourceSet().getResources())
+					{
+						Diagnostic diagnostic = managedResourceToDiagnosticMap.get(rsrc);
+
+						if(diagnostic != null)
+							basicDiagnostic.add(diagnostic);
+					}
+
+					managedMarkerHelper.deleteMarkers(aggregatorResource);
+					if(basicDiagnostic.getSeverity() != Diagnostic.OK)
+					{
+						try
 						{
-							public void run()
-							{
-								updateProblemIndication();
-							}
-						});
+							managedMarkerHelper.createMarkers(aggregatorResource, basicDiagnostic);
+						}
+						catch(CoreException exception)
+						{
+							AggregatorEditorPlugin.INSTANCE.log(exception);
+						}
 					}
 					break;
 				}
@@ -617,28 +781,41 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	 * Returns a diagnostic describing the errors and warnings listed in the resource and the specified exception (if
 	 * any). <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public Diagnostic analyzeResourceProblems(Resource resource, Exception exception)
 	{
-		if(!resource.getErrors().isEmpty() || !resource.getWarnings().isEmpty())
+		return analyzeResourceProblems(resource, exception, false);
+	}
+
+	public Diagnostic analyzeResourceProblems(Resource resource, Exception exception, boolean managedProblems)
+	{
+		synchronized(resource)
 		{
-			BasicDiagnostic basicDiagnostic = new BasicDiagnostic(Diagnostic.ERROR,
-					"org.eclipse.buckminster.aggregator.editor", 0, getString("_UI_CreateModelError_message",
-							resource.getURI()), new Object[] { exception == null
-							? (Object)resource
-							: exception });
-			basicDiagnostic.merge(EcoreUtil.computeDiagnostic(resource, true));
-			return basicDiagnostic;
-		}
-		else if(exception != null)
-		{
-			return new BasicDiagnostic(Diagnostic.ERROR, "org.eclipse.buckminster.aggregator.editor", 0, getString(
-					"_UI_CreateModelError_message", resource.getURI()), new Object[] { exception });
-		}
-		else
-		{
-			return Diagnostic.OK_INSTANCE;
+			if(!resource.getErrors().isEmpty() || !resource.getWarnings().isEmpty())
+			{
+				BasicDiagnostic basicDiagnostic = new BasicDiagnostic(Diagnostic.ERROR,
+						"org.eclipse.buckminster.aggregator.editor", 0, getString("_UI_CreateModelError_message",
+								resource.getURI()), new Object[] { exception == null
+								? (Object)resource
+								: exception });
+				Diagnostic diagnostic = computeDiagnostic(resource, true, true, managedProblems);
+				
+				if(diagnostic.getSeverity() == Diagnostic.OK && (diagnostic.getChildren() == null || diagnostic.getChildren().size() == 0))
+					return Diagnostic.OK_INSTANCE;
+				
+				basicDiagnostic.merge(diagnostic);
+				return basicDiagnostic;
+			}
+			else if(exception != null)
+			{
+				return new BasicDiagnostic(Diagnostic.ERROR, "org.eclipse.buckminster.aggregator.editor", 0, getString(
+						"_UI_CreateModelError_message", resource.getURI()), new Object[] { exception });
+			}
+			else
+			{
+				return Diagnostic.OK_INSTANCE;
+			}
 		}
 	}
 
@@ -669,7 +846,6 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				}
 
 				final List<MetadataRepositoryReference> repositoriesToLoad = aggregator.getAllMetadataRepositoryReferences(true);
-
 				Job wrapperJob = new Job("Loading repositories...")
 				{
 					@Override
@@ -1265,22 +1441,29 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public void gotoMarker(IMarker marker)
 	{
 		try
 		{
-			if(marker.getType().equals(EValidator.MARKER))
+			if(marker.getType().equals(EValidator.MARKER) || marker.getType().startsWith(AGGREGATOR_PROBLEM_MARKER))
 			{
 				String uriAttribute = marker.getAttribute(EValidator.URI_ATTRIBUTE, null);
 				if(uriAttribute != null)
 				{
 					URI uri = URI.createURI(uriAttribute);
-					EObject eObject = editingDomain.getResourceSet().getEObject(uri, true);
-					if(eObject != null)
+					if(uri.fragment() != null)
 					{
-						setSelectionToViewer(Collections.singleton(editingDomain.getWrapper(eObject)));
+						EObject eObject = editingDomain.getResourceSet().getEObject(uri, true);
+						if(eObject != null)
+							setSelectionToViewer(Collections.singleton(editingDomain.getWrapper(eObject)));
+					}
+					else
+					{
+						Resource resource = findResource(uri);
+						if(resource != null)
+							setSelectionToViewer(Collections.singleton(resource));
 					}
 				}
 			}
@@ -1291,6 +1474,18 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		}
 	}
 
+	private Resource findResource(URI uri)
+	{
+		if(uri == null)
+			return null;
+		
+		for(Resource resource : editingDomain.getResourceSet().getResources())
+			if(uri.equals(resource.getURI()))
+				return resource;
+		
+		return null;
+	}
+	
 	/**
 	 * This deals with how we want selection in the outliner to affect the other views. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
@@ -2030,5 +2225,151 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				}
 			}
 		}
+	}
+
+	private Diagnostic computeDiagnostic(Resource resource, boolean includeWarnings, boolean includeInfos, boolean managedProblems)
+	{
+		if(resource.getErrors().isEmpty() && (!includeWarnings || resource.getWarnings().isEmpty()))
+		{
+			return Diagnostic.OK_INSTANCE;
+		}
+		else
+		{
+			BasicDiagnostic basicDiagnostic = new BasicDiagnostic();
+			for(Resource.Diagnostic resourceDiagnostic : resource.getErrors())
+			{
+				if(managedProblems)
+				{
+					if(!(resourceDiagnostic instanceof ResourceDiagnosticImpl))
+						continue;
+				}
+				else
+				{
+					if(resourceDiagnostic instanceof ResourceDiagnosticImpl)
+						continue;
+				}
+
+				Diagnostic diagnostic = null;
+				if(resourceDiagnostic instanceof Throwable)
+				{
+					diagnostic = BasicDiagnostic.toDiagnostic((Throwable)resourceDiagnostic);
+				}
+				else
+				{
+					String messagePrefix = "";
+					
+					if(resourceDiagnostic instanceof ResourceDiagnosticImpl)
+						messagePrefix = getLabelPrefix(resourceDiagnostic.getLocation());
+					
+					diagnostic = new BasicDiagnostic(Diagnostic.ERROR, "org.eclipse.emf.ecore.resource", 0,
+							messagePrefix + resourceDiagnostic.getMessage(), new Object[] { resourceDiagnostic });
+				}
+				basicDiagnostic.add(diagnostic);
+			}
+
+			if(includeWarnings)
+			{
+				for(Resource.Diagnostic resourceDiagnostic : resource.getWarnings())
+				{
+					if(managedProblems)
+					{
+						if(!(resourceDiagnostic instanceof ResourceDiagnosticImpl))
+							continue;
+					}
+					else
+					{
+						if(resourceDiagnostic instanceof ResourceDiagnosticImpl)
+							continue;
+					}
+
+					Diagnostic diagnostic = null;
+					if(resourceDiagnostic instanceof Throwable)
+					{
+						diagnostic = BasicDiagnostic.toDiagnostic((Throwable)resourceDiagnostic);
+					}
+					else
+					{
+						String messagePrefix = "";
+						
+						if(resourceDiagnostic instanceof ResourceDiagnosticImpl)
+							messagePrefix = getLabelPrefix(resourceDiagnostic.getLocation());
+						
+						diagnostic = new BasicDiagnostic(Diagnostic.WARNING, "org.eclipse.emf.ecore.resource", 0,
+								messagePrefix + resourceDiagnostic.getMessage(), new Object[] { resourceDiagnostic });
+					}
+					basicDiagnostic.add(diagnostic);
+				}
+			}
+
+			if(includeInfos && resource instanceof AggregatorResource)
+			{
+				for(Resource.Diagnostic resourceDiagnostic : ((AggregatorResource)resource).getInfos())
+				{
+					if(managedProblems)
+					{
+						if(!(resourceDiagnostic instanceof ResourceDiagnosticImpl))
+							continue;
+					}
+					else
+					{
+						if(resourceDiagnostic instanceof ResourceDiagnosticImpl)
+							continue;
+					}
+
+					Diagnostic diagnostic = null;
+					if(resourceDiagnostic instanceof Throwable)
+					{
+						diagnostic = BasicDiagnostic.toDiagnostic((Throwable)resourceDiagnostic);
+					}
+					else
+					{
+						String messagePrefix = "";
+						
+						if(resourceDiagnostic instanceof ResourceDiagnosticImpl)
+							messagePrefix = getLabelPrefix(resourceDiagnostic.getLocation());
+						
+						diagnostic = new BasicDiagnostic(Diagnostic.INFO, "org.eclipse.emf.ecore.resource", 0,
+								messagePrefix + resourceDiagnostic.getMessage(), new Object[] { resourceDiagnostic });
+					}
+					basicDiagnostic.add(diagnostic);
+				}
+			}
+
+			return basicDiagnostic;
+		}
+	}
+
+	private String getLabelPrefix(String location)
+	{
+		if(location != null)
+		{
+			URI uri = URI.createURI(location);
+			if(uri != null && uri.fragment() != null)
+			{
+				EObject eObject = editingDomain.getResourceSet().getEObject(uri, true);
+				if(eObject != null)
+				{
+					IItemLabelProvider labelProvider = (IItemLabelProvider)adapterFactory.getRootAdapterFactory().adapt(
+							eObject, IItemLabelProvider.class);
+
+					if(labelProvider != null)
+						return labelProvider.getText(eObject) + ": ";
+				}
+			}
+		}
+
+		return "";
+	}
+
+	private Resource getResourceByURI(URI uri)
+	{
+		if(uri == null)
+			return null;
+
+		for(Resource resource : editingDomain.getResourceSet().getResources())
+			if(uri.equals(resource.getURI()))
+				return resource;
+
+		return null;
 	}
 }

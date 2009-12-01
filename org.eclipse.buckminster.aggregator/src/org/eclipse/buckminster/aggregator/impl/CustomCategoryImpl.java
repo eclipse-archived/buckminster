@@ -12,6 +12,7 @@ import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.Status;
 import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.emf.common.notify.Notification;
@@ -21,6 +22,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -30,6 +32,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getStatus <em>Status</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getErrors <em>Errors</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getWarnings <em>Warnings</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getInfos <em>Infos</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getIdentifier <em>Identifier</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getLabel <em>Label</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.CustomCategoryImpl#getDescription <em>Description</em>}</li>
@@ -49,6 +54,36 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	 * @ordered
 	 */
 	protected int eFlags = 0;
+
+	/**
+	 * The cached value of the '{@link #getErrors() <em>Errors</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getErrors()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> errors;
+
+	/**
+	 * The cached value of the '{@link #getWarnings() <em>Warnings</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getWarnings()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> warnings;
+
+	/**
+	 * The cached value of the '{@link #getInfos() <em>Infos</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getInfos()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> infos;
 
 	/**
 	 * The default value of the '{@link #getIdentifier() <em>Identifier</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -136,12 +171,68 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	 * @generated
 	 */
 	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == InfosProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.CUSTOM_CATEGORY__ERRORS:
+				return AggregatorPackage.INFOS_PROVIDER__ERRORS;
+			case AggregatorPackage.CUSTOM_CATEGORY__WARNINGS:
+				return AggregatorPackage.INFOS_PROVIDER__WARNINGS;
+			case AggregatorPackage.CUSTOM_CATEGORY__INFOS:
+				return AggregatorPackage.INFOS_PROVIDER__INFOS;
+			default:
+				return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == InfosProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.INFOS_PROVIDER__ERRORS:
+				return AggregatorPackage.CUSTOM_CATEGORY__ERRORS;
+			case AggregatorPackage.INFOS_PROVIDER__WARNINGS:
+				return AggregatorPackage.CUSTOM_CATEGORY__WARNINGS;
+			case AggregatorPackage.INFOS_PROVIDER__INFOS:
+				return AggregatorPackage.CUSTOM_CATEGORY__INFOS;
+			default:
+				return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
 		case AggregatorPackage.CUSTOM_CATEGORY__STATUS:
 			return getStatus();
+		case AggregatorPackage.CUSTOM_CATEGORY__ERRORS:
+			return getErrors();
+		case AggregatorPackage.CUSTOM_CATEGORY__WARNINGS:
+			return getWarnings();
+		case AggregatorPackage.CUSTOM_CATEGORY__INFOS:
+			return getInfos();
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 			return getIdentifier();
 		case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
@@ -199,6 +290,12 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 		{
 		case AggregatorPackage.CUSTOM_CATEGORY__STATUS:
 			return getStatus() != null;
+		case AggregatorPackage.CUSTOM_CATEGORY__ERRORS:
+			return errors != null && !errors.isEmpty();
+		case AggregatorPackage.CUSTOM_CATEGORY__WARNINGS:
+			return warnings != null && !warnings.isEmpty();
+		case AggregatorPackage.CUSTOM_CATEGORY__INFOS:
+			return infos != null && !infos.isEmpty();
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 			return IDENTIFIER_EDEFAULT == null
 					? identifier != null
@@ -228,6 +325,18 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.CUSTOM_CATEGORY__ERRORS:
+			getErrors().clear();
+			getErrors().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__WARNINGS:
+			getWarnings().clear();
+			getWarnings().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__INFOS:
+			getInfos().clear();
+			getInfos().addAll((Collection<? extends String>)newValue);
+			return;
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 			setIdentifier((String)newValue);
 			return;
@@ -255,6 +364,15 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.CUSTOM_CATEGORY__ERRORS:
+			getErrors().clear();
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__WARNINGS:
+			getWarnings().clear();
+			return;
+		case AggregatorPackage.CUSTOM_CATEGORY__INFOS:
+			getInfos().clear();
+			return;
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 			setIdentifier(IDENTIFIER_EDEFAULT);
 			return;
@@ -279,6 +397,20 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	public String getDescription()
 	{
 		return description;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getErrors()
+	{
+		if(errors == null)
+		{
+			errors = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.CUSTOM_CATEGORY__ERRORS);
+		}
+		return errors;
 	}
 
 	/**
@@ -311,6 +443,20 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 	 * 
 	 * @generated
 	 */
+	public EList<String> getInfos()
+	{
+		if(infos == null)
+		{
+			infos = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.CUSTOM_CATEGORY__INFOS);
+		}
+		return infos;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public String getLabel()
 	{
 		return label;
@@ -326,6 +472,20 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 				return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
 		return AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getWarnings()
+	{
+		if(warnings == null)
+		{
+			warnings = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.CUSTOM_CATEGORY__WARNINGS);
+		}
+		return warnings;
 	}
 
 	/**
@@ -382,7 +542,13 @@ public class CustomCategoryImpl extends MinimalEObjectImpl.Container implements 
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (identifier: ");
+		result.append(" (errors: ");
+		result.append(errors);
+		result.append(", warnings: ");
+		result.append(warnings);
+		result.append(", infos: ");
+		result.append(infos);
+		result.append(", identifier: ");
 		result.append(identifier);
 		result.append(", label: ");
 		result.append(label);

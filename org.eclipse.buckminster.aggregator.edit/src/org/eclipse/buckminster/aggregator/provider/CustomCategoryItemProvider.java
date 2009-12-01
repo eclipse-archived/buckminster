@@ -145,6 +145,9 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 
 		switch(notification.getFeatureID(CustomCategory.class))
 		{
+		case AggregatorPackage.CUSTOM_CATEGORY__ERRORS:
+		case AggregatorPackage.CUSTOM_CATEGORY__WARNINGS:
+		case AggregatorPackage.CUSTOM_CATEGORY__INFOS:
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 		case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
 		case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:

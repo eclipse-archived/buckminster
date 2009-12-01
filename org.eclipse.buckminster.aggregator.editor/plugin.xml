@@ -99,5 +99,26 @@
           parentId="org.eclipse.ui.contexts.window">
     </context>
  </extension>
+    <extension
+         id="diagnostic"
+         name="%_UI_AggregatorDiagnostic_marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         id="diagnostic.persistent"
+         name="%_UI_AggregatorDiagnostic_marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.emf.ecore.diagnostic"/>
+      <persistent value="true"/>
+   </extension>
+    <extension
+         id="diagnostic.nonpersistent"
+         name="%_UI_AggregatorDiagnostic_marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.emf.ecore.diagnostic"/>
+      <persistent value="false"/>
+   </extension>
  
 </plugin>

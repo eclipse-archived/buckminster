@@ -9,12 +9,14 @@
  */
 package org.eclipse.buckminster.aggregator.impl;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.AggregatorPlugin;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Status;
@@ -22,18 +24,22 @@ import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
+import org.eclipse.buckminster.aggregator.util.AggregatorResource;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
@@ -46,6 +52,9 @@ import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#isEnabled <em>Enabled</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getStatus <em>Status</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getErrors <em>Errors</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getWarnings <em>Warnings</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getInfos <em>Infos</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getMetadataRepository <em>Metadata
  * Repository</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MetadataRepositoryReferenceImpl#getLocation <em>Location</em>}</li>
@@ -96,6 +105,36 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * @ordered
 	 */
 	protected static final int ENABLED_EFLAG = 1 << 0;
+
+	/**
+	 * The cached value of the '{@link #getErrors() <em>Errors</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getErrors()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> errors;
+
+	/**
+	 * The cached value of the '{@link #getWarnings() <em>Warnings</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getWarnings()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> warnings;
+
+	/**
+	 * The cached value of the '{@link #getInfos() <em>Infos</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getInfos()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> infos;
 
 	/**
 	 * The cached value of the '{@link #getMetadataRepository() <em>Metadata Repository</em>}' reference. <!--
@@ -196,6 +235,20 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 				return -1;
 			}
 		}
+		if(baseClass == InfosProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ERRORS:
+				return AggregatorPackage.INFOS_PROVIDER__ERRORS;
+			case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__WARNINGS:
+				return AggregatorPackage.INFOS_PROVIDER__WARNINGS;
+			case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__INFOS:
+				return AggregatorPackage.INFOS_PROVIDER__INFOS;
+			default:
+				return -1;
+			}
+		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
 	}
 
@@ -217,6 +270,20 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 				return -1;
 			}
 		}
+		if(baseClass == InfosProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.INFOS_PROVIDER__ERRORS:
+				return AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ERRORS;
+			case AggregatorPackage.INFOS_PROVIDER__WARNINGS:
+				return AggregatorPackage.METADATA_REPOSITORY_REFERENCE__WARNINGS;
+			case AggregatorPackage.INFOS_PROVIDER__INFOS:
+				return AggregatorPackage.METADATA_REPOSITORY_REFERENCE__INFOS;
+			default:
+				return -1;
+			}
+		}
 		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
 	}
 
@@ -234,6 +301,12 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			return isEnabled();
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__STATUS:
 			return getStatus();
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ERRORS:
+			return getErrors();
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__WARNINGS:
+			return getWarnings();
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__INFOS:
+			return getInfos();
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY:
 			if(resolve)
 				return getMetadataRepository();
@@ -260,6 +333,12 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			return ((eFlags & ENABLED_EFLAG) != 0) != ENABLED_EDEFAULT;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__STATUS:
 			return getStatus() != null;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ERRORS:
+			return errors != null && !errors.isEmpty();
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__WARNINGS:
+			return warnings != null && !warnings.isEmpty();
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__INFOS:
+			return infos != null && !infos.isEmpty();
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY:
 			return metadataRepository != null;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
@@ -279,6 +358,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 * 
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
@@ -286,6 +366,18 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		{
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
 			setEnabled((Boolean)newValue);
+			return;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ERRORS:
+			getErrors().clear();
+			getErrors().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__WARNINGS:
+			getWarnings().clear();
+			getWarnings().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__INFOS:
+			getInfos().clear();
+			getInfos().addAll((Collection<? extends String>)newValue);
 			return;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY:
 			setMetadataRepository((MetadataRepository)newValue);
@@ -313,6 +405,15 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
 			setEnabled(ENABLED_EDEFAULT);
 			return;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ERRORS:
+			getErrors().clear();
+			return;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__WARNINGS:
+			getWarnings().clear();
+			return;
+		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__INFOS:
+			getInfos().clear();
+			return;
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__METADATA_REPOSITORY:
 			setMetadataRepository((MetadataRepository)null);
 			return;
@@ -334,6 +435,51 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	public Aggregator getAggregator()
 	{
 		return (Aggregator)eContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public EList<String> getErrors()
+	{
+		errors = new BasicEList<String>();
+
+		String nature = getNature();
+		String location = getResolvedLocation();
+		if(nature == null || location == null)
+		{
+			// Node is incomplete and doesn't appoint a repository just yet.
+			errors.add(getString("_UI_ErrorMessage_RepositoryIsNotSet"));
+			return errors;
+		}
+
+		MetadataRepositoryResourceImpl res = (MetadataRepositoryResourceImpl)MetadataRepositoryResourceImpl.getResourceForNatureAndLocation(
+				nature, location, getAggregator());
+
+		if(res == null)
+		{
+			errors.add(getString("_UI_ErrorMessage_RepositoryIsNotAvailable"));
+			return errors;
+		}
+
+		return errors;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getInfos()
+	{
+		if(infos == null)
+		{
+			infos = new EDataTypeUniqueEList<String>(String.class, this,
+					AggregatorPackage.METADATA_REPOSITORY_REFERENCE__INFOS);
+		}
+		return infos;
 	}
 
 	/**
@@ -495,6 +641,21 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated
+	 */
+	public EList<String> getWarnings()
+	{
+		if(warnings == null)
+		{
+			warnings = new EDataTypeUniqueEList<String>(String.class, this,
+					AggregatorPackage.METADATA_REPOSITORY_REFERENCE__WARNINGS);
+		}
+		return warnings;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated NOT
 	 */
 	public boolean isBranchEnabled()
@@ -519,7 +680,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 */
 	public void onRepositoryLoad()
 	{
-		// do nothing by default
+		((AggregatorResource)eResource()).analyzeResource();
 	}
 
 	/**
@@ -729,6 +890,12 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (enabled: ");
 		result.append((eFlags & ENABLED_EFLAG) != 0);
+		result.append(", errors: ");
+		result.append(errors);
+		result.append(", warnings: ");
+		result.append(warnings);
+		result.append(", infos: ");
+		result.append(infos);
 		result.append(", location: ");
 		result.append(location);
 		result.append(", nature: ");

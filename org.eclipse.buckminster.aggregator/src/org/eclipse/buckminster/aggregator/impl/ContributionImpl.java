@@ -14,6 +14,7 @@ import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.DescriptionProvider;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.Status;
@@ -27,6 +28,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -39,6 +41,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#isEnabled <em>Enabled</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getDescription <em>Description</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getStatus <em>Status</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getErrors <em>Errors</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getWarnings <em>Warnings</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getInfos <em>Infos</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getLabel <em>Label</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getRepositories <em>Repositories</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl#getContacts <em>Contacts</em>}</li>
@@ -98,6 +103,36 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 * @ordered
 	 */
 	protected String description = DESCRIPTION_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getErrors() <em>Errors</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getErrors()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> errors;
+
+	/**
+	 * The cached value of the '{@link #getWarnings() <em>Warnings</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getWarnings()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> warnings;
+
+	/**
+	 * The cached value of the '{@link #getInfos() <em>Infos</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getInfos()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> infos;
 
 	/**
 	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
@@ -188,6 +223,20 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 				return -1;
 			}
 		}
+		if(baseClass == InfosProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.CONTRIBUTION__ERRORS:
+				return AggregatorPackage.INFOS_PROVIDER__ERRORS;
+			case AggregatorPackage.CONTRIBUTION__WARNINGS:
+				return AggregatorPackage.INFOS_PROVIDER__WARNINGS;
+			case AggregatorPackage.CONTRIBUTION__INFOS:
+				return AggregatorPackage.INFOS_PROVIDER__INFOS;
+			default:
+				return -1;
+			}
+		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
 	}
 
@@ -219,6 +268,20 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 				return -1;
 			}
 		}
+		if(baseClass == InfosProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.INFOS_PROVIDER__ERRORS:
+				return AggregatorPackage.CONTRIBUTION__ERRORS;
+			case AggregatorPackage.INFOS_PROVIDER__WARNINGS:
+				return AggregatorPackage.CONTRIBUTION__WARNINGS;
+			case AggregatorPackage.INFOS_PROVIDER__INFOS:
+				return AggregatorPackage.CONTRIBUTION__INFOS;
+			default:
+				return -1;
+			}
+		}
 		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
 	}
 
@@ -238,6 +301,12 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			return getDescription();
 		case AggregatorPackage.CONTRIBUTION__STATUS:
 			return getStatus();
+		case AggregatorPackage.CONTRIBUTION__ERRORS:
+			return getErrors();
+		case AggregatorPackage.CONTRIBUTION__WARNINGS:
+			return getWarnings();
+		case AggregatorPackage.CONTRIBUTION__INFOS:
+			return getInfos();
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			return getLabel();
 		case AggregatorPackage.CONTRIBUTION__REPOSITORIES:
@@ -286,6 +355,12 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 					: !DESCRIPTION_EDEFAULT.equals(description);
 		case AggregatorPackage.CONTRIBUTION__STATUS:
 			return getStatus() != null;
+		case AggregatorPackage.CONTRIBUTION__ERRORS:
+			return errors != null && !errors.isEmpty();
+		case AggregatorPackage.CONTRIBUTION__WARNINGS:
+			return warnings != null && !warnings.isEmpty();
+		case AggregatorPackage.CONTRIBUTION__INFOS:
+			return infos != null && !infos.isEmpty();
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			return LABEL_EDEFAULT == null
 					? label != null
@@ -316,6 +391,18 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			return;
 		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
 			setDescription((String)newValue);
+			return;
+		case AggregatorPackage.CONTRIBUTION__ERRORS:
+			getErrors().clear();
+			getErrors().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.CONTRIBUTION__WARNINGS:
+			getWarnings().clear();
+			getWarnings().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.CONTRIBUTION__INFOS:
+			getInfos().clear();
+			getInfos().addAll((Collection<? extends String>)newValue);
 			return;
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			setLabel((String)newValue);
@@ -351,6 +438,15 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 			return;
 		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
 			setDescription(DESCRIPTION_EDEFAULT);
+			return;
+		case AggregatorPackage.CONTRIBUTION__ERRORS:
+			getErrors().clear();
+			return;
+		case AggregatorPackage.CONTRIBUTION__WARNINGS:
+			getWarnings().clear();
+			return;
+		case AggregatorPackage.CONTRIBUTION__INFOS:
+			getInfos().clear();
 			return;
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 			setLabel(LABEL_EDEFAULT);
@@ -406,6 +502,34 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	public String getDescription()
 	{
 		return description;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getErrors()
+	{
+		if(errors == null)
+		{
+			errors = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.CONTRIBUTION__ERRORS);
+		}
+		return errors;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getInfos()
+	{
+		if(infos == null)
+		{
+			infos = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.CONTRIBUTION__INFOS);
+		}
+		return infos;
 	}
 
 	/**
@@ -505,6 +629,20 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 	 * 
 	 * @generated
 	 */
+	public EList<String> getWarnings()
+	{
+		if(warnings == null)
+		{
+			warnings = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.CONTRIBUTION__WARNINGS);
+		}
+		return warnings;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public boolean isEnabled()
 	{
 		return (eFlags & ENABLED_EFLAG) != 0;
@@ -571,6 +709,12 @@ public class ContributionImpl extends MinimalEObjectImpl.Container implements Co
 		result.append((eFlags & ENABLED_EFLAG) != 0);
 		result.append(", description: ");
 		result.append(description);
+		result.append(", errors: ");
+		result.append(errors);
+		result.append(", warnings: ");
+		result.append(warnings);
+		result.append(", infos: ");
+		result.append(infos);
 		result.append(", label: ");
 		result.append(label);
 		result.append(')');

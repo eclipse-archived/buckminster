@@ -360,6 +360,9 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		{
 		case AggregatorPackage.CONTRIBUTION__ENABLED:
 		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
+		case AggregatorPackage.CONTRIBUTION__ERRORS:
+		case AggregatorPackage.CONTRIBUTION__WARNINGS:
+		case AggregatorPackage.CONTRIBUTION__INFOS:
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 		case AggregatorPackage.CONTRIBUTION__CONTACTS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

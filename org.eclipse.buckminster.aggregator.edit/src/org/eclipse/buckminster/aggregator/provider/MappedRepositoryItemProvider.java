@@ -17,6 +17,7 @@ import org.eclipse.buckminster.aggregator.Feature;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
+import org.eclipse.buckminster.aggregator.util.AggregatorResource;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.MapToMappedRepositoryCommand;
@@ -147,7 +148,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public void notifyChanged(Notification notification)
@@ -167,6 +168,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 		case AggregatorPackage.MAPPED_REPOSITORY__CATEGORIES:
 		case AggregatorPackage.MAPPED_REPOSITORY__MAP_RULES:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+			((AggregatorResource)((EObject)notification.getNotifier()).eResource()).analyzeResource();
 			return;
 		}
 		super.notifyChanged(notification);

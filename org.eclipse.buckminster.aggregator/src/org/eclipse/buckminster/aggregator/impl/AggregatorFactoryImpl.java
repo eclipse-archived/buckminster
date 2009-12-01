@@ -22,6 +22,7 @@ import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MavenItem;
@@ -268,6 +269,8 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 			return (EObject)createMavenItem();
 		case AggregatorPackage.STATUS:
 			return (EObject)createStatus();
+		case AggregatorPackage.INFOS_PROVIDER:
+			return (EObject)createInfosProvider();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -440,6 +443,17 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 		default:
 			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public InfosProvider createInfosProvider()
+	{
+		InfosProviderImpl infosProvider = new InfosProviderImpl();
+		return infosProvider;
 	}
 
 	/**

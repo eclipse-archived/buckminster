@@ -9,21 +9,25 @@
  */
 package org.eclipse.buckminster.aggregator.impl;
 
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.MavenItem;
 import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.Status;
 import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Maven Mapping</b></em>'. <!-- end-user-doc -->
@@ -31,6 +35,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getStatus <em>Status</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getErrors <em>Errors</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getWarnings <em>Warnings</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getInfos <em>Infos</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getNamePattern <em>Name Pattern</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getGroupId <em>Group Id</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.MavenMappingImpl#getArtifactId <em>Artifact Id</em>}</li>
@@ -51,6 +58,36 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	 * @ordered
 	 */
 	protected int eFlags = 0;
+
+	/**
+	 * The cached value of the '{@link #getErrors() <em>Errors</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getErrors()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> errors;
+
+	/**
+	 * The cached value of the '{@link #getWarnings() <em>Warnings</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getWarnings()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> warnings;
+
+	/**
+	 * The cached value of the '{@link #getInfos() <em>Infos</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getInfos()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> infos;
 
 	/**
 	 * The default value of the '{@link #getNamePattern() <em>Name Pattern</em>}' attribute. <!-- begin-user-doc -->
@@ -135,12 +172,68 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	 * @generated
 	 */
 	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == InfosProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.MAVEN_MAPPING__ERRORS:
+				return AggregatorPackage.INFOS_PROVIDER__ERRORS;
+			case AggregatorPackage.MAVEN_MAPPING__WARNINGS:
+				return AggregatorPackage.INFOS_PROVIDER__WARNINGS;
+			case AggregatorPackage.MAVEN_MAPPING__INFOS:
+				return AggregatorPackage.INFOS_PROVIDER__INFOS;
+			default:
+				return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
+	{
+		if(baseClass == InfosProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.INFOS_PROVIDER__ERRORS:
+				return AggregatorPackage.MAVEN_MAPPING__ERRORS;
+			case AggregatorPackage.INFOS_PROVIDER__WARNINGS:
+				return AggregatorPackage.MAVEN_MAPPING__WARNINGS;
+			case AggregatorPackage.INFOS_PROVIDER__INFOS:
+				return AggregatorPackage.MAVEN_MAPPING__INFOS;
+			default:
+				return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
 		switch(featureID)
 		{
 		case AggregatorPackage.MAVEN_MAPPING__STATUS:
 			return getStatus();
+		case AggregatorPackage.MAVEN_MAPPING__ERRORS:
+			return getErrors();
+		case AggregatorPackage.MAVEN_MAPPING__WARNINGS:
+			return getWarnings();
+		case AggregatorPackage.MAVEN_MAPPING__INFOS:
+			return getInfos();
 		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
 			return getNamePattern();
 		case AggregatorPackage.MAVEN_MAPPING__GROUP_ID:
@@ -163,6 +256,12 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 		{
 		case AggregatorPackage.MAVEN_MAPPING__STATUS:
 			return getStatus() != null;
+		case AggregatorPackage.MAVEN_MAPPING__ERRORS:
+			return errors != null && !errors.isEmpty();
+		case AggregatorPackage.MAVEN_MAPPING__WARNINGS:
+			return warnings != null && !warnings.isEmpty();
+		case AggregatorPackage.MAVEN_MAPPING__INFOS:
+			return infos != null && !infos.isEmpty();
 		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
 			return NAME_PATTERN_EDEFAULT == null
 					? namePattern != null
@@ -184,11 +283,24 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	 * 
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAVEN_MAPPING__ERRORS:
+			getErrors().clear();
+			getErrors().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.MAVEN_MAPPING__WARNINGS:
+			getWarnings().clear();
+			getWarnings().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.MAVEN_MAPPING__INFOS:
+			getInfos().clear();
+			getInfos().addAll((Collection<? extends String>)newValue);
+			return;
 		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
 			setNamePattern((String)newValue);
 			return;
@@ -212,6 +324,15 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.MAVEN_MAPPING__ERRORS:
+			getErrors().clear();
+			return;
+		case AggregatorPackage.MAVEN_MAPPING__WARNINGS:
+			getWarnings().clear();
+			return;
+		case AggregatorPackage.MAVEN_MAPPING__INFOS:
+			getInfos().clear();
+			return;
 		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
 			setNamePattern(NAME_PATTERN_EDEFAULT);
 			return;
@@ -240,9 +361,37 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 	 * 
 	 * @generated
 	 */
+	public EList<String> getErrors()
+	{
+		if(errors == null)
+		{
+			errors = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.MAVEN_MAPPING__ERRORS);
+		}
+		return errors;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public String getGroupId()
 	{
 		return groupId;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getInfos()
+	{
+		if(infos == null)
+		{
+			infos = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.MAVEN_MAPPING__INFOS);
+		}
+		return infos;
 	}
 
 	/**
@@ -281,6 +430,20 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 		{
 			return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN);
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getWarnings()
+	{
+		if(warnings == null)
+		{
+			warnings = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.MAVEN_MAPPING__WARNINGS);
+		}
+		return warnings;
 	}
 
 	/**
@@ -375,7 +538,13 @@ public class MavenMappingImpl extends MinimalEObjectImpl.Container implements Ma
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (namePattern: ");
+		result.append(" (errors: ");
+		result.append(errors);
+		result.append(", warnings: ");
+		result.append(warnings);
+		result.append(", infos: ");
+		result.append(infos);
+		result.append(", namePattern: ");
 		result.append(namePattern);
 		result.append(", groupId: ");
 		result.append(groupId);

@@ -10,6 +10,7 @@
 package org.eclipse.buckminster.aggregator;
 
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
+import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Installable Unit Reference</b></em>'. <!--
@@ -26,7 +27,7 @@ import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
  * @model abstract="true"
  * @generated
  */
-public interface InstallableUnitReference extends StatusProvider
+public interface InstallableUnitReference extends StatusProvider, InfosProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Installable Unit</b></em>' reference. <!-- begin-user-doc -->
@@ -51,6 +52,11 @@ public interface InstallableUnitReference extends StatusProvider
 	 * @generated
 	 */
 	InstallableUnit getInstallableUnit(boolean forceResolve);
+
+	/**
+	 * Returns the latest available version in the corresponding MDR
+	 */
+	Version getLatestVersion();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->

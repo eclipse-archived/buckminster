@@ -16,6 +16,7 @@ import org.eclipse.buckminster.aggregator.Configuration;
 import org.eclipse.buckminster.aggregator.Contact;
 import org.eclipse.buckminster.aggregator.Contribution;
 import org.eclipse.buckminster.aggregator.CustomCategory;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.MavenMapping;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
@@ -31,6 +32,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -41,6 +43,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getStatus <em>Status</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getErrors <em>Errors</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getWarnings <em>Warnings</em>}</li>
+ * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getInfos <em>Infos</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getConfigurations <em>Configurations</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getContributions <em>Contributions</em>}</li>
  * <li>{@link org.eclipse.buckminster.aggregator.impl.AggregatorImpl#getBuildmaster <em>Buildmaster</em>}</li>
@@ -62,6 +67,36 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class AggregatorImpl extends DescriptionProviderImpl implements Aggregator
 {
+	/**
+	 * The cached value of the '{@link #getErrors() <em>Errors</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getErrors()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> errors;
+
+	/**
+	 * The cached value of the '{@link #getWarnings() <em>Warnings</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getWarnings()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> warnings;
+
+	/**
+	 * The cached value of the '{@link #getInfos() <em>Infos</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getInfos()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> infos;
+
 	/**
 	 * The cached value of the '{@link #getConfigurations() <em>Configurations</em>}' containment reference list. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -344,6 +379,20 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 				return -1;
 			}
 		}
+		if(baseClass == InfosProvider.class)
+		{
+			switch(derivedFeatureID)
+			{
+			case AggregatorPackage.AGGREGATOR__ERRORS:
+				return AggregatorPackage.INFOS_PROVIDER__ERRORS;
+			case AggregatorPackage.AGGREGATOR__WARNINGS:
+				return AggregatorPackage.INFOS_PROVIDER__WARNINGS;
+			case AggregatorPackage.AGGREGATOR__INFOS:
+				return AggregatorPackage.INFOS_PROVIDER__INFOS;
+			default:
+				return -1;
+			}
+		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
 	}
 
@@ -365,6 +414,20 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 				return -1;
 			}
 		}
+		if(baseClass == InfosProvider.class)
+		{
+			switch(baseFeatureID)
+			{
+			case AggregatorPackage.INFOS_PROVIDER__ERRORS:
+				return AggregatorPackage.AGGREGATOR__ERRORS;
+			case AggregatorPackage.INFOS_PROVIDER__WARNINGS:
+				return AggregatorPackage.AGGREGATOR__WARNINGS;
+			case AggregatorPackage.INFOS_PROVIDER__INFOS:
+				return AggregatorPackage.AGGREGATOR__INFOS;
+			default:
+				return -1;
+			}
+		}
 		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
 	}
 
@@ -380,6 +443,12 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		{
 		case AggregatorPackage.AGGREGATOR__STATUS:
 			return getStatus();
+		case AggregatorPackage.AGGREGATOR__ERRORS:
+			return getErrors();
+		case AggregatorPackage.AGGREGATOR__WARNINGS:
+			return getWarnings();
+		case AggregatorPackage.AGGREGATOR__INFOS:
+			return getInfos();
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			return getConfigurations();
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
@@ -467,6 +536,12 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 		{
 		case AggregatorPackage.AGGREGATOR__STATUS:
 			return getStatus() != null;
+		case AggregatorPackage.AGGREGATOR__ERRORS:
+			return errors != null && !errors.isEmpty();
+		case AggregatorPackage.AGGREGATOR__WARNINGS:
+			return warnings != null && !warnings.isEmpty();
+		case AggregatorPackage.AGGREGATOR__INFOS:
+			return infos != null && !infos.isEmpty();
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			return configurations != null && !configurations.isEmpty();
 		case AggregatorPackage.AGGREGATOR__CONTRIBUTIONS:
@@ -512,6 +587,18 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.AGGREGATOR__ERRORS:
+			getErrors().clear();
+			getErrors().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.AGGREGATOR__WARNINGS:
+			getWarnings().clear();
+			getWarnings().addAll((Collection<? extends String>)newValue);
+			return;
+		case AggregatorPackage.AGGREGATOR__INFOS:
+			getInfos().clear();
+			getInfos().addAll((Collection<? extends String>)newValue);
+			return;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			getConfigurations().clear();
 			getConfigurations().addAll((Collection<? extends Configuration>)newValue);
@@ -571,6 +658,15 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	{
 		switch(featureID)
 		{
+		case AggregatorPackage.AGGREGATOR__ERRORS:
+			getErrors().clear();
+			return;
+		case AggregatorPackage.AGGREGATOR__WARNINGS:
+			getWarnings().clear();
+			return;
+		case AggregatorPackage.AGGREGATOR__INFOS:
+			getInfos().clear();
+			return;
 		case AggregatorPackage.AGGREGATOR__CONFIGURATIONS:
 			getConfigurations().clear();
 			return;
@@ -763,6 +859,34 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 	 * 
 	 * @generated
 	 */
+	public EList<String> getErrors()
+	{
+		if(errors == null)
+		{
+			errors = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.AGGREGATOR__ERRORS);
+		}
+		return errors;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getInfos()
+	{
+		if(infos == null)
+		{
+			infos = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.AGGREGATOR__INFOS);
+		}
+		return infos;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public String getLabel()
 	{
 		return label;
@@ -873,6 +997,20 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 				validationRepositories = enabledValidationRepositories;
 		}
 		return validationRepositories;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getWarnings()
+	{
+		if(warnings == null)
+		{
+			warnings = new EDataTypeUniqueEList<String>(String.class, this, AggregatorPackage.AGGREGATOR__WARNINGS);
+		}
+		return warnings;
 	}
 
 	/**
@@ -1013,7 +1151,13 @@ public class AggregatorImpl extends DescriptionProviderImpl implements Aggregato
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (label: ");
+		result.append(" (errors: ");
+		result.append(errors);
+		result.append(", warnings: ");
+		result.append(warnings);
+		result.append(", infos: ");
+		result.append(infos);
+		result.append(", label: ");
 		result.append(label);
 		result.append(", buildRoot: ");
 		result.append(buildRoot);

@@ -3,7 +3,7 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="aggregator"
     nsURI="http://www.eclipse.org/buckminster/2009/aggregator" nsPrefix="aggregator">
-  <eClassifiers xsi:type="ecore:EClass" name="Aggregator" eSuperTypes="#//DescriptionProvider #//StatusProvider">
+  <eClassifiers xsi:type="ecore:EClass" name="Aggregator" eSuperTypes="#//DescriptionProvider #//StatusProvider #//InfosProvider">
     <eOperations name="getContributions" upperBound="-1" eType="#//Contribution">
       <eParameters name="enabledOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eOperations>
@@ -71,7 +71,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="architecture" lowerBound="1"
         eType="#//Architecture"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Contribution" eSuperTypes="#//EnabledStatusProvider #//DescriptionProvider #//StatusProvider">
+  <eClassifiers xsi:type="ecore:EClass" name="Contribution" eSuperTypes="#//EnabledStatusProvider #//DescriptionProvider #//StatusProvider #//InfosProvider">
     <eOperations name="getRepositories" upperBound="-1" eType="#//MappedRepository">
       <eParameters name="enabledOnly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eOperations>
@@ -142,7 +142,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Category" eSuperTypes="#//MappedUnit">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="labelOverride" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="CustomCategory" eSuperTypes="#//StatusProvider">
+  <eClassifiers xsi:type="ecore:EClass" name="CustomCategory" eSuperTypes="#//StatusProvider #//InfosProvider">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifier" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -157,7 +157,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MapRule" abstract="true" eSuperTypes="#//InstallableUnitReference #//DescriptionProvider"/>
   <eClassifiers xsi:type="ecore:EClass" name="InstallableUnitReference" abstract="true"
-      eSuperTypes="#//StatusProvider">
+      eSuperTypes="#//StatusProvider #//InfosProvider">
     <eOperations name="getInstallableUnit" eType="#//p2/InstallableUnit">
       <eParameters name="forceResolve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eOperations>
@@ -171,7 +171,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="validConfigurations" upperBound="-1"
         eType="#//Configuration"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MetadataRepositoryReference" eSuperTypes="#//EnabledStatusProvider #//StatusProvider">
+  <eClassifiers xsi:type="ecore:EClass" name="MetadataRepositoryReference" eSuperTypes="#//EnabledStatusProvider #//StatusProvider #//InfosProvider">
     <eOperations name="getAggregator" eType="#//Aggregator"/>
     <eOperations name="getMetadataRepository" eType="#//p2/MetadataRepository">
       <eParameters name="forceResolve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
@@ -200,7 +200,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"
         defaultValueLiteral=""/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MavenMapping" eSuperTypes="#//StatusProvider">
+  <eClassifiers xsi:type="ecore:EClass" name="MavenMapping" eSuperTypes="#//StatusProvider #//InfosProvider">
     <eOperations name="map" eType="#//MavenItem">
       <eParameters name="installableUnitID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
@@ -241,6 +241,14 @@
   <eClassifiers xsi:type="ecore:EClass" name="StatusProvider" abstract="true" interface="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="status" lowerBound="1"
         eType="#//Status" changeable="false" volatile="true" transient="true" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InfosProvider">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="errors" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String" transient="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="warnings" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String" transient="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="infos" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String" transient="true"/>
   </eClassifiers>
   <eSubpackages name="p2" nsURI="http://www.eclipse.org/buckminster/2009/p2" nsPrefix="p2">
     <eClassifiers xsi:type="ecore:EClass" name="IArtifactKey" instanceClassName="org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey"

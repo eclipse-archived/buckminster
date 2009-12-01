@@ -19,6 +19,7 @@ import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.MapRule;
@@ -136,6 +137,12 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 		public Adapter caseFeature(Feature object)
 		{
 			return createFeatureAdapter();
+		}
+
+		@Override
+		public Adapter caseInfosProvider(InfosProvider object)
+		{
+			return createInfosProviderAdapter();
 		}
 
 		@Override
@@ -449,6 +456,21 @@ public class AggregatorAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createFeatureAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.aggregator.InfosProvider
+	 * <em>Infos Provider</em>}'. <!-- begin-user-doc --> This default implementation returns null so that we can easily
+	 * ignore cases; it's useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.aggregator.InfosProvider
+	 * @generated
+	 */
+	public Adapter createInfosProviderAdapter()
 	{
 		return null;
 	}

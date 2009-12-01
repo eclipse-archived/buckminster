@@ -38,6 +38,7 @@ import org.eclipse.buckminster.aggregator.p2view.P2viewFactory;
 import org.eclipse.buckminster.aggregator.p2view.Product;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
+import org.eclipse.buckminster.aggregator.util.ResourceDiagnosticImpl;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.TimeUtils;
 import org.eclipse.buckminster.aggregator.util.TwoColumnMatrix;
@@ -447,6 +448,12 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 		{
 			if(mdrResource != null)
 			{
+				if(mdrResource.warnings != null)
+					mdrResource.warnings.clear();
+
+				if(mdrResource.errors != null)
+					mdrResource.errors.clear();
+
 				mdrResource.setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.WAITING));
 
 				if(force)
@@ -480,13 +487,17 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 			if(mdrResource != null)
 				if(loadException != null)
 				{
+					mdrResource.getErrors().add(
+							new ResourceDiagnosticImpl(loadException.getMessage(), mdrResource.getURI().toString()));
 					String message = GeneralUtils.trimmedOrNull(loadException.getMessage());
 					if(message == null && unwrap(loadException) instanceof OperationCanceledException)
 						message = "Repository loading was cancelled";
 					mdrResource.setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN, message));
 				}
 				else
+				{
 					mdrResource.setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK));
+				}
 		}
 	}
 
@@ -511,6 +522,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 	private boolean m_forceReload = false;
 
 	private RepositoryLoaderJob m_loadingJob;
+
+	private org.eclipse.emf.common.util.Diagnostic m_diagnostic;
 
 	private Status m_status = AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK);
 
@@ -569,6 +582,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 		return found;
 	}
 
+	public org.eclipse.emf.common.util.Diagnostic getDiagnostic()
+	{
+		return m_diagnostic;
+	}
+
 	public Exception getLastException()
 	{
 		return m_lastException;
@@ -599,15 +617,6 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 		}
 
 		isLoading = true;
-		if(errors != null)
-		{
-			errors.clear();
-		}
-
-		if(warnings != null)
-		{
-			warnings.clear();
-		}
 
 		MetadataRepositoryImpl repository = (MetadataRepositoryImpl)P2Factory.eINSTANCE.createMetadataRepository();
 

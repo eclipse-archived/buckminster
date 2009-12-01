@@ -27,7 +27,7 @@ import org.eclipse.buckminster.aggregator.impl.MavenMappingImpl;
  * @model
  * @generated
  */
-public interface MavenMapping extends StatusProvider
+public interface MavenMapping extends StatusProvider, InfosProvider
 {
 	MavenMapping DEFAULT_MAPPING = new MavenMappingImpl("^([^.]+(?:\\.[^.]+(?:\\.[^.]+)?)?)(?:\\.[^.]+)*$", "$1", "$0");
 

@@ -73,7 +73,6 @@ import org.eclipse.emf.edit.ui.action.CreateChildAction;
 import org.eclipse.emf.edit.ui.action.CreateSiblingAction;
 import org.eclipse.emf.edit.ui.action.EditingDomainActionBarContributor;
 import org.eclipse.emf.edit.ui.action.LoadResourceAction;
-import org.eclipse.emf.edit.ui.action.ValidateAction;
 import org.eclipse.emf.edit.ui.provider.ExtendedImageRegistry;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.jface.action.Action;
@@ -894,7 +893,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	{
 		super(ADDITIONS_LAST_STYLE);
 		loadResourceAction = new LoadResourceAction();
-		validateAction = new ValidateAction();
+		validateAction = new AggregatorValidateAction();
 		controlAction = new ControlAction();
 		enabledStatusActionVisibility = new LinkedHashMap<EnabledStatusAction, Boolean>();
 		enabledStatusActionVisibility.put(new EnabledStatusAction(true), Boolean.FALSE);

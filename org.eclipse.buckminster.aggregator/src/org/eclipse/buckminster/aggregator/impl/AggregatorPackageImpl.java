@@ -23,6 +23,7 @@ import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.LabelProvider;
@@ -250,6 +251,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * @generated
 	 */
 	private EClass statusProviderEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass infosProviderEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -515,6 +523,11 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 
 		statusProviderEClass = createEClass(STATUS_PROVIDER);
 		createEReference(statusProviderEClass, STATUS_PROVIDER__STATUS);
+
+		infosProviderEClass = createEClass(INFOS_PROVIDER);
+		createEAttribute(infosProviderEClass, INFOS_PROVIDER__ERRORS);
+		createEAttribute(infosProviderEClass, INFOS_PROVIDER__WARNINGS);
+		createEAttribute(infosProviderEClass, INFOS_PROVIDER__INFOS);
 
 		// Create enums
 		aggregateTypeEEnum = createEEnum(AGGREGATE_TYPE);
@@ -1014,6 +1027,46 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 	 * 
 	 * @generated
 	 */
+	public EClass getInfosProvider()
+	{
+		return infosProviderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getInfosProvider_Errors()
+	{
+		return (EAttribute)infosProviderEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getInfosProvider_Infos()
+	{
+		return (EAttribute)infosProviderEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getInfosProvider_Warnings()
+	{
+		return (EAttribute)infosProviderEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EClass getInstallableUnitReference()
 	{
 		return installableUnitReferenceEClass;
@@ -1474,11 +1527,13 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		// Add supertypes to classes
 		aggregatorEClass.getESuperTypes().add(this.getDescriptionProvider());
 		aggregatorEClass.getESuperTypes().add(this.getStatusProvider());
+		aggregatorEClass.getESuperTypes().add(this.getInfosProvider());
 		mappedRepositoryEClass.getESuperTypes().add(this.getMetadataRepositoryReference());
 		mappedRepositoryEClass.getESuperTypes().add(this.getDescriptionProvider());
 		contributionEClass.getESuperTypes().add(this.getEnabledStatusProvider());
 		contributionEClass.getESuperTypes().add(this.getDescriptionProvider());
 		contributionEClass.getESuperTypes().add(this.getStatusProvider());
+		contributionEClass.getESuperTypes().add(this.getInfosProvider());
 		featureEClass.getESuperTypes().add(this.getMappedUnit());
 		bundleEClass.getESuperTypes().add(this.getMappedUnit());
 		mappedUnitEClass.getESuperTypes().add(this.getInstallableUnitReference());
@@ -1490,14 +1545,18 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		propertyEClass.getEGenericSuperTypes().add(g1);
 		categoryEClass.getESuperTypes().add(this.getMappedUnit());
 		customCategoryEClass.getESuperTypes().add(this.getStatusProvider());
+		customCategoryEClass.getESuperTypes().add(this.getInfosProvider());
 		mapRuleEClass.getESuperTypes().add(this.getInstallableUnitReference());
 		mapRuleEClass.getESuperTypes().add(this.getDescriptionProvider());
 		installableUnitReferenceEClass.getESuperTypes().add(this.getStatusProvider());
+		installableUnitReferenceEClass.getESuperTypes().add(this.getInfosProvider());
 		exclusionRuleEClass.getESuperTypes().add(this.getMapRule());
 		validConfigurationsRuleEClass.getESuperTypes().add(this.getMapRule());
 		metadataRepositoryReferenceEClass.getESuperTypes().add(this.getEnabledStatusProvider());
 		metadataRepositoryReferenceEClass.getESuperTypes().add(this.getStatusProvider());
+		metadataRepositoryReferenceEClass.getESuperTypes().add(this.getInfosProvider());
 		mavenMappingEClass.getESuperTypes().add(this.getStatusProvider());
+		mavenMappingEClass.getESuperTypes().add(this.getInfosProvider());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(aggregatorEClass, Aggregator.class, "Aggregator", !IS_ABSTRACT, !IS_INTERFACE,
@@ -1795,6 +1854,18 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		initEReference(getStatusProvider_Status(), this.getStatus(), null, "status", null, 1, 1, StatusProvider.class,
 				IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(infosProviderEClass, InfosProvider.class, "InfosProvider", !IS_ABSTRACT, !IS_INTERFACE,
+				IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getInfosProvider_Errors(), theXMLTypePackage.getString(), "errors", null, 0, -1,
+				InfosProvider.class, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInfosProvider_Warnings(), theXMLTypePackage.getString(), "warnings", null, 0, -1,
+				InfosProvider.class, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInfosProvider_Infos(), theXMLTypePackage.getString(), "infos", null, 0, -1,
+				InfosProvider.class, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(aggregateTypeEEnum, AggregateType.class, "AggregateType");

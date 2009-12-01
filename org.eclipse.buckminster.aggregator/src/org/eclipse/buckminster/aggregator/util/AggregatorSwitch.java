@@ -21,6 +21,7 @@ import org.eclipse.buckminster.aggregator.DescriptionProvider;
 import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.ExclusionRule;
 import org.eclipse.buckminster.aggregator.Feature;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.LabelProvider;
 import org.eclipse.buckminster.aggregator.MapRule;
@@ -264,6 +265,22 @@ public class AggregatorSwitch<T1>
 	 * @generated
 	 */
 	public T1 caseFeature(Feature object)
+	{
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Infos Provider</em>'. <!-- begin-user-doc
+	 * --> This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc
+	 * -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Infos Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseInfosProvider(InfosProvider object)
 	{
 		return null;
 	}
@@ -539,6 +556,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseStatusProvider(aggregator);
 			if(result == null)
+				result = caseInfosProvider(aggregator);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -554,6 +573,8 @@ public class AggregatorSwitch<T1>
 				result = caseEnabledStatusProvider(mappedRepository);
 			if(result == null)
 				result = caseStatusProvider(mappedRepository);
+			if(result == null)
+				result = caseInfosProvider(mappedRepository);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -576,6 +597,8 @@ public class AggregatorSwitch<T1>
 				result = caseDescriptionProvider(contribution);
 			if(result == null)
 				result = caseStatusProvider(contribution);
+			if(result == null)
+				result = caseInfosProvider(contribution);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -601,6 +624,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseStatusProvider(feature);
 			if(result == null)
+				result = caseInfosProvider(feature);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -617,6 +642,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseStatusProvider(bundle);
 			if(result == null)
+				result = caseInfosProvider(bundle);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -630,6 +657,8 @@ public class AggregatorSwitch<T1>
 				result = caseEnabledStatusProvider(mappedUnit);
 			if(result == null)
 				result = caseStatusProvider(mappedUnit);
+			if(result == null)
+				result = caseInfosProvider(mappedUnit);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -646,6 +675,8 @@ public class AggregatorSwitch<T1>
 				result = caseEnabledStatusProvider(product);
 			if(result == null)
 				result = caseStatusProvider(product);
+			if(result == null)
+				result = caseInfosProvider(product);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -673,6 +704,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseStatusProvider(category);
 			if(result == null)
+				result = caseInfosProvider(category);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -682,6 +715,8 @@ public class AggregatorSwitch<T1>
 			T1 result = caseCustomCategory(customCategory);
 			if(result == null)
 				result = caseStatusProvider(customCategory);
+			if(result == null)
+				result = caseInfosProvider(customCategory);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -705,6 +740,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseStatusProvider(mapRule);
 			if(result == null)
+				result = caseInfosProvider(mapRule);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -714,6 +751,8 @@ public class AggregatorSwitch<T1>
 			T1 result = caseInstallableUnitReference(installableUnitReference);
 			if(result == null)
 				result = caseStatusProvider(installableUnitReference);
+			if(result == null)
+				result = caseInfosProvider(installableUnitReference);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -731,6 +770,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseStatusProvider(exclusionRule);
 			if(result == null)
+				result = caseInfosProvider(exclusionRule);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -747,6 +788,8 @@ public class AggregatorSwitch<T1>
 			if(result == null)
 				result = caseStatusProvider(validConfigurationsRule);
 			if(result == null)
+				result = caseInfosProvider(validConfigurationsRule);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -758,6 +801,8 @@ public class AggregatorSwitch<T1>
 				result = caseEnabledStatusProvider(metadataRepositoryReference);
 			if(result == null)
 				result = caseStatusProvider(metadataRepositoryReference);
+			if(result == null)
+				result = caseInfosProvider(metadataRepositoryReference);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -784,6 +829,8 @@ public class AggregatorSwitch<T1>
 			T1 result = caseMavenMapping(mavenMapping);
 			if(result == null)
 				result = caseStatusProvider(mavenMapping);
+			if(result == null)
+				result = caseInfosProvider(mavenMapping);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -816,6 +863,14 @@ public class AggregatorSwitch<T1>
 		{
 			StatusProvider statusProvider = (StatusProvider)theEObject;
 			T1 result = caseStatusProvider(statusProvider);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case AggregatorPackage.INFOS_PROVIDER:
+		{
+			InfosProvider infosProvider = (InfosProvider)theEObject;
+			T1 result = caseInfosProvider(infosProvider);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
