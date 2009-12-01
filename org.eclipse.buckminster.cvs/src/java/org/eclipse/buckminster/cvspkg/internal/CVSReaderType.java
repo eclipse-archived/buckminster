@@ -196,9 +196,9 @@ public class CVSReaderType extends CatalogReaderType
 		VersionSelector selector = null;
 		if(tokenizer.hasMoreElements())
 		{
-			String tagInfo = tokenizer.nextToken();
-			if(!(tagInfo.length() == 0 || CVSTag.DEFAULT.toString().equals(tagInfo)))
-				selector = VersionSelector.tag(tagInfo);
+			String branchInfo = tokenizer.nextToken();
+			if(!(branchInfo.length() == 0 || CVSTag.DEFAULT.toString().equals(branchInfo)))
+				selector = VersionSelector.branch(branchInfo);
 		}
 		return new ReferenceInfo(repositoryLocation + ',' + module, selector, projectName);
 	}
