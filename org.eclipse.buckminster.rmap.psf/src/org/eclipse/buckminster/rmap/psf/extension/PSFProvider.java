@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.XMLConstants;
@@ -22,6 +23,9 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
+import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -30,6 +34,7 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.reader.ReferenceInfo;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
@@ -170,7 +175,42 @@ public class PSFProvider extends Provider
 							getVersionConverterDesc(), uri, null, null, getResolutionFilter(), isMutable(),
 							hasSource(), null, null);
 
-					ProviderMatch candidate = delegated.findMatch(query, problemCollector, monitor);
+					NodeQuery tmpQuery = query;
+					VersionSelector vs = refInfo.getSelector();
+					if(vs != null && query.getBranchTagPath().length == 0)
+					{
+						ComponentQuery cquery = query.getComponentQuery();
+						ComponentQueryBuilder cqTmp = new ComponentQueryBuilder();
+						cqTmp.initFrom(cquery);
+						AdvisorNodeBuilder foundNode = null;
+						for(AdvisorNodeBuilder node : cqTmp.getAdvisoryNodes())
+						{
+							Pattern pattern = node.getNamePattern();
+							if(!(pattern == null || pattern.matcher(cr.getName()).find()))
+								continue;
+
+							String matchingType = node.getComponentTypeID();
+							if(!(matchingType == null || matchingType.equals(cr.getComponentTypeID())))
+								continue;
+
+							Filter filter = node.getFilter();
+							if(filter == null || filter.match(query.getContext()))
+							{
+								foundNode = node;
+								break;
+							}
+						}
+						if(foundNode == null)
+						{
+							foundNode = cqTmp.addAdvisorNode();
+							foundNode.setNamePattern(Pattern.compile(Pattern.quote(cr.getName())));
+						}
+						foundNode.setBranchTagPath(new VersionSelector[] { vs });
+						ResolutionContext tmpContext = new ResolutionContext(cqTmp.createComponentQuery(), query.getResolutionContext());
+						tmpQuery = new NodeQuery(tmpContext, query.getQualifiedDependency());
+					}
+
+					ProviderMatch candidate = delegated.findMatch(tmpQuery, problemCollector, monitor);
 					if(candidate == null)
 						continue;
 
