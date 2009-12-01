@@ -698,36 +698,31 @@ public class MirrorGenerator extends BuilderPhase
 
 								for(IArtifactKey key : iu.getArtifacts())
 								{
-									String location = null;
-
 									if(repo.isMirrorArtifacts())
-										location = "${repoUrl}/non-p2/" + repo.getNature() + '/' + key.getClassifier()
-												+ '/' + (originalPath != null
+									{
+										String location = "${repoUrl}/non-p2/" + repo.getNature() + '/'
+												+ key.getClassifier() + '/' + (originalPath != null
 														? (originalPath + '/')
 														: "") + originalId + '_' + versionString + '.'
 												+ key.getClassifier();
-									else
-									{
-										for(IArtifactDescriptor desc : ar.getArtifactDescriptors(key))
-										{
-											// Take the first reference
-											if(location == null)
-											{
-												String ref = ((ArtifactDescriptor)desc).getRepositoryProperty(ArtifactDescriptor.ARTIFACT_REFERENCE);
-												if(ref != null)
-													location = ref;
-											}
-											referencedArtifacts.add(new ArtifactDescriptor(desc));
-										}
-									}
 
-									if(location != null)
 										mappingRules.add(new String[] {
 												"(& (classifier=" + GeneralUtils.encodeFilterValue(key.getClassifier())
 														+ ") (id=" + GeneralUtils.encodeFilterValue(key.getId())
 														+ ") (version="
 														+ GeneralUtils.encodeFilterValue(iu.getVersion().toString())
 														+ "))", location });
+									}
+									else
+									{
+										for(IArtifactDescriptor desc : ar.getArtifactDescriptors(key))
+										{
+											String ref = ((ArtifactDescriptor)desc).getRepositoryProperty(ArtifactDescriptor.ARTIFACT_REFERENCE);
+											ArtifactDescriptor ad = new ArtifactDescriptor(desc);
+											ad.setRepositoryProperty(ArtifactDescriptor.ARTIFACT_REFERENCE, ref);
+											referencedArtifacts.add(ad);
+										}
+									}
 								}
 							}
 						}
