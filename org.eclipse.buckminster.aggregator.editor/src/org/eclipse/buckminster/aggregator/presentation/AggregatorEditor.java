@@ -555,7 +555,23 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		{
 			if(notification.getNotifier() instanceof Resource)
 			{
-				switch(notification.getFeatureID(Resource.class))
+				int featureID = notification.getFeatureID(Resource.class);
+				
+				// If a repository is loaded, force updating the context menu by setting selection to current selection
+				if(featureID == Resource.RESOURCE__IS_LOADED)
+				{
+					getSite().getShell().getDisplay().asyncExec(new Runnable()
+					{
+						public void run()
+						{
+							setSelection(currentViewer == null
+									? StructuredSelection.EMPTY
+									: currentViewer.getSelection());
+						}
+					});
+				}
+
+				switch(featureID)
 				{
 				case AggregatorResource.RESOURCE__ANALYSIS_STARTED:
 					analysisStarted = true;
