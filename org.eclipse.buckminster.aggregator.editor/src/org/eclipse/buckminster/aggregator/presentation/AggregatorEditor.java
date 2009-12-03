@@ -556,7 +556,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			if(notification.getNotifier() instanceof Resource)
 			{
 				int featureID = notification.getFeatureID(Resource.class);
-				
+
 				// If a repository is loaded, force updating the context menu by setting selection to current selection
 				if(featureID == Resource.RESOURCE__IS_LOADED)
 				{
