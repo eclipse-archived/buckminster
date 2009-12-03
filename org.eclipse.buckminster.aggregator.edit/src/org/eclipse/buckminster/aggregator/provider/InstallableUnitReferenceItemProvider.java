@@ -75,7 +75,7 @@ public class InstallableUnitReferenceItemProvider extends AggregatorItemProvider
 	@Override
 	public Object getForeground(Object object)
 	{
-		return ((InstallableUnitReference)object).isBranchEnabled()
+		return !((InstallableUnitReference)object).isBranchDisabledOrMappedRepositoryBroken()
 				? null
 				: IItemColorProvider.GRAYED_OUT_COLOR;
 	}

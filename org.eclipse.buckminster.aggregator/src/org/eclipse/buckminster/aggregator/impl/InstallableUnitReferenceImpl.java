@@ -306,8 +306,8 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	{
 		errors = new BasicEList<String>();
 
-		if(getInstallableUnit() != null && Trivial.trim(getInstallableUnit().getId()) == null
-				|| getInstallableUnit() == null)
+		if(!isMappedRepositoryBroken()
+				&& (getInstallableUnit() != null && Trivial.trim(getInstallableUnit().getId()) == null || getInstallableUnit() == null))
 			errors.add(getString("_UI_ErrorMessage_InstallableUnitIsNotAvailable"));
 
 		return errors;
@@ -409,13 +409,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 	 */
 	synchronized public Status getStatus()
 	{
-		if(isMappedRepositoryBroken())
-			return AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN,
-					((MappedRepository)eContainer()).getLocation() != null
-							? getString("_UI_ErrorMessage_RepositoryIsNotAvailable")
-							: getString("_UI_ErrorMessage_RepositoryIsNotSet"));
-
-		if(isBranchEnabled() && getInstallableUnit() != null)
+		if(!isBranchDisabledOrMappedRepositoryBroken() && getInstallableUnit() != null)
 			if(InstallableUnitUtils.getStatus(getInstallableUnit()).getCode() == StatusCode.BROKEN)
 			{
 				Version latestVersion = getLatestVersion();
@@ -447,6 +441,11 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 					AggregatorPackage.INSTALLABLE_UNIT_REFERENCE__WARNINGS);
 		}
 		return warnings;
+	}
+
+	public boolean isBranchDisabledOrMappedRepositoryBroken()
+	{
+		return !isBranchEnabled() || isMappedRepositoryBroken();
 	}
 
 	/**

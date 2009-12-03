@@ -59,7 +59,7 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	public Object getImage(Object object)
 	{
 		return overlayImage(object, getResourceLocator().getImage(
-				"full/obj16/Feature" + (((Feature)object).isBranchEnabled()
+				"full/obj16/Feature" + (!((Feature)object).isBranchDisabledOrMappedRepositoryBroken()
 						? ""
 						: "Disabled")));
 	}

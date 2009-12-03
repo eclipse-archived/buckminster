@@ -57,9 +57,10 @@ public class ValidConfigurationsRuleItemProvider extends MapRuleItemProvider imp
 	public Object getImage(Object object)
 	{
 		return overlayImage(object, getResourceLocator().getImage(
-				"full/obj16/ValidConfigurationsRule" + (((ValidConfigurationsRule)object).isBranchEnabled()
-						? ""
-						: "Disabled")));
+				"full/obj16/ValidConfigurationsRule"
+						+ (!((ValidConfigurationsRule)object).isBranchDisabledOrMappedRepositoryBroken()
+								? ""
+								: "Disabled")));
 	}
 
 	/**

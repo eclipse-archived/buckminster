@@ -12,6 +12,7 @@ import java.util.List;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.MappedRepository;
+import org.eclipse.buckminster.aggregator.Product;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.util.InstallableUnitUtils;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -55,7 +56,10 @@ public class ProductItemProvider extends MappedUnitItemProvider implements IEdit
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Product"));
+		return overlayImage(object, getResourceLocator().getImage(
+				"full/obj16/Product" + (!((Product)object).isBranchDisabledOrMappedRepositoryBroken()
+						? ""
+						: "Disabled")));
 	}
 
 	/**

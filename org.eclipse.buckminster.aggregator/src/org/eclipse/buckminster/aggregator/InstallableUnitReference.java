@@ -62,6 +62,14 @@ public interface InstallableUnitReference extends StatusProvider, InfosProvider
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @model kind="operation"
+	 * @generated NOT
+	 */
+	boolean isBranchDisabledOrMappedRepositoryBroken();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
 	 * @generated
 	 */
 	boolean isBranchEnabled();

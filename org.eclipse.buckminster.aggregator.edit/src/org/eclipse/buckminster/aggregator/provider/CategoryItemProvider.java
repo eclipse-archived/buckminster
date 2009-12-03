@@ -61,7 +61,10 @@ public class CategoryItemProvider extends MappedUnitItemProvider implements IEdi
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Category"));
+		return overlayImage(object, getResourceLocator().getImage(
+				"full/obj16/Category" + (!((Category)object).isBranchDisabledOrMappedRepositoryBroken()
+						? ""
+						: "Disabled")));
 	}
 
 	/**

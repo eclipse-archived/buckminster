@@ -9,6 +9,7 @@ package org.eclipse.buckminster.aggregator.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.aggregator.Bundle;
 import org.eclipse.buckminster.aggregator.InstallableUnitReference;
 import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.MappedRepository;
@@ -55,7 +56,10 @@ public class BundleItemProvider extends MappedUnitItemProvider implements IEditi
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Bundle"));
+		return overlayImage(object, getResourceLocator().getImage(
+				"full/obj16/Bundle" + (!((Bundle)object).isBranchDisabledOrMappedRepositoryBroken()
+						? ""
+						: "Disabled")));
 	}
 
 	/**
