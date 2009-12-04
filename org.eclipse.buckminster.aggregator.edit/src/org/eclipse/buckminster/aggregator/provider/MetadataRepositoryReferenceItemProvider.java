@@ -186,7 +186,11 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 				bld.append(repoRef.getNature());
 				bld.append(':');
 				bld.append(repoRef.getLocation());
-				bld.append(" (missing)");
+				bld.append(" (");
+				bld.append(repoRef.getStatus().getCode() == StatusCode.WAITING
+						? "loading"
+						: "missing");
+				bld.append(')');
 			}
 			else
 				bld.append("no location");

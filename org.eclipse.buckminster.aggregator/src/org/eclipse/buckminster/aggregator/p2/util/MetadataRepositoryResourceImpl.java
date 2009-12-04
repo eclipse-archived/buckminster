@@ -18,10 +18,10 @@ import org.eclipse.buckminster.aggregator.ChildrenProvider;
 import org.eclipse.buckminster.aggregator.InstallableUnitType;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Property;
-import org.eclipse.buckminster.aggregator.loader.IRepositoryLoader;
 import org.eclipse.buckminster.aggregator.Status;
 import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
+import org.eclipse.buckminster.aggregator.loader.IRepositoryLoader;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.P2Factory;
@@ -65,6 +65,120 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
 
 public class MetadataRepositoryResourceImpl extends ResourceImpl implements StatusProvider
 {
+	class AsynchronousLoader extends Job
+	{
+		private Job m_replaceJob;
+
+		private boolean m_force;
+
+		public AsynchronousLoader(String name, Job replaceJob, boolean force)
+		{
+			super(name);
+			m_replaceJob = replaceJob;
+			m_force = force;
+		}
+
+		public boolean isForce()
+		{
+			return m_force;
+		}
+
+		@Override
+		protected IStatus run(final IProgressMonitor monitor)
+		{
+			class MonitorWatchDog extends Thread
+			{
+				private boolean m_done;
+
+				@Override
+				public void run()
+				{
+					while(!m_done)
+					{
+						if(monitor.isCanceled())
+						{
+							cancelLoadingJob();
+							break;
+						}
+
+						try
+						{
+							Thread.sleep(100);
+						}
+						catch(InterruptedException e)
+						{
+							// ignore
+						}
+					}
+				}
+
+				public void setDone()
+				{
+					m_done = true;
+				}
+			}
+
+			MonitorWatchDog watchDog = new MonitorWatchDog();
+
+			try
+			{
+				if(m_replaceJob != null)
+				{
+					m_replaceJob.cancel();
+					m_replaceJob.join();
+				}
+
+				watchDog.start();
+
+				MetadataRepository mdr = loadRepository(m_force);
+
+				IStatus status = org.eclipse.core.runtime.Status.OK_STATUS;
+
+				if(monitor.isCanceled())
+				{
+					// cancelled by user
+					status = org.eclipse.core.runtime.Status.CANCEL_STATUS;
+					mdr = null;
+				}
+
+				synchronized(MetadataRepositoryResourceImpl.this)
+				{
+					String myLocation = getURI().toString();
+					Aggregator aggregator = getAggregator();
+					for(MetadataRepositoryReference repoRef : aggregator.getAllMetadataRepositoryReferences(true))
+					{
+						synchronized(repoRef)
+						{
+							String refLocation = repoRef.getNature() + ":" + repoRef.getResolvedLocation();
+							if(myLocation.equals(refLocation))
+							{
+								repoRef.setMetadataRepository(mdr);
+								repoRef.onRepositoryLoad();
+							}
+						}
+					}
+				}
+
+				return status;
+			}
+			catch(InterruptedException e)
+			{
+				throw new RuntimeException("Repository load was interrupted");
+			}
+			finally
+			{
+				monitor.done();
+				watchDog.setDone();
+
+				synchronized(MetadataRepositoryResourceImpl.this)
+				{
+					if(m_asynchronousLoader == this)
+						m_asynchronousLoader = null;
+				}
+			}
+		}
+	}
+
 	class RepositoryLoaderJob extends Job
 	{
 		private final MetadataRepositoryImpl repository;
@@ -392,6 +506,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 		}
 	}
 
+	private static final String NOTIFICATION_KEY = "notification";
+
 	public static void cancelLoadRepository(String nature, String repositoryLocation, Aggregator aggregator)
 	{
 		Resource mdr = getResourceForNatureAndLocation(nature, repositoryLocation, aggregator);
@@ -403,6 +519,9 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 	public static Resource getResourceForNatureAndLocation(String nature, String repositoryLocation,
 			Aggregator aggregator)
 	{
+		if(nature == null || repositoryLocation == null)
+			return null;
+
 		ResourceSet topSet = ((EObject)aggregator).eResource().getResourceSet();
 		char c;
 		if((c = repositoryLocation.charAt(repositoryLocation.length() - 1)) == '/' || c == '\\')
@@ -432,75 +551,6 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 		return URI.createGenericURI(nature, location, null);
 	}
 
-	public static MetadataRepository loadRepository(String nature, String location, Aggregator aggregator)
-	{
-		return loadRepository(nature, location, aggregator, false);
-	}
-
-	public static MetadataRepository loadRepository(String nature, String repositoryLocation, Aggregator aggregator,
-			boolean force)
-	{
-		MetadataRepositoryResourceImpl mdrResource = (MetadataRepositoryResourceImpl)getResourceForNatureAndLocation(
-				nature, repositoryLocation, aggregator);
-		Exception loadException = null;
-
-		try
-		{
-			if(mdrResource != null)
-			{
-				if(mdrResource.warnings != null)
-					mdrResource.warnings.clear();
-
-				if(mdrResource.errors != null)
-					mdrResource.errors.clear();
-
-				mdrResource.setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.WAITING));
-
-				if(force)
-				{
-					mdrResource.unload();
-					mdrResource.load(Collections.emptyMap());
-				}
-				else if(!mdrResource.isLoaded())
-					mdrResource.load(Collections.emptyMap());
-
-				if(mdrResource.getLastException() != null)
-					throw mdrResource.getLastException();
-
-				List<EObject> contents = mdrResource.getContents();
-				if(contents.size() != 1
-						|| ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository().getLocation() == null)
-					throw new Exception(String.format("Unable to load repository %s", repositoryLocation));
-
-				return ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository();
-			}
-			else
-				throw new Exception(String.format("Unable to obtain a resource for repository %s", repositoryLocation));
-		}
-		catch(Exception e)
-		{
-			loadException = e;
-			return null;
-		}
-		finally
-		{
-			if(mdrResource != null)
-				if(loadException != null)
-				{
-					mdrResource.getErrors().add(
-							new ResourceDiagnosticImpl(loadException.getMessage(), mdrResource.getURI().toString()));
-					String message = GeneralUtils.trimmedOrNull(loadException.getMessage());
-					if(message == null && unwrap(loadException) instanceof OperationCanceledException)
-						message = "Repository loading was cancelled";
-					mdrResource.setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN, message));
-				}
-				else
-				{
-					mdrResource.setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK));
-				}
-		}
-	}
-
 	private static Throwable unwrap(Exception loadException)
 	{
 		Throwable rootCauseCandidate = loadException;
@@ -510,6 +560,8 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 
 		return rootCauseCandidate;
 	}
+
+	private AsynchronousLoader m_asynchronousLoader;
 
 	private IRepositoryLoader m_loader;
 
@@ -649,14 +701,129 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 		{
 			isLoading = false;
 			if(notification != null)
-				eNotify(notification);
+			{
+				if(options.containsKey(NOTIFICATION_KEY))
+				{
+					Notification notificationRef[] = (Notification[])options.get(NOTIFICATION_KEY);
+					notificationRef[0] = notification;
+				}
+				else
+					eNotify(notification);
+			}
 			setModified(false);
+		}
+	}
+
+	public MetadataRepository loadRepository(boolean force)
+	{
+		Exception loadException = null;
+		Map<String, Notification[]> notificationCollector = Collections.singletonMap(NOTIFICATION_KEY,
+				new Notification[] { null });
+
+		try
+		{
+			if(warnings != null)
+				warnings.clear();
+
+			if(errors != null)
+				errors.clear();
+
+			setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.WAITING));
+
+			if(force)
+			{
+				unload();
+				load(notificationCollector);
+			}
+			else if(!isLoaded())
+				load(notificationCollector);
+
+			if(getLastException() != null)
+				throw getLastException();
+
+			List<EObject> contents = getContents();
+			if(contents.size() != 1
+					|| ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository().getLocation() == null)
+				throw new Exception(String.format("Unable to load repository %s", getURI().toString()));
+
+			return ((MetadataRepositoryStructuredView)contents.get(0)).getMetadataRepository();
+		}
+		catch(Exception e)
+		{
+			loadException = e;
+			return null;
+		}
+		finally
+		{
+			if(loadException != null)
+			{
+				getErrors().add(new ResourceDiagnosticImpl(loadException.getMessage(), getURI().toString()));
+				String message = GeneralUtils.trimmedOrNull(loadException.getMessage());
+				if(message == null && unwrap(loadException) instanceof OperationCanceledException)
+					message = "Repository loading was cancelled";
+				setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.BROKEN, message));
+			}
+			else
+			{
+				setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.OK));
+			}
+
+			Notification notificationRef[] = notificationCollector.get(NOTIFICATION_KEY);
+			Notification notification = notificationRef[0];
+			if(notification != null && eNotificationRequired())
+				eNotify(notification);
 		}
 	}
 
 	public void save(Map<?, ?> options) throws IOException
 	{
 		// Let this be a no-op.
+	}
+
+	synchronized public void startAsynchronousLoad(boolean forceReload)
+	{
+		setStatus(AggregatorFactory.eINSTANCE.createStatus(StatusCode.WAITING));
+
+		// force listeners to update status
+		// TODO is this necessary?
+		eNotify(setLoaded(isLoaded));
+
+		String myLocation = getURI().toString();
+		MetadataRepository myMDR;
+		boolean mdrFinal = false;
+		if(!forceReload && isLoaded() && !isLoading())
+		{
+			myMDR = loadRepository(false);
+			mdrFinal = true;
+		}
+		else
+			myMDR = null;
+
+		Aggregator aggregator = getAggregator();
+		for(MetadataRepositoryReference mdr : aggregator.getAllMetadataRepositoryReferences(true))
+		{
+			String refLocation = mdr.getNature() + ":" + mdr.getResolvedLocation();
+			if(myLocation.equals(refLocation))
+			{
+				mdr.setMetadataRepository(myMDR);
+				if(mdrFinal)
+					mdr.onRepositoryLoad();
+			}
+		}
+
+		ResourceUtils.cleanUpResources(aggregator, false);
+
+		if(mdrFinal)
+			return;
+
+		AsynchronousLoader lastLoader = m_asynchronousLoader;
+
+		if(lastLoader == null || forceReload && !lastLoader.isForce())
+		{
+			m_asynchronousLoader = new AsynchronousLoader("Loading " + myLocation, lastLoader, forceReload);
+			m_asynchronousLoader.setUser(false);
+			m_asynchronousLoader.schedule();
+		}
 	}
 
 	@Override
@@ -724,6 +891,11 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 		}
 
 		return null;
+	}
+
+	private Aggregator getAggregator()
+	{
+		return (Aggregator)getResourceSet().getResources().get(0).getContents().get(0);
 	}
 
 	private List<Object> getFirstNode(Object[] startAfterPath, boolean forward)

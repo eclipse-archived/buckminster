@@ -15,9 +15,11 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -31,6 +33,7 @@ import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.engine.Builder;
 import org.eclipse.buckminster.aggregator.engine.Engine;
 import org.eclipse.buckminster.aggregator.engine.Builder.ActionType;
+import org.eclipse.buckminster.aggregator.impl.AggregatorImpl;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
@@ -60,6 +63,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -468,11 +472,13 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	class ReloadOrCancelRepoAction extends Action
 	{
-		private MetadataRepositoryReference m_metadataRepositoryReference;
+		private Set<MetadataRepositoryResourceImpl> m_metadataRepositoryResources;
 
 		private ImageDescriptor m_reloadImageDescriptor;
 
 		private ImageDescriptor m_cancelImageDescriptor;
+
+		private String m_loadText;
 
 		private boolean m_nextActionIsLoad;
 
@@ -489,40 +495,55 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				m_cancelImageDescriptor = ImageDescriptor.createFromURL((URL)imageURL);
 		}
 
-		public ImageDescriptor getImageDescriptor()
+		synchronized public void addMetadataRepositoryResource(MetadataRepositoryResourceImpl res)
+		{
+			m_metadataRepositoryResources.add(res);
+		}
+
+		synchronized public ImageDescriptor getImageDescriptor()
 		{
 			return m_nextActionIsLoad
 					? m_reloadImageDescriptor
 					: m_cancelImageDescriptor;
 		}
 
-		public String getText()
+		synchronized public String getText()
 		{
 			// the getText() is the first thing to be called when opening the menu - let's set the next action here
 			m_nextActionIsLoad = !isLoading();
 			return m_nextActionIsLoad
-					? "Reload Repository"
-					: "Cancel loading";
+					? m_loadText
+					: "Cancel Repository Loading";
 		}
 
-		public boolean isLoading()
+		synchronized public void initMetadataRepositoryReferences()
 		{
-			return m_metadataRepositoryReference.getStatus().getCode() == StatusCode.WAITING;
+			m_metadataRepositoryResources = new HashSet<MetadataRepositoryResourceImpl>();
 		}
 
 		@Override
-		public void run()
+		synchronized public void run()
 		{
-			if(m_metadataRepositoryReference != null && m_metadataRepositoryReference.isBranchEnabled())
-				if(m_nextActionIsLoad)
-					m_metadataRepositoryReference.startRepositoryLoad(true);
-				else
-					m_metadataRepositoryReference.cancelRepositoryLoad();
+			for(MetadataRepositoryResourceImpl mdr : m_metadataRepositoryResources)
+				if(mdr != null)
+					if(m_nextActionIsLoad)
+						mdr.startAsynchronousLoad(true);
+					else
+						mdr.cancelLoadingJob();
 		}
 
-		public void setMetadataRepositoryReference(MetadataRepositoryReference metadataRepositoryReference)
+		public void setLoadText(String loadText)
 		{
-			m_metadataRepositoryReference = metadataRepositoryReference;
+			m_loadText = loadText;
+		}
+
+		synchronized private boolean isLoading()
+		{
+			for(MetadataRepositoryResourceImpl mdr : m_metadataRepositoryResources)
+				if(mdr.getStatus().getCode() == StatusCode.WAITING)
+					return true;
+
+			return false;
 		}
 	}
 
@@ -1183,19 +1204,56 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				}
 			}
 
+			m_reloadOrCancelRepoAction.setEnabled(true);
+			m_reloadOrCancelRepoAction.initMetadataRepositoryReferences();
+			Aggregator aggregator = getAggregator();
+			if(selectedItems.size() == 1 && selectedItems.get(0).equals(aggregator))
+			{
+				m_reloadOrCancelRepoAction.setLoadText("Reload All Repositories");
+				m_reloadOrCancelRepoActionVisible = true;
+				ResourceSet resourceSet = ((AggregatorImpl)aggregator).eResource().getResourceSet();
+				for(Resource resource : resourceSet.getResources())
+					if(resource instanceof MetadataRepositoryResourceImpl)
+						m_reloadOrCancelRepoAction.addMetadataRepositoryResource((MetadataRepositoryResourceImpl)resource);
+			}
+			else
+			{
+				m_reloadOrCancelRepoAction.setLoadText("Reload Repository");
+				for(Object object : selectedItems)
+				{
+					if(object instanceof MetadataRepositoryReference)
+					{
+						MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)object;
+						if(!metadataRepositoryReference.isBranchEnabled())
+							m_reloadOrCancelRepoAction.setEnabled(false);
+						MetadataRepositoryResourceImpl res = (MetadataRepositoryResourceImpl)MetadataRepositoryResourceImpl.getResourceForNatureAndLocation(
+								metadataRepositoryReference.getNature(),
+								metadataRepositoryReference.getResolvedLocation(), aggregator);
+						m_reloadOrCancelRepoAction.addMetadataRepositoryResource(res);
+						m_reloadOrCancelRepoActionVisible = true;
+					}
+					else if(object instanceof MetadataRepositoryResourceImpl)
+					{
+						MetadataRepositoryResourceImpl res = (MetadataRepositoryResourceImpl)object;
+						m_reloadOrCancelRepoAction.addMetadataRepositoryResource(res);
+						m_reloadOrCancelRepoActionVisible = true;
+					}
+					else
+					{
+						m_reloadOrCancelRepoAction.setEnabled(false);
+						m_reloadOrCancelRepoActionVisible = false;
+						m_reloadOrCancelRepoAction.initMetadataRepositoryReferences();
+						break;
+					}
+				}
+			}
+
 			if(((IStructuredSelection)selection).size() == 1)
 			{
 				Object object = ((IStructuredSelection)selection).getFirstElement();
 
 				newChildDescriptors = domain.getNewChildDescriptors(object, null);
 				newSiblingDescriptors = domain.getNewChildDescriptors(null, object);
-				if(object instanceof MetadataRepositoryReference)
-				{
-					MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)object;
-					m_reloadOrCancelRepoAction.setEnabled(metadataRepositoryReference.isBranchEnabled());
-					m_reloadOrCancelRepoAction.setMetadataRepositoryReference(metadataRepositoryReference);
-					m_reloadOrCancelRepoActionVisible = true;
-				}
 
 				if(object instanceof RequiredCapabilityWrapper)
 				{

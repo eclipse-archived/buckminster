@@ -42,6 +42,17 @@ public class ResourceUtils
 	 */
 	public static void cleanUpResources(Aggregator aggregator)
 	{
+		cleanUpResources(aggregator, true);
+	}
+
+	/**
+	 * Cleans up unreferenced resources on demand and possibly updates error markers
+	 * 
+	 * @param aggregator
+	 * @param updateMarkers
+	 */
+	public static void cleanUpResources(Aggregator aggregator, boolean updateMarkers)
+	{
 		Resource topResource = ((EObject)aggregator).eResource();
 		ResourceSet topSet = topResource.getResourceSet();
 
@@ -92,7 +103,7 @@ public class ResourceUtils
 					}
 				}
 				else
-				// avoid notification recursion - set to null only if it not null yet
+				// avoid notification recursion - set to null only if it is not null yet
 				if(repoRef.getMetadataRepository(false) != null)
 					repoRef.setMetadataRepository(null);
 			}
@@ -110,7 +121,8 @@ public class ResourceUtils
 			}
 		}
 
-		((AggregatorResourceImpl)topResource).analyzeResource();
+		if(updateMarkers)
+			((AggregatorResourceImpl)topResource).analyzeResource();
 	}
 
 	/**

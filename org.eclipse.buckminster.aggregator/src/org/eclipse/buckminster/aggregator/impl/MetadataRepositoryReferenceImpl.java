@@ -10,14 +10,12 @@
 package org.eclipse.buckminster.aggregator.impl;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.AggregatorPlugin;
+import org.eclipse.buckminster.aggregator.InfosProvider;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.Status;
 import org.eclipse.buckminster.aggregator.StatusCode;
@@ -27,9 +25,6 @@ import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl
 import org.eclipse.buckminster.aggregator.util.AggregatorResource;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -39,9 +34,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
+import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 
 /**
@@ -186,10 +180,6 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	 */
 	protected String nature = NATURE_EDEFAULT;
 
-	private Set<Job> m_currentLoaderJobs = new HashSet<Job>();
-
-	private Set<Job> m_cancelledLoaderJobs = new HashSet<Job>();
-
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -213,8 +203,7 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 
 	synchronized public void cancelRepositoryLoad()
 	{
-		for(Job job : m_currentLoaderJobs)
-			job.cancel();
+		MetadataRepositoryResourceImpl.cancelLoadRepository(getNature(), getResolvedLocation(), getAggregator());
 	}
 
 	/**
@@ -762,118 +751,18 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 			return;
 		}
 
-		final String nature = getNature();
-		final String resolvedLocation = getResolvedLocation();
-		final Aggregator aggregator = getAggregator();
+		String nature = getNature();
+		String resolvedLocation = getResolvedLocation();
+		Aggregator aggregator = getAggregator();
 		Resource res = MetadataRepositoryResourceImpl.getResourceForNatureAndLocation(nature, resolvedLocation,
 				aggregator);
-		if(res != null && res.isLoaded() && !((ResourceImpl)res).isLoading())
-		{
-			if(forceReload || ((MetadataRepositoryResourceImpl)res).getLastException() != null)
-				res.unload();
-			else
-			{
-				synchronized(this)
-				{
-					setMetadataRepository(MetadataRepositoryResourceImpl.loadRepository(nature, resolvedLocation,
-							aggregator));
-					onRepositoryLoad();
-					return;
-				}
-			}
-		}
-
-		setMetadataRepository(null);
-
-		cancelCurrentLoaderJobs();
-
-		if(res == null)
+		if(res != null)
+			((MetadataRepositoryResourceImpl)res).startAsynchronousLoad(forceReload);
+		else
 		{
 			onRepositoryLoad();
 			return;
 		}
-
-		Job asynchronousLoader = new Job("Loading " + getResolvedLocation())
-		{
-
-			@Override
-			protected IStatus run(final IProgressMonitor monitor)
-			{
-				class MonitorWatchDog extends Thread
-				{
-					private boolean m_done;
-
-					@Override
-					public void run()
-					{
-						while(!m_done)
-						{
-							if(monitor.isCanceled())
-							{
-								MetadataRepositoryResourceImpl.cancelLoadRepository(nature, resolvedLocation,
-										aggregator);
-								break;
-							}
-
-							try
-							{
-								Thread.sleep(100);
-							}
-							catch(InterruptedException e)
-							{
-								// ignore
-							}
-						}
-					}
-
-					public void setDone()
-					{
-						m_done = true;
-					}
-				}
-
-				MonitorWatchDog watchDog = new MonitorWatchDog();
-
-				try
-				{
-					watchDog.start();
-
-					MetadataRepository mdr = MetadataRepositoryResourceImpl.loadRepository(nature, resolvedLocation,
-							aggregator, forceReload);
-
-					if(m_cancelledLoaderJobs.contains(this))
-						return org.eclipse.core.runtime.Status.CANCEL_STATUS;
-
-					IStatus status = org.eclipse.core.runtime.Status.OK_STATUS;
-
-					if(monitor.isCanceled())
-					{
-						// cancelled by user
-						status = org.eclipse.core.runtime.Status.CANCEL_STATUS;
-						mdr = null;
-					}
-
-					synchronized(MetadataRepositoryReferenceImpl.this)
-					{
-						setMetadataRepository(mdr);
-						onRepositoryLoad();
-					}
-
-					return status;
-				}
-				finally
-				{
-					removeCurrentLoaderJob(this);
-					monitor.done();
-					watchDog.setDone();
-				}
-			}
-
-		};
-		asynchronousLoader.setUser(false);
-
-		addCurrentLoaderJob(asynchronousLoader);
-		asynchronousLoader.schedule();
 	}
 
 	/**
@@ -914,25 +803,4 @@ public class MetadataRepositoryReferenceImpl extends MinimalEObjectImpl.Containe
 	{
 		return AggregatorPackage.Literals.METADATA_REPOSITORY_REFERENCE;
 	}
-
-	synchronized private void addCurrentLoaderJob(Job job)
-	{
-		m_currentLoaderJobs.add(job);
-	}
-
-	synchronized private void cancelCurrentLoaderJobs()
-	{
-		for(Job job : m_currentLoaderJobs)
-		{
-			job.cancel();
-			m_cancelledLoaderJobs.add(job);
-		}
-	}
-
-	synchronized private void removeCurrentLoaderJob(Job job)
-	{
-		m_currentLoaderJobs.remove(job);
-		m_cancelledLoaderJobs.remove(job);
-	}
-
 } // MetadataRepositoryReferenceImpl

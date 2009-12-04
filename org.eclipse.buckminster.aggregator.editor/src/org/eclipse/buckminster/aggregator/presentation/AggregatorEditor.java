@@ -25,6 +25,7 @@ import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
 import org.eclipse.buckminster.aggregator.StatusCode;
+import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
 import org.eclipse.buckminster.aggregator.p2view.provider.P2viewItemProviderAdapterFactory;
@@ -1950,7 +1951,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 					{
 						MetadataRepositoryResourceImpl mdr = (MetadataRepositoryResourceImpl)object;
 
-						if(!mdr.isLoaded() || mdr.isLoading())
+						if(mdr.getStatus().getCode() == StatusCode.WAITING)
 							return IItemFontProvider.ITALIC_FONT;
 					}
 					return null;
@@ -1983,7 +1984,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 						if(mdr.getLastException() != null)
 							overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Error");
-						else if(!mdr.isLoaded() || mdr.isLoading())
+						else if(mdr.getStatus().getCode() == StatusCode.WAITING)
 							overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Loading");
 					}
 
