@@ -450,6 +450,9 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	private Pattern findIUIdPattern;
 
 	private VersionRange findIUVersionRange;
+	
+	private boolean updateMarkers;
+	private boolean updateMarkersIsRunning;
 
 	/**
 	 * This listens for when the outline becomes active <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -627,31 +630,7 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 							managedResourceToDiagnosticMap.remove(resource);
 					}
 
-					// only aggregatorResource is a file and can be used for markers
-					Resource aggregatorResource = editingDomain.getResourceSet().getResources().get(0);
-					BasicDiagnostic basicDiagnostic = new BasicDiagnostic(Diagnostic.OK,
-							"org.eclipse.buckminster.aggregator.editor", 0, null, null);
-
-					for(Resource rsrc : editingDomain.getResourceSet().getResources())
-					{
-						Diagnostic diagnostic = managedResourceToDiagnosticMap.get(rsrc);
-
-						if(diagnostic != null)
-							basicDiagnostic.add(diagnostic);
-					}
-
-					managedMarkerHelper.deleteMarkers(aggregatorResource);
-					if(basicDiagnostic.getSeverity() != Diagnostic.OK)
-					{
-						try
-						{
-							managedMarkerHelper.createMarkers(aggregatorResource, basicDiagnostic);
-						}
-						catch(CoreException exception)
-						{
-							AggregatorEditorPlugin.INSTANCE.log(exception);
-						}
-					}
+					updateMarkers();
 					break;
 				}
 				}
@@ -660,6 +639,65 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			{
 				super.notifyChanged(notification);
 			}
+		}
+
+		private void updateMarkers()
+		{
+			Runnable runnable = new Runnable()
+			{
+				public void run()
+				{
+					synchronized(AggregatorEditor.this)
+					{
+						while(updateMarkers)
+							try
+							{
+								updateMarkers = false;
+								updateMarkersIsRunning = true;
+
+								// only aggregatorResource is a file and can be used for markers
+								Resource aggregatorResource = editingDomain.getResourceSet().getResources().get(0);
+								BasicDiagnostic basicDiagnostic = new BasicDiagnostic(Diagnostic.OK,
+										"org.eclipse.buckminster.aggregator.editor", 0, null, null);
+
+								for(Resource rsrc : editingDomain.getResourceSet().getResources())
+								{
+									Diagnostic diagnostic = managedResourceToDiagnosticMap.get(rsrc);
+
+									if(diagnostic != null)
+										basicDiagnostic.add(diagnostic);
+								}
+
+								managedMarkerHelper.deleteMarkers(aggregatorResource);
+								if(basicDiagnostic.getSeverity() != Diagnostic.OK)
+								{
+									try
+									{
+										managedMarkerHelper.createMarkers(aggregatorResource, basicDiagnostic);
+									}
+									catch(CoreException exception)
+									{
+										AggregatorEditorPlugin.INSTANCE.log(exception);
+									}
+								}
+							}
+							finally
+							{
+								updateMarkersIsRunning = false;
+							}
+					}
+				}
+			};
+
+			if(updateMarkers)
+				return;
+
+			updateMarkers = true;
+
+			if(updateMarkersIsRunning)
+				return;
+
+			new Thread(runnable).start();
 		}
 
 		@Override
