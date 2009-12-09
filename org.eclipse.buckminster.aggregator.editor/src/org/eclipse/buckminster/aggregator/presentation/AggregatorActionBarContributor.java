@@ -1224,12 +1224,17 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 					if(object instanceof MetadataRepositoryReference)
 					{
 						MetadataRepositoryReference metadataRepositoryReference = (MetadataRepositoryReference)object;
-						if(!metadataRepositoryReference.isBranchEnabled())
+						if(metadataRepositoryReference.isBranchEnabled())
+						{
+							MetadataRepositoryResourceImpl res = (MetadataRepositoryResourceImpl)MetadataRepositoryResourceImpl.getResourceForNatureAndLocation(
+									metadataRepositoryReference.getNature(),
+									metadataRepositoryReference.getResolvedLocation(), aggregator);
+							m_reloadOrCancelRepoAction.addMetadataRepositoryResource(res);
+						}
+						else
+						{
 							m_reloadOrCancelRepoAction.setEnabled(false);
-						MetadataRepositoryResourceImpl res = (MetadataRepositoryResourceImpl)MetadataRepositoryResourceImpl.getResourceForNatureAndLocation(
-								metadataRepositoryReference.getNature(),
-								metadataRepositoryReference.getResolvedLocation(), aggregator);
-						m_reloadOrCancelRepoAction.addMetadataRepositoryResource(res);
+						}
 						m_reloadOrCancelRepoActionVisible = true;
 					}
 					else if(object instanceof MetadataRepositoryResourceImpl)
