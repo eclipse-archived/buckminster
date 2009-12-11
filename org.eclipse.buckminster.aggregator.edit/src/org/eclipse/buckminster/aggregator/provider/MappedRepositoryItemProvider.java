@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
@@ -20,7 +21,7 @@ import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.util.AggregatorResource;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
-import org.eclipse.buckminster.aggregator.util.MapToMappedRepositoryCommand;
+import org.eclipse.buckminster.aggregator.util.AddIUsToMappedRepositoryCommand;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.common.command.CompoundCommand;
@@ -252,30 +253,14 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	/**
 	 * Supports DnD from IUs to MappedRepo
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Command createDragAndDropCommand(EditingDomain domain, Object owner, float location, int operations,
 			int operation, Collection<?> collection)
 	{
-		ItemSorter itemSorter = new ItemSorter(collection);
+		Command command = createAddIUsToMappedRepositoryCommand(owner, collection);
 
-		if(((MappedRepository)owner).isEnabled()
-				&& itemSorter.getTotalItemCount() > 0
-				&& (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(ItemGroup.IU).size()
-						&& ItemUtils.haveSameLocation((MappedRepository)owner,
-								(List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU)) || itemSorter.getTotalItemCount() == itemSorter.getGroupItems(
-						ItemGroup.IU_STRUCTURED).size()
-						&& ItemUtils.haveSameLocation(
-								(MappedRepository)owner,
-								ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)))))
-		{
-			List<InstallableUnit> ius = new ArrayList<InstallableUnit>();
-
-			ius.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
-			ius.addAll(ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)));
-
-			return new MapToMappedRepositoryCommand((MappedRepository)owner, ius);
-		}
+		if(command != null)
+			return command;
 
 		return UnexecutableCommand.INSTANCE;
 	}
@@ -326,6 +311,21 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	}
 
 	/**
+	 * Supports copy&paste from IUs to MappedRepo
+	 */
+	@Override
+	protected Command factorAddCommand(EditingDomain domain, CommandParameter commandParameter)
+	{
+		Command command = createAddIUsToMappedRepositoryCommand(commandParameter.getOwner(),
+				commandParameter.getCollection());
+
+		if(command != null)
+			return command;
+
+		return super.factorAddCommand(domain, commandParameter);
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -343,6 +343,32 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	protected String getTypeName()
 	{
 		return "_UI_MappedRepository_type";
+	}
+
+	@SuppressWarnings("unchecked")
+	private Command createAddIUsToMappedRepositoryCommand(Object owner, Collection<?> collection)
+	{
+		ItemSorter itemSorter = new ItemSorter(collection);
+
+		if(((MappedRepository)owner).isEnabled()
+				&& itemSorter.getTotalItemCount() > 0
+				&& (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(ItemGroup.IU).size()
+						&& ItemUtils.haveSameLocation((MappedRepository)owner,
+								(List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU)) || itemSorter.getTotalItemCount() == itemSorter.getGroupItems(
+						ItemGroup.IU_STRUCTURED).size()
+						&& ItemUtils.haveSameLocation(
+								(MappedRepository)owner,
+								ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)))))
+		{
+			List<InstallableUnit> ius = new ArrayList<InstallableUnit>();
+
+			ius.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
+			ius.addAll(ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)));
+
+			return new AddIUsToMappedRepositoryCommand((MappedRepository)owner, ius);
+		}
+
+		return null;
 	}
 
 	private Command createCompoundRemoveCommand(EditingDomain domain, MappedRepository mappedRepository,

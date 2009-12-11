@@ -21,8 +21,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 
 /**
- * <!-- begin-user-doc --> The <b>Resource </b> associated with the package. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> The <b>Resource </b> associated with the package.
  * 
+ * @extends AggregatorResource <!-- end-user-doc -->
  * @see org.eclipse.buckminster.aggregator.util.AggregatorResourceFactoryImpl
  * @generated
  */

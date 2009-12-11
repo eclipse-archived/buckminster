@@ -383,7 +383,7 @@ public abstract class InstallableUnitReferenceImpl extends MinimalEObjectImpl.Co
 
 		if(versionedName == null)
 			return null;
-		
+
 		Query query = new InstallableUnitQuery(versionedName.getId());
 
 		Collector ius = ((MappedRepository)eContainer()).getMetadataRepository().query(

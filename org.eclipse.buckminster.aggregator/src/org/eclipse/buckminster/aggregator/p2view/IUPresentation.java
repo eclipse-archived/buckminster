@@ -97,8 +97,9 @@ public interface IUPresentation
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Installable Unit</em>' reference.
+	 * @see #setInstallableUnit(InstallableUnit)
 	 * @see org.eclipse.buckminster.aggregator.p2view.P2viewPackage#getIUPresentation_InstallableUnit()
-	 * @model resolveProxies="false" changeable="false"
+	 * @model resolveProxies="false"
 	 * @generated
 	 */
 	InstallableUnit getInstallableUnit();
@@ -189,6 +190,17 @@ public interface IUPresentation
 	 * @generated
 	 */
 	void setId(String value);
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getInstallableUnit
+	 * <em>Installable Unit</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Installable Unit</em>' reference.
+	 * @see #getInstallableUnit()
+	 * @generated
+	 */
+	void setInstallableUnit(InstallableUnit value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.aggregator.p2view.IUPresentation#getLabel <em>Label</em>}'

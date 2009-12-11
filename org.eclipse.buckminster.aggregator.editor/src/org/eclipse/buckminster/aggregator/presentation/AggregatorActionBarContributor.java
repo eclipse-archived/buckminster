@@ -40,12 +40,12 @@ import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
-import org.eclipse.buckminster.aggregator.util.AddToCustomCategoryCommand;
-import org.eclipse.buckminster.aggregator.util.AddToParentRepositoryCommand;
+import org.eclipse.buckminster.aggregator.util.AddIUsToCustomCategoryCommand;
+import org.eclipse.buckminster.aggregator.util.AddIUsToParentRepositoryCommand;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
-import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
+import org.eclipse.buckminster.aggregator.util.AddIUsToContributionCommand;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.TwoColumnMatrix;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
@@ -132,7 +132,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	{
 		private EditingDomain m_domain;
 
-		private AddToCustomCategoryCommand m_command;
+		private AddIUsToCustomCategoryCommand m_command;
 
 		public AddToCustomCategoryAction(EditingDomain domain, CustomCategory customCategory,
 				List<InstallableUnit> selectedFeatures)
@@ -143,7 +143,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
 
 			m_domain = domain;
-			m_command = new AddToCustomCategoryCommand(customCategory, selectedFeatures);
+			m_command = new AddIUsToCustomCategoryCommand(customCategory, selectedFeatures);
 
 			setText((customCategory.getLabel() == null || customCategory.getLabel().length() == 0)
 					? "''"
@@ -162,7 +162,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	{
 		private EditingDomain m_domain;
 
-		private AddToParentRepositoryCommand m_command;
+		private AddIUsToParentRepositoryCommand m_command;
 
 		public AddToParentRepositoryAction(EditingDomain domain, List<InstallableUnit> selectedIUs)
 		{
@@ -172,7 +172,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
 
 			m_domain = domain;
-			m_command = new AddToParentRepositoryCommand(ResourceUtils.getAggregator(domain.getResourceSet()),
+			m_command = new AddIUsToParentRepositoryCommand(ResourceUtils.getAggregator(domain.getResourceSet()),
 					selectedIUs);
 
 			setText(m_command.getLabel());
@@ -446,7 +446,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	{
 		private EditingDomain m_domain;
 
-		private MapToContributionCommand m_command;
+		private AddIUsToContributionCommand m_command;
 
 		public MapToContributionAction(EditingDomain domain, Contribution contribution,
 				List<MetadataRepository> selectedMDRs, List<InstallableUnit> selectedIUs)
@@ -457,7 +457,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
 
 			m_domain = domain;
-			m_command = new MapToContributionCommand(contribution, selectedMDRs, selectedIUs);
+			m_command = new AddIUsToContributionCommand(contribution, selectedMDRs, selectedIUs);
 
 			setText(m_command.getLabel());
 			setEnabled(m_command.canExecute());

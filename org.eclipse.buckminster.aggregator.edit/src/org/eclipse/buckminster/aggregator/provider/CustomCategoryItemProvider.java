@@ -13,7 +13,7 @@ import java.util.List;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
 import org.eclipse.buckminster.aggregator.CustomCategory;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
-import org.eclipse.buckminster.aggregator.util.AddToCustomCategoryCommand;
+import org.eclipse.buckminster.aggregator.util.AddIUsToCustomCategoryCommand;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
@@ -22,6 +22,7 @@ import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -145,9 +146,6 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 
 		switch(notification.getFeatureID(CustomCategory.class))
 		{
-		case AggregatorPackage.CUSTOM_CATEGORY__ERRORS:
-		case AggregatorPackage.CUSTOM_CATEGORY__WARNINGS:
-		case AggregatorPackage.CUSTOM_CATEGORY__INFOS:
 		case AggregatorPackage.CUSTOM_CATEGORY__IDENTIFIER:
 		case AggregatorPackage.CUSTOM_CATEGORY__LABEL:
 		case AggregatorPackage.CUSTOM_CATEGORY__DESCRIPTION:
@@ -234,25 +232,31 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	/**
 	 * Supports DnD from Features to CustomCategory
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Command createDragAndDropCommand(EditingDomain domain, Object owner, float location, int operations,
 			int operation, Collection<?> collection)
 	{
-		ItemSorter itemSorter = new ItemSorter(collection);
+		Command command = createAddIUsToCustomCategoryCommand(owner, collection);
 
-		if(itemSorter.getTotalItemCount() > 0
-				&& (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(ItemGroup.FEATURE).size() || (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(
-						ItemGroup.FEATURE_STRUCTURED).size())))
-		{
-			List<InstallableUnit> features = new ArrayList<InstallableUnit>();
-			features.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.FEATURE));
-			features.addAll(ItemUtils.getIUs((List<org.eclipse.buckminster.aggregator.p2view.Feature>)itemSorter.getGroupItems(ItemGroup.FEATURE_STRUCTURED)));
-
-			return new AddToCustomCategoryCommand((CustomCategory)owner, features);
-		}
+		if(command != null)
+			return command;
 
 		return super.createDragAndDropCommand(domain, owner, location, operations, operation, collection);
+	}
+
+	/**
+	 * Supports copy&paste from IUs to CustomCategory
+	 */
+	@Override
+	protected Command factorAddCommand(EditingDomain domain, CommandParameter commandParameter)
+	{
+		Command command = createAddIUsToCustomCategoryCommand(commandParameter.getOwner(),
+				commandParameter.getCollection());
+
+		if(command != null)
+			return command;
+
+		return super.factorAddCommand(domain, commandParameter);
 	}
 
 	/**
@@ -277,6 +281,25 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 	protected boolean isWrappingNeeded(Object object)
 	{
 		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Command createAddIUsToCustomCategoryCommand(Object owner, Collection<?> collection)
+	{
+		ItemSorter itemSorter = new ItemSorter(collection);
+
+		if(itemSorter.getTotalItemCount() > 0
+				&& (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(ItemGroup.FEATURE).size() || (itemSorter.getTotalItemCount() == itemSorter.getGroupItems(
+						ItemGroup.FEATURE_STRUCTURED).size())))
+		{
+			List<InstallableUnit> features = new ArrayList<InstallableUnit>();
+			features.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.FEATURE));
+			features.addAll(ItemUtils.getIUs((List<org.eclipse.buckminster.aggregator.p2view.Feature>)itemSorter.getGroupItems(ItemGroup.FEATURE_STRUCTURED)));
+
+			return new AddIUsToCustomCategoryCommand((CustomCategory)owner, features);
+		}
+
+		return null;
 	}
 
 }

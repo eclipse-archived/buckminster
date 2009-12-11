@@ -450,8 +450,9 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 	private Pattern findIUIdPattern;
 
 	private VersionRange findIUVersionRange;
-	
+
 	private boolean updateMarkers;
+
 	private boolean updateMarkersIsRunning;
 
 	/**
@@ -641,6 +642,18 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 			}
 		}
 
+		@Override
+		protected void setTarget(Resource target)
+		{
+			basicSetTarget(target);
+		}
+
+		@Override
+		protected void unsetTarget(Resource target)
+		{
+			basicUnsetTarget(target);
+		}
+
 		private void updateMarkers()
 		{
 			Runnable runnable = new Runnable()
@@ -698,18 +711,6 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				return;
 
 			new Thread(runnable).start();
-		}
-
-		@Override
-		protected void setTarget(Resource target)
-		{
-			basicSetTarget(target);
-		}
-
-		@Override
-		protected void unsetTarget(Resource target)
-		{
-			basicUnsetTarget(target);
 		}
 	};
 

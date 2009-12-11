@@ -50,44 +50,45 @@ public class ItemSorter
 
 		List<Object> others = new ArrayList<Object>();
 
-		for(Object item : items)
-		{
-			m_totalItemCount++;
-
-			if(item instanceof InstallableUnit)
+		if(items != null)
+			for(Object item : items)
 			{
-				InstallableUnit iu = (InstallableUnit)item;
-				if(((EObject)iu).eContainer() instanceof MetadataRepository
-						&& InstallableUnitUtils.getType(iu) != InstallableUnitType.OTHER)
-				{
-					ius.add(iu);
+				m_totalItemCount++;
 
-					if(InstallableUnitUtils.getType(iu) == InstallableUnitType.FEATURE)
-						features.add(iu);
+				if(item instanceof InstallableUnit)
+				{
+					InstallableUnit iu = (InstallableUnit)item;
+					if(((EObject)iu).eContainer() instanceof MetadataRepository
+							&& InstallableUnitUtils.getType(iu) != InstallableUnitType.OTHER)
+					{
+						ius.add(iu);
+
+						if(InstallableUnitUtils.getType(iu) == InstallableUnitType.FEATURE)
+							features.add(iu);
+					}
+					else
+						others.add(item);
 				}
+				else if(item instanceof MetadataRepository)
+					mdrs.add((MetadataRepository)item);
+				else if(item instanceof IUPresentation)
+				{
+					IUPresentation iup = (IUPresentation)item;
+					if(iup.getType() != InstallableUnitType.OTHER)
+					{
+						iups.add(iup);
+
+						if(iup.getType() == InstallableUnitType.FEATURE)
+							structuredFeatures.add((Feature)iup);
+					}
+					else
+						others.add(item);
+				}
+				else if(item instanceof MetadataRepositoryStructuredView)
+					mdrsvs.add((MetadataRepositoryStructuredView)item);
 				else
 					others.add(item);
 			}
-			else if(item instanceof MetadataRepository)
-				mdrs.add((MetadataRepository)item);
-			else if(item instanceof IUPresentation)
-			{
-				IUPresentation iup = (IUPresentation)item;
-				if(iup.getType() != InstallableUnitType.OTHER)
-				{
-					iups.add(iup);
-
-					if(iup.getType() == InstallableUnitType.FEATURE)
-						structuredFeatures.add((Feature)iup);
-				}
-				else
-					others.add(item);
-			}
-			else if(item instanceof MetadataRepositoryStructuredView)
-				mdrsvs.add((MetadataRepositoryStructuredView)item);
-			else
-				others.add(item);
-		}
 
 		m_groups.put(ItemGroup.MDR, mdrs);
 		m_groups.put(ItemGroup.IU, ius);

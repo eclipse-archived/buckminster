@@ -24,7 +24,7 @@ import org.eclipse.emf.edit.command.DragAndDropFeedback;
  * @author Karel Brezina
  * 
  */
-public class MapToMappedRepositoryCommand extends AbstractCommand implements DragAndDropFeedback
+public class AddIUsToMappedRepositoryCommand extends AbstractCommand implements DragAndDropFeedback
 {
 	private MappedRepository m_mappedRepo;
 
@@ -32,7 +32,7 @@ public class MapToMappedRepositoryCommand extends AbstractCommand implements Dra
 
 	private List<MappedUnit> m_addedMappedUnits = new ArrayList<MappedUnit>();
 
-	public MapToMappedRepositoryCommand(MappedRepository mappedRepo, List<InstallableUnit> selectedIUs)
+	public AddIUsToMappedRepositoryCommand(MappedRepository mappedRepo, List<InstallableUnit> selectedIUs)
 	{
 		super(AggregatorEditPlugin.INSTANCE.getString("_UI_Map_to_command_prefix") + " "
 				+ AggregatorEditPlugin.INSTANCE.getString("_UI_MappedRepository_type") + " " + mappedRepo.getLocation());

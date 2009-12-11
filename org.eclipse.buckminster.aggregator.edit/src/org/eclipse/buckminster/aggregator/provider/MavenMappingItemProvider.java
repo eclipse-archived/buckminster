@@ -148,9 +148,6 @@ public class MavenMappingItemProvider extends AggregatorItemProviderAdapter impl
 
 		switch(notification.getFeatureID(MavenMapping.class))
 		{
-		case AggregatorPackage.MAVEN_MAPPING__ERRORS:
-		case AggregatorPackage.MAVEN_MAPPING__WARNINGS:
-		case AggregatorPackage.MAVEN_MAPPING__INFOS:
 		case AggregatorPackage.MAVEN_MAPPING__NAME_PATTERN:
 		case AggregatorPackage.MAVEN_MAPPING__GROUP_ID:
 		case AggregatorPackage.MAVEN_MAPPING__ARTIFACT_ID:

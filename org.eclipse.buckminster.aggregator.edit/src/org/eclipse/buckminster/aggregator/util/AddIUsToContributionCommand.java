@@ -26,7 +26,7 @@ import org.eclipse.emf.edit.command.DragAndDropFeedback;
  * @author Karel Brezina
  * 
  */
-public class MapToContributionCommand extends AbstractCommand implements DragAndDropFeedback
+public class AddIUsToContributionCommand extends AbstractCommand implements DragAndDropFeedback
 {
 	private Contribution m_contribution;
 
@@ -38,7 +38,7 @@ public class MapToContributionCommand extends AbstractCommand implements DragAnd
 
 	private List<MappedUnit> m_addedMappedUnits = new ArrayList<MappedUnit>();
 
-	public MapToContributionCommand(Contribution contribution, List<MetadataRepository> selectedMDRs,
+	public AddIUsToContributionCommand(Contribution contribution, List<MetadataRepository> selectedMDRs,
 			List<InstallableUnit> selectedIUs)
 	{
 		super(AggregatorEditPlugin.INSTANCE.getString("_UI_Map_to_command_prefix")

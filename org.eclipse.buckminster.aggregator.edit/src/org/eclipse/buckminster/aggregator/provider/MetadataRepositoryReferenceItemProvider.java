@@ -294,9 +294,6 @@ public class MetadataRepositoryReferenceItemProvider extends AggregatorItemProvi
 		switch(notification.getFeatureID(MetadataRepositoryReference.class))
 		{
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ENABLED:
-		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__ERRORS:
-		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__WARNINGS:
-		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__INFOS:
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__LOCATION:
 		case AggregatorPackage.METADATA_REPOSITORY_REFERENCE__NATURE:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));

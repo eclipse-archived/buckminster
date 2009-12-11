@@ -169,9 +169,6 @@ public class AggregatorItemProvider extends DescriptionProviderItemProvider impl
 
 		switch(notification.getFeatureID(Aggregator.class))
 		{
-		case AggregatorPackage.AGGREGATOR__ERRORS:
-		case AggregatorPackage.AGGREGATOR__WARNINGS:
-		case AggregatorPackage.AGGREGATOR__INFOS:
 		case AggregatorPackage.AGGREGATOR__BUILDMASTER:
 		case AggregatorPackage.AGGREGATOR__LABEL:
 		case AggregatorPackage.AGGREGATOR__BUILD_ROOT:

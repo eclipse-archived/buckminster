@@ -275,6 +275,9 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 		case P2viewPackage.IU_PRESENTATION__DESCRIPTION:
 			setDescription((String)newValue);
 			return;
+		case P2viewPackage.IU_PRESENTATION__INSTALLABLE_UNIT:
+			setInstallableUnit((InstallableUnit)newValue);
+			return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -303,6 +306,9 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 			return;
 		case P2viewPackage.IU_PRESENTATION__DESCRIPTION:
 			setDescription(DESCRIPTION_EDEFAULT);
+			return;
+		case P2viewPackage.IU_PRESENTATION__INSTALLABLE_UNIT:
+			setInstallableUnit((InstallableUnit)null);
 			return;
 		}
 		super.eUnset(featureID);
@@ -400,6 +406,20 @@ public abstract class IUPresentationImpl extends MinimalEObjectImpl.Container im
 		id = newId;
 		if(eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.IU_PRESENTATION__ID, oldId, id));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setInstallableUnit(InstallableUnit newInstallableUnit)
+	{
+		InstallableUnit oldInstallableUnit = installableUnit;
+		installableUnit = newInstallableUnit;
+		if(eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, P2viewPackage.IU_PRESENTATION__INSTALLABLE_UNIT,
+					oldInstallableUnit, installableUnit));
 	}
 
 	/**

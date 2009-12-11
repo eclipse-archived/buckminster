@@ -29,7 +29,7 @@ import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.p2view.MetadataRepositoryStructuredView;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
-import org.eclipse.buckminster.aggregator.util.MapToContributionCommand;
+import org.eclipse.buckminster.aggregator.util.AddIUsToContributionCommand;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.emf.common.command.Command;
@@ -40,6 +40,7 @@ import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.command.RemoveCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
@@ -360,9 +361,6 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		{
 		case AggregatorPackage.CONTRIBUTION__ENABLED:
 		case AggregatorPackage.CONTRIBUTION__DESCRIPTION:
-		case AggregatorPackage.CONTRIBUTION__ERRORS:
-		case AggregatorPackage.CONTRIBUTION__WARNINGS:
-		case AggregatorPackage.CONTRIBUTION__INFOS:
 		case AggregatorPackage.CONTRIBUTION__LABEL:
 		case AggregatorPackage.CONTRIBUTION__CONTACTS:
 			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
@@ -469,29 +467,14 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 	/**
 	 * Supports DnD from MDRs and IUs to Contribution
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Command createDragAndDropCommand(EditingDomain domain, Object owner, float location, int operations,
 			int operation, Collection<?> collection)
 	{
-		ItemSorter itemSorter = new ItemSorter(collection);
+		Command command = createAddIUsToContributionCommand(owner, collection);
 
-		if(((EnabledStatusProvider)owner).isEnabled()
-				&& itemSorter.getTotalItemCount() > 0
-				&& (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR).size() + itemSorter.getGroupItems(
-						ItemGroup.IU).size()) || itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(
-						ItemGroup.MDR_STRUCTURED).size() + itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED).size())))
-		{
-			List<MetadataRepository> mdrs = new ArrayList<MetadataRepository>();
-			List<InstallableUnit> ius = new ArrayList<InstallableUnit>();
-
-			mdrs.addAll((List<MetadataRepository>)itemSorter.getGroupItems(ItemGroup.MDR));
-			mdrs.addAll(ItemUtils.getMDRs((List<MetadataRepositoryStructuredView>)itemSorter.getGroupItems(ItemGroup.MDR_STRUCTURED)));
-			ius.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
-			ius.addAll(ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)));
-
-			return new MapToContributionCommand((Contribution)owner, mdrs, ius);
-		}
+		if(command != null)
+			return command;
 
 		return super.createDragAndDropCommand(domain, owner, location, operations, operation, collection);
 	}
@@ -542,6 +525,21 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 	}
 
 	/**
+	 * Supports copy&paste from IUs to COntribution
+	 */
+	@Override
+	protected Command factorAddCommand(EditingDomain domain, CommandParameter commandParameter)
+	{
+		Command command = createAddIUsToContributionCommand(commandParameter.getOwner(),
+				commandParameter.getCollection());
+
+		if(command != null)
+			return command;
+
+		return super.factorAddCommand(domain, commandParameter);
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -553,5 +551,30 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Command createAddIUsToContributionCommand(Object owner, Collection<?> collection)
+	{
+		ItemSorter itemSorter = new ItemSorter(collection);
+
+		if(((EnabledStatusProvider)owner).isEnabled()
+				&& itemSorter.getTotalItemCount() > 0
+				&& (itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(ItemGroup.MDR).size() + itemSorter.getGroupItems(
+						ItemGroup.IU).size()) || itemSorter.getTotalItemCount() == (itemSorter.getGroupItems(
+						ItemGroup.MDR_STRUCTURED).size() + itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED).size())))
+		{
+			List<MetadataRepository> mdrs = new ArrayList<MetadataRepository>();
+			List<InstallableUnit> ius = new ArrayList<InstallableUnit>();
+
+			mdrs.addAll((List<MetadataRepository>)itemSorter.getGroupItems(ItemGroup.MDR));
+			mdrs.addAll(ItemUtils.getMDRs((List<MetadataRepositoryStructuredView>)itemSorter.getGroupItems(ItemGroup.MDR_STRUCTURED)));
+			ius.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
+			ius.addAll(ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)));
+
+			return new AddIUsToContributionCommand((Contribution)owner, mdrs, ius);
+		}
+
+		return null;
 	}
 }

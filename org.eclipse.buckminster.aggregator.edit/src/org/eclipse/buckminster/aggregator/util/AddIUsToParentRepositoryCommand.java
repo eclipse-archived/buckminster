@@ -27,7 +27,7 @@ import org.eclipse.emf.ecore.EObject;
  * @author Karel Brezina
  * 
  */
-public class AddToParentRepositoryCommand extends AbstractCommand
+public class AddIUsToParentRepositoryCommand extends AbstractCommand
 {
 	private Aggregator m_aggregator;
 
@@ -37,7 +37,7 @@ public class AddToParentRepositoryCommand extends AbstractCommand
 
 	private Map<MappedRepository, List<MappedUnit>> m_unitsAddedToMappedRepo = new HashMap<MappedRepository, List<MappedUnit>>();
 
-	public AddToParentRepositoryCommand(Aggregator aggregator, List<InstallableUnit> selectedIUs)
+	public AddIUsToParentRepositoryCommand(Aggregator aggregator, List<InstallableUnit> selectedIUs)
 	{
 		super(AggregatorEditPlugin.INSTANCE.getString("_UI_Add_to_parent_Mapped_Repository"));
 

@@ -574,7 +574,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1"
           eType="#//InstallableUnitType" changeable="false" volatile="true" defaultValueLiteral=""/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="installableUnit" eType="#//p2/InstallableUnit"
-          changeable="false" resolveProxies="false"/>
+          resolveProxies="false"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IUPresentationWithDetails" abstract="true"
         eSuperTypes="#//p2view/IUPresentation #//p2view/IUDetails">

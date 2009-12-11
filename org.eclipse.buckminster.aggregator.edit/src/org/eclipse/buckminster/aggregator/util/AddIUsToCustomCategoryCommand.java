@@ -31,7 +31,7 @@ import org.eclipse.emf.edit.command.DragAndDropFeedback;
  * @author Karel Brezina
  * 
  */
-public class AddToCustomCategoryCommand extends AbstractCommand implements DragAndDropFeedback
+public class AddIUsToCustomCategoryCommand extends AbstractCommand implements DragAndDropFeedback
 {
 	private CustomCategory m_customCategory;
 
@@ -43,7 +43,7 @@ public class AddToCustomCategoryCommand extends AbstractCommand implements DragA
 
 	private Map<MappedRepository, List<MappedUnit>> m_unitsAddedToMappedRepo = new HashMap<MappedRepository, List<MappedUnit>>();
 
-	public AddToCustomCategoryCommand(CustomCategory category, List<InstallableUnit> selectedFeatures)
+	public AddIUsToCustomCategoryCommand(CustomCategory category, List<InstallableUnit> selectedFeatures)
 	{
 		super(AggregatorEditPlugin.INSTANCE.getString("_UI_Add_to_command_prefix") + " "
 				+ ((category.getLabel() == null || category.getLabel().length() == 0)
