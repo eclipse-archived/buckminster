@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.eclipse.buckminster.aggregator.engine.maven;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.buckminster.aggregator.engine.maven.pom.Build;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.CiManagement;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.ContributorsType;
@@ -35,6 +37,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -96,6 +99,11 @@ abstract class ResolvedModelBase implements Model
 	}
 
 	public Object eGet(EStructuralFeature feature, boolean resolve)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public Object eInvoke(EOperation arg0, EList<?> arg1) throws InvocationTargetException
 	{
 		throw new UnsupportedOperationException();
 	}
