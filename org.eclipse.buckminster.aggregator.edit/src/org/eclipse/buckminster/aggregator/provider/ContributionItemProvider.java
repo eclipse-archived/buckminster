@@ -158,17 +158,6 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 	}
 
 	/**
-	 * Grey out the label if this item is (directly or indirectly) disabled
-	 */
-	@Override
-	public Object getForeground(Object object)
-	{
-		return ((Contribution)object).isEnabled()
-				? null
-				: IItemColorProvider.GRAYED_OUT_COLOR;
-	}
-
-	/**
 	 * This returns Contribution.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated NOT

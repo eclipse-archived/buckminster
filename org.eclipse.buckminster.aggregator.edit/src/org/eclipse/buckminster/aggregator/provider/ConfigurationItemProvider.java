@@ -49,12 +49,15 @@ public class ConfigurationItemProvider extends AggregatorItemProviderAdapter imp
 	/**
 	 * This returns Configuration.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public Object getImage(Object object)
 	{
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Configuration"));
+		return overlayImage(object, getResourceLocator().getImage(
+				"full/obj16/Configuration" + (((Configuration)object).isEnabled()
+						? ""
+						: "Disabled")));
 	}
 
 	/**
@@ -69,6 +72,7 @@ public class ConfigurationItemProvider extends AggregatorItemProviderAdapter imp
 		{
 			super.getPropertyDescriptors(object);
 
+			addEnabledPropertyDescriptor(object);
 			addOperatingSystemPropertyDescriptor(object);
 			addWindowSystemPropertyDescriptor(object);
 			addArchitecturePropertyDescriptor(object);
@@ -117,6 +121,7 @@ public class ConfigurationItemProvider extends AggregatorItemProviderAdapter imp
 
 		switch(notification.getFeatureID(Configuration.class))
 		{
+		case AggregatorPackage.CONFIGURATION__ENABLED:
 		case AggregatorPackage.CONFIGURATION__OPERATING_SYSTEM:
 		case AggregatorPackage.CONFIGURATION__WINDOW_SYSTEM:
 		case AggregatorPackage.CONFIGURATION__ARCHITECTURE:
@@ -139,6 +144,21 @@ public class ConfigurationItemProvider extends AggregatorItemProviderAdapter imp
 						"_UI_Configuration_architecture_feature", "_UI_Configuration_type"),
 				AggregatorPackage.Literals.CONFIGURATION__ARCHITECTURE, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Enabled feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addEnabledPropertyDescriptor(Object object)
+	{
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(), getResourceLocator(),
+				getString("_UI_EnabledStatusProvider_enabled_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_EnabledStatusProvider_enabled_feature", "_UI_EnabledStatusProvider_type"),
+				AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED, true, false, false,
+				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**

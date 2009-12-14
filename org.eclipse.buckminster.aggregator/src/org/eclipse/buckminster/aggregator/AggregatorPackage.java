@@ -1367,13 +1367,21 @@ public interface AggregatorPackage extends EPackage
 	int CONFIGURATION = 2;
 
 	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int CONFIGURATION__ENABLED = ENABLED_STATUS_PROVIDER__ENABLED;
+
+	/**
 	 * The feature id for the '<em><b>Operating System</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int CONFIGURATION__OPERATING_SYSTEM = 0;
+	int CONFIGURATION__OPERATING_SYSTEM = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Window System</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1381,7 +1389,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CONFIGURATION__WINDOW_SYSTEM = 1;
+	int CONFIGURATION__WINDOW_SYSTEM = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Architecture</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1389,7 +1397,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CONFIGURATION__ARCHITECTURE = 2;
+	int CONFIGURATION__ARCHITECTURE = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Configuration</em>' class. <!-- begin-user-doc --> <!--
@@ -1398,7 +1406,7 @@ public interface AggregatorPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int CONFIGURATION_FEATURE_COUNT = 3;
+	int CONFIGURATION_FEATURE_COUNT = ENABLED_STATUS_PROVIDER_FEATURE_COUNT + 3;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.aggregator.impl.ContributionImpl

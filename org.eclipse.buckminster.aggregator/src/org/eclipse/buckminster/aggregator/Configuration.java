@@ -22,7 +22,7 @@ package org.eclipse.buckminster.aggregator;
  * @model
  * @generated
  */
-public interface Configuration
+public interface Configuration extends EnabledStatusProvider
 {
 	/**
 	 * Returns the value of the '<em><b>Architecture</b></em>' attribute. The literals are from the enumeration

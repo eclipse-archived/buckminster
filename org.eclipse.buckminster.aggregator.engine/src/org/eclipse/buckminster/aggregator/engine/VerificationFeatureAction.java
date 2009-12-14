@@ -69,13 +69,15 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 
 	private static Filter createFilter(List<Configuration> configs)
 	{
-		if(!(configs == null || configs.isEmpty()))
+		List<Configuration> enabledConfigs = getEnabledConfigs(configs);
+
+		if(!(enabledConfigs == null || enabledConfigs.isEmpty()))
 		{
 			StringBuilder filterBld = new StringBuilder();
-			if(configs.size() > 1)
+			if(enabledConfigs.size() > 1)
 				filterBld.append("(|");
 
-			for(Configuration config : configs)
+			for(Configuration config : enabledConfigs)
 			{
 				filterBld.append("(&(osgi.os=");
 				filterBld.append(config.getOperatingSystem().getLiteral());
@@ -85,7 +87,7 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 				filterBld.append(config.getArchitecture().getLiteral());
 				filterBld.append("))");
 			}
-			if(configs.size() > 1)
+			if(enabledConfigs.size() > 1)
 				filterBld.append(')');
 			try
 			{
@@ -97,6 +99,17 @@ public class VerificationFeatureAction extends AbstractPublisherAction
 			}
 		}
 		return null;
+	}
+
+	private static List<Configuration> getEnabledConfigs(List<Configuration> configs)
+	{
+		List<Configuration> enabledConfigs = new ArrayList<Configuration>();
+
+		for(Configuration config : configs)
+			if(config.isEnabled())
+				enabledConfigs.add(config);
+
+		return enabledConfigs;
 	}
 
 	private final Builder builder;

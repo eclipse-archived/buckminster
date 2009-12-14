@@ -584,6 +584,8 @@ public class AggregatorSwitch<T1>
 			Configuration configuration = (Configuration)theEObject;
 			T1 result = caseConfiguration(configuration);
 			if(result == null)
+				result = caseEnabledStatusProvider(configuration);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}

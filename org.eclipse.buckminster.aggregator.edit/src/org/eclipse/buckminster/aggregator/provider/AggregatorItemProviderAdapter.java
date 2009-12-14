@@ -1,15 +1,19 @@
 package org.eclipse.buckminster.aggregator.provider;
 
+import org.eclipse.buckminster.aggregator.AggregatorPackage;
+import org.eclipse.buckminster.aggregator.EnabledStatusProvider;
 import org.eclipse.buckminster.aggregator.Status;
 import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
-import org.eclipse.emf.common.notify.AdapterFactory;
-import org.eclipse.emf.common.util.ResourceLocator;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.buckminster.aggregator.util.OverlaidImage;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.emf.common.notify.AdapterFactory;
+import org.eclipse.emf.common.util.ResourceLocator;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.edit.provider.IItemColorProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
 public class AggregatorItemProviderAdapter extends ItemProviderAdapter implements TooltipTextProvider
 {
@@ -24,6 +28,26 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter implement
 					sortChoices, staticImage, category, filterFlags);
 		}
 
+		@Override
+		public boolean canSetProperty(Object object)
+		{
+			boolean result = super.canSetProperty(object);
+
+			if(result)
+				if(parentsEnabled(object))
+				{
+					if(object instanceof EnabledStatusProvider)
+						result = ((EnabledStatusProvider)object).isEnabled()
+								|| AggregatorPackage.Literals.ENABLED_STATUS_PROVIDER__ENABLED.getName().equals(
+										getId(object));
+				}
+				else
+					result = false;
+
+			return result;
+		}
+
+		@Override
 		public void setPropertyValue(Object object, Object value)
 		{
 			// Replaces empty string with null
@@ -31,6 +55,27 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter implement
 				value = Trivial.trim((String)value);
 
 			super.setPropertyValue(object, value);
+		}
+
+		private boolean parentsEnabled(Object object)
+		{
+			if(object instanceof EObject)
+			{
+				EObject eObject = (EObject)object;
+
+				EObject eContainer = eObject.eContainer();
+
+				if(eContainer == null)
+					return true;
+
+				if(eContainer instanceof EnabledStatusProvider)
+					if(!((EnabledStatusProvider)eContainer).isEnabled())
+						return false;
+
+				return parentsEnabled(eContainer);
+			}
+
+			return true;
 		}
 	}
 
@@ -60,6 +105,20 @@ public class AggregatorItemProviderAdapter extends ItemProviderAdapter implement
 	public AggregatorItemProviderAdapter(AdapterFactory adapterFactory)
 	{
 		super(adapterFactory);
+	}
+
+	/**
+	 * Grey out the label if this item is (directly or indirectly) disabled
+	 */
+	@Override
+	public Object getForeground(Object object)
+	{
+		if(object instanceof EnabledStatusProvider)
+			return ((EnabledStatusProvider)object).isEnabled()
+					? null
+					: IItemColorProvider.GRAYED_OUT_COLOR;
+
+		return null;
 	}
 
 	// default implementation

@@ -178,6 +178,10 @@ public class RepositoryVerifier extends BuilderPhase
 			for(int configIdx = 0; configIdx < configCount; ++configIdx)
 			{
 				Configuration config = configs.get(configIdx);
+
+				if(!config.isEnabled())
+					continue;
+
 				String configName = config.getName();
 				String info = format("Verifying config %s...", configName); //$NON-NLS-1$
 				log.info(info);

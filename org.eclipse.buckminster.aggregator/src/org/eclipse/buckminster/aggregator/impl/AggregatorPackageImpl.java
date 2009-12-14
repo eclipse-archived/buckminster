@@ -1530,6 +1530,7 @@ public class AggregatorPackageImpl extends EPackageImpl implements AggregatorPac
 		aggregatorEClass.getESuperTypes().add(this.getInfosProvider());
 		mappedRepositoryEClass.getESuperTypes().add(this.getMetadataRepositoryReference());
 		mappedRepositoryEClass.getESuperTypes().add(this.getDescriptionProvider());
+		configurationEClass.getESuperTypes().add(this.getEnabledStatusProvider());
 		contributionEClass.getESuperTypes().add(this.getEnabledStatusProvider());
 		contributionEClass.getESuperTypes().add(this.getDescriptionProvider());
 		contributionEClass.getESuperTypes().add(this.getStatusProvider());
