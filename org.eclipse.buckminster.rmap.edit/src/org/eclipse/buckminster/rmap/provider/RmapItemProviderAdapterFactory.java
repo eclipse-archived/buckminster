@@ -333,6 +333,14 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	protected URIMatcherItemProvider uriMatcherItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all {@link org.eclipse.buckminster.rmap.Properties} instances. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected PropertiesItemProvider propertiesItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -420,6 +428,23 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 		}
 
 		return locatorItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a {@link org.eclipse.buckminster.rmap.Properties}. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createPropertiesAdapter()
+	{
+		if(propertiesItemProvider == null)
+		{
+			propertiesItemProvider = new PropertiesItemProvider(this);
+		}
+
+		return propertiesItemProvider;
 	}
 
 	/**
@@ -566,6 +591,8 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 			documentRootItemProvider.dispose();
 		if(uriMatcherItemProvider != null)
 			uriMatcherItemProvider.dispose();
+		if(propertiesItemProvider != null)
+			propertiesItemProvider.dispose();
 	}
 
 	/**

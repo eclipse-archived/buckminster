@@ -10,16 +10,19 @@
 
 package org.eclipse.buckminster.core.rmap.model;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
+import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
@@ -61,13 +64,9 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 
 	public static final String ATTR_ALGORITHM = "algorithm"; //$NON-NLS-1$
 
-	public static final String ATTR_MUTABLE = "mutable"; //$NON-NLS-1$
-
 	public static final String ATTR_READER_TYPE = "readerType"; //$NON-NLS-1$
 
 	public static final String ATTR_RESOLUTION_FILTER = "resolutionFilter"; //$NON-NLS-1$
-
-	public static final String ATTR_SOURCE = "source"; //$NON-NLS-1$
 
 	public static final String ATTR_VERSION_CONVERTER = "versionConverter"; //$NON-NLS-1$
 
@@ -79,15 +78,26 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 
 	public static final String TAG_DIGEST = "digest"; //$NON-NLS-1$
 
+	public static Provider immutableProvider(String readerType, String componentType, String uri)
+	{
+		return immutableProvider(readerType, componentType, uri, null);
+	}
+
+	public static Provider immutableProvider(String readerType, String componentType, String uri,
+			Filter resolutionFilter)
+	{
+		Map<String, String> props = new HashMap<String, String>(2);
+		props.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
+		props.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
+		return new Provider(null, readerType, new String[] { componentType }, null, new Format(uri), null, null,
+				resolutionFilter, props, null, null);
+	}
+
 	private final Documentation m_documentation;
 
 	private final String[] m_componentTypeIDs;
 
-	private final boolean m_mutable;
-
 	private final String m_readerTypeId;
-
-	private final boolean m_source;
 
 	private final Format m_uri;
 
@@ -102,6 +112,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	private final URIMatcher m_uriMatcher;
 
 	private final Filter m_resolutionFilter;
+
+	private final Map<String, String> m_properties;
 
 	/**
 	 * Creates a new fully initialized Provider
@@ -120,13 +132,10 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 *            The digest URI or <code>null</code> if not applicable
 	 * @param digestAlgorithm
 	 *            The digest algorithm or <code>null</code> if not applicable
-	 * @param space
-	 *            The naming authority
-	 * @param mutable
-	 *            <code>true</code> if this provider delivers source from an SCM with read/write access. Should be false
-	 *            if not.
-	 * @param source
-	 *            <code>true</code> if this provider delivers source.
+	 * @param resolutionFilter
+	 *            Filter indicating when this provider is active
+	 * @param properties
+	 *            Provider specific properties
 	 * @param uriMatcher
 	 *            The URI matcher for the provider or <code>null</code> if not applicable.
 	 * @param documentation
@@ -134,7 +143,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 */
 	public Provider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
 			VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm,
-			Filter resolutionFilter, boolean mutable, boolean source, URIMatcher uriMatcher, Documentation documentation)
+			Filter resolutionFilter, Map<String, String> properties, URIMatcher uriMatcher, Documentation documentation)
 	{
 		m_searchPath = searchPath;
 		m_readerTypeId = remoteReaderType;
@@ -146,16 +155,11 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		m_digest = digest;
 		m_digestAlgorithm = digestAlgorithm;
 		m_resolutionFilter = resolutionFilter;
-		m_mutable = mutable;
-		m_source = source;
+		m_properties = properties == null
+				? Collections.<String, String> emptyMap()
+				: properties;
 		m_uriMatcher = uriMatcher;
 		m_documentation = documentation;
-	}
-
-	public Provider(String remoteReaderType, String[] componentTypeIDs, String uri, Filter resolutionFilter)
-	{
-		this(null, remoteReaderType, componentTypeIDs, null, new Format(uri), null, null, resolutionFilter, false,
-				false, null, null);
 	}
 
 	public void addPrefixMappings(HashMap<String, String> prefixMappings)
@@ -324,6 +328,11 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 		return properties;
 	}
 
+	public Map<String, String> getProviderProperties()
+	{
+		return m_properties;
+	}
+
 	public final IReaderType getReaderType() throws CoreException
 	{
 		return CorePlugin.getDefault().getReaderType(m_readerTypeId);
@@ -383,7 +392,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 */
 	public final boolean hasSource()
 	{
-		return m_source;
+		return Boolean.parseBoolean(m_properties.get(KeyConstants.IS_SOURCE));
 	}
 
 	/**
@@ -420,7 +429,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 */
 	public final boolean isMutable()
 	{
-		return m_mutable;
+		return Boolean.parseBoolean(m_properties.get(KeyConstants.IS_MUTABLE));
 	}
 
 	public boolean isPersisted(StorageManager sm) throws CoreException
@@ -466,8 +475,6 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ",")); //$NON-NLS-1$
 		if(m_resolutionFilter != null)
 			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, m_resolutionFilter.toString());
-		Utils.addAttribute(attrs, ATTR_MUTABLE, Boolean.toString(m_mutable));
-		Utils.addAttribute(attrs, ATTR_SOURCE, Boolean.toString(m_source));
 	}
 
 	@Override
@@ -480,6 +487,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			m_uriMatcher.toSax(handler, namespace, prefix, m_uriMatcher.getDefaultTag());
 
 		m_uri.toSax(handler, namespace, prefix, TAG_URI);
+
+		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
 
 		if(m_digest != null)
 		{

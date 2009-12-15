@@ -114,18 +114,13 @@ public class MaterializationContext extends RMContext
 		IReaderType rd = m_materializationSpec.getMaterializer(resolution).getMaterializationReaderType(resolution);
 		IPath relativeLocation = rd.getInstallLocation(resolution, this);
 
-		IComponentType cType = resolution.getComponentType();
-		if(cType != null)
+		if(relativeLocation == null)
 		{
-			IPath ctypeRelative = cType.getRelativeLocation();
-			if(ctypeRelative != null)
-			{
-				if(relativeLocation == null)
-					relativeLocation = ctypeRelative;
-				else
-					relativeLocation = relativeLocation.append(ctypeRelative);
-			}
+			IComponentType cType = resolution.getComponentType();
+			if(cType != null)
+				relativeLocation = cType.getRelativeLocation();
 		}
+
 		if(relativeLocation != null)
 		{
 			IPath tmp = expand(relativeLocation);

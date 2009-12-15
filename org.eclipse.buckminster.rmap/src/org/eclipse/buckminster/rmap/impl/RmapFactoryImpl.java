@@ -95,6 +95,8 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 			return createDocumentRoot();
 		case RmapPackage.URI_MATCHER:
 			return createURIMatcher();
+		case RmapPackage.PROPERTIES:
+			return createProperties();
 		default:
 			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -120,6 +122,17 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	{
 		LocatorImpl locator = new LocatorImpl();
 		return locator;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Properties createProperties()
+	{
+		PropertiesImpl properties = new PropertiesImpl();
+		return properties;
 	}
 
 	/**

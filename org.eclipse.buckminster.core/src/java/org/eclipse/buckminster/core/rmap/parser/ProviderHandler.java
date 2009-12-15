@@ -11,14 +11,17 @@
 package org.eclipse.buckminster.core.rmap.parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.FormatHandler;
+import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
-import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.SearchPath;
 import org.eclipse.buckminster.core.rmap.model.URIMatcher;
@@ -27,7 +30,6 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
-import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.buckminster.sax.MissingRequiredAttributeException;
 import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
@@ -37,7 +39,7 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppedListener
+public class ProviderHandler extends PropertyManagerHandler
 {
 	public final static String TAG = Provider.TAG;
 
@@ -59,10 +61,6 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 
 	private String[] m_componentTypes;
 
-	private boolean m_source;
-
-	private boolean m_mutable;
-
 	private Format m_uriFormat;
 
 	private Format m_digestFormat;
@@ -73,11 +71,14 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 
 	private Filter m_resolutionFilter;
 
+	private final Map<String, String> m_properties = new HashMap<String, String>();
+
 	public ProviderHandler(AbstractHandler parent)
 	{
-		super(parent);
+		super(parent, Provider.TAG);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		if(child == m_uriHandler)
@@ -102,6 +103,8 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}
 		}
+		else
+			super.childPopped(child);
 	}
 
 	@Override
@@ -143,11 +146,16 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		return ch;
 	}
 
+	@Override
+	public Map<String, String> getProperties()
+	{
+		return m_properties;
+	}
+
 	public Provider getProvider()
 	{
 		return new Provider(getSearchPath(), m_readerType, m_componentTypes, m_versionConverter, m_uriFormat,
-				m_digestFormat, m_digestAlgorithm, m_resolutionFilter, m_mutable, m_source, m_uriMatcher,
-				m_documentation);
+				m_digestFormat, m_digestAlgorithm, m_resolutionFilter, m_properties, m_uriMatcher, m_documentation);
 	}
 
 	@Override
@@ -214,8 +222,10 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 		if(m_componentTypes == null)
 			m_componentTypes = TextUtils.split(tmp, ","); //$NON-NLS-1$
 
-		m_mutable = getOptionalBooleanValue(attrs, Provider.ATTR_MUTABLE, true);
-		m_source = getOptionalBooleanValue(attrs, Provider.ATTR_SOURCE, true);
+		if(!getOptionalBooleanValue(attrs, "mutable", true)) //$NON-NLS-1$
+			m_properties.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
+		if(!getOptionalBooleanValue(attrs, "source", true)) //$NON-NLS-1$
+			m_properties.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
 
 		tmp = getOptionalStringValue(attrs, "space"); //$NON-NLS-1$
 		if(tmp != null)
@@ -296,15 +306,5 @@ public class ProviderHandler extends ExtensionAwareHandler implements ChildPoppe
 	protected final VersionConverterDesc getVersionConverter()
 	{
 		return m_versionConverter;
-	}
-
-	protected final boolean isMutable()
-	{
-		return m_mutable;
-	}
-
-	protected final boolean isSource()
-	{
-		return m_source;
 	}
 }

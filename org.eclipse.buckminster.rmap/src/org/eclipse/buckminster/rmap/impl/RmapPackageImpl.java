@@ -9,6 +9,7 @@ package org.eclipse.buckminster.rmap.impl;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.rmap.Locator;
 import org.eclipse.buckminster.rmap.Matcher;
+import org.eclipse.buckminster.rmap.Properties;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.rmap.Redirect;
 import org.eclipse.buckminster.rmap.ResourceMap;
@@ -101,6 +102,13 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 * @generated
 	 */
 	private EClass uriMatcherEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass propertiesEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -215,8 +223,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 		createEReference(resourceMapEClass, RESOURCE_MAP__LOCATORS);
 		createEReference(resourceMapEClass, RESOURCE_MAP__REDIRECTS);
 		createEReference(resourceMapEClass, RESOURCE_MAP__SEARCH_PATHS);
-		createEReference(resourceMapEClass, RESOURCE_MAP__PROPERTY_ELEMENTS);
-		createEReference(resourceMapEClass, RESOURCE_MAP__PROPERTIES);
 		createEReference(resourceMapEClass, RESOURCE_MAP__DOCUMENTATION);
 
 		providerEClass = createEClass(PROVIDER);
@@ -262,6 +268,10 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 		createEAttribute(uriMatcherEClass, URI_MATCHER__BASE);
 		createEAttribute(uriMatcherEClass, URI_MATCHER__RX_PARTS_GROUP);
 		createEReference(uriMatcherEClass, URI_MATCHER__RX_PARTS);
+
+		propertiesEClass = createEClass(PROPERTIES);
+		createEReference(propertiesEClass, PROPERTIES__PROPERTIES);
+		createEReference(propertiesEClass, PROPERTIES__PROPERTY_ELEMENTS);
 	}
 
 	/**
@@ -469,6 +479,36 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 * 
 	 * @generated
 	 */
+	public EClass getProperties()
+	{
+		return propertiesEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getProperties_Properties()
+	{
+		return (EReference)propertiesEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getProperties_PropertyElements()
+	{
+		return (EReference)propertiesEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public EClass getProvider()
 	{
 		return providerEClass;
@@ -611,7 +651,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	 */
 	public EReference getResourceMap_Documentation()
 	{
-		return (EReference)resourceMapEClass.getEStructuralFeatures().get(5);
+		return (EReference)resourceMapEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -622,26 +662,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 	public EReference getResourceMap_Locators()
 	{
 		return (EReference)resourceMapEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EReference getResourceMap_Properties()
-	{
-		return (EReference)resourceMapEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EReference getResourceMap_PropertyElements()
-	{
-		return (EReference)resourceMapEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -862,6 +882,8 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 		// Add supertypes to classes
 		redirectEClass.getESuperTypes().add(this.getMatcher());
 		locatorEClass.getESuperTypes().add(this.getMatcher());
+		resourceMapEClass.getESuperTypes().add(this.getProperties());
+		providerEClass.getESuperTypes().add(this.getProperties());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(matcherEClass, Matcher.class, "Matcher", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -899,12 +921,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 		initEReference(getResourceMap_SearchPaths(), this.getSearchPath(), null, "searchPaths", null, 0, -1,
 				ResourceMap.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getResourceMap_PropertyElements(), theCommonPackage.getPropertyElement(), null,
-				"propertyElements", null, 0, -1, ResourceMap.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-				IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getResourceMap_Properties(), theCommonPackage.getPropertyConstant(), null, "properties", null,
-				0, -1, ResourceMap.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getResourceMap_Documentation(), theCommonPackage.getDocumentation(), null, "documentation",
 				null, 0, 1, ResourceMap.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
 				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1019,6 +1035,15 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 				URIMatcher.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
 				!IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
+		initEClass(propertiesEClass, Properties.class, "Properties", !IS_ABSTRACT, !IS_INTERFACE,
+				IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getProperties_Properties(), theCommonPackage.getPropertyConstant(), null, "properties", null, 0,
+				-1, Properties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
+				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getProperties_PropertyElements(), theCommonPackage.getPropertyElement(), null,
+				"propertyElements", null, 0, -1, Properties.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		// Create resource
 		createResource(eNS_URI);
 
@@ -1045,10 +1070,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 		addAnnotation(getResourceMap_Redirects(), source, new String[] { "name", "redirect", "namespace",
 				"##targetNamespace", "kind", "element" });
 		addAnnotation(getResourceMap_SearchPaths(), source, new String[] { "name", "searchPath", "namespace",
-				"##targetNamespace", "kind", "element" });
-		addAnnotation(getResourceMap_PropertyElements(), source, new String[] { "name", "propertyElement", "namespace",
-				"##targetNamespace", "kind", "element" });
-		addAnnotation(getResourceMap_Properties(), source, new String[] { "name", "property", "namespace",
 				"##targetNamespace", "kind", "element" });
 		addAnnotation(getResourceMap_Documentation(), source, new String[] { "name", "documentation", "kind",
 				"element", "namespace", "##targetNamespace" });
@@ -1100,6 +1121,10 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage
 		addAnnotation(getURIMatcher_RxParts(), source, new String[] { "kind", "element", "name", "rxPart", "namespace",
 				"http://www.eclipse.org/buckminster/Common-1.0", "group",
 				"http://www.eclipse.org/buckminster/Common-1.0#rxPart:group" });
+		addAnnotation(getProperties_Properties(), source, new String[] { "name", "property", "namespace",
+				"##targetNamespace", "kind", "element" });
+		addAnnotation(getProperties_PropertyElements(), source, new String[] { "name", "propertyElement", "namespace",
+				"##targetNamespace", "kind", "element" });
 	}
 
 } // RmapPackageImpl

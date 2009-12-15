@@ -119,7 +119,7 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 
 	private final VersionSelector[] m_branchTagPath;
 
-	private final long m_revision;
+	private final String m_revision;
 
 	private final Date m_timestamp;
 
@@ -211,7 +211,7 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 		return m_resolutionPrio;
 	}
 
-	public long getRevision()
+	public String getRevision()
 	{
 		return m_revision;
 	}
@@ -320,8 +320,8 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 			Utils.addAttribute(attrs, ATTR_RESOLUTION_PRIO, bld.toString());
 		}
 
-		if(m_revision != -1)
-			Utils.addAttribute(attrs, ATTR_REVISION, Long.toString(m_revision));
+		if(m_revision != null)
+			Utils.addAttribute(attrs, ATTR_REVISION, m_revision);
 
 		if(m_timestamp != null)
 			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));

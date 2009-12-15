@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- 
 	Copyright (c) 2004, 2005
 	Thomas Hallgren, Kenneth Olwing, Mitch Sonies
@@ -8,69 +8,59 @@
 	copyright holders listed above, as Initial Contributors under such license.
 	The text of such license is available at www.eclipse.org.
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema"
-	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
-	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0"
-	targetNamespace="http://www.eclipse.org/buckminster/RMap-1.0"
-	attributeFormDefault="unqualified" elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:com="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.eclipse.org/buckminster/RMap-1.0">
 	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/common-1.0.xsd"/>
 
-	<element name="rmap" type="rm:ResourceMap"></element>
-	<element name="provider" type="rm:Provider" />
+	<element name="rmap" type="rm:ResourceMap"/>
+	<element name="provider" type="rm:Provider"/>
 	<complexType name="SearchPath">
 		<sequence>
-			<element name="provider" type="rm:Provider" minOccurs="1"
-				maxOccurs="unbounded" />
+			<element maxOccurs="unbounded" minOccurs="1" name="provider" type="rm:Provider"/>
 		</sequence>
-		<attribute name="name" type="string" use="required" />
+		<attribute name="name" type="string" use="required"/>
 	</complexType>
 	<complexType name="ResourceMap">
 		<sequence>
-			<element name="documentation" type="com:Documentation"
-				minOccurs="0" maxOccurs="1" />
-			<choice minOccurs="0" maxOccurs="unbounded">
-				<element name="property" type="com:PropertyConstant" />
-				<element name="propertyElement"
-					type="com:PropertyElement" />
-				<element name="searchPath" type="rm:SearchPath" />
-				<element name="locator" type="rm:Locator" />
-				<element name="redirect" type="rm:Redirect" />
+			<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
+			<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="property" type="com:PropertyConstant"/>
+				<element name="propertyElement" type="com:PropertyElement"/>
+				<element name="searchPath" type="rm:SearchPath"/>
+				<element name="locator" type="rm:Locator"/>
+				<element name="redirect" type="rm:Redirect"/>
 			</choice>
 		</sequence>
 	</complexType>
-	<complexType name="Matcher" abstract="true">
-		<attribute name="pattern" type="string" use="optional" />
+	<complexType abstract="true" name="Matcher">
+		<attribute name="pattern" type="string" use="optional"/>
 	</complexType>
 	<complexType name="Locator">
 		<complexContent>
 			<extension base="rm:Matcher">
-				<attribute name="searchPathRef" type="string"
-					use="required" />
-				<attribute name="failOnError" type="boolean"
-					use="optional" default="true"/>
+				<attribute name="searchPathRef" type="string" use="required"/>
+				<attribute default="true" name="failOnError" type="boolean" use="optional"/>
 			</extension>
 		</complexContent>
 	</complexType>
 	<complexType name="Redirect">
 		<complexContent>
 			<extension base="rm:Matcher">
-				<attribute name="href" type="com:URL" use="required" />
+				<attribute name="href" type="com:URL" use="required"/>
 			</extension>
 		</complexContent>
 	</complexType>
 
 	<complexType name="Provider">
 		<sequence>
-			<element name="documentation" type="com:Documentation"
-				minOccurs="0" maxOccurs="1" />
-			<element name="matcher" type="rm:URIMatcher"
-				minOccurs="0" maxOccurs="unbounded" />
-			<element name="uri" type="com:Format" minOccurs="1"
-				maxOccurs="1" />
-			<element name="digest" type="rm:Digest" minOccurs="0"
-				maxOccurs="1" />
-			<element name="versionConverter" type="rm:VersionConverter"
-				minOccurs="0" maxOccurs="1" />
+			<element maxOccurs="unbounded" minOccurs="0" name="matcher" type="rm:URIMatcher"/>
+			<element maxOccurs="1" minOccurs="1" name="uri" type="com:Format"/>
+			<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="property" type="com:PropertyConstant"/>
+				<element name="propertyElement" type="com:PropertyElement"/>
+			</choice>
+			<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
+			<element maxOccurs="1" minOccurs="0" name="digest" type="rm:Digest"/>
+			<element maxOccurs="1" minOccurs="0" name="versionConverter" type="rm:VersionConverter"/>
 		</sequence>
 		<attribute name="componentTypes" type="string" use="optional">
 			<annotation>
@@ -82,66 +72,53 @@
 				</documentation>
 			</annotation>
 		</attribute>
-		<attribute name="readerType" type="string" use="required" />
-		<attribute name="space" type="string" use="optional" />
-		<attribute name="resolutionFilter" type="string" use="optional" />
-		<attribute name="mutable" type="boolean" use="optional" />
-		<attribute name="source" type="boolean" use="optional" />
+		<attribute name="readerType" type="string" use="required"/>
+		<attribute name="space" type="string" use="optional"/>
+		<attribute name="resolutionFilter" type="string" use="optional"/>
+		<attribute name="mutable" type="boolean" use="optional"/>
+		<attribute name="source" type="boolean" use="optional"/>
 
 		<!-- Deprecated -->
-		<attribute name="componentType" type="string" use="optional" />
+		<attribute name="componentType" type="string" use="optional"/>
 		<!-- Deprecated -->
-		<attribute name="managedCategories" type="string"
-			use="optional" />
+		<attribute name="managedCategories" type="string" use="optional"/>
 	</complexType>
 	<complexType name="VersionConverter">
 		<sequence>
-			<element name="transform" type="rm:Transform" minOccurs="0"
-				maxOccurs="unbounded" />
+			<element maxOccurs="unbounded" minOccurs="0" name="transform" type="rm:Transform"/>
 		</sequence>
-		<attribute name="type" type="string" use="required" />
-		<attribute name="versionType" type="string" use="optional" />
+		<attribute name="type" type="string" use="required"/>
+		<attribute name="versionType" type="string" use="optional"/>
 	</complexType>
 	<complexType name="Transform">
-		<attribute name="toPattern" type="string" use="required" />
-		<attribute name="toReplacement" type="string" use="required" />
-		<attribute name="fromPattern" type="string" use="required" />
-		<attribute name="fromReplacement" type="string" use="required" />
+		<attribute name="toPattern" type="string" use="required"/>
+		<attribute name="toReplacement" type="string" use="required"/>
+		<attribute name="fromPattern" type="string" use="required"/>
+		<attribute name="fromReplacement" type="string" use="required"/>
 	</complexType>
 
-	<element name="group" substitutionGroup="com:rxPart"
-		type="com:RxGroup" />
-	<element name="match" substitutionGroup="com:rxPart"
-		type="com:RxPattern" />
-	<element name="name" substitutionGroup="com:rxPart"
-		type="com:RxPattern" />
-	<element name="version" substitutionGroup="com:rxPart"
-		type="com:RxPattern" />
-	<element name="timestamp" substitutionGroup="com:rxPart"
-		type="com:RxPattern" />
-	<element name="revision" substitutionGroup="com:rxPart"
-		type="com:RxPattern" />
-	<element name="os" substitutionGroup="com:rxPart"
-		type="com:RxPattern" />
-	<element name="ws" substitutionGroup="com:rxPart"
-		type="com:RxPattern" />
-	<element name="arch" substitutionGroup="com:rxPart"
-		type="com:RxPattern" />
-	<element name="nl" substitutionGroup="com:rxPart"
-		type="com:RxPattern" />
+	<element name="group" substitutionGroup="com:rxPart" type="com:RxGroup"/>
+	<element name="match" substitutionGroup="com:rxPart" type="com:RxPattern"/>
+	<element name="name" substitutionGroup="com:rxPart" type="com:RxPattern"/>
+	<element name="version" substitutionGroup="com:rxPart" type="com:RxPattern"/>
+	<element name="timestamp" substitutionGroup="com:rxPart" type="com:RxPattern"/>
+	<element name="revision" substitutionGroup="com:rxPart" type="com:RxPattern"/>
+	<element name="os" substitutionGroup="com:rxPart" type="com:RxPattern"/>
+	<element name="ws" substitutionGroup="com:rxPart" type="com:RxPattern"/>
+	<element name="arch" substitutionGroup="com:rxPart" type="com:RxPattern"/>
+	<element name="nl" substitutionGroup="com:rxPart" type="com:RxPattern"/>
 
 	<complexType name="URIMatcher">
 		<sequence>
-			<element ref="com:rxPart" minOccurs="1"
-				maxOccurs="unbounded" />
+			<element maxOccurs="unbounded" minOccurs="1" ref="com:rxPart"/>
 		</sequence>
-		<attribute name="base" use="required" />
+		<attribute name="base" use="required"/>
 	</complexType>
 
 	<complexType name="Digest">
 		<complexContent>
 			<extension base="com:Format">
-				<attribute name="algorithm" use="required" />
+				<attribute name="algorithm" use="required"/>
 			</extension>
 		</complexContent>
 	</complexType>

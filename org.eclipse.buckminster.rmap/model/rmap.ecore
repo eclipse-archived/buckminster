@@ -32,7 +32,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ResourceMap">
+  <eClassifiers xsi:type="ecore:EClass" name="ResourceMap" eSuperTypes="#//Properties">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="ResourceMap"/>
     </eAnnotations>
@@ -60,24 +60,6 @@
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyElements" upperBound="-1"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyElement"
-        containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="propertyElement"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyConstant"
-        containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="property"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
         containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -87,7 +69,7 @@
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Provider">
+  <eClassifiers xsi:type="ecore:EClass" name="Provider" eSuperTypes="#//Properties">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="componentTypes" upperBound="-1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" transient="true"
         defaultValueLiteral=""/>
@@ -314,6 +296,26 @@
         <details key="name" value="rxPart"/>
         <details key="namespace" value="http://www.eclipse.org/buckminster/Common-1.0"/>
         <details key="group" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart:group"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Properties">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyConstant"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="property"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="kind" value="element"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyElements" upperBound="-1"
+        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyElement"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="propertyElement"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

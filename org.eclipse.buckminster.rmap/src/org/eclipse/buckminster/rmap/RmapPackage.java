@@ -164,22 +164,6 @@ public interface RmapPackage extends EPackage
 		EReference RESOURCE_MAP__SEARCH_PATHS = eINSTANCE.getResourceMap_SearchPaths();
 
 		/**
-		 * The meta object literal for the '<em><b>Property Elements</b></em>' containment reference list feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference RESOURCE_MAP__PROPERTY_ELEMENTS = eINSTANCE.getResourceMap_PropertyElements();
-
-		/**
-		 * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference RESOURCE_MAP__PROPERTIES = eINSTANCE.getResourceMap_Properties();
-
-		/**
 		 * The meta object literal for the '<em><b>Documentation</b></em>' containment reference feature. <!--
 		 * begin-user-doc --> <!-- end-user-doc -->
 		 * 
@@ -509,6 +493,32 @@ public interface RmapPackage extends EPackage
 		 */
 		EReference URI_MATCHER__RX_PARTS = eINSTANCE.getURIMatcher_RxParts();
 
+		/**
+		 * The meta object literal for the '{@link org.eclipse.buckminster.rmap.impl.PropertiesImpl <em>Properties</em>}
+		 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.rmap.impl.PropertiesImpl
+		 * @see org.eclipse.buckminster.rmap.impl.RmapPackageImpl#getProperties()
+		 * @generated
+		 */
+		EClass PROPERTIES = eINSTANCE.getProperties();
+
+		/**
+		 * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference PROPERTIES__PROPERTIES = eINSTANCE.getProperties_Properties();
+
+		/**
+		 * The meta object literal for the '<em><b>Property Elements</b></em>' containment reference list feature. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference PROPERTIES__PROPERTY_ELEMENTS = eINSTANCE.getProperties_PropertyElements();
+
 	}
 
 	/**
@@ -678,6 +688,43 @@ public interface RmapPackage extends EPackage
 	int SEARCH_PATH_FEATURE_COUNT = 2;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.buckminster.rmap.impl.PropertiesImpl <em>Properties</em>}' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.impl.PropertiesImpl
+	 * @see org.eclipse.buckminster.rmap.impl.RmapPackageImpl#getProperties()
+	 * @generated
+	 */
+	int PROPERTIES = 10;
+
+	/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTIES__PROPERTIES = 0;
+
+	/**
+	 * The feature id for the '<em><b>Property Elements</b></em>' containment reference list. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTIES__PROPERTY_ELEMENTS = 1;
+
+	/**
+	 * The number of structural features of the '<em>Properties</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTIES_FEATURE_COUNT = 2;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl <em>Resource Map</em>}'
 	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -688,31 +735,13 @@ public interface RmapPackage extends EPackage
 	int RESOURCE_MAP = 4;
 
 	/**
-	 * The feature id for the '<em><b>Locators</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int RESOURCE_MAP__LOCATORS = 0;
-
-	/**
-	 * The feature id for the '<em><b>Redirects</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int RESOURCE_MAP__REDIRECTS = 1;
-
-	/**
-	 * The feature id for the '<em><b>Search Paths</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int RESOURCE_MAP__SEARCH_PATHS = 2;
+	int RESOURCE_MAP__PROPERTIES = PROPERTIES__PROPERTIES;
 
 	/**
 	 * The feature id for the '<em><b>Property Elements</b></em>' containment reference list. <!-- begin-user-doc -->
@@ -721,16 +750,34 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int RESOURCE_MAP__PROPERTY_ELEMENTS = 3;
+	int RESOURCE_MAP__PROPERTY_ELEMENTS = PROPERTIES__PROPERTY_ELEMENTS;
 
 	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * The feature id for the '<em><b>Locators</b></em>' containment reference list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int RESOURCE_MAP__PROPERTIES = 4;
+	int RESOURCE_MAP__LOCATORS = PROPERTIES_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Redirects</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int RESOURCE_MAP__REDIRECTS = PROPERTIES_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Search Paths</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int RESOURCE_MAP__SEARCH_PATHS = PROPERTIES_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Documentation</b></em>' containment reference. <!-- begin-user-doc --> <!--
@@ -739,7 +786,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int RESOURCE_MAP__DOCUMENTATION = 5;
+	int RESOURCE_MAP__DOCUMENTATION = PROPERTIES_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Resource Map</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -748,7 +795,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int RESOURCE_MAP_FEATURE_COUNT = 6;
+	int RESOURCE_MAP_FEATURE_COUNT = PROPERTIES_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.rmap.impl.ProviderImpl <em>Provider</em>}' class. <!--
@@ -761,13 +808,31 @@ public interface RmapPackage extends EPackage
 	int PROVIDER = 5;
 
 	/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDER__PROPERTIES = PROPERTIES__PROPERTIES;
+
+	/**
+	 * The feature id for the '<em><b>Property Elements</b></em>' containment reference list. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDER__PROPERTY_ELEMENTS = PROPERTIES__PROPERTY_ELEMENTS;
+
+	/**
 	 * The feature id for the '<em><b>Component Types</b></em>' attribute list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__COMPONENT_TYPES = 0;
+	int PROVIDER__COMPONENT_TYPES = PROPERTIES_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Component Types Attr</b></em>' attribute. <!-- begin-user-doc --> <!--
@@ -776,7 +841,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__COMPONENT_TYPES_ATTR = 1;
+	int PROVIDER__COMPONENT_TYPES_ATTR = PROPERTIES_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Reader Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -784,7 +849,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__READER_TYPE = 2;
+	int PROVIDER__READER_TYPE = PROPERTIES_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Source</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -792,7 +857,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__SOURCE = 3;
+	int PROVIDER__SOURCE = PROPERTIES_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Mutable</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -800,7 +865,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__MUTABLE = 4;
+	int PROVIDER__MUTABLE = PROPERTIES_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -809,7 +874,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__RESOLUTION_FILTER = 5;
+	int PROVIDER__RESOLUTION_FILTER = PROPERTIES_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Version Converter</b></em>' containment reference. <!-- begin-user-doc --> <!--
@@ -818,7 +883,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__VERSION_CONVERTER = 6;
+	int PROVIDER__VERSION_CONVERTER = PROPERTIES_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Uri</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -826,7 +891,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__URI = 7;
+	int PROVIDER__URI = PROPERTIES_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Matchers</b></em>' containment reference list. <!-- begin-user-doc --> <!--
@@ -835,7 +900,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__MATCHERS = 8;
+	int PROVIDER__MATCHERS = PROPERTIES_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Documentation</b></em>' containment reference. <!-- begin-user-doc --> <!--
@@ -844,7 +909,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__DOCUMENTATION = 9;
+	int PROVIDER__DOCUMENTATION = PROPERTIES_FEATURE_COUNT + 9;
 
 	/**
 	 * The number of structural features of the '<em>Provider</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -852,7 +917,7 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER_FEATURE_COUNT = 10;
+	int PROVIDER_FEATURE_COUNT = PROPERTIES_FEATURE_COUNT + 10;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.buckminster.rmap.impl.TransformImpl <em>Transform</em>}' class.
@@ -1353,6 +1418,40 @@ public interface RmapPackage extends EPackage
 	EAttribute getMatcher_Pattern();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.buckminster.rmap.Properties <em>Properties</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Properties</em>'.
+	 * @see org.eclipse.buckminster.rmap.Properties
+	 * @generated
+	 */
+	EClass getProperties();
+
+	/**
+	 * Returns the meta object for the containment reference list '
+	 * {@link org.eclipse.buckminster.rmap.Properties#getProperties <em>Properties</em>}'. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference list '<em>Properties</em>'.
+	 * @see org.eclipse.buckminster.rmap.Properties#getProperties()
+	 * @see #getProperties()
+	 * @generated
+	 */
+	EReference getProperties_Properties();
+
+	/**
+	 * Returns the meta object for the containment reference list '
+	 * {@link org.eclipse.buckminster.rmap.Properties#getPropertyElements <em>Property Elements</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference list '<em>Property Elements</em>'.
+	 * @see org.eclipse.buckminster.rmap.Properties#getPropertyElements()
+	 * @see #getProperties()
+	 * @generated
+	 */
+	EReference getProperties_PropertyElements();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.rmap.Provider <em>Provider</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1529,30 +1628,6 @@ public interface RmapPackage extends EPackage
 	 * @generated
 	 */
 	EReference getResourceMap_Locators();
-
-	/**
-	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.rmap.ResourceMap#getProperties <em>Properties</em>}'. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @return the meta object for the containment reference list '<em>Properties</em>'.
-	 * @see org.eclipse.buckminster.rmap.ResourceMap#getProperties()
-	 * @see #getResourceMap()
-	 * @generated
-	 */
-	EReference getResourceMap_Properties();
-
-	/**
-	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.rmap.ResourceMap#getPropertyElements <em>Property Elements</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the containment reference list '<em>Property Elements</em>'.
-	 * @see org.eclipse.buckminster.rmap.ResourceMap#getPropertyElements()
-	 * @see #getResourceMap()
-	 * @generated
-	 */
-	EReference getResourceMap_PropertyElements();
 
 	/**
 	 * Returns the meta object for the containment reference list '

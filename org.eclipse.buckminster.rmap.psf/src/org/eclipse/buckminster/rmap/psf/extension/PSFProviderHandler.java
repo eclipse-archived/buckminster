@@ -26,8 +26,7 @@ public class PSFProviderHandler extends ProviderHandler
 	public Provider getProvider()
 	{
 		return new PSFProvider(getSearchPath(), getReaderType(), getComponentTypes(), getVersionConverter(),
-				getUriFormat(), getDigestFormat(), getDigestAlgorithm(), getResolutionFilter(), isMutable(),
-				isSource(), null, getDocumentation(), m_psfFile);
+				getUriFormat(), getDigestFormat(), getDigestAlgorithm(), getResolutionFilter(), getProperties(), null, getDocumentation(), m_psfFile);
 	}
 
 	@Override

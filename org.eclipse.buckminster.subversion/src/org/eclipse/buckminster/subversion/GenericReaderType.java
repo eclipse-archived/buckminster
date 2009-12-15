@@ -151,9 +151,10 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> exten
 	{
 		VersionMatch vm = cr.getVersionMatch();
 		ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> session = getSession(cr.getRepository(),
-				vm.getBranchOrTag(), vm.getRevision(), vm.getTimestamp(), context);
+				vm.getBranchOrTag(), vm.getNumericRevision(), vm.getTimestamp(), context);
 		session.createCommonRoots(context);
-		session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm.getRevision(), vm.getTimestamp(), context);
+		session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm.getNumericRevision(), vm.getTimestamp(),
+				context);
 		try
 		{
 			updateRepositoryMap(project, session);

@@ -516,8 +516,6 @@ public class Messages extends NLS
 
 	public static String resource_map;
 
-	public static String revision_must_be_a_valid_integer_number;
-
 	public static String revision_with_colon;
 
 	public static String rmap_url_with_colon;

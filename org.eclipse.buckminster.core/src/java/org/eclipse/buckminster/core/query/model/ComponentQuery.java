@@ -480,23 +480,11 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return m_resourceMapURL;
 	}
 
-	/**
-	 * @deprecated Use {@link #getRevision(ComponentName, Map)}
-	 */
-	@Deprecated
-	public long getRevision(ComponentName cName)
-	{
-		IAdvisorNode node = getMatchingNode(cName);
-		return node == null
-				? -1
-				: node.getRevision();
-	}
-
-	public long getRevision(ComponentName cName, Map<String, ? extends Object> properties)
+	public String getRevision(ComponentName cName, Map<String, ? extends Object> properties)
 	{
 		IAdvisorNode node = getMatchingNode(cName, properties);
 		return node == null
-				? -1
+				? null
 				: node.getRevision();
 	}
 

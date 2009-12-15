@@ -60,7 +60,7 @@ public class MavenProviderHandler extends ProviderHandler
 	public Provider getProvider()
 	{
 		return new MavenProvider(getSearchPath(), getReaderType(), getComponentTypes(), getVersionConverter(),
-				getUriFormat(), getResolutionFilter(), isMutable(), isSource(), getDocumentation(), m_mappings, m_rules);
+				getUriFormat(), getResolutionFilter(), getProperties(), getDocumentation(), m_mappings, m_rules);
 	}
 
 	@Override

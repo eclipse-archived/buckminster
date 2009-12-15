@@ -7,12 +7,7 @@
 package org.eclipse.buckminster.rmap;
 
 import org.eclipse.buckminster.model.common.Documentation;
-import org.eclipse.buckminster.model.common.PropertyConstant;
-import org.eclipse.buckminster.model.common.PropertyElement;
-
 import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Resource Map</b></em>'. <!-- end-user-doc -->
@@ -23,8 +18,6 @@ import org.eclipse.emf.ecore.EObject;
  * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getLocators <em>Locators</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getRedirects <em>Redirects</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getSearchPaths <em>Search Paths</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getPropertyElements <em>Property Elements</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getProperties <em>Properties</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getDocumentation <em>Documentation</em>}</li>
  * </ul>
  * </p>
@@ -33,7 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model extendedMetaData="name='ResourceMap'"
  * @generated
  */
-public interface ResourceMap extends EObject
+public interface ResourceMap extends Properties
 {
 	/**
 	 * Returns the value of the '<em><b>Documentation</b></em>' containment reference. <!-- begin-user-doc -->
@@ -66,38 +59,6 @@ public interface ResourceMap extends EObject
 	 * @generated
 	 */
 	EList<Locator> getLocators();
-
-	/**
-	 * Returns the value of the '<em><b>Properties</b></em>' containment reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.model.common.PropertyConstant}. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Properties</em>' containment reference list isn't clear, there really should be more
-	 * of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Properties</em>' containment reference list.
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_Properties()
-	 * @model containment="true" extendedMetaData="name='property' namespace='##targetNamespace' kind='element'"
-	 * @generated
-	 */
-	EList<PropertyConstant> getProperties();
-
-	/**
-	 * Returns the value of the '<em><b>Property Elements</b></em>' containment reference list. The list contents are of
-	 * type {@link org.eclipse.buckminster.model.common.PropertyElement}. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Property Elements</em>' containment reference list isn't clear, there really should be
-	 * more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Property Elements</em>' containment reference list.
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_PropertyElements()
-	 * @model containment="true" extendedMetaData="name='propertyElement' namespace='##targetNamespace' kind='element'"
-	 * @generated
-	 */
-	EList<PropertyElement> getPropertyElements();
 
 	/**
 	 * Returns the value of the '<em><b>Redirects</b></em>' containment reference list. The list contents are of type

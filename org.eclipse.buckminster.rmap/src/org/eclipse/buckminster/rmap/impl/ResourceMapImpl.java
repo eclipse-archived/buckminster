@@ -9,9 +9,6 @@ package org.eclipse.buckminster.rmap.impl;
 import java.util.Collection;
 
 import org.eclipse.buckminster.model.common.Documentation;
-import org.eclipse.buckminster.model.common.PropertyConstant;
-import org.eclipse.buckminster.model.common.PropertyElement;
-
 import org.eclipse.buckminster.rmap.Locator;
 import org.eclipse.buckminster.rmap.Redirect;
 import org.eclipse.buckminster.rmap.ResourceMap;
@@ -27,8 +24,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -40,15 +35,13 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getLocators <em>Locators</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getRedirects <em>Redirects</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getSearchPaths <em>Search Paths</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getPropertyElements <em>Property Elements</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getProperties <em>Properties</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getDocumentation <em>Documentation</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ResourceMapImpl extends EObjectImpl implements ResourceMap
+public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 {
 	/**
 	 * The cached value of the '{@link #getLocators() <em>Locators</em>}' containment reference list. <!--
@@ -79,26 +72,6 @@ public class ResourceMapImpl extends EObjectImpl implements ResourceMap
 	 * @ordered
 	 */
 	protected EList<SearchPath> searchPaths;
-
-	/**
-	 * The cached value of the '{@link #getPropertyElements() <em>Property Elements</em>}' containment reference list.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getPropertyElements()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<PropertyElement> propertyElements;
-
-	/**
-	 * The cached value of the '{@link #getProperties() <em>Properties</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getProperties()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<PropertyConstant> properties;
 
 	/**
 	 * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' containment reference. <!--
@@ -157,10 +130,6 @@ public class ResourceMapImpl extends EObjectImpl implements ResourceMap
 			return getRedirects();
 		case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
 			return getSearchPaths();
-		case RmapPackage.RESOURCE_MAP__PROPERTY_ELEMENTS:
-			return getPropertyElements();
-		case RmapPackage.RESOURCE_MAP__PROPERTIES:
-			return getProperties();
 		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
 			return getDocumentation();
 		}
@@ -183,10 +152,6 @@ public class ResourceMapImpl extends EObjectImpl implements ResourceMap
 			return ((InternalEList<?>)getRedirects()).basicRemove(otherEnd, msgs);
 		case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
 			return ((InternalEList<?>)getSearchPaths()).basicRemove(otherEnd, msgs);
-		case RmapPackage.RESOURCE_MAP__PROPERTY_ELEMENTS:
-			return ((InternalEList<?>)getPropertyElements()).basicRemove(otherEnd, msgs);
-		case RmapPackage.RESOURCE_MAP__PROPERTIES:
-			return ((InternalEList<?>)getProperties()).basicRemove(otherEnd, msgs);
 		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
 			return basicSetDocumentation(null, msgs);
 		}
@@ -209,10 +174,6 @@ public class ResourceMapImpl extends EObjectImpl implements ResourceMap
 			return redirects != null && !redirects.isEmpty();
 		case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
 			return searchPaths != null && !searchPaths.isEmpty();
-		case RmapPackage.RESOURCE_MAP__PROPERTY_ELEMENTS:
-			return propertyElements != null && !propertyElements.isEmpty();
-		case RmapPackage.RESOURCE_MAP__PROPERTIES:
-			return properties != null && !properties.isEmpty();
 		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
 			return documentation != null;
 		}
@@ -242,14 +203,6 @@ public class ResourceMapImpl extends EObjectImpl implements ResourceMap
 			getSearchPaths().clear();
 			getSearchPaths().addAll((Collection<? extends SearchPath>)newValue);
 			return;
-		case RmapPackage.RESOURCE_MAP__PROPERTY_ELEMENTS:
-			getPropertyElements().clear();
-			getPropertyElements().addAll((Collection<? extends PropertyElement>)newValue);
-			return;
-		case RmapPackage.RESOURCE_MAP__PROPERTIES:
-			getProperties().clear();
-			getProperties().addAll((Collection<? extends PropertyConstant>)newValue);
-			return;
 		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
 			setDocumentation((Documentation)newValue);
 			return;
@@ -275,12 +228,6 @@ public class ResourceMapImpl extends EObjectImpl implements ResourceMap
 			return;
 		case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
 			getSearchPaths().clear();
-			return;
-		case RmapPackage.RESOURCE_MAP__PROPERTY_ELEMENTS:
-			getPropertyElements().clear();
-			return;
-		case RmapPackage.RESOURCE_MAP__PROPERTIES:
-			getProperties().clear();
 			return;
 		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
 			setDocumentation((Documentation)null);
@@ -311,36 +258,6 @@ public class ResourceMapImpl extends EObjectImpl implements ResourceMap
 			locators = new EObjectContainmentEList<Locator>(Locator.class, this, RmapPackage.RESOURCE_MAP__LOCATORS);
 		}
 		return locators;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EList<PropertyConstant> getProperties()
-	{
-		if(properties == null)
-		{
-			properties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this,
-					RmapPackage.RESOURCE_MAP__PROPERTIES);
-		}
-		return properties;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EList<PropertyElement> getPropertyElements()
-	{
-		if(propertyElements == null)
-		{
-			propertyElements = new EObjectContainmentEList<PropertyElement>(PropertyElement.class, this,
-					RmapPackage.RESOURCE_MAP__PROPERTY_ELEMENTS);
-		}
-		return propertyElements;
 	}
 
 	/**

@@ -1531,9 +1531,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 			m_useResolutionService.setSelection(node.isUseRemoteResolution());
 
 			m_branchTagPath.setText(TextUtils.notNullString(VersionSelector.toString(node.getBranchTagPath())));
-			long revision = node.getRevision();
-			m_revision.setText(revision == -1
-					? "" : Long.toString(revision)); //$NON-NLS-1$
+			m_revision.setText(node.getRevision());
 			Date timestamp = node.getTimestamp();
 			m_timestamp.setText(timestamp == null
 					? "" : m_timestampFormat.format(timestamp)); //$NON-NLS-1$
@@ -1767,22 +1765,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 
 		node.setBranchTagPath(VersionSelector.fromPath(UiUtils.trimmedValue(m_branchTagPath)));
 
-		tmp = UiUtils.trimmedValue(m_revision);
-		if(tmp != null)
-		{
-			try
-			{
-				node.setRevision(Long.parseLong(tmp));
-			}
-			catch(NumberFormatException e)
-			{
-				failureActivator.activate();
-				MessageDialog.openError(getSite().getShell(), null, Messages.revision_must_be_a_valid_integer_number);
-				return false;
-			}
-		}
-		else
-			node.setRevision(-1);
+		node.setRevision(UiUtils.trimmedValue(m_revision));
 
 		tmp = UiUtils.trimmedValue(m_timestamp);
 		if(tmp != null)

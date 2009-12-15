@@ -38,17 +38,44 @@ public class VersionMatch extends AbstractSaxableElement
 
 	public static final String ATTR_TIMESTAMP = "timestamp"; //$NON-NLS-1$
 
+	public static boolean satisfiesRevision(String revision, String satisfiedBy)
+	{
+		if(revision == null)
+			return true;
+		if(satisfiedBy == null)
+			return false;
+		if(revision.equals(satisfiedBy))
+			return true;
+
+		try
+		{
+			return Long.parseLong(revision) >= Long.parseLong(satisfiedBy);
+		}
+		catch(NumberFormatException e)
+		{
+			return false;
+		}
+	}
+
 	private final String m_artifactInfo;
 
 	private final VersionSelector m_branchOrTag;
 
-	private final long m_revision;
+	private final String m_revision;
 
 	private final Date m_timestamp;
 
 	private final Version m_version;
 
 	public VersionMatch(Version version, VersionSelector branchOrTag, long revision, Date timestamp, String artifactInfo)
+	{
+		this(version, branchOrTag, revision == -1
+				? null
+				: Long.toString(revision), timestamp, artifactInfo);
+	}
+
+	public VersionMatch(Version version, VersionSelector branchOrTag, String revision, Date timestamp,
+			String artifactInfo)
 	{
 		m_version = version;
 
@@ -84,7 +111,14 @@ public class VersionMatch extends AbstractSaxableElement
 		return TAG;
 	}
 
-	public long getRevision()
+	public long getNumericRevision()
+	{
+		return m_revision == null
+				? -1
+				: Long.parseLong(m_revision);
+	}
+
+	public String getRevision()
 	{
 		return m_revision;
 	}
@@ -97,6 +131,11 @@ public class VersionMatch extends AbstractSaxableElement
 	public Version getVersion()
 	{
 		return m_version;
+	}
+
+	public boolean satisfiesRevision(String revision)
+	{
+		return satisfiesRevision(revision, m_revision);
 	}
 
 	@Override
@@ -121,7 +160,7 @@ public class VersionMatch extends AbstractSaxableElement
 				bld.append(':');
 			m_branchOrTag.toString(bld);
 		}
-		if(m_revision != -1)
+		if(m_revision != null)
 		{
 			if(needSep)
 				bld.append(':');
@@ -144,8 +183,8 @@ public class VersionMatch extends AbstractSaxableElement
 		if(m_branchOrTag != null)
 			Utils.addAttribute(attrs, ATTR_BRANCH_OR_TAG, m_branchOrTag.toString());
 
-		if(m_revision != -1)
-			Utils.addAttribute(attrs, ATTR_REVISION, Long.toString(m_revision));
+		if(m_revision != null)
+			Utils.addAttribute(attrs, ATTR_REVISION, m_revision);
 
 		if(m_timestamp != null)
 			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));

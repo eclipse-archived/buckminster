@@ -90,6 +90,21 @@ public class RmapSwitch<T>
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Properties</em>'. <!-- begin-user-doc -->
+	 * This implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Properties</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseProperties(Properties object)
+	{
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Provider</em>'. <!-- begin-user-doc --> This
 	 * implementation returns null; returning a non-null result will terminate the switch. <!-- end-user-doc -->
 	 * 
@@ -297,6 +312,8 @@ public class RmapSwitch<T>
 			ResourceMap resourceMap = (ResourceMap)theEObject;
 			T result = caseResourceMap(resourceMap);
 			if(result == null)
+				result = caseProperties(resourceMap);
+			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
 		}
@@ -304,6 +321,8 @@ public class RmapSwitch<T>
 		{
 			Provider provider = (Provider)theEObject;
 			T result = caseProvider(provider);
+			if(result == null)
+				result = caseProperties(provider);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;
@@ -336,6 +355,14 @@ public class RmapSwitch<T>
 		{
 			URIMatcher uriMatcher = (URIMatcher)theEObject;
 			T result = caseURIMatcher(uriMatcher);
+			if(result == null)
+				result = defaultCase(theEObject);
+			return result;
+		}
+		case RmapPackage.PROPERTIES:
+		{
+			Properties properties = (Properties)theEObject;
+			T result = caseProperties(properties);
 			if(result == null)
 				result = defaultCase(theEObject);
 			return result;

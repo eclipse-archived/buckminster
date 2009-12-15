@@ -88,9 +88,9 @@ public interface IResolution extends IFileInfo
 	/**
 	 * If the resolution was based on a revision query, the matched revision is returned
 	 * 
-	 * @return The matched revision or 0L of the match did not involve revisions.
+	 * @return The matched revision or <code>null</code> of the match did not involve revisions.
 	 */
-	long getSelectedRevision();
+	String getSelectedRevision();
 
 	/**
 	 * If the resolution was based on a timestapm query, then the matched timestamp is returned here.

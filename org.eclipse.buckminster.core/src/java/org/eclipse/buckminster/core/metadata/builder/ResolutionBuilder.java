@@ -61,7 +61,7 @@ public class ResolutionBuilder implements IResolution
 
 	private Filter m_resolutionFilter;
 
-	private long m_revision;
+	private String m_revision;
 
 	private long m_size = -1;
 
@@ -104,7 +104,7 @@ public class ResolutionBuilder implements IResolution
 		m_repository = null;
 		m_request.clear();
 		m_resolutionFilter = null;
-		m_revision = 0L;
+		m_revision = null;
 		m_size = -1L;
 		m_timestamp = null;
 		m_unpack = false;
@@ -176,7 +176,7 @@ public class ResolutionBuilder implements IResolution
 			String componentType = m_cspec.getComponentTypeID();
 			if(componentType == null)
 				componentType = IComponentType.UNKNOWN;
-			return new Provider(m_readerTypeId, new String[] { componentType }, m_repository, m_resolutionFilter);
+			return Provider.immutableProvider(m_readerTypeId, componentType, m_repository, m_resolutionFilter);
 		}
 		return m_provider;
 	}
@@ -206,7 +206,7 @@ public class ResolutionBuilder implements IResolution
 		return m_resolutionFilter;
 	}
 
-	public long getSelectedRevision()
+	public String getSelectedRevision()
 	{
 		return m_revision;
 	}
@@ -351,7 +351,7 @@ public class ResolutionBuilder implements IResolution
 		m_resolutionFilter = resolutionFilter;
 	}
 
-	public void setRevision(long revision)
+	public void setRevision(String revision)
 	{
 		m_revision = revision;
 	}
@@ -377,7 +377,7 @@ public class ResolutionBuilder implements IResolution
 		{
 			m_artifactInfo = null;
 			m_branchOrTag = null;
-			m_revision = 0;
+			m_revision = null;
 			m_timestamp = null;
 		}
 		else

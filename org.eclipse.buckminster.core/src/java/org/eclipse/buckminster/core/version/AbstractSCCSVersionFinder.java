@@ -33,11 +33,20 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 	{
 		private final String m_entryName;
 
-		private final long m_revision;
+		private final String m_revision;
 
 		private final Date m_timestamp;
 
 		public RevisionEntry(String entryName, Date timestamp, long revision)
+		{
+			m_entryName = entryName;
+			m_timestamp = timestamp;
+			m_revision = revision == -1
+					? null
+					: Long.toString(revision);
+		}
+
+		public RevisionEntry(String entryName, Date timestamp, String revision)
 		{
 			m_entryName = entryName;
 			m_timestamp = timestamp;
@@ -49,7 +58,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 			return m_entryName;
 		}
 
-		public long getRevision()
+		public String getRevision()
 		{
 			return m_revision;
 		}
@@ -57,6 +66,11 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		public Date getTimestamp()
 		{
 			return m_timestamp;
+		}
+
+		public boolean satisfiesRevision(String revision)
+		{
+			return VersionMatch.satisfiesRevision(revision, m_revision);
 		}
 	}
 
@@ -225,14 +239,14 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 		NodeQuery query = getQuery();
 		VersionSelector[] branchTagPath = query.getBranchTagPath();
 		VersionRange versionRange = query.getVersionRange();
-		long revision = query.getRevision();
+		String revision = query.getRevision();
 		Date timestamp = query.getTimestamp();
 		VersionMatch best = null;
 		for(RevisionEntry entry : entries)
 		{
 			// Rule out anything that is above a given revision
 			//
-			if(revision != -1 && entry.getRevision() > revision)
+			if(!entry.satisfiesRevision(revision))
 			{
 				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()), "too high"); //$NON-NLS-1$
 				continue;
@@ -381,8 +395,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 
 			// Rule out anything that is above a given revision
 			//
-			long revision = query.getRevision();
-			if(revision != -1 && entry.getRevision() > revision)
+			String revision = query.getRevision();
+			if(!entry.satisfiesRevision(revision))
 			{
 				logDecision(ResolverDecisionType.REVISION_REJECTED, Long.valueOf(entry.getRevision()),
 						Messages.Too_high);

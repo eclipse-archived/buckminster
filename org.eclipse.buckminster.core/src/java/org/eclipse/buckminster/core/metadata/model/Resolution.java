@@ -394,7 +394,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return getProvider().getResolutionFilter();
 	}
 
-	public long getSelectedRevision()
+	public String getSelectedRevision()
 	{
 		return m_versionMatch.getRevision();
 	}

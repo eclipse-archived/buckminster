@@ -11,8 +11,6 @@ import org.eclipse.buckminster.model.common.Format;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Provider</b></em>'. <!-- end-user-doc -->
  * 
@@ -36,7 +34,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Provider extends EObject
+public interface Provider extends Properties
 {
 	/**
 	 * Returns the value of the '<em><b>Component Types</b></em>' attribute list. The list contents are of type

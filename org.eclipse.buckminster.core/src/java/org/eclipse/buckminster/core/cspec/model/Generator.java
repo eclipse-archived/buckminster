@@ -9,8 +9,10 @@ package org.eclipse.buckminster.core.cspec.model;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
@@ -167,8 +169,11 @@ public class Generator extends NamedElement implements IGenerator
 		String cType = ci.getComponentTypeID();
 		ResourceMap rmap = new ResourceMap(null);
 		SearchPath searchPath = new SearchPath(rmap, "default"); //$NON-NLS-1$
+		Map<String, String> props = new HashMap<String, String>(2);
+		props.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
+		props.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
 		Provider provider = new Provider(searchPath, readerType, new String[] { cType }, null, uri, null, null, null,
-				false, false, null, null);
+				props, null, null);
 		searchPath.addProvider(provider);
 		rmap.addSearchPath(searchPath);
 		rmap.addMatcher(new Locator(rmap, null, "default")); //$NON-NLS-1$

@@ -57,6 +57,12 @@ public class RmapAdapterFactory extends AdapterFactoryImpl
 		}
 
 		@Override
+		public Adapter caseProperties(Properties object)
+		{
+			return createPropertiesAdapter();
+		}
+
+		@Override
 		public Adapter caseProvider(Provider object)
 		{
 			return createProviderAdapter();
@@ -182,6 +188,20 @@ public class RmapAdapterFactory extends AdapterFactoryImpl
 	 * @generated
 	 */
 	public Adapter createMatcherAdapter()
+	{
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.buckminster.rmap.Properties <em>Properties</em>}
+	 * '. <!-- begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.rmap.Properties
+	 * @generated
+	 */
+	public Adapter createPropertiesAdapter()
 	{
 		return null;
 	}

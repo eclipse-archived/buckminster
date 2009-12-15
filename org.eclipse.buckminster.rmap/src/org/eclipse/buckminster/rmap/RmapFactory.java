@@ -42,6 +42,14 @@ public interface RmapFactory extends EFactory
 	Locator createLocator();
 
 	/**
+	 * Returns a new object of class '<em>Properties</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Properties</em>'.
+	 * @generated
+	 */
+	Properties createProperties();
+
+	/**
 	 * Returns a new object of class '<em>Provider</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Provider</em>'.

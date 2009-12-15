@@ -89,16 +89,19 @@ public class PDEMapProvider extends Provider
 	}
 
 	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes,
-			VersionConverterDesc vcDesc, Format uri, Filter resolutionFilter, boolean mutable, boolean source,
+			VersionConverterDesc vcDesc, Format uri, Filter resolutionFilter, Map<String, String> properties,
 			Documentation documentation)
 	{
-		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, resolutionFilter, mutable, source,
+		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, resolutionFilter, properties,
 				null, documentation);
 	}
 
-	public PDEMapProvider(String remoteReaderType, String[] componentTypes, String uri, Filter resolutionFilter)
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
-		super(remoteReaderType, componentTypes, uri, resolutionFilter);
+		super.addAttributes(attrs);
+		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				BM_PDEMAP_PROVIDER_PREFIX + ":PDEMapProvider"); //$NON-NLS-1$
 	}
 
 	@Override
@@ -106,6 +109,11 @@ public class PDEMapProvider extends Provider
 	{
 		super.addPrefixMappings(prefixMappings);
 		prefixMappings.put(BM_PDEMAP_PROVIDER_PREFIX, BM_PDEMAP_PROVIDER_NS);
+	}
+
+	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentIdentifier, MapFileEntry> map)
+	{
+		userCache.put(getId(), map);
 	}
 
 	@Override
@@ -158,7 +166,7 @@ public class PDEMapProvider extends Provider
 			String repoLocator = rt.convertFetchFactoryLocator(properties, rq.getName());
 			Format uri = new Format(repoLocator);
 			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(),
-					getVersionConverterDesc(), uri, null, null, getResolutionFilter(), isMutable(), hasSource(), null,
+					getVersionConverterDesc(), uri, null, null, getResolutionFilter(), getProviderProperties(), null,
 					null);
 
 			String ctypeID = rq.getComponentTypeID();
@@ -175,6 +183,12 @@ public class PDEMapProvider extends Provider
 		{
 			monitor.done();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<ComponentIdentifier, MapFileEntry> getCachedMap(Map<UUID, Object> userCache)
+	{
+		return (Map<ComponentIdentifier, MapFileEntry>)userCache.get(getId());
 	}
 
 	/**
@@ -255,25 +269,6 @@ public class PDEMapProvider extends Provider
 				monitor.done();
 			}
 		}
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				BM_PDEMAP_PROVIDER_PREFIX + ":PDEMapProvider"); //$NON-NLS-1$
-	}
-
-	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentIdentifier, MapFileEntry> map)
-	{
-		userCache.put(getId(), map);
-	}
-
-	@SuppressWarnings("unchecked")
-	private Map<ComponentIdentifier, MapFileEntry> getCachedMap(Map<UUID, Object> userCache)
-	{
-		return (Map<ComponentIdentifier, MapFileEntry>)userCache.get(getId());
 	}
 
 	private MapFileEntry getMapFileEntry(NodeQuery query, MultiStatus problemCollector,

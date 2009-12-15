@@ -145,18 +145,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler
 			}
 		}
 
-		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_REVISION);
-		if(tmp != null)
-		{
-			try
-			{
-				m_builder.setRevision(Long.parseLong(tmp));
-			}
-			catch(NumberFormatException e)
-			{
-				throw new SAXParseException(e.toString(), this.getDocumentLocator());
-			}
-		}
+		m_builder.setRevision(getOptionalStringValue(attrs, AdvisorNode.ATTR_REVISION));
 
 		tmp = getOptionalStringValue(attrs, AdvisorNode.ATTR_TIMESTAMP);
 		if(tmp != null)

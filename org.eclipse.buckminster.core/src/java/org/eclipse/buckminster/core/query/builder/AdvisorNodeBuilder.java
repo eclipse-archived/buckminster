@@ -52,7 +52,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 
 	private int[] m_resolutionPrio;
 
-	private long m_revision;
+	private String m_revision;
 
 	private boolean m_skipComponent;
 
@@ -113,7 +113,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		m_useRemoteResolution = true;
 		m_systemDiscovery = true;
 		m_branchTagPath = VersionSelector.EMPTY_PATH;
-		m_revision = -1;
+		m_revision = null;
 		m_timestamp = null;
 		m_resolutionPrio = IAdvisorNode.DEFAULT_RESOLUTION_PRIO;
 	}
@@ -181,7 +181,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		return m_resolutionPrio;
 	}
 
-	public long getRevision()
+	public String getRevision()
 	{
 		return m_revision;
 	}
@@ -314,7 +314,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode
 		m_resolutionPrio = resolutionPrio;
 	}
 
-	public void setRevision(long revision)
+	public void setRevision(String revision)
 	{
 		m_revision = revision;
 	}

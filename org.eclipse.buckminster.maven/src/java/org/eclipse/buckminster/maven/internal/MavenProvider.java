@@ -98,12 +98,12 @@ public class MavenProvider extends Provider
 	private final List<BidirectionalTransformer> m_rules;
 
 	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes,
-			VersionConverterDesc versionConverterDesc, Format uri, Filter resolutionFilter, boolean mutable,
-			boolean source, Documentation documentation, Map<String, MapEntry> mappings,
+			VersionConverterDesc versionConverterDesc, Format uri, Filter resolutionFilter,
+			Map<String, String> properties, Documentation documentation, Map<String, MapEntry> mappings,
 			List<BidirectionalTransformer> rules)
 	{
 		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, resolutionFilter,
-				mutable, source, null, documentation);
+				properties, null, documentation);
 		if(mappings == null)
 			mappings = Collections.emptyMap();
 		if(rules == null)
@@ -113,24 +113,18 @@ public class MavenProvider extends Provider
 	}
 
 	@Override
-	public void addPrefixMappings(HashMap<String, String> prefixMappings)
-	{
-		super.addPrefixMappings(prefixMappings);
-		prefixMappings.put(BM_MAVEN_PROVIDER_PREFIX, BM_MAVEN_PROVIDER_NS);
-	}
-
-	@Override
-	public IVersionConverter getVersionConverter() throws CoreException
-	{
-		return CorePlugin.getDefault().getVersionConverter(IVersionConverter.TAG);
-	}
-
-	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		super.addAttributes(attrs);
 		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", //$NON-NLS-1$ //$NON-NLS-2$
 				"CDATA", BM_MAVEN_PROVIDER_PREFIX + ":MavenProvider"); //$NON-NLS-1$ //$NON-NLS-2$
+	}
+
+	@Override
+	public void addPrefixMappings(HashMap<String, String> prefixMappings)
+	{
+		super.addPrefixMappings(prefixMappings);
+		prefixMappings.put(BM_MAVEN_PROVIDER_PREFIX, BM_MAVEN_PROVIDER_NS);
 	}
 
 	@Override
@@ -202,5 +196,11 @@ public class MavenProvider extends Provider
 					Messages.the_result_of_applying_a_match_rule_had_no_separator_slash_0, transformed));
 
 		return new MapEntry(name, transformed.substring(0, slashPos), transformed.substring(slashPos + 1), null);
+	}
+
+	@Override
+	public IVersionConverter getVersionConverter() throws CoreException
+	{
+		return CorePlugin.getDefault().getVersionConverter(IVersionConverter.TAG);
 	}
 }

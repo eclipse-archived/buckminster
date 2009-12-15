@@ -116,11 +116,11 @@ public class BOMNodeTooltipFigure extends RectangleFigure
 				figure.add(label);
 			}
 
-			if(resolution.getSelectedRevision() != 0l && resolution.getSelectedRevision() != -1l)
+			if(resolution.getSelectedRevision() != null)
 			{
 				label = new Label(Messages.SelectedRevision);
 				figure.add(label);
-				label = new Label(Long.toString(resolution.getSelectedRevision()));
+				label = new Label(resolution.getSelectedRevision());
 				figure.add(label);
 			}
 			if(resolution.getSelectedTimestamp() != null)

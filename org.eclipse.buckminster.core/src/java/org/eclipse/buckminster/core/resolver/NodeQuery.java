@@ -141,31 +141,20 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		// If only one match matches the revision, it will take precedence
 		// regardless of everything else.
 		//
-		long revision = getRevision();
-		long vm1Rev = vm1.getRevision();
-		long vm2Rev = vm2.getRevision();
-		if(revision != -1)
+		String revision = getRevision();
+		if(vm1.satisfiesRevision(revision))
 		{
-			if(vm1Rev != -1 && revision >= vm1Rev)
-			{
-				if(vm2Rev == -1 || revision < vm2Rev)
-					cmp = 1; // vm1 is greater since vm2 is invalid
-
-				// Both revisions are valid so the revision doesn't
-				// rule anything out. We compare the revisions further
-				// down.
-			}
-			else
-			{
-				if(vm2Rev != -1 && revision >= vm2Rev)
-					cmp = -1; // vm2 is greater since vm1 is invalid
-
-				// Both revisions are invalid. No use continuing the
-				// comparison
-				//
-				return 0;
-			}
+			if(!vm2.satisfiesRevision(revision))
+				cmp = -1;
 		}
+		else if(vm2.satisfiesRevision(revision))
+			cmp = 1;
+		else
+			// Both revisions are invalid. No use continuing the
+			// comparison
+			//
+			return 0;
+
 		if(cmp != 0)
 			return cmp;
 
@@ -193,11 +182,11 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 			{
 				if(vm2Ts != null && timestamp.compareTo(vm2Ts) >= 0)
 					cmp = -1; // vm2 is greater since vm1 is invalid
-
-				// Both timestamps are invalid. No use continuing the
-				// comparison
-				//
-				return 0;
+				else
+					// Both timestamps are invalid. No use continuing the
+					// comparison
+					//
+					return 0;
 			}
 		}
 		if(cmp != 0)
@@ -218,13 +207,23 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 				return cmp;
 		}
 
-		if(vm1Rev != -1 && vm2Rev != -1 && vm1Rev != vm2Rev)
+		String vm1Str = vm1.getRevision();
+		String vm2Str = vm2.getRevision();
+		if(vm1Str != null && vm2Str != null && !vm1Str.equals(vm2Str))
+		{
+			// Not same revision. The higher revision wins if they are numeric
 			//
-			// Not same revision. The higher revision wins
-			//
-			return vm1Rev < vm2Rev
-					? -1
-					: 1;
+			try
+			{
+				return Long.parseLong(vm1Str) < Long.parseLong(vm2Str)
+						? -1
+						: 1;
+			}
+			catch(NumberFormatException e)
+			{
+				//
+			}
+		}
 
 		if(vm1Ts != null && vm2Ts != null)
 			cmp = vm1Ts.compareTo(vm2Ts);
@@ -285,6 +284,14 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	public RMContext getContext()
 	{
 		return m_context;
+	}
+
+	public long getNumericRevision()
+	{
+		String revision = getRevision();
+		return revision == null
+				? -1
+				: Long.parseLong(revision);
 	}
 
 	public final URL getOverlayFolder()
@@ -362,7 +369,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 * 
 	 * @return The revision number to search for
 	 */
-	public long getRevision()
+	public String getRevision()
 	{
 		return getComponentQuery().getRevision(getComponentRequest(), m_context);
 	}

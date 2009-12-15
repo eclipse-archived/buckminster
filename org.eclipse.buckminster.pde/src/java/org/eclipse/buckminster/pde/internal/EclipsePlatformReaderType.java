@@ -30,7 +30,6 @@ import java.util.jar.JarOutputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -108,6 +107,26 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		synchronized(s_activeMap)
 		{
 			s_activeMap.clear();
+		}
+	}
+
+	private static String getArtifactURLString(RMContext context, Resolution res) throws CoreException
+	{
+		// This plug-in is not here. It's in a remote location
+		//
+		URI artifactURI = res.getArtifactURI(context);
+		if(artifactURI == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_obtain_URI_for_0,
+					res.getComponentIdentifier()));
+		try
+		{
+			URL artifactURL = artifactURI.toURL();
+			return artifactURL.toString();
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_obtain_URL_for_0,
+					res.getComponentIdentifier()));
 		}
 	}
 
@@ -206,26 +225,6 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		}
 	}
 
-	private static String getArtifactURLString(RMContext context, Resolution res) throws CoreException
-	{
-		// This plug-in is not here. It's in a remote location
-		//
-		URI artifactURI = res.getArtifactURI(context);
-		if(artifactURI == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_obtain_URI_for_0,
-					res.getComponentIdentifier()));
-		try
-		{
-			URL artifactURL = artifactURI.toURL();
-			return artifactURL.toString();
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_obtain_URL_for_0,
-					res.getComponentIdentifier()));
-		}
-	}
-
 	public List<Resolution> convertToSiteFeatures(RMContext context, File siteFolder, List<Resolution> features,
 			List<Resolution> plugins) throws CoreException
 	{
@@ -279,9 +278,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 			String siteURL = entry.getKey();
 			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(
 					IComponentType.ECLIPSE_SITE_FEATURE);
-			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE,
-					new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null, new Format(siteURL), null, null, null,
-					false, false, null, null);
+			Provider provider = Provider.immutableProvider(IReaderType.ECLIPSE_SITE_FEATURE,
+					IComponentType.ECLIPSE_SITE_FEATURE, siteURL);
 
 			for(Resolution res : entry.getValue())
 			{
@@ -403,9 +401,8 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		{
 			IComponentType siteFeatureType = CorePlugin.getDefault().getComponentType(
 					IComponentType.ECLIPSE_SITE_FEATURE);
-			Provider provider = new Provider(null, IReaderType.ECLIPSE_SITE_FEATURE,
-					new String[] { IComponentType.ECLIPSE_SITE_FEATURE }, null, new Format(
-							siteFolder.toURI().toURL().toString()), null, null, null, false, false, null, null);
+			Provider provider = Provider.immutableProvider(IReaderType.ECLIPSE_SITE_FEATURE,
+					IComponentType.ECLIPSE_SITE_FEATURE, siteFolder.toURI().toURL().toString());
 
 			Version version = VersionHelper.parseVersion(generatedFeature.getVersion());
 			VersionMatch vm = new VersionMatch(version, null, -1, null, null);
@@ -470,14 +467,6 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		return new EclipsePlatformReader(this, providerMatch);
 	}
 
-	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
-			IProgressMonitor monitor) throws CoreException
-	{
-		MonitorUtils.complete(monitor);
-		return new EclipsePlatformVersionFinder(this, provider, ctype, nodeQuery);
-	}
-
 	/**
 	 * Returns TOP features - features that are not included into other features
 	 * 
@@ -501,5 +490,13 @@ public class EclipsePlatformReaderType extends CatalogReaderType implements ISit
 		topFeatures.removeAll(includedFeatures);
 
 		return topFeatures;
+	}
+
+	@Override
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
+			IProgressMonitor monitor) throws CoreException
+	{
+		MonitorUtils.complete(monitor);
+		return new EclipsePlatformVersionFinder(this, provider, ctype, nodeQuery);
 	}
 }

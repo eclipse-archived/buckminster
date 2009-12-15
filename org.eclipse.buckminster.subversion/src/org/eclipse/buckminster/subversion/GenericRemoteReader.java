@@ -41,7 +41,7 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 		super(readerType, provider);
 		VersionMatch vm = provider.getVersionMatch();
 		VersionSelector branchOrTag = vm.getBranchOrTag();
-		m_session = getSession(provider.getRepositoryURI(), branchOrTag, vm.getRevision(), vm.getTimestamp(),
+		m_session = getSession(provider.getRepositoryURI(), branchOrTag, vm.getNumericRevision(), vm.getTimestamp(),
 				provider.getNodeQuery().getContext());
 		m_topEntries = getTopEntries(monitor);
 		if(m_topEntries.length == 0)

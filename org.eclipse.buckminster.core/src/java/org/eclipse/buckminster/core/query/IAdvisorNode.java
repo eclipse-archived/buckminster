@@ -45,7 +45,7 @@ public interface IAdvisorNode
 
 	int[] getResolutionPrio();
 
-	long getRevision();
+	String getRevision();
 
 	SourceLevel getSourceLevel();
 

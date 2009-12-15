@@ -80,11 +80,11 @@ public class PSFProvider extends Provider
 
 	public PSFProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
 			VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm,
-			Filter resolutionFilter, boolean mutable, boolean source, URIMatcher uriMatcher,
+			Filter resolutionFilter, Map<String,String> properties, URIMatcher uriMatcher,
 			Documentation documentation, String pfsFile)
 	{
 		super(searchPath, remoteReaderType, componentTypeIDs, versionConverterDesc, uri, digest, digestAlgorithm,
-				resolutionFilter, mutable, source, uriMatcher, documentation);
+				resolutionFilter, properties, uriMatcher, documentation);
 		this.psfFile = pfsFile;
 	}
 
@@ -172,8 +172,7 @@ public class PSFProvider extends Provider
 
 					Format uri = new Format(repoLocation);
 					Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(),
-							getVersionConverterDesc(), uri, null, null, getResolutionFilter(), isMutable(),
-							hasSource(), null, null);
+							getVersionConverterDesc(), uri, null, null, getResolutionFilter(), getProviderProperties(), null, null);
 
 					NodeQuery tmpQuery = query;
 					VersionSelector vs = refInfo.getSelector();
