@@ -26,9 +26,9 @@ public interface IRepositoryLoader
 
 	final String EXTENSION_POINT_ATTRIBUTE_NATURE = "nature";
 
-	final String ORIGINAL_PATH_PROPERTY = "original.path";
+	final String PROP_ORIGINAL_PATH = "original.path";
 
-	final String ORIGINAL_ID_PROPERTY = "original.id";
+	final String PROP_ORIGINAL_ID = "original.id";
 
 	void close() throws CoreException;
 

@@ -21,6 +21,7 @@ import org.eclipse.buckminster.aggregator.engine.maven.pom.PomFactory;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.PomPackage;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.impl.ModelImpl;
 import org.eclipse.buckminster.aggregator.engine.maven.pom.util.PomResourceFactoryImpl;
+import org.eclipse.buckminster.aggregator.engine.maven.pom.util.PomResourceImpl;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -122,6 +123,12 @@ public class POM
 
 	private POM m_parentPOM;
 
+	private String md5;
+
+	private String sha1;
+
+	private Long timestamp;
+
 	public POM()
 	{
 		m_documentRoot = PomFactory.eINSTANCE.createDocumentRoot();
@@ -136,6 +143,14 @@ public class POM
 		if(content.size() != 1)
 			throw BuckminsterException.fromMessage("ECore Resource did not contain one resource. It had %d",
 					Integer.valueOf(content.size()));
+
+		if(resource instanceof PomResourceImpl)
+		{
+			PomResourceImpl pomResource = (PomResourceImpl)resource;
+			md5 = pomResource.getMd5();
+			sha1 = pomResource.getSha1();
+			timestamp = pomResource.getTimestamp();
+		}
 
 		m_documentRoot = (DocumentRoot)content.get(0);
 		Diagnostic diag = Diagnostician.INSTANCE.validate(m_documentRoot);
@@ -180,6 +195,11 @@ public class POM
 		return getResolvedProject().getGroupId();
 	}
 
+	public String getMd5()
+	{
+		return md5;
+	}
+
 	public POM getParentPOM() throws CoreException
 	{
 		if(m_parentPOM != null)
@@ -212,6 +232,16 @@ public class POM
 			m_resolvedModel = new ResolvedModel(m_repoRoot, (ModelImpl)getProject());
 
 		return m_resolvedModel;
+	}
+
+	public String getSha1()
+	{
+		return sha1;
+	}
+
+	public Long getTimestamp()
+	{
+		return timestamp;
 	}
 
 	public String getVersion() throws CoreException

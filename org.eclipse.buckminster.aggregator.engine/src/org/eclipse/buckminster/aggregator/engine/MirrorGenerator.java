@@ -691,8 +691,8 @@ public class MirrorGenerator extends BuilderPhase
 								String versionString = iu.getVersion().getOriginal();
 								if(versionString == null)
 									versionString = iu.getVersion().toString();
-								String originalPath = iu.getProperty(IRepositoryLoader.ORIGINAL_PATH_PROPERTY);
-								String originalId = iu.getProperty(IRepositoryLoader.ORIGINAL_ID_PROPERTY);
+								String originalPath = iu.getProperty(IRepositoryLoader.PROP_ORIGINAL_PATH);
+								String originalId = iu.getProperty(IRepositoryLoader.PROP_ORIGINAL_ID);
 								if(originalId == null)
 									originalId = iu.getId();
 

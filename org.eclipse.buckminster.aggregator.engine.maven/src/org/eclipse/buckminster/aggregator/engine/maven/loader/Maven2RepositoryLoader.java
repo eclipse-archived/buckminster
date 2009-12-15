@@ -7,15 +7,21 @@
  ******************************************************************************/
 package org.eclipse.buckminster.aggregator.engine.maven.loader;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +33,10 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.eclipse.buckminster.aggregator.engine.maven.Activator;
 import org.eclipse.buckminster.aggregator.engine.maven.MavenManager;
 import org.eclipse.buckminster.aggregator.engine.maven.MavenMetadata;
 import org.eclipse.buckminster.aggregator.engine.maven.POM;
@@ -46,12 +56,15 @@ import org.eclipse.buckminster.aggregator.p2.impl.ProvidedCapabilityImpl;
 import org.eclipse.buckminster.aggregator.p2.impl.RequiredCapabilityImpl;
 import org.eclipse.buckminster.aggregator.p2.impl.TouchpointTypeImpl;
 import org.eclipse.buckminster.aggregator.util.GeneralUtils;
+import org.eclipse.buckminster.aggregator.util.RepositoryLoaderUtils;
 import org.eclipse.buckminster.aggregator.util.UriIterator;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
@@ -68,6 +81,8 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.MatchQuery;
 import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
 import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
+import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
 
 public class Maven2RepositoryLoader implements IRepositoryLoader
 {
@@ -169,6 +184,9 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 		}
 	};
 
+	public static final String SIMPLE_METADATA_TYPE = org.eclipse.equinox.internal.p2.metadata.repository.Activator.ID
+			+ ".simpleRepository"; //$NON-NLS-1$
+
 	private static Version createVersionFromFormatAndOriginal(String format, String versionStr)
 	{
 		return Version.parseVersion("format(" + format + "):" + versionStr);
@@ -190,9 +208,17 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 
 	private static final String REPOSITORY_CANCELLED_MESSAGE = "Repository loading was cancelled";
 
-	private static final String MAVEN_ID_PROPERTY = "maven.artifactId";
+	private static final String PROP_MAVEN_ID = "maven.artifactId";
 
-	private static final String MAVEN_GROUP_PROPERTY = "maven.groupId";
+	private static final String PROP_MAVEN_GROUP = "maven.groupId";
+
+	private static final String PROP_POM_MD5 = "maven.pom.md5";
+
+	private static final String PROP_POM_SHA1 = "maven.pom.sha1";
+
+	private static final String PROP_POM_TIMESTAMP = "maven.pom.timestamp";
+
+	private static final String PROP_INDEX_TIMESTAMP = "maven.index.timestamp";
 
 	private static Version createVersion(String versionStr) throws CoreException
 	{
@@ -276,10 +302,10 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 			for(IArtifactKey key : iu.getArtifacts())
 			{
 				ArtifactDescriptor ad = new ArtifactDescriptor(key);
-				String groupPath = iu.getProperty(MAVEN_GROUP_PROPERTY);
+				String groupPath = iu.getProperty(PROP_MAVEN_GROUP);
 				if(groupPath != null)
 					groupPath = groupPath.replace('.', '/');
-				String id = iu.getProperty(MAVEN_ID_PROPERTY);
+				String id = iu.getProperty(PROP_MAVEN_ID);
 
 				String version = MavenManager.getVersionString(iu.getVersion());
 				ad.setRepositoryProperty(ArtifactDescriptor.ARTIFACT_REFERENCE, mdr.getLocation().toString() + '/'
@@ -300,8 +326,13 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 	public void open(URI location, MetadataRepositoryImpl mdr) throws CoreException
 	{
 		if(!robotSafe(location.toString(), "/"))
-			throw BuckminsterException.fromMessage("Crawling of %1$s is discouraged (see %1$s/robots.txt)",
-					location.toString());
+		{
+			StringBuilder message = new StringBuilder("Crawling of %1$s is discouraged (see %1$s/robots.txt)");
+			if(getRemoteIndexTimestamp() != 0L)
+				message.append(". Hint: The repository is indexed. Install an index reader to map this repository.");
+
+			throw BuckminsterException.fromMessage(message.toString(), location.toString());
+		}
 
 		m_location = location;
 		m_repository = mdr;
@@ -372,6 +403,20 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 		return helper;
 	}
 
+	private IRepositoryLoader checkCache() throws CoreException
+	{
+		File p2content = getCacheFile();
+
+		// TODO Check timestamp!!! If the cache is obsolete, delete it
+		if(p2content.exists())
+		{
+			IConfigurationElement config = RepositoryLoaderUtils.getLoaderFor("p2");
+			return (IRepositoryLoader)config.createExecutableExtension("class");
+		}
+
+		return null;
+	}
+
 	private InstallableUnit createIU(VersionEntry versionEntry, IProgressMonitor monitor) throws IOException
 	{
 		InstallableUnitImpl iu = (InstallableUnitImpl)P2Factory.eINSTANCE.createInstallableUnit();
@@ -381,10 +426,10 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 				? versionEntry.artifactId
 				: (versionEntry.groupId + '/' + versionEntry.artifactId));
 		iu.setVersion(versionEntry.version);
-		iu.getPropertyMap().put(MAVEN_ID_PROPERTY, versionEntry.artifactId);
-		iu.getPropertyMap().put(MAVEN_GROUP_PROPERTY, versionEntry.groupId);
-		iu.getPropertyMap().put(ORIGINAL_PATH_PROPERTY, versionEntry.groupId.replace('.', '/'));
-		iu.getPropertyMap().put(ORIGINAL_ID_PROPERTY, versionEntry.artifactId);
+		iu.getPropertyMap().put(PROP_MAVEN_ID, versionEntry.artifactId);
+		iu.getPropertyMap().put(PROP_MAVEN_GROUP, versionEntry.groupId);
+		iu.getPropertyMap().put(PROP_ORIGINAL_PATH, versionEntry.groupId.replace('.', '/'));
+		iu.getPropertyMap().put(PROP_ORIGINAL_ID, versionEntry.artifactId);
 		iu.setFilter(null);
 
 		POM pom;
@@ -393,6 +438,17 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 		{
 			pom = POM.getPOM(m_location.toString(), versionEntry.groupId, versionEntry.artifactId,
 					versionEntry.version.getOriginal());
+
+			String md5 = pom.getMd5();
+			String sha1 = pom.getSha1();
+			Long timestamp = pom.getTimestamp();
+
+			if(md5 != null)
+				iu.getPropertyMap().put(PROP_POM_MD5, md5);
+			if(sha1 != null)
+				iu.getPropertyMap().put(PROP_POM_SHA1, sha1);
+			if(timestamp != null)
+				iu.getPropertyMap().put(PROP_POM_TIMESTAMP, timestamp.toString());
 
 			if(!versionEntry.groupId.equals(pom.getGroupId()))
 				throw new IOException(String.format("Bad groupId in POM: expected %s, found %s", versionEntry.groupId,
@@ -661,6 +717,76 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 		}
 	}
 
+	private File getCacheFile()
+	{
+		return new File(getCacheLocation(), "content.jar");
+	}
+
+	private File getCacheLocation()
+	{
+		return Activator.getPlugin().getCacheDirectory(m_location);
+	}
+
+	private long getRemoteIndexTimestamp() throws CoreException
+	{
+		try
+		{
+			BufferedReader reader = null;
+			String indexPropertiesFile = "/.index/nexus-maven-repository-index.properties";
+
+			if("http".equals(m_location.getScheme()) || "https".equals(m_location.getScheme()))
+			{
+				HttpClient httpClient = new HttpClient();
+				GetMethod method = new GetMethod(m_location.toString() + indexPropertiesFile);
+				int status = httpClient.executeMethod(method);
+				if(status == HttpStatus.SC_OK)
+					reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
+			}
+			else
+			{
+				URL url = new URL(m_location.toString() + indexPropertiesFile);
+				try
+				{
+					URLConnection conn = url.openConnection();
+					reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+				}
+				catch(ConnectException e)
+				{
+					// no index exists (very likely)
+				}
+			}
+
+			if(reader != null)
+			{
+				try
+				{
+					String line;
+					String[] timePrefixes = new String[] { "nexus.index.timestamp=", "nexus.index.time=" };
+					while((line = reader.readLine()) != null)
+					{
+						for(String timePrefix : timePrefixes)
+							if(line.startsWith(timePrefix))
+							{
+								String timeStr = line.substring(timePrefix.length());
+								SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss.SSS Z");
+								return dateFormat.parse(timeStr).getTime();
+							}
+					}
+				}
+				finally
+				{
+					reader.close();
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			throw BuckminsterException.fromMessage(e, "Unable to contact repository %s", m_location.toString());
+		}
+
+		return 0L;
+	}
+
 	private List<VersionEntry> getVersions(MavenMetadata md) throws CoreException
 	{
 		List<String> versions = md.getMetaData().getVersioning().getVersions().getVersion();
@@ -686,17 +812,73 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 
 	private void load(IProgressMonitor monitor, boolean avoidCache) throws CoreException
 	{
+		IRepositoryLoader cacheLoader = null;
+
+		if(avoidCache)
+			removeCache();
+		else
+			cacheLoader = checkCache();
+
+		if(cacheLoader != null)
+		{
+			Buckminster.getLogger().debug("Opening cache for %s", m_repository.toString());
+
+			cacheLoader.open(getCacheLocation().toURI(), m_repository);
+			cacheLoader.load(new NullProgressMonitor());
+
+			// reset location to the real location rather than the local cache file
+			m_repository.setLocation(m_location);
+
+			// remove compression property (cache is compressed but the maven original was not)
+			m_repository.getPropertyMap().remove(IRepository.PROP_COMPRESSED);
+
+			// remove timestamp property (cache has the timestamp of storing in the cache which is irrelevant)
+			m_repository.getPropertyMap().remove(IRepository.PROP_TIMESTAMP);
+
+			String cacheTimeString = m_repository.getPropertyMap().get(PROP_INDEX_TIMESTAMP);
+			long cacheTime = cacheTimeString != null
+					? Long.parseLong(cacheTimeString)
+					: 0L;
+			long remoteTime = getRemoteIndexTimestamp();
+
+			if(remoteTime == 0L || remoteTime > cacheTime)
+			{
+				// TODO Enable 'delta' crawling - if md5 is unchanged, leave cached IU
+
+				if(remoteTime == 0L)
+					Buckminster.getLogger().debug(
+							"Unable to check if cache for %s is obsolete, repository will be scanned again",
+							m_location.toString());
+				else
+					Buckminster.getLogger().debug("Cache for %s is obsolete, repository will be scanned again",
+							m_location.toString());
+
+				// the cache is obsolete
+				removeCache();
+				m_repository.removeAll();
+				m_repository.getPropertyMap().clear();
+				m_repository.setDescription(null);
+			}
+			else
+			{
+				Buckminster.getLogger().debug("Cache for %s is up-to-date", m_repository.toString());
+
+				monitor.done();
+				return;
+			}
+		}
+
 		SubMonitor subMon = SubMonitor.convert(monitor, 100);
 
 		try
 		{
-			m_repository.setName(null);
+			m_repository.setName("Maven2@" + m_location.toString());
 			m_repository.setLocation(m_location);
 			m_repository.setDescription(null);
 			m_repository.setProvider(null);
 			m_repository.setType("maven2");
 			m_repository.setVersion(null);
-			m_repository.getPropertyMap().putAll(Collections.<String, String> emptyMap());
+			m_repository.getPropertyMap().put(PROP_INDEX_TIMESTAMP, Long.valueOf(getRemoteIndexTimestamp()).toString());
 
 			UriIterator itor;
 			final SubMonitor[] crawlMonRef = new SubMonitor[1];
@@ -764,7 +946,7 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 				if(crawlMon.isCanceled())
 					throw new OperationCanceledException(REPOSITORY_CANCELLED_MESSAGE);
 
-				String groupId = iu.getProperty(MAVEN_GROUP_PROPERTY);
+				String groupId = iu.getProperty(PROP_MAVEN_GROUP);
 				InstallableUnitImpl category = (InstallableUnitImpl)categoryMap.get(groupId);
 				if(category == null)
 				{
@@ -786,10 +968,28 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 
 				ius.add(iu);
 			}
+
+			storeCache();
 		}
 		finally
 		{
 			subMon.done();
+		}
+	}
+
+	private void removeCache() throws CoreException
+	{
+		Buckminster m_bucky = Buckminster.getDefault();
+		IMetadataRepositoryManager mdrMgr = null;
+		try
+		{
+			mdrMgr = m_bucky.getService(IMetadataRepositoryManager.class);
+			mdrMgr.removeRepository(getCacheLocation().toURI());
+			getCacheFile().delete();
+		}
+		finally
+		{
+			m_bucky.ungetService(mdrMgr);
 		}
 	}
 
@@ -855,5 +1055,27 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 		}
 
 		return true;
+	}
+
+	private void storeCache() throws CoreException
+	{
+		Buckminster m_bucky = Buckminster.getDefault();
+		IMetadataRepositoryManager mdrMgr = null;
+		try
+		{
+			mdrMgr = m_bucky.getService(IMetadataRepositoryManager.class);
+			Map<String, String> properties = new HashMap<String, String>(2);
+			properties.put(IRepository.PROP_COMPRESSED, "true");
+			properties.put(PROP_INDEX_TIMESTAMP, m_repository.getPropertyMap().get(PROP_INDEX_TIMESTAMP));
+			IMetadataRepository mdr = mdrMgr.createRepository(getCacheLocation().toURI(), m_repository.getName(),
+					SIMPLE_METADATA_TYPE, properties);
+			mdr.setDescription(m_repository.getDescription());
+			mdr.addInstallableUnits(m_repository.getInstallableUnits().toArray(
+					new IInstallableUnit[m_repository.getInstallableUnits().size()]));
+		}
+		finally
+		{
+			m_bucky.ungetService(mdrMgr);
+		}
 	}
 }

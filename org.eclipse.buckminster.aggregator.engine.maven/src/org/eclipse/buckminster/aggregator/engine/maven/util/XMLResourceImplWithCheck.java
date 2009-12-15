@@ -5,8 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -19,11 +23,63 @@ import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
 
 public class XMLResourceImplWithCheck extends XMLResourceImpl
 {
+	public static class InputStreamWithInfo extends ByteArrayInputStream
+	{
+		private String md5;
+
+		private String sha1;
+
+		private Long timestamp;
+
+		public InputStreamWithInfo(byte[] bytes)
+		{
+			super(bytes);
+		}
+
+		public byte[] getContent()
+		{
+			return buf;
+		}
+
+		public String getMd5()
+		{
+			return md5;
+		}
+
+		public String getSha1()
+		{
+			return sha1;
+		}
+
+		public Long getTimestamp()
+		{
+			return timestamp;
+		}
+
+		public void setMd5(String md5)
+		{
+			this.md5 = md5;
+		}
+
+		public void setSha1(String sha1)
+		{
+			this.sha1 = sha1;
+		}
+
+		public void setTimestamp(Long timestamp)
+		{
+			this.timestamp = timestamp;
+		}
+	}
+
 	private static class URIHandlerWithCheck extends URIHandlerImpl
 	{
 		// If maven metadata exceeds this size, something is wrong...
 		// The downloader will throw an error is such cases
 		private static final long MAX_FILE_LENGTH = 10000000;
+
+		private static final SimpleDateFormat LAST_MODIFIED_DATE_FORMAT = new SimpleDateFormat(
+				"EEE, d MMM yyyy HH:mm:ss Z");
 
 		public static void register(URIConverter owner)
 		{
@@ -53,7 +109,8 @@ public class XMLResourceImplWithCheck extends XMLResourceImpl
 				String md5 = getDigest(uriStringMD5, MavenManager.MESSAGE_DIGESTERS[0].getDigestLength() << 1);
 				String sha1 = getDigest(uriStringSHA1, MavenManager.MESSAGE_DIGESTERS[1].getDigestLength() << 1);
 
-				byte[] content = download(uriString);
+				InputStreamWithInfo result = download(uriString);
+				byte[] content = result.getContent();
 				String[] checkSums = MavenManager.createCheckSum(content, MavenManager.MESSAGE_DIGESTERS);
 				if(!md5.equals(checkSums[0]))
 					throw new Exception("Invalid MD5 for " + uriString + ": found " + md5 + ", expected "
@@ -62,7 +119,10 @@ public class XMLResourceImplWithCheck extends XMLResourceImpl
 					throw new Exception("Invalid SHA1 for " + uriString + ": found " + sha1 + ", expected "
 							+ checkSums[1]);
 
-				return new ByteArrayInputStream(content);
+				result.setMd5(md5);
+				result.setSha1(sha1);
+
+				return result;
 			}
 			catch(IOException e)
 			{
@@ -94,10 +154,11 @@ public class XMLResourceImplWithCheck extends XMLResourceImpl
 		// authorization)
 		// BUT: ECF does not seem to honor KeepAlive support (why?) and RepositoryTransport seems to be very slow on
 		// many short transfers
-		private byte[] download(String uriStr) throws Exception
+		private InputStreamWithInfo download(String uriStr) throws Exception
 		{
 			byte[] buffer = new byte[1024];
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			long lastModified = 0;
 			InputStream is;
 			java.net.URI uri = new java.net.URI(uriStr);
 			String scheme = uri.getScheme();
@@ -105,25 +166,51 @@ public class XMLResourceImplWithCheck extends XMLResourceImpl
 			{
 				HttpMethod method = new GetMethod(uriStr);
 				m_httpClient.executeMethod(method);
+				Header header = method.getResponseHeader("last-modified");
+				if(header != null)
+					try
+					{
+						lastModified = LAST_MODIFIED_DATE_FORMAT.parse(header.getValue()).getTime();
+					}
+					catch(ParseException e)
+					{
+						// bad timestamp => no timestamp available
+					}
+
 				is = method.getResponseBodyAsStream();
 			}
 			else
-				is = uri.toURL().openStream();
-			int read;
-			long total = 0;
-			while((read = is.read(buffer)) != -1)
 			{
-				if((total += read) > MAX_FILE_LENGTH)
-					throw new IOException("Remote file (" + uriStr + ") exceeds maximum expected size of "
-							+ MAX_FILE_LENGTH + " bytes");
-				os.write(buffer, 0, read);
+				URLConnection conn = uri.toURL().openConnection();
+				lastModified = conn.getLastModified();
+				is = conn.getInputStream();
 			}
-			return os.toByteArray();
+
+			try
+			{
+				int read;
+				long total = 0;
+				while((read = is.read(buffer)) != -1)
+				{
+					if((total += read) > MAX_FILE_LENGTH)
+						throw new IOException("Remote file (" + uriStr + ") exceeds maximum expected size of "
+								+ MAX_FILE_LENGTH + " bytes");
+					os.write(buffer, 0, read);
+				}
+				InputStreamWithInfo result = new InputStreamWithInfo(os.toByteArray());
+				result.setTimestamp(lastModified);
+				return result;
+			}
+			finally
+			{
+				is.close();
+				os.close();
+			}
 		}
 
 		private String getDigest(String uri, int len) throws Exception
 		{
-			String line = new String(download(uri));
+			String line = new String(download(uri).getContent());
 
 			if(line.length() < len)
 				throw new Exception("Invalid digest: " + line);

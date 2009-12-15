@@ -213,6 +213,16 @@ public class MavenManager
 		return new MavenRepositoryHelper(top, mappingRulesList.toArray(new String[mappingRulesList.size()][]));
 	}
 
+	public static String encodeMD5(String str)
+	{
+		return encode(str, 0);
+	}
+
+	public static String encodeSHA1(String str)
+	{
+		return encode(str, 1);
+	}
+
 	public static String getVersionString(Version version)
 	{
 		String versionString = version.getOriginal();
@@ -310,6 +320,22 @@ public class MavenManager
 	private static URI createXmlURI(URI root, MavenMetadataHelper md) throws CoreException
 	{
 		return URI.createURI(root.toString() + "/" + md.getRelativePath() + "/maven-metadata.xml");
+	}
+
+	private static String encode(String str, int algorithmIndex)
+	{
+		byte[] digest = MESSAGE_DIGESTERS[algorithmIndex].digest(str.getBytes());
+		return formatDigest(digest);
+	}
+
+	private static String formatDigest(byte[] digest)
+	{
+		StringBuilder result = new StringBuilder(digest.length << 1);
+
+		for(byte b : digest)
+			result.append(String.format("%02x", Byte.valueOf(b)));
+
+		return result.toString();
 	}
 
 	private static void savePOMs(URI root, InstallableUnitMapping iu, URIConverter uriConverter,
