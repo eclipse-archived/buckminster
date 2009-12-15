@@ -673,13 +673,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 								BasicDiagnostic basicDiagnostic = new BasicDiagnostic(Diagnostic.OK,
 										"org.eclipse.buckminster.aggregator.editor", 0, null, null);
 
-								for(Resource rsrc : editingDomain.getResourceSet().getResources())
-								{
-									Diagnostic diagnostic = managedResourceToDiagnosticMap.get(rsrc);
-
-									if(diagnostic != null)
-										basicDiagnostic.add(diagnostic);
-								}
+								for(Diagnostic diagnostic : managedResourceToDiagnosticMap.values())
+									basicDiagnostic.add(diagnostic);
 
 								managedMarkerHelper.deleteMarkers(aggregatorResource);
 								if(basicDiagnostic.getSeverity() != Diagnostic.OK)
