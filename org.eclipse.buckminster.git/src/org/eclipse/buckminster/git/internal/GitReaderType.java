@@ -49,7 +49,12 @@ public class GitReaderType extends CatalogReaderType
 	{
 		// Register the project with the GitTeamProvider.
 		//
-		ConnectProviderOperation connectOp = new ConnectProviderOperation(project);
+		String fmt = cr.getRepository();
+		ConnectProviderOperation connectOp;
+		if(fmt.lastIndexOf(',') < 0)
+			connectOp = new ConnectProviderOperation(project);
+		else
+			connectOp = new ConnectProviderOperation(project, new File("../.git"));
 		connectOp.run(monitor);
 	}
 

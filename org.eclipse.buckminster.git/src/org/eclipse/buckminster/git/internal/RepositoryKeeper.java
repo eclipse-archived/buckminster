@@ -107,10 +107,18 @@ class RepositoryKeeper
 	{
 		try
 		{
+			String gitBranch = getGitBranch();
 			Repository local = getRepository(monitor);
-			Ref head = repository.getRef(getGitBranch());
+			Ref head = repository.getRef(gitBranch);
 			if(head == null || head.getObjectId() == null)
-				return;
+			{
+				// Branch is probably not cloned yet. So let's try and get it.
+				//
+				clone(monitor);
+				head = repository.getRef(gitBranch);
+				if(head == null)
+					throw BuckminsterException.fromMessage("Unable to obtain reference to branch: %s", getGitBranch());
+			}
 
 			// TODO: Assert that destination and component match
 			GitIndex index = new GitIndex(local);
