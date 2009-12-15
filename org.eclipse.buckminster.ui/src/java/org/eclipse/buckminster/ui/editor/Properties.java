@@ -9,6 +9,8 @@
 package org.eclipse.buckminster.ui.editor;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -94,7 +96,7 @@ public class Properties extends Composite
 		}
 	}
 
-	private ArrayList<Property> m_properties;
+	private List<Property> m_properties;
 
 	private TableViewer m_tableViewer;
 
@@ -109,7 +111,7 @@ public class Properties extends Composite
 	public Properties(Composite parent, int style)
 	{
 		super(parent, style);
-
+		m_properties = Collections.emptyList();
 		initComposite();
 	}
 
@@ -131,7 +133,7 @@ public class Properties extends Composite
 		}
 	}
 
-	public ArrayList<Property> getProperties()
+	public List<Property> getProperties()
 	{
 		return m_properties;
 	}
@@ -215,8 +217,8 @@ public class Properties extends Composite
 
 	private void addPropertyErrorDialog(Throwable e)
 	{
-		MessageDialog.openError(this.getShell(), Messages.error, NLS.bind(Messages.a_0_property_will_not_be_added, e
-				.getMessage()));
+		MessageDialog.openError(this.getShell(), Messages.error, NLS.bind(Messages.a_0_property_will_not_be_added,
+				e.getMessage()));
 	}
 
 	private void createButtonBox(Composite parent)

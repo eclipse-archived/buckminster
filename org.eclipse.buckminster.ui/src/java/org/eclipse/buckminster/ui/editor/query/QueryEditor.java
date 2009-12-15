@@ -1531,7 +1531,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 			m_useResolutionService.setSelection(node.isUseRemoteResolution());
 
 			m_branchTagPath.setText(TextUtils.notNullString(VersionSelector.toString(node.getBranchTagPath())));
-			m_revision.setText(node.getRevision());
+			m_revision.setText(TextUtils.notNullString(node.getRevision()));
 			Date timestamp = node.getTimestamp();
 			m_timestamp.setText(timestamp == null
 					? "" : m_timestampFormat.format(timestamp)); //$NON-NLS-1$
