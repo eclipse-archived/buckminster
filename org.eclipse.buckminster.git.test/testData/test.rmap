@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:locator searchPathRef="mangos" pattern="mangos"/>
+  <rm:locator searchPathRef="default"/>
+  <rm:searchPath name="mangos">
+    <rm:provider componentTypes="osgi.bundle" readerType="git" resolutionFilter="">
+      <rm:uri format="git://github.com/mangos/mangos.git"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="default">
+    <rm:provider componentTypes="osgi.bundle" readerType="git" resolutionFilter="">
+      <rm:uri format="{0}/egit,{1}">
+        <bc:propertyRef key="workspace.root"/>
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+      <rm:property key="git.remote.uri" value="git://egit.eclipse.org/egit/parallelip-egit.git"/>
+      <rm:property key="git.remote.name" value="pelle"/>
+    </rm:provider>
+  </rm:searchPath>
+</rm:rmap>
