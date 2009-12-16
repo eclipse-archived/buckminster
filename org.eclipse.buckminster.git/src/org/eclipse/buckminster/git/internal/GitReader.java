@@ -19,15 +19,14 @@ import org.eclipse.jgit.lib.TreeEntry;
 
 public class GitReader extends AbstractCatalogReader
 {
-	private final RepositoryKeeper repositoryKeeper;
+	private final RepositoryAccess repoAccess;
 
 	protected GitReader(IReaderType readerType, ProviderMatch providerMatch) throws CoreException
 	{
 		super(readerType, providerMatch);
 		Provider provider = providerMatch.getProvider();
-		repositoryKeeper = new RepositoryKeeper(//
+		repoAccess = new RepositoryAccess(//
 			provider.getURI(providerMatch.getNodeQuery().getProperties()),//
-			providerMatch.getVersionMatch(),
 			provider.getProviderProperties());
 	}
 
@@ -36,7 +35,7 @@ public class GitReader extends AbstractCatalogReader
 	{
 		try
 		{
-			return repositoryKeeper.getComponentTree(monitor).existsBlob(fileName);
+			return repoAccess.getComponentTree(getProviderMatch().getVersionMatch(), monitor).existsBlob(fileName);
 		}
 		catch(IOException e)
 		{
@@ -48,7 +47,7 @@ public class GitReader extends AbstractCatalogReader
 	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
 			throws CoreException, IOException
 	{
-		TreeEntry blobEntry = repositoryKeeper.getComponentTree(monitor).findBlobMember(fileName);
+		TreeEntry blobEntry = repoAccess.getComponentTree(getProviderMatch().getVersionMatch(), monitor).findBlobMember(fileName);
 		if(blobEntry == null)
 			throw new FileNotFoundException(fileName);
 
@@ -60,6 +59,6 @@ public class GitReader extends AbstractCatalogReader
 
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
 	{
-		repositoryKeeper.checkout(destination.toFile(), monitor);
+		repoAccess.checkout(getProviderMatch().getVersionMatch(), destination.toFile(), monitor);
 	}
 }

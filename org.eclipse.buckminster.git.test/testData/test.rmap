@@ -4,12 +4,16 @@
   <rm:locator searchPathRef="egit" pattern="\.egit(\..*)?$"/>
   <rm:locator searchPathRef="jgit" pattern="\.jgit(\..*)?$"/>
   <rm:searchPath name="mangos">
-    <rm:provider componentTypes="osgi.bundle" readerType="git" resolutionFilter="">
-      <rm:uri format="git://github.com/mangos/mangos.git"/>
+    <rm:provider componentTypes="unknown" readerType="git">
+      <rm:uri format="{0}/mangos">
+        <bc:propertyRef key="workspace.root"/>
+      </rm:uri>
+      <rm:property key="git.remote.uri" value="file:///home/thhal/tmp/mangos/.git"/>
+      <!-- <rm:property key="git.remote.uri" value="git://github.com/mangos/mangos.git"/> -->
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="egit">
-    <rm:provider componentTypes="osgi.bundle" readerType="git" resolutionFilter="">
+    <rm:provider componentTypes="osgi.bundle" readerType="git">
       <rm:uri format="{0}/egit,{1}">
         <bc:propertyRef key="workspace.root"/>
         <bc:propertyRef key="buckminster.component"/>
@@ -18,7 +22,7 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="jgit">
-    <rm:provider componentTypes="osgi.bundle" readerType="git" resolutionFilter="">
+    <rm:provider componentTypes="osgi.bundle" readerType="git">
       <rm:uri format="{0}/jgit,{1}">
         <bc:propertyRef key="workspace.root"/>
         <bc:propertyRef key="buckminster.component"/>

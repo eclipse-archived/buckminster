@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
-import org.eclipse.team.core.RepositoryProvider;
 
 public class GitReaderType extends CatalogReaderType
 {
@@ -87,5 +86,13 @@ public class GitReaderType extends CatalogReaderType
 			fmt = new File(fmt).getName();
 		}
 		return Path.fromOSString(fmt).addTrailingSeparator();
+	}
+
+	/**
+	 * Closes any cached RepositoryAccess instances.
+	 */
+	public void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException
+	{
+		
 	}
 }
