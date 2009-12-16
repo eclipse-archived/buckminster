@@ -200,6 +200,8 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 
 	private MetadataRepositoryImpl m_repository;
 
+	private Map<String, IInstallableUnit> m_cachedIUs;
+
 	private static final Pattern s_timestampPattern = Pattern.compile(//
 	"^((?:19|20)\\d{2}(?:0[1-9]|1[012])(?:0[1-9]|[12][0-9]|3[01]))" + // //$NON-NLS-1$
 			"(?:\\.((?:[01][0-9]|2[0-3])[0-5][0-9][0-5][0-9]))?$"); //$NON-NLS-1$
@@ -407,7 +409,6 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 	{
 		File p2content = getCacheFile();
 
-		// TODO Check timestamp!!! If the cache is obsolete, delete it
 		if(p2content.exists())
 		{
 			IConfigurationElement config = RepositoryLoaderUtils.getLoaderFor("p2");
@@ -421,10 +422,7 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 	{
 		InstallableUnitImpl iu = (InstallableUnitImpl)P2Factory.eINSTANCE.createInstallableUnit();
 
-		// TODO What about the groupId ? See discussion below
-		iu.setId((versionEntry.artifactId.equals(versionEntry.groupId) || versionEntry.artifactId.startsWith(versionEntry.groupId + '.'))
-				? versionEntry.artifactId
-				: (versionEntry.groupId + '/' + versionEntry.artifactId));
+		iu.setId(createP2Id(versionEntry.groupId, versionEntry.artifactId));
 		iu.setVersion(versionEntry.version);
 		iu.getPropertyMap().put(PROP_MAVEN_ID, versionEntry.artifactId);
 		iu.getPropertyMap().put(PROP_MAVEN_GROUP, versionEntry.groupId);
@@ -482,9 +480,7 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 
 					rc.setNamespace(namespace);
 
-					rc.setName(artifactId.equals(groupId) || artifactId.startsWith(groupId + '.')
-							? artifactId
-							: (groupId + '.' + artifactId));
+					rc.setName(createP2Id(groupId, artifactId));
 
 					VersionRange vr = createVersionRange(versionRange);
 					rc.setRange(vr);
@@ -578,6 +574,23 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 
 		Buckminster.getLogger().debug("Adding IU: %s#%s", iu.getId(), MavenManager.getVersionString(iu.getVersion()));
 		return iu;
+	}
+
+	private String createKey(IInstallableUnit iu)
+	{
+		return iu.getId() + '#' + iu.getVersion().toString();
+	}
+
+	private String createKey(VersionEntry ve)
+	{
+		return createP2Id(ve.groupId, ve.artifactId) + '#' + ve.version.toString();
+	}
+
+	private String createP2Id(String groupId, String artifactId)
+	{
+		return (artifactId.equals(groupId) || artifactId.startsWith(groupId + '.'))
+				? artifactId
+				: (groupId + '/' + artifactId);
 	}
 
 	private MavenMetadata findNextComponent(IProgressMonitor monitor) throws CoreException
@@ -706,6 +719,14 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 				throw new OperationCanceledException(REPOSITORY_CANCELLED_MESSAGE);
 
 			VersionEntry ve = m_versionEntryItor.next();
+
+			if(m_cachedIUs != null)
+			{
+				InstallableUnit iu = (InstallableUnit)m_cachedIUs.get(createKey(ve));
+				if(iu != null)
+					return iu;
+			}
+
 			try
 			{
 				return createIU(ve, monitor);
@@ -813,6 +834,7 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 	private void load(IProgressMonitor monitor, boolean avoidCache) throws CoreException
 	{
 		IRepositoryLoader cacheLoader = null;
+		m_cachedIUs = null;
 
 		if(avoidCache)
 			removeCache();
@@ -853,8 +875,15 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 					Buckminster.getLogger().debug("Cache for %s is obsolete, repository will be scanned again",
 							m_location.toString());
 
-				// the cache is obsolete
+				// the cache is obsolete, remove it
 				removeCache();
+
+				// save a map of IUs in the cached repository - existing IUs will be reused from cache
+				m_cachedIUs = new HashMap<String, IInstallableUnit>(m_repository.getInstallableUnits().size());
+				for(IInstallableUnit iu : m_repository.getInstallableUnits())
+					m_cachedIUs.put(createKey(iu), iu);
+
+				// finally, re-initialize the target repository to empty
 				m_repository.removeAll();
 				m_repository.getPropertyMap().clear();
 				m_repository.setDescription(null);
