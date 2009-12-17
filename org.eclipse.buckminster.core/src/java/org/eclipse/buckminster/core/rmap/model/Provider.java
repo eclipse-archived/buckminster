@@ -392,7 +392,10 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 */
 	public final boolean hasSource()
 	{
-		return Boolean.parseBoolean(m_properties.get(KeyConstants.IS_SOURCE));
+		String source = m_properties.get(KeyConstants.IS_SOURCE);
+		return source == null
+				? true
+				: Boolean.parseBoolean(source);
 	}
 
 	/**
@@ -429,7 +432,10 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 */
 	public final boolean isMutable()
 	{
-		return Boolean.parseBoolean(m_properties.get(KeyConstants.IS_MUTABLE));
+		String mutable = m_properties.get(KeyConstants.IS_MUTABLE);
+		return mutable == null
+				? true
+				: Boolean.parseBoolean(mutable);
 	}
 
 	public boolean isPersisted(StorageManager sm) throws CoreException
