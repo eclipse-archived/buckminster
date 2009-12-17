@@ -4,7 +4,7 @@ Bundle-Name: Buckminster CVS Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.cvs; singleton:=true
 Bundle-Version: 1.0.360.qualifier
 Bundle-Activator: org.eclipse.buckminster.cvspkg.CVSPlugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Buckminster Project
 Require-Bundle: org.eclipse.buckminster.core;bundle-version="1.1.350",
  org.eclipse.buckminster.runtime;bundle-version="1.1.0",
  org.eclipse.buckminster.sax;bundle-version="1.0.0",

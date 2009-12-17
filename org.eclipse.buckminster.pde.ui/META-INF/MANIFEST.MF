@@ -4,7 +4,7 @@ Bundle-Name: Buckminster Ui Plug-in for the PDE extension
 Bundle-SymbolicName: org.eclipse.buckminster.pde.ui;singleton:=true
 Bundle-Version: 1.0.360.qualifier
 Bundle-Localization: plugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Buckminster Project
 Require-Bundle: org.eclipse.buckminster.ui;bundle-version="1.0.350",
  org.eclipse.buckminster.core;bundle-version="1.1.350",
  org.eclipse.buckminster.sax;bundle-version="1.0.0",

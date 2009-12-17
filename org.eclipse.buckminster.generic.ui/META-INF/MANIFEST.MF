@@ -17,4 +17,4 @@ Export-Package: org.eclipse.buckminster.generic.ui,
  org.eclipse.buckminster.generic.ui.providers,
  org.eclipse.buckminster.generic.ui.utils
 Bundle-Activator: org.eclipse.buckminster.generic.ui.GenericUiPlugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Buckminster Project

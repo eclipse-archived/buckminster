@@ -4,7 +4,7 @@ Bundle-Name: Buckminster JDT Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.jdt; singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.buckminster.jdt.JdtPlugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Buckminster Project
 Bundle-Localization: plugin
 Bundle-ClassPath: bmjdt.jar
 Require-Bundle: org.eclipse.buckminster.ant;bundle-version="1.0.0",

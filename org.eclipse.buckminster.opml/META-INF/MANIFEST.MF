@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster OPML support
 Bundle-SymbolicName: org.eclipse.buckminster.opml
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Buckminster Project
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.buckminster.sax;bundle-version="1.0.0"
 Export-Package: org.eclipse.buckminster.opml,

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Ant Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.ant; singleton:=true
 Bundle-Version: 1.1.360.qualifier
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Buckminster Project
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.buckminster.core;bundle-version="1.1.350",
  org.eclipse.buckminster.cmdline;bundle-version="1.0.350",

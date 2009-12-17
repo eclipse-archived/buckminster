@@ -4,7 +4,7 @@ Bundle-Name: Buckminster Core
 Bundle-SymbolicName: org.eclipse.buckminster.core; singleton:=true
 Bundle-Version: 1.1.360.qualifier
 Bundle-Activator: org.eclipse.buckminster.core.CorePlugin
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Buckminster Project
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.buckminster.cmdline;bundle-version="1.0.350",
  org.eclipse.buckminster.download;bundle-version="1.1.0",

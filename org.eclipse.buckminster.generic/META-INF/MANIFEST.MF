@@ -11,4 +11,4 @@ Export-Package: org.eclipse.buckminster.generic.model,
  org.eclipse.buckminster.generic.plugin,
  org.eclipse.buckminster.generic.properties,
  org.eclipse.buckminster.generic.utils
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse Buckminster Project
