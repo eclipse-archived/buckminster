@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.site.eclipse"
       label="Buckminster"
       version="1.1.350.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.example.com/description">
       This is the Buckminster Update Site for Galileo Milestones

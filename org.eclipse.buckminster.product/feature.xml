@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.product"
       label="Buckminster Product"
       version="1.1.350.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
       This feature includes all features needed for the product. The product then includes only this feature and nothing else.
