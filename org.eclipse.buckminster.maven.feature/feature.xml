@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.maven.feature"
       label="Buckminster - Maven support"
       version="1.2.360.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
       This feature provides Maven integration for Buckminster.

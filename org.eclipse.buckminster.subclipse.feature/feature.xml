@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.subclipse.feature"
       label="Buckminster - Subclipse support"
       version="1.0.0.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
       This feature provides Subversion integration for Buckminster using the Subclipse client from http://subclipse.tigris.org

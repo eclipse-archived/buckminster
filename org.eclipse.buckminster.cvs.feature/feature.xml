@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.cvs.feature"
       label="Buckminster - CVS support"
       version="1.0.350.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
       This feature provides CVS integration for Buckminster.

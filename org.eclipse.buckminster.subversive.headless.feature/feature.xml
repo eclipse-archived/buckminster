@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.subversive.headless.feature"
       label="Buckminster - Subversive based SVN support for headless operation"
       version="1.0.0.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
       This feature provides headless SVN integration for Buckminster using Subversive from http://www.polarion.org.

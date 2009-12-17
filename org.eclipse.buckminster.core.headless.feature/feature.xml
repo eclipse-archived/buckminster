@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.core.headless.feature"
       label="Buckminster - Core Headless"
       version="1.1.350.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
       This is the core Buckminster feature. For UI support also install

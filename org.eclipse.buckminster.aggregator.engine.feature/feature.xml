@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.aggregator.engine.feature"
       label="Buckminster Aggregator Engine"
       version="1.0.0.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.example.com/description">
       This is the Buckminster Aggregator Engine. The feature contains everything needed to run an aggregation.

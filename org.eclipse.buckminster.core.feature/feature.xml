@@ -3,7 +3,7 @@
       id="org.eclipse.buckminster.core.feature"
       label="Buckminster - Core"
       version="1.2.360.qualifier"
-      provider-name="Eclipse.org"
+      provider-name="Eclipse Buckminster Project"
       plugin="org.eclipse.buckminster.ui">
 
    <description url="http://www.eclipse.org/buckminster">
