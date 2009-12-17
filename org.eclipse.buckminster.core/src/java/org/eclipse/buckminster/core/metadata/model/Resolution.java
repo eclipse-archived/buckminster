@@ -544,7 +544,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	public void remove(StorageManager sm) throws CoreException
 	{
-		WorkspaceInfo.clearResolutionCache(getComponentIdentifier());
+		WorkspaceInfo.updateResolutionCache(getComponentIdentifier(), null);
 		synchronized(sm.getResolutions())
 		{
 			sm.getResolutions().removeElement(getId());
@@ -553,7 +553,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	public void store(StorageManager sm) throws CoreException
 	{
-		WorkspaceInfo.clearResolutionCache(getComponentIdentifier());
+		WorkspaceInfo.updateResolutionCache(getComponentIdentifier(), this);
 		m_cspec.store(sm);
 		if(m_opml != null)
 			sm.getOPMLs().putElement(m_opml);

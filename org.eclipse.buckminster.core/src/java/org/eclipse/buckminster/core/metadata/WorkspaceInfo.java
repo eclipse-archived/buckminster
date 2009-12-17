@@ -81,11 +81,11 @@ public class WorkspaceInfo
 
 	private static boolean s_hasBeenFullyInitialized;
 
-	private static final HashMap<ComponentIdentifier, IPath> s_locationCache = new HashMap<ComponentIdentifier, IPath>();
+	private static final HashMap<IComponentIdentifier, IPath> s_locationCache = new HashMap<IComponentIdentifier, IPath>();
 
 	private static final IResource[] s_noResources = new IResource[0];
 
-	private static final HashMap<ComponentIdentifier, Resolution> s_resolutionCache = new HashMap<ComponentIdentifier, Resolution>();
+	private static final HashMap<IComponentIdentifier, Resolution> s_resolutionCache = new HashMap<IComponentIdentifier, Resolution>();
 
 	private static Stack<IGlobalContext> s_performContextStack;
 
@@ -94,14 +94,6 @@ public class WorkspaceInfo
 		synchronized(s_locationCache)
 		{
 			s_locationCache.remove(cid);
-		}
-	}
-
-	public static void clearResolutionCache(IComponentIdentifier cid)
-	{
-		synchronized(s_resolutionCache)
-		{
-			s_resolutionCache.remove(cid);
 		}
 	}
 
@@ -723,6 +715,17 @@ public class WorkspaceInfo
 		resource.setPersistentProperty(PPKEY_COMPONENT_ID, identifier == null
 				? null
 				: identifier.toString());
+	}
+
+	public static void updateResolutionCache(IComponentIdentifier cid, Resolution resolution)
+	{
+		synchronized(s_resolutionCache)
+		{
+			if(resolution == null)
+				s_resolutionCache.remove(cid);
+			else
+				s_resolutionCache.put(cid, resolution);
+		}
 	}
 
 	public static void validateMaterializations() throws CoreException
