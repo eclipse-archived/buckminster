@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:psf="http://www.eclipse.org/buckminster/PSFProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:property key="build.type" mutable="true" value="N"/>
   <rm:locator pattern="^org\.eclipse\.emf\.cdo\.all$" searchPathRef="cdo.features"/>
   <rm:locator pattern="^org\.eclipse\.emf\.cdo\.(releng\.buckminster|site\.eclipse)" searchPathRef="buckminster.testbench"/>
   <rm:locator searchPathRef="cdo.source" failOnError="false"/>
+  <rm:locator searchPathRef="modeling" failOnError="false"/>
   <rm:locator searchPathRef="target.platform"/>
   <rm:searchPath name="cdo.features">
     <rm:provider componentTypes="eclipse.feature" readerType="cvs">
@@ -40,5 +42,9 @@
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-  <rm:property key="build.type" mutable="true" value="N"/>
+  <rm:searchPath name="modeling">
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=N)">
+      <rm:uri format="http://download.eclipse.org/modeling/emf/updates/milestones"/>
+    </rm:provider>
+  </rm:searchPath>
 </rm:rmap>
