@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
 import org.eclipse.buckminster.aggregator.Contribution;
+import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
@@ -63,6 +64,43 @@ public class ItemUtils
 		mappedRepo.addUnit(newMU);
 
 		return newMU;
+	}
+
+	/**
+	 * Tries to add a MappedRule to a MappedRepository
+	 * 
+	 * @param mappedRepo
+	 *            mapped repository
+	 * @param iu
+	 *            installable unit
+	 * @param ruleClass
+	 *            defines which kind of rule is required
+	 * @return null if the MappedRepository already contains a MapRule created from the InstallableUnit or MapRule
+	 *         (created from the IU) if the InstallableUnit was added
+	 */
+	public static MapRule addMapRule(MappedRepository mappedRepo, InstallableUnit iu, Class<? extends MapRule> ruleClass)
+	{
+		if(iu == null)
+			return null;
+
+		MapRule foundRule = null;
+
+		for(MapRule rule : mappedRepo.getMapRules())
+			if(rule.getInstallableUnit() != null
+					&& (iu == rule.getInstallableUnit() || iu.getId() != null
+							&& rule.getInstallableUnit().getId() != null
+							&& iu.getId().equals(rule.getInstallableUnit().getId())))
+			{
+				foundRule = rule;
+			}
+
+		if(foundRule != null)
+			return null;
+
+		MapRule newMR = AggregatorFactory.eINSTANCE.createMapRule(iu, ruleClass);
+		mappedRepo.getMapRules().add(newMR);
+
+		return newMR;
 	}
 
 	/**

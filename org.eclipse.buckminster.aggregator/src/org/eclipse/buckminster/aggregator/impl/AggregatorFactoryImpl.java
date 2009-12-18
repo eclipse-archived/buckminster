@@ -8,34 +8,6 @@ package org.eclipse.buckminster.aggregator.impl;
 
 import java.net.URI;
 
-import org.eclipse.buckminster.aggregator.AggregateType;
-import org.eclipse.buckminster.aggregator.Aggregator;
-import org.eclipse.buckminster.aggregator.AggregatorFactory;
-import org.eclipse.buckminster.aggregator.AggregatorPackage;
-import org.eclipse.buckminster.aggregator.Architecture;
-import org.eclipse.buckminster.aggregator.Bundle;
-import org.eclipse.buckminster.aggregator.Category;
-import org.eclipse.buckminster.aggregator.Configuration;
-import org.eclipse.buckminster.aggregator.Contact;
-import org.eclipse.buckminster.aggregator.Contribution;
-import org.eclipse.buckminster.aggregator.CustomCategory;
-import org.eclipse.buckminster.aggregator.DescriptionProvider;
-import org.eclipse.buckminster.aggregator.ExclusionRule;
-import org.eclipse.buckminster.aggregator.Feature;
-import org.eclipse.buckminster.aggregator.InfosProvider;
-import org.eclipse.buckminster.aggregator.InstallableUnitType;
-import org.eclipse.buckminster.aggregator.MappedRepository;
-import org.eclipse.buckminster.aggregator.MavenItem;
-import org.eclipse.buckminster.aggregator.MavenMapping;
-import org.eclipse.buckminster.aggregator.MetadataRepositoryReference;
-import org.eclipse.buckminster.aggregator.OperatingSystem;
-import org.eclipse.buckminster.aggregator.PackedStrategy;
-import org.eclipse.buckminster.aggregator.Product;
-import org.eclipse.buckminster.aggregator.Property;
-import org.eclipse.buckminster.aggregator.Status;
-import org.eclipse.buckminster.aggregator.StatusCode;
-import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
-import org.eclipse.buckminster.aggregator.WindowSystem;
 import org.eclipse.buckminster.aggregator.*;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
@@ -526,6 +498,27 @@ public class AggregatorFactoryImpl extends EFactoryImpl implements AggregatorFac
 		mu.setInstallableUnit(iu);
 
 		return mu;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public MapRule createMapRule(InstallableUnit iu, Class<? extends MapRule> ruleClass)
+	{
+		MapRule mr = null;
+
+		if(ruleClass.isAssignableFrom(ExclusionRule.class))
+			mr = createExclusionRule();
+		else if(ruleClass.isAssignableFrom(ValidConfigurationsRule.class))
+			mr = createValidConfigurationsRule();
+		else
+			throw new IllegalArgumentException("Unknown rule class " + ruleClass);
+
+		mr.setInstallableUnit(iu);
+
+		return mr;
 	}
 
 	/**

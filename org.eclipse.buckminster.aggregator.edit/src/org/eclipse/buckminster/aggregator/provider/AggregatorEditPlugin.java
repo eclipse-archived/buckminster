@@ -46,6 +46,13 @@ public final class AggregatorEditPlugin extends EMFPlugin
 	 */
 	public static final AggregatorEditPlugin INSTANCE = new AggregatorEditPlugin();
 
+	// new DnD operations
+	public final static int DROP_IU = 1 << 5;
+
+	public final static int DROP_EXCLUSION_RULE = 1 << 6;
+
+	public final static int DROP_VALID_CONFIGURATIONS_RULE = 1 << 7;
+
 	/**
 	 * Keep track of the singleton. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 

@@ -8,6 +8,7 @@ package org.eclipse.buckminster.aggregator.presentation;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +29,7 @@ import org.eclipse.buckminster.aggregator.StatusCode;
 import org.eclipse.buckminster.aggregator.StatusProvider;
 import org.eclipse.buckminster.aggregator.p2.provider.P2ItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl;
+import org.eclipse.buckminster.aggregator.p2view.Feature;
 import org.eclipse.buckminster.aggregator.p2view.provider.P2viewItemProviderAdapterFactory;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
 import org.eclipse.buckminster.aggregator.provider.AggregatorItemProviderAdapter;
@@ -73,6 +75,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.edit.command.DragAndDropCommand;
 import org.eclipse.emf.edit.domain.AdapterFactoryEditingDomain;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
@@ -110,6 +113,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -126,16 +130,26 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -1789,14 +1803,139 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 		contextMenu.add(new Separator("additions"));
 		contextMenu.setRemoveAllWhenShown(true);
 		contextMenu.addMenuListener(this);
-		Menu menu = contextMenu.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
+		Menu iuAddingExtensionMenu = contextMenu.createContextMenu(viewer.getControl());
+		viewer.getControl().setMenu(iuAddingExtensionMenu);
 		getSite().registerContextMenu(contextMenu, new UnwrappingSelectionProvider(viewer));
+
+		DropTargetListener dtl = new EditingDomainViewerDropAdapter(editingDomain, viewer)
+		{
+			class IUAddingExtensionSelectionListener extends SelectionAdapter
+			{
+				private DropTargetEvent event;
+
+				public void setEvent(DropTargetEvent event)
+				{
+					this.event = event;
+				}
+
+				@Override
+				public void widgetSelected(SelectionEvent e)
+				{
+					if(event == null)
+						return;
+
+					// Create the command.
+					//
+					int operations = AggregatorEditPlugin.DROP_IU | AggregatorEditPlugin.DROP_EXCLUSION_RULE
+							| AggregatorEditPlugin.DROP_VALID_CONFIGURATIONS_RULE;
+
+					int operation = ((Integer)((Widget)e.getSource()).getData()).intValue();
+
+					command = DragAndDropCommand.create(domain, extractDropTarget(event.item), getLocation(event),
+							operations, operation, extractDragSource(event.data));
+
+					// If the command can execute...
+					//
+					if(command.canExecute())
+					{
+						// Execute it.
+						//
+						domain.getCommandStack().execute(command);
+					}
+					else
+					{
+						// Otherwise, let's call the whole thing off.
+						//
+						event.detail = DND.DROP_NONE;
+						command.dispose();
+					}
+
+					// Clean up the state.
+					//
+					command = null;
+					commandTarget = null;
+					source = null;
+					dragAndDropCommandInformation = null;
+
+				}
+			}
+
+			private int lastDragStateMask;
+
+			private Menu iuAddingExtensionMenu;
+
+			private IUAddingExtensionSelectionListener iuAddingExtensionSelectionListener;
+
+			{
+				viewer.getControl().getDisplay().addFilter(SWT.DragDetect, new Listener()
+				{
+					public void handleEvent(Event event)
+					{
+						lastDragStateMask = event.stateMask;
+					}
+				});
+
+				iuAddingExtensionMenu = new Menu(viewer.getControl());
+				iuAddingExtensionSelectionListener = new IUAddingExtensionSelectionListener();
+				MenuItem menuItem = new MenuItem(iuAddingExtensionMenu, SWT.NONE);
+				menuItem.setText("Add Feature");
+				menuItem.setImage(getImage(AggregatorEditPlugin.INSTANCE.getImage("full/obj16/Feature.gif")));
+				menuItem.setData(Integer.valueOf(AggregatorEditPlugin.DROP_IU));
+				menuItem.addSelectionListener(iuAddingExtensionSelectionListener);
+
+				menuItem = new MenuItem(iuAddingExtensionMenu, SWT.NONE);
+				menuItem.setText("Add Exclusion Rule");
+				menuItem.setImage(getImage(AggregatorEditPlugin.INSTANCE.getImage("full/obj16/ExclusionRule.gif")));
+				menuItem.setData(Integer.valueOf(AggregatorEditPlugin.DROP_EXCLUSION_RULE));
+				menuItem.addSelectionListener(iuAddingExtensionSelectionListener);
+
+				menuItem = new MenuItem(iuAddingExtensionMenu, SWT.NONE);
+				menuItem.setText("Add Valid Configurations Rule");
+				menuItem.setImage(getImage(AggregatorEditPlugin.INSTANCE.getImage("full/obj16/ValidConfigurationsRule.gif")));
+				menuItem.setData(Integer.valueOf(AggregatorEditPlugin.DROP_VALID_CONFIGURATIONS_RULE));
+				menuItem.addSelectionListener(iuAddingExtensionSelectionListener);
+			}
+
+			@Override
+			public void drop(DropTargetEvent event)
+			{
+				if((extractDropTarget(event.item) instanceof MappedRepository) && (lastDragStateMask & SWT.CONTROL) > 0
+						&& onlyFeatures(extractDragSource(event.data)))
+				{
+					iuAddingExtensionSelectionListener.setEvent(event);
+					iuAddingExtensionMenu.setLocation(event.x, event.y);
+					iuAddingExtensionMenu.setVisible(true);
+
+					return;
+				}
+
+				super.drop(event);
+			}
+
+			private Image getImage(Object imageURL)
+			{
+				Image image = null;
+
+				if(imageURL != null && imageURL instanceof URL)
+					image = ImageDescriptor.createFromURL((URL)imageURL).createImage();
+
+				return image;
+			}
+
+			private boolean onlyFeatures(Collection<?> collection)
+			{
+				for(Object object : collection)
+					if(!(object instanceof Feature))
+						return false;
+
+				return true;
+			}
+		};
 
 		int dndOperations = DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK;
 		Transfer[] transfers = new Transfer[] { LocalTransfer.getInstance() };
 		viewer.addDragSupport(dndOperations, transfers, new ViewerDragAdapter(viewer));
-		viewer.addDropSupport(dndOperations, transfers, new EditingDomainViewerDropAdapter(editingDomain, viewer));
+		viewer.addDropSupport(dndOperations, transfers, dtl);
 	}
 
 	/**

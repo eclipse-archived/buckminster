@@ -138,6 +138,8 @@ public interface AggregatorFactory extends EFactory
 	 */
 	MappedUnit createMappedUnit(InstallableUnit iu);
 
+	MapRule createMapRule(InstallableUnit iu, Class<? extends MapRule> ruleClass);
+
 	/**
 	 * Returns a new object of class '<em>Maven Item</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 

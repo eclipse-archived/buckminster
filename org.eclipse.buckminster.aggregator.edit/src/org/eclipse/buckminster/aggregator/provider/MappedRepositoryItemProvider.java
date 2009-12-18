@@ -257,7 +257,10 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	protected Command createDragAndDropCommand(EditingDomain domain, Object owner, float location, int operations,
 			int operation, Collection<?> collection)
 	{
-		Command command = createAddIUsToMappedRepositoryCommand(owner, collection);
+		if((operation & (AggregatorEditPlugin.DROP_IU | AggregatorEditPlugin.DROP_EXCLUSION_RULE | AggregatorEditPlugin.DROP_VALID_CONFIGURATIONS_RULE)) == 0)
+			operation = AggregatorEditPlugin.DROP_IU;
+
+		Command command = createAddIUsToMappedRepositoryCommand(owner, collection, operation);
 
 		if(command != null)
 			return command;
@@ -317,7 +320,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	protected Command factorAddCommand(EditingDomain domain, CommandParameter commandParameter)
 	{
 		Command command = createAddIUsToMappedRepositoryCommand(commandParameter.getOwner(),
-				commandParameter.getCollection());
+				commandParameter.getCollection(), AggregatorEditPlugin.DROP_IU);
 
 		if(command != null)
 			return command;
@@ -346,7 +349,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	}
 
 	@SuppressWarnings("unchecked")
-	private Command createAddIUsToMappedRepositoryCommand(Object owner, Collection<?> collection)
+	private Command createAddIUsToMappedRepositoryCommand(Object owner, Collection<?> collection, int operation)
 	{
 		ItemSorter itemSorter = new ItemSorter(collection);
 
@@ -365,7 +368,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 			ius.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
 			ius.addAll(ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)));
 
-			return new AddIUsToMappedRepositoryCommand((MappedRepository)owner, ius);
+			return new AddIUsToMappedRepositoryCommand((MappedRepository)owner, ius, operation);
 		}
 
 		return null;
