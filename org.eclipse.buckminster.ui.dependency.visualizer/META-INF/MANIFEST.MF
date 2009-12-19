@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Visualizer
 Bundle-SymbolicName: org.eclipse.buckminster.ui.dependency.visualizer;singleton:=true
 Bundle-Version: 1.0.360.qualifier
+Bundle-Localization: plugin
 Bundle-Activator: org.eclipse.buckminster.ui.dependency.visualizer.Activator
 Require-Bundle: org.eclipse.zest.core;bundle-version="1.1.0",
  org.eclipse.zest.layouts;bundle-version="1.1.0",

@@ -38,6 +38,14 @@ public class Messages extends NLS
 
 	public static String None;
 
+	public static String OpenDepencencyGraphAction_OpenEditorErrorMessage;
+
+	public static String OpenDepencencyGraphAction_ProcessingGraphMainTaskLabel;
+
+	public static String OpenDepencencyGraphAction_ProcessingItemTaskLabel;
+
+	public static String OpenDepencencyGraphAction_ResolvingDependencyGraphJobTitle;
+
 	public static String PathHighlighting;
 
 	public static String PathToRoot;

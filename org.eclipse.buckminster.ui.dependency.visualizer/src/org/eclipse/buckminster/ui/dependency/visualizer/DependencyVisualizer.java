@@ -25,6 +25,7 @@ import org.eclipse.buckminster.ui.dependency.visualizer.controls.HighlightPathCo
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.LayoutControl;
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.listener.IViewerSettingChangeListener;
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.listener.ViewerSettingChangeEvent;
+import org.eclipse.buckminster.ui.dependency.visualizer.input.BOMEditorInput;
 import org.eclipse.buckminster.ui.dependency.visualizer.viewer.DependencyViewer;
 import org.eclipse.buckminster.ui.dependency.visualizer.viewer.provider.DependencyLabelProvider;
 import org.eclipse.buckminster.ui.dependency.visualizer.viewer.provider.DependencyTreeContentProvider;
@@ -75,6 +76,8 @@ public class DependencyVisualizer extends EditorPart
 	private FormToolkit toolkit;
 
 	private TreeViewer treeViewer;
+
+	public static final String ID = "org.eclipse.buckminster.dependency.visualizer.editor1"; //$NON-NLS-1$
 
 	@Override
 	public void createPartControl(Composite parent)
@@ -153,6 +156,11 @@ public class DependencyVisualizer extends EditorPart
 			{
 				Activator.getDefault().log(e);
 			}
+		}
+		else if(input instanceof BOMEditorInput)
+		{
+			BOMEditorInput editorInput = (BOMEditorInput)input;
+			bom = editorInput.getBillOfMaterials();
 		}
 
 	}

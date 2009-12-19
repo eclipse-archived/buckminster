@@ -7,10 +7,25 @@
             class="org.eclipse.buckminster.ui.dependency.visualizer.DependencyVisualizer"
             default="true"
             extensions="bom"
-            filenames="*.test"
             id="org.eclipse.buckminster.dependency.visualizer.editor1"
-            name="Dependency Visualizer">
+            name="%editor.name">
       </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.eclipse.buckminster.ui.dependency.visualizer.resourceAction"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               class="org.eclipse.buckminster.ui.dependency.visualizer.actions.OpenDepencencyGraphAction"
+               enablesFor="1"
+               id="org.eclipse.buckminster.ui.dependency.visualizer.action1"
+               label="%open.graph.action.label"
+               menubarPath="org.eclipse.buckminster.ui.popup.menu/cspec"
+               tooltip="%open.graph.action.tooltip">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>
