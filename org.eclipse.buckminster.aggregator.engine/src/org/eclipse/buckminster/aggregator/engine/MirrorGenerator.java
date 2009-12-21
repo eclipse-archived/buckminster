@@ -21,6 +21,8 @@ import org.eclipse.buckminster.aggregator.PackedStrategy;
 import org.eclipse.buckminster.aggregator.engine.maven.InstallableUnitMapping;
 import org.eclipse.buckminster.aggregator.engine.maven.MavenManager;
 import org.eclipse.buckminster.aggregator.engine.maven.MavenRepositoryHelper;
+import org.eclipse.buckminster.aggregator.engine.maven.indexer.IMaven2Indexer;
+import org.eclipse.buckminster.aggregator.engine.maven.indexer.IndexerUtils;
 import org.eclipse.buckminster.aggregator.loader.IRepositoryLoader;
 import org.eclipse.buckminster.aggregator.p2.ArtifactKey;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
@@ -861,11 +863,18 @@ public class MirrorGenerator extends BuilderPhase
 
 			if(mavenHelper != null)
 			{
+
 				log.info("Adding maven metadata");
 				MavenManager.saveMetadata(
 						org.eclipse.emf.common.util.URI.createFileURI(aggregateDestination.getAbsolutePath()),
 						mavenHelper.getTop());
 
+				IMaven2Indexer indexer = IndexerUtils.getIndexer("nexus");
+				if(indexer != null)
+				{
+					log.info("Adding maven index");
+					indexer.updateLocalIndex(new File(aggregateDestination.getAbsolutePath()).toURI(), false);
+				}
 				MonitorUtils.worked(childMonitor, 10);
 				log.info("Done adding maven metadata");
 			}

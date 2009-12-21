@@ -27,7 +27,7 @@ public class MetadataRepositoryResourceFactoryImpl extends ResourceFactoryImpl
 
 	public Resource createResource(URI uri)
 	{
-		if(m_loaderConfiguration == null)
+		if(m_loaderConfiguration == null || !m_loaderConfiguration.isValid())
 			try
 			{
 				m_loaderConfiguration = RepositoryLoaderUtils.getLoaderFor(uri.scheme());

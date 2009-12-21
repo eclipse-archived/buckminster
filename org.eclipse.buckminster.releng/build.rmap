@@ -13,6 +13,7 @@
   <rm:locator pattern="^org\.tmatesoft\.svnkit(\..+)?" searchPathRef="svnkit"/>
   <rm:locator pattern="^org\.tigris\.subversion(\..+)?" searchPathRef="subclipse"/>
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
+  <rm:locator pattern="^org\.maven(\..+)?" searchPathRef="m2eclipse"/>
   <rm:locator searchPathRef="amalgam" failOnError="false"/>
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="svn">
@@ -132,6 +133,11 @@
       <rm:uri format="{0}/modeling/emf/updates/milestones">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="m2eclipse">
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
+      <rm:uri format="http://m2eclipse.sonatype.org/update"/>
     </rm:provider>
   </rm:searchPath>
   <rm:property key="eclipse.download.prefix" value="http://download.eclipse.org"/>

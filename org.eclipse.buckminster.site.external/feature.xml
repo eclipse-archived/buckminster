@@ -29,4 +29,8 @@
          id="org.eclipse.buckminster.emma.headless.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.buckminster.aggregator.engine.maven.indexer.feature"
+         version="0.0.0"/>
+
 </feature>

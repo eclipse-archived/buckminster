@@ -17,20 +17,20 @@ import org.eclipse.equinox.internal.p2.core.helpers.URLUtil;
 import org.eclipse.equinox.internal.provisional.p2.core.location.AgentLocation;
 import org.osgi.framework.BundleContext;
 
-public class Activator extends Plugin
+public class MavenActivator extends Plugin
 {
 	public static final String ID = "org.eclipse.buckminster.aggregator.engine.maven";
 
-	public static Activator plugin;
+	public static MavenActivator plugin;
 
-	public static Activator getPlugin()
+	public static MavenActivator getPlugin()
 	{
 		return plugin;
 	}
 
 	private AgentLocation agentLocation;
 
-	public Activator()
+	public MavenActivator()
 	{
 		plugin = this;
 	}

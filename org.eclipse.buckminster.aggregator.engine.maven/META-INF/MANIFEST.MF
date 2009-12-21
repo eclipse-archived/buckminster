@@ -8,12 +8,14 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.buckminster.aggregator.engine.maven,
- org.eclipse.buckminster.aggregator.engine.maven.pom,
- org.eclipse.buckminster.aggregator.engine.maven.pom.impl,
- org.eclipse.buckminster.aggregator.engine.maven.pom.util,
+ org.eclipse.buckminster.aggregator.engine.maven.indexer,
+ org.eclipse.buckminster.aggregator.engine.maven.loader,
  org.eclipse.buckminster.aggregator.engine.maven.metadata,
  org.eclipse.buckminster.aggregator.engine.maven.metadata.impl,
- org.eclipse.buckminster.aggregator.engine.maven.metadata.util
+ org.eclipse.buckminster.aggregator.engine.maven.metadata.util,
+ org.eclipse.buckminster.aggregator.engine.maven.pom,
+ org.eclipse.buckminster.aggregator.engine.maven.pom.impl,
+ org.eclipse.buckminster.aggregator.engine.maven.pom.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
@@ -37,4 +39,4 @@ Import-Package: org.eclipse.buckminster.aggregator,
  org.eclipse.equinox.internal.provisional.p2.metadata.query,
  org.eclipse.equinox.internal.provisional.p2.metadata.repository,
  org.eclipse.equinox.internal.provisional.p2.repository
-Bundle-Activator: org.eclipse.buckminster.aggregator.engine.maven.Activator
+Bundle-Activator: org.eclipse.buckminster.aggregator.engine.maven.MavenActivator

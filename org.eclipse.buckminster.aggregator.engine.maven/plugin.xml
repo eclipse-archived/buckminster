@@ -9,6 +9,7 @@
 -->
 
 <plugin>
+   <extension-point id="indexer" name="Repository Indexer" schema="schema/indexer.exsd"/>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
@@ -22,12 +23,6 @@
             uri="http://maven.apache.org/maven-metadata/1.0.0"
             class="org.eclipse.buckminster.aggregator.engine.maven.metadata.MetadataPackage"
             genModel="model/metadata.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.extension_parser">
-      <parser
-            type="pom"
-            class="org.eclipse.buckminster.aggregator.engine.maven.pom.util.PomResourceFactoryImpl"/>
    </extension>
 
    <extension
