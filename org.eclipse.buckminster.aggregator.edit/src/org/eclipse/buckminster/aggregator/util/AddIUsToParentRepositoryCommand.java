@@ -15,8 +15,11 @@ import java.util.Map;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorFactory;
+import org.eclipse.buckminster.aggregator.ExclusionRule;
+import org.eclipse.buckminster.aggregator.MapRule;
 import org.eclipse.buckminster.aggregator.MappedRepository;
 import org.eclipse.buckminster.aggregator.MappedUnit;
+import org.eclipse.buckminster.aggregator.ValidConfigurationsRule;
 import org.eclipse.buckminster.aggregator.p2.InstallableUnit;
 import org.eclipse.buckminster.aggregator.p2.MetadataRepository;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
@@ -33,21 +36,27 @@ public class AddIUsToParentRepositoryCommand extends AbstractCommand
 
 	private List<InstallableUnit> m_selectedIUs;
 
+	private int m_operation;
+
 	private Map<InstallableUnit, MappedRepository> m_mapIUMappedRepo = new HashMap<InstallableUnit, MappedRepository>();
 
 	private Map<MappedRepository, List<MappedUnit>> m_unitsAddedToMappedRepo = new HashMap<MappedRepository, List<MappedUnit>>();
 
-	public AddIUsToParentRepositoryCommand(Aggregator aggregator, List<InstallableUnit> selectedIUs)
+	private Map<MappedRepository, List<MapRule>> m_rulesAddedToMappedRepo = new HashMap<MappedRepository, List<MapRule>>();
+
+	public AddIUsToParentRepositoryCommand(Aggregator aggregator, List<InstallableUnit> selectedIUs, int operation)
 	{
 		super(AggregatorEditPlugin.INSTANCE.getString("_UI_Add_to_parent_Mapped_Repository"));
 
 		m_aggregator = aggregator;
 		m_selectedIUs = selectedIUs;
+		m_operation = operation;
 	}
 
 	public void execute()
 	{
 		m_unitsAddedToMappedRepo.clear();
+		m_rulesAddedToMappedRepo.clear();
 
 		for(InstallableUnit iu : m_selectedIUs)
 		{
@@ -56,20 +65,44 @@ public class AddIUsToParentRepositoryCommand extends AbstractCommand
 			if(!repo.isEnabled())
 				continue;
 
-			MappedUnit unit = ItemUtils.findMappedUnit(repo, iu);
-
-			if(unit == null)
+			if((m_operation & AggregatorEditPlugin.ADD_IU) > 0)
 			{
-				unit = AggregatorFactory.eINSTANCE.createMappedUnit(iu);
-				repo.addUnit(unit);
+				MappedUnit unit = ItemUtils.findMappedUnit(repo, iu);
 
-				List<MappedUnit> units = m_unitsAddedToMappedRepo.get(repo);
-				if(units == null)
+				if(unit == null)
 				{
-					units = new ArrayList<MappedUnit>();
-					m_unitsAddedToMappedRepo.put(repo, units);
+					unit = AggregatorFactory.eINSTANCE.createMappedUnit(iu);
+					repo.addUnit(unit);
+
+					List<MappedUnit> units = m_unitsAddedToMappedRepo.get(repo);
+					if(units == null)
+					{
+						units = new ArrayList<MappedUnit>();
+						m_unitsAddedToMappedRepo.put(repo, units);
+					}
+					units.add(unit);
 				}
-				units.add(unit);
+			}
+			else if((m_operation & (AggregatorEditPlugin.ADD_EXCLUSION_RULE | AggregatorEditPlugin.ADD_VALID_CONFIGURATIONS_RULE)) > 0)
+			{
+				MapRule rule = ItemUtils.findMapRule(repo, iu);
+
+				if(rule == null)
+				{
+					rule = AggregatorFactory.eINSTANCE.createMapRule(iu,
+							(m_operation & AggregatorEditPlugin.ADD_EXCLUSION_RULE) > 0
+									? ExclusionRule.class
+									: ValidConfigurationsRule.class);
+					repo.getMapRules().add(rule);
+
+					List<MapRule> rules = m_rulesAddedToMappedRepo.get(repo);
+					if(rules == null)
+					{
+						rules = new ArrayList<MapRule>();
+						m_rulesAddedToMappedRepo.put(repo, rules);
+					}
+					rules.add(rule);
+				}
 			}
 		}
 
@@ -78,8 +111,13 @@ public class AddIUsToParentRepositoryCommand extends AbstractCommand
 	public void redo()
 	{
 		for(MappedRepository mappedRepo : m_unitsAddedToMappedRepo.keySet())
+		{
 			for(MappedUnit unit : m_unitsAddedToMappedRepo.get(mappedRepo))
 				mappedRepo.removeUnit(unit);
+
+			for(MapRule rule : m_rulesAddedToMappedRepo.get(mappedRepo))
+				mappedRepo.getMapRules().remove(rule);
+		}
 	}
 
 	@Override
@@ -97,6 +135,9 @@ public class AddIUsToParentRepositoryCommand extends AbstractCommand
 
 			if(mappedRepo == null)
 				continue;
+
+			if(ItemUtils.findMappedUnit(mappedRepo, iu) != null || ItemUtils.findMapRule(mappedRepo, iu) != null)
+				return false;
 
 			m_mapIUMappedRepo.put(iu, mappedRepo);
 			someEnabled = someEnabled || mappedRepo.isBranchEnabled();

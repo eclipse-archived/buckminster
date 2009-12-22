@@ -8,8 +8,10 @@
 
 package org.eclipse.buckminster.aggregator.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
@@ -185,9 +187,18 @@ public class ItemUtils
 		return null;
 	}
 
+	public static MapRule findMapRule(MappedRepository mappedRepo, InstallableUnit iu)
+	{
+		for(MapRule rule : mappedRepo.getMapRules())
+			if(iu.equals(rule.getInstallableUnit()))
+				return rule;
+
+		return null;
+	}
+
 	public static Collection<? extends InstallableUnit> getIUs(Collection<? extends IUPresentation> iups)
 	{
-		Set<InstallableUnit> set = new HashSet<InstallableUnit>();
+		List<InstallableUnit> set = new ArrayList<InstallableUnit>();
 
 		for(IUPresentation iup : iups)
 			if(iup.getInstallableUnit() != null)

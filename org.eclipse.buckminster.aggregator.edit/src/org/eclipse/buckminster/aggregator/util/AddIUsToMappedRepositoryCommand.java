@@ -41,7 +41,7 @@ public class AddIUsToMappedRepositoryCommand extends AbstractCommand implements 
 
 	public AddIUsToMappedRepositoryCommand(MappedRepository mappedRepo, List<InstallableUnit> selectedIUs)
 	{
-		this(mappedRepo, selectedIUs, AggregatorEditPlugin.DROP_IU);
+		this(mappedRepo, selectedIUs, AggregatorEditPlugin.ADD_IU);
 	}
 
 	public AddIUsToMappedRepositoryCommand(MappedRepository mappedRepo, List<InstallableUnit> selectedIUs, int operation)
@@ -59,18 +59,18 @@ public class AddIUsToMappedRepositoryCommand extends AbstractCommand implements 
 		m_addedMappedUnits.clear();
 		m_addedMapRules.clear();
 
-		if((m_operation & AggregatorEditPlugin.DROP_IU) > 0)
+		if((m_operation & AggregatorEditPlugin.ADD_IU) > 0)
 			for(InstallableUnit iu : m_selectedIUs)
 			{
 				MappedUnit newMU = ItemUtils.addIU(m_mappedRepo, iu);
 				if(newMU != null)
 					m_addedMappedUnits.add(newMU);
 			}
-		else if((m_operation & (AggregatorEditPlugin.DROP_EXCLUSION_RULE | AggregatorEditPlugin.DROP_VALID_CONFIGURATIONS_RULE)) > 0)
+		else if((m_operation & (AggregatorEditPlugin.ADD_EXCLUSION_RULE | AggregatorEditPlugin.ADD_VALID_CONFIGURATIONS_RULE)) > 0)
 			for(InstallableUnit iu : m_selectedIUs)
 			{
 				MapRule newMR = ItemUtils.addMapRule(m_mappedRepo, iu,
-						(m_operation & AggregatorEditPlugin.DROP_EXCLUSION_RULE) > 0
+						(m_operation & AggregatorEditPlugin.ADD_EXCLUSION_RULE) > 0
 								? ExclusionRule.class
 								: ValidConfigurationsRule.class);
 				if(newMR != null)
@@ -118,7 +118,15 @@ public class AddIUsToMappedRepositoryCommand extends AbstractCommand implements 
 	@Override
 	protected boolean prepare()
 	{
-		return m_mappedRepo != null && m_mappedRepo.isBranchEnabled() && m_selectedIUs != null
+		boolean result = m_mappedRepo != null && m_mappedRepo.isBranchEnabled() && m_selectedIUs != null
 				&& m_selectedIUs.size() > 0 && ItemUtils.haveSameLocation(m_mappedRepo, m_selectedIUs);
+
+		if(result)
+			for(InstallableUnit iu : m_selectedIUs)
+				if(ItemUtils.findMappedUnit(m_mappedRepo, iu) != null
+						|| ItemUtils.findMapRule(m_mappedRepo, iu) != null)
+					return false;
+
+		return result;
 	}
 }

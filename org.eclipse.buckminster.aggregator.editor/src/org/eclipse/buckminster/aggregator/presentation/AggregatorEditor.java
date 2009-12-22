@@ -1826,8 +1826,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 
 					// Create the command.
 					//
-					int operations = AggregatorEditPlugin.DROP_IU | AggregatorEditPlugin.DROP_EXCLUSION_RULE
-							| AggregatorEditPlugin.DROP_VALID_CONFIGURATIONS_RULE;
+					int operations = AggregatorEditPlugin.ADD_IU | AggregatorEditPlugin.ADD_EXCLUSION_RULE
+							| AggregatorEditPlugin.ADD_VALID_CONFIGURATIONS_RULE;
 
 					int operation = ((Integer)((Widget)e.getSource()).getData()).intValue();
 
@@ -1878,29 +1878,29 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 				iuAddingExtensionMenu = new Menu(viewer.getControl());
 				iuAddingExtensionSelectionListener = new IUAddingExtensionSelectionListener();
 				MenuItem menuItem = new MenuItem(iuAddingExtensionMenu, SWT.NONE);
-				menuItem.setText("Add Feature");
+				menuItem.setText(AggregatorEditorPlugin.INSTANCE.getString("_UI_Add_Mapped_Feature"));
 				menuItem.setImage(getImage(AggregatorEditPlugin.INSTANCE.getImage("full/obj16/Feature.gif")));
-				menuItem.setData(Integer.valueOf(AggregatorEditPlugin.DROP_IU));
+				menuItem.setData(Integer.valueOf(AggregatorEditPlugin.ADD_IU));
 				menuItem.addSelectionListener(iuAddingExtensionSelectionListener);
 
 				menuItem = new MenuItem(iuAddingExtensionMenu, SWT.NONE);
-				menuItem.setText("Add Exclusion Rule");
+				menuItem.setText(AggregatorEditorPlugin.INSTANCE.getString("_UI_Add_Exclusion_Rule"));
 				menuItem.setImage(getImage(AggregatorEditPlugin.INSTANCE.getImage("full/obj16/ExclusionRule.gif")));
-				menuItem.setData(Integer.valueOf(AggregatorEditPlugin.DROP_EXCLUSION_RULE));
+				menuItem.setData(Integer.valueOf(AggregatorEditPlugin.ADD_EXCLUSION_RULE));
 				menuItem.addSelectionListener(iuAddingExtensionSelectionListener);
 
 				menuItem = new MenuItem(iuAddingExtensionMenu, SWT.NONE);
-				menuItem.setText("Add Valid Configurations Rule");
+				menuItem.setText(AggregatorEditorPlugin.INSTANCE.getString("_UI_Add_Valid_Configurations_Rule"));
 				menuItem.setImage(getImage(AggregatorEditPlugin.INSTANCE.getImage("full/obj16/ValidConfigurationsRule.gif")));
-				menuItem.setData(Integer.valueOf(AggregatorEditPlugin.DROP_VALID_CONFIGURATIONS_RULE));
+				menuItem.setData(Integer.valueOf(AggregatorEditPlugin.ADD_VALID_CONFIGURATIONS_RULE));
 				menuItem.addSelectionListener(iuAddingExtensionSelectionListener);
 			}
 
 			@Override
 			public void drop(DropTargetEvent event)
 			{
-				if((extractDropTarget(event.item) instanceof MappedRepository) && (lastDragStateMask & SWT.CONTROL) > 0
-						&& onlyFeatures(extractDragSource(event.data)))
+				if(command.canExecute() && (extractDropTarget(event.item) instanceof MappedRepository)
+						&& (lastDragStateMask & SWT.CONTROL) > 0 && onlyFeatures(extractDragSource(event.data)))
 				{
 					iuAddingExtensionSelectionListener.setEvent(event);
 					iuAddingExtensionMenu.setLocation(event.x, event.y);

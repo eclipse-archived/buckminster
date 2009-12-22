@@ -18,6 +18,7 @@ import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
 import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.command.UnexecutableCommand;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ResourceLocator;
@@ -239,7 +240,10 @@ public class CustomCategoryItemProvider extends AggregatorItemProviderAdapter im
 		Command command = createAddIUsToCustomCategoryCommand(owner, collection);
 
 		if(command != null)
-			return command;
+			if(command.canExecute())
+				return command;
+			else
+				return UnexecutableCommand.INSTANCE;
 
 		return super.createDragAndDropCommand(domain, owner, location, operations, operation, collection);
 	}

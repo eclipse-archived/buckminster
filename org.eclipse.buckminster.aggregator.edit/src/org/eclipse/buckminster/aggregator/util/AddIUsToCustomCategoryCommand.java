@@ -138,7 +138,12 @@ public class AddIUsToCustomCategoryCommand extends AbstractCommand implements Dr
 			MappedRepository mappedRepo = ItemUtils.findMappedRepository(aggregator, mdr);
 
 			if(mappedRepo != null)
+			{
 				m_mapFeatureMappedRepo.put(feature, mappedRepo);
+
+				if(ItemUtils.findMapRule(mappedRepo, feature) != null)
+					return false;
+			}
 		}
 
 		return m_customCategory != null && m_selectedFeatures != null && m_selectedFeatures.size() > 0 && isEnabled();

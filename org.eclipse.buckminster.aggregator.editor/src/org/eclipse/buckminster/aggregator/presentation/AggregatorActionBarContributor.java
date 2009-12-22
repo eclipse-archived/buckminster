@@ -164,18 +164,34 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 		private AddIUsToParentRepositoryCommand m_command;
 
-		public AddToParentRepositoryAction(EditingDomain domain, List<InstallableUnit> selectedIUs)
+		public AddToParentRepositoryAction(EditingDomain domain, List<InstallableUnit> selectedIUs, int operation)
 		{
-			Object imageURL = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/Contribution.gif");
+			m_domain = domain;
+			m_command = new AddIUsToParentRepositoryCommand(ResourceUtils.getAggregator(domain.getResourceSet()),
+					selectedIUs, operation);
+
+			Object imageURL = null;
+
+			if((operation & AggregatorEditPlugin.ADD_IU) > 0)
+			{
+				imageURL = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/Feature.gif");
+				setText(AggregatorEditorPlugin.INSTANCE.getString("_UI_Mapped_Feature"));
+
+			}
+			else if((operation & AggregatorEditPlugin.ADD_EXCLUSION_RULE) > 0)
+			{
+				imageURL = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/ExclusionRule.gif");
+				setText(AggregatorEditorPlugin.INSTANCE.getString("_UI_Exclusion_Rule"));
+			}
+			if((operation & AggregatorEditPlugin.ADD_VALID_CONFIGURATIONS_RULE) > 0)
+			{
+				imageURL = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/ValidConfigurationsRule.gif");
+				setText(AggregatorEditorPlugin.INSTANCE.getString("_UI_Valid_Configurations_Rule"));
+			}
 
 			if(imageURL != null && imageURL instanceof URL)
 				setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
 
-			m_domain = domain;
-			m_command = new AddIUsToParentRepositoryCommand(ResourceUtils.getAggregator(domain.getResourceSet()),
-					selectedIUs);
-
-			setText(m_command.getLabel());
 			setEnabled(m_command.canExecute());
 		}
 
@@ -895,15 +911,17 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 
 	protected BuildRepoAction m_cleanBuildRepoAction;
 
-	protected IAction m_addToParentRepositoryAction;
+	protected List<IAction> m_addToParentRepositoryActions;
 
-	protected List<IAction> m_addToCustomCategoriesActions = new ArrayList<IAction>();
+	protected List<IAction> m_addToCustomCategoriesActions;
 
 	protected IAction m_selectMatchingIUAction;
 
 	private Aggregator m_aggregator;
 
 	private IEditorPart m_lastActiveEditorPart;
+
+	private ISelection m_lastSelection;
 
 	/**
 	 * This creates an instance of the contributor. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -988,8 +1006,32 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	{
 		menuAboutToShowGen(menuManager);
 
-		if(m_addToParentRepositoryAction != null)
-			menuManager.insertBefore("edit", m_addToParentRepositoryAction);
+		// actions need to be created just before menu is displayed, otherwise it would be possible to add an IU as a
+		// Feature and then add the same IU as Exclusion Rule
+		m_addToParentRepositoryActions = generateAddToParentRepositoryAction(m_lastSelection);
+		m_addToCustomCategoriesActions = generateAddToCustomCategoryActions(m_lastSelection);
+
+		if(m_addToParentRepositoryActions != null && m_addToParentRepositoryActions.size() > 0)
+			if(m_addToParentRepositoryActions.size() == 1)
+			{
+				IAction action = m_addToParentRepositoryActions.get(0);
+
+				Object imageURL = AggregatorEditPlugin.INSTANCE.getImage("full/obj16/Contribution.gif");
+
+				if(imageURL != null && imageURL instanceof URL)
+					action.setImageDescriptor(ImageDescriptor.createFromURL((URL)imageURL));
+
+				action.setText(AggregatorEditPlugin.INSTANCE.getString("_UI_Add_to_parent_Mapped_Repository"));
+
+				menuManager.insertBefore("edit", action);
+			}
+			else
+			{
+				MenuManager submenuManager = new MenuManager(
+						AggregatorEditorPlugin.INSTANCE.getString("_UI_Add_to_parent_Mapped_Repository_As"));
+				populateManager(submenuManager, m_addToParentRepositoryActions, null);
+				menuManager.insertBefore("edit", submenuManager);
+			}
 
 		if(m_addToCustomCategoriesActions != null && m_addToCustomCategoriesActions.size() > 0)
 		{
@@ -1052,6 +1094,7 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	 */
 	public void selectionChanged(SelectionChangedEvent event)
 	{
+		m_lastSelection = event.getSelection();
 		updateContextMenu(event.getSelection());
 	}
 
@@ -1282,9 +1325,6 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			populateManager(createSiblingMenuManager, createSiblingActions, null);
 			createSiblingMenuManager.update(true);
 		}
-
-		m_addToParentRepositoryAction = generateAddToParentRepositoryAction(selection);
-		m_addToCustomCategoriesActions = generateAddToCustomCategoryActions(selection);
 	}
 
 	@Override
@@ -1458,9 +1498,9 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 	}
 
 	@SuppressWarnings("unchecked")
-	private IAction generateAddToParentRepositoryAction(ISelection selection)
+	private List<IAction> generateAddToParentRepositoryAction(ISelection selection)
 	{
-		IAction action = null;
+		List<IAction> actions = new ArrayList<IAction>();
 
 		if(selection instanceof IStructuredSelection && ((IStructuredSelection)selection).size() > 0)
 		{
@@ -1475,14 +1515,30 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 				ius.addAll((List<InstallableUnit>)itemSorter.getGroupItems(ItemGroup.IU));
 				ius.addAll(ItemUtils.getIUs((List<IUPresentation>)itemSorter.getGroupItems(ItemGroup.IU_STRUCTURED)));
 
-				action = new AddToParentRepositoryAction(((IEditingDomainProvider)activeEditorPart).getEditingDomain(),
-						ius);
+				if(itemSorter.getTotalItemCount() == itemSorter.getGroupItems(ItemGroup.FEATURE_STRUCTURED).size())
+				{
+					actions.add(new AddToParentRepositoryAction(
+							((IEditingDomainProvider)activeEditorPart).getEditingDomain(), ius,
+							AggregatorEditPlugin.ADD_IU));
+					actions.add(new AddToParentRepositoryAction(
+							((IEditingDomainProvider)activeEditorPart).getEditingDomain(), ius,
+							AggregatorEditPlugin.ADD_EXCLUSION_RULE));
+					actions.add(new AddToParentRepositoryAction(
+							((IEditingDomainProvider)activeEditorPart).getEditingDomain(), ius,
+							AggregatorEditPlugin.ADD_VALID_CONFIGURATIONS_RULE));
+				}
+				else
+				{
+					actions.add(new AddToParentRepositoryAction(
+							((IEditingDomainProvider)activeEditorPart).getEditingDomain(), ius,
+							AggregatorEditPlugin.ADD_IU));
+				}
 			}
 
-			return action;
+			return actions;
 		}
 
-		return action;
+		return actions;
 	}
 
 	private Aggregator getAggregator()

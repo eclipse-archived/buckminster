@@ -463,7 +463,10 @@ public class ContributionItemProvider extends AggregatorItemProviderAdapter impl
 		Command command = createAddIUsToContributionCommand(owner, collection);
 
 		if(command != null)
-			return command;
+			if(command.canExecute())
+				return command;
+			else
+				return UnexecutableCommand.INSTANCE;
 
 		return super.createDragAndDropCommand(domain, owner, location, operations, operation, collection);
 	}

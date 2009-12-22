@@ -257,12 +257,12 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	protected Command createDragAndDropCommand(EditingDomain domain, Object owner, float location, int operations,
 			int operation, Collection<?> collection)
 	{
-		if((operation & (AggregatorEditPlugin.DROP_IU | AggregatorEditPlugin.DROP_EXCLUSION_RULE | AggregatorEditPlugin.DROP_VALID_CONFIGURATIONS_RULE)) == 0)
-			operation = AggregatorEditPlugin.DROP_IU;
+		if((operation & (AggregatorEditPlugin.ADD_IU | AggregatorEditPlugin.ADD_EXCLUSION_RULE | AggregatorEditPlugin.ADD_VALID_CONFIGURATIONS_RULE)) == 0)
+			operation = AggregatorEditPlugin.ADD_IU;
 
 		Command command = createAddIUsToMappedRepositoryCommand(owner, collection, operation);
 
-		if(command != null)
+		if(command != null && command.canExecute())
 			return command;
 
 		return UnexecutableCommand.INSTANCE;
@@ -320,7 +320,7 @@ public class MappedRepositoryItemProvider extends MetadataRepositoryReferenceIte
 	protected Command factorAddCommand(EditingDomain domain, CommandParameter commandParameter)
 	{
 		Command command = createAddIUsToMappedRepositoryCommand(commandParameter.getOwner(),
-				commandParameter.getCollection(), AggregatorEditPlugin.DROP_IU);
+				commandParameter.getCollection(), AggregatorEditPlugin.ADD_IU);
 
 		if(command != null)
 			return command;

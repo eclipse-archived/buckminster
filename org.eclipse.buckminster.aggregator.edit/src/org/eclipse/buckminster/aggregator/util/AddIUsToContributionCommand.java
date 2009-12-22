@@ -125,9 +125,26 @@ public class AddIUsToContributionCommand extends AbstractCommand implements Drag
 	@Override
 	protected boolean prepare()
 	{
-		return m_contribution != null
+		boolean result = m_contribution != null
 				&& m_contribution.isEnabled()
 				&& (m_selectedMDRs != null && m_selectedMDRs.size() > 0 || m_selectedIUs != null
 						&& m_selectedIUs.size() > 0);
+
+		if(result)
+			for(InstallableUnit iu : m_selectedIUs)
+			{
+				if(!(((EObject)iu).eContainer() instanceof MetadataRepository))
+					return false;
+
+				MetadataRepository mdr = (MetadataRepository)((EObject)iu).eContainer();
+
+				MappedRepository mappedRepo = ItemUtils.findMappedRepository(m_contribution, mdr);
+				if(mappedRepo != null)
+					if(ItemUtils.findMappedUnit(mappedRepo, iu) != null
+							|| ItemUtils.findMapRule(mappedRepo, iu) != null)
+						return false;
+			}
+
+		return result;
 	}
 }
