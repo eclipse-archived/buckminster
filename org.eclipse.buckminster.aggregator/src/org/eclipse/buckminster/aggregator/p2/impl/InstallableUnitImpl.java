@@ -98,8 +98,11 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 					return 1;
 				else
 				{
-					String id1 = iu1.getId();
-					String id2 = iu2.getId();
+					VersionedId vid1 = InstallableUnitUtils.getVersionedName((InstallableUnit)iu1);
+					VersionedId vid2 = InstallableUnitUtils.getVersionedName((InstallableUnit)iu2);
+
+					String id1 = vid1.getId();
+					String id2 = vid2.getId();
 
 					if(id1 != null)
 						if(id2 == null)
@@ -111,8 +114,8 @@ public class InstallableUnitImpl extends MinimalEObjectImpl.Container implements
 							if(result == 0)
 							{
 								// Order by version in descending order
-								Version version1 = iu1.getVersion();
-								Version version2 = iu2.getVersion();
+								Version version1 = vid1.getVersion();
+								Version version2 = vid2.getVersion();
 
 								if(version1 != null)
 									if(version2 == null)

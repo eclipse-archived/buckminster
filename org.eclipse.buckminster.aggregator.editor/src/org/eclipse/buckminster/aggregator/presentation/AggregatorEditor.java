@@ -2144,7 +2144,8 @@ public class AggregatorEditor extends MultiPageEditorPart implements IEditingDom
 						{
 							AggregatorResourceImpl res = (AggregatorResourceImpl)object;
 
-							if(((Aggregator)res.getContents().get(0)).getStatus().getCode() != StatusCode.OK)
+							if(res.getContents().size() > 0
+									&& ((Aggregator)res.getContents().get(0)).getStatus().getCode() != StatusCode.OK)
 								overlayImage = AggregatorEditPlugin.INSTANCE.getImage("full/ovr16/Error");
 						}
 					}
