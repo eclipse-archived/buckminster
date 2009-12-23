@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -139,7 +140,11 @@ public class FeatureItemProvider extends MappedUnitItemProvider implements IEdit
 	@Override
 	protected List<? extends InstallableUnitReference> getContainerChildren(MappedRepository container)
 	{
-		return container.getFeatures();
+		List<InstallableUnitReference> featureRefs = new ArrayList<InstallableUnitReference>();
+		featureRefs.addAll(container.getFeatures());
+		featureRefs.addAll(container.getMapRules());
+		
+		return featureRefs;
 	}
 
 	@Override

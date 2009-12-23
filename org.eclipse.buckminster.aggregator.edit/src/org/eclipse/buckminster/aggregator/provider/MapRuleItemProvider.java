@@ -9,6 +9,7 @@
  */
 package org.eclipse.buckminster.aggregator.provider;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -173,7 +174,11 @@ public class MapRuleItemProvider extends InstallableUnitReferenceItemProvider im
 	@Override
 	protected List<? extends InstallableUnitReference> getContainerChildren(MappedRepository container)
 	{
-		return container.getMapRules();
+		List<InstallableUnitReference> featureRefs = new ArrayList<InstallableUnitReference>();
+		featureRefs.addAll(container.getMapRules());
+		featureRefs.addAll(container.getFeatures());
+		
+		return featureRefs;
 	}
 
 	@Override
