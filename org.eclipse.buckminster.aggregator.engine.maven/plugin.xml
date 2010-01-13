@@ -11,20 +11,6 @@
 <plugin>
    <extension-point id="indexer" name="Repository Indexer" schema="schema/indexer.exsd"/>
 
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <package
-            uri="http://maven.apache.org/POM/4.0.0"
-            class="org.eclipse.buckminster.aggregator.engine.maven.pom.PomPackage"
-            genModel="model/pom.genmodel"/>
-   </extension>
-
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <package
-            uri="http://maven.apache.org/maven-metadata/1.0.0"
-            class="org.eclipse.buckminster.aggregator.engine.maven.metadata.MetadataPackage"
-            genModel="model/metadata.genmodel"/>
-   </extension>
-
    <extension
          point="org.eclipse.buckminster.aggregator.loader">
       <loader
