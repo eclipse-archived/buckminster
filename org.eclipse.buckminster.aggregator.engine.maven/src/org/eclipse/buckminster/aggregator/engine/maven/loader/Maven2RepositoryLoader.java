@@ -9,6 +9,7 @@ package org.eclipse.buckminster.aggregator.engine.maven.loader;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -746,6 +747,10 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 					URLConnection conn = url.openConnection();
 					reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 				}
+				catch(FileNotFoundException e)
+				{
+					// no index exists (very likely)
+				}
 				catch(ConnectException e)
 				{
 					// no index exists (very likely)
@@ -847,6 +852,11 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 	{
 		IRepositoryLoader cacheLoader = null;
 		m_cachedIUs = null;
+		long remoteTime = getRemoteIndexTimestamp();
+
+		// if remote index is not available, get rid of the indexer
+		if(remoteTime == 0L)
+			m_indexer = null;
 
 		if(avoidCache)
 			removeCache();
@@ -874,7 +884,6 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 			long cacheTime = cacheTimeString != null
 					? Long.parseLong(cacheTimeString)
 					: 0L;
-			long remoteTime = getRemoteIndexTimestamp();
 
 			if(remoteTime == 0L || remoteTime > cacheTime)
 			{
