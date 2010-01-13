@@ -32,9 +32,12 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
 import org.eclipse.buckminster.aggregator.engine.maven.MavenActivator;
 import org.eclipse.buckminster.aggregator.engine.maven.MavenManager;
 import org.eclipse.buckminster.aggregator.engine.maven.MavenMetadata;
@@ -149,6 +152,8 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 	private static final Pattern s_folderExcludePattern = Pattern.compile("^.*/[0-9]+\\.[^/]*/?$");
 
 	private static final String MAVEN_METADATA = "maven-metadata.xml";
+
+	private static final String MAVEN_METADATA_LOCAL = "maven-metadata-local.xml";
 
 	private static final Query QUERY_ALL_IUS = new MatchQuery()
 	{
@@ -563,9 +568,7 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 		outer: while(itor.hasNext())
 		{
 			URI uri = itor.next();
-			IPath path = Path.fromPortableString(uri.getPath());
-
-			if(path.hasTrailingSeparator())
+			if(isFolder(uri))
 			{
 				// This was a folder. Push it on the stack and
 				// scan it.
@@ -599,7 +602,7 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 					URI subUri = uris[idx];
 					IPath subPath = Path.fromPortableString(subUri.getPath());
 					String name = subPath.lastSegment();
-					if(MAVEN_METADATA.equals(name))
+					if(MAVEN_METADATA.equals(name) || MAVEN_METADATA_LOCAL.equals(name))
 					{
 						mavenMetadataURI = subUri;
 						break;
@@ -630,7 +633,8 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 					{
 						URI subUri = uris[idx];
 						IPath subPath = Path.fromPortableString(subUri.getPath());
-						if(!versions.contains(subPath.lastSegment()))
+						String file = subPath.lastSegment();
+						if(!versions.contains(file))
 							uriList.add(subUri);
 					}
 					if(uriList.size() < top)
@@ -643,7 +647,9 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 
 			try
 			{
-				if(MAVEN_METADATA.equals(path.lastSegment()))
+				IPath path = Path.fromPortableString(uri.getPath());
+				String file = path.lastSegment();
+				if(MAVEN_METADATA.equals(file) || MAVEN_METADATA_LOCAL.equals(file))
 					return new MavenMetadata(org.eclipse.emf.common.util.URI.createURI(uri.toString()));
 			}
 			catch(Exception e)
@@ -798,6 +804,43 @@ public class Maven2RepositoryLoader implements IRepositoryLoader
 		}
 
 		return versionEntries;
+	}
+
+	private boolean isFolder(URI uri)
+	{
+		IPath path = Path.fromPortableString(uri.getPath());
+
+		if(path.hasTrailingSeparator())
+			return true;
+
+		String scheme = uri.getScheme();
+		if("http".equals(scheme) || "https".equals(scheme))
+		{
+			HttpMethod method = new HeadMethod(uri.toString());
+			HttpClient httpClient = new HttpClient();
+			try
+			{
+				method.setFollowRedirects(false);
+				int status;
+				if((status = httpClient.executeMethod(method)) == HttpStatus.SC_MOVED_PERMANENTLY
+						|| status == HttpStatus.SC_MOVED_TEMPORARILY)
+				{
+					Header target = method.getResponseHeader("location");
+					if(target != null && target.getValue() != null && target.getValue().endsWith("/"))
+						return true;
+				}
+
+				return false;
+			}
+			catch(Exception e)
+			{
+				Buckminster.getLogger().warning(e, "Unable to check if %s is folder: %s", uri.toString(),
+						e.getMessage());
+				return false;
+			}
+		}
+
+		return false;
 	}
 
 	private void load(IProgressMonitor monitor, boolean avoidCache) throws CoreException

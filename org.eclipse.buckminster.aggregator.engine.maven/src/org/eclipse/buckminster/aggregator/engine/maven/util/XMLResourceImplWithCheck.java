@@ -2,6 +2,7 @@ package org.eclipse.buckminster.aggregator.engine.maven.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,8 +14,10 @@ import java.util.Map;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.buckminster.aggregator.engine.maven.MavenManager;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
@@ -106,18 +109,38 @@ public class XMLResourceImplWithCheck extends XMLResourceImpl
 				String uriStringMD5 = uriString + ".md5";
 				String uriStringSHA1 = uriString + ".sha1";
 
-				String md5 = getDigest(uriStringMD5, MavenManager.MESSAGE_DIGESTERS[0].getDigestLength() << 1);
-				String sha1 = getDigest(uriStringSHA1, MavenManager.MESSAGE_DIGESTERS[1].getDigestLength() << 1);
+				String md5 = null;
+				try
+				{
+					md5 = getDigest(uriStringMD5, MavenManager.MESSAGE_DIGESTERS[0].getDigestLength() << 1);
+				}
+				catch(FileNotFoundException e)
+				{
+					// let md5 = null (i.e. not found)
+				}
+				String sha1 = null;
+				try
+				{
+					sha1 = getDigest(uriStringSHA1, MavenManager.MESSAGE_DIGESTERS[1].getDigestLength() << 1);
+				}
+				catch(FileNotFoundException e)
+				{
+					// let sha1 = null (i.e. not found)
+				}
 
 				InputStreamWithInfo result = download(uriString);
 				byte[] content = result.getContent();
 				String[] checkSums = MavenManager.createCheckSum(content, MavenManager.MESSAGE_DIGESTERS);
-				if(!md5.equals(checkSums[0]))
-					throw new Exception("Invalid MD5 for " + uriString + ": found " + md5 + ", expected "
-							+ checkSums[0]);
-				if(!sha1.equals(checkSums[1]))
-					throw new Exception("Invalid SHA1 for " + uriString + ": found " + sha1 + ", expected "
-							+ checkSums[1]);
+				if(md5 == null || !md5.equals(checkSums[0]))
+					Buckminster.getLogger().warning("Invalid MD5 for %s: found %s, expected %s", uriString,
+							(md5 != null
+									? md5
+									: "none"), checkSums[0]);
+				if(sha1 == null || !sha1.equals(checkSums[1]))
+					Buckminster.getLogger().warning("Invalid SHA1 for %s: found %s, expected %s", uriString,
+							(sha1 != null
+									? sha1
+									: "none"), checkSums[0]);
 
 				result.setMd5(md5);
 				result.setSha1(sha1);
@@ -165,7 +188,8 @@ public class XMLResourceImplWithCheck extends XMLResourceImpl
 			if("http".equals(scheme) || "https".equals(scheme))
 			{
 				HttpMethod method = new GetMethod(uriStr);
-				m_httpClient.executeMethod(method);
+				if(m_httpClient.executeMethod(method) == HttpStatus.SC_NOT_FOUND)
+					throw new FileNotFoundException();
 				Header header = method.getResponseHeader("last-modified");
 				if(header != null)
 					try
