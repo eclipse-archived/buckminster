@@ -55,9 +55,24 @@ public class UriUtils
 	}
 
 	/**
-	 * Pattern that scans for href's that are relative and don't start with ?
+	 * Pattern string that matches links that are relative, don't start with '?' or '#' and don't contain a slash (i.e.
+	 * folders leading too deep)
 	 */
-	private static final Pattern s_htmlPattern = Pattern.compile("<A\\s+HREF=\"([^?/][^:\"]+)\"\\s*>[^<]+</A>", //$NON-NLS-1$
+	private static final String s_linkPatternString = "([^?/#][^:\"/]+/?)";
+
+	/**
+	 * Pattern that scans for hrefs that are relative, don't start with '?' and don't contain a slash (i.e. folders
+	 * leading too deep)
+	 */
+	private static final Pattern s_htmlPattern = Pattern.compile(
+			"<A\\s+HREF=\"" + s_linkPatternString + "\"\\s*>[^<]+</A>", //$NON-NLS-1$
+			Pattern.CASE_INSENSITIVE);
+
+	/**
+	 * Pattern that scans for links that are relative, don't start with '?' and don't contain a slash (i.e. folders
+	 * leading too deep)
+	 */
+	private static final Pattern s_linkPattern = Pattern.compile(s_linkPatternString, 
 			Pattern.CASE_INSENSITIVE);
 
 	/**
@@ -308,7 +323,9 @@ public class UriUtils
 	{
 		if(element.getNodeName().equals("a")) //$NON-NLS-1$
 		{
-			addLink(links, parent, element.getAttribute("href")); //$NON-NLS-1$
+			String link = element.getAttribute("href"); //$NON-NLS-1$
+			if(s_linkPattern.matcher(link).matches())
+				addLink(links, parent, link);
 		}
 		else
 		{
