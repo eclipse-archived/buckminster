@@ -73,14 +73,16 @@ public class POM
 				if(end != -1)
 				{
 					String varValue = propertyMap.get(str.substring(pos + 2, end));
+					int varLength = 0;
 					if(varValue != null)
 					{
 						StringBuilder newStr = new StringBuilder(str.substring(0, pos));
 						newStr.append(varValue);
-						newStr.append(str.substring(end));
+						newStr.append(str.substring(end + 1));
 						str = newStr.toString();
+						varLength = varValue.length();
 					}
-					from = end + 1;
+					from = pos + varLength;
 				}
 				else
 					break;
