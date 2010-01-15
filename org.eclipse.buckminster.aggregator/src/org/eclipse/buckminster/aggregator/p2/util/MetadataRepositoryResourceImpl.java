@@ -634,6 +634,28 @@ public class MetadataRepositoryResourceImpl extends ResourceImpl implements Stat
 		return found;
 	}
 
+	// each IU is located in the structured view twice 1) under Categories node, 2) under Features (Bundles, ..) node
+	// skipCategoriesSubTree filters out the Categories subtree
+	public TwoColumnMatrix<IUPresentation, Object[]> findIUPresentationsWhichSatisfies(IRequiredCapability rc, boolean skipCategoriesSubTree)
+	{	
+		TwoColumnMatrix<IUPresentation, Object[]> found = new TwoColumnMatrix<IUPresentation, Object[]>();
+
+		for(int i = 0; i < allIUPresentationMatrix.size(); i++)
+		{
+			IUPresentation iup = allIUPresentationMatrix.getKey(i);
+			if(iup == null)
+				continue;
+
+			InstallableUnit iu = iup.getInstallableUnit();			
+			
+			if(iu.satisfies(rc))
+				if(!skipCategoriesSubTree || !(allIUPresentationMatrix.getValue(i)[2] instanceof Categories))
+					found.add(iup, allIUPresentationMatrix.getValue(i));
+		}
+
+		return found;
+	}
+
 	public org.eclipse.emf.common.util.Diagnostic getDiagnostic()
 	{
 		return m_diagnostic;

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.aggregator.Aggregator;
 import org.eclipse.buckminster.aggregator.AggregatorPackage;
@@ -40,12 +39,12 @@ import org.eclipse.buckminster.aggregator.p2.util.MetadataRepositoryResourceImpl
 import org.eclipse.buckminster.aggregator.p2view.IUPresentation;
 import org.eclipse.buckminster.aggregator.p2view.RequiredCapabilityWrapper;
 import org.eclipse.buckminster.aggregator.provider.AggregatorEditPlugin;
+import org.eclipse.buckminster.aggregator.util.AddIUsToContributionCommand;
 import org.eclipse.buckminster.aggregator.util.AddIUsToCustomCategoryCommand;
 import org.eclipse.buckminster.aggregator.util.AddIUsToParentRepositoryCommand;
 import org.eclipse.buckminster.aggregator.util.AggregatorResourceImpl;
 import org.eclipse.buckminster.aggregator.util.ItemSorter;
 import org.eclipse.buckminster.aggregator.util.ItemUtils;
-import org.eclipse.buckminster.aggregator.util.AddIUsToContributionCommand;
 import org.eclipse.buckminster.aggregator.util.ResourceUtils;
 import org.eclipse.buckminster.aggregator.util.TwoColumnMatrix;
 import org.eclipse.buckminster.aggregator.util.ItemSorter.ItemGroup;
@@ -574,7 +573,6 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 			setText(getString("_UI_Select_matching_IU_menu_item"));
 		}
 
-		@SuppressWarnings("restriction")
 		@Override
 		public void run()
 		{
@@ -586,9 +584,6 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 					Shell parent = activeEditorPart.getSite().getShell();
 					final EditingDomain editingDomain = ((IEditingDomainProvider)activeEditorPart).getEditingDomain();
 
-					Pattern iuIdPattern = Pattern.compile("^" + Pattern.quote(m_requiredCapabilityWrapper.getName())
-							+ "$");
-
 					final Map<MetadataRepositoryResourceImpl, TwoColumnMatrix<IUPresentation, Object[]>> foundIUs = new LinkedHashMap<MetadataRepositoryResourceImpl, TwoColumnMatrix<IUPresentation, Object[]>>();
 
 					for(Resource resource : editingDomain.getResourceSet().getResources())
@@ -596,8 +591,8 @@ public class AggregatorActionBarContributor extends EditingDomainActionBarContri
 						if(!(resource instanceof MetadataRepositoryResourceImpl))
 							continue;
 
-						TwoColumnMatrix<IUPresentation, Object[]> result = ((MetadataRepositoryResourceImpl)resource).findIUPresentations(
-								iuIdPattern, m_requiredCapabilityWrapper.getRange(), true);
+						TwoColumnMatrix<IUPresentation, Object[]> result = ((MetadataRepositoryResourceImpl)resource).findIUPresentationsWhichSatisfies(
+								m_requiredCapabilityWrapper.getGenuine(), true);
 
 						if(result != null && result.size() > 0)
 							foundIUs.put((MetadataRepositoryResourceImpl)resource, result);
