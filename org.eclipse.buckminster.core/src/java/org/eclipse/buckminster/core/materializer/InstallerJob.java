@@ -42,7 +42,7 @@ public class InstallerJob extends WorkspaceJob
 		//
 		this.setSystem(false);
 		this.setUser(true);
-		this.setPriority(LONG);
+		this.setPriority(BUILD);
 		this.setRule(ResourcesPlugin.getWorkspace().getRoot());
 	}
 

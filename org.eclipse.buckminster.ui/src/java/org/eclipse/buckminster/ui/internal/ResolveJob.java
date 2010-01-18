@@ -53,7 +53,7 @@ public class ResolveJob extends Job
 		m_materialize = materialize;
 		m_site = site;
 		setUser(true);
-		setPriority(LONG);
+		setPriority(BUILD);
 	}
 
 	@Override
