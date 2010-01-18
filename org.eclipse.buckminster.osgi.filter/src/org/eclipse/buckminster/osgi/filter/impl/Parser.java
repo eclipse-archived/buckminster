@@ -21,11 +21,6 @@ import org.osgi.framework.InvalidSyntaxException;
  */
 public class Parser
 {
-	class CommonAnds
-	{
-		ArrayList<AndOrFilterImpl> participants;
-	}
-
 	private static class Compacter
 	{
 		private FilterImpl m_base;
