@@ -8,14 +8,17 @@
 package org.eclipse.buckminster.galileo.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.amalgam.releng.build.Category;
 import org.eclipse.amalgam.releng.build.Contribution;
 import org.eclipse.amalgam.releng.build.Feature;
+import org.eclipse.buckminster.pde.tasks.FeatureVersionSuffixGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,6 +27,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.provisional.p2.core.Version;
 import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.internal.provisional.p2.core.VersionedName;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
@@ -85,8 +89,14 @@ public class CategoriesAction extends AbstractPublisherAction {
 		InstallableUnitDescription cat = new MetadataFactory.InstallableUnitDescription();
 		cat.setSingleton(true);
 		String categoryId = category.getName();
+
+		FeatureVersionSuffixGenerator vsGen = new FeatureVersionSuffixGenerator();
+		List<VersionedName> featureVNs = new ArrayList<VersionedName>(featureIUs.size());
+		for (IInstallableUnit iu : featureIUs)
+			featureVNs.add(new VersionedName(iu.getId(), iu.getVersion()));
+		Version categoryVersion = Version.createOSGi(0, 0, 0, vsGen.generateSuffix(featureVNs, Collections.<VersionedName> emptyList()));
 		cat.setId(categoryId);
-		cat.setVersion(Version.emptyVersion);
+		cat.setVersion(categoryVersion);
 		cat.setProperty(IInstallableUnit.PROP_NAME, category.getLabel());
 		cat.setProperty(IInstallableUnit.PROP_DESCRIPTION, category.getDescription());
 
@@ -106,7 +116,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 
 		// Create set of provided capabilities
 		ArrayList<IProvidedCapability> providedCapabilities = new ArrayList<IProvidedCapability>();
-		providedCapabilities.add(PublisherHelper.createSelfCapability(categoryId, Version.emptyVersion));
+		providedCapabilities.add(PublisherHelper.createSelfCapability(categoryId, categoryVersion));
 
 		cat.setCapabilities(providedCapabilities.toArray(new IProvidedCapability[providedCapabilities.size()]));
 
