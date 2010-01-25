@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.cvs.headless.feature"
       label="Buckminster - CVS support for headless operation"
-      version="1.0.360.qualifier"
+      version="1.1.0.qualifier"
       provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
