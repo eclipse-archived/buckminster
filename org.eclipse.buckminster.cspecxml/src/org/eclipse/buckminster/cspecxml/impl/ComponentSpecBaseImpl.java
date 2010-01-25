@@ -16,8 +16,8 @@ import org.eclipse.buckminster.cspecxml.IComponentSpecBase;
 import org.eclipse.buckminster.cspecxml.IDependenciesType;
 import org.eclipse.buckminster.cspecxml.IGeneratorsType;
 import org.eclipse.buckminster.cspecxml.IGroupsType;
-import org.eclipse.buckminster.cspecxml.util.VersionHelper;
 import org.eclipse.buckminster.model.common.Documentation;
+import org.eclipse.buckminster.model.common.util.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Component Spec Base</b></em>'. <!--

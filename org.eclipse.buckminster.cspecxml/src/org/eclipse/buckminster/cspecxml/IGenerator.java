@@ -7,7 +7,7 @@
 package org.eclipse.buckminster.cspecxml;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Generator</b></em>'. <!-- end-user-doc -->

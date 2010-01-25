@@ -10,7 +10,7 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '<em><b>Component Request</b></em>'. <!-- end-user-doc

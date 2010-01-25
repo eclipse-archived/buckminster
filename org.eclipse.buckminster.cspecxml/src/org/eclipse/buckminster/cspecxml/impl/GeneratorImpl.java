@@ -8,7 +8,7 @@ package org.eclipse.buckminster.cspecxml.impl;
 
 import org.eclipse.buckminster.cspecxml.ICSpecXMLPackage;
 import org.eclipse.buckminster.cspecxml.IGenerator;
-import org.eclipse.buckminster.cspecxml.util.VersionHelper;
+import org.eclipse.buckminster.model.common.util.VersionHelper;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -16,7 +16,7 @@ import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '<em><b>Generator</b></em>'. <!-- end-user-doc -->
