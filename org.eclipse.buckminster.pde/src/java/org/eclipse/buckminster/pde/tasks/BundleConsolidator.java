@@ -26,7 +26,7 @@ import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleException;
@@ -36,7 +36,6 @@ import org.osgi.framework.Constants;
  * @author Thomas Hallgren
  * 
  */
-@SuppressWarnings("restriction")
 public class BundleConsolidator extends VersionConsolidator
 {
 	private final byte[] m_bytes;

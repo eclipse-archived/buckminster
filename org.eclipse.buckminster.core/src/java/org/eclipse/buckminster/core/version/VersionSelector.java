@@ -166,8 +166,7 @@ public abstract class VersionSelector
 
 				if(c == ',' || Character.isWhitespace(c) || Character.isISOControl(c))
 					throw new IllegalArgumentException(NLS.bind(
-							Messages.The_0_character_is_illegal_in_branch_tag_qualifier, Character
-									.valueOf(c)));
+							Messages.The_0_character_is_illegal_in_branch_tag_qualifier, Character.valueOf(c)));
 			}
 			if(top > 0)
 				return isTag

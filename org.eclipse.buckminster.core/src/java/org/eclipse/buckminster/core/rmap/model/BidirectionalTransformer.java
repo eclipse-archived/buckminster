@@ -64,15 +64,6 @@ public class BidirectionalTransformer extends AbstractSaxableElement
 		m_fromReplacement = fromReplacement;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_TO_PATTERN, m_toPattern.toString());
-		Utils.addAttribute(attrs, ATTR_TO_REPLACEMENT, m_toReplacement);
-		Utils.addAttribute(attrs, ATTR_FROM_PATTERN, m_fromPattern.toString());
-		Utils.addAttribute(attrs, ATTR_FROM_REPLACEMENT, m_fromReplacement);
-	}
-
 	public String getDefaultTag()
 	{
 		return TAG;
@@ -98,6 +89,25 @@ public class BidirectionalTransformer extends AbstractSaxableElement
 		return m_toReplacement;
 	}
 
+	public String transformFrom(String source) throws TransformerMismatchException
+	{
+		return transform(source, m_fromPattern, m_fromReplacement, m_toPattern, m_toReplacement);
+	}
+
+	public String transformTo(String source) throws TransformerMismatchException
+	{
+		return transform(source, m_toPattern, m_toReplacement, m_fromPattern, m_fromReplacement);
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_TO_PATTERN, m_toPattern.toString());
+		Utils.addAttribute(attrs, ATTR_TO_REPLACEMENT, m_toReplacement);
+		Utils.addAttribute(attrs, ATTR_FROM_PATTERN, m_fromPattern.toString());
+		Utils.addAttribute(attrs, ATTR_FROM_REPLACEMENT, m_fromReplacement);
+	}
+
 	private String transform(String source, Pattern pattern, String replacement, Pattern reversePattern,
 			String reverseReplacement) throws TransformerMismatchException
 	{
@@ -119,15 +129,5 @@ public class BidirectionalTransformer extends AbstractSaxableElement
 			return result;
 
 		throw new TransformerMismatchException(this);
-	}
-
-	public String transformFrom(String source) throws TransformerMismatchException
-	{
-		return transform(source, m_fromPattern, m_fromReplacement, m_toPattern, m_toReplacement);
-	}
-
-	public String transformTo(String source) throws TransformerMismatchException
-	{
-		return transform(source, m_toPattern, m_toReplacement, m_fromPattern, m_fromReplacement);
 	}
 }

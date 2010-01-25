@@ -11,7 +11,6 @@ import java.io.File;
 
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.pde.Messages;
-import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -21,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.ConfigData;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
@@ -111,7 +110,7 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 				continue;
 			}
 
-			for(BundleInfo bi : TypedCollections.getBundleInfos(product))
+			for(BundleInfo bi : product.getBundleInfos())
 			{
 				if(tmp.getId().equals(bi.getSymbolicName()))
 				{

@@ -55,11 +55,6 @@ public class ResourceMapParser extends AbstractParser<ResourceMap>
 		return m_resourceMap;
 	}
 
-	void setResourceMap(ResourceMap resourceMap)
-	{
-		m_resourceMap = resourceMap;
-	}
-
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
 	{
@@ -72,5 +67,10 @@ public class ResourceMapParser extends AbstractParser<ResourceMap>
 		}
 		else
 			super.startElement(uri, localName, qName, attrs);
+	}
+
+	void setResourceMap(ResourceMap resourceMap)
+	{
+		m_resourceMap = resourceMap;
 	}
 }

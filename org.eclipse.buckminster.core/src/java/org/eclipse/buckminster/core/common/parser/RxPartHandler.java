@@ -30,6 +30,13 @@ abstract class RxPartHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_name = getNameAttributeValue(attrs);
+		m_optional = getOptionalBooleanValue(attrs, RxPart.ATTR_OPTIONAL, false);
+	}
+
 	protected abstract RxPart createPart();
 
 	protected final String getName()
@@ -40,13 +47,6 @@ abstract class RxPartHandler extends ExtensionAwareHandler
 	protected String getNameAttributeValue(Attributes attrs) throws SAXException
 	{
 		return getOptionalStringValue(attrs, RxPart.ATTR_NAME);
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_name = getNameAttributeValue(attrs);
-		m_optional = getOptionalBooleanValue(attrs, RxPart.ATTR_OPTIONAL, false);
 	}
 
 	protected final boolean isOptional()

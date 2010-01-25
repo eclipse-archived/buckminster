@@ -21,14 +21,14 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.impl.RxPartImpl#getName <em>Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.impl.RxPartImpl#isOptional <em>Optional</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.RxPartImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.RxPartImpl#isOptional <em>Optional</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
-public abstract class RxPartImpl extends EObjectImpl implements RxPart
+public abstract class RxPartImpl extends BObjectImpl implements RxPart
 {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -51,9 +51,9 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isOptional() <em>Optional</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isOptional() <em>Optional</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #isOptional()
 	 * @generated
 	 * @ordered
@@ -61,9 +61,9 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 	protected static final boolean OPTIONAL_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isOptional() <em>Optional</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #isOptional() <em>Optional</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #isOptional()
 	 * @generated
 	 * @ordered
@@ -71,8 +71,8 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 	protected boolean optional = OPTIONAL_EDEFAULT;
 
 	/**
-	 * This is true if the Optional attribute has been set. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This is true if the Optional attribute has been set.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
@@ -80,7 +80,6 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected RxPartImpl()
@@ -90,85 +89,74 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.RX_PART__NAME:
-			return getName();
-		case CommonPackage.RX_PART__OPTIONAL:
-			return isOptional();
+		switch (featureID) {
+			case CommonPackage.RX_PART__NAME:
+				return getName();
+			case CommonPackage.RX_PART__OPTIONAL:
+				return isOptional();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.RX_PART__NAME:
-			return NAME_EDEFAULT == null
-					? name != null
-					: !NAME_EDEFAULT.equals(name);
-		case CommonPackage.RX_PART__OPTIONAL:
-			return isSetOptional();
+		switch (featureID) {
+			case CommonPackage.RX_PART__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case CommonPackage.RX_PART__OPTIONAL:
+				return isSetOptional();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.RX_PART__NAME:
-			setName((String)newValue);
-			return;
-		case CommonPackage.RX_PART__OPTIONAL:
-			setOptional((Boolean)newValue);
-			return;
+		switch (featureID) {
+			case CommonPackage.RX_PART__NAME:
+				setName((String)newValue);
+				return;
+			case CommonPackage.RX_PART__OPTIONAL:
+				setOptional((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.RX_PART__NAME:
-			setName(NAME_EDEFAULT);
-			return;
-		case CommonPackage.RX_PART__OPTIONAL:
-			unsetOptional();
-			return;
+		switch (featureID) {
+			case CommonPackage.RX_PART__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case CommonPackage.RX_PART__OPTIONAL:
+				unsetOptional();
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getName()
@@ -178,7 +166,6 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isOptional()
@@ -188,7 +175,6 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isSetOptional()
@@ -198,20 +184,18 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setName(String newName)
 	{
 		String oldName = name;
 		name = newName;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.RX_PART__NAME, oldName, name));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setOptional(boolean newOptional)
@@ -220,37 +204,33 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 		optional = newOptional;
 		boolean oldOptionalESet = optionalESet;
 		optionalESet = true;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.RX_PART__OPTIONAL, oldOptional,
-					optional, !oldOptionalESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.RX_PART__OPTIONAL, oldOptional, optional, !oldOptionalESet));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	@Override
-	public String toString()
+	public String toStringGen()
 	{
-		if(eIsProxy())
-			return super.toString();
+		return null;
+	}
 
-		StringBuffer result = new StringBuffer(super.toString());
+	@Override
+	public void toString(StringBuilder result)
+	{
+		if (eIsProxy()) { result.append(super.toString()); return; }
+
 		result.append(" (name: ");
 		result.append(name);
 		result.append(", optional: ");
-		if(optionalESet)
-			result.append(optional);
-		else
-			result.append("<unset>");
+		if (optionalESet) result.append(optional); else result.append("<unset>");
 		result.append(')');
-		return result.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void unsetOptional()
@@ -259,14 +239,12 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart
 		boolean oldOptionalESet = optionalESet;
 		optional = OPTIONAL_EDEFAULT;
 		optionalESet = false;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, CommonPackage.RX_PART__OPTIONAL, oldOptional,
-					OPTIONAL_EDEFAULT, oldOptionalESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, CommonPackage.RX_PART__OPTIONAL, oldOptional, OPTIONAL_EDEFAULT, oldOptionalESet));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

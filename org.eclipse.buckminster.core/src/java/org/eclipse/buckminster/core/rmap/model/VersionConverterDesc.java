@@ -15,12 +15,11 @@ import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-@SuppressWarnings("restriction")
 public class VersionConverterDesc extends AbstractSaxableElement
 {
 	public static final String TAG = "versionConverter"; //$NON-NLS-1$
@@ -35,9 +34,9 @@ public class VersionConverterDesc extends AbstractSaxableElement
 
 	private final BidirectionalTransformer[] m_transformers;
 
-	private final VersionFormat m_versionFormat;
+	private final IVersionFormat m_versionFormat;
 
-	public VersionConverterDesc(String type, VersionFormat versionFormat, BidirectionalTransformer[] transformers)
+	public VersionConverterDesc(String type, IVersionFormat versionFormat, BidirectionalTransformer[] transformers)
 	{
 		m_type = type;
 		m_transformers = transformers;

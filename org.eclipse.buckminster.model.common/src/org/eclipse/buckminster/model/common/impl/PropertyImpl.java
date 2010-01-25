@@ -21,14 +21,14 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.impl.PropertyImpl#getKey <em>Key</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.impl.PropertyImpl#isMutable <em>Mutable</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyImpl#getKey <em>Key</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyImpl#isMutable <em>Mutable</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
-public abstract class PropertyImpl extends EObjectImpl implements Property
+public abstract class PropertyImpl extends BObjectImpl implements Property
 {
 	/**
 	 * The default value of the '{@link #getKey() <em>Key</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -41,8 +41,8 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 	protected static final String KEY_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getKey() <em>Key</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getKey() <em>Key</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getKey()
 	 * @generated
 	 * @ordered
@@ -50,9 +50,9 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 	protected String key = KEY_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isMutable() <em>Mutable</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isMutable() <em>Mutable</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #isMutable()
 	 * @generated
 	 * @ordered
@@ -60,9 +60,9 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 	protected static final boolean MUTABLE_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isMutable() <em>Mutable</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #isMutable() <em>Mutable</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #isMutable()
 	 * @generated
 	 * @ordered
@@ -70,8 +70,8 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 	protected boolean mutable = MUTABLE_EDEFAULT;
 
 	/**
-	 * This is true if the Mutable attribute has been set. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This is true if the Mutable attribute has been set.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
@@ -79,7 +79,6 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected PropertyImpl()
@@ -89,85 +88,74 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY__KEY:
-			return getKey();
-		case CommonPackage.PROPERTY__MUTABLE:
-			return isMutable();
+		switch (featureID) {
+			case CommonPackage.PROPERTY__KEY:
+				return getKey();
+			case CommonPackage.PROPERTY__MUTABLE:
+				return isMutable();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY__KEY:
-			return KEY_EDEFAULT == null
-					? key != null
-					: !KEY_EDEFAULT.equals(key);
-		case CommonPackage.PROPERTY__MUTABLE:
-			return isSetMutable();
+		switch (featureID) {
+			case CommonPackage.PROPERTY__KEY:
+				return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
+			case CommonPackage.PROPERTY__MUTABLE:
+				return isSetMutable();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY__KEY:
-			setKey((String)newValue);
-			return;
-		case CommonPackage.PROPERTY__MUTABLE:
-			setMutable((Boolean)newValue);
-			return;
+		switch (featureID) {
+			case CommonPackage.PROPERTY__KEY:
+				setKey((String)newValue);
+				return;
+			case CommonPackage.PROPERTY__MUTABLE:
+				setMutable((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY__KEY:
-			setKey(KEY_EDEFAULT);
-			return;
-		case CommonPackage.PROPERTY__MUTABLE:
-			unsetMutable();
-			return;
+		switch (featureID) {
+			case CommonPackage.PROPERTY__KEY:
+				setKey(KEY_EDEFAULT);
+				return;
+			case CommonPackage.PROPERTY__MUTABLE:
+				unsetMutable();
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getKey()
@@ -177,7 +165,6 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isMutable()
@@ -187,7 +174,6 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isSetMutable()
@@ -197,20 +183,18 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setKey(String newKey)
 	{
 		String oldKey = key;
 		key = newKey;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY__KEY, oldKey, key));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setMutable(boolean newMutable)
@@ -219,37 +203,33 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 		mutable = newMutable;
 		boolean oldMutableESet = mutableESet;
 		mutableESet = true;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY__MUTABLE, oldMutable, mutable,
-					!oldMutableESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY__MUTABLE, oldMutable, mutable, !oldMutableESet));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	@Override
-	public String toString()
+	public String toStringGen()
 	{
-		if(eIsProxy())
-			return super.toString();
+		return null;
+	}
 
-		StringBuffer result = new StringBuffer(super.toString());
+	@Override
+	public void toString(StringBuilder result)
+	{
+		if (eIsProxy()) { result.append(super.toString()); return; }
+
 		result.append(" (key: ");
 		result.append(key);
 		result.append(", mutable: ");
-		if(mutableESet)
-			result.append(mutable);
-		else
-			result.append("<unset>");
+		if (mutableESet) result.append(mutable); else result.append("<unset>");
 		result.append(')');
-		return result.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void unsetMutable()
@@ -258,14 +238,12 @@ public abstract class PropertyImpl extends EObjectImpl implements Property
 		boolean oldMutableESet = mutableESet;
 		mutable = MUTABLE_EDEFAULT;
 		mutableESet = false;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, CommonPackage.PROPERTY__MUTABLE, oldMutable,
-					MUTABLE_EDEFAULT, oldMutableESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, CommonPackage.PROPERTY__MUTABLE, oldMutable, MUTABLE_EDEFAULT, oldMutableESet));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

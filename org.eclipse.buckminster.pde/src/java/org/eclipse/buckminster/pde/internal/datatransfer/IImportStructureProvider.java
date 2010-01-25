@@ -18,7 +18,7 @@ import java.util.List;
  * Used by the import wizards to abstract the commonalities between importing from the file system and importing from an
  * archive.
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
 public interface IImportStructureProvider
 {
 	/**

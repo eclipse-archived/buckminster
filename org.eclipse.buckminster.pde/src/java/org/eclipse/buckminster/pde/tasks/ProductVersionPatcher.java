@@ -4,26 +4,27 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
-import org.eclipse.buckminster.pde.internal.TypedCollections;
+import org.eclipse.equinox.internal.p2.metadata.VersionedId;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.IQueryable;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
+import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.IQueryable;
 
 @SuppressWarnings("restriction")
 public class ProductVersionPatcher implements IProductDescriptor
 {
 	private final IProductDescriptor m_product;
 
-	private IQueryable m_mdr;
+	private IQueryable<IInstallableUnit> m_mdr;
 
 	public ProductVersionPatcher(IProductDescriptor product)
 	{
@@ -35,9 +36,9 @@ public class ProductVersionPatcher implements IProductDescriptor
 		return m_product.getApplication();
 	}
 
-	public List<?> getBundleInfos()
+	public List<BundleInfo> getBundleInfos()
 	{
-		List<BundleInfo> bis = TypedCollections.getBundleInfos(m_product);
+		List<BundleInfo> bis = m_product.getBundleInfos();
 		if(bis.size() == 0)
 			return bis;
 
@@ -61,9 +62,9 @@ public class ProductVersionPatcher implements IProductDescriptor
 		return pbis;
 	}
 
-	public List<?> getBundles(boolean includeFragments)
+	public List<IVersionedId> getBundles(boolean includeFragments)
 	{
-		return adjustVersionedIdList(TypedCollections.getProductBundles(m_product, includeFragments), false);
+		return adjustVersionedIdList(m_product.getBundles(includeFragments), false);
 	}
 
 	public String getConfigIniPath(String os)
@@ -71,19 +72,19 @@ public class ProductVersionPatcher implements IProductDescriptor
 		return m_product.getConfigIniPath(os);
 	}
 
-	public Properties getConfigurationProperties()
+	public Map<String, String> getConfigurationProperties()
 	{
 		return m_product.getConfigurationProperties();
 	}
 
-	public List<?> getFeatures()
+	public List<IVersionedId> getFeatures()
 	{
-		return adjustVersionedIdList(TypedCollections.getProductFeatures(m_product), true);
+		return adjustVersionedIdList(m_product.getFeatures(), true);
 	}
 
-	public List<?> getFragments()
+	public List<IVersionedId> getFragments()
 	{
-		return adjustVersionedIdList(TypedCollections.getProductFragments(m_product), false);
+		return adjustVersionedIdList(m_product.getFragments(), false);
 	}
 
 	public String[] getIcons(String os)
@@ -147,19 +148,19 @@ public class ProductVersionPatcher implements IProductDescriptor
 
 		if(version != null)
 		{
-			String qualifier = version.getQualifier();
+			String qualifier = VersionHelper.getQualifier(version);
 			if(qualifier == null || !qualifier.endsWith("qualifier")) //$NON-NLS-1$
 				return vstr;
 		}
 
 		boolean features = m_product.useFeatures();
-		List<VersionedId> deps = features
-				? TypedCollections.getProductFeatures(m_product)
-				: TypedCollections.getProductBundles(m_product, false);
+		List<IVersionedId> deps = features
+				? m_product.getFeatures()
+				: m_product.getBundles(false);
 
 		if(deps.size() == 1)
 		{
-			VersionedId dep = deps.get(0);
+			IVersionedId dep = deps.get(0);
 			version = adjustVersion(dep.getId(), dep.getVersion(), features);
 			if(version != null)
 				vstr = version.toString();
@@ -177,7 +178,7 @@ public class ProductVersionPatcher implements IProductDescriptor
 		return m_product.useFeatures();
 	}
 
-	void setQueryable(IQueryable queryable)
+	void setQueryable(IQueryable<IInstallableUnit> queryable)
 	{
 		m_mdr = queryable;
 	}
@@ -197,22 +198,23 @@ public class ProductVersionPatcher implements IProductDescriptor
 
 		if(version != null)
 		{
-			String qualifier = version.getQualifier();
+			String qualifier = VersionHelper.getQualifier(version);
 			if(qualifier == null || !qualifier.endsWith("qualifier")) //$NON-NLS-1$
 				return version;
 
+			org.osgi.framework.Version ov = Version.toOSGiVersion(version);
 			if(qualifier.length() > 9)
 			{
 				String lowQual = qualifier.substring(0, qualifier.length() - 1);
 				String highQual = lowQual + "zzzzzzzzzzzzzzzz"; //$NON-NLS-1$
-				Version low = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro(), lowQual);
-				Version high = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro(), highQual);
+				Version low = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro(), lowQual);
+				Version high = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro(), highQual);
 				range = new VersionRange(low, true, high, true);
 			}
 			else
 			{
-				Version low = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro());
-				Version high = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro() + 1);
+				Version low = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro());
+				Version high = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro() + 1);
 				range = new VersionRange(low, true, high, false);
 			}
 		}
@@ -222,12 +224,12 @@ public class ProductVersionPatcher implements IProductDescriptor
 			iuID += IPDEConstants.FEATURE_GROUP;
 
 		InstallableUnitQuery query = new InstallableUnitQuery(iuID, range);
-		Collector result = m_mdr.query(query, new Collector(), null);
+		IQueryResult<IInstallableUnit> result = m_mdr.query(query, null);
 		if(result.isEmpty())
 			return version;
 
 		Version candidate = null;
-		Iterator<IInstallableUnit> itor = TypedCollections.iterator(result);
+		Iterator<IInstallableUnit> itor = result.iterator();
 		while(itor.hasNext())
 		{
 			Version v = itor.next().getVersion();
@@ -237,14 +239,14 @@ public class ProductVersionPatcher implements IProductDescriptor
 		return candidate;
 	}
 
-	private List<?> adjustVersionedIdList(List<VersionedId> vns, boolean features)
+	private List<IVersionedId> adjustVersionedIdList(List<IVersionedId> vns, boolean features)
 	{
 		int top = vns.size();
 		if(top == 0)
 			return vns;
 
-		ArrayList<VersionedId> pvns = new ArrayList<VersionedId>(top);
-		for(VersionedId vn : vns)
+		ArrayList<IVersionedId> pvns = new ArrayList<IVersionedId>(top);
+		for(IVersionedId vn : vns)
 		{
 			String id = vn.getId();
 			pvns.add(new VersionedId(id, adjustVersion(id, vn.getVersion(), features)));

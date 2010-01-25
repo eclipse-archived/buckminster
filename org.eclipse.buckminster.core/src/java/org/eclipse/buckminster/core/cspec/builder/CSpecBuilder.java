@@ -36,14 +36,16 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.CapabilityQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
-import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.internal.p2.metadata.RequiredCapability;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.IRequirement;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.expression.IMatchExpression;
+import org.eclipse.equinox.p2.metadata.query.ExpressionQuery;
+import org.eclipse.equinox.p2.query.IQuery;
+import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -93,11 +95,12 @@ public class CSpecBuilder implements ICSpecData
 		setName(name);
 		setVersion(iu.getVersion());
 
-		String filterStr = iu.getFilter();
-		if(filterStr != null)
+		org.osgi.framework.Filter filterExpr = iu.getFilter();
+		if(filterExpr != null)
+		{
 			try
 			{
-				Filter filter = FilterFactory.newInstance(filterStr);
+				Filter filter = FilterFactory.newInstance(filterExpr.toString());
 				filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
 				setFilter(filter);
 			}
@@ -105,18 +108,25 @@ public class CSpecBuilder implements ICSpecData
 			{
 				throw BuckminsterException.wrap(e);
 			}
+		}
 
 		boolean hasBogusFragments = isFeature && ("org.eclipse.platform".equals(name) //$NON-NLS-1$
 				|| "org.eclipse.equinox.executable".equals(name) //$NON-NLS-1$
 		|| "org.eclipse.rcp".equals(name)); //$NON-NLS-1$
 
-		for(IRequiredCapability cap : iu.getRequiredCapabilities())
+		for(IRequirement cap : iu.getRequiredCapabilities())
 		{
 			// We only bother with direct dependencies to other IU's here
 			// since package imports etc. are not yet supported
 			//
-			String namespace = cap.getNamespace();
-			name = cap.getName();
+			IMatchExpression<IInstallableUnit> matches = cap.getMatches();
+			String namespace = RequiredCapability.extractNamespace(matches);
+			if(namespace == null)
+				continue;
+
+			name = RequiredCapability.extractName(matches);
+			if(name == null)
+				continue;
 			if(name.endsWith("_root") || name.contains("_root.")) //$NON-NLS-1$ //$NON-NLS-2$
 				// TODO: Handle binary feature contribution.
 				continue;
@@ -140,29 +150,35 @@ public class CSpecBuilder implements ICSpecData
 				// Package or something else that we don't care about here
 				continue;
 
-			filterStr = cap.getFilter();
-			if(cap.isOptional())
+			filterExpr = cap.getFilter();
+			String filterStr = filterExpr == null
+					? null
+					: filterExpr.toString();
+			if(cap.getMin() == 0)
 			{
 				if(filterStr == null)
 					filterStr = ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL;
 				else
+				{
 					filterStr = "(&" + ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL + filterStr + ')'; //$NON-NLS-1$
+				}
 			}
 			else if(hasBogusFragments && ctype == IComponentType.OSGI_BUNDLE && filterStr != null)
 			{
 				// Don't add unless this requirement can be satisfied within the same mdr
-				Query query = new CapabilityQuery(cap);
-				Collector collector = mdr.query(query, new Collector(), null);
-				if(collector.isEmpty())
+				IQuery<IInstallableUnit> query = new ExpressionQuery<IInstallableUnit>(IInstallableUnit.class, matches);
+				IQueryResult<IInstallableUnit> result = mdr.query(query, null);
+				if(result.isEmpty())
 					continue;
 			}
 
 			ComponentRequestBuilder crb = new ComponentRequestBuilder();
 			crb.setName(name);
 			crb.setComponentTypeID(ctype);
-			crb.setVersionRange(cap.getRange());
+			crb.setVersionRange(RequiredCapability.extractRange(matches));
 
 			if(filterStr != null)
+			{
 				try
 				{
 					Filter filter = FilterFactory.newInstance(filterStr);
@@ -173,6 +189,7 @@ public class CSpecBuilder implements ICSpecData
 				{
 					throw BuckminsterException.wrap(e);
 				}
+			}
 			addDependency(crb);
 		}
 	}
@@ -415,7 +432,7 @@ public class CSpecBuilder implements ICSpecData
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapterType)
 	{
 		if(CSpecBuilder.class.isAssignableFrom(adapterType))

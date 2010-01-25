@@ -15,7 +15,7 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.sax.AbstractHandler;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -23,7 +23,6 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 class VersionMatchHandler extends ExtensionAwareHandler
 {
 	public static final String TAG = VersionMatch.TAG;

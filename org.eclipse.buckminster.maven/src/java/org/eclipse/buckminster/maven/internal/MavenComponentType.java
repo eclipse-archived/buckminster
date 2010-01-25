@@ -42,9 +42,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -217,7 +217,7 @@ public class MavenComponentType extends AbstractComponentType
 		return VersionHelper.exactRange(version);
 	}
 
-	static VersionFormat getTripletFormat()
+	static IVersionFormat getTripletFormat()
 	{
 		try
 		{
@@ -447,7 +447,7 @@ public class MavenComponentType extends AbstractComponentType
 		if(high != null)
 			high = stripFromSnapshot(high);
 
-		if(!low.isOSGiCompatible())
+		if(!(low.isOSGiCompatible() && low.getSegmentCount() >= 3))
 			//
 			// We cannot apply advanced semantics here so we just
 			// strip the SNAPSHOT part and hope for the best.
@@ -473,9 +473,9 @@ public class MavenComponentType extends AbstractComponentType
 				// The >= calls for a very high limit. We get to that later.
 				//
 				bld.append('(');
-				int major = low.getMajor();
-				int minor = low.getMinor();
-				int micro = low.getMicro();
+				int major = ((Integer)low.getSegment(0)).intValue();
+				int minor = ((Integer)low.getSegment(1)).intValue();
+				int micro = ((Integer)low.getSegment(2)).intValue();
 				if(minor > 0 || micro > 0)
 				{
 					bld.append(major);
@@ -543,7 +543,7 @@ public class MavenComponentType extends AbstractComponentType
 				}
 				else
 				{
-					if(highIsSnapshot)
+					if(highIsSnapshot && high.isOSGiCompatible() && high.getSegmentCount() >= 3)
 					{
 						// ,1.2.3.SNAPSHOT) -> 1.2.2]
 						//
@@ -552,9 +552,9 @@ public class MavenComponentType extends AbstractComponentType
 						// lower. Instead, we include all up to the
 						// 1.2.2 release
 						//
-						int major = high.getMajor();
-						int minor = high.getMinor();
-						int micro = high.getMicro();
+						int major = ((Integer)high.getSegment(0)).intValue();
+						int minor = ((Integer)high.getSegment(1)).intValue();
+						int micro = ((Integer)high.getSegment(2)).intValue();
 						if(minor > 0 || micro > 0)
 						{
 							bld.append(major);

@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -48,7 +48,7 @@ import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.internal.core.FeatureDownloadException;
 
-@SuppressWarnings( { "restriction", "deprecation" })
+@SuppressWarnings({ "restriction", "deprecation" })
 public class EclipseImportFinder extends AbstractVersionFinder
 {
 	private static ISiteFeatureReference[] getSiteFeatureReferences(URL location, IProgressMonitor monitor)
@@ -135,9 +135,7 @@ public class EclipseImportFinder extends AbstractVersionFinder
 			{
 				seenFeatures.add(vid);
 				IFeature includedFeature = obtainFeature(ref, MonitorUtils.subMonitor(monitor, 50));
-				if(feature != null)
-					addFeaturePluginEntries(entries, seenFeatures, includedFeature,
-							MonitorUtils.subMonitor(monitor, 50));
+				addFeaturePluginEntries(entries, seenFeatures, includedFeature, MonitorUtils.subMonitor(monitor, 50));
 			}
 		}
 		monitor.done();

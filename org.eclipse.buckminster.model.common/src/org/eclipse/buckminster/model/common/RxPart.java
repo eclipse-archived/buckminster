@@ -10,22 +10,25 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object ' <em><b>Rx Part</b></em>'. <!-- end-user-doc -->
- * 
- * <!-- begin-model-doc --> Defines a partial regexp <!-- end-model-doc -->
- * 
+ *
+ * <!-- begin-model-doc -->
+ * Defines a partial regexp
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.RxPart#getName <em>Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>Optional</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.RxPart#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>Optional</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.buckminster.model.common.CommonPackage#getRxPart()
  * @model abstract="true"
+ * @extends BObject
  * @generated
  */
-public interface RxPart extends EObject
+public interface RxPart extends BObject
 {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc --> <!--
@@ -63,9 +66,8 @@ public interface RxPart extends EObject
 	boolean isOptional();
 
 	/**
-	 * Returns whether the value of the '{@link org.eclipse.buckminster.model.common.RxPart#isOptional
-	 * <em>Optional</em>}' attribute is set. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Returns whether the value of the '{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>Optional</em>}' attribute is set.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @return whether the value of the '<em>Optional</em>' attribute is set.
 	 * @see #unsetOptional()
 	 * @see #isOptional()
@@ -86,11 +88,9 @@ public interface RxPart extends EObject
 	void setName(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>Optional</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Optional</em>' attribute.
+	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>Optional</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Optional</em>' attribute.
 	 * @see #isSetOptional()
 	 * @see #unsetOptional()
 	 * @see #isOptional()
@@ -99,9 +99,8 @@ public interface RxPart extends EObject
 	void setOptional(boolean value);
 
 	/**
-	 * Unsets the value of the '{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>Optional</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Unsets the value of the '{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>Optional</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isSetOptional()
 	 * @see #isOptional()
 	 * @see #setOptional(boolean)

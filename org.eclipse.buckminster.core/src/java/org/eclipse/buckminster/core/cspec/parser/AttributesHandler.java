@@ -33,24 +33,10 @@ abstract class AttributesHandler extends ExtensionAwareHandler implements ChildP
 		super(parent);
 	}
 
-	final void addAttribute(AttributeBuilder attribute) throws SAXException
-	{
-		try
-		{
-			this.getCSpecBuilder().addAttribute(attribute);
-		}
-		catch(AttributeAlreadyDefinedException e)
-		{
-			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
-		}
-	}
-
 	public void childPopped(ChildHandler child) throws SAXException
 	{
 		this.addAttribute(((AttributeHandler)child).getAttributeBuilder());
 	}
-
-	abstract TopLevelAttributeHandler createAttributeHandler(boolean publ);
 
 	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
@@ -77,4 +63,18 @@ abstract class AttributesHandler extends ExtensionAwareHandler implements ChildP
 	{
 		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
 	}
+
+	final void addAttribute(AttributeBuilder attribute) throws SAXException
+	{
+		try
+		{
+			this.getCSpecBuilder().addAttribute(attribute);
+		}
+		catch(AttributeAlreadyDefinedException e)
+		{
+			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+		}
+	}
+
+	abstract TopLevelAttributeHandler createAttributeHandler(boolean publ);
 }

@@ -18,12 +18,11 @@ import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public abstract class AbstractVersionFinder implements IVersionFinder
 {
 	private final Provider m_provider;

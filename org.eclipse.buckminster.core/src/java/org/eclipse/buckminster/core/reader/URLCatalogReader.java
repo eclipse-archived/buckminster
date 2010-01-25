@@ -49,11 +49,6 @@ public class URLCatalogReader extends AbstractCatalogReader
 		m_uri = readerType.getURI(rInfo);
 	}
 
-	protected final URI getURI()
-	{
-		return m_uri;
-	}
-
 	public URL getURL() throws CoreException
 	{
 		try
@@ -64,6 +59,55 @@ public class URLCatalogReader extends AbstractCatalogReader
 		{
 			throw BuckminsterException.wrap(e);
 		}
+	}
+
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
+	{
+		URL url = getURL();
+		File source = FileUtils.getFile(url);
+		if(source == null)
+			throw new UnsupportedOperationException(Messages.Only_file_protocol_is_supported_at_this_time);
+
+		File destDir = destination.toFile();
+		boolean success = false;
+		try
+		{
+			if(destDir.toURI().toURL().equals(url))
+			{
+				// Component is already where it's supposed to be.
+				//
+				success = true;
+				return;
+			}
+			FileUtils.deepCopy(source, destDir, ConflictResolution.UPDATE, monitor);
+			success = true;
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			if(!success)
+			{
+				// Remove any stray stuff. The materialization should be
+				// as atomic as possible.
+				//
+				try
+				{
+					FileUtils.deleteRecursive(destDir, new NullProgressMonitor());
+				}
+				catch(Throwable t)
+				{
+					t.printStackTrace();
+				}
+			}
+		}
+	}
+
+	protected final URI getURI()
+	{
+		return m_uri;
 	}
 
 	@Override
@@ -154,50 +198,6 @@ public class URLCatalogReader extends AbstractCatalogReader
 			if(rootFile.isDirectory())
 				name += "/"; //$NON-NLS-1$
 			files.add(name);
-		}
-	}
-
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
-		URL url = getURL();
-		File source = FileUtils.getFile(url);
-		if(source == null)
-			throw new UnsupportedOperationException(Messages.Only_file_protocol_is_supported_at_this_time);
-
-		File destDir = destination.toFile();
-		boolean success = false;
-		try
-		{
-			if(destDir.toURI().toURL().equals(url))
-			{
-				// Component is already where it's supposed to be.
-				//
-				success = true;
-				return;
-			}
-			FileUtils.deepCopy(source, destDir, ConflictResolution.UPDATE, monitor);
-			success = true;
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			if(!success)
-			{
-				// Remove any stray stuff. The materialization should be
-				// as atomic as possible.
-				//
-				try
-				{
-					FileUtils.deleteRecursive(destDir, new NullProgressMonitor());
-				}
-				catch(Throwable t)
-				{
-					t.printStackTrace();
-				}
-			}
 		}
 	}
 

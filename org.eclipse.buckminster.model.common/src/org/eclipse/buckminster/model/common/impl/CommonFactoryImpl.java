@@ -39,20 +39,18 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.xml.type.XMLTypeFactory;
 import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
- * 
  * @generated
  */
 public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @deprecated
 	 * @generated
 	 */
@@ -63,30 +61,27 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 	}
 
 	/**
-	 * Creates the default factory implementation. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Creates the default factory implementation.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public static CommonFactory init()
 	{
-		try
-		{
-			CommonFactory theCommonFactory = (CommonFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/Common-1.0");
-			if(theCommonFactory != null)
-			{
+		try {
+			CommonFactory theCommonFactory = (CommonFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/Common-1.0"); 
+			if (theCommonFactory != null) {
 				return theCommonFactory;
 			}
 		}
-		catch(Exception exception)
-		{
+		catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new CommonFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Creates an instance of the factory.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public CommonFactoryImpl()
@@ -120,7 +115,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String convertPropertyKeyToString(EDataType eDataType, Object instanceValue)
@@ -130,44 +124,39 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String convertSplitTypeToString(EDataType eDataType, Object instanceValue)
 	{
-		return instanceValue == null
-				? null
-				: instanceValue.toString();
+		return instanceValue == null ? null : instanceValue.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue)
 	{
-		switch(eDataType.getClassifierID())
-		{
-		case CommonPackage.SPLIT_TYPE:
-			return convertSplitTypeToString(eDataType, instanceValue);
-		case CommonPackage.PROPERTY_KEY:
-			return convertPropertyKeyToString(eDataType, instanceValue);
-		case CommonPackage.UUID:
-			return convertUuidToString(eDataType, instanceValue);
-		case CommonPackage.PATTERN:
-			return convertPatternToString(eDataType, instanceValue);
-		case CommonPackage.FILTER:
-			return convertFilterToString(eDataType, instanceValue);
-		case CommonPackage.VERSION:
-			return convertVersionToString(eDataType, instanceValue);
-		case CommonPackage.VERSION_RANGE:
-			return convertVersionRangeToString(eDataType, instanceValue);
-		case CommonPackage.URL:
-			return convertURLToString(eDataType, instanceValue);
-		default:
-			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+		switch (eDataType.getClassifierID()) {
+			case CommonPackage.SPLIT_TYPE:
+				return convertSplitTypeToString(eDataType, instanceValue);
+			case CommonPackage.PROPERTY_KEY:
+				return convertPropertyKeyToString(eDataType, instanceValue);
+			case CommonPackage.UUID:
+				return convertUuidToString(eDataType, instanceValue);
+			case CommonPackage.PATTERN:
+				return convertPatternToString(eDataType, instanceValue);
+			case CommonPackage.FILTER:
+				return convertFilterToString(eDataType, instanceValue);
+			case CommonPackage.VERSION:
+				return convertVersionToString(eDataType, instanceValue);
+			case CommonPackage.VERSION_RANGE:
+				return convertVersionRangeToString(eDataType, instanceValue);
+			case CommonPackage.URL:
+				return convertURLToString(eDataType, instanceValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -221,54 +210,35 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public EObject create(EClass eClass)
 	{
-		switch(eClass.getClassifierID())
-		{
-		case CommonPackage.CONSTANT:
-			return createConstant();
-		case CommonPackage.DOCUMENTATION:
-			return createDocumentation();
-		case CommonPackage.FORMAT:
-			return createFormat();
-		case CommonPackage.MATCH:
-			return createMatch();
-		case CommonPackage.PROPERTY_CONSTANT:
-			return createPropertyConstant();
-		case CommonPackage.PROPERTY_ELEMENT:
-			return createPropertyElement();
-		case CommonPackage.PROPERTY_REF:
-			return createPropertyRef();
-		case CommonPackage.REPLACE:
-			return createReplace();
-		case CommonPackage.RX_GROUP:
-			return createRxGroup();
-		case CommonPackage.RX_PATTERN:
-			return createRxPattern();
-		case CommonPackage.SPLIT:
-			return createSplit();
-		case CommonPackage.TO_LOWER:
-			return createToLower();
-		case CommonPackage.TO_UPPER:
-			return createToUpper();
-		case CommonPackage.DOCUMENT_ROOT:
-			return createDocumentRoot();
-		case CommonPackage.COMPONENT_REQUEST:
-			return createComponentRequest();
-		case CommonPackage.COMPONENT_IDENTIFIER:
-			return createComponentIdentifier();
-		default:
-			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+		switch (eClass.getClassifierID()) {
+			case CommonPackage.CONSTANT: return (EObject)createConstant();
+			case CommonPackage.DOCUMENTATION: return (EObject)createDocumentation();
+			case CommonPackage.FORMAT: return (EObject)createFormat();
+			case CommonPackage.MATCH: return (EObject)createMatch();
+			case CommonPackage.PROPERTY_CONSTANT: return (EObject)createPropertyConstant();
+			case CommonPackage.PROPERTY_ELEMENT: return (EObject)createPropertyElement();
+			case CommonPackage.PROPERTY_REF: return (EObject)createPropertyRef();
+			case CommonPackage.REPLACE: return (EObject)createReplace();
+			case CommonPackage.RX_GROUP: return (EObject)createRxGroup();
+			case CommonPackage.RX_PATTERN: return (EObject)createRxPattern();
+			case CommonPackage.SPLIT: return (EObject)createSplit();
+			case CommonPackage.TO_LOWER: return (EObject)createToLower();
+			case CommonPackage.TO_UPPER: return (EObject)createToUpper();
+			case CommonPackage.DOCUMENT_ROOT: return (EObject)createDocumentRoot();
+			case CommonPackage.COMPONENT_REQUEST: return (EObject)createComponentRequest();
+			case CommonPackage.COMPONENT_IDENTIFIER: return (EObject)createComponentIdentifier();
+			default:
+				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public ComponentIdentifier createComponentIdentifier()
@@ -279,7 +249,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public ComponentRequest createComponentRequest()
@@ -290,7 +259,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Constant createConstant()
@@ -301,7 +269,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Documentation createDocumentation()
@@ -312,7 +279,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EObject createDocumentRoot()
@@ -342,7 +308,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Format createFormat()
@@ -353,38 +318,35 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue)
 	{
-		switch(eDataType.getClassifierID())
-		{
-		case CommonPackage.SPLIT_TYPE:
-			return createSplitTypeFromString(eDataType, initialValue);
-		case CommonPackage.PROPERTY_KEY:
-			return createPropertyKeyFromString(eDataType, initialValue);
-		case CommonPackage.UUID:
-			return createUuidFromString(eDataType, initialValue);
-		case CommonPackage.PATTERN:
-			return createPatternFromString(eDataType, initialValue);
-		case CommonPackage.FILTER:
-			return createFilterFromString(eDataType, initialValue);
-		case CommonPackage.VERSION:
-			return createVersionFromString(eDataType, initialValue);
-		case CommonPackage.VERSION_RANGE:
-			return createVersionRangeFromString(eDataType, initialValue);
-		case CommonPackage.URL:
-			return createURLFromString(eDataType, initialValue);
-		default:
-			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+		switch (eDataType.getClassifierID()) {
+			case CommonPackage.SPLIT_TYPE:
+				return createSplitTypeFromString(eDataType, initialValue);
+			case CommonPackage.PROPERTY_KEY:
+				return createPropertyKeyFromString(eDataType, initialValue);
+			case CommonPackage.UUID:
+				return createUuidFromString(eDataType, initialValue);
+			case CommonPackage.PATTERN:
+				return createPatternFromString(eDataType, initialValue);
+			case CommonPackage.FILTER:
+				return createFilterFromString(eDataType, initialValue);
+			case CommonPackage.VERSION:
+				return createVersionFromString(eDataType, initialValue);
+			case CommonPackage.VERSION_RANGE:
+				return createVersionRangeFromString(eDataType, initialValue);
+			case CommonPackage.URL:
+				return createURLFromString(eDataType, initialValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Match createMatch()
@@ -405,7 +367,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public PropertyConstant createPropertyConstant()
@@ -416,7 +377,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public PropertyElement createPropertyElement()
@@ -427,7 +387,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String createPropertyKeyFromString(EDataType eDataType, String initialValue)
@@ -437,7 +396,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public PropertyRef createPropertyRef()
@@ -448,7 +406,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Replace createReplace()
@@ -459,7 +416,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public RxGroup createRxGroup()
@@ -470,7 +426,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public RxPattern createRxPattern()
@@ -481,7 +436,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Split createSplit()
@@ -492,21 +446,17 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public SplitType createSplitTypeFromString(EDataType eDataType, String initialValue)
 	{
 		SplitType result = SplitType.get(initialValue);
-		if(result == null)
-			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
-					+ eDataType.getName() + "'");
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public ToLower createToLower()
@@ -517,7 +467,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public ToUpper createToUpper()
@@ -581,7 +530,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public CommonPackage getCommonPackage()

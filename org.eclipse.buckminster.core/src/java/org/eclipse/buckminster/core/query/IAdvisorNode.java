@@ -11,9 +11,8 @@ import org.eclipse.buckminster.core.query.model.MutableLevel;
 import org.eclipse.buckminster.core.query.model.SourceLevel;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.osgi.filter.Filter;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
-@SuppressWarnings("restriction")
 public interface IAdvisorNode
 {
 

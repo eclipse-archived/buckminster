@@ -80,19 +80,19 @@ import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
 import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepositoryFactory;
 import org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryIO;
 import org.eclipse.equinox.internal.p2.metadata.repository.URLMetadataRepository;
-import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactDescriptor;
-import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
-import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
-import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRequest;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.processing.ProcessingStepHandler;
-import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.p2.core.ProvisionException;
+import org.eclipse.equinox.p2.metadata.IArtifactKey;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
+import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.repository.artifact.IArtifactDescriptor;
+import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
+import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
+import org.eclipse.equinox.p2.repository.artifact.IArtifactRequest;
+import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.osgi.service.pluginconversion.PluginConversionException;
 import org.eclipse.osgi.service.resolver.BundleDescription;
@@ -107,7 +107,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 import org.eclipse.update.internal.jarprocessor.Utils;
 import org.osgi.framework.Constants;
 
-@SuppressWarnings( { "restriction", "deprecation" })
+@SuppressWarnings({ "restriction", "deprecation" })
 public class EclipseImportReaderType extends CatalogReaderType implements IPDEConstants
 {
 	/**
@@ -582,10 +582,10 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		if(IComponentType.ECLIPSE_FEATURE.equals(cr.getComponentTypeID())
 				&& !name.endsWith(IPDEConstants.FEATURE_GROUP))
 			name += IPDEConstants.FEATURE_GROUP;
-		Collector c = mdr.query(new InstallableUnitQuery(name, vr), new Collector(), null);
+		IQueryResult<IInstallableUnit> c = mdr.query(new InstallableUnitQuery(name, vr), null);
 		if(c.isEmpty())
 			return null;
-		return (IInstallableUnit)c.iterator().next();
+		return c.iterator().next();
 	}
 
 	IInstallableUnit getCachedInstallableUnit(ProviderMatch providerMatch) throws CoreException

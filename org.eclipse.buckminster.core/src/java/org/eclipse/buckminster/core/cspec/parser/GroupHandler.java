@@ -39,8 +39,7 @@ public class GroupHandler extends TopLevelAttributeHandler implements ChildPoppe
 		{
 			try
 			{
-				((GroupBuilder)this.getBuilder()).addPrerequisite((PrerequisiteBuilder)m_prerequisiteHandler
-						.getBuilder());
+				((GroupBuilder)this.getBuilder()).addPrerequisite((PrerequisiteBuilder)m_prerequisiteHandler.getBuilder());
 			}
 			catch(PrerequisiteAlreadyDefinedException e)
 			{
@@ -49,12 +48,6 @@ public class GroupHandler extends TopLevelAttributeHandler implements ChildPoppe
 		}
 		else
 			super.childPopped(child);
-	}
-
-	@Override
-	protected TopLevelAttributeBuilder createAttributeBuilder()
-	{
-		return this.getCSpecBuilder().createGroupBuilder();
 	}
 
 	@Override
@@ -68,11 +61,6 @@ public class GroupHandler extends TopLevelAttributeHandler implements ChildPoppe
 		return ch;
 	}
 
-	final GroupBuilder getGroupBuilder()
-	{
-		return (GroupBuilder)this.getBuilder();
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
@@ -80,5 +68,16 @@ public class GroupHandler extends TopLevelAttributeHandler implements ChildPoppe
 		String tmp = getOptionalStringValue(attrs, Group.ATTR_REBASE);
 		if(tmp != null)
 			this.getGroupBuilder().setPrerequisiteRebase(Path.fromPortableString(tmp));
+	}
+
+	@Override
+	protected TopLevelAttributeBuilder createAttributeBuilder()
+	{
+		return this.getCSpecBuilder().createGroupBuilder();
+	}
+
+	final GroupBuilder getGroupBuilder()
+	{
+		return (GroupBuilder)this.getBuilder();
 	}
 }

@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -220,85 +219,116 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 	// to set resource notifications, for example
 	private boolean m_initialBuildDone = false;
 
+	public void resourceChanged(IResourceChangeEvent event)
+	{
+		if(m_notifyOnChangedResources != null && event.getType() == IResourceChangeEvent.POST_CHANGE)
+		{
+			// don't instantiate a list until we know it's needed
+			List<IResource> changedResources = null;
+			for(IResource r : m_notifyOnChangedResources)
+			{
+				IResourceDelta delta = event.getDelta().findMember(r.getFullPath());
+				if(delta != null)
+				{
+					if(changedResources == null)
+						changedResources = new ArrayList<IResource>();
+					changedResources.add(r);
+				}
+			}
+
+			if(changedResources != null)
+				resourcesChangeNotification(changedResources.toArray(new IResource[0]));
+		}
+	}
+
+	@Override
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
+			throws CoreException
+	{
+		super.setInitializationData(config, propertyName, data);
+
+		m_config = config;
+		m_propertyName = propertyName;
+		m_data = data;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int, java.util.Map,
 	 * org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
-	final protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException
+	final protected IProject[] build(int kind, Map rawArgs, IProgressMonitor monitor) throws CoreException
 	{
+		@SuppressWarnings("unchecked")
+		Map<String, String> args = rawArgs;
 		if(args == null)
-			args = new HashMap();
+			args = new HashMap<String, String>();
 
 		boolean disabled = isDisabled(args);
+		if(disabled)
+			return null;
+
 		boolean isDeltaMatching = ((kind != AUTO_BUILD && kind != INCREMENTAL_BUILD)
 				? true
-				: isDeltaMatching(args, this.getProject(), this.getDelta(this.getProject()), m_notifyOnChangedResources));
+				: isDeltaMatching(args, getProject(), getDelta(getProject()), m_notifyOnChangedResources));
+
+		if(!isDeltaMatching && m_initialBuildDone)
+			return null;
 
 		IProject[] projects = null;
-		if(!disabled && (isDeltaMatching || !m_initialBuildDone))
+		m_initialBuildDone = true;
+
+		boolean needsPrintStream = isPrintingEnabledForKind(args, kind);
+
+		MonitorUtils.begin(monitor, 10);
+		Logger logger = CorePlugin.getLogger();
+		try
 		{
-			m_initialBuildDone = true;
-
-			boolean needsPrintStream = isPrintingEnabledForKind(args, kind);
-
-			Logger logger = CorePlugin.getLogger();
-			try
+			if(needsPrintStream)
 			{
-				if(needsPrintStream)
-				{
-					m_outStream = Logger.getOutStream();
-					m_errStream = Logger.getErrStream();
-				}
-				else
-				{
-					m_outStream = System.out;
-					m_errStream = System.err;
-				}
+				m_outStream = Logger.getOutStream();
+				m_errStream = Logger.getErrStream();
+			}
+			else
+			{
+				m_outStream = System.out;
+				m_errStream = System.err;
+			}
 
-				if(logger.isDebugEnabled())
-					logger.debug("[start AntBuilder(%s)] : %s - %s", kindToString(kind), getBestName(args), //$NON-NLS-1$
-							getProject().getName());
+			if(logger.isDebugEnabled())
+				logger.debug("[start AntBuilder(%s)] : %s - %s", kindToString(kind), getBestName(args), //$NON-NLS-1$
+						getProject().getName());
 
-				projects = doBuild(kind, args, monitor);
+			projects = doBuild(kind, args, MonitorUtils.subMonitor(monitor, 8));
 
-				String refreshResource = getValue(args, ARG_REFRESH_RESOURCE);
-				if(refreshResource != null)
+			String refreshResource = getValue(args, ARG_REFRESH_RESOURCE);
+			if(refreshResource != null)
+			{
+				IResource resource = getProject().findMember(new Path(refreshResource));
+				if(resource != null)
+					resource.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 1));
+			}
+
+			String derivedResource = getValue(args, ARG_DERIVED_RESOURCE);
+			if(derivedResource != null)
+			{
+				IResource resource = getProject().findMember(new Path(derivedResource));
+				if(resource != null)
 				{
-					IResource resource = this.getProject().findMember(new Path(refreshResource));
-					if(resource != null)
-						resource.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor,
-								IProgressMonitor.UNKNOWN));
-				}
-
-				String derivedResource = getValue(args, ARG_DERIVED_RESOURCE);
-				if(derivedResource != null)
-				{
-					IResource resource = this.getProject().findMember(new Path(derivedResource));
-					if(resource != null)
-					{
-						if(refreshResource == null || !refreshResource.equals(derivedResource))
-							resource.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor,
-									IProgressMonitor.UNKNOWN));
-						resource.accept(new IResourceVisitor()
-						{
-							public boolean visit(IResource rs) throws CoreException
-							{
-								rs.setDerived(true);
-								return true;
-							}
-						});
-					}
+					if(refreshResource == null || !refreshResource.equals(derivedResource))
+						resource.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 1));
+					resource.setDerived(true, MonitorUtils.subMonitor(monitor, 1));
 				}
 			}
-			finally
-			{
-				if(logger.isDebugEnabled())
-					logger.debug(String.format("[end AntBuilder(%s)]", kindToString(kind))); //$NON-NLS-1$
-			}
+		}
+		finally
+		{
+			MonitorUtils.done(monitor);
+			if(logger.isDebugEnabled())
+				logger.debug(String.format("[end AntBuilder(%s)]", kindToString(kind))); //$NON-NLS-1$
 		}
 		return projects;
 	}
@@ -308,7 +338,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 	{
 		// make all go the same way
 		//
-		this.build(CLEAN_BUILD, this.getCommand().getArguments(), monitor);
+		build(CLEAN_BUILD, getCommand().getArguments(), monitor);
 	}
 
 	protected IProject[] doAutoBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
@@ -319,13 +349,13 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 	protected IProject[] doBuild(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException
 	{
 		if(kind == AUTO_BUILD)
-			return this.doAutoBuild(args, monitor);
+			return doAutoBuild(args, monitor);
 		if(kind == CLEAN_BUILD)
-			return this.doCleanBuild(args, monitor);
+			return doCleanBuild(args, monitor);
 		if(kind == FULL_BUILD)
-			return this.doFullBuild(args, monitor);
+			return doFullBuild(args, monitor);
 		if(kind == INCREMENTAL_BUILD)
-			return this.doIncrementalBuild(args, monitor);
+			return doIncrementalBuild(args, monitor);
 
 		throw new CoreException(new Status(IStatus.ERROR, CorePlugin.CORE_NAMESPACE, 0, Messages.Unknown_kind, null));
 	}
@@ -352,7 +382,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 
 	protected String getBestName(Map<String, String> args)
 	{
-		return bestNameForBuilder(this.getGivenName(args), m_config);
+		return bestNameForBuilder(getGivenName(args), m_config);
 	}
 
 	protected IConfigurationElement getConfig()
@@ -390,28 +420,6 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 		m_notifyOnChangedResources = resources;
 	}
 
-	public void resourceChanged(IResourceChangeEvent event)
-	{
-		if(m_notifyOnChangedResources != null && event.getType() == IResourceChangeEvent.POST_CHANGE)
-		{
-			// don't instantiate a list until we know it's needed
-			List<IResource> changedResources = null;
-			for(IResource r : m_notifyOnChangedResources)
-			{
-				IResourceDelta delta = event.getDelta().findMember(r.getFullPath());
-				if(delta != null)
-				{
-					if(changedResources == null)
-						changedResources = new ArrayList<IResource>();
-					changedResources.add(r);
-				}
-			}
-
-			if(changedResources != null)
-				this.resourcesChangeNotification(changedResources.toArray(new IResource[0]));
-		}
-	}
-
 	protected void resourcesChangeNotification(IResource[] changedResources)
 	{
 		// if someone has requested notification and then doesn't listen to it,
@@ -420,21 +428,10 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 	}
 
 	@Override
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-			throws CoreException
-	{
-		super.setInitializationData(config, propertyName, data);
-
-		m_config = config;
-		m_propertyName = propertyName;
-		m_data = data;
-	}
-
-	@Override
 	protected void startupOnInitialize()
 	{
 		super.startupOnInitialize();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-		this.doStartupOnInitialize();
+		doStartupOnInitialize();
 	}
 }

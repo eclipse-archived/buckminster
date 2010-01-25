@@ -1,5 +1,6 @@
 package org.eclipse.buckminster.pde.internal;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
@@ -11,13 +12,16 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.internal.p2.metadata.RequiredCapability;
+import org.eclipse.equinox.p2.metadata.IArtifactKey;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.IRequirement;
+import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.expression.IMatchExpression;
+import org.eclipse.equinox.p2.metadata.query.ExpressionQuery;
+import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
+import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 
 @SuppressWarnings("restriction")
 public class P2VersionFinder extends AbstractVersionFinder
@@ -70,7 +74,7 @@ public class P2VersionFinder extends AbstractVersionFinder
 			vr = new VersionRange(designator.toString());
 		}
 
-		Collector c = m_mdr.query(new InstallableUnitQuery(name, vr), new Collector(), monitor);
+		IQueryResult<IInstallableUnit> c = m_mdr.query(new InstallableUnitQuery(name, vr), monitor);
 		if(c.isEmpty())
 			return null;
 
@@ -87,12 +91,10 @@ public class P2VersionFinder extends AbstractVersionFinder
 
 		// Find the wanted artifact.
 		//
-		IArtifactKey[] artifacts = best.getArtifacts();
+		Collection<IArtifactKey> artifacts = best.getArtifacts();
 		IArtifactKey wanted = null;
-		int idx = artifacts.length;
-		while(--idx >= 0)
+		for(IArtifactKey ak : artifacts)
 		{
-			IArtifactKey ak = artifacts[idx];
 			if(isFeature)
 			{
 				if(ak.getClassifier().equals(FEATURE_CLASSIFIER))
@@ -120,19 +122,22 @@ public class P2VersionFinder extends AbstractVersionFinder
 			//
 			String featureJarName = name.substring(0, name.length() - IPDEConstants.FEATURE_GROUP.length())
 					+ FEATURE_JAR;
-			IRequiredCapability found = null;
-			for(IRequiredCapability rqc : best.getRequiredCapabilities())
-				if(IInstallableUnit.NAMESPACE_IU_ID.equals(rqc.getNamespace()) && featureJarName.equals(rqc.getName()))
+			IRequirement found = null;
+			for(IRequirement rqc : best.getRequiredCapabilities())
+			{
+				IMatchExpression<IInstallableUnit> matches = rqc.getMatches();
+				if(IInstallableUnit.NAMESPACE_IU_ID.equals(RequiredCapability.extractNamespace(matches))
+						&& featureJarName.equals(RequiredCapability.extractName(matches)))
 				{
 					found = rqc;
 					break;
 				}
+			}
 
 			if(found == null)
 				return null;
 
-			c = new Collector();
-			m_mdr.query(new InstallableUnitQuery(found.getName(), found.getRange()), c, monitor);
+			c = m_mdr.query(new ExpressionQuery<IInstallableUnit>(IInstallableUnit.class, found.getMatches()), monitor);
 			if(c.isEmpty())
 				return null;
 
@@ -148,10 +153,8 @@ public class P2VersionFinder extends AbstractVersionFinder
 			// Find the wanted artifact.
 			//
 			artifacts = bestJar.getArtifacts();
-			idx = artifacts.length;
-			while(--idx >= 0)
+			for(IArtifactKey ak : artifacts)
 			{
-				IArtifactKey ak = artifacts[idx];
 				if(ak.getClassifier().equals(FEATURE_CLASSIFIER))
 				{
 					wanted = ak;

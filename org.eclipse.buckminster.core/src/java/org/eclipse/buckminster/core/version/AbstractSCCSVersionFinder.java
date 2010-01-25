@@ -19,14 +19,13 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder
 {
 	protected static class RevisionEntry

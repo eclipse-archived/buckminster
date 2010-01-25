@@ -33,26 +33,27 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactDescriptor;
+import org.eclipse.equinox.internal.p2.engine.Phase;
+import org.eclipse.equinox.internal.p2.engine.PhaseSet;
+import org.eclipse.equinox.internal.p2.engine.phases.Collect;
 import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
-import org.eclipse.equinox.internal.provisional.p2.artifact.repository.ArtifactDescriptor;
-import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
-import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepositoryManager;
-import org.eclipse.equinox.internal.provisional.p2.core.ProvisionException;
-import org.eclipse.equinox.internal.provisional.p2.engine.IEngine;
-import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
-import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
-import org.eclipse.equinox.internal.provisional.p2.engine.InstallableUnitOperand;
-import org.eclipse.equinox.internal.provisional.p2.engine.Phase;
-import org.eclipse.equinox.internal.provisional.p2.engine.PhaseSet;
-import org.eclipse.equinox.internal.provisional.p2.engine.ProvisioningContext;
-import org.eclipse.equinox.internal.provisional.p2.engine.phases.Collect;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
-import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepositoryManager;
+import org.eclipse.equinox.p2.core.ProvisionException;
+import org.eclipse.equinox.p2.engine.IEngine;
+import org.eclipse.equinox.p2.engine.IProfile;
+import org.eclipse.equinox.p2.engine.IProfileRegistry;
+import org.eclipse.equinox.p2.engine.IProvisioningPlan;
+import org.eclipse.equinox.p2.engine.InstallableUnitOperand;
+import org.eclipse.equinox.p2.engine.ProvisioningContext;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
+import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
+import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
+import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
+import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
@@ -259,17 +260,17 @@ public class P2Materializer extends AbstractMaterializer
 							}
 						}
 
-						ArtifactDescriptor desc;
+						SimpleArtifactDescriptor desc;
 						if(IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID()))
 						{
-							desc = new ArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE,
+							desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE,
 									cid.getName(), version));
 							desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER,
 									Boolean.toString(true)));
 						}
 						else
 						{
-							desc = new ArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(),
+							desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(),
 									version));
 							if(res.isUnpack())
 								desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER,
@@ -293,7 +294,6 @@ public class P2Materializer extends AbstractMaterializer
 					}
 
 					VersionRange range = new VersionRange(version, true, version, true);
-					Collector collector = new Collector();
 					String name = cid.getName();
 					boolean isFeature = IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID());
 
@@ -301,18 +301,19 @@ public class P2Materializer extends AbstractMaterializer
 						// Since this is what we want in the target platform
 						name = name + ".feature.jar"; //$NON-NLS-1$
 
-					mdr.query(new InstallableUnitQuery(name, range), collector, subSubMon.newChild(250));
-					Iterator<?> itor = collector.iterator();
+					IQueryResult<IInstallableUnit> result = mdr.query(new InstallableUnitQuery(name, range),
+							subSubMon.newChild(250));
+					Iterator<IInstallableUnit> itor = result.iterator();
 					if(!itor.hasNext())
 						throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2, new Object[] {
 								cid.getName(), version, res.getRepository() }));
 
-					IInstallableUnit iu = (IInstallableUnit)itor.next();
+					IInstallableUnit iu = itor.next();
 					ius.add(iu);
 
 					// Check if this IU has artifacts and if so, load the artifact repository
 					//
-					if(iu.getArtifacts().length > 0)
+					if(iu.getArtifacts().size() > 0)
 					{
 						IArtifactRepository ar = knownARs.get(repoURI);
 						if(ar == null)
@@ -361,7 +362,8 @@ public class P2Materializer extends AbstractMaterializer
 					Set<URI> arURIs = knownARs.keySet();
 					ProvisioningContext pctx = new ProvisioningContext(mdrURIs.toArray(new URI[mdrURIs.size()]));
 					pctx.setArtifactRepositories(arURIs.toArray(new URI[arURIs.size()]));
-					IStatus status = engine.perform(profile, phaseSet, operands, pctx, subMon.newChild(200));
+					IProvisioningPlan plan = engine.createCustomPlan(profile, operands, pctx);
+					IStatus status = engine.perform(plan, phaseSet, subMon.newChild(200));
 					if(status.getSeverity() == IStatus.ERROR)
 						throw BuckminsterException.wrap(status);
 				}

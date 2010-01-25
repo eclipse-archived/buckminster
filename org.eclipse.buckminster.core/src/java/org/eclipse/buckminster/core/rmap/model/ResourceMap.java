@@ -55,8 +55,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -64,7 +64,6 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class ResourceMap extends AbstractSaxableElement implements ISaxable
 {
 	public static final String TAG = "rmap"; //$NON-NLS-1$

@@ -42,8 +42,8 @@ public class MaxParallelResolutions extends BasicPreferenceHandler
 		catch(NumberFormatException e)
 		{
 		}
-		throw new IllegalArgumentException(String.format(NLS.bind(
-				Messages._0_illegal_value_for_maxParallelResolutions, prefValue)));
+		throw new IllegalArgumentException(String.format(NLS.bind(Messages._0_illegal_value_for_maxParallelResolutions,
+				prefValue)));
 
 	}
 

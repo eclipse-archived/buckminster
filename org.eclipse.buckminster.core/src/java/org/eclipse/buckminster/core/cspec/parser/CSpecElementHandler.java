@@ -30,8 +30,6 @@ public abstract class CSpecElementHandler extends ExtensionAwareHandler implemen
 		super(parent);
 	}
 
-	protected abstract NamedElementBuilder createBuilder();
-
 	public TopLevelAttributeBuilder getAttributeBuilder()
 	{
 		return ((IAttributeBuilderSupport)getParentHandler()).getAttributeBuilder();
@@ -47,6 +45,15 @@ public abstract class CSpecElementHandler extends ExtensionAwareHandler implemen
 		return ((ICSpecBuilderSupport)getParentHandler()).getCSpecBuilder();
 	}
 
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_builder = this.createBuilder();
+		m_builder.setName(this.getNameAttribute(attrs));
+	}
+
+	protected abstract NamedElementBuilder createBuilder();
+
 	protected CSpecElementBuilder getCSpecElementBuilder()
 	{
 		return (CSpecElementBuilder)this.getBuilder();
@@ -55,12 +62,5 @@ public abstract class CSpecElementHandler extends ExtensionAwareHandler implemen
 	protected String getNameAttribute(Attributes attrs) throws SAXException
 	{
 		return this.getStringValue(attrs, NamedElement.ATTR_NAME);
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_builder = this.createBuilder();
-		m_builder.setName(this.getNameAttribute(attrs));
 	}
 }

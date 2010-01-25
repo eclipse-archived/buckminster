@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PluginVersionIdentifier;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
@@ -38,7 +38,7 @@ import org.eclipse.update.core.VersionedIdentifier;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings( { "deprecation", "restriction" })
+@SuppressWarnings("deprecation")
 public class SiteFeatureReaderType extends CatalogReaderType
 {
 	/**

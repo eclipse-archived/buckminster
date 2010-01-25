@@ -13,8 +13,8 @@ import java.util.Map;
 
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 
 /**
@@ -150,7 +150,7 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 	 * @return The generated suffix or <code>null</code>
 	 * @throws CoreException
 	 */
-	public String generateSuffix(List<VersionedId> features, List<VersionedId> bundles)
+	public String generateSuffix(List<IVersionedId> features, List<IVersionedId> bundles)
 	{
 		if(m_maxVersionSuffixLength <= 0)
 			return null; // do nothing
@@ -179,9 +179,9 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		// to the running totals and storing the qualifier suffixes.
 		//
 		int idx = 0;
-		for(VersionedId refFeature : features)
+		for(IVersionedId refFeature : features)
 		{
-			Version version = refFeature.getVersion();
+			org.osgi.framework.Version version = Version.toOSGiVersion(refFeature.getVersion());
 			majorSum += version.getMajor();
 			minorSum += version.getMinor();
 			serviceSum += version.getMicro();
@@ -212,9 +212,9 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		// Loop through the included plug-ins and fragments, adding the version
 		// number parts to the running totals and storing the qualifiers.
 		//
-		for(VersionedId refBundle : bundles)
+		for(IVersionedId refBundle : bundles)
 		{
-			Version version = refBundle.getVersion();
+			org.osgi.framework.Version version = Version.toOSGiVersion(refBundle.getVersion());
 			majorSum += version.getMajor();
 			minorSum += version.getMinor();
 			serviceSum += version.getMicro();

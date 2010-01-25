@@ -62,8 +62,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			try
 			{
 				if(defToUse == null || defToUse.length() == 0)
-					throw BuckminsterException
-							.fromMessage(Messages.Missing_value_for_definition_to_use);
+					throw BuckminsterException.fromMessage(Messages.Missing_value_for_definition_to_use);
 
 				String resolvedDefsToUse = svm.performStringSubstitution(defToUse);
 
@@ -172,8 +171,7 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 		IPath relativePath = new Path(launcherDefinitionsFile);
 		if(relativePath.isAbsolute())
 			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.Launcher_definitions_file_name_not_relative_to_project_root_0,
-					launcherDefinitionsFile));
+					Messages.Launcher_definitions_file_name_not_relative_to_project_root_0, launcherDefinitionsFile));
 		IPath fullPath = project.getLocation().append(relativePath);
 
 		return fullPath.toFile();
@@ -214,9 +212,8 @@ public class ExternalCommandBuilder extends AbstractBuckminsterBuilder implement
 			thrStdOut.join();
 			int exitValue = p.waitFor();
 			if(exitValue != 0)
-				throw BuckminsterException.fromMessage(NLS.bind(
-						Messages.External_command_0_exited_with_1, fullCommandLine, Integer
-								.valueOf(exitValue)));
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.External_command_0_exited_with_1,
+						fullCommandLine, Integer.valueOf(exitValue)));
 		}
 		catch(Exception e)
 		{

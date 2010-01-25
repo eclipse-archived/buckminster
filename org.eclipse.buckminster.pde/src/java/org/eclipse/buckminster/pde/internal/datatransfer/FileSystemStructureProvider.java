@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * This class provides information regarding the structure and content of specified file system File objects.
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class FileSystemStructureProvider implements IImportStructureProvider
 {
 

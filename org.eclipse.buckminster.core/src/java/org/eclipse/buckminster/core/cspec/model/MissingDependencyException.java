@@ -20,7 +20,6 @@ public class MissingDependencyException extends LocalizedException
 
 	public MissingDependencyException(String componentName, String dependencyName)
 	{
-		super(NLS.bind(Messages.Component_0_has_no_declared_dependency_to_component_1,
-				componentName, dependencyName));
+		super(NLS.bind(Messages.Component_0_has_no_declared_dependency_to_component_1, componentName, dependencyName));
 	}
 }

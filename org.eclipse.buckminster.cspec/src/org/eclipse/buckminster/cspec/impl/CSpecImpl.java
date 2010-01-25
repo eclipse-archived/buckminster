@@ -562,16 +562,19 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
-	public String toString()
+	public String toStringGen()
 	{
-		if(eIsProxy())
-			return super.toString();
+		return null;
+	}
 
-		StringBuffer result = new StringBuffer(super.toString());
+	@Override
+	public void toString(StringBuilder result)
+	{
+		if (eIsProxy()) { result.append(super.toString()); return; }
+
 		result.append(" (shortDesc: ");
 		result.append(shortDesc);
 		result.append(", filter: ");
@@ -579,7 +582,6 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec
 		result.append(", projectInfo: ");
 		result.append(projectInfo);
 		result.append(')');
-		return result.toString();
 	}
 
 	/**

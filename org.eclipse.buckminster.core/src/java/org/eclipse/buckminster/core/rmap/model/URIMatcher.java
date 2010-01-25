@@ -32,6 +32,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
@@ -43,9 +44,9 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -53,7 +54,6 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  * 
  */
-@SuppressWarnings("restriction")
 public class URIMatcher extends RxAssembly
 {
 	@SuppressWarnings("hiding")
@@ -95,17 +95,17 @@ public class URIMatcher extends RxAssembly
 
 	private final String m_base;
 
-	private final VersionFormat m_versionFormat;
+	private final IVersionFormat m_versionFormat;
 
 	private final String m_componentType;
 
-	public URIMatcher(List<RxPart> parts, String base, VersionFormat versionFormat, String componentType)
+	public URIMatcher(List<RxPart> parts, String base, IVersionFormat versionFormat, String componentType)
 			throws CoreException, PatternSyntaxException
 	{
 		super(parts);
 		m_base = base;
 		m_versionFormat = versionFormat == null
-				? VersionFormat.OSGI_FORMAT
+				? VersionHelper.getOSGiFormat()
 				: versionFormat;
 		m_componentType = componentType;
 	}
@@ -288,7 +288,7 @@ public class URIMatcher extends RxAssembly
 		return pm;
 	}
 
-	public VersionFormat getVersionType()
+	public IVersionFormat getVersionType()
 	{
 		return m_versionFormat;
 	}
@@ -298,7 +298,7 @@ public class URIMatcher extends RxAssembly
 	{
 		super.addAttributes(attrs);
 		Utils.addAttribute(attrs, ATTR_BASE, m_base);
-		if(!m_versionFormat.equals(VersionFormat.OSGI_FORMAT))
+		if(!m_versionFormat.equals(VersionHelper.getOSGiFormat()))
 			Utils.addAttribute(attrs, ATTR_VERSION_FORMAT, m_versionFormat.toString());
 	}
 }

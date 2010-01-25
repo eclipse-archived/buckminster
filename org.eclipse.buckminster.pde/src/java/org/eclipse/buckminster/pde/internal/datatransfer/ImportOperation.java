@@ -49,7 +49,7 @@ import org.eclipse.osgi.util.NLS;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ImportOperation extends WorkspaceJob
 {
 	private static final int POLICY_DEFAULT = 0;

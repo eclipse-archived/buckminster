@@ -26,12 +26,11 @@ import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class CSpecExtension
 {
 	public static final String TAG = "cspecExtension"; //$NON-NLS-1$

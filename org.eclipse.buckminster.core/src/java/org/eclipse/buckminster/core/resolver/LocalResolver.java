@@ -81,7 +81,7 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings( { "serial" })
+@SuppressWarnings({ "serial" })
 public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implements IResolver
 {
 	public static final Provider INSTALLED_BUNDLE_PROVIDER;

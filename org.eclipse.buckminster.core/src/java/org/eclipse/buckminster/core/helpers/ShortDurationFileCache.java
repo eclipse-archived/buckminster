@@ -22,6 +22,77 @@ import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+/**
+ * @author Thomas Hallgren
+ */
+public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
+{
+	public interface Materializer
+	{
+		String getKey();
+
+		FileHandle materialize(IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException;
+	}
+
+	public ShortDurationFileCache(long keepAlive, String prefix, String suffix, File tempDir)
+	{
+		super(keepAlive, new TimedHashMap.EvictionPolicy<String, CacheEntry>()
+		{
+			public void evict(Entry<String, CacheEntry> entry)
+			{
+				CacheEntry ce = entry.getValue();
+				if(ce != null)
+					ce.remove();
+			}
+		});
+	}
+
+	public InputStream open(Materializer materializer, IProgressMonitor monitor) throws IOException, CoreException
+	{
+		return open(materializer, monitor, null);
+	}
+
+	public InputStream open(Materializer materializer, IProgressMonitor monitor, FileInfoBuilder fileInfo)
+			throws IOException, CoreException
+	{
+		String key = materializer.getKey();
+		CacheEntry ce;
+
+		// Synchronize the actual cache access. Not the whole method. We do not
+		// want everyone to wait for every file.
+		//
+		synchronized(this)
+		{
+			ce = get(key);
+			if(ce == null)
+			{
+				ce = new CacheEntry();
+				put(key, ce);
+			}
+		}
+
+		// This call is synchronized and will only do something for the first
+		// caller.
+		//
+		synchronized(ce)
+		{
+			ce.initialize(this, materializer, monitor, fileInfo);
+			return ce.open();
+		}
+	}
+
+	/**
+	 * This method will always return false since we want to defer scheduling until the completion of a materialization.
+	 * 
+	 * @return false
+	 */
+	@Override
+	public boolean scheduleOnPut()
+	{
+		return false;
+	}
+}
+
 class CacheEntry
 {
 	class DeletingInputStream extends FileInputStream
@@ -115,76 +186,5 @@ class CacheEntry
 			m_removePending = true;
 			m_tempFile.getFile().delete();
 		}
-	}
-}
-
-/**
- * @author Thomas Hallgren
- */
-public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
-{
-	public interface Materializer
-	{
-		String getKey();
-
-		FileHandle materialize(IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException;
-	}
-
-	public ShortDurationFileCache(long keepAlive, String prefix, String suffix, File tempDir)
-	{
-		super(keepAlive, new TimedHashMap.EvictionPolicy<String, CacheEntry>()
-		{
-			public void evict(Entry<String, CacheEntry> entry)
-			{
-				CacheEntry ce = entry.getValue();
-				if(ce != null)
-					ce.remove();
-			}
-		});
-	}
-
-	public InputStream open(Materializer materializer, IProgressMonitor monitor) throws IOException, CoreException
-	{
-		return open(materializer, monitor, null);
-	}
-
-	public InputStream open(Materializer materializer, IProgressMonitor monitor, FileInfoBuilder fileInfo)
-			throws IOException, CoreException
-	{
-		String key = materializer.getKey();
-		CacheEntry ce;
-
-		// Synchronize the actual cache access. Not the whole method. We do not
-		// want everyone to wait for every file.
-		//
-		synchronized(this)
-		{
-			ce = get(key);
-			if(ce == null)
-			{
-				ce = new CacheEntry();
-				put(key, ce);
-			}
-		}
-
-		// This call is synchronized and will only do something for the first
-		// caller.
-		//
-		synchronized(ce)
-		{
-			ce.initialize(this, materializer, monitor, fileInfo);
-			return ce.open();
-		}
-	}
-
-	/**
-	 * This method will always return false since we want to defer scheduling until the completion of a materialization.
-	 * 
-	 * @return false
-	 */
-	@Override
-	public boolean scheduleOnPut()
-	{
-		return false;
 	}
 }

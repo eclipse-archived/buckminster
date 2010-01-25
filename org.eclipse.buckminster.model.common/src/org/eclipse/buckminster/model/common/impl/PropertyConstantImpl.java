@@ -31,9 +31,9 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 public class PropertyConstantImpl extends PropertyImpl implements PropertyConstant
 {
 	/**
-	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
@@ -52,7 +52,6 @@ public class PropertyConstantImpl extends PropertyImpl implements PropertyConsta
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected PropertyConstantImpl()
@@ -62,75 +61,64 @@ public class PropertyConstantImpl extends PropertyImpl implements PropertyConsta
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY_CONSTANT__VALUE:
-			return getValue();
+		switch (featureID) {
+			case CommonPackage.PROPERTY_CONSTANT__VALUE:
+				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY_CONSTANT__VALUE:
-			return VALUE_EDEFAULT == null
-					? value != null
-					: !VALUE_EDEFAULT.equals(value);
+		switch (featureID) {
+			case CommonPackage.PROPERTY_CONSTANT__VALUE:
+				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY_CONSTANT__VALUE:
-			setValue((String)newValue);
-			return;
+		switch (featureID) {
+			case CommonPackage.PROPERTY_CONSTANT__VALUE:
+				setValue((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY_CONSTANT__VALUE:
-			setValue(VALUE_EDEFAULT);
-			return;
+		switch (featureID) {
+			case CommonPackage.PROPERTY_CONSTANT__VALUE:
+				setValue(VALUE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getValue()
@@ -140,39 +128,37 @@ public class PropertyConstantImpl extends PropertyImpl implements PropertyConsta
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setValue(String newValue)
 	{
 		String oldValue = value;
 		value = newValue;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_CONSTANT__VALUE, oldValue,
-					value));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_CONSTANT__VALUE, oldValue, value));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	@Override
-	public String toString()
+	public String toStringGen()
 	{
-		if(eIsProxy())
-			return super.toString();
+		return null;
+	}
 
-		StringBuffer result = new StringBuffer(super.toString());
+	@Override
+	public void toString(StringBuilder result)
+	{
+		if (eIsProxy()) { result.append(super.toString()); return; }
+
 		result.append(" (value: ");
 		result.append(value);
 		result.append(')');
-		return result.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

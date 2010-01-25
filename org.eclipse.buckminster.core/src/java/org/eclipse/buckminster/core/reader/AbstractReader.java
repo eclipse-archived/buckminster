@@ -49,16 +49,6 @@ public abstract class AbstractReader implements IComponentReader
 	{
 	}
 
-	protected void copyOverlay(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
-		// TODO: Handle file overlays
-	}
-
-	protected File createTempFile() throws IOException
-	{
-		return File.createTempFile(this.getReaderType().getId() + '-', ".tmp"); //$NON-NLS-1$
-	}
-
 	public IComponentType getComponentType()
 	{
 		return m_providerMatch.getComponentType();
@@ -97,5 +87,15 @@ public abstract class AbstractReader implements IComponentReader
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
 	{
 		return getNodeQuery().logDecision(decisionType, args);
+	}
+
+	protected void copyOverlay(IPath destination, IProgressMonitor monitor) throws CoreException
+	{
+		// TODO: Handle file overlays
+	}
+
+	protected File createTempFile() throws IOException
+	{
+		return File.createTempFile(this.getReaderType().getId() + '-', ".tmp"); //$NON-NLS-1$
 	}
 }

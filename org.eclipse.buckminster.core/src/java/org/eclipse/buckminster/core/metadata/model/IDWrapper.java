@@ -43,33 +43,9 @@ public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWr
 		this(wrapped.getId(), wrapped);
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_ID, m_id.toString());
-	}
-
 	public int compareTo(IDWrapper o)
 	{
 		return m_id.compareTo(o.m_id);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		if(m_wrapped instanceof BillOfMaterials)
-			((BillOfMaterials)m_wrapped).wrappedToSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped)
-					.getDefaultTag());
-		else if(m_wrapped instanceof ComponentQuery)
-		{
-			// Relative paths must be resolved prior to inclusion
-			//
-			ComponentQuery query = ((ComponentQuery)m_wrapped).resolve();
-			query.toSax(receiver, namespace, prefix, query.getDefaultTag());
-		}
-		else
-			((ISaxableElement)m_wrapped).toSax(receiver, namespace, prefix, ((ISaxableElement)m_wrapped)
-					.getDefaultTag());
 	}
 
 	public String getDefaultTag()
@@ -85,5 +61,29 @@ public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWr
 	public UUIDKeyed getWrapped()
 	{
 		return m_wrapped;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		Utils.addAttribute(attrs, ATTR_ID, m_id.toString());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		if(m_wrapped instanceof BillOfMaterials)
+			((BillOfMaterials)m_wrapped).wrappedToSax(receiver, namespace, prefix,
+					((ISaxableElement)m_wrapped).getDefaultTag());
+		else if(m_wrapped instanceof ComponentQuery)
+		{
+			// Relative paths must be resolved prior to inclusion
+			//
+			ComponentQuery query = ((ComponentQuery)m_wrapped).resolve();
+			query.toSax(receiver, namespace, prefix, query.getDefaultTag());
+		}
+		else
+			((ISaxableElement)m_wrapped).toSax(receiver, namespace, prefix,
+					((ISaxableElement)m_wrapped).getDefaultTag());
 	}
 }

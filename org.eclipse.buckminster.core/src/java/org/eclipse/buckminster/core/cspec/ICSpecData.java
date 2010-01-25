@@ -8,9 +8,8 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
-@SuppressWarnings("restriction")
 public interface ICSpecData extends IAdaptable
 {
 	IAttribute getAttribute(String name);

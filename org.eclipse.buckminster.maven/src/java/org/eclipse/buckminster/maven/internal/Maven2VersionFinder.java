@@ -28,8 +28,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.w3c.dom.Document;
 
 /**
@@ -92,7 +91,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		VersionRange range = query.getVersionRange();
 		if(range != null)
 		{
-			if(range.getFormat().equals(VersionFormat.OSGI_FORMAT))
+			if(range.getFormat().equals(VersionHelper.getOSGiFormat()))
 				//
 				// Convert the OSGi version to a Triplet version instead.
 				//

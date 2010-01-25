@@ -28,8 +28,6 @@ abstract class AlterPropertiesHandler extends PropertyManagerHandler
 		super(parent, tag);
 	}
 
-	protected abstract void addRemovedProperty(String key) throws SAXException;
-
 	@Override
 	public void childPopped(ChildHandler child) throws SAXException
 	{
@@ -49,4 +47,6 @@ abstract class AlterPropertiesHandler extends PropertyManagerHandler
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
+
+	protected abstract void addRemovedProperty(String key) throws SAXException;
 }

@@ -30,13 +30,6 @@ public abstract class NamedElement extends AbstractSaxableElement
 		m_name = name;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		if(m_name != null)
-			Utils.addAttribute(attrs, this.getNameAttributeName(), m_name);
-	}
-
 	public String getName()
 	{
 		return m_name;
@@ -53,5 +46,12 @@ public abstract class NamedElement extends AbstractSaxableElement
 		return m_name == null
 				? "null" //$NON-NLS-1$
 				: m_name;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		if(m_name != null)
+			Utils.addAttribute(attrs, this.getNameAttributeName(), m_name);
 	}
 }

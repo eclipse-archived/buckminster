@@ -11,13 +11,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,26 +28,28 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.p2.metadata.IRequiredCapability;
+import org.eclipse.equinox.internal.p2.metadata.VersionedId;
+import org.eclipse.equinox.internal.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
 import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
 import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IProvidedCapability;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
 import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory.InstallableUnitDescription;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.CompositeQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
+import org.eclipse.equinox.p2.metadata.IArtifactKey;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.IProvidedCapability;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
+import org.eclipse.equinox.p2.query.IQuery;
+import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.LimitQuery;
+import org.eclipse.equinox.p2.query.PipedQuery;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.equinox.spi.p2.publisher.PublisherHelper;
 
@@ -139,8 +139,7 @@ public class CategoriesAction extends AbstractPublisherAction
 	 * @param featureRoot
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	private static Map<Locale, Properties> getLocalizations(Map<String, String> properties, File featureRoot)
+	private static Map<Locale, Map<String, String>> getLocalizations(Map<String, String> properties, File featureRoot)
 	{
 		if(featureRoot == null || properties == null)
 			return Collections.emptyMap();
@@ -158,7 +157,7 @@ public class CategoriesAction extends AbstractPublisherAction
 		if(msgKeys == null)
 			return Collections.emptyMap();
 
-		Map<Locale, Properties> localizations;
+		Map<Locale, Map<String, String>> localizations;
 		String[] keyStrings = msgKeys.toArray(new String[msgKeys.size()]);
 		if(featureRoot.isDirectory())
 			localizations = LocalizationHelper.getDirPropertyLocalizations(featureRoot, "feature", null, keyStrings); //$NON-NLS-1$
@@ -174,15 +173,15 @@ public class CategoriesAction extends AbstractPublisherAction
 		return value != null && value.length() > 1 && value.charAt(0) == '%' && value.substring(1).equals(key);
 	}
 
-	private final Map<Locale, Properties> m_localizations;
+	private final Map<Locale, Map<String, String>> m_localizations;
 
 	private final Map<String, String> m_buildProperties;
 
-	private final List<VersionedId> m_featureEntries;
+	private final List<IVersionedId> m_featureEntries;
 
 	private final File m_projectRoot;
 
-	public CategoriesAction(File projectRoot, Map<String, String> buildProperties, List<VersionedId> featureEntries)
+	public CategoriesAction(File projectRoot, Map<String, String> buildProperties, List<IVersionedId> featureEntries)
 			throws CoreException
 	{
 		m_buildProperties = buildProperties;
@@ -212,8 +211,8 @@ public class CategoriesAction extends AbstractPublisherAction
 		cat.setProperty(IInstallableUnit.PROP_NAME, category.getLabel());
 		cat.setProperty(IInstallableUnit.PROP_DESCRIPTION, category.getDescription());
 
-		ArrayList<VersionedId> fts = new ArrayList<VersionedId>(featureIUs.size());
-		ArrayList<VersionedId> bds = new ArrayList<VersionedId>(featureIUs.size());
+		ArrayList<IVersionedId> fts = new ArrayList<IVersionedId>(featureIUs.size());
+		ArrayList<IVersionedId> bds = new ArrayList<IVersionedId>(featureIUs.size());
 		ArrayList<IRequiredCapability> reqsConfigurationUnits = new ArrayList<IRequiredCapability>(featureIUs.size());
 		for(IInstallableUnit iu : featureIUs)
 		{
@@ -242,19 +241,17 @@ public class CategoriesAction extends AbstractPublisherAction
 		ArrayList<IProvidedCapability> providedCapabilities = new ArrayList<IProvidedCapability>();
 		providedCapabilities.add(PublisherHelper.createSelfCapability(categoryId, categoryVersion));
 
-		for(Map.Entry<Locale, Properties> locEntry : m_localizations.entrySet())
+		for(Map.Entry<Locale, Map<String, String>> locEntry : m_localizations.entrySet())
 		{
 			Locale locale = locEntry.getKey();
-			Properties translatedStrings = locEntry.getValue();
-			Enumeration<?> propertyKeys = translatedStrings.propertyNames();
-			while(propertyKeys.hasMoreElements())
+			for(Map.Entry<String, String> entry : locEntry.getValue().entrySet())
 			{
-				String key = (String)propertyKeys.nextElement();
+				String key = entry.getKey();
 
 				// Is the category using this key?
 				//
 				if(isKeyReference(category.getLabel(), key) || isKeyReference(category.getDescription(), key))
-					cat.setProperty(locale.toString() + '.' + key, translatedStrings.getProperty(key));
+					cat.setProperty(locale.toString() + '.' + key, entry.getValue());
 			}
 			providedCapabilities.add(PublisherHelper.makeTranslationCapability(categoryId, locale));
 		}
@@ -262,7 +259,7 @@ public class CategoriesAction extends AbstractPublisherAction
 		cat.setCapabilities(providedCapabilities.toArray(new IProvidedCapability[providedCapabilities.size()]));
 
 		cat.setArtifacts(new IArtifactKey[0]);
-		cat.setProperty(IInstallableUnit.PROP_TYPE_CATEGORY, "true"); //$NON-NLS-1$
+		cat.setProperty(InstallableUnitDescription.PROP_TYPE_CATEGORY, "true"); //$NON-NLS-1$
 		return MetadataFactory.createInstallableUnit(cat);
 	}
 
@@ -318,45 +315,36 @@ public class CategoriesAction extends AbstractPublisherAction
 			throw new OperationCanceledException();
 
 		String id = name + ".feature.group"; //$NON-NLS-1$
-		Query query = null;
-		Collector collector = null;
+		IQuery<IInstallableUnit> query = null;
 		if(version == null || version.equals(Version.emptyVersion))
-		{
-			query = new CompositeQuery(new Query[] { new InstallableUnitQuery(id), new LatestIUVersionQuery() });
-			collector = new Collector();
-		}
+			query = new PipedQuery<IInstallableUnit>(new InstallableUnitQuery(id),
+					new LatestIUVersionQuery<IInstallableUnit>());
 		else
 		{
-			if(version.getQualifier() != null && version.getQualifier().contains("qualifier")) //$NON-NLS-1$
+			String qual = VersionHelper.getQualifier(version);
+			if(qual != null && qual.contains("qualifier")) //$NON-NLS-1$
 			{
 				// We won't find an IU that matches this version. We need to use a version range.
 				//
-				Version low = VersionHelper.replaceQualifier(version, "0"); //$NON-NLS-1$
-				Version high = Version.createOSGi(version.getMajor(), version.getMinor(), version.getMicro() + 1);
-				query = new InstallableUnitQuery(id, new VersionRange(low, true, high, false));
+				Version low = VersionHelper.replaceQualifier(version, null);
+				org.osgi.framework.Version ov = Version.toOSGiVersion(version);
+				query = new InstallableUnitQuery(id, new VersionRange(low, true, Version.createOSGi(ov.getMajor(),
+						ov.getMinor(), ov.getMicro() + 1), false));
 			}
 			else
 				query = new InstallableUnitQuery(id, version);
 
-			collector = new Collector()
-			{
-				@Override
-				public boolean accept(Object object)
-				{
-					super.accept(object);
-					return false; // stop searching once we've found one
-				}
-			};
+			query = new LimitQuery<IInstallableUnit>(query, 1);
 		}
 
-		collector = results.query(query, collector, monitor);
-		if(collector.size() == 0)
-			collector = publisherInfo.getMetadataRepository().query(query, collector, null);
-		if(collector.size() == 0 && publisherInfo.getContextMetadataRepository() != null)
-			collector = publisherInfo.getContextMetadataRepository().query(query, collector, null);
+		IQueryResult<IInstallableUnit> result = results.query(query, monitor);
+		if(result.isEmpty())
+			result = publisherInfo.getMetadataRepository().query(query, null);
+		if(result.isEmpty() && publisherInfo.getContextMetadataRepository() != null)
+			result = publisherInfo.getContextMetadataRepository().query(query, null);
 
-		if(collector.size() == 1)
-			return (IInstallableUnit)collector.iterator().next();
+		if(!result.isEmpty())
+			return result.iterator().next();
 		return null;
 	}
 
@@ -479,7 +467,7 @@ public class CategoriesAction extends AbstractPublisherAction
 			// This is expected. Just ignore
 		}
 
-		for(VersionedId fe : m_featureEntries)
+		for(IVersionedId fe : m_featureEntries)
 		{
 			IInstallableUnit iu = getFeatureIU(fe.getId(), fe.getVersion(), publisherInfo, results, monitor);
 			if(iu == null || mappings.containsKey(iu))

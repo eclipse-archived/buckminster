@@ -19,7 +19,7 @@ public class IllegalParameterException extends LocalizedException
 
 	public IllegalParameterException(String extensionPointId, String id, String parameterName)
 	{
-		super(NLS.bind(Messages.Parameter_0_is_illegal_for_id_1_extension_point_2,
-				new Object[] { parameterName, id, extensionPointId }));
+		super(NLS.bind(Messages.Parameter_0_is_illegal_for_id_1_extension_point_2, new Object[] { parameterName, id,
+				extensionPointId }));
 	}
 }

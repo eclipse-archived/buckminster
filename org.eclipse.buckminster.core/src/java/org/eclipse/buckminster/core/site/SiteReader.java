@@ -41,7 +41,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings( { "restriction", "deprecation" })
+@SuppressWarnings({ "restriction", "deprecation" })
 public class SiteReader implements IStreamConsumer<SaxableSite>
 {
 	static class ExtendedDefaultSiteParser extends DefaultSiteParser

@@ -120,6 +120,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void createProject(IProgressMonitor monitor) throws CoreException
 	{
 		MaterializationContext context = (MaterializationContext)m_query.getContext();

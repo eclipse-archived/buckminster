@@ -19,8 +19,9 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.internal.p2.metadata.VersionedId;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.pde.core.IModelChangedEvent;
 import org.eclipse.pde.core.IModelChangedListener;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
@@ -57,7 +58,8 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		for(IFeatureChild ref : feature.getIncludedFeatures())
 		{
 			String vstr = ref.getVersion();
-			ComponentIdentifier cid = replaceFeatureReferenceVersion(id, new VersionedId(ref.getId(), vstr));
+			ComponentIdentifier cid = replaceFeatureReferenceVersion(id,
+					new org.eclipse.equinox.internal.p2.metadata.VersionedId(ref.getId(), vstr));
 			if(cid != null)
 			{
 				deps.add(cid);
@@ -123,23 +125,23 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 			return;
 
 		IFeatureChild[] features = feature.getIncludedFeatures();
-		List<VersionedId> featureList;
+		List<IVersionedId> featureList;
 		if(features.length == 0)
 			featureList = Collections.emptyList();
 		else
 		{
-			featureList = new ArrayList<VersionedId>(features.length);
+			featureList = new ArrayList<IVersionedId>(features.length);
 			for(IFeatureChild f : features)
 				featureList.add(new VersionedId(f.getId(), f.getVersion()));
 		}
 
 		IFeatureImport[] bundles = feature.getImports();
-		List<VersionedId> bundleList;
+		List<IVersionedId> bundleList;
 		if(features.length == 0)
 			bundleList = Collections.emptyList();
 		else
 		{
-			bundleList = new ArrayList<VersionedId>(bundles.length);
+			bundleList = new ArrayList<IVersionedId>(bundles.length);
 			for(IFeatureImport f : bundles)
 				bundleList.add(new VersionedId(f.getId(), f.getVersion()));
 		}
@@ -148,7 +150,7 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		if(suffix == null)
 			return;
 
-		String qualifier = version.getQualifier();
+		String qualifier = VersionHelper.getQualifier(version);
 		if(qualifier == null)
 			qualifier = suffix;
 		else

@@ -45,16 +45,6 @@ class AlterGroupHandler extends AlterAttributeHandler
 		super(parent, new GroupHandler(parent, publ));
 	}
 
-	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException
-	{
-		((AlterGroupBuilder)this.getBuilder()).addAlterPrerequisite(prereq);
-	}
-
-	void addRemovePrerequisite(String key)
-	{
-		((AlterGroupBuilder)this.getBuilder()).addRemovePrerequisite(key);
-	}
-
 	@Override
 	public void childPopped(ChildHandler child) throws SAXException
 	{
@@ -76,12 +66,6 @@ class AlterGroupHandler extends AlterAttributeHandler
 	}
 
 	@Override
-	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
-	{
-		return new AlterGroupBuilder((GroupBuilder)baseBuilder);
-	}
-
-	@Override
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
 	{
 		ChildHandler ch;
@@ -92,5 +76,21 @@ class AlterGroupHandler extends AlterAttributeHandler
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
+	}
+
+	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException
+	{
+		((AlterGroupBuilder)this.getBuilder()).addAlterPrerequisite(prereq);
+	}
+
+	void addRemovePrerequisite(String key)
+	{
+		((AlterGroupBuilder)this.getBuilder()).addRemovePrerequisite(key);
+	}
+
+	@Override
+	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
+	{
+		return new AlterGroupBuilder((GroupBuilder)baseBuilder);
 	}
 }

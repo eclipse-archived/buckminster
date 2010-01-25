@@ -16,34 +16,35 @@ import org.eclipse.buckminster.cmdline.Headless;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
-import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
-import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.CompositeQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
+import org.eclipse.equinox.internal.p2.metadata.query.LatestIUVersionQuery;
+import org.eclipse.equinox.p2.engine.IProfile;
+import org.eclipse.equinox.p2.engine.IProfileRegistry;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.query.Collector;
+import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.PipedQuery;
 
 @SuppressWarnings("restriction")
 public class ListSite extends AbstractCommand
 {
 	static IInstallableUnit[] getRootIUs(URI site, IProgressMonitor monitor) throws SimpleErrorExitException
 	{
-		Collector roots = new Collector();
-
+		IQueryResult<IInstallableUnit> roots;
 		if(site == null)
 		{
 			IProfile runningInstanceProfile = ProvisioningHelper.getProfile(IProfileRegistry.SELF);
 
 			if(runningInstanceProfile != null)
-				roots = runningInstanceProfile.query(new CompositeQuery(new Query[] { new FeatureQuery(),
-						new LatestIUVersionQuery() }), roots, monitor);
+				roots = runningInstanceProfile.query(new PipedQuery<IInstallableUnit>(new FeatureQuery(),
+						new LatestIUVersionQuery<IInstallableUnit>()), monitor);
+			else
+				roots = Collector.emptyCollector();
 		}
 		else
-			roots = ProvisioningHelper.getInstallableUnits(site, new CompositeQuery(new Query[] { new FeatureQuery(),
-					new LatestIUVersionQuery() }), roots, monitor);
+			roots = ProvisioningHelper.getInstallableUnits(site, new PipedQuery<IInstallableUnit>(new FeatureQuery(),
+					new LatestIUVersionQuery<IInstallableUnit>()), monitor);
 
-		return (IInstallableUnit[])roots.toArray(IInstallableUnit.class);
+		return roots.toArray(IInstallableUnit.class);
 	}
 
 	private URI m_site;

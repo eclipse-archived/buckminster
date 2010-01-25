@@ -21,13 +21,12 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class GeneratorNode extends BOMNode
 {
 	public static final String ATTR_ATTRIBUTE = "attribute"; //$NON-NLS-1$

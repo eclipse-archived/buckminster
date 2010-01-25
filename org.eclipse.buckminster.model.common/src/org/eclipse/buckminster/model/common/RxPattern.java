@@ -8,18 +8,20 @@ package org.eclipse.buckminster.model.common;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object ' <em><b>Rx Pattern</b></em>'. <!-- end-user-doc -->
- * 
- * <!-- begin-model-doc --> Defines a partial regexp as a pattern <!-- end-model-doc -->
- * 
+ *
+ * <!-- begin-model-doc -->
+ * Defines a partial regexp as a pattern
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.RxPattern#getPattern <em>Pattern</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.RxPattern#getPrefix <em>Prefix</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.RxPattern#getSuffix <em>Suffix</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.RxPattern#getPattern <em>Pattern</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.RxPattern#getPrefix <em>Prefix</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.RxPattern#getSuffix <em>Suffix</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.buckminster.model.common.CommonPackage#getRxPattern()
  * @model
  * @generated
@@ -64,33 +66,27 @@ public interface RxPattern extends RxPart
 	String getSuffix();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.RxPattern#getPattern <em>Pattern</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Pattern</em>' attribute.
+	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.RxPattern#getPattern <em>Pattern</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Pattern</em>' attribute.
 	 * @see #getPattern()
 	 * @generated
 	 */
 	void setPattern(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.RxPattern#getPrefix <em>Prefix</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Prefix</em>' attribute.
+	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.RxPattern#getPrefix <em>Prefix</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Prefix</em>' attribute.
 	 * @see #getPrefix()
 	 * @generated
 	 */
 	void setPrefix(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.RxPattern#getSuffix <em>Suffix</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Suffix</em>' attribute.
+	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.RxPattern#getSuffix <em>Suffix</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Suffix</em>' attribute.
 	 * @see #getSuffix()
 	 * @generated
 	 */

@@ -20,8 +20,9 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.FormatException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionFormatException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -29,14 +30,13 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class VersionConverterHandler extends ExtensionAwareHandler implements ChildPoppedListener
 {
 	static final String TAG = VersionConverterDesc.TAG;
 
 	private String m_type;
 
-	private VersionFormat m_versionFormat;
+	private IVersionFormat m_versionFormat;
 
 	private final BidirectionalTransformerHandler m_transformerHandler = new BidirectionalTransformerHandler(this);
 
@@ -79,9 +79,9 @@ public class VersionConverterHandler extends ExtensionAwareHandler implements Ch
 		{
 			try
 			{
-				m_versionFormat = VersionFormat.compile(tmp);
+				m_versionFormat = Version.compile(tmp);
 			}
-			catch(FormatException e)
+			catch(VersionFormatException e)
 			{
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}

@@ -25,8 +25,8 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum SplitType implements Enumerator
 {
 	/**
-	 * The '<em><b>Quoted</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The '<em><b>Quoted</b></em>' literal object.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #QUOTED_VALUE
 	 * @generated
 	 * @ordered
@@ -34,8 +34,8 @@ public enum SplitType implements Enumerator
 	QUOTED(0, "quoted", "quoted"),
 
 	/**
-	 * The '<em><b>Unquoted</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The '<em><b>Unquoted</b></em>' literal object.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #UNQUOTED_VALUE
 	 * @generated
 	 * @ordered
@@ -43,8 +43,8 @@ public enum SplitType implements Enumerator
 	UNQUOTED(1, "unquoted", "unquoted"),
 
 	/**
-	 * The '<em><b>Groups</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The '<em><b>Groups</b></em>' literal object.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #GROUPS_VALUE
 	 * @generated
 	 * @ordered
@@ -52,13 +52,13 @@ public enum SplitType implements Enumerator
 	GROUPS(2, "groups", "groups");
 
 	/**
-	 * The '<em><b>Quoted</b></em>' literal value. <!-- begin-user-doc -->
+	 * The '<em><b>Quoted</b></em>' literal value.
+	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>Quoted</b></em>' literal object isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #QUOTED
 	 * @model name="quoted"
 	 * @generated
@@ -67,13 +67,13 @@ public enum SplitType implements Enumerator
 	public static final int QUOTED_VALUE = 0;
 
 	/**
-	 * The '<em><b>Unquoted</b></em>' literal value. <!-- begin-user-doc -->
+	 * The '<em><b>Unquoted</b></em>' literal value.
+	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>Unquoted</b></em>' literal object isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #UNQUOTED
 	 * @model name="unquoted"
 	 * @generated
@@ -82,13 +82,13 @@ public enum SplitType implements Enumerator
 	public static final int UNQUOTED_VALUE = 1;
 
 	/**
-	 * The '<em><b>Groups</b></em>' literal value. <!-- begin-user-doc -->
+	 * The '<em><b>Groups</b></em>' literal value.
+	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>Groups</b></em>' literal object isn't clear, there really should be more of a
 	 * description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #GROUPS
 	 * @model name="groups"
 	 * @generated
@@ -97,53 +97,51 @@ public enum SplitType implements Enumerator
 	public static final int GROUPS_VALUE = 2;
 
 	/**
-	 * An array of all the '<em><b>Split Type</b></em>' enumerators. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * An array of all the '<em><b>Split Type</b></em>' enumerators.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static final SplitType[] VALUES_ARRAY = new SplitType[] { QUOTED, UNQUOTED, GROUPS, };
+	private static final SplitType[] VALUES_ARRAY = new SplitType[] {
+			QUOTED,
+			UNQUOTED,
+			GROUPS,
+		};
 
 	/**
-	 * A public read-only list of all the '<em><b>Split Type</b></em>' enumerators. <!-- begin-user-doc --> <!--
+	 * A public read-only list of all the '<em><b>Split Type</b></em>' enumerators.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public static final List<SplitType> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Split Type</b></em>' literal with the specified integer value. <!-- begin-user-doc --> <!--
+	 * Returns the '<em><b>Split Type</b></em>' literal with the specified integer value.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public static SplitType get(int value)
 	{
-		switch(value)
-		{
-		case QUOTED_VALUE:
-			return QUOTED;
-		case UNQUOTED_VALUE:
-			return UNQUOTED;
-		case GROUPS_VALUE:
-			return GROUPS;
+		switch (value) {
+			case QUOTED_VALUE: return QUOTED;
+			case UNQUOTED_VALUE: return UNQUOTED;
+			case GROUPS_VALUE: return GROUPS;
 		}
 		return null;
 	}
 
 	/**
-	 * Returns the '<em><b>Split Type</b></em>' literal with the specified literal value. <!-- begin-user-doc --> <!--
+	 * Returns the '<em><b>Split Type</b></em>' literal with the specified literal value.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public static SplitType get(String literal)
 	{
-		for(int i = 0; i < VALUES_ARRAY.length; ++i)
-		{
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			SplitType result = VALUES_ARRAY[i];
-			if(result.toString().equals(literal))
-			{
+			if (result.toString().equals(literal)) {
 				return result;
 			}
 		}
@@ -151,18 +149,16 @@ public enum SplitType implements Enumerator
 	}
 
 	/**
-	 * Returns the '<em><b>Split Type</b></em>' literal with the specified name. <!-- begin-user-doc --> <!--
+	 * Returns the '<em><b>Split Type</b></em>' literal with the specified name.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public static SplitType getByName(String name)
 	{
-		for(int i = 0; i < VALUES_ARRAY.length; ++i)
-		{
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			SplitType result = VALUES_ARRAY[i];
-			if(result.getName().equals(name))
-			{
+			if (result.getName().equals(name)) {
 				return result;
 			}
 		}
@@ -171,28 +167,25 @@ public enum SplitType implements Enumerator
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private final int value;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private final String name;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private final String literal;
 
 	/**
-	 * Only this class can construct instances. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Only this class can construct instances.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	private SplitType(int value, String name, String literal)
@@ -204,38 +197,35 @@ public enum SplitType implements Enumerator
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getLiteral()
 	{
-		return literal;
+	  return literal;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getName()
 	{
-		return name;
+	  return name;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public int getValue()
 	{
-		return value;
+	  return value;
 	}
 
 	/**
-	 * Returns the literal value of the enumerator, which is its string representation. <!-- begin-user-doc --> <!--
+	 * Returns the literal value of the enumerator, which is its string representation.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

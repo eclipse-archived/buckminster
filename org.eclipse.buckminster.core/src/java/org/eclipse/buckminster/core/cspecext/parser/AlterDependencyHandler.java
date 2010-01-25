@@ -47,6 +47,13 @@ class AlterDependencyHandler extends AlterHandler
 		return m_baseHandler.createHandler(uri, localName, attrs);
 	}
 
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_baseHandler.handleAttributes(attrs);
+		m_builder = new AlterDependencyBuilder(m_baseHandler.getBuilder());
+	}
+
 	AlterDependency getAlterDependency() throws SAXException
 	{
 		try
@@ -62,12 +69,5 @@ class AlterDependencyHandler extends AlterHandler
 	AlterDependencyBuilder getBuilder()
 	{
 		return m_builder;
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_baseHandler.handleAttributes(attrs);
-		m_builder = new AlterDependencyBuilder(m_baseHandler.getBuilder());
 	}
 }

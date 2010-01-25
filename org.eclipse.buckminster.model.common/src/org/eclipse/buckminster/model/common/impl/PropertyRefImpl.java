@@ -21,13 +21,13 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.impl.PropertyRefImpl#getKey <em>Key</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyRefImpl#getKey <em>Key</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
-public class PropertyRefImpl extends EObjectImpl implements PropertyRef
+public class PropertyRefImpl extends BObjectImpl implements PropertyRef
 {
 	/**
 	 * The default value of the '{@link #getKey() <em>Key</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -40,8 +40,8 @@ public class PropertyRefImpl extends EObjectImpl implements PropertyRef
 	protected static final String KEY_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getKey() <em>Key</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getKey() <em>Key</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getKey()
 	 * @generated
 	 * @ordered
@@ -50,7 +50,6 @@ public class PropertyRefImpl extends EObjectImpl implements PropertyRef
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected PropertyRefImpl()
@@ -60,75 +59,64 @@ public class PropertyRefImpl extends EObjectImpl implements PropertyRef
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY_REF__KEY:
-			return getKey();
+		switch (featureID) {
+			case CommonPackage.PROPERTY_REF__KEY:
+				return getKey();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY_REF__KEY:
-			return KEY_EDEFAULT == null
-					? key != null
-					: !KEY_EDEFAULT.equals(key);
+		switch (featureID) {
+			case CommonPackage.PROPERTY_REF__KEY:
+				return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY_REF__KEY:
-			setKey((String)newValue);
-			return;
+		switch (featureID) {
+			case CommonPackage.PROPERTY_REF__KEY:
+				setKey((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.PROPERTY_REF__KEY:
-			setKey(KEY_EDEFAULT);
-			return;
+		switch (featureID) {
+			case CommonPackage.PROPERTY_REF__KEY:
+				setKey(KEY_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getKey()
@@ -138,38 +126,37 @@ public class PropertyRefImpl extends EObjectImpl implements PropertyRef
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setKey(String newKey)
 	{
 		String oldKey = key;
 		key = newKey;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_REF__KEY, oldKey, key));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	@Override
-	public String toString()
+	public String toStringGen()
 	{
-		if(eIsProxy())
-			return super.toString();
+		return null;
+	}
 
-		StringBuffer result = new StringBuffer(super.toString());
+	@Override
+	public void toString(StringBuilder result)
+	{
+		if (eIsProxy()) { result.append(super.toString()); return; }
+
 		result.append(" (key: ");
 		result.append(key);
 		result.append(')');
-		return result.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

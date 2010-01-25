@@ -37,7 +37,6 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
-import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -46,16 +45,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepositoryFactory;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
+import org.eclipse.equinox.internal.p2.metadata.VersionedId;
+import org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureManifestParser;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
-import org.eclipse.equinox.internal.provisional.p2.artifact.repository.IArtifactRepository;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
-import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
-import org.eclipse.equinox.internal.provisional.p2.repository.IRepository;
-import org.eclipse.equinox.internal.provisional.spi.p2.artifact.repository.SimpleArtifactRepositoryFactory;
-import org.eclipse.equinox.internal.provisional.spi.p2.metadata.repository.SimpleMetadataRepositoryFactory;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.Publisher;
@@ -64,6 +61,9 @@ import org.eclipse.equinox.p2.publisher.eclipse.BundlesAction;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
+import org.eclipse.equinox.p2.repository.IRepository;
+import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
+import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
@@ -182,7 +182,7 @@ public class P2SiteGenerator extends AbstractActor
 
 		if(product.useFeatures())
 		{
-			List<VersionedId> features = TypedCollections.getProductFeatures(product);
+			List<IVersionedId> features = product.getFeatures();
 			actions.add(new CategoriesAction(sourceFolder, buildProperties, features));
 		}
 		actions.add(new ProductAction(null, product, flavor, exeFeature));
@@ -223,7 +223,7 @@ public class P2SiteGenerator extends AbstractActor
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_parse_feature_manifest_file_0,
 						featureFile));
 
-			List<String> messageKeys = TypedCollections.getMessageKeys(parser);
+			List<String> messageKeys = parser.getMessageKeys();
 			String[] keyStrings = messageKeys.toArray(new String[messageKeys.size()]);
 			feature.setLocalizations(LocalizationHelper.getDirPropertyLocalizations(sourceFolder,
 					"feature", null, keyStrings)); //$NON-NLS-1$
@@ -443,7 +443,7 @@ public class P2SiteGenerator extends AbstractActor
 		return Status.OK_STATUS;
 	}
 
-	private void collectFeatures(CSpec cspec, Map<VersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException
+	private void collectFeatures(CSpec cspec, Map<IVersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException
 	{
 		ComponentIdentifier ci = cspec.getComponentIdentifier();
 		if(cspecs.put(new VersionedId(ci.getName(), ci.getVersion()), cspec) != null)
@@ -458,10 +458,10 @@ public class P2SiteGenerator extends AbstractActor
 		}
 	}
 
-	private Map<VersionedId, CSpec> collectFeatures(IActionContext ctx) throws CoreException
+	private Map<IVersionedId, CSpec> collectFeatures(IActionContext ctx) throws CoreException
 	{
 		CSpec cspec = ctx.getAction().getCSpec();
-		Map<VersionedId, CSpec> cspecs = new HashMap<VersionedId, CSpec>();
+		Map<IVersionedId, CSpec> cspecs = new HashMap<IVersionedId, CSpec>();
 		collectFeatures(cspec, cspecs, ctx);
 		return cspecs;
 	}
@@ -485,7 +485,7 @@ public class P2SiteGenerator extends AbstractActor
 			if(mirrorsSite != null && mirrorsSite.getURL() != null)
 				actions.add(new MirrorsSiteAction(mirrorsSite.getURL()));
 
-			ArrayList<VersionedId> featureList = new ArrayList<VersionedId>();
+			ArrayList<IVersionedId> featureList = new ArrayList<IVersionedId>();
 			for(FeatureEntry fe : topFeature.getEntries())
 			{
 				if(fe.isPatch() || fe.isPlugin() || fe.isRequires())

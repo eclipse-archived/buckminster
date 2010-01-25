@@ -18,18 +18,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.impl.FormatImpl#getFormat <em>Format</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.FormatImpl#getFormat <em>Format</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class FormatImpl extends ValueFilterImpl implements Format
 {
 	/**
-	 * The default value of the '{@link #getFormat() <em>Format</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getFormat() <em>Format</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getFormat()
 	 * @generated
 	 * @ordered
@@ -37,9 +37,9 @@ public class FormatImpl extends ValueFilterImpl implements Format
 	protected static final String FORMAT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFormat() <em>Format</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getFormat() <em>Format</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getFormat()
 	 * @generated
 	 * @ordered
@@ -48,7 +48,6 @@ public class FormatImpl extends ValueFilterImpl implements Format
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected FormatImpl()
@@ -58,75 +57,64 @@ public class FormatImpl extends ValueFilterImpl implements Format
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.FORMAT__FORMAT:
-			return getFormat();
+		switch (featureID) {
+			case CommonPackage.FORMAT__FORMAT:
+				return getFormat();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.FORMAT__FORMAT:
-			return FORMAT_EDEFAULT == null
-					? format != null
-					: !FORMAT_EDEFAULT.equals(format);
+		switch (featureID) {
+			case CommonPackage.FORMAT__FORMAT:
+				return FORMAT_EDEFAULT == null ? format != null : !FORMAT_EDEFAULT.equals(format);
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.FORMAT__FORMAT:
-			setFormat((String)newValue);
-			return;
+		switch (featureID) {
+			case CommonPackage.FORMAT__FORMAT:
+				setFormat((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.FORMAT__FORMAT:
-			setFormat(FORMAT_EDEFAULT);
-			return;
+		switch (featureID) {
+			case CommonPackage.FORMAT__FORMAT:
+				setFormat(FORMAT_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getFormat()
@@ -136,38 +124,37 @@ public class FormatImpl extends ValueFilterImpl implements Format
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setFormat(String newFormat)
 	{
 		String oldFormat = format;
 		format = newFormat;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.FORMAT__FORMAT, oldFormat, format));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	@Override
-	public String toString()
+	public String toStringGen()
 	{
-		if(eIsProxy())
-			return super.toString();
+		return null;
+	}
 
-		StringBuffer result = new StringBuffer(super.toString());
+	@Override
+	public void toString(StringBuilder result)
+	{
+		if (eIsProxy()) { result.append(super.toString()); return; }
+
 		result.append(" (format: ");
 		result.append(format);
 		result.append(')');
-		return result.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

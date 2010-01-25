@@ -102,11 +102,6 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 		return ch;
 	}
 
-	UUIDKeyed getWrapped(UUID id) throws SAXException
-	{
-		return ((IWrapperParent)getParentHandler()).getWrapped(id);
-	}
-
 	public IDWrapper getWrapper()
 	{
 		return m_wrapper;
@@ -117,5 +112,10 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 	{
 		m_id = UUID.fromString(this.getStringValue(attrs, IDWrapper.ATTR_ID));
 		m_wrapper = null;
+	}
+
+	UUIDKeyed getWrapped(UUID id) throws SAXException
+	{
+		return ((IWrapperParent)getParentHandler()).getWrapped(id);
 	}
 }

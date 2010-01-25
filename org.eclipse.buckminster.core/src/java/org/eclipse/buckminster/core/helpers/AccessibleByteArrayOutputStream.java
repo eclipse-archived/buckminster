@@ -69,8 +69,7 @@ public class AccessibleByteArrayOutputStream extends ByteArrayOutputStream
 	{
 		super.write(b, off, len);
 		if(m_maxSize > 0 && count >= m_maxSize)
-			throw new IllegalStateException(NLS.bind(Messages.Max_size_0_exceeded,
-					Integer.valueOf(m_maxSize)));
+			throw new IllegalStateException(NLS.bind(Messages.Max_size_0_exceeded, Integer.valueOf(m_maxSize)));
 	}
 
 	@Override
@@ -78,7 +77,6 @@ public class AccessibleByteArrayOutputStream extends ByteArrayOutputStream
 	{
 		super.write(b);
 		if(m_maxSize > 0 && count >= m_maxSize)
-			throw new IllegalStateException(NLS.bind(Messages.Max_size_0_exceeded,
-					Integer.valueOf(m_maxSize)));
+			throw new IllegalStateException(NLS.bind(Messages.Max_size_0_exceeded, Integer.valueOf(m_maxSize)));
 	}
 }

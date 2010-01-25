@@ -20,6 +20,13 @@ import org.eclipse.core.runtime.CoreException;
 public interface ISaxableStorage<T extends UUIDKeyed>
 {
 	/**
+	 * Obtains an array of the key of all instances in this storage.
+	 * 
+	 * @return The array of all id's known to this storage.
+	 */
+	public UUID[] getKeys();
+
+	/**
 	 * Drop all entries from this storage and commit the change immediately.
 	 */
 	void clear();
@@ -60,13 +67,6 @@ public interface ISaxableStorage<T extends UUIDKeyed>
 	 * @throws CoreException
 	 */
 	T[] getElements() throws CoreException;
-
-	/**
-	 * Obtains an array of the key of all instances in this storage.
-	 * 
-	 * @return The array of all id's known to this storage.
-	 */
-	public UUID[] getKeys();
 
 	/**
 	 * Returns the name of this storage.

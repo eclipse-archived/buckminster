@@ -19,15 +19,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.equinox.internal.provisional.p2.metadata.FormatException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionFormatException;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.xml.sax.Attributes;
 
-@SuppressWarnings("restriction")
 public class VersionHelper
 {
+	private static final Version sampleOSGiVersion;
+
 	static final String VERSION_TYPES_POINT = CorePlugin.CORE_NAMESPACE + ".versionTypes"; //$NON-NLS-1$
 
 	private static final HashMap<String, VersionType> s_knownTypes = new HashMap<String, VersionType>();
@@ -40,7 +41,7 @@ public class VersionHelper
 	{
 		try
 		{
-			Version.parseVersion("1.0.0"); //$NON-NLS-1$
+			sampleOSGiVersion = Version.parseVersion("1.0.0"); //$NON-NLS-1$
 			IExtensionRegistry exReg = Platform.getExtensionRegistry();
 			IConfigurationElement[] elems = exReg.getConfigurationElementsFor(VERSION_TYPES_POINT);
 			int idx = elems.length;
@@ -61,17 +62,17 @@ public class VersionHelper
 					String[] newLabels = new String[top + 1];
 					System.arraycopy(labels, 0, newLabels, 0, top);
 					newLabels[top] = id;
-					vt = new VersionType(VersionFormat.compile(format), newLabels);
+					vt = new VersionType(Version.compile(format), newLabels);
 				}
 				else
 				{
-					vt = new VersionType(VersionFormat.compile(format), id);
+					vt = new VersionType(Version.compile(format), id);
 				}
 				s_knownTypes.put(format, vt);
 			}
 
 		}
-		catch(FormatException e)
+		catch(VersionFormatException e)
 		{
 			throw new ExceptionInInitializerError(e);
 		}
@@ -81,18 +82,12 @@ public class VersionHelper
 		s_dateFormat.setTimeZone(utc);
 	}
 
-	public static VersionRange createRange(String versionTypeLabel, String rangeString)
-			throws MissingVersionTypeException
-	{
-		return createRange(getVersionType(versionTypeLabel), rangeString);
-	}
-
-	public static VersionRange createRange(VersionFormat versionFormat, String rangeString)
+	public static VersionRange createRange(IVersionFormat versionFormat, String rangeString)
 	{
 		if(rangeString == null)
 			return null;
 
-		if(versionFormat == null || versionFormat.equals(VersionFormat.OSGI_FORMAT))
+		if(versionFormat == null || versionFormat.equals(getOSGiFormat()))
 			return new VersionRange(rangeString);
 
 		StringBuffer bld = new StringBuffer();
@@ -102,20 +97,20 @@ public class VersionHelper
 		return new VersionRange(bld.toString());
 	}
 
+	public static VersionRange createRange(String versionTypeLabel, String rangeString)
+			throws MissingVersionTypeException
+	{
+		return createRange(getVersionType(versionTypeLabel), rangeString);
+	}
+
 	public static VersionRange createRange(VersionType versionType, String rangeString)
 	{
 		return createRange(versionType == null
-				? null
+				? (IVersionFormat)null
 				: versionType.getFormat(), rangeString);
 	}
 
-	public static Version createVersion(String versionTypeLabel, String versionString)
-			throws MissingVersionTypeException
-	{
-		return createVersion(getVersionType(versionTypeLabel), versionString);
-	}
-
-	public static Version createVersion(VersionFormat versionFormat, String versionString)
+	public static Version createVersion(IVersionFormat versionFormat, String versionString)
 	{
 		if(versionString == null)
 			return null;
@@ -125,9 +120,15 @@ public class VersionHelper
 			return null;
 
 		if(versionFormat == null)
-			versionFormat = VersionFormat.OSGI_FORMAT;
+			versionFormat = getOSGiFormat();
 
 		return versionFormat.parse(versionString);
+	}
+
+	public static Version createVersion(String versionTypeLabel, String versionString)
+			throws MissingVersionTypeException
+	{
+		return createVersion(getVersionType(versionTypeLabel), versionString);
 	}
 
 	public static Version createVersion(VersionType versionType, String versionString)
@@ -151,9 +152,31 @@ public class VersionHelper
 		if(b == null)
 			return false;
 
-		return a.equals(b)
-				|| (a.isOSGiCompatible() && b.isOSGiCompatible() && a.getMajor() == b.getMajor()
-						&& a.getMinor() == b.getMinor() && a.getMicro() == b.getMicro());
+		if(a.equals(b))
+			return true;
+
+		String aq = getQualifier(a);
+		String bq = getQualifier(b);
+		if(aq == null && bq == null)
+			return false;
+
+		String astr = getOriginal(a);
+		if(aq != null)
+			astr = astr.substring(0, astr.length() - (aq.length() + 1));
+
+		String bstr = getOriginal(b);
+		if(bq != null)
+			bstr = bstr.substring(0, bstr.length() - (bq.length() + 1));
+
+		IVersionFormat af = a.getFormat();
+		if(af == null)
+			af = getVersionType((IVersionFormat)null).getFormat();
+
+		IVersionFormat bf = a.getFormat();
+		if(bf == null)
+			bf = getVersionType((IVersionFormat)null).getFormat();
+
+		return af.parse(astr).equals(bf.parse(bstr));
 	}
 
 	public static VersionRange exactRange(org.osgi.framework.Version v)
@@ -177,7 +200,7 @@ public class VersionHelper
 
 		StringBuffer buf = new StringBuffer();
 		getOriginal(version, buf);
-		if(!VersionFormat.OSGI_FORMAT.equals(version.getFormat()))
+		if(!getOSGiFormat().equals(version.getFormat()))
 		{
 			buf.append('#');
 			buf.append(getVersionType(version).getId());
@@ -191,7 +214,7 @@ public class VersionHelper
 			return null;
 
 		StringBuffer buf = new StringBuffer();
-		if(VersionFormat.OSGI_FORMAT.equals(range.getFormat()))
+		if(getOSGiFormat().equals(range.getFormat()))
 			range.toString(buf);
 		else
 		{
@@ -251,42 +274,40 @@ public class VersionHelper
 		if(orig != null)
 			sb.append(orig);
 		else
-		{
-			if(VersionFormat.OSGI_FORMAT.equals(version.getFormat()))
-				version.toString(sb);
-			else
-				version.rawToString(sb, false);
-		}
+			version.toString(sb);
 	}
 
-	public static VersionType getVersionType(String id) throws MissingVersionTypeException
+	public static IVersionFormat getOSGiFormat()
 	{
-		if(id == null)
-			id = VersionType.OSGI;
-
-		for(VersionType vt : s_knownTypes.values())
-			for(String label : vt.getLabels())
-				if(label.equals(id))
-					return vt;
-
-		throw new MissingVersionTypeException(id);
+		return sampleOSGiVersion.getFormat();
 	}
 
-	public static VersionType getVersionType(Version version)
+	public static String getQualifier(Version version)
 	{
-		VersionFormat format = version.getFormat();
-
-		// format is not set if the version is in the raw format
-		if(format == null)
-			format = VersionFormat.RAW_FORMAT;
-
-		return getVersionType(format);
-	}
-
-	public static VersionType getVersionType(VersionFormat format)
-	{
-		if(format == null)
+		if(version == null || version.getSegmentCount() == 0)
 			return null;
+
+		Object last = version.getSegment(version.getSegmentCount() - 1);
+		if(!(last instanceof String))
+			return null;
+
+		String qual = (String)last;
+		return qual.length() > 0
+				? qual
+				: null;
+	}
+
+	public static VersionType getVersionType(IVersionFormat format)
+	{
+		if(format == null)
+			try
+			{
+				return getVersionType(VersionType.RAW);
+			}
+			catch(MissingVersionTypeException e)
+			{
+				throw new RuntimeException("Unable to find version type extension for type: " + VersionType.RAW); //$NON-NLS-1$
+			}
 
 		String fmtString = format.toString();
 		fmtString = fmtString.substring(7, fmtString.length() - 1);
@@ -305,15 +326,27 @@ public class VersionHelper
 		}
 	}
 
+	public static VersionType getVersionType(String id) throws MissingVersionTypeException
+	{
+		if(id == null)
+			id = VersionType.OSGI;
+
+		for(VersionType vt : s_knownTypes.values())
+			for(String label : vt.getLabels())
+				if(label.equals(id))
+					return vt;
+
+		throw new MissingVersionTypeException(id);
+	}
+
+	public static VersionType getVersionType(Version version)
+	{
+		return getVersionType(version.getFormat());
+	}
+
 	public static VersionType getVersionType(VersionRange range)
 	{
-		VersionFormat format = range.getFormat();
-
-		// format is not set if the version range is in the raw format
-		if(format == null)
-			format = VersionFormat.RAW_FORMAT;
-
-		return getVersionType(format);
+		return getVersionType(range.getFormat());
 	}
 
 	public static VersionRange greaterOrEqualRange(Version version)
@@ -376,26 +409,26 @@ public class VersionHelper
 		}
 	}
 
-	public static Version replaceQualifier(Version version, String qualifier)
+	public static Version replaceQualifier(Version v, String qualifier)
 	{
-		if(version == null || !version.isOSGiCompatible())
-			return version;
+		if(v == null)
+			return null;
 
-		String stringForm = version.toString();
-		String qual = version.getQualifier();
-		if(qual != null)
-		{
-			if(qualifier != null)
-				//
-				// Preserve qualifier separator
-				//
-				stringForm = stringForm.substring(0, stringForm.length() - qual.length()) + qualifier;
-			else
-				stringForm = stringForm.substring(0, stringForm.length() - (qual.length() + 1));
-		}
-		else if(qualifier != null)
-			stringForm = stringForm + '.' + qualifier;
-		return version.getFormat().parse(stringForm);
+		String q = getQualifier(v);
+		if(q == null)
+			return v;
+
+		IVersionFormat vf = v.getFormat();
+		String vs = v.getOriginal();
+		if(vf == null || vs == null || !vs.endsWith(q))
+			return v;
+
+		int lenWOQ = vs.length() - (q.length() + 1);
+		char sep = vs.charAt(lenWOQ);
+		vs = vs.substring(0, lenWOQ);
+		if(qualifier != null && qualifier.length() > 0)
+			vs = vs + sep + qualifier;
+		return vf.parse(vs);
 	}
 
 	public static Object toTimestampString(Date timestamp)

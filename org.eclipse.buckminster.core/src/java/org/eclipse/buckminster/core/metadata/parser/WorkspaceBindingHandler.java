@@ -22,7 +22,7 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -30,7 +30,6 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class WorkspaceBindingHandler extends PropertyManagerHandler
 {
 	public static final String TAG = WorkspaceBinding.TAG;

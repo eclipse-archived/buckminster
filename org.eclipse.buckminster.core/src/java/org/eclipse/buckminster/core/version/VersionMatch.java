@@ -16,14 +16,13 @@ import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class VersionMatch extends AbstractSaxableElement
 {
 	public static final VersionMatch DEFAULT = new VersionMatch(null, null, -1L, null, null);

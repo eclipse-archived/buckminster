@@ -36,14 +36,14 @@ public class SaxablePath extends Path implements ISaxableElement
 		return new SaxablePath(Path.fromPortableString(pathString).toOSString());
 	}
 
-	private SaxablePath(String fullPath)
-	{
-		super(fullPath);
-	}
-
 	public SaxablePath(String device, String path)
 	{
 		super(device, path);
+	}
+
+	private SaxablePath(String fullPath)
+	{
+		super(fullPath);
 	}
 
 	public String getDefaultTag()

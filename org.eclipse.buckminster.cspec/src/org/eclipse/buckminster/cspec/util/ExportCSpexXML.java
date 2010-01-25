@@ -33,7 +33,7 @@ import org.eclipse.buckminster.cspecxml.impl.ComponentSpecImpl;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 public class ExportCSpexXML
 {

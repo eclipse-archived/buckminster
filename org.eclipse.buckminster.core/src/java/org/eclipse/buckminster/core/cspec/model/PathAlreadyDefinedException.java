@@ -21,7 +21,7 @@ public class PathAlreadyDefinedException extends LocalizedException
 
 	public PathAlreadyDefinedException(String name, String attribute, IPath path)
 	{
-		super(NLS.bind(Messages.CSpec_0_attribute_1_already_defines_the_path_2,
-				new Object[] { name, attribute, path.toPortableString() }));
+		super(NLS.bind(Messages.CSpec_0_attribute_1_already_defines_the_path_2, new Object[] { name, attribute,
+				path.toPortableString() }));
 	}
 }

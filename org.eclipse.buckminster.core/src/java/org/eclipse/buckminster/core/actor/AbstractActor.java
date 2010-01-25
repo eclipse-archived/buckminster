@@ -115,8 +115,8 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		}
 
 		if(productPath == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.product_for_action_0_must_be_single_path, attr
-					.getQualifiedName()));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.product_for_action_0_must_be_single_path,
+					attr.getQualifiedName()));
 		return productPath;
 	}
 

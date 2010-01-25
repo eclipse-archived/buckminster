@@ -59,6 +59,50 @@ import org.xml.sax.SAXParseException;
 
 public class ParserFactory implements IParserFactory
 {
+	public static class ParserExtension
+	{
+		private final String m_namespace;
+
+		private final URL m_resource;
+
+		private final Map<String, Class<? extends ChildHandler>> m_handlers = new HashMap<String, Class<? extends ChildHandler>>();
+
+		public ParserExtension(String namespace, URL resource)
+		{
+			m_namespace = namespace;
+			m_resource = resource;
+		}
+
+		public final ChildHandler getHandler(AbstractHandler parent, String xsiType) throws CoreException
+		{
+			Class<? extends ChildHandler> handlerClass = m_handlers.get(xsiType);
+			try
+			{
+				Constructor<? extends ChildHandler> ctor = handlerClass.getConstructor(new Class[] { AbstractHandler.class });
+				return ctor.newInstance(new Object[] { parent });
+			}
+			catch(Exception e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+		}
+
+		public final String getNamespace()
+		{
+			return m_namespace;
+		}
+
+		public final URL getResource()
+		{
+			return m_resource;
+		}
+
+		void addHandler(String xsiType, Class<? extends ChildHandler> clazz)
+		{
+			m_handlers.put(xsiType, clazz);
+		}
+	}
+
 	static class OPMLParserExt extends OPMLParser implements IParser<OPML>
 	{
 		OPMLParserExt(boolean validating) throws SAXException
@@ -86,51 +130,6 @@ public class ParserFactory implements IParserFactory
 			{
 				getXMLReader().setContentHandler(this);
 			}
-		}
-	}
-
-	public static class ParserExtension
-	{
-		private final String m_namespace;
-
-		private final URL m_resource;
-
-		private final Map<String, Class<? extends ChildHandler>> m_handlers = new HashMap<String, Class<? extends ChildHandler>>();
-
-		public ParserExtension(String namespace, URL resource)
-		{
-			m_namespace = namespace;
-			m_resource = resource;
-		}
-
-		void addHandler(String xsiType, Class<? extends ChildHandler> clazz)
-		{
-			m_handlers.put(xsiType, clazz);
-		}
-
-		public final ChildHandler getHandler(AbstractHandler parent, String xsiType) throws CoreException
-		{
-			Class<? extends ChildHandler> handlerClass = m_handlers.get(xsiType);
-			try
-			{
-				Constructor<? extends ChildHandler> ctor = handlerClass
-						.getConstructor(new Class[] { AbstractHandler.class });
-				return ctor.newInstance(new Object[] { parent });
-			}
-			catch(Exception e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-		}
-
-		public final String getNamespace()
-		{
-			return m_namespace;
-		}
-
-		public final URL getResource()
-		{
-			return m_resource;
 		}
 	}
 
@@ -193,6 +192,26 @@ public class ParserFactory implements IParserFactory
 		}
 	}
 
+	public IParser<Provider> getProviderParser(boolean validating) throws CoreException
+	{
+		return new ProviderParser(getParserExtensions(Provider.TAG), validating);
+	}
+
+	public IParser<Resolution> getResolutionParser() throws CoreException
+	{
+		return new ResolutionParser(getParserExtensions(Resolution.TAG));
+	}
+
+	public IParser<ResourceMap> getResourceMapParser(boolean validating) throws CoreException
+	{
+		return new ResourceMapParser(getParserExtensions(ResourceMap.TAG, Provider.TAG), validating);
+	}
+
+	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating) throws CoreException
+	{
+		return new WorkspaceBindingParser(getParserExtensions(Provider.TAG, CSpec.TAG, Resolution.TAG), validating);
+	}
+
 	private synchronized List<ParserExtension> getParserExtensions(String... parserIds)
 	{
 		if(m_parserExtensions == null)
@@ -236,26 +255,6 @@ public class ParserFactory implements IParserFactory
 				: result;
 	}
 
-	public IParser<Provider> getProviderParser(boolean validating) throws CoreException
-	{
-		return new ProviderParser(getParserExtensions(Provider.TAG), validating);
-	}
-
-	public IParser<Resolution> getResolutionParser() throws CoreException
-	{
-		return new ResolutionParser(getParserExtensions(Resolution.TAG));
-	}
-
-	public IParser<ResourceMap> getResourceMapParser(boolean validating) throws CoreException
-	{
-		return new ResourceMapParser(getParserExtensions(ResourceMap.TAG, Provider.TAG), validating);
-	}
-
-	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating) throws CoreException
-	{
-		return new WorkspaceBindingParser(getParserExtensions(Provider.TAG, CSpec.TAG, Resolution.TAG), validating);
-	}
-
 	private Map<String, List<ParserExtension>> loadParserExtensions() throws CoreException
 	{
 		IExtensionRegistry exReg = Platform.getExtensionRegistry();
@@ -270,7 +269,7 @@ public class ParserFactory implements IParserFactory
 				try
 				{
 					pe.addHandler(handler.getAttribute("type"), ((Class<?>)bundle.loadClass(handler //$NON-NLS-1$
-							.getAttribute("class"))).asSubclass(ChildHandler.class)); //$NON-NLS-1$
+					.getAttribute("class"))).asSubclass(ChildHandler.class)); //$NON-NLS-1$
 				}
 				catch(ClassNotFoundException e)
 				{

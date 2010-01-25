@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.pde.internal.core.util.CoreUtility;
 
-@SuppressWarnings( { "unchecked", "restriction" })
+@SuppressWarnings({ "rawtypes", "unchecked", "restriction" })
 public abstract class JarImportOperation implements IWorkspaceRunnable
 {
 
@@ -653,7 +653,7 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 					}
 				}
 				else if(provider.getLabel(curr).endsWith(fileExtension))
-				{ 
+				{
 					return true;
 				}
 			}

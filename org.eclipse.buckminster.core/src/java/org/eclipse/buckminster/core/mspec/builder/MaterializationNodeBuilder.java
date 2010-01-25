@@ -68,7 +68,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 		return new MaterializationNode(this);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object getAdapter(Class adapter)
 	{
 		if(adapter.isInstance(this))

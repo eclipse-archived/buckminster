@@ -29,14 +29,14 @@ class PathHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
-	final IPath getPath()
-	{
-		return m_path;
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_path = Path.fromPortableString(this.getStringValue(attrs, SaxablePath.ATTR_PATH));
+	}
+
+	final IPath getPath()
+	{
+		return m_path;
 	}
 }

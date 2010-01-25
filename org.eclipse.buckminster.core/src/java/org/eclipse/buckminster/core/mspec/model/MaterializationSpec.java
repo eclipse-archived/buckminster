@@ -117,7 +117,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		m_nodes = Utils.createUnmodifiableList(nodes);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Object getAdapter(Class adapter)
 	{

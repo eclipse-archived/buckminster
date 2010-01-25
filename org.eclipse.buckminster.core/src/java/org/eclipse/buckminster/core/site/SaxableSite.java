@@ -28,7 +28,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings( { "restriction", "deprecation" })
+@SuppressWarnings({ "restriction", "deprecation" })
 public class SaxableSite extends AbstractSaxableElement implements ISaxable
 {
 	public static final String TAG = "site"; //$NON-NLS-1$

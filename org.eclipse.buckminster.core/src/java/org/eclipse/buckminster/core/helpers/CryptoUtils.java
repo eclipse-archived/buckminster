@@ -43,8 +43,7 @@ public class CryptoUtils
 		}
 		catch(NoSuchAlgorithmException nsae)
 		{
-			throw new IllegalArgumentException(NLS
-					.bind(Messages.Unknown_encrypt_algorithm_0, algorithmName));
+			throw new IllegalArgumentException(NLS.bind(Messages.Unknown_encrypt_algorithm_0, algorithmName));
 		}
 
 		algorithm.reset();
@@ -93,8 +92,7 @@ public class CryptoUtils
 		}
 		catch(UnsupportedEncodingException e)
 		{
-			throw new RuntimeException(NLS.bind(Messages.Internal_error_0_is_not_supported_encoding,
-					ENCODING_UTF8), e);
+			throw new RuntimeException(NLS.bind(Messages.Internal_error_0_is_not_supported_encoding, ENCODING_UTF8), e);
 		}
 	}
 

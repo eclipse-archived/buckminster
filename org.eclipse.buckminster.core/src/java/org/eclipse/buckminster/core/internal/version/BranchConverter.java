@@ -12,14 +12,13 @@ package org.eclipse.buckminster.core.internal.version;
 import org.eclipse.buckminster.core.version.AbstractConverter;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.FormatException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionFormatException;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class BranchConverter extends AbstractConverter
 {
 	public VersionSelector createSelector(Version version) throws CoreException
@@ -51,13 +50,13 @@ public class BranchConverter extends AbstractConverter
 	}
 
 	@Override
-	protected VersionFormat getDefaultVersionFormat()
+	protected IVersionFormat getDefaultVersionFormat()
 	{
 		try
 		{
-			return VersionFormat.compile("S"); //$NON-NLS-1$
+			return Version.compile("S"); //$NON-NLS-1$
 		}
-		catch(FormatException e)
+		catch(VersionFormatException e)
 		{
 			return null;
 		}

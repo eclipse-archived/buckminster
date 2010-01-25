@@ -51,7 +51,7 @@ import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -60,7 +60,6 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, IComponentQuery
 {
 	public static final String ATTR_PROPERTIES = "properties"; //$NON-NLS-1$

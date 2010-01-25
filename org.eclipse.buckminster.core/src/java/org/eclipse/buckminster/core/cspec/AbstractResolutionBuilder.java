@@ -131,8 +131,8 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 							mon.subTask(streamName);
 							try
 							{
-								IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory()
-										.getAlterCSpecParser(true);
+								IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory().getAlterCSpecParser(
+										true);
 								CSpecExtension ce = cspecExtParser.parse(streamName, stream);
 								MonitorUtils.worked(mon, 1);
 								return ce;

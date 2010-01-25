@@ -71,25 +71,6 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 	}
 
 	@Override
-	BOMNode getDepNode() throws SAXException
-	{
-		return new BillOfMaterials((BOMNode)getWrapped(m_topNodeId), getQuery(m_queryId), m_timestamp);
-	}
-
-	ComponentQuery getQuery(UUID queryId) throws SAXException
-	{
-		try
-		{
-			return (ComponentQuery)getWrapped(queryId);
-		}
-		catch(ClassCastException e)
-		{
-			throw new SAXParseException(NLS
-					.bind(Messages.Wrapper_0_does_not_wrap_query, queryId), getDocumentLocator());
-		}
-	}
-
-	@Override
 	public UUIDKeyed getWrapped(UUID id) throws SAXException
 	{
 		IDWrapper wrapper = m_wrapperMap.get(id);
@@ -103,8 +84,7 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 				if(parent instanceof ChildHandler)
 					parent = ((ChildHandler)parent).getParentHandler();
 			}
-			throw new SAXParseException(NLS
-					.bind(Messages.Id_0_appoints_non_existing_wrapper, id), getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.Id_0_appoints_non_existing_wrapper, id), getDocumentLocator());
 		}
 		return wrapper.getWrapped();
 	}
@@ -130,6 +110,24 @@ public class BillOfMaterialsHandler extends BomNodeHandler implements ChildPoppe
 		catch(ParseException e)
 		{
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+		}
+	}
+
+	@Override
+	BOMNode getDepNode() throws SAXException
+	{
+		return new BillOfMaterials((BOMNode)getWrapped(m_topNodeId), getQuery(m_queryId), m_timestamp);
+	}
+
+	ComponentQuery getQuery(UUID queryId) throws SAXException
+	{
+		try
+		{
+			return (ComponentQuery)getWrapped(queryId);
+		}
+		catch(ClassCastException e)
+		{
+			throw new SAXParseException(NLS.bind(Messages.Wrapper_0_does_not_wrap_query, queryId), getDocumentLocator());
 		}
 	}
 }

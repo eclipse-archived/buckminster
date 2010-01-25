@@ -43,31 +43,6 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 		BuckminsterPreferences.addListener(s_instance);
 	}
 
-	private static IResolverFactory[] createFactoriesByExtension()
-	{
-		Logger logger = CorePlugin.getLogger();
-		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
-				ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
-
-		ArrayList<IResolverFactory> factories = new ArrayList<IResolverFactory>(elems.length);
-		for(IConfigurationElement elem : elems)
-		{
-			try
-			{
-				IResolverFactory factory = (IResolverFactory)elem
-						.createExecutableExtension(ResolverFactoryMaintainer.FACTORY_ELEM);
-				factories.add(factory);
-			}
-			catch(CoreException e)
-			{
-				logger.error(e, NLS.bind(
-						Messages.Unable_to_instantiate_Query_Resolver_Factory_0, elem
-								.getAttribute("id"))); //$NON-NLS-1$
-			}
-		}
-		return factories.toArray(new IResolverFactory[factories.size()]);
-	}
-
 	public static ResolverFactoryMaintainer getInstance()
 	{
 		return s_instance;
@@ -82,6 +57,29 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener
 		while(--idx >= 0)
 			factoryIDs[idx] = elems[idx].getAttribute("id"); //$NON-NLS-1$
 		return factoryIDs;
+	}
+
+	private static IResolverFactory[] createFactoriesByExtension()
+	{
+		Logger logger = CorePlugin.getLogger();
+		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
+				ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
+
+		ArrayList<IResolverFactory> factories = new ArrayList<IResolverFactory>(elems.length);
+		for(IConfigurationElement elem : elems)
+		{
+			try
+			{
+				IResolverFactory factory = (IResolverFactory)elem.createExecutableExtension(ResolverFactoryMaintainer.FACTORY_ELEM);
+				factories.add(factory);
+			}
+			catch(CoreException e)
+			{
+				logger.error(e, NLS.bind(Messages.Unable_to_instantiate_Query_Resolver_Factory_0,
+						elem.getAttribute("id"))); //$NON-NLS-1$
+			}
+		}
+		return factories.toArray(new IResolverFactory[factories.size()]);
 	}
 
 	private IResolverFactory[] m_resolverFactories;

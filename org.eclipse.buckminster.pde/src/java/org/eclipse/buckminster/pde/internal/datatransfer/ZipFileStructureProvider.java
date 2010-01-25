@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Path;
 /**
  * This class provides information regarding the context structure and content of specified zip file entry objects.
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ZipFileStructureProvider implements IImportStructureProvider
 {
 	private ZipFile zipFile;

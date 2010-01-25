@@ -104,8 +104,7 @@ public class RxPattern extends RxPart
 		}
 
 		if(parenDepth != 0)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.Unbalanced_parenthesis_in_pattern_0,
-					pattern));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Unbalanced_parenthesis_in_pattern_0, pattern));
 
 		if(stripOuter)
 		{
@@ -175,39 +174,6 @@ public class RxPattern extends RxPart
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern);
-		if(m_prefix != null)
-			Utils.addAttribute(attrs, ATTR_PREFIX, m_prefix);
-		if(m_suffix != null)
-			Utils.addAttribute(attrs, ATTR_SUFFIX, m_suffix);
-	}
-
-	private void addInnerPattern(StringBuilder bld, List<RxPart> namedParts, boolean willBeGroup) throws CoreException
-	{
-		if(m_prefix != null)
-			addQuotedString(bld, m_prefix);
-
-		String name = getName();
-		if(name != null)
-		{
-			// Pattern must be a capturing group
-			//
-			bld.append('(');
-			addEscapedPattern(bld, m_pattern, true);
-			bld.append(')');
-			namedParts.add(this);
-		}
-		else
-			addEscapedPattern(bld, m_pattern, willBeGroup && m_prefix == null && m_suffix == null);
-
-		if(m_suffix != null)
-			addQuotedString(bld, m_suffix);
-	}
-
-	@Override
 	public void addPattern(StringBuilder bld, List<RxPart> namedParts) throws CoreException
 	{
 		if(!isOptional())
@@ -256,5 +222,38 @@ public class RxPattern extends RxPart
 	public String getSuffix()
 	{
 		return m_suffix;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		super.addAttributes(attrs);
+		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern);
+		if(m_prefix != null)
+			Utils.addAttribute(attrs, ATTR_PREFIX, m_prefix);
+		if(m_suffix != null)
+			Utils.addAttribute(attrs, ATTR_SUFFIX, m_suffix);
+	}
+
+	private void addInnerPattern(StringBuilder bld, List<RxPart> namedParts, boolean willBeGroup) throws CoreException
+	{
+		if(m_prefix != null)
+			addQuotedString(bld, m_prefix);
+
+		String name = getName();
+		if(name != null)
+		{
+			// Pattern must be a capturing group
+			//
+			bld.append('(');
+			addEscapedPattern(bld, m_pattern, true);
+			bld.append(')');
+			namedParts.add(this);
+		}
+		else
+			addEscapedPattern(bld, m_pattern, willBeGroup && m_prefix == null && m_suffix == null);
+
+		if(m_suffix != null)
+			addQuotedString(bld, m_suffix);
 	}
 }

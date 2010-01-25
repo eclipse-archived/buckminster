@@ -16,7 +16,7 @@ import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.version.VersionHelper;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * @author Thomas Hallgren

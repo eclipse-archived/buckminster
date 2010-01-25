@@ -22,7 +22,7 @@ import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -31,7 +31,6 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class BuildTimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
 	public static final String DEFAULT_FORMAT = "'v'yyyyMMddHHmm"; //$NON-NLS-1$
@@ -74,7 +73,7 @@ public class BuildTimestampQualifierGenerator extends AbstractExtension implemen
 		mf.setLenient(false);
 
 		String newQual = mf.format(timestamp);
-		newQual = currentVersion.getQualifier().replace("qualifier", newQual); //$NON-NLS-1$
+		newQual = VersionHelper.getQualifier(currentVersion).replace("qualifier", newQual); //$NON-NLS-1$
 		return VersionHelper.replaceQualifier(currentVersion, newQual);
 	}
 }

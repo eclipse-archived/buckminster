@@ -20,10 +20,7 @@ public class ComponentTypeMismatchException extends LocalizedException
 
 	public ComponentTypeMismatchException(String componentName, String expectedType, String actualType)
 	{
-		super(
-				NLS
-						.bind(
-								Messages.Component_type_mismatch_exception_for_component_0_Expected_1_but_actual_2,
-								new Object[] { componentName, expectedType, actualType }));
+		super(NLS.bind(Messages.Component_type_mismatch_exception_for_component_0_Expected_1_but_actual_2,
+				new Object[] { componentName, expectedType, actualType }));
 	}
 }

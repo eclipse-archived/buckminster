@@ -24,22 +24,22 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
 import org.eclipse.equinox.internal.p2.engine.SimpleProfileRegistry;
+import org.eclipse.equinox.internal.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.internal.provisional.p2.director.IPlanner;
 import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
-import org.eclipse.equinox.internal.provisional.p2.director.ProvisioningPlan;
-import org.eclipse.equinox.internal.provisional.p2.engine.DefaultPhaseSet;
-import org.eclipse.equinox.internal.provisional.p2.engine.IEngine;
-import org.eclipse.equinox.internal.provisional.p2.engine.IProfile;
-import org.eclipse.equinox.internal.provisional.p2.engine.IProfileRegistry;
-import org.eclipse.equinox.internal.provisional.p2.engine.ProvisioningContext;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Collector;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.CompositeQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.InstallableUnitQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.LatestIUVersionQuery;
-import org.eclipse.equinox.internal.provisional.p2.metadata.query.Query;
+import org.eclipse.equinox.p2.engine.DefaultPhaseSet;
+import org.eclipse.equinox.p2.engine.IEngine;
+import org.eclipse.equinox.p2.engine.IProfile;
+import org.eclipse.equinox.p2.engine.IProfileRegistry;
+import org.eclipse.equinox.p2.engine.IProvisioningPlan;
+import org.eclipse.equinox.p2.engine.ProvisioningContext;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
+import org.eclipse.equinox.p2.query.IQuery;
+import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.PipedQuery;
 import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
@@ -59,20 +59,20 @@ public class Install extends AbstractCommand
 		if(!iuName.endsWith(".feature.group"))
 			iuName = iuName + ".feature.group";
 
-		Query query = new InstallableUnitQuery(iuName, version == null
+		IQuery<IInstallableUnit> query = new InstallableUnitQuery(iuName, version == null
 				? VersionRange.emptyRange
 				: new VersionRange(version, true, version, true));
+ 
+		IQueryResult<IInstallableUnit> roots = ProvisioningHelper.getInstallableUnits(site,
+				new PipedQuery<IInstallableUnit>(query, new LatestIUVersionQuery<IInstallableUnit>()), monitor);
 
-		Collector roots = ProvisioningHelper.getInstallableUnits(site, new CompositeQuery(new Query[] { query,
-				new LatestIUVersionQuery() }), new Collector(), monitor);
+		if(roots.isEmpty())
+			roots = profile.query(query, new NullProgressMonitor());
 
-		if(roots.size() <= 0)
-			roots = profile.query(query, roots, new NullProgressMonitor());
-
-		if(roots.size() <= 0)
+		if(roots.isEmpty())
 			throw new SimpleErrorExitException(NLS.bind(Messages.no_suitable_feature_version_found_matching_0, iuName));
 
-		return (IInstallableUnit[])roots.toArray(IInstallableUnit.class);
+		return roots.toArray(IInstallableUnit.class);
 	}
 
 	static URI normalizeToURI(String surl)
@@ -101,7 +101,7 @@ public class Install extends AbstractCommand
 	{
 		Buckminster bucky = Buckminster.getDefault();
 		IPlanner planner = bucky.getService(IPlanner.class);
-		ProvisioningPlan plan;
+		IProvisioningPlan plan;
 		try
 		{
 			plan = planner.getProvisioningPlan(request, context, monitor);
@@ -119,7 +119,7 @@ public class Install extends AbstractCommand
 		IEngine engine = bucky.getService(IEngine.class);
 		try
 		{
-			IStatus status = engine.perform(profile, new DefaultPhaseSet(), plan.getOperands(), context, monitor);
+			IStatus status = engine.perform(plan, new DefaultPhaseSet(), monitor);
 			if(status.getSeverity() == IStatus.CANCEL)
 				return Headless.EXIT_FORCED;
 			if(status.getSeverity() == IStatus.ERROR)
@@ -184,7 +184,7 @@ public class Install extends AbstractCommand
 			// Add as root IU's to a request
 			ProfileChangeRequest request = new ProfileChangeRequest(profile);
 			for(IInstallableUnit rootIU : rootArr)
-				request.setInstallableUnitProfileProperty(rootIU, IInstallableUnit.PROP_PROFILE_ROOT_IU,
+				request.setInstallableUnitProfileProperty(rootIU, IProfile.PROP_PROFILE_ROOT_IU,
 						Boolean.TRUE.toString());
 			request.addInstallableUnits(rootArr);
 			return planAndExecute(profile, request, createContext(m_site), monitor);

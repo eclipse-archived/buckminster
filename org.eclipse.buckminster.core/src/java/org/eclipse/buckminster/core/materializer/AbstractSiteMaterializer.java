@@ -39,7 +39,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IIncludedFeatureReference;
 import org.eclipse.update.core.IPluginEntry;
@@ -52,7 +52,7 @@ import org.eclipse.update.core.VersionedIdentifier;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings( { "restriction", "deprecation" })
+@SuppressWarnings({ "deprecation" })
 abstract class AbstractSiteMaterializer extends AbstractMaterializer
 {
 	@SuppressWarnings("serial")

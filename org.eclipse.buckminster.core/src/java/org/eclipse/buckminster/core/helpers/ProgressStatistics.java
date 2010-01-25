@@ -160,29 +160,6 @@ public class ProgressStatistics
 		m_current += inc;
 	}
 
-	synchronized private void registerRecentSpeed(long key, long inc)
-	{
-		Long keyL = Long.valueOf(key);
-		Long currentValueL = m_recentSpeedMap.get(keyL);
-		long currentValue = 0L;
-		if(currentValueL != null)
-			currentValue = currentValueL.longValue();
-
-		m_recentSpeedMap.put(keyL, Long.valueOf(inc + currentValue));
-
-		if(m_recentSpeedMapKey != key)
-		{
-			m_recentSpeedMapKey = key;
-			removeObsoleteRecentSpeedData(key);
-		}
-	}
-
-	synchronized private void removeObsoleteRecentSpeedData(long lastKey)
-	{
-		long threshold = lastKey - m_recentSpeedInterval / m_recentSpeedResolution;
-		m_recentSpeedMap.headMap(Long.valueOf(threshold)).clear();
-	}
-
 	public String report()
 	{
 		return m_converter.convert(m_current) + (m_total != -1
@@ -235,5 +212,28 @@ public class ProgressStatistics
 	public String toString()
 	{
 		return report();
+	}
+
+	synchronized private void registerRecentSpeed(long key, long inc)
+	{
+		Long keyL = Long.valueOf(key);
+		Long currentValueL = m_recentSpeedMap.get(keyL);
+		long currentValue = 0L;
+		if(currentValueL != null)
+			currentValue = currentValueL.longValue();
+
+		m_recentSpeedMap.put(keyL, Long.valueOf(inc + currentValue));
+
+		if(m_recentSpeedMapKey != key)
+		{
+			m_recentSpeedMapKey = key;
+			removeObsoleteRecentSpeedData(key);
+		}
+	}
+
+	synchronized private void removeObsoleteRecentSpeedData(long lastKey)
+	{
+		long threshold = lastKey - m_recentSpeedInterval / m_recentSpeedResolution;
+		m_recentSpeedMap.headMap(Long.valueOf(threshold)).clear();
 	}
 }

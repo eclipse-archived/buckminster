@@ -21,9 +21,8 @@ import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiUtils;
 import org.eclipse.buckminster.ui.general.editor.simple.Widgetin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -337,7 +336,7 @@ public class VersionDesignator extends Widgetin
 			m_versionDsType.select(dsType.ordinal());
 			dsTypeIndexChanged(dsType.ordinal());
 
-			if(versionDesignator.getFormat() == VersionFormat.OSGI_FORMAT)
+			if(versionDesignator.getFormat() == VersionHelper.getOSGiFormat())
 			{
 				m_fromVersion.setText(versionDesignator.getMinimum().toString());
 				m_toVersion.setText(TextUtils.notNullString(versionDesignator.getMaximum()));

@@ -20,7 +20,6 @@ public class AmbigousComponentException extends LocalizedException
 
 	public AmbigousComponentException(String componentName)
 	{
-		super(NLS.bind(Messages.More_then_one_version_of_component_0_known_to_Buckminster,
-				componentName));
+		super(NLS.bind(Messages.More_then_one_version_of_component_0_known_to_Buckminster, componentName));
 	}
 }

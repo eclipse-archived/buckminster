@@ -63,8 +63,7 @@ public abstract class AbstractRemoteReader extends AbstractCatalogReader
 		monitor.beginTask(fileName, 2000);
 		try
 		{
-			input = CorePlugin.getDefault()
-					.openCachedRemoteFile(this, fileName, MonitorUtils.subMonitor(monitor, 1000));
+			input = CorePlugin.getDefault().openCachedRemoteFile(this, fileName, MonitorUtils.subMonitor(monitor, 1000));
 			return consumer.consumeStream(this, this.toString() + ',' + fileName, input, MonitorUtils.subMonitor(
 					monitor, 1000));
 		}

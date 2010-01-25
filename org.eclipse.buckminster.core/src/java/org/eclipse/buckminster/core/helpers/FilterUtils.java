@@ -84,7 +84,7 @@ public class FilterUtils
 		return null;
 	}
 
-	public static Filter replaceAttributeNames(Filter filter, String from, String to)
+	public static Filter replaceAttributeNames(org.osgi.framework.Filter filter, String from, String to)
 	{
 		if(filter == null)
 			return null;

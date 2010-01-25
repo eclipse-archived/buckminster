@@ -58,30 +58,6 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		super(readerType, providerMatch);
 	}
 
-	@Override
-	protected void copyOverlay(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 100);
-		try
-		{
-			File addOnFolder = getOverlayFolder(MonitorUtils.subMonitor(monitor, 50));
-			if(addOnFolder != null)
-			{
-				// Copy the addOnFolder. Overwrite is always OK for addOnFolders
-				//
-				File destDir = destination.toFile();
-				destDir.mkdirs();
-				FileUtils.deepCopyUnchecked(addOnFolder, destDir, MonitorUtils.subMonitor(monitor, 50));
-			}
-			else
-				MonitorUtils.worked(monitor, 50);
-		}
-		finally
-		{
-			monitor.done();
-		}
-	}
-
 	public final boolean exists(String fileName, IProgressMonitor monitor) throws CoreException
 	{
 		monitor.beginTask(null, 100);
@@ -115,9 +91,8 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 				File addOnFile = new File(addOnFolder, fileName);
 				if(addOnFile.exists())
 				{
-					logger
-							.debug(
-									"Provider %s(%s): getContents will use overlay %s for file = %s", getReaderType().getId(), ri.getRepositoryURI(), addOnFile, fileName); //$NON-NLS-1$
+					logger.debug(
+							"Provider %s(%s): getContents will use overlay %s for file = %s", getReaderType().getId(), ri.getRepositoryURI(), addOnFile, fileName); //$NON-NLS-1$
 					MonitorUtils.worked(monitor, 90);
 					return new FileHandle(fileName, addOnFile, false);
 				}
@@ -127,56 +102,6 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		finally
 		{
 			monitor.done();
-		}
-	}
-
-	protected File getOverlayFolder(IProgressMonitor monitor) throws CoreException
-	{
-		URL overlay = getNodeQuery().getOverlayFolder();
-		if(overlay == null)
-		{
-			MonitorUtils.complete(monitor);
-			return null;
-		}
-
-		File fileOverlay;
-		try
-		{
-			fileOverlay = FileUtils.getFile(FileLocator.toFileURL(overlay));
-			if(fileOverlay == null)
-				return obtainRemoteOverlayFolder(overlay, monitor);
-
-			if(!fileOverlay.isAbsolute())
-			{
-				// Relative overlays are relative to the workspace root so that they
-				// can reside in other projects residing in the workspace from which
-				// prototyping takes place.
-				//
-				IPath wsRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-				fileOverlay = wsRoot.append(new Path(fileOverlay.toString())).toFile();
-			}
-
-			String fos = fileOverlay.toString();
-			if(fos.endsWith(".zip") || fos.endsWith(".jar")) //$NON-NLS-1$ //$NON-NLS-2$
-			{
-				File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
-				FileUtils.unzip(URLUtils.normalizeToURL(fos), getConnectContext(), null, dest,
-						ConflictResolution.REPLACE, monitor);
-				return dest;
-			}
-
-			if(!fileOverlay.isDirectory())
-				throw new IllegalOverlayException(
-						Messages.Only_folders_zip_and_jar_archives_allowed);
-
-			// Monitor was not used for anything so make it complete
-			//
-			MonitorUtils.complete(monitor);
-			return fileOverlay;
-		}
-		catch(IOException e)
-		{
-			throw BuckminsterException.wrap(e);
 		}
 	}
 
@@ -202,54 +127,6 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		return files;
 	}
 
-	protected abstract boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException;
-
-	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
-	{
-		OutputStream tmp = null;
-		File tempFile = null;
-		try
-		{
-			tempFile = createTempFile();
-			tmp = new FileOutputStream(tempFile);
-			final OutputStream out = tmp;
-			readFile(fileName, new IStreamConsumer<Object>()
-			{
-				public Object consumeStream(IComponentReader reader, String streamName, InputStream stream,
-						IProgressMonitor mon) throws IOException
-				{
-					FileUtils.copyFile(stream, out, mon);
-					return null;
-				}
-			}, monitor);
-			FileHandle fh = new FileHandle(fileName, tempFile, true);
-			tempFile = null;
-			return fh;
-		}
-		catch(FileNotFoundException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			IOUtils.close(tmp);
-			if(tempFile != null)
-				tempFile.delete();
-		}
-	}
-
-	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
-	}
-
-	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
-	{
-	}
-
-	protected abstract <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
-			throws CoreException, IOException;
-
 	public final List<String> list(IProgressMonitor monitor) throws CoreException
 	{
 		ArrayList<String> files = new ArrayList<String>();
@@ -274,18 +151,6 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		{
 			monitor.done();
 		}
-	}
-
-	private File obtainRemoteOverlayFolder(URL url, IProgressMonitor monitor) throws CoreException
-	{
-		String path = url.getPath();
-		if(!(path.endsWith(".zip") || path.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$
-			throw new IllegalOverlayException(
-					Messages.Only_zip_and_jar_archives_allowed_for_remote_overlays);
-
-		File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
-		FileUtils.unzip(url, getConnectContext(), null, dest, ConflictResolution.REPLACE, monitor);
-		return dest;
 	}
 
 	public synchronized IEclipsePreferences readBuckminsterPreferences(IProgressMonitor monitor) throws CoreException
@@ -349,5 +214,137 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		{
 			MonitorUtils.done(monitor);
 		}
+	}
+
+	@Override
+	protected void copyOverlay(IPath destination, IProgressMonitor monitor) throws CoreException
+	{
+		monitor.beginTask(null, 100);
+		try
+		{
+			File addOnFolder = getOverlayFolder(MonitorUtils.subMonitor(monitor, 50));
+			if(addOnFolder != null)
+			{
+				// Copy the addOnFolder. Overwrite is always OK for addOnFolders
+				//
+				File destDir = destination.toFile();
+				destDir.mkdirs();
+				FileUtils.deepCopyUnchecked(addOnFolder, destDir, MonitorUtils.subMonitor(monitor, 50));
+			}
+			else
+				MonitorUtils.worked(monitor, 50);
+		}
+		finally
+		{
+			monitor.done();
+		}
+	}
+
+	protected File getOverlayFolder(IProgressMonitor monitor) throws CoreException
+	{
+		URL overlay = getNodeQuery().getOverlayFolder();
+		if(overlay == null)
+		{
+			MonitorUtils.complete(monitor);
+			return null;
+		}
+
+		File fileOverlay;
+		try
+		{
+			fileOverlay = FileUtils.getFile(FileLocator.toFileURL(overlay));
+			if(fileOverlay == null)
+				return obtainRemoteOverlayFolder(overlay, monitor);
+
+			if(!fileOverlay.isAbsolute())
+			{
+				// Relative overlays are relative to the workspace root so that they
+				// can reside in other projects residing in the workspace from which
+				// prototyping takes place.
+				//
+				IPath wsRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+				fileOverlay = wsRoot.append(new Path(fileOverlay.toString())).toFile();
+			}
+
+			String fos = fileOverlay.toString();
+			if(fos.endsWith(".zip") || fos.endsWith(".jar")) //$NON-NLS-1$ //$NON-NLS-2$
+			{
+				File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+				FileUtils.unzip(URLUtils.normalizeToURL(fos), getConnectContext(), null, dest,
+						ConflictResolution.REPLACE, monitor);
+				return dest;
+			}
+
+			if(!fileOverlay.isDirectory())
+				throw new IllegalOverlayException(Messages.Only_folders_zip_and_jar_archives_allowed);
+
+			// Monitor was not used for anything so make it complete
+			//
+			MonitorUtils.complete(monitor);
+			return fileOverlay;
+		}
+		catch(IOException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	protected abstract boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException;
+
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
+	{
+		OutputStream tmp = null;
+		File tempFile = null;
+		try
+		{
+			tempFile = createTempFile();
+			tmp = new FileOutputStream(tempFile);
+			final OutputStream out = tmp;
+			readFile(fileName, new IStreamConsumer<Object>()
+			{
+				public Object consumeStream(IComponentReader reader, String streamName, InputStream stream,
+						IProgressMonitor mon) throws IOException
+				{
+					FileUtils.copyFile(stream, out, mon);
+					return null;
+				}
+			}, monitor);
+			FileHandle fh = new FileHandle(fileName, tempFile, true);
+			tempFile = null;
+			return fh;
+		}
+		catch(FileNotFoundException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
+		finally
+		{
+			IOUtils.close(tmp);
+			if(tempFile != null)
+				tempFile.delete();
+		}
+	}
+
+	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
+			throws CoreException, IOException
+	{
+	}
+
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
+	{
+	}
+
+	protected abstract <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
+			throws CoreException, IOException;
+
+	private File obtainRemoteOverlayFolder(URL url, IProgressMonitor monitor) throws CoreException
+	{
+		String path = url.getPath();
+		if(!(path.endsWith(".zip") || path.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IllegalOverlayException(Messages.Only_zip_and_jar_archives_allowed_for_remote_overlays);
+
+		File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+		FileUtils.unzip(url, getConnectContext(), null, dest, ConflictResolution.REPLACE, monitor);
+		return dest;
 	}
 }

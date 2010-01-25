@@ -82,18 +82,6 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		return m_uri;
 	}
 
-	protected URL getURL() throws CoreException
-	{
-		try
-		{
-			return m_uri.toURL();
-		}
-		catch(MalformedURLException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
 	public void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor)
 			throws CoreException
 	{
@@ -173,5 +161,17 @@ public class URLFileReader extends AbstractReader implements IFileReader
 	public String toString()
 	{
 		return m_uri.toString();
+	}
+
+	protected URL getURL() throws CoreException
+	{
+		try
+		{
+			return m_uri.toURL();
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 }

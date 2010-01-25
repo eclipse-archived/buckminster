@@ -40,6 +40,15 @@ public class RxPatternHandler extends RxPartHandler
 		return new RxPattern(getName(), isOptional(), m_pattern, m_prefix, m_suffix);
 	}
 
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		super.handleAttributes(attrs);
+		m_pattern = getStringValue(attrs, RxPattern.ATTR_PATTERN);
+		m_prefix = getOptionalStringValue(attrs, RxPattern.ATTR_PREFIX);
+		m_suffix = getOptionalStringValue(attrs, RxPattern.ATTR_SUFFIX);
+	}
+
 	protected final String getPattern()
 	{
 		return m_pattern;
@@ -53,14 +62,5 @@ public class RxPatternHandler extends RxPartHandler
 	protected final String getSuffix()
 	{
 		return m_suffix;
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		super.handleAttributes(attrs);
-		m_pattern = getStringValue(attrs, RxPattern.ATTR_PATTERN);
-		m_prefix = getOptionalStringValue(attrs, RxPattern.ATTR_PREFIX);
-		m_suffix = getOptionalStringValue(attrs, RxPattern.ATTR_SUFFIX);
 	}
 }

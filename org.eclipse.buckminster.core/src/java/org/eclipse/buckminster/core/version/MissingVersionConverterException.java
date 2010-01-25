@@ -21,10 +21,7 @@ public class MissingVersionConverterException extends LocalizedException
 
 	public MissingVersionConverterException(String versionConverterId)
 	{
-		super(
-				NLS
-						.bind(
-								Messages.No_version_converter_with_id_0_has_been_registered_with_extension_point_1,
-								versionConverterId, CorePlugin.VERSION_CONVERTERS_POINT));
+		super(NLS.bind(Messages.No_version_converter_with_id_0_has_been_registered_with_extension_point_1,
+				versionConverterId, CorePlugin.VERSION_CONVERTERS_POINT));
 	}
 }

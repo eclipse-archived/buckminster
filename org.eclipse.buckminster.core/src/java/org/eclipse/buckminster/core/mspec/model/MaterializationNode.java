@@ -86,7 +86,7 @@ public class MaterializationNode extends MaterializationDirective implements IMa
 		m_expand = builder.isExpand();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Object getAdapter(Class adapter)
 	{

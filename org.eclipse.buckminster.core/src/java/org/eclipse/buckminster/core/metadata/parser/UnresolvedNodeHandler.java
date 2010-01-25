@@ -73,16 +73,16 @@ class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListene
 	}
 
 	@Override
-	BOMNode getDepNode()
-	{
-		return new UnresolvedNode(new QualifiedDependency(m_componentRequest, m_attributes));
-	}
-
-	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		if(m_attributes != null)
 			m_attributes.clear();
 		m_componentRequest = null;
+	}
+
+	@Override
+	BOMNode getDepNode()
+	{
+		return new UnresolvedNode(new QualifiedDependency(m_componentRequest, m_attributes));
 	}
 }

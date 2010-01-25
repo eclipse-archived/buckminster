@@ -36,14 +36,14 @@ class RemoveHandler extends ExtensionAwareHandler
 		return m_tag;
 	}
 
-	final String getValue()
-	{
-		return m_name;
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_name = this.getStringValue(attrs, m_attrName);
+	}
+
+	final String getValue()
+	{
+		return m_name;
 	}
 }

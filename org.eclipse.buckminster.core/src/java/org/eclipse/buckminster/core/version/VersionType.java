@@ -1,9 +1,8 @@
 package org.eclipse.buckminster.core.version;
 
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
+import org.eclipse.equinox.p2.metadata.Version;
 
-@SuppressWarnings("restriction")
 public class VersionType
 {
 	public static final String OSGI = "OSGi"; //$NON-NLS-1$
@@ -14,11 +13,13 @@ public class VersionType
 
 	public static final String TRIPLET = "Triplet"; //$NON-NLS-1$
 
-	private final VersionFormat m_format;
+	public static final String RAW = "Raw Omni Version"; //$NON-NLS-1$
+
+	private final IVersionFormat m_format;
 
 	private final String[] m_labels;
 
-	public VersionType(VersionFormat format, String... labels)
+	public VersionType(IVersionFormat format, String... labels)
 	{
 		m_format = format;
 		m_labels = labels;
@@ -59,7 +60,7 @@ public class VersionType
 	 * 
 	 * @return The version format
 	 */
-	public VersionFormat getFormat()
+	public IVersionFormat getFormat()
 	{
 		return m_format;
 	}

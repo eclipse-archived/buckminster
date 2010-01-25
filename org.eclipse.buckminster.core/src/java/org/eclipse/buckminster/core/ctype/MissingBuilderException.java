@@ -22,10 +22,8 @@ public class MissingBuilderException extends LocalizedException
 
 	public MissingBuilderException(String builderId)
 	{
-		super(
-				NLS
-						.bind(
-								Messages.No_Component_Specification_cspec_builder_with_id_0_has_been_registered_with_extension_point_1,
-								builderId, CorePlugin.CSPEC_BUILDER_POINT));
+		super(NLS.bind(
+				Messages.No_Component_Specification_cspec_builder_with_id_0_has_been_registered_with_extension_point_1,
+				builderId, CorePlugin.CSPEC_BUILDER_POINT));
 	}
 }

@@ -28,6 +28,13 @@ public abstract class PropertyHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_key = this.getStringValue(attrs, "key"); //$NON-NLS-1$
+		m_mutable = getOptionalBooleanValue(attrs, "mutable", false); //$NON-NLS-1$
+	}
+
 	abstract void addYourself(Map<String, String> props);
 
 	final String getKey()
@@ -38,12 +45,5 @@ public abstract class PropertyHandler extends ExtensionAwareHandler
 	final boolean getMutable()
 	{
 		return m_mutable;
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_key = this.getStringValue(attrs, "key"); //$NON-NLS-1$
-		m_mutable = getOptionalBooleanValue(attrs, "mutable", false); //$NON-NLS-1$
 	}
 }

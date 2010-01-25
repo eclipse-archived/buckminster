@@ -50,11 +50,6 @@ public class SearchPathHandler extends ExtensionAwareHandler implements ChildPop
 		return ch;
 	}
 
-	SearchPath getSearchPath()
-	{
-		return m_searchPath;
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
@@ -62,5 +57,10 @@ public class SearchPathHandler extends ExtensionAwareHandler implements ChildPop
 		ResourceMap rmap = ((ResourceMapHandler)getParentHandler()).getResourceMap();
 		m_searchPath = new SearchPath(rmap, getStringValue(attrs, SearchPath.ATTR_NAME));
 		rmap.addSearchPath(m_searchPath);
+	}
+
+	SearchPath getSearchPath()
+	{
+		return m_searchPath;
 	}
 }

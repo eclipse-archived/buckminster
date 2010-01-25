@@ -34,15 +34,6 @@ public abstract class RxPart extends AbstractSaxableElement
 		m_optional = optional;
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		if(!(isTagged() || m_name == null))
-			Utils.addAttribute(attrs, ATTR_NAME, m_name);
-		if(m_optional)
-			Utils.addAttribute(attrs, ATTR_OPTIONAL, Boolean.TRUE.toString());
-	}
-
 	public abstract void addPattern(StringBuilder bld, List<RxPart> namedParts) throws CoreException;
 
 	public String getName()
@@ -58,5 +49,14 @@ public abstract class RxPart extends AbstractSaxableElement
 	public boolean isTagged()
 	{
 		return false;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs)
+	{
+		if(!(isTagged() || m_name == null))
+			Utils.addAttribute(attrs, ATTR_NAME, m_name);
+		if(m_optional)
+			Utils.addAttribute(attrs, ATTR_OPTIONAL, Boolean.TRUE.toString());
 	}
 }

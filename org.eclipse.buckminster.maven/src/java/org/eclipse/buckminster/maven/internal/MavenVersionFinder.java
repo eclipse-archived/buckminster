@@ -28,9 +28,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -138,10 +137,10 @@ public class MavenVersionFinder extends AbstractVersionFinder implements ILocati
 		NodeQuery query = getQuery();
 		VersionRange range = query.getVersionRange();
 		if(range == null)
-			range = new VersionRange(Version.MIN_VERSION, true, Version.MAX_VERSION, true);
+			range = VersionRange.emptyRange;
 		else
 		{
-			if(range.getFormat().equals(VersionFormat.OSGI_FORMAT))
+			if(range.getFormat().equals(VersionHelper.getOSGiFormat()))
 				//
 				// Convert the OSGi version to a Triplet version instead.
 				//

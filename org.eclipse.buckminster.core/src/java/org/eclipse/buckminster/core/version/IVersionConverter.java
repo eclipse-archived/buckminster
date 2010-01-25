@@ -12,7 +12,7 @@ package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.IBuckminsterExtension;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * Converts a <code>VersionSelector</code> of type <code>PLAIN</code> to something that can be understood by a source
@@ -20,7 +20,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public interface IVersionConverter extends IBuckminsterExtension
 {
 	static final String TAG = "tag"; //$NON-NLS-1$

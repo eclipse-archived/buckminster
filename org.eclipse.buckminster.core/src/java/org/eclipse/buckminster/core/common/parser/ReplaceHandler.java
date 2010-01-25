@@ -33,11 +33,6 @@ public class ReplaceHandler extends ValueFilterHandler
 			super(parent);
 		}
 
-		final Replace.Match getMatch()
-		{
-			return m_match;
-		}
-
 		@Override
 		public void handleAttributes(Attributes attrs) throws SAXException
 		{
@@ -45,6 +40,11 @@ public class ReplaceHandler extends ValueFilterHandler
 			String replacement = this.getStringValue(attrs, Replace.ATTR_REPLACEMENT);
 			boolean quotePattern = getOptionalBooleanValue(attrs, Replace.ATTR_QUOTE_PATTERN, false);
 			m_match = new Replace.Match(pattern, replacement, quotePattern);
+		}
+
+		final Replace.Match getMatch()
+		{
+			return m_match;
 		}
 	}
 

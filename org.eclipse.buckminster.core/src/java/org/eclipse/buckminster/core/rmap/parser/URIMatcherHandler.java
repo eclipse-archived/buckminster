@@ -8,20 +8,20 @@ import org.eclipse.buckminster.core.rmap.model.URIMatcher;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.FormatException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionFormatException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-@SuppressWarnings("restriction")
 public class URIMatcherHandler extends RxAssemblyHandler
 {
 	public static final String TAG = URIMatcher.TAG;
 
 	private String m_base;
 
-	private VersionFormat m_versionFormat;
+	private IVersionFormat m_versionFormat;
 
 	private String m_componentType = IComponentType.UNKNOWN;
 
@@ -49,9 +49,9 @@ public class URIMatcherHandler extends RxAssemblyHandler
 		{
 			try
 			{
-				m_versionFormat = VersionFormat.compile(tmp);
+				m_versionFormat = Version.compile(tmp);
 			}
-			catch(FormatException e)
+			catch(VersionFormatException e)
 			{
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}

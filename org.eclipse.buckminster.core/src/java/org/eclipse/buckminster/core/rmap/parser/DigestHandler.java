@@ -17,15 +17,15 @@ public class DigestHandler extends FormatHandler
 		super(parent);
 	}
 
-	String getAlgorithm()
-	{
-		return m_algorithm;
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
 		m_algorithm = getStringValue(attrs, Provider.ATTR_ALGORITHM);
+	}
+
+	String getAlgorithm()
+	{
+		return m_algorithm;
 	}
 }

@@ -72,29 +72,6 @@ public abstract class MaterializationDirective extends AbstractSaxableElement im
 		m_maxParallelJobs = builder.getMaxParallelJobs();
 	}
 
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		if(m_installLocation != null)
-			Utils.addAttribute(attrs, ATTR_INSTALL_LOCATION, m_installLocation.toPortableString());
-		if(m_workspaceLocation != null)
-			Utils.addAttribute(attrs, ATTR_WORKSPACE_LOCATION, m_workspaceLocation.toPortableString());
-		if(m_materializer != null)
-			Utils.addAttribute(attrs, ATTR_MATERIALIZER, m_materializer);
-		if(m_conflictResolution != null)
-			Utils.addAttribute(attrs, ATTR_CONFLICT_RESOLUTION, m_conflictResolution.name());
-		if(m_maxParallelJobs != -1)
-			Utils.addAttribute(attrs, ATTR_MAX_PARALLEL_JOBS, Integer.toString(m_maxParallelJobs));
-	}
-
-	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(receiver, namespace, prefix, m_documentation.getDefaultTag());
-		SAXEmitter.emitProperties(receiver, m_properties, namespace, prefix, true, false);
-	}
-
 	public ConflictResolution getConflictResolution()
 	{
 		return m_conflictResolution;
@@ -128,5 +105,28 @@ public abstract class MaterializationDirective extends AbstractSaxableElement im
 	public IPath getWorkspaceLocation()
 	{
 		return m_workspaceLocation;
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException
+	{
+		if(m_installLocation != null)
+			Utils.addAttribute(attrs, ATTR_INSTALL_LOCATION, m_installLocation.toPortableString());
+		if(m_workspaceLocation != null)
+			Utils.addAttribute(attrs, ATTR_WORKSPACE_LOCATION, m_workspaceLocation.toPortableString());
+		if(m_materializer != null)
+			Utils.addAttribute(attrs, ATTR_MATERIALIZER, m_materializer);
+		if(m_conflictResolution != null)
+			Utils.addAttribute(attrs, ATTR_CONFLICT_RESOLUTION, m_conflictResolution.name());
+		if(m_maxParallelJobs != -1)
+			Utils.addAttribute(attrs, ATTR_MAX_PARALLEL_JOBS, Integer.toString(m_maxParallelJobs));
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
+	{
+		if(m_documentation != null)
+			m_documentation.toSax(receiver, namespace, prefix, m_documentation.getDefaultTag());
+		SAXEmitter.emitProperties(receiver, m_properties, namespace, prefix, true, false);
 	}
 }

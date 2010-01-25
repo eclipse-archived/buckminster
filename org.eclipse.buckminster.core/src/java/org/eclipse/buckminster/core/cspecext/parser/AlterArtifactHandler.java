@@ -42,16 +42,9 @@ class AlterArtifactHandler extends AlterAttributeHandler
 	{
 
 		if(child == m_removePathHandler)
-			((AlterArtifactBuilder)this.getBuilder()).addRemovedPath(Path.fromPortableString(m_removePathHandler
-					.getValue()));
+			((AlterArtifactBuilder)this.getBuilder()).addRemovedPath(Path.fromPortableString(m_removePathHandler.getValue()));
 		else
 			super.childPopped(child);
-	}
-
-	@Override
-	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
-	{
-		return new AlterArtifactBuilder(baseBuilder);
 	}
 
 	@Override
@@ -63,5 +56,11 @@ class AlterArtifactHandler extends AlterAttributeHandler
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
+	}
+
+	@Override
+	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
+	{
+		return new AlterArtifactBuilder(baseBuilder);
 	}
 }

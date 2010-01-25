@@ -25,8 +25,8 @@ public abstract class AbstractExtension implements IBuckminsterExtension, IExecu
 	@SuppressWarnings("unchecked")
 	private static Map<String, String> getInitializationParameters(Object data)
 	{
-		return (data instanceof Map)
-				? (Map)data
+		return (data instanceof Map<?, ?>)
+				? (Map<String, String>)data
 				: null;
 	}
 

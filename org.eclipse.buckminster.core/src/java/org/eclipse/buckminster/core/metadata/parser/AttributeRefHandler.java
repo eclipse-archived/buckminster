@@ -28,14 +28,14 @@ public class AttributeRefHandler extends ExtensionAwareHandler
 		super(parent);
 	}
 
-	final String getName()
-	{
-		return m_name;
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_name = getStringValue(attrs, NamedElement.ATTR_NAME);
+	}
+
+	final String getName()
+	{
+		return m_name;
 	}
 }

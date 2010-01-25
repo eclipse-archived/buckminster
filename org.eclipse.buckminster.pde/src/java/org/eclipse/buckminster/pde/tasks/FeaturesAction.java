@@ -20,7 +20,6 @@ import org.apache.tools.ant.types.selectors.OrSelector;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
-import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.pde.tasks.FeatureRootAdvice.ConfigAdvice;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -31,15 +30,15 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 import org.eclipse.equinox.internal.p2.publisher.FileSetDescriptor;
-import org.eclipse.equinox.internal.provisional.p2.artifact.repository.ArtifactDescriptor;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IArtifactKey;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.p2.metadata.IArtifactKey;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
+import org.eclipse.equinox.p2.repository.artifact.spi.ArtifactDescriptor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.Utils;
@@ -52,7 +51,8 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	private static FeatureRootAdvice createRootAdvice(String featureId, Properties buildProperties,
 			IPath baseDirectory, String[] configs)
 	{
-		Map<String, Map<String, String>> configMap = TypedCollections.processRootProperties(buildProperties, true);
+		@SuppressWarnings("unchecked")
+		Map<String, Map<String, String>> configMap = Utils.processRootProperties(buildProperties, true);
 		if(configMap.size() == 1)
 		{
 			Map<String, String> entry = configMap.get(Utils.ROOT_COMMON);
@@ -220,9 +220,9 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		return parsed[1] + '.' + parsed[0] + '.' + parsed[2];
 	}
 
-	private final Map<VersionedId, CSpec> m_cspecs;
+	private final Map<IVersionedId, CSpec> m_cspecs;
 
-	public FeaturesAction(File[] featureBinaries, Map<VersionedId, CSpec> cspecs)
+	public FeaturesAction(File[] featureBinaries, Map<IVersionedId, CSpec> cspecs)
 	{
 		super(featureBinaries);
 		m_cspecs = cspecs;
@@ -278,8 +278,8 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	{
 		ArrayList<IInstallableUnit> ius = new ArrayList<IInstallableUnit>();
 
-		Collection<FeatureRootAdvice> collection = TypedCollections.getAdvice(publisherInfo, null, false,
-				feature.getId(), Version.parseVersion(feature.getVersion()), FeatureRootAdvice.class);
+		Collection<FeatureRootAdvice> collection = publisherInfo.getAdvice(null, false, feature.getId(),
+				Version.parseVersion(feature.getVersion()), FeatureRootAdvice.class);
 		if(collection.isEmpty())
 			return ius;
 
@@ -299,8 +299,11 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 				IInstallableUnit iu = createFeatureRootFileIU(feature.getId(), feature.getVersion(), null,
 						configAdvice.getDescriptor());
+				Collection<IArtifactKey> keys = iu.getArtifacts();
+				if(keys.isEmpty())
+					continue;
 
-				IArtifactKey artifactKey = iu.getArtifacts()[0];
+				IArtifactKey artifactKey = keys.iterator().next();
 				ArtifactDescriptor artifactDescriptor = new ArtifactDescriptor(artifactKey);
 				publishArtifact(artifactDescriptor, files, null, publisherInfo, configAdvice);
 				result.addIU(iu, IPublisherResult.NON_ROOT);

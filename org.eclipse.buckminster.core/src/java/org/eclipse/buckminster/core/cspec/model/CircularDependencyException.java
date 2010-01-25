@@ -35,7 +35,6 @@ public class CircularDependencyException extends LocalizedException
 
 	public CircularDependencyException(List<String> componentNames)
 	{
-		super(NLS.bind(Messages.Circular_component_dependency_detected_Chain_is_0,
-				buildChain(componentNames)));
+		super(NLS.bind(Messages.Circular_component_dependency_detected_Chain_is_0, buildChain(componentNames)));
 	}
 }

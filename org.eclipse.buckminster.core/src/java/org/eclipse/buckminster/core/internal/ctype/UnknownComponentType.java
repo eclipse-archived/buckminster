@@ -16,12 +16,11 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * @author thhal
  */
-@SuppressWarnings("restriction")
 public class UnknownComponentType extends AbstractComponentType
 {
 	private static final DefaultResolutionBuilder s_defaultBuilder = new DefaultResolutionBuilder();

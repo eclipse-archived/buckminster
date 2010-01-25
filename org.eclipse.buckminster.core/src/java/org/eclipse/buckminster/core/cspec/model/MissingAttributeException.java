@@ -26,8 +26,8 @@ public class MissingAttributeException extends LocalizedException
 	public MissingAttributeException(String name, String target, boolean withVisibility)
 	{
 
-		super(NLS.bind(Messages.CSpec_0_has_no_1_action_group_or_local_artifact_named_2,
-				new Object[] { name, withVisibility
+		super(NLS.bind(Messages.CSpec_0_has_no_1_action_group_or_local_artifact_named_2, new Object[] { name,
+				withVisibility
 						? "public " //$NON-NLS-1$
 						: "", target })); //$NON-NLS-1$
 	}

@@ -43,7 +43,6 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -271,24 +270,22 @@ public class PerformManager implements IPerformManager
 				refreshParents(container.getParent(), MonitorUtils.subMonitor(monitor, 50));
 			else
 				MonitorUtils.worked(monitor, 50);
-			container.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 50));
+			container.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 40));
 
 			if(leaf != null)
 			{
 				IFile file = container.getFile(new Path(leaf));
 				if(file.exists())
-					file.setDerived(true);
+					file.setDerived(true, MonitorUtils.subMonitor(monitor, 10));
+				else
+					MonitorUtils.worked(monitor, 10);
 			}
 			else
 			{
-				container.accept(new IResourceVisitor()
-				{
-					public boolean visit(IResource resource) throws CoreException
-					{
-						resource.setDerived(true);
-						return true;
-					}
-				});
+				if(!(container instanceof IProgressMonitor))
+					container.setDerived(true, MonitorUtils.subMonitor(monitor, 10));
+				else
+					MonitorUtils.worked(monitor, 10);
 			}
 		}
 		finally

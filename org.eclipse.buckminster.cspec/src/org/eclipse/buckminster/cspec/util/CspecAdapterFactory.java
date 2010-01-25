@@ -17,7 +17,7 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
 
-import org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
 
 /**
  * <!-- begin-user-doc --> The <b>Adapter Factory</b> for the model. It provides an adapter <code>createXXX</code>
@@ -413,12 +413,12 @@ public class CspecAdapterFactory extends AdapterFactoryImpl
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId <em>IVersioned Id</em>}'. <!--
+	 * {@link org.eclipse.equinox.p2.metadata.IVersionedId <em>IVersioned Id</em>}'. <!--
 	 * begin-user-doc --> This default implementation returns null so that we can easily ignore cases; it's useful to
 	 * ignore a case when inheritance will catch all the cases anyway. <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.equinox.internal.provisional.p2.metadata.IVersionedId
+	 * @see org.eclipse.equinox.p2.metadata.IVersionedId
 	 * @generated
 	 */
 	public Adapter createIVersionedIdAdapter()

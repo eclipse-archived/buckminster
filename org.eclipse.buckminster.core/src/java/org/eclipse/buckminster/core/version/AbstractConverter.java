@@ -13,22 +13,21 @@ import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public abstract class AbstractConverter extends AbstractExtension implements IVersionConverter
 {
 	private static final BidirectionalTransformer[] s_noTransformers = new BidirectionalTransformer[0];
 
 	private BidirectionalTransformer[] m_transformers = s_noTransformers;
 
-	private VersionFormat m_versionFormat = getDefaultVersionFormat();
+	private IVersionFormat m_versionFormat = getDefaultVersionFormat();
 
-	public VersionFormat getVersionFormat()
+	public IVersionFormat getVersionFormat()
 	{
 		return m_versionFormat;
 	}
@@ -50,7 +49,7 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 	 * 
 	 * @param versionFormat
 	 */
-	public final void setVersionFormat(VersionFormat versionFormat)
+	public final void setVersionFormat(IVersionFormat versionFormat)
 	{
 		m_versionFormat = versionFormat == null
 				? getDefaultVersionFormat()
@@ -126,5 +125,5 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 		}
 	}
 
-	protected abstract VersionFormat getDefaultVersionFormat();
+	protected abstract IVersionFormat getDefaultVersionFormat();
 }

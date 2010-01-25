@@ -16,8 +16,8 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.service.resolver.BundleDescription;
@@ -29,7 +29,6 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
  * @author Thomas Hallgren
  * 
  */
-@SuppressWarnings("restriction")
 public abstract class SelectionHelper
 {
 	public static CSpec selectionChanged(ISelection selection)
@@ -64,15 +63,15 @@ public abstract class SelectionHelper
 
 	private static Resolution getResolution(BundleSpecification spec) throws CoreException
 	{
-		ComponentRequest cr = new ComponentRequest(spec.getName(), IComponentType.OSGI_BUNDLE, VersionRange
-				.fromOSGiVersionRange(spec.getVersionRange()));
+		ComponentRequest cr = new ComponentRequest(spec.getName(), IComponentType.OSGI_BUNDLE,
+				VersionRange.fromOSGiVersionRange(spec.getVersionRange()));
 		return WorkspaceInfo.getResolution(cr, false);
 	}
 
 	private static Resolution getResolution(IPluginBase base) throws CoreException
 	{
-		return WorkspaceInfo.getResolution(new ComponentIdentifier(base.getId(), IComponentType.OSGI_BUNDLE, Version
-				.parseVersion(base.getVersion())));
+		return WorkspaceInfo.getResolution(new ComponentIdentifier(base.getId(), IComponentType.OSGI_BUNDLE,
+				Version.parseVersion(base.getVersion())));
 	}
 
 	private static Resolution getResolution(IPluginModelBase model) throws CoreException

@@ -10,15 +10,15 @@
 package org.eclipse.buckminster.core.internal.version;
 
 import org.eclipse.buckminster.core.version.AbstractConverter;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class TagConverter extends AbstractConverter
 {
 	public VersionSelector createSelector(Version version) throws CoreException
@@ -45,8 +45,8 @@ public class TagConverter extends AbstractConverter
 	}
 
 	@Override
-	protected VersionFormat getDefaultVersionFormat()
+	protected IVersionFormat getDefaultVersionFormat()
 	{
-		return VersionFormat.OSGI_FORMAT;
+		return VersionHelper.getOSGiFormat();
 	}
 }

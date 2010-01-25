@@ -58,6 +58,13 @@ class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 	}
 
 	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException
+	{
+		m_resolutionId = UUID.fromString(this.getStringValue(attrs, ResolvedNode.ATTR_RESOLUTION_ID));
+		m_children.clear();
+	}
+
+	@Override
 	BOMNode getDepNode() throws SAXException
 	{
 		ArrayList<BOMNode> childNodes = new ArrayList<BOMNode>(m_children.size());
@@ -70,15 +77,8 @@ class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
 		}
 		catch(ClassCastException e)
 		{
-			throw new SAXParseException(NLS.bind(Messages.Wrapper_0_does_not_wrap_resolution,
-					m_resolutionId), getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.Wrapper_0_does_not_wrap_resolution, m_resolutionId),
+					getDocumentLocator());
 		}
-	}
-
-	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_resolutionId = UUID.fromString(this.getStringValue(attrs, ResolvedNode.ATTR_RESOLUTION_ID));
-		m_children.clear();
 	}
 }

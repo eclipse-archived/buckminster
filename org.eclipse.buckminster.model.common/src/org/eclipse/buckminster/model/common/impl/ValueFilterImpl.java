@@ -34,19 +34,19 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getConstants <em>Constants</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getFormats <em>Formats</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getPropertyRefs <em>Property Refs</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getReplacements <em>Replacements</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getSplits <em>Splits</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToLowers <em>To Lowers</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToUppers <em>To Uppers</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getConstants <em>Constants</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getFormats <em>Formats</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getPropertyRefs <em>Property Refs</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getReplacements <em>Replacements</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getSplits <em>Splits</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToLowers <em>To Lowers</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToUppers <em>To Uppers</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
-public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
+public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 {
 	/**
 	 * The cached value of the '{@link #getConstants() <em>Constants</em>}' containment reference list. <!--
@@ -59,9 +59,9 @@ public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
 	protected EList<Constant> constants;
 
 	/**
-	 * The cached value of the '{@link #getFormats() <em>Formats</em>}' containment reference list. <!-- begin-user-doc
+	 * The cached value of the '{@link #getFormats() <em>Formats</em>}' containment reference list.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @see #getFormats()
 	 * @generated
 	 * @ordered
@@ -89,9 +89,9 @@ public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
 	protected EList<Replace> replacements;
 
 	/**
-	 * The cached value of the '{@link #getSplits() <em>Splits</em>}' containment reference list. <!-- begin-user-doc
+	 * The cached value of the '{@link #getSplits() <em>Splits</em>}' containment reference list.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @see #getSplits()
 	 * @generated
 	 * @ordered
@@ -120,7 +120,6 @@ public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected ValueFilterImpl()
@@ -130,190 +129,175 @@ public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.VALUE_FILTER__CONSTANTS:
-			return getConstants();
-		case CommonPackage.VALUE_FILTER__FORMATS:
-			return getFormats();
-		case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-			return getPropertyRefs();
-		case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-			return getReplacements();
-		case CommonPackage.VALUE_FILTER__SPLITS:
-			return getSplits();
-		case CommonPackage.VALUE_FILTER__TO_LOWERS:
-			return getToLowers();
-		case CommonPackage.VALUE_FILTER__TO_UPPERS:
-			return getToUppers();
+		switch (featureID) {
+			case CommonPackage.VALUE_FILTER__CONSTANTS:
+				return getConstants();
+			case CommonPackage.VALUE_FILTER__FORMATS:
+				return getFormats();
+			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
+				return getPropertyRefs();
+			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
+				return getReplacements();
+			case CommonPackage.VALUE_FILTER__SPLITS:
+				return getSplits();
+			case CommonPackage.VALUE_FILTER__TO_LOWERS:
+				return getToLowers();
+			case CommonPackage.VALUE_FILTER__TO_UPPERS:
+				return getToUppers();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.VALUE_FILTER__CONSTANTS:
-			return ((InternalEList<?>)getConstants()).basicRemove(otherEnd, msgs);
-		case CommonPackage.VALUE_FILTER__FORMATS:
-			return ((InternalEList<?>)getFormats()).basicRemove(otherEnd, msgs);
-		case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-			return ((InternalEList<?>)getPropertyRefs()).basicRemove(otherEnd, msgs);
-		case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-			return ((InternalEList<?>)getReplacements()).basicRemove(otherEnd, msgs);
-		case CommonPackage.VALUE_FILTER__SPLITS:
-			return ((InternalEList<?>)getSplits()).basicRemove(otherEnd, msgs);
-		case CommonPackage.VALUE_FILTER__TO_LOWERS:
-			return ((InternalEList<?>)getToLowers()).basicRemove(otherEnd, msgs);
-		case CommonPackage.VALUE_FILTER__TO_UPPERS:
-			return ((InternalEList<?>)getToUppers()).basicRemove(otherEnd, msgs);
+		switch (featureID) {
+			case CommonPackage.VALUE_FILTER__CONSTANTS:
+				return ((InternalEList<?>)getConstants()).basicRemove(otherEnd, msgs);
+			case CommonPackage.VALUE_FILTER__FORMATS:
+				return ((InternalEList<?>)getFormats()).basicRemove(otherEnd, msgs);
+			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
+				return ((InternalEList<?>)getPropertyRefs()).basicRemove(otherEnd, msgs);
+			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
+				return ((InternalEList<?>)getReplacements()).basicRemove(otherEnd, msgs);
+			case CommonPackage.VALUE_FILTER__SPLITS:
+				return ((InternalEList<?>)getSplits()).basicRemove(otherEnd, msgs);
+			case CommonPackage.VALUE_FILTER__TO_LOWERS:
+				return ((InternalEList<?>)getToLowers()).basicRemove(otherEnd, msgs);
+			case CommonPackage.VALUE_FILTER__TO_UPPERS:
+				return ((InternalEList<?>)getToUppers()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.VALUE_FILTER__CONSTANTS:
-			return constants != null && !constants.isEmpty();
-		case CommonPackage.VALUE_FILTER__FORMATS:
-			return formats != null && !formats.isEmpty();
-		case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-			return propertyRefs != null && !propertyRefs.isEmpty();
-		case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-			return replacements != null && !replacements.isEmpty();
-		case CommonPackage.VALUE_FILTER__SPLITS:
-			return splits != null && !splits.isEmpty();
-		case CommonPackage.VALUE_FILTER__TO_LOWERS:
-			return toLowers != null && !toLowers.isEmpty();
-		case CommonPackage.VALUE_FILTER__TO_UPPERS:
-			return toUppers != null && !toUppers.isEmpty();
+		switch (featureID) {
+			case CommonPackage.VALUE_FILTER__CONSTANTS:
+				return constants != null && !constants.isEmpty();
+			case CommonPackage.VALUE_FILTER__FORMATS:
+				return formats != null && !formats.isEmpty();
+			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
+				return propertyRefs != null && !propertyRefs.isEmpty();
+			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
+				return replacements != null && !replacements.isEmpty();
+			case CommonPackage.VALUE_FILTER__SPLITS:
+				return splits != null && !splits.isEmpty();
+			case CommonPackage.VALUE_FILTER__TO_LOWERS:
+				return toLowers != null && !toLowers.isEmpty();
+			case CommonPackage.VALUE_FILTER__TO_UPPERS:
+				return toUppers != null && !toUppers.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.VALUE_FILTER__CONSTANTS:
-			getConstants().clear();
-			getConstants().addAll((Collection<? extends Constant>)newValue);
-			return;
-		case CommonPackage.VALUE_FILTER__FORMATS:
-			getFormats().clear();
-			getFormats().addAll((Collection<? extends Format>)newValue);
-			return;
-		case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-			getPropertyRefs().clear();
-			getPropertyRefs().addAll((Collection<? extends PropertyRef>)newValue);
-			return;
-		case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-			getReplacements().clear();
-			getReplacements().addAll((Collection<? extends Replace>)newValue);
-			return;
-		case CommonPackage.VALUE_FILTER__SPLITS:
-			getSplits().clear();
-			getSplits().addAll((Collection<? extends Split>)newValue);
-			return;
-		case CommonPackage.VALUE_FILTER__TO_LOWERS:
-			getToLowers().clear();
-			getToLowers().addAll((Collection<? extends ToLower>)newValue);
-			return;
-		case CommonPackage.VALUE_FILTER__TO_UPPERS:
-			getToUppers().clear();
-			getToUppers().addAll((Collection<? extends ToUpper>)newValue);
-			return;
+		switch (featureID) {
+			case CommonPackage.VALUE_FILTER__CONSTANTS:
+				getConstants().clear();
+				getConstants().addAll((Collection<? extends Constant>)newValue);
+				return;
+			case CommonPackage.VALUE_FILTER__FORMATS:
+				getFormats().clear();
+				getFormats().addAll((Collection<? extends Format>)newValue);
+				return;
+			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
+				getPropertyRefs().clear();
+				getPropertyRefs().addAll((Collection<? extends PropertyRef>)newValue);
+				return;
+			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
+				getReplacements().clear();
+				getReplacements().addAll((Collection<? extends Replace>)newValue);
+				return;
+			case CommonPackage.VALUE_FILTER__SPLITS:
+				getSplits().clear();
+				getSplits().addAll((Collection<? extends Split>)newValue);
+				return;
+			case CommonPackage.VALUE_FILTER__TO_LOWERS:
+				getToLowers().clear();
+				getToLowers().addAll((Collection<? extends ToLower>)newValue);
+				return;
+			case CommonPackage.VALUE_FILTER__TO_UPPERS:
+				getToUppers().clear();
+				getToUppers().addAll((Collection<? extends ToUpper>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID)
 	{
-		switch(featureID)
-		{
-		case CommonPackage.VALUE_FILTER__CONSTANTS:
-			getConstants().clear();
-			return;
-		case CommonPackage.VALUE_FILTER__FORMATS:
-			getFormats().clear();
-			return;
-		case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-			getPropertyRefs().clear();
-			return;
-		case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-			getReplacements().clear();
-			return;
-		case CommonPackage.VALUE_FILTER__SPLITS:
-			getSplits().clear();
-			return;
-		case CommonPackage.VALUE_FILTER__TO_LOWERS:
-			getToLowers().clear();
-			return;
-		case CommonPackage.VALUE_FILTER__TO_UPPERS:
-			getToUppers().clear();
-			return;
+		switch (featureID) {
+			case CommonPackage.VALUE_FILTER__CONSTANTS:
+				getConstants().clear();
+				return;
+			case CommonPackage.VALUE_FILTER__FORMATS:
+				getFormats().clear();
+				return;
+			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
+				getPropertyRefs().clear();
+				return;
+			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
+				getReplacements().clear();
+				return;
+			case CommonPackage.VALUE_FILTER__SPLITS:
+				getSplits().clear();
+				return;
+			case CommonPackage.VALUE_FILTER__TO_LOWERS:
+				getToLowers().clear();
+				return;
+			case CommonPackage.VALUE_FILTER__TO_UPPERS:
+				getToUppers().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Constant> getConstants()
 	{
-		if(constants == null)
-		{
-			constants = new EObjectContainmentEList<Constant>(Constant.class, this,
-					CommonPackage.VALUE_FILTER__CONSTANTS);
+		if (constants == null) {
+			constants = new EObjectContainmentEList<Constant>(Constant.class, this, CommonPackage.VALUE_FILTER__CONSTANTS);
 		}
 		return constants;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Format> getFormats()
 	{
-		if(formats == null)
-		{
+		if (formats == null) {
 			formats = new EObjectContainmentEList<Format>(Format.class, this, CommonPackage.VALUE_FILTER__FORMATS);
 		}
 		return formats;
@@ -321,43 +305,35 @@ public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<PropertyRef> getPropertyRefs()
 	{
-		if(propertyRefs == null)
-		{
-			propertyRefs = new EObjectContainmentEList<PropertyRef>(PropertyRef.class, this,
-					CommonPackage.VALUE_FILTER__PROPERTY_REFS);
+		if (propertyRefs == null) {
+			propertyRefs = new EObjectContainmentEList<PropertyRef>(PropertyRef.class, this, CommonPackage.VALUE_FILTER__PROPERTY_REFS);
 		}
 		return propertyRefs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Replace> getReplacements()
 	{
-		if(replacements == null)
-		{
-			replacements = new EObjectContainmentEList<Replace>(Replace.class, this,
-					CommonPackage.VALUE_FILTER__REPLACEMENTS);
+		if (replacements == null) {
+			replacements = new EObjectContainmentEList<Replace>(Replace.class, this, CommonPackage.VALUE_FILTER__REPLACEMENTS);
 		}
 		return replacements;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Split> getSplits()
 	{
-		if(splits == null)
-		{
+		if (splits == null) {
 			splits = new EObjectContainmentEList<Split>(Split.class, this, CommonPackage.VALUE_FILTER__SPLITS);
 		}
 		return splits;
@@ -365,13 +341,11 @@ public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<ToLower> getToLowers()
 	{
-		if(toLowers == null)
-		{
+		if (toLowers == null) {
 			toLowers = new EObjectContainmentEList<ToLower>(ToLower.class, this, CommonPackage.VALUE_FILTER__TO_LOWERS);
 		}
 		return toLowers;
@@ -379,13 +353,11 @@ public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<ToUpper> getToUppers()
 	{
-		if(toUppers == null)
-		{
+		if (toUppers == null) {
 			toUppers = new EObjectContainmentEList<ToUpper>(ToUpper.class, this, CommonPackage.VALUE_FILTER__TO_UPPERS);
 		}
 		return toUppers;
@@ -393,7 +365,6 @@ public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
@@ -402,4 +373,9 @@ public abstract class ValueFilterImpl extends EObjectImpl implements ValueFilter
 		return CommonPackage.Literals.VALUE_FILTER;
 	}
 
+	@Override
+	public void toString(StringBuilder bld)
+	{
+		
+	}
 } // ValueFilterImpl

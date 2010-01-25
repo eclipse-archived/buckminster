@@ -25,10 +25,10 @@ abstract class BomNodeHandler extends ExtensionAwareHandler implements IWrapperP
 		super(parent);
 	}
 
-	abstract BOMNode getDepNode() throws SAXException;
-
 	public UUIDKeyed getWrapped(UUID id) throws SAXException
 	{
 		return ((IDWrapperHandler)getParentHandler()).getWrapped(id);
 	}
+
+	abstract BOMNode getDepNode() throws SAXException;
 }

@@ -25,7 +25,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -33,7 +33,6 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public abstract class TopLevelAttribute extends Attribute implements Cloneable
 {
 	public final static String PROPERTY_PREFIX = "buckminster."; //$NON-NLS-1$

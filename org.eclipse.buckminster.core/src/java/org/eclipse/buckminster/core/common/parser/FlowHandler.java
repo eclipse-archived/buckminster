@@ -31,28 +31,6 @@ public class FlowHandler extends ChildHandler implements ChildPoppedListener
 		m_localName = localName;
 	}
 
-	private void addElement(ISaxableElement element)
-	{
-		if(m_elements == null)
-			m_elements = new ArrayList<ISaxableElement>();
-		m_elements.add(element);
-	}
-
-	private void addTextIfAny()
-	{
-		if(m_text == null)
-			return;
-
-		int textLen = m_text.length();
-		if(textLen == 0)
-			return;
-
-		char[] buf = new char[textLen];
-		m_text.getChars(0, textLen, buf, 0);
-		addElement(new Text(buf));
-		m_text.setLength(0);
-	}
-
 	@Override
 	public void characters(char[] chars, int start, int length) throws SAXException
 	{
@@ -77,13 +55,6 @@ public class FlowHandler extends ChildHandler implements ChildPoppedListener
 				: m_elements.toArray(new ISaxableElement[m_elements.size()]);
 
 		return createFlowElement(m_localName, m_keyValuePairs, children);
-	}
-
-	Flow createFlowElement(String localName, String[] keyValuePairs, ISaxableElement[] children)
-	{
-		return (keyValuePairs.length == 0)
-				? new Flow(localName, children)
-				: new FlowWithAttributes(localName, children, keyValuePairs);
 	}
 
 	@Override
@@ -119,5 +90,34 @@ public class FlowHandler extends ChildHandler implements ChildPoppedListener
 		}
 		else
 			m_keyValuePairs = Trivial.EMPTY_STRING_ARRAY;
+	}
+
+	Flow createFlowElement(String localName, String[] keyValuePairs, ISaxableElement[] children)
+	{
+		return (keyValuePairs.length == 0)
+				? new Flow(localName, children)
+				: new FlowWithAttributes(localName, children, keyValuePairs);
+	}
+
+	private void addElement(ISaxableElement element)
+	{
+		if(m_elements == null)
+			m_elements = new ArrayList<ISaxableElement>();
+		m_elements.add(element);
+	}
+
+	private void addTextIfAny()
+	{
+		if(m_text == null)
+			return;
+
+		int textLen = m_text.length();
+		if(textLen == 0)
+			return;
+
+		char[] buf = new char[textLen];
+		m_text.getChars(0, textLen, buf, 0);
+		addElement(new Text(buf));
+		m_text.setLength(0);
 	}
 }

@@ -21,7 +21,6 @@ public class ComponentRequestConflictException extends LocalizedException
 
 	public ComponentRequestConflictException(IComponentRequest rq1, IComponentRequest rq2)
 	{
-		super(NLS.bind(Messages.Component_request_0_is_in_conflict_with_request_1,
-				rq1, rq2));
+		super(NLS.bind(Messages.Component_request_0_is_in_conflict_with_request_1, rq1, rq2));
 	}
 }

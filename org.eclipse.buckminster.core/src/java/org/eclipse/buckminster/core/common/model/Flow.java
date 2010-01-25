@@ -46,11 +46,6 @@ public class Flow implements ISaxableElement
 		return m_tag;
 	}
 
-	String[] getKeyNamePairs()
-	{
-		return Trivial.EMPTY_STRING_ARRAY;
-	}
-
 	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
 	{
 		String qName = (prefix == null)
@@ -60,5 +55,10 @@ public class Flow implements ISaxableElement
 		for(ISaxableElement child : m_children)
 			child.toSax(receiver, XMLConstants.XHTML_NS, null, child.getDefaultTag());
 		receiver.endElement(namespace, localName, qName);
+	}
+
+	String[] getKeyNamePairs()
+	{
+		return Trivial.EMPTY_STRING_ARRAY;
 	}
 }

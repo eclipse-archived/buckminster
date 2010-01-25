@@ -34,6 +34,7 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.ProjectDescReader;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.jdt.ClasspathReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.actor.FragmentsActor;
@@ -48,7 +49,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.pde.core.build.IBuild;
@@ -329,7 +330,7 @@ public class CSpecFromSource extends CSpecGenerator
 		Version version = cspec.getVersion();
 		if(version != null)
 		{
-			String versionQualifier = version.getQualifier();
+			String versionQualifier = VersionHelper.getQualifier(version);
 			if(versionQualifier != null)
 				versionExpansion = versionQualifier.endsWith(VersionQualifierTask.QUALIFIER_SUFFIX);
 		}

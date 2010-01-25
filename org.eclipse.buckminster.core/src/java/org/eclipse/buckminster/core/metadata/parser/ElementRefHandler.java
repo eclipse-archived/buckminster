@@ -31,11 +31,6 @@ public class ElementRefHandler extends ExtensionAwareHandler
 		m_tag = name;
 	}
 
-	final UUID getRefId()
-	{
-		return m_refId;
-	}
-
 	@Override
 	public String getTAG()
 	{
@@ -46,5 +41,10 @@ public class ElementRefHandler extends ExtensionAwareHandler
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_refId = UUID.fromString(this.getStringValue(attrs, ATTR_REFID));
+	}
+
+	final UUID getRefId()
+	{
+		return m_refId;
 	}
 }

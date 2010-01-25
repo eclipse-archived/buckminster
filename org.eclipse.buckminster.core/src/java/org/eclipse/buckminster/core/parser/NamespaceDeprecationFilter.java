@@ -27,8 +27,8 @@ public class NamespaceDeprecationFilter extends XMLFilterImpl
 		if(m_oldNamespace.equals(namespace))
 		{
 			CorePlugin.getLogger().warning(
-					NLS.bind(Messages.XML_namespace_0_deprecated_Use_1_instead_2,
-							new Object[] { m_oldNamespace, m_newNamespace, m_systemID }));
+					NLS.bind(Messages.XML_namespace_0_deprecated_Use_1_instead_2, new Object[] { m_oldNamespace,
+							m_newNamespace, m_systemID }));
 			namespace = m_newNamespace;
 		}
 		super.startPrefixMapping(prefix, namespace);

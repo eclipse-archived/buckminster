@@ -12,12 +12,11 @@ import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Trivial;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class ComponentRequestBuilder implements IComponentRequest
 {
 	private String m_name;

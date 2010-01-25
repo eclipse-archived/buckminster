@@ -36,14 +36,14 @@ public class TaggedRxPatternHandler extends RxPatternHandler
 	}
 
 	@Override
-	protected String getNameAttributeValue(Attributes attrs) throws SAXException
-	{
-		return TaggedRxPattern.TAGGED_PREFIX + m_tag;
-	}
-
-	@Override
 	public String getTAG()
 	{
 		return m_tag;
+	}
+
+	@Override
+	protected String getNameAttributeValue(Attributes attrs) throws SAXException
+	{
+		return TaggedRxPattern.TAGGED_PREFIX + m_tag;
 	}
 }

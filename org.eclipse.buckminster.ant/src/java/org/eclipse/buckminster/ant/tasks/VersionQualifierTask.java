@@ -30,14 +30,13 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
  * 
  */
-@SuppressWarnings("restriction")
 public class VersionQualifierTask
 {
 	public static final String GENERATOR_PREFIX = "generator:"; //$NON-NLS-1$
@@ -100,7 +99,7 @@ public class VersionQualifierTask
 		if(version == null)
 			return false;
 
-		String qualifier = version.getQualifier();
+		String qualifier = VersionHelper.getQualifier(version);
 		if(qualifier == null || !qualifier.endsWith(QUALIFIER_SUFFIX))
 			return false;
 
@@ -114,7 +113,7 @@ public class VersionQualifierTask
 		if(version == null)
 			return version;
 
-		String qualifier = version.getQualifier();
+		String qualifier = VersionHelper.getQualifier(version);
 		if(qualifier == null)
 			return version;
 

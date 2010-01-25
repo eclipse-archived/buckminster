@@ -81,8 +81,7 @@ public class LocationEmitter extends PropertiesEmitter
 
 			try
 			{
-				Class<?> classpathEmitterClass = bundle
-						.loadClass("org.eclipse.buckminster.jdt.internal.ClasspathEmitter"); //$NON-NLS-1$
+				Class<?> classpathEmitterClass = bundle.loadClass("org.eclipse.buckminster.jdt.internal.ClasspathEmitter"); //$NON-NLS-1$
 				s_getDefaultOutputFolder = classpathEmitterClass.getMethod("getDefaultOutputFolder", //$NON-NLS-1$
 						new Class[] { IProject.class });
 			}
@@ -145,7 +144,7 @@ public class LocationEmitter extends PropertiesEmitter
 				IPath dfltOutput = getDefaultOutputFolder(project);
 				if(dfltOutput != null)
 					addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, dfltOutput //$NON-NLS-1$
-							.toOSString());
+					.toOSString());
 			}
 			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location));
 		}

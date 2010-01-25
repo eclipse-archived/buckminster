@@ -89,14 +89,14 @@ public class RxAssemblyHandler extends ExtensionAwareHandler implements ChildPop
 		return getPartHandler(this, localName, m_partHandlers);
 	}
 
-	protected ArrayList<RxPart> getParts()
-	{
-		return m_parts;
-	}
-
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_parts = null;
+	}
+
+	protected ArrayList<RxPart> getParts()
+	{
+		return m_parts;
 	}
 }

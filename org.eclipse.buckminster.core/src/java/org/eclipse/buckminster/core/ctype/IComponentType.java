@@ -20,8 +20,8 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
 /**
  * A IComponentType knows how to find dependency information in the components that it represents, often in combination
@@ -31,7 +31,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
  * @see org.eclipse.buckminster.core.CorePlugin#getComponentType(String)
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public interface IComponentType extends IBuckminsterExtension
 {
 	public static final String OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$

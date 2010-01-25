@@ -25,14 +25,14 @@ abstract class AlterHandler extends ExtensionAwareHandler implements ChildPopped
 		super(parent);
 	}
 
-	AlterCSpecBuilder getAlterCSpecBuilder()
-	{
-		return ((AlterHandler)this.getParentHandler()).getAlterCSpecBuilder();
-	}
-
 	public CSpecBuilder getCSpecBuilder()
 	{
 		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
+	}
+
+	AlterCSpecBuilder getAlterCSpecBuilder()
+	{
+		return ((AlterHandler)this.getParentHandler()).getAlterCSpecBuilder();
 	}
 
 	String getCSpecExtensionName()

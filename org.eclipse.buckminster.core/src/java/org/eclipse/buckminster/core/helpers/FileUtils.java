@@ -68,8 +68,8 @@ public abstract class FileUtils
 
 		public CopyOntoSelfException(File source, File destination)
 		{
-			super(NLS.bind(Messages.Cannot_copy_0_to_1_since_destination_equal_or_contained_in_source,
-					source, destination));
+			super(NLS.bind(Messages.Cannot_copy_0_to_1_since_destination_equal_or_contained_in_source, source,
+					destination));
 		}
 	}
 
@@ -147,11 +147,6 @@ public abstract class FileUtils
 		s_defaultExcludes = bld.toArray(new Pattern[bld.size()]);
 	}
 
-	private static void addPattern(ArrayList<Pattern> bld, String expr)
-	{
-		bld.add(Pattern.compile(expr));
-	}
-
 	public static void appendRelativeFiles(File directory, File relPath, Map<String, Long> fileNames)
 	{
 		String path = relPath.getPath();
@@ -175,40 +170,6 @@ public abstract class FileUtils
 	public static void appendRelativeFiles(File directory, Map<String, Long> fileNames)
 	{
 		appendRelativeFiles(directory, fileNames, new StringBuilder());
-	}
-
-	private static void appendRelativeFiles(File directory, Map<String, Long> fileNames, StringBuilder path)
-	{
-		int pathLen = path.length();
-		if(pathLen > 0)
-		{
-			path.append(FILE_SEP);
-			pathLen = path.length();
-		}
-
-		File[] files = directory.listFiles();
-		if(files == null)
-			return;
-
-		int idx = files.length;
-		while(--idx >= 0)
-		{
-			File file = files[idx];
-			String sourceStr = file.toString().replace('\\', '/');
-
-			path.append(file.getName());
-			if(file.isDirectory())
-			{
-				if(!isMatch(sourceStr + '/', s_defaultExcludes, false))
-					appendRelativeFiles(file, fileNames, path);
-			}
-			else
-			{
-				if(!isMatch(sourceStr, s_defaultExcludes, false))
-					fileNames.put(path.toString(), new Long(file.lastModified()));
-			}
-			path.setLength(pathLen);
-		}
 	}
 
 	/**
@@ -377,27 +338,6 @@ public abstract class FileUtils
 		return copyFile(input, output, new byte[0x2000], monitor);
 	}
 
-	private static int countFilesAndGetOldest(File fileOrDir, int count, long[] timestampHolder)
-	{
-		File[] files = fileOrDir.listFiles();
-		if(files == null)
-		{
-			if(fileOrDir.isFile())
-			{
-				long timestamp = fileOrDir.lastModified();
-				if(timestamp < timestampHolder[0])
-					timestampHolder[0] = timestamp;
-				count++;
-			}
-		}
-		else
-		{
-			for(File file : files)
-				count = countFilesAndGetOldest(file, count, timestampHolder);
-		}
-		return count;
-	}
-
 	public static synchronized void createDirectory(File file, IProgressMonitor monitor) throws MkdirException
 	{
 		MonitorUtils.begin(monitor, 1);
@@ -500,53 +440,6 @@ public abstract class FileUtils
 
 		createTempFolder(tmpFile);
 		return tmpFile;
-	}
-
-	/**
-	 * internal helper method to read all files/dirs in a directory tree to a *single* outstream
-	 */
-	private static void deepCalculateDigest(File from, OutputStream os, int rootOffset, IProgressMonitor monitor)
-			throws IOException
-	{
-		// get the file list, but *always* sort it to ensure we
-		// always process things in the same order as this is important
-		// for always getting the same digest
-		//
-		File names[] = from.listFiles();
-		MonitorUtils.begin(monitor, names.length * 100);
-		try
-		{
-			Arrays.sort(names);
-			for(int i = 0; i < names.length; i++)
-			{
-				File p = names[i];
-				//
-				// Make pathnames count for everything we encounter to ensure
-				// changes in dir structure also count (new dirs, empty files,
-				// changed names)
-				// replace the platform specific separator with something
-				// else...we should then
-				// get identical results on any platform.
-				//
-				IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 100);
-				os.write(p.getName().getBytes());
-				if(p.isDirectory())
-				{
-					os.write(1);
-					deepCalculateDigest(p, os, rootOffset, subMonitor);
-				}
-				else
-				{
-					FileInputStream fis = new FileInputStream(p);
-					copyFile(fis, os, subMonitor);
-					fis.close();
-				}
-			}
-		}
-		finally
-		{
-			MonitorUtils.done(monitor);
-		}
 	}
 
 	/**
@@ -870,22 +763,6 @@ public abstract class FileUtils
 		return lastModTime;
 	}
 
-	private static boolean isMatch(String fileStr, Pattern[] patterns, boolean whenEmpty)
-	{
-		if(patterns != null)
-		{
-			int idx = patterns.length;
-			if(idx > 0)
-			{
-				while(--idx >= 0)
-					if(patterns[idx].matcher(fileStr).matches())
-						return true;
-				return false;
-			}
-		}
-		return whenEmpty;
-	}
-
 	/**
 	 * Creates directories in a synchronized block.
 	 * 
@@ -899,14 +776,13 @@ public abstract class FileUtils
 		synchronized(THREADLOCK)
 		{
 			if(directory == null || directory.exists() && !directory.isDirectory())
-				throw BuckminsterException.fromMessage(NLS.bind(
-						Messages.Unable_to_create_directory_0_Not_a_directory, directory != null
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_create_directory_0_Not_a_directory,
+						directory != null
 								? directory
 								: "(null)")); //$NON-NLS-1$
 
 			if(!directory.exists() && !directory.mkdirs())
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_create_directory_0,
-						directory));
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_create_directory_0, directory));
 		}
 	}
 
@@ -1174,5 +1050,128 @@ public abstract class FileUtils
 		{
 			IOUtils.close(input);
 		}
+	}
+
+	private static void addPattern(ArrayList<Pattern> bld, String expr)
+	{
+		bld.add(Pattern.compile(expr));
+	}
+
+	private static void appendRelativeFiles(File directory, Map<String, Long> fileNames, StringBuilder path)
+	{
+		int pathLen = path.length();
+		if(pathLen > 0)
+		{
+			path.append(FILE_SEP);
+			pathLen = path.length();
+		}
+
+		File[] files = directory.listFiles();
+		if(files == null)
+			return;
+
+		int idx = files.length;
+		while(--idx >= 0)
+		{
+			File file = files[idx];
+			String sourceStr = file.toString().replace('\\', '/');
+
+			path.append(file.getName());
+			if(file.isDirectory())
+			{
+				if(!isMatch(sourceStr + '/', s_defaultExcludes, false))
+					appendRelativeFiles(file, fileNames, path);
+			}
+			else
+			{
+				if(!isMatch(sourceStr, s_defaultExcludes, false))
+					fileNames.put(path.toString(), new Long(file.lastModified()));
+			}
+			path.setLength(pathLen);
+		}
+	}
+
+	private static int countFilesAndGetOldest(File fileOrDir, int count, long[] timestampHolder)
+	{
+		File[] files = fileOrDir.listFiles();
+		if(files == null)
+		{
+			if(fileOrDir.isFile())
+			{
+				long timestamp = fileOrDir.lastModified();
+				if(timestamp < timestampHolder[0])
+					timestampHolder[0] = timestamp;
+				count++;
+			}
+		}
+		else
+		{
+			for(File file : files)
+				count = countFilesAndGetOldest(file, count, timestampHolder);
+		}
+		return count;
+	}
+
+	/**
+	 * internal helper method to read all files/dirs in a directory tree to a *single* outstream
+	 */
+	private static void deepCalculateDigest(File from, OutputStream os, int rootOffset, IProgressMonitor monitor)
+			throws IOException
+	{
+		// get the file list, but *always* sort it to ensure we
+		// always process things in the same order as this is important
+		// for always getting the same digest
+		//
+		File names[] = from.listFiles();
+		MonitorUtils.begin(monitor, names.length * 100);
+		try
+		{
+			Arrays.sort(names);
+			for(int i = 0; i < names.length; i++)
+			{
+				File p = names[i];
+				//
+				// Make pathnames count for everything we encounter to ensure
+				// changes in dir structure also count (new dirs, empty files,
+				// changed names)
+				// replace the platform specific separator with something
+				// else...we should then
+				// get identical results on any platform.
+				//
+				IProgressMonitor subMonitor = MonitorUtils.subMonitor(monitor, 100);
+				os.write(p.getName().getBytes());
+				if(p.isDirectory())
+				{
+					os.write(1);
+					deepCalculateDigest(p, os, rootOffset, subMonitor);
+				}
+				else
+				{
+					FileInputStream fis = new FileInputStream(p);
+					copyFile(fis, os, subMonitor);
+					fis.close();
+				}
+			}
+		}
+		finally
+		{
+			MonitorUtils.done(monitor);
+		}
+	}
+
+	private static boolean isMatch(String fileStr, Pattern[] patterns, boolean whenEmpty)
+	{
+		if(patterns != null)
+		{
+			int idx = patterns.length;
+			if(idx > 0)
+			{
+				while(--idx >= 0)
+					if(patterns[idx].matcher(fileStr).matches())
+						return true;
+				return false;
+			}
+		}
+		return whenEmpty;
 	}
 }

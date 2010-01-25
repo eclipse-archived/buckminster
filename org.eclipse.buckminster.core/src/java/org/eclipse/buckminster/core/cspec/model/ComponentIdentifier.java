@@ -15,14 +15,13 @@ import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * A Component Identifier is something that uniquely identifies a component.
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class ComponentIdentifier extends ComponentName implements IComponentIdentifier
 {
 	private final Version m_version;
@@ -69,7 +68,6 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 		m_version = version;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public int compareTo(IComponentName o)
 	{

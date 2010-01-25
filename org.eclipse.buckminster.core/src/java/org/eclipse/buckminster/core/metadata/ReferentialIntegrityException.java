@@ -21,7 +21,7 @@ public class ReferentialIntegrityException extends LocalizedException
 
 	public ReferentialIntegrityException(IUUIDPersisted instance, String operation, String reason)
 	{
-		super(NLS.bind(Messages.Unable_to_0_the_1_with_id_2_3, new Object[] { operation,
-				instance.getClass().getName(), instance.getId(), reason }));
+		super(NLS.bind(Messages.Unable_to_0_the_1_with_id_2_3, new Object[] { operation, instance.getClass().getName(),
+				instance.getId(), reason }));
 	}
 }

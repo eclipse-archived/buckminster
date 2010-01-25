@@ -176,6 +176,7 @@ public class PluginImportOperation extends JarImportOperation
 	 * @throws CoreException
 	 *             if a problem occurs while importing a plugin
 	 */
+	@SuppressWarnings("deprecation")
 	public void importPlugin(IProgressMonitor monitor) throws CoreException
 	{
 		MaterializationContext context = (MaterializationContext)m_query.getContext();
@@ -303,8 +304,8 @@ public class PluginImportOperation extends JarImportOperation
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
-	@SuppressWarnings("unchecked")
 	protected void collectNonJavaResources(ZipFileStructureProvider provider, Object element, ArrayList collected)
 	{
 		super.collectNonJavaResources(provider, element, collected);

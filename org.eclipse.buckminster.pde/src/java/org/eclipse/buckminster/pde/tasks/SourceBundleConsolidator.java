@@ -6,10 +6,9 @@ import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.osgi.framework.Constants;
 
-@SuppressWarnings("restriction")
 public class SourceBundleConsolidator extends BundleConsolidator
 {
 	public SourceBundleConsolidator(File inputFile, File outputFile, File propertiesFile, String qualifier)

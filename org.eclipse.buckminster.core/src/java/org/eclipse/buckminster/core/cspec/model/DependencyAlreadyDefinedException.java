@@ -20,8 +20,6 @@ public class DependencyAlreadyDefinedException extends LocalizedException
 
 	public DependencyAlreadyDefinedException(String componentName, String dependencyName)
 	{
-		super(NLS.bind(
-				Messages.Dependency_0_is_defined_more_then_once_in_component_1,
-				dependencyName, componentName));
+		super(NLS.bind(Messages.Dependency_0_is_defined_more_then_once_in_component_1, dependencyName, componentName));
 	}
 }

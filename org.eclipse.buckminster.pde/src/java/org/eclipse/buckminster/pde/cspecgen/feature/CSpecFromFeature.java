@@ -24,12 +24,11 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
-import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelManager;
@@ -122,7 +121,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 		if(!productDescriptor.useFeatures())
 			return;
 
-		List<VersionedId> features = TypedCollections.getProductFeatures(productDescriptor);
+		List<IVersionedId> features = productDescriptor.getFeatures();
 		if(features.size() == 0)
 			return;
 
@@ -135,7 +134,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 
 		String self = cspec.getName();
-		for(VersionedId feature : features)
+		for(IVersionedId feature : features)
 		{
 			if(feature.getId().equals(self))
 				continue;

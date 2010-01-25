@@ -52,13 +52,6 @@ public class TimedHashMap<K, V> implements Map<K, V>
 			return m_value;
 		}
 
-		void remove()
-		{
-			this.cancel();
-			if(m_evictionPolicy != null)
-				m_evictionPolicy.evict(this);
-		}
-
 		@Override
 		public void run()
 		{
@@ -78,6 +71,13 @@ public class TimedHashMap<K, V> implements Map<K, V>
 			m_value = value;
 			s_timer.schedule(this, m_keepAliveTime);
 			return old;
+		}
+
+		void remove()
+		{
+			this.cancel();
+			if(m_evictionPolicy != null)
+				m_evictionPolicy.evict(this);
 		}
 	}
 

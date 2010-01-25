@@ -80,7 +80,6 @@ public class MaterializationStatistics
 
 	public boolean isIncluded(ComponentIdentifier ci)
 	{
-		return (m_failed.contains(ci) || m_kept.contains(ci) || m_replaced.contains(ci) || m_skipped.contains(ci) || m_updated
-				.contains(ci));
+		return (m_failed.contains(ci) || m_kept.contains(ci) || m_replaced.contains(ci) || m_skipped.contains(ci) || m_updated.contains(ci));
 	}
 }

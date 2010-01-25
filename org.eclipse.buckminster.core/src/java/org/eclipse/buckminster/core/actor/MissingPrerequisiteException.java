@@ -18,8 +18,8 @@ public class MissingPrerequisiteException extends LocalizedException
 
 	public MissingPrerequisiteException(Action action, Object alias)
 	{
-		super(NLS
-				.bind(Messages.action_0_is_missing_required_prerequisite_with_alias_1, action.getQualifiedName(), alias));
+		super(NLS.bind(Messages.action_0_is_missing_required_prerequisite_with_alias_1, action.getQualifiedName(),
+				alias));
 	}
 
 	public MissingPrerequisiteException(String name, String attribute, String prereqName)

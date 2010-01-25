@@ -23,7 +23,7 @@ import org.eclipse.update.internal.mirror.MirrorSiteFactory;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings( { "restriction", "deprecation" })
+@SuppressWarnings({ "restriction", "deprecation" })
 public class SiteMirrorMaterializer extends AbstractSiteMaterializer
 {
 	public static final String MIRROR_SITE_URL_PROPERTY = "mirror.site.url"; //$NON-NLS-1$

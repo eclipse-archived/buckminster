@@ -202,8 +202,7 @@ public class PerformContext implements IActionContext
 
 		if(allRequiredPaths.size() > 0)
 		{
-			PathGroup[] pathGroups = normalizePathGroups(allRequiredPaths
-					.toArray(new PathGroup[allRequiredPaths.size()]));
+			PathGroup[] pathGroups = normalizePathGroups(allRequiredPaths.toArray(new PathGroup[allRequiredPaths.size()]));
 			String alias = action.getPrerequisitesAlias();
 			if(alias != null)
 				pgas.put(alias, pathGroups);

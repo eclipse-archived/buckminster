@@ -100,7 +100,8 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder
 		m_public = flag;
 	}
 
-	private PrerequisiteBuilder createPrerequisite(String component, String type, String name, String alias, Filter filter)
+	private PrerequisiteBuilder createPrerequisite(String component, String type, String name, String alias,
+			Filter filter)
 	{
 		PrerequisiteBuilder bld = createPrerequisiteBuilder();
 		bld.setComponentName(component);

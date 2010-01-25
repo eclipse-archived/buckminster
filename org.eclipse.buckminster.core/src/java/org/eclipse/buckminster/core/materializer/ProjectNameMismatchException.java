@@ -20,10 +20,7 @@ public class ProjectNameMismatchException extends LocalizedException
 
 	public ProjectNameMismatchException(String wantedName, String existingName)
 	{
-		super(
-				NLS
-						.bind(
-								Messages.ProjectBinding_name_conflict_information_indicates_0_for_project_named_1,
-								wantedName, existingName));
+		super(NLS.bind(Messages.ProjectBinding_name_conflict_information_indicates_0_for_project_named_1, wantedName,
+				existingName));
 	}
 }

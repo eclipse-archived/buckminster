@@ -57,8 +57,7 @@ public class AlterActionBuilder extends AlterAttributeBuilder
 		if(m_alteredPrerequisites.containsKey(key))
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
 
-		List<? extends IPrerequisite> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder()
-				.getPrerequisites();
+		List<? extends IPrerequisite> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder().getPrerequisites();
 		if(GroupBuilder.indexOfPrerequisite(basePreqs, key) >= 0)
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
 

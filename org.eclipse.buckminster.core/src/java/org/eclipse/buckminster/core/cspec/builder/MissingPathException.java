@@ -21,7 +21,6 @@ public class MissingPathException extends LocalizedException
 
 	public MissingPathException(String name, String attribute, IPath path)
 	{
-		super(NLS.bind(Messages.CSpec_0_attribute_1_does_not_define_path_2, new Object[] { name,
-				attribute, path }));
+		super(NLS.bind(Messages.CSpec_0_attribute_1_does_not_define_path_2, new Object[] { name, attribute, path }));
 	}
 }

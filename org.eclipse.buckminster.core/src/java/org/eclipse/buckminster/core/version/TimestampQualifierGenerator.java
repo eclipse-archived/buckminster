@@ -25,7 +25,7 @@ import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * This class will generate qualifiers based on the last modification timestamp. The timestamp is obtained using the
@@ -33,7 +33,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class TimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
 	public static final String FORMAT_PROPERTY = "generator.lastModified.format"; //$NON-NLS-1$
@@ -111,7 +110,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 				if(depVer == null)
 					continue;
 
-				String qualifier = depVer.getQualifier();
+				String qualifier = VersionHelper.getQualifier(depVer);
 				if(qualifier == null)
 					continue;
 
@@ -146,8 +145,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 						// Replace the qualifier and attempt to find the real source in the workspace. If
 						// found, we use the SCM timestamp for that source.
 						//
-						depVer = Version.createOSGi(depVer.getMajor(), depVer.getMinor(), depVer.getMicro(),
-								"qualifier"); //$NON-NLS-1$
+						depVer = VersionHelper.replaceQualifier(depVer, "qualifier"); //$NON-NLS-1$
 						depLastMod = getLastModification(new ComponentIdentifier(dependency.getName(),
 								dependency.getComponentTypeID(), depVer), context);
 					}
@@ -160,7 +158,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 					lastMod = depLastMod;
 			}
 			String newQual = mf.format(lastMod);
-			newQual = currentVersion.getQualifier().replace("qualifier", newQual); //$NON-NLS-1$
+			newQual = VersionHelper.getQualifier(currentVersion).replace("qualifier", newQual); //$NON-NLS-1$
 			return VersionHelper.replaceQualifier(currentVersion, newQual);
 		}
 		catch(MissingComponentException e)

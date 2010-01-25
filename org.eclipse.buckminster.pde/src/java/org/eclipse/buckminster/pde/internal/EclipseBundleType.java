@@ -20,13 +20,12 @@ import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.equinox.internal.provisional.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.internal.provisional.p2.metadata.repository.IMetadataRepository;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class EclipseBundleType extends AbstractComponentType
 {
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)

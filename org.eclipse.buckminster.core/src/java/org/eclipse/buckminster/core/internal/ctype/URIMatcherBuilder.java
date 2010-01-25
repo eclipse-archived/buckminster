@@ -32,7 +32,7 @@ public class URIMatcherBuilder extends AbstractResolutionBuilder
 			throws CoreException
 	{
 		MonitorUtils.complete(mon);
-		return new ResolvedNode(m_pm.getProvider().getURIMatcher().createResolution(m_pm), Collections
-				.<BOMNode> emptyList());
+		return new ResolvedNode(m_pm.getProvider().getURIMatcher().createResolution(m_pm),
+				Collections.<BOMNode> emptyList());
 	}
 }

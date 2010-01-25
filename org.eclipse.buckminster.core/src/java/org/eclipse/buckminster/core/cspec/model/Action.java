@@ -287,7 +287,7 @@ public class Action extends TopLevelAttribute implements IAction
 					//
 					if(isDebug)
 						logger.debug(String.format("%sNo product is matching requirement %s", failLeadIn, entry //$NON-NLS-1$
-								.getKey()));
+						.getKey()));
 					return false;
 				}
 
@@ -342,7 +342,7 @@ public class Action extends TopLevelAttribute implements IAction
 					break;
 				default:
 					logger.debug(String.format("%sFile count(%d) < expected(%d)", failLeadIn, Integer //$NON-NLS-1$
-							.valueOf(fileCountBin[0]), Integer.valueOf(expectedFileCount)));
+					.valueOf(fileCountBin[0]), Integer.valueOf(expectedFileCount)));
 					break;
 				}
 			}

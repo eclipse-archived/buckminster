@@ -34,10 +34,7 @@ public class CircularReferenceException extends LocalizedException
 
 	public CircularReferenceException(String componentName, List<String> attributeNames, String recursionStart)
 	{
-		super(
-				NLS
-						.bind(
-								Messages.Component_0_has_an_internal_circular_attribute_reference_Attribute_chain_is_1,
-								componentName, buildChain(attributeNames, recursionStart)));
+		super(NLS.bind(Messages.Component_0_has_an_internal_circular_attribute_reference_Attribute_chain_is_1,
+				componentName, buildChain(attributeNames, recursionStart)));
 	}
 }

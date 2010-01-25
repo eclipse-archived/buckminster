@@ -68,6 +68,25 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder imple
 
 	private IFile m_propertyFile;
 
+	public void doStartupOnIntialize() throws CoreException
+	{
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event)
+	{
+		if(event.getType() != IResourceChangeEvent.POST_CHANGE || m_propertyFile == null)
+			return;
+
+		IResourceDelta propFileDelta = event.getDelta().findMember(m_propertyFile.getFullPath());
+		if(propFileDelta != null && (propFileDelta.getKind() & IResourceDelta.REMOVED) != 0)
+			//
+			// Someone removed our property file. Let's make sure it's rebuilt
+			//
+			this.forgetLastBuiltState();
+	}
+
 	/**
 	 * Add a format that can be used when creating the keys in the emitted properties. Before adding the
 	 * <code>defaultFormat</code>, a check is made if an alternative format has been provided in the <code>args</code>
@@ -189,24 +208,25 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder imple
 			MonitorUtils.worked(monitor, 2);
 			AccessibleByteArrayOutputStream output = new AccessibleByteArrayOutputStream();
 			BMProperties.store(m_properties, output, Messages.Generated_by_Buckminster_Do_not_edit);
-
-			IProgressMonitor storeMonitor = MonitorUtils.subMonitor(monitor, 2);
 			if(oldProps != null)
 			{
 				if(!m_properties.equals(oldProps))
 				{
-					m_propertyFile.setContents(output.getInputStream(), false, false, storeMonitor);
+					m_propertyFile.setContents(output.getInputStream(), false, false, MonitorUtils.subMonitor(monitor,
+							1));
 
 					// Might stem from a project created on existing folders.
 					//
-					m_propertyFile.setDerived(true);
+					m_propertyFile.setDerived(true, MonitorUtils.subMonitor(monitor, 1));
 				}
+				else
+					MonitorUtils.worked(monitor, 2);
 			}
 			else
 			{
 				FileUtils.createFolder(m_propertyFile.getParent());
-				m_propertyFile.create(output.getInputStream(), false, storeMonitor);
-				m_propertyFile.setDerived(true);
+				m_propertyFile.create(output.getInputStream(), false, MonitorUtils.subMonitor(monitor, 1));
+				m_propertyFile.setDerived(true, MonitorUtils.subMonitor(monitor, 1));
 			}
 		}
 		catch(IOException e)
@@ -229,11 +249,6 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder imple
 	protected IProject[] doIncrementalBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
 	{
 		return this.doFullBuild(args, monitor);
-	}
-
-	public void doStartupOnIntialize() throws CoreException
-	{
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 	}
 
 	/**
@@ -269,19 +284,5 @@ public abstract class PropertiesEmitter extends AbstractBuckminsterBuilder imple
 		return m_arguments == null
 				? null
 				: (String)m_arguments.get(key);
-	}
-
-	@Override
-	public void resourceChanged(IResourceChangeEvent event)
-	{
-		if(event.getType() != IResourceChangeEvent.POST_CHANGE || m_propertyFile == null)
-			return;
-
-		IResourceDelta propFileDelta = event.getDelta().findMember(m_propertyFile.getFullPath());
-		if(propFileDelta != null && (propFileDelta.getKind() & IResourceDelta.REMOVED) != 0)
-			//
-			// Someone removed our property file. Let's make sure it's rebuilt
-			//
-			this.forgetLastBuiltState();
 	}
 }

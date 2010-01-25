@@ -43,7 +43,6 @@ import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
-import org.eclipse.buckminster.pde.internal.TypedCollections;
 import org.eclipse.buckminster.pde.tasks.P2SiteGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -55,12 +54,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.equinox.internal.p2.metadata.VersionFormat;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionFormat;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionRange;
-import org.eclipse.equinox.internal.provisional.p2.metadata.VersionedId;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.BundleSpecification;
 import org.eclipse.osgi.util.ManifestElement;
@@ -209,10 +208,11 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			return version;
 
 		Version v = Version.parseVersion(version);
-		boolean qualifierTag = "qualifier".equals(v.getQualifier()); //$NON-NLS-1$
+		boolean qualifierTag = "qualifier".equals(VersionHelper.getQualifier(v)); //$NON-NLS-1$
 		if(qualifierTag)
 			v = VersionHelper.replaceQualifier(v, null);
 
+		org.osgi.framework.Version ov = Version.toOSGiVersion(v);
 		StringBuilder vbld = new StringBuilder();
 		switch(pdeMatchRule)
 		{
@@ -226,11 +226,11 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				// any qualifier.
 				//
 				vbld.append(".0,"); //$NON-NLS-1$
-				vbld.append(v.getMajor());
+				vbld.append(ov.getMajor());
 				vbld.append('.');
-				vbld.append(v.getMinor());
+				vbld.append(ov.getMinor());
 				vbld.append('.');
-				vbld.append(v.getMicro() + 1);
+				vbld.append(ov.getMicro() + 1);
 				vbld.append(')');
 			}
 			else
@@ -253,9 +253,9 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			if(qualifierTag)
 				vbld.append(".0"); //$NON-NLS-1$
 			vbld.append(',');
-			vbld.append(v.getMajor());
+			vbld.append(ov.getMajor());
 			vbld.append('.');
-			vbld.append(v.getMinor() + 1);
+			vbld.append(ov.getMinor() + 1);
 			vbld.append(".0)"); //$NON-NLS-1$
 			break;
 
@@ -269,7 +269,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			if(qualifierTag)
 				vbld.append(".0"); //$NON-NLS-1$
 			vbld.append(',');
-			vbld.append(v.getMajor() + 1);
+			vbld.append(ov.getMajor() + 1);
 			vbld.append(".0.0)"); //$NON-NLS-1$
 			break;
 		default:
@@ -430,7 +430,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if(productDescriptor.useFeatures())
 			return;
 
-		List<VersionedId> bundles = TypedCollections.getProductBundles(productDescriptor, true);
+		List<IVersionedId> bundles = productDescriptor.getBundles(true);
 		if(bundles.size() == 0)
 			return;
 
@@ -444,7 +444,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if(IComponentType.OSGI_BUNDLE.equals(cspec.getComponentTypeID()))
 			self = cspec.getName();
 
-		for(VersionedId bundle : bundles)
+		for(IVersionedId bundle : bundles)
 		{
 			String pluginId = bundle.getId();
 			if(self != null && self.equals(pluginId))
@@ -522,6 +522,16 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return createDependency(pluginImport.getName(), category, pluginImport.getVersionRange(), filter);
 	}
 
+	protected ComponentRequestBuilder createDependency(IVersionedId versionedName, String componentType)
+			throws CoreException
+	{
+		String versionRange = null;
+		Version v = versionedName.getVersion();
+		if(!(v == null || Version.emptyVersion.equals(v)))
+			versionRange = new VersionRange(v, true, v, true).toString();
+		return createDependency(versionedName.getId(), componentType, versionRange, null);
+	}
+
 	protected ComponentRequestBuilder createDependency(String name, String componentType, String versionDesignator,
 			Filter filter) throws CoreException
 	{
@@ -547,16 +557,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		bld.setVersionRange(versionRange);
 		bld.setFilter(filter);
 		return bld;
-	}
-
-	protected ComponentRequestBuilder createDependency(VersionedId versionedName, String componentType)
-			throws CoreException
-	{
-		String versionRange = null;
-		Version v = versionedName.getVersion();
-		if(!(v == null || Version.emptyVersion.equals(v)))
-			versionRange = new VersionRange(v, true, v, true).toString();
-		return createDependency(versionedName.getId(), componentType, versionRange, null);
 	}
 
 	protected void createSiteAction(String rawSiteAttribute, String siteDefiningAttribute) throws CoreException

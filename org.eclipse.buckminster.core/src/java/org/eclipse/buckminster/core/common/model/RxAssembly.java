@@ -58,13 +58,6 @@ public class RxAssembly extends AbstractSaxableElement
 		CorePlugin.getLogger().debug("URI pattern %s created", patternStr); //$NON-NLS-1$
 	}
 
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		for(RxPart part : m_parts)
-			part.toSax(handler, namespace, prefix, part.getDefaultTag());
-	}
-
 	public String getDefaultTag()
 	{
 		return TAG;
@@ -92,8 +85,8 @@ public class RxAssembly extends AbstractSaxableElement
 
 		if(top != groupCount)
 		{
-			logger.warning(NLS.bind(Messages.URI_pattern_group_count_was_0_expected_1, Integer
-					.valueOf(groupCount), Integer.valueOf(top)));
+			logger.warning(NLS.bind(Messages.URI_pattern_group_count_was_0_expected_1, Integer.valueOf(groupCount),
+					Integer.valueOf(top)));
 			top = groupCount;
 		}
 
@@ -118,5 +111,12 @@ public class RxAssembly extends AbstractSaxableElement
 	public Pattern getPattern()
 	{
 		return m_pattern;
+	}
+
+	@Override
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
+	{
+		for(RxPart part : m_parts)
+			part.toSax(handler, namespace, prefix, part.getDefaultTag());
 	}
 }

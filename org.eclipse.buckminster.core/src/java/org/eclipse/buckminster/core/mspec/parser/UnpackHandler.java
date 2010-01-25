@@ -31,8 +31,7 @@ public class UnpackHandler extends ChildHandler
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		super.handleAttributes(attrs);
-		MaterializationNodeBuilder builder = ((MaterializationNodeHandler)getParentHandler())
-				.getMaterializationNodeBuilder();
+		MaterializationNodeBuilder builder = ((MaterializationNodeHandler)getParentHandler()).getMaterializationNodeBuilder();
 		builder.setUnpack(true);
 		builder.setExpand(getOptionalBooleanValue(attrs, MaterializationNode.ATTR_EXPAND, true));
 		builder.setSuffix(getOptionalStringValue(attrs, MaterializationNode.ATTR_SUFFIX));

@@ -22,7 +22,7 @@ import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * This class will generate qualifiers based on component revisions. The revision is obtained using the same @
@@ -30,7 +30,6 @@ import org.eclipse.equinox.internal.provisional.p2.metadata.Version;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class RevisionQualifierGenerator extends AbstractExtension implements IQualifierGenerator
 {
 	public static String FORMAT_PROPERTY = "generator.lastRevision.format"; //$NON-NLS-1$
@@ -67,7 +66,7 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 				if(depVer == null)
 					continue;
 
-				String qualifier = depVer.getQualifier();
+				String qualifier = VersionHelper.getQualifier(depVer);
 				if(qualifier == null)
 					continue;
 
@@ -82,7 +81,7 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 				}
 			}
 			String newQual = mf.format(new Object[] { new Long(revision) });
-			newQual = currentVersion.getQualifier().replace("qualifier", newQual); //$NON-NLS-1$
+			newQual = VersionHelper.getQualifier(currentVersion).replace("qualifier", newQual); //$NON-NLS-1$
 			return VersionHelper.replaceQualifier(currentVersion, newQual);
 		}
 		catch(MissingComponentException e)
