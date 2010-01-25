@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster CVS Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.cvs; singleton:=true
-Bundle-Version: 1.0.360.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.eclipse.buckminster.cvspkg.CVSPlugin
 Bundle-Vendor: Eclipse Buckminster Project
 Require-Bundle: org.eclipse.buckminster.core;bundle-version="1.1.350",
