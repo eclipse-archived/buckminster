@@ -55,7 +55,7 @@ public abstract class AbstractTreeDataNode implements ITreeDataNode, IAdaptable
 	 * Default implementation of IAdaptable.getAdapter() - if the data object is instance of the wanted class, it is
 	 * returned immediately.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter)
 	{
 		Object data = getData();

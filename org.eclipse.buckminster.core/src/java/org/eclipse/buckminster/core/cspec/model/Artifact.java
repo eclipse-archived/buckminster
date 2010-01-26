@@ -66,15 +66,6 @@ public class Artifact extends TopLevelAttribute implements IArtifact
 		return m_paths;
 	}
 
-	/**
-	 * @deprecated type is not used
-	 */
-	@Deprecated
-	public final String getType()
-	{
-		return null;
-	}
-
 	@Override
 	protected void addAttributes(AttributesImpl attrs)
 	{

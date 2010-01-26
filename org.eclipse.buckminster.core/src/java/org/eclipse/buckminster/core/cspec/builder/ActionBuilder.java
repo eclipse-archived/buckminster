@@ -78,16 +78,6 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		return bld;
 	}
 
-	/**
-	 * @deprecated The type is no longer used. Please use {@link #addProductArtifact(String, boolean, IPath)} instead.
-	 */
-	@Deprecated
-	public ArtifactBuilder addProductArtifact(String name, boolean publ, String type, IPath output)
-			throws AttributeAlreadyDefinedException
-	{
-		return addProductArtifact(name, publ, output);
-	}
-
 	public void addProductPath(IPath path)
 	{
 		m_productPaths.add(path);

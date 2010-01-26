@@ -78,7 +78,6 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
  * @author Kenneth Olwing
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class ResolverNodePage extends AbstractQueryPage
 {
 	class RequestLabelProvider extends LabelProvider implements ITableLabelProvider

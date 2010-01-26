@@ -308,7 +308,6 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void highlightSelectionInternal(BOMNode nodeSelection)
 	{
 		BOMNode previousSelection = selection;
@@ -332,7 +331,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 			graphViewer.reveal(source);
 
 		}
-		List objectsToUpdate = new ArrayList(interestingConnections.size() + interestingNodes.size());
+		List<Object> objectsToUpdate = new ArrayList<Object>(interestingConnections.size() + interestingNodes.size());
 		objectsToUpdate.addAll(interestingConnections.keySet());
 		objectsToUpdate.addAll(interestingNodes.keySet());
 		objectsToUpdate.add(root);

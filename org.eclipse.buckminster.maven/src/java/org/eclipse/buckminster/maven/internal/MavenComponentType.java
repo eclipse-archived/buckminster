@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,7 @@ import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.MissingVersionTypeException;
 import org.eclipse.buckminster.core.version.VersionHelper;
@@ -56,7 +58,6 @@ import org.w3c.dom.Node;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class MavenComponentType extends AbstractComponentType
 {
 	public static final String ID = "maven"; //$NON-NLS-1$
@@ -155,12 +156,14 @@ public class MavenComponentType extends AbstractComponentType
 
 		if(dependenciesNode != null)
 		{
+			NodeQuery nq = reader.getNodeQuery();
 			Provider provider = reader.getProviderMatch().getProvider();
-			ComponentQuery query = reader.getNodeQuery().getComponentQuery();
+			ComponentQuery query = nq.getComponentQuery();
+			Map<String, ? extends Object> ctx = nq.getContext();
 			for(Node dep = dependenciesNode.getFirstChild(); dep != null; dep = dep.getNextSibling())
 			{
 				if(dep.getNodeType() == Node.ELEMENT_NODE && "dependency".equals(dep.getNodeName())) //$NON-NLS-1$
-					addDependency(query, provider, cspec, archives, properties, dep);
+					addDependency(query, ctx, provider, cspec, archives, properties, dep);
 			}
 		}
 		return packaging;
@@ -257,8 +260,9 @@ public class MavenComponentType extends AbstractComponentType
 		}
 	}
 
-	private static void addDependency(ComponentQuery query, Provider provider, CSpecBuilder cspec,
-			GroupBuilder archives, ExpandingProperties<String> properties, Node dep) throws CoreException
+	private static void addDependency(ComponentQuery query, Map<String, ? extends Object> context, Provider provider,
+			CSpecBuilder cspec, GroupBuilder archives, ExpandingProperties<String> properties, Node dep)
+			throws CoreException
 	{
 		String id = null;
 		String groupId = null;
@@ -328,14 +332,14 @@ public class MavenComponentType extends AbstractComponentType
 		}
 
 		ComponentName adviceKey = new ComponentName(componentName, ID);
-		if(query.skipComponent(adviceKey))
+		if(query.skipComponent(adviceKey, context))
 			return;
 
 		ComponentRequestBuilder depBld = cspec.createDependencyBuilder();
 		depBld.setName(componentName);
 		depBld.setComponentTypeID(ID);
 
-		VersionRange vd = query.getVersionOverride(adviceKey);
+		VersionRange vd = query.getVersionOverride(adviceKey, context);
 		if(vd == null)
 			vd = createVersionRange(versionStr);
 		depBld.setVersionRange(vd);

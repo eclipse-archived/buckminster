@@ -86,7 +86,6 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
  * @author Kenneth Olwing
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class RetrieveAndBindPage extends AbstractQueryPage
 {
 	class ComponentLabelProvider extends LabelProvider implements ITableLabelProvider

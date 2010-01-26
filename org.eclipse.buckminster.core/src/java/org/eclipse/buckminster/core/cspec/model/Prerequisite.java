@@ -181,15 +181,6 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 		return isMatch(component, attribute, m_excludePattern, m_includePattern);
 	}
 
-	/**
-	 * @deprecated not used
-	 */
-	@Deprecated
-	public final boolean isOptional()
-	{
-		return false;
-	}
-
 	public boolean isPatternFilter()
 	{
 		return m_excludePattern != null || m_includePattern != null;

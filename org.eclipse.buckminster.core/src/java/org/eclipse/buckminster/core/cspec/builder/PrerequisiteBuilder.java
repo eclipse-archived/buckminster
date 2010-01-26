@@ -126,15 +126,6 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		return Prerequisite.isMatch(component, attribute, m_excludePattern, m_includePattern);
 	}
 
-	/**
-	 * @deprecated not used
-	 */
-	@Deprecated
-	public boolean isOptional()
-	{
-		return false;
-	}
-
 	public void setAlias(String alias)
 	{
 		m_alias = alias;
@@ -168,14 +159,6 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 	public void setIncludePattern(Pattern includePattern)
 	{
 		m_includePattern = includePattern;
-	}
-
-	/**
-	 * @deprecated not used
-	 */
-	@Deprecated
-	public void setOptional(boolean optional)
-	{
 	}
 
 	@Override

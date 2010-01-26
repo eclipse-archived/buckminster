@@ -49,7 +49,7 @@ public class DependencyContentProvider implements IGraphEntityContentProvider
 	public Object[] getElements(Object inputElement)
 	{
 
-		if(inputElement instanceof List)
+		if(inputElement instanceof List<?>)
 		{
 			List<BOMNode> input = (List<BOMNode>)inputElement;
 			Set<BOMNode> nodes = new HashSet<BOMNode>();

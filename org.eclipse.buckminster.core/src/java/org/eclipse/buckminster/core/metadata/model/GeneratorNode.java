@@ -8,6 +8,7 @@
 package org.eclipse.buckminster.core.metadata.model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.RMContext;
@@ -99,15 +100,6 @@ public class GeneratorNode extends BOMNode
 		return TAG;
 	}
 
-	/**
-	 * @deprecated use #getGeneratesId()
-	 */
-	@Deprecated
-	public String getGenerates()
-	{
-		return m_generates.getName();
-	}
-
 	public IComponentIdentifier getGeneratesId()
 	{
 		return m_generates;
@@ -135,7 +127,7 @@ public class GeneratorNode extends BOMNode
 	}
 
 	@Override
-	public boolean isFullyResolved(ComponentQuery query) throws CoreException
+	public boolean isFullyResolved(ComponentQuery query, Map<String, ? extends Object> properties) throws CoreException
 	{
 		return true;
 	}

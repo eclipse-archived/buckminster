@@ -855,7 +855,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key)
 	{

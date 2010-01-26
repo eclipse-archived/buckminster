@@ -41,7 +41,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Henrik Lindberg
  * 
  */
-@SuppressWarnings("restriction")
 public class BuckminsterLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider
 {
 	private Image m_projectImage;

@@ -125,7 +125,6 @@ import org.osgi.framework.InvalidSyntaxException;
  * @author Karel Brezina
  * 
  */
-@SuppressWarnings("restriction")
 public class QueryEditor extends EditorPart implements IEditorMatchingStrategy
 {
 	class AdvisorNodeLabelProvider extends LabelProvider implements ITableLabelProvider

@@ -9,7 +9,6 @@ package org.eclipse.buckminster.maven.internal;
 
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,49 +26,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.w3c.dom.Document;
 
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class Maven2VersionFinder extends MavenVersionFinder
 {
 	public static IPath getDefaultLocalRepoPath()
 	{
 		return new Path(System.getProperty("user.home")).append(".m2").append("repository"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-	}
-
-	/**
-	 * @deprecated Use
-	 *             {@link Maven2ReaderType#getMetadataDocument(DocumentBuilder,URL,LocalCache,IConnectContext,IProgressMonitor)}
-	 *             instead
-	 */
-	@Deprecated
-	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx,
-			IProgressMonitor monitor) throws CoreException, FileNotFoundException
-	{
-		return Maven2ReaderType.getMetadataDocument(docBld, url, cache, cctx, monitor);
-	}
-
-	/**
-	 * @deprecated Use {@link Maven2ReaderType#getSnapshotVersion(Document,String)} instead
-	 */
-	@Deprecated
-	public static String getSnapshotVersion(Document doc, String version)
-	{
-		return Maven2ReaderType.getSnapshotVersion(doc, version);
-	}
-
-	/**
-	 * @deprecated Use {@link Maven2ReaderType#getVersions(Document)} instead
-	 */
-	@Deprecated
-	public static List<String> getVersions(Document doc)
-	{
-		return Maven2ReaderType.getVersions(doc);
 	}
 
 	public Maven2VersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)

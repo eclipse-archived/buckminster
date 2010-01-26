@@ -29,7 +29,6 @@ import org.w3c.dom.Document;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class MavenPlugin extends LogAwarePlugin
 {
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.maven"; //$NON-NLS-1$

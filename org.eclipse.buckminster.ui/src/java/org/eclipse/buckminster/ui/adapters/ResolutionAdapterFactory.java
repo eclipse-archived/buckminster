@@ -19,10 +19,9 @@ import org.eclipse.core.runtime.IAdapterFactory;
  */
 public class ResolutionAdapterFactory implements IAdapterFactory
 {
-	@SuppressWarnings("unchecked")
-	private static Class[] s_adapterList = { Resolution.class, ResolutionDataNode.class };
+	private static Class<?>[] s_adapterList = { Resolution.class, ResolutionDataNode.class };
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object getAdapter(Object adaptableObject, Class adapterType)
 	{
 		if(adaptableObject instanceof Resolution && adapterType.isAssignableFrom(ResolutionDataNode.class))
@@ -35,8 +34,7 @@ public class ResolutionAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList()
+	public Class<?>[] getAdapterList()
 	{
 		return s_adapterList;
 	}

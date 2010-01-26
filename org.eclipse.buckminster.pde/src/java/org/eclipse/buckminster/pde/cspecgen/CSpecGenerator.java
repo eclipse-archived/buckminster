@@ -415,16 +415,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		group.addPrerequisite(pqBld);
 	}
 
-	/**
-	 * @deprecated Use {@link #addExternalPrerequisite(GroupBuilder,String,String,String)} instead
-	 */
-	@Deprecated
-	protected void addExternalPrerequisite(GroupBuilder group, String component, String type, String name,
-			boolean optional) throws CoreException
-	{
-		addExternalPrerequisite(group, component, type, name);
-	}
-
 	protected void addProductBundles(IProductDescriptor productDescriptor) throws CoreException
 	{
 		if(productDescriptor.useFeatures())

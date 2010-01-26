@@ -39,7 +39,6 @@ import org.eclipse.equinox.p2.metadata.Version;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class MavenReaderType extends URLCatalogReaderType
 {
 	static void appendMavenVersionName(StringBuilder bld, VersionMatch vm) throws CoreException

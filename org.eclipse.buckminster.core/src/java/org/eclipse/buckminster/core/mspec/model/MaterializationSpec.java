@@ -130,12 +130,6 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return super.getAdapter(adapter);
 	}
 
-	@Deprecated
-	public ConflictResolution getConflictResolution(IComponentName cName)
-	{
-		return getConflictResolution(getMatchingNode(cName));
-	}
-
 	public ConflictResolution getConflictResolution(Resolution res)
 	{
 		return getConflictResolution(getMatchingNode(res));
@@ -149,15 +143,6 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	public String getDefaultTag()
 	{
 		return TAG;
-	}
-
-	@Deprecated
-	public IPath getLeafArtifact(IComponentName cname)
-	{
-		IMaterializationNode node = getMatchingNode(cname);
-		return node == null
-				? null
-				: node.getLeafArtifact();
 	}
 
 	public IPath getLeafArtifact(Resolution resolution)
@@ -218,12 +203,6 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return m_nodes;
 	}
 
-	@Deprecated
-	public String getProjectName(ComponentName cName) throws CoreException
-	{
-		return getProjectName(cName, getMatchingNode(cName));
-	}
-
 	public String getProjectName(Resolution res) throws CoreException
 	{
 		return getProjectName(res.getComponentIdentifier(), getMatchingNode(res));
@@ -233,15 +212,6 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	{
 		return URLUtils.resolveURL(m_contextURL, ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(),
 				m_url, 0));
-	}
-
-	@Deprecated
-	public IPath getResourcePath(IComponentName cName)
-	{
-		IMaterializationNode node = getMatchingNode(cName);
-		return node == null
-				? null
-				: node.getResourcePath();
 	}
 
 	public IPath getResourcePath(Resolution res)
@@ -255,15 +225,6 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	public String getShortDesc()
 	{
 		return m_shortDesc;
-	}
-
-	@Deprecated
-	public String getSuffix(IComponentName cName)
-	{
-		IMaterializationNode node = getMatchingNode(cName);
-		return node == null
-				? null
-				: node.getSuffix();
 	}
 
 	public String getSuffix(Resolution res)
@@ -291,24 +252,10 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return node != null && node.isExclude();
 	}
 
-	@Deprecated
-	public boolean isExpand(IComponentName cName)
-	{
-		IMaterializationNode node = getMatchingNode(cName);
-		return node != null && (node.isUnpack() && node.isExpand());
-	}
-
 	public boolean isExpand(Resolution res)
 	{
 		IMaterializationNode node = getMatchingNode(res);
 		return node != null && (node.isUnpack() && node.isExpand());
-	}
-
-	@Deprecated
-	public boolean isUnpack(IComponentName cName)
-	{
-		IMaterializationNode node = getMatchingNode(cName);
-		return node != null && node.isUnpack();
 	}
 
 	public boolean isUnpack(Resolution res)

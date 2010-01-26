@@ -34,11 +34,9 @@ public interface IMaterializer
 
 	static final String WORKSPACE = "workspace"; //$NON-NLS-1$
 
-	static final String TARGET_PLATFORM = "targetPlatform"; //$NON-NLS-1$
+	static final String P2 = "p2"; //$NON-NLS-1$
 
-	static final String SITE_MIRROR = "site.mirror"; //$NON-NLS-1$
-
-	static final Object MATERIALIZER_PROPERTY = "buckminster.materializer.name"; //$NON-NLS-1$
+	static final String MATERIALIZER_PROPERTY = "buckminster.materializer.name"; //$NON-NLS-1$
 
 	/**
 	 * Returns true if this materializer can work in parallel with other materializers of the same type.

@@ -23,11 +23,10 @@ import org.eclipse.core.runtime.IAdapterFactory;
  */
 public class ResourceAdapterFactory implements IAdapterFactory
 {
-	@SuppressWarnings("unchecked")
-	private static Class[] s_adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class,
+	private static Class<?>[] s_adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class,
 			ResolutionDataNode.class };
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object getAdapter(Object adaptableObject, Class adapterType)
 	{
 		if(adaptableObject instanceof IResource)
@@ -64,8 +63,7 @@ public class ResourceAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList()
+	public Class<?>[] getAdapterList()
 	{
 		return s_adapterList;
 	}

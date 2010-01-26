@@ -74,20 +74,6 @@ public class Generator extends NamedElement implements IGenerator
 		m_generatesVersion = generates.getVersion();
 	}
 
-	/**
-	 * @deprecated Use {@link #Generator(CSpec, String, String, ComponentIdentifier)}
-	 */
-	@Deprecated
-	public Generator(CSpec cspec, String component, String attribute, String generates)
-	{
-		super(generates);
-		m_cspec = cspec;
-		m_component = component;
-		m_attribute = attribute;
-		m_generatesType = null;
-		m_generatesVersion = null;
-	}
-
 	public String getAttribute()
 	{
 		return m_attribute;

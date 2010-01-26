@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Composite;
  * @author Karel Brezina
  * 
  */
-@SuppressWarnings("restriction")
 public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
 {
 	private CSpecEditor m_editor;

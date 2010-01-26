@@ -70,7 +70,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
@@ -102,12 +101,9 @@ import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PDEState;
 import org.eclipse.pde.internal.core.feature.ExternalFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
-import org.eclipse.update.core.PluginEntry;
-import org.eclipse.update.core.VersionedIdentifier;
-import org.eclipse.update.internal.jarprocessor.Utils;
 import org.osgi.framework.Constants;
 
-@SuppressWarnings({ "restriction", "deprecation" })
+@SuppressWarnings({ "restriction" })
 public class EclipseImportReaderType extends CatalogReaderType implements IPDEConstants
 {
 	/**
@@ -217,24 +213,9 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			}
 			finally
 			{
-				Utils.close(destination);
+				IOUtils.close(destination);
 			}
 			return status;
-		}
-	}
-
-	public static class RemotePluginEntry extends PluginEntry
-	{
-		private final URL m_remoteLocation;
-
-		public RemotePluginEntry(URL remoteLocation)
-		{
-			m_remoteLocation = remoteLocation;
-		}
-
-		public URL getRemoteLocation()
-		{
-			return m_remoteLocation;
 		}
 	}
 
@@ -284,33 +265,45 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	static URL createRemoteComponentURL(URL remoteLocation, IConnectContext cctx, String name, Version version,
-			String subDir) throws MalformedURLException, CoreException
+	static URL createRemoteComponentURL(URL remoteLocation, IConnectContext cctx, ComponentIdentifier cid, String subDir)
+			throws CoreException
 	{
 		if(remoteLocation.getPath().endsWith(".jar")) //$NON-NLS-1$
 			return remoteLocation;
 
 		if(remoteLocation.getPath().endsWith(".map")) //$NON-NLS-1$
 		{
-			for(RemotePluginEntry entry : getMapPluginEntries(remoteLocation, cctx))
+			for(MapFileEntry entry : getMapEntries(remoteLocation, cctx))
 			{
-				VersionedIdentifier vid = entry.getVersionedIdentifier();
-				if(!name.equals(vid.getIdentifier()))
+				ComponentIdentifier entryCid = entry.getComponentIdentifier();
+				if(!(entryCid.getName().equals(cid.getName()) && entryCid.getComponentTypeID().equals(
+						cid.getComponentTypeID())))
 					continue;
 
-				PluginVersionIdentifier pvi = vid.getVersion();
-				Version pv = (pvi == null)
-						? null
-						: Version.parseVersion(pvi.toString());
-				if(VersionHelper.equalsUnqualified(version, pv))
-					return entry.getRemoteLocation();
+				if(VersionHelper.equalsUnqualified(cid.getVersion(), entryCid.getVersion()))
+					try
+					{
+						return new URL(entry.getProperties().get("src")); //$NON-NLS-1$
+					}
+					catch(MalformedURLException e)
+					{
+						// Just skip
+					}
 			}
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_0_in_map_1, name, remoteLocation));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_0_in_map_1, cid.getName(),
+					remoteLocation));
 		}
-		return new URL(remoteLocation, subDir + '/' + name + '_' + version + ".jar"); //$NON-NLS-1$
+		try
+		{
+			return new URL(remoteLocation, subDir + '/' + cid.getName() + '_' + cid.getVersion() + ".jar"); //$NON-NLS-1$
+		}
+		catch(MalformedURLException e)
+		{
+			throw BuckminsterException.wrap(e);
+		}
 	}
 
-	static RemotePluginEntry[] getMapPluginEntries(URL location, IConnectContext cctx) throws CoreException
+	static List<MapFileEntry> getMapEntries(URL location, IConnectContext cctx) throws CoreException
 	{
 		InputStream input = null;
 		try
@@ -318,13 +311,9 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			ArrayList<MapFileEntry> mapEntries = new ArrayList<MapFileEntry>();
 			input = DownloadManager.read(location, cctx);
 			MapFile.parse(input, location.toString(), mapEntries);
-			ArrayList<RemotePluginEntry> entries = new ArrayList<RemotePluginEntry>();
+			ArrayList<MapFileEntry> binaryEntries = new ArrayList<MapFileEntry>();
 			for(MapFileEntry entry : mapEntries)
 			{
-				ComponentIdentifier cid = entry.getComponentIdentifier();
-				if(!IComponentType.OSGI_BUNDLE.equals(cid.getComponentTypeID()))
-					continue;
-
 				if(!IReaderType.URL.equals(entry.getReaderType().getId()))
 					continue;
 
@@ -333,28 +322,13 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				if(src == null || !(src.endsWith(".jar") || src.endsWith(".zip"))) //$NON-NLS-1$ //$NON-NLS-2$
 					continue;
 
-				RemotePluginEntry pluginEntry;
-				try
-				{
-					pluginEntry = new RemotePluginEntry(new URL(src));
-				}
-				catch(MalformedURLException e)
-				{
-					continue;
-				}
-
-				pluginEntry.setPluginIdentifier(cid.getName());
-				if(cid.getVersion() != null)
-					pluginEntry.setPluginVersion(cid.getVersion().toString());
-
-				pluginEntry.setUnpack(Boolean.parseBoolean(props.get("unpack"))); //$NON-NLS-1$
-				entries.add(pluginEntry);
+				binaryEntries.add(entry);
 			}
-			return entries.toArray(new RemotePluginEntry[entries.size()]);
+			return binaryEntries;
 		}
 		catch(FileNotFoundException e)
 		{
-			return new RemotePluginEntry[0];
+			return Collections.emptyList();
 		}
 		catch(IOException e)
 		{
@@ -420,11 +394,12 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			if(!(sitePath.endsWith(".map") || sitePath.endsWith(".xml") || sitePath.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				siteURL = URLUtils.appendTrailingSlash(siteURL);
 
-			String subDir = IComponentType.ECLIPSE_FEATURE.equals(resolution.getComponentTypeId())
+			boolean isFeature = IComponentType.ECLIPSE_FEATURE.equals(resolution.getComponentTypeId());
+			String subDir = isFeature
 					? FEATURES_FOLDER
 					: PLUGINS_FOLDER;
 
-			return createRemoteComponentURL(siteURL, null, resolution.getName(), resolution.getVersion(), subDir).toURI();
+			return createRemoteComponentURL(siteURL, null, resolution.getComponentIdentifier(), subDir).toURI();
 		}
 		catch(MalformedURLException e)
 		{
@@ -509,7 +484,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				}
 				catch(Exception e)
 				{
-					Utils.close(in);
+					IOUtils.close(in);
 					in = null;
 				}
 
@@ -527,7 +502,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				}
 				catch(Exception e)
 				{
-					Utils.close(in);
+					IOUtils.close(in);
 					in = null;
 				}
 
@@ -546,7 +521,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			}
 			finally
 			{
-				Utils.close(in);
+				IOUtils.close(in);
 				if(monitor != null)
 					monitor.done();
 			}
@@ -710,8 +685,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			}
 			else
 			{
-				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), cctx, rInfo.getComponentName(),
-						vm.getVersion(), typeDir);
+				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), cctx, new ComponentIdentifier(
+						rInfo.getComponentName(), rInfo.getComponentType().getId(), vm.getVersion()), typeDir);
 
 				// Use a temporary local site
 				//

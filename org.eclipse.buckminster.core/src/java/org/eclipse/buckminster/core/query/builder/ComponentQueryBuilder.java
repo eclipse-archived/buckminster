@@ -108,19 +108,6 @@ public class ComponentQueryBuilder implements IComponentQuery
 		return null;
 	}
 
-	/**
-	 * @deprecated Use {@link #getNodeByCriteria(Pattern, String, Filter)}
-	 */
-	@Deprecated
-	public AdvisorNodeBuilder getNodeByPattern(String pattern, String componentType)
-	{
-		for(AdvisorNodeBuilder node : m_advisorNodes)
-			if(node.getNamePattern().toString().equals(pattern)
-					&& Trivial.equalsAllowNull(node.getComponentTypeID(), componentType))
-				return node;
-		return null;
-	}
-
 	public String getPropertiesURL()
 	{
 		return m_propertiesURL;

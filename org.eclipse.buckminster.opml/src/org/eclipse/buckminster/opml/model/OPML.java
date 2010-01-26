@@ -49,7 +49,7 @@ public class OPML extends UUIDKeyed implements IOPML
 		m_body = new Body(builder.getBodyBuilder());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public Object getAdapter(Class adapter)
 	{

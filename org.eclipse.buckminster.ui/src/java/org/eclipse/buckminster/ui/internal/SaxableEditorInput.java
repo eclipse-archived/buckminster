@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
 
 public abstract class SaxableEditorInput implements IStorageEditorInput
 {
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter)
 	{
 		return null;
@@ -41,8 +41,7 @@ public abstract class SaxableEditorInput implements IStorageEditorInput
 		try
 		{
 			contents = this.getStorage().getContents();
-			return Platform.getContentTypeManager()
-					.getDescriptionFor(contents, this.getName(), IContentDescription.ALL);
+			return Platform.getContentTypeManager().getDescriptionFor(contents, this.getName(), IContentDescription.ALL);
 		}
 		catch(CoreException e)
 		{
@@ -73,7 +72,7 @@ public abstract class SaxableEditorInput implements IStorageEditorInput
 	{
 		return new IStorage()
 		{
-			@SuppressWarnings("unchecked")
+			@SuppressWarnings("rawtypes")
 			public Object getAdapter(Class adapter)
 			{
 				return null;

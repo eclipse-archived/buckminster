@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -120,7 +121,6 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void createProject(IProgressMonitor monitor) throws CoreException
 	{
 		MaterializationContext context = (MaterializationContext)m_query.getContext();
@@ -130,7 +130,8 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 		IProject project = m_root.getProject(projectName);
 		try
 		{
-			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(request);
+			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(
+					WorkspaceInfo.getResolution(request, false));
 			if(project.exists())
 			{
 				switch(conflictResolution)

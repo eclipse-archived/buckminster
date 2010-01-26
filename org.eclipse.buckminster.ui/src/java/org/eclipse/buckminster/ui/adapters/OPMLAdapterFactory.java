@@ -30,12 +30,10 @@ import org.eclipse.core.runtime.IAdapterFactory;
  */
 public class OPMLAdapterFactory implements IAdapterFactory
 {
-	@SuppressWarnings("unchecked")
-	private static Class[] s_adapterList = { OPML.class, OPMLDataNode.class, Outline.class, OutlineDataNode.class,
+	private static Class<?>[] s_adapterList = { OPML.class, OPMLDataNode.class, Outline.class, OutlineDataNode.class,
 			Resolution.class, ResolutionDataNode.class };
 
-	@SuppressWarnings("unchecked")
-	public Object fromOPML(IOPML adapted, Class clazz)
+	public Object fromOPML(IOPML adapted, Class<?> clazz)
 	{
 		if(clazz.isAssignableFrom(OPMLDataNode.class))
 			return new OPMLDataNode(adapted);
@@ -46,8 +44,7 @@ public class OPMLAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object fromOPMLDataNode(OPMLDataNode adapted, Class clazz)
+	public Object fromOPMLDataNode(OPMLDataNode adapted, Class<?> clazz)
 	{
 		// No Adaption
 		if(clazz.isAssignableFrom(OPMLDataNode.class))
@@ -74,8 +71,7 @@ public class OPMLAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object fromOutline(Outline adapted, Class clazz)
+	public Object fromOutline(Outline adapted, Class<?> clazz)
 	{
 		if(clazz.isAssignableFrom(OutlineDataNode.class))
 			return new OutlineDataNode(adapted);
@@ -86,8 +82,7 @@ public class OPMLAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object fromOutlineDataNode(OutlineDataNode adapted, Class clazz)
+	public Object fromOutlineDataNode(OutlineDataNode adapted, Class<?> clazz)
 	{
 		// no adaption
 		if(clazz.isAssignableFrom(OutlineDataNode.class))
@@ -131,8 +126,7 @@ public class OPMLAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object fromResolution(Resolution adapted, Class clazz)
+	public Object fromResolution(Resolution adapted, Class<?> clazz)
 	{
 		if(clazz.isAssignableFrom(ResolutionDataNode.class))
 			return new ResolutionDataNode(adapted);
@@ -154,7 +148,7 @@ public class OPMLAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Object adaptableObject, Class adapterType)
 	{
 		if(adaptableObject instanceof IOPML)
@@ -176,8 +170,7 @@ public class OPMLAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList()
+	public Class<?>[] getAdapterList()
 	{
 		return s_adapterList;
 	}

@@ -109,7 +109,6 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private static IFile[] getFilesForSystemId(String systemId)
 	{
 		if(systemId == null || systemId.contains(".metadata")) //$NON-NLS-1$
@@ -127,7 +126,7 @@ public abstract class AbstractParser<T> extends TopHandler implements ErrorHandl
 		{
 			// Apparently not a valid URL. That's expected
 		}
-		return ResourcesPlugin.getWorkspace().getRoot().findFilesForLocation(new Path(systemId));
+		return ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(new Path(systemId).toFile().toURI());
 	}
 
 	private final boolean m_validating;

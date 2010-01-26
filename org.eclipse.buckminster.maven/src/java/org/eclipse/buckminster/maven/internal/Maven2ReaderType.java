@@ -48,7 +48,6 @@ import org.xml.sax.SAXParseException;
  * @author Thomas Hallgren
  * 
  */
-@SuppressWarnings("restriction")
 public class Maven2ReaderType extends MavenReaderType
 {
 	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx,

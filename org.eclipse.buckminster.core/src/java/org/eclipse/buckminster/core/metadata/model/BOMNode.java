@@ -80,15 +80,6 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 		return false;
 	}
 
-	/**
-	 * @deprecated Use {@link #isFullyResolved(ComponentQuery, Map)}
-	 */
-	@Deprecated
-	public boolean isFullyResolved(ComponentQuery query) throws CoreException
-	{
-		return isFullyResolved(query, new HashSet<BOMNode>());
-	}
-
 	public boolean isFullyResolved(ComponentQuery query, Map<String, ? extends Object> properties) throws CoreException
 	{
 		return isFullyResolved(query, new HashSet<BOMNode>(), properties);
@@ -139,15 +130,6 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 		HashSet<BOMNode> allNodes = new HashSet<BOMNode>();
 		collectNodes(allNodes);
 		return allNodes.size();
-	}
-
-	/**
-	 * @deprecated Use {@link #isFullyResolved(ComponentQuery, HashSet, Map)}
-	 */
-	@Deprecated
-	protected boolean isFullyResolved(ComponentQuery query, HashSet<BOMNode> seen) throws CoreException
-	{
-		return isFullyResolved(query, seen, query.getGlobalProperties());
 	}
 
 	protected boolean isFullyResolved(ComponentQuery query, HashSet<BOMNode> seen,

@@ -22,10 +22,6 @@
    </url>
 
    <includes
-         id="org.eclipse.buckminster.aggregator.engine.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.buckminster.core.headless.feature"
          version="0.0.0"/>
 

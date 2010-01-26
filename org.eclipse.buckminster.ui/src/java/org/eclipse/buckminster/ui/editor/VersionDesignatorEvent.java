@@ -13,7 +13,6 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Widget;
 
-@SuppressWarnings("restriction")
 public class VersionDesignatorEvent extends TypedEvent
 {
 	private static final long serialVersionUID = 3880730801886666166L;

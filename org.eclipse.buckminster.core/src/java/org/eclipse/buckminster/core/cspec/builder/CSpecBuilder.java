@@ -216,16 +216,6 @@ public class CSpecBuilder implements ICSpecData
 		return bld;
 	}
 
-	/**
-	 * @deprecated Please use {@link #addArtifact(String, boolean, IPath)}
-	 */
-	@Deprecated
-	public ArtifactBuilder addArtifact(String name, boolean publ, String type, IPath base)
-			throws AttributeAlreadyDefinedException
-	{
-		return addArtifact(name, publ, base);
-	}
-
 	public void addAttribute(IAttribute attribute) throws AttributeAlreadyDefinedException
 	{
 		String name = attribute.getName();
@@ -514,21 +504,6 @@ public class CSpecBuilder implements ICSpecData
 		return m_generators == null
 				? Collections.<GeneratorBuilder> emptySet()
 				: m_generators.values();
-	}
-
-	/**
-	 * @deprecated
-	 */
-	@Deprecated
-	public Map<String, GeneratorBuilder> getGenerators()
-	{
-		if(m_generators == null)
-			return Collections.emptyMap();
-
-		HashMap<String, GeneratorBuilder> map = new HashMap<String, GeneratorBuilder>(m_generators.size());
-		for(GeneratorBuilder bld : m_generators.values())
-			map.put(bld.getGenerates(), bld);
-		return map;
 	}
 
 	public GroupBuilder getGroup(String name)

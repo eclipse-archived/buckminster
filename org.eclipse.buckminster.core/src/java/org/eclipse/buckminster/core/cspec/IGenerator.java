@@ -7,10 +7,4 @@ public interface IGenerator
 	String getComponent();
 
 	IComponentIdentifier getGeneratedIdentifier();
-
-	/**
-	 * @deprecated Use {@link #getGeneratedIdentifier()}
-	 */
-	@Deprecated
-	String getGenerates();
 }

@@ -108,7 +108,6 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 	 * entire current tree, and a new tree is erected. If the newInput is an instance of IViewSite all resolutions are
 	 * collected in the background.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
 	{
@@ -123,9 +122,10 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 			initialize();
 			root = getHiddenRoot();
 		}
-		if(newInput instanceof List)
+		if(newInput instanceof List<?>)
 		{
 			root.removeAllChildren();
+			@SuppressWarnings("unchecked")
 			List<Resolution> resolutions = (List<Resolution>)newInput;
 			if(resolutions.size() < 1)
 				return; // empty
@@ -136,8 +136,7 @@ public class ResolutionsTreeContentProvider extends TreeDataNodeContentProvider
 		if(newInput instanceof Resolution)
 		{
 			ITreeDataNode[] children = root.getChildren();
-			if(!(children.length > 0 && children[0] instanceof ResolutionDataNode && newInput
-					.equals(((ResolutionDataNode)children[0]).getData())))
+			if(!(children.length > 0 && children[0] instanceof ResolutionDataNode && newInput.equals(((ResolutionDataNode)children[0]).getData())))
 			{
 				root.removeAllChildren();
 				root.addChild(new ResolutionDataNode((Resolution)newInput));

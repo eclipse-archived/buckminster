@@ -42,7 +42,6 @@ import org.osgi.framework.InvalidSyntaxException;
  * @author Karel Brezina
  * 
  */
-@SuppressWarnings("restriction")
 public class DependenciesTable extends SimpleTable<ComponentRequestBuilder>
 {
 	class FilterValidator implements IValidator

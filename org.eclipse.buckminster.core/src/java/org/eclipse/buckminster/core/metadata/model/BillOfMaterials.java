@@ -307,25 +307,6 @@ public class BillOfMaterials extends BOMNode
 		return getTopNode().isChild(node);
 	}
 
-	/**
-	 * @deprecated Use {@link #isFullyResolved(Map)}
-	 */
-	@Deprecated
-	public boolean isFullyResolved() throws CoreException
-	{
-		return getTopNode().isFullyResolved(getQuery());
-	}
-
-	/**
-	 * @deprecated Use {@link #isFullyResolved(ComponentQuery, Map)}
-	 */
-	@Deprecated
-	@Override
-	public boolean isFullyResolved(ComponentQuery query) throws CoreException
-	{
-		return getTopNode().isFullyResolved(query);
-	}
-
 	@Override
 	public boolean isFullyResolved(ComponentQuery query, Map<String, ? extends Object> properties) throws CoreException
 	{

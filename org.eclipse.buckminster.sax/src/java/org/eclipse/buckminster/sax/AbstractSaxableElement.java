@@ -24,7 +24,7 @@ public abstract class AbstractSaxableElement implements ISaxableElement, IAdapta
 	 * returned immediately, else the task is delegated to the Platform Adapter Manager which handles registered adapter
 	 * factories.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter)
 	{
 		if(adapter.isInstance(this))

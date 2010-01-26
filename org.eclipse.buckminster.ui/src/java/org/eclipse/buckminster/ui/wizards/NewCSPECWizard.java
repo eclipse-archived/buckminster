@@ -18,7 +18,6 @@ import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.ui.INewWizard;
 import org.xml.sax.SAXException;
 
-@SuppressWarnings("restriction")
 public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 {
 	private final String INIT_COMPONENT_TYPE = "buckminster"; //$NON-NLS-1$

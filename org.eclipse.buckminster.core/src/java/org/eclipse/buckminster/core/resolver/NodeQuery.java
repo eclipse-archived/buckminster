@@ -124,7 +124,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 */
 	public boolean allowCircularDependency() throws CoreException
 	{
-		return getComponentQuery().allowCircularDependency(getComponentRequest());
+		return getComponentQuery().allowCircularDependency(getComponentRequest(), m_context);
 	}
 
 	public int compare(VersionMatch vm1, VersionMatch vm2)

@@ -73,10 +73,9 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static Class[] s_supported = { IBrowseable.class, IBrowseableFeed.class };
+	private static Class<?>[] s_supported = { IBrowseable.class, IBrowseableFeed.class };
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object getAdapter(Object adaptableObject, Class adapterType)
 	{
 		// Adapt an Outline or adaptable to Outline
@@ -94,7 +93,7 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 		{
 			URL url = null;
 			URI uri = null;
-			Class returnClass = null;
+			Class<?> returnClass = null;
 			if(adapterType.isAssignableFrom(IBrowseable.class))
 			{
 				returnClass = IBrowseable.class;
@@ -131,8 +130,7 @@ public class BrowseableAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList()
+	public Class<?>[] getAdapterList()
 	{
 		return s_supported;
 	}

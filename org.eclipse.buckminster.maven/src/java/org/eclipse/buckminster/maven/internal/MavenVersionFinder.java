@@ -40,7 +40,6 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class MavenVersionFinder extends AbstractVersionFinder implements ILocationResolver
 {
 	private static final String[] s_allowedExtensions = new String[] { ".jar", ".mar" }; //$NON-NLS-1$ //$NON-NLS-2$

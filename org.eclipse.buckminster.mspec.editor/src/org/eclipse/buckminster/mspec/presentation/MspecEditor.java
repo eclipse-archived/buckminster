@@ -893,7 +893,7 @@ public class MspecEditor extends MultiPageEditorPart implements IEditingDomainPr
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key)
 	{

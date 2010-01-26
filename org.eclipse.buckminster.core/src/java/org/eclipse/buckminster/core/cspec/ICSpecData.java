@@ -30,12 +30,6 @@ public interface ICSpecData extends IAdaptable
 
 	Collection<? extends IGenerator> getGeneratorList();
 
-	/**
-	 * @deprecated use getGeneratorList()
-	 */
-	@Deprecated
-	Map<String, ? extends IGenerator> getGenerators();
-
 	String getName();
 
 	URL getProjectInfo();

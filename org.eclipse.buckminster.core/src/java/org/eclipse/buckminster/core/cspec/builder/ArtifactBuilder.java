@@ -69,15 +69,6 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 		return m_paths;
 	}
 
-	/**
-	 * @deprecated no longer used
-	 */
-	@Deprecated
-	public String getType()
-	{
-		return null;
-	}
-
 	@Override
 	public void initFrom(IAttribute attribute)
 	{
@@ -99,13 +90,5 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 		m_base = (base == null)
 				? null
 				: base.addTrailingSeparator();
-	}
-
-	/**
-	 * @deprecated type is no longer used
-	 */
-	@Deprecated
-	public void setType(String type)
-	{
 	}
 }

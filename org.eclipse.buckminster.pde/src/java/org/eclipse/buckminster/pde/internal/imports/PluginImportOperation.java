@@ -28,6 +28,7 @@ import java.util.zip.ZipFile;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.pde.Messages;
@@ -176,7 +177,6 @@ public class PluginImportOperation extends JarImportOperation
 	 * @throws CoreException
 	 *             if a problem occurs while importing a plugin
 	 */
-	@SuppressWarnings("deprecation")
 	public void importPlugin(IProgressMonitor monitor) throws CoreException
 	{
 		MaterializationContext context = (MaterializationContext)m_query.getContext();
@@ -186,7 +186,8 @@ public class PluginImportOperation extends JarImportOperation
 		MonitorUtils.begin(monitor, NLS.bind(Messages.importing_plugin_0, id), 7);
 		try
 		{
-			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(request);
+			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(
+					WorkspaceInfo.getResolution(request, false));
 			BundleDescription desc = m_model.getBundleDescription();
 			if(desc != null)
 			{

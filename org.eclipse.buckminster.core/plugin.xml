@@ -70,10 +70,7 @@
 		<readerType
 			class="org.eclipse.buckminster.core.reader.LocalReaderType"
 			id="local" />
-  <readerType
-        class="org.eclipse.buckminster.core.reader.SiteFeatureReaderType"
-        id="site.feature"/>
-	</extension>
+</extension>
 	<extension point="org.eclipse.buckminster.core.versionTypes">
 		<versionType
           format="n[.n=0;[.n=0;[.S=&apos;&apos;;=[A-Za-z0-9_-];]]]"
@@ -303,10 +300,7 @@
           class="org.eclipse.buckminster.core.materializer.WorkspaceMaterializer"
           id="workspace"/>
     <materializer
-          class="org.eclipse.buckminster.core.materializer.SiteMirrorMaterializer"
-          id="site.mirror"/>
-    <materializer
-          class="org.eclipse.buckminster.core.materializer.TargetPlatformMaterializer"
+          class="org.eclipse.buckminster.core.materializer.P2Materializer"
           id="targetPlatform">
     </materializer>
     <materializer

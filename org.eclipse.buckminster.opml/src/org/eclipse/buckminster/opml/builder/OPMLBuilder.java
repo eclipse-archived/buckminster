@@ -23,7 +23,7 @@ public class OPMLBuilder implements IOPML
 		m_version = null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object getAdapter(Class adapter)
 	{
 		if(adapter.isInstance(this))

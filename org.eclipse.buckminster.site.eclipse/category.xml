@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature id="org.eclipse.buckminster.aggregator.editor.feature" version="0.0.0">
-      <category name="buckminster"/>
-   </feature>
    <feature id="org.eclipse.buckminster.core.feature" version="0.0.0">
       <category name="buckminster"/>
    </feature>
@@ -23,9 +20,6 @@
    </feature>
    <feature id="org.eclipse.buckminster.subversive.feature" version="0.0.0">
       <category name="buckminster.subversive"/>
-   </feature>
-   <feature id="org.eclipse.buckminster.aggregator.editor.source.feature" version="0.0.0">
-      <category name="buckminster.source"/>
    </feature>
    <feature id="org.eclipse.buckminster.core.source.feature" version="0.0.0">
       <category name="buckminster.source"/>

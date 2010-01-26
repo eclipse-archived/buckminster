@@ -38,7 +38,6 @@ import org.eclipse.swt.graphics.Image;
  * @author Johannes Utzig
  * 
  */
-@SuppressWarnings("restriction")
 public class BOMNodeTooltipFigure extends RectangleFigure
 {
 

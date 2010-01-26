@@ -31,10 +31,9 @@ import org.eclipse.swt.widgets.Control;
  */
 public abstract class StructuredTable<T> extends Table<T> implements IStructuredTable<T>
 {
-	@SuppressWarnings("unchecked")
-	class CompoundFieldModifyListener implements ModifyListener, SelectionListener, ITableModifyListener
+	class CompoundFieldModifyListener<E> implements ModifyListener, SelectionListener, ITableModifyListener<E>
 	{
-		public void modifyTable(TableModifyEvent e)
+		public void modifyTable(TableModifyEvent<E> e)
 		{
 			notifyFieldListeners(e);
 		}
@@ -57,6 +56,7 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	protected final CompoundFieldModifyListener FIELD_LISTENER = new CompoundFieldModifyListener();
 
 	private List<String> m_stackKeys = new ArrayList<String>();

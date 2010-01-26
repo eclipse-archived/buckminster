@@ -307,7 +307,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 		return 11 * toString().hashCode();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean match(Dictionary properties)
 	{
 		return match(properties, false);
@@ -327,7 +327,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 				: new ServiceReferenceMap(reference));
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public boolean matchCase(Dictionary dictionary)
 	{
 		return match(dictionary, true);
@@ -439,7 +439,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 
 	abstract void toString(StringBuilder bld);
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private boolean match(Dictionary dictionary, boolean caseSensitive)
 	{
 		Map props = null;

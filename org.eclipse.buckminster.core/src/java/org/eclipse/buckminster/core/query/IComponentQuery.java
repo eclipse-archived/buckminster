@@ -21,12 +21,6 @@ public interface IComponentQuery
 
 	IAdvisorNode getNodeByCriteria(Pattern pattern, String componentTypeID, Filter filter);
 
-	/**
-	 * @deprecated Use {@link #getNodeByCriteria(Pattern, String, Filter)}
-	 */
-	@Deprecated
-	IAdvisorNode getNodeByPattern(String pattern, String componentTypeID);
-
 	String getPropertiesURL();
 
 	String getResourceMapURL();

@@ -44,7 +44,7 @@ public class AbstractModel implements IPropertyChange, IAdaptable
 
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter)
 	{
 		if(adapter.isInstance(this))

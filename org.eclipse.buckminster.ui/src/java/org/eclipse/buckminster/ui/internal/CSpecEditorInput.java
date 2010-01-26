@@ -16,7 +16,6 @@ import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.Version;
 
-@SuppressWarnings("restriction")
 public class CSpecEditorInput extends SaxableEditorInput
 {
 	private final CSpec m_cspec;

@@ -397,21 +397,6 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		return m_generators.values();
 	}
 
-	/**
-	 * @deprecated use getGeneratorList()
-	 */
-	@Deprecated
-	public Map<String, Generator> getGenerators()
-	{
-		if(m_generators.isEmpty())
-			return Collections.emptyMap();
-
-		HashMap<String, Generator> map = new HashMap<String, Generator>(m_generators.size());
-		for(Generator gen : m_generators.values())
-			map.put(gen.getGenerates(), gen);
-		return map;
-	}
-
 	public String getName()
 	{
 		return m_componentIdentifier.getName();
@@ -630,7 +615,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		// be referenced from an attribute or from a generator
 		//
 		Collection<ComponentRequest> deps;
-		if(attrNames.isEmpty() && getGenerators().isEmpty())
+		if(attrNames.isEmpty() && getGeneratorList().isEmpty())
 			deps = getDependencies();
 		else
 		{
@@ -644,7 +629,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 					addReferencedDependencies(referencedDeps, referencedAttrs, attr, null);
 			}
 
-			for(IGenerator generator : getGenerators().values())
+			for(IGenerator generator : getGeneratorList())
 			{
 				String component = generator.getComponent();
 				if(component == null)
@@ -687,7 +672,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData
 		// Add all generators that can be added with respect to dependency or
 		// local attribute
 		//
-		for(IGenerator generator : getGenerators().values())
+		for(IGenerator generator : getGeneratorList())
 		{
 			String component = generator.getComponent();
 			if(component == null)

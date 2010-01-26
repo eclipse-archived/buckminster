@@ -103,12 +103,10 @@ import org.eclipse.ui.part.EditorPart;
  * @author Karel Brezina
  * 
  */
-@SuppressWarnings("restriction")
 public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 {
-	@SuppressWarnings("unchecked")
 	// don't need generics here - need just to setDirty
-	class CompoundModifyListener implements ModifyListener, ITableModifyListener, IFieldModifyListener
+	class CompoundModifyListener<T> implements ModifyListener, ITableModifyListener<T>, IFieldModifyListener
 	{
 
 		public void modifyField(FieldModifyEvent e)
@@ -116,7 +114,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 			setDirty(true);
 		}
 
-		public void modifyTable(TableModifyEvent e)
+		public void modifyTable(TableModifyEvent<T> e)
 		{
 			setDirty(true);
 		}
@@ -161,6 +159,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 
 	private List<GeneratorBuilder> m_generatorBuilders = new ArrayList<GeneratorBuilder>();
 
+	@SuppressWarnings("rawtypes")
 	private CompoundModifyListener m_compoundModifyListener;
 
 	private boolean m_hasChanges = false;
@@ -496,8 +495,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		{
 			IOUtils.close(stream);
 		}
-
-		m_compoundModifyListener = new CompoundModifyListener();
+		m_compoundModifyListener = new CompoundModifyListener<Object>();
 	}
 
 	@Override

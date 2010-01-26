@@ -121,23 +121,6 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 				: m_parentContext.getGeneratorNode(request);
 	}
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated
-	public GeneratorNode getGeneratorNode(String name)
-	{
-		if(m_generators != null)
-		{
-			GeneratorNode node = m_generators.get(name);
-			if(node != null)
-				return node;
-		}
-		return (m_parentContext == null)
-				? null
-				: m_parentContext.getGeneratorNode(name);
-	}
-
 	@Override
 	public Map<String, ? extends Object> getProperties(ComponentName cName)
 	{

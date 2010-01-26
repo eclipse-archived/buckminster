@@ -81,7 +81,7 @@ public class ExternalFileEditorInput implements IPathEditorInput, ILocationProvi
 		return m_file.exists();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter)
 	{
 		if(ILocationProvider.class.equals(adapter) || IWorkbenchAdapter.class.equals(adapter))

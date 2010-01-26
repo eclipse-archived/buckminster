@@ -320,30 +320,6 @@ public class WorkspaceInfo
 		return generators;
 	}
 
-	/**
-	 * @deprecated use {@link #getGenerators(ComponentRequest)}
-	 */
-	@Deprecated
-	public static List<Generator> getGenerators(String componentName) throws CoreException
-	{
-		List<Generator> generators = null;
-		for(Resolution res : getAllResolutions())
-		{
-			for(Generator generator : res.getCSpec().getGeneratorList())
-			{
-				if(componentName.equals(generator.getGeneratedIdentifier().getName()))
-				{
-					if(generators == null)
-						generators = new ArrayList<Generator>();
-					generators.add(generator);
-				}
-			}
-		}
-		if(generators == null)
-			generators = Collections.emptyList();
-		return generators;
-	}
-
 	public static Materialization getMaterialization(ComponentRequest request) throws CoreException
 	{
 		// Add all components for which we have a materialization

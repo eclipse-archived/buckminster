@@ -57,13 +57,12 @@ public class DependencyTreeContentProvider implements ITreeContentProvider
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Object[] getElements(Object inputElement)
 	{
 
-		if(inputElement instanceof Collection)
+		if(inputElement instanceof Collection<?>)
 		{
-			Collection collection = (Collection)inputElement;
+			Collection<?> collection = (Collection<?>)inputElement;
 			return collection.toArray();
 
 		}

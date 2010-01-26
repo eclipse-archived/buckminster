@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings("restriction")
 public class VersionDesignator extends Widgetin
 {
 	enum DesignatorType

@@ -19,10 +19,4 @@ public interface IPrerequisite extends IAttributeFilter
 	boolean isContributor();
 
 	boolean isExternal();
-
-	/**
-	 * @deprecated not used
-	 */
-	@Deprecated
-	boolean isOptional();
 }

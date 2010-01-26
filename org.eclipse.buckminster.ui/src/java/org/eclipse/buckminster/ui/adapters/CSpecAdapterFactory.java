@@ -23,11 +23,10 @@ import org.eclipse.core.runtime.IAdapterFactory;
  */
 public class CSpecAdapterFactory implements IAdapterFactory
 {
-	@SuppressWarnings("unchecked")
-	private static Class[] s_adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class,
+	private static Class<?>[] s_adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class,
 			ResolutionDataNode.class };
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object adaptCSpec(CSpec cspec, Class adapterType)
 	{
 		if(adapterType.isAssignableFrom(CSpec.class))
@@ -57,7 +56,7 @@ public class CSpecAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Object adaptableObject, Class adapterType)
 	{
 		if(adaptableObject instanceof CSpec)
@@ -70,8 +69,7 @@ public class CSpecAdapterFactory implements IAdapterFactory
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList()
+	public Class<?>[] getAdapterList()
 	{
 		return s_adapterList;
 	}
