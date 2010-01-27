@@ -379,7 +379,9 @@ public class MavenManager
 			Versioning versioning = MetadataFactory.eINSTANCE.createVersioning();
 			md.setVersioning(versioning);
 			versioning.setLastUpdated(timestamp);
-			versioning.setRelease(getVersionString(mdh.getRelease()));
+			Version release = mdh.getRelease();
+			if(release != null)
+				versioning.setRelease(getVersionString(release));
 			Versions versions = MetadataFactory.eINSTANCE.createVersions();
 			versioning.setVersions(versions);
 			List<String> versionList = versions.getVersion();
