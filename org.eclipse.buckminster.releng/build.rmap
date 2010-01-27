@@ -25,12 +25,12 @@
   </rm:searchPath>
   <rm:searchPath name="platform">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.5))">
-      <rm:uri format="{0}/eclipse/updates/3.5/R-3.5.1-200909170800">
+      <rm:uri format="{0}/eclipse/updates/3.5.x/M20100120-0800">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
-      <rm:uri format="{0}/eclipse/updates/3.5.x/M20091021-0800">
+      <rm:uri format="{0}/eclipse/updates/3.5.x/M20100120-0800">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
