@@ -210,7 +210,7 @@ public class POM
 		Model model = getProject();
 		Parent parent = model.getParent();
 		if(parent != null)
-			return getPOM(m_repoRoot, parent.getGroupId(), parent.getArtifactId(), parent.getVersion());
+			return (m_parentPOM = getPOM(m_repoRoot, parent.getGroupId(), parent.getArtifactId(), parent.getVersion()));
 
 		return null;
 	}
