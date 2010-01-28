@@ -67,6 +67,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.equinox.p2.core.IProvisioningAgent;
+import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -93,8 +95,6 @@ public class CorePlugin extends LogAwarePlugin
 	public static final String CSPEC_FILE = "buckminster.cspec"; //$NON-NLS-1$
 
 	public static final String CSPECEXT_FILE = "buckminster.cspex"; //$NON-NLS-1$
-
-	public static final String OPML_FILE = "buckminster.opml"; //$NON-NLS-1$
 
 	public static final String FORCED_ACTIVATIONS_POINT = CORE_NAMESPACE + ".forcedActivations"; //$NON-NLS-1$
 
@@ -258,6 +258,8 @@ public class CorePlugin extends LogAwarePlugin
 	private final ShortDurationURLCache m_urlCache = new ShortDurationURLCache();
 
 	private WorkspaceJob m_updatePrefsJob;
+
+	private IProvisioningAgent resolverAgent;
 
 	/**
 	 * The constructor.
@@ -494,6 +496,25 @@ public class CorePlugin extends LogAwarePlugin
 		throw new MissingBuilderException(id);
 	}
 
+	public synchronized IProvisioningAgent getResolverAgent() throws CoreException
+	{
+		if(resolverAgent == null)
+		{
+			Buckminster bucky = Buckminster.getDefault();
+			IProvisioningAgentProvider agentProvider = bucky.getService(IProvisioningAgentProvider.class);
+			try
+			{
+				IPath stateLocation = getStateLocation().append("p2.resolver"); //$NON-NLS-1$
+				resolverAgent = agentProvider.createAgent(stateLocation.toFile().toURI());
+			}
+			finally
+			{
+				bucky.ungetService(agentProvider);
+			}
+		}
+		return resolverAgent;
+	}
+
 	/**
 	 * Returns the plugin's resource bundle,
 	 */
@@ -590,6 +611,14 @@ public class CorePlugin extends LogAwarePlugin
 			}
 		};
 		startJob.schedule(100);
+	}
+
+	@Override
+	public void stop(BundleContext context) throws Exception
+	{
+		if(resolverAgent != null)
+			resolverAgent.stop();
+		super.stop(context);
 	}
 
 	public synchronized void stopAllJobs() throws Exception

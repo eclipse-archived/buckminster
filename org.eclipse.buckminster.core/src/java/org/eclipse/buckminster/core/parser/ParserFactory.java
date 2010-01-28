@@ -10,7 +10,6 @@
 
 package org.eclipse.buckminster.core.parser;
 
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,8 +24,8 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.parser.CSpecParser;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
 import org.eclipse.buckminster.core.cspecext.parser.AlterCSpecParser;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
@@ -43,19 +42,14 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.buckminster.core.rmap.parser.ProviderParser;
 import org.eclipse.buckminster.core.rmap.parser.ResourceMapParser;
-import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.opml.parser.OPMLParser;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 public class ParserFactory implements IParserFactory
 {
@@ -100,36 +94,6 @@ public class ParserFactory implements IParserFactory
 		void addHandler(String xsiType, Class<? extends ChildHandler> clazz)
 		{
 			m_handlers.put(xsiType, clazz);
-		}
-	}
-
-	static class OPMLParserExt extends OPMLParser implements IParser<OPML>
-	{
-		OPMLParserExt(boolean validating) throws SAXException
-		{
-			super(validating);
-		}
-
-		public OPML parse(String systemId, InputStream input) throws CoreException
-		{
-			IFile[] files = AbstractParser.clearMarkers(systemId);
-			try
-			{
-				return parseInput(systemId, input);
-			}
-			catch(SAXParseException e)
-			{
-				AbstractParser.setMarkers(files, e);
-				throw BuckminsterException.wrap(e);
-			}
-			catch(Exception e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
-				getXMLReader().setContentHandler(this);
-			}
 		}
 	}
 
@@ -178,18 +142,6 @@ public class ParserFactory implements IParserFactory
 	public IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating) throws CoreException
 	{
 		return new MaterializationSpecParser(getParserExtensions(MaterializationSpec.TAG), validating);
-	}
-
-	public IParser<OPML> getOPMLParser(boolean validating) throws CoreException
-	{
-		try
-		{
-			return new OPMLParserExt(validating);
-		}
-		catch(SAXException e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
 	}
 
 	public IParser<Provider> getProviderParser(boolean validating) throws CoreException

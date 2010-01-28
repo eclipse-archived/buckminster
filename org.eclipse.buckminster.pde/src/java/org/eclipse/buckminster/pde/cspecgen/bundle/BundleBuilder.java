@@ -30,7 +30,6 @@ import org.eclipse.buckminster.core.reader.LocalReaderType;
 import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
-import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
@@ -268,24 +267,15 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		return IComponentType.OSGI_BUNDLE;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder#createResolution(org.eclipse.buckminster.core.reader
-	 * .IComponentReader, org.eclipse.buckminster.core.cspec.builder.CSpecBuilder,
-	 * org.eclipse.buckminster.opml.builder.OPMLBuilder)
-	 */
 	@Override
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
-			throws CoreException
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException
 	{
 		if(reader instanceof EclipseImportReader)
 		{
 			EclipseImportReader eclipseImportReader = (EclipseImportReader)reader;
-			return super.createResolution(reader, cspecBuilder, opmlBuilder, eclipseImportReader.isUnpack());
+			return super.createResolution(reader, cspecBuilder, eclipseImportReader.isUnpack());
 		}
-		return super.createResolution(reader, cspecBuilder, opmlBuilder);
+		return super.createResolution(reader, cspecBuilder);
 	}
 
 	@Override

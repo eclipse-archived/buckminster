@@ -27,4 +27,10 @@ public class MissingCSpecSourceException extends LocalizedException
 				providerMatch.getProvider().getURI(providerMatch.getNodeQuery().getProperties()),
 				providerMatch.getComponentType().getId() }));
 	}
+
+	public MissingCSpecSourceException(String readerType, String uri, String ctypeId)
+	{
+		super(NLS.bind(Messages.Provider_0_1_Missing_CSpec_source_required_by_component_type_2, new Object[] {
+				readerType, uri, ctypeId }));
+	}
 }

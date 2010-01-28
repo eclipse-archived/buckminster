@@ -83,7 +83,7 @@ public class ImportBundle
 			//
 			StorageManager sm = StorageManager.getDefault();
 			Resolution newRes = LocalResolver.fromPath(m_outputDir, m_bundleName);
-			newRes = new Resolution(newRes.getCSpec(), newRes.getOPML(), node.getResolution());
+			newRes = new Resolution(newRes.getCSpec(), node.getResolution());
 			newRes.store(sm);
 			Materialization mat = new Materialization(m_outputDir, newRes.getComponentIdentifier());
 			mat.store(sm);

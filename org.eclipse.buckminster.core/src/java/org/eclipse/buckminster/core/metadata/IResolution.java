@@ -8,7 +8,6 @@ import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
-import org.eclipse.buckminster.opml.IOPML;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.IFileInfo;
 
@@ -35,13 +34,6 @@ public interface IResolution extends IFileInfo
 	 * @return The matched selector or <code>null</code>.
 	 */
 	VersionSelector getMatchedBranchOrTag();
-
-	/**
-	 * Returns the OPML document
-	 * 
-	 * @return The OPML or <code>null</code> if no OPML was present
-	 */
-	IOPML getOPML();
 
 	/**
 	 * Returns the persistent identifier for the resolution. This is intended to be used when resolutions are stored in

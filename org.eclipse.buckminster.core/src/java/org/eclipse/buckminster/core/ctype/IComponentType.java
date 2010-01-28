@@ -57,8 +57,6 @@ public interface IComponentType extends IBuckminsterExtension
 
 	public static final String PREF_CQUERY_FILE = CorePlugin.getID() + ".cquery.file"; //$NON-NLS-1$
 
-	public static final String PREF_OPML_FILE = CorePlugin.getID() + ".opml.file"; //$NON-NLS-1$
-
 	/**
 	 * Extracts the component version from artifacts found inside of the component. Component types where this is not
 	 * applicable will return <code>null</code>.

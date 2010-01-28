@@ -26,7 +26,6 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
-import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -77,10 +76,9 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 						: -1);
 	}
 
-	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
-			throws CoreException
+	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException
 	{
-		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder, opmlBuilder));
+		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder));
 	}
 
 	public String getComponentTypeID()
@@ -162,16 +160,15 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		}
 	}
 
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
-			throws CoreException
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException
 	{
-		return createResolution(reader, cspecBuilder, opmlBuilder, false);
+		return createResolution(reader, cspecBuilder, false);
 	}
 
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder,
-			boolean unpack) throws CoreException
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, boolean unpack)
+			throws CoreException
 	{
-		ResolutionBuilder resBld = reader.getProviderMatch().createResolution(cspecBuilder, opmlBuilder, unpack);
+		ResolutionBuilder resBld = reader.getProviderMatch().createResolution(cspecBuilder, unpack);
 		resBld.setMaterializable(reader.canMaterialize());
 		if(reader instanceof ZipArchiveReader)
 			reader = ((ZipArchiveReader)reader).getFileReader();

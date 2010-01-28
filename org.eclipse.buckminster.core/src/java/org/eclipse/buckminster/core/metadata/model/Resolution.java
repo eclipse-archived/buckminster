@@ -35,7 +35,6 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
-import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
@@ -63,8 +62,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public static final String ATTR_LAST_MODIFIED = "lastModified"; //$NON-NLS-1$
 
 	public static final String ATTR_MATERIALIZABLE = "materializable"; //$NON-NLS-1$
-
-	public static final String ATTR_OPML_ID = "opmlId"; //$NON-NLS-1$
 
 	public static final String ATTR_PERSISTENT_ID = "persistentId"; //$NON-NLS-1$
 
@@ -98,8 +95,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	private final boolean m_materializable;
 
-	private transient OPML m_opml;
-
 	private final String m_persistentId;
 
 	private transient Provider m_provider;
@@ -118,10 +113,9 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	private Map<String, ? extends Object> m_properties;
 
-	public Resolution(CSpec cspec, OPML opml, Resolution old)
+	public Resolution(CSpec cspec, Resolution old)
 	{
 		m_cspec = cspec;
-		m_opml = opml;
 		m_request = old.getRequest();
 		m_attributes = old.getAttributes();
 		m_persistentId = old.getPersistentId();
@@ -137,12 +131,11 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_unpack = old.isUnpack();
 	}
 
-	public Resolution(CSpec cspec, OPML opml, String componentTypeId, VersionMatch versionMatch, Provider provider,
+	public Resolution(CSpec cspec, String componentTypeId, VersionMatch versionMatch, Provider provider,
 			boolean materializeable, ComponentRequest request, List<String> attributes, String persistentId,
 			String repository, String remoteName, String contentType, long lastModified, long size, boolean unpack)
 	{
 		m_cspec = cspec;
-		m_opml = opml;
 		m_provider = provider;
 		m_componentTypeId = componentTypeId;
 		m_versionMatch = versionMatch;
@@ -166,7 +159,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		m_cspec = bld.getCSpec();
 		m_lastModified = bld.getLastModified();
 		m_materializable = bld.isMaterializable();
-		m_opml = bld.getOPML();
 		m_persistentId = bld.getPersistentId();
 		m_provider = bld.getProvider();
 		m_remoteName = bld.getRemoteName();
@@ -180,7 +172,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public Resolution(Version version, Resolution old)
 	{
 		m_cspec = old.getCSpec();
-		m_opml = old.getOPML();
 		m_request = old.getRequest();
 		m_attributes = old.getAttributes();
 		m_persistentId = old.getPersistentId();
@@ -289,28 +280,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public final String getName()
 	{
 		return m_request.getName();
-	}
-
-	/**
-	 * Returns the OPML document
-	 * 
-	 * @return The OPML or <code>null</code> if no OPML was present
-	 */
-	public OPML getOPML()
-	{
-		return m_opml;
-	}
-
-	/**
-	 * Returns the id of the contained OPML.
-	 * 
-	 * @return The id of the contained OPML or null if no OPML exists.
-	 */
-	public UUID getOPMLId()
-	{
-		return m_opml == null
-				? null
-				: m_opml.getId();
 	}
 
 	public String getPersistentId()
@@ -554,8 +523,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	{
 		WorkspaceInfo.updateResolutionCache(getComponentIdentifier(), this);
 		m_cspec.store(sm);
-		if(m_opml != null)
-			sm.getOPMLs().putElement(m_opml);
 		m_provider.store(sm);
 		synchronized(sm.getResolutions())
 		{
@@ -593,9 +560,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	protected void addAttributes(AttributesImpl attrs) throws SAXException
 	{
 		Utils.addAttribute(attrs, ATTR_CSPEC_ID, m_cspec.getId().toString());
-		if(m_opml != null)
-			Utils.addAttribute(attrs, ATTR_OPML_ID, m_opml.getId().toString());
-
 		String tmp = TextUtils.concat(m_attributes, ","); //$NON-NLS-1$
 		if(tmp != null)
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);

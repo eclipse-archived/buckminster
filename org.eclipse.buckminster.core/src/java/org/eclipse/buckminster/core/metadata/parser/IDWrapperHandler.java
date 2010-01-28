@@ -14,8 +14,6 @@ import org.eclipse.buckminster.core.metadata.model.IDWrapper;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.query.parser.ComponentQueryHandler;
 import org.eclipse.buckminster.core.rmap.parser.ProviderHandler;
-import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.opml.parser.OPMLHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -42,8 +40,6 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 
 	private final ComponentQueryHandler m_componentQueryHandler = new ComponentQueryHandler(this, null);
 
-	private final OPMLHandler m_opmlHandler = new OPMLHandler(this);
-
 	private BillOfMaterialsHandler m_billOfMaterialsHandler;
 
 	private UUID m_id;
@@ -67,8 +63,6 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 			m_wrapper = new IDWrapper(m_id, m_resolutionHandler.getResolution());
 		else if(child == m_componentQueryHandler)
 			m_wrapper = new IDWrapper(m_id, m_componentQueryHandler.getComponentQuery());
-		else if(child == m_opmlHandler)
-			m_wrapper = new IDWrapper(m_id, new OPML(m_opmlHandler.getOPML()));
 	}
 
 	@Override
@@ -95,8 +89,6 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 			ch = m_generatorNodeHandler;
 		else if(m_componentQueryHandler.getTAG().equals(localName))
 			ch = m_componentQueryHandler;
-		else if(m_opmlHandler.getTAG().equals(localName))
-			ch = m_opmlHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;

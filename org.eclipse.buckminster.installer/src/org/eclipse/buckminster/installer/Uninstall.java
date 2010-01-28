@@ -8,15 +8,20 @@
 
 package org.eclipse.buckminster.installer;
 
+import java.util.Iterator;
+
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
 import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
+import org.eclipse.equinox.p2.core.IProvisioningAgent;
+import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
 import org.eclipse.equinox.p2.engine.IProfile;
 import org.eclipse.equinox.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
@@ -53,14 +58,28 @@ public class Uninstall extends AbstractCommand
 			throw new SimpleErrorExitException(Messages.no_feature_id_provided);
 
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-		IProfile profile = ProvisioningHelper.getProfile(IProfileRegistry.SELF);
-		IInstallableUnit[] rootArr = Install.getRootIUs(null, profile, m_feature, m_version, monitor);
+		Buckminster bucky = Buckminster.getDefault();
+		IProvisioningAgentProvider agentProvider = bucky.getService(IProvisioningAgentProvider.class);
+		IProvisioningAgent agent = agentProvider.createAgent(null);
+		try
+		{
+			IProfileRegistry profileRegistry = (IProfileRegistry)agent.getService(IProfileRegistry.SERVICE_NAME);
+			IProfile profile = profileRegistry.getProfile(IProfileRegistry.SELF);
+			IQueryResult<IInstallableUnit> rootArr = Install.getRootIUs(agent, null, profile, m_feature, m_version,
+					monitor);
 
-		// Add as root IU's to a request
-		ProfileChangeRequest request = new ProfileChangeRequest(profile);
-		for(IInstallableUnit rootIU : rootArr)
-			request.setInstallableUnitProfileProperty(rootIU, IProfile.PROP_PROFILE_ROOT_IU, Boolean.TRUE.toString());
-		request.removeInstallableUnits(rootArr);
-		return Install.planAndExecute(profile, request, null, monitor);
+			// Add as root IU's to a request
+			ProfileChangeRequest request = new ProfileChangeRequest(profile);
+			for(Iterator<IInstallableUnit> iter = rootArr.iterator(); iter.hasNext();)
+				request.setInstallableUnitProfileProperty(iter.next(), IProfile.PROP_PROFILE_ROOT_IU,
+						Boolean.TRUE.toString());
+			request.removeInstallableUnits(rootArr);
+			return Install.planAndExecute(agent, profile, request, null, monitor);
+		}
+		finally
+		{
+			agent.stop();
+			bucky.ungetService(agentProvider);
+		}
 	}
 }

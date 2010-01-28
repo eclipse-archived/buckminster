@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.P2Constants;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.IAttribute;
@@ -54,8 +55,6 @@ import org.osgi.framework.InvalidSyntaxException;
 @SuppressWarnings("restriction")
 public class CSpecBuilder implements ICSpecData
 {
-	private static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
-
 	private HashMap<String, AttributeBuilder> m_attributes;
 
 	private String m_componentType;
@@ -83,10 +82,10 @@ public class CSpecBuilder implements ICSpecData
 	public CSpecBuilder(IMetadataRepository mdr, IInstallableUnit iu) throws CoreException
 	{
 		String name = iu.getId();
-		boolean isFeature = name.endsWith(FEATURE_GROUP);
+		boolean isFeature = name.endsWith(P2Constants.FEATURE_GROUP);
 		if(isFeature)
 		{
-			name = name.substring(0, name.length() - FEATURE_GROUP.length());
+			name = name.substring(0, name.length() - P2Constants.FEATURE_GROUP.length());
 			setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
 		}
 		else
@@ -134,9 +133,9 @@ public class CSpecBuilder implements ICSpecData
 			String ctype;
 			if(IInstallableUnit.NAMESPACE_IU_ID.equals(namespace))
 			{
-				if(name.endsWith(FEATURE_GROUP))
+				if(name.endsWith(P2Constants.FEATURE_GROUP))
 				{
-					name = name.substring(0, name.length() - FEATURE_GROUP.length());
+					name = name.substring(0, name.length() - P2Constants.FEATURE_GROUP.length());
 					ctype = IComponentType.ECLIPSE_FEATURE;
 				}
 				else if(isFeature)

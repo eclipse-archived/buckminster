@@ -12,7 +12,6 @@ import java.util.List;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.parser.AbstractParser;
 import org.eclipse.buckminster.core.parser.ParserFactory;
-import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;
 
@@ -34,6 +33,5 @@ public abstract class MetaDataParser<T> extends AbstractParser<T> implements Chi
 				XMLConstants.BM_RMAP_NS }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE,
 				XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_CQUERY_RESOURCE, XMLConstants.BM_CSPEC_RESOURCE,
 				XMLConstants.BM_METADATA_RESOURCE, XMLConstants.BM_RMAP_RESOURCE }, validating);
-		addNamespaceLocation(OPML.OPML_NAMESPACE, OPML.class.getResource(OPML.OPML_NS_RESOURCE));
 	}
 }

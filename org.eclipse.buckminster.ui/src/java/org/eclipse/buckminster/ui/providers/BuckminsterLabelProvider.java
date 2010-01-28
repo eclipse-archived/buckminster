@@ -8,8 +8,6 @@
 
 package org.eclipse.buckminster.ui.providers;
 
-import java.util.List;
-
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.IResolution;
@@ -18,9 +16,6 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 import org.eclipse.buckminster.generic.model.tree.ITreeDataNode;
 import org.eclipse.buckminster.generic.ui.utils.UiUtils;
-import org.eclipse.buckminster.opml.IOPML;
-import org.eclipse.buckminster.opml.IOutline;
-import org.eclipse.buckminster.opml.OutlineType;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.UiPlugin;
 import org.eclipse.buckminster.ui.adapters.ComponentReference;
@@ -53,10 +48,6 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 
 	private Image m_componentImage;
 
-	private Image m_rssImage;
-
-	private Image m_htmlImage;
-
 	private Image m_dependantImage;
 
 	private Image m_dependencyImage;
@@ -78,8 +69,6 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 			m_cspecImage.dispose();
 		if(m_componentImage != null)
 			m_componentImage.dispose();
-		if(m_htmlImage != null)
-			m_htmlImage.dispose();
 		if(m_dependencyImage != null)
 			m_dependencyImage.dispose();
 		if(m_dependantImage != null)
@@ -117,23 +106,6 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 		if(element instanceof IResolution)
 			return getComponentImage();
 
-		// OPML stuff
-		if(element instanceof IOPML)
-			return getFolderImage();
-
-		if(element instanceof IOutline)
-		{
-			// An outline that has sub-outlines is shown as a folder
-			//
-			List<? extends IOutline> outlines = ((IOutline)element).getOutlines();
-			if(((IOutline)element).getType() == OutlineType.UNKNOWN
-					|| ((IOutline)element).getType() == OutlineType.TEXT || (outlines != null && outlines.size() > 0))
-				return getFolderImage();
-			// An outline that is a link is shown as a browseable image
-			if(((IOutline)element).getType() == OutlineType.LINK)
-				return getHtmlImage();
-			return getRssImage();
-		}
 		if(element instanceof ComponentReference)
 			return ((ComponentReference)element).getMode() == ComponentReference.Mode.IN
 					? getDependantImage()
@@ -193,15 +165,6 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 		{
 			return new StyledString(Messages.component_specification_and_cspec_in_paranthesis);
 		}
-		if(element instanceof IOPML)
-		{
-			return new StyledString(Messages.component_information);
-		}
-		if(element instanceof IOutline)
-		{
-			IOutline outline = (IOutline)element;
-			return new StyledString(outline.getText());
-		}
 		return new StyledString(element.toString());
 	}
 
@@ -256,25 +219,10 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 		return m_folderImage;
 	}
 
-	private Image getHtmlImage()
-	{
-		if(m_htmlImage == null)
-			m_htmlImage = UiUtils.getImageDescriptor("file.html").createImage(); //$NON-NLS-1$
-		return m_htmlImage;
-	}
-
 	private Image getProjectImage()
 	{
 		if(m_projectImage == null)
 			m_projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage(); //$NON-NLS-1$
 		return m_projectImage;
 	}
-
-	private Image getRssImage()
-	{
-		if(m_rssImage == null)
-			m_rssImage = UiPlugin.getImageDescriptor("icons/rsslink.gif").createImage(); //$NON-NLS-1$
-		return m_rssImage;
-	}
-
 }

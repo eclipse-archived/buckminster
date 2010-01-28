@@ -34,7 +34,7 @@ public class JarComponentType extends AbstractComponentType
 			CSpecBuilder dflt = ri.createCSpec();
 			addSelfAsJarArtifactGroups(dflt);
 			applyExtensions(dflt, forResolutionAidOnly, reader, monitor);
-			return createNode(reader, dflt, null);
+			return createNode(reader, dflt);
 		}
 	};
 

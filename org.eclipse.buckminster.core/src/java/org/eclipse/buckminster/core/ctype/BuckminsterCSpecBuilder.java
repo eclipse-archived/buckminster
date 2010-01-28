@@ -18,17 +18,13 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.metadata.OPMLConsumer;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
-import org.eclipse.buckminster.opml.builder.OPMLBuilder;
-import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -45,7 +41,6 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 		IComponentReader reader = readerHandle[0];
 		try
 		{
-			OPMLBuilder opmlBld = null;
 			CSpecBuilder cspecBld = new CSpecBuilder();
 			if(reader instanceof ICatalogReader)
 			{
@@ -53,27 +48,12 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 				String fileName = getMetadataFile(catRdr, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE,
 						MonitorUtils.subMonitor(monitor, 100));
 				cspecBld.initFrom(catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100)));
-
-				if(!forResolutionAidOnly && BuckminsterPreferences.isOPMLSupport())
-				{
-					fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE, null);
-					try
-					{
-						OPML opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 100));
-						opmlBld = new OPMLBuilder();
-						opmlBld.initFrom(opml);
-					}
-					catch(FileNotFoundException e)
-					{
-						// This is OK, the OPML is optional
-					}
-				}
 			}
 			else
 				cspecBld.initFrom(((IFileReader)reader).readFile(this, MonitorUtils.subMonitor(monitor, 1000)));
 
 			applyExtensions(cspecBld, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
-			return createNode(reader, cspecBld, opmlBld);
+			return createNode(reader, cspecBld);
 		}
 		catch(FileNotFoundException e)
 		{

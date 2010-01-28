@@ -24,7 +24,6 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.5.0",
  org.eclipse.equinox.security;bundle-version="1.0.100",
  org.eclipse.buckminster.generic;bundle-version="1.0.0",
  org.eclipse.buckminster.generic.ui;bundle-version="1.0.0",
- org.eclipse.buckminster.opml;bundle-version="1.0.0",
  org.eclipse.ui.views;bundle-version="3.4.0",
  org.eclipse.ecf;bundle-version="3.0.0",
  org.eclipse.equinox.p2.metadata;bundle-version="1.0.100"

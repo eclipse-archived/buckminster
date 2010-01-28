@@ -15,13 +15,14 @@ import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.pde.cspecgen.PDEBuilder;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 
 /**
  * @author Thomas Hallgren
@@ -39,18 +40,23 @@ public class EclipseFeatureType extends AbstractComponentType
 	protected BOMNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor)
 			throws CoreException
 	{
-		IReaderType readerType = rInfo.getReaderType();
-		if(readerType instanceof EclipseImportReaderType)
+		try
 		{
-			EclipseImportReaderType eiReaderType = (EclipseImportReaderType)readerType;
-			IMetadataRepository mdr = eiReaderType.getCachedMDR(rInfo);
-			if(mdr != null)
+			SubMonitor subMon = SubMonitor.convert(monitor, 20);
+			IReaderType readerType = rInfo.getReaderType();
+			if(readerType instanceof EclipseImportReaderType)
 			{
-				IInstallableUnit iu = eiReaderType.getCachedInstallableUnit(mdr, rInfo);
+				IInstallableUnit iu = P2ReaderType.getIU(rInfo, subMon.newChild(10));
 				if(iu != null)
-					return PDEBuilder.createNode(rInfo, new CSpecBuilder(mdr, iu), null);
+					return PDEBuilder.createNode(rInfo, new CSpecBuilder(P2ReaderType.getMetadataRepository(rInfo,
+							subMon.newChild(10)), iu));
 			}
+			return super.getResolution(rInfo, forResolutionAidOnly, subMon.newChild(10));
 		}
-		return super.getResolution(rInfo, forResolutionAidOnly, monitor);
+		finally
+		{
+			if(monitor != null)
+				monitor.done();
+		}
 	}
 }

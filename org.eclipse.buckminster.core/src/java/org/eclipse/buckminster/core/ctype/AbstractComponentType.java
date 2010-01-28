@@ -28,6 +28,8 @@ import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -328,6 +330,13 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 	protected BOMNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor)
 			throws CoreException
 	{
+		IReaderType readerType = rInfo.getReaderType();
+		if(readerType instanceof P2ReaderType)
+		{
+			// Component type etc. is given by the IU
+			return ((P2ReaderType)readerType).getResolution(rInfo, monitor);
+		}
+
 		monitor.beginTask(null, 2000);
 		IComponentReader[] reader = new IComponentReader[1];
 		try

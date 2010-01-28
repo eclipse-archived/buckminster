@@ -31,7 +31,6 @@ import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -134,9 +133,6 @@ public class BillOfMaterials extends BOMNode
 				//
 				addIfNotAdded(resolution.getProvider(), unique, wrappers);
 				addIfNotAdded(resolution.getCSpec(), unique, wrappers);
-				OPML opml = resolution.getOPML();
-				if(opml != null)
-					addIfNotAdded(opml, unique, wrappers);
 				addIfNotAdded(resolution, unique, wrappers);
 
 				// Recursively add all children of this ResolvedNode. It's

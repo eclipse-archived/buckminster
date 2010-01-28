@@ -102,7 +102,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			}
 
 			applyExtensions(cspecBld, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
-			return createNode(reader, cspecBld, null);
+			return createNode(reader, cspecBld);
 		}
 		catch(IOException e)
 		{

@@ -27,9 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.RMContext;
@@ -38,6 +36,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
@@ -45,6 +44,8 @@ import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
+import org.eclipse.buckminster.core.reader.P2ReaderType;
+import org.eclipse.buckminster.core.reader.P2VersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -59,7 +60,6 @@ import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.pde.mapfile.MapFile;
 import org.eclipse.buckminster.pde.mapfile.MapFileEntry;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -71,16 +71,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.equinox.internal.p2.artifact.repository.ArtifactRequest;
-import org.eclipse.equinox.internal.p2.core.helpers.ServiceHelper;
-import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
-import org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepositoryFactory;
-import org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryIO;
-import org.eclipse.equinox.internal.p2.metadata.repository.URLMetadataRepository;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.processing.ProcessingStepHandler;
-import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.Version;
@@ -89,7 +82,6 @@ import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactDescriptor;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
-import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRequest;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -103,7 +95,7 @@ import org.eclipse.pde.internal.core.feature.ExternalFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.osgi.framework.Constants;
 
-@SuppressWarnings({ "restriction" })
+@SuppressWarnings( { "restriction" })
 public class EclipseImportReaderType extends CatalogReaderType implements IPDEConstants
 {
 	/**
@@ -221,32 +213,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	private static final UUID CACHE_KEY_SITE_CACHE = UUID.randomUUID();
 
-	private static final UUID CACHE_KEY_MDR_CACHE = UUID.randomUUID();
-
-	public static IArtifactRepository getArtifactRepository(URI repoLocation, IProgressMonitor monitor)
-			throws CoreException
-	{
-		IArtifactRepositoryManager manager = (IArtifactRepositoryManager)ServiceHelper.getService(
-				PDEPlugin.getContext(), IArtifactRepositoryManager.class.getName());
-		if(manager == null)
-			throw new IllegalStateException("No metadata repository manager found"); //$NON-NLS-1$
-
-		SubMonitor subMon = SubMonitor.convert(monitor, 200);
-		try
-		{
-			return manager.loadRepository(repoLocation, subMon.newChild(100));
-		}
-		catch(ProvisionException e)
-		{
-			return manager.refreshRepository(repoLocation, subMon.newChild(100));
-		}
-		finally
-		{
-			if(monitor != null)
-				monitor.done();
-		}
-	}
-
 	public static File getTempSite(Map<UUID, Object> ucache) throws CoreException
 	{
 		Map<String, File> siteCache = getSiteCache(ucache);
@@ -355,21 +321,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static Map<String, IMetadataRepository> getMDRCache(Map<UUID, Object> ctxUserCache)
-	{
-		synchronized(ctxUserCache)
-		{
-			Map<String, IMetadataRepository> cache = (Map<String, IMetadataRepository>)ctxUserCache.get(CACHE_KEY_MDR_CACHE);
-			if(cache == null)
-			{
-				cache = Collections.synchronizedMap(new HashMap<String, IMetadataRepository>());
-				ctxUserCache.put(CACHE_KEY_MDR_CACHE, cache);
-			}
-			return cache;
-		}
-	}
-
 	private final Map<IProject, IClasspathEntry[]> m_classpaths = new HashMap<IProject, IClasspathEntry[]>();
 
 	private final HashMap<File, IFeatureModel[]> m_featureCache = new HashMap<File, IFeatureModel[]>();
@@ -418,6 +369,12 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	}
 
 	@Override
+	public String getRecommendedMaterializer()
+	{
+		return IMaterializer.P2;
+	}
+
+	@Override
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
 			IProgressMonitor monitor) throws CoreException
 	{
@@ -429,103 +386,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			MonitorUtils.complete(monitor);
 			return new EclipseImportFinder(this, provider, ctype, nodeQuery);
 		}
-
-		StringBuilder bld = new StringBuilder(path);
-		if(!path.endsWith("/")) //$NON-NLS-1$
-			bld.append('/');
-
-		String base = bld.toString().intern();
-		synchronized(base)
-		{
-			Map<String, IMetadataRepository> mdrCache = getMDRCache(nodeQuery.getContext().getUserCache());
-			IMetadataRepository mdr = mdrCache.get(base);
-			if(mdr != null)
-			{
-				MonitorUtils.complete(monitor);
-				return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
-			}
-
-			if(mdrCache.containsKey(base))
-			{
-				// Null stored in cache which means that we know that there's no P2 info
-				MonitorUtils.complete(monitor);
-				return new EclipseImportFinder(this, provider, ctype, nodeQuery);
-			}
-
-			SubMonitor subMon = SubMonitor.convert(monitor, 2000);
-
-			bld.append(URLMetadataRepository.CONTENT_FILENAME);
-			int len = bld.length();
-
-			bld.append(".jar"); //$NON-NLS-1$
-			IFileInfo[] fiHandle = new IFileInfo[1];
-			InputStream in = null;
-			try
-			{
-				try
-				{
-					URL location = new URL(uri.getScheme(), uri.getHost(), uri.getPort(), bld.toString());
-					in = DownloadManager.getCache().open(location, provider.getConnectContext(), null, fiHandle,
-							subMon.newChild(800));
-
-					JarInputStream jarStream = new JarInputStream(in);
-					JarEntry jarEntry = jarStream.getNextJarEntry();
-					String entryName = URLMetadataRepository.CONTENT_FILENAME + URLMetadataRepository.XML_EXTENSION;
-					while(jarEntry != null && !entryName.equals(jarEntry.getName()))
-						jarEntry = jarStream.getNextJarEntry();
-
-					if(jarEntry == null)
-						throw new FileNotFoundException();
-
-					MetadataRepositoryIO mdrIO = new MetadataRepositoryIO();
-					mdr = mdrIO.read(location, jarStream, subMon.newChild(200));
-					mdrCache.put(base, mdr);
-					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
-				}
-				catch(Exception e)
-				{
-					IOUtils.close(in);
-					in = null;
-				}
-
-				bld.setLength(len);
-				bld.append(URLMetadataRepository.XML_EXTENSION);
-				try
-				{
-					URL location = new URL(uri.getScheme(), uri.getHost(), uri.getPort(), bld.toString());
-					in = DownloadManager.getCache().open(location, provider.getConnectContext(), null, fiHandle,
-							subMon.newChild(800));
-					MetadataRepositoryIO mdrIO = new MetadataRepositoryIO();
-					mdr = mdrIO.read(location, in, subMon.newChild(200));
-					mdrCache.put(base, mdr);
-					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
-				}
-				catch(Exception e)
-				{
-					IOUtils.close(in);
-					in = null;
-				}
-
-				try
-				{
-					CompositeMetadataRepositoryFactory cmf = new CompositeMetadataRepositoryFactory();
-					mdr = cmf.load(uri, 0, subMon.newChild(200));
-					mdrCache.put(base, mdr);
-					return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
-				}
-				catch(Exception e)
-				{
-					mdrCache.put(base, null);
-					return new EclipseImportFinder(this, provider, ctype, nodeQuery);
-				}
-			}
-			finally
-			{
-				IOUtils.close(in);
-				if(monitor != null)
-					monitor.done();
-			}
-		}
+		IMetadataRepository mdr = P2ReaderType.getMetadataRepository(provider, nodeQuery.getProperties(), monitor);
+		return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
 	}
 
 	@Override
@@ -561,31 +423,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		if(c.isEmpty())
 			return null;
 		return c.iterator().next();
-	}
-
-	IInstallableUnit getCachedInstallableUnit(ProviderMatch providerMatch) throws CoreException
-	{
-		IMetadataRepository mdr = getCachedMDR(providerMatch);
-		return (mdr == null)
-				? null
-				: getCachedInstallableUnit(mdr, providerMatch);
-	}
-
-	IMetadataRepository getCachedMDR(ProviderMatch providerMatch)
-	{
-		NodeQuery query = providerMatch.getNodeQuery();
-		URI uri = URI.create(providerMatch.getRepositoryURI());
-		String path = uri.getPath();
-		if(path.endsWith(".jar") || path.endsWith(".map") || path.endsWith(".zip") || path.endsWith(".xml")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			return null;
-
-		StringBuilder bld = new StringBuilder(path);
-		if(!path.endsWith("/")) //$NON-NLS-1$
-			bld.append('/');
-
-		String base = bld.toString();
-		Map<String, IMetadataRepository> mdrCache = getMDRCache(query.getContext().getUserCache());
-		return mdrCache.get(base);
 	}
 
 	IFeatureModel getFeatureModel(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
@@ -667,21 +504,28 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 			File tempSite = getTempSite(userCache);
 			File subDir = new File(tempSite, typeDir);
-			String jarName;
-			File jarFile;
+			String jarName = null;
+			File jarFile = null;
 
 			VersionMatch vm = rInfo.getVersionMatch();
 			if(vm.getArtifactInfo() != null)
 			{
 				// This is a P2 artifact. Copy it from the artifact repository
 				//
-				IArtifactKey ak = ArtifactKey.parse(vm.getArtifactInfo());
-				IArtifactRepository ar = getArtifactRepository(base.getRemoteLocation().toURI(), monitor);
-				jarName = ak.getId() + '_' + ak.getVersion() + ".jar"; //$NON-NLS-1$
-				jarFile = new File(subDir, jarName);
-				IStatus status = ar.getArtifacts(new IArtifactRequest[] { new CopyRequest(ar, ak, jarFile) }, monitor);
-				if(!status.isOK())
-					throw new CoreException(status);
+				IInstallableUnit iu = P2ReaderType.getIU(rInfo, monitor);
+				IArtifactRepository ar = P2ReaderType.getArtifactRepository(rInfo, monitor);
+				for(IArtifactKey ak : iu.getArtifacts())
+				{
+					jarName = ak.getId() + '_' + ak.getVersion() + ".jar"; //$NON-NLS-1$
+					jarFile = new File(subDir, jarName);
+					IStatus status = ar.getArtifacts(new IArtifactRequest[] { new CopyRequest(ar, ak, jarFile) },
+							monitor);
+					if(!status.isOK())
+						throw new CoreException(status);
+				}
+				if(jarFile == null)
+					throw BuckminsterException.fromMessage(NLS.bind(Messages.IU_0_1_has_no_artifacts, iu.getId(),
+							iu.getVersion()));
 			}
 			else
 			{

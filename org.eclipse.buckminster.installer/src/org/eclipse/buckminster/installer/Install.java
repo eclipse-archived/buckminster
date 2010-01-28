@@ -12,21 +12,22 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Iterator;
 
 import org.eclipse.buckminster.cmdline.AbstractCommand;
 import org.eclipse.buckminster.cmdline.Headless;
-import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.equinox.internal.p2.console.ProvisioningHelper;
-import org.eclipse.equinox.internal.p2.engine.SimpleProfileRegistry;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.internal.provisional.p2.director.IPlanner;
 import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
+import org.eclipse.equinox.p2.core.IProvisioningAgent;
+import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
 import org.eclipse.equinox.p2.engine.DefaultPhaseSet;
 import org.eclipse.equinox.p2.engine.IEngine;
 import org.eclipse.equinox.p2.engine.IProfile;
@@ -39,7 +40,9 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.IQueryable;
 import org.eclipse.equinox.p2.query.PipedQuery;
+import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
@@ -53,8 +56,8 @@ public class Install extends AbstractCommand
 		return context;
 	}
 
-	static IInstallableUnit[] getRootIUs(URI site, IProfile profile, String iuName, Version version,
-			IProgressMonitor monitor) throws SimpleErrorExitException
+	static IQueryResult<IInstallableUnit> getRootIUs(IProvisioningAgent agent, URI site, IProfile profile,
+			String iuName, Version version, IProgressMonitor monitor) throws CoreException
 	{
 		if(!iuName.endsWith(".feature.group"))
 			iuName = iuName + ".feature.group";
@@ -62,17 +65,29 @@ public class Install extends AbstractCommand
 		IQuery<IInstallableUnit> query = new InstallableUnitQuery(iuName, version == null
 				? VersionRange.emptyRange
 				: new VersionRange(version, true, version, true));
- 
-		IQueryResult<IInstallableUnit> roots = ProvisioningHelper.getInstallableUnits(site,
-				new PipedQuery<IInstallableUnit>(query, new LatestIUVersionQuery<IInstallableUnit>()), monitor);
+
+		SubMonitor subMon = SubMonitor.convert(monitor, 100);
+		IQueryable<IInstallableUnit> queryable;
+		IMetadataRepositoryManager repoManager = (IMetadataRepositoryManager)agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
+		if(site == null)
+		{
+			queryable = repoManager;
+			subMon.worked(80);
+		}
+		else
+			queryable = repoManager.loadRepository(site, subMon.newChild(80));
+
+		IQueryResult<IInstallableUnit> roots = queryable.query(new PipedQuery<IInstallableUnit>(query,
+				new LatestIUVersionQuery<IInstallableUnit>()), subMon.newChild(10));
 
 		if(roots.isEmpty())
-			roots = profile.query(query, new NullProgressMonitor());
+			roots = profile.query(query, subMon.newChild(10));
 
 		if(roots.isEmpty())
-			throw new SimpleErrorExitException(NLS.bind(Messages.no_suitable_feature_version_found_matching_0, iuName));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.no_suitable_feature_version_found_matching_0,
+					iuName));
 
-		return roots.toArray(IInstallableUnit.class);
+		return roots;
 	}
 
 	static URI normalizeToURI(String surl)
@@ -96,39 +111,23 @@ public class Install extends AbstractCommand
 		return URI.create(url.toString());
 	}
 
-	static int planAndExecute(IProfile profile, ProfileChangeRequest request, ProvisioningContext context,
-			IProgressMonitor monitor) throws CoreException
+	static int planAndExecute(IProvisioningAgent agent, IProfile profile, ProfileChangeRequest request,
+			ProvisioningContext context, IProgressMonitor monitor) throws CoreException
 	{
-		Buckminster bucky = Buckminster.getDefault();
-		IPlanner planner = bucky.getService(IPlanner.class);
-		IProvisioningPlan plan;
-		try
-		{
-			plan = planner.getProvisioningPlan(request, context, monitor);
-			IStatus status = plan.getStatus();
-			if(status.getSeverity() == IStatus.CANCEL)
-				return Headless.EXIT_FORCED;
-			if(status.getSeverity() == IStatus.ERROR)
-				throw new CoreException(status);
-		}
-		finally
-		{
-			bucky.ungetService(planner);
-		}
+		IPlanner planner = (IPlanner)agent.getService(IPlanner.SERVICE_NAME);
+		IProvisioningPlan plan = planner.getProvisioningPlan(request, context, monitor);
+		IStatus status = plan.getStatus();
+		if(status.getSeverity() == IStatus.CANCEL)
+			return Headless.EXIT_FORCED;
+		if(status.getSeverity() == IStatus.ERROR)
+			throw new CoreException(status);
 
-		IEngine engine = bucky.getService(IEngine.class);
-		try
-		{
-			IStatus status = engine.perform(plan, new DefaultPhaseSet(), monitor);
-			if(status.getSeverity() == IStatus.CANCEL)
-				return Headless.EXIT_FORCED;
-			if(status.getSeverity() == IStatus.ERROR)
-				throw new CoreException(status);
-		}
-		finally
-		{
-			bucky.ungetService(engine);
-		}
+		IEngine engine = (IEngine)agent.getService(IEngine.SERVICE_NAME);
+		status = engine.perform(plan, new DefaultPhaseSet(), monitor);
+		if(status.getSeverity() == IStatus.CANCEL)
+			return Headless.EXIT_FORCED;
+		if(status.getSeverity() == IStatus.ERROR)
+			throw new CoreException(status);
 		return Headless.EXIT_OK;
 	}
 
@@ -168,6 +167,8 @@ public class Install extends AbstractCommand
 			throw new UsageException(Messages.no_feature_id_provided);
 
 		Buckminster bucky = Buckminster.getDefault();
+		IProvisioningAgentProvider agentProvider = bucky.getService(IProvisioningAgentProvider.class);
+		IProvisioningAgent agent = agentProvider.createAgent(null);
 		String profileId = bucky.getBundle().getBundleContext().getProperty("eclipse.p2.profile");
 		if(profileId == null)
 		{
@@ -175,23 +176,24 @@ public class Install extends AbstractCommand
 			System.setProperty("eclipse.p2.profile", profileId);
 		}
 
-		SimpleProfileRegistry profileRegistry = (SimpleProfileRegistry)bucky.getService(IProfileRegistry.class);
+		IProfileRegistry profileRegistry = (IProfileRegistry)agent.getService(IProfileRegistry.SERVICE_NAME);
 		try
 		{
 			IProfile profile = profileRegistry.getProfile(profileId);
-			IInstallableUnit[] rootArr = getRootIUs(m_site, profile, m_feature, m_version, monitor);
+			IQueryResult<IInstallableUnit> rootArr = getRootIUs(agent, m_site, profile, m_feature, m_version, monitor);
 
 			// Add as root IU's to a request
 			ProfileChangeRequest request = new ProfileChangeRequest(profile);
-			for(IInstallableUnit rootIU : rootArr)
-				request.setInstallableUnitProfileProperty(rootIU, IProfile.PROP_PROFILE_ROOT_IU,
+			for(Iterator<IInstallableUnit> iter = rootArr.iterator(); iter.hasNext();)
+				request.setInstallableUnitProfileProperty(iter.next(), IProfile.PROP_PROFILE_ROOT_IU,
 						Boolean.TRUE.toString());
 			request.addInstallableUnits(rootArr);
-			return planAndExecute(profile, request, createContext(m_site), monitor);
+			return planAndExecute(agent, profile, request, createContext(m_site), monitor);
 		}
 		finally
 		{
-			bucky.ungetService(profileRegistry);
+			agent.stop();
+			bucky.ungetService(agentProvider);
 		}
 	}
 }

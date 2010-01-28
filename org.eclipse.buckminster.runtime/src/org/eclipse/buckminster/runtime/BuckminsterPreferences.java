@@ -36,7 +36,6 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		s_defaultNode.put(QUERY_RESOLVER_SORT_ORDER, QUERY_RESOLVER_SORT_ORDER_DEFAULT);
 		s_defaultNode.putInt(CONNECTION_RETRY_COUNT, CONNECTION_RETRY_COUNT_DEFAULT);
 		s_defaultNode.putInt(CONNECTION_RETRY_DELAY, CONNECTION_RETRY_DELAY_DEFAULT);
-		s_defaultNode.putBoolean(OPML_SUPPORT, OPML_SUPPORT_DEFAULT);
 		s_defaultNode.putBoolean(PREF_CONSOLE_SHOW_ON_MESSAGE, PREF_CONSOLE_SHOW_ON_MESSAGE_DEFAULT);
 		s_defaultNode.putBoolean(PREF_CONSOLE_SHOW_ON_ERROR, PREF_CONSOLE_SHOW_ON_ERROR_DEFAULT);
 		s_defaultNode.putBoolean(PREF_CONSOLE_LIMIT_OUTPUT, PREF_CONSOLE_LIMIT_OUTPUT_DEFAULT);
@@ -178,11 +177,6 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 		return s_prefsNode.getBoolean(LOG_ECLIPSE_TO_CONSOLE, LOG_ECLIPSE_TO_CONSOLE_DEFAULT);
 	}
 
-	public static boolean isOPMLSupport()
-	{
-		return s_prefsNode.getBoolean(OPML_SUPPORT, OPML_SUPPORT_DEFAULT);
-	}
-
 	public static void removeListener(IPreferenceChangeListener listener)
 	{
 		s_prefsNode.removePreferenceChangeListener(listener);
@@ -270,11 +264,6 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 	public static void setLogLevelEclipseLogger(int logLevel)
 	{
 		s_prefsNode.putInt(LOG_LEVEL_ECLIPSE_LOGGER, logLevel);
-	}
-
-	public static void setOPMLSupport(boolean flag)
-	{
-		s_prefsNode.putBoolean(OPML_SUPPORT, flag);
 	}
 
 	public static void setQueryResolverSortOrder(String[] sortOrder)

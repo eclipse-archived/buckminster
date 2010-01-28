@@ -64,7 +64,6 @@ Java and all Java-based trademarks are trademarks of Sun Microsystems, Inc. in t
    <requires>
       <import plugin="org.eclipse.buckminster.download" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.runtime" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.buckminster.opml" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.sax" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.core" version="1.1.350" match="greaterOrEqual"/>
       <import plugin="org.eclipse.buckminster.osgi.filter" version="1.0.0" match="greaterOrEqual"/>

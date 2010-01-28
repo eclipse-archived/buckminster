@@ -297,8 +297,6 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage implements 
 			m_resolversParent.setLayout(m_resolversStack);
 			m_resolversParent.setVisible(false);
 		}
-		addField(new BooleanFieldEditor(OPML_SUPPORT, Messages.enable_support_for_component_bookmarks,
-				getFieldEditorParent()));
 
 		Group tsGroup = new Group(getFieldEditorParent(), SWT.NONE);
 		tsGroup.setLayout(new GridLayout(2, false));

@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ProviderScore;
-import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
@@ -100,10 +99,9 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 		return bld;
 	}
 
-	public ResolutionBuilder createResolution(CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder, boolean unpack)
-			throws CoreException
+	public ResolutionBuilder createResolution(CSpecBuilder cspecBuilder, boolean unpack) throws CoreException
 	{
-		ResolutionBuilder resBld = new ResolutionBuilder(cspecBuilder, opmlBuilder);
+		ResolutionBuilder resBld = new ResolutionBuilder(cspecBuilder);
 
 		Provider provider = getProvider();
 		NodeQuery nq = getNodeQuery();

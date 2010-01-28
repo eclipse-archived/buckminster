@@ -19,9 +19,6 @@ import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
-import org.eclipse.buckminster.opml.IOPML;
-import org.eclipse.buckminster.opml.builder.OPMLBuilder;
-import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
@@ -49,8 +46,6 @@ public class ResolutionBuilder implements IResolution
 
 	private String m_remoteName;
 
-	private OPMLBuilder m_opml;
-
 	private Provider m_provider;
 
 	private String m_readerTypeId;
@@ -73,13 +68,12 @@ public class ResolutionBuilder implements IResolution
 
 	public ResolutionBuilder()
 	{
-		this(new CSpecBuilder(), null);
+		this(new CSpecBuilder());
 	}
 
-	public ResolutionBuilder(CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
+	public ResolutionBuilder(CSpecBuilder cspecBuilder)
 	{
 		m_cspec = cspecBuilder;
-		m_opml = opmlBuilder;
 	}
 
 	public void addAttribute(String attribute)
@@ -98,7 +92,6 @@ public class ResolutionBuilder implements IResolution
 		m_lastModified = 0L;
 		m_materializable = true;
 		m_remoteName = null;
-		m_opml = null;
 		m_provider = null;
 		m_readerTypeId = null;
 		m_repository = null;
@@ -148,20 +141,6 @@ public class ResolutionBuilder implements IResolution
 	public VersionSelector getMatchedBranchOrTag()
 	{
 		return m_branchOrTag;
-	}
-
-	public OPML getOPML()
-	{
-		return m_opml == null
-				? null
-				: new OPML(m_opml);
-	}
-
-	public OPMLBuilder getOPMLBuilder()
-	{
-		if(m_opml == null)
-			m_opml = new OPMLBuilder();
-		return m_opml;
 	}
 
 	public String getPersistentId()
@@ -235,12 +214,6 @@ public class ResolutionBuilder implements IResolution
 		m_cspec.initFrom(resolution.getCSpec());
 		m_lastModified = resolution.getLastModified();
 		m_materializable = resolution.isMaterializable();
-		IOPML opml = resolution.getOPML();
-		if(opml != null)
-		{
-			m_opml = new OPMLBuilder();
-			m_opml.initFrom(opml);
-		}
 		m_persistentId = resolution.getPersistentId();
 		m_provider = resolution.getProvider();
 		m_resolutionFilter = resolution.getResolutionFilter();

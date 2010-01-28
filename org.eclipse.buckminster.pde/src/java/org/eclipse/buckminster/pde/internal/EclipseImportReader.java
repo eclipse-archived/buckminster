@@ -38,7 +38,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.p2.metadata.Version;
-import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.IModel;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
@@ -71,11 +70,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_model_for_0,
 						m_base.getComponentName()));
 		}
-	}
-
-	public IInstallableUnit getCachedInstallableUnit() throws CoreException
-	{
-		return ((EclipseImportReaderType)getReaderType()).getCachedInstallableUnit(getProviderMatch());
 	}
 
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException

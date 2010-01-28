@@ -13,15 +13,9 @@ package org.eclipse.buckminster.ui;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.generic.plugin.PluginClassHandle;
-import org.eclipse.buckminster.opml.model.OPML;
-import org.eclipse.buckminster.opml.model.Outline;
 import org.eclipse.buckminster.runtime.Buckminster;
-import org.eclipse.buckminster.ui.adapters.BrowseableAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.CSpecAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.CSpecDataNode;
-import org.eclipse.buckminster.ui.adapters.OPMLAdapterFactory;
-import org.eclipse.buckminster.ui.adapters.OPMLDataNode;
-import org.eclipse.buckminster.ui.adapters.OutlineDataNode;
 import org.eclipse.buckminster.ui.adapters.ResolutionAdapterFactory;
 import org.eclipse.buckminster.ui.adapters.ResolutionDataNode;
 import org.eclipse.buckminster.ui.adapters.ResourceAdapterFactory;
@@ -65,11 +59,7 @@ public class UiPlugin extends AbstractUIPlugin
 
 	private static ResourceAdapterFactory s_resourceAdapterFactory;
 
-	private static OPMLAdapterFactory s_opmlAdapterFactory;
-
 	private static CSpecAdapterFactory s_cspecAdapterFactory;
-
-	private static BrowseableAdapterFactory s_adapterFactory;
 
 	private static ResolutionAdapterFactory s_resolutionAdapterFactory;
 
@@ -199,24 +189,13 @@ public class UiPlugin extends AbstractUIPlugin
 		super.start(context);
 
 		// register factory to convert an Outline to browseable URLs
-		s_adapterFactory = new BrowseableAdapterFactory();
 		s_cspecAdapterFactory = new CSpecAdapterFactory();
-		s_opmlAdapterFactory = new OPMLAdapterFactory();
 		s_resolutionAdapterFactory = new ResolutionAdapterFactory();
 		s_resourceAdapterFactory = new ResourceAdapterFactory();
 
 		IAdapterManager adapterManager = Platform.getAdapterManager();
-		adapterManager.registerAdapters(s_adapterFactory, Outline.class);
-		adapterManager.registerAdapters(s_adapterFactory, OutlineDataNode.class);
 		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpec.class);
 		adapterManager.registerAdapters(s_cspecAdapterFactory, CSpecDataNode.class);
-
-		adapterManager.registerAdapters(s_opmlAdapterFactory, Resolution.class);
-		adapterManager.registerAdapters(s_opmlAdapterFactory, ResolutionDataNode.class);
-		adapterManager.registerAdapters(s_opmlAdapterFactory, OPML.class);
-		adapterManager.registerAdapters(s_opmlAdapterFactory, OPMLDataNode.class);
-		adapterManager.registerAdapters(s_opmlAdapterFactory, Outline.class);
-		adapterManager.registerAdapters(s_opmlAdapterFactory, OutlineDataNode.class);
 
 		adapterManager.registerAdapters(s_resolutionAdapterFactory, Resolution.class);
 		adapterManager.registerAdapters(s_resolutionAdapterFactory, ResolutionDataNode.class);
@@ -234,9 +213,7 @@ public class UiPlugin extends AbstractUIPlugin
 	public void stop(BundleContext context) throws Exception
 	{
 		IAdapterManager adapterManager = Platform.getAdapterManager();
-		adapterManager.unregisterAdapters(s_adapterFactory);
 		adapterManager.unregisterAdapters(s_cspecAdapterFactory);
-		adapterManager.unregisterAdapters(s_opmlAdapterFactory);
 		adapterManager.unregisterAdapters(s_resolutionAdapterFactory);
 		adapterManager.unregisterAdapters(s_resolutionAdapterFactory);
 

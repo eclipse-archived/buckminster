@@ -13,6 +13,8 @@ public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.pde.messages"; //$NON-NLS-1$
 
+	public static String IU_0_1_has_no_artifacts;
+
 	public static String not_an_OSGi_manifest;
 
 	public static String unable_to_manifest_from_0;

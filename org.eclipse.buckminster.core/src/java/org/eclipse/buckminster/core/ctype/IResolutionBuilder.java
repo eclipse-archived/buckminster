@@ -15,7 +15,6 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.opml.builder.OPMLBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -63,13 +62,10 @@ public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IR
 	 *            The <code>reader</code> to use when creating the result.
 	 * @param cspecBuilder
 	 *            The <code>CSPEC</code> for the resolution.
-	 * @param opmlBuilder
-	 *            The optional <code>OPML</code> for the resolution. Might be <code>null</code>.
 	 * @return The component information.
 	 * @throws CoreException
 	 */
-	ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder, OPMLBuilder opmlBuilder)
-			throws CoreException;
+	ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException;
 
 	/**
 	 * Returns the component type of the cspec built by this builder.

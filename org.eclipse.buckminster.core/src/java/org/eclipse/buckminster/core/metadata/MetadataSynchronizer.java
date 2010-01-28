@@ -33,7 +33,6 @@ import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.AttachableProgressMonitor;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.internal.resources.ProjectDescription;
@@ -699,16 +698,6 @@ public class MetadataSynchronizer implements IResourceChangeListener
 			return true;
 
 		tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_CSPEX_FILE, CorePlugin.CSPECEXT_FILE);
-		if(path.equals(Path.fromPortableString(tmp)))
-			return true;
-
-		if(BuckminsterPreferences.isOPMLSupport())
-		{
-			tmp = AbstractResolutionBuilder.getMetadataFile(prefs, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE);
-			if(path.equals(Path.fromPortableString(tmp)))
-				return true;
-		}
-
-		return false;
+		return path.equals(Path.fromPortableString(tmp));
 	}
 }

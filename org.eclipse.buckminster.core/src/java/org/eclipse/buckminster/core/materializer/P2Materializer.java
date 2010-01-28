@@ -24,7 +24,6 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -38,6 +37,7 @@ import org.eclipse.equinox.internal.p2.engine.Phase;
 import org.eclipse.equinox.internal.p2.engine.PhaseSet;
 import org.eclipse.equinox.internal.p2.engine.phases.Collect;
 import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
+import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.engine.IEngine;
 import org.eclipse.equinox.p2.engine.IProfile;
@@ -170,225 +170,192 @@ public class P2Materializer extends AbstractMaterializer
 			rss.add(res);
 		}
 
-		Buckminster bucky = Buckminster.getDefault();
 		SubMonitor subMon = SubMonitor.convert(monitor, resPerLocation.size() * 1000);
-		List<URI> mdrsToRemove = null;
-		List<URI> arsToRemove = null;
-		IMetadataRepositoryManager mdrManager = bucky.getService(IMetadataRepositoryManager.class);
-		IArtifactRepositoryManager arManager = bucky.getService(IArtifactRepositoryManager.class);
-		IEngine engine = bucky.getService(IEngine.class);
-		IProfileRegistry registry = bucky.getService(IProfileRegistry.class);
+		IProvisioningAgent p2Agent = CorePlugin.getDefault().getResolverAgent();
+		IMetadataRepositoryManager mdrManager = (IMetadataRepositoryManager)p2Agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
+		IArtifactRepositoryManager arManager = (IArtifactRepositoryManager)p2Agent.getService(IArtifactRepositoryManager.SERVICE_NAME);
+		IEngine engine = (IEngine)p2Agent.getService(IEngine.SERVICE_NAME);
+		IProfileRegistry registry = (IProfileRegistry)p2Agent.getService(IProfileRegistry.SERVICE_NAME);
 		Map<URI, IMetadataRepository> knownMDRs = new HashMap<URI, IMetadataRepository>();
 		Map<URI, IArtifactRepository> knownARs = new HashMap<URI, IArtifactRepository>();
-		try
+		for(Map.Entry<File, List<Resolution>> entry : resPerLocation.entrySet())
 		{
-			for(Map.Entry<File, List<Resolution>> entry : resPerLocation.entrySet())
+			// ensure the user-specified artifact repos will be consulted by loading them
+
+			File destDir = entry.getKey();
+
+			// do a create here to ensure that we don't default to a #load later and grab a repo which is the wrong
+			// type
+			// e.g. extension location type because a plugins/ directory exists.
+			IArtifactRepository destAR;
+			try
 			{
-				// ensure the user-specified artifact repos will be consulted by loading them
+				destAR = arManager.createRepository(destDir.toURI(), "Runnable repository.", //$NON-NLS-1$
+						IArtifactRepositoryManager.TYPE_SIMPLE_REPOSITORY, null);
+			}
+			catch(ProvisionException e)
+			{
+				// ignore... perhaps one already exists and we will just load it later
+				destAR = arManager.loadRepository(destDir.toURI(), null);
+			}
 
-				File destDir = entry.getKey();
+			List<Resolution> ress = entry.getValue();
+			List<IInstallableUnit> ius = new ArrayList<IInstallableUnit>(ress.size());
+			for(Resolution res : ress)
+			{
+				SubMonitor subSubMon = subMon.newChild(800 / ress.size());
+				subSubMon.setWorkRemaining(1000);
 
-				// do a create here to ensure that we don't default to a #load later and grab a repo which is the wrong
-				// type
-				// e.g. extension location type because a plugins/ directory exists.
-				IArtifactRepository destAR;
-				try
+				IComponentIdentifier cid = res.getComponentIdentifier();
+				Version version = Version.create(cid.getVersion().toString());
+				URI repoURI = cleanURIFromImportType(URI.create(res.getRepository()));
+				String path = repoURI.getPath();
+				if(path.endsWith(".jar")) //$NON-NLS-1$
 				{
-					destAR = arManager.createRepository(destDir.toURI(), "Runnable repository.", //$NON-NLS-1$
-							IArtifactRepositoryManager.TYPE_SIMPLE_REPOSITORY, null);
-				}
-				catch(ProvisionException e)
-				{
-					// ignore... perhaps one already exists and we will just load it later
-					destAR = arManager.loadRepository(destDir.toURI(), null);
-				}
-
-				List<Resolution> ress = entry.getValue();
-				List<IInstallableUnit> ius = new ArrayList<IInstallableUnit>(ress.size());
-				for(Resolution res : ress)
-				{
-					SubMonitor subSubMon = subMon.newChild(800 / ress.size());
-					subSubMon.setWorkRemaining(1000);
-
-					IComponentIdentifier cid = res.getComponentIdentifier();
-					Version version = Version.create(cid.getVersion().toString());
-					URI repoURI = cleanURIFromImportType(URI.create(res.getRepository()));
-					String path = repoURI.getPath();
-					if(path.endsWith(".jar")) //$NON-NLS-1$
-					{
-						// This is a direct pointer to an artifact, not a repository
-						//
-						String rType = res.getReaderTypeId();
-						if(IReaderType.ECLIPSE_IMPORT.equals(rType))
-							rType = IReaderType.URL;
-
-						if(!IReaderType.URL.equals(rType))
-							throw BuckminsterException.fromMessage(NLS.bind(
-									Messages.p2_materializer_cannot_process_readertype_0, rType));
-
-						IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getComponentTypeID());
-						IPath location = Path.fromOSString(destDir.getAbsolutePath());
-						IPath ctypeRelative = ctype.getRelativeLocation();
-						if(ctypeRelative != null)
-							location = location.append(ctypeRelative);
-						location.toFile().mkdirs();
-
-						String leafName = cid.getName() + '_' + cid.getVersion();
-						if(res.isUnpack())
-						{
-							location = location.append(leafName);
-							location = location.addTrailingSeparator();
-						}
-						else
-							location = location.append(leafName + ".jar"); //$NON-NLS-1$
-
-						IReaderType readerType = CorePlugin.getDefault().getReaderType(rType);
-						IComponentReader reader = readerType.getReader(res, context, subSubMon.newChild(10));
-						try
-						{
-							reader.materialize(location, res, context, subSubMon.newChild(500));
-						}
-						finally
-						{
-							try
-							{
-								reader.close();
-							}
-							catch(IOException e)
-							{
-								throw BuckminsterException.wrap(e);
-							}
-						}
-
-						SimpleArtifactDescriptor desc;
-						if(IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID()))
-						{
-							desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE,
-									cid.getName(), version));
-							desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER,
-									Boolean.toString(true)));
-						}
-						else
-						{
-							desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(),
-									version));
-							if(res.isUnpack())
-								desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER,
-										Boolean.toString(true)));
-						}
-						destAR.addDescriptor(desc);
-						continue;
-					}
-
-					IMetadataRepository mdr = knownMDRs.get(repoURI);
-					if(mdr == null)
-					{
-						if(!mdrManager.contains(repoURI))
-						{
-							if(mdrsToRemove == null)
-								mdrsToRemove = new ArrayList<URI>();
-							mdrsToRemove.add(repoURI);
-						}
-						mdr = getMetadataRepository(mdrManager, repoURI, subSubMon.newChild(500));
-						knownMDRs.put(repoURI, mdr);
-					}
-
-					VersionRange range = new VersionRange(version, true, version, true);
-					String name = cid.getName();
-					boolean isFeature = IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID());
-
-					if(isFeature)
-						// Since this is what we want in the target platform
-						name = name + ".feature.jar"; //$NON-NLS-1$
-
-					IQueryResult<IInstallableUnit> result = mdr.query(new InstallableUnitQuery(name, range),
-							subSubMon.newChild(250));
-					Iterator<IInstallableUnit> itor = result.iterator();
-					if(!itor.hasNext())
-						throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2, new Object[] {
-								cid.getName(), version, res.getRepository() }));
-
-					IInstallableUnit iu = itor.next();
-					ius.add(iu);
-
-					// Check if this IU has artifacts and if so, load the artifact repository
+					// This is a direct pointer to an artifact, not a repository
 					//
-					if(iu.getArtifacts().size() > 0)
+					String rType = res.getReaderTypeId();
+					if(IReaderType.ECLIPSE_IMPORT.equals(rType))
+						rType = IReaderType.URL;
+
+					if(!IReaderType.URL.equals(rType))
+						throw BuckminsterException.fromMessage(NLS.bind(
+								Messages.p2_materializer_cannot_process_readertype_0, rType));
+
+					IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getComponentTypeID());
+					IPath location = Path.fromOSString(destDir.getAbsolutePath());
+					IPath ctypeRelative = ctype.getRelativeLocation();
+					if(ctypeRelative != null)
+						location = location.append(ctypeRelative);
+					location.toFile().mkdirs();
+
+					String leafName = cid.getName() + '_' + cid.getVersion();
+					if(res.isUnpack())
 					{
-						IArtifactRepository ar = knownARs.get(repoURI);
-						if(ar == null)
-						{
-							if(!arManager.contains(repoURI))
-							{
-								if(arsToRemove == null)
-									arsToRemove = new ArrayList<URI>();
-								arsToRemove.add(repoURI);
-							}
-							ar = getArtifactRepository(arManager, repoURI, subSubMon.newChild(250));
-							knownARs.put(repoURI, ar);
-						}
+						location = location.append(leafName);
+						location = location.addTrailingSeparator();
 					}
 					else
-						subSubMon.worked(250);
+						location = location.append(leafName + ".jar"); //$NON-NLS-1$
+
+					IReaderType readerType = CorePlugin.getDefault().getReaderType(rType);
+					IComponentReader reader = readerType.getReader(res, context, subSubMon.newChild(10));
+					try
+					{
+						reader.materialize(location, res, context, subSubMon.newChild(500));
+					}
+					finally
+					{
+						try
+						{
+							reader.close();
+						}
+						catch(IOException e)
+						{
+							throw BuckminsterException.wrap(e);
+						}
+					}
+
+					SimpleArtifactDescriptor desc;
+					if(IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID()))
+					{
+						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE,
+								cid.getName(), version));
+						desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER,
+								Boolean.toString(true)));
+					}
+					else
+					{
+						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(),
+								version));
+						if(res.isUnpack())
+							desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER,
+									Boolean.toString(true)));
+					}
+					destAR.addDescriptor(desc);
+					continue;
 				}
 
-				// create the operands from the list of IUs
-				InstallableUnitOperand[] operands = new InstallableUnitOperand[ius.size()];
-				int i = 0;
-				for(IInstallableUnit iu : ius)
-					operands[i++] = new InstallableUnitOperand(null, iu);
-
-				// call the engine with only the "collect" phase so all we do is download
-
-				String destDirStr = destDir.toString();
-				if(!registry.containsProfile(destDirStr))
+				IMetadataRepository mdr = knownMDRs.get(repoURI);
+				if(mdr == null)
 				{
-					Map<String, String> properties = new HashMap<String, String>();
-					properties.put(IProfile.PROP_SHARED_CACHE, Boolean.toString(false));
-					properties.put(IProfile.PROP_INSTALL_FEATURES, Boolean.toString(true));
-					properties.put(IProfile.PROP_CACHE, destDirStr);
-					properties.put(IProfile.PROP_INSTALL_FOLDER, destDirStr);
-					registry.addProfile(destDirStr, properties);
+					mdr = getMetadataRepository(mdrManager, repoURI, subSubMon.newChild(500));
+					knownMDRs.put(repoURI, mdr);
 				}
 
-				IProfile profile = registry.getProfile(destDirStr);
-				try
+				VersionRange range = new VersionRange(version, true, version, true);
+				String name = cid.getName();
+				boolean isFeature = IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID());
+
+				if(isFeature)
+					// Since this is what we want in the target platform
+					name = name + ".feature.jar"; //$NON-NLS-1$
+
+				IQueryResult<IInstallableUnit> result = mdr.query(new InstallableUnitQuery(name, range),
+						subSubMon.newChild(250));
+				Iterator<IInstallableUnit> itor = result.iterator();
+				if(!itor.hasNext())
+					throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2, new Object[] {
+							cid.getName(), version, res.getRepository() }));
+
+				IInstallableUnit iu = itor.next();
+				ius.add(iu);
+
+				// Check if this IU has artifacts and if so, load the artifact repository
+				//
+				if(iu.getArtifacts().size() > 0)
 				{
-					PhaseSet phaseSet = new PhaseSet(new Phase[] { new Collect(100) })
-					{ /* nothing to override */
-					};
-					engine = bucky.getService(IEngine.class);
-					Set<URI> mdrURIs = knownMDRs.keySet();
-					Set<URI> arURIs = knownARs.keySet();
-					ProvisioningContext pctx = new ProvisioningContext(mdrURIs.toArray(new URI[mdrURIs.size()]));
-					pctx.setArtifactRepositories(arURIs.toArray(new URI[arURIs.size()]));
-					IProvisioningPlan plan = engine.createCustomPlan(profile, operands, pctx);
-					IStatus status = engine.perform(plan, phaseSet, subMon.newChild(200));
-					if(status.getSeverity() == IStatus.ERROR)
-						throw BuckminsterException.wrap(status);
+					IArtifactRepository ar = knownARs.get(repoURI);
+					if(ar == null)
+					{
+						ar = getArtifactRepository(arManager, repoURI, subSubMon.newChild(250));
+						knownARs.put(repoURI, ar);
+					}
 				}
-				finally
-				{
-					registry.removeProfile(profile.getProfileId());
-				}
+				else
+					subSubMon.worked(250);
 			}
-			TargetPlatform.getInstance().locationsChanged(resPerLocation.keySet());
-		}
-		finally
-		{
-			if(mdrsToRemove != null)
-				for(URI repoLocation : mdrsToRemove)
-					mdrManager.removeRepository(repoLocation);
 
-			if(arsToRemove != null)
-				for(URI repoLocation : arsToRemove)
-					arManager.removeRepository(repoLocation);
+			// create the operands from the list of IUs
+			InstallableUnitOperand[] operands = new InstallableUnitOperand[ius.size()];
+			int i = 0;
+			for(IInstallableUnit iu : ius)
+				operands[i++] = new InstallableUnitOperand(null, iu);
 
-			bucky.ungetService(mdrManager);
-			bucky.ungetService(arManager);
-			bucky.ungetService(registry);
-			bucky.ungetService(engine);
+			// call the engine with only the "collect" phase so all we do is download
+
+			String destDirStr = destDir.toString();
+			if(!registry.containsProfile(destDirStr))
+			{
+				Map<String, String> properties = new HashMap<String, String>();
+				properties.put(IProfile.PROP_SHARED_CACHE, Boolean.toString(false));
+				properties.put(IProfile.PROP_INSTALL_FEATURES, Boolean.toString(true));
+				properties.put(IProfile.PROP_CACHE, destDirStr);
+				properties.put(IProfile.PROP_INSTALL_FOLDER, destDirStr);
+				registry.addProfile(destDirStr, properties);
+			}
+
+			IProfile profile = registry.getProfile(destDirStr);
+			try
+			{
+				PhaseSet phaseSet = new PhaseSet(new Phase[] { new Collect(100) })
+				{ /* nothing to override */
+				};
+				Set<URI> mdrURIs = knownMDRs.keySet();
+				Set<URI> arURIs = knownARs.keySet();
+				ProvisioningContext pctx = new ProvisioningContext(mdrURIs.toArray(new URI[mdrURIs.size()]));
+				pctx.setArtifactRepositories(arURIs.toArray(new URI[arURIs.size()]));
+				IProvisioningPlan plan = engine.createCustomPlan(profile, operands, pctx);
+				IStatus status = engine.perform(plan, phaseSet, subMon.newChild(200));
+				if(status.getSeverity() == IStatus.ERROR)
+					throw BuckminsterException.wrap(status);
+			}
+			finally
+			{
+				registry.removeProfile(profile.getProfileId());
+			}
 		}
+		TargetPlatform.getInstance().locationsChanged(resPerLocation.keySet());
 		return Collections.emptyList();
 	}
 }

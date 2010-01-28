@@ -40,8 +40,6 @@ public class Messages extends NLS
 
 	public static String actor_properties;
 
-	public static String add_opml_bookmarks_to_rss_reader;
-
 	public static String add_with_arrow_left;
 
 	public static String additional_file_count;
@@ -308,8 +306,6 @@ public class Messages extends NLS
 
 	public static String internal_error_0;
 
-	public static String internal_problem_when_generating_opml_xml;
-
 	public static String invalid_input;
 
 	public static String invalid_number;
@@ -409,8 +405,6 @@ public class Messages extends NLS
 	public static String open_with;
 
 	public static String opening_file_for_editing_with_dots;
-
-	public static String opml_format_error;
 
 	public static String optional;
 

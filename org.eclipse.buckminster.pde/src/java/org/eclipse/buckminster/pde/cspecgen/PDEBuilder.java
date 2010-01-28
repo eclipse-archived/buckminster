@@ -8,14 +8,8 @@
 
 package org.eclipse.buckminster.pde.cspecgen;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.metadata.OPMLConsumer;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -24,13 +18,9 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
-import org.eclipse.buckminster.opml.builder.OPMLBuilder;
-import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
-import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -54,12 +44,11 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 	 */
 	public static final String OPTIONAL_TARGET = "optional"; //$NON-NLS-1$
 
-	public static ResolvedNode createNode(ProviderMatch providerMatch, CSpecBuilder cspecBuilder,
-			OPMLBuilder opmlBuilder) throws CoreException
+	public static ResolvedNode createNode(ProviderMatch providerMatch, CSpecBuilder cspecBuilder) throws CoreException
 	{
 
 		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(
-				cspecBuilder, opmlBuilder, false)));
+				cspecBuilder, false)));
 	}
 
 	private boolean m_usingInstalledReader;
@@ -85,28 +74,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 			CSpecBuilder cspecBuilder = new CSpecBuilder();
 			parseFile(cspecBuilder, forResolutionAidOnly, catRdr, MonitorUtils.subMonitor(monitor, 1000));
 			applyExtensions(cspecBuilder, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 200));
-
-			OPMLBuilder opmlBld = null;
-			if(!forResolutionAidOnly && BuckminsterPreferences.isOPMLSupport())
-			{
-				String fileName = getMetadataFile(catRdr, IComponentType.PREF_OPML_FILE, CorePlugin.OPML_FILE,
-						MonitorUtils.subMonitor(monitor, 200));
-				try
-				{
-					OPML opml = catRdr.readFile(fileName, new OPMLConsumer(), MonitorUtils.subMonitor(monitor, 200));
-					opmlBld = new OPMLBuilder();
-					opmlBld.initFrom(opml);
-				}
-				catch(FileNotFoundException e)
-				{
-					// This is OK, the OPML is optional
-				}
-				catch(IOException e)
-				{
-					throw BuckminsterException.wrap(e);
-				}
-			}
-			return createNode(reader, cspecBuilder, opmlBld);
+			return createNode(reader, cspecBuilder);
 		}
 		finally
 		{

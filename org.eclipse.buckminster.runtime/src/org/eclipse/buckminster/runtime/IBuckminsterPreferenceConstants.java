@@ -47,10 +47,6 @@ public interface IBuckminsterPreferenceConstants
 
 	public static final int CONNECTION_RETRY_DELAY_DEFAULT = 1;
 
-	public static final String OPML_SUPPORT = "opmlSupport"; //$NON-NLS-1$
-
-	public static final boolean OPML_SUPPORT_DEFAULT = false;
-
 	public static final String PREF_CONSOLE_MESSAGE_COLOR = "pref_console_message_color"; //$NON-NLS-1$
 
 	public static final String PREF_CONSOLE_MESSAGE_COLOR_DEFAULT = "0,0,0"; //$NON-NLS-1$

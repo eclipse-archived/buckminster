@@ -70,6 +70,9 @@
 		<readerType
 			class="org.eclipse.buckminster.core.reader.LocalReaderType"
 			id="local" />
+		<readerType
+			class="org.eclipse.buckminster.core.reader.P2ReaderType"
+			id="p2" />
 </extension>
 	<extension point="org.eclipse.buckminster.core.versionTypes">
 		<versionType

@@ -12,8 +12,8 @@ package org.eclipse.buckminster.core.parser;
 
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspecext.model.CSpecExtension;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
@@ -21,7 +21,6 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.ResourceMap;
-import org.eclipse.buckminster.opml.model.OPML;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -103,16 +102,6 @@ public interface IParserFactory
 	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
 	 */
 	IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating) throws CoreException;
-
-	/**
-	 * Creates a SAX parser that can parse an OPML document
-	 * 
-	 * @param validating
-	 * @return an OPML parser
-	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
-	 */
-	IParser<OPML> getOPMLParser(boolean validating) throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a IProvider.
