@@ -227,6 +227,10 @@ public interface IPDEConstants
 
 	static final String PROP_PRODUCT_FILE = "buckminster.eclipse.productFile"; //$NON-NLS-1$
 
+	static final String PROP_PDE_MATCH_RULE_DEFAULT = "pde.match.rule.default"; //$NON-NLS-1$
+
+	static final String PROP_PDE_MATCH_RULE_RETAIN_LOWER = "pde.match.rule.retain.lower"; //$NON-NLS-1$
+
 	static final String SITE_FILE = "site.xml"; //$NON-NLS-1$
 
 	static final String SOURCE_MANIFEST = "SOURCE_" + IPDEBuildConstants.MANIFEST; //$NON-NLS-1$

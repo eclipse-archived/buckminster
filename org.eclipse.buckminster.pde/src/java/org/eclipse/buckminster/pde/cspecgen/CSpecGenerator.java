@@ -43,6 +43,7 @@ import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
+import org.eclipse.buckminster.pde.tasks.FeaturesAction;
 import org.eclipse.buckminster.pde.tasks.P2SiteGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -194,92 +195,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	private static final ImportSpecification[] s_noRequiredBundles = new ImportSpecification[0];
 
-	public static String convertMatchRule(int pdeMatchRule, String version) throws CoreException
-	{
-		version = Trivial.trim(version);
-		if(version == null || version.equals("0.0.0")) //$NON-NLS-1$
-			return null;
-
-		char c = version.charAt(0);
-		if(c == '[' || c == '(')
-			//
-			// Already an OSGi range, just ignore the rule then.
-			//
-			return version;
-
-		Version v = Version.parseVersion(version);
-		boolean qualifierTag = "qualifier".equals(VersionHelper.getQualifier(v)); //$NON-NLS-1$
-		if(qualifierTag)
-			v = VersionHelper.replaceQualifier(v, null);
-
-		org.osgi.framework.Version ov = Version.toOSGiVersion(v);
-		StringBuilder vbld = new StringBuilder();
-		switch(pdeMatchRule)
-		{
-		case IMatchRules.NONE:
-		case IMatchRules.PERFECT:
-			vbld.append('[');
-			vbld.append(v);
-			if(qualifierTag)
-			{
-				// Generate a version range that matches the given version with
-				// any qualifier.
-				//
-				vbld.append(".0,"); //$NON-NLS-1$
-				vbld.append(ov.getMajor());
-				vbld.append('.');
-				vbld.append(ov.getMinor());
-				vbld.append('.');
-				vbld.append(ov.getMicro() + 1);
-				vbld.append(')');
-			}
-			else
-			{
-				// Use a true explicit version range
-				//
-				vbld.append(',');
-				vbld.append(v);
-				vbld.append(']');
-			}
-			break;
-
-		case IMatchRules.EQUIVALENT:
-			//
-			// Create a range that requires major and minor numbers
-			// to be equal.
-			//
-			vbld.append('[');
-			vbld.append(v);
-			if(qualifierTag)
-				vbld.append(".0"); //$NON-NLS-1$
-			vbld.append(',');
-			vbld.append(ov.getMajor());
-			vbld.append('.');
-			vbld.append(ov.getMinor() + 1);
-			vbld.append(".0)"); //$NON-NLS-1$
-			break;
-
-		case IMatchRules.COMPATIBLE:
-			//
-			// Create a range that requires major and minor numbers
-			// to be equal.
-			//
-			vbld.append('[');
-			vbld.append(v);
-			if(qualifierTag)
-				vbld.append(".0"); //$NON-NLS-1$
-			vbld.append(',');
-			vbld.append(ov.getMajor() + 1);
-			vbld.append(".0.0)"); //$NON-NLS-1$
-			break;
-		default:
-			vbld.append(v);
-			if(qualifierTag)
-				vbld.append(".0"); //$NON-NLS-1$
-		}
-		return vbld.toString();
-	}
-
 	protected static String buildArtifactName(String id, String ver, boolean asJar)
 	{
 		StringBuilder bld = new StringBuilder();
@@ -360,6 +275,116 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	{
 		m_cspecBuilder = cspecBuilder;
 		m_reader = reader;
+	}
+
+	public String convertMatchRule(int pdeMatchRule, String version) throws CoreException
+	{
+		version = Trivial.trim(version);
+		if(version == null || version.equals("0.0.0")) //$NON-NLS-1$
+			return null;
+
+		char c = version.charAt(0);
+		if(c == '[' || c == '(')
+			//
+			// Already an OSGi range, just ignore the rule then.
+			//
+			return version;
+
+		Version v = Version.parseVersion(version);
+		boolean qualifierTag = "qualifier".equals(VersionHelper.getQualifier(v)); //$NON-NLS-1$
+		if(qualifierTag)
+			v = VersionHelper.replaceQualifier(v, null);
+
+		org.osgi.framework.Version ov = Version.toOSGiVersion(v);
+		boolean retainLowerBound = true;
+		if(pdeMatchRule == IMatchRules.NONE)
+		{
+			Map<String, String> props = getProperties();
+			pdeMatchRule = FeaturesAction.getMatchRule(props.get(PROP_PDE_MATCH_RULE_DEFAULT));
+			String rtl = props.get(PROP_PDE_MATCH_RULE_RETAIN_LOWER);
+			if(rtl != null)
+				retainLowerBound = Boolean.parseBoolean(rtl);
+		}
+
+		StringBuilder vbld = new StringBuilder();
+		switch(pdeMatchRule)
+		{
+		case IMatchRules.NONE:
+		case IMatchRules.PERFECT:
+			vbld.append('[');
+			vbld.append(v);
+			if(qualifierTag)
+			{
+				// Generate a version range that matches the given version with
+				// any qualifier.
+				//
+				vbld.append(".0,"); //$NON-NLS-1$
+				vbld.append(ov.getMajor());
+				vbld.append('.');
+				vbld.append(ov.getMinor());
+				vbld.append('.');
+				vbld.append(ov.getMicro() + 1);
+				vbld.append(')');
+			}
+			else
+			{
+				// Use a true explicit version range
+				//
+				vbld.append(',');
+				vbld.append(v);
+				vbld.append(']');
+			}
+			break;
+
+		case IMatchRules.EQUIVALENT:
+			//
+			// Create a range that requires major and minor numbers
+			// to be equal.
+			//
+			vbld.append('[');
+			if(retainLowerBound)
+				vbld.append(v);
+			else
+			{
+				vbld.append(ov.getMajor());
+				vbld.append('.');
+				vbld.append(ov.getMinor());
+				vbld.append(".0"); //$NON-NLS-1$
+			}
+			if(qualifierTag)
+				vbld.append(".0"); //$NON-NLS-1$
+			vbld.append(',');
+			vbld.append(ov.getMajor());
+			vbld.append('.');
+			vbld.append(ov.getMinor() + 1);
+			vbld.append(".0)"); //$NON-NLS-1$
+			break;
+
+		case IMatchRules.COMPATIBLE:
+			//
+			// Create a range that requires major and minor numbers
+			// to be equal.
+			//
+			vbld.append('[');
+			if(retainLowerBound)
+				vbld.append(v);
+			else
+			{
+				vbld.append(ov.getMajor());
+				vbld.append(".0.0"); //$NON-NLS-1$
+			}
+			if(qualifierTag)
+				vbld.append(".0"); //$NON-NLS-1$
+			vbld.append(',');
+			vbld.append(ov.getMajor() + 1);
+			vbld.append(".0.0)"); //$NON-NLS-1$
+			break;
+		default:
+			vbld.append(v);
+			if(qualifierTag)
+				vbld.append(".0"); //$NON-NLS-1$
+		}
+		return vbld.toString();
 	}
 
 	public abstract void generate(IProgressMonitor monitor) throws CoreException;
@@ -612,23 +637,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if(value.charAt(0) != '%')
 			return value;
 
-		if(m_properties == null)
-		{
-			try
-			{
-				m_properties = m_reader.readFile(getPropertyFileName(), new PropertiesParser(),
-						new NullProgressMonitor());
-			}
-			catch(FileNotFoundException e)
-			{
-				m_properties = Collections.emptyMap();
-			}
-			catch(IOException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-		}
-		String expValue = m_properties.get(value.substring(1));
+		String expValue = getProperties().get(value.substring(1));
 		if(expValue != null)
 			value = expValue;
 
@@ -649,6 +658,27 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	}
 
 	protected abstract String getProductOutputFolder(String productId);
+
+	protected Map<String, String> getProperties() throws CoreException
+	{
+		if(m_properties == null)
+		{
+			try
+			{
+				m_properties = m_reader.readFile(getPropertyFileName(), new PropertiesParser(),
+						new NullProgressMonitor());
+			}
+			catch(FileNotFoundException e)
+			{
+				m_properties = Collections.emptyMap();
+			}
+			catch(IOException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+		}
+		return m_properties;
+	}
 
 	protected abstract String getPropertyFileName();
 

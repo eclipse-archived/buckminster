@@ -18,6 +18,7 @@ import org.apache.tools.ant.types.PatternSet.NameEntry;
 import org.apache.tools.ant.types.selectors.FilenameSelector;
 import org.apache.tools.ant.types.selectors.OrSelector;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.tasks.FeatureRootAdvice.ConfigAdvice;
@@ -38,8 +39,11 @@ import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
+import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
+import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
 import org.eclipse.equinox.p2.repository.artifact.spi.ArtifactDescriptor;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.Utils;
 
@@ -47,6 +51,39 @@ import org.eclipse.pde.internal.build.Utils;
 public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.FeaturesAction
 {
 	private static final Project PROPERTY_REPLACER = new Project();
+
+	public static int getMatchRule(String matchRuleString)
+	{
+		if(matchRuleString == null)
+			return IMatchRules.NONE;
+
+		String[] table = IMatchRules.RULE_NAME_TABLE;
+		int idx = table.length;
+		while(--idx >= 0)
+			if(matchRuleString.equalsIgnoreCase(table[idx]))
+				return idx;
+		return IMatchRules.NONE;
+	}
+
+	public static Version limitWithMatchRule(Version v, int matchRule)
+	{
+		if(v == null || matchRule == IMatchRules.NONE || matchRule == IMatchRules.PERFECT)
+			return v;
+
+		org.osgi.framework.Version ov = Version.toOSGiVersion(v);
+		switch(matchRule)
+		{
+		case IMatchRules.EQUIVALENT:
+			v = Version.createOSGi(ov.getMajor(), ov.getMinor(), 0);
+			break;
+		case IMatchRules.COMPATIBLE:
+			v = Version.createOSGi(ov.getMajor(), 0, 0);
+			break;
+		default:
+			v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro());
+		}
+		return v;
+	}
 
 	private static FeatureRootAdvice createRootAdvice(String featureId, Properties buildProperties,
 			IPath baseDirectory, String[] configs)
@@ -222,6 +259,8 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 	private final Map<IVersionedId, CSpec> m_cspecs;
 
+	private Properties m_properties;
+
 	public FeaturesAction(File[] featureBinaries, Map<IVersionedId, CSpec> cspecs)
 	{
 		super(featureBinaries);
@@ -240,12 +279,12 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 				{
 					File buildProps = location.append(IPDEBuildConstants.PROPERTIES_FILE).toFile();
 					InputStream input = null;
-					Properties properties = new Properties();
+					m_properties = new Properties();
 					try
 					{
 						input = new BufferedInputStream(new FileInputStream(buildProps));
-						properties.load(input);
-						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), properties, location,
+						m_properties.load(input);
+						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), m_properties, location,
 								publisherInfo.getConfigurations());
 						if(rootAdvice != null)
 							publisherInfo.addAdvice(rootAdvice);
@@ -270,6 +309,81 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 			}
 		}
 		return super.perform(publisherInfo, results, monitor);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected IInstallableUnit createGroupIU(Feature feature, List childIUs, IPublisherInfo publisherInfo)
+	{
+		String dfltMatchRule = m_properties.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
+		int pdeMatchRule = getMatchRule(dfltMatchRule);
+
+		if(pdeMatchRule == IMatchRules.NONE || pdeMatchRule == IMatchRules.PERFECT)
+			return super.createGroupIU(feature, childIUs, publisherInfo);
+
+		boolean retainLowerBound = true;
+		String rtl = m_properties.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
+		if(rtl != null)
+			retainLowerBound = Boolean.parseBoolean(rtl);
+
+		Feature newFeature = new Feature(feature.getId(), feature.getVersion());
+		final String canonicalMatchRule = IMatchRules.RULE_NAME_TABLE[pdeMatchRule];
+		FeatureEntry[] entries = feature.getEntries();
+		int idx = entries.length;
+		while(--idx >= 0)
+		{
+			FeatureEntry entry = entries[idx];
+			if(entry.isPatch() || entry.isRequires() || getMatchRule(entry.getMatch()) != IMatchRules.NONE)
+			{
+				newFeature.addEntry(entry);
+				continue;
+			}
+
+			Version version = Version.create(entry.getVersion());
+			if(!retainLowerBound)
+				version = limitWithMatchRule(Version.create(entry.getVersion()), pdeMatchRule);
+
+			String vstr = version == null
+					? null
+					: version.toString();
+			FeatureEntry newEntry = FeatureEntry.createRequires(entry.getId(), vstr, canonicalMatchRule,
+					entry.getFilter(), entry.isPlugin());
+			newEntry.setEnvironment(entry.getOS(), entry.getWS(), entry.getArch(), entry.getNL());
+			newEntry.setFragment(entry.isFragment());
+			newEntry.setOptional(entry.isOptional());
+			newEntry.setUnpack(entry.isUnpack());
+			newEntry.setURL(entry.getURL());
+			newFeature.addEntry(newEntry);
+		}
+		for(URLEntry site : feature.getDiscoverySites())
+			newFeature.addDiscoverySite(site.getAnnotation(), site.getURL());
+		newFeature.setApplication(feature.getApplication());
+		newFeature.setColocationAffinity(feature.getColocationAffinity());
+		newFeature.setCopyright(feature.getCopyright());
+		newFeature.setCopyrightURL(feature.getCopyrightURL());
+		newFeature.setDescription(feature.getDescription());
+		newFeature.setDescriptionURL(feature.getDescriptionURL());
+		newFeature.setEnvironment(feature.getOS(), feature.getWS(), feature.getArch(), feature.getNL());
+		newFeature.setExclusive(feature.isExclusive());
+		newFeature.setImage(feature.getImage());
+		newFeature.setInstallHandler(feature.getInstallHandler());
+		newFeature.setInstallHandlerLibrary(feature.getInstallHandlerLibrary());
+		newFeature.setInstallHandlerURL(feature.getInstallHandlerURL());
+		newFeature.setLabel(feature.getLabel());
+		newFeature.setLicense(feature.getLicense());
+		newFeature.setLicenseURL(feature.getLicenseURL());
+		newFeature.setLocalizations(feature.getLocalizations());
+		newFeature.setLocation(feature.getLocation());
+		newFeature.setPlugin(feature.getPlugin());
+		newFeature.setPrimary(feature.isPrimary());
+		newFeature.setProviderName(feature.getProviderName());
+		URLEntry site = feature.getUpdateSite();
+		if(site != null)
+		{
+			newFeature.setUpdateSiteLabel(site.getAnnotation());
+			newFeature.setUpdateSiteURL(site.getURL());
+		}
+		return super.createGroupIU(newFeature, childIUs, publisherInfo);
 	}
 
 	@Override

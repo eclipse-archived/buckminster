@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -54,14 +55,15 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		IFeature feature = m_featureModel.getFeature();
 		String id = feature.getId();
 
+		Map<String, Version[]> featureVers = getFeatureVersions();
 		ArrayList<ComponentIdentifier> deps = new ArrayList<ComponentIdentifier>();
 		for(IFeatureChild ref : feature.getIncludedFeatures())
 		{
 			String vstr = ref.getVersion();
-			ComponentIdentifier cid = replaceFeatureReferenceVersion(id,
-					new org.eclipse.equinox.internal.p2.metadata.VersionedId(ref.getId(), vstr));
-			if(cid != null)
+			Version version = findBestVersion(featureVers, id, "feature", ref.getId(), vstr); //$NON-NLS-1$
+			if(version != null)
 			{
+				ComponentIdentifier cid = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
 				deps.add(cid);
 				String nvstr = cid.getVersion().toString();
 				if(!nvstr.equals(vstr))
@@ -69,12 +71,14 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 			}
 		}
 
+		Map<String, Version[]> pluginVers = getPluginVersions();
 		for(IFeaturePlugin ref : feature.getPlugins())
 		{
 			String vstr = ref.getVersion();
-			ComponentIdentifier cid = replacePluginReferenceVersion(id, new VersionedId(ref.getId(), vstr));
-			if(cid != null)
+			Version version = findBestVersion(pluginVers, id, "plugin", ref.getId(), vstr); //$NON-NLS-1$
+			if(version != null)
 			{
+				ComponentIdentifier cid = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
 				deps.add(cid);
 				String nvstr = cid.getVersion().toString();
 				if(!nvstr.equals(vstr))

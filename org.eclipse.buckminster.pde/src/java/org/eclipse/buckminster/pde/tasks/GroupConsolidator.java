@@ -21,8 +21,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
@@ -76,8 +74,9 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 	}
 
 	static Version findBestVersion(Map<String, Version[]> versionMap, String id, String componentType, String refId,
-			Version version) throws CoreException
+			String vstr) throws CoreException
 	{
+		Version version = Version.create(vstr);
 		if(version != null && Version.emptyVersion.equals(version))
 			version = null;
 
@@ -332,21 +331,5 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 	Map<String, Version[]> getPluginVersions()
 	{
 		return m_pluginVersions;
-	}
-
-	ComponentIdentifier replaceFeatureReferenceVersion(String id, IVersionedId ref) throws CoreException
-	{
-		Version version = findBestVersion(m_featureVersions, id, "feature", ref.getId(), ref.getVersion()); //$NON-NLS-1$
-		if(version != null)
-			return new ComponentIdentifier(ref.getId(), IComponentType.ECLIPSE_FEATURE, version);
-		return null;
-	}
-
-	ComponentIdentifier replacePluginReferenceVersion(String id, IVersionedId ref) throws CoreException
-	{
-		Version version = findBestVersion(m_pluginVersions, id, "plugin", ref.getId(), ref.getVersion()); //$NON-NLS-1$
-		if(version != null)
-			return new ComponentIdentifier(ref.getId(), IComponentType.OSGI_BUNDLE, version);
-		return null;
 	}
 }

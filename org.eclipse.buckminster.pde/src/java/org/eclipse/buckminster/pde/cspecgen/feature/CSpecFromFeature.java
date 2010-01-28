@@ -269,7 +269,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 	ComponentRequestBuilder createDependency(IFeaturePlugin plugin) throws CoreException
 	{
 		Filter filter = FilterUtils.createFilter(plugin.getOS(), plugin.getWS(), plugin.getArch(), plugin.getNL());
-		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), IMatchRules.PERFECT,
+		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), IMatchRules.NONE,
 				filter);
 	}
 
