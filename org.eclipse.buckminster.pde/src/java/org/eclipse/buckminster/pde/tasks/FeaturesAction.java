@@ -316,12 +316,14 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	protected IInstallableUnit createGroupIU(Feature feature, List childIUs, IPublisherInfo publisherInfo)
 	{
 		String dfltMatchRule = m_properties.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
+		if(dfltMatchRule == null)
+			dfltMatchRule = IMatchRules.RULE_EQUIVALENT;
 		int pdeMatchRule = getMatchRule(dfltMatchRule);
 
 		if(pdeMatchRule == IMatchRules.NONE || pdeMatchRule == IMatchRules.PERFECT)
 			return super.createGroupIU(feature, childIUs, publisherInfo);
 
-		boolean retainLowerBound = true;
+		boolean retainLowerBound = false;
 		String rtl = m_properties.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
 		if(rtl != null)
 			retainLowerBound = Boolean.parseBoolean(rtl);

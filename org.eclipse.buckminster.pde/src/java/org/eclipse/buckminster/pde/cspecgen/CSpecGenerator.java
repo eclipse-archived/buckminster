@@ -296,11 +296,14 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			v = VersionHelper.replaceQualifier(v, null);
 
 		org.osgi.framework.Version ov = Version.toOSGiVersion(v);
-		boolean retainLowerBound = true;
+		boolean retainLowerBound = false;
 		if(pdeMatchRule == IMatchRules.NONE)
 		{
 			Map<String, String> props = getProperties();
-			pdeMatchRule = FeaturesAction.getMatchRule(props.get(PROP_PDE_MATCH_RULE_DEFAULT));
+			String prop = props.get(PROP_PDE_MATCH_RULE_DEFAULT);
+			if(prop == null)
+				prop = IMatchRules.RULE_EQUIVALENT;
+			pdeMatchRule = FeaturesAction.getMatchRule(prop);
 			String rtl = props.get(PROP_PDE_MATCH_RULE_RETAIN_LOWER);
 			if(rtl != null)
 				retainLowerBound = Boolean.parseBoolean(rtl);
