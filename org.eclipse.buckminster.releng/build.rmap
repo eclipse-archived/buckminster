@@ -40,7 +40,7 @@
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
-      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100125-0800">
+      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100129-1300">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -79,12 +79,12 @@
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=M)">
-      <rm:uri format="{0}/tools/orbit/downloads/drops/S20091026190351/updateSite">
+      <rm:uri format="{0}/tools/orbit/downloads/drops/S20100120144102/updateSite">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=I)">
-      <rm:uri format="{0}/tools/orbit/downloads/drops/I20091020124240/updateSite">
+      <rm:uri format="{0}/tools/orbit/downloads/drops/I20100120144102/updateSite">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
