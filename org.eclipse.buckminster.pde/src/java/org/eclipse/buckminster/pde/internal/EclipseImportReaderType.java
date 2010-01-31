@@ -45,7 +45,6 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.reader.P2ReaderType;
-import org.eclipse.buckminster.core.reader.P2VersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
@@ -95,7 +94,7 @@ import org.eclipse.pde.internal.core.feature.ExternalFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.osgi.framework.Constants;
 
-@SuppressWarnings( { "restriction" })
+@SuppressWarnings({ "restriction" })
 public class EclipseImportReaderType extends CatalogReaderType implements IPDEConstants
 {
 	/**
@@ -378,16 +377,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
 			IProgressMonitor monitor) throws CoreException
 	{
-		String url = provider.getURI(nodeQuery.getProperties());
-		URI uri = URI.create(url);
-		String path = uri.getPath();
-		if(path.endsWith(".jar") || path.endsWith(".map") || path.endsWith(".zip") || path.endsWith(".xml")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		{
-			MonitorUtils.complete(monitor);
-			return new EclipseImportFinder(this, provider, ctype, nodeQuery);
-		}
-		IMetadataRepository mdr = P2ReaderType.getMetadataRepository(provider, nodeQuery.getProperties(), monitor);
-		return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
+		throw new UnsupportedOperationException("import reader can not be used for resolution"); //$NON-NLS-1$
 	}
 
 	@Override
