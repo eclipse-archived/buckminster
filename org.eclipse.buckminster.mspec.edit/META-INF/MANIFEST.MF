@@ -15,5 +15,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.model.common;visibility:=reexport,
  org.eclipse.buckminster.model.common.edit;visibility:=reexport,
  org.eclipse.buckminster.osgi.filter;bundle-version="1.0.0",
- org.eclipse.equinox.p2.metadata;bundle-version="1.0.100"
+ org.eclipse.equinox.p2.metadata;bundle-version="2.0.0"
 Bundle-ActivationPolicy: lazy

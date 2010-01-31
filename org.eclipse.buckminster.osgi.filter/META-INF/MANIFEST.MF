@@ -5,6 +5,5 @@ Bundle-SymbolicName: org.eclipse.buckminster.osgi.filter;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: The Buckminster project
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: org.eclipse.osgi.util,
- org.osgi.framework
 Export-Package: org.eclipse.buckminster.osgi.filter
+Require-Bundle: org.eclipse.osgi;bundle-version="3.5.0"
