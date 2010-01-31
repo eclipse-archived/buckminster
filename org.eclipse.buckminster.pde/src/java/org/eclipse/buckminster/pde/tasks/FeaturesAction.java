@@ -311,9 +311,9 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		return super.perform(publisherInfo, results, monitor);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected IInstallableUnit createGroupIU(Feature feature, List childIUs, IPublisherInfo publisherInfo)
+	protected IInstallableUnit createGroupIU(Feature feature, List<IInstallableUnit> childIUs,
+			IPublisherInfo publisherInfo)
 	{
 		String dfltMatchRule = m_properties.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
 		if(dfltMatchRule == null)

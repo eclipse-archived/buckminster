@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.common.parser.FormatHandler;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.model.SearchPath;
 import org.eclipse.buckminster.core.rmap.model.URIMatcher;
@@ -162,6 +163,12 @@ public class ProviderHandler extends PropertyManagerHandler
 	public void handleAttributes(Attributes attrs) throws SAXException
 	{
 		m_readerType = getStringValue(attrs, Provider.ATTR_READER_TYPE);
+		if(m_readerType.equals(IReaderType.ECLIPSE_IMPORT))
+		{
+			logAttributeValueDeprecation(getTAG(), Provider.ATTR_READER_TYPE, IReaderType.ECLIPSE_IMPORT,
+					IReaderType.P2);
+			m_readerType = IReaderType.P2;
+		}
 
 		m_componentTypes = null;
 		String tmp = getOptionalStringValue(attrs, Provider.ATTR_COMPONENT_TYPES);

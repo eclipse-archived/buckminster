@@ -215,9 +215,6 @@ public class P2Materializer extends AbstractMaterializer
 					// This is a direct pointer to an artifact, not a repository
 					//
 					String rType = res.getReaderTypeId();
-					if(IReaderType.ECLIPSE_IMPORT.equals(rType))
-						rType = IReaderType.URL;
-
 					if(!IReaderType.URL.equals(rType))
 						throw BuckminsterException.fromMessage(NLS.bind(
 								Messages.p2_materializer_cannot_process_readertype_0, rType));

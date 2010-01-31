@@ -41,9 +41,12 @@ public interface IReaderType extends IBuckminsterExtension
 {
 	public static final String ECLIPSE_PLATFORM = "eclipse.platform"; //$NON-NLS-1$
 
+	public static final String ECLIPSE_SITE_FEATURE = "site.feature"; //$NON-NLS-1$
+
+	// For internal use by the Workspace materializer.
 	public static final String ECLIPSE_IMPORT = "eclipse.import"; //$NON-NLS-1$
 
-	public static final String ECLIPSE_SITE_FEATURE = "site.feature"; //$NON-NLS-1$
+	public static final String P2 = "p2"; //$NON-NLS-1$
 
 	public static final String LOCAL = "local"; //$NON-NLS-1$
 

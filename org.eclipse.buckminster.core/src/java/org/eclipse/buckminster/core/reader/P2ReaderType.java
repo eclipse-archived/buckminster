@@ -10,6 +10,7 @@
 package org.eclipse.buckminster.core.reader;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -24,6 +25,7 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -42,6 +44,10 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 public class P2ReaderType extends CatalogReaderType
 {
 	private static final IExpression iuQuery = ExpressionUtil.parse("id == $0 && version == $1"); //$NON-NLS-1$
+
+	private static final String PARAM_IMPORT_TYPE = "importType"; //$NON-NLS-1$
+
+	private static final String IMPORT_TYPE_BINARY = "binary"; //$NON-NLS-1$
 
 	public static IArtifactRepository getArtifactRepository(Provider provider,
 			Map<String, ? extends Object> properties, IProgressMonitor monitor) throws CoreException
@@ -97,6 +103,26 @@ public class P2ReaderType extends CatalogReaderType
 	{
 		String url = provider.getURI(properties);
 		URI uri = URLUtils.normalizeToURI(url, true);
+
+		Map<String, String> params = URLUtils.queryAsParameters(uri.getQuery());
+
+		// Remove legacy parameter from old 'eclipseImport' reader
+		//
+		String importType = params.get(PARAM_IMPORT_TYPE);
+		if(importType != null || IMPORT_TYPE_BINARY.equalsIgnoreCase(importType))
+		{
+			params.remove(PARAM_IMPORT_TYPE);
+			String query = URLUtils.encodeFromQueryPairs(params);
+			try
+			{
+				uri = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), query,
+						uri.getFragment());
+			}
+			catch(URISyntaxException e)
+			{
+				throw BuckminsterException.wrap(e);
+			}
+		}
 		return getMetadataRepository(uri, monitor);
 	}
 
