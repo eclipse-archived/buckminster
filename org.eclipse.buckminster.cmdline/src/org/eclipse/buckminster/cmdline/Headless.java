@@ -27,10 +27,6 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.osgi.util.NLS;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
-import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * This class controls all aspects of the application's execution
@@ -118,14 +114,6 @@ public class Headless implements IApplication, OptionValueType
 
 	private int m_logLevel = Logger.INFO;
 
-	static private final String EXEMPLARY_SETUP = "org.eclipse.equinox.p2.exemplarysetup"; //$NON-NLS-1$
-
-	static private final String FRAMEWORKADMIN_EQUINOX = "org.eclipse.equinox.frameworkadmin.equinox"; //$NON-NLS-1$
-
-	static private final String SIMPLE_CONFIGURATOR_MANIPULATOR = "org.eclipse.equinox.simpleconfigurator.manipulator"; //$NON-NLS-1$
-
-	private static final Integer EXIT_ERROR = Integer.valueOf(13);
-
 	public Object run(Object objArgs) throws Exception
 	{
 		Buckminster.setHeadless();
@@ -162,30 +150,6 @@ public class Headless implements IApplication, OptionValueType
 
 	public Object start(IApplicationContext context) throws Exception
 	{
-		Buckminster bucky = Buckminster.getDefault();
-		PackageAdmin packageAdmin = bucky.getService(PackageAdmin.class);
-		try
-		{
-			if(!startEarly(packageAdmin, EXEMPLARY_SETUP))
-			{
-				Buckminster.getLogger().error(NLS.bind(Messages.Missing_bundle_0, EXEMPLARY_SETUP));
-				return EXIT_ERROR;
-			}
-			if(!startEarly(packageAdmin, SIMPLE_CONFIGURATOR_MANIPULATOR))
-			{
-				Buckminster.getLogger().error(NLS.bind(Messages.Missing_bundle_0, SIMPLE_CONFIGURATOR_MANIPULATOR));
-				return EXIT_ERROR;
-			}
-			if(!startEarly(packageAdmin, FRAMEWORKADMIN_EQUINOX))
-			{
-				Buckminster.getLogger().error(NLS.bind(Messages.Missing_bundle_0, FRAMEWORKADMIN_EQUINOX));
-				return EXIT_ERROR;
-			}
-		}
-		finally
-		{
-			bucky.ungetService(packageAdmin);
-		}
 		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
 	}
 
@@ -343,30 +307,5 @@ public class Headless implements IApplication, OptionValueType
 				return exitValue;
 		}
 		return EXIT_OK;
-	}
-
-	private synchronized Bundle getBundle(PackageAdmin packageAdmin, String symbolicName)
-	{
-		Bundle[] bundles = packageAdmin.getBundles(symbolicName, null);
-		if(bundles == null)
-			return null;
-		// Return the first bundle that is not installed or uninstalled
-		for(int i = 0; i < bundles.length; i++)
-		{
-			if((bundles[i].getState() & (Bundle.INSTALLED | Bundle.UNINSTALLED)) == 0)
-			{
-				return bundles[i];
-			}
-		}
-		return null;
-	}
-
-	private boolean startEarly(PackageAdmin packageAdmin, String bundleName) throws BundleException
-	{
-		Bundle bundle = getBundle(packageAdmin, bundleName);
-		if(bundle == null)
-			return false;
-		bundle.start(Bundle.START_TRANSIENT);
-		return true;
 	}
 }

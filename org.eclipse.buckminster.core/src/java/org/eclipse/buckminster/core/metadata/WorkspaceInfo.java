@@ -15,6 +15,7 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -87,6 +88,8 @@ public class WorkspaceInfo
 	private static final HashMap<IComponentIdentifier, Resolution> s_resolutionCache = new HashMap<IComponentIdentifier, Resolution>();
 
 	private static Stack<IGlobalContext> s_performContextStack;
+
+	private static final Map<ComponentIdentifier, Resolution> tpResolutions = new HashMap<ComponentIdentifier, Resolution>();
 
 	public static void clearCachedLocation(IComponentIdentifier cid)
 	{
@@ -175,8 +178,19 @@ public class WorkspaceInfo
 		for(Resolution cr : getActiveResolutions(sm))
 			bld.add(cr);
 
-		for(ComponentIdentifier ci : TargetPlatform.getInstance().getComponents())
-			bld.add(getResolution(ci));
+		synchronized(tpResolutions)
+		{
+			for(ComponentIdentifier ci : TargetPlatform.getInstance().getComponents())
+			{
+				Resolution tpRes = tpResolutions.get(ci);
+				if(tpRes == null)
+				{
+					tpRes = getResolution(ci);
+					tpResolutions.put(ci, tpRes);
+				}
+				bld.add(tpRes);
+			}
+		}
 
 		ArrayList<Resolution> sorted = new ArrayList<Resolution>(bld);
 		Collections.sort(sorted, new Comparator<Resolution>()
