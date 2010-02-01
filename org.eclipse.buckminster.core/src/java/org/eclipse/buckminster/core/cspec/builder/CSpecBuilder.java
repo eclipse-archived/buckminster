@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.P2Constants;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
@@ -25,7 +27,6 @@ import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.DependencyAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.MissingAttributeException;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
@@ -47,6 +48,7 @@ import org.eclipse.equinox.p2.metadata.query.ExpressionQuery;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
+import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -277,12 +279,20 @@ public class CSpecBuilder implements ICSpecData
 		{
 			if(nvd != null)
 			{
-				vd = vd.intersect(nvd);
-				if(vd == null)
+				VersionRange isect = vd.intersect(nvd);
+				if(isect == null)
+				{
+					// Version ranges were not possible to merge, i.e. no intersection. We
+					// log a warning about this and select the higher range.
 					//
-					// Version ranges were not possible to merge, i.e. no intersection
-					//
-					throw new DependencyAlreadyDefinedException(getName(), old.getName());
+					CorePlugin.getLogger().warning(
+							NLS.bind(Messages.Dependency_0_is_defined_more_then_once_in_component_1, getName(),
+									old.getName()));
+					if(vd.getMinimum().compareTo(nvd.getMaximum()) < 0)
+						vd = nvd;
+				}
+				else
+					vd = isect;
 			}
 		}
 
