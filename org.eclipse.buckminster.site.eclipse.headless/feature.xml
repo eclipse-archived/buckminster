@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.site.eclipse.headless"
       label="Buckminster Headless"
-      version="1.1.350.qualifier"
+      version="1.2.0.qualifier"
       provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.example.com/description">
