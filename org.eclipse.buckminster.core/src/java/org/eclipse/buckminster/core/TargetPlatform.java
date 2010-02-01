@@ -109,6 +109,11 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 		return Collections.emptyList();
 	}
 
+	public File getDefaultPlatformLocation(boolean asActive) throws CoreException
+	{
+		return null;
+	}
+
 	public File getLocation()
 	{
 		return getPlatformInstallLocation();

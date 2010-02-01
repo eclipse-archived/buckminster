@@ -22,7 +22,6 @@ import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -225,10 +224,7 @@ public class Import extends WorkspaceInitCommand
 				MaterializationSpecBuilder mspecBld = new MaterializationSpecBuilder();
 				mspecBld.setURL(url.toString());
 				mspecBld.setName(bom.getViewName());
-				String materializer = getMaterializer();
-				if(materializer == null)
-					materializer = IMaterializer.WORKSPACE;
-				mspecBld.setMaterializerID(materializer);
+				mspecBld.setMaterializerID(getMaterializer());
 				bom.addMaterializationNodes(mspecBld);
 				mspec = mspecBld.createMaterializationSpec();
 			}

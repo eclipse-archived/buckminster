@@ -10,7 +10,6 @@ package org.eclipse.buckminster.ui.internal;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -120,7 +119,6 @@ public class ResolveJob extends Job
 					//
 					MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 					mspecBuilder.setName(bom.getViewName());
-					mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
 					bom.addMaterializationNodes(mspecBuilder);
 					MaterializationContext matCtx = new MaterializationContext(bom,
 							mspecBuilder.createMaterializationSpec(), ctx);

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ITargetPlatform;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -20,7 +21,10 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.service.resolver.BundleDescription;
@@ -31,6 +35,7 @@ import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.target.DirectoryBundleContainer;
+import org.eclipse.pde.internal.core.target.TargetPlatformService;
 import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
 import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
@@ -46,6 +51,24 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 	private static interface ITargetDefinitionOperation<T>
 	{
 		T run(ITargetDefinition target) throws CoreException;
+	}
+
+	private static final String defaultTP = "Buckminster Default TP"; //$NON-NLS-1$
+
+	private static File getLocation(ITargetDefinition target) throws CoreException
+	{
+		IBundleContainer[] containers = target.getBundleContainers();
+		if(containers == null)
+			return null;
+		for(IBundleContainer container : containers)
+		{
+			// bug 285449: the directory bundle container is actually the only we one we can use
+			if(container instanceof DirectoryBundleContainer)
+			{
+				return new File(((DirectoryBundleContainer)container).getLocation(true));
+			}
+		}
+		return null;
 	}
 
 	public String getArch()
@@ -88,24 +111,67 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return bld;
 	}
 
+	public ITargetDefinition getDefaultPlatform(boolean asActive) throws CoreException
+	{
+		Buckminster bucky = Buckminster.getDefault();
+		ITargetPlatformService service = bucky.getService(ITargetPlatformService.class);
+		ITargetDefinition dflt = null;
+		for(ITargetHandle handle : service.getTargets(null))
+		{
+			ITargetDefinition target = handle.getTargetDefinition();
+			if(defaultTP.equals(target.getName()))
+			{
+				if(!asActive)
+					return target;
+
+				ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
+				if(activeHandle != null && activeHandle.equals(handle))
+					return target;
+
+				dflt = target;
+				break;
+			}
+		}
+
+		if(dflt == null)
+		{
+			// Create a default target platform under the buckminster folder
+			//
+			IProject buckyProj = CorePlugin.getDefault().getBuckminsterProject(true, null);
+			IFolder tpFolder = buckyProj.getFolder("tp"); //$NON-NLS-1$
+			if(!tpFolder.exists())
+				tpFolder.create(true, false, null);
+
+			dflt = ((TargetPlatformService)service).newDefaultTargetDefinition();
+			IBundleContainer runningInstance = dflt.getBundleContainers()[0];
+			IBundleContainer directory = service.newDirectoryContainer(tpFolder.getLocation().toOSString());
+			dflt.setBundleContainers(new IBundleContainer[] { directory, runningInstance });
+			dflt.setName(defaultTP);
+			service.saveTargetDefinition(dflt);
+		}
+
+		if(asActive)
+		{
+			LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(dflt);
+			IStatus status = job.run(new NullProgressMonitor());
+			if(status.getSeverity() == IStatus.ERROR)
+				throw new CoreException(status);
+		}
+		return dflt;
+	}
+
+	public File getDefaultPlatformLocation(boolean asActive) throws CoreException
+	{
+		return getLocation(getDefaultPlatform(asActive));
+	}
+
 	public File getLocation()
 	{
 		File location = doWithActivePlatform(new ITargetDefinitionOperation<File>()
 		{
 			public File run(ITargetDefinition target) throws CoreException
 			{
-				IBundleContainer[] containers = target.getBundleContainers();
-				if(containers == null)
-					return null;
-				for(IBundleContainer container : containers)
-				{
-					// bug 285449: the directory bundle container is actually the only we one we can use
-					if(container instanceof DirectoryBundleContainer)
-					{
-						return new File(((DirectoryBundleContainer)container).getLocation(true));
-					}
-				}
-				return null;
+				return getLocation(target);
 			}
 		});
 		// bug 285449: don't fall back on deprecated TargetPlatform.getLocation() setting

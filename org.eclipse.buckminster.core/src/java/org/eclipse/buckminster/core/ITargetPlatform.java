@@ -30,6 +30,19 @@ public interface ITargetPlatform
 	List<ComponentIdentifier> getComponents() throws CoreException;
 
 	/**
+	 * Returns the location of the directory container of the default target platform. The default target platform is
+	 * the running instance augmented with an extra directory that Buckminster uses for p2 provisioning. It will be
+	 * created if it does not exist.
+	 * 
+	 * @param asActive
+	 *            Set the default target platform active.
+	 * @return The location of the directory container maintained by the default target platform.
+	 * @throws CoreException
+	 *             if something goes wrong when defining the default target platform
+	 */
+	File getDefaultPlatformLocation(boolean asActive) throws CoreException;
+
+	/**
 	 * Returns the target platform's main location
 	 */
 	File getLocation();

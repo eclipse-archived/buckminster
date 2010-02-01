@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.ITargetPlatform;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
@@ -120,11 +121,17 @@ public class P2Materializer extends AbstractMaterializer
 	@Override
 	public String getMaterializerRootDir() throws CoreException
 	{
-		File location = TargetPlatform.getInstance().getLocation();
-		// bug 285449: throw exception if we cannot determine the target location
+		ITargetPlatform tp = TargetPlatform.getInstance();
+		File location = tp.getLocation();
 		if(location == null)
-			throw BuckminsterException.fromMessage(Messages.Unable_to_determine_platform_install_location);
-
+		{
+			// Create a default target platform under the buckminster folder
+			//
+			location = tp.getDefaultPlatformLocation(true);
+			// bug 285449: throw exception if we cannot determine the target location
+			if(location == null)
+				throw BuckminsterException.fromMessage(Messages.Unable_to_determine_platform_install_location);
+		}
 		return location.getAbsolutePath();
 	}
 
