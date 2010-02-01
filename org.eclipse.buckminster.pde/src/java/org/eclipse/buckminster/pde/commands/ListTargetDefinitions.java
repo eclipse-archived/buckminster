@@ -17,9 +17,12 @@ import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.commands.WorkspaceCommand;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.internal.core.target.AbstractBundleContainer;
+import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
 import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
 import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
@@ -27,6 +30,26 @@ import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
 @SuppressWarnings("restriction")
 public class ListTargetDefinitions extends WorkspaceCommand
 {
+	public static String getTargetName(ITargetDefinition target) throws CoreException
+	{
+		String name = target.getName();
+		if(name != null)
+		{
+			name = name.trim();
+			if(name.length() > 0)
+				return name;
+			name = null;
+		}
+		IBundleContainer[] bundleContainers = target.getBundleContainers();
+		if(bundleContainers != null && bundleContainers.length == 1)
+		{
+			IBundleContainer container = bundleContainers[0];
+			if(container instanceof AbstractBundleContainer)
+				return ((AbstractBundleContainer)container).getLocation(false);
+		}
+		return "<no name>"; //$NON-NLS-1$
+	}
+
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception
 	{
@@ -54,7 +77,8 @@ public class ListTargetDefinitions extends WorkspaceCommand
 			if(targetHandle.equals(activeHandle))
 				activeTarget = target;
 
-			int nameLen = target.getName().length();
+			String name = getTargetName(target);
+			int nameLen = name.length();
 			if(nameLen > maxNameLen)
 				maxNameLen = nameLen;
 		}
@@ -63,7 +87,7 @@ public class ListTargetDefinitions extends WorkspaceCommand
 		for(int idx = 0; idx < top; ++idx)
 		{
 			ITargetDefinition target = targets[idx];
-			String name = target.getName();
+			String name = getTargetName(target);
 			int nameLen = name.length();
 			if(target == activeTarget)
 				out.print('*');
