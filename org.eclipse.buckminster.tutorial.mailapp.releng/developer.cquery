@@ -2,7 +2,4 @@
 <cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="eclipse.rmap" shortDesc="Developer CQUERY to get all source for Buckminster tutorial building p2 self managed RCP mailapp">
     <cq:rootRequest name="org.eclipse.buckminster.tutorial.mailapp.product.feature" componentType="eclipse.feature"/>
     <cq:property key="useBuild" value="IBUILD"/>
-    <cq:advisorNode namePattern="org.eclipse.buddyproj.*">
-        <cq:property key="useBuild" value="NBUILD"/>
-    </cq:advisorNode>
 </cq:componentQuery>
