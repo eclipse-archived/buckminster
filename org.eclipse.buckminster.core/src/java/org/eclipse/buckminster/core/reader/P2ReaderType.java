@@ -109,7 +109,7 @@ public class P2ReaderType extends CatalogReaderType
 		// Remove legacy parameter from old 'eclipseImport' reader
 		//
 		String importType = params.get(PARAM_IMPORT_TYPE);
-		if(importType != null || IMPORT_TYPE_BINARY.equalsIgnoreCase(importType))
+		if(importType != null && IMPORT_TYPE_BINARY.equalsIgnoreCase(importType))
 		{
 			params.remove(PARAM_IMPORT_TYPE);
 			String query = URLUtils.encodeFromQueryPairs(params);
