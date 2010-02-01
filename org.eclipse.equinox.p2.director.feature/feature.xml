@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.equinox.p2.director.feature"
       label="Equinox P2 Director Feature"
-      version="1.0.0.qualifier"
+      version="1.1.0.qualifier"
       provider-name="Eclipse Buckminster">
 
    <description url="http://www.example.com/description">
@@ -40,13 +40,6 @@
 
    <plugin
          id="org.eclipse.equinox.p2.engine"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.exemplarysetup"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -377,6 +370,20 @@
 
    <plugin
          id="org.eclipse.equinox.p2.publisher"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.ds"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.util"
          download-size="0"
          install-size="0"
          version="0.0.0"
