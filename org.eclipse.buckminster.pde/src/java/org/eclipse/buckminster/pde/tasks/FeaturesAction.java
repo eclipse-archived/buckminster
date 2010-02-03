@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
@@ -30,6 +32,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
+import org.eclipse.equinox.internal.p2.metadata.VersionedId;
 import org.eclipse.equinox.internal.p2.publisher.FileSetDescriptor;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
@@ -259,7 +262,7 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 	private final Map<IVersionedId, CSpec> m_cspecs;
 
-	private Properties m_properties;
+	private final Map<IVersionedId, Properties> m_properties = new HashMap<IVersionedId, Properties>();
 
 	public FeaturesAction(File[] featureBinaries, Map<IVersionedId, CSpec> cspecs)
 	{
@@ -270,8 +273,9 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	@Override
 	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
 	{
-		for(CSpec cspec : m_cspecs.values())
+		for(Entry<IVersionedId, CSpec> entry : m_cspecs.entrySet())
 		{
+			CSpec cspec = entry.getValue();
 			try
 			{
 				IPath location = cspec.getComponentLocation();
@@ -279,12 +283,14 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 				{
 					File buildProps = location.append(IPDEBuildConstants.PROPERTIES_FILE).toFile();
 					InputStream input = null;
-					m_properties = new Properties();
+					IVersionedId vn = entry.getKey();
+					Properties props = new Properties();
+					m_properties.put(vn, props);
 					try
 					{
 						input = new BufferedInputStream(new FileInputStream(buildProps));
-						m_properties.load(input);
-						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), m_properties, location,
+						props.load(input);
+						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), props, location,
 								publisherInfo.getConfigurations());
 						if(rootAdvice != null)
 							publisherInfo.addAdvice(rootAdvice);
@@ -315,18 +321,21 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	protected IInstallableUnit createGroupIU(Feature feature, List<IInstallableUnit> childIUs,
 			IPublisherInfo publisherInfo)
 	{
-		String dfltMatchRule = m_properties.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
-		if(dfltMatchRule == null)
-			dfltMatchRule = IMatchRules.RULE_EQUIVALENT;
-		int pdeMatchRule = getMatchRule(dfltMatchRule);
+		IVersionedId vn = new VersionedId(feature.getId(), feature.getVersion());
+		Properties props = m_properties.get(vn);
+		boolean retainLowerBound = true;
+		int pdeMatchRule = IMatchRules.NONE;
 
+		if(props != null)
+		{
+			String dfltMatchRule = props.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
+			String rtl = props.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
+			pdeMatchRule = getMatchRule(dfltMatchRule);
+			if(rtl != null)
+				retainLowerBound = Boolean.parseBoolean(rtl);
+		}
 		if(pdeMatchRule == IMatchRules.NONE || pdeMatchRule == IMatchRules.PERFECT)
 			return super.createGroupIU(feature, childIUs, publisherInfo);
-
-		boolean retainLowerBound = false;
-		String rtl = m_properties.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
-		if(rtl != null)
-			retainLowerBound = Boolean.parseBoolean(rtl);
 
 		Feature newFeature = new Feature(feature.getId(), feature.getVersion());
 		final String canonicalMatchRule = IMatchRules.RULE_NAME_TABLE[pdeMatchRule];
