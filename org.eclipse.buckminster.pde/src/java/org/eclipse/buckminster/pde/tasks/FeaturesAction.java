@@ -323,8 +323,8 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	{
 		IVersionedId vn = new VersionedId(feature.getId(), feature.getVersion());
 		Properties props = m_properties.get(vn);
-		boolean retainLowerBound = true;
-		int pdeMatchRule = IMatchRules.NONE;
+		boolean retainLowerBound = false;
+		int pdeMatchRule = IMatchRules.EQUIVALENT;
 
 		if(props != null)
 		{
