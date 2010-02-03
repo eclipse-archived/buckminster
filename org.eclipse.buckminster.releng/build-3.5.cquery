@@ -5,5 +5,7 @@
     <cq:property key="target.os" value="*"/>
     <cq:property key="target.ws" value="*"/>
     <cq:advisorNode namePattern="\.buckminster\." useTargetPlatform="false" branchTagPath="Platform-3.5.x,main"/>
+    <cq:advisorNode namePattern="org\.eclipse\.equinox\.p2\.director\.feature" useTargetPlatform="false" branchTagPath="Platform-3.5.x,main"/>
+    <cq:advisorNode namePattern="org\.eclipse\.equinox\.p2\.director\.product" useTargetPlatform="false" branchTagPath="Platform-3.5.x,main"/>
     <cq:advisorNode namePattern=".*" useTargetPlatform="false"/>
 </cq:componentQuery>
