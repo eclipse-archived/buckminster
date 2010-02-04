@@ -424,11 +424,15 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			else if(IComponentType.ECLIPSE_FEATURE.equals(ctypeID))
 				provider = INSTALLED_FEATURE_PROVIDER;
 			else
+			{
+				query.logDecision(ResolverDecisionType.COMPONENT_TYPE_MISMATCH, ctypeID);
 				return null;
+			}
 
 			MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null); //$NON-NLS-1$
 			ProviderMatch match = provider.findMatch(query, problemCollector, new NullProgressMonitor());
 			if(match == null)
+				// The reason will have been logged already
 				return null;
 
 			monitor.beginTask(null, 30);
@@ -441,13 +445,16 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				IOUtils.close(reader[0]);
 
 				Resolution res = node.getResolution();
-				if(res.isFilterMatchFor(query))
+				Filter[] failingFilter = new Filter[1];
+				if(res.isFilterMatchFor(query, failingFilter))
 				{
 					if(!isSilent)
 						query.logDecision(ResolverDecisionType.MATCH_FOUND, res.getComponentIdentifier());
 					res.store(StorageManager.getDefault());
 					return node;
 				}
+				query.logDecision(ResolverDecisionType.FILTER_MISMATCH, failingFilter[0]);
+				return null;
 			}
 			finally
 			{
