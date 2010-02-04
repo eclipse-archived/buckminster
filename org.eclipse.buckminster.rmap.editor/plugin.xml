@@ -11,15 +11,12 @@
 <plugin>
 
    <extension point="org.eclipse.ui.newWizards">
-      <category
-            id="org.eclipse.emf.ecore.Wizard.category.ID"
-            name="%_UI_Wizard_category"/>
       <wizard
             id="org.eclipse.buckminster.rmap.presentation.RmapModelWizardID"
             name="%_UI_RmapModelWizard_label"
             class="org.eclipse.buckminster.rmap.presentation.RmapModelWizard"
-            category="org.eclipse.emf.ecore.Wizard.category.ID"
-            icon="icons/full/obj16/RmapModelFile.gif">
+            category="org.eclipse.buckminster"
+            icon="icons/full/obj16/rmap.png">
          <description>%_UI_RmapModelWizard_description</description>
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
