@@ -87,6 +87,8 @@ import org.osgi.framework.BundleException;
 @SuppressWarnings("restriction")
 public class PluginImportOperation extends JarImportOperation
 {
+	public static final int IMPORT_UNKNOWN = 0;
+
 	public static final int IMPORT_BINARY = 1;
 
 	public static final int IMPORT_BINARY_WITH_LINKS = 2;

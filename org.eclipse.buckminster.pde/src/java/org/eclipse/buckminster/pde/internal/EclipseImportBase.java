@@ -184,7 +184,9 @@ final class EclipseImportBase
 
 		Map<String, String> params = URLUtils.queryAsParameters(uri.getQuery());
 		String importType = params.get(PARAM_IMPORT_TYPE);
-		if(importType == null || IMPORT_TYPE_BINARY.equalsIgnoreCase(importType))
+		if(importType == null)
+			m_type = PluginImportOperation.IMPORT_UNKNOWN;
+		else if(IMPORT_TYPE_BINARY.equalsIgnoreCase(importType))
 			m_type = PluginImportOperation.IMPORT_BINARY;
 		else if(IMPORT_TYPE_LINKED.equalsIgnoreCase(importType))
 			m_type = PluginImportOperation.IMPORT_BINARY_WITH_LINKS;

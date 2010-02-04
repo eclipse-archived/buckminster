@@ -31,6 +31,7 @@ import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -162,6 +163,13 @@ public class WorkspaceMaterializer extends FileSystemMaterializer
 		// reader in order to materialize
 		//
 		IReaderType rt = super.getMaterializationReaderType(resolution);
+		if(rt instanceof P2ReaderType)
+			//
+			// At present, materializing from a p2 repository into a workspace
+			// can only mean one thing. Importing...
+			//
+			rt = CorePlugin.getDefault().getReaderType(IReaderType.ECLIPSE_IMPORT);
+
 		if(rt instanceof CatalogReaderType)
 			return rt;
 

@@ -10,7 +10,6 @@
 package org.eclipse.buckminster.core.reader;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -18,6 +17,7 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
+import org.eclipse.buckminster.core.materializer.P2Materializer;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -25,7 +25,6 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -45,16 +44,10 @@ public class P2ReaderType extends CatalogReaderType
 {
 	private static final IExpression iuQuery = ExpressionUtil.parse("id == $0 && version == $1"); //$NON-NLS-1$
 
-	private static final String PARAM_IMPORT_TYPE = "importType"; //$NON-NLS-1$
-
-	private static final String IMPORT_TYPE_BINARY = "binary"; //$NON-NLS-1$
-
 	public static IArtifactRepository getArtifactRepository(Provider provider,
 			Map<String, ? extends Object> properties, IProgressMonitor monitor) throws CoreException
 	{
-		String url = provider.getURI(properties);
-		URI uri = URLUtils.normalizeToURI(url, true);
-		return getArtifactRepository(uri, monitor);
+		return getArtifactRepository(getURI(provider, properties), monitor);
 	}
 
 	public static IArtifactRepository getArtifactRepository(ProviderMatch providerMatch, IProgressMonitor monitor)
@@ -101,29 +94,7 @@ public class P2ReaderType extends CatalogReaderType
 	public static IMetadataRepository getMetadataRepository(Provider provider,
 			Map<String, ? extends Object> properties, IProgressMonitor monitor) throws CoreException
 	{
-		String url = provider.getURI(properties);
-		URI uri = URLUtils.normalizeToURI(url, true);
-
-		Map<String, String> params = URLUtils.queryAsParameters(uri.getQuery());
-
-		// Remove legacy parameter from old 'eclipseImport' reader
-		//
-		String importType = params.get(PARAM_IMPORT_TYPE);
-		if(importType != null && IMPORT_TYPE_BINARY.equalsIgnoreCase(importType))
-		{
-			params.remove(PARAM_IMPORT_TYPE);
-			String query = URLUtils.encodeFromQueryPairs(params);
-			try
-			{
-				uri = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), query,
-						uri.getFragment());
-			}
-			catch(URISyntaxException e)
-			{
-				throw BuckminsterException.wrap(e);
-			}
-		}
-		return getMetadataRepository(uri, monitor);
+		return getMetadataRepository(getURI(provider, properties), monitor);
 	}
 
 	public static IMetadataRepository getMetadataRepository(ProviderMatch providerMatch, IProgressMonitor monitor)
@@ -154,6 +125,11 @@ public class P2ReaderType extends CatalogReaderType
 			if(monitor != null)
 				monitor.done();
 		}
+	}
+
+	public static URI getURI(Provider provider, Map<String, ? extends Object> properties) throws CoreException
+	{
+		return P2Materializer.cleanURIFromImportType(URLUtils.normalizeToURI(provider.getURI(properties), true));
 	}
 
 	public P2ReaderType()

@@ -66,6 +66,22 @@ public class P2Materializer extends AbstractMaterializer
 
 	private static final String PROP_ARTIFACT_FOLDER = "artifact.folder"; //$NON-NLS-1$
 
+	public static URI cleanURIFromImportType(URI repoLocation)
+	{
+		Map<String, String> props = URLUtils.queryAsParameters(repoLocation.getQuery());
+		if(props.remove("importType") != null) //$NON-NLS-1$
+			try
+			{
+				repoLocation = new URI(repoLocation.getScheme(), repoLocation.getAuthority(), repoLocation.getPath(),
+						URLUtils.encodeFromQueryPairs(props), repoLocation.getFragment());
+			}
+			catch(URISyntaxException e)
+			{
+				throw new IllegalArgumentException(e);
+			}
+		return repoLocation;
+	}
+
 	static IArtifactRepository getArtifactRepository(IArtifactRepositoryManager manager, URI repoLocation,
 			IProgressMonitor monitor) throws CoreException
 	{
@@ -92,22 +108,6 @@ public class P2Materializer extends AbstractMaterializer
 		{
 			return manager.refreshRepository(repoLocation, subMon.newChild(100));
 		}
-	}
-
-	private static URI cleanURIFromImportType(URI repoLocation)
-	{
-		Map<String, String> props = URLUtils.queryAsParameters(repoLocation.getQuery());
-		if(props.remove("importType") != null) //$NON-NLS-1$
-			try
-			{
-				repoLocation = new URI(repoLocation.getScheme(), repoLocation.getAuthority(), repoLocation.getPath(),
-						URLUtils.encodeFromQueryPairs(props), repoLocation.getFragment());
-			}
-			catch(URISyntaxException e)
-			{
-				throw new IllegalArgumentException(e);
-			}
-		return repoLocation;
 	}
 
 	@Override

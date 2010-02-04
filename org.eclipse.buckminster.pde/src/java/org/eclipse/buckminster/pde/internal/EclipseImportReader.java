@@ -173,7 +173,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 	private IWorkspaceRunnable getFeatureImportJob(IFeatureModel model, IPath destination)
 	{
 		return new FeatureImportOperation((EclipseImportReaderType)getReaderType(), model, getNodeQuery(), destination,
-				m_base.getType() == PluginImportOperation.IMPORT_BINARY);
+				getImportType() == PluginImportOperation.IMPORT_BINARY);
 	}
 
 	private IFeatureModel getFeatureModel(Version version, IProgressMonitor monitor) throws CoreException
@@ -204,6 +204,16 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		}
 	}
 
+	private int getImportType()
+	{
+		int importType = m_base.getType();
+		if(importType == PluginImportOperation.IMPORT_UNKNOWN)
+			importType = getProviderMatch().getProvider().hasSource()
+					? PluginImportOperation.IMPORT_WITH_SOURCE
+					: PluginImportOperation.IMPORT_BINARY;
+		return importType;
+	}
+
 	private File getInstallLocation()
 	{
 		String location = (m_model instanceof IPluginModelBase)
@@ -215,7 +225,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 
 	private IWorkspaceRunnable getPluginImportJob(IPluginModelBase model, IPath destination)
 	{
-		PluginImportOperation job = new PluginImportOperation(model, getNodeQuery(), destination, m_base.getType());
+		PluginImportOperation job = new PluginImportOperation(model, getNodeQuery(), destination, getImportType());
 		job.setClasspathCollector((EclipseImportReaderType)getReaderType());
 		return job;
 	}
