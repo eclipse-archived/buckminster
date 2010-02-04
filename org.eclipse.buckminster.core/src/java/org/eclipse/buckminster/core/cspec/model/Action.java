@@ -246,22 +246,13 @@ public class Action extends TopLevelAttribute implements IAction
 			failLeadIn = String.format("Action %s using 'up to date' policy %s: Rebuild needed: ", this, //$NON-NLS-1$
 					m_upToDatePolicy);
 
-		if(m_upToDatePolicy == UpToDatePolicy.ACTOR)
-		{
-			if(ActorFactory.getInstance().getActor(this).isUpToDate(this, ctx))
-				return true;
-
-			if(isDebug)
-				logger.debug("%sActor decision", failLeadIn); //$NON-NLS-1$
-			return false;
-		}
-
+		int expectedFileCount;
 		if(m_upToDatePolicy == UpToDatePolicy.MAPPER)
 		{
 			Map<String, Long> prereqFiles = getPrerequisiteRelativeFiles(ctx);
 			Map<String, Long> productFiles = getProductRelativeFiles(ctx);
 
-			int expectedFileCount = prereqFiles.size();
+			expectedFileCount = prereqFiles.size();
 			if(m_productFileCount > 0)
 				expectedFileCount += m_productFileCount;
 
@@ -310,13 +301,14 @@ public class Action extends TopLevelAttribute implements IAction
 			return true;
 		}
 
-		int expectedFileCount;
+		int[] fileCountBin = new int[] { 0 };
 		switch(m_upToDatePolicy)
 		{
 		case COUNT:
 			expectedFileCount = m_productFileCount;
 			break;
 
+		case ACTOR:
 		case NOT_EMPTY:
 			expectedFileCount = 0;
 			break;
@@ -325,8 +317,24 @@ public class Action extends TopLevelAttribute implements IAction
 			expectedFileCount = -1;
 		}
 
-		int[] fileCountBin = new int[] { 0 };
 		long oldest = getFirstModified(ctx, expectedFileCount, fileCountBin);
+		if(m_upToDatePolicy == UpToDatePolicy.ACTOR)
+		{
+			fileCountBin[0] = 0;
+			long prereqAge = getPrerequisiteGroup().getLastModified(ctx, oldest, fileCountBin);
+			if(ActorFactory.getInstance().getActor(this).isUpToDate(this, ctx, prereqAge, oldest))
+			{
+				if(isDebug)
+					logger.debug(String.format("Action %s using 'up to date' policy %s: Product is up to date", this, //$NON-NLS-1$
+							m_upToDatePolicy));
+				return true;
+			}
+
+			if(isDebug)
+				logger.debug("%sActor decision", failLeadIn); //$NON-NLS-1$
+			return false;
+		}
+
 		int fileCount = fileCountBin[0];
 		if(oldest == 0L || (expectedFileCount > 0 && expectedFileCount > fileCount))
 		{

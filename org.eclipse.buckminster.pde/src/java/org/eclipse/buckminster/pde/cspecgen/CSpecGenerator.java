@@ -588,29 +588,32 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		siteBuilder.addLocalPrerequisite(siteDefiningAttribute, P2SiteGenerator.ALIAS_SITE_DEFINER);
 		siteBuilder.addLocalPrerequisite(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, P2SiteGenerator.ALIAS_PRODUCT_CONFIGS);
 		siteBuilder.setProductBase(IPDEConstants.OUTPUT_DIR_SITE_P2);
+		siteBuilder.setUpToDatePolicy(UpToDatePolicy.ACTOR);
 	}
 
 	protected void createSitePackAction(String rawSiteAttribute) throws CoreException
 	{
-		ActionBuilder siteBuilder = getCSpec().addAction(ATTRIBUTE_SITE_PACKED, true, JarProcessorActor.ACTOR_ID, true);
+		ActionBuilder siteBuilder = getCSpec().addAction(ATTRIBUTE_SITE_PACKED, true, JarProcessorActor.ACTOR_ID, false);
 		siteBuilder.addLocalPrerequisite(rawSiteAttribute, JarProcessorActor.ALIAS_JAR_FOLDER, SIGNING_DISABLED);
 		siteBuilder.addLocalPrerequisite(ATTRIBUTE_SITE_SIGNED, JarProcessorActor.ALIAS_JAR_FOLDER, SIGNING_ENABLED);
 		siteBuilder.getProperties().put(JarProcessorActor.PROP_COMMAND, JarProcessorActor.COMMAND_PACK);
 		siteBuilder.setProductBase(OUTPUT_DIR_SITE_PACKED);
+		siteBuilder.setUpToDatePolicy(UpToDatePolicy.MAPPER);
 	}
 
 	protected void createSiteRepackAction(String rawSiteAttribute) throws CoreException
 	{
 		ActionBuilder siteBuilder = getCSpec().addAction(ATTRIBUTE_SITE_REPACKED, false, JarProcessorActor.ACTOR_ID,
-				true);
+				false);
 		siteBuilder.addLocalPrerequisite(rawSiteAttribute, JarProcessorActor.ALIAS_JAR_FOLDER);
 		siteBuilder.getProperties().put(JarProcessorActor.PROP_COMMAND, JarProcessorActor.COMMAND_REPACK);
 		siteBuilder.setProductBase(OUTPUT_DIR_SITE_REPACKED);
+		siteBuilder.setUpToDatePolicy(UpToDatePolicy.MAPPER);
 	}
 
 	protected void createSiteSignAction(String rawSiteAttribute) throws CoreException
 	{
-		ActionBuilder siteBuilder = getCSpec().addAction(ATTRIBUTE_SITE_SIGNED, true, AntActor.ACTOR_ID, true);
+		ActionBuilder siteBuilder = getCSpec().addAction(ATTRIBUTE_SITE_SIGNED, true, AntActor.ACTOR_ID, false);
 		Map<String, String> actorProps = siteBuilder.getActorProperties();
 		actorProps.put(AntActor.PROP_BUILD_FILE_ID, "buckminster.signing"); //$NON-NLS-1$
 		actorProps.put(AntActor.PROP_TARGETS, "sign.jars"); //$NON-NLS-1$
@@ -620,6 +623,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		siteBuilder.addLocalPrerequisite(rawSiteAttribute, null, PACK_DISABLED);
 		siteBuilder.setProductBase(OUTPUT_DIR_SITE_SIGNED);
 		siteBuilder.setProductAlias(ALIAS_OUTPUT);
+		siteBuilder.setUpToDatePolicy(UpToDatePolicy.MAPPER);
 	}
 
 	protected void createSiteZipAction() throws CoreException
@@ -629,6 +633,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		siteZip.addLocalPrerequisite(ATTRIBUTE_SITE_P2, ALIAS_REQUIREMENTS);
 		siteZip.setProductBase(OUTPUT_DIR_SITE_ZIP);
 		siteZip.setProductAlias(ALIAS_OUTPUT);
+		siteZip.setUpToDatePolicy(UpToDatePolicy.COUNT);
+		siteZip.setProductFileCount(1);
 	}
 
 	protected String expand(String value) throws CoreException

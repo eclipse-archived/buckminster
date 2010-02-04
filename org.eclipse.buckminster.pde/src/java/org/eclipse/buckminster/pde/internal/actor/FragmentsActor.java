@@ -42,6 +42,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.service.resolver.BundleDescription;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.osgi.framework.InvalidSyntaxException;
@@ -56,12 +57,13 @@ public class FragmentsActor extends AbstractActor
 	public static final String PROP_FRAGMENT_ATTRIBUTE = "fragment.attribute"; //$NON-NLS-1$
 
 	@Override
-	public boolean isUpToDate(Action action, IModelCache ctx) throws CoreException
+	public boolean isUpToDate(Action action, IModelCache ctx, long prerequisiteAge, long oldestTarget)
+			throws CoreException
 	{
 		ComponentIdentifier cid = action.getCSpec().getComponentIdentifier();
 		IPath outputDir = action.getProductBase();
 		if(outputDir == null)
-			throw BuckminsterException.fromMessage(Messages.missing_product_base_in_ctf_actor);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.missing_product_base_in_0_actor, ID));
 
 		Map<String, ? extends Object> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
@@ -89,8 +91,8 @@ public class FragmentsActor extends AbstractActor
 				//
 				continue;
 
-			ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionHelper
-					.exactRange(fragment.getVersion()));
+			ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE,
+					VersionHelper.exactRange(fragment.getVersion()));
 
 			String filterStr = fragment.getPlatformFilter();
 			if(filterStr != null)
@@ -128,7 +130,7 @@ public class FragmentsActor extends AbstractActor
 
 		IPath outputDir = ctx.getAction().getProductBase();
 		if(outputDir == null)
-			throw BuckminsterException.fromMessage(Messages.missing_product_base_in_ctf_actor);
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.missing_product_base_in_0_actor, ID));
 
 		Map<String, ? extends Object> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
@@ -172,8 +174,8 @@ public class FragmentsActor extends AbstractActor
 					//
 					continue;
 
-				ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionHelper
-						.exactRange(fragment.getVersion()));
+				ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE,
+						VersionHelper.exactRange(fragment.getVersion()));
 
 				String filterStr = fragment.getPlatformFilter();
 				if(filterStr != null)
@@ -203,8 +205,8 @@ public class FragmentsActor extends AbstractActor
 				//
 				CSpec cspec = res.getCSpec();
 				Attribute bundleJar = cspec.getAttribute(fragmentAttribute);
-				performManager.perform(Collections.singletonList(bundleJar), ctx.getGlobalContext(), MonitorUtils
-						.subMonitor(monitor, 70));
+				performManager.perform(Collections.singletonList(bundleJar), ctx.getGlobalContext(),
+						MonitorUtils.subMonitor(monitor, 70));
 
 				// Copy the path groups to the given destination
 				//

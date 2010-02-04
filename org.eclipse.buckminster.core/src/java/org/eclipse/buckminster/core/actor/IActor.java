@@ -25,7 +25,7 @@ public interface IActor
 
 	void init(Action action) throws CoreException;
 
-	boolean isUpToDate(Action action, IModelCache ctx) throws CoreException;
+	boolean isUpToDate(Action action, IModelCache ctx, long prerequisiteAge, long oldestInTarget) throws CoreException;
 
 	IStatus perform(IActionContext ctx, IProgressMonitor monitor) throws CoreException;
 }

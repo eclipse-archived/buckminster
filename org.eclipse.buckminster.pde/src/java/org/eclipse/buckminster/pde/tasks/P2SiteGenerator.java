@@ -26,12 +26,14 @@ import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.actor.IllegalPrerequisiteException;
 import org.eclipse.buckminster.core.actor.MissingPrerequisiteException;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
@@ -44,6 +46,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepositoryFactory;
 import org.eclipse.equinox.internal.p2.core.helpers.FileUtils;
@@ -71,6 +74,8 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 @SuppressWarnings("restriction")
 public class P2SiteGenerator extends AbstractActor
 {
+	public static final String ID = "p2SiteGenerator"; //$NON-NLS-1$
+
 	public static final String ALIAS_SITE = "site"; //$NON-NLS-1$
 
 	public static final String ALIAS_SITE_DEFINER = "site.definer"; //$NON-NLS-1$
@@ -263,6 +268,28 @@ public class P2SiteGenerator extends AbstractActor
 		{
 			IOUtils.close(input);
 		}
+	}
+
+	@Override
+	public boolean isUpToDate(Action action, IModelCache ctx, long prerequisiteAge, long oldestTarget)
+			throws CoreException
+	{
+		if(!super.isUpToDate(action, ctx, prerequisiteAge, oldestTarget))
+			// Prerequisite is younger
+			return false;
+
+		IPath outputDir = action.getProductBase();
+		if(outputDir == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.missing_product_base_in_0_actor, ID));
+
+		Map<String, ? extends Object> properties = ctx.getProperties();
+		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
+
+		// We could of course check that all files referenced by the artifacts.jar exists too but
+		// we trust that the output is consistent. If it isn't, someone has manually removed things
+		// from it and then reverted the timestamp of the folder. It would be somewhat paranoid to
+		// check for htat.
+		return outputDir.append("content.jar").toFile().exists() && outputDir.append("artifacts.jar").toFile().exists(); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	public void run(IActionContext ctx, File siteDefiner, File sourceFolder, List<File> productConfigs,

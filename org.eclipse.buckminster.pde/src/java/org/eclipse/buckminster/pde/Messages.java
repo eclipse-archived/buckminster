@@ -81,7 +81,7 @@ public class Messages extends NLS
 
 	public static String project_0_already_exists;
 
-	public static String missing_product_base_in_ctf_actor;
+	public static String missing_product_base_in_0_actor;
 
 	public static String badly_formatted_version_0_in_PDEmap_1;
 

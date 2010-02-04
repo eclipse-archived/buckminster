@@ -160,9 +160,11 @@ public abstract class AbstractActor implements IActor, IExecutableExtension
 		this.internalInit();
 	}
 
-	public boolean isUpToDate(Action action, IModelCache ctx) throws CoreException
+	public boolean isUpToDate(Action action, IModelCache ctx, long prerequisiteAge, long oldestTarget)
+			throws CoreException
 	{
-		return false;
+		// Return true if the oldest target is younger or the same age as the youngest prerequisite.
+		return oldestTarget >= prerequisiteAge;
 	}
 
 	public final synchronized IStatus perform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
