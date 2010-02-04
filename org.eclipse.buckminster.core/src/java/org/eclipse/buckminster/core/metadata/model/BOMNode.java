@@ -146,15 +146,12 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted
 	{
 	}
 
-	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
+	BOMNode replaceNode(BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
 	{
 		BOMNode self = visited.get(this);
 		if(self == null)
 		{
-			QualifiedDependency qDep = getQualifiedDependency();
-			if(topReplacer.getQualifiedDependency().equals(qDep))
-				self = topReplacer;
-			else if(topReplacer != node && node.getQualifiedDependency().equals(qDep))
+			if(node.getQualifiedDependency().equals(getQualifiedDependency()))
 				self = node;
 			else
 				self = this;

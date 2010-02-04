@@ -322,7 +322,7 @@ public class BillOfMaterials extends BOMNode
 
 	public BillOfMaterials replaceNode(BOMNode node) throws CoreException
 	{
-		return replaceNode(node, node);
+		return (BillOfMaterials)replaceNode(node, new HashMap<BOMNode, BOMNode>());
 	}
 
 	public BillOfMaterials switchContent(BillOfMaterials other)
@@ -398,33 +398,30 @@ public class BillOfMaterials extends BOMNode
 		getTopNode().collectAll(notThese, all);
 	}
 
-	BillOfMaterials replaceNode(BOMNode topReplacer, BOMNode node) throws CoreException
-	{
-		List<BOMNode> children = node.getChildren();
-		int idx = children.size();
-		BillOfMaterials self = this;
-		while(--idx >= 0)
-			self = self.replaceNode(node, children.get(idx));
-		return (BillOfMaterials)self.replaceNode(node, node, new HashMap<BOMNode, BOMNode>());
-	}
-
 	@Override
-	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
+	BOMNode replaceNode(BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
 	{
-		if(node instanceof BillOfMaterials && node.getQuery().equals(getQuery()))
-			node = ((BillOfMaterials)node).getTopNode();
-		else
-		{
-			BOMNode newNode = super.replaceNode(topReplacer, node, visited);
-			if(newNode != this)
-				return newNode;
-		}
+		BOMNode self = visited.get(this);
+		if(self != null)
+			return self;
 
 		BOMNode oldTop = getTopNode();
-		BOMNode newTop = oldTop.replaceNode(topReplacer, node, visited);
-		return (oldTop == newTop)
+		if(node instanceof BillOfMaterials && node.getQuery().equals(getQuery()))
+		{
+			BOMNode newTop = ((BillOfMaterials)node).getTopNode();
+			if(oldTop.getQualifiedDependency().equals(newTop.getQualifiedDependency()))
+			{
+				visited.put(this, node);
+				return node;
+			}
+		}
+
+		BOMNode newTop = oldTop.replaceNode(node, visited);
+		self = (oldTop == newTop)
 				? this
 				: create(newTop, getQuery());
+		visited.put(this, self);
+		return self;
 	}
 
 	/**

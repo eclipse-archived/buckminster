@@ -275,9 +275,9 @@ public class ResolvedNode extends BOMNode
 	}
 
 	@Override
-	BOMNode replaceNode(BOMNode topReplacer, BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
+	BOMNode replaceNode(BOMNode node, Map<BOMNode, BOMNode> visited) throws CoreException
 	{
-		BOMNode self = super.replaceNode(topReplacer, node, visited);
+		BOMNode self = super.replaceNode(node, visited);
 		if(self != this)
 			return self;
 
@@ -287,7 +287,7 @@ public class ResolvedNode extends BOMNode
 		for(int idx = 0; idx < numChildren; ++idx)
 		{
 			BOMNode oldChild = oldChildren.get(idx);
-			BOMNode newChild = oldChild.replaceNode(topReplacer, node, visited);
+			BOMNode newChild = oldChild.replaceNode(node, visited);
 			if(oldChild == newChild)
 				continue;
 

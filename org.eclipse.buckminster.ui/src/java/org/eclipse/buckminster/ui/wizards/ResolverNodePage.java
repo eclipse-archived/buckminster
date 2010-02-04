@@ -337,10 +337,7 @@ public class ResolverNodePage extends AbstractQueryPage
 	void unresolveNode()
 	{
 		final BOMNode node = getSelectedMasterNode();
-		if(node == null)
-			return;
-
-		if(node instanceof UnresolvedNode)
+		if(node == null || node.getResolution() == null)
 			return;
 
 		QueryWizard queryWizard = getQueryWizard();
@@ -361,7 +358,8 @@ public class ResolverNodePage extends AbstractQueryPage
 		ti.setText(node.getViewName());
 		ti.setData(node);
 
-		if(node instanceof UnresolvedNode)
+		IResolution resolution = node.getResolution();
+		if(resolution == null)
 		{
 			if(node.isFullyResolved(getContext().getComponentQuery(), getContext()))
 				ti.setImage(m_yellowDotImage);
@@ -371,16 +369,12 @@ public class ResolverNodePage extends AbstractQueryPage
 			return;
 		}
 
-		IResolution resolution = node.getResolution();
-		if(resolution != null)
+		Integer nc = m_masterDups.get(resolution);
+		if(nc != null && nc.intValue() > 1 && !wasParentWhenFirstSeen(parent, node))
 		{
-			Integer nc = m_masterDups.get(resolution);
-			if(nc != null && nc.intValue() > 1 && !wasParentWhenFirstSeen(parent, node))
-			{
-				ti.setImage(m_grayDotImage);
-				ti.setFont(m_itemItalicFont);
-				return;
-			}
+			ti.setImage(m_grayDotImage);
+			ti.setFont(m_itemItalicFont);
+			return;
 		}
 
 		ti.setImage(m_greenDotImage);
