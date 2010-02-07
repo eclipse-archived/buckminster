@@ -9,14 +9,18 @@ package org.eclipse.buckminster.cspecxml;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Parameter Type</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Parameter Type</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.IParameterType#isMandatory <em>Mandatory</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.IParameterType#getName <em>Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.IParameterType#getValue <em>Value</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.IParameterType#isMandatory <em>
+ * Mandatory</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.IParameterType#getName <em>Name
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.IParameterType#getValue <em>Value
+ * </em>}</li>
  * </ul>
  * </p>
  * 
@@ -24,12 +28,13 @@ import org.eclipse.emf.ecore.EObject;
  * @model extendedMetaData="name='parameter_._type' kind='empty'"
  * @generated
  */
-public interface IParameterType extends EObject
-{
+public interface IParameterType extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear, there really should be more of a description here...
+	 * If the meaning of the '<em>Name</em>' attribute isn't clear, there really
+	 * should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -43,10 +48,11 @@ public interface IParameterType extends EObject
 	String getName();
 
 	/**
-	 * Returns the value of the '<em><b>Value</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Value</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Value</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Value</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -60,11 +66,11 @@ public interface IParameterType extends EObject
 	String getValue();
 
 	/**
-	 * Returns the value of the '<em><b>Mandatory</b></em>' attribute. The default value is <code>"false"</code>. <!--
-	 * begin-user-doc -->
+	 * Returns the value of the '<em><b>Mandatory</b></em>' attribute. The
+	 * default value is <code>"false"</code>. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Mandatory</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Mandatory</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -73,15 +79,18 @@ public interface IParameterType extends EObject
 	 * @see #unsetMandatory()
 	 * @see #setMandatory(boolean)
 	 * @see org.eclipse.buckminster.cspecxml.ICSpecXMLPackage#getParameterType_Mandatory()
-	 * @model default="false" unsettable="true" dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 * @model default="false" unsettable="true"
+	 *        dataType="org.eclipse.emf.ecore.xml.type.Boolean"
 	 *        extendedMetaData="kind='attribute' name='mandatory'"
 	 * @generated
 	 */
 	boolean isMandatory();
 
 	/**
-	 * Returns whether the value of the '{@link org.eclipse.buckminster.cspecxml.IParameterType#isMandatory
-	 * <em>Mandatory</em>}' attribute is set. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns whether the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IParameterType#isMandatory
+	 * <em>Mandatory</em>}' attribute is set. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @return whether the value of the '<em>Mandatory</em>' attribute is set.
 	 * @see #unsetMandatory()
@@ -92,8 +101,10 @@ public interface IParameterType extends EObject
 	boolean isSetMandatory();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IParameterType#isMandatory <em>Mandatory</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IParameterType#isMandatory
+	 * <em>Mandatory</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Mandatory</em>' attribute.
@@ -105,8 +116,9 @@ public interface IParameterType extends EObject
 	void setMandatory(boolean value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IParameterType#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IParameterType#getName
+	 * <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Name</em>' attribute.
@@ -116,8 +128,9 @@ public interface IParameterType extends EObject
 	void setName(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IParameterType#getValue <em>Value</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IParameterType#getValue
+	 * <em>Value</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Value</em>' attribute.
@@ -127,8 +140,10 @@ public interface IParameterType extends EObject
 	void setValue(String value);
 
 	/**
-	 * Unsets the value of the '{@link org.eclipse.buckminster.cspecxml.IParameterType#isMandatory <em>Mandatory</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Unsets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IParameterType#isMandatory
+	 * <em>Mandatory</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @see #isSetMandatory()
 	 * @see #isMandatory()

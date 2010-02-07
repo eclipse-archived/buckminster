@@ -17,23 +17,27 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Parameter Type</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Parameter Type</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ParameterTypeImpl#isMandatory <em>Mandatory</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ParameterTypeImpl#getName <em>Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ParameterTypeImpl#getValue <em>Value</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ParameterTypeImpl#isMandatory
+ * <em>Mandatory</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ParameterTypeImpl#getName
+ * <em>Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ParameterTypeImpl#getValue
+ * <em>Value</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ParameterTypeImpl extends EObjectImpl implements IParameterType
-{
+public class ParameterTypeImpl extends EObjectImpl implements IParameterType {
 	/**
-	 * The default value of the '{@link #isMandatory() <em>Mandatory</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #isMandatory() <em>Mandatory</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isMandatory()
 	 * @generated
@@ -42,8 +46,8 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	protected static final boolean MANDATORY_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isMandatory() <em>Mandatory</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #isMandatory() <em>Mandatory</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isMandatory()
 	 * @generated
@@ -52,7 +56,8 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	protected boolean mandatory = MANDATORY_EDEFAULT;
 
 	/**
-	 * This is true if the Mandatory attribute has been set. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is true if the Mandatory attribute has been set. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -60,8 +65,8 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	protected boolean mandatoryESet;
 
 	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -70,8 +75,8 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	protected static final String NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -80,8 +85,8 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getValue()
 	 * @generated
@@ -90,8 +95,8 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	protected static final String VALUE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getValue()
 	 * @generated
@@ -104,8 +109,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * 
 	 * @generated
 	 */
-	protected ParameterTypeImpl()
-	{
+	protected ParameterTypeImpl() {
 		super();
 	}
 
@@ -115,16 +119,14 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY:
-			return isMandatory();
-		case ICSpecXMLPackage.PARAMETER_TYPE__NAME:
-			return getName();
-		case ICSpecXMLPackage.PARAMETER_TYPE__VALUE:
-			return getValue();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY:
+				return isMandatory();
+			case ICSpecXMLPackage.PARAMETER_TYPE__NAME:
+				return getName();
+			case ICSpecXMLPackage.PARAMETER_TYPE__VALUE:
+				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -135,20 +137,14 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY:
-			return isSetMandatory();
-		case ICSpecXMLPackage.PARAMETER_TYPE__NAME:
-			return NAME_EDEFAULT == null
-					? name != null
-					: !NAME_EDEFAULT.equals(name);
-		case ICSpecXMLPackage.PARAMETER_TYPE__VALUE:
-			return VALUE_EDEFAULT == null
-					? value != null
-					: !VALUE_EDEFAULT.equals(value);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY:
+				return isSetMandatory();
+			case ICSpecXMLPackage.PARAMETER_TYPE__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case ICSpecXMLPackage.PARAMETER_TYPE__VALUE:
+				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -159,19 +155,17 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY:
-			setMandatory((Boolean)newValue);
-			return;
-		case ICSpecXMLPackage.PARAMETER_TYPE__NAME:
-			setName((String)newValue);
-			return;
-		case ICSpecXMLPackage.PARAMETER_TYPE__VALUE:
-			setValue((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY:
+				setMandatory((Boolean) newValue);
+				return;
+			case ICSpecXMLPackage.PARAMETER_TYPE__NAME:
+				setName((String) newValue);
+				return;
+			case ICSpecXMLPackage.PARAMETER_TYPE__VALUE:
+				setValue((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -182,19 +176,17 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY:
-			unsetMandatory();
-			return;
-		case ICSpecXMLPackage.PARAMETER_TYPE__NAME:
-			setName(NAME_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.PARAMETER_TYPE__VALUE:
-			setValue(VALUE_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY:
+				unsetMandatory();
+				return;
+			case ICSpecXMLPackage.PARAMETER_TYPE__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.PARAMETER_TYPE__VALUE:
+				setValue(VALUE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -204,8 +196,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * 
 	 * @generated
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
@@ -214,8 +205,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * 
 	 * @generated
 	 */
-	public String getValue()
-	{
+	public String getValue() {
 		return value;
 	}
 
@@ -224,8 +214,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * 
 	 * @generated
 	 */
-	public boolean isMandatory()
-	{
+	public boolean isMandatory() {
 		return mandatory;
 	}
 
@@ -234,8 +223,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * 
 	 * @generated
 	 */
-	public boolean isSetMandatory()
-	{
+	public boolean isSetMandatory() {
 		return mandatoryESet;
 	}
 
@@ -244,15 +232,14 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * 
 	 * @generated
 	 */
-	public void setMandatory(boolean newMandatory)
-	{
+	public void setMandatory(boolean newMandatory) {
 		boolean oldMandatory = mandatory;
 		mandatory = newMandatory;
 		boolean oldMandatoryESet = mandatoryESet;
 		mandatoryESet = true;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY,
-					oldMandatory, mandatory, !oldMandatoryESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY, oldMandatory, mandatory,
+					!oldMandatoryESet));
 	}
 
 	/**
@@ -260,11 +247,10 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * 
 	 * @generated
 	 */
-	public void setName(String newName)
-	{
+	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PARAMETER_TYPE__NAME, oldName, name));
 	}
 
@@ -273,13 +259,11 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * 
 	 * @generated
 	 */
-	public void setValue(String newValue)
-	{
+	public void setValue(String newValue) {
 		String oldValue = value;
 		value = newValue;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PARAMETER_TYPE__VALUE, oldValue,
-					value));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PARAMETER_TYPE__VALUE, oldValue, value));
 	}
 
 	/**
@@ -288,14 +272,13 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (mandatory: ");
-		if(mandatoryESet)
+		if (mandatoryESet)
 			result.append(mandatory);
 		else
 			result.append("<unset>");
@@ -312,15 +295,14 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * 
 	 * @generated
 	 */
-	public void unsetMandatory()
-	{
+	public void unsetMandatory() {
 		boolean oldMandatory = mandatory;
 		boolean oldMandatoryESet = mandatoryESet;
 		mandatory = MANDATORY_EDEFAULT;
 		mandatoryESet = false;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY,
-					oldMandatory, MANDATORY_EDEFAULT, oldMandatoryESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.PARAMETER_TYPE__MANDATORY, oldMandatory, MANDATORY_EDEFAULT,
+					oldMandatoryESet));
 	}
 
 	/**
@@ -329,8 +311,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.PARAMETER_TYPE;
 	}
 

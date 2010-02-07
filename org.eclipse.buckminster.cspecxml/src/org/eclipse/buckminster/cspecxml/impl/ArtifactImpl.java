@@ -28,27 +28,34 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Artifact</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Artifact</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getDefinitions <em>Definitions</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getPath <em>Path</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getBase <em>Base</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getFilter <em>Filter</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getPath1 <em>Path1</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getType <em>Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getGroup <em>
+ * Group</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getDefinitions
+ * <em>Definitions</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getPath <em>
+ * Path</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getBase <em>
+ * Base</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getFilter <em>
+ * Filter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getPath1 <em>
+ * Path1</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ArtifactImpl#getType <em>
+ * Type</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ArtifactImpl extends AttributeImpl implements IArtifact
-{
+public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -57,8 +64,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	protected FeatureMap group;
 
 	/**
-	 * The default value of the '{@link #getBase() <em>Base</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getBase() <em>Base</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getBase()
 	 * @generated
@@ -67,8 +74,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	protected static final String BASE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getBase() <em>Base</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getBase() <em>Base</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getBase()
 	 * @generated
@@ -77,8 +84,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	protected String base = BASE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getFilter() <em>Filter</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -87,8 +94,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	protected static final Filter FILTER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -97,8 +104,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	protected Filter filter = FILTER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getPath1() <em>Path1</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getPath1() <em>Path1</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPath1()
 	 * @generated
@@ -107,8 +114,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	protected static final String PATH1_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPath1() <em>Path1</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getPath1() <em>Path1</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPath1()
 	 * @generated
@@ -117,8 +124,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	protected String path1 = PATH1_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getType()
 	 * @generated
@@ -127,8 +134,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	protected static final String TYPE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getType()
 	 * @generated
@@ -141,8 +148,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	protected ArtifactImpl()
-	{
+	protected ArtifactImpl() {
 		super();
 	}
 
@@ -152,26 +158,24 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ARTIFACT__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
-			return getDefinitions();
-		case ICSpecXMLPackage.ARTIFACT__PATH:
-			return getPath();
-		case ICSpecXMLPackage.ARTIFACT__BASE:
-			return getBase();
-		case ICSpecXMLPackage.ARTIFACT__FILTER:
-			return getFilter();
-		case ICSpecXMLPackage.ARTIFACT__PATH1:
-			return getPath1();
-		case ICSpecXMLPackage.ARTIFACT__TYPE:
-			return getType();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ARTIFACT__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
+				return getDefinitions();
+			case ICSpecXMLPackage.ARTIFACT__PATH:
+				return getPath();
+			case ICSpecXMLPackage.ARTIFACT__BASE:
+				return getBase();
+			case ICSpecXMLPackage.ARTIFACT__FILTER:
+				return getFilter();
+			case ICSpecXMLPackage.ARTIFACT__PATH1:
+				return getPath1();
+			case ICSpecXMLPackage.ARTIFACT__TYPE:
+				return getType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -182,16 +186,14 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ARTIFACT__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
-			return ((InternalEList<?>)getDefinitions()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ARTIFACT__PATH:
-			return ((InternalEList<?>)getPath()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ARTIFACT__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
+				return ((InternalEList<?>) getDefinitions()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ARTIFACT__PATH:
+				return ((InternalEList<?>) getPath()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -202,32 +204,22 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ARTIFACT__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
-			return !getDefinitions().isEmpty();
-		case ICSpecXMLPackage.ARTIFACT__PATH:
-			return !getPath().isEmpty();
-		case ICSpecXMLPackage.ARTIFACT__BASE:
-			return BASE_EDEFAULT == null
-					? base != null
-					: !BASE_EDEFAULT.equals(base);
-		case ICSpecXMLPackage.ARTIFACT__FILTER:
-			return FILTER_EDEFAULT == null
-					? filter != null
-					: !FILTER_EDEFAULT.equals(filter);
-		case ICSpecXMLPackage.ARTIFACT__PATH1:
-			return PATH1_EDEFAULT == null
-					? path1 != null
-					: !PATH1_EDEFAULT.equals(path1);
-		case ICSpecXMLPackage.ARTIFACT__TYPE:
-			return TYPE_EDEFAULT == null
-					? type != null
-					: !TYPE_EDEFAULT.equals(type);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ARTIFACT__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
+				return !getDefinitions().isEmpty();
+			case ICSpecXMLPackage.ARTIFACT__PATH:
+				return !getPath().isEmpty();
+			case ICSpecXMLPackage.ARTIFACT__BASE:
+				return BASE_EDEFAULT == null ? base != null : !BASE_EDEFAULT.equals(base);
+			case ICSpecXMLPackage.ARTIFACT__FILTER:
+				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
+			case ICSpecXMLPackage.ARTIFACT__PATH1:
+				return PATH1_EDEFAULT == null ? path1 != null : !PATH1_EDEFAULT.equals(path1);
+			case ICSpecXMLPackage.ARTIFACT__TYPE:
+				return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -239,33 +231,31 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ARTIFACT__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
-			getDefinitions().clear();
-			getDefinitions().addAll((Collection<? extends IDefinitions>)newValue);
-			return;
-		case ICSpecXMLPackage.ARTIFACT__PATH:
-			getPath().clear();
-			getPath().addAll((Collection<? extends IPath>)newValue);
-			return;
-		case ICSpecXMLPackage.ARTIFACT__BASE:
-			setBase((String)newValue);
-			return;
-		case ICSpecXMLPackage.ARTIFACT__FILTER:
-			setFilter((Filter)newValue);
-			return;
-		case ICSpecXMLPackage.ARTIFACT__PATH1:
-			setPath1((String)newValue);
-			return;
-		case ICSpecXMLPackage.ARTIFACT__TYPE:
-			setType((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ARTIFACT__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
+				getDefinitions().clear();
+				getDefinitions().addAll((Collection<? extends IDefinitions>) newValue);
+				return;
+			case ICSpecXMLPackage.ARTIFACT__PATH:
+				getPath().clear();
+				getPath().addAll((Collection<? extends IPath>) newValue);
+				return;
+			case ICSpecXMLPackage.ARTIFACT__BASE:
+				setBase((String) newValue);
+				return;
+			case ICSpecXMLPackage.ARTIFACT__FILTER:
+				setFilter((Filter) newValue);
+				return;
+			case ICSpecXMLPackage.ARTIFACT__PATH1:
+				setPath1((String) newValue);
+				return;
+			case ICSpecXMLPackage.ARTIFACT__TYPE:
+				setType((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -276,31 +266,29 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ARTIFACT__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
-			getDefinitions().clear();
-			return;
-		case ICSpecXMLPackage.ARTIFACT__PATH:
-			getPath().clear();
-			return;
-		case ICSpecXMLPackage.ARTIFACT__BASE:
-			setBase(BASE_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.ARTIFACT__FILTER:
-			setFilter(FILTER_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.ARTIFACT__PATH1:
-			setPath1(PATH1_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.ARTIFACT__TYPE:
-			setType(TYPE_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ARTIFACT__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.ARTIFACT__DEFINITIONS:
+				getDefinitions().clear();
+				return;
+			case ICSpecXMLPackage.ARTIFACT__PATH:
+				getPath().clear();
+				return;
+			case ICSpecXMLPackage.ARTIFACT__BASE:
+				setBase(BASE_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.ARTIFACT__FILTER:
+				setFilter(FILTER_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.ARTIFACT__PATH1:
+				setPath1(PATH1_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.ARTIFACT__TYPE:
+				setType(TYPE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -310,8 +298,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public String getBase()
-	{
+	public String getBase() {
 		return base;
 	}
 
@@ -320,8 +307,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public EList<IDefinitions> getDefinitions()
-	{
+	public EList<IDefinitions> getDefinitions() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ARTIFACT__DEFINITIONS);
 	}
 
@@ -330,8 +316,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public Filter getFilter()
-	{
+	public Filter getFilter() {
 		return filter;
 	}
 
@@ -340,10 +325,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ARTIFACT__GROUP);
 		}
 		return group;
@@ -354,8 +337,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public EList<IPath> getPath()
-	{
+	public EList<IPath> getPath() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ARTIFACT__PATH);
 	}
 
@@ -364,8 +346,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public String getPath1()
-	{
+	public String getPath1() {
 		return path1;
 	}
 
@@ -374,8 +355,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public String getType()
-	{
+	public String getType() {
 		return type;
 	}
 
@@ -384,11 +364,10 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public void setBase(String newBase)
-	{
+	public void setBase(String newBase) {
 		String oldBase = base;
 		base = newBase;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ARTIFACT__BASE, oldBase, base));
 	}
 
@@ -397,11 +376,10 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public void setFilter(Filter newFilter)
-	{
+	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ARTIFACT__FILTER, oldFilter, filter));
 	}
 
@@ -410,11 +388,10 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public void setPath1(String newPath1)
-	{
+	public void setPath1(String newPath1) {
 		String oldPath1 = path1;
 		path1 = newPath1;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ARTIFACT__PATH1, oldPath1, path1));
 	}
 
@@ -423,11 +400,10 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * 
 	 * @generated
 	 */
-	public void setType(String newType)
-	{
+	public void setType(String newType) {
 		String oldType = type;
 		type = newType;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ARTIFACT__TYPE, oldType, type));
 	}
 
@@ -437,9 +413,8 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -463,8 +438,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.ARTIFACT;
 	}
 

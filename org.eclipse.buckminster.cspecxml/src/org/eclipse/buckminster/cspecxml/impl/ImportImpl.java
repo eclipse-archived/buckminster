@@ -17,23 +17,27 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Import</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Import</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ImportImpl#getAttribute <em>Attribute</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ImportImpl#getFilter <em>Filter</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ImportImpl#getVersionDesignator <em>Version Designator</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ImportImpl#getAttribute <em>
+ * Attribute</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ImportImpl#getFilter <em>
+ * Filter</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ImportImpl#getVersionDesignator
+ * <em>Version Designator</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ImportImpl extends EObjectImpl implements IImport
-{
+public class ImportImpl extends EObjectImpl implements IImport {
 	/**
-	 * The default value of the '{@link #getAttribute() <em>Attribute</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getAttribute() <em>Attribute</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAttribute()
 	 * @generated
@@ -42,8 +46,8 @@ public class ImportImpl extends EObjectImpl implements IImport
 	protected static final String ATTRIBUTE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getAttribute() <em>Attribute</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getAttribute() <em>Attribute</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAttribute()
 	 * @generated
@@ -52,8 +56,8 @@ public class ImportImpl extends EObjectImpl implements IImport
 	protected String attribute = ATTRIBUTE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getFilter() <em>Filter</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -62,8 +66,8 @@ public class ImportImpl extends EObjectImpl implements IImport
 	protected static final String FILTER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -72,8 +76,9 @@ public class ImportImpl extends EObjectImpl implements IImport
 	protected String filter = FILTER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getVersionDesignator() <em>Version Designator</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getVersionDesignator()
+	 * <em>Version Designator</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getVersionDesignator()
 	 * @generated
@@ -82,8 +87,9 @@ public class ImportImpl extends EObjectImpl implements IImport
 	protected static final String VERSION_DESIGNATOR_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getVersionDesignator() <em>Version Designator</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getVersionDesignator()
+	 * <em>Version Designator</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getVersionDesignator()
 	 * @generated
@@ -96,8 +102,7 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * 
 	 * @generated
 	 */
-	protected ImportImpl()
-	{
+	protected ImportImpl() {
 		super();
 	}
 
@@ -107,16 +112,14 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.IMPORT__ATTRIBUTE:
-			return getAttribute();
-		case ICSpecXMLPackage.IMPORT__FILTER:
-			return getFilter();
-		case ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR:
-			return getVersionDesignator();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.IMPORT__ATTRIBUTE:
+				return getAttribute();
+			case ICSpecXMLPackage.IMPORT__FILTER:
+				return getFilter();
+			case ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR:
+				return getVersionDesignator();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -127,22 +130,14 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.IMPORT__ATTRIBUTE:
-			return ATTRIBUTE_EDEFAULT == null
-					? attribute != null
-					: !ATTRIBUTE_EDEFAULT.equals(attribute);
-		case ICSpecXMLPackage.IMPORT__FILTER:
-			return FILTER_EDEFAULT == null
-					? filter != null
-					: !FILTER_EDEFAULT.equals(filter);
-		case ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR:
-			return VERSION_DESIGNATOR_EDEFAULT == null
-					? versionDesignator != null
-					: !VERSION_DESIGNATOR_EDEFAULT.equals(versionDesignator);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.IMPORT__ATTRIBUTE:
+				return ATTRIBUTE_EDEFAULT == null ? attribute != null : !ATTRIBUTE_EDEFAULT.equals(attribute);
+			case ICSpecXMLPackage.IMPORT__FILTER:
+				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
+			case ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR:
+				return VERSION_DESIGNATOR_EDEFAULT == null ? versionDesignator != null : !VERSION_DESIGNATOR_EDEFAULT.equals(versionDesignator);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -153,19 +148,17 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.IMPORT__ATTRIBUTE:
-			setAttribute((String)newValue);
-			return;
-		case ICSpecXMLPackage.IMPORT__FILTER:
-			setFilter((String)newValue);
-			return;
-		case ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR:
-			setVersionDesignator((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.IMPORT__ATTRIBUTE:
+				setAttribute((String) newValue);
+				return;
+			case ICSpecXMLPackage.IMPORT__FILTER:
+				setFilter((String) newValue);
+				return;
+			case ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR:
+				setVersionDesignator((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -176,19 +169,17 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.IMPORT__ATTRIBUTE:
-			setAttribute(ATTRIBUTE_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.IMPORT__FILTER:
-			setFilter(FILTER_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR:
-			setVersionDesignator(VERSION_DESIGNATOR_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.IMPORT__ATTRIBUTE:
+				setAttribute(ATTRIBUTE_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.IMPORT__FILTER:
+				setFilter(FILTER_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR:
+				setVersionDesignator(VERSION_DESIGNATOR_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -198,8 +189,7 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * 
 	 * @generated
 	 */
-	public String getAttribute()
-	{
+	public String getAttribute() {
 		return attribute;
 	}
 
@@ -208,8 +198,7 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * 
 	 * @generated
 	 */
-	public String getFilter()
-	{
+	public String getFilter() {
 		return filter;
 	}
 
@@ -218,8 +207,7 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * 
 	 * @generated
 	 */
-	public String getVersionDesignator()
-	{
+	public String getVersionDesignator() {
 		return versionDesignator;
 	}
 
@@ -228,13 +216,11 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * 
 	 * @generated
 	 */
-	public void setAttribute(String newAttribute)
-	{
+	public void setAttribute(String newAttribute) {
 		String oldAttribute = attribute;
 		attribute = newAttribute;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.IMPORT__ATTRIBUTE, oldAttribute,
-					attribute));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.IMPORT__ATTRIBUTE, oldAttribute, attribute));
 	}
 
 	/**
@@ -242,11 +228,10 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * 
 	 * @generated
 	 */
-	public void setFilter(String newFilter)
-	{
+	public void setFilter(String newFilter) {
 		String oldFilter = filter;
 		filter = newFilter;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.IMPORT__FILTER, oldFilter, filter));
 	}
 
@@ -255,13 +240,12 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * 
 	 * @generated
 	 */
-	public void setVersionDesignator(String newVersionDesignator)
-	{
+	public void setVersionDesignator(String newVersionDesignator) {
 		String oldVersionDesignator = versionDesignator;
 		versionDesignator = newVersionDesignator;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR,
-					oldVersionDesignator, versionDesignator));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.IMPORT__VERSION_DESIGNATOR, oldVersionDesignator,
+					versionDesignator));
 	}
 
 	/**
@@ -270,9 +254,8 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -292,8 +275,7 @@ public class ImportImpl extends EObjectImpl implements IImport
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.IMPORT;
 	}
 

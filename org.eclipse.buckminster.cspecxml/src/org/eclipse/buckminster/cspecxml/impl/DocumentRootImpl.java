@@ -29,25 +29,33 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Document Root</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Document Root</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getMixed <em>Mixed</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getXMLNSPrefixMap <em>XMLNS Prefix Map</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getXSISchemaLocation <em>XSI Schema Location</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getCspec <em>Cspec</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getCspecExtension <em>Cspec Extension</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getMixed
+ * <em>Mixed</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getXMLNSPrefixMap
+ * <em>XMLNS Prefix Map</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getXSISchemaLocation
+ * <em>XSI Schema Location</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getCspec
+ * <em>Cspec</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl#getCspecExtension
+ * <em>Cspec Extension</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
-{
+public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot {
 	/**
-	 * The cached value of the '{@link #getMixed() <em>Mixed</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getMixed() <em>Mixed</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getMixed()
 	 * @generated
@@ -56,8 +64,9 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	protected FeatureMap mixed;
 
 	/**
-	 * The cached value of the '{@link #getXMLNSPrefixMap() <em>XMLNS Prefix Map</em>}' map. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #getXMLNSPrefixMap()
+	 * <em>XMLNS Prefix Map</em>}' map. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getXMLNSPrefixMap()
 	 * @generated
@@ -66,8 +75,9 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	protected EMap<String, String> xMLNSPrefixMap;
 
 	/**
-	 * The cached value of the '{@link #getXSISchemaLocation() <em>XSI Schema Location</em>}' map. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getXSISchemaLocation()
+	 * <em>XSI Schema Location</em>}' map. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getXSISchemaLocation()
 	 * @generated
@@ -80,8 +90,7 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	protected DocumentRootImpl()
-	{
+	protected DocumentRootImpl() {
 		super();
 	}
 
@@ -90,10 +99,8 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetCspec(IComponentSpec newCspec, NotificationChain msgs)
-	{
-		return ((FeatureMap.Internal)getMixed()).basicAdd(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC, newCspec,
-				msgs);
+	public NotificationChain basicSetCspec(IComponentSpec newCspec, NotificationChain msgs) {
+		return ((FeatureMap.Internal) getMixed()).basicAdd(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC, newCspec, msgs);
 	}
 
 	/**
@@ -101,10 +108,8 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetCspecExtension(ICSpecExtension newCspecExtension, NotificationChain msgs)
-	{
-		return ((FeatureMap.Internal)getMixed()).basicAdd(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC_EXTENSION,
-				newCspecExtension, msgs);
+	public NotificationChain basicSetCspecExtension(ICSpecExtension newCspecExtension, NotificationChain msgs) {
+		return ((FeatureMap.Internal) getMixed()).basicAdd(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC_EXTENSION, newCspecExtension, msgs);
 	}
 
 	/**
@@ -113,28 +118,26 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
-			if(coreType)
-				return getMixed();
-			return ((FeatureMap.Internal)getMixed()).getWrapper();
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
-			if(coreType)
-				return getXMLNSPrefixMap();
-			else
-				return getXMLNSPrefixMap().map();
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
-			if(coreType)
-				return getXSISchemaLocation();
-			else
-				return getXSISchemaLocation().map();
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
-			return getCspec();
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
-			return getCspecExtension();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
+				if (coreType)
+					return getMixed();
+				return ((FeatureMap.Internal) getMixed()).getWrapper();
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
+				if (coreType)
+					return getXMLNSPrefixMap();
+				else
+					return getXMLNSPrefixMap().map();
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
+				if (coreType)
+					return getXSISchemaLocation();
+				else
+					return getXSISchemaLocation().map();
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
+				return getCspec();
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
+				return getCspecExtension();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -145,20 +148,18 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
-			return ((InternalEList<?>)getMixed()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
-			return ((InternalEList<?>)getXMLNSPrefixMap()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
-			return ((InternalEList<?>)getXSISchemaLocation()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
-			return basicSetCspec(null, msgs);
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
-			return basicSetCspecExtension(null, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
+				return ((InternalEList<?>) getMixed()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
+				return ((InternalEList<?>) getXMLNSPrefixMap()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
+				return ((InternalEList<?>) getXSISchemaLocation()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
+				return basicSetCspec(null, msgs);
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
+				return basicSetCspecExtension(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -169,20 +170,18 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
-			return mixed != null && !mixed.isEmpty();
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
-			return xMLNSPrefixMap != null && !xMLNSPrefixMap.isEmpty();
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
-			return xSISchemaLocation != null && !xSISchemaLocation.isEmpty();
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
-			return getCspec() != null;
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
-			return getCspecExtension() != null;
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
+				return mixed != null && !mixed.isEmpty();
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
+				return xMLNSPrefixMap != null && !xMLNSPrefixMap.isEmpty();
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
+				return xSISchemaLocation != null && !xSISchemaLocation.isEmpty();
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
+				return getCspec() != null;
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
+				return getCspecExtension() != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -193,25 +192,23 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
-			((FeatureMap.Internal)getMixed()).set(newValue);
-			return;
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
-			((EStructuralFeature.Setting)getXMLNSPrefixMap()).set(newValue);
-			return;
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
-			((EStructuralFeature.Setting)getXSISchemaLocation()).set(newValue);
-			return;
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
-			setCspec((IComponentSpec)newValue);
-			return;
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
-			setCspecExtension((ICSpecExtension)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
+				((FeatureMap.Internal) getMixed()).set(newValue);
+				return;
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
+				((EStructuralFeature.Setting) getXMLNSPrefixMap()).set(newValue);
+				return;
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
+				((EStructuralFeature.Setting) getXSISchemaLocation()).set(newValue);
+				return;
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
+				setCspec((IComponentSpec) newValue);
+				return;
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
+				setCspecExtension((ICSpecExtension) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -222,25 +219,23 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
-			getMixed().clear();
-			return;
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
-			getXMLNSPrefixMap().clear();
-			return;
-		case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
-			getXSISchemaLocation().clear();
-			return;
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
-			setCspec((IComponentSpec)null);
-			return;
-		case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
-			setCspecExtension((ICSpecExtension)null);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DOCUMENT_ROOT__MIXED:
+				getMixed().clear();
+				return;
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP:
+				getXMLNSPrefixMap().clear();
+				return;
+			case ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
+				getXSISchemaLocation().clear();
+				return;
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC:
+				setCspec((IComponentSpec) null);
+				return;
+			case ICSpecXMLPackage.DOCUMENT_ROOT__CSPEC_EXTENSION:
+				setCspecExtension((ICSpecExtension) null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -250,9 +245,8 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	public IComponentSpec getCspec()
-	{
-		return (IComponentSpec)getMixed().get(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC, true);
+	public IComponentSpec getCspec() {
+		return (IComponentSpec) getMixed().get(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC, true);
 	}
 
 	/**
@@ -260,9 +254,8 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	public ICSpecExtension getCspecExtension()
-	{
-		return (ICSpecExtension)getMixed().get(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC_EXTENSION, true);
+	public ICSpecExtension getCspecExtension() {
+		return (ICSpecExtension) getMixed().get(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC_EXTENSION, true);
 	}
 
 	/**
@@ -270,10 +263,8 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getMixed()
-	{
-		if(mixed == null)
-		{
+	public FeatureMap getMixed() {
+		if (mixed == null) {
 			mixed = new BasicFeatureMap(this, ICSpecXMLPackage.DOCUMENT_ROOT__MIXED);
 		}
 		return mixed;
@@ -284,12 +275,10 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	public EMap<String, String> getXMLNSPrefixMap()
-	{
-		if(xMLNSPrefixMap == null)
-		{
-			xMLNSPrefixMap = new EcoreEMap<String, String>(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY,
-					EStringToStringMapEntryImpl.class, this, ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP);
+	public EMap<String, String> getXMLNSPrefixMap() {
+		if (xMLNSPrefixMap == null) {
+			xMLNSPrefixMap = new EcoreEMap<String, String>(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY, EStringToStringMapEntryImpl.class,
+					this, ICSpecXMLPackage.DOCUMENT_ROOT__XMLNS_PREFIX_MAP);
 		}
 		return xMLNSPrefixMap;
 	}
@@ -299,12 +288,10 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	public EMap<String, String> getXSISchemaLocation()
-	{
-		if(xSISchemaLocation == null)
-		{
-			xSISchemaLocation = new EcoreEMap<String, String>(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY,
-					EStringToStringMapEntryImpl.class, this, ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION);
+	public EMap<String, String> getXSISchemaLocation() {
+		if (xSISchemaLocation == null) {
+			xSISchemaLocation = new EcoreEMap<String, String>(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY, EStringToStringMapEntryImpl.class,
+					this, ICSpecXMLPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION);
 		}
 		return xSISchemaLocation;
 	}
@@ -314,9 +301,8 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	public void setCspec(IComponentSpec newCspec)
-	{
-		((FeatureMap.Internal)getMixed()).set(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC, newCspec);
+	public void setCspec(IComponentSpec newCspec) {
+		((FeatureMap.Internal) getMixed()).set(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC, newCspec);
 	}
 
 	/**
@@ -324,10 +310,8 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * 
 	 * @generated
 	 */
-	public void setCspecExtension(ICSpecExtension newCspecExtension)
-	{
-		((FeatureMap.Internal)getMixed()).set(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC_EXTENSION,
-				newCspecExtension);
+	public void setCspecExtension(ICSpecExtension newCspecExtension) {
+		((FeatureMap.Internal) getMixed()).set(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC_EXTENSION, newCspecExtension);
 	}
 
 	/**
@@ -336,9 +320,8 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -354,8 +337,7 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.DOCUMENT_ROOT;
 	}
 

@@ -28,24 +28,29 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Alter Properties</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Alter Properties</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterPropertiesImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterPropertiesImpl#getProperty <em>Property</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterPropertiesImpl#getRemove <em>Remove</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterPropertiesImpl#getGroup
+ * <em>Group</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterPropertiesImpl#getProperty
+ * <em>Property</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterPropertiesImpl#getRemove
+ * <em>Remove</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
-{
+public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties {
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -58,8 +63,7 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * 
 	 * @generated
 	 */
-	protected AlterPropertiesImpl()
-	{
+	protected AlterPropertiesImpl() {
 		super();
 	}
 
@@ -69,18 +73,16 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
-			return getProperty();
-		case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
-			return getRemove();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
+				return getProperty();
+			case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
+				return getRemove();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -91,16 +93,14 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
-			return ((InternalEList<?>)getProperty()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
-			return ((InternalEList<?>)getRemove()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
+				return ((InternalEList<?>) getProperty()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
+				return ((InternalEList<?>) getRemove()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -111,16 +111,14 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
-			return !getProperty().isEmpty();
-		case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
-			return !getRemove().isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
+				return !getProperty().isEmpty();
+			case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
+				return !getRemove().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -132,21 +130,19 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
-			getProperty().clear();
-			getProperty().addAll((Collection<? extends PropertyConstant>)newValue);
-			return;
-		case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
-			getRemove().clear();
-			getRemove().addAll((Collection<? extends IRemoveProperty>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
+				getProperty().clear();
+				getProperty().addAll((Collection<? extends PropertyConstant>) newValue);
+				return;
+			case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
+				getRemove().clear();
+				getRemove().addAll((Collection<? extends IRemoveProperty>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -157,19 +153,17 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
-			getProperty().clear();
-			return;
-		case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
-			getRemove().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PROPERTIES__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.ALTER_PROPERTIES__PROPERTY:
+				getProperty().clear();
+				return;
+			case ICSpecXMLPackage.ALTER_PROPERTIES__REMOVE:
+				getRemove().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -179,10 +173,8 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_PROPERTIES__GROUP);
 		}
 		return group;
@@ -193,8 +185,7 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * 
 	 * @generated
 	 */
-	public EList<PropertyConstant> getProperty()
-	{
+	public EList<PropertyConstant> getProperty() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PROPERTIES__PROPERTY);
 	}
 
@@ -203,8 +194,7 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * 
 	 * @generated
 	 */
-	public EList<IRemoveProperty> getRemove()
-	{
+	public EList<IRemoveProperty> getRemove() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PROPERTIES__REMOVE);
 	}
 
@@ -214,9 +204,8 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -232,8 +221,7 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.ALTER_PROPERTIES;
 	}
 

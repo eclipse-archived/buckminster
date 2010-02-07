@@ -17,22 +17,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Rename</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Rename</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.RenameImpl#getNewName <em>New Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.RenameImpl#getOldName <em>Old Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.RenameImpl#getNewName <em>
+ * New Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.RenameImpl#getOldName <em>
+ * Old Name</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class RenameImpl extends EObjectImpl implements IRename
-{
+public class RenameImpl extends EObjectImpl implements IRename {
 	/**
-	 * The default value of the '{@link #getNewName() <em>New Name</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getNewName() <em>New Name</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getNewName()
 	 * @generated
@@ -41,8 +43,8 @@ public class RenameImpl extends EObjectImpl implements IRename
 	protected static final String NEW_NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getNewName() <em>New Name</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getNewName() <em>New Name</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getNewName()
 	 * @generated
@@ -51,8 +53,8 @@ public class RenameImpl extends EObjectImpl implements IRename
 	protected String newName = NEW_NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getOldName() <em>Old Name</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getOldName() <em>Old Name</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getOldName()
 	 * @generated
@@ -61,8 +63,8 @@ public class RenameImpl extends EObjectImpl implements IRename
 	protected static final String OLD_NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getOldName() <em>Old Name</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getOldName() <em>Old Name</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getOldName()
 	 * @generated
@@ -75,8 +77,7 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * 
 	 * @generated
 	 */
-	protected RenameImpl()
-	{
+	protected RenameImpl() {
 		super();
 	}
 
@@ -86,14 +87,12 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.RENAME__NEW_NAME:
-			return getNewName();
-		case ICSpecXMLPackage.RENAME__OLD_NAME:
-			return getOldName();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.RENAME__NEW_NAME:
+				return getNewName();
+			case ICSpecXMLPackage.RENAME__OLD_NAME:
+				return getOldName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -104,18 +103,12 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.RENAME__NEW_NAME:
-			return NEW_NAME_EDEFAULT == null
-					? newName != null
-					: !NEW_NAME_EDEFAULT.equals(newName);
-		case ICSpecXMLPackage.RENAME__OLD_NAME:
-			return OLD_NAME_EDEFAULT == null
-					? oldName != null
-					: !OLD_NAME_EDEFAULT.equals(oldName);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.RENAME__NEW_NAME:
+				return NEW_NAME_EDEFAULT == null ? newName != null : !NEW_NAME_EDEFAULT.equals(newName);
+			case ICSpecXMLPackage.RENAME__OLD_NAME:
+				return OLD_NAME_EDEFAULT == null ? oldName != null : !OLD_NAME_EDEFAULT.equals(oldName);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -126,16 +119,14 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.RENAME__NEW_NAME:
-			setNewName((String)newValue);
-			return;
-		case ICSpecXMLPackage.RENAME__OLD_NAME:
-			setOldName((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.RENAME__NEW_NAME:
+				setNewName((String) newValue);
+				return;
+			case ICSpecXMLPackage.RENAME__OLD_NAME:
+				setOldName((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -146,16 +137,14 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.RENAME__NEW_NAME:
-			setNewName(NEW_NAME_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.RENAME__OLD_NAME:
-			setOldName(OLD_NAME_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.RENAME__NEW_NAME:
+				setNewName(NEW_NAME_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.RENAME__OLD_NAME:
+				setOldName(OLD_NAME_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -165,8 +154,7 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * 
 	 * @generated
 	 */
-	public String getNewName()
-	{
+	public String getNewName() {
 		return newName;
 	}
 
@@ -175,8 +163,7 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * 
 	 * @generated
 	 */
-	public String getOldName()
-	{
+	public String getOldName() {
 		return oldName;
 	}
 
@@ -185,13 +172,11 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * 
 	 * @generated
 	 */
-	public void setNewName(String newNewName)
-	{
+	public void setNewName(String newNewName) {
 		String oldNewName = newName;
 		newName = newNewName;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.RENAME__NEW_NAME, oldNewName,
-					newName));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.RENAME__NEW_NAME, oldNewName, newName));
 	}
 
 	/**
@@ -199,13 +184,11 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * 
 	 * @generated
 	 */
-	public void setOldName(String newOldName)
-	{
+	public void setOldName(String newOldName) {
 		String oldOldName = oldName;
 		oldName = newOldName;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.RENAME__OLD_NAME, oldOldName,
-					oldName));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.RENAME__OLD_NAME, oldOldName, oldName));
 	}
 
 	/**
@@ -214,9 +197,8 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -234,8 +216,7 @@ public class RenameImpl extends EObjectImpl implements IRename
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.RENAME;
 	}
 

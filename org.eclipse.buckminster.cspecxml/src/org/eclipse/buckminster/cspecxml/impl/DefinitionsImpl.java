@@ -25,21 +25,22 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Definitions</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Definitions</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.DefinitionsImpl#getDefine <em>Define</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.DefinitionsImpl#getDefine
+ * <em>Define</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class DefinitionsImpl extends EObjectImpl implements IDefinitions
-{
+public class DefinitionsImpl extends EObjectImpl implements IDefinitions {
 	/**
-	 * The cached value of the '{@link #getDefine() <em>Define</em>}' containment reference list. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getDefine() <em>Define</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getDefine()
 	 * @generated
@@ -52,8 +53,7 @@ public class DefinitionsImpl extends EObjectImpl implements IDefinitions
 	 * 
 	 * @generated
 	 */
-	protected DefinitionsImpl()
-	{
+	protected DefinitionsImpl() {
 		super();
 	}
 
@@ -63,12 +63,10 @@ public class DefinitionsImpl extends EObjectImpl implements IDefinitions
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEFINITIONS__DEFINE:
-			return getDefine();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEFINITIONS__DEFINE:
+				return getDefine();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -79,12 +77,10 @@ public class DefinitionsImpl extends EObjectImpl implements IDefinitions
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEFINITIONS__DEFINE:
-			return ((InternalEList<?>)getDefine()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEFINITIONS__DEFINE:
+				return ((InternalEList<?>) getDefine()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -95,12 +91,10 @@ public class DefinitionsImpl extends EObjectImpl implements IDefinitions
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEFINITIONS__DEFINE:
-			return define != null && !define.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEFINITIONS__DEFINE:
+				return define != null && !define.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -112,14 +106,12 @@ public class DefinitionsImpl extends EObjectImpl implements IDefinitions
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEFINITIONS__DEFINE:
-			getDefine().clear();
-			getDefine().addAll((Collection<? extends IAttribute>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEFINITIONS__DEFINE:
+				getDefine().clear();
+				getDefine().addAll((Collection<? extends IAttribute>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -130,13 +122,11 @@ public class DefinitionsImpl extends EObjectImpl implements IDefinitions
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEFINITIONS__DEFINE:
-			getDefine().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEFINITIONS__DEFINE:
+				getDefine().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -146,12 +136,9 @@ public class DefinitionsImpl extends EObjectImpl implements IDefinitions
 	 * 
 	 * @generated
 	 */
-	public EList<IAttribute> getDefine()
-	{
-		if(define == null)
-		{
-			define = new EObjectContainmentEList<IAttribute>(IAttribute.class, this,
-					ICSpecXMLPackage.DEFINITIONS__DEFINE);
+	public EList<IAttribute> getDefine() {
+		if (define == null) {
+			define = new EObjectContainmentEList<IAttribute>(IAttribute.class, this, ICSpecXMLPackage.DEFINITIONS__DEFINE);
 		}
 		return define;
 	}
@@ -162,8 +149,7 @@ public class DefinitionsImpl extends EObjectImpl implements IDefinitions
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.DEFINITIONS;
 	}
 

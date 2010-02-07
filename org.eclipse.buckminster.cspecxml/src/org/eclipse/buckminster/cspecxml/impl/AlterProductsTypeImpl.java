@@ -28,26 +28,35 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Alter Products Type</b></em>'. <!--
- * end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Alter Products Type</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getPublic <em>Public</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getPrivate <em>Private</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getRemoveProduct <em>Remove Product</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getRemovePath <em>Remove Path</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getGroup
+ * <em>Group</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getPublic
+ * <em>Public</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getPrivate
+ * <em>Private</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getRemoveProduct
+ * <em>Remove Product</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterProductsTypeImpl#getRemovePath
+ * <em>Remove Path</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProductsType
-{
+public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProductsType {
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -60,8 +69,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
-	protected AlterProductsTypeImpl()
-	{
+	protected AlterProductsTypeImpl() {
 		super();
 	}
 
@@ -71,22 +79,20 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
-			return getPublic();
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
-			return getPrivate();
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
-			return getRemoveProduct();
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
-			return getRemovePath();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
+				return getPublic();
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
+				return getPrivate();
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
+				return getRemoveProduct();
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
+				return getRemovePath();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -97,20 +103,18 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
-			return ((InternalEList<?>)getPublic()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
-			return ((InternalEList<?>)getPrivate()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
-			return ((InternalEList<?>)getRemoveProduct()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
-			return ((InternalEList<?>)getRemovePath()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
+				return ((InternalEList<?>) getPublic()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
+				return ((InternalEList<?>) getPrivate()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
+				return ((InternalEList<?>) getRemoveProduct()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
+				return ((InternalEList<?>) getRemovePath()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -121,20 +125,18 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
-			return !getPublic().isEmpty();
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
-			return !getPrivate().isEmpty();
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
-			return !getRemoveProduct().isEmpty();
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
-			return !getRemovePath().isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
+				return !getPublic().isEmpty();
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
+				return !getPrivate().isEmpty();
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
+				return !getRemoveProduct().isEmpty();
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
+				return !getRemovePath().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -146,29 +148,27 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
-			getPublic().clear();
-			getPublic().addAll((Collection<? extends IAlterGroup>)newValue);
-			return;
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
-			getPrivate().clear();
-			getPrivate().addAll((Collection<? extends IAlterGroup>)newValue);
-			return;
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
-			getRemoveProduct().clear();
-			getRemoveProduct().addAll((Collection<? extends IRemove>)newValue);
-			return;
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
-			getRemovePath().clear();
-			getRemovePath().addAll((Collection<? extends IRemovePath>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
+				getPublic().clear();
+				getPublic().addAll((Collection<? extends IAlterGroup>) newValue);
+				return;
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
+				getPrivate().clear();
+				getPrivate().addAll((Collection<? extends IAlterGroup>) newValue);
+				return;
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
+				getRemoveProduct().clear();
+				getRemoveProduct().addAll((Collection<? extends IRemove>) newValue);
+				return;
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
+				getRemovePath().clear();
+				getRemovePath().addAll((Collection<? extends IRemovePath>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -179,25 +179,23 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
-			getPublic().clear();
-			return;
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
-			getPrivate().clear();
-			return;
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
-			getRemoveProduct().clear();
-			return;
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
-			getRemovePath().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PUBLIC:
+				getPublic().clear();
+				return;
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__PRIVATE:
+				getPrivate().clear();
+				return;
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT:
+				getRemoveProduct().clear();
+				return;
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__REMOVE_PATH:
+				getRemovePath().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -207,10 +205,8 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP);
 		}
 		return group;
@@ -221,8 +217,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
-	public EList<IAlterGroup> getPrivate()
-	{
+	public EList<IAlterGroup> getPrivate() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PRODUCTS_TYPE__PRIVATE);
 	}
 
@@ -231,8 +226,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
-	public EList<IAlterGroup> getPublic()
-	{
+	public EList<IAlterGroup> getPublic() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PRODUCTS_TYPE__PUBLIC);
 	}
 
@@ -241,8 +235,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
-	public EList<IRemovePath> getRemovePath()
-	{
+	public EList<IRemovePath> getRemovePath() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PRODUCTS_TYPE__REMOVE_PATH);
 	}
 
@@ -251,8 +244,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
-	public EList<IRemove> getRemoveProduct()
-	{
+	public EList<IRemove> getRemoveProduct() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT);
 	}
 
@@ -262,9 +254,8 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -280,8 +271,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.ALTER_PRODUCTS_TYPE;
 	}
 

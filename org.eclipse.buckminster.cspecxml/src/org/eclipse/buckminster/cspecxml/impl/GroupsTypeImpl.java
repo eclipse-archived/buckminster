@@ -26,23 +26,26 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Groups Type</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Groups Type</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupsTypeImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupsTypeImpl#getPublic <em>Public</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupsTypeImpl#getPrivate <em>Private</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupsTypeImpl#getGroup <em>
+ * Group</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupsTypeImpl#getPublic
+ * <em>Public</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupsTypeImpl#getPrivate
+ * <em>Private</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
-{
+public class GroupsTypeImpl extends EObjectImpl implements IGroupsType {
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -55,8 +58,7 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * 
 	 * @generated
 	 */
-	protected GroupsTypeImpl()
-	{
+	protected GroupsTypeImpl() {
 		super();
 	}
 
@@ -66,18 +68,16 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
-			return getPublic();
-		case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
-			return getPrivate();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
+				return getPublic();
+			case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
+				return getPrivate();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -88,16 +88,14 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
-			return ((InternalEList<?>)getPublic()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
-			return ((InternalEList<?>)getPrivate()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
+				return ((InternalEList<?>) getPublic()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
+				return ((InternalEList<?>) getPrivate()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -108,16 +106,14 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
-			return !getPublic().isEmpty();
-		case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
-			return !getPrivate().isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
+				return !getPublic().isEmpty();
+			case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
+				return !getPrivate().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -129,21 +125,19 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
-			getPublic().clear();
-			getPublic().addAll((Collection<? extends IGroup>)newValue);
-			return;
-		case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
-			getPrivate().clear();
-			getPrivate().addAll((Collection<? extends IGroup>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
+				getPublic().clear();
+				getPublic().addAll((Collection<? extends IGroup>) newValue);
+				return;
+			case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
+				getPrivate().clear();
+				getPrivate().addAll((Collection<? extends IGroup>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -154,19 +148,17 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
-			getPublic().clear();
-			return;
-		case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
-			getPrivate().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUPS_TYPE__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.GROUPS_TYPE__PUBLIC:
+				getPublic().clear();
+				return;
+			case ICSpecXMLPackage.GROUPS_TYPE__PRIVATE:
+				getPrivate().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -176,10 +168,8 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.GROUPS_TYPE__GROUP);
 		}
 		return group;
@@ -190,8 +180,7 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * 
 	 * @generated
 	 */
-	public EList<IGroup> getPrivate()
-	{
+	public EList<IGroup> getPrivate() {
 		return getGroup().list(ICSpecXMLPackage.Literals.GROUPS_TYPE__PRIVATE);
 	}
 
@@ -200,8 +189,7 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * 
 	 * @generated
 	 */
-	public EList<IGroup> getPublic()
-	{
+	public EList<IGroup> getPublic() {
 		return getGroup().list(ICSpecXMLPackage.Literals.GROUPS_TYPE__PUBLIC);
 	}
 
@@ -211,9 +199,8 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -229,8 +216,7 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.GROUPS_TYPE;
 	}
 

@@ -31,30 +31,43 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Products Type</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Products Type</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getPath <em>Path</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getPublic <em>Public</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getPrivate <em>Private</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getAlias <em>Alias</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getBase <em>Base</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getFileCount <em>File Count</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getPattern <em>Pattern</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getReplacement <em>Replacement</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getUpToDatePolicy <em>Up To Date Policy</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getGroup
+ * <em>Group</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getPath
+ * <em>Path</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getPublic
+ * <em>Public</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getPrivate
+ * <em>Private</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getAlias
+ * <em>Alias</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getBase
+ * <em>Base</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getFileCount
+ * <em>File Count</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getPattern
+ * <em>Pattern</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getReplacement
+ * <em>Replacement</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl#getUpToDatePolicy
+ * <em>Up To Date Policy</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ProductsTypeImpl extends EObjectImpl implements IProductsType
-{
+public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -63,8 +76,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected FeatureMap group;
 
 	/**
-	 * The default value of the '{@link #getAlias() <em>Alias</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getAlias() <em>Alias</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAlias()
 	 * @generated
@@ -73,8 +86,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected static final String ALIAS_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getAlias() <em>Alias</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getAlias() <em>Alias</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAlias()
 	 * @generated
@@ -83,8 +96,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected String alias = ALIAS_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getBase() <em>Base</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getBase() <em>Base</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getBase()
 	 * @generated
@@ -93,8 +106,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected static final String BASE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getBase() <em>Base</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getBase() <em>Base</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getBase()
 	 * @generated
@@ -103,8 +116,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected String base = BASE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFileCount() <em>File Count</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getFileCount() <em>File Count</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFileCount()
 	 * @generated
@@ -113,8 +126,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected static final int FILE_COUNT_EDEFAULT = 0;
 
 	/**
-	 * The cached value of the '{@link #getFileCount() <em>File Count</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFileCount() <em>File Count</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFileCount()
 	 * @generated
@@ -123,8 +136,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected int fileCount = FILE_COUNT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPattern()
 	 * @generated
@@ -133,8 +146,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected static final Pattern PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPattern()
 	 * @generated
@@ -143,8 +156,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected Pattern pattern = PATTERN_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getReplacement() <em>Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getReplacement() <em>Replacement</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getReplacement()
 	 * @generated
@@ -153,8 +166,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected static final String REPLACEMENT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getReplacement() <em>Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getReplacement() <em>Replacement</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getReplacement()
 	 * @generated
@@ -163,8 +176,9 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected String replacement = REPLACEMENT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getUpToDatePolicy() <em>Up To Date Policy</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getUpToDatePolicy()
+	 * <em>Up To Date Policy</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getUpToDatePolicy()
 	 * @generated
@@ -173,8 +187,9 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected static final UpToDatePolicy UP_TO_DATE_POLICY_EDEFAULT = UpToDatePolicy.DEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getUpToDatePolicy() <em>Up To Date Policy</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getUpToDatePolicy()
+	 * <em>Up To Date Policy</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getUpToDatePolicy()
 	 * @generated
@@ -183,7 +198,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	protected UpToDatePolicy upToDatePolicy = UP_TO_DATE_POLICY_EDEFAULT;
 
 	/**
-	 * This is true if the Up To Date Policy attribute has been set. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is true if the Up To Date Policy attribute has been set. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -195,8 +211,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	protected ProductsTypeImpl()
-	{
+	protected ProductsTypeImpl() {
 		super();
 	}
 
@@ -206,32 +221,30 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
-			return getPath();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
-			return getPublic();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
-			return getPrivate();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS:
-			return getAlias();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__BASE:
-			return getBase();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT:
-			return getFileCount();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN:
-			return getPattern();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT:
-			return getReplacement();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY:
-			return getUpToDatePolicy();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
+				return getPath();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
+				return getPublic();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
+				return getPrivate();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS:
+				return getAlias();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__BASE:
+				return getBase();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT:
+				return getFileCount();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN:
+				return getPattern();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT:
+				return getReplacement();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY:
+				return getUpToDatePolicy();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -242,18 +255,16 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
-			return ((InternalEList<?>)getPath()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
-			return ((InternalEList<?>)getPublic()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
-			return ((InternalEList<?>)getPrivate()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
+				return ((InternalEList<?>) getPath()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
+				return ((InternalEList<?>) getPublic()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
+				return ((InternalEList<?>) getPrivate()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -264,38 +275,28 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
-			return !getPath().isEmpty();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
-			return !getPublic().isEmpty();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
-			return !getPrivate().isEmpty();
-		case ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS:
-			return ALIAS_EDEFAULT == null
-					? alias != null
-					: !ALIAS_EDEFAULT.equals(alias);
-		case ICSpecXMLPackage.PRODUCTS_TYPE__BASE:
-			return BASE_EDEFAULT == null
-					? base != null
-					: !BASE_EDEFAULT.equals(base);
-		case ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT:
-			return fileCount != FILE_COUNT_EDEFAULT;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN:
-			return PATTERN_EDEFAULT == null
-					? pattern != null
-					: !PATTERN_EDEFAULT.equals(pattern);
-		case ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT:
-			return REPLACEMENT_EDEFAULT == null
-					? replacement != null
-					: !REPLACEMENT_EDEFAULT.equals(replacement);
-		case ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY:
-			return isSetUpToDatePolicy();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
+				return !getPath().isEmpty();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
+				return !getPublic().isEmpty();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
+				return !getPrivate().isEmpty();
+			case ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS:
+				return ALIAS_EDEFAULT == null ? alias != null : !ALIAS_EDEFAULT.equals(alias);
+			case ICSpecXMLPackage.PRODUCTS_TYPE__BASE:
+				return BASE_EDEFAULT == null ? base != null : !BASE_EDEFAULT.equals(base);
+			case ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT:
+				return fileCount != FILE_COUNT_EDEFAULT;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN:
+				return PATTERN_EDEFAULT == null ? pattern != null : !PATTERN_EDEFAULT.equals(pattern);
+			case ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT:
+				return REPLACEMENT_EDEFAULT == null ? replacement != null : !REPLACEMENT_EDEFAULT.equals(replacement);
+			case ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY:
+				return isSetUpToDatePolicy();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -307,43 +308,41 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
-			getPath().clear();
-			getPath().addAll((Collection<? extends IPath>)newValue);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
-			getPublic().clear();
-			getPublic().addAll((Collection<? extends IActionArtifact>)newValue);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
-			getPrivate().clear();
-			getPrivate().addAll((Collection<? extends IActionArtifact>)newValue);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS:
-			setAlias((String)newValue);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__BASE:
-			setBase((String)newValue);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT:
-			setFileCount((Integer)newValue);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN:
-			setPattern((Pattern)newValue);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT:
-			setReplacement((String)newValue);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY:
-			setUpToDatePolicy((UpToDatePolicy)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
+				getPath().clear();
+				getPath().addAll((Collection<? extends IPath>) newValue);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
+				getPublic().clear();
+				getPublic().addAll((Collection<? extends IActionArtifact>) newValue);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
+				getPrivate().clear();
+				getPrivate().addAll((Collection<? extends IActionArtifact>) newValue);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS:
+				setAlias((String) newValue);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__BASE:
+				setBase((String) newValue);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT:
+				setFileCount((Integer) newValue);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN:
+				setPattern((Pattern) newValue);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT:
+				setReplacement((String) newValue);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY:
+				setUpToDatePolicy((UpToDatePolicy) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -354,40 +353,38 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
-			getPath().clear();
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
-			getPublic().clear();
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
-			getPrivate().clear();
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS:
-			setAlias(ALIAS_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__BASE:
-			setBase(BASE_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT:
-			setFileCount(FILE_COUNT_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN:
-			setPattern(PATTERN_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT:
-			setReplacement(REPLACEMENT_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY:
-			unsetUpToDatePolicy();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PRODUCTS_TYPE__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PATH:
+				getPath().clear();
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PUBLIC:
+				getPublic().clear();
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PRIVATE:
+				getPrivate().clear();
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS:
+				setAlias(ALIAS_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__BASE:
+				setBase(BASE_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT:
+				setFileCount(FILE_COUNT_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN:
+				setPattern(PATTERN_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT:
+				setReplacement(REPLACEMENT_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY:
+				unsetUpToDatePolicy();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -397,8 +394,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public String getAlias()
-	{
+	public String getAlias() {
 		return alias;
 	}
 
@@ -407,8 +403,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public String getBase()
-	{
+	public String getBase() {
 		return base;
 	}
 
@@ -417,8 +412,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public int getFileCount()
-	{
+	public int getFileCount() {
 		return fileCount;
 	}
 
@@ -427,10 +421,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.PRODUCTS_TYPE__GROUP);
 		}
 		return group;
@@ -441,8 +433,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public EList<IPath> getPath()
-	{
+	public EList<IPath> getPath() {
 		return getGroup().list(ICSpecXMLPackage.Literals.PRODUCTS_TYPE__PATH);
 	}
 
@@ -451,8 +442,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public Pattern getPattern()
-	{
+	public Pattern getPattern() {
 		return pattern;
 	}
 
@@ -461,8 +451,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public EList<IActionArtifact> getPrivate()
-	{
+	public EList<IActionArtifact> getPrivate() {
 		return getGroup().list(ICSpecXMLPackage.Literals.PRODUCTS_TYPE__PRIVATE);
 	}
 
@@ -471,8 +460,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public EList<IActionArtifact> getPublic()
-	{
+	public EList<IActionArtifact> getPublic() {
 		return getGroup().list(ICSpecXMLPackage.Literals.PRODUCTS_TYPE__PUBLIC);
 	}
 
@@ -481,8 +469,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public String getReplacement()
-	{
+	public String getReplacement() {
 		return replacement;
 	}
 
@@ -491,8 +478,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public UpToDatePolicy getUpToDatePolicy()
-	{
+	public UpToDatePolicy getUpToDatePolicy() {
 		return upToDatePolicy;
 	}
 
@@ -501,8 +487,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public boolean isSetUpToDatePolicy()
-	{
+	public boolean isSetUpToDatePolicy() {
 		return upToDatePolicyESet;
 	}
 
@@ -511,13 +496,11 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public void setAlias(String newAlias)
-	{
+	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS, oldAlias,
-					alias));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__ALIAS, oldAlias, alias));
 	}
 
 	/**
@@ -525,11 +508,10 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public void setBase(String newBase)
-	{
+	public void setBase(String newBase) {
 		String oldBase = base;
 		base = newBase;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__BASE, oldBase, base));
 	}
 
@@ -538,13 +520,11 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public void setFileCount(int newFileCount)
-	{
+	public void setFileCount(int newFileCount) {
 		int oldFileCount = fileCount;
 		fileCount = newFileCount;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT,
-					oldFileCount, fileCount));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__FILE_COUNT, oldFileCount, fileCount));
 	}
 
 	/**
@@ -552,13 +532,11 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public void setPattern(Pattern newPattern)
-	{
+	public void setPattern(Pattern newPattern) {
 		Pattern oldPattern = pattern;
 		pattern = newPattern;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN, oldPattern,
-					pattern));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__PATTERN, oldPattern, pattern));
 	}
 
 	/**
@@ -566,13 +544,11 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public void setReplacement(String newReplacement)
-	{
+	public void setReplacement(String newReplacement) {
 		String oldReplacement = replacement;
 		replacement = newReplacement;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT,
-					oldReplacement, replacement));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__REPLACEMENT, oldReplacement, replacement));
 	}
 
 	/**
@@ -580,17 +556,14 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public void setUpToDatePolicy(UpToDatePolicy newUpToDatePolicy)
-	{
+	public void setUpToDatePolicy(UpToDatePolicy newUpToDatePolicy) {
 		UpToDatePolicy oldUpToDatePolicy = upToDatePolicy;
-		upToDatePolicy = newUpToDatePolicy == null
-				? UP_TO_DATE_POLICY_EDEFAULT
-				: newUpToDatePolicy;
+		upToDatePolicy = newUpToDatePolicy == null ? UP_TO_DATE_POLICY_EDEFAULT : newUpToDatePolicy;
 		boolean oldUpToDatePolicyESet = upToDatePolicyESet;
 		upToDatePolicyESet = true;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY,
-					oldUpToDatePolicy, upToDatePolicy, !oldUpToDatePolicyESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY, oldUpToDatePolicy,
+					upToDatePolicy, !oldUpToDatePolicyESet));
 	}
 
 	/**
@@ -599,9 +572,8 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -618,7 +590,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 		result.append(", replacement: ");
 		result.append(replacement);
 		result.append(", upToDatePolicy: ");
-		if(upToDatePolicyESet)
+		if (upToDatePolicyESet)
 			result.append(upToDatePolicy);
 		else
 			result.append("<unset>");
@@ -631,15 +603,14 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * 
 	 * @generated
 	 */
-	public void unsetUpToDatePolicy()
-	{
+	public void unsetUpToDatePolicy() {
 		UpToDatePolicy oldUpToDatePolicy = upToDatePolicy;
 		boolean oldUpToDatePolicyESet = upToDatePolicyESet;
 		upToDatePolicy = UP_TO_DATE_POLICY_EDEFAULT;
 		upToDatePolicyESet = false;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY,
-					oldUpToDatePolicy, UP_TO_DATE_POLICY_EDEFAULT, oldUpToDatePolicyESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.PRODUCTS_TYPE__UP_TO_DATE_POLICY, oldUpToDatePolicy,
+					UP_TO_DATE_POLICY_EDEFAULT, oldUpToDatePolicyESet));
 	}
 
 	/**
@@ -648,8 +619,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.PRODUCTS_TYPE;
 	}
 

@@ -31,31 +31,44 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Action</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Action</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getDefinitions <em>Definitions</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getActorProperties <em>Actor Properties</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getProperties <em>Properties</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getPrerequisites <em>Prerequisites</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getProducts <em>Products</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getActor <em>Actor</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#isAlways <em>Always</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#isAssignConsoleSupport <em>Assign Console Support</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#isEnabled <em>Enabled</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getFilter <em>Filter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getGroup <em>
+ * Group</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getDefinitions
+ * <em>Definitions</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getActorProperties
+ * <em>Actor Properties</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getProperties
+ * <em>Properties</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getPrerequisites
+ * <em>Prerequisites</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getProducts <em>
+ * Products</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getActor <em>
+ * Actor</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#isAlways <em>
+ * Always</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#isAssignConsoleSupport
+ * <em>Assign Console Support</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#isEnabled <em>
+ * Enabled</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ActionImpl#getFilter <em>
+ * Filter</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ActionImpl extends AttributeImpl implements IAction
-{
+public class ActionImpl extends AttributeImpl implements IAction {
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -64,8 +77,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected FeatureMap group;
 
 	/**
-	 * The default value of the '{@link #getActor() <em>Actor</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getActor() <em>Actor</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getActor()
 	 * @generated
@@ -74,8 +87,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected static final String ACTOR_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getActor() <em>Actor</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getActor() <em>Actor</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getActor()
 	 * @generated
@@ -84,8 +97,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected String actor = ACTOR_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isAlways() <em>Always</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #isAlways() <em>Always</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isAlways()
 	 * @generated
@@ -94,8 +107,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected static final boolean ALWAYS_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isAlways() <em>Always</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #isAlways() <em>Always</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isAlways()
 	 * @generated
@@ -104,7 +117,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected boolean always = ALWAYS_EDEFAULT;
 
 	/**
-	 * This is true if the Always attribute has been set. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is true if the Always attribute has been set. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -112,8 +126,9 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected boolean alwaysESet;
 
 	/**
-	 * The default value of the '{@link #isAssignConsoleSupport() <em>Assign Console Support</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #isAssignConsoleSupport()
+	 * <em>Assign Console Support</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #isAssignConsoleSupport()
 	 * @generated
@@ -122,8 +137,9 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected static final boolean ASSIGN_CONSOLE_SUPPORT_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #isAssignConsoleSupport() <em>Assign Console Support</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #isAssignConsoleSupport()
+	 * <em>Assign Console Support</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #isAssignConsoleSupport()
 	 * @generated
@@ -132,7 +148,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected boolean assignConsoleSupport = ASSIGN_CONSOLE_SUPPORT_EDEFAULT;
 
 	/**
-	 * This is true if the Assign Console Support attribute has been set. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is true if the Assign Console Support attribute has been set. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -140,8 +157,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected boolean assignConsoleSupportESet;
 
 	/**
-	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #isEnabled() <em>Enabled</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isEnabled()
 	 * @generated
@@ -150,8 +167,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected static final boolean ENABLED_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #isEnabled() <em>Enabled</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #isEnabled() <em>Enabled</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isEnabled()
 	 * @generated
@@ -160,7 +177,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected boolean enabled = ENABLED_EDEFAULT;
 
 	/**
-	 * This is true if the Enabled attribute has been set. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is true if the Enabled attribute has been set. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -168,8 +186,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected boolean enabledESet;
 
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getFilter() <em>Filter</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -178,8 +196,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	protected static final Filter FILTER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -192,8 +210,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	protected ActionImpl()
-	{
+	protected ActionImpl() {
 		super();
 	}
 
@@ -203,34 +220,32 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ACTION__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.ACTION__DEFINITIONS:
-			return getDefinitions();
-		case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
-			return getActorProperties();
-		case ICSpecXMLPackage.ACTION__PROPERTIES:
-			return getProperties();
-		case ICSpecXMLPackage.ACTION__PREREQUISITES:
-			return getPrerequisites();
-		case ICSpecXMLPackage.ACTION__PRODUCTS:
-			return getProducts();
-		case ICSpecXMLPackage.ACTION__ACTOR:
-			return getActor();
-		case ICSpecXMLPackage.ACTION__ALWAYS:
-			return isAlways();
-		case ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT:
-			return isAssignConsoleSupport();
-		case ICSpecXMLPackage.ACTION__ENABLED:
-			return isEnabled();
-		case ICSpecXMLPackage.ACTION__FILTER:
-			return getFilter();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ACTION__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.ACTION__DEFINITIONS:
+				return getDefinitions();
+			case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
+				return getActorProperties();
+			case ICSpecXMLPackage.ACTION__PROPERTIES:
+				return getProperties();
+			case ICSpecXMLPackage.ACTION__PREREQUISITES:
+				return getPrerequisites();
+			case ICSpecXMLPackage.ACTION__PRODUCTS:
+				return getProducts();
+			case ICSpecXMLPackage.ACTION__ACTOR:
+				return getActor();
+			case ICSpecXMLPackage.ACTION__ALWAYS:
+				return isAlways();
+			case ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT:
+				return isAssignConsoleSupport();
+			case ICSpecXMLPackage.ACTION__ENABLED:
+				return isEnabled();
+			case ICSpecXMLPackage.ACTION__FILTER:
+				return getFilter();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -241,22 +256,20 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ACTION__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ACTION__DEFINITIONS:
-			return ((InternalEList<?>)getDefinitions()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
-			return ((InternalEList<?>)getActorProperties()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ACTION__PROPERTIES:
-			return ((InternalEList<?>)getProperties()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ACTION__PREREQUISITES:
-			return ((InternalEList<?>)getPrerequisites()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ACTION__PRODUCTS:
-			return ((InternalEList<?>)getProducts()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ACTION__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ACTION__DEFINITIONS:
+				return ((InternalEList<?>) getDefinitions()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
+				return ((InternalEList<?>) getActorProperties()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ACTION__PROPERTIES:
+				return ((InternalEList<?>) getProperties()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ACTION__PREREQUISITES:
+				return ((InternalEList<?>) getPrerequisites()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ACTION__PRODUCTS:
+				return ((InternalEList<?>) getProducts()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -267,36 +280,30 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ACTION__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.ACTION__DEFINITIONS:
-			return !getDefinitions().isEmpty();
-		case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
-			return !getActorProperties().isEmpty();
-		case ICSpecXMLPackage.ACTION__PROPERTIES:
-			return !getProperties().isEmpty();
-		case ICSpecXMLPackage.ACTION__PREREQUISITES:
-			return !getPrerequisites().isEmpty();
-		case ICSpecXMLPackage.ACTION__PRODUCTS:
-			return !getProducts().isEmpty();
-		case ICSpecXMLPackage.ACTION__ACTOR:
-			return ACTOR_EDEFAULT == null
-					? actor != null
-					: !ACTOR_EDEFAULT.equals(actor);
-		case ICSpecXMLPackage.ACTION__ALWAYS:
-			return isSetAlways();
-		case ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT:
-			return isSetAssignConsoleSupport();
-		case ICSpecXMLPackage.ACTION__ENABLED:
-			return isSetEnabled();
-		case ICSpecXMLPackage.ACTION__FILTER:
-			return FILTER_EDEFAULT == null
-					? filter != null
-					: !FILTER_EDEFAULT.equals(filter);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ACTION__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.ACTION__DEFINITIONS:
+				return !getDefinitions().isEmpty();
+			case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
+				return !getActorProperties().isEmpty();
+			case ICSpecXMLPackage.ACTION__PROPERTIES:
+				return !getProperties().isEmpty();
+			case ICSpecXMLPackage.ACTION__PREREQUISITES:
+				return !getPrerequisites().isEmpty();
+			case ICSpecXMLPackage.ACTION__PRODUCTS:
+				return !getProducts().isEmpty();
+			case ICSpecXMLPackage.ACTION__ACTOR:
+				return ACTOR_EDEFAULT == null ? actor != null : !ACTOR_EDEFAULT.equals(actor);
+			case ICSpecXMLPackage.ACTION__ALWAYS:
+				return isSetAlways();
+			case ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT:
+				return isSetAssignConsoleSupport();
+			case ICSpecXMLPackage.ACTION__ENABLED:
+				return isSetEnabled();
+			case ICSpecXMLPackage.ACTION__FILTER:
+				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -308,48 +315,46 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ACTION__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__DEFINITIONS:
-			getDefinitions().clear();
-			getDefinitions().addAll((Collection<? extends IDefinitions>)newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
-			getActorProperties().clear();
-			getActorProperties().addAll((Collection<? extends IProperties>)newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__PROPERTIES:
-			getProperties().clear();
-			getProperties().addAll((Collection<? extends IProperties>)newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__PREREQUISITES:
-			getPrerequisites().clear();
-			getPrerequisites().addAll((Collection<? extends IPrerequisites>)newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__PRODUCTS:
-			getProducts().clear();
-			getProducts().addAll((Collection<? extends IProductsType>)newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__ACTOR:
-			setActor((String)newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__ALWAYS:
-			setAlways((Boolean)newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT:
-			setAssignConsoleSupport((Boolean)newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__ENABLED:
-			setEnabled((Boolean)newValue);
-			return;
-		case ICSpecXMLPackage.ACTION__FILTER:
-			setFilter((Filter)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ACTION__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__DEFINITIONS:
+				getDefinitions().clear();
+				getDefinitions().addAll((Collection<? extends IDefinitions>) newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
+				getActorProperties().clear();
+				getActorProperties().addAll((Collection<? extends IProperties>) newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__PROPERTIES:
+				getProperties().clear();
+				getProperties().addAll((Collection<? extends IProperties>) newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__PREREQUISITES:
+				getPrerequisites().clear();
+				getPrerequisites().addAll((Collection<? extends IPrerequisites>) newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__PRODUCTS:
+				getProducts().clear();
+				getProducts().addAll((Collection<? extends IProductsType>) newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__ACTOR:
+				setActor((String) newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__ALWAYS:
+				setAlways((Boolean) newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT:
+				setAssignConsoleSupport((Boolean) newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__ENABLED:
+				setEnabled((Boolean) newValue);
+				return;
+			case ICSpecXMLPackage.ACTION__FILTER:
+				setFilter((Filter) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -360,43 +365,41 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ACTION__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.ACTION__DEFINITIONS:
-			getDefinitions().clear();
-			return;
-		case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
-			getActorProperties().clear();
-			return;
-		case ICSpecXMLPackage.ACTION__PROPERTIES:
-			getProperties().clear();
-			return;
-		case ICSpecXMLPackage.ACTION__PREREQUISITES:
-			getPrerequisites().clear();
-			return;
-		case ICSpecXMLPackage.ACTION__PRODUCTS:
-			getProducts().clear();
-			return;
-		case ICSpecXMLPackage.ACTION__ACTOR:
-			setActor(ACTOR_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.ACTION__ALWAYS:
-			unsetAlways();
-			return;
-		case ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT:
-			unsetAssignConsoleSupport();
-			return;
-		case ICSpecXMLPackage.ACTION__ENABLED:
-			unsetEnabled();
-			return;
-		case ICSpecXMLPackage.ACTION__FILTER:
-			setFilter(FILTER_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ACTION__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.ACTION__DEFINITIONS:
+				getDefinitions().clear();
+				return;
+			case ICSpecXMLPackage.ACTION__ACTOR_PROPERTIES:
+				getActorProperties().clear();
+				return;
+			case ICSpecXMLPackage.ACTION__PROPERTIES:
+				getProperties().clear();
+				return;
+			case ICSpecXMLPackage.ACTION__PREREQUISITES:
+				getPrerequisites().clear();
+				return;
+			case ICSpecXMLPackage.ACTION__PRODUCTS:
+				getProducts().clear();
+				return;
+			case ICSpecXMLPackage.ACTION__ACTOR:
+				setActor(ACTOR_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.ACTION__ALWAYS:
+				unsetAlways();
+				return;
+			case ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT:
+				unsetAssignConsoleSupport();
+				return;
+			case ICSpecXMLPackage.ACTION__ENABLED:
+				unsetEnabled();
+				return;
+			case ICSpecXMLPackage.ACTION__FILTER:
+				setFilter(FILTER_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -406,8 +409,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public String getActor()
-	{
+	public String getActor() {
 		return actor;
 	}
 
@@ -416,8 +418,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public EList<IProperties> getActorProperties()
-	{
+	public EList<IProperties> getActorProperties() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__ACTOR_PROPERTIES);
 	}
 
@@ -426,8 +427,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public EList<IDefinitions> getDefinitions()
-	{
+	public EList<IDefinitions> getDefinitions() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__DEFINITIONS);
 	}
 
@@ -436,8 +436,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public Filter getFilter()
-	{
+	public Filter getFilter() {
 		return filter;
 	}
 
@@ -446,10 +445,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ACTION__GROUP);
 		}
 		return group;
@@ -460,8 +457,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public EList<IPrerequisites> getPrerequisites()
-	{
+	public EList<IPrerequisites> getPrerequisites() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__PREREQUISITES);
 	}
 
@@ -470,8 +466,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public EList<IProductsType> getProducts()
-	{
+	public EList<IProductsType> getProducts() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__PRODUCTS);
 	}
 
@@ -480,8 +475,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public EList<IProperties> getProperties()
-	{
+	public EList<IProperties> getProperties() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__PROPERTIES);
 	}
 
@@ -490,8 +484,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public boolean isAlways()
-	{
+	public boolean isAlways() {
 		return always;
 	}
 
@@ -500,8 +493,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public boolean isAssignConsoleSupport()
-	{
+	public boolean isAssignConsoleSupport() {
 		return assignConsoleSupport;
 	}
 
@@ -510,8 +502,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public boolean isEnabled()
-	{
+	public boolean isEnabled() {
 		return enabled;
 	}
 
@@ -520,8 +511,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public boolean isSetAlways()
-	{
+	public boolean isSetAlways() {
 		return alwaysESet;
 	}
 
@@ -530,8 +520,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public boolean isSetAssignConsoleSupport()
-	{
+	public boolean isSetAssignConsoleSupport() {
 		return assignConsoleSupportESet;
 	}
 
@@ -540,8 +529,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public boolean isSetEnabled()
-	{
+	public boolean isSetEnabled() {
 		return enabledESet;
 	}
 
@@ -550,11 +538,10 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public void setActor(String newActor)
-	{
+	public void setActor(String newActor) {
 		String oldActor = actor;
 		actor = newActor;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ACTION__ACTOR, oldActor, actor));
 	}
 
@@ -563,15 +550,13 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public void setAlways(boolean newAlways)
-	{
+	public void setAlways(boolean newAlways) {
 		boolean oldAlways = always;
 		always = newAlways;
 		boolean oldAlwaysESet = alwaysESet;
 		alwaysESet = true;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ACTION__ALWAYS, oldAlways, always,
-					!oldAlwaysESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ACTION__ALWAYS, oldAlways, always, !oldAlwaysESet));
 	}
 
 	/**
@@ -579,15 +564,14 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public void setAssignConsoleSupport(boolean newAssignConsoleSupport)
-	{
+	public void setAssignConsoleSupport(boolean newAssignConsoleSupport) {
 		boolean oldAssignConsoleSupport = assignConsoleSupport;
 		assignConsoleSupport = newAssignConsoleSupport;
 		boolean oldAssignConsoleSupportESet = assignConsoleSupportESet;
 		assignConsoleSupportESet = true;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT,
-					oldAssignConsoleSupport, assignConsoleSupport, !oldAssignConsoleSupportESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT, oldAssignConsoleSupport,
+					assignConsoleSupport, !oldAssignConsoleSupportESet));
 	}
 
 	/**
@@ -595,15 +579,13 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public void setEnabled(boolean newEnabled)
-	{
+	public void setEnabled(boolean newEnabled) {
 		boolean oldEnabled = enabled;
 		enabled = newEnabled;
 		boolean oldEnabledESet = enabledESet;
 		enabledESet = true;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ACTION__ENABLED, oldEnabled,
-					enabled, !oldEnabledESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ACTION__ENABLED, oldEnabled, enabled, !oldEnabledESet));
 	}
 
 	/**
@@ -611,11 +593,10 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public void setFilter(Filter newFilter)
-	{
+	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.ACTION__FILTER, oldFilter, filter));
 	}
 
@@ -625,9 +606,8 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -636,17 +616,17 @@ public class ActionImpl extends AttributeImpl implements IAction
 		result.append(", actor: ");
 		result.append(actor);
 		result.append(", always: ");
-		if(alwaysESet)
+		if (alwaysESet)
 			result.append(always);
 		else
 			result.append("<unset>");
 		result.append(", assignConsoleSupport: ");
-		if(assignConsoleSupportESet)
+		if (assignConsoleSupportESet)
 			result.append(assignConsoleSupport);
 		else
 			result.append("<unset>");
 		result.append(", enabled: ");
-		if(enabledESet)
+		if (enabledESet)
 			result.append(enabled);
 		else
 			result.append("<unset>");
@@ -661,15 +641,13 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public void unsetAlways()
-	{
+	public void unsetAlways() {
 		boolean oldAlways = always;
 		boolean oldAlwaysESet = alwaysESet;
 		always = ALWAYS_EDEFAULT;
 		alwaysESet = false;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.ACTION__ALWAYS, oldAlways,
-					ALWAYS_EDEFAULT, oldAlwaysESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.ACTION__ALWAYS, oldAlways, ALWAYS_EDEFAULT, oldAlwaysESet));
 	}
 
 	/**
@@ -677,15 +655,14 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public void unsetAssignConsoleSupport()
-	{
+	public void unsetAssignConsoleSupport() {
 		boolean oldAssignConsoleSupport = assignConsoleSupport;
 		boolean oldAssignConsoleSupportESet = assignConsoleSupportESet;
 		assignConsoleSupport = ASSIGN_CONSOLE_SUPPORT_EDEFAULT;
 		assignConsoleSupportESet = false;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT,
-					oldAssignConsoleSupport, ASSIGN_CONSOLE_SUPPORT_EDEFAULT, oldAssignConsoleSupportESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.ACTION__ASSIGN_CONSOLE_SUPPORT, oldAssignConsoleSupport,
+					ASSIGN_CONSOLE_SUPPORT_EDEFAULT, oldAssignConsoleSupportESet));
 	}
 
 	/**
@@ -693,15 +670,13 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * 
 	 * @generated
 	 */
-	public void unsetEnabled()
-	{
+	public void unsetEnabled() {
 		boolean oldEnabled = enabled;
 		boolean oldEnabledESet = enabledESet;
 		enabled = ENABLED_EDEFAULT;
 		enabledESet = false;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.ACTION__ENABLED, oldEnabled,
-					ENABLED_EDEFAULT, oldEnabledESet));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, ICSpecXMLPackage.ACTION__ENABLED, oldEnabled, ENABLED_EDEFAULT, oldEnabledESet));
 	}
 
 	/**
@@ -710,8 +685,7 @@ public class ActionImpl extends AttributeImpl implements IAction
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.ACTION;
 	}
 

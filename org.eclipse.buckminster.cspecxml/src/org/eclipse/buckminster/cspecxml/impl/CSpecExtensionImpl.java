@@ -27,27 +27,35 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>CSpec Extension</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>CSpec Extension</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getGroup1 <em>Group1</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getAlterActions <em>Alter Actions</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getAlterArtifacts <em>Alter Artifacts</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getAlterDependencies <em>Alter Dependencies</em>}
- * </li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getAlterGroups <em>Alter Groups</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getGroup1
+ * <em>Group1</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getAlterActions
+ * <em>Alter Actions</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getAlterArtifacts
+ * <em>Alter Artifacts</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getAlterDependencies
+ * <em>Alter Dependencies</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.CSpecExtensionImpl#getAlterGroups
+ * <em>Alter Groups</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecExtension
-{
+public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecExtension {
 	/**
-	 * The cached value of the '{@link #getGroup1() <em>Group1</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup1() <em>Group1</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup1()
 	 * @generated
@@ -60,8 +68,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
-	protected CSpecExtensionImpl()
-	{
+	protected CSpecExtensionImpl() {
 		super();
 	}
 
@@ -71,22 +78,20 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
-			if(coreType)
-				return getGroup1();
-			return ((FeatureMap.Internal)getGroup1()).getWrapper();
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
-			return getAlterActions();
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
-			return getAlterArtifacts();
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
-			return getAlterDependencies();
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
-			return getAlterGroups();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
+				if (coreType)
+					return getGroup1();
+				return ((FeatureMap.Internal) getGroup1()).getWrapper();
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
+				return getAlterActions();
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
+				return getAlterArtifacts();
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
+				return getAlterDependencies();
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
+				return getAlterGroups();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -97,20 +102,18 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
-			return ((InternalEList<?>)getGroup1()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
-			return ((InternalEList<?>)getAlterActions()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
-			return ((InternalEList<?>)getAlterArtifacts()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
-			return ((InternalEList<?>)getAlterDependencies()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
-			return ((InternalEList<?>)getAlterGroups()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
+				return ((InternalEList<?>) getGroup1()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
+				return ((InternalEList<?>) getAlterActions()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
+				return ((InternalEList<?>) getAlterArtifacts()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
+				return ((InternalEList<?>) getAlterDependencies()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
+				return ((InternalEList<?>) getAlterGroups()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -121,20 +124,18 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
-			return group1 != null && !group1.isEmpty();
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
-			return !getAlterActions().isEmpty();
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
-			return !getAlterArtifacts().isEmpty();
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
-			return !getAlterDependencies().isEmpty();
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
-			return !getAlterGroups().isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
+				return group1 != null && !group1.isEmpty();
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
+				return !getAlterActions().isEmpty();
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
+				return !getAlterArtifacts().isEmpty();
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
+				return !getAlterDependencies().isEmpty();
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
+				return !getAlterGroups().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -146,29 +147,27 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
-			((FeatureMap.Internal)getGroup1()).set(newValue);
-			return;
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
-			getAlterActions().clear();
-			getAlterActions().addAll((Collection<? extends IAlterActionsType>)newValue);
-			return;
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
-			getAlterArtifacts().clear();
-			getAlterArtifacts().addAll((Collection<? extends IAlterArtifactsType>)newValue);
-			return;
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
-			getAlterDependencies().clear();
-			getAlterDependencies().addAll((Collection<? extends IAlterDependenciesType>)newValue);
-			return;
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
-			getAlterGroups().clear();
-			getAlterGroups().addAll((Collection<? extends IAlterGroupsType>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
+				((FeatureMap.Internal) getGroup1()).set(newValue);
+				return;
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
+				getAlterActions().clear();
+				getAlterActions().addAll((Collection<? extends IAlterActionsType>) newValue);
+				return;
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
+				getAlterArtifacts().clear();
+				getAlterArtifacts().addAll((Collection<? extends IAlterArtifactsType>) newValue);
+				return;
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
+				getAlterDependencies().clear();
+				getAlterDependencies().addAll((Collection<? extends IAlterDependenciesType>) newValue);
+				return;
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
+				getAlterGroups().clear();
+				getAlterGroups().addAll((Collection<? extends IAlterGroupsType>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -179,25 +178,23 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
-			getGroup1().clear();
-			return;
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
-			getAlterActions().clear();
-			return;
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
-			getAlterArtifacts().clear();
-			return;
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
-			getAlterDependencies().clear();
-			return;
-		case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
-			getAlterGroups().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1:
+				getGroup1().clear();
+				return;
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ACTIONS:
+				getAlterActions().clear();
+				return;
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_ARTIFACTS:
+				getAlterArtifacts().clear();
+				return;
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_DEPENDENCIES:
+				getAlterDependencies().clear();
+				return;
+			case ICSpecXMLPackage.CSPEC_EXTENSION__ALTER_GROUPS:
+				getAlterGroups().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -207,8 +204,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
-	public EList<IAlterActionsType> getAlterActions()
-	{
+	public EList<IAlterActionsType> getAlterActions() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.CSPEC_EXTENSION__ALTER_ACTIONS);
 	}
 
@@ -217,8 +213,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
-	public EList<IAlterArtifactsType> getAlterArtifacts()
-	{
+	public EList<IAlterArtifactsType> getAlterArtifacts() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.CSPEC_EXTENSION__ALTER_ARTIFACTS);
 	}
 
@@ -227,8 +222,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
-	public EList<IAlterDependenciesType> getAlterDependencies()
-	{
+	public EList<IAlterDependenciesType> getAlterDependencies() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.CSPEC_EXTENSION__ALTER_DEPENDENCIES);
 	}
 
@@ -237,8 +231,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
-	public EList<IAlterGroupsType> getAlterGroups()
-	{
+	public EList<IAlterGroupsType> getAlterGroups() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.CSPEC_EXTENSION__ALTER_GROUPS);
 	}
 
@@ -247,10 +240,8 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup1()
-	{
-		if(group1 == null)
-		{
+	public FeatureMap getGroup1() {
+		if (group1 == null) {
 			group1 = new BasicFeatureMap(this, ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1);
 		}
 		return group1;
@@ -262,9 +253,8 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -280,8 +270,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.CSPEC_EXTENSION;
 	}
 

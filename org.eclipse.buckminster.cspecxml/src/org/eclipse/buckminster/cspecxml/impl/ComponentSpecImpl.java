@@ -16,21 +16,22 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Component Spec</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Component Spec</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecImpl#getName <em>Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecImpl#getName
+ * <em>Name</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ComponentSpecImpl extends ComponentSpecBaseImpl implements IComponentSpec
-{
+public class ComponentSpecImpl extends ComponentSpecBaseImpl implements IComponentSpec {
 	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -39,8 +40,8 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	protected static final String NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -53,8 +54,7 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * 
 	 * @generated
 	 */
-	protected ComponentSpecImpl()
-	{
+	protected ComponentSpecImpl() {
 		super();
 	}
 
@@ -64,12 +64,10 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.COMPONENT_SPEC__NAME:
-			return getName();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.COMPONENT_SPEC__NAME:
+				return getName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -80,14 +78,10 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.COMPONENT_SPEC__NAME:
-			return NAME_EDEFAULT == null
-					? name != null
-					: !NAME_EDEFAULT.equals(name);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.COMPONENT_SPEC__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -98,13 +92,11 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.COMPONENT_SPEC__NAME:
-			setName((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.COMPONENT_SPEC__NAME:
+				setName((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -115,13 +107,11 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.COMPONENT_SPEC__NAME:
-			setName(NAME_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.COMPONENT_SPEC__NAME:
+				setName(NAME_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -131,8 +121,7 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * 
 	 * @generated
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
@@ -141,11 +130,10 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * 
 	 * @generated
 	 */
-	public void setName(String newName)
-	{
+	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC__NAME, oldName, name));
 	}
 
@@ -155,9 +143,8 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -173,8 +160,7 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.COMPONENT_SPEC;
 	}
 

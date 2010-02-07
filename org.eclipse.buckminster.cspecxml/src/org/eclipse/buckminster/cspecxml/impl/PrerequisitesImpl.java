@@ -29,25 +29,33 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Prerequisites</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Prerequisites</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getDocumentation <em>Documentation</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getAttribute <em>Attribute</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getAlias <em>Alias</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getRebase <em>Rebase</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getDocumentation
+ * <em>Documentation</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getGroup
+ * <em>Group</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getAttribute
+ * <em>Attribute</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getAlias
+ * <em>Alias</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.PrerequisitesImpl#getRebase
+ * <em>Rebase</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
-{
+public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites {
 	/**
-	 * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' containment reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getDocumentation()
+	 * <em>Documentation</em>}' containment reference. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @see #getDocumentation()
 	 * @generated
@@ -56,8 +64,8 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	protected Documentation documentation;
 
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -66,8 +74,8 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	protected FeatureMap group;
 
 	/**
-	 * The default value of the '{@link #getAlias() <em>Alias</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getAlias() <em>Alias</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAlias()
 	 * @generated
@@ -76,8 +84,8 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	protected static final String ALIAS_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getAlias() <em>Alias</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getAlias() <em>Alias</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAlias()
 	 * @generated
@@ -86,8 +94,8 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	protected String alias = ALIAS_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getRebase() <em>Rebase</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getRebase() <em>Rebase</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRebase()
 	 * @generated
@@ -96,8 +104,8 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	protected static final String REBASE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getRebase() <em>Rebase</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getRebase() <em>Rebase</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRebase()
 	 * @generated
@@ -110,8 +118,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	protected PrerequisitesImpl()
-	{
+	protected PrerequisitesImpl() {
 		super();
 	}
 
@@ -120,15 +127,13 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs)
-	{
+	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs) {
 		Documentation oldDocumentation = documentation;
 		documentation = newDocumentation;
-		if(eNotificationRequired())
-		{
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-					ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION, oldDocumentation, newDocumentation);
-			if(msgs == null)
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION,
+					oldDocumentation, newDocumentation);
+			if (msgs == null)
 				msgs = notification;
 			else
 				msgs.add(notification);
@@ -142,22 +147,20 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
-			return getDocumentation();
-		case ICSpecXMLPackage.PREREQUISITES__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
-			return getAttribute();
-		case ICSpecXMLPackage.PREREQUISITES__ALIAS:
-			return getAlias();
-		case ICSpecXMLPackage.PREREQUISITES__REBASE:
-			return getRebase();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
+				return getDocumentation();
+			case ICSpecXMLPackage.PREREQUISITES__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
+				return getAttribute();
+			case ICSpecXMLPackage.PREREQUISITES__ALIAS:
+				return getAlias();
+			case ICSpecXMLPackage.PREREQUISITES__REBASE:
+				return getRebase();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -168,16 +171,14 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
-			return basicSetDocumentation(null, msgs);
-		case ICSpecXMLPackage.PREREQUISITES__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
-			return ((InternalEList<?>)getAttribute()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
+				return basicSetDocumentation(null, msgs);
+			case ICSpecXMLPackage.PREREQUISITES__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
+				return ((InternalEList<?>) getAttribute()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -188,24 +189,18 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
-			return documentation != null;
-		case ICSpecXMLPackage.PREREQUISITES__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
-			return !getAttribute().isEmpty();
-		case ICSpecXMLPackage.PREREQUISITES__ALIAS:
-			return ALIAS_EDEFAULT == null
-					? alias != null
-					: !ALIAS_EDEFAULT.equals(alias);
-		case ICSpecXMLPackage.PREREQUISITES__REBASE:
-			return REBASE_EDEFAULT == null
-					? rebase != null
-					: !REBASE_EDEFAULT.equals(rebase);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
+				return documentation != null;
+			case ICSpecXMLPackage.PREREQUISITES__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
+				return !getAttribute().isEmpty();
+			case ICSpecXMLPackage.PREREQUISITES__ALIAS:
+				return ALIAS_EDEFAULT == null ? alias != null : !ALIAS_EDEFAULT.equals(alias);
+			case ICSpecXMLPackage.PREREQUISITES__REBASE:
+				return REBASE_EDEFAULT == null ? rebase != null : !REBASE_EDEFAULT.equals(rebase);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -217,26 +212,24 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
-			setDocumentation((Documentation)newValue);
-			return;
-		case ICSpecXMLPackage.PREREQUISITES__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
-			getAttribute().clear();
-			getAttribute().addAll((Collection<? extends IPrerequisite>)newValue);
-			return;
-		case ICSpecXMLPackage.PREREQUISITES__ALIAS:
-			setAlias((String)newValue);
-			return;
-		case ICSpecXMLPackage.PREREQUISITES__REBASE:
-			setRebase((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
+				setDocumentation((Documentation) newValue);
+				return;
+			case ICSpecXMLPackage.PREREQUISITES__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
+				getAttribute().clear();
+				getAttribute().addAll((Collection<? extends IPrerequisite>) newValue);
+				return;
+			case ICSpecXMLPackage.PREREQUISITES__ALIAS:
+				setAlias((String) newValue);
+				return;
+			case ICSpecXMLPackage.PREREQUISITES__REBASE:
+				setRebase((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -247,25 +240,23 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
-			setDocumentation((Documentation)null);
-			return;
-		case ICSpecXMLPackage.PREREQUISITES__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
-			getAttribute().clear();
-			return;
-		case ICSpecXMLPackage.PREREQUISITES__ALIAS:
-			setAlias(ALIAS_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.PREREQUISITES__REBASE:
-			setRebase(REBASE_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION:
+				setDocumentation((Documentation) null);
+				return;
+			case ICSpecXMLPackage.PREREQUISITES__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.PREREQUISITES__ATTRIBUTE:
+				getAttribute().clear();
+				return;
+			case ICSpecXMLPackage.PREREQUISITES__ALIAS:
+				setAlias(ALIAS_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.PREREQUISITES__REBASE:
+				setRebase(REBASE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -275,8 +266,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	public String getAlias()
-	{
+	public String getAlias() {
 		return alias;
 	}
 
@@ -285,8 +275,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	public EList<IPrerequisite> getAttribute()
-	{
+	public EList<IPrerequisite> getAttribute() {
 		return getGroup().list(ICSpecXMLPackage.Literals.PREREQUISITES__ATTRIBUTE);
 	}
 
@@ -295,8 +284,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	public Documentation getDocumentation()
-	{
+	public Documentation getDocumentation() {
 		return documentation;
 	}
 
@@ -305,10 +293,8 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.PREREQUISITES__GROUP);
 		}
 		return group;
@@ -319,8 +305,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	public String getRebase()
-	{
+	public String getRebase() {
 		return rebase;
 	}
 
@@ -329,13 +314,11 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	public void setAlias(String newAlias)
-	{
+	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PREREQUISITES__ALIAS, oldAlias,
-					alias));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PREREQUISITES__ALIAS, oldAlias, alias));
 	}
 
 	/**
@@ -343,24 +326,20 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	public void setDocumentation(Documentation newDocumentation)
-	{
-		if(newDocumentation != documentation)
-		{
+	public void setDocumentation(Documentation newDocumentation) {
+		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
-			if(documentation != null)
-				msgs = ((InternalEObject)documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
-						- ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION, null, msgs);
-			if(newDocumentation != null)
-				msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
-						- ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION, null, msgs);
+			if (documentation != null)
+				msgs = ((InternalEObject) documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION,
+						null, msgs);
+			if (newDocumentation != null)
+				msgs = ((InternalEObject) newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION,
+						null, msgs);
 			msgs = basicSetDocumentation(newDocumentation, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION,
-					newDocumentation, newDocumentation));
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PREREQUISITES__DOCUMENTATION, newDocumentation, newDocumentation));
 	}
 
 	/**
@@ -368,13 +347,11 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * 
 	 * @generated
 	 */
-	public void setRebase(String newRebase)
-	{
+	public void setRebase(String newRebase) {
 		String oldRebase = rebase;
 		rebase = newRebase;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PREREQUISITES__REBASE, oldRebase,
-					rebase));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.PREREQUISITES__REBASE, oldRebase, rebase));
 	}
 
 	/**
@@ -383,9 +360,8 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -405,8 +381,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.PREREQUISITES;
 	}
 

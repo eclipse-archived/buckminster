@@ -9,23 +9,24 @@ package org.eclipse.buckminster.cspecxml;
 import org.eclipse.emf.ecore.EFactory;
 
 /**
- * <!-- begin-user-doc --> The <b>Factory</b> for the model. It provides a create method for each non-abstract class of
- * the model. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> The <b>Factory</b> for the model. It provides a
+ * create method for each non-abstract class of the model. <!-- end-user-doc -->
  * 
  * @see org.eclipse.buckminster.cspecxml.ICSpecXMLPackage
  * @generated
  */
-public interface ICSpecXMLFactory extends EFactory
-{
+public interface ICSpecXMLFactory extends EFactory {
 	/**
-	 * The singleton instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The singleton instance of the factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	ICSpecXMLFactory eINSTANCE = org.eclipse.buckminster.cspecxml.impl.CSpecXMLFactoryImpl.init();
 
 	/**
-	 * Returns a new object of class '<em>Action</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Action</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Action</em>'.
 	 * @generated
@@ -33,7 +34,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAction createAction();
 
 	/**
-	 * Returns a new object of class '<em>Action Artifact</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Action Artifact</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Action Artifact</em>'.
 	 * @generated
@@ -41,7 +43,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IActionArtifact createActionArtifact();
 
 	/**
-	 * Returns a new object of class '<em>Actions Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Actions Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Actions Type</em>'.
 	 * @generated
@@ -49,7 +52,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IActionsType createActionsType();
 
 	/**
-	 * Returns a new object of class '<em>Alter Action</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Action</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Action</em>'.
 	 * @generated
@@ -57,7 +61,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterAction createAlterAction();
 
 	/**
-	 * Returns a new object of class '<em>Alter Actions Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Actions Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Actions Type</em>'.
 	 * @generated
@@ -65,7 +70,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterActionsType createAlterActionsType();
 
 	/**
-	 * Returns a new object of class '<em>Alter Artifact</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Artifact</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Artifact</em>'.
 	 * @generated
@@ -73,7 +79,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterArtifact createAlterArtifact();
 
 	/**
-	 * Returns a new object of class '<em>Alter Artifacts Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Artifacts Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Artifacts Type</em>'.
 	 * @generated
@@ -81,7 +88,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterArtifactsType createAlterArtifactsType();
 
 	/**
-	 * Returns a new object of class '<em>Alter Dependencies Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Dependencies Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Dependencies Type</em>'.
 	 * @generated
@@ -89,7 +97,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterDependenciesType createAlterDependenciesType();
 
 	/**
-	 * Returns a new object of class '<em>Alter Group</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Group</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Group</em>'.
 	 * @generated
@@ -97,7 +106,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterGroup createAlterGroup();
 
 	/**
-	 * Returns a new object of class '<em>Alter Groups Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Groups Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Groups Type</em>'.
 	 * @generated
@@ -105,7 +115,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterGroupsType createAlterGroupsType();
 
 	/**
-	 * Returns a new object of class '<em>Alter Prerequisites</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Prerequisites</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Prerequisites</em>'.
 	 * @generated
@@ -113,7 +124,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterPrerequisites createAlterPrerequisites();
 
 	/**
-	 * Returns a new object of class '<em>Alter Products Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Products Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Products Type</em>'.
 	 * @generated
@@ -121,7 +133,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterProductsType createAlterProductsType();
 
 	/**
-	 * Returns a new object of class '<em>Alter Properties</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Properties</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Properties</em>'.
 	 * @generated
@@ -129,7 +142,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAlterProperties createAlterProperties();
 
 	/**
-	 * Returns a new object of class '<em>Artifact</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Artifact</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Artifact</em>'.
 	 * @generated
@@ -137,7 +151,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IArtifact createArtifact();
 
 	/**
-	 * Returns a new object of class '<em>Artifacts Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Artifacts Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Artifacts Type</em>'.
 	 * @generated
@@ -145,7 +160,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IArtifactsType createArtifactsType();
 
 	/**
-	 * Returns a new object of class '<em>Attribute</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Attribute</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Attribute</em>'.
 	 * @generated
@@ -153,7 +169,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IAttribute createAttribute();
 
 	/**
-	 * Returns a new object of class '<em>Component Request</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Component Request</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Component Request</em>'.
 	 * @generated
@@ -161,7 +178,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IComponentRequest createComponentRequest();
 
 	/**
-	 * Returns a new object of class '<em>Component Spec</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Component Spec</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Component Spec</em>'.
 	 * @generated
@@ -169,7 +187,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IComponentSpec createComponentSpec();
 
 	/**
-	 * Returns a new object of class '<em>Component Spec Base</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Component Spec Base</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Component Spec Base</em>'.
 	 * @generated
@@ -177,7 +196,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IComponentSpecBase createComponentSpecBase();
 
 	/**
-	 * Returns a new object of class '<em>CSpec Extension</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>CSpec Extension</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>CSpec Extension</em>'.
 	 * @generated
@@ -185,7 +205,8 @@ public interface ICSpecXMLFactory extends EFactory
 	ICSpecExtension createCSpecExtension();
 
 	/**
-	 * Returns a new object of class '<em>Definitions</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Definitions</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Definitions</em>'.
 	 * @generated
@@ -193,7 +214,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IDefinitions createDefinitions();
 
 	/**
-	 * Returns a new object of class '<em>Dependencies Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Dependencies Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Dependencies Type</em>'.
 	 * @generated
@@ -201,7 +223,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IDependenciesType createDependenciesType();
 
 	/**
-	 * Returns a new object of class '<em>Document Root</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Document Root</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Document Root</em>'.
 	 * @generated
@@ -209,7 +232,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IDocumentRoot createDocumentRoot();
 
 	/**
-	 * Returns a new object of class '<em>Generator</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Generator</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Generator</em>'.
 	 * @generated
@@ -217,7 +241,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IGenerator createGenerator();
 
 	/**
-	 * Returns a new object of class '<em>Generators Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Generators Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Generators Type</em>'.
 	 * @generated
@@ -225,7 +250,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IGeneratorsType createGeneratorsType();
 
 	/**
-	 * Returns a new object of class '<em>Group</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Group</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Group</em>'.
 	 * @generated
@@ -233,7 +259,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IGroup createGroup();
 
 	/**
-	 * Returns a new object of class '<em>Groups Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Groups Type</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Groups Type</em>'.
 	 * @generated
@@ -241,7 +268,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IGroupsType createGroupsType();
 
 	/**
-	 * Returns a new object of class '<em>Import</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Import</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Import</em>'.
 	 * @generated
@@ -249,7 +277,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IImport createImport();
 
 	/**
-	 * Returns a new object of class '<em>Parameter Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Parameter Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Parameter Type</em>'.
 	 * @generated
@@ -257,7 +286,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IParameterType createParameterType();
 
 	/**
-	 * Returns a new object of class '<em>Path</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Path</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Path</em>'.
 	 * @generated
@@ -265,7 +295,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IPath createPath();
 
 	/**
-	 * Returns a new object of class '<em>Prerequisite</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Prerequisite</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Prerequisite</em>'.
 	 * @generated
@@ -273,7 +304,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IPrerequisite createPrerequisite();
 
 	/**
-	 * Returns a new object of class '<em>Prerequisites</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Prerequisites</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Prerequisites</em>'.
 	 * @generated
@@ -281,7 +313,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IPrerequisites createPrerequisites();
 
 	/**
-	 * Returns a new object of class '<em>Products Type</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Products Type</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Products Type</em>'.
 	 * @generated
@@ -289,7 +322,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IProductsType createProductsType();
 
 	/**
-	 * Returns a new object of class '<em>Properties</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Properties</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Properties</em>'.
 	 * @generated
@@ -297,7 +331,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IProperties createProperties();
 
 	/**
-	 * Returns a new object of class '<em>Remove</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Remove</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Remove</em>'.
 	 * @generated
@@ -305,7 +340,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IRemove createRemove();
 
 	/**
-	 * Returns a new object of class '<em>Remove Path</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Remove Path</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Remove Path</em>'.
 	 * @generated
@@ -313,7 +349,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IRemovePath createRemovePath();
 
 	/**
-	 * Returns a new object of class '<em>Remove Property</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Remove Property</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Remove Property</em>'.
 	 * @generated
@@ -321,7 +358,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IRemoveProperty createRemoveProperty();
 
 	/**
-	 * Returns a new object of class '<em>Rename</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Rename</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Rename</em>'.
 	 * @generated
@@ -329,7 +367,8 @@ public interface ICSpecXMLFactory extends EFactory
 	IRename createRename();
 
 	/**
-	 * Returns the package supported by this factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the package supported by this factory. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return the package supported by this factory.
 	 * @generated

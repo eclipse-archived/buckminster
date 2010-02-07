@@ -25,22 +25,23 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Dependencies Type</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Dependencies Type</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.DependenciesTypeImpl#getDependency <em>Dependency</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.DependenciesTypeImpl#getDependency
+ * <em>Dependency</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesType
-{
+public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesType {
 	/**
-	 * The cached value of the '{@link #getDependency() <em>Dependency</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getDependency() <em>Dependency</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getDependency()
 	 * @generated
@@ -53,8 +54,7 @@ public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesTy
 	 * 
 	 * @generated
 	 */
-	protected DependenciesTypeImpl()
-	{
+	protected DependenciesTypeImpl() {
 		super();
 	}
 
@@ -64,12 +64,10 @@ public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesTy
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
-			return getDependency();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
+				return getDependency();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -80,12 +78,10 @@ public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesTy
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
-			return ((InternalEList<?>)getDependency()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
+				return ((InternalEList<?>) getDependency()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -96,12 +92,10 @@ public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesTy
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
-			return dependency != null && !dependency.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
+				return dependency != null && !dependency.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -113,14 +107,12 @@ public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesTy
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
-			getDependency().clear();
-			getDependency().addAll((Collection<? extends IComponentRequest>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
+				getDependency().clear();
+				getDependency().addAll((Collection<? extends IComponentRequest>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -131,13 +123,11 @@ public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesTy
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
-			getDependency().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY:
+				getDependency().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -147,12 +137,9 @@ public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesTy
 	 * 
 	 * @generated
 	 */
-	public EList<IComponentRequest> getDependency()
-	{
-		if(dependency == null)
-		{
-			dependency = new EObjectContainmentEList<IComponentRequest>(IComponentRequest.class, this,
-					ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY);
+	public EList<IComponentRequest> getDependency() {
+		if (dependency == null) {
+			dependency = new EObjectContainmentEList<IComponentRequest>(IComponentRequest.class, this, ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY);
 		}
 		return dependency;
 	}
@@ -163,8 +150,7 @@ public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesTy
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.DEPENDENCIES_TYPE;
 	}
 

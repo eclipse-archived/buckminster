@@ -25,22 +25,23 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Generators Type</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Generators Type</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.GeneratorsTypeImpl#getGenerator <em>Generator</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.GeneratorsTypeImpl#getGenerator
+ * <em>Generator</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType
-{
+public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType {
 	/**
-	 * The cached value of the '{@link #getGenerator() <em>Generator</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getGenerator() <em>Generator</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGenerator()
 	 * @generated
@@ -53,8 +54,7 @@ public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType
 	 * 
 	 * @generated
 	 */
-	protected GeneratorsTypeImpl()
-	{
+	protected GeneratorsTypeImpl() {
 		super();
 	}
 
@@ -64,12 +64,10 @@ public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
-			return getGenerator();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
+				return getGenerator();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -80,12 +78,10 @@ public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
-			return ((InternalEList<?>)getGenerator()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
+				return ((InternalEList<?>) getGenerator()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -96,12 +92,10 @@ public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
-			return generator != null && !generator.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
+				return generator != null && !generator.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -113,14 +107,12 @@ public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
-			getGenerator().clear();
-			getGenerator().addAll((Collection<? extends IGenerator>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
+				getGenerator().clear();
+				getGenerator().addAll((Collection<? extends IGenerator>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -131,13 +123,11 @@ public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
-			getGenerator().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR:
+				getGenerator().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -147,12 +137,9 @@ public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType
 	 * 
 	 * @generated
 	 */
-	public EList<IGenerator> getGenerator()
-	{
-		if(generator == null)
-		{
-			generator = new EObjectContainmentEList<IGenerator>(IGenerator.class, this,
-					ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR);
+	public EList<IGenerator> getGenerator() {
+		if (generator == null) {
+			generator = new EObjectContainmentEList<IGenerator>(IGenerator.class, this, ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR);
 		}
 		return generator;
 	}
@@ -163,8 +150,7 @@ public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.GENERATORS_TYPE;
 	}
 

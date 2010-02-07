@@ -10,18 +10,28 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.p2.metadata.Version;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Generator</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Generator</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getAttribute <em>Attribute</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getComponent <em>Component</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getComponentType <em>Component Type</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getGenerates <em>Generates</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesType <em>Generates Type</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesVersionString <em>Generates Version String</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesVersionType <em>Generates Version Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getAttribute <em>
+ * Attribute</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getComponent <em>
+ * Component</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getComponentType <em>
+ * Component Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getGenerates <em>
+ * Generates</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesType <em>
+ * Generates Type</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesVersionString
+ * <em>Generates Version String</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesVersionType
+ * <em>Generates Version Type</em>}</li>
  * </ul>
  * </p>
  * 
@@ -29,13 +39,13 @@ import org.eclipse.equinox.p2.metadata.Version;
  * @model extendedMetaData="name='Generator' kind='empty'"
  * @generated
  */
-public interface IGenerator extends EObject
-{
+public interface IGenerator extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Attribute</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Attribute</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Attribute</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Attribute</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -49,42 +59,47 @@ public interface IGenerator extends EObject
 	String getAttribute();
 
 	/**
-	 * Returns the value of the '<em><b>Component</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Component</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Component</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Component</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Component</em>' attribute.
 	 * @see #setComponent(String)
 	 * @see org.eclipse.buckminster.cspecxml.ICSpecXMLPackage#getGenerator_Component()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" extendedMetaData="kind='attribute' name='component'"
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+	 *        extendedMetaData="kind='attribute' name='component'"
 	 * @generated
 	 */
 	String getComponent();
 
 	/**
-	 * Returns the value of the '<em><b>Component Type</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Component Type</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Component Type</em>' attribute isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Component Type</em>' attribute isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Component Type</em>' attribute.
 	 * @see #setComponentType(String)
 	 * @see org.eclipse.buckminster.cspecxml.ICSpecXMLPackage#getGenerator_ComponentType()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" extendedMetaData="kind='attribute' name='componentType'"
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+	 *        extendedMetaData="kind='attribute' name='componentType'"
 	 * @generated
 	 */
 	String getComponentType();
 
 	/**
-	 * Returns the value of the '<em><b>Generates</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Generates</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generates</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Generates</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -98,17 +113,19 @@ public interface IGenerator extends EObject
 	String getGenerates();
 
 	/**
-	 * Returns the value of the '<em><b>Generates Type</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Generates Type</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generates Type</em>' attribute isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Generates Type</em>' attribute isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Generates Type</em>' attribute.
 	 * @see #setGeneratesType(String)
 	 * @see org.eclipse.buckminster.cspecxml.ICSpecXMLPackage#getGenerator_GeneratesType()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" extendedMetaData="kind='attribute' name='generatesType'"
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+	 *        extendedMetaData="kind='attribute' name='generatesType'"
 	 * @generated
 	 */
 	String getGeneratesType();
@@ -116,21 +133,23 @@ public interface IGenerator extends EObject
 	/**
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generates Version</em>' attribute isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Generates Version</em>' attribute isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @model kind="operation" dataType="org.eclipse.buckminster.model.common.Version"
+	 * @model kind="operation"
+	 *        dataType="org.eclipse.buckminster.model.common.Version"
 	 * @generated
 	 */
 	Version getGeneratesVersion();
 
 	/**
-	 * Returns the value of the '<em><b>Generates Version String</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Generates Version String</b></em>'
+	 * attribute. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generates Version String</em>' attribute isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Generates Version String</em>' attribute isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -144,10 +163,11 @@ public interface IGenerator extends EObject
 	String getGeneratesVersionString();
 
 	/**
-	 * Returns the value of the '<em><b>Generates Version Type</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Generates Version Type</b></em>'
+	 * attribute. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generates Version Type</em>' attribute isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Generates Version Type</em>' attribute isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -161,8 +181,10 @@ public interface IGenerator extends EObject
 	String getGeneratesVersionType();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IGenerator#getAttribute <em>Attribute</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IGenerator#getAttribute
+	 * <em>Attribute</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Attribute</em>' attribute.
@@ -172,8 +194,10 @@ public interface IGenerator extends EObject
 	void setAttribute(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IGenerator#getComponent <em>Component</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IGenerator#getComponent
+	 * <em>Component</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Component</em>' attribute.
@@ -183,8 +207,10 @@ public interface IGenerator extends EObject
 	void setComponent(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IGenerator#getComponentType
-	 * <em>Component Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IGenerator#getComponentType
+	 * <em>Component Type</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Component Type</em>' attribute.
@@ -194,8 +220,10 @@ public interface IGenerator extends EObject
 	void setComponentType(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IGenerator#getGenerates <em>Generates</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IGenerator#getGenerates
+	 * <em>Generates</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Generates</em>' attribute.
@@ -205,8 +233,10 @@ public interface IGenerator extends EObject
 	void setGenerates(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesType
-	 * <em>Generates Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesType
+	 * <em>Generates Type</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Generates Type</em>' attribute.
@@ -216,22 +246,28 @@ public interface IGenerator extends EObject
 	void setGeneratesType(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesVersionString
-	 * <em>Generates Version String</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesVersionString
+	 * <em>Generates Version String</em>}' attribute. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @param value
-	 *            the new value of the '<em>Generates Version String</em>' attribute.
+	 *            the new value of the '<em>Generates Version String</em>'
+	 *            attribute.
 	 * @see #getGeneratesVersionString()
 	 * @generated
 	 */
 	void setGeneratesVersionString(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesVersionType
-	 * <em>Generates Version Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspecxml.IGenerator#getGeneratesVersionType
+	 * <em>Generates Version Type</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
-	 *            the new value of the '<em>Generates Version Type</em>' attribute.
+	 *            the new value of the '<em>Generates Version Type</em>'
+	 *            attribute.
 	 * @see #getGeneratesVersionType()
 	 * @generated
 	 */

@@ -28,25 +28,30 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Group</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Group</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getDefinitions <em>Definitions</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getAttribute <em>Attribute</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getFilter <em>Filter</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getRebase <em>Rebase</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getGroup <em>Group
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getDefinitions
+ * <em>Definitions</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getAttribute <em>
+ * Attribute</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getFilter <em>
+ * Filter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.GroupImpl#getRebase <em>
+ * Rebase</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class GroupImpl extends AttributeImpl implements IGroup
-{
+public class GroupImpl extends AttributeImpl implements IGroup {
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -55,8 +60,8 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	protected FeatureMap group;
 
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getFilter() <em>Filter</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -65,8 +70,8 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	protected static final Filter FILTER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -75,8 +80,8 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	protected Filter filter = FILTER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getRebase() <em>Rebase</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getRebase() <em>Rebase</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRebase()
 	 * @generated
@@ -85,8 +90,8 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	protected static final String REBASE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getRebase() <em>Rebase</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getRebase() <em>Rebase</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRebase()
 	 * @generated
@@ -99,8 +104,7 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * 
 	 * @generated
 	 */
-	protected GroupImpl()
-	{
+	protected GroupImpl() {
 		super();
 	}
 
@@ -110,22 +114,20 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUP__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.GROUP__DEFINITIONS:
-			return getDefinitions();
-		case ICSpecXMLPackage.GROUP__ATTRIBUTE:
-			return getAttribute();
-		case ICSpecXMLPackage.GROUP__FILTER:
-			return getFilter();
-		case ICSpecXMLPackage.GROUP__REBASE:
-			return getRebase();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUP__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.GROUP__DEFINITIONS:
+				return getDefinitions();
+			case ICSpecXMLPackage.GROUP__ATTRIBUTE:
+				return getAttribute();
+			case ICSpecXMLPackage.GROUP__FILTER:
+				return getFilter();
+			case ICSpecXMLPackage.GROUP__REBASE:
+				return getRebase();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -136,16 +138,14 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUP__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.GROUP__DEFINITIONS:
-			return ((InternalEList<?>)getDefinitions()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.GROUP__ATTRIBUTE:
-			return ((InternalEList<?>)getAttribute()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUP__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.GROUP__DEFINITIONS:
+				return ((InternalEList<?>) getDefinitions()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.GROUP__ATTRIBUTE:
+				return ((InternalEList<?>) getAttribute()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -156,24 +156,18 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUP__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.GROUP__DEFINITIONS:
-			return !getDefinitions().isEmpty();
-		case ICSpecXMLPackage.GROUP__ATTRIBUTE:
-			return !getAttribute().isEmpty();
-		case ICSpecXMLPackage.GROUP__FILTER:
-			return FILTER_EDEFAULT == null
-					? filter != null
-					: !FILTER_EDEFAULT.equals(filter);
-		case ICSpecXMLPackage.GROUP__REBASE:
-			return REBASE_EDEFAULT == null
-					? rebase != null
-					: !REBASE_EDEFAULT.equals(rebase);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUP__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.GROUP__DEFINITIONS:
+				return !getDefinitions().isEmpty();
+			case ICSpecXMLPackage.GROUP__ATTRIBUTE:
+				return !getAttribute().isEmpty();
+			case ICSpecXMLPackage.GROUP__FILTER:
+				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
+			case ICSpecXMLPackage.GROUP__REBASE:
+				return REBASE_EDEFAULT == null ? rebase != null : !REBASE_EDEFAULT.equals(rebase);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -185,27 +179,25 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUP__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.GROUP__DEFINITIONS:
-			getDefinitions().clear();
-			getDefinitions().addAll((Collection<? extends IDefinitions>)newValue);
-			return;
-		case ICSpecXMLPackage.GROUP__ATTRIBUTE:
-			getAttribute().clear();
-			getAttribute().addAll((Collection<? extends IPrerequisite>)newValue);
-			return;
-		case ICSpecXMLPackage.GROUP__FILTER:
-			setFilter((Filter)newValue);
-			return;
-		case ICSpecXMLPackage.GROUP__REBASE:
-			setRebase((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUP__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.GROUP__DEFINITIONS:
+				getDefinitions().clear();
+				getDefinitions().addAll((Collection<? extends IDefinitions>) newValue);
+				return;
+			case ICSpecXMLPackage.GROUP__ATTRIBUTE:
+				getAttribute().clear();
+				getAttribute().addAll((Collection<? extends IPrerequisite>) newValue);
+				return;
+			case ICSpecXMLPackage.GROUP__FILTER:
+				setFilter((Filter) newValue);
+				return;
+			case ICSpecXMLPackage.GROUP__REBASE:
+				setRebase((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -216,25 +208,23 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.GROUP__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.GROUP__DEFINITIONS:
-			getDefinitions().clear();
-			return;
-		case ICSpecXMLPackage.GROUP__ATTRIBUTE:
-			getAttribute().clear();
-			return;
-		case ICSpecXMLPackage.GROUP__FILTER:
-			setFilter(FILTER_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.GROUP__REBASE:
-			setRebase(REBASE_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.GROUP__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.GROUP__DEFINITIONS:
+				getDefinitions().clear();
+				return;
+			case ICSpecXMLPackage.GROUP__ATTRIBUTE:
+				getAttribute().clear();
+				return;
+			case ICSpecXMLPackage.GROUP__FILTER:
+				setFilter(FILTER_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.GROUP__REBASE:
+				setRebase(REBASE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -244,8 +234,7 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * 
 	 * @generated
 	 */
-	public EList<IPrerequisite> getAttribute()
-	{
+	public EList<IPrerequisite> getAttribute() {
 		return getGroup().list(ICSpecXMLPackage.Literals.GROUP__ATTRIBUTE);
 	}
 
@@ -254,8 +243,7 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * 
 	 * @generated
 	 */
-	public EList<IDefinitions> getDefinitions()
-	{
+	public EList<IDefinitions> getDefinitions() {
 		return getGroup().list(ICSpecXMLPackage.Literals.GROUP__DEFINITIONS);
 	}
 
@@ -264,8 +252,7 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * 
 	 * @generated
 	 */
-	public Filter getFilter()
-	{
+	public Filter getFilter() {
 		return filter;
 	}
 
@@ -274,10 +261,8 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.GROUP__GROUP);
 		}
 		return group;
@@ -288,8 +273,7 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * 
 	 * @generated
 	 */
-	public String getRebase()
-	{
+	public String getRebase() {
 		return rebase;
 	}
 
@@ -298,11 +282,10 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * 
 	 * @generated
 	 */
-	public void setFilter(Filter newFilter)
-	{
+	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.GROUP__FILTER, oldFilter, filter));
 	}
 
@@ -311,11 +294,10 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * 
 	 * @generated
 	 */
-	public void setRebase(String newRebase)
-	{
+	public void setRebase(String newRebase) {
 		String oldRebase = rebase;
 		rebase = newRebase;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.GROUP__REBASE, oldRebase, rebase));
 	}
 
@@ -325,9 +307,8 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -347,8 +328,7 @@ public class GroupImpl extends AttributeImpl implements IGroup
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.GROUP;
 	}
 

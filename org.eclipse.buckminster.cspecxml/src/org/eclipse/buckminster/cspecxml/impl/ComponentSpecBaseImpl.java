@@ -32,35 +32,63 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.equinox.p2.metadata.Version;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Component Spec Base</b></em>'. <!--
- * end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Component Spec Base</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getDocumentation <em>Documentation</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getDependencies <em>Dependencies</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getGenerators <em>Generators</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getArtifacts <em>Artifacts</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getGroups <em>Groups</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getActions <em>Actions</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getCategory <em>Category</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getComponentType <em>Component Type</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getFilter <em>Filter</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getProjectInfo <em>Project Info</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getShortDesc <em>Short Desc</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getVersionString <em>Version String</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getVersionType <em>Version Type</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getDocumentation
+ * <em>Documentation</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getGroup
+ * <em>Group</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getDependencies
+ * <em>Dependencies</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getGenerators
+ * <em>Generators</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getArtifacts
+ * <em>Artifacts</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getGroups
+ * <em>Groups</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getActions
+ * <em>Actions</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getCategory
+ * <em>Category</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getComponentType
+ * <em>Component Type</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getFilter
+ * <em>Filter</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getProjectInfo
+ * <em>Project Info</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getShortDesc
+ * <em>Short Desc</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getVersionString
+ * <em>Version String</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.ComponentSpecBaseImpl#getVersionType
+ * <em>Version Type</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpecBase
-{
+public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpecBase {
 	/**
-	 * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' containment reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getDocumentation()
+	 * <em>Documentation</em>}' containment reference. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @see #getDocumentation()
 	 * @generated
@@ -69,8 +97,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected Documentation documentation;
 
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -79,8 +107,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected FeatureMap group;
 
 	/**
-	 * The default value of the '{@link #getCategory() <em>Category</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getCategory() <em>Category</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getCategory()
 	 * @generated
@@ -89,8 +117,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected static final String CATEGORY_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getCategory() <em>Category</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getCategory() <em>Category</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getCategory()
 	 * @generated
@@ -99,8 +127,9 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected String category = CATEGORY_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getComponentType() <em>Component Type</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #getComponentType()
+	 * <em>Component Type</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getComponentType()
 	 * @generated
@@ -109,8 +138,9 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected static final String COMPONENT_TYPE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getComponentType() <em>Component Type</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #getComponentType()
+	 * <em>Component Type</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getComponentType()
 	 * @generated
@@ -119,8 +149,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected String componentType = COMPONENT_TYPE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getFilter() <em>Filter</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -129,8 +159,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected static final Filter FILTER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -139,8 +169,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected Filter filter = FILTER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getProjectInfo() <em>Project Info</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #getProjectInfo() <em>Project Info</em>}
+	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getProjectInfo()
 	 * @generated
@@ -149,8 +179,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected static final URL PROJECT_INFO_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getProjectInfo() <em>Project Info</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getProjectInfo() <em>Project Info</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getProjectInfo()
 	 * @generated
@@ -159,8 +189,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected URL projectInfo = PROJECT_INFO_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getShortDesc() <em>Short Desc</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getShortDesc() <em>Short Desc</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getShortDesc()
 	 * @generated
@@ -169,8 +199,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected static final String SHORT_DESC_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getShortDesc() <em>Short Desc</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getShortDesc() <em>Short Desc</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getShortDesc()
 	 * @generated
@@ -179,8 +209,9 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected String shortDesc = SHORT_DESC_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getVersionString() <em>Version String</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #getVersionString()
+	 * <em>Version String</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getVersionString()
 	 * @generated
@@ -189,8 +220,9 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected static final String VERSION_STRING_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getVersionString() <em>Version String</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #getVersionString()
+	 * <em>Version String</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getVersionString()
 	 * @generated
@@ -199,8 +231,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected String versionString = VERSION_STRING_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getVersionType() <em>Version Type</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #getVersionType() <em>Version Type</em>}
+	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getVersionType()
 	 * @generated
@@ -209,8 +241,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	protected static final String VERSION_TYPE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getVersionType() <em>Version Type</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getVersionType() <em>Version Type</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getVersionType()
 	 * @generated
@@ -223,8 +255,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	protected ComponentSpecBaseImpl()
-	{
+	protected ComponentSpecBaseImpl() {
 		super();
 	}
 
@@ -233,15 +264,13 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs)
-	{
+	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs) {
 		Documentation oldDocumentation = documentation;
 		documentation = newDocumentation;
-		if(eNotificationRequired())
-		{
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-					ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION, oldDocumentation, newDocumentation);
-			if(msgs == null)
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION,
+					oldDocumentation, newDocumentation);
+			if (msgs == null)
 				msgs = notification;
 			else
 				msgs.add(notification);
@@ -255,40 +284,38 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
-			return getDocumentation();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
-			return getDependencies();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
-			return getGenerators();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
-			return getArtifacts();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
-			return getGroups();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
-			return getActions();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY:
-			return getCategory();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE:
-			return getComponentType();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER:
-			return getFilter();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO:
-			return getProjectInfo();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC:
-			return getShortDesc();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING:
-			return getVersionString();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE:
-			return getVersionType();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
+				return getDocumentation();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
+				return getDependencies();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
+				return getGenerators();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
+				return getArtifacts();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
+				return getGroups();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
+				return getActions();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY:
+				return getCategory();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE:
+				return getComponentType();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER:
+				return getFilter();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO:
+				return getProjectInfo();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC:
+				return getShortDesc();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING:
+				return getVersionString();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE:
+				return getVersionType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -299,24 +326,22 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
-			return basicSetDocumentation(null, msgs);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
-			return ((InternalEList<?>)getDependencies()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
-			return ((InternalEList<?>)getGenerators()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
-			return ((InternalEList<?>)getArtifacts()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
-			return ((InternalEList<?>)getGroups()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
-			return ((InternalEList<?>)getActions()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
+				return basicSetDocumentation(null, msgs);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
+				return ((InternalEList<?>) getDependencies()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
+				return ((InternalEList<?>) getGenerators()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
+				return ((InternalEList<?>) getArtifacts()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
+				return ((InternalEList<?>) getGroups()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
+				return ((InternalEList<?>) getActions()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -327,52 +352,36 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
-			return documentation != null;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
-			return !getDependencies().isEmpty();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
-			return !getGenerators().isEmpty();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
-			return !getArtifacts().isEmpty();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
-			return !getGroups().isEmpty();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
-			return !getActions().isEmpty();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY:
-			return CATEGORY_EDEFAULT == null
-					? category != null
-					: !CATEGORY_EDEFAULT.equals(category);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE:
-			return COMPONENT_TYPE_EDEFAULT == null
-					? componentType != null
-					: !COMPONENT_TYPE_EDEFAULT.equals(componentType);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER:
-			return FILTER_EDEFAULT == null
-					? filter != null
-					: !FILTER_EDEFAULT.equals(filter);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO:
-			return PROJECT_INFO_EDEFAULT == null
-					? projectInfo != null
-					: !PROJECT_INFO_EDEFAULT.equals(projectInfo);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC:
-			return SHORT_DESC_EDEFAULT == null
-					? shortDesc != null
-					: !SHORT_DESC_EDEFAULT.equals(shortDesc);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING:
-			return VERSION_STRING_EDEFAULT == null
-					? versionString != null
-					: !VERSION_STRING_EDEFAULT.equals(versionString);
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE:
-			return VERSION_TYPE_EDEFAULT == null
-					? versionType != null
-					: !VERSION_TYPE_EDEFAULT.equals(versionType);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
+				return documentation != null;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
+				return !getDependencies().isEmpty();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
+				return !getGenerators().isEmpty();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
+				return !getArtifacts().isEmpty();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
+				return !getGroups().isEmpty();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
+				return !getActions().isEmpty();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY:
+				return CATEGORY_EDEFAULT == null ? category != null : !CATEGORY_EDEFAULT.equals(category);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE:
+				return COMPONENT_TYPE_EDEFAULT == null ? componentType != null : !COMPONENT_TYPE_EDEFAULT.equals(componentType);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER:
+				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO:
+				return PROJECT_INFO_EDEFAULT == null ? projectInfo != null : !PROJECT_INFO_EDEFAULT.equals(projectInfo);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC:
+				return SHORT_DESC_EDEFAULT == null ? shortDesc != null : !SHORT_DESC_EDEFAULT.equals(shortDesc);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING:
+				return VERSION_STRING_EDEFAULT == null ? versionString != null : !VERSION_STRING_EDEFAULT.equals(versionString);
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE:
+				return VERSION_TYPE_EDEFAULT == null ? versionType != null : !VERSION_TYPE_EDEFAULT.equals(versionType);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -384,57 +393,55 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
-			setDocumentation((Documentation)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
-			getDependencies().clear();
-			getDependencies().addAll((Collection<? extends IDependenciesType>)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
-			getGenerators().clear();
-			getGenerators().addAll((Collection<? extends IGeneratorsType>)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
-			getArtifacts().clear();
-			getArtifacts().addAll((Collection<? extends IArtifactsType>)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
-			getGroups().clear();
-			getGroups().addAll((Collection<? extends IGroupsType>)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
-			getActions().clear();
-			getActions().addAll((Collection<? extends IActionsType>)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY:
-			setCategory((String)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE:
-			setComponentType((String)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER:
-			setFilter((Filter)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO:
-			setProjectInfo((URL)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC:
-			setShortDesc((String)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING:
-			setVersionString((String)newValue);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE:
-			setVersionType((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
+				setDocumentation((Documentation) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
+				getDependencies().clear();
+				getDependencies().addAll((Collection<? extends IDependenciesType>) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
+				getGenerators().clear();
+				getGenerators().addAll((Collection<? extends IGeneratorsType>) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
+				getArtifacts().clear();
+				getArtifacts().addAll((Collection<? extends IArtifactsType>) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
+				getGroups().clear();
+				getGroups().addAll((Collection<? extends IGroupsType>) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
+				getActions().clear();
+				getActions().addAll((Collection<? extends IActionsType>) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY:
+				setCategory((String) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE:
+				setComponentType((String) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER:
+				setFilter((Filter) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO:
+				setProjectInfo((URL) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC:
+				setShortDesc((String) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING:
+				setVersionString((String) newValue);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE:
+				setVersionType((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -445,52 +452,50 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
-			setDocumentation((Documentation)null);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
-			getDependencies().clear();
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
-			getGenerators().clear();
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
-			getArtifacts().clear();
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
-			getGroups().clear();
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
-			getActions().clear();
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY:
-			setCategory(CATEGORY_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE:
-			setComponentType(COMPONENT_TYPE_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER:
-			setFilter(FILTER_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO:
-			setProjectInfo(PROJECT_INFO_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC:
-			setShortDesc(SHORT_DESC_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING:
-			setVersionString(VERSION_STRING_EDEFAULT);
-			return;
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE:
-			setVersionType(VERSION_TYPE_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION:
+				setDocumentation((Documentation) null);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__DEPENDENCIES:
+				getDependencies().clear();
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GENERATORS:
+				getGenerators().clear();
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ARTIFACTS:
+				getArtifacts().clear();
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUPS:
+				getGroups().clear();
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__ACTIONS:
+				getActions().clear();
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY:
+				setCategory(CATEGORY_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE:
+				setComponentType(COMPONENT_TYPE_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER:
+				setFilter(FILTER_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO:
+				setProjectInfo(PROJECT_INFO_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC:
+				setShortDesc(SHORT_DESC_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING:
+				setVersionString(VERSION_STRING_EDEFAULT);
+				return;
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE:
+				setVersionType(VERSION_TYPE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -500,8 +505,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public EList<IActionsType> getActions()
-	{
+	public EList<IActionsType> getActions() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__ACTIONS);
 	}
 
@@ -510,8 +514,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public EList<IArtifactsType> getArtifacts()
-	{
+	public EList<IArtifactsType> getArtifacts() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__ARTIFACTS);
 	}
 
@@ -520,8 +523,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public String getCategory()
-	{
+	public String getCategory() {
 		return category;
 	}
 
@@ -530,8 +532,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public String getComponentType()
-	{
+	public String getComponentType() {
 		return componentType;
 	}
 
@@ -540,8 +541,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public EList<IDependenciesType> getDependencies()
-	{
+	public EList<IDependenciesType> getDependencies() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__DEPENDENCIES);
 	}
 
@@ -550,8 +550,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public Documentation getDocumentation()
-	{
+	public Documentation getDocumentation() {
 		return documentation;
 	}
 
@@ -560,8 +559,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public Filter getFilter()
-	{
+	public Filter getFilter() {
 		return filter;
 	}
 
@@ -570,8 +568,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public EList<IGeneratorsType> getGenerators()
-	{
+	public EList<IGeneratorsType> getGenerators() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__GENERATORS);
 	}
 
@@ -580,10 +577,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP);
 		}
 		return group;
@@ -594,8 +589,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public EList<IGroupsType> getGroups()
-	{
+	public EList<IGroupsType> getGroups() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__GROUPS);
 	}
 
@@ -604,8 +598,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public URL getProjectInfo()
-	{
+	public URL getProjectInfo() {
 		return projectInfo;
 	}
 
@@ -614,8 +607,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public String getShortDesc()
-	{
+	public String getShortDesc() {
 		return shortDesc;
 	}
 
@@ -624,8 +616,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated NOT
 	 */
-	public Version getVersion()
-	{
+	public Version getVersion() {
 		return VersionHelper.createVersion(getVersionType(), getVersionString());
 	}
 
@@ -634,8 +625,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public String getVersionString()
-	{
+	public String getVersionString() {
 		return versionString;
 	}
 
@@ -644,8 +634,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public String getVersionType()
-	{
+	public String getVersionType() {
 		return versionType;
 	}
 
@@ -654,13 +643,11 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public void setCategory(String newCategory)
-	{
+	public void setCategory(String newCategory) {
 		String oldCategory = category;
 		category = newCategory;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY,
-					oldCategory, category));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__CATEGORY, oldCategory, category));
 	}
 
 	/**
@@ -668,13 +655,12 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public void setComponentType(String newComponentType)
-	{
+	public void setComponentType(String newComponentType) {
 		String oldComponentType = componentType;
 		componentType = newComponentType;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE,
-					oldComponentType, componentType));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__COMPONENT_TYPE, oldComponentType,
+					componentType));
 	}
 
 	/**
@@ -682,24 +668,21 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public void setDocumentation(Documentation newDocumentation)
-	{
-		if(newDocumentation != documentation)
-		{
+	public void setDocumentation(Documentation newDocumentation) {
+		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
-			if(documentation != null)
-				msgs = ((InternalEObject)documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
+			if (documentation != null)
+				msgs = ((InternalEObject) documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
 						- ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION, null, msgs);
-			if(newDocumentation != null)
-				msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
+			if (newDocumentation != null)
+				msgs = ((InternalEObject) newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
 						- ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION, null, msgs);
 			msgs = basicSetDocumentation(newDocumentation, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION,
-					newDocumentation, newDocumentation));
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__DOCUMENTATION, newDocumentation,
+					newDocumentation));
 	}
 
 	/**
@@ -707,13 +690,11 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public void setFilter(Filter newFilter)
-	{
+	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER,
-					oldFilter, filter));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__FILTER, oldFilter, filter));
 	}
 
 	/**
@@ -721,13 +702,11 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public void setProjectInfo(URL newProjectInfo)
-	{
+	public void setProjectInfo(URL newProjectInfo) {
 		URL oldProjectInfo = projectInfo;
 		projectInfo = newProjectInfo;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO,
-					oldProjectInfo, projectInfo));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__PROJECT_INFO, oldProjectInfo, projectInfo));
 	}
 
 	/**
@@ -735,13 +714,11 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public void setShortDesc(String newShortDesc)
-	{
+	public void setShortDesc(String newShortDesc) {
 		String oldShortDesc = shortDesc;
 		shortDesc = newShortDesc;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC,
-					oldShortDesc, shortDesc));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__SHORT_DESC, oldShortDesc, shortDesc));
 	}
 
 	/**
@@ -749,12 +726,9 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public void setVersion(Version version)
-	{
+	public void setVersion(Version version) {
 		setVersionType(null);
-		setVersionString(version == null
-				? null
-				: version.toString());
+		setVersionString(version == null ? null : version.toString());
 	}
 
 	/**
@@ -762,13 +736,12 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public void setVersionString(String newVersionString)
-	{
+	public void setVersionString(String newVersionString) {
 		String oldVersionString = versionString;
 		versionString = newVersionString;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING,
-					oldVersionString, versionString));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_STRING, oldVersionString,
+					versionString));
 	}
 
 	/**
@@ -776,13 +749,11 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
-	public void setVersionType(String newVersionType)
-	{
+	public void setVersionType(String newVersionType) {
 		String oldVersionType = versionType;
 		versionType = newVersionType;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE,
-					oldVersionType, versionType));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ICSpecXMLPackage.COMPONENT_SPEC_BASE__VERSION_TYPE, oldVersionType, versionType));
 	}
 
 	/**
@@ -791,9 +762,8 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -823,8 +793,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE;
 	}
 

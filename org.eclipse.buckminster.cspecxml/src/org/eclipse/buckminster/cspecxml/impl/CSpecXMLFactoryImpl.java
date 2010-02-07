@@ -18,12 +18,12 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactory
-{
+public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactory {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -31,40 +31,36 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * @generated
 	 */
 	@Deprecated
-	public static ICSpecXMLPackage getPackage()
-	{
+	public static ICSpecXMLPackage getPackage() {
 		return ICSpecXMLPackage.eINSTANCE;
 	}
 
 	/**
-	 * Creates the default factory implementation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates the default factory implementation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static ICSpecXMLFactory init()
-	{
-		try
-		{
-			ICSpecXMLFactory theCSpecXMLFactory = (ICSpecXMLFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/CSpec-1.0");
-			if(theCSpecXMLFactory != null)
-			{
+	public static ICSpecXMLFactory init() {
+		try {
+			ICSpecXMLFactory theCSpecXMLFactory = (ICSpecXMLFactory) EPackage.Registry.INSTANCE
+					.getEFactory("http://www.eclipse.org/buckminster/CSpec-1.0");
+			if (theCSpecXMLFactory != null) {
 				return theCSpecXMLFactory;
 			}
-		}
-		catch(Exception exception)
-		{
+		} catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new CSpecXMLFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public CSpecXMLFactoryImpl()
-	{
+	public CSpecXMLFactoryImpl() {
 		super();
 	}
 
@@ -74,16 +70,14 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * @generated
 	 */
 	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue)
-	{
-		switch(eDataType.getClassifierID())
-		{
-		case ICSpecXMLPackage.UP_TO_DATE_POLICY:
-			return convertUpToDatePolicyToString(eDataType, instanceValue);
-		case ICSpecXMLPackage.UP_TO_DATE_POLICY_OBJECT:
-			return convertUpToDatePolicyObjectToString(eDataType, instanceValue);
-		default:
-			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+	public String convertToString(EDataType eDataType, Object instanceValue) {
+		switch (eDataType.getClassifierID()) {
+			case ICSpecXMLPackage.UP_TO_DATE_POLICY:
+				return convertUpToDatePolicyToString(eDataType, instanceValue);
+			case ICSpecXMLPackage.UP_TO_DATE_POLICY_OBJECT:
+				return convertUpToDatePolicyObjectToString(eDataType, instanceValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -92,8 +86,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public String convertUpToDatePolicyObjectToString(EDataType eDataType, Object instanceValue)
-	{
+	public String convertUpToDatePolicyObjectToString(EDataType eDataType, Object instanceValue) {
 		return convertUpToDatePolicyToString(ICSpecXMLPackage.Literals.UP_TO_DATE_POLICY, instanceValue);
 	}
 
@@ -102,11 +95,8 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public String convertUpToDatePolicyToString(EDataType eDataType, Object instanceValue)
-	{
-		return instanceValue == null
-				? null
-				: instanceValue.toString();
+	public String convertUpToDatePolicyToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
 	}
 
 	/**
@@ -115,88 +105,86 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * @generated
 	 */
 	@Override
-	public EObject create(EClass eClass)
-	{
-		switch(eClass.getClassifierID())
-		{
-		case ICSpecXMLPackage.ACTION:
-			return createAction();
-		case ICSpecXMLPackage.ACTION_ARTIFACT:
-			return createActionArtifact();
-		case ICSpecXMLPackage.ACTIONS_TYPE:
-			return createActionsType();
-		case ICSpecXMLPackage.ALTER_ACTION:
-			return createAlterAction();
-		case ICSpecXMLPackage.ALTER_ACTIONS_TYPE:
-			return createAlterActionsType();
-		case ICSpecXMLPackage.ALTER_ARTIFACT:
-			return createAlterArtifact();
-		case ICSpecXMLPackage.ALTER_ARTIFACTS_TYPE:
-			return createAlterArtifactsType();
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE:
-			return createAlterDependenciesType();
-		case ICSpecXMLPackage.ALTER_GROUP:
-			return createAlterGroup();
-		case ICSpecXMLPackage.ALTER_GROUPS_TYPE:
-			return createAlterGroupsType();
-		case ICSpecXMLPackage.ALTER_PREREQUISITES:
-			return createAlterPrerequisites();
-		case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE:
-			return createAlterProductsType();
-		case ICSpecXMLPackage.ALTER_PROPERTIES:
-			return createAlterProperties();
-		case ICSpecXMLPackage.ARTIFACT:
-			return createArtifact();
-		case ICSpecXMLPackage.ARTIFACTS_TYPE:
-			return createArtifactsType();
-		case ICSpecXMLPackage.ATTRIBUTE:
-			return createAttribute();
-		case ICSpecXMLPackage.COMPONENT_REQUEST:
-			return createComponentRequest();
-		case ICSpecXMLPackage.COMPONENT_SPEC:
-			return createComponentSpec();
-		case ICSpecXMLPackage.COMPONENT_SPEC_BASE:
-			return createComponentSpecBase();
-		case ICSpecXMLPackage.CSPEC_EXTENSION:
-			return createCSpecExtension();
-		case ICSpecXMLPackage.DEFINITIONS:
-			return createDefinitions();
-		case ICSpecXMLPackage.DEPENDENCIES_TYPE:
-			return createDependenciesType();
-		case ICSpecXMLPackage.DOCUMENT_ROOT:
-			return createDocumentRoot();
-		case ICSpecXMLPackage.GENERATOR:
-			return createGenerator();
-		case ICSpecXMLPackage.GENERATORS_TYPE:
-			return createGeneratorsType();
-		case ICSpecXMLPackage.GROUP:
-			return createGroup();
-		case ICSpecXMLPackage.GROUPS_TYPE:
-			return createGroupsType();
-		case ICSpecXMLPackage.IMPORT:
-			return createImport();
-		case ICSpecXMLPackage.PARAMETER_TYPE:
-			return createParameterType();
-		case ICSpecXMLPackage.PATH:
-			return createPath();
-		case ICSpecXMLPackage.PREREQUISITE:
-			return createPrerequisite();
-		case ICSpecXMLPackage.PREREQUISITES:
-			return createPrerequisites();
-		case ICSpecXMLPackage.PRODUCTS_TYPE:
-			return createProductsType();
-		case ICSpecXMLPackage.PROPERTIES:
-			return createProperties();
-		case ICSpecXMLPackage.REMOVE:
-			return createRemove();
-		case ICSpecXMLPackage.REMOVE_PATH:
-			return createRemovePath();
-		case ICSpecXMLPackage.REMOVE_PROPERTY:
-			return createRemoveProperty();
-		case ICSpecXMLPackage.RENAME:
-			return createRename();
-		default:
-			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+	public EObject create(EClass eClass) {
+		switch (eClass.getClassifierID()) {
+			case ICSpecXMLPackage.ACTION:
+				return createAction();
+			case ICSpecXMLPackage.ACTION_ARTIFACT:
+				return createActionArtifact();
+			case ICSpecXMLPackage.ACTIONS_TYPE:
+				return createActionsType();
+			case ICSpecXMLPackage.ALTER_ACTION:
+				return createAlterAction();
+			case ICSpecXMLPackage.ALTER_ACTIONS_TYPE:
+				return createAlterActionsType();
+			case ICSpecXMLPackage.ALTER_ARTIFACT:
+				return createAlterArtifact();
+			case ICSpecXMLPackage.ALTER_ARTIFACTS_TYPE:
+				return createAlterArtifactsType();
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE:
+				return createAlterDependenciesType();
+			case ICSpecXMLPackage.ALTER_GROUP:
+				return createAlterGroup();
+			case ICSpecXMLPackage.ALTER_GROUPS_TYPE:
+				return createAlterGroupsType();
+			case ICSpecXMLPackage.ALTER_PREREQUISITES:
+				return createAlterPrerequisites();
+			case ICSpecXMLPackage.ALTER_PRODUCTS_TYPE:
+				return createAlterProductsType();
+			case ICSpecXMLPackage.ALTER_PROPERTIES:
+				return createAlterProperties();
+			case ICSpecXMLPackage.ARTIFACT:
+				return createArtifact();
+			case ICSpecXMLPackage.ARTIFACTS_TYPE:
+				return createArtifactsType();
+			case ICSpecXMLPackage.ATTRIBUTE:
+				return createAttribute();
+			case ICSpecXMLPackage.COMPONENT_REQUEST:
+				return createComponentRequest();
+			case ICSpecXMLPackage.COMPONENT_SPEC:
+				return createComponentSpec();
+			case ICSpecXMLPackage.COMPONENT_SPEC_BASE:
+				return createComponentSpecBase();
+			case ICSpecXMLPackage.CSPEC_EXTENSION:
+				return createCSpecExtension();
+			case ICSpecXMLPackage.DEFINITIONS:
+				return createDefinitions();
+			case ICSpecXMLPackage.DEPENDENCIES_TYPE:
+				return createDependenciesType();
+			case ICSpecXMLPackage.DOCUMENT_ROOT:
+				return createDocumentRoot();
+			case ICSpecXMLPackage.GENERATOR:
+				return createGenerator();
+			case ICSpecXMLPackage.GENERATORS_TYPE:
+				return createGeneratorsType();
+			case ICSpecXMLPackage.GROUP:
+				return createGroup();
+			case ICSpecXMLPackage.GROUPS_TYPE:
+				return createGroupsType();
+			case ICSpecXMLPackage.IMPORT:
+				return createImport();
+			case ICSpecXMLPackage.PARAMETER_TYPE:
+				return createParameterType();
+			case ICSpecXMLPackage.PATH:
+				return createPath();
+			case ICSpecXMLPackage.PREREQUISITE:
+				return createPrerequisite();
+			case ICSpecXMLPackage.PREREQUISITES:
+				return createPrerequisites();
+			case ICSpecXMLPackage.PRODUCTS_TYPE:
+				return createProductsType();
+			case ICSpecXMLPackage.PROPERTIES:
+				return createProperties();
+			case ICSpecXMLPackage.REMOVE:
+				return createRemove();
+			case ICSpecXMLPackage.REMOVE_PATH:
+				return createRemovePath();
+			case ICSpecXMLPackage.REMOVE_PROPERTY:
+				return createRemoveProperty();
+			case ICSpecXMLPackage.RENAME:
+				return createRename();
+			default:
+				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -205,8 +193,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAction createAction()
-	{
+	public IAction createAction() {
 		ActionImpl action = new ActionImpl();
 		return action;
 	}
@@ -216,8 +203,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IActionArtifact createActionArtifact()
-	{
+	public IActionArtifact createActionArtifact() {
 		ActionArtifactImpl actionArtifact = new ActionArtifactImpl();
 		return actionArtifact;
 	}
@@ -227,8 +213,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IActionsType createActionsType()
-	{
+	public IActionsType createActionsType() {
 		ActionsTypeImpl actionsType = new ActionsTypeImpl();
 		return actionsType;
 	}
@@ -238,8 +223,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterAction createAlterAction()
-	{
+	public IAlterAction createAlterAction() {
 		AlterActionImpl alterAction = new AlterActionImpl();
 		return alterAction;
 	}
@@ -249,8 +233,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterActionsType createAlterActionsType()
-	{
+	public IAlterActionsType createAlterActionsType() {
 		AlterActionsTypeImpl alterActionsType = new AlterActionsTypeImpl();
 		return alterActionsType;
 	}
@@ -260,8 +243,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterArtifact createAlterArtifact()
-	{
+	public IAlterArtifact createAlterArtifact() {
 		AlterArtifactImpl alterArtifact = new AlterArtifactImpl();
 		return alterArtifact;
 	}
@@ -271,8 +253,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterArtifactsType createAlterArtifactsType()
-	{
+	public IAlterArtifactsType createAlterArtifactsType() {
 		AlterArtifactsTypeImpl alterArtifactsType = new AlterArtifactsTypeImpl();
 		return alterArtifactsType;
 	}
@@ -282,8 +263,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterDependenciesType createAlterDependenciesType()
-	{
+	public IAlterDependenciesType createAlterDependenciesType() {
 		AlterDependenciesTypeImpl alterDependenciesType = new AlterDependenciesTypeImpl();
 		return alterDependenciesType;
 	}
@@ -293,8 +273,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterGroup createAlterGroup()
-	{
+	public IAlterGroup createAlterGroup() {
 		AlterGroupImpl alterGroup = new AlterGroupImpl();
 		return alterGroup;
 	}
@@ -304,8 +283,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterGroupsType createAlterGroupsType()
-	{
+	public IAlterGroupsType createAlterGroupsType() {
 		AlterGroupsTypeImpl alterGroupsType = new AlterGroupsTypeImpl();
 		return alterGroupsType;
 	}
@@ -315,8 +293,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterPrerequisites createAlterPrerequisites()
-	{
+	public IAlterPrerequisites createAlterPrerequisites() {
 		AlterPrerequisitesImpl alterPrerequisites = new AlterPrerequisitesImpl();
 		return alterPrerequisites;
 	}
@@ -326,8 +303,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterProductsType createAlterProductsType()
-	{
+	public IAlterProductsType createAlterProductsType() {
 		AlterProductsTypeImpl alterProductsType = new AlterProductsTypeImpl();
 		return alterProductsType;
 	}
@@ -337,8 +313,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAlterProperties createAlterProperties()
-	{
+	public IAlterProperties createAlterProperties() {
 		AlterPropertiesImpl alterProperties = new AlterPropertiesImpl();
 		return alterProperties;
 	}
@@ -348,8 +323,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IArtifact createArtifact()
-	{
+	public IArtifact createArtifact() {
 		ArtifactImpl artifact = new ArtifactImpl();
 		return artifact;
 	}
@@ -359,8 +333,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IArtifactsType createArtifactsType()
-	{
+	public IArtifactsType createArtifactsType() {
 		ArtifactsTypeImpl artifactsType = new ArtifactsTypeImpl();
 		return artifactsType;
 	}
@@ -370,8 +343,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IAttribute createAttribute()
-	{
+	public IAttribute createAttribute() {
 		AttributeImpl attribute = new AttributeImpl();
 		return attribute;
 	}
@@ -381,8 +353,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IComponentRequest createComponentRequest()
-	{
+	public IComponentRequest createComponentRequest() {
 		ComponentRequestImpl componentRequest = new ComponentRequestImpl();
 		return componentRequest;
 	}
@@ -392,8 +363,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IComponentSpec createComponentSpec()
-	{
+	public IComponentSpec createComponentSpec() {
 		ComponentSpecImpl componentSpec = new ComponentSpecImpl();
 		return componentSpec;
 	}
@@ -403,8 +373,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IComponentSpecBase createComponentSpecBase()
-	{
+	public IComponentSpecBase createComponentSpecBase() {
 		ComponentSpecBaseImpl componentSpecBase = new ComponentSpecBaseImpl();
 		return componentSpecBase;
 	}
@@ -414,8 +383,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public ICSpecExtension createCSpecExtension()
-	{
+	public ICSpecExtension createCSpecExtension() {
 		CSpecExtensionImpl cSpecExtension = new CSpecExtensionImpl();
 		return cSpecExtension;
 	}
@@ -425,8 +393,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IDefinitions createDefinitions()
-	{
+	public IDefinitions createDefinitions() {
 		DefinitionsImpl definitions = new DefinitionsImpl();
 		return definitions;
 	}
@@ -436,8 +403,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IDependenciesType createDependenciesType()
-	{
+	public IDependenciesType createDependenciesType() {
 		DependenciesTypeImpl dependenciesType = new DependenciesTypeImpl();
 		return dependenciesType;
 	}
@@ -447,8 +413,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IDocumentRoot createDocumentRoot()
-	{
+	public IDocumentRoot createDocumentRoot() {
 		DocumentRootImpl documentRoot = new DocumentRootImpl();
 		return documentRoot;
 	}
@@ -459,16 +424,14 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * @generated
 	 */
 	@Override
-	public Object createFromString(EDataType eDataType, String initialValue)
-	{
-		switch(eDataType.getClassifierID())
-		{
-		case ICSpecXMLPackage.UP_TO_DATE_POLICY:
-			return createUpToDatePolicyFromString(eDataType, initialValue);
-		case ICSpecXMLPackage.UP_TO_DATE_POLICY_OBJECT:
-			return createUpToDatePolicyObjectFromString(eDataType, initialValue);
-		default:
-			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+	public Object createFromString(EDataType eDataType, String initialValue) {
+		switch (eDataType.getClassifierID()) {
+			case ICSpecXMLPackage.UP_TO_DATE_POLICY:
+				return createUpToDatePolicyFromString(eDataType, initialValue);
+			case ICSpecXMLPackage.UP_TO_DATE_POLICY_OBJECT:
+				return createUpToDatePolicyObjectFromString(eDataType, initialValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -477,8 +440,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IGenerator createGenerator()
-	{
+	public IGenerator createGenerator() {
 		GeneratorImpl generator = new GeneratorImpl();
 		return generator;
 	}
@@ -488,8 +450,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IGeneratorsType createGeneratorsType()
-	{
+	public IGeneratorsType createGeneratorsType() {
 		GeneratorsTypeImpl generatorsType = new GeneratorsTypeImpl();
 		return generatorsType;
 	}
@@ -499,8 +460,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IGroup createGroup()
-	{
+	public IGroup createGroup() {
 		GroupImpl group = new GroupImpl();
 		return group;
 	}
@@ -510,8 +470,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IGroupsType createGroupsType()
-	{
+	public IGroupsType createGroupsType() {
 		GroupsTypeImpl groupsType = new GroupsTypeImpl();
 		return groupsType;
 	}
@@ -521,8 +480,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IImport createImport()
-	{
+	public IImport createImport() {
 		ImportImpl import_ = new ImportImpl();
 		return import_;
 	}
@@ -532,8 +490,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IParameterType createParameterType()
-	{
+	public IParameterType createParameterType() {
 		ParameterTypeImpl parameterType = new ParameterTypeImpl();
 		return parameterType;
 	}
@@ -543,8 +500,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IPath createPath()
-	{
+	public IPath createPath() {
 		PathImpl path = new PathImpl();
 		return path;
 	}
@@ -554,8 +510,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IPrerequisite createPrerequisite()
-	{
+	public IPrerequisite createPrerequisite() {
 		PrerequisiteImpl prerequisite = new PrerequisiteImpl();
 		return prerequisite;
 	}
@@ -565,8 +520,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IPrerequisites createPrerequisites()
-	{
+	public IPrerequisites createPrerequisites() {
 		PrerequisitesImpl prerequisites = new PrerequisitesImpl();
 		return prerequisites;
 	}
@@ -576,8 +530,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IProductsType createProductsType()
-	{
+	public IProductsType createProductsType() {
 		ProductsTypeImpl productsType = new ProductsTypeImpl();
 		return productsType;
 	}
@@ -587,8 +540,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IProperties createProperties()
-	{
+	public IProperties createProperties() {
 		PropertiesImpl properties = new PropertiesImpl();
 		return properties;
 	}
@@ -598,8 +550,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IRemove createRemove()
-	{
+	public IRemove createRemove() {
 		RemoveImpl remove = new RemoveImpl();
 		return remove;
 	}
@@ -609,8 +560,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IRemovePath createRemovePath()
-	{
+	public IRemovePath createRemovePath() {
 		RemovePathImpl removePath = new RemovePathImpl();
 		return removePath;
 	}
@@ -620,8 +570,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IRemoveProperty createRemoveProperty()
-	{
+	public IRemoveProperty createRemoveProperty() {
 		RemovePropertyImpl removeProperty = new RemovePropertyImpl();
 		return removeProperty;
 	}
@@ -631,8 +580,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public IRename createRename()
-	{
+	public IRename createRename() {
 		RenameImpl rename = new RenameImpl();
 		return rename;
 	}
@@ -642,12 +590,10 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public UpToDatePolicy createUpToDatePolicyFromString(EDataType eDataType, String initialValue)
-	{
+	public UpToDatePolicy createUpToDatePolicyFromString(EDataType eDataType, String initialValue) {
 		UpToDatePolicy result = UpToDatePolicy.get(initialValue);
-		if(result == null)
-			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
-					+ eDataType.getName() + "'");
+		if (result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
 
@@ -656,8 +602,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public UpToDatePolicy createUpToDatePolicyObjectFromString(EDataType eDataType, String initialValue)
-	{
+	public UpToDatePolicy createUpToDatePolicyObjectFromString(EDataType eDataType, String initialValue) {
 		return createUpToDatePolicyFromString(ICSpecXMLPackage.Literals.UP_TO_DATE_POLICY, initialValue);
 	}
 
@@ -666,9 +611,8 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
-	public ICSpecXMLPackage getCSpecXMLPackage()
-	{
-		return (ICSpecXMLPackage)getEPackage();
+	public ICSpecXMLPackage getCSpecXMLPackage() {
+		return (ICSpecXMLPackage) getEPackage();
 	}
 
 } // CSpecXMLFactoryImpl

@@ -27,24 +27,29 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Alter Dependencies Type</b></em>'. <!--
- * end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Alter Dependencies Type</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterDependenciesTypeImpl#getGroup <em>Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterDependenciesTypeImpl#getDependency <em>Dependency</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.AlterDependenciesTypeImpl#getRemove <em>Remove</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterDependenciesTypeImpl#getGroup
+ * <em>Group</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterDependenciesTypeImpl#getDependency
+ * <em>Dependency</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspecxml.impl.AlterDependenciesTypeImpl#getRemove
+ * <em>Remove</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDependenciesType
-{
+public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDependenciesType {
 	/**
-	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroup() <em>Group</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroup()
 	 * @generated
@@ -57,8 +62,7 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * 
 	 * @generated
 	 */
-	protected AlterDependenciesTypeImpl()
-	{
+	protected AlterDependenciesTypeImpl() {
 		super();
 	}
 
@@ -68,18 +72,16 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
-			if(coreType)
-				return getGroup();
-			return ((FeatureMap.Internal)getGroup()).getWrapper();
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
-			return getDependency();
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
-			return getRemove();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
+				if (coreType)
+					return getGroup();
+				return ((FeatureMap.Internal) getGroup()).getWrapper();
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
+				return getDependency();
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
+				return getRemove();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -90,16 +92,14 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
-			return ((InternalEList<?>)getGroup()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
-			return ((InternalEList<?>)getDependency()).basicRemove(otherEnd, msgs);
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
-			return ((InternalEList<?>)getRemove()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
+				return ((InternalEList<?>) getGroup()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
+				return ((InternalEList<?>) getDependency()).basicRemove(otherEnd, msgs);
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
+				return ((InternalEList<?>) getRemove()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -110,16 +110,14 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
-			return group != null && !group.isEmpty();
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
-			return !getDependency().isEmpty();
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
-			return !getRemove().isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
+				return group != null && !group.isEmpty();
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
+				return !getDependency().isEmpty();
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
+				return !getRemove().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -131,21 +129,19 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
-			((FeatureMap.Internal)getGroup()).set(newValue);
-			return;
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
-			getDependency().clear();
-			getDependency().addAll((Collection<? extends IComponentRequest>)newValue);
-			return;
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
-			getRemove().clear();
-			getRemove().addAll((Collection<? extends IRemove>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
+				((FeatureMap.Internal) getGroup()).set(newValue);
+				return;
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
+				getDependency().clear();
+				getDependency().addAll((Collection<? extends IComponentRequest>) newValue);
+				return;
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
+				getRemove().clear();
+				getRemove().addAll((Collection<? extends IRemove>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -156,19 +152,17 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
-			getGroup().clear();
-			return;
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
-			getDependency().clear();
-			return;
-		case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
-			getRemove().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP:
+				getGroup().clear();
+				return;
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__DEPENDENCY:
+				getDependency().clear();
+				return;
+			case ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__REMOVE:
+				getRemove().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -178,8 +172,7 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * 
 	 * @generated
 	 */
-	public EList<IComponentRequest> getDependency()
-	{
+	public EList<IComponentRequest> getDependency() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_DEPENDENCIES_TYPE__DEPENDENCY);
 	}
 
@@ -188,10 +181,8 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getGroup()
-	{
-		if(group == null)
-		{
+	public FeatureMap getGroup() {
+		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP);
 		}
 		return group;
@@ -202,8 +193,7 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * 
 	 * @generated
 	 */
-	public EList<IRemove> getRemove()
-	{
+	public EList<IRemove> getRemove() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_DEPENDENCIES_TYPE__REMOVE);
 	}
 
@@ -213,9 +203,8 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -231,8 +220,7 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.ALTER_DEPENDENCIES_TYPE;
 	}
 

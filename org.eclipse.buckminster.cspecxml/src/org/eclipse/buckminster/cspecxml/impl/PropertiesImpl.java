@@ -26,21 +26,22 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Properties</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Properties</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspecxml.impl.PropertiesImpl#getProperty <em>Property</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspecxml.impl.PropertiesImpl#getProperty
+ * <em>Property</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class PropertiesImpl extends EObjectImpl implements IProperties
-{
+public class PropertiesImpl extends EObjectImpl implements IProperties {
 	/**
-	 * The cached value of the '{@link #getProperty() <em>Property</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getProperty() <em>Property</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getProperty()
 	 * @generated
@@ -53,8 +54,7 @@ public class PropertiesImpl extends EObjectImpl implements IProperties
 	 * 
 	 * @generated
 	 */
-	protected PropertiesImpl()
-	{
+	protected PropertiesImpl() {
 		super();
 	}
 
@@ -64,12 +64,10 @@ public class PropertiesImpl extends EObjectImpl implements IProperties
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PROPERTIES__PROPERTY:
-			return getProperty();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PROPERTIES__PROPERTY:
+				return getProperty();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -80,12 +78,10 @@ public class PropertiesImpl extends EObjectImpl implements IProperties
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PROPERTIES__PROPERTY:
-			return ((InternalEList<?>)getProperty()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PROPERTIES__PROPERTY:
+				return ((InternalEList<?>) getProperty()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -96,12 +92,10 @@ public class PropertiesImpl extends EObjectImpl implements IProperties
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PROPERTIES__PROPERTY:
-			return property != null && !property.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PROPERTIES__PROPERTY:
+				return property != null && !property.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -113,14 +107,12 @@ public class PropertiesImpl extends EObjectImpl implements IProperties
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PROPERTIES__PROPERTY:
-			getProperty().clear();
-			getProperty().addAll((Collection<? extends PropertyConstant>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PROPERTIES__PROPERTY:
+				getProperty().clear();
+				getProperty().addAll((Collection<? extends PropertyConstant>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -131,13 +123,11 @@ public class PropertiesImpl extends EObjectImpl implements IProperties
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case ICSpecXMLPackage.PROPERTIES__PROPERTY:
-			getProperty().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case ICSpecXMLPackage.PROPERTIES__PROPERTY:
+				getProperty().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -147,12 +137,9 @@ public class PropertiesImpl extends EObjectImpl implements IProperties
 	 * 
 	 * @generated
 	 */
-	public EList<PropertyConstant> getProperty()
-	{
-		if(property == null)
-		{
-			property = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this,
-					ICSpecXMLPackage.PROPERTIES__PROPERTY);
+	public EList<PropertyConstant> getProperty() {
+		if (property == null) {
+			property = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this, ICSpecXMLPackage.PROPERTIES__PROPERTY);
 		}
 		return property;
 	}
@@ -163,8 +150,7 @@ public class PropertiesImpl extends EObjectImpl implements IProperties
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return ICSpecXMLPackage.Literals.PROPERTIES;
 	}
 
