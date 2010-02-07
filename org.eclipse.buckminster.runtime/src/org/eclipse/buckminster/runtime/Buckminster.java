@@ -20,120 +20,98 @@ import org.osgi.framework.ServiceReference;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Buckminster extends LogAwarePlugin implements IPreferenceChangeListener, IBuckminsterPreferenceConstants
-{
+public class Buckminster extends LogAwarePlugin implements IPreferenceChangeListener, IBuckminsterPreferenceConstants {
 	public static final String NAMESPACE = "org.eclipse.buckminster"; //$NON-NLS-1$
 
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.runtime"; //$NON-NLS-1$
 
-	private static Buckminster s_plugin;
+	private static Buckminster plugin;
 
 	// this tracks if Buckminster was invoked headless
 	// intended to be set by the buckminster application entry point
 	// specifically should be an 'object' so it can only be set once
 	// see isHeadless/setHeadless
 	//
-	private static boolean s_headless = false;
+	private static boolean headless = false;
 
-	public static Buckminster getDefault()
-	{
-		return s_plugin;
+	public static Buckminster getDefault() {
+		return plugin;
 	}
 
-	public static Logger getLogger()
-	{
-		return s_plugin.getBundleLogger();
+	public static Logger getLogger() {
+		return plugin.getBundleLogger();
 	}
 
 	/**
-	 * Returns true if Buckminster was started through the application entry point.
+	 * Returns true if Buckminster was started through the application entry
+	 * point.
 	 * 
 	 * @return The headless state
 	 */
-	public static boolean isHeadless()
-	{
-		return s_headless;
+	public static boolean isHeadless() {
+		return headless;
 	}
 
 	/**
 	 * Sets the headless state.
 	 */
-	public static void setHeadless()
-	{
-		s_headless = true;
+	public static void setHeadless() {
+		headless = true;
 	}
 
-	private IdentityHashMap<Object, ServiceReference> m_services;
+	private IdentityHashMap<Object, ServiceReference> services;
 
-	public Buckminster()
-	{
-		s_plugin = this;
+	public Buckminster() {
+		plugin = this;
 	}
 
-	public <T> T getService(Class<T> serviceClass) throws CoreException
-	{
+	public <T> T getService(Class<T> serviceClass) throws CoreException {
 		BundleContext context = getBundle().getBundleContext();
 		String serviceName = serviceClass.getName();
 		ServiceReference serviceRef = context.getServiceReference(serviceName);
-		if(serviceRef == null)
+		if (serviceRef == null)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.Missing_OSGi_Service_0, serviceName));
 		T service = serviceClass.cast(context.getService(serviceRef));
-		if(m_services == null)
-			m_services = new IdentityHashMap<Object, ServiceReference>();
-		m_services.put(service, serviceRef);
+		if (services == null)
+			services = new IdentityHashMap<Object, ServiceReference>();
+		services.put(service, serviceRef);
 		return service;
 	}
 
-	public <T> T getService(Class<T> serviceClass, String filter) throws CoreException
-	{
+	public <T> T getService(Class<T> serviceClass, String filter) throws CoreException {
 		BundleContext context = getBundle().getBundleContext();
 		String serviceName = serviceClass.getName();
 		ServiceReference[] serviceRef;
-		try
-		{
+		try {
 			serviceRef = context.getServiceReferences(serviceName, filter);
-		}
-		catch(InvalidSyntaxException e)
-		{
+		} catch (InvalidSyntaxException e) {
 			throw BuckminsterException.wrap(e);
 		}
-		if(serviceRef == null || serviceRef.length == 0)
+		if (serviceRef == null || serviceRef.length == 0)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.Missing_OSGi_Service_0, serviceName));
 		T service = serviceClass.cast(context.getService(serviceRef[0]));
-		if(m_services == null)
-			m_services = new IdentityHashMap<Object, ServiceReference>();
-		m_services.put(service, serviceRef[0]);
+		if (services == null)
+			services = new IdentityHashMap<Object, ServiceReference>();
+		services.put(service, serviceRef[0]);
 		return service;
 	}
 
-	public void preferenceChange(PreferenceChangeEvent event)
-	{
-		if(LOG_LEVEL_CONSOLE.equals(event.getKey()))
-		{
+	public void preferenceChange(PreferenceChangeEvent event) {
+		if (LOG_LEVEL_CONSOLE.equals(event.getKey())) {
 			Object newVal = event.getNewValue();
-			Logger.setConsoleLevelThreshold(newVal == null
-					? LOG_LEVEL_CONSOLE_DEFAULT
-					: Integer.parseInt(newVal.toString()));
+			Logger.setConsoleLevelThreshold(newVal == null ? LOG_LEVEL_CONSOLE_DEFAULT : Integer.parseInt(newVal.toString()));
 		}
-		if(LOG_LEVEL_ECLIPSE_LOGGER.equals(event.getKey()))
-		{
+		if (LOG_LEVEL_ECLIPSE_LOGGER.equals(event.getKey())) {
 			Object newVal = event.getNewValue();
-			Logger.setEclipseLoggerLevelThreshold(newVal == null
-					? LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT
-					: Integer.parseInt(newVal.toString()));
-		}
-		else if(LOG_ECLIPSE_TO_CONSOLE.equals(event.getKey()))
-		{
+			Logger.setEclipseLoggerLevelThreshold(newVal == null ? LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT : Integer.parseInt(newVal.toString()));
+		} else if (LOG_ECLIPSE_TO_CONSOLE.equals(event.getKey())) {
 			Object newVal = event.getNewValue();
-			Logger.setEclipseLoggerToConsole(newVal == null
-					? LOG_ECLIPSE_TO_CONSOLE_DEFAULT
-					: Boolean.valueOf(newVal.toString()).booleanValue());
+			Logger.setEclipseLoggerToConsole(newVal == null ? LOG_ECLIPSE_TO_CONSOLE_DEFAULT : Boolean.valueOf(newVal.toString()).booleanValue());
 		}
 	}
 
 	@Override
-	public void start(BundleContext context) throws Exception
-	{
+	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		Logger.setConsoleLevelThreshold(BuckminsterPreferences.getLogLevelConsole());
 		Logger.setEclipseLoggerLevelThreshold(BuckminsterPreferences.getLogLevelEclipseLogger());
@@ -146,24 +124,20 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 	 * This method is called when the plug-in is stopped
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception
-	{
-		if(m_services != null)
-		{
-			for(ServiceReference serviceRef : m_services.values())
+	public void stop(BundleContext context) throws Exception {
+		if (services != null) {
+			for (ServiceReference serviceRef : services.values())
 				context.ungetService(serviceRef);
-			m_services = null;
+			services = null;
 		}
-		s_plugin = null;
+		plugin = null;
 		super.stop(context);
 	}
 
-	public void ungetService(Object service)
-	{
-		if(m_services != null && service != null)
-		{
-			ServiceReference serviceRef = m_services.remove(service);
-			if(serviceRef != null)
+	public void ungetService(Object service) {
+		if (services != null && service != null) {
+			ServiceReference serviceRef = services.remove(service);
+			if (serviceRef != null)
 				getBundle().getBundleContext().ungetService(serviceRef);
 		}
 	}

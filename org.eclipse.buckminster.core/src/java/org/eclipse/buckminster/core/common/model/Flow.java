@@ -19,46 +19,37 @@ import org.xml.sax.SAXException;
  * @author Thomas Hallgren
  * 
  */
-public class Flow implements ISaxableElement
-{
-	private final String m_tag;
+public class Flow implements ISaxableElement {
+	private final String tag;
 
-	private final ISaxableElement[] m_children;
+	private final ISaxableElement[] children;
 
-	public Flow(String tag, ISaxableElement[] children)
-	{
-		m_tag = tag;
-		m_children = children;
+	public Flow(String tag, ISaxableElement[] children) {
+		this.tag = tag;
+		this.children = children;
 	}
 
-	public Attributes getAttributes()
-	{
+	public Attributes getAttributes() {
 		return EMPTY_ATTRIBUTES;
 	}
 
-	public ISaxableElement[] getChildren()
-	{
-		return m_children;
+	public ISaxableElement[] getChildren() {
+		return children;
 	}
 
-	public String getDefaultTag()
-	{
-		return m_tag;
+	public String getDefaultTag() {
+		return tag;
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
-	{
-		String qName = (prefix == null)
-				? localName
-				: Utils.makeQualifiedName(prefix, localName);
+	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException {
+		String qName = (prefix == null) ? localName : Utils.makeQualifiedName(prefix, localName);
 		receiver.startElement(namespace, localName, qName, getAttributes());
-		for(ISaxableElement child : m_children)
+		for (ISaxableElement child : children)
 			child.toSax(receiver, XMLConstants.XHTML_NS, null, child.getDefaultTag());
 		receiver.endElement(namespace, localName, qName);
 	}
 
-	String[] getKeyNamePairs()
-	{
+	String[] getKeyNamePairs() {
 		return Trivial.EMPTY_STRING_ARRAY;
 	}
 }

@@ -9,12 +9,12 @@
 package org.eclipse.buckminster.generic.ui.actions;
 
 /**
- * Marker interface for something browsable that represents a Feed (RSS, Atom, etc).
+ * Marker interface for something browsable that represents a Feed (RSS, Atom,
+ * etc).
  * 
  * @author Henrik Lindberg
  * 
  */
-public interface IBrowseableFeed extends IDescribedURL
-{
+public interface IBrowseableFeed extends IDescribedURL {
 
 }

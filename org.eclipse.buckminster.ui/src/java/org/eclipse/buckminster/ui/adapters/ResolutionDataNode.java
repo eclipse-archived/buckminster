@@ -11,11 +11,9 @@ package org.eclipse.buckminster.ui.adapters;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 
-public class ResolutionDataNode extends BasicTreeParentDataNode
-{
+public class ResolutionDataNode extends BasicTreeParentDataNode {
 
-	public ResolutionDataNode(Resolution data)
-	{
+	public ResolutionDataNode(Resolution data) {
 		super(data);
 		// add cspec child node
 		addChild(new CSpecDataNode(data.getCSpec()));

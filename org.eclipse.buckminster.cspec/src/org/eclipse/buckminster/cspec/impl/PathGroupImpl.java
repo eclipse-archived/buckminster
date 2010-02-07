@@ -23,22 +23,24 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Path Group</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Path Group</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PathGroupImpl#getBase <em>Base</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PathGroupImpl#getPaths <em>Paths</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.PathGroupImpl#getBase <em>Base
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.PathGroupImpl#getPaths <em>
+ * Paths</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class PathGroupImpl extends EObjectImpl implements PathGroup
-{
+public class PathGroupImpl extends EObjectImpl implements PathGroup {
 	/**
-	 * The default value of the '{@link #getBase() <em>Base</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getBase() <em>Base</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getBase()
 	 * @generated
@@ -47,8 +49,8 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	protected static final IPath BASE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getBase() <em>Base</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getBase() <em>Base</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getBase()
 	 * @generated
@@ -57,8 +59,8 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	protected IPath base = BASE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getPaths() <em>Paths</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getPaths() <em>Paths</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPaths()
 	 * @generated
@@ -71,8 +73,7 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * 
 	 * @generated
 	 */
-	protected PathGroupImpl()
-	{
+	protected PathGroupImpl() {
 		super();
 	}
 
@@ -82,14 +83,12 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.PATH_GROUP__BASE:
-			return getBase();
-		case CspecPackage.PATH_GROUP__PATHS:
-			return getPaths();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CspecPackage.PATH_GROUP__BASE:
+				return getBase();
+			case CspecPackage.PATH_GROUP__PATHS:
+				return getPaths();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -100,16 +99,12 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.PATH_GROUP__BASE:
-			return BASE_EDEFAULT == null
-					? base != null
-					: !BASE_EDEFAULT.equals(base);
-		case CspecPackage.PATH_GROUP__PATHS:
-			return paths != null && !paths.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case CspecPackage.PATH_GROUP__BASE:
+				return BASE_EDEFAULT == null ? base != null : !BASE_EDEFAULT.equals(base);
+			case CspecPackage.PATH_GROUP__PATHS:
+				return paths != null && !paths.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -121,17 +116,15 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.PATH_GROUP__BASE:
-			setBase((IPath)newValue);
-			return;
-		case CspecPackage.PATH_GROUP__PATHS:
-			getPaths().clear();
-			getPaths().addAll((Collection<? extends IPath>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case CspecPackage.PATH_GROUP__BASE:
+				setBase((IPath) newValue);
+				return;
+			case CspecPackage.PATH_GROUP__PATHS:
+				getPaths().clear();
+				getPaths().addAll((Collection<? extends IPath>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -142,16 +135,14 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.PATH_GROUP__BASE:
-			setBase(BASE_EDEFAULT);
-			return;
-		case CspecPackage.PATH_GROUP__PATHS:
-			getPaths().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case CspecPackage.PATH_GROUP__BASE:
+				setBase(BASE_EDEFAULT);
+				return;
+			case CspecPackage.PATH_GROUP__PATHS:
+				getPaths().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -161,8 +152,7 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * 
 	 * @generated
 	 */
-	public IPath getBase()
-	{
+	public IPath getBase() {
 		return base;
 	}
 
@@ -171,10 +161,8 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * 
 	 * @generated
 	 */
-	public EList<IPath> getPaths()
-	{
-		if(paths == null)
-		{
+	public EList<IPath> getPaths() {
+		if (paths == null) {
 			paths = new EDataTypeUniqueEList<IPath>(IPath.class, this, CspecPackage.PATH_GROUP__PATHS);
 		}
 		return paths;
@@ -185,9 +173,8 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * 
 	 * @generated NOT
 	 */
-	public PathGroup resolve(IPath path)
-	{
-		if(base.isAbsolute())
+	public PathGroup resolve(IPath path) {
+		if (base.isAbsolute())
 			return this;
 
 		PathGroup resolved = new PathGroupImpl();
@@ -201,11 +188,10 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * 
 	 * @generated
 	 */
-	public void setBase(IPath newBase)
-	{
+	public void setBase(IPath newBase) {
 		IPath oldBase = base;
 		base = newBase;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PATH_GROUP__BASE, oldBase, base));
 	}
 
@@ -215,9 +201,8 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -235,8 +220,7 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.PATH_GROUP;
 	}
 

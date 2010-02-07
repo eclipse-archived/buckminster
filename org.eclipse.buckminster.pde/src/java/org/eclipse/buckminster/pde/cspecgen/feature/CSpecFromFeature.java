@@ -37,36 +37,31 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
 @SuppressWarnings("restriction")
-public abstract class CSpecFromFeature extends CSpecGenerator
-{
-	private static boolean isListOK(String list, Object item)
-	{
-		if(list == null || list.length() == 0)
+public abstract class CSpecFromFeature extends CSpecGenerator {
+	private static boolean isListOK(String list, Object item) {
+		if (list == null || list.length() == 0)
 			return true;
 		StringTokenizer tokens = new StringTokenizer(list, ","); //$NON-NLS-1$
-		while(tokens.hasMoreTokens())
-			if(item.equals("*") || item.equals(tokens.nextElement())) //$NON-NLS-1$
+		while (tokens.hasMoreTokens())
+			if (item.equals("*") || item.equals(tokens.nextElement())) //$NON-NLS-1$
 				return true;
 		return false;
 	}
 
-	private final IFeature m_feature;
+	private final IFeature feature;
 
-	protected CSpecFromFeature(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature)
-	{
+	protected CSpecFromFeature(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature) {
 		super(cspecBuilder, reader);
-		m_feature = feature;
+		this.feature = feature;
 	}
 
 	@Override
-	public void generate(IProgressMonitor monitor) throws CoreException
-	{
+	public void generate(IProgressMonitor monitor) throws CoreException {
 		CSpecBuilder cspec = getCSpec();
-		cspec.setName(m_feature.getId());
-		cspec.setVersion(VersionHelper.parseVersion(m_feature.getVersion()));
+		cspec.setName(feature.getId());
+		cspec.setVersion(VersionHelper.parseVersion(feature.getVersion()));
 		cspec.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
-		cspec.setFilter(FilterUtils.createFilter(m_feature.getOS(), m_feature.getWS(), m_feature.getArch(),
-				m_feature.getNL()));
+		cspec.setFilter(FilterUtils.createFilter(feature.getOS(), feature.getWS(), feature.getArch(), feature.getNL()));
 
 		// This feature and all included features. Does not imply copying since
 		// the group will reference the features where they are found.
@@ -75,12 +70,14 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 		cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_REFS, true).setFilter(SOURCE_FILTER);
 
 		// All bundles imported by this feature and all included features. Does
-		// not imply copying since the group will reference the bundles where they
+		// not imply copying since the group will reference the bundles where
+		// they
 		// are found.
 		//
 		cspec.addGroup(ATTRIBUTE_BUNDLE_JARS, true);
 
-		// Source of all bundles imported by this feature and all included features.
+		// Source of all bundles imported by this feature and all included
+		// features.
 		//
 		cspec.addGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS, true).setFilter(SOURCE_FILTER);
 
@@ -103,11 +100,13 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 		createFeatureSourceJarAction();
 		createFeatureExportsAction();
 
-		GroupBuilder featureJars = cspec.addGroup(ATTRIBUTE_FEATURE_JARS, true); // including self
+		GroupBuilder featureJars = cspec.addGroup(ATTRIBUTE_FEATURE_JARS, true); // including
+																					// self
 		featureJars.addLocalPrerequisite(ATTRIBUTE_FEATURE_JAR);
 		featureJars.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS);
 
-		GroupBuilder sourceFeatureJars = cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_JARS, true); // including self
+		GroupBuilder sourceFeatureJars = cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_JARS, true); // including
+																								// self
 		sourceFeatureJars.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JAR);
 		sourceFeatureJars.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS);
 
@@ -116,13 +115,12 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 	}
 
 	@Override
-	protected void addProductFeatures(IProductDescriptor productDescriptor) throws CoreException
-	{
-		if(!productDescriptor.useFeatures())
+	protected void addProductFeatures(IProductDescriptor productDescriptor) throws CoreException {
+		if (!productDescriptor.useFeatures())
 			return;
 
 		List<IVersionedId> features = productDescriptor.getFeatures();
-		if(features.size() == 0)
+		if (features.size() == 0)
 			return;
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
@@ -134,42 +132,36 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 
 		String self = cspec.getName();
-		for(IVersionedId feature : features)
-		{
-			if(feature.getId().equals(self))
+		for (IVersionedId productFeature : features) {
+			if (productFeature.getId().equals(self))
 				continue;
 
-			ComponentRequestBuilder dep = createDependency(feature, IComponentType.ECLIPSE_FEATURE);
-			if(skipComponent(query, dep))
+			ComponentRequestBuilder dep = createDependency(productFeature, IComponentType.ECLIPSE_FEATURE);
+			if (skipComponent(query, dep))
 				continue;
 
 			cspec.addDependency(dep);
 			featureRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_JARS);
-			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
-					ATTRIBUTE_SOURCE_FEATURE_JARS);
+			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_FEATURE_JARS);
 			bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_JARS);
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
-					ATTRIBUTE_SOURCE_BUNDLE_JARS);
+			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
 			fullClean.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FULL_CLEAN);
 		}
 	}
 
 	@Override
-	protected String getPropertyFileName()
-	{
+	protected String getPropertyFileName() {
 		return FEATURE_PROPERTIES_FILE;
 	}
 
 	@Override
-	protected boolean isFeature()
-	{
+	protected boolean isFeature() {
 		return true;
 	}
 
-	void addFeatures() throws CoreException
-	{
-		IFeatureChild[] features = m_feature.getIncludedFeatures();
-		if(features == null || features.length == 0)
+	void addFeatures() throws CoreException {
+		IFeatureChild[] features = feature.getIncludedFeatures();
+		if (features == null || features.length == 0)
 			return;
 
 		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
@@ -180,29 +172,24 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
-		for(IFeatureChild feature : features)
-		{
-			ComponentRequestBuilder dep = createDependency(feature);
-			if(skipComponent(query, dep))
+		for (IFeatureChild includedFeature : features) {
+			ComponentRequestBuilder dep = createDependency(includedFeature);
+			if (skipComponent(query, dep))
 				continue;
 
 			cspec.addDependency(dep);
 			featureRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_JARS);
-			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
-					ATTRIBUTE_SOURCE_FEATURE_JARS);
+			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_FEATURE_JARS);
 			bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_JARS);
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
-					ATTRIBUTE_SOURCE_BUNDLE_JARS);
+			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
 			fullClean.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FULL_CLEAN);
-			productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
-					ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+			productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		}
 	}
 
-	void addPlugins() throws CoreException
-	{
-		IFeaturePlugin[] plugins = m_feature.getPlugins();
-		if(plugins == null || plugins.length == 0)
+	void addPlugins() throws CoreException {
+		IFeaturePlugin[] plugins = feature.getPlugins();
+		if (plugins == null || plugins.length == 0)
 			return;
 
 		Map<String, ? extends Object> props = getReader().getNodeQuery().getProperties();
@@ -218,59 +205,51 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		PluginModelManager manager = PDECore.getDefault().getModelManager();
 
-		String id = m_feature.getId();
+		String id = feature.getId();
 		boolean hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
 				|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
 				|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
-		for(IFeaturePlugin plugin : plugins)
-		{
-			if(!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch)))
-			{
+		for (IFeaturePlugin plugin : plugins) {
+			if (!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch))) {
 				// Only include this if we can find it in the target platform
 				//
-				if(manager.findEntry(plugin.getId()) == null)
+				if (manager.findEntry(plugin.getId()) == null)
 					continue;
 			}
 
-			if(hasBogusFragments && (plugin.getOS() != null || plugin.getWS() != null || plugin.getArch() != null))
-			{
-				// Only include this if we can find it in the target platform. See
+			if (hasBogusFragments && (plugin.getOS() != null || plugin.getWS() != null || plugin.getArch() != null)) {
+				// Only include this if we can find it in the target platform.
+				// See
 				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
 				//
-				if(manager.findEntry(plugin.getId()) == null)
+				if (manager.findEntry(plugin.getId()) == null)
 					continue;
 			}
 
 			ComponentRequestBuilder dep = createDependency(plugin);
-			if(skipComponent(query, dep))
+			if (skipComponent(query, dep))
 				continue;
 
-			if(!addDependency(dep))
+			if (!addDependency(dep))
 				continue;
 
 			bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
-					ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
+			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
 			fullClean.addExternalPrerequisite(dep.getName(), IComponentType.OSGI_BUNDLE, ATTRIBUTE_FULL_CLEAN);
-			productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(),
-					ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+			productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		}
 	}
 
-	ComponentRequestBuilder createDependency(IFeatureChild feature) throws CoreException
-	{
-		Filter filter = FilterUtils.createFilter(feature.getOS(), feature.getWS(), feature.getArch(), feature.getNL());
-		if(feature.isOptional())
+	ComponentRequestBuilder createDependency(IFeatureChild featureChild) throws CoreException {
+		Filter filter = FilterUtils.createFilter(featureChild.getOS(), featureChild.getWS(), featureChild.getArch(), featureChild.getNL());
+		if (featureChild.isOptional())
 			filter = ComponentRequest.P2_OPTIONAL_FILTER.addFilterWithAnd(filter);
-		return createDependency(feature.getId(), IComponentType.ECLIPSE_FEATURE, feature.getVersion(),
-				feature.getMatch(), filter);
+		return createDependency(featureChild.getId(), IComponentType.ECLIPSE_FEATURE, featureChild.getVersion(), featureChild.getMatch(), filter);
 	}
 
-	ComponentRequestBuilder createDependency(IFeaturePlugin plugin) throws CoreException
-	{
+	ComponentRequestBuilder createDependency(IFeaturePlugin plugin) throws CoreException {
 		Filter filter = FilterUtils.createFilter(plugin.getOS(), plugin.getWS(), plugin.getArch(), plugin.getNL());
-		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), IMatchRules.NONE,
-				filter);
+		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), IMatchRules.NONE, filter);
 	}
 
 	abstract void createFeatureJarAction(IProgressMonitor monitor) throws CoreException;
@@ -279,8 +258,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 
 	abstract void createSiteActions(IProgressMonitor monitor) throws CoreException;
 
-	private ActionBuilder createCopyFeaturesAction() throws CoreException
-	{
+	private ActionBuilder createCopyFeaturesAction() throws CoreException {
 		// Copy all features (including this one) to the features directory.
 		//
 		ActionBuilder copyFeatures = addAntAction(ACTION_COPY_FEATURES, TASK_COPY_GROUP, false);
@@ -293,8 +271,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator
 		return copyFeatures;
 	}
 
-	private void createFeatureExportsAction() throws CoreException
-	{
+	private void createFeatureExportsAction() throws CoreException {
 		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_FEATURE_EXPORTS);
 		featureExports.addLocalPrerequisite(createCopyFeaturesAction());
 		featureExports.addLocalPrerequisite(createCopyPluginsAction());

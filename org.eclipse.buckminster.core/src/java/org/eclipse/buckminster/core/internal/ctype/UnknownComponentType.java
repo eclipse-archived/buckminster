@@ -21,22 +21,16 @@ import org.eclipse.equinox.p2.metadata.Version;
 /**
  * @author thhal
  */
-public class UnknownComponentType extends AbstractComponentType
-{
-	private static final DefaultResolutionBuilder s_defaultBuilder = new DefaultResolutionBuilder();
+public class UnknownComponentType extends AbstractComponentType {
+	private static final DefaultResolutionBuilder defaultBuilder = new DefaultResolutionBuilder();
 
 	@Override
-	public Version getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
-	{
+	public Version getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException {
 		return null;
 	}
 
-	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		ProviderMatch pm = reader.getProviderMatch();
-		return (pm.getMatcherMap() == null)
-				? s_defaultBuilder
-				: new URIMatcherBuilder(pm);
+		return (pm.getMatcherMap() == null) ? defaultBuilder : new URIMatcherBuilder(pm);
 	}
 }

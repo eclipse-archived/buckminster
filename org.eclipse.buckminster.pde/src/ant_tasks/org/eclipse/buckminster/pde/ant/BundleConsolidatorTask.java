@@ -17,23 +17,18 @@ import org.eclipse.buckminster.pde.tasks.BundleConsolidator;
  * 
  * @author Thomas Hallgren
  */
-public class BundleConsolidatorTask extends VersionConsolidatorTask
-{
+public class BundleConsolidatorTask extends VersionConsolidatorTask {
 	@Override
-	public void execute() throws BuildException
-	{
-		try
-		{
-	    	if(getInput() == null)
-				throw new BuildException("Missing attribute input", getLocation());
-			if(getOutput() == null)
-				throw new BuildException("Missing attribute output", getLocation());
+	public void execute() throws BuildException {
+		try {
+			if (getInput() == null)
+				throw new BuildException("Missing attribute input", getLocation()); //$NON-NLS-1$
+			if (getOutput() == null)
+				throw new BuildException("Missing attribute output", getLocation()); //$NON-NLS-1$
 
 			BundleConsolidator bc = new BundleConsolidator(getInput(), getOutput(), getPropertiesFile(), getQualifier());
 			bc.run();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}

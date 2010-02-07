@@ -26,89 +26,72 @@ import org.eclipse.core.runtime.Path;
 /**
  * @author Thomas Hallgren
  */
-public class PackageNames extends Task
-{
-	private String m_property;
+public class PackageNames extends Task {
+	private String property;
 
-	private final ArrayList<FileSet> m_fileSets = new ArrayList<FileSet>();
+	private final ArrayList<FileSet> fileSets = new ArrayList<FileSet>();
 
-	public void addFileset(FileSet fileSet)
-	{
-		m_fileSets.add(fileSet);
+	public void addFileset(FileSet fileSet) {
+		fileSets.add(fileSet);
 	}
 
 	@Override
-	public void execute() throws BuildException
-	{
-		if(m_property == null)
+	public void execute() throws BuildException {
+		if (property == null)
 			throw new BuildException("\"property\" must be set");
 
-		if(m_fileSets.isEmpty())
+		if (fileSets.isEmpty())
 			throw new BuildException("Please use at least one nested fileset");
 
 		Project antProj = getProject();
 		HashSet<IPath> packages = new HashSet<IPath>();
-		for(FileSet fileSet : m_fileSets)
-		{
+		for (FileSet fileSet : fileSets) {
 			DirectoryScanner ds = fileSet.getDirectoryScanner(antProj);
 			File base = ds.getBasedir();
-			for(String fileName : ds.getIncludedFiles())
-			{
+			for (String fileName : ds.getIncludedFiles()) {
 				File file = new File(base, fileName);
 				JarFile jarFile = null;
-				try
-				{
+				try {
 					jarFile = new JarFile(file);
 					Enumeration<JarEntry> entries = jarFile.entries();
-					while(entries.hasMoreElements())
-					{
+					while (entries.hasMoreElements()) {
 						JarEntry jarEntry = entries.nextElement();
-						if(jarEntry.isDirectory())
+						if (jarEntry.isDirectory())
 							continue;
 
 						IPath entryPath = new Path(jarEntry.getName());
-						if(entryPath.segmentCount() < 2 || "META-INF".equalsIgnoreCase(entryPath.segment(0)))
+						if (entryPath.segmentCount() < 2 || "META-INF".equalsIgnoreCase(entryPath.segment(0)))
 							continue;
 
 						packages.add(entryPath.removeLastSegments(1));
 					}
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 					throw new BuildException(e, getLocation());
-				}
-				finally
-				{
-					if(jarFile != null)
-						try
-						{
+				} finally {
+					if (jarFile != null)
+						try {
 							jarFile.close();
-						}
-						catch(IOException e)
-						{
+						} catch (IOException e) {
 						}
 				}
 			}
 		}
 
 		StringBuilder bld = new StringBuilder(packages.size() * 30);
-		for(IPath pkgPath : packages)
-		{
-			if(bld.length() > 0)
+		for (IPath pkgPath : packages) {
+			if (bld.length() > 0)
 				bld.append(',');
 			int top = pkgPath.segmentCount();
 			bld.append(pkgPath.segment(0));
-			for(int idx = 1; idx < top; ++idx)
-			{
+			for (int idx = 1; idx < top; ++idx) {
 				bld.append('.');
 				bld.append(pkgPath.segment(idx));
 			}
 		}
-		antProj.setProperty(m_property, bld.toString());
+		antProj.setProperty(property, bld.toString());
 	}
 
-	public void setProperty(String property)
-	{
-		m_property = property;
+	public void setProperty(String property) {
+		this.property = property;
 	}
 }

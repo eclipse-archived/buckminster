@@ -25,13 +25,13 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.ElementHandlerImpl;
 
 /**
- * <!-- begin-user-doc --> The <b>Resource Factory</b> associated with the package. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> The <b>Resource Factory</b> associated with the
+ * package. <!-- end-user-doc -->
  * 
  * @see org.eclipse.buckminster.team.psf.util.PsfResourceImpl
  * @generated
  */
-public class PsfResourceFactoryImpl extends ResourceFactoryImpl
-{
+public class PsfResourceFactoryImpl extends ResourceFactoryImpl {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -40,25 +40,25 @@ public class PsfResourceFactoryImpl extends ResourceFactoryImpl
 	protected ExtendedMetaData extendedMetaData;
 
 	/**
-	 * Creates an instance of the resource factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the resource factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public PsfResourceFactoryImpl()
-	{
+	public PsfResourceFactoryImpl() {
 		super();
 		extendedMetaData = new BasicExtendedMetaData(new EPackageRegistryImpl(EPackage.Registry.INSTANCE));
 		extendedMetaData.putPackage(null, PsfPackage.eINSTANCE);
 	}
 
 	/**
-	 * Creates an instance of the resource. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the resource. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated NOT
 	 */
 	@Override
-	public Resource createResource(URI uri)
-	{
+	public Resource createResource(URI uri) {
 		XMLResource result = new PsfResourceImpl(uri);
 		result.getDefaultSaveOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
 		result.getDefaultLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);

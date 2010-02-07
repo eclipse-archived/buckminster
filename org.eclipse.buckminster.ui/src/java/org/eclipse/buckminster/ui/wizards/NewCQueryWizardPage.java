@@ -11,19 +11,18 @@ import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
- * The "New" wizard page allows setting the container for the new file as well as the file name. The page will only
- * accept file name without the extension OR with the extension that matches the expected one (cquery).
+ * The "New" wizard page allows setting the container for the new file as well
+ * as the file name. The page will only accept file name without the extension
+ * OR with the extension that matches the expected one (cquery).
  */
 
-public class NewCQueryWizardPage extends NewBMFileWizardPage
-{
+public class NewCQueryWizardPage extends NewBMFileWizardPage {
 	/**
 	 * Constructor for NewCQueryWizardPage.
 	 * 
 	 * @param pageName
 	 */
-	public NewCQueryWizardPage(ISelection selection)
-	{
+	public NewCQueryWizardPage(ISelection selection) {
 		super(selection, "new_query.cquery", "cquery"); //$NON-NLS-1$ //$NON-NLS-2$
 		setTitle(Messages.new_buckminster_component_query_editor_file);
 		setDescription(Messages.new_buckminster_cquery_wizard_explanation_article);

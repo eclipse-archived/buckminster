@@ -16,14 +16,11 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingBuilderException extends LocalizedException
-{
+public class MissingBuilderException extends LocalizedException {
 	private static final long serialVersionUID = -7398224237506596350L;
 
-	public MissingBuilderException(String builderId)
-	{
-		super(NLS.bind(
-				Messages.No_Component_Specification_cspec_builder_with_id_0_has_been_registered_with_extension_point_1,
-				builderId, CorePlugin.CSPEC_BUILDER_POINT));
+	public MissingBuilderException(String builderId) {
+		super(NLS.bind(Messages.No_Component_Specification_cspec_builder_with_id_0_has_been_registered_with_extension_point_1, builderId,
+				CorePlugin.CSPEC_BUILDER_POINT));
 	}
 }

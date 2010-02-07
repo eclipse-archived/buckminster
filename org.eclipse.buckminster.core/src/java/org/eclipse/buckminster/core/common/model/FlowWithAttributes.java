@@ -16,29 +16,25 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  * 
  */
-public class FlowWithAttributes extends Flow
-{
-	private final String[] m_keyNamePairs;
+public class FlowWithAttributes extends Flow {
+	private final String[] keyNamePairs;
 
-	public FlowWithAttributes(String tag, ISaxableElement[] children, String[] keyNamePairs)
-	{
+	public FlowWithAttributes(String tag, ISaxableElement[] children, String[] keyNamePairs) {
 		super(tag, children);
-		m_keyNamePairs = keyNamePairs;
+		this.keyNamePairs = keyNamePairs;
 	}
 
 	@Override
-	public Attributes getAttributes()
-	{
+	public Attributes getAttributes() {
 		AttributesImpl attrs = new AttributesImpl();
-		int top = m_keyNamePairs.length;
-		for(int idx = 0; idx < top; idx += 2)
-			Utils.addAttribute(attrs, m_keyNamePairs[idx], m_keyNamePairs[idx + 1]);
+		int top = keyNamePairs.length;
+		for (int idx = 0; idx < top; idx += 2)
+			Utils.addAttribute(attrs, keyNamePairs[idx], keyNamePairs[idx + 1]);
 		return attrs;
 	}
 
 	@Override
-	String[] getKeyNamePairs()
-	{
-		return m_keyNamePairs;
+	String[] getKeyNamePairs() {
+		return keyNamePairs;
 	}
 }

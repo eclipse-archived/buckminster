@@ -29,20 +29,16 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class RxAssemblyHandler extends ExtensionAwareHandler implements ChildPoppedListener
-{
-	static RxPartHandler getPartHandler(ExtensionAwareHandler parent, String localName,
-			Map<String, RxPartHandler> handlerCache)
-	{
-		synchronized(handlerCache)
-		{
+public class RxAssemblyHandler extends ExtensionAwareHandler implements ChildPoppedListener {
+	static RxPartHandler getPartHandler(ExtensionAwareHandler parent, String localName, Map<String, RxPartHandler> handlerCache) {
+		synchronized (handlerCache) {
 			RxPartHandler ch = handlerCache.get(localName);
-			if(ch != null)
+			if (ch != null)
 				return ch;
 
-			if(RxGroup.TAG.equals(localName))
+			if (RxGroup.TAG.equals(localName))
 				ch = new RxGroupHandler(parent);
-			else if(RxPattern.TAG.equals(localName))
+			else if (RxPattern.TAG.equals(localName))
 				ch = new RxPatternHandler(parent);
 			else
 				ch = new TaggedRxPatternHandler(parent, localName);
@@ -52,51 +48,41 @@ public class RxAssemblyHandler extends ExtensionAwareHandler implements ChildPop
 		}
 	}
 
-	private final HashMap<String, RxPartHandler> m_partHandlers = new HashMap<String, RxPartHandler>();
+	private final HashMap<String, RxPartHandler> partHandlers = new HashMap<String, RxPartHandler>();
 
-	private ArrayList<RxPart> m_parts;
+	private ArrayList<RxPart> parts;
 
-	public RxAssemblyHandler(AbstractHandler parent)
-	{
+	public RxAssemblyHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof RxPartHandler)
-		{
-			if(m_parts == null)
-				m_parts = new ArrayList<RxPart>();
-			m_parts.add(((RxPartHandler)child).createPart());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child instanceof RxPartHandler) {
+			if (parts == null)
+				parts = new ArrayList<RxPart>();
+			parts.add(((RxPartHandler) child).createPart());
 		}
 	}
 
-	public RxAssembly createAssembly() throws SAXException
-	{
-		try
-		{
-			return new RxAssembly(m_parts);
-		}
-		catch(Exception e)
-		{
+	public RxAssembly createAssembly() throws SAXException {
+		try {
+			return new RxAssembly(parts);
+		} catch (Exception e) {
 			throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 		}
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
-		return getPartHandler(this, localName, m_partHandlers);
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
+		return getPartHandler(this, localName, partHandlers);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_parts = null;
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		parts = null;
 	}
 
-	protected ArrayList<RxPart> getParts()
-	{
-		return m_parts;
+	protected ArrayList<RxPart> getParts() {
+		return parts;
 	}
 }

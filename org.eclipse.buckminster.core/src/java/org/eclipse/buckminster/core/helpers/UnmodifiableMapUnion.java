@@ -21,234 +21,192 @@ import java.util.Set;
 /**
  * @author Thomas Hallgren
  */
-public class UnmodifiableMapUnion<K, V> extends AbstractMap<K, V>
-{
-	abstract class AbstractIterator<X> implements Iterator<X>
-	{
-		private Iterator<? extends K> m_currentIterator = m_overlay.keySet().iterator();
+public class UnmodifiableMapUnion<K, V> extends AbstractMap<K, V> {
+	abstract class AbstractIterator<X> implements Iterator<X> {
+		private Iterator<? extends K> currentIterator = overlay.keySet().iterator();
 
-		private K m_currentKey = null;
+		private K currentKey = null;
 
-		private boolean m_phase1 = true;
+		private boolean phase1 = true;
 
-		public boolean hasNext()
-		{
-			m_currentKey = getValidKey();
-			return m_currentKey != null;
+		public boolean hasNext() {
+			currentKey = getValidKey();
+			return currentKey != null;
 		}
 
-		public void remove()
-		{
+		public void remove() {
 			throw new UnsupportedOperationException();
 		}
 
-		K nextKey()
-		{
+		K nextKey() {
 			K key = getValidKey();
-			if(key == null)
+			if (key == null)
 				throw new NoSuchElementException();
 
-			m_currentKey = null; // Force retrieval of next key
+			currentKey = null; // Force retrieval of next key
 			return key;
 		}
 
-		private K getValidKey()
-		{
-			if(m_currentKey != null)
-				return m_currentKey;
+		private K getValidKey() {
+			if (currentKey != null)
+				return currentKey;
 
-			if(m_phase1)
-			{
+			if (phase1) {
 				// All keys are valid during phase 1 since they stem from
 				// the mutable map.
 				//
-				if(m_currentIterator.hasNext())
-				{
-					m_currentKey = m_currentIterator.next();
-					return m_currentKey;
+				if (currentIterator.hasNext()) {
+					currentKey = currentIterator.next();
+					return currentKey;
 				}
-				m_currentIterator = m_map.keySet().iterator();
-				m_phase1 = false;
+				currentIterator = map.keySet().iterator();
+				phase1 = false;
 			}
 
-			while(m_currentIterator.hasNext())
-			{
-				K key = m_currentIterator.next();
-				if(!m_overlay.containsKey(key))
-				{
-					m_currentKey = key;
+			while (currentIterator.hasNext()) {
+				K key = currentIterator.next();
+				if (!overlay.containsKey(key)) {
+					currentKey = key;
 					break;
 				}
 			}
-			return m_currentKey;
+			return currentKey;
 		}
 	}
 
-	class EntryIterator extends AbstractIterator<Map.Entry<K, V>>
-	{
-		public Map.Entry<K, V> next()
-		{
+	class EntryIterator extends AbstractIterator<Map.Entry<K, V>> {
+		public Map.Entry<K, V> next() {
 			return new UnionEntry(nextKey());
 		}
 	}
 
-	class KeyIterator extends AbstractIterator<K>
-	{
-		public K next()
-		{
+	class KeyIterator extends AbstractIterator<K> {
+		public K next() {
 			return nextKey();
 		}
 	}
 
-	class UnionEntry implements Map.Entry<K, V>
-	{
-		private final K m_key;
+	class UnionEntry implements Map.Entry<K, V> {
+		private final K key;
 
-		public UnionEntry(K key)
-		{
-			m_key = key;
+		public UnionEntry(K key) {
+			this.key = key;
 		}
 
-		public K getKey()
-		{
-			return m_key;
+		public K getKey() {
+			return key;
 		}
 
-		public V getValue()
-		{
-			return get(m_key);
+		public V getValue() {
+			return get(key);
 		}
 
-		public V setValue(V value)
-		{
+		public V setValue(V value) {
 			throw new UnsupportedOperationException();
 		}
 	}
 
-	class ValueIterator extends AbstractIterator<V>
-	{
-		public V next()
-		{
+	class ValueIterator extends AbstractIterator<V> {
+		public V next() {
 			return get(this.nextKey());
 		}
 	}
 
-	private final Map<? extends K, ? extends V> m_map;
+	private final Map<? extends K, ? extends V> map;
 
-	private final Map<? extends K, ? extends V> m_overlay;
+	private final Map<? extends K, ? extends V> overlay;
 
-	public UnmodifiableMapUnion(Map<? extends K, ? extends V> overlay, Map<? extends K, ? extends V> map)
-	{
-		m_overlay = overlay;
-		m_map = map;
+	public UnmodifiableMapUnion(Map<? extends K, ? extends V> overlay, Map<? extends K, ? extends V> map) {
+		this.overlay = overlay;
+		this.map = map;
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean containsKey(Object key)
-	{
-		return m_overlay.containsKey(key) || m_map.containsKey(key);
+	public boolean containsKey(Object key) {
+		return overlay.containsKey(key) || map.containsKey(key);
 	}
 
 	@Override
-	public Set<Entry<K, V>> entrySet()
-	{
-		return new AbstractSet<Entry<K, V>>()
-		{
+	public Set<Entry<K, V>> entrySet() {
+		return new AbstractSet<Entry<K, V>>() {
 			@Override
-			public Iterator<Entry<K, V>> iterator()
-			{
+			public Iterator<Entry<K, V>> iterator() {
 				return new EntryIterator();
 			}
 
 			@Override
-			public int size()
-			{
+			public int size() {
 				return UnmodifiableMapUnion.this.size();
 			}
 		};
 	}
 
 	@Override
-	public V get(Object key)
-	{
-		V value = m_overlay.get(key);
-		if(value == null && !m_overlay.containsKey(key))
-			value = m_map.get(key);
+	public V get(Object key) {
+		V value = overlay.get(key);
+		if (value == null && !overlay.containsKey(key))
+			value = map.get(key);
 		return value;
 	}
 
 	@Override
-	public Set<K> keySet()
-	{
-		return new AbstractSet<K>()
-		{
+	public Set<K> keySet() {
+		return new AbstractSet<K>() {
 			@Override
-			public Iterator<K> iterator()
-			{
+			public Iterator<K> iterator() {
 				return new KeyIterator();
 			}
 
 			@Override
-			public int size()
-			{
+			public int size() {
 				return UnmodifiableMapUnion.this.size();
 			}
 		};
 	}
 
-	public Set<? extends K> overlayKeySet()
-	{
-		return m_overlay.keySet();
+	public Set<? extends K> overlayKeySet() {
+		return overlay.keySet();
 	}
 
 	@Override
-	public V put(K key, V value)
-	{
+	public V put(K key, V value) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void putAll(Map<? extends K, ? extends V> m)
-	{
+	public void putAll(Map<? extends K, ? extends V> m) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public V remove(Object key)
-	{
+	public V remove(Object key) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public int size()
-	{
+	public int size() {
 		int immutableVisibleCount = 0;
-		for(K key : m_map.keySet())
-			if(!m_overlay.containsKey(key))
+		for (K key : map.keySet())
+			if (!overlay.containsKey(key))
 				immutableVisibleCount++;
-		return m_overlay.size() + immutableVisibleCount;
+		return overlay.size() + immutableVisibleCount;
 	}
 
 	@Override
-	public Collection<V> values()
-	{
-		return new AbstractCollection<V>()
-		{
+	public Collection<V> values() {
+		return new AbstractCollection<V>() {
 			@Override
-			public Iterator<V> iterator()
-			{
+			public Iterator<V> iterator() {
 				return new ValueIterator();
 			}
 
 			@Override
-			public int size()
-			{
+			public int size() {
 				return UnmodifiableMapUnion.this.size();
 			}
 		};

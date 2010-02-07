@@ -11,8 +11,7 @@ package org.eclipse.buckminster.core.helpers;
  * @author Filip Hrbek
  * 
  */
-public final class MappingException extends Exception
-{
+public final class MappingException extends Exception {
 
 	/**
 	 * Serial UID
@@ -22,32 +21,28 @@ public final class MappingException extends Exception
 	/**
 	 * Creates an empty mapping exception without any message.
 	 */
-	public MappingException()
-	{
+	public MappingException() {
 		super();
 	}
 
 	/**
 	 * Creates a mapping exception with specified message.
 	 */
-	public MappingException(String message)
-	{
+	public MappingException(String message) {
 		super(message);
 	}
 
 	/**
 	 * Creates a mapping exception with specified message and cause.
 	 */
-	public MappingException(String message, Throwable cause)
-	{
+	public MappingException(String message, Throwable cause) {
 		super(message, cause);
 	}
 
 	/**
 	 * Creates a mapping exception with specified cause.
 	 */
-	public MappingException(Throwable cause)
-	{
+	public MappingException(Throwable cause) {
 		super(cause);
 	}
 }

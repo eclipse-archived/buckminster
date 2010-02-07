@@ -16,22 +16,20 @@ import org.eclipse.osgi.util.NLS;
  * @author ken1
  * 
  */
-public class EclipseBuildActor extends AbstractBuildIntegrationActor
-{
+public class EclipseBuildActor extends AbstractBuildIntegrationActor {
 	public static final String ID = "eclipse.build"; //$NON-NLS-1$
 
 	public static final String KIND_PROPERTY = "kind"; //$NON-NLS-1$
 
 	@Override
-	protected String getNameForKind(IActionContext ctx)
-	{
+	protected String getNameForKind(IActionContext ctx) {
 		String kindAsString = this.getActorProperty(KIND_PROPERTY);
 
-		if(kindAsString == null)
+		if (kindAsString == null)
 			return WellknownActions.ECLIPSE.INCREMENTAL.toString();
 
-		for(WellknownActions.ECLIPSE e : WellknownActions.ECLIPSE.values())
-			if(kindAsString.equals(e.toString()))
+		for (WellknownActions.ECLIPSE e : WellknownActions.ECLIPSE.values())
+			if (kindAsString.equals(e.toString()))
 				return kindAsString;
 
 		throw new IllegalArgumentException(NLS.bind(Messages.Invalid_kind_0, kindAsString));

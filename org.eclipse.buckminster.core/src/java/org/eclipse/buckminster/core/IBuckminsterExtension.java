@@ -13,8 +13,7 @@ package org.eclipse.buckminster.core;
 /**
  * @author Thomas Hallgren
  */
-public interface IBuckminsterExtension
-{
+public interface IBuckminsterExtension {
 	/**
 	 * Returns the extension-point id used when this instance was created.
 	 * 

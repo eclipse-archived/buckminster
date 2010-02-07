@@ -11,29 +11,26 @@
 package org.eclipse.buckminster.cmdline;
 
 /**
- * Exception thrown while parsing the command line. The message is printed as an information to the invoking user.
+ * Exception thrown while parsing the command line. The message is printed as an
+ * information to the invoking user.
  * 
  * @author Thomas Hallgren
  */
-public class UsageException extends Exception
-{
+public class UsageException extends Exception {
 	private static final long serialVersionUID = 8048232638062127928L;
 
-	private final boolean m_emitHelp;
+	private final boolean emitHelp;
 
-	public UsageException(String msg)
-	{
+	public UsageException(String msg) {
 		this(msg, true);
 	}
 
-	public UsageException(String msg, boolean emitHelp)
-	{
+	public UsageException(String msg, boolean emitHelp) {
 		super(msg);
-		m_emitHelp = emitHelp;
+		this.emitHelp = emitHelp;
 	}
 
-	public boolean isEmitHelp()
-	{
-		return m_emitHelp;
+	public boolean isEmitHelp() {
+		return emitHelp;
 	}
 }

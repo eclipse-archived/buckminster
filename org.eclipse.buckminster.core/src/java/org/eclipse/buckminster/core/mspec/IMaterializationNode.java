@@ -5,8 +5,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IPath;
 
-public interface IMaterializationNode extends IMaterializationDirective
-{
+public interface IMaterializationNode extends IMaterializationDirective {
 	Pattern getBindingNamePattern();
 
 	String getBindingNameReplacement();

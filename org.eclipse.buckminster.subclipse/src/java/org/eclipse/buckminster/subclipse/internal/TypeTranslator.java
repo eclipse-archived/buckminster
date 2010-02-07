@@ -9,34 +9,25 @@ import org.eclipse.core.runtime.CoreException;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 /**
- * Translates Subclipse types to more standard eclipse SVN types Used to unify the logic between the two SVN clients
- * (Subclipse and Subversive)
+ * Translates Subclipse types to more standard eclipse SVN types Used to unify
+ * the logic between the two SVN clients (Subclipse and Subversive)
  * 
  * @author Guillaume Chatelet
  * 
  */
-public class TypeTranslator
-{
-	public static URI from(SVNUrl url) throws CoreException
-	{
-		try
-		{
+public class TypeTranslator {
+	public static URI from(SVNUrl url) throws CoreException {
+		try {
 			return new URI(url.toString());
-		}
-		catch(URISyntaxException e)
-		{
+		} catch (URISyntaxException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public static SVNUrl from(URI url) throws CoreException
-	{
-		try
-		{
+	public static SVNUrl from(URI url) throws CoreException {
+		try {
 			return new SVNUrl(url.toString());
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}

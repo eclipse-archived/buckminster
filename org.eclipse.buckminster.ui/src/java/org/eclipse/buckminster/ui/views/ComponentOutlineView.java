@@ -22,128 +22,110 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.part.EditorPart;
 
 /**
- * The ComponentOutlineView shows the outline of one component. The Outline changes as the selected page changes. The
- * Resolution for the currently selected item is obtained, and an outline is produced for this resolution.
+ * The ComponentOutlineView shows the outline of one component. The Outline
+ * changes as the selected page changes. The Resolution for the currently
+ * selected item is obtained, and an outline is produced for this resolution.
  * 
  * @author Henrik Lindberg
  * 
  */
-public class ComponentOutlineView extends ComponentBrowserView
-{
-	private ISelectionListener m_selectionListener;
+public class ComponentOutlineView extends ComponentBrowserView {
+	private ISelectionListener selectionListener;
 
 	/**
 	 * Call-back that creates and initializes the viewer.
 	 */
 	@Override
-	public void createPartControl(Composite parent)
-	{
+	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 		hookPageSelection();
 	}
 
 	@Override
-	public void dispose()
-	{
-		if(m_selectionListener != null)
-			getSite().getPage().removePostSelectionListener(m_selectionListener);
+	public void dispose() {
+		if (selectionListener != null)
+			getSite().getPage().removePostSelectionListener(selectionListener);
 		super.dispose();
 	}
 
 	@Override
-	public boolean isAutoExpand()
-	{
+	public boolean isAutoExpand() {
 		return true;
 	}
 
 	@Override
-	protected ResolutionsTreeContentProvider getContentProvider()
-	{
+	protected ResolutionsTreeContentProvider getContentProvider() {
 		return new ResolutionsTreeContentProvider(ResolutionsTreeContentProvider.Mode.SINGLE);
 	}
 
-	private void hookPageSelection()
-	{
-		m_selectionListener = new ISelectionListener()
-		{
-			public void selectionChanged(IWorkbenchPart part, ISelection selection)
-			{
+	private void hookPageSelection() {
+		selectionListener = new ISelectionListener() {
+			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 				pageSelectionChanged(part, selection);
 			}
 		};
-		getSite().getPage().addPostSelectionListener(m_selectionListener);
+		getSite().getPage().addPostSelectionListener(selectionListener);
 	}
 
-	private void pageSelectionChanged(IWorkbenchPart part, ISelection selection)
-	{
-		if(part == this)
+	private void pageSelectionChanged(IWorkbenchPart part, ISelection selection) {
+		if (part == this)
 			return;
 
 		Resolution r = null;
-		if(part instanceof EditorPart)
-		{
-			IEditorInput input = ((EditorPart)part).getEditorInput();
-			IResource resource = (IResource)input.getAdapter(IResource.class);
-			if(resource != null)
-				r = (Resolution)resource.getAdapter(Resolution.class);
+		if (part instanceof EditorPart) {
+			IEditorInput input = ((EditorPart) part).getEditorInput();
+			IResource resource = (IResource) input.getAdapter(IResource.class);
+			if (resource != null)
+				r = (Resolution) resource.getAdapter(Resolution.class);
 			else
-				return; // If editor is not for a resource, stay on the same component
-		}
-		else
-		{
-			if(!(selection instanceof IStructuredSelection))
+				return; // If editor is not for a resource, stay on the same
+						// component
+		} else {
+			if (!(selection instanceof IStructuredSelection))
 				return;
-			IStructuredSelection sel = (IStructuredSelection)selection;
+			IStructuredSelection sel = (IStructuredSelection) selection;
 
-			if(!sel.isEmpty() && (sel.getFirstElement() instanceof IAdaptable))
-			{
-				IAdaptable element = (IAdaptable)sel.getFirstElement();
+			if (!sel.isEmpty() && (sel.getFirstElement() instanceof IAdaptable)) {
+				IAdaptable element = (IAdaptable) sel.getFirstElement();
 				// If adaptable to Resolution directly
-				r = (Resolution)element.getAdapter(Resolution.class);
+				r = (Resolution) element.getAdapter(Resolution.class);
 
-				if(r == null)
-				{
+				if (r == null) {
 					// Try to adapt it to Resource first
-					IResource resource = (IResource)element.getAdapter(IResource.class);
-					if(resource != null)
-					{
+					IResource resource = (IResource) element.getAdapter(IResource.class);
+					if (resource != null) {
 						// get the project of the resource
 						resource = resource.getProject();
-						r = (Resolution)resource.getAdapter(Resolution.class);
+						r = (Resolution) resource.getAdapter(Resolution.class);
 					}
 				}
-				if(r == null)
-				{
-					IWorkbenchAdapter wbAdapter = (IWorkbenchAdapter)element.getAdapter(IWorkbenchAdapter.class);
-					while(wbAdapter != null)
-					{
+				if (r == null) {
+					IWorkbenchAdapter wbAdapter = (IWorkbenchAdapter) element.getAdapter(IWorkbenchAdapter.class);
+					while (wbAdapter != null) {
 						IResource resource = null;
 						Object parent = wbAdapter.getParent(element);
-						if(parent != null && parent instanceof IAdaptable)
-							resource = (IResource)((IAdaptable)parent).getAdapter(IResource.class);
-						if(resource != null)
-							r = (Resolution)resource.getAdapter(Resolution.class);
-						if(r != null)
+						if (parent != null && parent instanceof IAdaptable)
+							resource = (IResource) ((IAdaptable) parent).getAdapter(IResource.class);
+						if (resource != null)
+							r = (Resolution) resource.getAdapter(Resolution.class);
+						if (r != null)
 							break;
 
-						wbAdapter = (parent == null || !(parent instanceof IAdaptable))
-								? null
-								: (IWorkbenchAdapter)((IAdaptable)parent).getAdapter(IWorkbenchAdapter.class);
-						if(wbAdapter != null)
-							element = (IAdaptable)parent;
+						wbAdapter = (parent == null || !(parent instanceof IAdaptable)) ? null : (IWorkbenchAdapter) ((IAdaptable) parent)
+								.getAdapter(IWorkbenchAdapter.class);
+						if (wbAdapter != null)
+							element = (IAdaptable) parent;
 					}
 
 				}
 			}
 
 		}
-		Object input = r == null
-				? getViewSite()
-				: r;
-		if(m_viewer.getInput() == input)
+		Object input = r == null ? getViewSite() : r;
+		if (viewer.getInput() == input)
 			return;
-		m_viewer.setInput(input);
-		m_viewer.expandAll();
+		viewer.setInput(input);
+		viewer.expandAll();
 	}
 
 }

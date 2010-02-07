@@ -10,64 +10,50 @@
 
 package org.eclipse.buckminster.cmdline;
 
-public class OptionDescriptor
-{
-	private final Character m_shortName;
+public class OptionDescriptor {
+	private final Character shortName;
 
-	private final String m_longName;
+	private final String longName;
 
-	private final int m_type;
+	private final int type;
 
-	public OptionDescriptor(char shortName, String longName, int type)
-	{
-		this(shortName == 0
-				? null
-				: Character.valueOf(shortName), longName, type);
+	public OptionDescriptor(char shortName, String longName, int type) {
+		this(shortName == 0 ? null : Character.valueOf(shortName), longName, type);
 	}
 
-	public OptionDescriptor(Character shortName, String longName, int type)
-	{
-		m_shortName = shortName;
-		m_longName = longName;
-		m_type = type;
+	public OptionDescriptor(Character shortName, String longName, int type) {
+		this.shortName = shortName;
+		this.longName = longName;
+		this.type = type;
 	}
 
-	public OptionDescriptor(String longName, int type)
-	{
+	public OptionDescriptor(String longName, int type) {
 		this(null, longName, type);
 	}
 
-	public String getLongName()
-	{
-		return m_longName;
+	public String getLongName() {
+		return longName;
 	}
 
-	public Character getShortName()
-	{
-		return m_shortName;
+	public Character getShortName() {
+		return shortName;
 	}
 
-	public int getType()
-	{
-		return m_type;
+	public int getType() {
+		return type;
 	}
 
-	public boolean isAcceptableName(String name, boolean isLongName, boolean exact)
-	{
+	public boolean isAcceptableName(String name, boolean isLongName, boolean exact) {
 		// short names have simple testing
 		//
-		if(!isLongName)
-			return (m_shortName == null
-					? false
-					: m_shortName.charValue() == name.charAt(0));
+		if (!isLongName)
+			return (shortName == null ? false : shortName.charValue() == name.charAt(0));
 
 		// long names are sensitive to exact or non-exact matching
 		//
-		if(m_longName == null)
+		if (longName == null)
 			return false;
 
-		return (exact
-				? m_longName.equals(name)
-				: m_longName.startsWith(name));
+		return (exact ? longName.equals(name) : longName.startsWith(name));
 	}
 }

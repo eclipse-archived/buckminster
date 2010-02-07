@@ -22,10 +22,8 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
-public class JobBlocker extends JobChangeAdapter
-{
-	private static void trace(String format, Object... args)
-	{
+public class JobBlocker extends JobChangeAdapter {
+	private static void trace(String format, Object... args) {
 		// We can't trust that the CorePlugin is still active
 		// since some jobs might outlive it.
 		//
@@ -41,62 +39,52 @@ public class JobBlocker extends JobChangeAdapter
 		// }
 	}
 
-	private final Set<String> m_blockByName = Collections.synchronizedSet(new HashSet<String>());
+	private final Set<String> blockByName = Collections.synchronizedSet(new HashSet<String>());
 
-	private final Set<String> m_blockByClass = Collections.synchronizedSet(new HashSet<String>());
+	private final Set<String> blockByClass = Collections.synchronizedSet(new HashSet<String>());
 
-	public JobBlocker()
-	{
+	public JobBlocker() {
 		Job.getJobManager().addJobChangeListener(this);
 	}
 
 	@Override
-	public void aboutToRun(IJobChangeEvent event)
-	{
+	public void aboutToRun(IJobChangeEvent event) {
 		Job job = event.getJob();
 		String jobName = job.getName();
 		String className = job.getClass().getName();
 		trace(NLS.bind(Messages.JOB_AboutToRun_0, jobName));
-		if(m_blockByName.contains(jobName) || m_blockByClass.contains(className))
-		{
+		if (blockByName.contains(jobName) || blockByClass.contains(className)) {
 			job.cancel();
 			trace(NLS.bind(Messages.Blocked_0_1, className, jobName));
 			return;
 		}
 	}
 
-	public void addClassBlock(Class<? extends Job> classToBlock)
-	{
-		m_blockByClass.add(classToBlock.getName());
+	public void addClassBlock(Class<? extends Job> classToBlock) {
+		blockByClass.add(classToBlock.getName());
 	}
 
-	public void addClassBlock(String className)
-	{
-		m_blockByClass.add(className);
+	public void addClassBlock(String className) {
+		blockByClass.add(className);
 	}
 
-	public void addNameBlock(String nameToBlock)
-	{
-		m_blockByName.add(nameToBlock);
+	public void addNameBlock(String nameToBlock) {
+		blockByName.add(nameToBlock);
 	}
 
-	public void release()
-	{
+	public void release() {
 		Job.getJobManager().removeJobChangeListener(this);
 	}
 
-	public void removeClassBlock(Class<? extends Job> classToBlock)
-	{
-		m_blockByClass.remove(classToBlock.getName());
+	public void removeClassBlock(Class<? extends Job> classToBlock) {
+		blockByClass.remove(classToBlock.getName());
 	}
 
-	public void removeClassBlock(String className)
-	{
-		m_blockByClass.remove(className);
+	public void removeClassBlock(String className) {
+		blockByClass.remove(className);
 	}
 
-	public void removeNameBlock(String nameToBlock)
-	{
-		m_blockByName.remove(nameToBlock);
+	public void removeNameBlock(String nameToBlock) {
+		blockByName.remove(nameToBlock);
 	}
 }

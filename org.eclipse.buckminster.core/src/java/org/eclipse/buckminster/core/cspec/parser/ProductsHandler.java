@@ -32,118 +32,96 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport,
-		IAttributeBuilderSupport
-{
-	public static class ProductArtifactHandler extends ArtifactHandler
-	{
-		public ProductArtifactHandler(AbstractHandler parent, boolean publ)
-		{
+public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport, IAttributeBuilderSupport {
+	public static class ProductArtifactHandler extends ArtifactHandler {
+		public ProductArtifactHandler(AbstractHandler parent, boolean publ) {
 			super(parent, publ);
 		}
 
 		@Override
-		public void handleAttributes(Attributes attrs) throws SAXException
-		{
+		public void handleAttributes(Attributes attrs) throws SAXException {
 			super.handleAttributes(attrs);
-			ActionArtifactBuilder productBuilder = (ActionArtifactBuilder)this.getBuilder();
-			productBuilder.setActionName(((ProductsHandler)this.getParentHandler()).getActionName());
+			ActionArtifactBuilder productBuilder = (ActionArtifactBuilder) this.getBuilder();
+			productBuilder.setActionName(((ProductsHandler) this.getParentHandler()).getActionName());
 			productBuilder.setAlias(getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS));
 		}
 
 		@Override
-		protected TopLevelAttributeBuilder createAttributeBuilder()
-		{
+		protected TopLevelAttributeBuilder createAttributeBuilder() {
 			return getCSpecBuilder().createActionArtifactBuilder();
 		}
 	}
 
 	public static final String TAG = Action.ELEM_PRODUCTS;
 
-	private final PathHandler m_pathHandler = new PathHandler(this);
+	private final PathHandler pathHandler = new PathHandler(this);
 
-	private final ProductArtifactHandler m_privateHandler = new ProductArtifactHandler(this, false);
+	private final ProductArtifactHandler privateHandler = new ProductArtifactHandler(this, false);
 
-	private final ProductArtifactHandler m_publicHandler = new ProductArtifactHandler(this, true);
+	private final ProductArtifactHandler publicHandler = new ProductArtifactHandler(this, true);
 
-	ProductsHandler(AbstractHandler parent)
-	{
+	ProductsHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_pathHandler)
-			((ActionBuilder)this.getAttributeBuilder()).addProductPath(m_pathHandler.getPath());
-		else if(child == m_publicHandler)
-			this.addProductArtifact(m_publicHandler.getAttributeBuilder());
-		else if(child == m_privateHandler)
-			this.addProductArtifact(m_privateHandler.getAttributeBuilder());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == pathHandler)
+			((ActionBuilder) this.getAttributeBuilder()).addProductPath(pathHandler.getPath());
+		else if (child == publicHandler)
+			this.addProductArtifact(publicHandler.getAttributeBuilder());
+		else if (child == privateHandler)
+			this.addProductArtifact(privateHandler.getAttributeBuilder());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch = null;
-		if(PathHandler.TAG.equals(localName))
-			ch = m_pathHandler;
-		else if(TopLevelAttribute.PUBLIC_TAG.equals(localName))
-			ch = m_publicHandler;
-		else if(TopLevelAttribute.PRIVATE_TAG.equals(localName))
-			ch = m_privateHandler;
+		if (PathHandler.TAG.equals(localName))
+			ch = pathHandler;
+		else if (TopLevelAttribute.PUBLIC_TAG.equals(localName))
+			ch = publicHandler;
+		else if (TopLevelAttribute.PRIVATE_TAG.equals(localName))
+			ch = privateHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public TopLevelAttributeBuilder getAttributeBuilder()
-	{
-		return ((IAttributeBuilderSupport)this.getParentHandler()).getAttributeBuilder();
+	public TopLevelAttributeBuilder getAttributeBuilder() {
+		return ((IAttributeBuilderSupport) this.getParentHandler()).getAttributeBuilder();
 	}
 
-	public CSpecBuilder getCSpecBuilder()
-	{
-		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
+	public CSpecBuilder getCSpecBuilder() {
+		return ((ICSpecBuilderSupport) this.getParentHandler()).getCSpecBuilder();
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		ActionHandler parent = (ActionHandler)this.getParentHandler();
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		ActionHandler parent = (ActionHandler) this.getParentHandler();
 		parent.setProductAlias(getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS));
 		parent.setProductFileCount(getOptionalIntValue(attrs, Action.ATTR_PRODUCT_FILE_COUNT, -1));
 		String tmp = getOptionalStringValue(attrs, Artifact.ATTR_BASE);
-		if(tmp != null)
+		if (tmp != null)
 			parent.setProductBase(Path.fromPortableString(tmp));
 		tmp = getOptionalStringValue(attrs, Action.ATTR_UP_TO_DATE_POLICY);
-		if(tmp != null)
-		{
-			try
-			{
+		if (tmp != null) {
+			try {
 				parent.setUpToDatePolicy(UpToDatePolicy.valueOf(tmp));
-			}
-			catch(IllegalArgumentException e)
-			{
-				throw new SAXParseException(NLS.bind(Messages._0_is_not_a_valid_UpToDatePolicy, tmp),
-						getDocumentLocator());
+			} catch (IllegalArgumentException e) {
+				throw new SAXParseException(NLS.bind(Messages._0_is_not_a_valid_UpToDatePolicy, tmp), getDocumentLocator());
 			}
 		}
 	}
 
-	final void addProductArtifact(AttributeBuilder artifact) throws SAXException
-	{
-		try
-		{
+	final void addProductArtifact(AttributeBuilder artifact) throws SAXException {
+		try {
 			this.getCSpecBuilder().addAttribute(artifact);
-		}
-		catch(AttributeAlreadyDefinedException e)
-		{
+		} catch (AttributeAlreadyDefinedException e) {
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 		}
 	}
 
-	final String getActionName()
-	{
-		return ((CSpecElementHandler)this.getParentHandler()).getBuilder().getName();
+	final String getActionName() {
+		return ((CSpecElementHandler) this.getParentHandler()).getBuilder().getName();
 	}
 }

@@ -47,57 +47,47 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author Karel Brezina
  * 
  */
-public class AllAttributesView extends Composite
-{
-	class TableContentProvider implements IStructuredContentProvider
-	{
-		public void dispose()
-		{
+public class AllAttributesView extends Composite {
+	class TableContentProvider implements IStructuredContentProvider {
+		public void dispose() {
 			// Nothing to dispose
 		}
 
-		public Object[] getElements(Object inputElement)
-		{
-			return m_table.toArray();
+		public Object[] getElements(Object inputElement) {
+			return table.toArray();
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-		{
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// Nothing to do
 		}
 	}
 
-	class TableLabelProvider extends LabelProvider implements ITableLabelProvider
-	{
-		public Image getColumnImage(Object element, int columnIndex)
-		{
+	class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
-		public String getColumnText(Object element, int columnIndex)
-		{
-			switch(columnIndex)
-			{
-			case 0:
-				return ((TopLevelAttributeBuilder)element).getName();
-			case 1:
-				return getAttributeType((TopLevelAttributeBuilder)element);
-			case 2:
-				return Boolean.valueOf(((TopLevelAttributeBuilder)element).isPublic()).toString();
-			default:
-				return ""; //$NON-NLS-1$
+		public String getColumnText(Object element, int columnIndex) {
+			switch (columnIndex) {
+				case 0:
+					return ((TopLevelAttributeBuilder) element).getName();
+				case 1:
+					return getAttributeType((TopLevelAttributeBuilder) element);
+				case 2:
+					return Boolean.valueOf(((TopLevelAttributeBuilder) element).isPublic()).toString();
+				default:
+					return ""; //$NON-NLS-1$
 			}
 		}
 
-		private String getAttributeType(TopLevelAttributeBuilder builder)
-		{
-			if(builder instanceof ActionBuilder)
+		private String getAttributeType(TopLevelAttributeBuilder builder) {
+			if (builder instanceof ActionBuilder)
 				return Messages.action;
-			else if(builder instanceof ActionArtifactBuilder)
+			else if (builder instanceof ActionArtifactBuilder)
 				return Messages.product_artifact;
-			else if(builder instanceof ArtifactBuilder)
+			else if (builder instanceof ArtifactBuilder)
 				return Messages.artifact;
-			else if(builder instanceof GroupBuilder)
+			else if (builder instanceof GroupBuilder)
 				return Messages.group;
 
 			return ""; //$NON-NLS-1$
@@ -108,174 +98,141 @@ public class AllAttributesView extends Composite
 
 	private static final int[] TABLE_WEIGHTS = { 60, 20, 20 };
 
-	private CSpecEditor m_cspecEditor;
+	private CSpecEditor cspecEditor;
 
-	private TableViewer m_tableViewer;
+	private TableViewer tableViewer;
 
-	private List<TopLevelAttributeBuilder> m_table = new ArrayList<TopLevelAttributeBuilder>();
+	private List<TopLevelAttributeBuilder> table = new ArrayList<TopLevelAttributeBuilder>();
 
-	private Map<ActionArtifactBuilder, ActionBuilder> m_aaMap = new HashMap<ActionArtifactBuilder, ActionBuilder>();
+	private Map<ActionArtifactBuilder, ActionBuilder> aaMap = new HashMap<ActionArtifactBuilder, ActionBuilder>();
 
-	private int m_lastSelectedRow = -1;
+	private int lastSelectedRow = -1;
 
-	public AllAttributesView(Composite parent, int style, CSpecEditor editor)
-	{
+	public AllAttributesView(Composite parent, int style, CSpecEditor editor) {
 		super(parent, style);
-		m_cspecEditor = editor;
+		cspecEditor = editor;
 
 		initComposite();
 	}
 
-	public void refresh()
-	{
-		m_table.clear();
-		m_table.addAll(m_cspecEditor.getActionBuilders());
-		for(ActionBuilder actionBuilder : m_cspecEditor.getActionArtifactBuilders().keySet())
-			for(ActionArtifactBuilder actionArtifactBuilder : m_cspecEditor.getActionArtifactBuilders().get(
-					actionBuilder))
-			{
-				m_table.add(actionArtifactBuilder);
-				m_aaMap.put(actionArtifactBuilder, actionBuilder);
+	public void refresh() {
+		table.clear();
+		table.addAll(cspecEditor.getActionBuilders());
+		for (ActionBuilder actionBuilder : cspecEditor.getActionArtifactBuilders().keySet())
+			for (ActionArtifactBuilder actionArtifactBuilder : cspecEditor.getActionArtifactBuilders().get(actionBuilder)) {
+				table.add(actionArtifactBuilder);
+				aaMap.put(actionArtifactBuilder, actionBuilder);
 			}
 
-		m_table.addAll(m_cspecEditor.getArtifactBuilders());
-		m_table.addAll(m_cspecEditor.getGroupBuilders());
+		table.addAll(cspecEditor.getArtifactBuilders());
+		table.addAll(cspecEditor.getGroupBuilders());
 
-		Collections.sort(m_table, CSpecEditorUtils.getAttributeComparator());
+		Collections.sort(table, CSpecEditorUtils.getAttributeComparator());
 
-		m_tableViewer.setInput(m_table);
+		tableViewer.setInput(table);
 
-		if(getSelectionIndex() == -1 && m_table.size() > 0)
-		{
-			if(m_lastSelectedRow == -1)
-			{
-				m_tableViewer.getTable().setSelection(0);
-			}
-			else
-			{
-				if(m_lastSelectedRow >= m_table.size())
-				{
-					m_lastSelectedRow = m_table.size() - 1;
+		if (getSelectionIndex() == -1 && table.size() > 0) {
+			if (lastSelectedRow == -1) {
+				tableViewer.getTable().setSelection(0);
+			} else {
+				if (lastSelectedRow >= table.size()) {
+					lastSelectedRow = table.size() - 1;
 				}
-				m_tableViewer.getTable().setSelection(m_lastSelectedRow);
+				tableViewer.getTable().setSelection(lastSelectedRow);
 			}
 		}
-		if(getSelectionIndex() != -1)
-		{
-			m_lastSelectedRow = getSelectionIndex();
+		if (getSelectionIndex() != -1) {
+			lastSelectedRow = getSelectionIndex();
 		}
 	}
 
 	@Override
-	public boolean setFocus()
-	{
-		return m_tableViewer.getTable().setFocus();
+	public boolean setFocus() {
+		return tableViewer.getTable().setFocus();
 	}
 
-	protected void initComposite()
-	{
+	protected void initComposite() {
 		GridLayout topLayout = new GridLayout(2, false);
 		topLayout.marginHeight = topLayout.marginWidth = 0;
 		setLayout(topLayout);
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		Table table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		Table tbl = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 
 		Button detailButton = new Button(this, SWT.PUSH);
 		detailButton.setText(Messages.show_details);
 		detailButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-		detailButton.addSelectionListener(new SelectionAdapter()
-		{
+		detailButton.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
-				show(m_table.get(m_tableViewer.getTable().getSelectionIndex()));
+			public void widgetSelected(SelectionEvent e) {
+				show(table.get(tableViewer.getTable().getSelectionIndex()));
 			}
 		});
 
-		table.addFocusListener(new FocusListener()
-		{
+		tbl.addFocusListener(new FocusListener() {
 
-			public void focusGained(FocusEvent e)
-			{
+			public void focusGained(FocusEvent e) {
 				refresh();
 			}
 
-			public void focusLost(FocusEvent e)
-			{
+			public void focusLost(FocusEvent e) {
 				updateLastSelectedRow();
 			}
 		});
 
-		table.setHeaderVisible(true);
+		tbl.setHeaderVisible(true);
 		DynamicTableLayout layout = new DynamicTableLayout(50);
 
 		int tableIdx = 0;
-		for(int idx = 0; idx < 3; idx++)
-		{
-			TableColumn tableColumn = new TableColumn(table, SWT.LEFT, tableIdx);
+		for (int idx = 0; idx < 3; idx++) {
+			TableColumn tableColumn = new TableColumn(tbl, SWT.LEFT, tableIdx);
 			tableColumn.setText(TABLE_TITLES[idx]);
 			layout.addColumnData(new ColumnWeightData(TABLE_WEIGHTS[idx], true));
 			tableIdx++;
 		}
-		table.setLayout(layout);
+		tbl.setLayout(layout);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		// gridData.widthHint = 600;
-		table.setLayoutData(gridData);
+		tbl.setLayoutData(gridData);
 
-		m_tableViewer = new TableViewer(table);
-		m_tableViewer.setLabelProvider(new TableLabelProvider());
-		m_tableViewer.setContentProvider(new TableContentProvider());
-		m_tableViewer.setInput(m_table);
-		m_tableViewer.addDoubleClickListener(new IDoubleClickListener()
-		{
-			public void doubleClick(DoubleClickEvent event)
-			{
-				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
-				{
-					show(m_table.get(m_tableViewer.getTable().getSelectionIndex()));
+		tableViewer = new TableViewer(tbl);
+		tableViewer.setLabelProvider(new TableLabelProvider());
+		tableViewer.setContentProvider(new TableContentProvider());
+		tableViewer.setInput(tbl);
+		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				if (tableViewer.getTable().getSelectionIndex() >= 0) {
+					show(table.get(tableViewer.getTable().getSelectionIndex()));
 				}
 			}
 		});
 	}
 
-	private int getSelectionIndex()
-	{
-		return m_tableViewer.getTable().getSelectionIndex();
+	private int getSelectionIndex() {
+		return tableViewer.getTable().getSelectionIndex();
 	}
 
-	private void show(TopLevelAttributeBuilder builder)
-	{
-		if(builder instanceof ActionBuilder)
-		{
-			if(m_cspecEditor.getActionsEditor().show(((ActionBuilder)builder), Messages.general))
-				m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
-		}
-		else if(builder instanceof ActionArtifactBuilder)
-		{
-			if(m_cspecEditor.getActionsEditor().show(m_aaMap.get(builder), Messages.products))
-			{
-				m_cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
-				m_cspecEditor.getActionsTable().showProductArtifact((ActionArtifactBuilder)builder);
+	private void show(TopLevelAttributeBuilder builder) {
+		if (builder instanceof ActionBuilder) {
+			if (cspecEditor.getActionsEditor().show(((ActionBuilder) builder), Messages.general))
+				cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
+		} else if (builder instanceof ActionArtifactBuilder) {
+			if (cspecEditor.getActionsEditor().show(aaMap.get(builder), Messages.products)) {
+				cspecEditor.switchTab(CSpecEditorTab.ACTIONS);
+				cspecEditor.getActionsTable().showProductArtifact((ActionArtifactBuilder) builder);
 			}
-		}
-		else if(builder instanceof ArtifactBuilder)
-		{
-			if(m_cspecEditor.getArtifactsEditor().show(((ArtifactBuilder)builder), Messages.general))
-				m_cspecEditor.switchTab(CSpecEditorTab.ARTIFACTS);
-		}
-		else if(builder instanceof GroupBuilder)
-		{
-			if(m_cspecEditor.getGroupsEditor().show(((GroupBuilder)builder), Messages.general))
-				m_cspecEditor.switchTab(CSpecEditorTab.GROUPS);
+		} else if (builder instanceof ArtifactBuilder) {
+			if (cspecEditor.getArtifactsEditor().show(((ArtifactBuilder) builder), Messages.general))
+				cspecEditor.switchTab(CSpecEditorTab.ARTIFACTS);
+		} else if (builder instanceof GroupBuilder) {
+			if (cspecEditor.getGroupsEditor().show(((GroupBuilder) builder), Messages.general))
+				cspecEditor.switchTab(CSpecEditorTab.GROUPS);
 		}
 	}
 
-	private void updateLastSelectedRow()
-	{
-		if(getSelectionIndex() != -1)
-		{
-			m_lastSelectedRow = getSelectionIndex();
+	private void updateLastSelectedRow() {
+		if (getSelectionIndex() != -1) {
+			lastSelectedRow = getSelectionIndex();
 		}
 	}
 }

@@ -25,45 +25,39 @@ import org.eclipse.osgi.util.NLS;
  * @author kolwing
  * 
  */
-public class UnsetPreference extends WorkspaceCommand
-{
+public class UnsetPreference extends WorkspaceCommand {
 	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE); //$NON-NLS-1$
 
-	private boolean m_test = false;
+	private boolean test = false;
 
-	private String[] m_assignments;
+	private String[] assignments;
 
 	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(TEST_DESCRIPTOR);
 		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(TEST_DESCRIPTOR))
-			m_test = true;
+	protected void handleOption(Option option) throws Exception {
+		if (option.is(TEST_DESCRIPTOR))
+			test = true;
 		else
 			super.handleOption(option);
 	}
 
 	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		if(unparsed.length < 1)
+	protected void handleUnparsed(String[] unparsed) throws Exception {
+		if (unparsed.length < 1)
 			throw new UsageException(Messages.You_must_provide_at_least_one_preference_to_unset);
-		m_assignments = unparsed;
+		assignments = unparsed;
 	}
 
 	@Override
-	protected int internalRun(IProgressMonitor monitor) throws Exception
-	{
-		PreferenceMappingManager prefManager = PreferenceMappingManager.getInstance(m_test);
-		for(int idx = 0; idx < m_assignments.length; ++idx)
-		{
-			String assignment = m_assignments[idx];
+	protected int internalRun(IProgressMonitor monitor) throws Exception {
+		PreferenceMappingManager prefManager = PreferenceMappingManager.getInstance(test);
+		for (int idx = 0; idx < assignments.length; ++idx) {
+			String assignment = assignments[idx];
 			BasicPreferenceHandler bph = prefManager.getHandler(assignment);
 			bph.unset();
 			System.out.println(NLS.bind(Messages.Unset_the_value_for_0, bph.getName()));

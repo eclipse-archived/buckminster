@@ -56,19 +56,18 @@ import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
 
 @SuppressWarnings("restriction")
-public class FeatureImportOperation implements IWorkspaceRunnable
-{
-	private final IFeatureModel m_model;
+public class FeatureImportOperation implements IWorkspaceRunnable {
+	private final IFeatureModel model;
 
-	private final NodeQuery m_query;
+	private final NodeQuery query;
 
-	private final EclipseImportReaderType m_classpathCollector;
+	private final EclipseImportReaderType classpathCollector;
 
-	private final boolean m_binary;
+	private final boolean binary;
 
-	private final IWorkspaceRoot m_root;
+	private final IWorkspaceRoot root;
 
-	private final IPath m_destination;
+	private final IPath destination;
 
 	/**
 	 * @param models
@@ -76,175 +75,147 @@ public class FeatureImportOperation implements IWorkspaceRunnable
 	 *            a parent of external project or null
 	 * @param replaceQuery
 	 */
-	public FeatureImportOperation(EclipseImportReaderType classpathCollector, IFeatureModel model, NodeQuery query,
-			IPath destination, boolean binary)
-	{
-		m_classpathCollector = classpathCollector;
-		m_model = model;
-		m_binary = binary;
-		m_query = query;
-		m_root = ResourcesPlugin.getWorkspace().getRoot();
-		m_destination = destination;
+	public FeatureImportOperation(EclipseImportReaderType classpathCollector, IFeatureModel model, NodeQuery query, IPath destination, boolean binary) {
+		this.classpathCollector = classpathCollector;
+		this.model = model;
+		this.binary = binary;
+		this.query = query;
+		this.root = ResourcesPlugin.getWorkspace().getRoot();
+		this.destination = destination;
 	}
 
 	/*
 	 * @see IWorkspaceRunnable#run(IProgressMonitor)
 	 */
-	public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException
-	{
+	public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		createProject(monitor);
 		MonitorUtils.testCancelStatus(monitor);
 	}
 
-	private void createBuildProperties(IProject project)
-	{
+	private void createBuildProperties(IProject project) {
 		IFile file = project.getFile("build.properties"); //$NON-NLS-1$
-		if(file.exists())
+		if (file.exists())
 			return;
 
-		WorkspaceBuildModel model = new WorkspaceBuildModel(file);
-		IBuildEntry ientry = model.getFactory().createEntry("bin.includes"); //$NON-NLS-1$
-		try
-		{
+		WorkspaceBuildModel buildModel = new WorkspaceBuildModel(file);
+		IBuildEntry ientry = buildModel.getFactory().createEntry("bin.includes"); //$NON-NLS-1$
+		try {
 			IResource[] res = project.members();
-			for(int i = 0; i < res.length; i++)
-			{
+			for (int i = 0; i < res.length; i++) {
 				String path = res[i].getProjectRelativePath().toString();
-				if(!path.equals(".project")) //$NON-NLS-1$
+				if (!path.equals(".project")) //$NON-NLS-1$
 					ientry.addToken(path);
 			}
-			model.getBuild().add(ientry);
-			model.save();
-		}
-		catch(CoreException e)
-		{
+			buildModel.getBuild().add(ientry);
+			buildModel.save();
+		} catch (CoreException e) {
 		}
 	}
 
-	private void createProject(IProgressMonitor monitor) throws CoreException
-	{
-		MaterializationContext context = (MaterializationContext)m_query.getContext();
-		ComponentRequest request = m_query.getComponentRequest();
+	private void createProject(IProgressMonitor monitor) throws CoreException {
+		MaterializationContext context = (MaterializationContext) query.getContext();
+		ComponentRequest request = query.getComponentRequest();
 		String projectName = request.getProjectName();
 		monitor.beginTask(NLS.bind(Messages.importing_feature_0, projectName), 100);
-		IProject project = m_root.getProject(projectName);
-		try
-		{
+		IProject project = root.getProject(projectName);
+		try {
 			ConflictResolution conflictResolution = context.getMaterializationSpec().getConflictResolution(
 					WorkspaceInfo.getResolution(request, false));
-			if(project.exists())
-			{
-				switch(conflictResolution)
-				{
-				case FAIL:
-					throw BuckminsterException.fromMessage(NLS.bind(Messages.project_0_already_exists, projectName));
-				case KEEP:
-					return;
-				default:
+			if (project.exists()) {
+				switch (conflictResolution) {
+					case FAIL:
+						throw BuckminsterException.fromMessage(NLS.bind(Messages.project_0_already_exists, projectName));
+					case KEEP:
+						return;
+					default:
 				}
 
 				// Overwrite, i.e. remove current contents.
 				//
 				project.delete(true, true, MonitorUtils.subMonitor(monitor, 10));
-				try
-				{
+				try {
 					RepositoryProvider.unmap(project);
+				} catch (TeamException e) {
 				}
-				catch(TeamException e)
-				{
-				}
-			}
-			else
+			} else
 				MonitorUtils.worked(monitor, 10);
 
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IProjectDescription description = workspace.newProjectDescription(projectName);
-			FileUtils.prepareDestination(m_destination.toFile(), conflictResolution, MonitorUtils.subMonitor(monitor,
-					10));
-			description.setLocation(m_destination);
+			FileUtils.prepareDestination(destination.toFile(), conflictResolution, MonitorUtils.subMonitor(monitor, 10));
+			description.setLocation(destination);
 			project.create(description, MonitorUtils.subMonitor(monitor, 5));
 			project.open(MonitorUtils.subMonitor(monitor, 5));
-			File featureDir = new File(m_model.getInstallLocation());
+			File featureDir = new File(model.getInstallLocation());
 
-			importContent(featureDir, project.getFullPath(),
-					org.eclipse.buckminster.pde.internal.datatransfer.FileSystemStructureProvider.INSTANCE, null,
-					MonitorUtils.subMonitor(monitor, 50));
+			importContent(featureDir, project.getFullPath(), org.eclipse.buckminster.pde.internal.datatransfer.FileSystemStructureProvider.INSTANCE,
+					null, MonitorUtils.subMonitor(monitor, 50));
 
 			IFolder folder = project.getFolder("META-INF"); //$NON-NLS-1$
-			if(folder.exists())
+			if (folder.exists())
 				folder.delete(true, null);
 
-			if(m_binary)
-			{
+			if (binary) {
 				// Mark this project so that we can show image overlay
 				// using the label decorator
 				project.setPersistentProperty(PDECore.EXTERNAL_PROJECT_PROPERTY, PDECore.BINARY_PROJECT_VALUE);
 			}
 			createBuildProperties(project);
-			setProjectNatures(project, m_model, MonitorUtils.subMonitor(monitor, 20));
-			if(project.hasNature(JavaCore.NATURE_ID))
-				m_classpathCollector.addProjectClasspath(project, getClasspath(project, m_model));
+			setProjectNatures(project, model, MonitorUtils.subMonitor(monitor, 20));
+			if (project.hasNature(JavaCore.NATURE_ID))
+				classpathCollector.addProjectClasspath(project, getClasspath(project, model));
 
 			project.delete(false, true, MonitorUtils.subMonitor(monitor, 100));
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	private IClasspathEntry[] getClasspath(IProject project, IFeatureModel model) throws JavaModelException
-	{
+	private IClasspathEntry[] getClasspath(IProject project, IFeatureModel featureModel) throws JavaModelException {
 		IClasspathEntry jreCPEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
 
-		String libName = model.getFeature().getInstallHandler().getLibrary();
+		String libName = featureModel.getFeature().getInstallHandler().getLibrary();
 		IClasspathEntry handlerCPEntry = JavaCore.newLibraryEntry(project.getFullPath().append(libName), null, null);
 
 		return new IClasspathEntry[] { jreCPEntry, handlerCPEntry };
 	}
 
-	private void importContent(Object source, IPath destPath, IImportStructureProvider provider, List<?> filesToImport,
-			IProgressMonitor monitor) throws CoreException
-	{
-		IOverwriteQuery query = new IOverwriteQuery()
-		{
-			public String queryOverwrite(String file)
-			{
+	private void importContent(Object source, IPath destPath, IImportStructureProvider provider, List<?> filesToImport, IProgressMonitor monitor)
+			throws CoreException {
+		IOverwriteQuery overwrite = new IOverwriteQuery() {
+			public String queryOverwrite(String file) {
 				return ALL;
 			}
 		};
-		ImportOperation op = new ImportOperation(destPath, source, provider, query);
+		ImportOperation op = new ImportOperation(destPath, source, provider, overwrite);
 		op.setCreateContainerStructure(false);
-		if(filesToImport != null)
+		if (filesToImport != null)
 			op.setFilesToImport(filesToImport);
 
 		IStatus status = op.runInWorkspace(monitor);
-		if(status == Status.CANCEL_STATUS || monitor.isCanceled())
+		if (status == Status.CANCEL_STATUS || monitor.isCanceled())
 			throw new OperationCanceledException(status.getMessage());
 
-		if(status.getSeverity() == IStatus.ERROR)
+		if (status.getSeverity() == IStatus.ERROR)
 			throw new CoreException(status);
 	}
 
-	private boolean needsJavaNature(IFeatureModel model)
-	{
-		IFeatureInstallHandler handler = model.getFeature().getInstallHandler();
-		if(handler == null)
+	private boolean needsJavaNature(IFeatureModel featureModel) {
+		IFeatureInstallHandler handler = featureModel.getFeature().getInstallHandler();
+		if (handler == null)
 			return false;
 
 		String libName = handler.getLibrary();
-		if(libName == null || libName.length() == 0)
+		if (libName == null || libName.length() == 0)
 			return false;
 
-		File lib = new File(model.getInstallLocation(), libName);
+		File lib = new File(featureModel.getInstallLocation(), libName);
 		return lib.exists();
 	}
 
-	private void setProjectNatures(IProject project, IFeatureModel model, IProgressMonitor monitor)
-			throws CoreException
-	{
+	private void setProjectNatures(IProject project, IFeatureModel model, IProgressMonitor monitor) throws CoreException {
 		IProjectDescription desc = project.getDescription();
-		if(needsJavaNature(model))
+		if (needsJavaNature(model))
 			desc.setNatureIds(new String[] { JavaCore.NATURE_ID, IPDEConstants.FEATURE_NATURE });
 		else
 			desc.setNatureIds(new String[] { IPDEConstants.FEATURE_NATURE });

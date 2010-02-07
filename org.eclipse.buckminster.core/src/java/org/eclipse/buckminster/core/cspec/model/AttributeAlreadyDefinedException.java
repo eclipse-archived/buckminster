@@ -14,12 +14,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class AttributeAlreadyDefinedException extends LocalizedException
-{
+public class AttributeAlreadyDefinedException extends LocalizedException {
 	private static final long serialVersionUID = 144766820164381136L;
 
-	public AttributeAlreadyDefinedException(String componentName, String attributeName)
-	{
+	public AttributeAlreadyDefinedException(String componentName, String attributeName) {
 		super(NLS.bind(Messages.Attribute_0_is_defined_more_then_once_in_component_1, attributeName, componentName));
 	}
 }

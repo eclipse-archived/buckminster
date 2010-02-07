@@ -28,69 +28,55 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class AlterGroupHandler extends AlterAttributeHandler
-{
-	private final RemoveHandler m_removeHandler = new RemoveHandler(this, AlterGroup.ELEM_REMOVE,
-			NamedElement.ATTR_NAME);
+class AlterGroupHandler extends AlterAttributeHandler {
+	private final RemoveHandler removeHandler = new RemoveHandler(this, AlterGroup.ELEM_REMOVE, NamedElement.ATTR_NAME);
 
-	private final PrerequisiteHandler m_alterHandler = new PrerequisiteHandler(this);
+	private final PrerequisiteHandler alterHandler = new PrerequisiteHandler(this);
 
-	AlterGroupHandler(AbstractHandler parent, AttributeHandler baseHandler)
-	{
+	AlterGroupHandler(AbstractHandler parent, AttributeHandler baseHandler) {
 		super(parent, baseHandler);
 	}
 
-	AlterGroupHandler(AbstractHandler parent, boolean publ)
-	{
+	AlterGroupHandler(AbstractHandler parent, boolean publ) {
 		super(parent, new GroupHandler(parent, publ));
 	}
 
 	@Override
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_removeHandler)
-			this.addRemovePrerequisite(m_removeHandler.getValue());
-		else if(child == m_alterHandler)
-		{
-			try
-			{
-				this.addAlterPrerequisite(((PrerequisiteBuilder)m_alterHandler.getBuilder()).createPrerequisite());
-			}
-			catch(PrerequisiteAlreadyDefinedException e)
-			{
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == removeHandler)
+			this.addRemovePrerequisite(removeHandler.getValue());
+		else if (child == alterHandler) {
+			try {
+				this.addAlterPrerequisite(((PrerequisiteBuilder) alterHandler.getBuilder()).createPrerequisite());
+			} catch (PrerequisiteAlreadyDefinedException e) {
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
-		}
-		else
+		} else
 			super.childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(m_removeHandler.getTAG().equals(localName))
-			ch = m_removeHandler;
-		else if(AlterGroup.ELEM_ALTER_ATTRIBUTE.equals(localName))
-			ch = m_alterHandler;
+		if (removeHandler.getTAG().equals(localName))
+			ch = removeHandler;
+		else if (AlterGroup.ELEM_ALTER_ATTRIBUTE.equals(localName))
+			ch = alterHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException
-	{
-		((AlterGroupBuilder)this.getBuilder()).addAlterPrerequisite(prereq);
+	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException {
+		((AlterGroupBuilder) this.getBuilder()).addAlterPrerequisite(prereq);
 	}
 
-	void addRemovePrerequisite(String key)
-	{
-		((AlterGroupBuilder)this.getBuilder()).addRemovePrerequisite(key);
+	void addRemovePrerequisite(String key) {
+		((AlterGroupBuilder) this.getBuilder()).addRemovePrerequisite(key);
 	}
 
 	@Override
-	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
-	{
-		return new AlterGroupBuilder((GroupBuilder)baseBuilder);
+	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder) {
+		return new AlterGroupBuilder((GroupBuilder) baseBuilder);
 	}
 }

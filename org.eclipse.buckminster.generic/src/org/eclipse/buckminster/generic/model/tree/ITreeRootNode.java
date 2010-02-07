@@ -17,7 +17,6 @@ package org.eclipse.buckminster.generic.model.tree;
  * @author Henrik Lindberg
  * 
  */
-public interface ITreeRootNode extends ITreeParentDataNode, ITreeDataChange
-{
+public interface ITreeRootNode extends ITreeParentDataNode, ITreeDataChange {
 
 }

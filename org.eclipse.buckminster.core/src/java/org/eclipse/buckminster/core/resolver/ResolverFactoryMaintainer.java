@@ -29,120 +29,98 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
-public class ResolverFactoryMaintainer implements IPreferenceChangeListener
-{
+public class ResolverFactoryMaintainer implements IPreferenceChangeListener {
 	public static final String QUERY_RESOLVERS_POINT = CorePlugin.CORE_NAMESPACE + ".queryResolvers"; //$NON-NLS-1$
 
 	static final String FACTORY_ELEM = "factory"; //$NON-NLS-1$
 
-	private static final ResolverFactoryMaintainer s_instance;
+	private static final ResolverFactoryMaintainer instance;
 
-	static
-	{
-		s_instance = new ResolverFactoryMaintainer();
-		BuckminsterPreferences.addListener(s_instance);
+	static {
+		instance = new ResolverFactoryMaintainer();
+		BuckminsterPreferences.addListener(instance);
 	}
 
-	public static ResolverFactoryMaintainer getInstance()
-	{
-		return s_instance;
+	public static ResolverFactoryMaintainer getInstance() {
+		return instance;
 	}
 
-	public static String[] getRegisterFactoryIDs()
-	{
-		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
-				ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
+	public static String[] getRegisterFactoryIDs() {
+		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
 		int idx = elems.length;
 		String[] factoryIDs = new String[idx];
-		while(--idx >= 0)
+		while (--idx >= 0)
 			factoryIDs[idx] = elems[idx].getAttribute("id"); //$NON-NLS-1$
 		return factoryIDs;
 	}
 
-	private static IResolverFactory[] createFactoriesByExtension()
-	{
+	private static IResolverFactory[] createFactoriesByExtension() {
 		Logger logger = CorePlugin.getLogger();
-		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(
-				ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
+		IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT);
 
 		ArrayList<IResolverFactory> factories = new ArrayList<IResolverFactory>(elems.length);
-		for(IConfigurationElement elem : elems)
-		{
-			try
-			{
-				IResolverFactory factory = (IResolverFactory)elem.createExecutableExtension(ResolverFactoryMaintainer.FACTORY_ELEM);
+		for (IConfigurationElement elem : elems) {
+			try {
+				IResolverFactory factory = (IResolverFactory) elem.createExecutableExtension(ResolverFactoryMaintainer.FACTORY_ELEM);
 				factories.add(factory);
-			}
-			catch(CoreException e)
-			{
-				logger.error(e, NLS.bind(Messages.Unable_to_instantiate_Query_Resolver_Factory_0,
-						elem.getAttribute("id"))); //$NON-NLS-1$
+			} catch (CoreException e) {
+				logger.error(e, NLS.bind(Messages.Unable_to_instantiate_Query_Resolver_Factory_0, elem.getAttribute("id"))); //$NON-NLS-1$
 			}
 		}
 		return factories.toArray(new IResolverFactory[factories.size()]);
 	}
 
-	private IResolverFactory[] m_resolverFactories;
+	private IResolverFactory[] resolverFactories;
 
-	public IResolverFactory[] getActiveResolverFactories()
-	{
+	public IResolverFactory[] getActiveResolverFactories() {
 		IResolverFactory[] allFactories = getResolverFactories();
 		HashMap<String, IResolverFactory> factoriesById = new HashMap<String, IResolverFactory>();
-		for(IResolverFactory factory : allFactories)
+		for (IResolverFactory factory : allFactories)
 			factoriesById.put(factory.getId(), factory);
 
 		String[] sortOrder = BuckminsterPreferences.getQueryResolverSortOrder();
 		int numFactories = sortOrder.length;
 
 		ArrayList<IResolverFactory> factories = new ArrayList<IResolverFactory>(numFactories);
-		for(String factoryName : sortOrder)
-		{
+		for (String factoryName : sortOrder) {
 			IResolverFactory factory = factoriesById.remove(factoryName);
-			if(factory != null)
+			if (factory != null)
 				factories.add(factory);
 		}
 		return factories.toArray(new IResolverFactory[factories.size()]);
 	}
 
-	public synchronized IResolverFactory[] getResolverFactories()
-	{
-		if(m_resolverFactories == null)
-		{
+	public synchronized IResolverFactory[] getResolverFactories() {
+		if (resolverFactories == null) {
 			IResolverFactory[] fcs = createFactoriesByExtension();
-			m_resolverFactories = fcs;
-			if(!BuckminsterPreferences.isCustomQuerySortOrder())
-			{
+			resolverFactories = fcs;
+			if (!BuckminsterPreferences.isCustomQuerySortOrder()) {
 				setDefaultResolutionOrder();
-				m_resolverFactories = fcs; // Restore since they are cleared by the pref change
+				resolverFactories = fcs; // Restore since they are cleared by
+											// the pref change
 			}
 		}
-		return m_resolverFactories;
+		return resolverFactories;
 	}
 
-	public synchronized void preferenceChange(PreferenceChangeEvent event)
-	{
-		if(IBuckminsterPreferenceConstants.QUERY_RESOLVER_SORT_ORDER.equals(event.getKey()))
-		{
-			m_resolverFactories = null;
+	public synchronized void preferenceChange(PreferenceChangeEvent event) {
+		if (IBuckminsterPreferenceConstants.QUERY_RESOLVER_SORT_ORDER.equals(event.getKey())) {
+			resolverFactories = null;
 		}
 	}
 
-	public void setDefaultResolutionOrder()
-	{
+	public void setDefaultResolutionOrder() {
 		Map<Integer, String> activeFactories = new TreeMap<Integer, String>();
-		for(IResolverFactory factory : getResolverFactories())
-		{
+		for (IResolverFactory factory : getResolverFactories()) {
 			int prio = factory.getResolutionPriority();
-			if(prio >= 0)
+			if (prio >= 0)
 				activeFactories.put(new Integer(prio), factory.getId());
 		}
-		BuckminsterPreferences.setQueryResolverSortOrder(activeFactories.values().toArray(
-				new String[activeFactories.size()]));
+		BuckminsterPreferences.setQueryResolverSortOrder(activeFactories.values().toArray(new String[activeFactories.size()]));
 		BuckminsterPreferences.setCustomQueryResolverSortOrder(false);
 	}
 
-	public synchronized void setResolverFactories(IResolverFactory[] resolverFactories)
-	{
-		m_resolverFactories = resolverFactories;
+	public synchronized void setResolverFactories(IResolverFactory[] resolverFactories) {
+		this.resolverFactories = resolverFactories;
 	}
 }

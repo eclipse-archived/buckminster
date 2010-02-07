@@ -12,12 +12,12 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * Emulates part of Widget functionality - handles with listeners and can save data Object
+ * Emulates part of Widget functionality - handles with listeners and can save
+ * data Object
  * 
  * @author Karel Brezina
  */
-public interface IWidgetin
-{
+public interface IWidgetin {
 	public void addListener(int eventType, Listener listener);
 
 	public Object getData();

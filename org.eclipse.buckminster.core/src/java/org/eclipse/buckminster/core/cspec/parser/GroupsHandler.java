@@ -13,18 +13,15 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 /**
  * @author Thomas Hallgren
  */
-class GroupsHandler extends AttributesHandler
-{
+class GroupsHandler extends AttributesHandler {
 	public static final String TAG = CSpec.ELEM_GROUPS;
 
-	GroupsHandler(AbstractHandler parent)
-	{
+	GroupsHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	TopLevelAttributeHandler createAttributeHandler(boolean publ)
-	{
+	TopLevelAttributeHandler createAttributeHandler(boolean publ) {
 		return new GroupHandler(this, publ);
 	}
 }

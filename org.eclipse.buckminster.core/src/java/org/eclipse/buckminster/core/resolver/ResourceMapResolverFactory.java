@@ -35,11 +35,10 @@ import org.eclipse.ecf.core.security.IConnectContext;
 /**
  * @author Thomas Hallgren
  */
-public class ResourceMapResolverFactory extends AbstractExtension implements IResourceMapResolverFactory
-{
-	private static final IEclipsePreferences s_prefsNode = new InstanceScope().getNode(Buckminster.PLUGIN_ID);
+public class ResourceMapResolverFactory extends AbstractExtension implements IResourceMapResolverFactory {
+	private static final IEclipsePreferences preferencesNode = new InstanceScope().getNode(Buckminster.PLUGIN_ID);
 
-	private static final IEclipsePreferences s_defaultNode = new DefaultScope().getNode(Buckminster.PLUGIN_ID);
+	private static final IEclipsePreferences defaultNode = new DefaultScope().getNode(Buckminster.PLUGIN_ID);
 
 	public static final String RESOURCE_MAP_URL_PARAM = "resourceMapURL"; //$NON-NLS-1$
 
@@ -55,38 +54,32 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 
 	public static final int RESOLVER_THREADS_MAX_DEFAULT = 4;
 
-	public static void addListener(IPreferenceChangeListener listener)
-	{
-		s_prefsNode.addPreferenceChangeListener(listener);
+	public static void addListener(IPreferenceChangeListener listener) {
+		preferencesNode.addPreferenceChangeListener(listener);
 	}
 
-	public static void removeListener(IPreferenceChangeListener listener)
-	{
-		s_prefsNode.removePreferenceChangeListener(listener);
+	public static void removeListener(IPreferenceChangeListener listener) {
+		preferencesNode.removePreferenceChangeListener(listener);
 	}
 
-	private IEclipsePreferences m_prefsNode;
+	private IEclipsePreferences prefsNode;
 
-	private String m_resourceMapURL;
+	private String resourceMapURL;
 
-	private boolean m_overrideQueryURL = OVERRIDE_QUERY_URL_DEFAULT;
+	private boolean overrideQueryURL = OVERRIDE_QUERY_URL_DEFAULT;
 
-	private boolean m_localResolve = LOCAL_RESOLVE_DEFAULT;
+	private boolean localResolve = LOCAL_RESOLVE_DEFAULT;
 
-	private int m_resolverThreadsMax = RESOLVER_THREADS_MAX_DEFAULT;
+	private int resolverThreadsMax = RESOLVER_THREADS_MAX_DEFAULT;
 
 	private static final UUID CACHE_KEY_RESOURCE_MAP = UUID.randomUUID();
 
-	public static ResourceMap getCachedResourceMap(ResolutionContext context, URL url, IConnectContext cctx)
-			throws CoreException
-	{
+	public static ResourceMap getCachedResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException {
 		Map<String, ResourceMap> rmapCache = getResourceMapCache(context.getUserCache());
 		String key = url.toString().intern();
-		synchronized(key)
-		{
+		synchronized (key) {
 			ResourceMap rmap = rmapCache.get(key);
-			if(rmap == null)
-			{
+			if (rmap == null) {
 				rmap = ResourceMap.fromURL(url, cctx);
 				rmapCache.put(key, rmap);
 			}
@@ -95,13 +88,10 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Map<String, ResourceMap> getResourceMapCache(Map<UUID, Object> ctxUserCache)
-	{
-		synchronized(ctxUserCache)
-		{
-			Map<String, ResourceMap> resourceMapCache = (Map<String, ResourceMap>)ctxUserCache.get(CACHE_KEY_RESOURCE_MAP);
-			if(resourceMapCache == null)
-			{
+	private static Map<String, ResourceMap> getResourceMapCache(Map<UUID, Object> ctxUserCache) {
+		synchronized (ctxUserCache) {
+			Map<String, ResourceMap> resourceMapCache = (Map<String, ResourceMap>) ctxUserCache.get(CACHE_KEY_RESOURCE_MAP);
+			if (resourceMapCache == null) {
 				resourceMapCache = Collections.synchronizedMap(new HashMap<String, ResourceMap>());
 				ctxUserCache.put(CACHE_KEY_RESOURCE_MAP, resourceMapCache);
 			}
@@ -109,158 +99,127 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		}
 	}
 
-	public IResolver createResolver(ResolutionContext context) throws CoreException
-	{
+	public IResolver createResolver(ResolutionContext context) throws CoreException {
 		ComponentQuery query = context.getComponentQuery();
 		URL url;
-		if(isOverrideQueryURL())
+		if (isOverrideQueryURL())
 			url = getResourceMapURL();
-		else
-		{
+		else {
 			url = query.getResolvedResourceMapURL();
-			if(url == null)
+			if (url == null)
 				url = getResourceMapURL();
 		}
-		return (url == null)
-				? new LocalResolver(context)
-				: new ResourceMapResolver(this, context, false);
+		return (url == null) ? new LocalResolver(context) : new ResourceMapResolver(this, context, false);
 	}
 
-	public IPreferenceDescriptor[] getPreferenceDescriptors()
-	{
+	public IPreferenceDescriptor[] getPreferenceDescriptors() {
 		PreferenceDescriptor[] pds = new PreferenceDescriptor[4];
 		pds[0] = new PreferenceDescriptor(RESOURCE_MAP_URL_PARAM, PreferenceType.String, Messages.Resource_map_URL);
-		pds[1] = new PreferenceDescriptor(OVERRIDE_QUERY_URL_PARAM, PreferenceType.Boolean,
-				Messages.Override_URL_in_Component_Query);
-		pds[2] = new PreferenceDescriptor(LOCAL_RESOLVE_PARAM, PreferenceType.Boolean,
-				Messages.Perform_local_resolution);
-		pds[3] = new PreferenceDescriptor(RESOLVER_THREADS_MAX_PARAM, PreferenceType.Integer,
-				Messages.Maximum_number_of_resolver_threads);
+		pds[1] = new PreferenceDescriptor(OVERRIDE_QUERY_URL_PARAM, PreferenceType.Boolean, Messages.Override_URL_in_Component_Query);
+		pds[2] = new PreferenceDescriptor(LOCAL_RESOLVE_PARAM, PreferenceType.Boolean, Messages.Perform_local_resolution);
+		pds[3] = new PreferenceDescriptor(RESOLVER_THREADS_MAX_PARAM, PreferenceType.Integer, Messages.Maximum_number_of_resolver_threads);
 		pds[3].setTextWidth(2);
 		pds[3].setIntegerRange(1, 12);
 		return pds;
 	}
 
-	public synchronized IEclipsePreferences getPreferences()
-	{
-		if(m_prefsNode == null)
-		{
-			m_prefsNode = (IEclipsePreferences)s_prefsNode.node(getId());
+	public synchronized IEclipsePreferences getPreferences() {
+		if (prefsNode == null) {
+			prefsNode = (IEclipsePreferences) preferencesNode.node(getId());
 			initDefaultPreferences();
 		}
-		return m_prefsNode;
+		return prefsNode;
 	}
 
-	public int getResolutionPriority()
-	{
+	public int getResolutionPriority() {
 		return 0;
 	}
 
-	public int getResolverThreadsMax()
-	{
-		return getPreferences().getInt(RESOLVER_THREADS_MAX_PARAM, m_resolverThreadsMax);
+	public int getResolverThreadsMax() {
+		return getPreferences().getInt(RESOLVER_THREADS_MAX_PARAM, resolverThreadsMax);
 	}
 
-	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException
-	{
-		if(url == null || isOverrideQueryURL())
+	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException {
+		if (url == null || isOverrideQueryURL())
 			url = getResourceMapURL();
 		return getCachedResourceMap(context, url, cctx);
 	}
 
 	/**
-	 * Obtains the {@link #RESOURCE_MAP_URL_PARAM} setting for this factory from the preference store. If not found
-	 * there, it defaults to the value set in the extension definition.
+	 * Obtains the {@link #RESOURCE_MAP_URL_PARAM} setting for this factory from
+	 * the preference store. If not found there, it defaults to the value set in
+	 * the extension definition.
 	 * 
 	 * @return The URL or <code>null</code> if it has not been set.
 	 */
-	public URL getResourceMapURL() throws CoreException
-	{
-		try
-		{
-			return URLUtils.normalizeToURL(getPreferences().get(RESOURCE_MAP_URL_PARAM, m_resourceMapURL));
-		}
-		catch(MalformedURLException e)
-		{
+	public URL getResourceMapURL() throws CoreException {
+		try {
+			return URLUtils.normalizeToURL(getPreferences().get(RESOURCE_MAP_URL_PARAM, resourceMapURL));
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public void initDefaultPreferences()
-	{
-		IEclipsePreferences defaultNode = (IEclipsePreferences)s_defaultNode.node(getId());
-		if(defaultNode.getInt(RESOLVER_THREADS_MAX_PARAM, 0) == 0)
-		{
+	public void initDefaultPreferences() {
+		IEclipsePreferences dfltNode = (IEclipsePreferences) defaultNode.node(getId());
+		if (dfltNode.getInt(RESOLVER_THREADS_MAX_PARAM, 0) == 0) {
 			// Defaults not initialized. Do it now
 			//
-			defaultNode.putBoolean(OVERRIDE_QUERY_URL_PARAM, OVERRIDE_QUERY_URL_DEFAULT);
-			defaultNode.putBoolean(LOCAL_RESOLVE_PARAM, LOCAL_RESOLVE_DEFAULT);
-			defaultNode.putInt(RESOLVER_THREADS_MAX_PARAM, RESOLVER_THREADS_MAX_DEFAULT);
+			dfltNode.putBoolean(OVERRIDE_QUERY_URL_PARAM, OVERRIDE_QUERY_URL_DEFAULT);
+			dfltNode.putBoolean(LOCAL_RESOLVE_PARAM, LOCAL_RESOLVE_DEFAULT);
+			dfltNode.putInt(RESOLVER_THREADS_MAX_PARAM, RESOLVER_THREADS_MAX_DEFAULT);
 		}
 	}
 
 	/**
-	 * Obtains the {@link #LOCAL_RESOLVE_PARAM} setting for this factory from the preference store. If not found there,
-	 * it defaults to the value set in the extension definition.
+	 * Obtains the {@link #LOCAL_RESOLVE_PARAM} setting for this factory from
+	 * the preference store. If not found there, it defaults to the value set in
+	 * the extension definition.
 	 * 
 	 * @return <code>true</code>ue if local resolutions should be performed.
 	 */
-	public boolean isLocalResolve()
-	{
-		return getPreferences().getBoolean(LOCAL_RESOLVE_PARAM, m_localResolve);
+	public boolean isLocalResolve() {
+		return getPreferences().getBoolean(LOCAL_RESOLVE_PARAM, localResolve);
 	}
 
 	/**
-	 * Obtains the {@link #OVERRIDE_QUERY_URL_PARAM} setting for this factory from the preference store. If not found
-	 * there, it defaults to the value set in the extension definition.
+	 * Obtains the {@link #OVERRIDE_QUERY_URL_PARAM} setting for this factory
+	 * from the preference store. If not found there, it defaults to the value
+	 * set in the extension definition.
 	 * 
 	 * @return the overrideQueryURL
 	 */
-	public boolean isOverrideQueryURL()
-	{
-		return getPreferences().getBoolean(OVERRIDE_QUERY_URL_PARAM, m_overrideQueryURL);
+	public boolean isOverrideQueryURL() {
+		return getPreferences().getBoolean(OVERRIDE_QUERY_URL_PARAM, overrideQueryURL);
 	}
 
 	@Override
-	public void setExtensionParameter(String key, String value) throws CoreException
-	{
-		if(RESOURCE_MAP_URL_PARAM.equalsIgnoreCase(key))
-		{
-			m_resourceMapURL = value;
-		}
-		else if(OVERRIDE_QUERY_URL_PARAM.equalsIgnoreCase(key))
-		{
-			m_overrideQueryURL = Boolean.parseBoolean(value);
-		}
-		else if(LOCAL_RESOLVE_PARAM.equalsIgnoreCase(key))
-		{
-			m_localResolve = Boolean.parseBoolean(value);
-		}
-		else if(RESOLVER_THREADS_MAX_PARAM.equalsIgnoreCase(key))
-		{
-			m_resolverThreadsMax = Integer.parseInt(value);
-		}
-		else
+	public void setExtensionParameter(String key, String value) throws CoreException {
+		if (RESOURCE_MAP_URL_PARAM.equalsIgnoreCase(key)) {
+			resourceMapURL = value;
+		} else if (OVERRIDE_QUERY_URL_PARAM.equalsIgnoreCase(key)) {
+			overrideQueryURL = Boolean.parseBoolean(value);
+		} else if (LOCAL_RESOLVE_PARAM.equalsIgnoreCase(key)) {
+			localResolve = Boolean.parseBoolean(value);
+		} else if (RESOLVER_THREADS_MAX_PARAM.equalsIgnoreCase(key)) {
+			resolverThreadsMax = Integer.parseInt(value);
+		} else
 			throw new IllegalParameterException(ResolverFactoryMaintainer.QUERY_RESOLVERS_POINT, this.getId(), key);
 	}
 
-	public void setLocalResolve(boolean localResolve)
-	{
+	public void setLocalResolve(boolean localResolve) {
 		getPreferences().putBoolean(LOCAL_RESOLVE_PARAM, localResolve);
 	}
 
-	public void setOverrideQueryURL(boolean overrideQueryURL)
-	{
+	public void setOverrideQueryURL(boolean overrideQueryURL) {
 		getPreferences().putBoolean(OVERRIDE_QUERY_URL_PARAM, overrideQueryURL);
 	}
 
-	public void setResolverThreadsMax(int resolverThreadsMax)
-	{
+	public void setResolverThreadsMax(int resolverThreadsMax) {
 		getPreferences().putInt(RESOLVER_THREADS_MAX_PARAM, resolverThreadsMax);
 	}
 
-	public void setResourceMapURL(URL resourceMapURL)
-	{
+	public void setResourceMapURL(URL resourceMapURL) {
 		getPreferences().put(RESOURCE_MAP_URL_PARAM, resourceMapURL.toExternalForm());
 	}
 }

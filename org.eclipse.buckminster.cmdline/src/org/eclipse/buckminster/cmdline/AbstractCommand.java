@@ -21,31 +21,26 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.ProgressProvider;
 import org.eclipse.osgi.util.NLS;
 
-abstract public class AbstractCommand
-{
-	static private final OptionDescriptor s_helpDescriptor = new OptionDescriptor('?', "help", OptionValueType.NONE); //$NON-NLS-1$
+abstract public class AbstractCommand {
+	static private final OptionDescriptor helpDescriptor = new OptionDescriptor('?', "help", OptionValueType.NONE); //$NON-NLS-1$
 
-	private String m_calledUsingName;
+	private String calledUsingName;
 
-	private CommandInfo m_cmdInfo;
+	private CommandInfo cmdInfo;
 
-	private boolean m_addHelpFlags;
+	private boolean addHelpFlags;
 
-	public ProgressProvider getProgressProvider()
-	{
-		return new ProgressProvider()
-		{
+	public ProgressProvider getProgressProvider() {
+		return new ProgressProvider() {
 			@Override
-			public IProgressMonitor createMonitor(Job job)
-			{
+			public IProgressMonitor createMonitor(Job job) {
 				return this.getDefaultMonitor();
 			}
 		};
 	}
 
-	public void init(boolean addHelpFlags)
-	{
-		m_addHelpFlags = addHelpFlags;
+	public void init(boolean helpFlags) {
+		addHelpFlags = helpFlags;
 	}
 
 	/**
@@ -55,77 +50,61 @@ abstract public class AbstractCommand
 	 *            The name of the command.
 	 * @return the exit code.
 	 */
-	public int run(String cmdName) throws Exception
-	{
-		m_calledUsingName = cmdName;
-		m_cmdInfo = CommandInfo.getCommand(cmdName);
+	public int run(String cmdName) throws Exception {
+		calledUsingName = cmdName;
+		cmdInfo = CommandInfo.getCommand(cmdName);
 		return this.run(this.getProgressProvider().getDefaultMonitor());
 	}
 
-	protected void beginOptionProcessing() throws Exception
-	{
+	protected void beginOptionProcessing() throws Exception {
 		// noop
 	}
 
-	protected void endOptionProcessing() throws Exception
-	{
+	protected void endOptionProcessing() throws Exception {
 		// noop
 	}
 
-	protected String getCalledUsingName() throws Exception
-	{
-		return m_calledUsingName;
+	protected String getCalledUsingName() throws Exception {
+		return calledUsingName;
 	}
 
-	protected CommandInfo getCommandInfo() throws Exception
-	{
-		return m_cmdInfo;
+	protected CommandInfo getCommandInfo() throws Exception {
+		return cmdInfo;
 	}
 
-	protected String getFullName() throws Exception
-	{
-		return m_cmdInfo.getFullName();
+	protected String getFullName() throws Exception {
+		return cmdInfo.getFullName();
 	}
 
-	protected InputStream getHelpStream() throws Exception
-	{
+	protected InputStream getHelpStream() throws Exception {
 		Class<? extends AbstractCommand> myClass = getClass();
 		String helpResource = "/" + myClass.getName().replace('.', '/') + ".help"; //$NON-NLS-1$ //$NON-NLS-2$
 		return myClass.getResourceAsStream(helpResource);
 	}
 
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 	}
 
-	protected void handleOption(Option option) throws Exception
-	{
+	protected void handleOption(Option option) throws Exception {
 		// noop
 	}
 
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
+	protected void handleUnparsed(String[] unparsed) throws Exception {
 		// noop
 	}
 
-	protected void help() throws Exception
-	{
+	protected void help() throws Exception {
 		this.help(this.getHelpStream());
 	}
 
-	protected void help(InputStream helpStream) throws Exception
-	{
-		if(helpStream == null)
+	protected void help(InputStream helpStream) throws Exception {
+		if (helpStream == null)
 			System.err.println(NLS.bind(Messages.AbstractCommand_Help_missing_for_0, this.getFullName()));
-		else
-		{
-			try
-			{
+		else {
+			try {
 				System.out.print(NLS.bind(Messages.AbstractCommand_Help_text_for_0, this.getFullName()));
 				IOUtils.copy(helpStream, System.out, null);
-			}
-			finally
-			{
+			} finally {
 				IOUtils.close(helpStream);
 			}
 			System.out.flush();
@@ -134,46 +113,39 @@ abstract public class AbstractCommand
 
 	protected abstract int run(IProgressMonitor monitor) throws Exception;
 
-	final int basicRun(String calledUsingName, CommandInfo cmdInfo, String[] commandArgs) throws Exception
-	{
-		m_calledUsingName = calledUsingName;
-		m_cmdInfo = cmdInfo;
+	final int basicRun(String calledAs, CommandInfo commandInfo, String[] commandArgs) throws Exception {
+		calledUsingName = calledAs;
+		cmdInfo = commandInfo;
 
 		ArrayList<OptionDescriptor> optionDescriptors = new ArrayList<OptionDescriptor>();
 		this.getOptionDescriptors(optionDescriptors);
-		if(m_addHelpFlags)
-			optionDescriptors.add(s_helpDescriptor);
+		if (addHelpFlags)
+			optionDescriptors.add(helpDescriptor);
 
-		try
-		{
+		try {
 			boolean helpRequested = this.parseOptions(commandArgs, optionDescriptors);
-			if(helpRequested)
-			{
+			if (helpRequested) {
 				this.help();
 				return Headless.EXIT_OK;
 			}
 			return this.run(this.getProgressProvider().getDefaultMonitor());
-		}
-		catch(UsageException e)
-		{
+		} catch (UsageException e) {
 			System.err.println(e.getMessage());
-			if(e.isEmitHelp())
+			if (e.isEmitHelp())
 				this.help();
 			return Headless.EXIT_FAIL;
 		}
 	}
 
-	private boolean parseOptions(String[] args, List<OptionDescriptor> optionDescriptors) throws Exception
-	{
+	private boolean parseOptions(String[] args, List<OptionDescriptor> optionDescriptors) throws Exception {
 		ParseResult pr = ParseResult.parse(args, optionDescriptors);
 		Option[] options = pr.getOptions();
 		boolean helpRequested = false;
 		this.beginOptionProcessing();
 		int top = options.length;
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			Option option = options[idx];
-			if(option.is(s_helpDescriptor))
+			if (option.is(helpDescriptor))
 				helpRequested = true;
 			else
 				this.handleOption(option);

@@ -7,7 +7,8 @@
 package org.eclipse.buckminster.rmap;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Redirect</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Redirect</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
@@ -20,12 +21,13 @@ package org.eclipse.buckminster.rmap;
  * @model
  * @generated
  */
-public interface Redirect extends Matcher
-{
+public interface Redirect extends Matcher {
 	/**
-	 * Returns the value of the '<em><b>Href</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Href</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Href</em>' attribute isn't clear, there really should be more of a description here...
+	 * If the meaning of the '<em>Href</em>' attribute isn't clear, there really
+	 * should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -38,8 +40,9 @@ public interface Redirect extends Matcher
 	String getHref();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Href</em>' attribute.

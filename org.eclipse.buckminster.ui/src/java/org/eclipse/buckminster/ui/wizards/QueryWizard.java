@@ -36,10 +36,8 @@ import org.eclipse.ui.PlatformUI;
  * @author Kenneth Olwing
  * @author Thomas Hallgren
  */
-public class QueryWizard extends Wizard implements INewWizard
-{
-	public static void openWizard(IWorkbenchPart targetPart, IStructuredSelection selection)
-	{
+public class QueryWizard extends Wizard implements INewWizard {
+	public static void openWizard(IWorkbenchPart targetPart, IStructuredSelection selection) {
 		final QueryWizard wizard = new QueryWizard();
 		IWorkbenchPartSite site = targetPart.getSite();
 		wizard.init(site.getWorkbenchWindow().getWorkbench(), selection);
@@ -48,8 +46,7 @@ public class QueryWizard extends Wizard implements INewWizard
 		dialog.open();
 	}
 
-	public static void openWizard(IWorkbenchPartSite site, ResolutionContext context, BillOfMaterials bom)
-	{
+	public static void openWizard(IWorkbenchPartSite site, ResolutionContext context, BillOfMaterials bom) {
 		final QueryWizard wizard = new QueryWizard(context, bom);
 		wizard.init(PlatformUI.getWorkbench(), null);
 		WizardDialog dialog = new WizardDialog(site.getShell(), wizard);
@@ -57,57 +54,46 @@ public class QueryWizard extends Wizard implements INewWizard
 		dialog.open();
 	}
 
-	private final MaterializationSpecBuilder m_mspec;
+	private final MaterializationSpecBuilder mspec;
 
-	private MaterializationContext m_materializationContext;
+	private MaterializationContext materializationContext;
 
-	private ResolutionContext m_context;
+	private ResolutionContext context;
 
-	private BillOfMaterials m_bom;
+	private BillOfMaterials bom;
 
-	public QueryWizard()
-	{
+	public QueryWizard() {
 		this(null, null);
 	}
 
-	private QueryWizard(ResolutionContext context, BillOfMaterials bom)
-	{
-		m_context = context;
-		m_mspec = new MaterializationSpecBuilder();
-		if(bom != null)
-		{
-			try
-			{
+	private QueryWizard(ResolutionContext context, BillOfMaterials bom) {
+		this.context = context;
+		this.mspec = new MaterializationSpecBuilder();
+		if (bom != null) {
+			try {
 				setBOM(bom);
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				CorePlugin.getLogger().error(e, e.toString());
 			}
 		}
 	}
 
-	public MaterializationContext getMaterializationContext()
-	{
-		if(m_materializationContext == null)
-		{
-			m_materializationContext = new MaterializationContext(getBOM(), m_mspec.createMaterializationSpec(),
-					getContext());
-			m_materializationContext.setContinueOnError(m_context.isContinueOnError());
+	public MaterializationContext getMaterializationContext() {
+		if (materializationContext == null) {
+			materializationContext = new MaterializationContext(getBOM(), mspec.createMaterializationSpec(), getContext());
+			materializationContext.setContinueOnError(context.isContinueOnError());
 
 		}
-		return m_materializationContext;
+		return materializationContext;
 	}
 
-	public void init(IWorkbench workbench, IStructuredSelection selection)
-	{
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		String title = Messages.buckminster_component_query;
 
 		setNeedsProgressMonitor(true);
 
 		WizardPage page;
-		if(m_bom == null)
-		{
+		if (bom == null) {
 			page = new SelectBOMPage(selection);
 			page.setTitle(title);
 			addPage(page);
@@ -123,20 +109,15 @@ public class QueryWizard extends Wizard implements INewWizard
 	}
 
 	@Override
-	public boolean performFinish()
-	{
-		BillOfMaterials bom = getBOM();
-		if(bom == null)
+	public boolean performFinish() {
+		if (getBOM() == null)
 			return false;
 
-		try
-		{
+		try {
 			MaterializationJob job = new MaterializationJob(getMaterializationContext());
 			job.schedule();
 			return true;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			Throwable t = BuckminsterException.unwind(e);
 			ByteArrayOutputStream bld = new ByteArrayOutputStream();
 			PrintStream p = new PrintStream(bld);
@@ -144,51 +125,44 @@ public class QueryWizard extends Wizard implements INewWizard
 			p.flush();
 			String msg = new String(bld.toByteArray());
 			CorePlugin.getLogger().error(t, msg);
-			((WizardPage)getContainer().getCurrentPage()).setErrorMessage(msg);
+			((WizardPage) getContainer().getCurrentPage()).setErrorMessage(msg);
 		}
 		return false;
 	}
 
-	public void resetBOM()
-	{
-		m_bom = null;
+	public void resetBOM() {
+		bom = null;
 	}
 
-	BillOfMaterials getBOM()
-	{
-		if(m_bom == null)
+	BillOfMaterials getBOM() {
+		if (bom == null)
 			throw new IllegalStateException(Messages.wizard_not_yet_initialized_with_bom);
-		return m_bom;
+		return bom;
 	}
 
-	ResolutionContext getContext()
-	{
-		if(m_context == null)
+	ResolutionContext getContext() {
+		if (context == null)
 			throw new IllegalStateException(Messages.wizard_not_yet_initialized_with_bom);
-		return m_context;
+		return context;
 	}
 
-	MaterializationSpecBuilder getMaterializationSpec()
-	{
-		return m_mspec;
+	MaterializationSpecBuilder getMaterializationSpec() {
+		return mspec;
 	}
 
-	boolean hasBOM()
-	{
-		return m_bom != null;
+	boolean hasBOM() {
+		return bom != null;
 	}
 
-	void invalidateMaterializationContext()
-	{
-		m_materializationContext = null;
+	void invalidateMaterializationContext() {
+		materializationContext = null;
 	}
 
-	void setBOM(BillOfMaterials bom) throws CoreException
-	{
-		m_bom = bom;
-		if(m_context == null)
-			m_context = new ResolutionContext(bom.getQuery());
-		m_mspec.setName(bom.getViewName());
-		bom.addMaterializationNodes(m_mspec);
+	void setBOM(BillOfMaterials bom) throws CoreException {
+		this.bom = bom;
+		if (context == null)
+			context = new ResolutionContext(bom.getQuery());
+		mspec.setName(bom.getViewName());
+		bom.addMaterializationNodes(mspec);
 	}
 }

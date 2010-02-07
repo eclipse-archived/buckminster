@@ -19,24 +19,29 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Transform</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Transform</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getFromPattern <em>From Pattern</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getFromReplacement <em>From Replacement</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getToPattern <em>To Pattern</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getToReplacement <em>To Replacement</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getFromPattern
+ * <em>From Pattern</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.TransformImpl#getFromReplacement
+ * <em>From Replacement</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getToPattern <em>
+ * To Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getToReplacement
+ * <em>To Replacement</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class TransformImpl extends EObjectImpl implements Transform
-{
+public class TransformImpl extends EObjectImpl implements Transform {
 	/**
-	 * The default value of the '{@link #getFromPattern() <em>From Pattern</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #getFromPattern() <em>From Pattern</em>}
+	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFromPattern()
 	 * @generated
@@ -45,8 +50,8 @@ public class TransformImpl extends EObjectImpl implements Transform
 	protected static final Pattern FROM_PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFromPattern() <em>From Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFromPattern() <em>From Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFromPattern()
 	 * @generated
@@ -55,8 +60,9 @@ public class TransformImpl extends EObjectImpl implements Transform
 	protected Pattern fromPattern = FROM_PATTERN_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFromReplacement() <em>From Replacement</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getFromReplacement()
+	 * <em>From Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getFromReplacement()
 	 * @generated
@@ -65,8 +71,9 @@ public class TransformImpl extends EObjectImpl implements Transform
 	protected static final String FROM_REPLACEMENT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFromReplacement() <em>From Replacement</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getFromReplacement()
+	 * <em>From Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getFromReplacement()
 	 * @generated
@@ -75,8 +82,8 @@ public class TransformImpl extends EObjectImpl implements Transform
 	protected String fromReplacement = FROM_REPLACEMENT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getToPattern() <em>To Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getToPattern() <em>To Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getToPattern()
 	 * @generated
@@ -85,8 +92,8 @@ public class TransformImpl extends EObjectImpl implements Transform
 	protected static final Pattern TO_PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getToPattern() <em>To Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getToPattern() <em>To Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getToPattern()
 	 * @generated
@@ -95,8 +102,9 @@ public class TransformImpl extends EObjectImpl implements Transform
 	protected Pattern toPattern = TO_PATTERN_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getToReplacement() <em>To Replacement</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #getToReplacement()
+	 * <em>To Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getToReplacement()
 	 * @generated
@@ -105,8 +113,9 @@ public class TransformImpl extends EObjectImpl implements Transform
 	protected static final String TO_REPLACEMENT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getToReplacement() <em>To Replacement</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #getToReplacement()
+	 * <em>To Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getToReplacement()
 	 * @generated
@@ -119,8 +128,7 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * 
 	 * @generated
 	 */
-	protected TransformImpl()
-	{
+	protected TransformImpl() {
 		super();
 	}
 
@@ -130,18 +138,16 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.TRANSFORM__FROM_PATTERN:
-			return getFromPattern();
-		case RmapPackage.TRANSFORM__FROM_REPLACEMENT:
-			return getFromReplacement();
-		case RmapPackage.TRANSFORM__TO_PATTERN:
-			return getToPattern();
-		case RmapPackage.TRANSFORM__TO_REPLACEMENT:
-			return getToReplacement();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case RmapPackage.TRANSFORM__FROM_PATTERN:
+				return getFromPattern();
+			case RmapPackage.TRANSFORM__FROM_REPLACEMENT:
+				return getFromReplacement();
+			case RmapPackage.TRANSFORM__TO_PATTERN:
+				return getToPattern();
+			case RmapPackage.TRANSFORM__TO_REPLACEMENT:
+				return getToReplacement();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -152,26 +158,16 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.TRANSFORM__FROM_PATTERN:
-			return FROM_PATTERN_EDEFAULT == null
-					? fromPattern != null
-					: !FROM_PATTERN_EDEFAULT.equals(fromPattern);
-		case RmapPackage.TRANSFORM__FROM_REPLACEMENT:
-			return FROM_REPLACEMENT_EDEFAULT == null
-					? fromReplacement != null
-					: !FROM_REPLACEMENT_EDEFAULT.equals(fromReplacement);
-		case RmapPackage.TRANSFORM__TO_PATTERN:
-			return TO_PATTERN_EDEFAULT == null
-					? toPattern != null
-					: !TO_PATTERN_EDEFAULT.equals(toPattern);
-		case RmapPackage.TRANSFORM__TO_REPLACEMENT:
-			return TO_REPLACEMENT_EDEFAULT == null
-					? toReplacement != null
-					: !TO_REPLACEMENT_EDEFAULT.equals(toReplacement);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case RmapPackage.TRANSFORM__FROM_PATTERN:
+				return FROM_PATTERN_EDEFAULT == null ? fromPattern != null : !FROM_PATTERN_EDEFAULT.equals(fromPattern);
+			case RmapPackage.TRANSFORM__FROM_REPLACEMENT:
+				return FROM_REPLACEMENT_EDEFAULT == null ? fromReplacement != null : !FROM_REPLACEMENT_EDEFAULT.equals(fromReplacement);
+			case RmapPackage.TRANSFORM__TO_PATTERN:
+				return TO_PATTERN_EDEFAULT == null ? toPattern != null : !TO_PATTERN_EDEFAULT.equals(toPattern);
+			case RmapPackage.TRANSFORM__TO_REPLACEMENT:
+				return TO_REPLACEMENT_EDEFAULT == null ? toReplacement != null : !TO_REPLACEMENT_EDEFAULT.equals(toReplacement);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -182,22 +178,20 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.TRANSFORM__FROM_PATTERN:
-			setFromPattern((Pattern)newValue);
-			return;
-		case RmapPackage.TRANSFORM__FROM_REPLACEMENT:
-			setFromReplacement((String)newValue);
-			return;
-		case RmapPackage.TRANSFORM__TO_PATTERN:
-			setToPattern((Pattern)newValue);
-			return;
-		case RmapPackage.TRANSFORM__TO_REPLACEMENT:
-			setToReplacement((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case RmapPackage.TRANSFORM__FROM_PATTERN:
+				setFromPattern((Pattern) newValue);
+				return;
+			case RmapPackage.TRANSFORM__FROM_REPLACEMENT:
+				setFromReplacement((String) newValue);
+				return;
+			case RmapPackage.TRANSFORM__TO_PATTERN:
+				setToPattern((Pattern) newValue);
+				return;
+			case RmapPackage.TRANSFORM__TO_REPLACEMENT:
+				setToReplacement((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -208,22 +202,20 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.TRANSFORM__FROM_PATTERN:
-			setFromPattern(FROM_PATTERN_EDEFAULT);
-			return;
-		case RmapPackage.TRANSFORM__FROM_REPLACEMENT:
-			setFromReplacement(FROM_REPLACEMENT_EDEFAULT);
-			return;
-		case RmapPackage.TRANSFORM__TO_PATTERN:
-			setToPattern(TO_PATTERN_EDEFAULT);
-			return;
-		case RmapPackage.TRANSFORM__TO_REPLACEMENT:
-			setToReplacement(TO_REPLACEMENT_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case RmapPackage.TRANSFORM__FROM_PATTERN:
+				setFromPattern(FROM_PATTERN_EDEFAULT);
+				return;
+			case RmapPackage.TRANSFORM__FROM_REPLACEMENT:
+				setFromReplacement(FROM_REPLACEMENT_EDEFAULT);
+				return;
+			case RmapPackage.TRANSFORM__TO_PATTERN:
+				setToPattern(TO_PATTERN_EDEFAULT);
+				return;
+			case RmapPackage.TRANSFORM__TO_REPLACEMENT:
+				setToReplacement(TO_REPLACEMENT_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -233,8 +225,7 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * 
 	 * @generated
 	 */
-	public Pattern getFromPattern()
-	{
+	public Pattern getFromPattern() {
 		return fromPattern;
 	}
 
@@ -243,8 +234,7 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * 
 	 * @generated
 	 */
-	public String getFromReplacement()
-	{
+	public String getFromReplacement() {
 		return fromReplacement;
 	}
 
@@ -253,8 +243,7 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * 
 	 * @generated
 	 */
-	public Pattern getToPattern()
-	{
+	public Pattern getToPattern() {
 		return toPattern;
 	}
 
@@ -263,8 +252,7 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * 
 	 * @generated
 	 */
-	public String getToReplacement()
-	{
+	public String getToReplacement() {
 		return toReplacement;
 	}
 
@@ -273,13 +261,11 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * 
 	 * @generated
 	 */
-	public void setFromPattern(Pattern newFromPattern)
-	{
+	public void setFromPattern(Pattern newFromPattern) {
 		Pattern oldFromPattern = fromPattern;
 		fromPattern = newFromPattern;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.TRANSFORM__FROM_PATTERN, oldFromPattern,
-					fromPattern));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.TRANSFORM__FROM_PATTERN, oldFromPattern, fromPattern));
 	}
 
 	/**
@@ -287,13 +273,11 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * 
 	 * @generated
 	 */
-	public void setFromReplacement(String newFromReplacement)
-	{
+	public void setFromReplacement(String newFromReplacement) {
 		String oldFromReplacement = fromReplacement;
 		fromReplacement = newFromReplacement;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.TRANSFORM__FROM_REPLACEMENT,
-					oldFromReplacement, fromReplacement));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.TRANSFORM__FROM_REPLACEMENT, oldFromReplacement, fromReplacement));
 	}
 
 	/**
@@ -301,13 +285,11 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * 
 	 * @generated
 	 */
-	public void setToPattern(Pattern newToPattern)
-	{
+	public void setToPattern(Pattern newToPattern) {
 		Pattern oldToPattern = toPattern;
 		toPattern = newToPattern;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.TRANSFORM__TO_PATTERN, oldToPattern,
-					toPattern));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.TRANSFORM__TO_PATTERN, oldToPattern, toPattern));
 	}
 
 	/**
@@ -315,13 +297,11 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * 
 	 * @generated
 	 */
-	public void setToReplacement(String newToReplacement)
-	{
+	public void setToReplacement(String newToReplacement) {
 		String oldToReplacement = toReplacement;
 		toReplacement = newToReplacement;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.TRANSFORM__TO_REPLACEMENT,
-					oldToReplacement, toReplacement));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.TRANSFORM__TO_REPLACEMENT, oldToReplacement, toReplacement));
 	}
 
 	/**
@@ -330,9 +310,8 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -354,8 +333,7 @@ public class TransformImpl extends EObjectImpl implements Transform
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return RmapPackage.Literals.TRANSFORM;
 	}
 

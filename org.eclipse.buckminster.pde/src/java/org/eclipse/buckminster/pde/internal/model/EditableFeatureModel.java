@@ -53,81 +53,68 @@ import org.osgi.framework.Version;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class EditableFeatureModel extends ExternalFeatureModel implements IEditableModel
-{
+public class EditableFeatureModel extends ExternalFeatureModel implements IEditableModel {
 	private static final long serialVersionUID = 5818223312516456482L;
 
-	public static int getContextQualifierLength(InputStream input)
-	{
+	public static int getContextQualifierLength(InputStream input) {
 		int ctxQualLen = -1;
 		Scanner scanner = new Scanner(input);
-		if(scanner.findWithinHorizon(s_ctxQualLenPattern, 100) != null)
+		if (scanner.findWithinHorizon(ctxQualLenPattern, 100) != null)
 			ctxQualLen = Integer.parseInt(scanner.match().group(1));
 		return ctxQualLen;
 	}
 
-	private static IPluginModelBase findModel(String id, String version)
-	{
+	private static IPluginModelBase findModel(String id, String version) {
 		IPluginModelBase unversioned = null;
-		for(IPluginModelBase model : PluginRegistry.getActiveModels())
-		{
+		for (IPluginModelBase model : PluginRegistry.getActiveModels()) {
 			BundleDescription desc = model.getBundleDescription();
-			if(desc == null)
+			if (desc == null)
 				continue;
 
-			if(desc.getSymbolicName().equals(id))
-			{
+			if (desc.getSymbolicName().equals(id)) {
 				Version v = desc.getVersion();
-				if(v == null)
-				{
-					if(version == null)
+				if (v == null) {
+					if (version == null)
 						return model;
 					unversioned = model;
 					continue;
 				}
 
-				if(version == null || version.equals(v.toString()))
+				if (version == null || version.equals(v.toString()))
 					return model;
 			}
 		}
 		return unversioned;
 	}
 
-	private int m_contextQualifierLength = -1;
+	private int contextQualifierLength = -1;
 
-	private boolean m_dirty;
+	private boolean dirty;
 
-	private final File m_externalFile;
+	private final File externalFile;
 
-	private static final Pattern s_ctxQualLenPattern = Pattern.compile("\\scontextQualifierLength\\s*=\\s*(\\d+)\\s"); //$NON-NLS-1$
+	private static final Pattern ctxQualLenPattern = Pattern.compile("\\scontextQualifierLength\\s*=\\s*(\\d+)\\s"); //$NON-NLS-1$
 
-	public EditableFeatureModel(File externalFile)
-	{
-		m_externalFile = externalFile;
+	public EditableFeatureModel(File externalFile) {
+		this.externalFile = externalFile;
 	}
 
-	public void computeRequiredPlugins() throws CoreException
-	{
+	public void computeRequiredPlugins() throws CoreException {
 		ArrayList<IFeatureImport> seen = new ArrayList<IFeatureImport>(feature.getImports().length);
-		for(IFeaturePlugin fp : feature.getPlugins())
-		{
+		for (IFeaturePlugin fp : feature.getPlugins()) {
 			IPluginModelBase model = findModel(fp.getId(), fp.getVersion());
-			if(model == null)
+			if (model == null)
 				continue;
 
 			addRequirements(seen, model.getPluginBase());
-			if(model.isFragmentModel())
-			{
+			if (model.isFragmentModel()) {
 				HostSpecification hostSpec = model.getBundleDescription().getHost();
 				String id = hostSpec.getName();
 				String version = null;
 				int match = IMatchRules.NONE;
 				VersionRange versionRange = hostSpec.getVersionRange();
-				if(!(versionRange == null || VersionRange.emptyRange.equals(versionRange)))
-				{
-					version = versionRange.getMinimum() != null
-							? versionRange.getMinimum().toString()
-							: null;
+				if (!(versionRange == null || VersionRange.emptyRange.equals(versionRange))) {
+					version = versionRange.getMinimum() != null ? versionRange.getMinimum().toString() : null;
 					match = PluginBase.getMatchRule(versionRange);
 				}
 				addRequirement(id, version, match, seen);
@@ -135,138 +122,105 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		}
 	}
 
-	public int getContextQualifierLength()
-	{
-		return m_contextQualifierLength;
+	public int getContextQualifierLength() {
+		return contextQualifierLength;
 	}
 
-	public boolean isDirty()
-	{
-		return m_dirty;
+	public boolean isDirty() {
+		return dirty;
 	}
 
 	@Override
-	public boolean isEditable()
-	{
+	public boolean isEditable() {
 		return true;
 	}
 
 	@Override
-	public void load() throws CoreException
-	{
+	public void load() throws CoreException {
 		InputStream input = null;
-		try
-		{
-			input = new BufferedInputStream(new FileInputStream(m_externalFile));
+		try {
+			input = new BufferedInputStream(new FileInputStream(externalFile));
 			load(input, true);
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 
-		if(feature == null)
-		{
+		if (feature == null) {
 			// Parsing failed but AbstractFeatureParser silently ignores
 			// SAXExceptions
 			//
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_parse_feature_0, m_externalFile));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_parse_feature_0, externalFile));
 		}
 
 		int ctxQualLen = -1;
 		String version = feature.getVersion();
-		if(version != null && version.indexOf('-') > 0)
-		{
-			try
-			{
-				input = new FileInputStream(m_externalFile);
+		if (version != null && version.indexOf('-') > 0) {
+			try {
+				input = new FileInputStream(externalFile);
 				ctxQualLen = getContextQualifierLength(input);
-			}
-			catch(FileNotFoundException e)
-			{
+			} catch (FileNotFoundException e) {
 				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
+			} finally {
 				IOUtils.close(input);
 			}
-			m_contextQualifierLength = ctxQualLen;
+			contextQualifierLength = ctxQualLen;
 		}
 	}
 
-	public void save()
-	{
-		try
-		{
-			save(m_externalFile);
-		}
-		catch(FileNotFoundException e)
-		{
+	public void save() {
+		try {
+			save(externalFile);
+		} catch (FileNotFoundException e) {
 			PDEPlugin.getLogger().error(e, Messages.unable_to_save_feature_model);
 		}
 	}
 
-	public void save(File outputFile) throws FileNotFoundException
-	{
+	public void save(File outputFile) throws FileNotFoundException {
 		OutputStream output = null;
-		try
-		{
+		try {
 			output = new FileOutputStream(outputFile);
 			this.save(output);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(output);
 		}
 	}
 
-	public void save(OutputStream output)
-	{
-		try
-		{
+	public void save(OutputStream output) {
+		try {
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, "UTF-8")); //$NON-NLS-1$
 			save(writer);
 			writer.flush();
-		}
-		catch(UnsupportedEncodingException e)
-		{
+		} catch (UnsupportedEncodingException e) {
 			PDEPlugin.getLogger().error(e, Messages.utf8_not_supported);
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void save(PrintWriter writer)
-	{
+	public void save(PrintWriter writer) {
 		writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
-		if(getFeature().getVersion().indexOf('-') > 0 && m_contextQualifierLength != -1)
-			writer.println("<!-- contextQualifierLength=" + m_contextQualifierLength + " -->"); //$NON-NLS-1$ //$NON-NLS-2$
+		if (getFeature().getVersion().indexOf('-') > 0 && contextQualifierLength != -1)
+			writer.println("<!-- contextQualifierLength=" + contextQualifierLength + " -->"); //$NON-NLS-1$ //$NON-NLS-2$
 		feature.write("", writer); //$NON-NLS-1$
 		setDirty(false);
 	}
 
-	public void setContextQualifierLength(int contextQualifierLength)
-	{
-		m_contextQualifierLength = contextQualifierLength;
+	public void setContextQualifierLength(int contextQualifierLength) {
+		this.contextQualifierLength = contextQualifierLength;
 	}
 
-	public void setDirty(boolean dirty)
-	{
-		m_dirty = dirty;
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
 	}
 
-	private void addRequirement(String id, String version, int match, List<IFeatureImport> seen) throws CoreException
-	{
-		for(IFeatureImport bundle : seen)
-			if(bundle.getId().equals(id)
-					&& (version == null || (version.equals(bundle.getVersion()) && match == bundle.getMatch())))
+	private void addRequirement(String id, String version, int match, List<IFeatureImport> seen) throws CoreException {
+		for (IFeatureImport bundle : seen)
+			if (bundle.getId().equals(id) && (version == null || (version.equals(bundle.getVersion()) && match == bundle.getMatch())))
 				return;
 
-		for(IFeaturePlugin bundle : feature.getPlugins())
-			if(VersionUtil.compare(bundle.getId(), bundle.getVersion(), id, version, match))
+		for (IFeaturePlugin bundle : feature.getPlugins())
+			if (VersionUtil.compare(bundle.getId(), bundle.getVersion(), id, version, match))
 				return;
 
 		IFeatureImport bundle = feature.getModel().getFactory().createImport();
@@ -277,9 +231,8 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		seen.add(bundle);
 	}
 
-	private void addRequirements(List<IFeatureImport> seen, IPluginBase plugin) throws CoreException
-	{
-		for(IPluginImport bundle : plugin.getImports())
+	private void addRequirements(List<IFeatureImport> seen, IPluginBase plugin) throws CoreException {
+		for (IPluginImport bundle : plugin.getImports())
 			addRequirement(bundle.getId(), bundle.getVersion(), bundle.getMatch(), seen);
 	}
 }

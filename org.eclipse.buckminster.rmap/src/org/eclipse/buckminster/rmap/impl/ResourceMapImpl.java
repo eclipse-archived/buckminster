@@ -28,24 +28,29 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Resource Map</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Resource Map</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getLocators <em>Locators</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getRedirects <em>Redirects</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getSearchPaths <em>Search Paths</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getDocumentation <em>Documentation</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getLocators <em>
+ * Locators</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getRedirects
+ * <em>Redirects</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getSearchPaths
+ * <em>Search Paths</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getDocumentation
+ * <em>Documentation</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
-{
+public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	/**
-	 * The cached value of the '{@link #getLocators() <em>Locators</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getLocators() <em>Locators</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getLocators()
 	 * @generated
@@ -54,8 +59,8 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	protected EList<Locator> locators;
 
 	/**
-	 * The cached value of the '{@link #getRedirects() <em>Redirects</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRedirects() <em>Redirects</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRedirects()
 	 * @generated
@@ -64,8 +69,8 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	protected EList<Redirect> redirects;
 
 	/**
-	 * The cached value of the '{@link #getSearchPaths() <em>Search Paths</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getSearchPaths() <em>Search Paths</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getSearchPaths()
 	 * @generated
@@ -74,8 +79,9 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	protected EList<SearchPath> searchPaths;
 
 	/**
-	 * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' containment reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getDocumentation()
+	 * <em>Documentation</em>}' containment reference. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @see #getDocumentation()
 	 * @generated
@@ -88,8 +94,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * 
 	 * @generated
 	 */
-	protected ResourceMapImpl()
-	{
+	protected ResourceMapImpl() {
 		super();
 	}
 
@@ -98,15 +103,13 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs)
-	{
+	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs) {
 		Documentation oldDocumentation = documentation;
 		documentation = newDocumentation;
-		if(eNotificationRequired())
-		{
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-					RmapPackage.RESOURCE_MAP__DOCUMENTATION, oldDocumentation, newDocumentation);
-			if(msgs == null)
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.RESOURCE_MAP__DOCUMENTATION, oldDocumentation,
+					newDocumentation);
+			if (msgs == null)
 				msgs = notification;
 			else
 				msgs.add(notification);
@@ -120,18 +123,16 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.RESOURCE_MAP__LOCATORS:
-			return getLocators();
-		case RmapPackage.RESOURCE_MAP__REDIRECTS:
-			return getRedirects();
-		case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
-			return getSearchPaths();
-		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
-			return getDocumentation();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case RmapPackage.RESOURCE_MAP__LOCATORS:
+				return getLocators();
+			case RmapPackage.RESOURCE_MAP__REDIRECTS:
+				return getRedirects();
+			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
+				return getSearchPaths();
+			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
+				return getDocumentation();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -142,18 +143,16 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.RESOURCE_MAP__LOCATORS:
-			return ((InternalEList<?>)getLocators()).basicRemove(otherEnd, msgs);
-		case RmapPackage.RESOURCE_MAP__REDIRECTS:
-			return ((InternalEList<?>)getRedirects()).basicRemove(otherEnd, msgs);
-		case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
-			return ((InternalEList<?>)getSearchPaths()).basicRemove(otherEnd, msgs);
-		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
-			return basicSetDocumentation(null, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case RmapPackage.RESOURCE_MAP__LOCATORS:
+				return ((InternalEList<?>) getLocators()).basicRemove(otherEnd, msgs);
+			case RmapPackage.RESOURCE_MAP__REDIRECTS:
+				return ((InternalEList<?>) getRedirects()).basicRemove(otherEnd, msgs);
+			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
+				return ((InternalEList<?>) getSearchPaths()).basicRemove(otherEnd, msgs);
+			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
+				return basicSetDocumentation(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -164,18 +163,16 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.RESOURCE_MAP__LOCATORS:
-			return locators != null && !locators.isEmpty();
-		case RmapPackage.RESOURCE_MAP__REDIRECTS:
-			return redirects != null && !redirects.isEmpty();
-		case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
-			return searchPaths != null && !searchPaths.isEmpty();
-		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
-			return documentation != null;
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case RmapPackage.RESOURCE_MAP__LOCATORS:
+				return locators != null && !locators.isEmpty();
+			case RmapPackage.RESOURCE_MAP__REDIRECTS:
+				return redirects != null && !redirects.isEmpty();
+			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
+				return searchPaths != null && !searchPaths.isEmpty();
+			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
+				return documentation != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -187,25 +184,23 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.RESOURCE_MAP__LOCATORS:
-			getLocators().clear();
-			getLocators().addAll((Collection<? extends Locator>)newValue);
-			return;
-		case RmapPackage.RESOURCE_MAP__REDIRECTS:
-			getRedirects().clear();
-			getRedirects().addAll((Collection<? extends Redirect>)newValue);
-			return;
-		case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
-			getSearchPaths().clear();
-			getSearchPaths().addAll((Collection<? extends SearchPath>)newValue);
-			return;
-		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
-			setDocumentation((Documentation)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case RmapPackage.RESOURCE_MAP__LOCATORS:
+				getLocators().clear();
+				getLocators().addAll((Collection<? extends Locator>) newValue);
+				return;
+			case RmapPackage.RESOURCE_MAP__REDIRECTS:
+				getRedirects().clear();
+				getRedirects().addAll((Collection<? extends Redirect>) newValue);
+				return;
+			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
+				getSearchPaths().clear();
+				getSearchPaths().addAll((Collection<? extends SearchPath>) newValue);
+				return;
+			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
+				setDocumentation((Documentation) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -216,22 +211,20 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.RESOURCE_MAP__LOCATORS:
-			getLocators().clear();
-			return;
-		case RmapPackage.RESOURCE_MAP__REDIRECTS:
-			getRedirects().clear();
-			return;
-		case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
-			getSearchPaths().clear();
-			return;
-		case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
-			setDocumentation((Documentation)null);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case RmapPackage.RESOURCE_MAP__LOCATORS:
+				getLocators().clear();
+				return;
+			case RmapPackage.RESOURCE_MAP__REDIRECTS:
+				getRedirects().clear();
+				return;
+			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
+				getSearchPaths().clear();
+				return;
+			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
+				setDocumentation((Documentation) null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -241,8 +234,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * 
 	 * @generated
 	 */
-	public Documentation getDocumentation()
-	{
+	public Documentation getDocumentation() {
 		return documentation;
 	}
 
@@ -251,10 +243,8 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * 
 	 * @generated
 	 */
-	public EList<Locator> getLocators()
-	{
-		if(locators == null)
-		{
+	public EList<Locator> getLocators() {
+		if (locators == null) {
 			locators = new EObjectContainmentEList<Locator>(Locator.class, this, RmapPackage.RESOURCE_MAP__LOCATORS);
 		}
 		return locators;
@@ -265,10 +255,8 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * 
 	 * @generated
 	 */
-	public EList<Redirect> getRedirects()
-	{
-		if(redirects == null)
-		{
+	public EList<Redirect> getRedirects() {
+		if (redirects == null) {
 			redirects = new EObjectContainmentEList<Redirect>(Redirect.class, this, RmapPackage.RESOURCE_MAP__REDIRECTS);
 		}
 		return redirects;
@@ -279,12 +267,9 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * 
 	 * @generated
 	 */
-	public EList<SearchPath> getSearchPaths()
-	{
-		if(searchPaths == null)
-		{
-			searchPaths = new EObjectContainmentEList<SearchPath>(SearchPath.class, this,
-					RmapPackage.RESOURCE_MAP__SEARCH_PATHS);
+	public EList<SearchPath> getSearchPaths() {
+		if (searchPaths == null) {
+			searchPaths = new EObjectContainmentEList<SearchPath>(SearchPath.class, this, RmapPackage.RESOURCE_MAP__SEARCH_PATHS);
 		}
 		return searchPaths;
 	}
@@ -294,24 +279,20 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * 
 	 * @generated
 	 */
-	public void setDocumentation(Documentation newDocumentation)
-	{
-		if(newDocumentation != documentation)
-		{
+	public void setDocumentation(Documentation newDocumentation) {
+		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
-			if(documentation != null)
-				msgs = ((InternalEObject)documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
-						- RmapPackage.RESOURCE_MAP__DOCUMENTATION, null, msgs);
-			if(newDocumentation != null)
-				msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
-						- RmapPackage.RESOURCE_MAP__DOCUMENTATION, null, msgs);
+			if (documentation != null)
+				msgs = ((InternalEObject) documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.RESOURCE_MAP__DOCUMENTATION, null,
+						msgs);
+			if (newDocumentation != null)
+				msgs = ((InternalEObject) newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.RESOURCE_MAP__DOCUMENTATION, null,
+						msgs);
 			msgs = basicSetDocumentation(newDocumentation, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.RESOURCE_MAP__DOCUMENTATION,
-					newDocumentation, newDocumentation));
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.RESOURCE_MAP__DOCUMENTATION, newDocumentation, newDocumentation));
 	}
 
 	/**
@@ -320,8 +301,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return RmapPackage.Literals.RESOURCE_MAP;
 	}
 

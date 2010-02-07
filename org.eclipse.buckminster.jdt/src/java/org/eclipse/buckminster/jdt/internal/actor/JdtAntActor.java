@@ -26,53 +26,43 @@ import org.eclipse.core.runtime.Path;
 /**
  * @author Thomas Hallgren
  */
-public class JdtAntActor extends AntActor
-{
+public class JdtAntActor extends AntActor {
 	@SuppressWarnings("hiding")
 	public static final String ACTOR_ID = "jdt.ant"; //$NON-NLS-1$
 
 	public static final String PROPERTY_PROJECT_CLASSPATH = "project.classpath"; //$NON-NLS-1$
 
 	@Override
-	protected void addActorPathGroups(IActionContext ctx, Map<String, PathGroup[]> namedPathGroupArrays)
-			throws CoreException
-	{
+	protected void addActorPathGroups(IActionContext ctx, Map<String, PathGroup[]> namedPathGroupArrays) throws CoreException {
 		IProject project = WorkspaceInfo.getProject(ctx.getCSpec().getComponentIdentifier());
-		if(project == null)
+		if (project == null)
 			return;
 
 		List<IPath> paths = ClasspathEmitter.finalClasspathResolve(project, null);
 		int top = paths.size();
-		if(top > 0)
-		{
+		if (top > 0) {
 			HashMap<IPath, ArrayList<IPath>> blds = new HashMap<IPath, ArrayList<IPath>>();
-			for(int idx = 0; idx < top; ++idx)
-			{
+			for (int idx = 0; idx < top; ++idx) {
 				IPath relPath = null;
 				IPath path = paths.get(idx);
-				if(path.toFile().isFile())
-				{
+				if (path.toFile().isFile()) {
 					relPath = new Path(path.lastSegment());
 					path = path.removeLastSegments(1);
 				}
 				ArrayList<IPath> bld = blds.get(path);
-				if(bld == null)
-				{
+				if (bld == null) {
 					bld = new ArrayList<IPath>();
 					blds.put(path, bld);
 				}
-				if(relPath != null)
+				if (relPath != null)
 					bld.add(relPath);
 			}
 
 			ArrayList<PathGroup> pgs = new ArrayList<PathGroup>();
-			for(Map.Entry<IPath, ArrayList<IPath>> entry : blds.entrySet())
-			{
+			for (Map.Entry<IPath, ArrayList<IPath>> entry : blds.entrySet()) {
 				ArrayList<IPath> bld = entry.getValue();
 				int nPaths = bld.size();
-				IPath[] blda = nPaths == 0
-						? Trivial.EMPTY_PATH_ARRAY
-						: bld.toArray(new IPath[nPaths]);
+				IPath[] blda = nPaths == 0 ? Trivial.EMPTY_PATH_ARRAY : bld.toArray(new IPath[nPaths]);
 				pgs.add(new PathGroup(entry.getKey(), blda));
 			}
 			namedPathGroupArrays.put(PROPERTY_PROJECT_CLASSPATH, pgs.toArray(new PathGroup[pgs.size()]));

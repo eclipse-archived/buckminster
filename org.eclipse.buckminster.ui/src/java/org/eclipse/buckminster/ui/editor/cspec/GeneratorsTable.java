@@ -27,87 +27,73 @@ import org.eclipse.swt.widgets.Composite;
  * @author Karel Brezina
  * 
  */
-public class GeneratorsTable extends SimpleTable<GeneratorBuilder>
-{
-	private CSpecEditor m_editor;
+public class GeneratorsTable extends SimpleTable<GeneratorBuilder> {
+	private CSpecEditor editor;
 
-	private CSpecBuilder m_cspecBuilder;
+	private CSpecBuilder cspecBuilder;
 
-	public GeneratorsTable(CSpecEditor editor, List<GeneratorBuilder> data, CSpecBuilder cspecBuilder, boolean readOnly)
-	{
+	public GeneratorsTable(CSpecEditor editor, List<GeneratorBuilder> data, CSpecBuilder cspecBuilder, boolean readOnly) {
 		super(data, readOnly);
-		m_editor = editor;
-		m_cspecBuilder = cspecBuilder;
+		this.editor = editor;
+		this.cspecBuilder = cspecBuilder;
 	}
 
-	public GeneratorBuilder createRowClass()
-	{
-		return m_cspecBuilder.createGeneratorBuilder();
+	public GeneratorBuilder createRowClass() {
+		return cspecBuilder.createGeneratorBuilder();
 	}
 
-	public String[] getColumnHeaders()
-	{
-		return new String[] { Messages.generatesName, Messages.generatesType, Messages.generatesVersion,
-				Messages.component, Messages.attribute };
+	public String[] getColumnHeaders() {
+		return new String[] { Messages.generatesName, Messages.generatesType, Messages.generatesVersion, Messages.component, Messages.attribute };
 	}
 
-	public int[] getColumnWeights()
-	{
+	public int[] getColumnWeights() {
 		return new int[] { 25, 15, 15, 25, 15 };
 	}
 
 	@Override
-	public IValidator getFieldValidator(int idx)
-	{
-		switch(idx)
-		{
-		case 0:
-			return SimpleTable.createNotEmptyStringValidator(Messages.generator_name_cannot_be_empty);
-		case 4:
-			return SimpleTable.createNotEmptyStringValidator(Messages.attribute_cannot_be_empty);
-		default:
-			return SimpleTable.getEmptyValidator();
+	public IValidator getFieldValidator(int idx) {
+		switch (idx) {
+			case 0:
+				return SimpleTable.createNotEmptyStringValidator(Messages.generator_name_cannot_be_empty);
+			case 4:
+				return SimpleTable.createNotEmptyStringValidator(Messages.attribute_cannot_be_empty);
+			default:
+				return SimpleTable.getEmptyValidator();
 		}
 	}
 
 	@Override
-	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
-	{
-		switch(idx)
-		{
-		case 0:
-			return getTextWidgetin(parent, idx, value);
-		case 3:
-			return getComboWidgetin(parent, idx, value, m_editor.getComponentNames(), SWT.NONE);
-		case 4:
-			return getComboWidgetin(parent, idx, value, m_editor.getAttributeNames(null), SWT.NONE);
-		default:
-			return getTextWidgetin(parent, idx, value);
+	public IWidgetin getWidgetin(Composite parent, int idx, Object value) {
+		switch (idx) {
+			case 0:
+				return getTextWidgetin(parent, idx, value);
+			case 3:
+				return getComboWidgetin(parent, idx, value, editor.getComponentNames(), SWT.NONE);
+			case 4:
+				return getComboWidgetin(parent, idx, value, editor.getAttributeNames(null), SWT.NONE);
+			default:
+				return getTextWidgetin(parent, idx, value);
 		}
 	}
 
-	public Object[] toRowArray(GeneratorBuilder t)
-	{
+	public Object[] toRowArray(GeneratorBuilder t) {
 		Object[] array = new Object[getColumns()];
 
 		ComponentIdentifier ci = t.getGeneratedIdentifier();
 		array[0] = ci.getName();
 		array[1] = ci.getComponentTypeID();
-		array[2] = ci.getVersion() == null
-				? null
-				: ci.getVersion().toString();
+		array[2] = ci.getVersion() == null ? null : ci.getVersion().toString();
 		array[3] = t.getComponent();
 		array[4] = t.getAttribute();
 
 		return array;
 	}
 
-	public void updateRowClass(GeneratorBuilder builder, Object[] args) throws ValidatorException
-	{
-		builder.setName(TextUtils.notEmptyString((String)args[0]));
-		builder.setGeneratesType(TextUtils.notEmptyString((String)args[1]));
-		builder.setGeneratesVersion(Version.create(TextUtils.notEmptyString((String)args[2])));
-		builder.setComponent(TextUtils.notEmptyString((String)args[3]));
-		builder.setAttribute(TextUtils.notEmptyString((String)args[4]));
+	public void updateRowClass(GeneratorBuilder builder, Object[] args) throws ValidatorException {
+		builder.setName(TextUtils.notEmptyString((String) args[0]));
+		builder.setGeneratesType(TextUtils.notEmptyString((String) args[1]));
+		builder.setGeneratesVersion(Version.create(TextUtils.notEmptyString((String) args[2])));
+		builder.setComponent(TextUtils.notEmptyString((String) args[3]));
+		builder.setAttribute(TextUtils.notEmptyString((String) args[4]));
 	}
 }

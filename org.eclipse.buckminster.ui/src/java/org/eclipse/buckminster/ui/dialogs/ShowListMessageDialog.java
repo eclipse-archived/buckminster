@@ -26,38 +26,34 @@ import org.eclipse.swt.widgets.Shell;
  * @author ken1
  * 
  */
-public class ShowListMessageDialog extends MessageDialog
-{
-	private final String[] m_list;
+public class ShowListMessageDialog extends MessageDialog {
+	private final String[] list;
 
-	private final int m_maxHeightHint;
+	private final int maxHeightHint;
 
-	private final int m_maxWidthHint;
+	private final int maxWidthHint;
 
-	private final Font m_font;
+	private final Font font;
 
-	public ShowListMessageDialog(Shell shell, String title, String msg, String[] list, Font font, int maxHeightHint,
-			int maxWidthHint)
-	{
+	public ShowListMessageDialog(Shell shell, String title, String msg, String[] list, Font font, int maxHeightHint, int maxWidthHint) {
 		super(shell, title, null, msg, MessageDialog.NONE, new String[] { Messages.ok }, 0);
 		int shellStyle = this.getShellStyle();
 		shellStyle |= SWT.RESIZE;
 		this.setShellStyle(shellStyle);
-		m_list = list;
-		m_maxHeightHint = maxHeightHint;
-		m_maxWidthHint = maxWidthHint;
-		m_font = font;
+		this.list = list;
+		this.maxHeightHint = maxHeightHint;
+		this.maxWidthHint = maxWidthHint;
+		this.font = font;
 	}
 
 	@Override
-	protected Control createCustomArea(Composite parent)
-	{
+	protected Control createCustomArea(Composite parent) {
 		Group grp = new Group(parent, SWT.NONE);
 		grp.setLayout(new GridLayout(1, false));
 		grp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		grp.setText(Messages.command);
 
-		UiUtils.createListViewer(grp, m_list, m_font, m_maxHeightHint, m_maxWidthHint);
+		UiUtils.createListViewer(grp, list, font, maxHeightHint, maxWidthHint);
 
 		return grp;
 	}

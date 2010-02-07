@@ -31,58 +31,48 @@ import org.eclipse.osgi.util.NLS;
  * @author kolwing
  * 
  */
-public class PreferenceMappingManager
-{
+public class PreferenceMappingManager {
 	static private final String PREFMAPPINGS_EXTPOINT = "org.eclipse.buckminster.cmdline.prefmappings"; //$NON-NLS-1$
 
 	static private final String CLASS_ATTRIBUTE = "class"; //$NON-NLS-1$
 
 	static private final String TEST_PREFIX = "org.eclipse.buckminster.cmdline.test."; //$NON-NLS-1$
 
-	private static WeakReference<PreferenceMappingManager> s_instanceRef;
+	private static WeakReference<PreferenceMappingManager> instanceRef;
 
-	public static synchronized PreferenceMappingManager getInstance(boolean includeTests) throws CoreException
-	{
+	public static synchronized PreferenceMappingManager getInstance(boolean includeTests) throws CoreException {
 		PreferenceMappingManager pmm = null;
-		if(s_instanceRef != null)
-			pmm = s_instanceRef.get();
-		if(pmm == null || pmm.m_includeTests != includeTests)
-		{
+		if (instanceRef != null)
+			pmm = instanceRef.get();
+		if (pmm == null || pmm.includeTests != includeTests) {
 			pmm = new PreferenceMappingManager(includeTests);
-			s_instanceRef = new WeakReference<PreferenceMappingManager>(pmm);
+			instanceRef = new WeakReference<PreferenceMappingManager>(pmm);
 		}
 		return pmm;
 	}
 
-	private final boolean m_includeTests;
+	private final boolean includeTests;
 
-	private final List<BasicPreferenceHandler> m_mappings;
+	private final List<BasicPreferenceHandler> mappings;
 
-	private PreferenceMappingManager(boolean includeTests) throws CoreException
-	{
-		m_includeTests = includeTests;
-		m_mappings = this.findAllMappings();
+	private PreferenceMappingManager(boolean includeTests) throws CoreException {
+		this.includeTests = includeTests;
+		mappings = findAllMappings();
 	}
 
-	public List<BasicPreferenceHandler> getAllHandlers(String pattern)
-	{
-		Pattern rx = (pattern == null)
-				? null
-				: Pattern.compile(pattern);
+	public List<BasicPreferenceHandler> getAllHandlers(String pattern) {
+		Pattern rx = (pattern == null) ? null : Pattern.compile(pattern);
 
 		ArrayList<BasicPreferenceHandler> handlers = new ArrayList<BasicPreferenceHandler>();
-		int top = m_mappings.size();
-		for(int idx = 0; idx < top; ++idx)
-		{
-			BasicPreferenceHandler bph = m_mappings.get(idx);
-			if(rx == null || rx.matcher(bph.getName()).find())
+		int top = mappings.size();
+		for (int idx = 0; idx < top; ++idx) {
+			BasicPreferenceHandler bph = mappings.get(idx);
+			if (rx == null || rx.matcher(bph.getName()).find())
 				handlers.add(bph);
 		}
 
-		Comparator<BasicPreferenceHandler> bphComparator = new Comparator<BasicPreferenceHandler>()
-		{
-			public int compare(BasicPreferenceHandler o1, BasicPreferenceHandler o2)
-			{
+		Comparator<BasicPreferenceHandler> bphComparator = new Comparator<BasicPreferenceHandler>() {
+			public int compare(BasicPreferenceHandler o1, BasicPreferenceHandler o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		};
@@ -90,45 +80,39 @@ public class PreferenceMappingManager
 		return handlers;
 	}
 
-	public BasicPreferenceHandler getHandler(String name) throws UsageException
-	{
+	public BasicPreferenceHandler getHandler(String name) throws UsageException {
 		ArrayList<BasicPreferenceHandler> matches = null;
-		int idx = m_mappings.size();
-		while(--idx >= 0)
-		{
-			BasicPreferenceHandler mapping = m_mappings.get(idx);
+		int idx = mappings.size();
+		while (--idx >= 0) {
+			BasicPreferenceHandler mapping = mappings.get(idx);
 			String prefName = mapping.getName();
-			for(;;)
-			{
-				if(name.equals(prefName))
-				{
-					if(matches == null)
+			for (;;) {
+				if (name.equals(prefName)) {
+					if (matches == null)
 						matches = new ArrayList<BasicPreferenceHandler>();
 					matches.add(mapping);
 					break;
 				}
 				int dotIdx = prefName.indexOf('.');
-				if(dotIdx < 0)
+				if (dotIdx < 0)
 					break;
 				prefName = prefName.substring(dotIdx + 1);
 			}
 		}
 
-		if(matches == null)
+		if (matches == null)
 			throw new UsageException(NLS.bind(Messages.No_preference_matches_0, name));
 
 		int foundMatches = matches.size();
-		if(foundMatches == 1)
+		if (foundMatches == 1)
 			return matches.get(0);
 
 		StringBuilder bld = new StringBuilder(80);
 		bld.append(NLS.bind(Messages.Preference_0_is_ambiguous, name));
-		for(int i = 0; i < foundMatches; i++)
-		{
-			if(i > 0)
-			{
+		for (int i = 0; i < foundMatches; i++) {
+			if (i > 0) {
 				bld.append(", "); //$NON-NLS-1$
-				if(i + 1 == foundMatches)
+				if (i + 1 == foundMatches)
 					bld.append(Messages.And);
 			}
 			bld.append(matches.get(i).getName());
@@ -136,29 +120,26 @@ public class PreferenceMappingManager
 		throw new UsageException(bld.toString());
 	}
 
-	private List<BasicPreferenceHandler> findAllMappings() throws CoreException
-	{
-		List<BasicPreferenceHandler> mappings = new ArrayList<BasicPreferenceHandler>();
+	private List<BasicPreferenceHandler> findAllMappings() throws CoreException {
+		List<BasicPreferenceHandler> prefMappings = new ArrayList<BasicPreferenceHandler>();
 
 		IExtensionRegistry er = Platform.getExtensionRegistry();
 		IConfigurationElement[] elems = er.getConfigurationElementsFor(PREFMAPPINGS_EXTPOINT);
 		int idx = elems.length;
-		while(--idx >= 0)
-		{
+		while (--idx >= 0) {
 			IConfigurationElement elem = elems[idx];
 			BasicPreferenceHandler bph;
-			if(elem.getAttribute(CLASS_ATTRIBUTE) != null)
-				bph = (BasicPreferenceHandler)elem.createExecutableExtension(CLASS_ATTRIBUTE);
-			else
-			{
+			if (elem.getAttribute(CLASS_ATTRIBUTE) != null)
+				bph = (BasicPreferenceHandler) elem.createExecutableExtension(CLASS_ATTRIBUTE);
+			else {
 				bph = new BasicPreferenceHandler();
-				((IExecutableExtension)bph).setInitializationData(elem, CLASS_ATTRIBUTE, null);
+				((IExecutableExtension) bph).setInitializationData(elem, CLASS_ATTRIBUTE, null);
 			}
 			String name = bph.getName();
-			if(name.startsWith(TEST_PREFIX) && !m_includeTests)
+			if (name.startsWith(TEST_PREFIX) && !includeTests)
 				continue;
-			mappings.add(bph);
+			prefMappings.add(bph);
 		}
-		return mappings;
+		return prefMappings;
 	}
 }

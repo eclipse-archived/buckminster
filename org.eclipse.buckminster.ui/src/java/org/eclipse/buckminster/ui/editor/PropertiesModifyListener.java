@@ -12,7 +12,6 @@ package org.eclipse.buckminster.ui.editor;
  * @author Karel Brezina
  * 
  */
-public interface PropertiesModifyListener
-{
+public interface PropertiesModifyListener {
 	void modifyProperties(PropertiesModifyEvent e);
 }

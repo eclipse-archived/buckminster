@@ -35,104 +35,83 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @author Karel Brezina
  * 
  */
-public class ResolveJob extends Job
-{
-	private final IResolver m_resolver;
+public class ResolveJob extends Job {
+	private final IResolver resolver;
 
-	private final boolean m_materialize;
+	private final boolean materialize;
 
-	private final IWorkbenchPartSite m_site;
+	private final IWorkbenchPartSite site;
 
-	public ResolveJob(ComponentQuery query, boolean materialize, IWorkbenchPartSite site, boolean continueOnError)
-			throws CoreException
-	{
+	public ResolveJob(ComponentQuery query, boolean materialize, IWorkbenchPartSite site, boolean continueOnError) throws CoreException {
 		super(Messages.resolving_qurey);
-		m_resolver = new MainResolver(new ResolutionContext(query));
-		m_resolver.getContext().setContinueOnError(continueOnError);
-		m_materialize = materialize;
-		m_site = site;
+		this.resolver = new MainResolver(new ResolutionContext(query));
+		resolver.getContext().setContinueOnError(continueOnError);
+		this.materialize = materialize;
+		this.site = site;
 		setUser(true);
 		setPriority(BUILD);
 	}
 
 	@Override
-	protected IStatus run(IProgressMonitor monitor)
-	{
-		ResolutionContext ctx = m_resolver.getContext();
+	protected IStatus run(IProgressMonitor monitor) {
+		ResolutionContext ctx = resolver.getContext();
 		ComponentQuery query = ctx.getComponentQuery();
 
-		try
-		{
+		try {
 			IProgressMonitor resolutionMonitor;
-			if(m_materialize)
-			{
+			if (materialize) {
 				monitor.beginTask(null, 1000);
 				resolutionMonitor = MonitorUtils.subMonitor(monitor, 500);
-			}
-			else
+			} else
 				resolutionMonitor = monitor;
 
-			Display display = m_site.getShell().getDisplay();
+			Display display = site.getShell().getDisplay();
 			ComponentRequest rootRequest = query.getExpandedRootRequest(ctx);
 			BillOfMaterials bom = null;
 			IStatus status;
-			try
-			{
-				bom = m_resolver.resolve(rootRequest, resolutionMonitor);
+			try {
+				bom = resolver.resolve(rootRequest, resolutionMonitor);
 				status = ctx.getStatus();
-			}
-			catch(OperationCanceledException e)
-			{
+			} catch (OperationCanceledException e) {
 				status = ctx.getStatus();
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				status = e.getStatus();
 			}
 
 			CorePlugin.logWarningsAndErrors(status);
 			ctx.emitWarningAndErrorTags();
-			if(bom == null || (status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError()))
+			if (bom == null || (status.getSeverity() == IStatus.ERROR && !ctx.isContinueOnError()))
 				return Status.OK_STATUS;
 
-			if(!m_materialize)
-			{
+			if (!materialize) {
 				final BillOfMaterials finalBom = bom;
-				display.asyncExec(new Runnable()
-				{
-					public void run()
-					{
-						QueryWizard.openWizard(m_site, m_resolver.getContext(), finalBom);
+				display.asyncExec(new Runnable() {
+					public void run() {
+						QueryWizard.openWizard(site, resolver.getContext(), finalBom);
 					}
 				});
 				return Status.OK_STATUS;
 			}
 
-			try
-			{
-				if(bom.isFullyResolved(ctx) || ctx.isContinueOnError())
-				{
+			try {
+				if (bom.isFullyResolved(ctx) || ctx.isContinueOnError()) {
 					setName(Messages.materializing);
 
-					// Just create a default mspec that materializes to the current
+					// Just create a default mspec that materializes to the
+					// current
 					// workspace
 					//
 					MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 					mspecBuilder.setName(bom.getViewName());
 					bom.addMaterializationNodes(mspecBuilder);
-					MaterializationContext matCtx = new MaterializationContext(bom,
-							mspecBuilder.createMaterializationSpec(), ctx);
+					MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), ctx);
 					MaterializationJob.runDelegated(matCtx, MonitorUtils.subMonitor(monitor, 500));
 				}
 				return status;
-			}
-			finally
-			{
+			} finally {
 				monitor.done();
 			}
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			return BuckminsterException.wrap(e).getStatus();
 		}
 	}

@@ -13,17 +13,17 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * Base class for immutable UUID keyed classes. The contract specifies that such a class may only declare immutable
- * (i.e. final) properties since the id of the instance is calculated from the byte array that is the result of a XML
+ * Base class for immutable UUID keyed classes. The contract specifies that such
+ * a class may only declare immutable (i.e. final) properties since the id of
+ * the instance is calculated from the byte array that is the result of a XML
  * serialization.
  * 
  * @author Thomas Hallgren
  */
-public interface IUUIDPersisted
-{
+public interface IUUIDPersisted {
 	/**
-	 * Returns the id of this keyed instance. The instance will be persisted in its storage the first time this method
-	 * is called.
+	 * Returns the id of this keyed instance. The instance will be persisted in
+	 * its storage the first time this method is called.
 	 * 
 	 * @return the id of this resolution
 	 */
@@ -42,12 +42,14 @@ public interface IUUIDPersisted
 	boolean isPersisted(StorageManager sm) throws CoreException;
 
 	/**
-	 * Remove this instance from persistent storage. Referential integrity is maintained.
+	 * Remove this instance from persistent storage. Referential integrity is
+	 * maintained.
 	 */
 	void remove(StorageManager sm) throws CoreException;
 
 	/**
-	 * Used by the persistent store when it knows the id and image of an element that it just restored from disk.
+	 * Used by the persistent store when it knows the id and image of an element
+	 * that it just restored from disk.
 	 * 
 	 * @param id
 	 *            The identifier for the element

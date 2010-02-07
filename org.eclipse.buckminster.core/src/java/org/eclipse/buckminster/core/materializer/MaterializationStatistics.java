@@ -16,70 +16,58 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 /**
  * @author Thomas Hallgren
  */
-public class MaterializationStatistics
-{
-	private List<ComponentIdentifier> m_failed = new ArrayList<ComponentIdentifier>();
+public class MaterializationStatistics {
+	private List<ComponentIdentifier> failed = new ArrayList<ComponentIdentifier>();
 
-	private List<ComponentIdentifier> m_kept = new ArrayList<ComponentIdentifier>();
+	private List<ComponentIdentifier> kept = new ArrayList<ComponentIdentifier>();
 
-	private List<ComponentIdentifier> m_replaced = new ArrayList<ComponentIdentifier>();
+	private List<ComponentIdentifier> replaced = new ArrayList<ComponentIdentifier>();
 
-	private List<ComponentIdentifier> m_skipped = new ArrayList<ComponentIdentifier>();
+	private List<ComponentIdentifier> skipped = new ArrayList<ComponentIdentifier>();
 
-	private List<ComponentIdentifier> m_updated = new ArrayList<ComponentIdentifier>();
+	private List<ComponentIdentifier> updated = new ArrayList<ComponentIdentifier>();
 
-	public void addFailed(ComponentIdentifier ci)
-	{
-		m_failed.add(ci);
+	public void addFailed(ComponentIdentifier ci) {
+		failed.add(ci);
 	}
 
-	public void addKept(ComponentIdentifier ci)
-	{
-		m_kept.add(ci);
+	public void addKept(ComponentIdentifier ci) {
+		kept.add(ci);
 	}
 
-	public void addReplaced(ComponentIdentifier ci)
-	{
-		m_replaced.add(ci);
+	public void addReplaced(ComponentIdentifier ci) {
+		replaced.add(ci);
 	}
 
-	public void addSkipped(ComponentIdentifier ci)
-	{
-		m_skipped.add(ci);
+	public void addSkipped(ComponentIdentifier ci) {
+		skipped.add(ci);
 	}
 
-	public void addUpdated(ComponentIdentifier ci)
-	{
-		m_updated.add(ci);
+	public void addUpdated(ComponentIdentifier ci) {
+		updated.add(ci);
 	}
 
-	public List<ComponentIdentifier> getFailed()
-	{
-		return m_failed;
+	public List<ComponentIdentifier> getFailed() {
+		return failed;
 	}
 
-	public List<ComponentIdentifier> getKept()
-	{
-		return m_kept;
+	public List<ComponentIdentifier> getKept() {
+		return kept;
 	}
 
-	public List<ComponentIdentifier> getReplaced()
-	{
-		return m_replaced;
+	public List<ComponentIdentifier> getReplaced() {
+		return replaced;
 	}
 
-	public List<ComponentIdentifier> getSkipped()
-	{
-		return m_skipped;
+	public List<ComponentIdentifier> getSkipped() {
+		return skipped;
 	}
 
-	public List<ComponentIdentifier> getUpdated()
-	{
-		return m_updated;
+	public List<ComponentIdentifier> getUpdated() {
+		return updated;
 	}
 
-	public boolean isIncluded(ComponentIdentifier ci)
-	{
-		return (m_failed.contains(ci) || m_kept.contains(ci) || m_replaced.contains(ci) || m_skipped.contains(ci) || m_updated.contains(ci));
+	public boolean isIncluded(ComponentIdentifier ci) {
+		return (failed.contains(ci) || kept.contains(ci) || replaced.contains(ci) || skipped.contains(ci) || updated.contains(ci));
 	}
 }

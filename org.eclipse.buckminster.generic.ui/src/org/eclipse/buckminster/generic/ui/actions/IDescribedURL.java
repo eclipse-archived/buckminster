@@ -17,8 +17,7 @@ import java.net.URL;
  * @author Henrik Lindberg
  * 
  */
-public interface IDescribedURL
-{
+public interface IDescribedURL {
 	/**
 	 * Get the URI (same as the URL, but in URI form).
 	 * 

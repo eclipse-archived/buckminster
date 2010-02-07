@@ -20,17 +20,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * A IStreamConsumer responsible for reading and parsing eclipse preferences from an input stream
+ * A IStreamConsumer responsible for reading and parsing eclipse preferences
+ * from an input stream
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class EclipsePreferencesReader implements IStreamConsumer<IEclipsePreferences>
-{
-	private static class ECRemotePrefs extends EclipsePreferences
-	{
-		public static IEclipsePreferences loadFromStream(InputStream stream) throws IOException
-		{
+public class EclipsePreferencesReader implements IStreamConsumer<IEclipsePreferences> {
+	private static class ECRemotePrefs extends EclipsePreferences {
+		public static IEclipsePreferences loadFromStream(InputStream stream) throws IOException {
 			Properties props = new Properties();
 			props.load(stream);
 			EclipsePreferences prefs = new EclipsePreferences();
@@ -41,21 +39,16 @@ public class EclipsePreferencesReader implements IStreamConsumer<IEclipsePrefere
 
 	public static final EclipsePreferencesReader INSTANCE = new EclipsePreferencesReader();
 
-	public static final String BUCKMINSTER_PROJECT_PREFS_PATH = EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME + '/'
-			+ CorePlugin.getID() + ".prefs"; //$NON-NLS-1$
+	public static final String BUCKMINSTER_PROJECT_PREFS_PATH = EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME + '/' + CorePlugin.getID() + ".prefs"; //$NON-NLS-1$
 
-	public IEclipsePreferences consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
-			IProgressMonitor monitor) throws CoreException, IOException
-	{
+	public IEclipsePreferences consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
+			throws CoreException, IOException {
 		monitor = MonitorUtils.ensureNotNull(monitor);
-		try
-		{
+		try {
 			monitor.beginTask(null, 1);
 			monitor.subTask(Messages.Loading_preferences);
 			return ECRemotePrefs.loadFromStream(stream);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}

@@ -27,22 +27,24 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Mappings</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Mappings</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.maven.impl.MappingsImpl#getEntries <em>Entries</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.maven.impl.MappingsImpl#getRules <em>Rules</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.maven.impl.MappingsImpl#getEntries
+ * <em>Entries</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.maven.impl.MappingsImpl#getRules <em>
+ * Rules</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class MappingsImpl extends EObjectImpl implements Mappings
-{
+public class MappingsImpl extends EObjectImpl implements Mappings {
 	/**
-	 * The cached value of the '{@link #getEntries() <em>Entries</em>}' containment reference list. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getEntries() <em>Entries</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getEntries()
 	 * @generated
@@ -51,8 +53,8 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	protected EList<MapEntry> entries;
 
 	/**
-	 * The cached value of the '{@link #getRules() <em>Rules</em>}' containment reference list. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRules() <em>Rules</em>}' containment
+	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRules()
 	 * @generated
@@ -65,8 +67,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	 * 
 	 * @generated
 	 */
-	protected MappingsImpl()
-	{
+	protected MappingsImpl() {
 		super();
 	}
 
@@ -76,14 +77,12 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.MAPPINGS__ENTRIES:
-			return getEntries();
-		case MavenPackage.MAPPINGS__RULES:
-			return getRules();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case MavenPackage.MAPPINGS__ENTRIES:
+				return getEntries();
+			case MavenPackage.MAPPINGS__RULES:
+				return getRules();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -94,14 +93,12 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.MAPPINGS__ENTRIES:
-			return ((InternalEList<?>)getEntries()).basicRemove(otherEnd, msgs);
-		case MavenPackage.MAPPINGS__RULES:
-			return ((InternalEList<?>)getRules()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case MavenPackage.MAPPINGS__ENTRIES:
+				return ((InternalEList<?>) getEntries()).basicRemove(otherEnd, msgs);
+			case MavenPackage.MAPPINGS__RULES:
+				return ((InternalEList<?>) getRules()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -112,14 +109,12 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.MAPPINGS__ENTRIES:
-			return entries != null && !entries.isEmpty();
-		case MavenPackage.MAPPINGS__RULES:
-			return rules != null && !rules.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case MavenPackage.MAPPINGS__ENTRIES:
+				return entries != null && !entries.isEmpty();
+			case MavenPackage.MAPPINGS__RULES:
+				return rules != null && !rules.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -131,18 +126,16 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.MAPPINGS__ENTRIES:
-			getEntries().clear();
-			getEntries().addAll((Collection<? extends MapEntry>)newValue);
-			return;
-		case MavenPackage.MAPPINGS__RULES:
-			getRules().clear();
-			getRules().addAll((Collection<? extends Transform>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case MavenPackage.MAPPINGS__ENTRIES:
+				getEntries().clear();
+				getEntries().addAll((Collection<? extends MapEntry>) newValue);
+				return;
+			case MavenPackage.MAPPINGS__RULES:
+				getRules().clear();
+				getRules().addAll((Collection<? extends Transform>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -153,16 +146,14 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.MAPPINGS__ENTRIES:
-			getEntries().clear();
-			return;
-		case MavenPackage.MAPPINGS__RULES:
-			getRules().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case MavenPackage.MAPPINGS__ENTRIES:
+				getEntries().clear();
+				return;
+			case MavenPackage.MAPPINGS__RULES:
+				getRules().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -172,10 +163,8 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	 * 
 	 * @generated
 	 */
-	public EList<MapEntry> getEntries()
-	{
-		if(entries == null)
-		{
+	public EList<MapEntry> getEntries() {
+		if (entries == null) {
 			entries = new EObjectContainmentEList<MapEntry>(MapEntry.class, this, MavenPackage.MAPPINGS__ENTRIES);
 		}
 		return entries;
@@ -186,10 +175,8 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	 * 
 	 * @generated
 	 */
-	public EList<Transform> getRules()
-	{
-		if(rules == null)
-		{
+	public EList<Transform> getRules() {
+		if (rules == null) {
 			rules = new EObjectContainmentEList<Transform>(Transform.class, this, MavenPackage.MAPPINGS__RULES);
 		}
 		return rules;
@@ -201,8 +188,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return MavenPackage.Literals.MAPPINGS;
 	}
 

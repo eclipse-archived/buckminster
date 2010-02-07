@@ -29,49 +29,37 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class ComponentQueryParser extends AbstractParser<ComponentQuery> implements ChildPoppedListener
-{
-	private ComponentQuery m_componentQuery;
+public class ComponentQueryParser extends AbstractParser<ComponentQuery> implements ChildPoppedListener {
+	private ComponentQuery componentQuery;
 
-	private URL m_contextURL;
+	private URL contextURL;
 
-	public ComponentQueryParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-			throws CoreException
-	{
-		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS,
-				XMLConstants.BM_CSPEC_NS, XMLConstants.BM_CQUERY_NS }, new String[] { XMLConstants.XHTML_RESOURCE,
-				XMLConstants.XML_RESOURCE, XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_CSPEC_RESOURCE,
-				XMLConstants.BM_CQUERY_RESOURCE }, validating);
+	public ComponentQueryParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating) throws CoreException {
+		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS, XMLConstants.BM_CSPEC_NS,
+				XMLConstants.BM_CQUERY_NS }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE, XMLConstants.BM_COMMON_RESOURCE,
+				XMLConstants.BM_CSPEC_RESOURCE, XMLConstants.BM_CQUERY_RESOURCE }, validating);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_componentQuery = ((ComponentQueryHandler)child).getComponentQuery();
+	public void childPopped(ChildHandler child) throws SAXException {
+		componentQuery = ((ComponentQueryHandler) child).getComponentQuery();
 	}
 
-	public ComponentQuery parse(String systemId, InputStream input) throws CoreException
-	{
-		try
-		{
-			m_contextURL = URLUtils.normalizeToURL(systemId);
-		}
-		catch(MalformedURLException e)
-		{
-			m_contextURL = null;
+	public ComponentQuery parse(String systemId, InputStream input) throws CoreException {
+		try {
+			contextURL = URLUtils.normalizeToURL(systemId);
+		} catch (MalformedURLException e) {
+			contextURL = null;
 		}
 		this.parseInput(systemId, input);
-		return m_componentQuery;
+		return componentQuery;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(ComponentQuery.TAG.equals(localName))
-		{
-			ComponentQueryHandler rmh = new ComponentQueryHandler(this, m_contextURL);
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if (ComponentQuery.TAG.equals(localName)) {
+			ComponentQueryHandler rmh = new ComponentQueryHandler(this, contextURL);
 			this.pushHandler(rmh, attrs);
-		}
-		else
+		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
 }

@@ -26,17 +26,15 @@ import org.eclipse.core.runtime.Status;
  * 
  * @author Thomas Hallgren
  */
-public class InstallerJob extends WorkspaceJob
-{
-	private final MaterializationContext m_context;
+public class InstallerJob extends WorkspaceJob {
+	private final MaterializationContext context;
 
-	private final boolean m_propagateStatus;
+	private final boolean propagateStatus;
 
-	public InstallerJob(MaterializationContext ctx, boolean propagateStatus) throws CoreException
-	{
+	public InstallerJob(MaterializationContext ctx, boolean propagateStatus) throws CoreException {
 		super(Messages.InstallerJob_Installing);
-		m_context = ctx;
-		m_propagateStatus = propagateStatus;
+		this.context = ctx;
+		this.propagateStatus = propagateStatus;
 
 		// Report using the standard job reporter.
 		//
@@ -47,25 +45,19 @@ public class InstallerJob extends WorkspaceJob
 	}
 
 	@Override
-	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException
-	{
+	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 1000);
-		BillOfMaterials bom = m_context.getBillOfMaterials();
-		try
-		{
-			AbstractMaterializer.performInstallActions(bom, m_context, MonitorUtils.subMonitor(monitor, 100));
-		}
-		catch(CoreException e)
-		{
-			m_context.addRequestStatus(bom.getRequest(), e.getStatus());
-			if(m_propagateStatus)
+		BillOfMaterials bom = context.getBillOfMaterials();
+		try {
+			AbstractMaterializer.performInstallActions(bom, context, MonitorUtils.subMonitor(monitor, 100));
+		} catch (CoreException e) {
+			context.addRequestStatus(bom.getRequest(), e.getStatus());
+			if (propagateStatus)
 				CorePlugin.getLogger().error(e, e.getMessage());
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
-			if(m_propagateStatus)
-				m_context.emitWarningAndErrorTags();
+			if (propagateStatus)
+				context.emitWarningAndErrorTags();
 		}
 		return Status.OK_STATUS;
 	}

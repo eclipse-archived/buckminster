@@ -28,34 +28,27 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
  * @author thhal
  */
 @SuppressWarnings("restriction")
-public class FeatureModelReader implements IStreamConsumer<IFeatureModel>
-{
-	public static EditableFeatureModel readEditableFeatureModel(File featureFile) throws CoreException
-	{
+public class FeatureModelReader implements IStreamConsumer<IFeatureModel> {
+	public static EditableFeatureModel readEditableFeatureModel(File featureFile) throws CoreException {
 		EditableFeatureModel featureModel = new EditableFeatureModel(featureFile);
 		featureModel.load();
 		return featureModel;
 	}
 
-	public static IFeatureModel readFeatureModel(InputStream stream) throws CoreException
-	{
+	public static IFeatureModel readFeatureModel(InputStream stream) throws CoreException {
 		ExternalFeatureModel featureModel = new ExternalFeatureModel();
 		featureModel.load(stream, true);
 		return featureModel;
 	}
 
-	public IFeatureModel consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IFeatureModel consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
+			throws CoreException {
 		monitor.beginTask(null, 1);
-		try
-		{
+		try {
 			IFeatureModel featureModel = readFeatureModel(stream);
 			MonitorUtils.worked(monitor, 1);
 			return featureModel;
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}

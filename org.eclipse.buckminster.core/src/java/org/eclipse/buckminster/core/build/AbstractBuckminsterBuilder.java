@@ -36,8 +36,7 @@ import org.eclipse.core.runtime.Status;
 /**
  * @author kolwing
  */
-public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuilder implements IResourceChangeListener
-{
+public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuilder implements IResourceChangeListener {
 	public static final String ARG_REFRESH_RESOURCE = "refresh.resource"; //$NON-NLS-1$
 
 	public static final String ARG_DERIVED_RESOURCE = "derived.resource"; //$NON-NLS-1$
@@ -56,380 +55,333 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 
 	public static final String ARG_INCREMENTAL_PRINTSTREAM_KEY = "incremental.printstream"; //$NON-NLS-1$
 
-	public static String bestNameForBuilder(String givenName, IConfigurationElement ce)
-	{
+	public static String bestNameForBuilder(String givenName, IConfigurationElement ce) {
 		StringBuilder sb = new StringBuilder();
-		if(givenName != null)
+		if (givenName != null)
 			sb.append(givenName).append(" ("); //$NON-NLS-1$
 		String s = ce.getDeclaringExtension().getLabel().trim();
-		if(s.length() == 0)
+		if (s.length() == 0)
 			s = ce.getDeclaringExtension().getUniqueIdentifier();
 		sb.append(s);
-		if(givenName != null)
+		if (givenName != null)
 			sb.append(")"); //$NON-NLS-1$
 		return sb.toString();
 	}
 
-	public static String getValue(Map<String, String> args, String key)
-	{
+	public static String getValue(Map<String, String> args, String key) {
 		String v = args.get(key);
-		if(v != null)
-		{
+		if (v != null) {
 			v = v.trim();
-			if(v.length() == 0)
+			if (v.length() == 0)
 				v = null;
 		}
 		return v;
 	}
 
-	public static boolean isDeltaMatching(Map<String, String> args, IProject project, IResourceDelta delta,
-			IResource[] notifyOnChangedResources) throws CoreException
-	{
+	public static boolean isDeltaMatching(Map<String, String> args, IProject project, IResourceDelta delta, IResource[] notifyOnChangedResources)
+			throws CoreException {
 		// if there's no delta available, just go on
 		//
-		if(delta == null)
+		if (delta == null)
 			return true;
 
 		// if there is no delta resource configured, everything matches
 		//
 		String deltaResource = getValue(args, ARG_DELTA_RESOURCE_KEY);
-		if(deltaResource == null)
+		if (deltaResource == null)
 			return true;
 
 		// try to find the configured delta resource
 		//
-		if(delta.findMember(new Path(deltaResource)) != null)
+		if (delta.findMember(new Path(deltaResource)) != null)
 			return true;
 
 		// anything the builder wishes change notifications about are
 		// implicitly delta resources
 		// note: delta checks are for auto/incremental, notifications for any
 		// change, so they are otherwise different usecases
-		if(notifyOnChangedResources != null)
-		{
-			for(IResource r : notifyOnChangedResources)
-				if(delta.findMember(r.getFullPath()) != null)
+		if (notifyOnChangedResources != null) {
+			for (IResource r : notifyOnChangedResources)
+				if (delta.findMember(r.getFullPath()) != null)
 					return true;
 		}
 
 		return false;
 	}
 
-	public static boolean isDisabled(Map<String, String> args)
-	{
+	public static boolean isDisabled(Map<String, String> args) {
 		return Boolean.parseBoolean(getValue(args, ARG_DISABLED_KEY));
 	}
 
-	public static boolean isPrintingEnabledForKind(Map<String, String> args, int kind)
-	{
+	public static boolean isPrintingEnabledForKind(Map<String, String> args, int kind) {
 		String key = null;
-		switch(kind)
-		{
-		case AUTO_BUILD:
-			key = ARG_AUTO_PRINTSTREAM_KEY;
-			break;
-		case CLEAN_BUILD:
-			key = ARG_CLEAN_PRINTSTREAM_KEY;
-			break;
-		case FULL_BUILD:
-			key = ARG_FULL_PRINTSTREAM_KEY;
-			break;
-		case INCREMENTAL_BUILD:
-			key = ARG_INCREMENTAL_PRINTSTREAM_KEY;
-			break;
+		switch (kind) {
+			case AUTO_BUILD:
+				key = ARG_AUTO_PRINTSTREAM_KEY;
+				break;
+			case CLEAN_BUILD:
+				key = ARG_CLEAN_PRINTSTREAM_KEY;
+				break;
+			case FULL_BUILD:
+				key = ARG_FULL_PRINTSTREAM_KEY;
+				break;
+			case INCREMENTAL_BUILD:
+				key = ARG_INCREMENTAL_PRINTSTREAM_KEY;
+				break;
 		}
 
-		if(key == null)
+		if (key == null)
 			return true;
 
 		// an absent value indicates 'true'
 		//
 		String value = getValue(args, key);
-		if(value == null)
+		if (value == null)
 			return true;
 
 		return Boolean.parseBoolean(value);
 	}
 
-	public static String kindToString(int kind)
-	{
-		if(kind == AUTO_BUILD)
+	public static String kindToString(int kind) {
+		if (kind == AUTO_BUILD)
 			return "AUTO"; //$NON-NLS-1$
-		if(kind == CLEAN_BUILD)
+		if (kind == CLEAN_BUILD)
 			return "CLEAN"; //$NON-NLS-1$
-		if(kind == FULL_BUILD)
+		if (kind == FULL_BUILD)
 			return "FULL"; //$NON-NLS-1$
-		if(kind == INCREMENTAL_BUILD)
+		if (kind == INCREMENTAL_BUILD)
 			return "INCREMENTAL"; //$NON-NLS-1$
 
 		return "NONE"; //$NON-NLS-1$
 	}
 
-	public static void setDisabled(Map<String, String> args, boolean disabled)
-	{
-		if(disabled)
+	public static void setDisabled(Map<String, String> args, boolean disabled) {
+		if (disabled)
 			args.put(ARG_DISABLED_KEY, Boolean.TRUE.toString());
 		else
 			args.remove(ARG_DISABLED_KEY);
 	}
 
-	public static void setPrintingEnabledForKind(Map<String, String> args, int kind, boolean enabled)
-	{
+	public static void setPrintingEnabledForKind(Map<String, String> args, int kind, boolean enabled) {
 		String key = null;
-		switch(kind)
-		{
-		case AUTO_BUILD:
-			key = ARG_AUTO_PRINTSTREAM_KEY;
-			break;
-		case CLEAN_BUILD:
-			key = ARG_CLEAN_PRINTSTREAM_KEY;
-			break;
-		case FULL_BUILD:
-			key = ARG_FULL_PRINTSTREAM_KEY;
-			break;
-		case INCREMENTAL_BUILD:
-			key = ARG_INCREMENTAL_PRINTSTREAM_KEY;
-			break;
+		switch (kind) {
+			case AUTO_BUILD:
+				key = ARG_AUTO_PRINTSTREAM_KEY;
+				break;
+			case CLEAN_BUILD:
+				key = ARG_CLEAN_PRINTSTREAM_KEY;
+				break;
+			case FULL_BUILD:
+				key = ARG_FULL_PRINTSTREAM_KEY;
+				break;
+			case INCREMENTAL_BUILD:
+				key = ARG_INCREMENTAL_PRINTSTREAM_KEY;
+				break;
 		}
 
-		if(key != null)
-		{
-			if(enabled)
+		if (key != null) {
+			if (enabled)
 				args.remove(key);
 			else
 				args.put(key, Boolean.FALSE.toString());
 		}
 	}
 
-	private IConfigurationElement m_config;
+	private IConfigurationElement config;
 
-	private Object m_data;
+	private Object data;
 
-	private String m_propertyName;
+	private String propertyName;
 
-	private PrintStream m_errStream = null;
+	private PrintStream errStream = null;
 
-	private PrintStream m_outStream = null;
+	private PrintStream outStream = null;
 
-	private IResource[] m_notifyOnChangedResources;
+	private IResource[] notifyOnChangedResources;
 
 	// regardless of if delta is matching or not, always do a build
 	// the very first time the builder is called (unless disabled, of course)
 	// this catches cases where otherwise the builder hasn't had the opportunity
 	// to set resource notifications, for example
-	private boolean m_initialBuildDone = false;
+	private boolean initialBuildDone = false;
 
-	public void resourceChanged(IResourceChangeEvent event)
-	{
-		if(m_notifyOnChangedResources != null && event.getType() == IResourceChangeEvent.POST_CHANGE)
-		{
+	public void resourceChanged(IResourceChangeEvent event) {
+		if (notifyOnChangedResources != null && event.getType() == IResourceChangeEvent.POST_CHANGE) {
 			// don't instantiate a list until we know it's needed
 			List<IResource> changedResources = null;
-			for(IResource r : m_notifyOnChangedResources)
-			{
+			for (IResource r : notifyOnChangedResources) {
 				IResourceDelta delta = event.getDelta().findMember(r.getFullPath());
-				if(delta != null)
-				{
-					if(changedResources == null)
+				if (delta != null) {
+					if (changedResources == null)
 						changedResources = new ArrayList<IResource>();
 					changedResources.add(r);
 				}
 			}
 
-			if(changedResources != null)
+			if (changedResources != null)
 				resourcesChangeNotification(changedResources.toArray(new IResource[0]));
 		}
 	}
 
 	@Override
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-			throws CoreException
-	{
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		super.setInitializationData(config, propertyName, data);
 
-		m_config = config;
-		m_propertyName = propertyName;
-		m_data = data;
+		this.config = config;
+		this.propertyName = propertyName;
+		this.data = data;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int, java.util.Map,
-	 * org.eclipse.core.runtime.IProgressMonitor)
+	 * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int,
+	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
-	final protected IProject[] build(int kind, Map rawArgs, IProgressMonitor monitor) throws CoreException
-	{
+	final protected IProject[] build(int kind, Map rawArgs, IProgressMonitor monitor) throws CoreException {
 		@SuppressWarnings("unchecked")
 		Map<String, String> args = rawArgs;
-		if(args == null)
+		if (args == null)
 			args = new HashMap<String, String>();
 
 		boolean disabled = isDisabled(args);
-		if(disabled)
+		if (disabled)
 			return null;
 
-		boolean isDeltaMatching = ((kind != AUTO_BUILD && kind != INCREMENTAL_BUILD)
-				? true
-				: isDeltaMatching(args, getProject(), getDelta(getProject()), m_notifyOnChangedResources));
+		boolean isDeltaMatching = ((kind != AUTO_BUILD && kind != INCREMENTAL_BUILD) ? true : isDeltaMatching(args, getProject(),
+				getDelta(getProject()), notifyOnChangedResources));
 
-		if(!isDeltaMatching && m_initialBuildDone)
+		if (!isDeltaMatching && initialBuildDone)
 			return null;
 
 		IProject[] projects = null;
-		m_initialBuildDone = true;
+		initialBuildDone = true;
 
 		boolean needsPrintStream = isPrintingEnabledForKind(args, kind);
 
 		MonitorUtils.begin(monitor, 10);
 		Logger logger = CorePlugin.getLogger();
-		try
-		{
-			if(needsPrintStream)
-			{
-				m_outStream = Logger.getOutStream();
-				m_errStream = Logger.getErrStream();
-			}
-			else
-			{
-				m_outStream = System.out;
-				m_errStream = System.err;
+		try {
+			if (needsPrintStream) {
+				outStream = Logger.getOutStream();
+				errStream = Logger.getErrStream();
+			} else {
+				outStream = System.out;
+				errStream = System.err;
 			}
 
-			if(logger.isDebugEnabled())
+			if (logger.isDebugEnabled())
 				logger.debug("[start AntBuilder(%s)] : %s - %s", kindToString(kind), getBestName(args), //$NON-NLS-1$
 						getProject().getName());
 
 			projects = doBuild(kind, args, MonitorUtils.subMonitor(monitor, 8));
 
 			String refreshResource = getValue(args, ARG_REFRESH_RESOURCE);
-			if(refreshResource != null)
-			{
+			if (refreshResource != null) {
 				IResource resource = getProject().findMember(new Path(refreshResource));
-				if(resource != null)
+				if (resource != null)
 					resource.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 1));
 			}
 
 			String derivedResource = getValue(args, ARG_DERIVED_RESOURCE);
-			if(derivedResource != null)
-			{
+			if (derivedResource != null) {
 				IResource resource = getProject().findMember(new Path(derivedResource));
-				if(resource != null)
-				{
-					if(refreshResource == null || !refreshResource.equals(derivedResource))
+				if (resource != null) {
+					if (refreshResource == null || !refreshResource.equals(derivedResource))
 						resource.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 1));
 					resource.setDerived(true, MonitorUtils.subMonitor(monitor, 1));
 				}
 			}
-		}
-		finally
-		{
+		} finally {
 			MonitorUtils.done(monitor);
-			if(logger.isDebugEnabled())
+			if (logger.isDebugEnabled())
 				logger.debug(String.format("[end AntBuilder(%s)]", kindToString(kind))); //$NON-NLS-1$
 		}
 		return projects;
 	}
 
 	@Override
-	protected final void clean(IProgressMonitor monitor) throws CoreException
-	{
+	protected final void clean(IProgressMonitor monitor) throws CoreException {
 		// make all go the same way
 		//
 		build(CLEAN_BUILD, getCommand().getArguments(), monitor);
 	}
 
-	protected IProject[] doAutoBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
-	{
+	protected IProject[] doAutoBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		return null;
 	}
 
-	protected IProject[] doBuild(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException
-	{
-		if(kind == AUTO_BUILD)
+	protected IProject[] doBuild(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
+		if (kind == AUTO_BUILD)
 			return doAutoBuild(args, monitor);
-		if(kind == CLEAN_BUILD)
+		if (kind == CLEAN_BUILD)
 			return doCleanBuild(args, monitor);
-		if(kind == FULL_BUILD)
+		if (kind == FULL_BUILD)
 			return doFullBuild(args, monitor);
-		if(kind == INCREMENTAL_BUILD)
+		if (kind == INCREMENTAL_BUILD)
 			return doIncrementalBuild(args, monitor);
 
 		throw new CoreException(new Status(IStatus.ERROR, CorePlugin.CORE_NAMESPACE, 0, Messages.Unknown_kind, null));
 	}
 
-	protected IProject[] doCleanBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
-	{
+	protected IProject[] doCleanBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		return null;
 	}
 
-	protected IProject[] doFullBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
-	{
+	protected IProject[] doFullBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		return null;
 	}
 
-	protected IProject[] doIncrementalBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException
-	{
+	protected IProject[] doIncrementalBuild(Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		return null;
 	}
 
-	protected void doStartupOnInitialize()
-	{
+	protected void doStartupOnInitialize() {
 		// noop
 	}
 
-	protected String getBestName(Map<String, String> args)
-	{
-		return bestNameForBuilder(getGivenName(args), m_config);
+	protected String getBestName(Map<String, String> args) {
+		return bestNameForBuilder(getGivenName(args), config);
 	}
 
-	protected IConfigurationElement getConfig()
-	{
-		return m_config;
+	protected IConfigurationElement getConfig() {
+		return config;
 	}
 
-	protected Object getData()
-	{
-		return m_data;
+	protected Object getData() {
+		return data;
 	}
 
-	protected PrintStream getErrStream()
-	{
-		return m_errStream;
+	protected PrintStream getErrStream() {
+		return errStream;
 	}
 
-	protected String getGivenName(Map<String, String> args)
-	{
+	protected String getGivenName(Map<String, String> args) {
 		return getValue(args, ARG_GIVEN_NAME_KEY);
 	}
 
-	protected PrintStream getOutStream()
-	{
-		return m_outStream;
+	protected PrintStream getOutStream() {
+		return outStream;
 	}
 
-	protected String getPropertyName()
-	{
-		return m_propertyName;
+	protected String getPropertyName() {
+		return propertyName;
 	}
 
-	protected void notifyOnChangedResources(IResource[] resources)
-	{
-		m_notifyOnChangedResources = resources;
+	protected void notifyOnChangedResources(IResource[] resources) {
+		notifyOnChangedResources = resources;
 	}
 
-	protected void resourcesChangeNotification(IResource[] changedResources)
-	{
+	protected void resourcesChangeNotification(IResource[] changedResources) {
 		// if someone has requested notification and then doesn't listen to it,
 		// they deserve to be punished
 		throw new IllegalStateException(Messages.Method_not_overridden);
 	}
 
 	@Override
-	protected void startupOnInitialize()
-	{
+	protected void startupOnInitialize() {
 		super.startupOnInitialize();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 		doStartupOnInitialize();

@@ -13,25 +13,21 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Widget;
 
-public class VersionDesignatorEvent extends TypedEvent
-{
+public class VersionDesignatorEvent extends TypedEvent {
 	private static final long serialVersionUID = 3880730801886666166L;
 
-	public VersionDesignatorEvent(VersionDesignator vd, Widget w, Object d)
-	{
+	public VersionDesignatorEvent(VersionDesignator vd, Widget w, Object d) {
 		super(vd);
 		this.display = vd.getDisplay();
 		this.widget = w;
 		this.data = d;
 	}
 
-	public VersionRange getVersionDesignator()
-	{
-		return ((VersionDesignator)this.getSource()).getVersionDesignator();
+	public VersionRange getVersionDesignator() {
+		return ((VersionDesignator) this.getSource()).getVersionDesignator();
 	}
 
-	public String getVersionType()
-	{
-		return ((VersionDesignator)this.getSource()).getVersionType();
+	public String getVersionType() {
+		return ((VersionDesignator) this.getSource()).getVersionType();
 	}
 }

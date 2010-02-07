@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -31,32 +32,29 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
-public abstract class NewBMFileWizardPage extends WizardPage
-{
+public abstract class NewBMFileWizardPage extends WizardPage {
 
 	private Text containerText;
 
 	private Text fileText;
 
-	private String m_fileName;
+	private String fileName;
 
-	protected ISelection m_selection;
+	protected ISelection selection;
 
-	private String m_extension;
+	private String extension;
 
-	protected NewBMFileWizardPage(ISelection selection, String fileName, String extension)
-	{
+	protected NewBMFileWizardPage(ISelection selection, String fileName, String extension) {
 		super("wizardPage"); //$NON-NLS-1$
-		m_selection = selection;
-		m_fileName = fileName;
-		m_extension = extension;
+		this.selection = selection;
+		this.fileName = fileName;
+		this.extension = extension;
 	}
 
 	/**
 	 * @see IDialogPage#createControl(Composite)
 	 */
-	public void createControl(Composite parent)
-	{
+	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
 		GridLayout layout = new GridLayout();
 		container.setLayout(layout);
@@ -68,21 +66,17 @@ public abstract class NewBMFileWizardPage extends WizardPage
 		containerText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		containerText.setLayoutData(gd);
-		containerText.addModifyListener(new ModifyListener()
-		{
-			public void modifyText(ModifyEvent e)
-			{
+		containerText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
 				dialogChanged();
 			}
 		});
 
 		Button button = new Button(container, SWT.PUSH);
 		button.setText(Messages.browse_with_dots);
-		button.addSelectionListener(new SelectionAdapter()
-		{
+		button.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				handleBrowse();
 			}
 		});
@@ -92,10 +86,8 @@ public abstract class NewBMFileWizardPage extends WizardPage
 		fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fileText.setLayoutData(gd);
-		fileText.addModifyListener(new ModifyListener()
-		{
-			public void modifyText(ModifyEvent e)
-			{
+		fileText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
 				dialogChanged();
 			}
 		});
@@ -104,8 +96,7 @@ public abstract class NewBMFileWizardPage extends WizardPage
 		setControl(container);
 	}
 
-	public String getContainerName()
-	{
+	public String getContainerName() {
 		return containerText.getText();
 	}
 
@@ -114,54 +105,45 @@ public abstract class NewBMFileWizardPage extends WizardPage
 	 * 
 	 * @return
 	 */
-	public String getFileName()
-	{
-		String fileName = fileText.getText();
-		if(!fileName.endsWith("." + m_extension)) //$NON-NLS-1$
-			fileName += "." + m_extension; //$NON-NLS-1$
-		return fileName;
+	public String getFileName() {
+		String file = fileText.getText();
+		if (!file.endsWith("." + extension)) //$NON-NLS-1$
+			file += "." + extension; //$NON-NLS-1$
+		return file;
 	}
 
 	/**
 	 * Ensures that both text fields are set.
 	 */
-	private void dialogChanged()
-	{
+	private void dialogChanged() {
 		IResource container = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(getContainerName()));
-		String fileName = fileText.getText();
+		String file = fileText.getText();
 
-		if(getContainerName().length() == 0)
-		{
+		if (getContainerName().length() == 0) {
 			updateStatus(Messages.file_container_must_be_specified);
 			return;
 		}
-		if(container == null || (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0)
-		{
+		if (container == null || (container.getType() & (IResource.PROJECT | IResource.FOLDER)) == 0) {
 			updateStatus(Messages.file_container_must_exist);
 			return;
 		}
-		if(!container.isAccessible())
-		{
+		if (!container.isAccessible()) {
 			updateStatus(Messages.project_must_be_writable);
 			return;
 		}
-		if(fileName.length() == 0)
-		{
+		if (file.length() == 0) {
 			updateStatus(Messages.file_name_must_be_specified);
 			return;
 		}
-		if(fileName.replace('\\', '/').indexOf('/', 1) > 0)
-		{
+		if (file.replace('\\', '/').indexOf('/', 1) > 0) {
 			updateStatus(Messages.file_name_must_be_valid);
 			return;
 		}
-		int dotLoc = fileName.lastIndexOf('.');
-		if(dotLoc != -1)
-		{
-			String ext = fileName.substring(dotLoc + 1);
-			if(ext.equalsIgnoreCase(m_extension) == false)
-			{
-				updateStatus(NLS.bind(Messages.file_extension_must_be_0, m_extension));
+		int dotLoc = file.lastIndexOf('.');
+		if (dotLoc != -1) {
+			String ext = file.substring(dotLoc + 1);
+			if (ext.equalsIgnoreCase(extension) == false) {
+				updateStatus(NLS.bind(Messages.file_extension_must_be_0, extension));
 				return;
 			}
 		}
@@ -169,54 +151,47 @@ public abstract class NewBMFileWizardPage extends WizardPage
 	}
 
 	/**
-	 * Uses the standard container m_selection dialog to choose the new value for the container field.
+	 * Uses the standard container selection dialog to choose the new value for
+	 * the container field.
 	 */
-	private void handleBrowse()
-	{
-		ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin.getWorkspace()
-				.getRoot(), false, Messages.select_new_file_container);
-		if(dialog.open() == Window.OK)
-		{
+	private void handleBrowse() {
+		ContainerSelectionDialog dialog = new ContainerSelectionDialog(getShell(), ResourcesPlugin.getWorkspace().getRoot(), false,
+				Messages.select_new_file_container);
+		if (dialog.open() == Window.OK) {
 			Object[] result = dialog.getResult();
-			if(result.length == 1)
-			{
-				containerText.setText(((Path)result[0]).toString());
+			if (result.length == 1) {
+				containerText.setText(((Path) result[0]).toString());
 			}
 		}
 	}
 
 	/**
-	 * Tests if the current workbench m_selection is a suitable container to use.
+	 * Tests if the current workbench selection is a suitable container to use.
 	 */
-	private void initialize()
-	{
-		if(m_selection != null && m_selection.isEmpty() == false && m_selection instanceof IStructuredSelection)
-		{
-			IStructuredSelection ssel = (IStructuredSelection)m_selection;
-			if(ssel.size() > 1)
+	private void initialize() {
+		if (selection != null && selection.isEmpty() == false && selection instanceof IStructuredSelection) {
+			IStructuredSelection ssel = (IStructuredSelection) selection;
+			if (ssel.size() > 1)
 				return;
 			Object obj = ssel.getFirstElement();
 
-			if(obj instanceof IProjectNature)
-			{
-				obj = ((IProjectNature)obj).getProject();
+			if (obj instanceof IProjectNature) {
+				obj = ((IProjectNature) obj).getProject();
 			}
 
-			if(obj instanceof IResource)
-			{
+			if (obj instanceof IResource) {
 				IContainer container;
-				if(obj instanceof IContainer)
-					container = (IContainer)obj;
+				if (obj instanceof IContainer)
+					container = (IContainer) obj;
 				else
-					container = ((IResource)obj).getParent();
+					container = ((IResource) obj).getParent();
 				containerText.setText(container.getFullPath().toString());
 			}
 		}
-		fileText.setText(m_fileName);
+		fileText.setText(fileName);
 	}
 
-	private void updateStatus(String message)
-	{
+	private void updateStatus(String message) {
 		setErrorMessage(message);
 		setPageComplete(message == null);
 	}

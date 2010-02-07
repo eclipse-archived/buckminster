@@ -12,15 +12,13 @@ package org.eclipse.buckminster.cmdline.parser;
 
 import org.eclipse.buckminster.cmdline.Messages;
 
-public class NoOptionNameException extends AbstractOptionParsingException
-{
+public class NoOptionNameException extends AbstractOptionParsingException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6869141594127060224L;
 
-	public NoOptionNameException()
-	{
+	public NoOptionNameException() {
 		super(Messages.NoOptionNameException_Missing_option_name);
 	}
 }

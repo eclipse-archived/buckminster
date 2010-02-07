@@ -19,31 +19,26 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class TaggedRxPatternHandler extends RxPatternHandler
-{
-	private final String m_tag;
+public class TaggedRxPatternHandler extends RxPatternHandler {
+	private final String tag;
 
-	public TaggedRxPatternHandler(AbstractHandler parent, String tag)
-	{
+	public TaggedRxPatternHandler(AbstractHandler parent, String tag) {
 		super(parent);
-		m_tag = tag;
+		this.tag = tag;
 	}
 
 	@Override
-	public RxPart createPart()
-	{
-		return new TaggedRxPattern(m_tag, getName(), isOptional(), getPattern(), getPrefix(), getSuffix());
+	public RxPart createPart() {
+		return new TaggedRxPattern(tag, getName(), isOptional(), getPattern(), getPrefix(), getSuffix());
 	}
 
 	@Override
-	public String getTAG()
-	{
-		return m_tag;
+	public String getTAG() {
+		return tag;
 	}
 
 	@Override
-	protected String getNameAttributeValue(Attributes attrs) throws SAXException
-	{
-		return TaggedRxPattern.TAGGED_PREFIX + m_tag;
+	protected String getNameAttributeValue(Attributes attrs) throws SAXException {
+		return TaggedRxPattern.TAGGED_PREFIX + tag;
 	}
 }

@@ -17,12 +17,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class ElementNotFoundException extends LocalizedException
-{
+public class ElementNotFoundException extends LocalizedException {
 	private static final long serialVersionUID = 853871657215671889L;
 
-	public ElementNotFoundException(ISaxableStorage<?> storage, UUID uuid)
-	{
+	public ElementNotFoundException(ISaxableStorage<?> storage, UUID uuid) {
 		super(NLS.bind(Messages.No_element_with_id_0_was_found_in_storage_1, uuid, storage.getName()));
 	}
 }

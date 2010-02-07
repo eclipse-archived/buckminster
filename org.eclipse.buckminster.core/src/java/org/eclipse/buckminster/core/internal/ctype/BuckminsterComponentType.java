@@ -24,30 +24,28 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class BuckminsterComponentType extends AbstractComponentType
-{
-	private static final IResolutionBuilder s_builder = new BuckminsterCSpecBuilder();
+public class BuckminsterComponentType extends AbstractComponentType {
+	private static final IResolutionBuilder builder = new BuckminsterCSpecBuilder();
 
-	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
-			throws CoreException
-	{
-		// Not that we cannot look for a cquery at the very top. If we did, then we
-		// would end up in an endless recursion since an attempt to resolve it would
+	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
+		// Not that we cannot look for a cquery at the very top. If we did, then
+		// we
+		// would end up in an endless recursion since an attempt to resolve it
+		// would
 		// just find it again.
 		//
-		if(reader instanceof ICatalogReader)
-		{
+		if (reader instanceof ICatalogReader) {
 			NodeQuery query = reader.getNodeQuery();
-			boolean atTop = query.getComponentRequest().equals(
-					query.getComponentQuery().getExpandedRootRequest(query.getContext()));
-			if(!atTop)
-			{
-				return ((ICatalogReader)reader).exists(CorePlugin.CQUERY_FILE, monitor)
-						? CorePlugin.getDefault().getResolutionBuilder(IResolutionBuilder.CQUERY2BOM)
-						: s_builder; // No need to complete monitor
+			boolean atTop = query.getComponentRequest().equals(query.getComponentQuery().getExpandedRootRequest(query.getContext()));
+			if (!atTop) {
+				return ((ICatalogReader) reader).exists(CorePlugin.CQUERY_FILE, monitor) ? CorePlugin.getDefault().getResolutionBuilder(
+						IResolutionBuilder.CQUERY2BOM) : builder; // No need
+																	// to
+																	// complete
+																	// monitor
 			}
 		}
 		MonitorUtils.complete(monitor);
-		return s_builder;
+		return builder;
 	}
 }

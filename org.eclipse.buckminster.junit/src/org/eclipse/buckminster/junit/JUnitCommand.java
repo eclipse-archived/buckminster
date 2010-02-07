@@ -34,68 +34,61 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.junit.JUnitCore;
 import org.xml.sax.InputSource;
 
-public class JUnitCommand extends Launch
-{
+public class JUnitCommand extends Launch {
 	private static final OptionDescriptor QUIET_DESCRIPTOR = new OptionDescriptor('q', "quiet", OptionValueType.NONE); //$NON-NLS-1$
 
 	private static final OptionDescriptor OUTPUT_DESCRIPTOR = new OptionDescriptor('o', "output", //$NON-NLS-1$
 			OptionValueType.REQUIRED);
 
-	private boolean m_quiet;
+	private boolean quiet;
 
-	private String m_outputPath;
+	private String outputPath;
 
 	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		super.getOptionDescriptors(appendHere);
 		appendHere.add(QUIET_DESCRIPTOR);
 		appendHere.add(OUTPUT_DESCRIPTOR);
 	}
 
 	@Override
-	protected void handleOption(Option option) throws Exception
-	{
+	protected void handleOption(Option option) throws Exception {
 		super.handleOption(option);
 
-		if(option.is(QUIET_DESCRIPTOR))
-			m_quiet = true;
-		else if(option.is(OUTPUT_DESCRIPTOR))
-			m_outputPath = option.getValue();
+		if (option.is(QUIET_DESCRIPTOR))
+			quiet = true;
+		else if (option.is(OUTPUT_DESCRIPTOR))
+			outputPath = option.getValue();
 	}
 
 	@Override
-	protected int internalRun(IProgressMonitor monitor) throws Exception
-	{
-		TestListener listener = new TestListener(m_quiet);
+	protected int internalRun(IProgressMonitor monitor) throws Exception {
+		TestListener listener = new TestListener(quiet);
 		JUnitCore.addTestRunListener(listener);
 
-		try
-		{
+		try {
 			int result = super.internalRun(monitor);
 
-			if(m_outputPath != null && listener.getTestRunSession() != null)
+			if (outputPath != null && listener.getTestRunSession() != null)
 				exportTestRunSession(listener);
 
 			return result;
-		}
-		finally
-		{
+		} finally {
 			JUnitCore.removeTestRunListener(listener);
 		}
 	}
 
 	/*
-	 * This method is basically copied from JUnitModel#exportTestRunSession in order to avoid using internal API.
+	 * This method is basically copied from JUnitModel#exportTestRunSession in
+	 * order to avoid using internal API.
 	 */
-	private void exportTestRunSession(TestListener listener) throws Exception
-	{
+	private void exportTestRunSession(TestListener listener) throws Exception {
 		// bug #292376 - JUnit reporting fails if output path does not exist
-		File parentFile = new File(m_outputPath).getParentFile();
-		if(parentFile != null)
+		File parentFile = new File(outputPath).getParentFile();
+		if (parentFile != null)
 			FileUtils.createDirectory(parentFile, new NullProgressMonitor());
 
-		OutputStream out = new BufferedOutputStream(new FileOutputStream(m_outputPath));
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(outputPath));
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		InputSource inputSource = new InputSource();
 		SAXSource source = new SAXSource(new ResultSerializer(listener, getStdOut(), getStdErr()), inputSource);
@@ -104,16 +97,15 @@ public class JUnitCommand extends Launch
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 		/*
 		 * Bug in Xalan: Only indents if proprietary property
-		 * org.apache.xalan.templates.OutputProperties.S_KEY_INDENT_AMOUNT is set.
+		 * org.apache.xalan.templates.OutputProperties.S_KEY_INDENT_AMOUNT is
+		 * set.
 		 * 
-		 * Bug in Xalan as shipped with J2SE 5.0: Does not read the indent-amount property at all >:-(.
+		 * Bug in Xalan as shipped with J2SE 5.0: Does not read the
+		 * indent-amount property at all >:-(.
 		 */
-		try
-		{
+		try {
 			transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2"); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		catch(IllegalArgumentException e)
-		{
+		} catch (IllegalArgumentException e) {
 			// no indentation today...
 		}
 		transformer.transform(source, result);

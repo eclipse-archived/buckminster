@@ -49,207 +49,165 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author Karel Brezina
  * 
  */
-public class Properties extends Composite
-{
+public class Properties extends Composite {
 
-	class PropertiesContentProvider implements IStructuredContentProvider
-	{
-		public void dispose()
-		{
+	class PropertiesContentProvider implements IStructuredContentProvider {
+		public void dispose() {
 			// Nothing to dispose
 		}
 
-		public Object[] getElements(Object inputElement)
-		{
-			return m_properties.toArray();
+		public Object[] getElements(Object inputElement) {
+			return properties.toArray();
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-		{
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// Nothing to do
 		}
 	}
 
-	class PropertiesLabelProvider extends LabelProvider implements ITableLabelProvider
-	{
-		public Image getColumnImage(Object element, int columnIndex)
-		{
+	class PropertiesLabelProvider extends LabelProvider implements ITableLabelProvider {
+		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
-		public String getColumnText(Object element, int columnIndex)
-		{
-			Property prop = (Property)element;
+		public String getColumnText(Object element, int columnIndex) {
+			Property prop = (Property) element;
 			String lbl;
-			switch(columnIndex)
-			{
-			case 0:
-				lbl = prop.getKey().toString();
-				break;
-			case 1:
-				lbl = prop.getValue();
-				break;
-			default:
-				lbl = null;
+			switch (columnIndex) {
+				case 0:
+					lbl = prop.getKey().toString();
+					break;
+				case 1:
+					lbl = prop.getValue();
+					break;
+				default:
+					lbl = null;
 			}
 			return lbl;
 		}
 	}
 
-	private List<Property> m_properties;
+	private List<Property> properties;
 
-	private TableViewer m_tableViewer;
+	private TableViewer tableViewer;
 
-	private Button m_newButton;
+	private Button newButton;
 
-	private Button m_editButton;
+	private Button editButton;
 
-	private Button m_removeButton;
+	private Button removeButton;
 
-	private final ArrayList<PropertiesModifyListener> m_listeners = new ArrayList<PropertiesModifyListener>();
+	private final ArrayList<PropertiesModifyListener> listeners = new ArrayList<PropertiesModifyListener>();
 
-	public Properties(Composite parent, int style)
-	{
+	public Properties(Composite parent, int style) {
 		super(parent, style);
-		m_properties = Collections.emptyList();
+		properties = Collections.emptyList();
 		initComposite();
 	}
 
-	public void addPropertiesModifyListener(PropertiesModifyListener listener)
-	{
-		if(!m_listeners.contains(listener))
-		{
-			m_listeners.add(listener);
+	public void addPropertiesModifyListener(PropertiesModifyListener listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
 		}
 	}
 
-	public void fillProperties(Map<String, String> mappedProperties)
-	{
+	public void fillProperties(Map<String, String> mappedProperties) {
 		mappedProperties.clear();
 
-		for(Property prop : m_properties)
-		{
+		for (Property prop : properties) {
 			mappedProperties.put(prop.getKey(), prop.getValue());
 		}
 	}
 
-	public List<Property> getProperties()
-	{
-		return m_properties;
+	public List<Property> getProperties() {
+		return properties;
 	}
 
-	public void refreshList()
-	{
-		m_tableViewer.setInput(m_properties);
+	public void refreshList() {
+		tableViewer.setInput(properties);
 	}
 
-	public void removePropertiesModifyListener(PropertiesModifyListener listener)
-	{
-		m_listeners.remove(listener);
+	public void removePropertiesModifyListener(PropertiesModifyListener listener) {
+		listeners.remove(listener);
 	}
 
 	@Override
-	public void setEnabled(boolean enabled)
-	{
-		m_tableViewer.getTable().setEnabled(enabled);
+	public void setEnabled(boolean enabled) {
+		tableViewer.getTable().setEnabled(enabled);
 
-		if(enabled)
-		{
-			m_newButton.setEnabled(true);
+		if (enabled) {
+			newButton.setEnabled(true);
 			enableDisableButtonGroup();
 
-		}
-		else
-		{
-			m_newButton.setEnabled(false);
-			m_editButton.setEnabled(false);
-			m_removeButton.setEnabled(false);
+		} else {
+			newButton.setEnabled(false);
+			editButton.setEnabled(false);
+			removeButton.setEnabled(false);
 		}
 	}
 
-	public void setProperties(Map<String, String> mappedProperties)
-	{
-		m_properties = new ArrayList<Property>();
+	public void setProperties(Map<String, String> mappedProperties) {
+		properties = new ArrayList<Property>();
 
-		for(String key : mappedProperties.keySet())
-		{
+		for (String key : mappedProperties.keySet()) {
 			Property newProp = new Property(key, mappedProperties.get(key));
 
-			try
-			{
+			try {
 				addProperty(newProp);
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				addPropertyErrorDialog(e);
 			}
 		}
 	}
 
-	private void addProperty(Property newProp) throws CoreException
-	{
+	private void addProperty(Property newProp) throws CoreException {
 		String key = newProp.getKey();
 
 		int idx = -1;
 
-		for(Property prop : m_properties)
-		{
-			if(prop.getKey().compareTo(key) == 0)
-			{
+		for (Property prop : properties) {
+			if (prop.getKey().compareTo(key) == 0) {
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.duplicity_of_key_0, key));
 			}
-			if(prop.getKey().compareTo(key) > 0)
-			{
-				idx = m_properties.indexOf(prop);
+			if (prop.getKey().compareTo(key) > 0) {
+				idx = properties.indexOf(prop);
 				break;
 			}
 		}
 
-		if(idx >= 0)
-		{
-			m_properties.add(idx, newProp);
-		}
-		else
-		{
-			m_properties.add(newProp);
+		if (idx >= 0) {
+			properties.add(idx, newProp);
+		} else {
+			properties.add(newProp);
 		}
 	}
 
-	private void addPropertyErrorDialog(Throwable e)
-	{
-		MessageDialog.openError(this.getShell(), Messages.error, NLS.bind(Messages.a_0_property_will_not_be_added,
-				e.getMessage()));
+	private void addPropertyErrorDialog(Throwable e) {
+		MessageDialog.openError(this.getShell(), Messages.error, NLS.bind(Messages.a_0_property_will_not_be_added, e.getMessage()));
 	}
 
-	private void createButtonBox(Composite parent)
-	{
+	private void createButtonBox(Composite parent) {
 		Composite buttonBox = new Composite(parent, SWT.None);
 		buttonBox.setLayout(new FillLayout(SWT.VERTICAL));
 		buttonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
-		m_newButton = UiUtils.createPushButton(buttonBox, Messages.new_label, new SelectionAdapter()
-		{
+		newButton = UiUtils.createPushButton(buttonBox, Messages.new_label, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				newProperty();
 			}
 		});
 
-		m_editButton = UiUtils.createPushButton(buttonBox, Messages.edit, new SelectionAdapter()
-		{
+		editButton = UiUtils.createPushButton(buttonBox, Messages.edit, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				editProperty();
 			}
 		});
 
-		m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove, new SelectionAdapter()
-		{
+		removeButton = UiUtils.createPushButton(buttonBox, Messages.remove, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				removeProperty();
 			}
 		});
@@ -257,42 +215,34 @@ public class Properties extends Composite
 		enableDisableButtonGroup();
 	}
 
-	private void editProperty()
-	{
+	private void editProperty() {
 		PropertyDialog dialog = new PropertyDialog(this.getShell(), getSelectedProperty());
-		int idx = m_tableViewer.getTable().getSelectionIndex();
+		int idx = tableViewer.getTable().getSelectionIndex();
 
-		if(dialog.open() == IDialogConstants.OK_ID)
-		{
-			m_properties.set(idx, dialog.getProperty());
+		if (dialog.open() == IDialogConstants.OK_ID) {
+			properties.set(idx, dialog.getProperty());
 			notifyListeners();
 			refreshList();
 		}
 	}
 
-	private void enableDisableButtonGroup()
-	{
+	private void enableDisableButtonGroup() {
 		boolean enable = false;
 
-		if(m_tableViewer.getTable().getSelectionIndex() >= 0)
-		{
+		if (tableViewer.getTable().getSelectionIndex() >= 0) {
 			enable = true;
 		}
 
-		m_editButton.setEnabled(enable);
-		m_removeButton.setEnabled(enable);
+		editButton.setEnabled(enable);
+		removeButton.setEnabled(enable);
 	}
 
-	private Property getSelectedProperty()
-	{
-		int idx = m_tableViewer.getTable().getSelectionIndex();
-		return idx >= 0
-				? (Property)m_tableViewer.getElementAt(idx)
-				: null;
+	private Property getSelectedProperty() {
+		int idx = tableViewer.getTable().getSelectionIndex();
+		return idx >= 0 ? (Property) tableViewer.getElementAt(idx) : null;
 	}
 
-	private void initComposite()
-	{
+	private void initComposite() {
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.marginHeight = gridLayout.marginWidth = 0;
 		setLayout(gridLayout);
@@ -307,8 +257,7 @@ public class Properties extends Composite
 
 		table.setHeaderVisible(true);
 		DynamicTableLayout layout = new DynamicTableLayout(50);
-		for(int idx = 0; idx < columnNames.length; idx++)
-		{
+		for (int idx = 0; idx < columnNames.length; idx++) {
 			TableColumn tableColumn = new TableColumn(table, SWT.LEFT, idx);
 			tableColumn.setText(columnNames[idx]);
 			layout.addColumnData(new ColumnWeightData(columnWeights[idx], true));
@@ -318,23 +267,18 @@ public class Properties extends Composite
 		// gridData.widthHint = 600;
 		table.setLayoutData(gridData);
 
-		m_tableViewer = new TableViewer(table);
-		m_tableViewer.setLabelProvider(new PropertiesLabelProvider());
-		m_tableViewer.setContentProvider(new PropertiesContentProvider());
-		m_tableViewer.setInput(m_properties);
-		m_tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
-		{
-			public void selectionChanged(SelectionChangedEvent event)
-			{
+		tableViewer = new TableViewer(table);
+		tableViewer.setLabelProvider(new PropertiesLabelProvider());
+		tableViewer.setContentProvider(new PropertiesContentProvider());
+		tableViewer.setInput(properties);
+		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
 				enableDisableButtonGroup();
 			}
 		});
-		m_tableViewer.addDoubleClickListener(new IDoubleClickListener()
-		{
-			public void doubleClick(DoubleClickEvent event)
-			{
-				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
-				{
+		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				if (tableViewer.getTable().getSelectionIndex() >= 0) {
 					editProperty();
 				}
 			}
@@ -343,35 +287,28 @@ public class Properties extends Composite
 		createButtonBox(this);
 	}
 
-	private void newProperty()
-	{
+	private void newProperty() {
 		PropertyDialog dialog = new PropertyDialog(this.getShell(), null);
-		if(dialog.open() == IDialogConstants.OK_ID)
-		{
-			try
-			{
+		if (dialog.open() == IDialogConstants.OK_ID) {
+			try {
 				addProperty(dialog.getProperty());
 				notifyListeners();
 				refreshList();
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				addPropertyErrorDialog(e);
 			}
 		}
 	}
 
-	private void notifyListeners()
-	{
+	private void notifyListeners() {
 		PropertiesModifyEvent e = new PropertiesModifyEvent(this);
-		for(PropertiesModifyListener listener : m_listeners)
+		for (PropertiesModifyListener listener : listeners)
 			listener.modifyProperties(e);
 	}
 
-	private void removeProperty()
-	{
+	private void removeProperty() {
 		Property prop = getSelectedProperty();
-		m_properties.remove(prop);
+		properties.remove(prop);
 		notifyListeners();
 		refreshList();
 	}

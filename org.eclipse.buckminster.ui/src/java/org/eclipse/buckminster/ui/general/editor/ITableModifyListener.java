@@ -12,7 +12,6 @@ package org.eclipse.buckminster.ui.general.editor;
  * @author Karel Brezina
  * 
  */
-public interface ITableModifyListener<T>
-{
+public interface ITableModifyListener<T> {
 	void modifyTable(TableModifyEvent<T> e);
 }

@@ -1,5 +1,3 @@
-package org.eclipse.buckminster.runtime;
-
 /*******************************************************************************
  * Copyright (c) 2009 Johannes Utzig.
  * All rights reserved. This program and the accompanying materials
@@ -10,138 +8,122 @@ package org.eclipse.buckminster.runtime;
  * Contributors:
  *    Johannes Utzig - initial API and implementation
  *******************************************************************************/
+package org.eclipse.buckminster.runtime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class AttachableProgressMonitor
-{
+public class AttachableProgressMonitor {
 
-	private class ProgressMonitor implements IProgressMonitor
-	{
+	private class ProgressMonitor implements IProgressMonitor {
 
-		private int m_totalWork;
+		private int totalWork;
 
-		private int m_ticks;
+		private int ticks;
 
-		private String m_task;
+		private String task;
 
-		private String m_subTask;
+		private String subTask;
 
-		private IProgressMonitor m_mainProgressMonitor;
+		private IProgressMonitor mainProgressMonitor;
 
-		public ProgressMonitor(IProgressMonitor mainprogressMonitor)
-		{
-			this.m_mainProgressMonitor = mainprogressMonitor;
+		public ProgressMonitor(IProgressMonitor mainprogressMonitor) {
+			this.mainProgressMonitor = mainprogressMonitor;
 		}
 
-		public void beginTask(String name, int totalWork)
-		{
-			this.m_totalWork = totalWork;
-			this.m_task = name;
-			m_mainProgressMonitor.beginTask(name, totalWork);
-			for(IProgressMonitor monitor : m_attachedMonitors)
-			{
-				monitor.beginTask(name, totalWork);
+		public void beginTask(String name, int work) {
+			this.totalWork = work;
+			this.task = name;
+			mainProgressMonitor.beginTask(name, work);
+			for (IProgressMonitor attachedMonitor : attachedMonitors) {
+				attachedMonitor.beginTask(name, work);
 			}
 
 		}
 
-		public void done()
-		{
-			m_mainProgressMonitor.done();
-			for(IProgressMonitor monitor : m_attachedMonitors)
-			{
-				monitor.done();
+		public void done() {
+			mainProgressMonitor.done();
+			for (IProgressMonitor attachedMonitor : attachedMonitors) {
+				attachedMonitor.done();
 			}
 
 		}
 
-		public void internalWorked(double work)
-		{
-			m_mainProgressMonitor.internalWorked(work);
-			for(IProgressMonitor subMonitor : m_attachedMonitors)
-			{
-				subMonitor.internalWorked(work);
+		public void internalWorked(double work) {
+			mainProgressMonitor.internalWorked(work);
+			for (IProgressMonitor attachedMonitor : attachedMonitors) {
+				attachedMonitor.internalWorked(work);
 			}
 		}
 
-		public boolean isCanceled()
-		{
-			return m_mainProgressMonitor.isCanceled();
+		public boolean isCanceled() {
+			return mainProgressMonitor.isCanceled();
 		}
 
-		public void setCanceled(boolean value)
-		{
-			m_mainProgressMonitor.setCanceled(value);
-			for(IProgressMonitor monitor : m_attachedMonitors)
-			{
-				monitor.setCanceled(value);
+		public void setCanceled(boolean value) {
+			mainProgressMonitor.setCanceled(value);
+			for (IProgressMonitor attachedMonitor : attachedMonitors) {
+				attachedMonitor.setCanceled(value);
 			}
 
 		}
 
-		public void setTaskName(String name)
-		{
-			m_mainProgressMonitor.setTaskName(name);
-			for(IProgressMonitor monitor : m_attachedMonitors)
-			{
-				monitor.setTaskName(name);
+		public void setTaskName(String name) {
+			mainProgressMonitor.setTaskName(name);
+			for (IProgressMonitor attachedMonitor : attachedMonitors) {
+				attachedMonitor.setTaskName(name);
 			}
 
 		}
 
-		public void subTask(String name)
-		{
-			this.m_subTask = name;
-			m_mainProgressMonitor.subTask(name);
-			for(IProgressMonitor monitor : m_attachedMonitors)
-			{
-				monitor.subTask(name);
+		public void subTask(String name) {
+			this.subTask = name;
+			mainProgressMonitor.subTask(name);
+			for (IProgressMonitor attachedMonitor : attachedMonitors) {
+				attachedMonitor.subTask(name);
 			}
 
 		}
 
-		public void worked(int work)
-		{
-			m_ticks += work;
-			m_mainProgressMonitor.worked(work);
-			for(IProgressMonitor monitor : m_attachedMonitors)
-			{
-				monitor.worked(work);
+		public void worked(int work) {
+			ticks += work;
+			mainProgressMonitor.worked(work);
+			for (IProgressMonitor attachedMonitor : attachedMonitors) {
+				attachedMonitor.worked(work);
 			}
 
 		}
 
-		void attachProgressMonitor(IProgressMonitor toAttach)
-		{
+		void attachProgressMonitor(IProgressMonitor toAttach) {
 
-			if(m_task != null)
-			{
-				toAttach.beginTask(m_task, m_totalWork);
-				toAttach.worked(m_ticks);
+			if (task != null) {
+				toAttach.beginTask(task, totalWork);
+				toAttach.worked(ticks);
 			}
 
-			if(m_subTask != null)
-			{
-				toAttach.subTask(m_subTask);
+			if (subTask != null) {
+				toAttach.subTask(subTask);
 			}
 
 		}
 	}
 
-	private ProgressMonitor m_monitor;
+	private ProgressMonitor monitor;
 
-	private List<IProgressMonitor> m_attachedMonitors = new ArrayList<IProgressMonitor>();
+	private List<IProgressMonitor> attachedMonitors = new ArrayList<IProgressMonitor>();
 
 	/**
-	 * attaches the given IProgressMonitor to the main progress monitor that was passed in
-	 * {@link AttachableProgressMonitor#wrap(IProgressMonitor)}. All work done on this main progress monitor will be
-	 * mirrored to the attached progress monitors. If the main progress monitor already did work before this method was
-	 * invoked, the monitor to be attached will be adjusted to the current state of the main monitor. It
-	 * {@link AttachableProgressMonitor#wrap(IProgressMonitor)} has not been called yet, the given monitor will be
-	 * attached as soon as a main monitor is being wrapped.
+	 * attaches the given IProgressMonitor to the main progress monitor that was
+	 * passed in {@link AttachableProgressMonitor#wrap(IProgressMonitor)}. All
+	 * work done on this main progress monitor will be mirrored to the attached
+	 * progress monitors. If the main progress monitor already did work before
+	 * this method was invoked, the monitor to be attached will be adjusted to
+	 * the current state of the main monitor. It
+	 * {@link AttachableProgressMonitor#wrap(IProgressMonitor)} has not been
+	 * called yet, the given monitor will be attached as soon as a main monitor
+	 * is being wrapped.
 	 * 
 	 * @param toAttach
 	 *            - the monitor to be attached to the main monitor
@@ -151,55 +133,52 @@ public class AttachableProgressMonitor
 	 *             if the given monitor is <code>null</code>
 	 * @see AttachableProgressMonitor#wrap(IProgressMonitor)
 	 */
-	public void attachProgressMonitor(IProgressMonitor toAttach)
-	{
+	public void attachProgressMonitor(IProgressMonitor toAttach) {
 
-		if(toAttach == null)
-		{
+		if (toAttach == null) {
 			throw new IllegalArgumentException("The given IProgressMonitor must not be null"); //$NON-NLS-1$
 		}
-		if(m_monitor != null)
-		{
-			m_monitor.attachProgressMonitor(m_monitor);
+		if (monitor != null) {
+			monitor.attachProgressMonitor(monitor);
 
 		}
-		m_attachedMonitors.add(toAttach);
+		attachedMonitors.add(toAttach);
 
 	}
 
 	/**
-	 * Wraps this {@link AttachableProgressMonitor} around the given {@link IProgressMonitor}.
+	 * Wraps this {@link AttachableProgressMonitor} around the given
+	 * {@link IProgressMonitor}.
 	 * <p>
-	 * The {@link AttachableProgressMonitor} will mirror all calls to the given {@link IProgressMonitor} to all monitors
-	 * that get attached in {@link AttachableProgressMonitor#attachProgressMonitor(IProgressMonitor)}. This method
-	 * <b>must</b> be called prior to call {@link AttachableProgressMonitor#m_attachedMonitors} and <b>must not</b> be
+	 * The {@link AttachableProgressMonitor} will mirror all calls to the given
+	 * {@link IProgressMonitor} to all monitors that get attached in
+	 * {@link AttachableProgressMonitor#attachProgressMonitor(IProgressMonitor)}
+	 * . This method <b>must</b> be called prior to call
+	 * {@link AttachableProgressMonitor#attachedMonitors} and <b>must not</b> be
 	 * called more than once.
 	 * 
 	 * @param mainProgressMonitor
 	 *            the ProgressMonitor that monitors the actual work
-	 * @return A {@link ProgressMonitor} that forwards all calls to the given mainProgressMonitor and all attached ones.
+	 * @return A {@link ProgressMonitor} that forwards all calls to the given
+	 *         mainProgressMonitor and all attached ones.
 	 * @throws IllegalArgumentException
 	 *             if the given {@link IProgressMonitor} is <code>null</code>
 	 * @throws RuntimeException
 	 *             if this method is called more than once
-	 * @see AttachableProgressMonitor#m_attachedMonitors
+	 * @see AttachableProgressMonitor#attachedMonitors
 	 */
-	public IProgressMonitor wrap(IProgressMonitor mainProgressMonitor)
-	{
-		if(mainProgressMonitor == null)
-		{
+	public IProgressMonitor wrap(IProgressMonitor mainProgressMonitor) {
+		if (mainProgressMonitor == null) {
 			throw new IllegalArgumentException("The given IProgressMonitor must not be null"); //$NON-NLS-1$
 		}
-		if(m_monitor != null)
-		{
+		if (monitor != null) {
 			throw new RuntimeException("Only one ProgressMonitor can be wrapped at a time"); //$NON-NLS-1$
 		}
-		m_monitor = new ProgressMonitor(mainProgressMonitor);
-		for(IProgressMonitor monitor : m_attachedMonitors)
-		{
-			m_monitor.attachProgressMonitor(monitor);
+		monitor = new ProgressMonitor(mainProgressMonitor);
+		for (IProgressMonitor attachedMonitor : attachedMonitors) {
+			monitor.attachProgressMonitor(attachedMonitor);
 		}
-		return m_monitor;
+		return monitor;
 	}
 
 }

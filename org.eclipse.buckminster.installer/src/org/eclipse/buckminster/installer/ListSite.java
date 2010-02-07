@@ -30,76 +30,63 @@ import org.eclipse.equinox.p2.query.PipedQuery;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 
 @SuppressWarnings("restriction")
-public class ListSite extends AbstractCommand
-{
-	static IInstallableUnit[] getRootIUs(URI site, IProgressMonitor monitor) throws CoreException
-	{
+public class ListSite extends AbstractCommand {
+	static IInstallableUnit[] getRootIUs(URI site, IProgressMonitor monitor) throws CoreException {
 		Buckminster bucky = Buckminster.getDefault();
 		IProvisioningAgentProvider agentProvider = bucky.getService(IProvisioningAgentProvider.class);
 		IProvisioningAgent agent = agentProvider.createAgent(null);
 		SubMonitor subMon = SubMonitor.convert(monitor, 10);
-		try
-		{
+		try {
 			IQueryResult<IInstallableUnit> roots;
-			if(site == null)
-			{
-				IProfileRegistry registry = (IProfileRegistry)agent.getService(IProfileRegistry.SERVICE_NAME);
+			if (site == null) {
+				IProfileRegistry registry = (IProfileRegistry) agent.getService(IProfileRegistry.SERVICE_NAME);
 				IProfile runningInstanceProfile = registry.getProfile(IProfileRegistry.SELF);
 
-				if(runningInstanceProfile != null)
+				if (runningInstanceProfile != null)
 					roots = runningInstanceProfile.query(new PipedQuery<IInstallableUnit>(new FeatureQuery(),
 							new LatestIUVersionQuery<IInstallableUnit>()), subMon.newChild(10));
 				else
 					roots = Collector.emptyCollector();
-			}
-			else
-			{
-				IMetadataRepositoryManager repoManager = (IMetadataRepositoryManager)agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
+			} else {
+				IMetadataRepositoryManager repoManager = (IMetadataRepositoryManager) agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
 				roots = repoManager.loadRepository(site, subMon.newChild(8)).query(
-						new PipedQuery<IInstallableUnit>(new FeatureQuery(),
-								new LatestIUVersionQuery<IInstallableUnit>()), subMon.newChild(2));
+						new PipedQuery<IInstallableUnit>(new FeatureQuery(), new LatestIUVersionQuery<IInstallableUnit>()), subMon.newChild(2));
 			}
 			return roots.toArray(IInstallableUnit.class);
-		}
-		finally
-		{
+		} finally {
 			agent.stop();
 			bucky.ungetService(agentProvider);
 			subMon.done();
 		}
 	}
 
-	private URI m_site;
+	private URI site;
 
 	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
+	protected void handleUnparsed(String[] unparsed) throws Exception {
 		int len = unparsed.length;
-		if(len > 1)
+		if (len > 1)
 			throw new SimpleErrorExitException(Messages.too_many_arguments);
-		if(len == 1)
-			m_site = Install.normalizeToURI(unparsed[0]);
+		if (len == 1)
+			site = Install.normalizeToURI(unparsed[0]);
 	}
 
 	@Override
-	protected int run(IProgressMonitor monitor) throws Exception
-	{
+	protected int run(IProgressMonitor monitor) throws Exception {
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		System.out.println(Messages.feature_listing_heading);
 
-		IInstallableUnit[] roots = getRootIUs(m_site, monitor);
+		IInstallableUnit[] roots = getRootIUs(site, monitor);
 		Arrays.sort(roots);
-		for(IInstallableUnit iu : roots)
-		{
+		for (IInstallableUnit iu : roots) {
 			System.out.print("  "); //$NON-NLS-1$
 
 			String id = iu.getId();
-			if(id.endsWith(FeatureQuery.FEATURE_GROUP))
+			if (id.endsWith(FeatureQuery.FEATURE_GROUP))
 				id = id.substring(0, id.length() - 14);
 			System.out.print(id);
 			String label = iu.getProperty(IInstallableUnit.PROP_NAME);
-			if(label != null)
-			{
+			if (label != null) {
 				System.out.print(" ("); //$NON-NLS-1$
 				System.out.print(label);
 				System.out.println(")"); //$NON-NLS-1$

@@ -48,160 +48,123 @@ import org.eclipse.team.core.RepositoryProvider;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractReaderType extends AbstractExtension implements IReaderType
-{
-	protected class DefaultVersionFinder extends AbstractVersionFinder
-	{
-		private final VersionMatch m_versionMatch;
+public abstract class AbstractReaderType extends AbstractExtension implements IReaderType {
+	protected class DefaultVersionFinder extends AbstractVersionFinder {
+		private final VersionMatch versionMatch;
 
-		DefaultVersionFinder(Provider provider, IComponentType ctype, NodeQuery query)
-		{
+		DefaultVersionFinder(Provider provider, IComponentType ctype, NodeQuery query) {
 			super(provider, ctype, query);
-			m_versionMatch = new VersionMatch(null, null, -1, null, null);
+			versionMatch = new VersionMatch(null, null, -1, null, null);
 		}
 
-		public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
-		{
+		public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException {
 			MonitorUtils.complete(monitor);
-			return m_versionMatch;
+			return versionMatch;
 		}
 	}
 
-	public static IReaderType getTypeForRepositoryProvider(String providerId) throws CoreException
-	{
+	public static IReaderType getTypeForRepositoryProvider(String providerId) throws CoreException {
 		IExtensionRegistry exReg = Platform.getExtensionRegistry();
-		for(IConfigurationElement elem : exReg.getConfigurationElementsFor(CorePlugin.READER_TYPE_POINT))
-		{
-			if(providerId.equals(elem.getAttribute("teamRepositoryId"))) //$NON-NLS-1$
+		for (IConfigurationElement elem : exReg.getConfigurationElementsFor(CorePlugin.READER_TYPE_POINT)) {
+			if (providerId.equals(elem.getAttribute("teamRepositoryId"))) //$NON-NLS-1$
 				return CorePlugin.getDefault().getReaderType(elem.getAttribute("id")); //$NON-NLS-1$
 		}
 		return null;
 	}
 
-	public static IReaderType getTypeForResource(IResource resource) throws CoreException
-	{
-		if(resource == null)
+	public static IReaderType getTypeForResource(IResource resource) throws CoreException {
+		if (resource == null)
 			return null;
 
 		IProject project = resource.getProject();
-		if(project == null)
+		if (project == null)
 			return null;
 
 		RepositoryProvider provider = RepositoryProvider.getProvider(project);
-		if(provider == null)
+		if (provider == null)
 			return null;
 
 		return getTypeForRepositoryProvider(provider.getID());
 	}
 
-	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException
-	{
+	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException {
 	}
 
-	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName)
-			throws CoreException
-	{
-		throw new UnsupportedOperationException(
-				NLS.bind(Messages.ReaderType_0_cannot_handle_fetchFactory_data, getId()));
+	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
+		throw new UnsupportedOperationException(NLS.bind(Messages.ReaderType_0_cannot_handle_fetchFactory_data, getId()));
 	}
 
-	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
-	{
+	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException {
 		return null;
 	}
 
-	public ReferenceInfo extractReferenceInfo(String reference) throws CoreException
-	{
+	public ReferenceInfo extractReferenceInfo(String reference) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
-	public VersionMatch getDefaultVersion() throws CoreException
-	{
+	public VersionMatch getDefaultVersion() throws CoreException {
 		return VersionMatch.DEFAULT;
 	}
 
-	public IPath getFixedLocation(Resolution cr) throws CoreException
-	{
+	public IPath getFixedLocation(Resolution cr) throws CoreException {
 		return null;
 	}
 
-	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException
-	{
+	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException {
 		return null;
 	}
 
-	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException {
 		return null;
 	}
 
-	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException {
 		return null;
 	}
 
-	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
+	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException {
 		return -1;
 	}
 
-	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public long getLastRevision(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException {
 		return -1;
 	}
 
-	public IReaderType getLocalReaderType(boolean destIsFile) throws CoreException
-	{
-		return CorePlugin.getDefault().getReaderType(destIsFile
-				? URL
-				: URL_CATALOG);
+	public IReaderType getLocalReaderType(boolean destIsFile) throws CoreException {
+		return CorePlugin.getDefault().getReaderType(destIsFile ? URL : URL_CATALOG);
 	}
 
-	public IComponentReader getReader(Provider provider, IComponentType ctype, NodeQuery query,
-			VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(Provider provider, IComponentType ctype, NodeQuery query, VersionMatch versionMatch, IProgressMonitor monitor)
+			throws CoreException {
 		return getReader(new ProviderMatch(provider, ctype, versionMatch, ProviderScore.FAIR, query), monitor);
 	}
 
-	public IComponentReader getReader(Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException {
 		return getReader(cr.getProviderMatch(context), monitor);
 	}
 
-	public String getRecommendedMaterializer()
-	{
+	public String getRecommendedMaterializer() {
 		return IMaterializer.WORKSPACE;
 	}
 
-	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
+	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException {
 		return null;
 	}
 
-	public String getRemotePath(String repositoryLocation) throws CoreException
-	{
+	public String getRemotePath(String repositoryLocation) throws CoreException {
 		return null;
 	}
 
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor) throws CoreException {
 		return new DefaultVersionFinder(provider, ctype, query);
 	}
 
-	public void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException
-	{
+	public void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException {
 	}
 
-	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public void prepareMaterialization(List<Materialization> mtr, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
 	}
 
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException {
 	}
 }

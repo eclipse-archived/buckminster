@@ -31,76 +31,66 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class RxAssembly extends AbstractSaxableElement
-{
+public class RxAssembly extends AbstractSaxableElement {
 	public static final String TAG = "rxAssembly"; //$NON-NLS-1$
 
 	public static final String ATTR_REPLACEMENT = "replacement"; //$NON-NLS-1$
 
-	private final List<RxPart> m_parts;
+	private final List<RxPart> parts;
 
-	private final Pattern m_pattern;
+	private final Pattern pattern;
 
-	private final List<RxPart> m_parameters = new ArrayList<RxPart>();
+	private final List<RxPart> parameters = new ArrayList<RxPart>();
 
-	public RxAssembly(List<RxPart> parts) throws CoreException, PatternSyntaxException
-	{
-		m_parts = Utils.createUnmodifiableList(parts);
+	public RxAssembly(List<RxPart> parts) throws CoreException, PatternSyntaxException {
+		this.parts = Utils.createUnmodifiableList(parts);
 
 		StringBuilder bld = new StringBuilder();
 		bld.append('^');
-		for(RxPart part : parts)
-			part.addPattern(bld, m_parameters);
+		for (RxPart part : parts)
+			part.addPattern(bld, parameters);
 		bld.append('$');
 
 		String patternStr = bld.toString();
-		m_pattern = Pattern.compile(patternStr);
+		pattern = Pattern.compile(patternStr);
 		CorePlugin.getLogger().debug("URI pattern %s created", patternStr); //$NON-NLS-1$
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public Map<String, String> getMatchMap(CharSequence input)
-	{
-		if(input == null)
+	public Map<String, String> getMatchMap(CharSequence input) {
+		if (input == null)
 			return null;
 
 		Logger logger = CorePlugin.getLogger();
-		Matcher m = m_pattern.matcher(input);
-		if(!m.matches())
-		{
+		Matcher m = pattern.matcher(input);
+		if (!m.matches()) {
 			logger.debug("URI pattern does not match %s", input); //$NON-NLS-1$
 			return null;
 		}
 
 		int groupCount = m.groupCount();
-		int top = m_parameters.size();
-		if(logger.isDebugEnabled())
-		{
+		int top = parameters.size();
+		if (logger.isDebugEnabled()) {
 			logger.debug("URI pattern captured %d groups in %s", Integer.valueOf(groupCount), input); //$NON-NLS-1$
 		}
 
-		if(top != groupCount)
-		{
-			logger.warning(NLS.bind(Messages.URI_pattern_group_count_was_0_expected_1, Integer.valueOf(groupCount),
-					Integer.valueOf(top)));
+		if (top != groupCount) {
+			logger.warning(NLS.bind(Messages.URI_pattern_group_count_was_0_expected_1, Integer.valueOf(groupCount), Integer.valueOf(top)));
 			top = groupCount;
 		}
 
-		if(top == 0)
+		if (top == 0)
 			return Collections.emptyMap();
 
 		HashMap<String, String> matchMap = new HashMap<String, String>();
 
-		for(int idx = 0; idx < top; ++idx)
-		{
-			RxPart param = m_parameters.get(idx);
+		for (int idx = 0; idx < top; ++idx) {
+			RxPart param = parameters.get(idx);
 			String value = TextUtils.notEmptyString(m.group(idx + 1));
-			if(value != null)
-			{
+			if (value != null) {
 				logger.debug("Assigning URI pattern parameter %s=\"%s\"", param.getName(), value); //$NON-NLS-1$
 				matchMap.put(param.getName(), value);
 			}
@@ -108,15 +98,13 @@ public class RxAssembly extends AbstractSaxableElement
 		return matchMap;
 	}
 
-	public Pattern getPattern()
-	{
-		return m_pattern;
+	public Pattern getPattern() {
+		return pattern;
 	}
 
 	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		for(RxPart part : m_parts)
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
+		for (RxPart part : parts)
 			part.toSax(handler, namespace, prefix, part.getDefaultTag());
 	}
 }

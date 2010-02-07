@@ -40,61 +40,42 @@ import org.tigris.subversion.svnclientadapter.SVNRevision;
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SvnReaderType extends GenericReaderType<ISVNDirEntry, SVNRevision>
-{
+public class SvnReaderType extends GenericReaderType<ISVNDirEntry, SVNRevision> {
 
-	private abstract class SafeExecute<RETURN_TYPE extends Object>
-	{
+	private abstract class SafeExecute<RETURN_TYPE extends Object> {
 		final protected RETURN_TYPE failValue;
 
-		public SafeExecute()
-		{
+		public SafeExecute() {
 			failValue = null;
 		}
 
-		public SafeExecute(RETURN_TYPE val)
-		{
+		public SafeExecute(RETURN_TYPE val) {
 			failValue = val;
 		}
 
-		abstract protected RETURN_TYPE compute(ISVNInfo info);
-
-		public RETURN_TYPE execute(File workingCopy, IProgressMonitor monitor) throws CoreException
-		{
+		public RETURN_TYPE execute(File workingCopy, IProgressMonitor monitor) throws CoreException {
 			monitor.beginTask(null, 1);
-			try
-			{
+			try {
 				final ISVNInfo info = getInfoFromWorkingCopy(workingCopy);
-				if(info == null)
+				if (info == null)
 					return failValue;
 				return compute(info);
-			}
-			catch(SVNClientException e)
-			{
+			} catch (SVNClientException e) {
 				throw BuckminsterException.wrap(e);
-			}
-			finally
-			{
+			} finally {
 				MonitorUtils.worked(monitor, 1);
 				monitor.done();
 			}
 		}
-	}
 
-	private ISVNInfo getInfoFromWorkingCopy(File workingCopy) throws SVNClientException, SVNException
-	{
-		return SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient()
-				.getInfoFromWorkingCopy(workingCopy);
+		abstract protected RETURN_TYPE compute(ISVNInfo info);
 	}
 
 	@Override
-	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
-		return new SafeExecute<Date>()
-		{
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException {
+		return new SafeExecute<Date>() {
 			@Override
-			protected Date compute(ISVNInfo info)
-			{
+			protected Date compute(ISVNInfo info) {
 				return info.getLastChangedDate();
 			}
 
@@ -103,58 +84,51 @@ public class SvnReaderType extends GenericReaderType<ISVNDirEntry, SVNRevision>
 
 	@SuppressWarnings("boxing")
 	@Override
-	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
-		return new SafeExecute<Long>(new Long(-1))
-		{
+	public long getLastRevision(File workingCopy, IProgressMonitor monitor) throws CoreException {
+		return new SafeExecute<Long>(new Long(-1)) {
 			@Override
-			protected Long compute(ISVNInfo info)
-			{
+			protected Long compute(ISVNInfo info) {
 				final SVNRevision.Number lastRev = info.getLastChangedRevision();
-				if(lastRev != null)
+				if (lastRev != null)
 					return new Long(lastRev.getNumber());
 				return failValue;
 			}
 		}.execute(workingCopy, monitor);
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		return new SvnRemoteFileReader(this, providerMatch, monitor);
 	}
 
 	@Override
-	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
-		return new SafeExecute<String>()
-		{
+	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException {
+		return new SafeExecute<String>() {
 			@Override
-			protected String compute(ISVNInfo info)
-			{
+			protected String compute(ISVNInfo info) {
 				return info.getUrl().toString();
 			}
 		}.execute(workingCopy, monitor);
 	}
 
 	@Override
-	protected ISubversionSession<ISVNDirEntry, SVNRevision> getSession(String repositoryURI,
-			VersionSelector branchOrTag, long revision, Date timestamp, RMContext context) throws CoreException
-	{
-		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
-	}
-
-	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
+			throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new VersionFinder(provider, ctype, nodeQuery);
 	}
 
 	@Override
-	protected void updateRepositoryMap(IProject project, ISubversionSession<ISVNDirEntry, SVNRevision> session)
-			throws TeamException
-	{
+	protected ISubversionSession<ISVNDirEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag, long revision,
+			Date timestamp, RMContext context) throws CoreException {
+		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
+
+	@Override
+	protected void updateRepositoryMap(IProject project, ISubversionSession<ISVNDirEntry, SVNRevision> session) throws TeamException {
 		RepositoryProvider.map(project, SVNProviderPlugin.PROVIDER_ID);
+	}
+
+	private ISVNInfo getInfoFromWorkingCopy(File workingCopy) throws SVNClientException, SVNException {
+		return SVNProviderPlugin.getPlugin().getSVNClientManager().createSVNClient().getInfoFromWorkingCopy(workingCopy);
 	}
 }

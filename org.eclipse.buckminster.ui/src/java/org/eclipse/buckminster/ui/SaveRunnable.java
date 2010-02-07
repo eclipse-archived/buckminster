@@ -33,67 +33,59 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**
- * A runnable capable of saving a query to a certain location. The location must be relative to the root of the local
- * file-system. Once saved, the resulting {@link org.eclipse.ui.IEditorInput IEditorInput} can be obtained through a
+ * A runnable capable of saving a query to a certain location. The location must
+ * be relative to the root of the local file-system. Once saved, the resulting
+ * {@link org.eclipse.ui.IEditorInput IEditorInput} can be obtained through a
  * call to {@link #getSavedInput()}. That editor input will either be an
- * {@link org.eclipse.buckminster.ui.editor.ExternalFileEditorInput ExternalFileEditorInput} or a
- * {@link org.eclipse.ui.IFileEditorInput IFileEditorInput} depending on if the location could be mapped to a file in an
- * existing project or not.
+ * {@link org.eclipse.buckminster.ui.editor.ExternalFileEditorInput
+ * ExternalFileEditorInput} or a {@link org.eclipse.ui.IFileEditorInput
+ * IFileEditorInput} depending on if the location could be mapped to a file in
+ * an existing project or not.
  * 
  * @author Thomas Hallgren
  */
-public class SaveRunnable implements IRunnableWithProgress
-{
-	private final ISaxable m_saxable;
+public class SaveRunnable implements IRunnableWithProgress {
+	private final ISaxable saxable;
 
-	private final IPath m_location;
+	private final IPath location;
 
-	private IEditorInput m_newInput;
+	private IEditorInput newInput;
 
 	/**
-	 * Creates a new instance that will save the <code>query</code> at the specificed <code>location</code>.
+	 * Creates a new instance that will save the <code>query</code> at the
+	 * specificed <code>location</code>.
 	 * 
 	 * @param saxable
 	 *            The SAX output enabled element to be saved.
 	 * @param location
 	 *            A location relative to the root of the local file-system.
 	 */
-	public SaveRunnable(ISaxable saxable, IPath location)
-	{
-		m_saxable = saxable;
-		m_location = location;
+	public SaveRunnable(ISaxable saxable, IPath location) {
+		this.saxable = saxable;
+		this.location = location;
 	}
 
-	public IEditorInput getSavedInput()
-	{
-		return m_newInput;
+	public IEditorInput getSavedInput() {
+		return newInput;
 	}
 
-	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-	{
-		try
-		{
-			if(m_location.segmentCount() > 1)
-			{
-				IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(
-						m_location.removeLastSegments(1));
-				if(container != null)
-				{
+	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		try {
+			if (location.segmentCount() > 1) {
+				IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(location.removeLastSegments(1));
+				if (container != null) {
 					// Workspace file.
 					//
 					InputStream stream = null;
-					try
-					{
-						IFile file = container.getFile(new Path(m_location.lastSegment()));
-						stream = Utils.getInputStream(m_saxable);
-						if(file.exists())
+					try {
+						IFile file = container.getFile(new Path(location.lastSegment()));
+						stream = Utils.getInputStream(saxable);
+						if (file.exists())
 							file.setContents(stream, IResource.KEEP_HISTORY, monitor);
 						else
 							file.create(stream, false, monitor);
-						m_newInput = new FileEditorInput(file);
-					}
-					finally
-					{
+						newInput = new FileEditorInput(file);
+					} finally {
 						IOUtils.close(stream);
 					}
 					return;
@@ -103,24 +95,17 @@ public class SaveRunnable implements IRunnableWithProgress
 			// External file.
 			//
 			OutputStream stream = null;
-			try
-			{
-				File file = m_location.toFile();
+			try {
+				File file = location.toFile();
 				stream = new FileOutputStream(file);
-				Utils.serialize(m_saxable, stream);
-				m_newInput = new ExternalFileEditorInput(file);
-			}
-			finally
-			{
+				Utils.serialize(saxable, stream);
+				newInput = new ExternalFileEditorInput(file);
+			} finally {
 				IOUtils.close(stream);
 			}
-		}
-		catch(OperationCanceledException e)
-		{
+		} catch (OperationCanceledException e) {
 			throw new InterruptedException();
-		}
-		catch(Throwable e)
-		{
+		} catch (Throwable e) {
 			throw new InvocationTargetException(e);
 		}
 	}

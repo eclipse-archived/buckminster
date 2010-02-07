@@ -28,32 +28,27 @@ import org.osgi.framework.InvalidSyntaxException;
  * @author Karel Brezina
  * 
  */
-public class GroupPrerequisitesTable extends PrerequisitesTable
-{
+public class GroupPrerequisitesTable extends PrerequisitesTable {
 
-	public GroupPrerequisitesTable(CSpecEditor editor, AttributesTable<?> parentAttributesTable,
-			List<PrerequisiteBuilder> data, TopLevelAttributeBuilder attributeBuilder, boolean readOnly)
-	{
+	public GroupPrerequisitesTable(CSpecEditor editor, AttributesTable<?> parentAttributesTable, List<PrerequisiteBuilder> data,
+			TopLevelAttributeBuilder attributeBuilder, boolean readOnly) {
 		super(editor, parentAttributesTable, data, attributeBuilder, readOnly);
 	}
 
 	@Override
-	public String[] getColumnHeaders()
-	{
-		return new String[] { Messages.component, Messages.name, Messages.contributor, Messages.filter,
-				Messages.include_pattern, Messages.exclude_pattern };
+	public String[] getColumnHeaders() {
+		return new String[] { Messages.component, Messages.name, Messages.contributor, Messages.filter, Messages.include_pattern,
+				Messages.exclude_pattern };
 	}
 
 	@Override
-	public int[] getColumnWeights()
-	{
+	public int[] getColumnWeights() {
 		return new int[] { 20, 10, 0, 0, 0, 0 };
 	}
 
 	@Override
-	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
-	{
-		if(idx < 2)
+	public IWidgetin getWidgetin(Composite parent, int idx, Object value) {
+		if (idx < 2)
 			return super.getWidgetin(parent, idx, value);
 
 		// Alias is removed here
@@ -61,63 +56,45 @@ public class GroupPrerequisitesTable extends PrerequisitesTable
 	}
 
 	@Override
-	public Object[] toRowArray(PrerequisiteBuilder t)
-	{
-		return new Object[] { t.getComponentName(), t.getName(), Boolean.valueOf(t.isContributor()),
-				TextUtils.notNullString(t.getFilter()), TextUtils.notNullString(t.getIncludePattern()),
-				TextUtils.notNullString(t.getExcludePattern()) };
+	public Object[] toRowArray(PrerequisiteBuilder t) {
+		return new Object[] { t.getComponentName(), t.getName(), Boolean.valueOf(t.isContributor()), TextUtils.notNullString(t.getFilter()),
+				TextUtils.notNullString(t.getIncludePattern()), TextUtils.notNullString(t.getExcludePattern()) };
 	}
 
 	@Override
-	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
-	{
-		builder.setComponentName(TextUtils.notEmptyString((String)args[0]));
-		builder.setName(TextUtils.notEmptyString((String)args[1]));
-		builder.setContributor(((Boolean)args[2]).booleanValue());
+	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException {
+		builder.setComponentName(TextUtils.notEmptyString((String) args[0]));
+		builder.setName(TextUtils.notEmptyString((String) args[1]));
+		builder.setContributor(((Boolean) args[2]).booleanValue());
 
-		String filterStr = TextUtils.notEmptyString((String)args[3]);
-		if(filterStr != null)
-		{
-			try
-			{
+		String filterStr = TextUtils.notEmptyString((String) args[3]);
+		if (filterStr != null) {
+			try {
 				builder.setFilter(FilterFactory.newInstance(filterStr));
-			}
-			catch(InvalidSyntaxException e)
-			{
+			} catch (InvalidSyntaxException e) {
 				throw new ValidatorException(e.getMessage());
 			}
-		}
-		else
+		} else
 			builder.setFilter(null);
 
-		String includePatternStr = TextUtils.notEmptyString((String)args[4]);
-		if(includePatternStr != null)
-		{
-			try
-			{
+		String includePatternStr = TextUtils.notEmptyString((String) args[4]);
+		if (includePatternStr != null) {
+			try {
 				builder.setIncludePattern(Pattern.compile(includePatternStr));
-			}
-			catch(PatternSyntaxException e)
-			{
+			} catch (PatternSyntaxException e) {
 				throw new ValidatorException(e.getMessage());
 			}
-		}
-		else
+		} else
 			builder.setIncludePattern(null);
 
-		String excludePatternStr = TextUtils.notEmptyString((String)args[5]);
-		if(excludePatternStr != null)
-		{
-			try
-			{
+		String excludePatternStr = TextUtils.notEmptyString((String) args[5]);
+		if (excludePatternStr != null) {
+			try {
 				builder.setExcludePattern(Pattern.compile(excludePatternStr));
-			}
-			catch(PatternSyntaxException e)
-			{
+			} catch (PatternSyntaxException e) {
 				throw new ValidatorException(e.getMessage());
 			}
-		}
-		else
+		} else
 			builder.setExcludePattern(null);
 	}
 }

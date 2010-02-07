@@ -31,12 +31,12 @@ import org.eclipse.swt.widgets.Text;
 /**
  * A simple input dialog that uses combo widget.
  * <p>
- * This concrete dialog class can be instantiated as is, or further subclassed as required.
+ * This concrete dialog class can be instantiated as is, or further subclassed
+ * as required.
  * </p>
  */
 @SuppressWarnings("hiding")
-public class ComboInputDialog extends Dialog
-{
+public class ComboInputDialog extends Dialog {
 	/**
 	 * The title of the dialog.
 	 */
@@ -83,14 +83,15 @@ public class ComboInputDialog extends Dialog
 	private String errorMessage;
 
 	/**
-	 * Creates an input dialog with OK and Cancel buttons. Note that the dialog will have no visual representation (no
-	 * widgets) until it is told to open.
+	 * Creates an input dialog with OK and Cancel buttons. Note that the dialog
+	 * will have no visual representation (no widgets) until it is told to open.
 	 * <p>
 	 * Note that the <code>open</code> method blocks for input dialogs.
 	 * </p>
 	 * 
 	 * @param parentShell
-	 *            the parent shell, or <code>null</code> to create a top-level shell
+	 *            the parent shell, or <code>null</code> to create a top-level
+	 *            shell
 	 * @param dialogTitle
 	 *            the dialog title, or <code>null</code> if none
 	 * @param dialogMessage
@@ -98,23 +99,20 @@ public class ComboInputDialog extends Dialog
 	 * @param choices
 	 *            choices for combo widget
 	 * @param initialValue
-	 *            the initial input value, or <code>null</code> if none (equivalent to the empty string)
+	 *            the initial input value, or <code>null</code> if none
+	 *            (equivalent to the empty string)
 	 * @param validator
 	 *            an input validator, or <code>null</code> if none
 	 */
-	public ComboInputDialog(Shell parentShell, String dialogTitle, String dialogMessage, String[] choices,
-			String initialValue, IInputValidator validator)
-	{
+	public ComboInputDialog(Shell parentShell, String dialogTitle, String dialogMessage, String[] choices, String initialValue,
+			IInputValidator validator) {
 		super(parentShell);
 		this.title = dialogTitle;
 		message = dialogMessage;
 		this.choices = choices;
-		if(initialValue == null)
-		{
+		if (initialValue == null) {
 			value = "";//$NON-NLS-1$
-		}
-		else
-		{
+		} else {
 			value = initialValue;
 		}
 		this.validator = validator;
@@ -125,25 +123,22 @@ public class ComboInputDialog extends Dialog
 	 * 
 	 * @return the input string
 	 */
-	public String getValue()
-	{
+	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * Sets or clears the error message. If not <code>null</code>, the OK button is disabled.
+	 * Sets or clears the error message. If not <code>null</code>, the OK button
+	 * is disabled.
 	 * 
 	 * @param errorMessage
 	 *            the error message, or <code>null</code> to clear
 	 * @since 3.0
 	 */
-	public void setErrorMessage(String errorMessage)
-	{
+	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
-		if(errorMessageText != null && !errorMessageText.isDisposed())
-		{
-			errorMessageText.setText(errorMessage == null
-					? " \n " : errorMessage); //$NON-NLS-1$
+		if (errorMessageText != null && !errorMessageText.isDisposed()) {
+			errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
 			// Disable the error message text control if there is no error, or
 			// no error text (empty or whitespace only). Hide it also to avoid
 			// color change.
@@ -152,11 +147,11 @@ public class ComboInputDialog extends Dialog
 			errorMessageText.setEnabled(hasError);
 			errorMessageText.setVisible(hasError);
 			errorMessageText.getParent().update();
-			// Access the ok button by id, in case clients have overridden button creation.
+			// Access the ok button by id, in case clients have overridden
+			// button creation.
 			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=113643
 			Control button = getButton(IDialogConstants.OK_ID);
-			if(button != null)
-			{
+			if (button != null) {
 				button.setEnabled(errorMessage == null);
 			}
 		}
@@ -166,14 +161,10 @@ public class ComboInputDialog extends Dialog
 	 * (non-Javadoc) Method declared on Dialog.
 	 */
 	@Override
-	protected void buttonPressed(int buttonId)
-	{
-		if(buttonId == IDialogConstants.OK_ID)
-		{
+	protected void buttonPressed(int buttonId) {
+		if (buttonId == IDialogConstants.OK_ID) {
 			value = combo.getText();
-		}
-		else
-		{
+		} else {
 			value = null;
 		}
 		super.buttonPressed(buttonId);
@@ -182,14 +173,14 @@ public class ComboInputDialog extends Dialog
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+	 * @see
+	 * org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets
+	 * .Shell)
 	 */
 	@Override
-	protected void configureShell(Shell shell)
-	{
+	protected void configureShell(Shell shell) {
 		super.configureShell(shell);
-		if(title != null)
-		{
+		if (title != null) {
 			shell.setText(title);
 		}
 	}
@@ -197,19 +188,19 @@ public class ComboInputDialog extends Dialog
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+	 * @see
+	 * org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse
+	 * .swt.widgets.Composite)
 	 */
 	@Override
-	protected void createButtonsForButtonBar(Composite parent)
-	{
+	protected void createButtonsForButtonBar(Composite parent) {
 		// create OK and Cancel buttons by default
 		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 		// do this here because setting the text will set enablement on the ok
 		// button
 		combo.setFocus();
-		if(value != null)
-		{
+		if (value != null) {
 			combo.setText(value);
 			// combo.selectAll();
 		}
@@ -219,17 +210,15 @@ public class ComboInputDialog extends Dialog
 	 * (non-Javadoc) Method declared on Dialog.
 	 */
 	@Override
-	protected Control createDialogArea(Composite parent)
-	{
+	protected Control createDialogArea(Composite parent) {
 		// create composite
-		Composite composite = (Composite)super.createDialogArea(parent);
+		Composite composite = (Composite) super.createDialogArea(parent);
 		// create message
-		if(message != null)
-		{
+		if (message != null) {
 			Label label = new Label(composite, SWT.WRAP);
 			label.setText(message);
-			GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
-					| GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+			GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+					| GridData.VERTICAL_ALIGN_CENTER);
 			data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 			label.setLayoutData(data);
 			label.setFont(parent.getFont());
@@ -237,10 +226,8 @@ public class ComboInputDialog extends Dialog
 		combo = new Combo(composite, SWT.NONE);
 		combo.setItems(choices);
 		combo.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-		combo.addModifyListener(new ModifyListener()
-		{
-			public void modifyText(ModifyEvent e)
-			{
+		combo.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
 				validateInput();
 			}
 		});
@@ -260,8 +247,7 @@ public class ComboInputDialog extends Dialog
 	 * 
 	 * @return the combo
 	 */
-	protected Combo getCombo()
-	{
+	protected Combo getCombo() {
 		return combo;
 	}
 
@@ -270,8 +256,7 @@ public class ComboInputDialog extends Dialog
 	 * 
 	 * @return the ok button
 	 */
-	protected Button getOkButton()
-	{
+	protected Button getOkButton() {
 		return okButton;
 	}
 
@@ -280,24 +265,22 @@ public class ComboInputDialog extends Dialog
 	 * 
 	 * @return the validator
 	 */
-	protected IInputValidator getValidator()
-	{
+	protected IInputValidator getValidator() {
 		return validator;
 	}
 
 	/**
 	 * Validates the input.
 	 * <p>
-	 * The default implementation of this framework method delegates the request to the supplied input validator object;
-	 * if it finds the input invalid, the error message is displayed in the dialog's message line. This hook method is
-	 * called whenever the text changes in the input field.
+	 * The default implementation of this framework method delegates the request
+	 * to the supplied input validator object; if it finds the input invalid,
+	 * the error message is displayed in the dialog's message line. This hook
+	 * method is called whenever the text changes in the input field.
 	 * </p>
 	 */
-	protected void validateInput()
-	{
+	protected void validateInput() {
 		String errorMessage = null;
-		if(validator != null)
-		{
+		if (validator != null) {
 			errorMessage = validator.isValid(combo.getText());
 		}
 		// Bug 16256: important not to treat "" (blank error) the same as null

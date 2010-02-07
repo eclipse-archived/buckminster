@@ -17,8 +17,6 @@ import org.eclipse.equinox.p2.metadata.Version;
 /**
  * @author Thomas Hallgren
  */
-public interface IQualifierGenerator
-{
-	Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies)
-			throws CoreException;
+public interface IQualifierGenerator {
+	Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException;
 }

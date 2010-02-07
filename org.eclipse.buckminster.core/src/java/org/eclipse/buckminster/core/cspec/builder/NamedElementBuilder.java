@@ -10,28 +10,23 @@ package org.eclipse.buckminster.core.cspec.builder;
 /**
  * @author Thomas Hallgren
  */
-public abstract class NamedElementBuilder
-{
-	private String m_name;
+public abstract class NamedElementBuilder {
+	private String name;
 
-	public void clear()
-	{
-		m_name = null;
+	public void clear() {
+		name = null;
 	}
 
-	public String getName()
-	{
-		return m_name;
+	public String getName() {
+		return name;
 	}
 
-	public void initFrom(String name)
-	{
+	public void initFrom(String n) {
 		clear();
-		m_name = name;
+		this.name = n;
 	}
 
-	public void setName(String name)
-	{
-		m_name = name;
+	public void setName(String name) {
+		this.name = name;
 	}
 }

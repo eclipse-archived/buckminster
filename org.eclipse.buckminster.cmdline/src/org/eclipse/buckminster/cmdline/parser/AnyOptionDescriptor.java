@@ -13,16 +13,13 @@ package org.eclipse.buckminster.cmdline.parser;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 
-public class AnyOptionDescriptor extends OptionDescriptor
-{
-	public AnyOptionDescriptor()
-	{
+public class AnyOptionDescriptor extends OptionDescriptor {
+	public AnyOptionDescriptor() {
 		super(null, null, OptionValueType.OPTIONAL);
 	}
 
 	@Override
-	public boolean isAcceptableName(String name, boolean isLongName, boolean exact)
-	{
+	public boolean isAcceptableName(String name, boolean isLongName, boolean exact) {
 		// we accept anything!
 		//
 		return true;

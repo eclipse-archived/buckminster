@@ -27,13 +27,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.pde.core.IModel;
 
 /**
- * This abstract builder contains all functionality that is common to the PDE Cspec builders. Subclasses must implement
+ * This abstract builder contains all functionality that is common to the PDE
+ * Cspec builders. Subclasses must implement
  * {@link #parseFile(IComponentReader reader)}.
  * 
  * @author Thomas Hallgren
  */
-public abstract class PDEBuilder extends AbstractResolutionBuilder implements IPDEConstants
-{
+public abstract class PDEBuilder extends AbstractResolutionBuilder implements IPDEConstants {
 	/**
 	 * Name of the default generated target.
 	 */
@@ -44,59 +44,47 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 	 */
 	public static final String OPTIONAL_TARGET = "optional"; //$NON-NLS-1$
 
-	public static ResolvedNode createNode(ProviderMatch providerMatch, CSpecBuilder cspecBuilder) throws CoreException
-	{
+	public static ResolvedNode createNode(ProviderMatch providerMatch, CSpecBuilder cspecBuilder) throws CoreException {
 
-		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(
-				cspecBuilder, false)));
+		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(cspecBuilder, false)));
 	}
 
-	private boolean m_usingInstalledReader;
+	private boolean usingInstalledReader;
 
-	private IModel m_model;
+	private IModel model;
 
-	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IComponentReader reader = readerHandle[0];
 
-		if(!(reader instanceof ICatalogReader))
-			reader = new ZipArchiveReader((IFileReader)reader);
+		if (!(reader instanceof ICatalogReader))
+			reader = new ZipArchiveReader((IFileReader) reader);
 
-		ICatalogReader catRdr = (ICatalogReader)reader;
-		monitor.beginTask(null, forResolutionAidOnly
-				? 1200
-				: 1600);
+		ICatalogReader catRdr = (ICatalogReader) reader;
+		monitor.beginTask(null, forResolutionAidOnly ? 1200 : 1600);
 		monitor.subTask(Messages.generating_cspec_from_PDE_artifacts);
-		try
-		{
-			m_usingInstalledReader = reader instanceof EclipsePlatformReader;
+		try {
+			usingInstalledReader = reader instanceof EclipsePlatformReader;
 			CSpecBuilder cspecBuilder = new CSpecBuilder();
 			parseFile(cspecBuilder, forResolutionAidOnly, catRdr, MonitorUtils.subMonitor(monitor, 1000));
 			applyExtensions(cspecBuilder, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 200));
 			return createNode(reader, cspecBuilder);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	public IModel getModel()
-	{
-		return m_model;
+	public IModel getModel() {
+		return model;
 	}
 
-	protected boolean isUsingInstalledReader()
-	{
-		return m_usingInstalledReader;
+	protected boolean isUsingInstalledReader() {
+		return usingInstalledReader;
 	}
 
-	protected abstract void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader,
-			IProgressMonitor monitor) throws CoreException;
+	protected abstract void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor)
+			throws CoreException;
 
-	protected void setModel(IModel model)
-	{
-		m_model = model;
+	protected void setModel(IModel model) {
+		this.model = model;
 	}
 }

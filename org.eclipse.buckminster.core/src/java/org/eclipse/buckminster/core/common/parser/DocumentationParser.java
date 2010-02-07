@@ -23,36 +23,29 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class DocumentationParser extends AbstractParser<Documentation> implements ChildPoppedListener
-{
-	private Documentation m_documentation;
+public class DocumentationParser extends AbstractParser<Documentation> implements ChildPoppedListener {
+	private Documentation documentation;
 
-	public DocumentationParser() throws CoreException
-	{
-		super(Collections.<ParserFactory.ParserExtension> emptyList(), new String[] { XMLConstants.XHTML_NS,
-				XMLConstants.XML_NS }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE }, true);
+	public DocumentationParser() throws CoreException {
+		super(Collections.<ParserFactory.ParserExtension> emptyList(), new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS }, new String[] {
+				XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE }, true);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_documentation = ((DocumentationHandler)child).createDocumentation();
+	public void childPopped(ChildHandler child) throws SAXException {
+		documentation = ((DocumentationHandler) child).createDocumentation();
 	}
 
-	public Documentation parse(String systemID, InputStream input) throws CoreException
-	{
+	public Documentation parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
-		return m_documentation;
+		return documentation;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(Documentation.XHTML_TAG.equals(localName))
-		{
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if (Documentation.XHTML_TAG.equals(localName)) {
 			DocumentationHandler rmh = new DocumentationHandler(this);
 			this.pushHandler(rmh, attrs);
-		}
-		else
+		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
 }

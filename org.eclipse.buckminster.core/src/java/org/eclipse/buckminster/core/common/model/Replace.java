@@ -22,27 +22,26 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * The Replace class will perform a regular expression based match and replace on its source. The pattern can be quoted
- * in order to make the replace function as a normal (non expression based) replace.
+ * The Replace class will perform a regular expression based match and replace
+ * on its source. The pattern can be quoted in order to make the replace
+ * function as a normal (non expression based) replace.
  * 
  * @author Thomas Hallgren
  */
-public class Replace extends ValueHolderFilter
-{
-	public static final class Match extends AbstractSaxableElement
-	{
-		private final Pattern m_pattern;
+public class Replace extends ValueHolderFilter {
+	public static final class Match extends AbstractSaxableElement {
+		private final Pattern pattern;
 
-		private final String m_patternString;
+		private final String patternString;
 
-		private final String m_replacement;
+		private final String replacement;
 
-		private final boolean m_quotePattern;
+		private final boolean quotePattern;
 
 		/**
-		 * Create a Replace.Match that will replace every subsequence of the value provided by a
-		 * <code>valueProvider</code> that matches the <code>pattern</code> with the given <code>replacement</code>
-		 * string.
+		 * Create a Replace.Match that will replace every subsequence of the
+		 * value provided by a <code>valueProvider</code> that matches the
+		 * <code>pattern</code> with the given <code>replacement</code> string.
 		 * 
 		 * @param pattern
 		 *            The pattern that defines the replacement
@@ -53,64 +52,54 @@ public class Replace extends ValueHolderFilter
 		 * @see java.util.regex.Matcher#replaceAll(String)
 		 * @see java.util.regex.Pattern#quote(String)
 		 */
-		public Match(String pattern, String replacement, boolean quotePattern)
-		{
-			m_patternString = pattern;
-			m_quotePattern = quotePattern;
-			m_replacement = replacement;
-			if(quotePattern)
+		public Match(String pattern, String replacement, boolean quotePattern) {
+			this.patternString = pattern;
+			this.quotePattern = quotePattern;
+			this.replacement = replacement;
+			if (quotePattern)
 				pattern = Pattern.quote(pattern);
-			m_pattern = Pattern.compile(pattern);
+			this.pattern = Pattern.compile(pattern);
 		}
 
 		@Override
-		public boolean equals(Object o)
-		{
-			if(o == this)
+		public boolean equals(Object o) {
+			if (o == this)
 				return true;
 
-			if(!(o instanceof Match))
+			if (!(o instanceof Match))
 				return false;
 
-			return m_quotePattern == ((Match)o).m_quotePattern && m_patternString.equals(((Match)o).m_patternString)
-					&& m_replacement.equals(((Match)o).m_replacement);
+			return quotePattern == ((Match) o).quotePattern && patternString.equals(((Match) o).patternString)
+					&& replacement.equals(((Match) o).replacement);
 		}
 
-		public String getDefaultTag()
-		{
+		public String getDefaultTag() {
 			return MATCH_TAG;
 		}
 
 		@Override
-		public int hashCode()
-		{
-			int hc = m_patternString.hashCode();
-			hc = 37 * hc + m_replacement.hashCode();
-			hc = 37 * hc + (m_quotePattern
-					? 17
-					: 0);
+		public int hashCode() {
+			int hc = patternString.hashCode();
+			hc = 37 * hc + replacement.hashCode();
+			hc = 37 * hc + (quotePattern ? 17 : 0);
 			return hc;
 		}
 
 		@Override
-		protected void addAttributes(AttributesImpl attrs) throws SAXException
-		{
-			Utils.addAttribute(attrs, ATTR_PATTERN, m_patternString);
-			Utils.addAttribute(attrs, ATTR_REPLACEMENT, m_replacement);
-			if(m_quotePattern)
+		protected void addAttributes(AttributesImpl attrs) throws SAXException {
+			Utils.addAttribute(attrs, ATTR_PATTERN, patternString);
+			Utils.addAttribute(attrs, ATTR_REPLACEMENT, replacement);
+			if (quotePattern)
 				Utils.addAttribute(attrs, ATTR_QUOTE_PATTERN, "true"); //$NON-NLS-1$
 		}
 
-		String match(String resolved)
-		{
-			Matcher matcher = m_pattern.matcher(resolved);
-			if(matcher.find())
-			{
+		String match(String resolved) {
+			Matcher matcher = pattern.matcher(resolved);
+			if (matcher.find()) {
 				StringBuffer sb = new StringBuffer();
-				do
-				{
-					matcher.appendReplacement(sb, m_replacement);
-				} while(matcher.find());
+				do {
+					matcher.appendReplacement(sb, replacement);
+				} while (matcher.find());
 				matcher.appendTail(sb);
 				return sb.toString();
 			}
@@ -128,71 +117,61 @@ public class Replace extends ValueHolderFilter
 
 	public static final String ATTR_QUOTE_PATTERN = "quotePattern"; //$NON-NLS-1$
 
-	private final ArrayList<Match> m_matchers = new ArrayList<Match>();
+	private final ArrayList<Match> matchers = new ArrayList<Match>();
 
-	public void addMatch(Match match)
-	{
-		m_matchers.add(match);
+	public void addMatch(Match match) {
+		matchers.add(match);
 	}
 
 	@Override
-	public String checkedGetValue(Map<String, ? extends Object> props, int recursionGuard)
-	{
+	public String checkedGetValue(Map<String, ? extends Object> props, int recursionGuard) {
 		String resolved = this.checkedGetSourceValue(props, recursionGuard);
-		if(resolved == null || NO_VALUE.equals(resolved))
+		if (resolved == null || NO_VALUE.equals(resolved))
 			return NO_VALUE;
 
-		for(Match match : m_matchers)
-		{
+		for (Match match : matchers) {
 			String result = match.match(resolved);
-			if(result != null)
+			if (result != null)
 				return result;
 		}
 		return resolved;
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		return super.equals(o) && m_matchers.equals(((Replace)o).m_matchers);
+	public boolean equals(Object o) {
+		return super.equals(o) && matchers.equals(((Replace) o).matchers);
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int hc = super.hashCode();
-		hc = 37 * hc + m_matchers.hashCode();
+		hc = 37 * hc + matchers.hashCode();
 		return hc;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
 		// If we have exactly one, then use attributes instead of
 		// subelements
 		//
-		if(m_matchers.size() == 1)
-			m_matchers.get(0).addAttributes(attrs);
+		if (matchers.size() == 1)
+			matchers.get(0).addAttributes(attrs);
 	}
 
 	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
 		super.emitElements(handler, namespace, prefix);
-		int top = m_matchers.size();
+		int top = matchers.size();
 
 		// If there's only one it will be added as an attribute.
 		//
-		if(top > 1)
-		{
-			for(int idx = 0; idx < top; ++idx)
-			{
-				Match match = m_matchers.get(idx);
+		if (top > 1) {
+			for (int idx = 0; idx < top; ++idx) {
+				Match match = matchers.get(idx);
 				match.toSax(handler, namespace, prefix, match.getDefaultTag());
 			}
 		}

@@ -20,104 +20,89 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.eclipse.buckminster.ant.types.FileSetGroup;
-import org.eclipse.buckminster.pde.ant.VersionConsolidatorTask;
 import org.eclipse.buckminster.pde.tasks.SourceFeatureCreator;
 
 /**
- * Ant task creates a source feature for a given feature and a set of source features and source bundles.
+ * Ant task creates a source feature for a given feature and a set of source
+ * features and source bundles.
  * 
  * @author Thomas Hallgren
  */
-public class SourceFeatureCreatorTask extends Task
-{
-	private ArrayList<FileSet> m_fileSets;
+public class SourceFeatureCreatorTask extends Task {
+	private ArrayList<FileSet> fileSets;
 
-	private ArrayList<FileSetGroup> m_fileSetGroups;
+	private ArrayList<FileSetGroup> fileSetGroups;
 
-	private File m_input;
+	private File input;
 
-	private File m_output;
-
+	private File output;
 
 	/**
 	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
 	 */
-	public void add(FileSetGroup fsGroup) throws BuildException
-	{
-		if(m_fileSetGroups == null)
-			m_fileSetGroups = new ArrayList<FileSetGroup>();
-		m_fileSetGroups.add(fsGroup);
+	public void add(FileSetGroup fsGroup) throws BuildException {
+		if (fileSetGroups == null)
+			fileSetGroups = new ArrayList<FileSetGroup>();
+		fileSetGroups.add(fsGroup);
 	}
 
 	/**
 	 * Adds a nested <code>&lt;fileset&gt;</code> element.
 	 */
-	public void addFileset(FileSet fs) throws BuildException
-	{
-		if(m_fileSets == null)
-			m_fileSets = new ArrayList<FileSet>();
-		m_fileSets.add(fs);
+	public void addFileset(FileSet fs) throws BuildException {
+		if (fileSets == null)
+			fileSets = new ArrayList<FileSet>();
+		fileSets.add(fs);
 	}
 
 	@Override
-	public void execute() throws BuildException
-	{
-		try
-		{
-	    	if(m_fileSetGroups != null)
-	    	{
-	    		for(FileSetGroup fsg : m_fileSetGroups)
-		    		for(FileSet fs : fsg.getFileSets())
-		    			addFileset(fs);
-	    		m_fileSetGroups = null;
-	    	}
+	public void execute() throws BuildException {
+		try {
+			if (fileSetGroups != null) {
+				for (FileSetGroup fsg : fileSetGroups)
+					for (FileSet fs : fsg.getFileSets())
+						addFileset(fs);
+				fileSetGroups = null;
+			}
 
-	    	if(getInput() == null)
-				throw new BuildException("Missing attribute input", getLocation());
-			if(getOutput() == null)
-				throw new BuildException("Missing attribute output", getLocation());
+			if (getInput() == null)
+				throw new BuildException("Missing attribute input", getLocation()); //$NON-NLS-1$
+			if (getOutput() == null)
+				throw new BuildException("Missing attribute output", getLocation()); //$NON-NLS-1$
 
 			Project proj = getProject();
 			List<File> featuresAndPlugins;
-			if(m_fileSets == null)
+			if (fileSets == null)
 				featuresAndPlugins = Collections.emptyList();
-			else
-			{
+			else {
 				featuresAndPlugins = new ArrayList<File>();
-				for(FileSet fs : m_fileSets)
-				{
-		            DirectoryScanner ds = fs.getDirectoryScanner(proj);
-		            File dir = fs.getDir(proj);
-		            for(String file : ds.getIncludedFiles())
-		            	featuresAndPlugins.add(new File(dir, file));
+				for (FileSet fs : fileSets) {
+					DirectoryScanner ds = fs.getDirectoryScanner(proj);
+					File dir = fs.getDir(proj);
+					for (String file : ds.getIncludedFiles())
+						featuresAndPlugins.add(new File(dir, file));
 				}
 			}
 			SourceFeatureCreator fc = new SourceFeatureCreator(getInput(), getOutput(), featuresAndPlugins);
 			fc.run();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 
-	public File getInput()
-	{
-		return m_input;
+	public File getInput() {
+		return input;
 	}
 
-	public File getOutput()
-	{
-		return m_output;
+	public File getOutput() {
+		return output;
 	}
 
-	public void setInputFile(File input)
-	{
-		m_input = input;
+	public void setInputFile(File input) {
+		this.input = input;
 	}
 
-	public void setOutputFile(File output)
-	{
-		m_output = output;
+	public void setOutputFile(File output) {
+		this.output = output;
 	}
 }

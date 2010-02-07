@@ -20,21 +20,18 @@ import org.eclipse.buckminster.ui.dependency.visualizer.viewer.provider.IRelatio
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 /**
- * The DirectRelationshipProvider gathers all connections to direct dependencies of a {@link BOMNode}
+ * The DirectRelationshipProvider gathers all connections to direct dependencies
+ * of a {@link BOMNode}
  * 
  * @author Johannes Utzig
  * 
  */
-public class DirectRelationshipProvider implements IRelationshipProvider
-{
+public class DirectRelationshipProvider implements IRelationshipProvider {
 
-	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root,
-			BOMNode currentSelection, Object[] allConnections)
-	{
+	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection, Object[] allConnections) {
 		List<BOMNode> nodes = currentSelection.getChildren();
 		Map<EntityConnectionData, ConnectionCategory> connections = new HashMap<EntityConnectionData, ConnectionCategory>();
-		for(BOMNode bomNode : nodes)
-		{
+		for (BOMNode bomNode : nodes) {
 			connections.put(new EntityConnectionData(currentSelection, bomNode), ConnectionCategory.DEPENDENCY);
 		}
 		return connections;

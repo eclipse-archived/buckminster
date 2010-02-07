@@ -17,171 +17,145 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 /**
  * @author Thomas Hallgren
  */
-public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequisite
-{
-	private String m_alias;
+public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequisite {
+	private String alias;
 
-	private final AttributeBuilder m_attributeBuilder;
+	private final AttributeBuilder attributeBuilder;
 
-	private String m_component;
+	private String component;
 
-	private String m_componentType;
+	private String componentType;
 
-	private boolean m_contributor = true;
+	private boolean contributor = true;
 
-	private Pattern m_excludePattern;
+	private Pattern excludePattern;
 
-	private Pattern m_includePattern;
+	private Pattern includePattern;
 
-	private Filter m_filter;
+	private Filter filter;
 
-	PrerequisiteBuilder(AttributeBuilder attributeBuilder)
-	{
+	PrerequisiteBuilder(AttributeBuilder attributeBuilder) {
 		super(attributeBuilder.getCSpecBuilder());
-		m_attributeBuilder = attributeBuilder;
+		this.attributeBuilder = attributeBuilder;
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_alias = null;
-		m_component = null;
-		m_componentType = null;
-		m_contributor = true;
-		m_excludePattern = null;
-		m_includePattern = null;
-		m_filter = null;
+		alias = null;
+		component = null;
+		componentType = null;
+		contributor = true;
+		excludePattern = null;
+		includePattern = null;
+		filter = null;
 	}
 
-	public Prerequisite createPrerequisite()
-	{
+	public Prerequisite createPrerequisite() {
 		return new Prerequisite(this);
 	}
 
-	public String getAlias()
-	{
-		return m_alias;
+	public String getAlias() {
+		return alias;
 	}
 
-	public String getAttribute()
-	{
+	public String getAttribute() {
 		return getAttributeBuilder().getName();
 	}
 
-	public AttributeBuilder getAttributeBuilder()
-	{
-		return m_attributeBuilder;
+	public AttributeBuilder getAttributeBuilder() {
+		return attributeBuilder;
 	}
 
-	public String getComponentName()
-	{
-		return m_component;
+	public String getComponentName() {
+		return component;
 	}
 
-	public String getComponentType()
-	{
-		return m_componentType;
+	public String getComponentType() {
+		return componentType;
 	}
 
-	public Pattern getExcludePattern()
-	{
-		return m_excludePattern;
+	public Pattern getExcludePattern() {
+		return excludePattern;
 	}
 
-	public Filter getFilter()
-	{
-		return m_filter;
+	public Filter getFilter() {
+		return filter;
 	}
 
-	public Pattern getIncludePattern()
-	{
-		return m_includePattern;
+	public Pattern getIncludePattern() {
+		return includePattern;
 	}
 
-	public void initFrom(IPrerequisite prerequisite)
-	{
+	public void initFrom(IPrerequisite prerequisite) {
 		super.initFrom(prerequisite.getName());
-		m_alias = prerequisite.getAlias();
-		m_component = prerequisite.getComponentName();
-		m_componentType = prerequisite.getComponentType();
-		m_contributor = prerequisite.isContributor();
-		m_excludePattern = prerequisite.getExcludePattern();
-		m_includePattern = prerequisite.getIncludePattern();
-		m_filter = prerequisite.getFilter();
+		alias = prerequisite.getAlias();
+		component = prerequisite.getComponentName();
+		componentType = prerequisite.getComponentType();
+		contributor = prerequisite.isContributor();
+		excludePattern = prerequisite.getExcludePattern();
+		includePattern = prerequisite.getIncludePattern();
+		filter = prerequisite.getFilter();
 	}
 
-	public boolean isContributor()
-	{
-		return m_contributor;
+	public boolean isContributor() {
+		return contributor;
 	}
 
-	public boolean isExternal()
-	{
-		return m_component != null;
+	public boolean isExternal() {
+		return component != null;
 	}
 
-	public boolean isMatch(String component, String attribute)
-	{
-		return Prerequisite.isMatch(component, attribute, m_excludePattern, m_includePattern);
+	public boolean isMatch(String componentName, String attribute) {
+		return Prerequisite.isMatch(componentName, attribute, excludePattern, includePattern);
 	}
 
-	public void setAlias(String alias)
-	{
-		m_alias = alias;
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 
-	public void setComponentName(String component)
-	{
-		m_component = component;
+	public void setComponentName(String component) {
+		this.component = component;
 	}
 
-	public void setComponentType(String type)
-	{
-		m_componentType = type;
+	public void setComponentType(String componentType) {
+		this.componentType = componentType;
 	}
 
-	public void setContributor(boolean contributor)
-	{
-		m_contributor = contributor;
+	public void setContributor(boolean contributor) {
+		this.contributor = contributor;
 	}
 
-	public void setExcludePattern(Pattern excludePattern)
-	{
-		m_excludePattern = excludePattern;
+	public void setExcludePattern(Pattern excludePattern) {
+		this.excludePattern = excludePattern;
 	}
 
-	public void setFilter(Filter filter)
-	{
-		m_filter = filter;
+	public void setFilter(Filter filter) {
+		this.filter = filter;
 	}
 
-	public void setIncludePattern(Pattern includePattern)
-	{
-		m_includePattern = includePattern;
+	public void setIncludePattern(Pattern includePattern) {
+		this.includePattern = includePattern;
 	}
 
 	@Override
-	public String toString()
-	{
-		if(m_component == null)
+	public String toString() {
+		if (component == null)
 			return getName();
 
 		StringBuilder bld = new StringBuilder();
-		bld.append(m_component);
-		if(m_componentType != null)
-		{
+		bld.append(component);
+		if (componentType != null) {
 			bld.append(':');
-			bld.append(m_componentType);
+			bld.append(componentType);
 		}
 		bld.append('#');
 		bld.append(getName());
 		return bld.toString();
 	}
 
-	void finalWrapUp(Map<String, ComponentRequestBuilder> dependencies)
-	{
-		if(m_componentType != null && dependencies.containsKey(m_component))
-			m_componentType = null;
+	void finalWrapUp(Map<String, ComponentRequestBuilder> dependencies) {
+		if (componentType != null && dependencies.containsKey(component))
+			componentType = null;
 	}
 }

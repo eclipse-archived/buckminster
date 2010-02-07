@@ -17,83 +17,70 @@ import org.eclipse.equinox.p2.metadata.Version;
 /**
  * @author Thomas Hallgren
  */
-public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator
-{
-	private String m_attribute;
+public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator {
+	private String attribute;
 
-	private String m_component;
+	private String component;
 
-	private String m_generatesType;
+	private String generatesType;
 
-	private Version m_generatesVersion;
+	private Version generatesVersion;
 
-	GeneratorBuilder(CSpecBuilder cspecBuilder)
-	{
+	GeneratorBuilder(CSpecBuilder cspecBuilder) {
 		super(cspecBuilder);
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_component = null;
-		m_attribute = null;
-		m_generatesType = null;
-		m_generatesVersion = null;
+		component = null;
+		attribute = null;
+		generatesType = null;
+		generatesVersion = null;
 	}
 
-	public Generator createGenerator(CSpec cspec)
-	{
-		return new Generator(cspec, m_component, m_attribute, getGeneratedIdentifier());
+	public Generator createGenerator(CSpec cspec) {
+		return new Generator(cspec, component, attribute, getGeneratedIdentifier());
 	}
 
-	public String getAttribute()
-	{
-		return m_attribute;
+	public String getAttribute() {
+		return attribute;
 	}
 
-	public String getComponent()
-	{
-		return m_component;
+	public String getComponent() {
+		return component;
 	}
 
-	public ComponentIdentifier getGeneratedIdentifier()
-	{
-		return new ComponentIdentifier(getName(), m_generatesType, m_generatesVersion);
+	public ComponentIdentifier getGeneratedIdentifier() {
+		return new ComponentIdentifier(getName(), generatesType, generatesVersion);
 	}
 
-	public String getGenerates()
-	{
+	public String getGenerates() {
 		return getName();
 	}
 
-	public void initFrom(IGenerator generator)
-	{
+	public void initFrom(IGenerator generator) {
 		IComponentIdentifier ci = generator.getGeneratedIdentifier();
 		super.initFrom(ci.getName());
-		m_component = generator.getComponent();
-		m_attribute = generator.getAttribute();
-		m_generatesType = ci.getComponentTypeID();
-		m_generatesVersion = ci.getVersion();
+		component = generator.getComponent();
+		attribute = generator.getAttribute();
+		generatesType = ci.getComponentTypeID();
+		generatesVersion = ci.getVersion();
 	}
 
-	public void setAttribute(String attribute)
-	{
-		m_attribute = attribute;
+	public void setAttribute(String attribute) {
+		this.attribute = attribute;
 	}
 
-	public void setComponent(String component)
-	{
-		m_component = component;
+	public void setComponent(String component) {
+		this.component = component;
 	}
 
-	public void setGeneratesType(String generatesType)
-	{
-		m_generatesType = generatesType;
+	public void setGeneratesType(String generatesType) {
+		this.generatesType = generatesType;
 	}
 
-	public void setGeneratesVersion(Version version)
-	{
-		m_generatesVersion = version;
+	public void setGeneratesVersion(Version version) {
+		this.generatesVersion = version;
 	}
 }

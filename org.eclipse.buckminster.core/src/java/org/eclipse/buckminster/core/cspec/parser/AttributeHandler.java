@@ -23,57 +23,45 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AttributeHandler extends CSpecElementHandler implements ChildPoppedListener
-{
-	private DocumentationHandler m_documentationHandler;
+public abstract class AttributeHandler extends CSpecElementHandler implements ChildPoppedListener {
+	private DocumentationHandler documentationHandler;
 
-	public AttributeHandler(AbstractHandler parent)
-	{
+	public AttributeHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_documentationHandler)
-			((AttributeBuilder)getBuilder()).setDocumentation(m_documentationHandler.createDocumentation());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == documentationHandler)
+			((AttributeBuilder) getBuilder()).setDocumentation(documentationHandler.createDocumentation());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(DocumentationHandler.TAG.equals(localName))
-		{
-			if(m_documentationHandler == null)
-				m_documentationHandler = new DocumentationHandler(this);
-			ch = m_documentationHandler;
-		}
-		else
+		if (DocumentationHandler.TAG.equals(localName)) {
+			if (documentationHandler == null)
+				documentationHandler = new DocumentationHandler(this);
+			ch = documentationHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
 		String filterStr = getOptionalStringValue(attrs, Attribute.ATTR_FILTER);
-		if(filterStr != null)
-		{
-			try
-			{
+		if (filterStr != null) {
+			try {
 				getAttributeBuilder().setFilter(FilterFactory.newInstance(filterStr));
-			}
-			catch(InvalidSyntaxException e)
-			{
+			} catch (InvalidSyntaxException e) {
 				throw new SAXParseException(e.getMessage(), getDocumentLocator());
 			}
 		}
 	}
 
 	@Override
-	protected CSpecElementBuilder createBuilder()
-	{
+	protected CSpecElementBuilder createBuilder() {
 		return getCSpecBuilder().createAttributeBuilder();
 	}
 }

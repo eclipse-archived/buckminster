@@ -16,56 +16,41 @@ import java.io.PrintStream;
 
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.DefaultLogger;
-import org.eclipse.ant.internal.core.ant.InternalAntMessages;
 
 /**
  * @author ken1
  */
-public class AntBuildLogger extends DefaultLogger
-{
-	StringBuilder m_msgBld = new StringBuilder();
+public class AntBuildLogger extends DefaultLogger {
+	StringBuilder msgBld = new StringBuilder();
 
-	private Throwable m_buildResult;
+	private Throwable buildResult;
 
 	@Override
-	public void buildStarted(BuildEvent event)
-	{
+	public void buildFinished(BuildEvent event) {
+		buildResult = event.getException();
+	}
+
+	@Override
+	public void buildStarted(BuildEvent event) {
 		this.setEmacsMode(true);
 		super.buildStarted(event);
 	}
 
-	@Override
-	public void buildFinished(BuildEvent event)
-	{
-		m_buildResult = event.getException();
-	}
-
-	public Throwable getBuildResult()
-	{
-		return m_buildResult;
+	public Throwable getBuildResult() {
+		return buildResult;
 	}
 
 	@Override
-	protected synchronized void printMessage(final String message, final PrintStream stream, final int priority)
-	{
-		if(InternalAntMessages.InternalAntRunner_BUILD_SUCCESSFUL_1.equals(message))
-			//
-			// It's not enough to override the buildFinished method. The Eclipse
-			// InternalAntRunner will still insist on writing this message. Well,
-			// we don't want that printout after each and every task that we execute.
-			//
-			return;
-
-		m_msgBld.setLength(0);
-		m_msgBld.append("[ant] ");
+	protected synchronized void printMessage(final String message, final PrintStream stream, final int priority) {
+		msgBld.setLength(0);
+		msgBld.append("[ant] ");
 		int top = message.length();
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			char c = message.charAt(idx);
-			m_msgBld.append(c);
-			if(c == '\n')
-				m_msgBld.append("[ant] ");
+			msgBld.append(c);
+			if (c == '\n')
+				msgBld.append("[ant] ");
 		}
-		super.printMessage(m_msgBld.toString(), stream, priority);
+		super.printMessage(msgBld.toString(), stream, priority);
 	}
 }

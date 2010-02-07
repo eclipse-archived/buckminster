@@ -24,8 +24,7 @@ import org.eclipse.osgi.util.NLS;
  * @author kolwing
  * 
  */
-public class SimulationActor extends AbstractActor
-{
+public class SimulationActor extends AbstractActor {
 	public static final String ID = "simulation"; //$NON-NLS-1$
 
 	public static final String TICKS_PROPERTY = "ticks"; //$NON-NLS-1$
@@ -36,52 +35,42 @@ public class SimulationActor extends AbstractActor
 
 	public static final int TICKS_DEFAULT = 3000;
 
-	private int m_ticks = TICKS_DEFAULT;
+	private int ticks = TICKS_DEFAULT;
 
 	@Override
-	protected void internalInit() throws CoreException
-	{
+	protected void internalInit() throws CoreException {
 		String sTicks = this.getActorProperty(TICKS_PROPERTY);
-		if(sTicks != null)
-		{
-			int ticks = Integer.parseInt(sTicks);
-			if(ticks < TICKS_MIN)
-				ticks = TICKS_MIN;
-			else if(ticks > TICKS_MAX)
-				ticks = TICKS_MAX;
-			m_ticks = ticks;
+		if (sTicks != null) {
+			int tcks = Integer.parseInt(sTicks);
+			if (tcks < TICKS_MIN)
+				tcks = TICKS_MIN;
+			else if (tcks > TICKS_MAX)
+				tcks = TICKS_MAX;
+			ticks = tcks;
 		}
 	}
 
 	@Override
-	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
-	{
+	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException {
 		monitor = MonitorUtils.ensureNotNull(monitor);
 
-		int ticks = m_ticks;
+		int tcks = ticks;
 
-		try
-		{
-			monitor.beginTask(null, ticks);
+		try {
+			monitor.beginTask(null, tcks);
 
 			PrintStream ps = ctx.getOutputStream();
-			ps.print(NLS.bind(Messages.Simulation_0_working_for_1_ticks, ctx.getAction().getName(),
-					Integer.valueOf(ticks)));
-			for(int i = 0; i < ticks; i++)
-			{
+			ps.print(NLS.bind(Messages.Simulation_0_working_for_1_ticks, ctx.getAction().getName(), Integer.valueOf(tcks)));
+			for (int i = 0; i < ticks; i++) {
 				Thread.sleep(1);
 				MonitorUtils.worked(monitor, 1);
 			}
 			ps.println(Messages.Finished_working);
 
 			return Status.OK_STATUS;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}

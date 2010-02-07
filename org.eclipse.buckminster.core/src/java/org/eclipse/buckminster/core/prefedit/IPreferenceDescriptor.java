@@ -10,8 +10,7 @@ package org.eclipse.buckminster.core.prefedit;
 /**
  * @author Thomas Hallgren
  */
-public interface IPreferenceDescriptor
-{
+public interface IPreferenceDescriptor {
 	Enum<?>[] getEnums();
 
 	int[] getIntegerRange();

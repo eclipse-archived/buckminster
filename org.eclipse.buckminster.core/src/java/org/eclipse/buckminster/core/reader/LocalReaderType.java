@@ -33,50 +33,39 @@ import org.eclipse.core.runtime.Path;
 /**
  * @author Thomas Hallgren
  */
-public class LocalReaderType extends URLCatalogReaderType
-{
-	private static final IVersionFinder s_blindFinder = new AbstractVersionFinder(null, null, null)
-	{
-		public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
-		{
+public class LocalReaderType extends URLCatalogReaderType {
+	private static final IVersionFinder blindFinder = new AbstractVersionFinder(null, null, null) {
+		public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException {
 			MonitorUtils.complete(monitor);
 			return null;
 		}
 	};
 
 	@Override
-	public IPath getFixedLocation(Resolution rc) throws CoreException
-	{
-		try
-		{
+	public IPath getFixedLocation(Resolution rc) throws CoreException {
+		try {
 			File file = FileUtils.getFile(URLUtils.normalizeToURL(rc.getRepository()));
-			if(file == null)
+			if (file == null)
 				throw new IllegalArgumentException(Messages.Resolution_not_created_using_LocalReader);
 			IPath path = Path.fromOSString(file.toString());
-			if(path.toFile().isDirectory())
+			if (path.toFile().isDirectory())
 				path = path.addTrailingSeparator();
 			return path;
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
 	@Override
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new LocalReader(this, providerMatch);
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
+			throws CoreException {
 		MonitorUtils.complete(monitor);
-		return nodeQuery.useWorkspace() || nodeQuery.useMaterialization()
-				? new DefaultVersionFinder(provider, ctype, nodeQuery)
-				: s_blindFinder;
+		return nodeQuery.useWorkspace() || nodeQuery.useMaterialization() ? new DefaultVersionFinder(provider, ctype, nodeQuery) : blindFinder;
 	}
 }

@@ -22,13 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author thhal
  */
-public class JarComponentType extends AbstractComponentType
-{
-	private static final IResolutionBuilder s_builder = new AbstractResolutionBuilder()
-	{
-		public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
-				throws CoreException
-		{
+public class JarComponentType extends AbstractComponentType {
+	private static final IResolutionBuilder builder = new AbstractResolutionBuilder() {
+		public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 			IComponentReader reader = readerHandle[0];
 			ProviderMatch ri = reader.getProviderMatch();
 			CSpecBuilder dflt = ri.createCSpec();
@@ -38,10 +34,8 @@ public class JarComponentType extends AbstractComponentType
 		}
 	};
 
-	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
-		return s_builder;
+		return builder;
 	}
 }

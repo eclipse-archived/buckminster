@@ -35,28 +35,23 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractPreferencesCommand extends WorkspaceCommand
-{
-	class PreferenceFilter implements IPreferenceFilter
-	{
-		private final String[] m_scopes;
+public abstract class AbstractPreferencesCommand extends WorkspaceCommand {
+	class PreferenceFilter implements IPreferenceFilter {
+		private final String[] scopes;
 
-		private final Map<String, PreferenceFilterEntry[]> m_mapping;
+		private final Map<String, PreferenceFilterEntry[]> mapping;
 
-		PreferenceFilter(String[] scopes, Map<String, PreferenceFilterEntry[]> mapping)
-		{
-			m_scopes = scopes;
-			m_mapping = mapping;
+		PreferenceFilter(String[] scopes, Map<String, PreferenceFilterEntry[]> mapping) {
+			this.scopes = scopes;
+			this.mapping = mapping;
 		}
 
-		public Map<String, PreferenceFilterEntry[]> getMapping(String scope)
-		{
-			return m_mapping;
+		public Map<String, PreferenceFilterEntry[]> getMapping(String s) {
+			return mapping;
 		}
 
-		public String[] getScopes()
-		{
-			return m_scopes;
+		public String[] getScopes() {
+			return scopes;
 		}
 	}
 
@@ -64,125 +59,110 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 
 	static private final OptionDescriptor FILE_OPTION = new OptionDescriptor('F', "file", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	private IScopeContext m_scope;
+	private IScopeContext scope;
 
-	private HashMap<String, ArrayList<PreferenceFilterEntry>> m_includes;
+	private HashMap<String, ArrayList<PreferenceFilterEntry>> includes;
 
-	private File m_prefsFile;
+	private File prefsFile;
 
 	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(SCOPE_OPTION);
 		appendHere.add(FILE_OPTION);
 		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(SCOPE_OPTION))
-		{
-			if(m_scope != null)
+	protected void handleOption(Option option) throws Exception {
+		if (option.is(SCOPE_OPTION)) {
+			if (scope != null)
 				throw new UsageException(Messages.Only_one_scope_can_be_given);
 
 			String scopeName = option.getValue();
-			if(scopeName.equalsIgnoreCase(InstanceScope.SCOPE))
-				m_scope = new InstanceScope();
-			else if(scopeName.equalsIgnoreCase(ConfigurationScope.SCOPE))
-				m_scope = new ConfigurationScope();
+			if (scopeName.equalsIgnoreCase(InstanceScope.SCOPE))
+				scope = new InstanceScope();
+			else if (scopeName.equalsIgnoreCase(ConfigurationScope.SCOPE))
+				scope = new ConfigurationScope();
 			else
-				throw new UsageException(NLS.bind(Messages.Invalid_scope_Valid_scopes_are_0_and_1,
-						ConfigurationScope.SCOPE, InstanceScope.SCOPE));
-		}
-		else if(option.is(FILE_OPTION))
-		{
-			if(m_prefsFile != null)
+				throw new UsageException(NLS.bind(Messages.Invalid_scope_Valid_scopes_are_0_and_1, ConfigurationScope.SCOPE, InstanceScope.SCOPE));
+		} else if (option.is(FILE_OPTION)) {
+			if (prefsFile != null)
 				throw new UsageException(Messages.Only_one_file_can_be_given);
-			m_prefsFile = new File(option.getValue());
-		}
-		else
+			prefsFile = new File(option.getValue());
+		} else
 			super.handleOption(option);
 	}
 
 	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		if(unparsed.length == 0)
+	protected void handleUnparsed(String[] unparsed) throws Exception {
+		if (unparsed.length == 0)
 			return;
 
-		if(m_includes == null)
-			m_includes = new HashMap<String, ArrayList<PreferenceFilterEntry>>();
+		if (includes == null)
+			includes = new HashMap<String, ArrayList<PreferenceFilterEntry>>();
 
-		for(int idx = 0; idx < unparsed.length; ++idx)
-		{
+		for (int idx = 0; idx < unparsed.length; ++idx) {
 			String include = unparsed[idx];
 			String rootKey = null;
 			String[] subKeys = null;
 			int sepIdx = include.indexOf('#');
-			if(sepIdx < 0 || sepIdx >= 1)
-			{
-				if(sepIdx < 0)
+			if (sepIdx < 0 || sepIdx >= 1) {
+				if (sepIdx < 0)
 					rootKey = include.trim();
-				else
-				{
+				else {
 					rootKey = include.substring(0, sepIdx).trim();
 					subKeys = include.substring(sepIdx + 1).split(","); //$NON-NLS-1$
-					if(subKeys.length == 0)
+					if (subKeys.length == 0)
 						subKeys = null;
 				}
 			}
-			if(rootKey == null || rootKey.length() == 0)
+			if (rootKey == null || rootKey.length() == 0)
 				throw new UsageException(NLS.bind(Messages.Illegal_include_0_Must_be_in_the_form, include));
 
-			if(subKeys == null)
-			{
-				m_includes.put(rootKey, null);
+			if (subKeys == null) {
+				includes.put(rootKey, null);
 				continue;
 			}
 
-			ArrayList<PreferenceFilterEntry> pfes = m_includes.get(rootKey);
-			if(pfes == null)
+			ArrayList<PreferenceFilterEntry> pfes = includes.get(rootKey);
+			if (pfes == null)
 				pfes = new ArrayList<PreferenceFilterEntry>();
 
-			for(int subIdx = 0; subIdx < subKeys.length; ++subIdx)
-			{
+			for (int subIdx = 0; subIdx < subKeys.length; ++subIdx) {
 				String subKey = subKeys[subIdx];
 				subKey = subKey.trim();
-				if(subKey.length() == 0)
+				if (subKey.length() == 0)
 					continue;
 
-				// As a convenience, for a key like 'org.eclipse.jdt.core#compiler.codegen' we will
-				// add both 'compiler.codegen' and 'org.eclipse.jdt.core.compiler.codegen'
+				// As a convenience, for a key like
+				// 'org.eclipse.jdt.core#compiler.codegen' we will
+				// add both 'compiler.codegen' and
+				// 'org.eclipse.jdt.core.compiler.codegen'
 				//
 				pfes.add(new PreferenceFilterEntry(subKey));
-				if(!subKey.startsWith(rootKey))
+				if (!subKey.startsWith(rootKey))
 					pfes.add(new PreferenceFilterEntry(rootKey + '.' + subKey));
 			}
-			if(pfes.size() > 0)
-				m_includes.put(rootKey, pfes);
+			if (pfes.size() > 0)
+				includes.put(rootKey, pfes);
 		}
 	}
 
-	File getFile()
-	{
-		return m_prefsFile;
+	File getFile() {
+		return prefsFile;
 	}
 
-	IPreferenceFilter[] getFilter()
-	{
+	IPreferenceFilter[] getFilter() {
 		HashMap<String, PreferenceFilterEntry[]> pfess = null;
-		if(m_includes != null)
-		{
+		if (includes != null) {
 			// Qualify the filter with specific includes
 			//
 			pfess = new HashMap<String, PreferenceFilterEntry[]>();
-			Iterator<Map.Entry<String, ArrayList<PreferenceFilterEntry>>> entries = m_includes.entrySet().iterator();
-			while(entries.hasNext())
-			{
+			Iterator<Map.Entry<String, ArrayList<PreferenceFilterEntry>>> entries = includes.entrySet().iterator();
+			while (entries.hasNext()) {
 				Map.Entry<String, ArrayList<PreferenceFilterEntry>> entry = entries.next();
 				ArrayList<PreferenceFilterEntry> pfes = entry.getValue();
-				if(pfes != null)
+				if (pfes != null)
 					pfess.put(entry.getKey(), pfes.toArray(new PreferenceFilterEntry[pfes.size()]));
 				else
 					pfess.put(entry.getKey(), null);
@@ -190,21 +170,20 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand
 		}
 
 		PreferenceFilter filter;
-		if(m_scope == null)
+		if (scope == null)
 			filter = new PreferenceFilter(new String[] { InstanceScope.SCOPE, ConfigurationScope.SCOPE }, pfess);
 		else
-			filter = new PreferenceFilter(new String[] { m_scope.getName() }, pfess);
+			filter = new PreferenceFilter(new String[] { scope.getName() }, pfess);
 		return new IPreferenceFilter[] { filter };
 	}
 
-	IEclipsePreferences getNode()
-	{
+	IEclipsePreferences getNode() {
 		IPreferencesService prefService = Platform.getPreferencesService();
 		IEclipsePreferences node;
-		if(m_scope == null)
+		if (scope == null)
 			node = prefService.getRootNode();
 		else
-			node = (IEclipsePreferences)prefService.getRootNode().node(m_scope.getName());
+			node = (IEclipsePreferences) prefService.getRootNode().node(scope.getName());
 		return node;
 	}
 }

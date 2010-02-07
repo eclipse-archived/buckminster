@@ -45,95 +45,79 @@ import org.eclipse.osgi.service.datalocation.Location;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractMaterializer extends AbstractExtension implements IMaterializer
-{
-	public static String[] getMaterializerIDs(boolean includeEmptyEntry)
-	{
+public abstract class AbstractMaterializer extends AbstractExtension implements IMaterializer {
+	public static String[] getMaterializerIDs(boolean includeEmptyEntry) {
 		IConfigurationElement[] elems = getElements();
 		int idx = elems.length;
 		ArrayList<String> names = new ArrayList<String>(idx + 1);
-		if(includeEmptyEntry)
+		if (includeEmptyEntry)
 			names.add(""); //$NON-NLS-1$
-		while(--idx >= 0)
+		while (--idx >= 0)
 			names.add(elems[idx].getAttribute("id")); //$NON-NLS-1$
 		Collections.sort(names);
 		return names.toArray(new String[names.size()]);
 	}
 
-	public static void performInstallActions(BillOfMaterials bom, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public static void performInstallActions(BillOfMaterials bom, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, bom.uniqueNodeCount() * 100);
-		try
-		{
+		try {
 			Resolution resolution = bom.getResolution();
 			MaterializationSpec mspec = context.getMaterializationSpec();
 			IMaterializer materializer = mspec.getMaterializer(resolution);
 			Set<Resolution> perused = new LinkedHashSet<Resolution>();
 			materializer.installRecursive(bom, context, new HashSet<String>(), perused, monitor);
 			IStatus status = context.getStatus();
-			if(status.getSeverity() == IStatus.ERROR)
+			if (status.getSeverity() == IStatus.ERROR)
 				return;
 
 			// Collect the reader types in the order they were perused
 			//
 			Set<String> readerTypes = new LinkedHashSet<String>();
-			for(Resolution res : perused)
-			{
-				if(!mspec.isExcluded(res))
+			for (Resolution res : perused) {
+				if (!mspec.isExcluded(res))
 					readerTypes.add(mspec.getMaterializer(res).getMaterializationReaderType(res).getId());
 			}
 
 			CorePlugin plugin = CorePlugin.getDefault();
-			for(String readerTypeId : readerTypes)
-			{
+			for (String readerTypeId : readerTypes) {
 				IReaderType readerType = plugin.getReaderType(readerTypeId);
 				readerType.postMaterialization(context, new SubProgressMonitor(monitor, 1));
 			}
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	private static IConfigurationElement[] getElements()
-	{
+	private static IConfigurationElement[] getElements() {
 		IExtensionRegistry exReg = Platform.getExtensionRegistry();
 		return exReg.getConfigurationElementsFor(MATERIALIZERS_POINT);
 	}
 
-	public boolean canWorkInParallel()
-	{
+	public boolean canWorkInParallel() {
 		// Most materializers should be able to do this.
 		//
 		return true;
 	}
 
-	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException
-	{
+	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException {
 		IPath rootDir = Path.fromOSString(getMaterializerRootDir());
-		if(rootDir.isAbsolute())
+		if (rootDir.isAbsolute())
 			return rootDir;
 
-		if(Platform.OS_WIN32.equals(Platform.getOS()))
-		{
+		if (Platform.OS_WIN32.equals(Platform.getOS())) {
 			File userDir = null;
 			String appDataEnv = System.getenv("APPDATA"); //$NON-NLS-1$
-			if(appDataEnv != null)
-			{
+			if (appDataEnv != null) {
 				userDir = new File(appDataEnv + "\\buckminster"); //$NON-NLS-1$
 				return Path.fromOSString(new File(userDir, rootDir.toOSString()).toString());
 			}
 		}
 
 		Location userLocation = Platform.getUserLocation();
-		if(userLocation != null)
-		{
+		if (userLocation != null) {
 			File userDir = FileUtils.getFile(userLocation.getURL());
-			if(userDir != null)
-			{
-				if(Platform.OS_WIN32.equals(Platform.getOS()))
+			if (userDir != null) {
+				if (Platform.OS_WIN32.equals(Platform.getOS()))
 					userDir = new File(userDir, "Application Data\\buckminster"); //$NON-NLS-1$
 				else
 					userDir = new File(userDir, "buckminster"); //$NON-NLS-1$
@@ -143,39 +127,33 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		throw BuckminsterException.fromMessage(Messages.Unable_to_determine_users_home_directory);
 	}
 
-	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException
-	{
+	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException {
 		return resolution.getProvider().getReaderType();
 	}
 
 	public abstract String getMaterializerRootDir() throws CoreException;
 
-	public void installRecursive(BOMNode node, MaterializationContext context, Set<String> generated,
-			Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
-	{
-		if(node instanceof GeneratorNode)
-		{
-			GeneratorNode generatorNode = (GeneratorNode)node;
+	public void installRecursive(BOMNode node, MaterializationContext context, Set<String> generated, Set<Resolution> perused,
+			IProgressMonitor monitor) throws CoreException {
+		if (node instanceof GeneratorNode) {
+			GeneratorNode generatorNode = (GeneratorNode) node;
 			String generates = generatorNode.getGeneratesId().toString();
-			if(!generated.contains(generates))
-			{
-				if(generateResolution(generatorNode, context, MonitorUtils.subMonitor(monitor, 100)))
+			if (!generated.contains(generates)) {
+				if (generateResolution(generatorNode, context, MonitorUtils.subMonitor(monitor, 100)))
 					generated.add(generates);
 			}
-		}
-		else
-		{
+		} else {
 			Resolution resolution = node.getResolution();
-			if(resolution == null || perused.contains(resolution))
+			if (resolution == null || perused.contains(resolution))
 				return;
 
 			perused.add(resolution);
-			for(BOMNode child : node.getChildren())
+			for (BOMNode child : node.getChildren())
 				delegateAndInstallRecursive(child, context, generated, perused, monitor);
 
-			if(!context.getMaterializationSpec().isExcluded(resolution))
-			{
-				// The local reader might create resolutions that are not materialized and
+			if (!context.getMaterializationSpec().isExcluded(resolution)) {
+				// The local reader might create resolutions that are not
+				// materialized and
 				// hence not stored so we must make sure it's stored here.
 				//
 				resolution.store(StorageManager.getDefault());
@@ -184,52 +162,40 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		}
 	}
 
-	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
 		// The AbstractMaterializer will not perform any install actions
 		//
 		MonitorUtils.complete(monitor);
 	}
 
-	private void delegateAndInstallRecursive(BOMNode node, MaterializationContext context, Set<String> generated,
-			Set<Resolution> perused, IProgressMonitor monitor) throws CoreException
-	{
+	private void delegateAndInstallRecursive(BOMNode node, MaterializationContext context, Set<String> generated, Set<Resolution> perused,
+			IProgressMonitor monitor) throws CoreException {
 		Resolution res = node.getResolution();
-		if(res == null)
+		if (res == null)
 			return;
 
 		IMaterializer materializer;
-		if(node instanceof GeneratorNode)
+		if (node instanceof GeneratorNode)
 			materializer = this;
-		else
-		{
+		else {
 			String materializerId = context.getMaterializationSpec().getMaterializerID(res);
-			materializer = materializerId.equals(getId())
-					? this
-					: CorePlugin.getDefault().getMaterializer(materializerId);
+			materializer = materializerId.equals(getId()) ? this : CorePlugin.getDefault().getMaterializer(materializerId);
 		}
-		((AbstractMaterializer)materializer).installRecursive(node, context, generated, perused, monitor);
+		((AbstractMaterializer) materializer).installRecursive(node, context, generated, perused, monitor);
 	}
 
-	private boolean generateResolution(GeneratorNode generatorNode, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException
-	{
+	private boolean generateResolution(GeneratorNode generatorNode, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
 		CSpec cspec = generatorNode.getDeclaringCSpec();
-		try
-		{
+		try {
 			IPerformManager performManager = CorePlugin.getPerformManager();
-			Attribute generatorAttribute = cspec.getReferencedAttribute(generatorNode.getComponent(), null,
-					generatorNode.getAttribute(), new ModelCache());
-			if(generatorAttribute != null)
-			{
+			Attribute generatorAttribute = cspec.getReferencedAttribute(generatorNode.getComponent(), null, generatorNode.getAttribute(),
+					new ModelCache());
+			if (generatorAttribute != null) {
 				performManager.perform(Collections.singletonList(generatorAttribute), context, false, false, monitor);
 				return true;
 			}
-		}
-		catch(CoreException e)
-		{
-			if(!context.isContinueOnError())
+		} catch (CoreException e) {
+			if (!context.isContinueOnError())
 				throw e;
 			context.addRequestStatus(generatorNode.getRequest(), e.getStatus());
 		}

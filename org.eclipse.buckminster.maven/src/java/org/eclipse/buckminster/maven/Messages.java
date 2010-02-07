@@ -2,8 +2,7 @@ package org.eclipse.buckminster.maven;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.maven.messages"; //$NON-NLS-1$
 
 	public static String _0_has_no_version;
@@ -35,13 +34,11 @@ public class Messages extends NLS
 	public static String unable_to_resolve_component_name_0_skipping_dependency;
 
 	public static String verifying_digest_with_dots;
-	static
-	{
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
-	{
+	private Messages() {
 	}
 }

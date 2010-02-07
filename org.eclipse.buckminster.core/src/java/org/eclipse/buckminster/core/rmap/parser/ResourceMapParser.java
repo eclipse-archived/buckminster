@@ -27,50 +27,40 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class ResourceMapParser extends AbstractParser<ResourceMap>
-{
-	private ResourceMap m_resourceMap;
+public class ResourceMapParser extends AbstractParser<ResourceMap> {
+	private ResourceMap resourceMap;
 
-	private URL m_contextURL;
+	private URL contextURL;
 
-	public ResourceMapParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-			throws CoreException
-	{
-		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS,
-				XMLConstants.BM_RMAP_NS, }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE,
-				XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_RMAP_RESOURCE, }, validating);
+	public ResourceMapParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating) throws CoreException {
+		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS, XMLConstants.BM_RMAP_NS, },
+				new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE, XMLConstants.BM_COMMON_RESOURCE,
+						XMLConstants.BM_RMAP_RESOURCE, }, validating);
 	}
 
-	public ResourceMap parse(String systemID, InputStream input) throws CoreException
-	{
-		try
-		{
-			m_contextURL = URLUtils.normalizeToURL(systemID);
-		}
-		catch(MalformedURLException e)
-		{
-			m_contextURL = null;
+	public ResourceMap parse(String systemID, InputStream input) throws CoreException {
+		try {
+			contextURL = URLUtils.normalizeToURL(systemID);
+		} catch (MalformedURLException e) {
+			contextURL = null;
 		}
 		this.parseInput(systemID, input);
-		return m_resourceMap;
+		return resourceMap;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if("rmap".equals(localName)) //$NON-NLS-1$
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if ("rmap".equals(localName)) //$NON-NLS-1$
 		{
 			String type = attrs.getValue(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type"); //$NON-NLS-1$
 			ResourceMapHandler rmh = this.createContentHandler(this, ResourceMapHandler.class, uri, type);
-			rmh.setContextURL(m_contextURL);
+			rmh.setContextURL(contextURL);
 			this.pushHandler(rmh, attrs);
-		}
-		else
+		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
 
-	void setResourceMap(ResourceMap resourceMap)
-	{
-		m_resourceMap = resourceMap;
+	void setResourceMap(ResourceMap resourceMap) {
+		this.resourceMap = resourceMap;
 	}
 }

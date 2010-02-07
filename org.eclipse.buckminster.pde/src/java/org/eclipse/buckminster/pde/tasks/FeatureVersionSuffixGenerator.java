@@ -21,12 +21,9 @@ import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPropertiesConstants
-{
-	private static void appendEncodedCharacter(StringBuilder buffer, int c)
-	{
-		while(c > 62)
-		{
+public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPropertiesConstants {
+	private static void appendEncodedCharacter(StringBuilder buffer, int c) {
+		while (c > 62) {
 			buffer.append('z');
 			c -= 63;
 		}
@@ -36,15 +33,11 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 	// Integer to character conversion in our base-64 encoding scheme. If the
 	// input is out of range, an illegal character will be returned.
 	//
-	private static char base64Character(int number)
-	{
-		return (number < 0 || number > 63)
-				? ' '
-				: BASE_64_ENCODING.charAt(number);
+	private static char base64Character(int number) {
+		return (number < 0 || number > 63) ? ' ' : BASE_64_ENCODING.charAt(number);
 	}
 
-	private static int charValue(char c)
-	{
+	private static int charValue(char c) {
 		int index = BASE_64_ENCODING.indexOf(c);
 		// The "+ 1" is very intentional. For a blank (or anything else that
 		// is not a legal character), we want to return 0. For legal
@@ -74,42 +67,37 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 	// "7-" through "76" and "E--" through "E6z" are not legal encodings of
 	// any number. But the benefit of filling in those wasted ranges would not
 	// be worth the added complexity.)
-	private static String lengthPrefixBase64(long number)
-	{
+	private static String lengthPrefixBase64(long number) {
 		int length = 7;
-		for(int i = 0; i < 7; ++i)
-		{
-			if(number < (1L << ((i * 6) + 3)))
-			{
+		for (int i = 0; i < 7; ++i) {
+			if (number < (1L << ((i * 6) + 3))) {
 				length = i;
 				break;
 			}
 		}
 		StringBuilder result = new StringBuilder(length + 1);
-		result.append(base64Character((length << 3) + (int)((number >> (6 * length)) & 0x7)));
-		while(--length >= 0)
-		{
-			result.append(base64Character((int)((number >> (6 * length)) & 0x3f)));
+		result.append(base64Character((length << 3) + (int) ((number >> (6 * length)) & 0x7)));
+		while (--length >= 0) {
+			result.append(base64Character((int) ((number >> (6 * length)) & 0x3f)));
 		}
 		return result.toString();
 	}
 
-	private Map<String, Integer> m_contextQualifierLengths;
+	private Map<String, Integer> contextQualifierLengths;
 
 	private static final int QUALIFIER_SUFFIX_VERSION = 1;
 
-	// The 64 characters that are legal in a version qualifier, in lexicographical order.
+	// The 64 characters that are legal in a version qualifier, in
+	// lexicographical order.
 	private static final String BASE_64_ENCODING = "-0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"; //$NON-NLS-1$
 
-	private static int computeNameSum(String name)
-	{
+	private static int computeNameSum(String name) {
 		int sum = 0;
 		int top = name.length();
 		int lshift = 20;
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			int c = name.charAt(idx) & 0xffff;
-			if(c == '.' && lshift > 0)
+			if (c == '.' && lshift > 0)
 				lshift -= 4;
 			else
 				sum += c << lshift;
@@ -117,30 +105,23 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		return sum;
 	}
 
-	private final int m_maxVersionSuffixLength;
+	private final int maxVersionSuffixLength;
 
-	private final int m_significantDigits;
+	private final int significantDigits;
 
-	public FeatureVersionSuffixGenerator()
-	{
+	public FeatureVersionSuffixGenerator() {
 		this(-1, -1);
 	}
 
-	public FeatureVersionSuffixGenerator(int maxVersionSuffixLenght, int significantDigits)
-	{
-		m_maxVersionSuffixLength = maxVersionSuffixLenght < 0
-				? 28
-				: maxVersionSuffixLenght;
-		m_significantDigits = significantDigits < 0
-				? Integer.MAX_VALUE
-				: significantDigits;
+	public FeatureVersionSuffixGenerator(int maxVersionSuffixLenght, int significantDigits) {
+		this.maxVersionSuffixLength = maxVersionSuffixLenght < 0 ? 28 : maxVersionSuffixLenght;
+		this.significantDigits = significantDigits < 0 ? Integer.MAX_VALUE : significantDigits;
 	}
 
-	public void addContextQualifierLength(String context, int length)
-	{
-		if(m_contextQualifierLengths == null)
-			m_contextQualifierLengths = new HashMap<String, Integer>();
-		m_contextQualifierLengths.put(context, Integer.valueOf(length));
+	public void addContextQualifierLength(String context, int length) {
+		if (contextQualifierLengths == null)
+			contextQualifierLengths = new HashMap<String, Integer>();
+		contextQualifierLengths.put(context, Integer.valueOf(length));
 	}
 
 	/**
@@ -150,9 +131,8 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 	 * @return The generated suffix or <code>null</code>
 	 * @throws CoreException
 	 */
-	public String generateSuffix(List<IVersionedId> features, List<IVersionedId> bundles)
-	{
-		if(m_maxVersionSuffixLength <= 0)
+	public String generateSuffix(List<IVersionedId> features, List<IVersionedId> bundles) {
+		if (maxVersionSuffixLength <= 0)
 			return null; // do nothing
 
 		long majorSum = 0L;
@@ -167,7 +147,7 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		majorSum += QUALIFIER_SUFFIX_VERSION;
 
 		int numElements = features.size() + bundles.size();
-		if(numElements == 0)
+		if (numElements == 0)
 			//
 			// This feature is empty so there will be no suffix
 			//
@@ -179,21 +159,17 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		// to the running totals and storing the qualifier suffixes.
 		//
 		int idx = 0;
-		for(IVersionedId refFeature : features)
-		{
+		for (IVersionedId refFeature : features) {
 			org.osgi.framework.Version version = Version.toOSGiVersion(refFeature.getVersion());
 			majorSum += version.getMajor();
 			minorSum += version.getMinor();
 			serviceSum += version.getMicro();
 
 			String qualifier = version.getQualifier();
-			Integer ctxLen = m_contextQualifierLengths == null
-					? null
-					: m_contextQualifierLengths.get(refFeature.getId());
-			int contextLength = (ctxLen == null)
-					? -1
-					: ctxLen.intValue();
-			++contextLength; // account for the '-' separating the context qualifier and suffix
+			Integer ctxLen = contextQualifierLengths == null ? null : contextQualifierLengths.get(refFeature.getId());
+			int contextLength = (ctxLen == null) ? -1 : ctxLen.intValue();
+			++contextLength; // account for the '-' separating the context
+								// qualifier and suffix
 
 			// The entire qualifier of the nested feature is often too long to
 			// include in the suffix computation for the containing feature,
@@ -202,7 +178,7 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 			// part of the qualifier, or just the context part (if there is no
 			// suffix part). See bug #162022.
 			//
-			if(qualifier != null && contextLength > 0 && qualifier.length() > contextLength)
+			if (qualifier != null && contextLength > 0 && qualifier.length() > contextLength)
 				qualifier = qualifier.substring(contextLength);
 
 			qualifiers[idx++] = qualifier;
@@ -212,26 +188,20 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		// Loop through the included plug-ins and fragments, adding the version
 		// number parts to the running totals and storing the qualifiers.
 		//
-		for(IVersionedId refBundle : bundles)
-		{
+		for (IVersionedId refBundle : bundles) {
 			org.osgi.framework.Version version = Version.toOSGiVersion(refBundle.getVersion());
 			majorSum += version.getMajor();
 			minorSum += version.getMinor();
 			serviceSum += version.getMicro();
 
 			String qualifier = version.getQualifier();
-			if(qualifier != null && qualifier.endsWith(PROPERTY_QUALIFIER))
-			{
+			if (qualifier != null && qualifier.endsWith(PROPERTY_QUALIFIER)) {
 				int resultingLength = qualifier.length() - PROPERTY_QUALIFIER.length();
-				if(resultingLength > 0)
-				{
-					if(qualifier.charAt(resultingLength - 1) == '.')
+				if (resultingLength > 0) {
+					if (qualifier.charAt(resultingLength - 1) == '.')
 						resultingLength--;
-					qualifier = resultingLength > 0
-							? qualifier.substring(0, resultingLength)
-							: null;
-				}
-				else
+					qualifier = resultingLength > 0 ? qualifier.substring(0, resultingLength) : null;
+				} else
 					qualifier = null;
 			}
 			qualifiers[idx++] = qualifier;
@@ -241,18 +211,16 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		// and figure out what the longest qualifier is.
 		//
 		int longestQualifier = 0;
-		while(--idx >= 0)
-		{
+		while (--idx >= 0) {
 			String qualifier = qualifiers[idx];
-			if(qualifier == null)
+			if (qualifier == null)
 				continue;
 
-			if(qualifier.length() > m_significantDigits)
-			{
-				qualifier = qualifier.substring(0, m_significantDigits);
+			if (qualifier.length() > significantDigits) {
+				qualifier = qualifier.substring(0, significantDigits);
 				qualifiers[idx] = qualifier;
 			}
-			if(qualifier.length() > longestQualifier)
+			if (qualifier.length() > longestQualifier)
 				longestQualifier = qualifier.length();
 		}
 
@@ -264,25 +232,22 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		result.append(lengthPrefixBase64(serviceSum));
 		result.append(lengthPrefixBase64(nameCharsSum));
 
-		if(longestQualifier > 0)
-		{
+		if (longestQualifier > 0) {
 			// Calculate the sum at each position of the qualifiers.
 			int[] qualifierSums = new int[longestQualifier];
-			for(idx = 0; idx < numElements; ++idx)
-			{
+			for (idx = 0; idx < numElements; ++idx) {
 				String qualifier = qualifiers[idx];
-				if(qualifier == null)
+				if (qualifier == null)
 					continue;
 
 				int top = qualifier.length();
-				for(int j = 0; j < top; ++j)
+				for (int j = 0; j < top; ++j)
 					qualifierSums[j] += charValue(qualifier.charAt(j));
 			}
 
 			// Normalize the sums to be base 65.
 			int carry = 0;
-			for(int k = longestQualifier - 1; k >= 1; --k)
-			{
+			for (int k = longestQualifier - 1; k >= 1; --k) {
 				qualifierSums[k] += carry;
 				carry = qualifierSums[k] / 65;
 				qualifierSums[k] = qualifierSums[k] % 65;
@@ -292,21 +257,22 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 			// Always use one character for overflow. This will be handled
 			// correctly even when the overflow character itself overflows.
 			result.append(lengthPrefixBase64(qualifierSums[0]));
-			for(int m = 1; m < longestQualifier; ++m)
+			for (int m = 1; m < longestQualifier; ++m)
 				appendEncodedCharacter(result, qualifierSums[m]);
 		}
 
-		// If the resulting suffix is too long, shorten it to the designed length.
+		// If the resulting suffix is too long, shorten it to the designed
+		// length.
 		//
-		if(result.length() > m_maxVersionSuffixLength)
-			result.setLength(m_maxVersionSuffixLength);
+		if (result.length() > maxVersionSuffixLength)
+			result.setLength(maxVersionSuffixLength);
 
 		// It is safe to strip any '-' characters from the end of the suffix.
 		// (This won't happen very often, but it will save us a character or
 		// two when it does.)
 		//
 		int len = result.length();
-		while(len > 0 && result.charAt(len - 1) == '-')
+		while (len > 0 && result.charAt(len - 1) == '-')
 			result.setLength(--len);
 		return result.toString();
 	}

@@ -47,212 +47,163 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class EclipseImportReader extends AbstractRemoteReader implements IPDEConstants
-{
-	private EclipseImportBase m_base;
+public class EclipseImportReader extends AbstractRemoteReader implements IPDEConstants {
+	private EclipseImportBase base;
 
-	private IModel m_model;
+	private IModel importModel;
 
-	protected EclipseImportReader(EclipseImportReaderType readerType, ProviderMatch rInfo) throws CoreException
-	{
+	protected EclipseImportReader(EclipseImportReaderType readerType, ProviderMatch rInfo) throws CoreException {
 		super(readerType, rInfo);
-		m_base = EclipseImportBase.obtain(rInfo.getNodeQuery(), rInfo.getRepositoryURI());
+		base = EclipseImportBase.obtain(rInfo.getNodeQuery(), rInfo.getRepositoryURI());
 
 		VersionMatch vm = rInfo.getVersionMatch();
-		if(vm.getArtifactInfo() == null)
-		{
+		if (vm.getArtifactInfo() == null) {
 			Version version = rInfo.getVersionMatch().getVersion();
-			m_model = m_base.isFeature()
-					? getFeatureModel(version, new NullProgressMonitor())
-					: getPluginModel(version, new NullProgressMonitor());
+			importModel = base.isFeature() ? getFeatureModel(version, new NullProgressMonitor()) : getPluginModel(version, new NullProgressMonitor());
 
-			if(m_model == null)
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_model_for_0,
-						m_base.getComponentName()));
+			if (importModel == null)
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_model_for_0, base.getComponentName()));
 		}
 	}
 
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 1000);
-		try
-		{
-			localize(!m_base.isFeature(), MonitorUtils.subMonitor(monitor, 800));
-			IWorkspaceRunnable job = m_base.isFeature()
-					? getFeatureImportJob((IFeatureModel)m_model, destination)
-					: getPluginImportJob((IPluginModelBase)m_model, destination);
+		try {
+			localize(!base.isFeature(), MonitorUtils.subMonitor(monitor, 800));
+			IWorkspaceRunnable job = base.isFeature() ? getFeatureImportJob((IFeatureModel) importModel, destination) : getPluginImportJob(
+					(IPluginModelBase) importModel, destination);
 			ResourcesPlugin.getWorkspace().run(job, MonitorUtils.subMonitor(monitor, 200));
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	public boolean isUnpack()
-	{
-		return m_base.isUnpack();
+	public boolean isUnpack() {
+		return base.isUnpack();
 	}
 
 	@Override
-	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
-	{
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException {
 		monitor.beginTask(null, 1000);
 
 		File destFile = null;
 		OutputStream output = null;
-		try
-		{
-			boolean isPlugin = m_model instanceof IPluginModelBase;
+		try {
+			boolean isPlugin = importModel instanceof IPluginModelBase;
 			localize(isPlugin, MonitorUtils.subMonitor(monitor, 890));
 			destFile = createTempFile();
 			output = new FileOutputStream(destFile);
 			MonitorUtils.worked(monitor, 10);
 			InputStream input = null;
-			try
-			{
+			try {
 				File source = getInstallLocation();
-				if(source.isDirectory())
+				if (source.isDirectory())
 					input = new FileInputStream(new File(source, fileName));
-				else
-				{
+				else {
 					ZipFile zipFile = new ZipFile(source);
 					ZipEntry entry = zipFile.getEntry(fileName);
-					if(entry == null)
+					if (entry == null)
 						throw new FileNotFoundException(source.getName() + '!' + fileName);
 					input = zipFile.getInputStream(entry);
 				}
 				FileUtils.copyFile(input, output, MonitorUtils.subMonitor(monitor, 100));
-			}
-			finally
-			{
+			} finally {
 				IOUtils.close(input);
 			}
 			FileHandle fh = new FileHandle(fileName, destFile, true);
 			destFile = null;
 			return fh;
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(output);
-			if(destFile != null)
+			if (destFile != null)
 				destFile.delete();
 		}
 	}
 
-	IPluginModelBase getPluginModel(Version version, IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, m_base.isLocal()
-				? 1000
-				: 2000);
-		monitor.subTask(NLS.bind(Messages.downloading_0, m_base.getComponentName()));
-		try
-		{
-			EclipseImportReaderType readerType = (EclipseImportReaderType)getReaderType();
-			if(!m_base.isLocal())
+	IPluginModelBase getPluginModel(Version version, IProgressMonitor monitor) throws CoreException {
+		monitor.beginTask(null, base.isLocal() ? 1000 : 2000);
+		monitor.subTask(NLS.bind(Messages.downloading_0, base.getComponentName()));
+		try {
+			EclipseImportReaderType readerType = (EclipseImportReaderType) getReaderType();
+			if (!base.isLocal())
 				localize(true, MonitorUtils.subMonitor(monitor, 1000));
 
 			IPluginModelBase model = null;
-			for(IPluginModelBase candidate : m_base.getPluginModels(readerType, MonitorUtils.subMonitor(monitor, 1000)))
-			{
-				if(version == null
-						|| version.toString().equals(candidate.getBundleDescription().getVersion().toString()))
-				{
+			for (IPluginModelBase candidate : base.getPluginModels(readerType, MonitorUtils.subMonitor(monitor, 1000))) {
+				if (version == null || version.toString().equals(candidate.getBundleDescription().getVersion().toString())) {
 					model = candidate;
 					break;
 				}
 			}
 			return model;
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	private IWorkspaceRunnable getFeatureImportJob(IFeatureModel model, IPath destination)
-	{
-		return new FeatureImportOperation((EclipseImportReaderType)getReaderType(), model, getNodeQuery(), destination,
+	private IWorkspaceRunnable getFeatureImportJob(IFeatureModel model, IPath destination) {
+		return new FeatureImportOperation((EclipseImportReaderType) getReaderType(), model, getNodeQuery(), destination,
 				getImportType() == PluginImportOperation.IMPORT_BINARY);
 	}
 
-	private IFeatureModel getFeatureModel(Version version, IProgressMonitor monitor) throws CoreException
-	{
+	private IFeatureModel getFeatureModel(Version version, IProgressMonitor monitor) throws CoreException {
 		IFeatureModel model = null;
-		monitor.beginTask(null, m_base.isLocal()
-				? 1000
-				: 3000);
-		try
-		{
-			if(!m_base.isLocal())
+		monitor.beginTask(null, base.isLocal() ? 1000 : 3000);
+		try {
+			if (!base.isLocal())
 				localize(false, MonitorUtils.subMonitor(monitor, 1000));
 
-			EclipseImportReaderType readerType = (EclipseImportReaderType)getReaderType();
-			for(IFeatureModel candidate : m_base.getFeatureModels(readerType, MonitorUtils.subMonitor(monitor, 1000)))
-			{
-				if(version == null || version.toString().equals(candidate.getFeature().getVersion()))
-				{
+			EclipseImportReaderType readerType = (EclipseImportReaderType) getReaderType();
+			for (IFeatureModel candidate : base.getFeatureModels(readerType, MonitorUtils.subMonitor(monitor, 1000))) {
+				if (version == null || version.toString().equals(candidate.getFeature().getVersion())) {
 					model = candidate;
 					break;
 				}
 			}
 			return model;
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	private int getImportType()
-	{
-		int importType = m_base.getType();
-		if(importType == PluginImportOperation.IMPORT_UNKNOWN)
-			importType = getProviderMatch().getProvider().hasSource()
-					? PluginImportOperation.IMPORT_WITH_SOURCE
+	private int getImportType() {
+		int importType = base.getType();
+		if (importType == PluginImportOperation.IMPORT_UNKNOWN)
+			importType = getProviderMatch().getProvider().hasSource() ? PluginImportOperation.IMPORT_WITH_SOURCE
 					: PluginImportOperation.IMPORT_BINARY;
 		return importType;
 	}
 
-	private File getInstallLocation()
-	{
-		String location = (m_model instanceof IPluginModelBase)
-				? ((IPluginModelBase)m_model).getInstallLocation()
-				: ((IFeatureModel)m_model).getInstallLocation();
+	private File getInstallLocation() {
+		String location = (importModel instanceof IPluginModelBase) ? ((IPluginModelBase) importModel).getInstallLocation() : ((IFeatureModel) importModel)
+				.getInstallLocation();
 
 		return new File(location);
 	}
 
-	private IWorkspaceRunnable getPluginImportJob(IPluginModelBase model, IPath destination)
-	{
+	private IWorkspaceRunnable getPluginImportJob(IPluginModelBase model, IPath destination) {
 		PluginImportOperation job = new PluginImportOperation(model, getNodeQuery(), destination, getImportType());
-		job.setClasspathCollector((EclipseImportReaderType)getReaderType());
+		job.setClasspathCollector((EclipseImportReaderType) getReaderType());
 		return job;
 	}
 
-	private void localize(boolean isPlugin, IProgressMonitor monitor) throws CoreException
-	{
-		if(m_base.isLocal() && getProviderMatch().getVersionMatch().getArtifactInfo() == null)
-		{
+	private void localize(boolean isPlugin, IProgressMonitor monitor) throws CoreException {
+		if (base.isLocal() && getProviderMatch().getVersionMatch().getArtifactInfo() == null) {
 			MonitorUtils.complete(monitor);
 			return;
 		}
 
 		monitor.beginTask(null, 1000);
 		ProviderMatch ri = getProviderMatch();
-		m_base = ((EclipseImportReaderType)getReaderType()).localizeContents(ri, isPlugin, MonitorUtils.subMonitor(
-				monitor, 950));
+		base = ((EclipseImportReaderType) getReaderType()).localizeContents(ri, isPlugin, MonitorUtils.subMonitor(monitor, 950));
 
 		// Model is now local, so reset it.
 		//
 		Version version = ri.getVersionMatch().getVersion();
 		IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 50);
-		m_model = isPlugin
-				? getPluginModel(version, subMon)
-				: getFeatureModel(version, subMon);
-		if(m_model == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_localized_model_for_0,
-					m_base.getComponentName()));
+		importModel = isPlugin ? getPluginModel(version, subMon) : getFeatureModel(version, subMon);
+		if (importModel == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_load_localized_model_for_0, base.getComponentName()));
 		monitor.done();
 	}
 }

@@ -1,7 +1,6 @@
 package org.eclipse.buckminster.core.cspec;
 
-public interface IGenerator
-{
+public interface IGenerator {
 	String getAttribute();
 
 	String getComponent();

@@ -13,13 +13,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class IllegalParameterException extends LocalizedException
-{
+public class IllegalParameterException extends LocalizedException {
 	private static final long serialVersionUID = 721070047124720053L;
 
-	public IllegalParameterException(String extensionPointId, String id, String parameterName)
-	{
-		super(NLS.bind(Messages.Parameter_0_is_illegal_for_id_1_extension_point_2, new Object[] { parameterName, id,
-				extensionPointId }));
+	public IllegalParameterException(String extensionPointId, String id, String parameterName) {
+		super(NLS.bind(Messages.Parameter_0_is_illegal_for_id_1_extension_point_2, new Object[] { parameterName, id, extensionPointId }));
 	}
 }

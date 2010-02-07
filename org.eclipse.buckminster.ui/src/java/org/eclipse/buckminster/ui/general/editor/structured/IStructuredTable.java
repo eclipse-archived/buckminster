@@ -16,13 +16,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * Data wrapped for structured general table editor. If you need a structured table editor wrap your data into this
- * instance (preferably use intance of StructuredTable instead IStructuredTable) and start using OnePageTableEditor
+ * Data wrapped for structured general table editor. If you need a structured
+ * table editor wrap your data into this instance (preferably use intance of
+ * StructuredTable instead IStructuredTable) and start using OnePageTableEditor
  * 
  * @author Karel Brezina
  */
-public interface IStructuredTable<T> extends ITable<T>
-{
+public interface IStructuredTable<T> extends ITable<T> {
 	/**
 	 * Adds an empty record to the table
 	 * 
@@ -76,14 +76,16 @@ public interface IStructuredTable<T> extends ITable<T>
 	public int getTableViewerColumns();
 
 	/**
-	 * Gets column weights of columns in a TableViewer. Higher weight means larger space in the TableViewer.
+	 * Gets column weights of columns in a TableViewer. Higher weight means
+	 * larger space in the TableViewer.
 	 * 
 	 * @return column weights
 	 */
 	public int[] getTableViewerColumnWeights();
 
 	/**
-	 * Gets a value from table row at a given TableViewer position. It's used for ITableLabelProvider
+	 * Gets a value from table row at a given TableViewer position. It's used
+	 * for ITableLabelProvider
 	 * 
 	 * @param t
 	 *            data table row
@@ -102,8 +104,8 @@ public interface IStructuredTable<T> extends ITable<T>
 	public void refreshRow(int rowIdx);
 
 	/**
-	 * Saves values from controls to row rowIdx of the data table. If rowIdx == -1, saves values to the end of the data
-	 * table.
+	 * Saves values from controls to row rowIdx of the data table. If rowIdx ==
+	 * -1, saves values to the end of the data table.
 	 * 
 	 * @param rowIdx
 	 *            row number where values should be saved

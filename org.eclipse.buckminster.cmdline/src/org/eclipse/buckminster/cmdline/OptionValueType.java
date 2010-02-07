@@ -10,8 +10,7 @@
 
 package org.eclipse.buckminster.cmdline;
 
-public interface OptionValueType
-{
+public interface OptionValueType {
 	public static final int NONE = 1;
 
 	public static final int OPTIONAL = 2;

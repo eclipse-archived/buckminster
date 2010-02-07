@@ -11,13 +11,13 @@ package org.eclipse.buckminster.ui.editor;
 import org.eclipse.ui.IEditorInput;
 
 /**
- * It is used to access the original <code>IEditorInput</code> in case of derived editor inputs.
+ * It is used to access the original <code>IEditorInput</code> in case of
+ * derived editor inputs.
  * 
  * @author Karel Brezina
  * 
  */
-public interface IDerivedEditorInput
-{
+public interface IDerivedEditorInput {
 	/**
 	 * Returns original <code>IEditorInput</code>
 	 * 

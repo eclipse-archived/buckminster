@@ -19,15 +19,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * An implementation of a IResolutionBuilder Creates a {@link org.eclipse.buckminster.core.metadata.model.BOMNode
- * DepNode} based on the dependency information that it can read using a
- * {@link org.eclipse.buckminster.core.reader.IComponentReader IRemoteReader}. The <code>CSPecPacking</code> is
- * delivered as a sequence of SAX events
+ * An implementation of a IResolutionBuilder Creates a
+ * {@link org.eclipse.buckminster.core.metadata.model.BOMNode DepNode} based on
+ * the dependency information that it can read using a
+ * {@link org.eclipse.buckminster.core.reader.IComponentReader IRemoteReader}.
+ * The <code>CSPecPacking</code> is delivered as a sequence of SAX events
  * 
  * @author Thomas Hallgren
  */
-public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IResolutionBuilder>
-{
+public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IResolutionBuilder> {
 	public static final String DEFAULT = "default"; //$NON-NLS-1$
 
 	public static final String CSPEC2CSPEC = "cspec2cspec"; //$NON-NLS-1$
@@ -39,21 +39,22 @@ public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IR
 	public static final String CQUERY2BOM = "cquery2BOM"; //$NON-NLS-1$
 
 	/**
-	 * The builder obtains whatever input it has and creates a resolved node. The builder may close the reader when it
-	 * is done with it. The reader is passed in a one element array. If the builder closes the reader, it must set the
-	 * array element to <code>null</code>.
+	 * The builder obtains whatever input it has and creates a resolved node.
+	 * The builder may close the reader when it is done with it. The reader is
+	 * passed in a one element array. If the builder closes the reader, it must
+	 * set the array element to <code>null</code>.
 	 * 
 	 * @param reader
 	 *            The one element array containing the reader.
 	 * @param forResolutionAidOnly
-	 *            Set to <code>true</code> if the generated node will be used only to extract the component version
+	 *            Set to <code>true</code> if the generated node will be used
+	 *            only to extract the component version
 	 * @param monitor
 	 *            Monitor for cancellation and progress reporting
 	 * @return The created node
 	 * @throws CoreException
 	 */
-	BOMNode build(IComponentReader[] reader, boolean forResolutionAidOnly, IProgressMonitor monitor)
-			throws CoreException;
+	BOMNode build(IComponentReader[] reader, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns a resolved node.
@@ -73,15 +74,16 @@ public interface IResolutionBuilder extends IBuckminsterExtension, Comparable<IR
 	String getComponentTypeID();
 
 	/**
-	 * Returns the nature for which this builder will create a configuration spec or <code>null</code> if no nature is
-	 * associated with this builder.
+	 * Returns the nature for which this builder will create a configuration
+	 * spec or <code>null</code> if no nature is associated with this builder.
 	 * 
 	 * @return The name of the associated nature or <code>null</code>.
 	 */
 	String getNature();
 
 	/**
-	 * The weight determines what builder that has precedence in cases where more than one possible builder exists.
+	 * The weight determines what builder that has precedence in cases where
+	 * more than one possible builder exists.
 	 * 
 	 * @return The weight of this builder.
 	 */

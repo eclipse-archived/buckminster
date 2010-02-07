@@ -18,47 +18,40 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class RxGroup extends RxPart
-{
+public class RxGroup extends RxPart {
 	public static final String TAG = "group"; //$NON-NLS-1$
 
-	private final List<RxPart> m_parts;
+	private final List<RxPart> parts;
 
-	public RxGroup(String name, boolean optional, List<RxPart> parts)
-	{
+	public RxGroup(String name, boolean optional, List<RxPart> parts) {
 		super(name, optional);
-		m_parts = Utils.createUnmodifiableList(parts);
+		this.parts = Utils.createUnmodifiableList(parts);
 	}
 
 	@Override
-	public void addPattern(StringBuilder bld, List<RxPart> namedParts) throws CoreException
-	{
-		if(getName() != null)
-		{
+	public void addPattern(StringBuilder bld, List<RxPart> namedParts) throws CoreException {
+		if (getName() != null) {
 			bld.append('(');
 			namedParts.add(this);
-		}
-		else if(isOptional())
+		} else if (isOptional())
 			bld.append("(?:"); //$NON-NLS-1$
 
-		for(RxPart part : m_parts)
+		for (RxPart part : parts)
 			part.addPattern(bld, namedParts);
 
-		if(getName() != null)
+		if (getName() != null)
 			bld.append(')');
-		else if(isOptional())
+		else if (isOptional())
 			bld.append(")?"); //$NON-NLS-1$
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
 	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		for(RxPart part : m_parts)
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
+		for (RxPart part : parts)
 			part.toSax(handler, namespace, prefix, part.getDefaultTag());
 	}
 }

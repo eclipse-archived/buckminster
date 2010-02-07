@@ -15,12 +15,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingComponentException extends LocalizedException
-{
+public class MissingComponentException extends LocalizedException {
 	private static final long serialVersionUID = 7295286631884059972L;
 
-	public MissingComponentException(String componentName)
-	{
+	public MissingComponentException(String componentName) {
 		super(NLS.bind(Messages.No_component_0_known_to_Buckminster, componentName));
 	}
 }

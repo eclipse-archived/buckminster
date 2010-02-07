@@ -19,53 +19,46 @@ import org.eclipse.buckminster.ant.types.FileSetGroup;
 /**
  * @author Thomas Hallgren
  */
-public class Jar extends org.apache.tools.ant.taskdefs.Jar
-{
-	private ArrayList<FileSetGroup> m_fileSetGroups;
+public class Jar extends org.apache.tools.ant.taskdefs.Jar {
+	private ArrayList<FileSetGroup> fileSetGroups;
 
-	private ArrayList<FileSetGroup> m_zipGroupFileSetGroups;
+	private ArrayList<FileSetGroup> zipGroupFileSetGroups;
 
 	/**
 	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
 	 */
-	public void add(FileSetGroup fsGroup) throws BuildException
-	{
-		if(m_fileSetGroups == null)
-			m_fileSetGroups = new ArrayList<FileSetGroup>();
-		m_fileSetGroups.add(fsGroup);
+	public void add(FileSetGroup fsGroup) throws BuildException {
+		if (fileSetGroups == null)
+			fileSetGroups = new ArrayList<FileSetGroup>();
+		fileSetGroups.add(fsGroup);
 	}
 
 	/**
-	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element
-	 * targeted for zipgroupfilesets.
+	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element targeted for
+	 * zipgroupfilesets.
 	 */
-    public void addZipGroupFilesetGroup(FileSetGroup setGroup)
-    {
-    	if(m_zipGroupFileSetGroups == null)
-    		m_zipGroupFileSetGroups = new ArrayList<FileSetGroup>();
-    	m_zipGroupFileSetGroups.add(setGroup);
-    }
+	public void addZipGroupFilesetGroup(FileSetGroup setGroup) {
+		if (zipGroupFileSetGroups == null)
+			zipGroupFileSetGroups = new ArrayList<FileSetGroup>();
+		zipGroupFileSetGroups.add(setGroup);
+	}
 
 	@Override
-	public void execute() throws BuildException
-	{
-    	if(m_fileSetGroups != null)
-    	{
-    		for(FileSetGroup fsg : m_fileSetGroups)
-	    		for(FileSet fs : fsg.getFileSets())
-	    		{
-	    			this.log("Adding fileset " + fs.toString());
-	    			this.addFileset(fs);
-	    		}
-    		m_fileSetGroups = null;
-    	}
-    	if(m_zipGroupFileSetGroups != null)
-    	{
-    		for(FileSetGroup fsg : m_zipGroupFileSetGroups)
-	    		for(FileSet fs : fsg.getFileSets())
-	    			this.addZipGroupFileset(fs);
-    		m_zipGroupFileSetGroups = null;
-    	}
+	public void execute() throws BuildException {
+		if (fileSetGroups != null) {
+			for (FileSetGroup fsg : fileSetGroups)
+				for (FileSet fs : fsg.getFileSets()) {
+					this.log("Adding fileset " + fs.toString());
+					this.addFileset(fs);
+				}
+			fileSetGroups = null;
+		}
+		if (zipGroupFileSetGroups != null) {
+			for (FileSetGroup fsg : zipGroupFileSetGroups)
+				for (FileSet fs : fsg.getFileSets())
+					this.addZipGroupFileset(fs);
+			zipGroupFileSetGroups = null;
+		}
 		super.execute();
 	}
 }

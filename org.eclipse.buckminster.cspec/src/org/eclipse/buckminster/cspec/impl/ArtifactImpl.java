@@ -23,22 +23,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Artifact</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Artifact</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.impl.ArtifactImpl#getBase <em>Base</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.ArtifactImpl#getPaths <em>Paths</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.ArtifactImpl#getBase <em>Base
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.ArtifactImpl#getPaths <em>Paths
+ * </em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ArtifactImpl extends AttributeImpl implements Artifact
-{
+public class ArtifactImpl extends AttributeImpl implements Artifact {
 	/**
-	 * The default value of the '{@link #getBase() <em>Base</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getBase() <em>Base</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getBase()
 	 * @generated
@@ -47,8 +49,8 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	protected static final IPath BASE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getBase() <em>Base</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getBase() <em>Base</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getBase()
 	 * @generated
@@ -57,8 +59,8 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	protected IPath base = BASE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getPaths() <em>Paths</em>}' attribute list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getPaths() <em>Paths</em>}' attribute
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPaths()
 	 * @generated
@@ -71,8 +73,7 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * 
 	 * @generated
 	 */
-	protected ArtifactImpl()
-	{
+	protected ArtifactImpl() {
 		super();
 	}
 
@@ -82,18 +83,15 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * @generated
 	 */
 	@Override
-	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
-	{
-		if(baseClass == PathGroup.class)
-		{
-			switch(derivedFeatureID)
-			{
-			case CspecPackage.ARTIFACT__BASE:
-				return CspecPackage.PATH_GROUP__BASE;
-			case CspecPackage.ARTIFACT__PATHS:
-				return CspecPackage.PATH_GROUP__PATHS;
-			default:
-				return -1;
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+		if (baseClass == PathGroup.class) {
+			switch (derivedFeatureID) {
+				case CspecPackage.ARTIFACT__BASE:
+					return CspecPackage.PATH_GROUP__BASE;
+				case CspecPackage.ARTIFACT__PATHS:
+					return CspecPackage.PATH_GROUP__PATHS;
+				default:
+					return -1;
 			}
 		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
@@ -105,18 +103,15 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * @generated
 	 */
 	@Override
-	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
-	{
-		if(baseClass == PathGroup.class)
-		{
-			switch(baseFeatureID)
-			{
-			case CspecPackage.PATH_GROUP__BASE:
-				return CspecPackage.ARTIFACT__BASE;
-			case CspecPackage.PATH_GROUP__PATHS:
-				return CspecPackage.ARTIFACT__PATHS;
-			default:
-				return -1;
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+		if (baseClass == PathGroup.class) {
+			switch (baseFeatureID) {
+				case CspecPackage.PATH_GROUP__BASE:
+					return CspecPackage.ARTIFACT__BASE;
+				case CspecPackage.PATH_GROUP__PATHS:
+					return CspecPackage.ARTIFACT__PATHS;
+				default:
+					return -1;
 			}
 		}
 		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
@@ -128,14 +123,12 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ARTIFACT__BASE:
-			return getBase();
-		case CspecPackage.ARTIFACT__PATHS:
-			return getPaths();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CspecPackage.ARTIFACT__BASE:
+				return getBase();
+			case CspecPackage.ARTIFACT__PATHS:
+				return getPaths();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -146,16 +139,12 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ARTIFACT__BASE:
-			return BASE_EDEFAULT == null
-					? base != null
-					: !BASE_EDEFAULT.equals(base);
-		case CspecPackage.ARTIFACT__PATHS:
-			return paths != null && !paths.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ARTIFACT__BASE:
+				return BASE_EDEFAULT == null ? base != null : !BASE_EDEFAULT.equals(base);
+			case CspecPackage.ARTIFACT__PATHS:
+				return paths != null && !paths.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -167,17 +156,15 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ARTIFACT__BASE:
-			setBase((IPath)newValue);
-			return;
-		case CspecPackage.ARTIFACT__PATHS:
-			getPaths().clear();
-			getPaths().addAll((Collection<? extends IPath>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case CspecPackage.ARTIFACT__BASE:
+				setBase((IPath) newValue);
+				return;
+			case CspecPackage.ARTIFACT__PATHS:
+				getPaths().clear();
+				getPaths().addAll((Collection<? extends IPath>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -188,16 +175,14 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ARTIFACT__BASE:
-			setBase(BASE_EDEFAULT);
-			return;
-		case CspecPackage.ARTIFACT__PATHS:
-			getPaths().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ARTIFACT__BASE:
+				setBase(BASE_EDEFAULT);
+				return;
+			case CspecPackage.ARTIFACT__PATHS:
+				getPaths().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -207,8 +192,7 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * 
 	 * @generated
 	 */
-	public IPath getBase()
-	{
+	public IPath getBase() {
 		return base;
 	}
 
@@ -217,10 +201,8 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * 
 	 * @generated
 	 */
-	public EList<IPath> getPaths()
-	{
-		if(paths == null)
-		{
+	public EList<IPath> getPaths() {
+		if (paths == null) {
 			paths = new EDataTypeUniqueEList<IPath>(IPath.class, this, CspecPackage.ARTIFACT__PATHS);
 		}
 		return paths;
@@ -231,8 +213,7 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * 
 	 * @generated
 	 */
-	public PathGroup resolve(IPath path)
-	{
+	public PathGroup resolve(IPath path) {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
@@ -243,11 +224,10 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * 
 	 * @generated
 	 */
-	public void setBase(IPath newBase)
-	{
+	public void setBase(IPath newBase) {
 		IPath oldBase = base;
 		base = newBase;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ARTIFACT__BASE, oldBase, base));
 	}
 
@@ -257,9 +237,8 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -277,8 +256,7 @@ public class ArtifactImpl extends AttributeImpl implements Artifact
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.ARTIFACT;
 	}
 

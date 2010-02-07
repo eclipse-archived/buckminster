@@ -24,35 +24,28 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PlatformUI;
 
-public class BlankQueryAction implements IObjectActionDelegate
-{
+public class BlankQueryAction implements IObjectActionDelegate {
 	public static final String TEMP_FILE_PREFIX = "bmqtmp-"; //$NON-NLS-1$
 
-	private IWorkbenchPart m_targetPart;
+	private IWorkbenchPart targetPart;
 
-	public void run(IAction action)
-	{
+	public void run(IAction action) {
 		IWorkbench workbench = PlatformUI.getWorkbench();
-		IWorkbenchPartSite site = m_targetPart.getSite();
+		IWorkbenchPartSite site = targetPart.getSite();
 		IEditorDescriptor ed = workbench.getEditorRegistry().getDefaultEditor("buckminster.cquery"); //$NON-NLS-1$
-		try
-		{
+		try {
 			File tempFile = File.createTempFile(TEMP_FILE_PREFIX, ".cquery"); //$NON-NLS-1$
 			tempFile.deleteOnExit();
 			site.getPage().openEditor(new ExternalFileEditorInput(tempFile), ed.getId());
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			UiUtils.openError(site.getShell(), Messages.unable_to_open_editor, e);
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection)
-	{
+	public void selectionChanged(IAction action, ISelection selection) {
 	}
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_targetPart = targetPart;
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		this.targetPart = targetPart;
 	}
 }

@@ -13,18 +13,15 @@ import java.io.OutputStream;
 /**
  * @author Thomas Hallgren
  */
-public class MultiTeeOutputStream extends OutputStream
-{
-	private final OutputStream[] m_streams;
+public class MultiTeeOutputStream extends OutputStream {
+	private final OutputStream[] streams;
 
-	public MultiTeeOutputStream(OutputStream[] streams)
-	{
-		m_streams = streams;
+	public MultiTeeOutputStream(OutputStream[] streams) {
+		this.streams = streams;
 	}
 
 	@Override
-	public void close() throws IOException
-	{
+	public void close() throws IOException {
 		// We do make sure that all streams are closed even if
 		// exceptions are thrown. We also make sure that at least
 		// one of any number of thrown exceptions is thrown. There
@@ -32,52 +29,44 @@ public class MultiTeeOutputStream extends OutputStream
 		// throw an exception.
 		//
 		IOException closeException = null;
-		int idx = m_streams.length;
-		while(--idx >= 0)
-		{
-			try
-			{
-				m_streams[idx].close();
-			}
-			catch(IOException ioe)
-			{
-				if(closeException == null)
+		int idx = streams.length;
+		while (--idx >= 0) {
+			try {
+				streams[idx].close();
+			} catch (IOException ioe) {
+				if (closeException == null)
 					closeException = ioe;
 			}
 		}
-		if(closeException != null)
+		if (closeException != null)
 			throw closeException;
 	}
 
 	@Override
-	public void flush() throws IOException
-	{
-		int idx = m_streams.length;
-		while(--idx >= 0)
-			m_streams[idx].flush();
+	public void flush() throws IOException {
+		int idx = streams.length;
+		while (--idx >= 0)
+			streams[idx].flush();
 	}
 
 	@Override
-	public void write(byte[] b) throws IOException
-	{
-		int idx = m_streams.length;
-		while(--idx >= 0)
-			m_streams[idx].write(b);
+	public void write(byte[] b) throws IOException {
+		int idx = streams.length;
+		while (--idx >= 0)
+			streams[idx].write(b);
 	}
 
 	@Override
-	public void write(byte[] b, int off, int len) throws IOException
-	{
-		int idx = m_streams.length;
-		while(--idx >= 0)
-			m_streams[idx].write(b, off, len);
+	public void write(byte[] b, int off, int len) throws IOException {
+		int idx = streams.length;
+		while (--idx >= 0)
+			streams[idx].write(b, off, len);
 	}
 
 	@Override
-	public void write(int b) throws IOException
-	{
-		int idx = m_streams.length;
-		while(--idx >= 0)
-			m_streams[idx].write(b);
+	public void write(int b) throws IOException {
+		int idx = streams.length;
+		while (--idx >= 0)
+			streams[idx].write(b);
 	}
 }

@@ -24,50 +24,44 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
-{
-	private String m_actorName;
+public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
+	private String actorName;
 
-	private final ExpandingProperties<String> m_actorProperties = new ExpandingProperties<String>();
+	private final ExpandingProperties<String> actorProperties = new ExpandingProperties<String>();
 
-	private boolean m_always = Action.ALWAYS_DEFAULT;
+	private boolean always = Action.ALWAYS_DEFAULT;
 
-	private boolean m_assignConsoleSupport = Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT;
+	private boolean assignConsoleSupport = Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT;
 
-	private final PrerequisitesBuilder m_prerequisitesBuilder;
+	private final PrerequisitesBuilder prerequisitesBuilder;
 
-	private String m_productAlias;
+	private String productAlias;
 
-	private IPath m_productBase;
+	private IPath productBase;
 
-	private int m_productFileCount = -1;
+	private int productFileCount = -1;
 
-	private final HashSet<IPath> m_productPaths = new HashSet<IPath>();
+	private final HashSet<IPath> productPaths = new HashSet<IPath>();
 
-	private final ExpandingProperties<String> m_properties = new ExpandingProperties<String>();
+	private final ExpandingProperties<String> properties = new ExpandingProperties<String>();
 
-	private UpToDatePolicy m_upToDatePolicy = UpToDatePolicy.DEFAULT;
+	private UpToDatePolicy upToDatePolicy = UpToDatePolicy.DEFAULT;
 
-	ActionBuilder(CSpecBuilder cspecBuilder)
-	{
+	ActionBuilder(CSpecBuilder cspecBuilder) {
 		super(cspecBuilder);
-		m_prerequisitesBuilder = new PrerequisitesBuilder(cspecBuilder);
+		prerequisitesBuilder = new PrerequisitesBuilder(cspecBuilder);
 	}
 
-	public void addActorProperty(String key, String propVal, boolean mutable)
-	{
-		m_actorProperties.put(key, propVal, mutable);
+	public void addActorProperty(String key, String propVal, boolean mutable) {
+		actorProperties.put(key, propVal, mutable);
 	}
 
 	@Override
-	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException
-	{
-		m_prerequisitesBuilder.addPrerequisite(prerequisite);
+	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
+		prerequisitesBuilder.addPrerequisite(prerequisite);
 	}
 
-	public ArtifactBuilder addProductArtifact(String name, boolean publ, IPath output)
-			throws AttributeAlreadyDefinedException
-	{
+	public ArtifactBuilder addProductArtifact(String name, boolean publ, IPath output) throws AttributeAlreadyDefinedException {
 		CSpecBuilder cspecBuilder = getCSpecBuilder();
 		ActionArtifactBuilder bld = cspecBuilder.createActionArtifactBuilder();
 		bld.setActionName(getName());
@@ -78,217 +72,176 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction
 		return bld;
 	}
 
-	public void addProductPath(IPath path)
-	{
-		m_productPaths.add(path);
+	public void addProductPath(IPath path) {
+		productPaths.add(path);
 	}
 
-	public void addProperty(String key, String propVal, boolean mutable)
-	{
-		m_properties.put(key, propVal, mutable);
+	public void addProperty(String key, String propVal, boolean mutable) {
+		properties.put(key, propVal, mutable);
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_actorName = null;
-		m_always = Action.ALWAYS_DEFAULT;
-		m_assignConsoleSupport = Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT;
-		m_actorProperties.clear();
-		m_prerequisitesBuilder.clear();
-		m_productPaths.clear();
-		m_properties.clear();
-		m_productAlias = null;
-		m_productBase = null;
-		m_upToDatePolicy = UpToDatePolicy.DEFAULT;
-		m_productFileCount = -1;
+		actorName = null;
+		always = Action.ALWAYS_DEFAULT;
+		assignConsoleSupport = Action.ASSIGN_CONSOLE_SUPPORT_DEFAULT;
+		actorProperties.clear();
+		prerequisitesBuilder.clear();
+		productPaths.clear();
+		properties.clear();
+		productAlias = null;
+		productBase = null;
+		upToDatePolicy = UpToDatePolicy.DEFAULT;
+		productFileCount = -1;
 	}
 
 	@Override
-	public Action createAttribute()
-	{
+	public Action createAttribute() {
 		return new Action(this);
 	}
 
-	public String getActorName()
-	{
-		return m_actorName;
+	public String getActorName() {
+		return actorName;
 	}
 
-	public ExpandingProperties<String> getActorProperties()
-	{
-		return m_actorProperties;
+	public ExpandingProperties<String> getActorProperties() {
+		return actorProperties;
 	}
 
 	@Override
-	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
-	{
-		return specBuilder == getCSpecBuilder()
-				? this
-				: new ActionBuilder(specBuilder);
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder) {
+		return specBuilder == getCSpecBuilder() ? this : new ActionBuilder(specBuilder);
 	}
 
-	public PrerequisiteBuilder getPrerequisite(String prerequisteName)
-	{
-		return m_prerequisitesBuilder.getPrerequisite(prerequisteName);
+	public PrerequisiteBuilder getPrerequisite(String prerequisteName) {
+		return prerequisitesBuilder.getPrerequisite(prerequisteName);
 	}
 
-	public Group getPrerequisiteGroup()
-	{
+	public Group getPrerequisiteGroup() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<? extends IPrerequisite> getPrerequisites()
-	{
+	public List<? extends IPrerequisite> getPrerequisites() {
 		return getPrerequisitesBuilder().getPrerequisites();
 	}
 
-	public String getPrerequisitesAlias()
-	{
-		return m_prerequisitesBuilder.getName();
+	public String getPrerequisitesAlias() {
+		return prerequisitesBuilder.getName();
 	}
 
-	public PrerequisitesBuilder getPrerequisitesBuilder()
-	{
-		return m_prerequisitesBuilder;
+	public PrerequisitesBuilder getPrerequisitesBuilder() {
+		return prerequisitesBuilder;
 	}
 
-	public String getProductAlias()
-	{
-		return m_productAlias;
+	public String getProductAlias() {
+		return productAlias;
 	}
 
-	public ArtifactBuilder getProductArtifact(String name)
-	{
+	public ArtifactBuilder getProductArtifact(String name) {
 		ArtifactBuilder bld = getCSpecBuilder().getArtifactBuilder(name);
-		return (bld instanceof ActionArtifactBuilder)
-				? bld
-				: null;
+		return (bld instanceof ActionArtifactBuilder) ? bld : null;
 	}
 
-	public IPath getProductBase()
-	{
-		return m_productBase;
+	public IPath getProductBase() {
+		return productBase;
 	}
 
-	public int getProductFileCount()
-	{
-		return m_productFileCount;
+	public int getProductFileCount() {
+		return productFileCount;
 	}
 
-	public HashSet<IPath> getProductPaths()
-	{
-		return m_productPaths;
+	public HashSet<IPath> getProductPaths() {
+		return productPaths;
 	}
 
-	public ExpandingProperties<String> getProperties()
-	{
-		return m_properties;
+	public ExpandingProperties<String> getProperties() {
+		return properties;
 	}
 
-	public UpToDatePolicy getUpToDatePolicy()
-	{
-		return m_upToDatePolicy;
+	public UpToDatePolicy getUpToDatePolicy() {
+		return upToDatePolicy;
 	}
 
 	@Override
-	public void initFrom(IAttribute attribute)
-	{
-		IAction action = (IAction)attribute;
+	public void initFrom(IAttribute attribute) {
+		IAction action = (IAction) attribute;
 		super.initFrom(action);
-		m_actorName = action.getActorName();
-		m_actorProperties.putAll(action.getActorProperties(), true);
-		m_always = action.isAlways();
-		m_assignConsoleSupport = action.isAssignConsoleSupport();
-		m_prerequisitesBuilder.initFrom(action.getPrerequisiteGroup());
-		m_productAlias = action.getProductAlias();
-		m_productBase = action.getProductBase();
-		m_upToDatePolicy = action.getUpToDatePolicy();
-		m_productFileCount = action.getProductFileCount();
-		m_productPaths.addAll(action.getProductPaths());
-		m_properties.putAll(action.getProperties(), true);
+		actorName = action.getActorName();
+		actorProperties.putAll(action.getActorProperties(), true);
+		always = action.isAlways();
+		assignConsoleSupport = action.isAssignConsoleSupport();
+		prerequisitesBuilder.initFrom(action.getPrerequisiteGroup());
+		productAlias = action.getProductAlias();
+		productBase = action.getProductBase();
+		upToDatePolicy = action.getUpToDatePolicy();
+		productFileCount = action.getProductFileCount();
+		productPaths.addAll(action.getProductPaths());
+		properties.putAll(action.getProperties(), true);
 	}
 
-	public boolean isAlways()
-	{
-		return m_always;
+	public boolean isAlways() {
+		return always;
 	}
 
-	public boolean isAssignConsoleSupport()
-	{
-		return m_assignConsoleSupport;
+	public boolean isAssignConsoleSupport() {
+		return assignConsoleSupport;
 	}
 
-	public boolean isInternal()
-	{
+	public boolean isInternal() {
 		// An internal action is never "built".
 		//
 		return false;
 	}
 
 	@Override
-	public void removePrerequisite(String prerequisteName)
-	{
-		m_prerequisitesBuilder.removePrerequisite(prerequisteName);
+	public void removePrerequisite(String prerequisteName) {
+		prerequisitesBuilder.removePrerequisite(prerequisteName);
 	}
 
-	public void removeProductPath(IPath path)
-	{
-		m_productPaths.remove(path);
+	public void removeProductPath(IPath path) {
+		productPaths.remove(path);
 	}
 
-	public void setActorName(String actorName)
-	{
-		m_actorName = actorName;
+	public void setActorName(String actorName) {
+		this.actorName = actorName;
 	}
 
-	public void setAlways(boolean always)
-	{
-		m_always = always;
+	public void setAlways(boolean always) {
+		this.always = always;
 	}
 
-	public void setAssignConsoleSupport(boolean assignConsoleSupport)
-	{
-		m_assignConsoleSupport = assignConsoleSupport;
+	public void setAssignConsoleSupport(boolean assignConsoleSupport) {
+		this.assignConsoleSupport = assignConsoleSupport;
 	}
 
-	public void setPrerequisites(Group prerequisites)
-	{
-		m_prerequisitesBuilder.initFrom(prerequisites);
+	public void setPrerequisites(Group prerequisites) {
+		prerequisitesBuilder.initFrom(prerequisites);
 	}
 
-	public void setPrerequisitesAlias(String alias)
-	{
-		m_prerequisitesBuilder.setName(alias);
+	public void setPrerequisitesAlias(String alias) {
+		prerequisitesBuilder.setName(alias);
 	}
 
-	public void setPrerequisitesRebase(IPath rebase)
-	{
-		m_prerequisitesBuilder.setPrerequisiteRebase(rebase);
+	public void setPrerequisitesRebase(IPath rebase) {
+		prerequisitesBuilder.setPrerequisiteRebase(rebase);
 	}
 
-	public void setProductAlias(String productAlias)
-	{
-		m_productAlias = productAlias;
+	public void setProductAlias(String productAlias) {
+		this.productAlias = productAlias;
 	}
 
-	public void setProductBase(IPath productBase)
-	{
-		m_productBase = productBase == null
-				? null
-				: productBase.addTrailingSeparator();
+	public void setProductBase(IPath productBase) {
+		this.productBase = productBase == null ? null : productBase.addTrailingSeparator();
 	}
 
-	public void setProductFileCount(int productFileCount)
-	{
-		m_productFileCount = productFileCount;
+	public void setProductFileCount(int productFileCount) {
+		this.productFileCount = productFileCount;
 	}
 
-	public void setUpToDatePolicy(UpToDatePolicy upToDatePolicy)
-	{
-		m_upToDatePolicy = upToDatePolicy;
+	public void setUpToDatePolicy(UpToDatePolicy upToDatePolicy) {
+		this.upToDatePolicy = upToDatePolicy;
 	}
 }

@@ -12,35 +12,29 @@ package org.eclipse.buckminster.ui.dialogs;
  * @author Karel Brezina
  * 
  */
-public class Property
-{
-	private String m_key;
+public class Property {
+	private String key;
 
-	private String m_value;
+	private String value;
 
-	public Property(String key, String value)
-	{
-		m_key = key;
-		m_value = value;
+	public Property(String key, String value) {
+		this.key = key;
+		this.value = value;
 	}
 
-	public String getKey()
-	{
-		return m_key;
+	public String getKey() {
+		return key;
 	}
 
-	public String getValue()
-	{
-		return m_value;
+	public String getValue() {
+		return value;
 	}
 
-	public void setKey(String key)
-	{
-		m_key = key;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
-	public void setValue(String value)
-	{
-		m_value = value;
+	public void setValue(String value) {
+		this.value = value;
 	}
 }

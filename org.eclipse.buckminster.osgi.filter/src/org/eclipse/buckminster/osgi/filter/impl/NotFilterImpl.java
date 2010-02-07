@@ -11,63 +11,55 @@ import java.util.Map;
 
 import org.eclipse.buckminster.osgi.filter.Filter;
 
-class NotFilterImpl extends FilterImpl
-{
-	private final FilterImpl m_filter;
+class NotFilterImpl extends FilterImpl {
+	private final FilterImpl filter;
 
-	NotFilterImpl(FilterImpl value)
-	{
+	NotFilterImpl(FilterImpl value) {
 		super(FilterImpl.NOT, null);
-		m_filter = value;
+		filter = value;
 	}
 
 	@Override
-	public void addConsultedAttributes(Map<String, String[]> propertyChoices)
-	{
-		m_filter.addConsultedAttributes(propertyChoices);
+	public void addConsultedAttributes(Map<String, String[]> propertyChoices) {
+		filter.addConsultedAttributes(propertyChoices);
 	}
 
-	public int compareTo(FilterImpl filter)
-	{
-		int cmp = internalCompareTo(filter);
-		if(cmp == 0)
-			cmp = m_filter.compareTo(((NotFilterImpl)filter).m_filter);
+	public int compareTo(FilterImpl that) {
+		int cmp = internalCompareTo(that);
+		if (cmp == 0)
+			cmp = filter.compareTo(((NotFilterImpl) that).filter);
 		return cmp;
 	}
 
 	@Override
-	public FilterImpl stripFilter(Filter subFilter)
-	{
-		if(equals(subFilter))
+	public FilterImpl stripFilter(Filter subFilter) {
+		if (equals(subFilter))
 			return null;
 
-		FilterImpl newFilter = (FilterImpl)m_filter.stripFilter(subFilter);
-		if(newFilter == m_filter)
+		FilterImpl newFilter = (FilterImpl) filter.stripFilter(subFilter);
+		if (newFilter == filter)
 			return this;
 
-		if(newFilter == null)
+		if (newFilter == null)
 			return null;
 
 		return new NotFilterImpl(newFilter);
 	}
 
-	FilterImpl getFilter()
-	{
-		return m_filter;
+	FilterImpl getFilter() {
+		return filter;
 	}
 
 	@Override
-	boolean match0(Map<String, ? extends Object> properties)
-	{
-		return !m_filter.match0(properties);
+	boolean match0(Map<String, ? extends Object> properties) {
+		return !filter.match0(properties);
 	}
 
 	@Override
-	void toString(StringBuilder sb)
-	{
+	void toString(StringBuilder sb) {
 		sb.append('(');
 		sb.append('!');
-		m_filter.toString(sb);
+		filter.toString(sb);
 		sb.append(')');
 	}
 }

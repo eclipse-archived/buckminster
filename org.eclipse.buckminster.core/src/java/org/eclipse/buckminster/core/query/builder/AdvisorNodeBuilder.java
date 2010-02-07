@@ -25,348 +25,292 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
-public class AdvisorNodeBuilder implements IAdvisorNode
-{
-	private boolean m_allowCircularDependency;
+public class AdvisorNodeBuilder implements IAdvisorNode {
+	private boolean allowCircularDependency;
 
-	private final ArrayList<String> m_attributes = new ArrayList<String>();
+	private final ArrayList<String> attributes = new ArrayList<String>();
 
-	private VersionSelector[] m_branchTagPath;
+	private VersionSelector[] branchTagPath;
 
-	private String m_componentType;
+	private String componentType;
 
-	private Documentation m_documentation;
+	private Documentation documentation;
 
-	private Filter m_filter;
+	private Filter filter;
 
-	private MutableLevel m_mutableLevel;
+	private MutableLevel mutableLevel;
 
-	private Pattern m_namePattern;
+	private Pattern namePattern;
 
-	private URL m_overlayFolder;
+	private URL overlayFolder;
 
-	private Map<String, String> m_properties;
+	private Map<String, String> properties;
 
-	private boolean m_prune;
+	private boolean prune;
 
-	private int[] m_resolutionPrio;
+	private int[] resolutionPrio;
 
-	private String m_revision;
+	private String revision;
 
-	private boolean m_skipComponent;
+	private boolean skipComponent;
 
-	private SourceLevel m_sourceLevel;
+	private SourceLevel sourceLevel;
 
-	private boolean m_systemDiscovery;
+	private boolean systemDiscovery;
 
-	private Date m_timestamp;
+	private Date timestamp;
 
-	private boolean m_useTargetPlatform;
+	private boolean useTargetPlatform;
 
-	private boolean m_useMaterialization;
+	private boolean useMaterialization;
 
-	private boolean m_useWorkspace;
+	private boolean useWorkspace;
 
-	private boolean m_useRemoteResolution;
+	private boolean useRemoteResolution;
 
-	private VersionRange m_versionOverride;
+	private VersionRange versionOverride;
 
-	public AdvisorNodeBuilder()
-	{
+	public AdvisorNodeBuilder() {
 		this.clear();
 	}
 
-	public void addAttribute(String attribute)
-	{
-		m_attributes.add(attribute);
+	public void addAttribute(String attribute) {
+		attributes.add(attribute);
 	}
 
-	public void addAttributes(List<String> attributes)
-	{
-		m_attributes.addAll(attributes);
+	public void addAttributes(List<String> attrs) {
+		attributes.addAll(attrs);
 	}
 
-	public boolean allowCircularDependency()
-	{
-		return m_allowCircularDependency;
+	public boolean allowCircularDependency() {
+		return allowCircularDependency;
 	}
 
-	public void clear()
-	{
-		m_attributes.clear();
-		m_properties = null;
-		m_documentation = null;
-		m_componentType = null;
-		m_filter = null;
-		m_mutableLevel = MutableLevel.INDIFFERENT;
-		m_namePattern = null;
-		m_overlayFolder = null;
-		m_prune = false;
-		m_skipComponent = false;
-		m_allowCircularDependency = false;
-		m_sourceLevel = SourceLevel.INDIFFERENT;
-		m_useTargetPlatform = true;
-		m_useMaterialization = true;
-		m_useWorkspace = true;
-		m_versionOverride = null;
-		m_useRemoteResolution = true;
-		m_systemDiscovery = true;
-		m_branchTagPath = VersionSelector.EMPTY_PATH;
-		m_revision = null;
-		m_timestamp = null;
-		m_resolutionPrio = IAdvisorNode.DEFAULT_RESOLUTION_PRIO;
+	public void clear() {
+		attributes.clear();
+		properties = null;
+		documentation = null;
+		componentType = null;
+		filter = null;
+		mutableLevel = MutableLevel.INDIFFERENT;
+		namePattern = null;
+		overlayFolder = null;
+		prune = false;
+		skipComponent = false;
+		allowCircularDependency = false;
+		sourceLevel = SourceLevel.INDIFFERENT;
+		useTargetPlatform = true;
+		useMaterialization = true;
+		useWorkspace = true;
+		versionOverride = null;
+		useRemoteResolution = true;
+		systemDiscovery = true;
+		branchTagPath = VersionSelector.EMPTY_PATH;
+		revision = null;
+		timestamp = null;
+		resolutionPrio = IAdvisorNode.DEFAULT_RESOLUTION_PRIO;
 	}
 
-	public AdvisorNode create()
-	{
+	public AdvisorNode create() {
 		return new AdvisorNode(this);
 	}
 
-	public List<String> getAttributes()
-	{
-		return m_attributes;
+	public List<String> getAttributes() {
+		return attributes;
 	}
 
-	public VersionSelector[] getBranchTagPath()
-	{
-		return m_branchTagPath;
+	public VersionSelector[] getBranchTagPath() {
+		return branchTagPath;
 	}
 
-	public String getComponentTypeID()
-	{
-		return m_componentType;
+	public String getComponentTypeID() {
+		return componentType;
 	}
 
-	public Documentation getDocumentation()
-	{
-		return m_documentation;
+	public Documentation getDocumentation() {
+		return documentation;
 	}
 
-	public Filter getFilter()
-	{
-		return m_filter;
+	public Filter getFilter() {
+		return filter;
 	}
 
-	public IPath getMaterializationLocation(String projectName)
-	{
+	public IPath getMaterializationLocation(String projectName) {
 		// TODO: Implement this
 		return null;
 	}
 
-	public MutableLevel getMutableLevel()
-	{
-		return m_mutableLevel;
+	public MutableLevel getMutableLevel() {
+		return mutableLevel;
 	}
 
-	public Pattern getNamePattern()
-	{
-		return m_namePattern;
+	public Pattern getNamePattern() {
+		return namePattern;
 	}
 
-	public URL getOverlayFolder()
-	{
-		return m_overlayFolder;
+	public URL getOverlayFolder() {
+		return overlayFolder;
 	}
 
-	public Map<String, String> getProperties()
-	{
-		if(m_properties == null)
-			m_properties = new HashMap<String, String>();
-		return m_properties;
+	public Map<String, String> getProperties() {
+		if (properties == null)
+			properties = new HashMap<String, String>();
+		return properties;
 	}
 
-	public int[] getResolutionPrio()
-	{
-		return m_resolutionPrio;
+	public int[] getResolutionPrio() {
+		return resolutionPrio;
 	}
 
-	public String getRevision()
-	{
-		return m_revision;
+	public String getRevision() {
+		return revision;
 	}
 
-	public SourceLevel getSourceLevel()
-	{
-		return m_sourceLevel;
+	public SourceLevel getSourceLevel() {
+		return sourceLevel;
 	}
 
-	public Date getTimestamp()
-	{
-		return m_timestamp;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
-	public VersionRange getVersionOverride()
-	{
-		return m_versionOverride;
+	public VersionRange getVersionOverride() {
+		return versionOverride;
 	}
 
-	public void initFrom(IAdvisorNode node)
-	{
+	public void initFrom(IAdvisorNode node) {
 		this.clear();
-		m_allowCircularDependency = node.allowCircularDependency();
-		m_attributes.addAll(node.getAttributes());
-		m_componentType = node.getComponentTypeID();
-		m_documentation = node.getDocumentation();
-		m_filter = node.getFilter();
-		m_mutableLevel = node.getMutableLevel();
-		m_namePattern = node.getNamePattern();
-		m_overlayFolder = node.getOverlayFolder();
+		allowCircularDependency = node.allowCircularDependency();
+		attributes.addAll(node.getAttributes());
+		componentType = node.getComponentTypeID();
+		documentation = node.getDocumentation();
+		filter = node.getFilter();
+		mutableLevel = node.getMutableLevel();
+		namePattern = node.getNamePattern();
+		overlayFolder = node.getOverlayFolder();
 		Map<String, String> props = node.getProperties();
-		if(props.size() > 0)
-			m_properties = new HashMap<String, String>(props);
-		m_prune = node.isPrune();
-		m_skipComponent = node.skipComponent();
-		m_sourceLevel = node.getSourceLevel();
-		m_useMaterialization = node.isUseMaterialization();
-		m_useRemoteResolution = node.isUseRemoteResolution();
-		m_useTargetPlatform = node.isUseTargetPlatform();
-		m_useWorkspace = node.isUseWorkspace();
-		m_versionOverride = node.getVersionOverride();
-		m_systemDiscovery = node.isSystemDiscovery();
-		m_branchTagPath = node.getBranchTagPath();
-		m_revision = node.getRevision();
-		m_timestamp = node.getTimestamp();
-		m_resolutionPrio = node.getResolutionPrio();
+		if (props.size() > 0)
+			properties = new HashMap<String, String>(props);
+		prune = node.isPrune();
+		skipComponent = node.skipComponent();
+		sourceLevel = node.getSourceLevel();
+		useMaterialization = node.isUseMaterialization();
+		useRemoteResolution = node.isUseRemoteResolution();
+		useTargetPlatform = node.isUseTargetPlatform();
+		useWorkspace = node.isUseWorkspace();
+		versionOverride = node.getVersionOverride();
+		systemDiscovery = node.isSystemDiscovery();
+		branchTagPath = node.getBranchTagPath();
+		revision = node.getRevision();
+		timestamp = node.getTimestamp();
+		resolutionPrio = node.getResolutionPrio();
 	}
 
-	public boolean isPrune()
-	{
-		return m_prune;
+	public boolean isPrune() {
+		return prune;
 	}
 
-	public boolean isSystemDiscovery()
-	{
-		return m_systemDiscovery;
+	public boolean isSystemDiscovery() {
+		return systemDiscovery;
 	}
 
-	public boolean isUseMaterialization()
-	{
-		return m_useMaterialization;
+	public boolean isUseMaterialization() {
+		return useMaterialization;
 	}
 
-	public boolean isUseRemoteResolution()
-	{
-		return m_useRemoteResolution;
+	public boolean isUseRemoteResolution() {
+		return useRemoteResolution;
 	}
 
-	public boolean isUseTargetPlatform()
-	{
-		return m_useTargetPlatform;
+	public boolean isUseTargetPlatform() {
+		return useTargetPlatform;
 	}
 
-	public boolean isUseWorkspace()
-	{
-		return m_useWorkspace;
+	public boolean isUseWorkspace() {
+		return useWorkspace;
 	}
 
-	public void setAllowCircularDependency(boolean allowCircularDependency)
-	{
-		m_allowCircularDependency = allowCircularDependency;
+	public void setAllowCircularDependency(boolean allowCircularDependency) {
+		this.allowCircularDependency = allowCircularDependency;
 	}
 
-	public void setBranchTagPath(VersionSelector[] branchTagPath)
-	{
-		m_branchTagPath = branchTagPath == null
-				? VersionSelector.EMPTY_PATH
-				: branchTagPath;
+	public void setBranchTagPath(VersionSelector[] branchTagPath) {
+		this.branchTagPath = branchTagPath == null ? VersionSelector.EMPTY_PATH : branchTagPath;
 	}
 
-	public void setComponentTypeID(String componentType)
-	{
-		m_componentType = componentType;
+	public void setComponentTypeID(String componentType) {
+		this.componentType = componentType;
 	}
 
-	public void setDocumentation(Documentation documentation)
-	{
-		m_documentation = documentation;
+	public void setDocumentation(Documentation documentation) {
+		this.documentation = documentation;
 	}
 
-	public void setFilter(Filter filter)
-	{
-		m_filter = filter;
+	public void setFilter(Filter filter) {
+		this.filter = filter;
 	}
 
-	public void setMutableLevel(MutableLevel mutableLevel)
-	{
-		m_mutableLevel = mutableLevel == null
-				? MutableLevel.INDIFFERENT
-				: mutableLevel;
+	public void setMutableLevel(MutableLevel mutableLevel) {
+		this.mutableLevel = mutableLevel == null ? MutableLevel.INDIFFERENT : mutableLevel;
 	}
 
-	public void setNamePattern(Pattern namePattern)
-	{
-		m_namePattern = namePattern;
+	public void setNamePattern(Pattern namePattern) {
+		this.namePattern = namePattern;
 	}
 
-	public void setOverlayFolder(URL addOnFolder)
-	{
-		m_overlayFolder = addOnFolder;
+	public void setOverlayFolder(URL addOnFolder) {
+		this.overlayFolder = addOnFolder;
 	}
 
-	public void setPrune(boolean prune)
-	{
-		m_prune = prune;
+	public void setPrune(boolean prune) {
+		this.prune = prune;
 	}
 
-	public void setResolutionPrio(int[] resolutionPrio)
-	{
-		m_resolutionPrio = resolutionPrio;
+	public void setResolutionPrio(int[] resolutionPrio) {
+		this.resolutionPrio = resolutionPrio;
 	}
 
-	public void setRevision(String revision)
-	{
-		m_revision = revision;
+	public void setRevision(String revision) {
+		this.revision = revision;
 	}
 
-	public void setSkipComponent(boolean skipComponent)
-	{
-		m_skipComponent = skipComponent;
+	public void setSkipComponent(boolean flag) {
+		this.skipComponent = flag;
 	}
 
-	public void setSourceLevel(SourceLevel sourceLevel)
-	{
-		m_sourceLevel = sourceLevel == null
-				? SourceLevel.INDIFFERENT
-				: sourceLevel;
+	public void setSourceLevel(SourceLevel sourceLevel) {
+		this.sourceLevel = sourceLevel == null ? SourceLevel.INDIFFERENT : sourceLevel;
 	}
 
-	public void setSystemDiscovery(boolean systemDiscovery)
-	{
-		m_systemDiscovery = systemDiscovery;
+	public void setSystemDiscovery(boolean flag) {
+		this.systemDiscovery = flag;
 	}
 
-	public void setTimestamp(Date timestamp)
-	{
-		m_timestamp = timestamp;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
-	public void setUseMaterialization(boolean useMaterialization)
-	{
-		m_useMaterialization = useMaterialization;
+	public void setUseMaterialization(boolean flag) {
+		this.useMaterialization = flag;
 	}
 
-	public void setUseRemoteResolution(boolean useRemoteResolution)
-	{
-		m_useRemoteResolution = useRemoteResolution;
+	public void setUseRemoteResolution(boolean flag) {
+		this.useRemoteResolution = flag;
 	}
 
-	public void setUseTargetPlatform(boolean useInstalled)
-	{
-		m_useTargetPlatform = useInstalled;
+	public void setUseTargetPlatform(boolean flag) {
+		this.useTargetPlatform = flag;
 	}
 
-	public void setUseWorkspace(boolean useProject)
-	{
-		m_useWorkspace = useProject;
+	public void setUseWorkspace(boolean flag) {
+		this.useWorkspace = flag;
 	}
 
-	public void setVersionOverride(VersionRange versionOverride)
-	{
-		m_versionOverride = versionOverride;
+	public void setVersionOverride(VersionRange versionOverride) {
+		this.versionOverride = versionOverride;
 	}
 
-	public boolean skipComponent()
-	{
-		return m_skipComponent;
+	public boolean skipComponent() {
+		return skipComponent;
 	}
 }

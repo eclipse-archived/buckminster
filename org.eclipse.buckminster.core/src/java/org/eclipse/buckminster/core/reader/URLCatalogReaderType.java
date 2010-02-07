@@ -62,141 +62,114 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class URLCatalogReaderType extends CatalogReaderType
-{
-	private static final DocumentBuilderFactory s_documentBuilderFactory = DocumentBuilderFactory.newInstance();
+public class URLCatalogReaderType extends CatalogReaderType {
+	private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
 	/**
 	 * Pattern that scans for href's that are relative and don't start with ?
 	 */
-	private static final Pattern s_htmlPattern = Pattern.compile("<A\\s+HREF=\"([^?/][^:\"]+)\"\\s*>[^<]+</A>", //$NON-NLS-1$
+	private static final Pattern htmlPattern = Pattern.compile("<A\\s+HREF=\"([^?/][^:\"]+)\"\\s*>[^<]+</A>", //$NON-NLS-1$
 			Pattern.CASE_INSENSITIVE);
 
 	/**
-	 * Scan a listing obtained using FTP. The file name comes after a timestamp that ends with <hh:mm> or <year> and
-	 * might contain a link, i.e. xxx -> yyy.
+	 * Scan a listing obtained using FTP. The file name comes after a timestamp
+	 * that ends with <hh:mm> or <year> and might contain a link, i.e. xxx ->
+	 * yyy.
 	 */
-	private static final Pattern s_ftpPattern = Pattern.compile(
+	private static final Pattern ftpPattern = Pattern.compile(
 			"[a-z]+\\s+[0-9]+\\s+(?:(?:[0-9]+:[0-9]+)|(?:[0-9]{4}))\\s+(.+?)(?:([\\r|\\n])|(\\s+->\\s+))", //$NON-NLS-1$
 			Pattern.CASE_INSENSITIVE);
 
 	/**
-	 * Check if pattern matches an index.html or other index.xxx. We transform such URL's to denote folders instead.
+	 * Check if pattern matches an index.html or other index.xxx. We transform
+	 * such URL's to denote folders instead.
 	 */
-	private static final Pattern s_indexPath = Pattern.compile("^(.*/)?index\\.[a-z][a-z0-9]+$"); //$NON-NLS-1$
+	private static final Pattern indexPath = Pattern.compile("^(.*/)?index\\.[a-z][a-z0-9]+$"); //$NON-NLS-1$
 
-	private static final ThreadLocal<ProviderMatch> s_currentProviderMatch = new InheritableThreadLocal<ProviderMatch>();
+	private static final ThreadLocal<ProviderMatch> currentProviderMatch = new InheritableThreadLocal<ProviderMatch>();
 
-	static
-	{
-		s_documentBuilderFactory.setIgnoringComments(true);
-		s_documentBuilderFactory.setValidating(false);
-		s_documentBuilderFactory.setNamespaceAware(false);
+	static {
+		documentBuilderFactory.setIgnoringComments(true);
+		documentBuilderFactory.setValidating(false);
+		documentBuilderFactory.setNamespaceAware(false);
 	}
 
-	public static URL[] extractHTMLLinks(URL urlToHTML, IConnectContext cctx, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public static URL[] extractHTMLLinks(URL urlToHTML, IConnectContext cctx, IProgressMonitor monitor) throws CoreException {
 		ArrayList<URL> links = new ArrayList<URL>();
-		try
-		{
+		try {
 			AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream(0x2000, 0x200000);
 			DownloadManager.readInto(urlToHTML, cctx, buffer, monitor);
-			try
-			{
-				final DocumentBuilder builder = s_documentBuilderFactory.newDocumentBuilder();
+			try {
+				final DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
 
 				// Use a very silent error handler
 				//
-				builder.setErrorHandler(new ErrorHandler()
-				{
-					public void error(SAXParseException ex) throws SAXException
-					{
+				builder.setErrorHandler(new ErrorHandler() {
+					public void error(SAXParseException ex) throws SAXException {
 						throw ex;
 					}
 
-					public void fatalError(SAXParseException ex) throws SAXException
-					{
+					public void fatalError(SAXParseException ex) throws SAXException {
 						throw ex;
 					}
 
-					public void warning(SAXParseException ex) throws SAXException
-					{
+					public void warning(SAXParseException ex) throws SAXException {
 					}
 				});
 				InputSource source = new InputSource(buffer.getInputStream());
 				source.setSystemId(urlToHTML.toString());
 				Document document = builder.parse(source);
 				collectLinks(document.getDocumentElement(), urlToHTML, links);
-			}
-			catch(SAXException e)
-			{
+			} catch (SAXException e) {
 				// HTML was not well formed. Use a scanner instead
 				//
 				Scanner scanner = new Scanner(buffer.getInputStream());
 				URL parent = URLUtils.appendTrailingSlash(urlToHTML);
-				while(scanner.findWithinHorizon(s_htmlPattern, 0) != null)
-				{
+				while (scanner.findWithinHorizon(htmlPattern, 0) != null) {
 					MatchResult mr = scanner.match();
 					addLink(links, parent, mr.group(1));
 				}
 				scanner.close();
 			}
-		}
-		catch(IllegalStateException e)
-		{
+		} catch (IllegalStateException e) {
 			CorePlugin.getLogger().warning(e, e.getMessage());
 			return Trivial.EMPTY_URL_ARRAY;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			return Trivial.EMPTY_URL_ARRAY;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			CorePlugin.getLogger().warning(e, e.getMessage());
 			return Trivial.EMPTY_URL_ARRAY;
-		}
-		catch(ParserConfigurationException e)
-		{
+		} catch (ParserConfigurationException e) {
 			CorePlugin.getLogger().warning(e, e.getMessage());
 			return Trivial.EMPTY_URL_ARRAY;
 		}
 		return links.toArray(new URL[links.size()]);
 	}
 
-	public static ProviderMatch getCurrentProviderMatch()
-	{
-		return s_currentProviderMatch.get();
+	public static ProviderMatch getCurrentProviderMatch() {
+		return currentProviderMatch.get();
 	}
 
-	public static IComponentReader getReader(URL catalog, IProgressMonitor monitor) throws CoreException
-	{
+	public static IComponentReader getReader(URL catalog, IProgressMonitor monitor) throws CoreException {
 		return getDirectReader(catalog, URL_CATALOG, monitor);
 	}
 
-	public static URL[] list(URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException
-	{
+	public static URL[] list(URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException {
 		File dir = FileUtils.getFile(url);
-		if(dir != null)
-		{
+		if (dir != null) {
 			File[] list = dir.listFiles();
-			if(list == null)
+			if (list == null)
 				return Trivial.EMPTY_URL_ARRAY;
 			int top = list.length;
-			if(top == 0)
+			if (top == 0)
 				return Trivial.EMPTY_URL_ARRAY;
 			URL[] result = new URL[top];
-			while(--top >= 0)
-			{
+			while (--top >= 0) {
 				File file = list[top];
 				URI uri = URLUtils.normalizeToURI(file.toString(), file.isDirectory());
-				try
-				{
+				try {
 					result[top] = uri.toURL();
-				}
-				catch(MalformedURLException e)
-				{
+				} catch (MalformedURLException e) {
 					throw BuckminsterException.wrap(e);
 				}
 			}
@@ -205,46 +178,35 @@ public class URLCatalogReaderType extends CatalogReaderType
 		}
 
 		String proto = url.getProtocol();
-		if(proto.equalsIgnoreCase("ftp") || proto.equalsIgnoreCase("sftp")) //$NON-NLS-1$ //$NON-NLS-2$
+		if (proto.equalsIgnoreCase("ftp") || proto.equalsIgnoreCase("sftp")) //$NON-NLS-1$ //$NON-NLS-2$
 		{
 			final ArrayList<URL> result = new ArrayList<URL>();
 			Scanner scanner = null;
-			try
-			{
+			try {
 				scanner = new Scanner(DownloadManager.read(url, cctx));
 				url = URLUtils.appendTrailingSlash(url);
-				while(scanner.findWithinHorizon(s_ftpPattern, 0) != null)
-				{
+				while (scanner.findWithinHorizon(ftpPattern, 0) != null) {
 					MatchResult mr = scanner.match();
 					result.add(new URL(url, mr.group(1)));
 				}
 				return result.toArray(new URL[result.size()]);
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				CorePlugin.getLogger().warning(e, e.getMessage());
 				return Trivial.EMPTY_URL_ARRAY;
-			}
-			catch(FileNotFoundException e)
-			{
+			} catch (FileNotFoundException e) {
 				return Trivial.EMPTY_URL_ARRAY;
-			}
-			catch(IOException e)
-			{
+			} catch (IOException e) {
 				CorePlugin.getLogger().warning(e, e.getMessage());
 				return Trivial.EMPTY_URL_ARRAY;
-			}
-			finally
-			{
-				if(scanner != null)
+			} finally {
+				if (scanner != null)
 					scanner.close();
 			}
 		}
 		return extractHTMLLinks(url, cctx, monitor);
 	}
 
-	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
-	{
+	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException {
 		String urlString = url.toString();
 		ComponentRequest rq = new ComponentRequest(urlString, null, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
@@ -259,99 +221,76 @@ public class URLCatalogReaderType extends CatalogReaderType
 		return pm.getReader(monitor);
 	}
 
-	private static void addLink(List<URL> links, URL parent, String link) throws MalformedURLException
-	{
-		Matcher m = s_indexPath.matcher(link.toString());
-		if(m.matches())
-		{
+	private static void addLink(List<URL> links, URL parent, String link) throws MalformedURLException {
+		Matcher m = indexPath.matcher(link.toString());
+		if (m.matches()) {
 			link = m.group(1);
-			if(link == null)
+			if (link == null)
 				return;
 		}
 
-		if(link.equals("../")) //$NON-NLS-1$
+		if (link.equals("../")) //$NON-NLS-1$
 			return;
 
 		links.add(new URL(parent, link));
 	}
 
-	private static void collectLinks(Element element, URL parent, ArrayList<URL> links)
-	{
-		if(element.getNodeName().equals("a")) //$NON-NLS-1$
+	private static void collectLinks(Element element, URL parent, ArrayList<URL> links) {
+		if (element.getNodeName().equals("a")) //$NON-NLS-1$
 		{
-			try
-			{
+			try {
 				addLink(links, parent, element.getAttribute("href")); //$NON-NLS-1$
-			}
-			catch(MalformedURLException e)
-			{
+			} catch (MalformedURLException e) {
 				// Invalid href. Just skip it.
 			}
-		}
-		else
-		{
-			for(Node child = element.getFirstChild(); child != null; child = child.getNextSibling())
-			{
-				if(child.getNodeType() == Node.ELEMENT_NODE)
-					collectLinks((Element)child, parent, links);
+		} else {
+			for (Node child = element.getFirstChild(); child != null; child = child.getNextSibling()) {
+				if (child.getNodeType() == Node.ELEMENT_NODE)
+					collectLinks((Element) child, parent, links);
 			}
 		}
 	}
 
 	@Override
-	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
-	{
-		try
-		{
+	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException {
+		try {
 			return URLUtils.normalizeToURL(repositoryLocator);
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
-		try
-		{
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
+		try {
 			return new URI(resolution.getRepository());
-		}
-		catch(URISyntaxException e)
-		{
+		} catch (URISyntaxException e) {
 			return null;
 		}
 	}
 
-	public IReaderType getLocalReaderType()
-	{
+	public IReaderType getLocalReaderType() {
 		return this;
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new URLCatalogReader(this, providerMatch);
 	}
 
 	@Override
-	public String getRemotePath(String repositoryLocation) throws CoreException
-	{
+	public String getRemotePath(String repositoryLocation) throws CoreException {
 		return getURI(repositoryLocation).getPath();
 	}
 
-	public URI getURI(Provider provider, Map<String, ? extends Object> properties) throws CoreException
-	{
+	public URI getURI(Provider provider, Map<String, ? extends Object> properties) throws CoreException {
 		return getURI(provider.getURI(properties));
 	}
 
-	public URI getURI(ProviderMatch providerMatch) throws CoreException
-	{
+	public URI getURI(ProviderMatch providerMatch) throws CoreException {
 		return getURI(providerMatch.getRepositoryURI());
 	}
 
-	public URI getURI(String repository) throws CoreException
-	{
+	public URI getURI(String repository) throws CoreException {
 		return URLUtils.normalizeToURI(repository, true);
 	}
 }

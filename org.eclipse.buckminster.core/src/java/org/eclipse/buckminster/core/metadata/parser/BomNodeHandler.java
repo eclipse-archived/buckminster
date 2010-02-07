@@ -18,16 +18,13 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-abstract class BomNodeHandler extends ExtensionAwareHandler implements IWrapperParent
-{
-	BomNodeHandler(AbstractHandler parent)
-	{
+abstract class BomNodeHandler extends ExtensionAwareHandler implements IWrapperParent {
+	BomNodeHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public UUIDKeyed getWrapped(UUID id) throws SAXException
-	{
-		return ((IDWrapperHandler)getParentHandler()).getWrapped(id);
+	public UUIDKeyed getWrapped(UUID id) throws SAXException {
+		return ((IDWrapperHandler) getParentHandler()).getWrapped(id);
 	}
 
 	abstract BOMNode getDepNode() throws SAXException;

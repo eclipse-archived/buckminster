@@ -17,12 +17,12 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory
-{
+public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -30,40 +30,35 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory
 	 * @generated
 	 */
 	@Deprecated
-	public static PsfPackage getPackage()
-	{
+	public static PsfPackage getPackage() {
 		return PsfPackage.eINSTANCE;
 	}
 
 	/**
-	 * Creates the default factory implementation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates the default factory implementation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static PsfFactory init()
-	{
-		try
-		{
-			PsfFactory thePsfFactory = (PsfFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/PSFProvider-1.0");
-			if(thePsfFactory != null)
-			{
+	public static PsfFactory init() {
+		try {
+			PsfFactory thePsfFactory = (PsfFactory) EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/PSFProvider-1.0");
+			if (thePsfFactory != null) {
 				return thePsfFactory;
 			}
-		}
-		catch(Exception exception)
-		{
+		} catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new PsfFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public PsfFactoryImpl()
-	{
+	public PsfFactoryImpl() {
 		super();
 	}
 
@@ -73,14 +68,12 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory
 	 * @generated
 	 */
 	@Override
-	public EObject create(EClass eClass)
-	{
-		switch(eClass.getClassifierID())
-		{
-		case PsfPackage.PSF_PROVIDER:
-			return createPSFProvider();
-		default:
-			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+	public EObject create(EClass eClass) {
+		switch (eClass.getClassifierID()) {
+			case PsfPackage.PSF_PROVIDER:
+				return createPSFProvider();
+			default:
+				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -89,8 +82,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory
 	 * 
 	 * @generated
 	 */
-	public PSFProvider createPSFProvider()
-	{
+	public PSFProvider createPSFProvider() {
 		PSFProviderImpl psfProvider = new PSFProviderImpl();
 		return psfProvider;
 	}
@@ -100,9 +92,8 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory
 	 * 
 	 * @generated
 	 */
-	public PsfPackage getPsfPackage()
-	{
-		return (PsfPackage)getEPackage();
+	public PsfPackage getPsfPackage() {
+		return (PsfPackage) getEPackage();
 	}
 
 } // PsfFactoryImpl

@@ -47,250 +47,200 @@ import org.xml.sax.XMLReader;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractParser<T> extends TopHandler implements ErrorHandler, IParser<T>
-{
-	private static Pattern s_saxParseCleaner = Pattern.compile("^cvc-[^:]+:(.*)$"); //$NON-NLS-1$
+public abstract class AbstractParser<T> extends TopHandler implements ErrorHandler, IParser<T> {
+	private static Pattern saxParseCleaner = Pattern.compile("^cvc-[^:]+:(.*)$"); //$NON-NLS-1$
 
-	private static IFile[] s_noFiles = new IFile[0];
+	private static IFile[] noFiles = new IFile[0];
 
-	public static IFile[] clearMarkers(String systemId)
-	{
-		// If the systemId is represented as a resource in the workspace, then remove
+	public static IFile[] clearMarkers(String systemId) {
+		// If the systemId is represented as a resource in the workspace, then
+		// remove
 		// all problem markers from it.
 		//
 		IFile[] files = getFilesForSystemId(systemId);
-		try
-		{
-			for(IFile file : files)
+		try {
+			for (IFile file : files)
 				file.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-		}
-		catch(CoreException ce)
-		{
+		} catch (CoreException ce) {
 			// Ignore, probably a locked workspace
 		}
 		return files;
 	}
 
-	public static XMLReader createXMLReader(boolean validating, boolean withNamespace) throws CoreException
-	{
-		try
-		{
+	public static XMLReader createXMLReader(boolean validating, boolean withNamespace) throws CoreException {
+		try {
 			return Utils.createXMLReader(validating, withNamespace);
-		}
-		catch(SAXException e)
-		{
+		} catch (SAXException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public static void setMarkers(IFile[] files, SAXParseException e)
-	{
+	public static void setMarkers(IFile[] files, SAXParseException e) {
 		// Annotate the file if "systemId" denotes a resource in a project
 		//
-		try
-		{
+		try {
 			String msg = e.getMessage();
-			Matcher match = s_saxParseCleaner.matcher(msg);
-			if(match.matches())
+			Matcher match = saxParseCleaner.matcher(msg);
+			if (match.matches())
 				msg = match.group(1);
 
-			for(IFile file : files)
-			{
+			for (IFile file : files) {
 				IMarker marker = file.createMarker(IMarker.PROBLEM);
 				marker.setAttribute(IMarker.MESSAGE, msg);
 				marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 				marker.setAttribute(IMarker.LINE_NUMBER, e.getLineNumber());
 			}
-		}
-		catch(CoreException ce)
-		{
+		} catch (CoreException ce) {
 			// Ignore
 		}
 	}
 
-	private static IFile[] getFilesForSystemId(String systemId)
-	{
-		if(systemId == null || systemId.contains(".metadata")) //$NON-NLS-1$
-			return s_noFiles;
+	private static IFile[] getFilesForSystemId(String systemId) {
+		if (systemId == null || systemId.contains(".metadata")) //$NON-NLS-1$
+			return noFiles;
 
-		try
-		{
+		try {
 			URL url = new URL(systemId);
 			File file = FileUtils.getFile(url);
-			if(file == null)
-				return s_noFiles;
+			if (file == null)
+				return noFiles;
 			systemId = file.toString();
-		}
-		catch(MalformedURLException murle)
-		{
+		} catch (MalformedURLException murle) {
 			// Apparently not a valid URL. That's expected
 		}
 		return ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(new Path(systemId).toFile().toURI());
 	}
 
-	private final boolean m_validating;
+	private final boolean validating;
 
-	private final List<String> m_namespaceLocations;
+	private final List<String> namespaceLocations;
 
-	private final List<ParserFactory.ParserExtension> m_parserExtensions;
+	private final List<ParserFactory.ParserExtension> parserExtensions;
 
-	private HashSet<String> m_printedWarnings;
+	private HashSet<String> printedWarnings;
 
-	protected AbstractParser(List<ParserFactory.ParserExtension> parserExtensions, String[] namespaces,
-			String[] schemaLocations, boolean validating) throws CoreException
-	{
+	protected AbstractParser(List<ParserFactory.ParserExtension> parserExtensions, String[] namespaces, String[] schemaLocations, boolean validating)
+			throws CoreException {
 		super(createXMLReader(validating, true));
 
-		m_validating = validating;
+		this.validating = validating;
 		int top = namespaces.length;
 
-		if(top != schemaLocations.length)
+		if (top != schemaLocations.length)
 			throw new IllegalArgumentException(Messages.The_namespace_and_schemaLocation_arrays_must_be_equal_in_length);
-		m_namespaceLocations = new ArrayList<String>();
-		for(int idx = 0; idx < top; ++idx)
-		{
+		this.namespaceLocations = new ArrayList<String>();
+		for (int idx = 0; idx < top; ++idx) {
 			String namespace = namespaces[idx];
 			String schemaFile = schemaLocations[idx];
 			URL schemaURL = getClass().getResource(schemaFile);
-			if(schemaURL == null)
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_find_XMLSchema_for_namespace_0,
-						namespace));
+			if (schemaURL == null)
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_find_XMLSchema_for_namespace_0, namespace));
 			addNamespaceLocation(namespace, schemaURL);
 		}
 
-		if(parserExtensions != null)
-		{
-			for(ParserFactory.ParserExtension pe : parserExtensions)
+		if (parserExtensions != null) {
+			for (ParserFactory.ParserExtension pe : parserExtensions)
 				addNamespaceLocation(pe.getNamespace(), pe.getResource());
 		}
-		m_parserExtensions = parserExtensions;
+		this.parserExtensions = parserExtensions;
 		setNamespaceAware(true);
 		setErrorHandler(this);
 	}
 
-	public <H extends ChildHandler> H createContentHandler(AbstractHandler parent, Class<H> handlerClass,
-			String namespace, String xsiType) throws SAXException
-	{
-		try
-		{
-			if(xsiType != null && m_parserExtensions != null)
-			{
+	public <H extends ChildHandler> H createContentHandler(AbstractHandler parent, Class<H> handlerClass, String namespace, String xsiType)
+			throws SAXException {
+		try {
+			if (xsiType != null && parserExtensions != null) {
 				String ns;
 				int colonIndex = xsiType.indexOf(':');
-				if(colonIndex > 0)
-				{
+				if (colonIndex > 0) {
 					String prefix = xsiType.substring(0, colonIndex);
 					ns = getPrefixMapping(prefix);
-					if(ns == null)
-						throw new SAXParseException(NLS.bind(Messages.Unknown_namespace_prefix_0, prefix),
-								getDocumentLocator());
+					if (ns == null)
+						throw new SAXParseException(NLS.bind(Messages.Unknown_namespace_prefix_0, prefix), getDocumentLocator());
 					xsiType = xsiType.substring(colonIndex + 1);
-				}
-				else
+				} else
 					ns = namespace;
 
-				for(ParserFactory.ParserExtension pe : m_parserExtensions)
-				{
-					if(pe.getNamespace().equals(ns))
+				for (ParserFactory.ParserExtension pe : parserExtensions) {
+					if (pe.getNamespace().equals(ns))
 						return handlerClass.cast(pe.getHandler(parent, xsiType));
 				}
 			}
-			try
-			{
+			try {
 				Constructor<H> ctor = handlerClass.getConstructor(new Class[] { AbstractHandler.class });
 				return ctor.newInstance(new Object[] { parent });
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				throw BuckminsterException.wrap(e);
 			}
-		}
-		catch(Exception e)
-		{
-			throw new SAXParseException(NLS.bind(Messages.Unable_to_create_extension_handler_0_1, namespace, xsiType),
-					getDocumentLocator(), e);
+		} catch (Exception e) {
+			throw new SAXParseException(NLS.bind(Messages.Unable_to_create_extension_handler_0_1, namespace, xsiType), getDocumentLocator(), e);
 		}
 	}
 
 	@Override
-	public void error(SAXParseException e) throws SAXException
-	{
+	public void error(SAXParseException e) throws SAXException {
 		throw e;
 	}
 
 	@Override
-	public void warning(SAXParseException e) throws SAXException
-	{
+	public void warning(SAXParseException e) throws SAXException {
 		throw e;
 	}
 
-	public void warningOnce(String warning)
-	{
-		if(m_printedWarnings == null)
-			m_printedWarnings = new HashSet<String>();
-		else if(m_printedWarnings.contains(warning))
+	public void warningOnce(String warning) {
+		if (printedWarnings == null)
+			printedWarnings = new HashSet<String>();
+		else if (printedWarnings.contains(warning))
 			return;
 
-		m_printedWarnings.add(warning);
+		printedWarnings.add(warning);
 		CorePlugin.getLogger().warning(warning);
 	}
 
-	protected void addNamespaceLocation(String namespace, URL location)
-	{
-		m_namespaceLocations.add(namespace + ' ' + location.toString());
+	protected void addNamespaceLocation(String namespace, URL location) {
+		namespaceLocations.add(namespace + ' ' + location.toString());
 	}
 
-	protected void init() throws SAXException
-	{
+	protected void init() throws SAXException {
 		XMLReader reader = getXMLReader();
-		if(m_validating)
-		{
+		if (validating) {
 			reader.setFeature("http://apache.org/xml/features/validation/schema", true); //$NON-NLS-1$
 			reader.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true); //$NON-NLS-1$
 		}
 
 		int len = 0;
-		int top = m_namespaceLocations.size();
-		for(int idx = 0; idx < top; ++idx)
-		{
-			len += m_namespaceLocations.get(idx).length();
+		int top = namespaceLocations.size();
+		for (int idx = 0; idx < top; ++idx) {
+			len += namespaceLocations.get(idx).length();
 			len++;
 		}
 		StringBuilder bld = new StringBuilder(len);
-		for(int idx = 0; idx < top; ++idx)
-		{
-			if(idx > 0)
+		for (int idx = 0; idx < top; ++idx) {
+			if (idx > 0)
 				bld.append(' ');
-			bld.append(m_namespaceLocations.get(idx));
+			bld.append(namespaceLocations.get(idx));
 		}
 		reader.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation", bld.toString()); //$NON-NLS-1$
 	}
 
-	protected void parseInput(String systemId, InputStream input) throws CoreException
-	{
+	protected void parseInput(String systemId, InputStream input) throws CoreException {
 		IFile[] files = clearMarkers(systemId);
-		try
-		{
+		try {
 			init();
-			if(!(input instanceof BufferedInputStream || input instanceof ByteArrayInputStream))
+			if (!(input instanceof BufferedInputStream || input instanceof ByteArrayInputStream))
 				input = new BufferedInputStream(input);
 			InputSource source = new InputSource(input);
-			if(systemId != null)
+			if (systemId != null)
 				source.setSystemId(systemId);
 			getXMLReader().parse(source);
-		}
-		catch(SAXParseException e)
-		{
+		} catch (SAXParseException e) {
 			setMarkers(files, e);
 			throw BuckminsterException.wrap(e);
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			getXMLReader().setContentHandler(this);
 		}
 	}

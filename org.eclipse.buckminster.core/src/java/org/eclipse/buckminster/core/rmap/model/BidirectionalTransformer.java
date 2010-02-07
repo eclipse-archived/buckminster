@@ -20,8 +20,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class BidirectionalTransformer extends AbstractSaxableElement
-{
+public class BidirectionalTransformer extends AbstractSaxableElement {
 	public static final String TAG = "transform"; //$NON-NLS-1$
 
 	public static final String ATTR_TO_PATTERN = "toPattern"; //$NON-NLS-1$
@@ -32,100 +31,88 @@ public class BidirectionalTransformer extends AbstractSaxableElement
 
 	public static final String ATTR_FROM_REPLACEMENT = "fromReplacement"; //$NON-NLS-1$
 
-	private static String replace(String source, Pattern pattern, String replacement)
-	{
+	private static String replace(String source, Pattern pattern, String replacement) {
 		Matcher matcher = pattern.matcher(source);
-		if(matcher.find())
-		{
+		if (matcher.find()) {
 			StringBuffer sb = new StringBuffer();
-			do
-			{
+			do {
 				matcher.appendReplacement(sb, replacement);
-			} while(matcher.find());
+			} while (matcher.find());
 			matcher.appendTail(sb);
 			return sb.toString();
 		}
 		return null;
 	}
 
-	private final Pattern m_toPattern;
+	private final Pattern toPattern;
 
-	private final String m_toReplacement;
+	private final String toReplacement;
 
-	private final Pattern m_fromPattern;
+	private final Pattern fromPattern;
 
-	private final String m_fromReplacement;
+	private final String fromReplacement;
 
-	public BidirectionalTransformer(Pattern toPattern, String toReplacement, Pattern fromPattern, String fromReplacement)
-	{
-		m_toPattern = toPattern;
-		m_toReplacement = toReplacement;
-		m_fromPattern = fromPattern;
-		m_fromReplacement = fromReplacement;
+	public BidirectionalTransformer(Pattern toPattern, String toReplacement, Pattern fromPattern, String fromReplacement) {
+		this.toPattern = toPattern;
+		this.toReplacement = toReplacement;
+		this.fromPattern = fromPattern;
+		this.fromReplacement = fromReplacement;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public final Pattern getFromPattern()
-	{
-		return m_fromPattern;
+	public final Pattern getFromPattern() {
+		return fromPattern;
 	}
 
-	public final String getFromReplacement()
-	{
-		return m_fromReplacement;
+	public final String getFromReplacement() {
+		return fromReplacement;
 	}
 
-	public final Pattern getToPattern()
-	{
-		return m_toPattern;
+	public final Pattern getToPattern() {
+		return toPattern;
 	}
 
-	public final String getToReplacement()
-	{
-		return m_toReplacement;
+	public final String getToReplacement() {
+		return toReplacement;
 	}
 
-	public String transformFrom(String source) throws TransformerMismatchException
-	{
-		return transform(source, m_fromPattern, m_fromReplacement, m_toPattern, m_toReplacement);
+	public String transformFrom(String source) throws TransformerMismatchException {
+		return transform(source, fromPattern, fromReplacement, toPattern, toReplacement);
 	}
 
-	public String transformTo(String source) throws TransformerMismatchException
-	{
-		return transform(source, m_toPattern, m_toReplacement, m_fromPattern, m_fromReplacement);
+	public String transformTo(String source) throws TransformerMismatchException {
+		return transform(source, toPattern, toReplacement, fromPattern, fromReplacement);
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_TO_PATTERN, m_toPattern.toString());
-		Utils.addAttribute(attrs, ATTR_TO_REPLACEMENT, m_toReplacement);
-		Utils.addAttribute(attrs, ATTR_FROM_PATTERN, m_fromPattern.toString());
-		Utils.addAttribute(attrs, ATTR_FROM_REPLACEMENT, m_fromReplacement);
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_TO_PATTERN, toPattern.toString());
+		Utils.addAttribute(attrs, ATTR_TO_REPLACEMENT, toReplacement);
+		Utils.addAttribute(attrs, ATTR_FROM_PATTERN, fromPattern.toString());
+		Utils.addAttribute(attrs, ATTR_FROM_REPLACEMENT, fromReplacement);
 	}
 
-	private String transform(String source, Pattern pattern, String replacement, Pattern reversePattern,
-			String reverseReplacement) throws TransformerMismatchException
-	{
+	private String transform(String source, Pattern pattern, String replacement, Pattern reversePattern, String reverseReplacement)
+			throws TransformerMismatchException {
 		String result = replace(source, pattern, replacement);
-		if(result == null)
+		if (result == null)
 			return null;
 
 		String reverse = replace(result, reversePattern, reverseReplacement);
-		if(reverse == null)
+		if (reverse == null)
 			//
 			// Matches only one direction. Don't replace then.
 			//
 			return null;
 
-		// This pattern was possible to replace in both directions. The result should
+		// This pattern was possible to replace in both directions. The result
+		// should
 		// be the same in that case.
 		//
-		if(source.equals(reverse))
+		if (source.equals(reverse))
 			return result;
 
 		throw new TransformerMismatchException(this);

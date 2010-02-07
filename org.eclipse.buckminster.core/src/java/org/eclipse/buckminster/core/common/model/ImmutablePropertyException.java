@@ -13,12 +13,10 @@ package org.eclipse.buckminster.core.common.model;
 /**
  * @author Thomas Hallgren
  */
-public class ImmutablePropertyException extends RuntimeException
-{
+public class ImmutablePropertyException extends RuntimeException {
 	private static final long serialVersionUID = 4071760256419163007L;
 
-	ImmutablePropertyException(String propKey)
-	{
+	ImmutablePropertyException(String propKey) {
 		super(propKey);
 	}
 }

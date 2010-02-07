@@ -19,38 +19,32 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-abstract class RxPartHandler extends ExtensionAwareHandler
-{
-	private String m_name;
+abstract class RxPartHandler extends ExtensionAwareHandler {
+	private String name;
 
-	private boolean m_optional;
+	private boolean optional;
 
-	public RxPartHandler(AbstractHandler parent)
-	{
+	public RxPartHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_name = getNameAttributeValue(attrs);
-		m_optional = getOptionalBooleanValue(attrs, RxPart.ATTR_OPTIONAL, false);
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		name = getNameAttributeValue(attrs);
+		optional = getOptionalBooleanValue(attrs, RxPart.ATTR_OPTIONAL, false);
 	}
 
 	protected abstract RxPart createPart();
 
-	protected final String getName()
-	{
-		return m_name;
+	protected final String getName() {
+		return name;
 	}
 
-	protected String getNameAttributeValue(Attributes attrs) throws SAXException
-	{
+	protected String getNameAttributeValue(Attributes attrs) throws SAXException {
 		return getOptionalStringValue(attrs, RxPart.ATTR_NAME);
 	}
 
-	protected final boolean isOptional()
-	{
-		return m_optional;
+	protected final boolean isOptional() {
+		return optional;
 	}
 }

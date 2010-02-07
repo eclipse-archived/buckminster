@@ -35,11 +35,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Johannes Utzig
  * 
  */
-public class FilterControl extends AbstractViewerSettingControl
-{
+public class FilterControl extends AbstractViewerSettingControl {
 
-	class RegExText implements Runnable, ModifyListener
-	{
+	class RegExText implements Runnable, ModifyListener {
 
 		private ViewerFilter regexFilter;
 
@@ -49,20 +47,15 @@ public class FilterControl extends AbstractViewerSettingControl
 
 		private boolean invert;
 
-		public RegExText(boolean invert)
-		{
+		public RegExText(boolean invert) {
 			super();
 			this.invert = invert;
 		}
 
-		public void createControl(Composite parent)
-		{
-			if(invert)
-			{
+		public void createControl(Composite parent) {
+			if (invert) {
 				getWidgetToolkit().createLabel(parent, Messages.Blacklist);
-			}
-			else
-			{
+			} else {
 				getWidgetToolkit().createLabel(parent, Messages.Whilelist);
 			}
 
@@ -70,65 +63,49 @@ public class FilterControl extends AbstractViewerSettingControl
 			regex.addModifyListener(this);
 		}
 
-		public void modifyText(ModifyEvent e)
-		{
-			if(!isProcessing)
-			{
+		public void modifyText(ModifyEvent e) {
+			if (!isProcessing) {
 				e.display.timerExec(1000, this);
 				isProcessing = true;
 			}
 
 		}
 
-		public void run()
-		{
-			if(regexFilter != null)
-				fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(FilterControl.this,
-						ViewerSettingType.FILTER_REMOVED, regexFilter, null));
-			if(regex.getText() == null || regex.getText().length() == 0)
-			{
+		public void run() {
+			if (regexFilter != null)
+				fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(FilterControl.this, ViewerSettingType.FILTER_REMOVED, regexFilter, null));
+			if (regex.getText() == null || regex.getText().length() == 0) {
 				return;
 			}
 			regexFilter = new RegExFilter(regex.getText(), invert);
-			fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(FilterControl.this,
-					ViewerSettingType.FILTER_ADDED, regexFilter, null));
+			fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(FilterControl.this, ViewerSettingType.FILTER_ADDED, regexFilter, null));
 			isProcessing = false;
 		}
 	}
 
 	private ViewerFilter platformFilter = new PlatformComponentsFilter();
 
-	public FilterControl(FormToolkit toolkit)
-	{
+	public FilterControl(FormToolkit toolkit) {
 		super(toolkit);
 	}
 
 	@Override
-	public Control createControl(Composite parent)
-	{
+	public Control createControl(Composite parent) {
 		Composite filterComposite = getWidgetToolkit().createComposite(parent);
 		filterComposite.setLayout(new GridLayout(2, true));
 
-		final Button filterPlatform = getWidgetToolkit().createButton(filterComposite, Messages.FilterTargetPlatform,
-				SWT.CHECK);
+		final Button filterPlatform = getWidgetToolkit().createButton(filterComposite, Messages.FilterTargetPlatform, SWT.CHECK);
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(filterPlatform);
 		filterPlatform.setSelection(true);
-		filterPlatform.addSelectionListener(new SelectionAdapter()
-		{
+		filterPlatform.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 
-				if(filterPlatform.getSelection())
-				{
-					fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.FILTER_ADDED,
-							platformFilter, null));
+				if (filterPlatform.getSelection()) {
+					fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.FILTER_ADDED, platformFilter, null));
 
-				}
-				else
-				{
-					fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.FILTER_REMOVED,
-							platformFilter, null));
+				} else {
+					fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.FILTER_REMOVED, platformFilter, null));
 				}
 			}
 		});
@@ -136,8 +113,7 @@ public class FilterControl extends AbstractViewerSettingControl
 		// new RegExText(true).createControl(filterComposite);
 
 		// fire defaults
-		fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.FILTER_ADDED,
-				platformFilter, null));
+		fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.FILTER_ADDED, platformFilter, null));
 		return filterComposite;
 	}
 

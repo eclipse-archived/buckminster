@@ -23,22 +23,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Map Entry</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Map Entry</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.maven.impl.MapEntryImpl#getName <em>Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.maven.impl.MapEntryImpl#getAliases <em>Aliases</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.maven.impl.MapEntryImpl#getName <em>
+ * Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.maven.impl.MapEntryImpl#getAliases
+ * <em>Aliases</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
-{
+public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -47,8 +49,8 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	protected static final String NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -57,8 +59,8 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getAliases() <em>Aliases</em>}' reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getAliases() <em>Aliases</em>}'
+	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAliases()
 	 * @generated
@@ -71,8 +73,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 * 
 	 * @generated
 	 */
-	protected MapEntryImpl()
-	{
+	protected MapEntryImpl() {
 		super();
 	}
 
@@ -82,14 +83,12 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.MAP_ENTRY__NAME:
-			return getName();
-		case MavenPackage.MAP_ENTRY__ALIASES:
-			return getAliases();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case MavenPackage.MAP_ENTRY__NAME:
+				return getName();
+			case MavenPackage.MAP_ENTRY__ALIASES:
+				return getAliases();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -100,16 +99,12 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.MAP_ENTRY__NAME:
-			return NAME_EDEFAULT == null
-					? name != null
-					: !NAME_EDEFAULT.equals(name);
-		case MavenPackage.MAP_ENTRY__ALIASES:
-			return aliases != null && !aliases.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case MavenPackage.MAP_ENTRY__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case MavenPackage.MAP_ENTRY__ALIASES:
+				return aliases != null && !aliases.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -121,17 +116,15 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.MAP_ENTRY__NAME:
-			setName((String)newValue);
-			return;
-		case MavenPackage.MAP_ENTRY__ALIASES:
-			getAliases().clear();
-			getAliases().addAll((Collection<? extends GroupAndArtifact>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case MavenPackage.MAP_ENTRY__NAME:
+				setName((String) newValue);
+				return;
+			case MavenPackage.MAP_ENTRY__ALIASES:
+				getAliases().clear();
+				getAliases().addAll((Collection<? extends GroupAndArtifact>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -142,16 +135,14 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.MAP_ENTRY__NAME:
-			setName(NAME_EDEFAULT);
-			return;
-		case MavenPackage.MAP_ENTRY__ALIASES:
-			getAliases().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case MavenPackage.MAP_ENTRY__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case MavenPackage.MAP_ENTRY__ALIASES:
+				getAliases().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -161,10 +152,8 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 * 
 	 * @generated
 	 */
-	public EList<GroupAndArtifact> getAliases()
-	{
-		if(aliases == null)
-		{
+	public EList<GroupAndArtifact> getAliases() {
+		if (aliases == null) {
 			aliases = new EObjectEList<GroupAndArtifact>(GroupAndArtifact.class, this, MavenPackage.MAP_ENTRY__ALIASES);
 		}
 		return aliases;
@@ -175,8 +164,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 * 
 	 * @generated
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
@@ -185,11 +173,10 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 * 
 	 * @generated
 	 */
-	public void setName(String newName)
-	{
+	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MavenPackage.MAP_ENTRY__NAME, oldName, name));
 	}
 
@@ -199,9 +186,8 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -217,8 +203,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return MavenPackage.Literals.MAP_ENTRY;
 	}
 

@@ -12,7 +12,6 @@ package org.eclipse.buckminster.ui.general.editor;
  * @author Karel Brezina
  * 
  */
-public interface IValidator
-{
+public interface IValidator {
 	public void validate(Object... arg) throws ValidatorException;
 }

@@ -28,7 +28,8 @@ import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.client.CommandOutputListener;
 
 /**
- * An RLogListener that collects global meta-data about the repository. The following data is collected
+ * An RLogListener that collects global meta-data about the repository. The
+ * following data is collected
  * <ul>
  * <li>The timestamp of the last modified revision</li>
  * <li>All tag names, i.e. tags that are not associated with a branch revision</li>
@@ -36,8 +37,7 @@ import org.eclipse.team.internal.ccvs.core.client.CommandOutputListener;
  * </ul>
  */
 @SuppressWarnings("restriction")
-public class MetaDataCollector extends CommandOutputListener
-{
+public class MetaDataCollector extends CommandOutputListener {
 	private static final int BEGIN = 0;
 
 	private static final int HEADER = 1;
@@ -58,59 +58,54 @@ public class MetaDataCollector extends CommandOutputListener
 	//
 	private static final String NOTHING_KNOWN_ABOUT = "nothing known about "; //$NON-NLS-1$
 
-	private static final Pattern s_revDataExpr = Pattern.compile(
+	private static final Pattern revDataExpr = Pattern.compile(
 			"^date:\\s*([^;]+);\\s*author:[^;]+;\\s*state:\\s*([^;]+);.*$", Pattern.CASE_INSENSITIVE); //$NON-NLS-1$
 
 	private static final int SYMBOLIC_NAMES = 2;
 
 	/**
-	 * Converts a time stamp as sent from a cvs server for a "log" command into a <code>Date</code>.
+	 * Converts a time stamp as sent from a cvs server for a "log" command into
+	 * a <code>Date</code>.
 	 */
-	private static Date convertFromLogTime(String modTime)
-	{
-		if(modTime == null)
+	private static Date convertFromLogTime(String modTime) {
+		if (modTime == null)
 			return null;
 
 		String timestampFormat = LOG_TIMESTAMP_FORMAT;
 		// Compatibility for older cvs version (pre 1.12.9)
-		if(modTime.length() > 4 && modTime.charAt(4) == '/')
+		if (modTime.length() > 4 && modTime.charAt(4) == '/')
 			timestampFormat = LOG_TIMESTAMP_FORMAT_OLD;
 
 		SimpleDateFormat format = new SimpleDateFormat(timestampFormat, LOG_TIMESTAMP_LOCALE);
-		try
-		{
+		try {
 			return format.parse(modTime);
-		}
-		catch(ParseException e)
-		{
+		} catch (ParseException e) {
 			// fallback is to return null
 			return null;
 		}
 	}
 
 	/**
-	 * branch tags have odd number of segments or have an even number with a zero as the second last segment e.g: 1.1.1,
-	 * 1.26.0.2 are branch revision numbers
+	 * branch tags have odd number of segments or have an even number with a
+	 * zero as the second last segment e.g: 1.1.1, 1.26.0.2 are branch revision
+	 * numbers
 	 */
-	private static boolean isBranchTag(String tagName)
-	{
+	private static boolean isBranchTag(String tagName) {
 		// First check if we have an odd number of segments (i.e. even number of
 		// dots)
 		//
 		int numberOfDots = 0;
 		int lastDot = 0;
 		int top = tagName.length();
-		for(int i = 0; i < top; i++)
-		{
-			if(tagName.charAt(i) == '.')
-			{
+		for (int i = 0; i < top; i++) {
+			if (tagName.charAt(i) == '.') {
 				numberOfDots++;
 				lastDot = i;
 			}
 		}
-		if((numberOfDots % 2) == 0)
+		if ((numberOfDots % 2) == 0)
 			return true;
-		if(numberOfDots == 1)
+		if (numberOfDots == 1)
 			return false;
 
 		// If not, check if the second lat segment is a zero
@@ -118,23 +113,20 @@ public class MetaDataCollector extends CommandOutputListener
 		return tagName.charAt(lastDot - 1) == '0' && tagName.charAt(lastDot - 2) == '.';
 	}
 
-	private final HashSet<String> m_branches = new HashSet<String>();
+	private final HashSet<String> branches = new HashSet<String>();
 
-	private final HashSet<String> m_tags = new HashSet<String>();
+	private final HashSet<String> tags = new HashSet<String>();
 
-	private Date m_lastModificationTime;
+	private Date lastModificationTime;
 
-	private int m_state = BEGIN;
+	private int state = BEGIN;
 
 	@Override
-	public IStatus errorLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot,
-			IProgressMonitor monitor)
-	{
+	public IStatus errorLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot, IProgressMonitor monitor) {
 		String serverMessage = getServerMessage(line, location);
-		if(serverMessage != null && serverMessage.startsWith(NOTHING_KNOWN_ABOUT))
-			return new CVSStatus(IStatus.ERROR, CVSStatus.DOES_NOT_EXIST, NLS.bind(
-					CVSMessages.CVSStatus_messageWithRoot, new String[] { commandRoot.getName(), line }),
-					(Throwable)null);
+		if (serverMessage != null && serverMessage.startsWith(NOTHING_KNOWN_ABOUT))
+			return new CVSStatus(IStatus.ERROR, CVSStatus.DOES_NOT_EXIST, NLS.bind(CVSMessages.CVSStatus_messageWithRoot, new String[] {
+					commandRoot.getName(), line }), (Throwable) null);
 		return OK;
 	}
 
@@ -143,14 +135,12 @@ public class MetaDataCollector extends CommandOutputListener
 	 * 
 	 * @return All known branch names.
 	 */
-	public Set<String> getBranchNames()
-	{
-		return m_branches;
+	public Set<String> getBranchNames() {
+		return branches;
 	}
 
-	public Date getLastModificationTime()
-	{
-		return m_lastModificationTime;
+	public Date getLastModificationTime() {
+		return lastModificationTime;
 	}
 
 	/**
@@ -158,63 +148,56 @@ public class MetaDataCollector extends CommandOutputListener
 	 * 
 	 * @return All known tag names.
 	 */
-	public Set<String> getTagNames()
-	{
-		return m_tags;
+	public Set<String> getTagNames() {
+		return tags;
 	}
 
 	@Override
-	public IStatus messageLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot,
-			IProgressMonitor monitor)
-	{
-		switch(m_state)
-		{
-		case BEGIN:
-			if(line.startsWith("RCS file:")) //$NON-NLS-1$
-				m_state = HEADER;
-			break;
-		case NEXT_REV_OR_BEGIN:
-		case HEADER:
-			if(line.startsWith("RCS file:")) //$NON-NLS-1$
-				m_state = HEADER;
-			else if(line.startsWith("revision ")) //$NON-NLS-1$
-				m_state = REVISION;
-			else if(line.startsWith("symbolic names:")) //$NON-NLS-1$
-				m_state = SYMBOLIC_NAMES;
-			break;
-		case SYMBOLIC_NAMES:
-			if(line.startsWith("keyword substitution:")) //$NON-NLS-1$
-				m_state = HEADER;
-			else
-				this.symbolicName(line);
-			break;
-		case REVISION:
-			this.revision(line, location);
-			break;
+	public IStatus messageLine(String line, ICVSRepositoryLocation location, ICVSFolder commandRoot, IProgressMonitor monitor) {
+		switch (state) {
+			case BEGIN:
+				if (line.startsWith("RCS file:")) //$NON-NLS-1$
+					state = HEADER;
+				break;
+			case NEXT_REV_OR_BEGIN:
+			case HEADER:
+				if (line.startsWith("RCS file:")) //$NON-NLS-1$
+					state = HEADER;
+				else if (line.startsWith("revision ")) //$NON-NLS-1$
+					state = REVISION;
+				else if (line.startsWith("symbolic names:")) //$NON-NLS-1$
+					state = SYMBOLIC_NAMES;
+				break;
+			case SYMBOLIC_NAMES:
+				if (line.startsWith("keyword substitution:")) //$NON-NLS-1$
+					state = HEADER;
+				else
+					this.symbolicName(line);
+				break;
+			case REVISION:
+				this.revision(line, location);
+				break;
 		}
 		return OK;
 	}
 
-	private void revision(String line, ICVSRepositoryLocation location)
-	{
-		Matcher matcher = s_revDataExpr.matcher(line);
-		if(matcher.matches())
-		{
+	private void revision(String line, ICVSRepositoryLocation location) {
+		Matcher matcher = revDataExpr.matcher(line);
+		if (matcher.matches()) {
 			Date date = convertFromLogTime(matcher.group(1) + " GMT"); //$NON-NLS-1$
-			if(m_lastModificationTime == null || m_lastModificationTime.compareTo(date) < 0)
-				m_lastModificationTime = date;
+			if (lastModificationTime == null || lastModificationTime.compareTo(date) < 0)
+				lastModificationTime = date;
 		}
-		m_state = NEXT_REV_OR_BEGIN;
+		state = NEXT_REV_OR_BEGIN;
 	}
 
-	private void symbolicName(String line)
-	{
+	private void symbolicName(String line) {
 		int firstColon = line.indexOf(':');
 		String tag = line.substring(1, firstColon);
 		String rev = line.substring(firstColon + 2);
-		if(isBranchTag(rev))
-			m_branches.add(tag);
+		if (isBranchTag(rev))
+			branches.add(tag);
 		else
-			m_tags.add(tag);
+			tags.add(tag);
 	}
 }

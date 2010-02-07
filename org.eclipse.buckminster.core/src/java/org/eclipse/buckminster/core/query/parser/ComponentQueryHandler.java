@@ -26,74 +26,63 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class ComponentQueryHandler extends PropertyManagerHandler
-{
-	private final URL m_contextURL;
+public class ComponentQueryHandler extends PropertyManagerHandler {
+	private final URL contextURL;
 
-	private DocumentationHandler m_documentationHandler;
+	private DocumentationHandler documentationHandler;
 
-	private AdvisorNodeHandler m_advisorNodeHandler;
+	private AdvisorNodeHandler advisorNodeHandler;
 
-	private final ComponentQueryBuilder m_builder = new ComponentQueryBuilder();
+	private final ComponentQueryBuilder builder = new ComponentQueryBuilder();
 
-	public ComponentQueryHandler(AbstractHandler parent, URL contextURL)
-	{
+	public ComponentQueryHandler(AbstractHandler parent, URL contextURL) {
 		super(parent, ComponentQuery.TAG);
-		m_contextURL = contextURL;
+		this.contextURL = contextURL;
 	}
 
 	@Override
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_advisorNodeHandler)
-			m_builder.addAdvisorNode(m_advisorNodeHandler.getAdvisorNodeBuilder());
-		else if(child == m_documentationHandler)
-			m_builder.setDocumentation(m_documentationHandler.createDocumentation());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == advisorNodeHandler)
+			builder.addAdvisorNode(advisorNodeHandler.getAdvisorNodeBuilder());
+		else if (child == documentationHandler)
+			builder.setDocumentation(documentationHandler.createDocumentation());
 		else
 			super.childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(ComponentQuery.ELEM_ROOT_REQUEST.equals(localName))
-			ch = new ComponentRequestHandler(this, m_builder.getRootRequestBuilder());
-		else if(AdvisorNodeHandler.TAG.equals(localName))
-		{
-			if(m_advisorNodeHandler == null)
-				m_advisorNodeHandler = new AdvisorNodeHandler(this);
-			ch = m_advisorNodeHandler;
-		}
-		else if(DocumentationHandler.TAG.equals(localName))
-		{
-			if(m_documentationHandler == null)
-				m_documentationHandler = new DocumentationHandler(this);
-			ch = m_documentationHandler;
-		}
-		else
+		if (ComponentQuery.ELEM_ROOT_REQUEST.equals(localName))
+			ch = new ComponentRequestHandler(this, builder.getRootRequestBuilder());
+		else if (AdvisorNodeHandler.TAG.equals(localName)) {
+			if (advisorNodeHandler == null)
+				advisorNodeHandler = new AdvisorNodeHandler(this);
+			ch = advisorNodeHandler;
+		} else if (DocumentationHandler.TAG.equals(localName)) {
+			if (documentationHandler == null)
+				documentationHandler = new DocumentationHandler(this);
+			ch = documentationHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public ComponentQuery getComponentQuery() throws SAXException
-	{
-		return m_builder.createComponentQuery();
+	public ComponentQuery getComponentQuery() throws SAXException {
+		return builder.createComponentQuery();
 	}
 
 	@Override
-	public Map<String, String> getProperties()
-	{
-		return m_builder.getDeclaredProperties();
+	public Map<String, String> getProperties() {
+		return builder.getDeclaredProperties();
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_builder.clear();
-		m_builder.setContextURL(m_contextURL);
-		m_builder.setPropertiesURL(getOptionalStringValue(attrs, ComponentQuery.ATTR_PROPERTIES));
-		m_builder.setResourceMapURL(getOptionalStringValue(attrs, ComponentQuery.ATTR_RESOURCE_MAP));
-		m_builder.setShortDesc(getOptionalStringValue(attrs, ComponentQuery.ATTR_SHORT_DESC));
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		builder.clear();
+		builder.setContextURL(contextURL);
+		builder.setPropertiesURL(getOptionalStringValue(attrs, ComponentQuery.ATTR_PROPERTIES));
+		builder.setResourceMapURL(getOptionalStringValue(attrs, ComponentQuery.ATTR_RESOURCE_MAP));
+		builder.setShortDesc(getOptionalStringValue(attrs, ComponentQuery.ATTR_SHORT_DESC));
 	}
 }

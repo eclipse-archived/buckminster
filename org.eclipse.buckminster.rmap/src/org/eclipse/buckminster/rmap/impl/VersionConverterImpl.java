@@ -27,24 +27,28 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Version Converter</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Version Converter</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getType <em>Type</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getVersionType <em>Version Type</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getTransformers <em>Transformers</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getType
+ * <em>Type</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getVersionType
+ * <em>Version Type</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getTransformers
+ * <em>Transformers</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class VersionConverterImpl extends EObjectImpl implements VersionConverter
-{
+public class VersionConverterImpl extends EObjectImpl implements VersionConverter {
 	/**
-	 * The default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getType()
 	 * @generated
@@ -53,8 +57,8 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	protected static final String TYPE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getType()
 	 * @generated
@@ -63,8 +67,8 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	protected String type = TYPE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getVersionType() <em>Version Type</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #getVersionType() <em>Version Type</em>}
+	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getVersionType()
 	 * @generated
@@ -73,8 +77,8 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	protected static final String VERSION_TYPE_EDEFAULT = "OSGi";
 
 	/**
-	 * The cached value of the '{@link #getVersionType() <em>Version Type</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getVersionType() <em>Version Type</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getVersionType()
 	 * @generated
@@ -83,8 +87,9 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	protected String versionType = VERSION_TYPE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getTransformers() <em>Transformers</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getTransformers() <em>Transformers</em>}
+	 * ' containment reference list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @see #getTransformers()
 	 * @generated
@@ -97,8 +102,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
-	protected VersionConverterImpl()
-	{
+	protected VersionConverterImpl() {
 		super();
 	}
 
@@ -108,16 +112,14 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.VERSION_CONVERTER__TYPE:
-			return getType();
-		case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
-			return getVersionType();
-		case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
-			return getTransformers();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case RmapPackage.VERSION_CONVERTER__TYPE:
+				return getType();
+			case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
+				return getVersionType();
+			case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
+				return getTransformers();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -128,12 +130,10 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
-			return ((InternalEList<?>)getTransformers()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
+				return ((InternalEList<?>) getTransformers()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -144,20 +144,14 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.VERSION_CONVERTER__TYPE:
-			return TYPE_EDEFAULT == null
-					? type != null
-					: !TYPE_EDEFAULT.equals(type);
-		case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
-			return VERSION_TYPE_EDEFAULT == null
-					? versionType != null
-					: !VERSION_TYPE_EDEFAULT.equals(versionType);
-		case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
-			return transformers != null && !transformers.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case RmapPackage.VERSION_CONVERTER__TYPE:
+				return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
+			case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
+				return VERSION_TYPE_EDEFAULT == null ? versionType != null : !VERSION_TYPE_EDEFAULT.equals(versionType);
+			case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
+				return transformers != null && !transformers.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -169,20 +163,18 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.VERSION_CONVERTER__TYPE:
-			setType((String)newValue);
-			return;
-		case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
-			setVersionType((String)newValue);
-			return;
-		case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
-			getTransformers().clear();
-			getTransformers().addAll((Collection<? extends Transform>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case RmapPackage.VERSION_CONVERTER__TYPE:
+				setType((String) newValue);
+				return;
+			case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
+				setVersionType((String) newValue);
+				return;
+			case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
+				getTransformers().clear();
+				getTransformers().addAll((Collection<? extends Transform>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -193,19 +185,17 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.VERSION_CONVERTER__TYPE:
-			setType(TYPE_EDEFAULT);
-			return;
-		case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
-			setVersionType(VERSION_TYPE_EDEFAULT);
-			return;
-		case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
-			getTransformers().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case RmapPackage.VERSION_CONVERTER__TYPE:
+				setType(TYPE_EDEFAULT);
+				return;
+			case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
+				setVersionType(VERSION_TYPE_EDEFAULT);
+				return;
+			case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
+				getTransformers().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -215,12 +205,9 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
-	public EList<Transform> getTransformers()
-	{
-		if(transformers == null)
-		{
-			transformers = new EObjectContainmentEList<Transform>(Transform.class, this,
-					RmapPackage.VERSION_CONVERTER__TRANSFORMERS);
+	public EList<Transform> getTransformers() {
+		if (transformers == null) {
+			transformers = new EObjectContainmentEList<Transform>(Transform.class, this, RmapPackage.VERSION_CONVERTER__TRANSFORMERS);
 		}
 		return transformers;
 	}
@@ -230,8 +217,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
-	public String getType()
-	{
+	public String getType() {
 		return type;
 	}
 
@@ -240,8 +226,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
-	public String getVersionType()
-	{
+	public String getVersionType() {
 		return versionType;
 	}
 
@@ -250,11 +235,10 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
-	public void setType(String newType)
-	{
+	public void setType(String newType) {
 		String oldType = type;
 		type = newType;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.VERSION_CONVERTER__TYPE, oldType, type));
 	}
 
@@ -263,13 +247,11 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
-	public void setVersionType(String newVersionType)
-	{
+	public void setVersionType(String newVersionType) {
 		String oldVersionType = versionType;
 		versionType = newVersionType;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.VERSION_CONVERTER__VERSION_TYPE,
-					oldVersionType, versionType));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.VERSION_CONVERTER__VERSION_TYPE, oldVersionType, versionType));
 	}
 
 	/**
@@ -278,9 +260,8 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -298,8 +279,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return RmapPackage.Literals.VERSION_CONVERTER;
 	}
 

@@ -13,8 +13,7 @@ package org.eclipse.buckminster.core.build;
  * @author kolwing
  * 
  */
-public interface ExternalCommandBuilderConstants
-{
+public interface ExternalCommandBuilderConstants {
 	public static final String LAUNCHERDEFINITIONS_FILE_KEY = "launcherdefinitions.file"; //$NON-NLS-1$
 
 	public static final String LAUNCHERDEFINITION_TO_USE_KEY = "launcherdefinition.to.use"; //$NON-NLS-1$

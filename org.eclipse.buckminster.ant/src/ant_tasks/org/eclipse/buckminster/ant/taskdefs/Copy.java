@@ -19,30 +19,26 @@ import org.eclipse.buckminster.ant.types.FileSetGroup;
 /**
  * @author Thomas Hallgren
  */
-public class Copy extends org.apache.tools.ant.taskdefs.Copy
-{
-	private ArrayList<FileSetGroup> m_fileSetGroups;
+public class Copy extends org.apache.tools.ant.taskdefs.Copy {
+	private ArrayList<FileSetGroup> fileSetGroups;
 
 	/**
 	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
 	 */
-	public void add(FileSetGroup fsGroup) throws BuildException
-	{
-		if(m_fileSetGroups == null)
-			m_fileSetGroups = new ArrayList<FileSetGroup>();
-		m_fileSetGroups.add(fsGroup);
+	public void add(FileSetGroup fsGroup) throws BuildException {
+		if (fileSetGroups == null)
+			fileSetGroups = new ArrayList<FileSetGroup>();
+		fileSetGroups.add(fsGroup);
 	}
 
 	@Override
-	public void execute() throws BuildException
-	{
-    	if(m_fileSetGroups != null)
-    	{
-    		for(FileSetGroup fsg : m_fileSetGroups)
-	    		for(FileSet fs : fsg.getFileSets())
-	    			this.addFileset(fs);
-    		m_fileSetGroups = null;
-    	}
+	public void execute() throws BuildException {
+		if (fileSetGroups != null) {
+			for (FileSetGroup fsg : fileSetGroups)
+				for (FileSet fs : fsg.getFileSets())
+					this.addFileset(fs);
+			fileSetGroups = null;
+		}
 		super.execute();
 	}
 }

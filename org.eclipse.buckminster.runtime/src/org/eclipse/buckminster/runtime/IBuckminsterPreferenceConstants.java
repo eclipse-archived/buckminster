@@ -7,8 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.runtime;
 
-public interface IBuckminsterPreferenceConstants
-{
+public interface IBuckminsterPreferenceConstants {
 	public static final String LOG_LEVEL_CONSOLE = "logLevelConsole"; //$NON-NLS-1$
 
 	public static final String LOG_LEVEL_ECLIPSE_LOGGER = "logLevelEclipseLogger"; //$NON-NLS-1$

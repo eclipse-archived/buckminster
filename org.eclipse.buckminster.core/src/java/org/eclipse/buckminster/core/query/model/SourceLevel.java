@@ -11,34 +11,38 @@
 package org.eclipse.buckminster.core.query.model;
 
 /**
- * The SourceLevel is used when choosing the {@link IProvider} that will be the best fit for a component requirement.
+ * The SourceLevel is used when choosing the {@link IProvider} that will be the
+ * best fit for a component requirement.
  * 
  * @author Thomas Hallgren
  */
-public enum SourceLevel
-{
+public enum SourceLevel {
 	/**
 	 * Don't care if the provider has source or not.
 	 */
 	INDIFFERENT,
 
 	/**
-	 * Reject a provider that provides source. This is used when only pre-compiled material is desired.
+	 * Reject a provider that provides source. This is used when only
+	 * pre-compiled material is desired.
 	 */
 	REJECT,
 
 	/**
-	 * A provider that provides source will score higher than one that does not. Both are ok.
+	 * A provider that provides source will score higher than one that does not.
+	 * Both are ok.
 	 */
 	DESIRE,
 
 	/**
-	 * A provider that provides source will score lower than one that does not. Both are ok.
+	 * A provider that provides source will score lower than one that does not.
+	 * Both are ok.
 	 */
 	AVOID,
 
 	/**
-	 * Reject providers that have no source. Typically used when the intention is to browse or modify source.
+	 * Reject providers that have no source. Typically used when the intention
+	 * is to browse or modify source.
 	 */
 	REQUIRE
 }

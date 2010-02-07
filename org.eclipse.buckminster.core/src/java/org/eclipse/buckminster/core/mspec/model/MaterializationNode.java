@@ -22,8 +22,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class MaterializationNode extends MaterializationDirective implements IMaterializationNode
-{
+public class MaterializationNode extends MaterializationDirective implements IMaterializationNode {
 	public static final String TAG = "mspecNode"; //$NON-NLS-1$
 
 	public static final String ATTR_NAME_PATTERN = "namePattern"; //$NON-NLS-1$
@@ -48,50 +47,47 @@ public class MaterializationNode extends MaterializationDirective implements IMa
 
 	public static final String ATTR_EXPAND = "expand"; //$NON-NLS-1$
 
-	private final Pattern m_namePattern;
+	private final Pattern namePattern;
 
-	private final Filter m_filter;
+	private final Filter filter;
 
-	private final IPath m_leafArtifact;
+	private final IPath leafArtifact;
 
-	private final String m_componentTypeID;
+	private final String componentTypeID;
 
-	private final boolean m_exclude;
+	private final boolean exclude;
 
-	private final IPath m_resourcePath;
+	private final IPath resourcePath;
 
-	private final Pattern m_bindingNamePattern;
+	private final Pattern bindingNamePattern;
 
-	private final String m_bindingNameReplacement;
+	private final String bindingNameReplacement;
 
-	private final String m_suffix;
+	private final String suffix;
 
-	private final boolean m_unpack;
+	private final boolean unpack;
 
-	private final boolean m_expand;
+	private final boolean expand;
 
-	public MaterializationNode(MaterializationNodeBuilder builder)
-	{
+	public MaterializationNode(MaterializationNodeBuilder builder) {
 		super(builder);
-		m_namePattern = builder.getNamePattern();
-		m_filter = builder.getFilter();
-		m_leafArtifact = builder.getLeafArtifact();
-		m_componentTypeID = builder.getComponentTypeID();
-		m_exclude = builder.isExclude();
-		m_resourcePath = builder.getResourcePath();
-		m_bindingNamePattern = builder.getBindingNamePattern();
-		m_bindingNameReplacement = builder.getBindingNameReplacement();
-		m_suffix = builder.getSuffix();
-		m_unpack = builder.isUnpack();
-		m_expand = builder.isExpand();
+		namePattern = builder.getNamePattern();
+		filter = builder.getFilter();
+		leafArtifact = builder.getLeafArtifact();
+		componentTypeID = builder.getComponentTypeID();
+		exclude = builder.isExclude();
+		resourcePath = builder.getResourcePath();
+		bindingNamePattern = builder.getBindingNamePattern();
+		bindingNameReplacement = builder.getBindingNameReplacement();
+		suffix = builder.getSuffix();
+		unpack = builder.isUnpack();
+		expand = builder.isExpand();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Object getAdapter(Class adapter)
-	{
-		if(adapter.isAssignableFrom(MaterializationNodeBuilder.class))
-		{
+	public Object getAdapter(Class adapter) {
+		if (adapter.isAssignableFrom(MaterializationNodeBuilder.class)) {
 			MaterializationNodeBuilder bld = new MaterializationNodeBuilder();
 			bld.initFrom(this);
 			return bld;
@@ -99,99 +95,84 @@ public class MaterializationNode extends MaterializationDirective implements IMa
 		return super.getAdapter(adapter);
 	}
 
-	public Pattern getBindingNamePattern()
-	{
-		return m_bindingNamePattern;
+	public Pattern getBindingNamePattern() {
+		return bindingNamePattern;
 	}
 
-	public String getBindingNameReplacement()
-	{
-		return m_bindingNameReplacement;
+	public String getBindingNameReplacement() {
+		return bindingNameReplacement;
 	}
 
-	public String getComponentTypeID()
-	{
-		return m_componentTypeID;
+	public String getComponentTypeID() {
+		return componentTypeID;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public Filter getFilter()
-	{
-		return m_filter;
+	public Filter getFilter() {
+		return filter;
 	}
 
-	public IPath getLeafArtifact()
-	{
-		return m_leafArtifact;
+	public IPath getLeafArtifact() {
+		return leafArtifact;
 	}
 
-	public Pattern getNamePattern()
-	{
-		return m_namePattern;
+	public Pattern getNamePattern() {
+		return namePattern;
 	}
 
-	public IPath getResourcePath()
-	{
-		return m_resourcePath;
+	public IPath getResourcePath() {
+		return resourcePath;
 	}
 
-	public String getSuffix()
-	{
-		return m_suffix;
+	public String getSuffix() {
+		return suffix;
 	}
 
-	public boolean isExclude()
-	{
-		return m_exclude;
+	public boolean isExclude() {
+		return exclude;
 	}
 
-	public boolean isExpand()
-	{
-		return m_expand;
+	public boolean isExpand() {
+		return expand;
 	}
 
-	public boolean isUnpack()
-	{
-		return m_unpack;
+	public boolean isUnpack() {
+		return unpack;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
 		super.addAttributes(attrs);
-		if(m_namePattern != null)
-			Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
-		if(m_filter != null)
-			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
-		if(m_componentTypeID != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeID);
-		if(m_leafArtifact != null)
-			Utils.addAttribute(attrs, ATTR_LEAF_ARTIFACT, m_leafArtifact.toPortableString());
-		if(m_resourcePath != null)
-			Utils.addAttribute(attrs, ATTR_RESOURCE_PATH, m_resourcePath.toPortableString());
-		if(m_exclude)
+		if (namePattern != null)
+			Utils.addAttribute(attrs, ATTR_NAME_PATTERN, namePattern.toString());
+		if (filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, filter.toString());
+		if (componentTypeID != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, componentTypeID);
+		if (leafArtifact != null)
+			Utils.addAttribute(attrs, ATTR_LEAF_ARTIFACT, leafArtifact.toPortableString());
+		if (resourcePath != null)
+			Utils.addAttribute(attrs, ATTR_RESOURCE_PATH, resourcePath.toPortableString());
+		if (exclude)
 			Utils.addAttribute(attrs, ATTR_EXCLUDE, "true"); //$NON-NLS-1$
-		if(m_bindingNamePattern != null)
-			Utils.addAttribute(attrs, ATTR_BINDING_NAME_PATTERN, m_bindingNamePattern.toString());
-		if(m_bindingNameReplacement != null)
-			Utils.addAttribute(attrs, ATTR_BINDING_NAME_REPLACEMENT, m_bindingNameReplacement);
+		if (bindingNamePattern != null)
+			Utils.addAttribute(attrs, ATTR_BINDING_NAME_PATTERN, bindingNamePattern.toString());
+		if (bindingNameReplacement != null)
+			Utils.addAttribute(attrs, ATTR_BINDING_NAME_REPLACEMENT, bindingNameReplacement);
 	}
 
 	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException {
 		super.emitElements(receiver, namespace, prefix);
-		if(m_unpack)
-		{
+		if (unpack) {
 			AttributesImpl attrs = new AttributesImpl();
-			if(!m_expand)
+			if (!expand)
 				Utils.addAttribute(attrs, ATTR_EXPAND, "false"); //$NON-NLS-1$
-			if(m_suffix != null)
-				Utils.addAttribute(attrs, ATTR_SUFFIX, m_suffix);
+			if (suffix != null)
+				Utils.addAttribute(attrs, ATTR_SUFFIX, suffix);
 			String qName = Utils.makeQualifiedName(prefix, ELEM_UNPACK);
 			receiver.startElement(namespace, ELEM_UNPACK, qName, attrs);
 			receiver.endElement(namespace, ELEM_UNPACK, qName);

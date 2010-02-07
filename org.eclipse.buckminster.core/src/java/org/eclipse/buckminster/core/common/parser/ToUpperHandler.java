@@ -15,18 +15,15 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class ToUpperHandler extends ValueFilterHandler
-{
+public class ToUpperHandler extends ValueFilterHandler {
 	static final String TAG = ToUpper.TAG;
 
-	public ToUpperHandler(AbstractHandler parent)
-	{
+	public ToUpperHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		this.setValueHolder(new ToUpper());
 	}
 }

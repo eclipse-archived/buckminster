@@ -19,47 +19,38 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class GeneratorHandler extends CSpecElementHandler
-{
+class GeneratorHandler extends CSpecElementHandler {
 	public static final String TAG = Generator.TAG;
 
-	GeneratorHandler(AbstractHandler parent)
-	{
+	GeneratorHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		GeneratorBuilder builder = (GeneratorBuilder)getBuilder();
+		GeneratorBuilder builder = (GeneratorBuilder) getBuilder();
 		builder.setComponent(getOptionalStringValue(attrs, Generator.ATTR_COMPONENT));
 		builder.setAttribute(getStringValue(attrs, Generator.ATTR_ATTRIBUTE));
 		builder.setGeneratesType(getOptionalStringValue(attrs, Generator.ATTR_GENERATES_TYPE));
 
 		String version = getOptionalStringValue(attrs, Generator.ATTR_GENERATES_VERSION);
-		if(version != null)
-		{
-			try
-			{
+		if (version != null) {
+			try {
 				builder.setGeneratesVersion(VersionHelper.parseVersion(version));
-			}
-			catch(IllegalArgumentException e)
-			{
+			} catch (IllegalArgumentException e) {
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
 		}
 	}
 
 	@Override
-	protected NamedElementBuilder createBuilder()
-	{
+	protected NamedElementBuilder createBuilder() {
 		return this.getCSpecBuilder().createGeneratorBuilder();
 	}
 
 	@Override
-	protected String getNameAttribute(Attributes attrs) throws SAXException
-	{
+	protected String getNameAttribute(Attributes attrs) throws SAXException {
 		return this.getStringValue(attrs, Generator.ATTR_GENERATES);
 	}
 }

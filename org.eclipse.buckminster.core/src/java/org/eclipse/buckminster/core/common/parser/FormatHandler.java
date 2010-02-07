@@ -15,16 +15,13 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class FormatHandler extends ValueFilterHandler
-{
-	public FormatHandler(AbstractHandler parent)
-	{
+public class FormatHandler extends ValueFilterHandler {
+	public FormatHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		this.setValueHolder(new Format(this.getStringValue(attrs, "format"))); //$NON-NLS-1$
 	}
 }

@@ -26,8 +26,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public abstract class MaterializationDirective extends AbstractSaxableElement implements IMaterializationDirective
-{
+public abstract class MaterializationDirective extends AbstractSaxableElement implements IMaterializationDirective {
 	public static final String ATTR_INSTALL_LOCATION = "installLocation"; //$NON-NLS-1$
 
 	public static final String ATTR_WORKSPACE_LOCATION = "workspaceLocation"; //$NON-NLS-1$
@@ -38,95 +37,81 @@ public abstract class MaterializationDirective extends AbstractSaxableElement im
 
 	public static final String ATTR_MAX_PARALLEL_JOBS = "maxParallelJobs"; //$NON-NLS-1$
 
-	private final int m_maxParallelJobs;
+	private final int maxParallelJobs;
 
-	private final Map<String, String> m_properties;
+	private final Map<String, String> properties;
 
-	private final IPath m_installLocation;
+	private final IPath installLocation;
 
-	private final IPath m_workspaceLocation;
+	private final IPath workspaceLocation;
 
-	private final String m_materializer;
+	private final String materializer;
 
-	private final ConflictResolution m_conflictResolution;
+	private final ConflictResolution conflictResolution;
 
-	private final Documentation m_documentation;
+	private final Documentation documentation;
 
-	public MaterializationDirective(MaterializationDirectiveBuilder builder)
-	{
-		m_documentation = builder.getDocumentation();
+	public MaterializationDirective(MaterializationDirectiveBuilder builder) {
+		documentation = builder.getDocumentation();
 
 		IPath tmp = builder.getInstallLocation();
-		m_installLocation = (tmp == null)
-				? null
-				: tmp.addTrailingSeparator();
+		installLocation = (tmp == null) ? null : tmp.addTrailingSeparator();
 
 		tmp = builder.getWorkspaceLocation();
-		m_workspaceLocation = (tmp == null)
-				? null
-				: tmp.addTrailingSeparator();
+		workspaceLocation = (tmp == null) ? null : tmp.addTrailingSeparator();
 
-		m_materializer = builder.getMaterializerID();
-		m_conflictResolution = builder.getConflictResolution();
-		m_properties = ExpandingProperties.createUnmodifiableProperties(builder.getProperties());
-		m_maxParallelJobs = builder.getMaxParallelJobs();
+		materializer = builder.getMaterializerID();
+		conflictResolution = builder.getConflictResolution();
+		properties = ExpandingProperties.createUnmodifiableProperties(builder.getProperties());
+		maxParallelJobs = builder.getMaxParallelJobs();
 	}
 
-	public ConflictResolution getConflictResolution()
-	{
-		return m_conflictResolution;
+	public ConflictResolution getConflictResolution() {
+		return conflictResolution;
 	}
 
-	public Documentation getDocumentation()
-	{
-		return m_documentation;
+	public Documentation getDocumentation() {
+		return documentation;
 	}
 
-	public IPath getInstallLocation()
-	{
-		return m_installLocation;
+	public IPath getInstallLocation() {
+		return installLocation;
 	}
 
-	public String getMaterializerID()
-	{
-		return m_materializer;
+	public String getMaterializerID() {
+		return materializer;
 	}
 
-	public int getMaxParallelJobs()
-	{
-		return m_maxParallelJobs;
+	public int getMaxParallelJobs() {
+		return maxParallelJobs;
 	}
 
-	public Map<String, String> getProperties()
-	{
-		return m_properties;
+	public Map<String, String> getProperties() {
+		return properties;
 	}
 
-	public IPath getWorkspaceLocation()
-	{
-		return m_workspaceLocation;
+	public IPath getWorkspaceLocation() {
+		return workspaceLocation;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		if(m_installLocation != null)
-			Utils.addAttribute(attrs, ATTR_INSTALL_LOCATION, m_installLocation.toPortableString());
-		if(m_workspaceLocation != null)
-			Utils.addAttribute(attrs, ATTR_WORKSPACE_LOCATION, m_workspaceLocation.toPortableString());
-		if(m_materializer != null)
-			Utils.addAttribute(attrs, ATTR_MATERIALIZER, m_materializer);
-		if(m_conflictResolution != null)
-			Utils.addAttribute(attrs, ATTR_CONFLICT_RESOLUTION, m_conflictResolution.name());
-		if(m_maxParallelJobs != -1)
-			Utils.addAttribute(attrs, ATTR_MAX_PARALLEL_JOBS, Integer.toString(m_maxParallelJobs));
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		if (installLocation != null)
+			Utils.addAttribute(attrs, ATTR_INSTALL_LOCATION, installLocation.toPortableString());
+		if (workspaceLocation != null)
+			Utils.addAttribute(attrs, ATTR_WORKSPACE_LOCATION, workspaceLocation.toPortableString());
+		if (materializer != null)
+			Utils.addAttribute(attrs, ATTR_MATERIALIZER, materializer);
+		if (conflictResolution != null)
+			Utils.addAttribute(attrs, ATTR_CONFLICT_RESOLUTION, conflictResolution.name());
+		if (maxParallelJobs != -1)
+			Utils.addAttribute(attrs, ATTR_MAX_PARALLEL_JOBS, Integer.toString(maxParallelJobs));
 	}
 
 	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(receiver, namespace, prefix, m_documentation.getDefaultTag());
-		SAXEmitter.emitProperties(receiver, m_properties, namespace, prefix, true, false);
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException {
+		if (documentation != null)
+			documentation.toSax(receiver, namespace, prefix, documentation.getDefaultTag());
+		SAXEmitter.emitProperties(receiver, properties, namespace, prefix, true, false);
 	}
 }

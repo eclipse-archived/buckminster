@@ -15,12 +15,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class UnresolvedNodeException extends LocalizedException
-{
+public class UnresolvedNodeException extends LocalizedException {
 	private static final long serialVersionUID = 6297785682251941992L;
 
-	public UnresolvedNodeException(IComponentRequest request)
-	{
+	public UnresolvedNodeException(IComponentRequest request) {
 		super(NLS.bind(Messages.Attempt_to_use_an_unresolved_node_Request_is_0, request));
 	}
 }

@@ -17,28 +17,31 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public interface ITargetPlatform
-{
+public interface ITargetPlatform {
 	/**
 	 * Returns the target system architecture
 	 */
 	String getArch();
 
 	/**
-	 * Returns a list of all components (features, plugins, and fragments) that are known to the target platform.
+	 * Returns a list of all components (features, plugins, and fragments) that
+	 * are known to the target platform.
 	 */
 	List<ComponentIdentifier> getComponents() throws CoreException;
 
 	/**
-	 * Returns the location of the directory container of the default target platform. The default target platform is
-	 * the running instance augmented with an extra directory that Buckminster uses for p2 provisioning. It will be
-	 * created if it does not exist.
+	 * Returns the location of the directory container of the default target
+	 * platform. The default target platform is the running instance augmented
+	 * with an extra directory that Buckminster uses for p2 provisioning. It
+	 * will be created if it does not exist.
 	 * 
 	 * @param asActive
 	 *            Set the default target platform active.
-	 * @return The location of the directory container maintained by the default target platform.
+	 * @return The location of the directory container maintained by the default
+	 *         target platform.
 	 * @throws CoreException
-	 *             if something goes wrong when defining the default target platform
+	 *             if something goes wrong when defining the default target
+	 *             platform
 	 */
 	File getDefaultPlatformLocation(boolean asActive) throws CoreException;
 
@@ -63,10 +66,12 @@ public interface ITargetPlatform
 	String getWS();
 
 	/**
-	 * Perform any refresh actions needed after the content of the given locations has been altered.
+	 * Perform any refresh actions needed after the content of the given
+	 * locations has been altered.
 	 * 
 	 * @param locations
-	 *            A set of files denoting absolute paths in the local file system
+	 *            A set of files denoting absolute paths in the local file
+	 *            system
 	 */
 	void locationsChanged(Set<File> locations);
 }

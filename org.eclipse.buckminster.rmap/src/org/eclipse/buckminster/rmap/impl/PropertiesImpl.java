@@ -27,22 +27,25 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Properties</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Properties</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.PropertiesImpl#getProperties <em>Properties</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.PropertiesImpl#getPropertyElements <em>Property Elements</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.PropertiesImpl#getProperties
+ * <em>Properties</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.PropertiesImpl#getPropertyElements
+ * <em>Property Elements</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class PropertiesImpl extends EObjectImpl implements Properties
-{
+public class PropertiesImpl extends EObjectImpl implements Properties {
 	/**
-	 * The cached value of the '{@link #getProperties() <em>Properties</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getProperties() <em>Properties</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getProperties()
 	 * @generated
@@ -51,8 +54,9 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	protected EList<PropertyConstant> properties;
 
 	/**
-	 * The cached value of the '{@link #getPropertyElements() <em>Property Elements</em>}' containment reference list.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getPropertyElements()
+	 * <em>Property Elements</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPropertyElements()
 	 * @generated
@@ -65,8 +69,7 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	 * 
 	 * @generated
 	 */
-	protected PropertiesImpl()
-	{
+	protected PropertiesImpl() {
 		super();
 	}
 
@@ -76,14 +79,12 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.PROPERTIES__PROPERTIES:
-			return getProperties();
-		case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
-			return getPropertyElements();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case RmapPackage.PROPERTIES__PROPERTIES:
+				return getProperties();
+			case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
+				return getPropertyElements();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -94,14 +95,12 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.PROPERTIES__PROPERTIES:
-			return ((InternalEList<?>)getProperties()).basicRemove(otherEnd, msgs);
-		case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
-			return ((InternalEList<?>)getPropertyElements()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case RmapPackage.PROPERTIES__PROPERTIES:
+				return ((InternalEList<?>) getProperties()).basicRemove(otherEnd, msgs);
+			case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
+				return ((InternalEList<?>) getPropertyElements()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -112,14 +111,12 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.PROPERTIES__PROPERTIES:
-			return properties != null && !properties.isEmpty();
-		case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
-			return propertyElements != null && !propertyElements.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case RmapPackage.PROPERTIES__PROPERTIES:
+				return properties != null && !properties.isEmpty();
+			case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
+				return propertyElements != null && !propertyElements.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -131,18 +128,16 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.PROPERTIES__PROPERTIES:
-			getProperties().clear();
-			getProperties().addAll((Collection<? extends PropertyConstant>)newValue);
-			return;
-		case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
-			getPropertyElements().clear();
-			getPropertyElements().addAll((Collection<? extends PropertyElement>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case RmapPackage.PROPERTIES__PROPERTIES:
+				getProperties().clear();
+				getProperties().addAll((Collection<? extends PropertyConstant>) newValue);
+				return;
+			case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
+				getPropertyElements().clear();
+				getPropertyElements().addAll((Collection<? extends PropertyElement>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -153,16 +148,14 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.PROPERTIES__PROPERTIES:
-			getProperties().clear();
-			return;
-		case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
-			getPropertyElements().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case RmapPackage.PROPERTIES__PROPERTIES:
+				getProperties().clear();
+				return;
+			case RmapPackage.PROPERTIES__PROPERTY_ELEMENTS:
+				getPropertyElements().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -172,12 +165,9 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	 * 
 	 * @generated
 	 */
-	public EList<PropertyConstant> getProperties()
-	{
-		if(properties == null)
-		{
-			properties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this,
-					RmapPackage.PROPERTIES__PROPERTIES);
+	public EList<PropertyConstant> getProperties() {
+		if (properties == null) {
+			properties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this, RmapPackage.PROPERTIES__PROPERTIES);
 		}
 		return properties;
 	}
@@ -187,12 +177,9 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	 * 
 	 * @generated
 	 */
-	public EList<PropertyElement> getPropertyElements()
-	{
-		if(propertyElements == null)
-		{
-			propertyElements = new EObjectContainmentEList<PropertyElement>(PropertyElement.class, this,
-					RmapPackage.PROPERTIES__PROPERTY_ELEMENTS);
+	public EList<PropertyElement> getPropertyElements() {
+		if (propertyElements == null) {
+			propertyElements = new EObjectContainmentEList<PropertyElement>(PropertyElement.class, this, RmapPackage.PROPERTIES__PROPERTY_ELEMENTS);
 		}
 		return propertyElements;
 	}
@@ -203,8 +190,7 @@ public class PropertiesImpl extends EObjectImpl implements Properties
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return RmapPackage.Literals.PROPERTIES;
 	}
 

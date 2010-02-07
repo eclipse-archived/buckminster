@@ -22,45 +22,38 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class AlterArtifactHandler extends AlterAttributeHandler
-{
-	private final RemoveHandler m_removePathHandler = new RemoveHandler(this, AlterArtifact.ELEM_REMOVE_PATH,
-			Artifact.ATTR_PATH);
+class AlterArtifactHandler extends AlterAttributeHandler {
+	private final RemoveHandler removePathHandler = new RemoveHandler(this, AlterArtifact.ELEM_REMOVE_PATH, Artifact.ATTR_PATH);
 
-	AlterArtifactHandler(AbstractHandler parent, ArtifactHandler baseHandler)
-	{
+	AlterArtifactHandler(AbstractHandler parent, ArtifactHandler baseHandler) {
 		super(parent, baseHandler);
 	}
 
-	AlterArtifactHandler(AbstractHandler parent, boolean publ)
-	{
+	AlterArtifactHandler(AbstractHandler parent, boolean publ) {
 		this(parent, new ArtifactHandler(parent, publ));
 	}
 
 	@Override
-	public void childPopped(ChildHandler child) throws SAXException
-	{
+	public void childPopped(ChildHandler child) throws SAXException {
 
-		if(child == m_removePathHandler)
-			((AlterArtifactBuilder)this.getBuilder()).addRemovedPath(Path.fromPortableString(m_removePathHandler.getValue()));
+		if (child == removePathHandler)
+			((AlterArtifactBuilder) this.getBuilder()).addRemovedPath(Path.fromPortableString(removePathHandler.getValue()));
 		else
 			super.childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(m_removePathHandler.getTAG().equals(localName))
-			ch = m_removePathHandler;
+		if (removePathHandler.getTAG().equals(localName))
+			ch = removePathHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
-	{
+	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder) {
 		return new AlterArtifactBuilder(baseBuilder);
 	}
 }

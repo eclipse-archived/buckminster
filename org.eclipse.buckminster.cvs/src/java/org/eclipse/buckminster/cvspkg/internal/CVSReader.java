@@ -48,113 +48,91 @@ import org.eclipse.team.internal.ccvs.core.resources.UpdateContentCachingService
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class CVSReader extends AbstractCatalogReader
-{
+public class CVSReader extends AbstractCatalogReader {
 	// We need to synchronize this on something static.
 	// See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=197301
 	//
-	static synchronized Date getTagDate(CVSTag tag)
-	{
+	static synchronized Date getTagDate(CVSTag tag) {
 		return tag.asDate();
 	}
 
-	private final CVSTag m_fixed;
+	private final CVSTag fixed;
 
-	private final CVSSession m_session;
+	private final CVSSession session;
 
-	private RepositoryMetaData m_metaData;
+	private RepositoryMetaData metaData;
 
-	private RemoteFolder m_flatRoot;
+	private RemoteFolder flatRoot;
 
-	public CVSReader(IReaderType readerType, ProviderMatch rInfo) throws CoreException
-	{
+	public CVSReader(IReaderType readerType, ProviderMatch rInfo) throws CoreException {
 		super(readerType, rInfo);
-		m_session = new CVSSession(rInfo.getRepositoryURI());
-		m_fixed = CVSReaderType.getCVSTag(rInfo.getVersionMatch());
+		session = new CVSSession(rInfo.getRepositoryURI());
+		fixed = CVSReaderType.getCVSTag(rInfo.getVersionMatch());
 	}
 
 	@Override
-	public void close()
-	{
-		m_session.close();
+	public void close() {
+		session.close();
 	}
 
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 100);
 
-		CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
+		CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation) session.getLocation();
 
 		// We avoid using the date if it is the last date known for
 		// the repository.
 		//
 		CVSTag tag = null;
-		if(m_fixed.getType() == CVSTag.DATE)
-		{
-			Date fixedDate = getTagDate(m_fixed);
-			if(getMetaData(MonitorUtils.subMonitor(monitor, 20)).getLastModification().compareTo(fixedDate) > 0)
-				tag = m_fixed;
-		}
-		else
-		{
-			tag = m_fixed;
+		if (fixed.getType() == CVSTag.DATE) {
+			Date fixedDate = getTagDate(fixed);
+			if (getMetaData(MonitorUtils.subMonitor(monitor, 20)).getLastModification().compareTo(fixedDate) > 0)
+				tag = fixed;
+		} else {
+			tag = fixed;
 			MonitorUtils.worked(monitor, 20);
 		}
 
 		MonitorUtils.testCancelStatus(monitor);
-		ICVSFolder root = new RemoteFolder(null, cvsLocation, m_session.getModuleName(), tag);
-		try
-		{
-			ICVSFolder folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, root, tag,
-					IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, 90));
-			if(folder == null)
+		ICVSFolder root = new RemoteFolder(null, cvsLocation, session.getModuleName(), tag);
+		try {
+			ICVSFolder folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, root, tag, IResource.DEPTH_INFINITE, MonitorUtils
+					.subMonitor(monitor, 90));
+			if (folder == null)
 				throw new FileNotFoundException(toString());
 
 			FileSystemCopier copier = new FileSystemCopier(folder, destination, MonitorUtils.subMonitor(monitor, 80));
-			try
-			{
+			try {
 				folder.accept(copier, true);
-			}
-			finally
-			{
+			} finally {
 				copier.done();
 				monitor.done();
 			}
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
 	@Override
-	public String toString()
-	{
-		return m_session.getRepository() + ',' + m_fixed.getName();
+	public String toString() {
+		return session.getRepository() + ',' + fixed.getName();
 	}
 
 	@Override
-	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
-	{
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
 		InputStream input = null;
-		try
-		{
+		try {
 			getCVSRemoteFile(fileName, monitor);
 			return true;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			return false;
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 	}
 
 	@Override
-	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
-	{
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException {
 		// Build the local options
 		//
 		monitor.beginTask(null, 1000);
@@ -163,8 +141,7 @@ public class CVSReader extends AbstractCatalogReader
 		InputStream in = null;
 		OutputStream out = null;
 		File tempFile = null;
-		try
-		{
+		try {
 			ICVSRemoteFile cvsFile = getCVSRemoteFile(fileName, MonitorUtils.subMonitor(monitor, 500));
 			in = cvsFile.getContents(MonitorUtils.subMonitor(monitor, 250));
 			tempFile = createTempFile();
@@ -173,166 +150,125 @@ public class CVSReader extends AbstractCatalogReader
 			FileHandle fh = new FileHandle(fileName, tempFile, true);
 			tempFile = null;
 			return fh;
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(out);
 			IOUtils.close(in);
-			if(tempFile != null)
+			if (tempFile != null)
 				tempFile.delete();
 			monitor.done();
 		}
 	}
 
 	@Override
-	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
-		monitor.beginTask(null, 1000 + (m_flatRoot == null
-				? 500
-				: 0));
-		try
-		{
-			if(m_flatRoot == null)
+	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor) throws CoreException, IOException {
+		monitor.beginTask(null, 1000 + (flatRoot == null ? 500 : 0));
+		try {
+			if (flatRoot == null)
 				getFlatRoot(MonitorUtils.subMonitor(monitor, 500));
 
 			ArrayList<String> matching = null;
-			for(ICVSRemoteResource child : m_flatRoot.getChildren())
-			{
+			for (ICVSRemoteResource child : flatRoot.getChildren()) {
 				String name = child.getName();
-				if(pattern.matcher(name).matches())
-				{
-					if(matching == null)
+				if (pattern.matcher(name).matches()) {
+					if (matching == null)
 						matching = new ArrayList<String>();
 					matching.add(name);
 				}
 			}
-			if(matching == null)
+			if (matching == null)
 				return;
 
 			int ticksPerMatch = 1000 / matching.size();
-			for(String name : matching)
+			for (String name : matching)
 				files.add(innerGetContents(name, MonitorUtils.subMonitor(monitor, ticksPerMatch)));
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
 	@Override
-	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
-	{
-		monitor.beginTask(null, 1000 + (m_flatRoot == null
-				? 500
-				: 0));
-		try
-		{
-			if(m_flatRoot == null)
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException {
+		monitor.beginTask(null, 1000 + (flatRoot == null ? 500 : 0));
+		try {
+			if (flatRoot == null)
 				getFlatRoot(MonitorUtils.subMonitor(monitor, 500));
 
-			for(ICVSRemoteResource child : m_flatRoot.getChildren())
-			{
+			for (ICVSRemoteResource child : flatRoot.getChildren()) {
 				String name = child.getName();
-				if(child.isFolder() && !name.endsWith("/")) //$NON-NLS-1$
+				if (child.isFolder() && !name.endsWith("/")) //$NON-NLS-1$
 					name = name + "/"; //$NON-NLS-1$
 				files.add(child.getName());
 			}
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
 	@Override
-	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		// Build the local options
 		//
 		monitor.beginTask(null, 1000);
 		monitor.subTask(NLS.bind(Messages.retrieving_0, fileName));
 
 		InputStream in = null;
-		try
-		{
+		try {
 			ICVSRemoteFile cvsFile = getCVSRemoteFile(fileName, MonitorUtils.subMonitor(monitor, 500));
 			in = cvsFile.getContents(MonitorUtils.subMonitor(monitor, 250));
 			return consumer.consumeStream(this, fileName, in, MonitorUtils.subMonitor(monitor, 250));
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(in);
 			monitor.done();
 		}
 	}
 
-	private ICVSRemoteFile getCVSRemoteFile(String fileName, IProgressMonitor monitor) throws CoreException,
-			FileNotFoundException
-	{
+	private ICVSRemoteFile getCVSRemoteFile(String fileName, IProgressMonitor monitor) throws CoreException, FileNotFoundException {
 		IPath filePath = Path.fromPortableString(fileName);
-		RemoteFolder folder = m_flatRoot;
-		if(filePath.segmentCount() > 1)
-		{
-			IPath parentPath = Path.fromPortableString(m_session.getModuleName()).append(filePath.removeLastSegments(1));
-			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
-			folder = new RemoteFolder(null, cvsLocation, parentPath.toPortableString(), m_fixed);
-			folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, folder, m_fixed, IResource.DEPTH_ONE,
-					monitor);
-		}
-		else
-		{
-			if(m_flatRoot == null)
+		RemoteFolder folder = flatRoot;
+		if (filePath.segmentCount() > 1) {
+			IPath parentPath = Path.fromPortableString(session.getModuleName()).append(filePath.removeLastSegments(1));
+			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation) session.getLocation();
+			folder = new RemoteFolder(null, cvsLocation, parentPath.toPortableString(), fixed);
+			folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, folder, fixed, IResource.DEPTH_ONE, monitor);
+		} else {
+			if (flatRoot == null)
 				getFlatRoot(monitor);
 			else
 				MonitorUtils.complete(monitor);
-			folder = m_flatRoot;
+			folder = flatRoot;
 		}
 
-		if(folder == null)
+		if (folder == null)
 			throw new FileNotFoundException(toString());
 
 		ICVSResource cvsFile;
-		try
-		{
+		try {
 			cvsFile = folder.getChild(filePath.lastSegment());
-		}
-		catch(CVSException e)
-		{
+		} catch (CVSException e) {
 			throw new FileNotFoundException(e.getMessage());
 		}
 
-		if(!(cvsFile instanceof ICVSRemoteFile))
+		if (!(cvsFile instanceof ICVSRemoteFile))
 			throw new FileNotFoundException(NLS.bind(Messages.file_0_appears_to_be_folder, fileName));
 
-		return (ICVSRemoteFile)cvsFile;
+		return (ICVSRemoteFile) cvsFile;
 	}
 
-	private void getFlatRoot(IProgressMonitor monitor) throws CoreException
-	{
-		if(m_flatRoot == null)
-		{
-			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
-			RemoteFolder root = new RemoteFolder(null, cvsLocation, m_session.getModuleName(), m_fixed);
-			m_flatRoot = UpdateContentCachingService.buildRemoteTree(cvsLocation, root, m_fixed, IResource.DEPTH_ONE,
-					monitor);
-		}
-		else
+	private void getFlatRoot(IProgressMonitor monitor) throws CoreException {
+		if (flatRoot == null) {
+			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation) session.getLocation();
+			RemoteFolder root = new RemoteFolder(null, cvsLocation, session.getModuleName(), fixed);
+			flatRoot = UpdateContentCachingService.buildRemoteTree(cvsLocation, root, fixed, IResource.DEPTH_ONE, monitor);
+		} else
 			MonitorUtils.complete(monitor);
 	}
 
-	private synchronized RepositoryMetaData getMetaData(IProgressMonitor monitor) throws CoreException
-	{
-		if(m_metaData == null)
-		{
-			CVSTag tag = (m_fixed.getType() == CVSTag.DATE)
-					? null
-					: m_fixed;
-			m_metaData = RepositoryMetaData.getMetaData(m_session, tag, monitor);
-		}
-		else
+	private synchronized RepositoryMetaData getMetaData(IProgressMonitor monitor) throws CoreException {
+		if (metaData == null) {
+			CVSTag tag = (fixed.getType() == CVSTag.DATE) ? null : fixed;
+			metaData = RepositoryMetaData.getMetaData(session, tag, monitor);
+		} else
 			MonitorUtils.complete(monitor);
-		return m_metaData;
+		return metaData;
 	}
 }

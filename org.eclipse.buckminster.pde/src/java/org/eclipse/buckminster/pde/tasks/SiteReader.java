@@ -34,80 +34,60 @@ import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
 import org.xml.sax.SAXException;
 
 /**
- * A IStreamConsumer responsible for reading and parsing a <code>site.xml</code> type files.
+ * A IStreamConsumer responsible for reading and parsing a <code>site.xml</code>
+ * type files.
  * 
  * @author Thomas Hallgren
  */
-@SuppressWarnings( { "restriction" })
-public class SiteReader implements IStreamConsumer<SiteModel>
-{
-	public static SiteModel getSite(File siteFile) throws CoreException, FileNotFoundException
-	{
+@SuppressWarnings({ "restriction" })
+public class SiteReader implements IStreamConsumer<SiteModel> {
+	public static SiteModel getSite(File siteFile) throws CoreException, FileNotFoundException {
 		InputStream input = null;
-		try
-		{
+		try {
 			input = new BufferedInputStream(new FileInputStream(siteFile));
 			return parseSite(input, siteFile.toURI());
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 	}
 
-	public static SiteModel getSite(URL siteURL, IConnectContext cctx) throws CoreException, FileNotFoundException
-	{
+	public static SiteModel getSite(URL siteURL, IConnectContext cctx) throws CoreException, FileNotFoundException {
 		InputStream input = null;
-		try
-		{
+		try {
 			input = DownloadManager.read(siteURL, cctx);
 			return parseSite(input, URI.create(siteURL.toExternalForm()));
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 	}
 
-	private static SiteModel parseSite(InputStream input, URI uri) throws CoreException, FileNotFoundException
-	{
-		try
-		{
+	private static SiteModel parseSite(InputStream input, URI uri) throws CoreException, FileNotFoundException {
+		try {
 			DefaultSiteParser siteParser = new DefaultSiteParser(uri);
 			SiteModel site = siteParser.parse(input);
 			IStatus status = siteParser.getStatus();
-			if(status != null)
+			if (status != null)
 				throw BuckminsterException.wrap(status);
 			return site;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw e;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		catch(SAXException e)
-		{
+		} catch (SAXException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public SiteModel consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
-			IProgressMonitor monitor) throws CoreException, IOException
-	{
+	public SiteModel consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
+			throws CoreException, IOException {
 		monitor = MonitorUtils.ensureNotNull(monitor);
 		monitor.beginTask(null, 1);
-		try
-		{
+		try {
 			monitor.subTask(Messages.Loading_site_definition);
 			SiteModel site = parseSite(stream, URLUtils.normalizeToURI(streamName, false));
 			MonitorUtils.worked(monitor, 1);
 			return site;
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}

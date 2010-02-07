@@ -15,28 +15,23 @@ import org.xml.sax.SAXException;
  * @author Thomas Hallgren
  * 
  */
-public class Text implements ISaxableElement
-{
-	private final char[] m_content;
+public class Text implements ISaxableElement {
+	private final char[] content;
 
-	public Text(char[] content)
-	{
-		m_content = content;
+	public Text(char[] content) {
+		this.content = content;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return "p"; //$NON-NLS-1$
 	}
 
-	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException
-	{
-		receiver.characters(m_content, 0, m_content.length);
+	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException {
+		receiver.characters(content, 0, content.length);
 	}
 
 	@Override
-	public String toString()
-	{
-		return new String(m_content);
+	public String toString() {
+		return new String(content);
 	}
 }

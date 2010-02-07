@@ -15,44 +15,40 @@ package org.eclipse.buckminster.generic.model.tree;
 import org.eclipse.buckminster.generic.model.IPropertyChange;
 
 /**
- * A Basic Parent Tree Data Node - it passivly refers to some data, and passivly holds children. An instance of this
- * class is usful for static "folder nodes" in a tree.
+ * A Basic Parent Tree Data Node - it passivly refers to some data, and passivly
+ * holds children. An instance of this class is usful for static "folder nodes"
+ * in a tree.
  * 
  * @author Henrik Lindberg
  * 
  */
-public class BasicTreeParentDataNode extends AbstractTreeParentDataNode
-{
-	private final Object m_data;
+public class BasicTreeParentDataNode extends AbstractTreeParentDataNode {
+	private final Object data;
 
-	public BasicTreeParentDataNode(Object data)
-	{
-		m_data = data;
-		if(data instanceof IPropertyChange)
-			((IPropertyChange)data).addPropertyChangeListener(this);
+	public BasicTreeParentDataNode(Object data) {
+		this.data = data;
+		if (data instanceof IPropertyChange)
+			((IPropertyChange) data).addPropertyChangeListener(this);
 	}
 
 	/**
 	 * Disposes all children
 	 */
 	@Override
-	public void dispose()
-	{
-		if(m_data instanceof IPropertyChange)
-			((IPropertyChange)m_data).removePropertyChangeListener(this);
+	public void dispose() {
+		if (data instanceof IPropertyChange)
+			((IPropertyChange) data).removePropertyChangeListener(this);
 		// dispose all recursively
 		dispose(getChildren());
 	}
 
 	@Override
-	public Object getData()
-	{
-		return m_data;
+	public Object getData() {
+		return data;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getData().toString();
 	}
 
@@ -61,11 +57,10 @@ public class BasicTreeParentDataNode extends AbstractTreeParentDataNode
 	 * 
 	 * @param children
 	 */
-	private void dispose(ITreeDataNode children[])
-	{
-		if(children == null || children.length < 1)
+	private void dispose(ITreeDataNode children[]) {
+		if (children == null || children.length < 1)
 			return;
-		for(int i = 0; i < children.length; i++)
+		for (int i = 0; i < children.length; i++)
 			children[i].dispose();
 	}
 }

@@ -20,35 +20,28 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class ResolutionParser extends MetaDataParser<Resolution>
-{
-	private Resolution m_resolution;
+public class ResolutionParser extends MetaDataParser<Resolution> {
+	private Resolution resolution;
 
-	public ResolutionParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException
-	{
+	public ResolutionParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException {
 		super(parserExtensions);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_resolution = ((ResolutionHandler)child).getResolution();
+	public void childPopped(ChildHandler child) throws SAXException {
+		resolution = ((ResolutionHandler) child).getResolution();
 	}
 
-	public Resolution parse(String systemID, InputStream input) throws CoreException
-	{
+	public Resolution parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
-		return m_resolution;
+		return resolution;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(ResolutionHandler.TAG.equals(localName))
-		{
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if (ResolutionHandler.TAG.equals(localName)) {
 			ResolutionHandler rmh = new ResolutionHandler(this);
 			this.pushHandler(rmh, attrs);
-		}
-		else
+		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
 }

@@ -17,12 +17,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class FileFolderMismatchException extends LocalizedException
-{
+public class FileFolderMismatchException extends LocalizedException {
 	private static final long serialVersionUID = -8203237901604381801L;
 
-	public FileFolderMismatchException(IComponentIdentifier ci, IPath path)
-	{
+	public FileFolderMismatchException(IComponentIdentifier ci, IPath path) {
 		super(NLS.bind(Messages.Unable_to_reuse_location_0_for_component_1, path, ci));
 	}
 }

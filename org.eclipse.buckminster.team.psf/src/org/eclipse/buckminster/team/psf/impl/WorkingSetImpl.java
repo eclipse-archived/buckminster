@@ -27,24 +27,31 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Working Set</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Working Set</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getId <em>Id</em>}</li>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getLabel <em>Label</em>}</li>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getName <em>Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getEditPageId <em>Edit Page Id</em>}</li>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getItems <em>Items</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getId <em>Id
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getLabel <em>
+ * Label</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getName <em>
+ * Name</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getEditPageId
+ * <em>Edit Page Id</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl#getItems <em>
+ * Items</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class WorkingSetImpl extends EObjectImpl implements WorkingSet
-{
+public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	/**
-	 * The default value of the '{@link #getId() <em>Id</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getId() <em>Id</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getId()
 	 * @generated
@@ -53,7 +60,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	protected static final String ID_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getId() <em>Id</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getId() <em>Id</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getId()
 	 * @generated
@@ -62,8 +70,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	protected String id = ID_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getLabel() <em>Label</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getLabel()
 	 * @generated
@@ -72,8 +80,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	protected static final String LABEL_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getLabel() <em>Label</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getLabel()
 	 * @generated
@@ -82,8 +90,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	protected String label = LABEL_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -92,8 +100,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	protected static final String NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -102,8 +110,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getEditPageId() <em>Edit Page Id</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getEditPageId() <em>Edit Page Id</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getEditPageId()
 	 * @generated
@@ -112,8 +120,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	protected static final String EDIT_PAGE_ID_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getEditPageId() <em>Edit Page Id</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getEditPageId() <em>Edit Page Id</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getEditPageId()
 	 * @generated
@@ -122,8 +130,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	protected String editPageId = EDIT_PAGE_ID_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getItems() <em>Items</em>}' containment reference list. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #getItems() <em>Items</em>}' containment
+	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getItems()
 	 * @generated
@@ -136,8 +144,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	protected WorkingSetImpl()
-	{
+	protected WorkingSetImpl() {
 		super();
 	}
 
@@ -147,20 +154,18 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.WORKING_SET__ID:
-			return getId();
-		case PsfPackage.WORKING_SET__LABEL:
-			return getLabel();
-		case PsfPackage.WORKING_SET__NAME:
-			return getName();
-		case PsfPackage.WORKING_SET__EDIT_PAGE_ID:
-			return getEditPageId();
-		case PsfPackage.WORKING_SET__ITEMS:
-			return getItems();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case PsfPackage.WORKING_SET__ID:
+				return getId();
+			case PsfPackage.WORKING_SET__LABEL:
+				return getLabel();
+			case PsfPackage.WORKING_SET__NAME:
+				return getName();
+			case PsfPackage.WORKING_SET__EDIT_PAGE_ID:
+				return getEditPageId();
+			case PsfPackage.WORKING_SET__ITEMS:
+				return getItems();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -171,12 +176,10 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.WORKING_SET__ITEMS:
-			return ((InternalEList<?>)getItems()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case PsfPackage.WORKING_SET__ITEMS:
+				return ((InternalEList<?>) getItems()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -187,28 +190,18 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.WORKING_SET__ID:
-			return ID_EDEFAULT == null
-					? id != null
-					: !ID_EDEFAULT.equals(id);
-		case PsfPackage.WORKING_SET__LABEL:
-			return LABEL_EDEFAULT == null
-					? label != null
-					: !LABEL_EDEFAULT.equals(label);
-		case PsfPackage.WORKING_SET__NAME:
-			return NAME_EDEFAULT == null
-					? name != null
-					: !NAME_EDEFAULT.equals(name);
-		case PsfPackage.WORKING_SET__EDIT_PAGE_ID:
-			return EDIT_PAGE_ID_EDEFAULT == null
-					? editPageId != null
-					: !EDIT_PAGE_ID_EDEFAULT.equals(editPageId);
-		case PsfPackage.WORKING_SET__ITEMS:
-			return items != null && !items.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case PsfPackage.WORKING_SET__ID:
+				return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
+			case PsfPackage.WORKING_SET__LABEL:
+				return LABEL_EDEFAULT == null ? label != null : !LABEL_EDEFAULT.equals(label);
+			case PsfPackage.WORKING_SET__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case PsfPackage.WORKING_SET__EDIT_PAGE_ID:
+				return EDIT_PAGE_ID_EDEFAULT == null ? editPageId != null : !EDIT_PAGE_ID_EDEFAULT.equals(editPageId);
+			case PsfPackage.WORKING_SET__ITEMS:
+				return items != null && !items.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -220,26 +213,24 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.WORKING_SET__ID:
-			setId((String)newValue);
-			return;
-		case PsfPackage.WORKING_SET__LABEL:
-			setLabel((String)newValue);
-			return;
-		case PsfPackage.WORKING_SET__NAME:
-			setName((String)newValue);
-			return;
-		case PsfPackage.WORKING_SET__EDIT_PAGE_ID:
-			setEditPageId((String)newValue);
-			return;
-		case PsfPackage.WORKING_SET__ITEMS:
-			getItems().clear();
-			getItems().addAll((Collection<? extends Item>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case PsfPackage.WORKING_SET__ID:
+				setId((String) newValue);
+				return;
+			case PsfPackage.WORKING_SET__LABEL:
+				setLabel((String) newValue);
+				return;
+			case PsfPackage.WORKING_SET__NAME:
+				setName((String) newValue);
+				return;
+			case PsfPackage.WORKING_SET__EDIT_PAGE_ID:
+				setEditPageId((String) newValue);
+				return;
+			case PsfPackage.WORKING_SET__ITEMS:
+				getItems().clear();
+				getItems().addAll((Collection<? extends Item>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -250,25 +241,23 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.WORKING_SET__ID:
-			setId(ID_EDEFAULT);
-			return;
-		case PsfPackage.WORKING_SET__LABEL:
-			setLabel(LABEL_EDEFAULT);
-			return;
-		case PsfPackage.WORKING_SET__NAME:
-			setName(NAME_EDEFAULT);
-			return;
-		case PsfPackage.WORKING_SET__EDIT_PAGE_ID:
-			setEditPageId(EDIT_PAGE_ID_EDEFAULT);
-			return;
-		case PsfPackage.WORKING_SET__ITEMS:
-			getItems().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case PsfPackage.WORKING_SET__ID:
+				setId(ID_EDEFAULT);
+				return;
+			case PsfPackage.WORKING_SET__LABEL:
+				setLabel(LABEL_EDEFAULT);
+				return;
+			case PsfPackage.WORKING_SET__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case PsfPackage.WORKING_SET__EDIT_PAGE_ID:
+				setEditPageId(EDIT_PAGE_ID_EDEFAULT);
+				return;
+			case PsfPackage.WORKING_SET__ITEMS:
+				getItems().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -278,8 +267,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	public String getEditPageId()
-	{
+	public String getEditPageId() {
 		return editPageId;
 	}
 
@@ -288,8 +276,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	public String getId()
-	{
+	public String getId() {
 		return id;
 	}
 
@@ -298,10 +285,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	public EList<Item> getItems()
-	{
-		if(items == null)
-		{
+	public EList<Item> getItems() {
+		if (items == null) {
 			items = new EObjectContainmentEList<Item>(Item.class, this, PsfPackage.WORKING_SET__ITEMS);
 		}
 		return items;
@@ -312,8 +297,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	public String getLabel()
-	{
+	public String getLabel() {
 		return label;
 	}
 
@@ -322,8 +306,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
@@ -332,13 +315,11 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	public void setEditPageId(String newEditPageId)
-	{
+	public void setEditPageId(String newEditPageId) {
 		String oldEditPageId = editPageId;
 		editPageId = newEditPageId;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.WORKING_SET__EDIT_PAGE_ID, oldEditPageId,
-					editPageId));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.WORKING_SET__EDIT_PAGE_ID, oldEditPageId, editPageId));
 	}
 
 	/**
@@ -346,11 +327,10 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	public void setId(String newId)
-	{
+	public void setId(String newId) {
 		String oldId = id;
 		id = newId;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.WORKING_SET__ID, oldId, id));
 	}
 
@@ -359,11 +339,10 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	public void setLabel(String newLabel)
-	{
+	public void setLabel(String newLabel) {
 		String oldLabel = label;
 		label = newLabel;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.WORKING_SET__LABEL, oldLabel, label));
 	}
 
@@ -372,11 +351,10 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * 
 	 * @generated
 	 */
-	public void setName(String newName)
-	{
+	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.WORKING_SET__NAME, oldName, name));
 	}
 
@@ -386,9 +364,8 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -410,8 +387,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return PsfPackage.Literals.WORKING_SET;
 	}
 

@@ -13,14 +13,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Guillaume CHATELET
  * 
  */
-public class BZip2Decompressor implements IDecompressor
-{
+public class BZip2Decompressor implements IDecompressor {
 
-	public InputStream decompress(InputStream input, IProgressMonitor monitor) throws IOException
-	{
+	public InputStream decompress(InputStream input, IProgressMonitor monitor) throws IOException {
 		/**
 		 * according to the documentation
-		 * http://api.dpml.net/org/apache/ant/1.7.0/org/apache/tools/bzip2/CBZip2InputStream.html we have to skip the
+		 * http://api.dpml.net/org/apache/ant/1.7.0
+		 * /org/apache/tools/bzip2/CBZip2InputStream.html we have to skip the
 		 * two first bytes.
 		 * 
 		 * @author Guillaume CHATELET

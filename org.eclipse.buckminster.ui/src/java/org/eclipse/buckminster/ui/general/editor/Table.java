@@ -16,16 +16,14 @@ import java.util.List;
  * 
  * @author Karel Brezina
  */
-public abstract class Table<T> implements ITable<T>
-{
-	private List<T> m_data;
+public abstract class Table<T> implements ITable<T> {
+	private List<T> data;
 
-	private boolean m_readOnly;
+	private boolean readOnly;
 
-	private List<ITableModifyListener<T>> m_listeners = new ArrayList<ITableModifyListener<T>>();
+	private List<ITableModifyListener<T>> listeners = new ArrayList<ITableModifyListener<T>>();
 
-	public Table(List<T> data)
-	{
+	public Table(List<T> data) {
 		this(data, false);
 	}
 
@@ -35,55 +33,45 @@ public abstract class Table<T> implements ITable<T>
 	 * @param data
 	 *            input data that will be edited
 	 */
-	public Table(List<T> data, boolean readOnly)
-	{
-		m_data = data;
-		m_readOnly = readOnly;
+	public Table(List<T> data, boolean readOnly) {
+		this.data = data;
+		this.readOnly = readOnly;
 	}
 
-	public void addTableModifyListener(ITableModifyListener<T> listener)
-	{
-		if(!m_listeners.contains(listener))
-		{
-			m_listeners.add(listener);
+	public void addTableModifyListener(ITableModifyListener<T> listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
 		}
 	}
 
-	public T getRow(int row)
-	{
-		return m_data.get(row);
+	public T getRow(int row) {
+		return data.get(row);
 	}
 
-	public List<T> getRows()
-	{
-		return m_data;
+	public List<T> getRows() {
+		return data;
 	}
 
-	public boolean isReadOnly()
-	{
-		return m_readOnly;
+	public boolean isReadOnly() {
+		return readOnly;
 	}
 
 	// no need for refreshing
-	public void refresh()
-	{
+	public void refresh() {
 	}
 
-	public void removeRow(int row)
-	{
-		T oldTableRow = m_data.remove(row);
+	public void removeRow(int row) {
+		T oldTableRow = data.remove(row);
 		notifyListeners(TableModifyEventType.REMOVE_ROW, row, oldTableRow);
 	}
 
-	public void removeTableModifyListener(ITableModifyListener<T> listener)
-	{
-		m_listeners.remove(listener);
+	public void removeTableModifyListener(ITableModifyListener<T> listener) {
+		listeners.remove(listener);
 	}
 
-	protected void notifyListeners(TableModifyEventType eventType, int row, T tableRow)
-	{
+	protected void notifyListeners(TableModifyEventType eventType, int row, T tableRow) {
 		TableModifyEvent<T> e = new TableModifyEvent<T>(this, eventType, row, tableRow);
-		for(ITableModifyListener<T> listener : m_listeners)
+		for (ITableModifyListener<T> listener : listeners)
 			listener.modifyTable(e);
 	}
 }

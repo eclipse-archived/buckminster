@@ -25,20 +25,16 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  * @author Johannes Utzig
  * 
  */
-public class DependencyContentProvider implements IGraphEntityContentProvider
-{
+public class DependencyContentProvider implements IGraphEntityContentProvider {
 
-	public void dispose()
-	{
+	public void dispose() {
 		// nothing to dispose
 
 	}
 
-	public Object[] getConnectedTo(Object entity)
-	{
-		if(entity instanceof BOMNode)
-		{
-			BOMNode node = (BOMNode)entity;
+	public Object[] getConnectedTo(Object entity) {
+		if (entity instanceof BOMNode) {
+			BOMNode node = (BOMNode) entity;
 			return node.getChildren().toArray();
 
 		}
@@ -46,16 +42,13 @@ public class DependencyContentProvider implements IGraphEntityContentProvider
 	}
 
 	@SuppressWarnings("unchecked")
-	public Object[] getElements(Object inputElement)
-	{
+	public Object[] getElements(Object inputElement) {
 
-		if(inputElement instanceof List<?>)
-		{
-			List<BOMNode> input = (List<BOMNode>)inputElement;
+		if (inputElement instanceof List<?>) {
+			List<BOMNode> input = (List<BOMNode>) inputElement;
 			Set<BOMNode> nodes = new HashSet<BOMNode>();
 
-			for(BOMNode bomNode : input)
-			{
+			for (BOMNode bomNode : input) {
 				nodes.add(bomNode);
 				getElementsRecursivly(bomNode, nodes);
 			}
@@ -65,17 +58,14 @@ public class DependencyContentProvider implements IGraphEntityContentProvider
 
 	}
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-	{
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		// nothing to do
 
 	}
 
-	private Set<BOMNode> getElementsRecursivly(BOMNode node, Set<BOMNode> allElements)
-	{
+	private Set<BOMNode> getElementsRecursivly(BOMNode node, Set<BOMNode> allElements) {
 		Collection<BOMNode> children = node.getChildren();
-		for(BOMNode bomNode : children)
-		{
+		for (BOMNode bomNode : children) {
 			allElements.add(bomNode);
 			getElementsRecursivly(bomNode, allElements);
 

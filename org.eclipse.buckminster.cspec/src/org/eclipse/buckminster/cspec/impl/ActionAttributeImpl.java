@@ -20,23 +20,24 @@ import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Action Attribute</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Action Attribute</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.impl.ActionAttributeImpl#getAlias <em>Alias</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.ActionAttributeImpl#getAction <em>Action</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.ActionAttributeImpl#getAlias
+ * <em>Alias</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.ActionAttributeImpl#getAction
+ * <em>Action</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
-{
+public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute {
 	/**
-	 * The default value of the '{@link #getAlias() <em>Alias</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getAlias() <em>Alias</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAlias()
 	 * @generated
@@ -45,8 +46,8 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	protected static final String ALIAS_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getAlias() <em>Alias</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getAlias() <em>Alias</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAlias()
 	 * @generated
@@ -55,8 +56,8 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	protected String alias = ALIAS_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getAction() <em>Action</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getAction() <em>Action</em>}' reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAction()
 	 * @generated
@@ -69,8 +70,7 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
-	protected ActionAttributeImpl()
-	{
+	protected ActionAttributeImpl() {
 		super();
 	}
 
@@ -79,8 +79,7 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
-	public Action basicGetAction()
-	{
+	public Action basicGetAction() {
 		return action;
 	}
 
@@ -89,15 +88,13 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetAction(Action newAction, NotificationChain msgs)
-	{
+	public NotificationChain basicSetAction(Action newAction, NotificationChain msgs) {
 		Action oldAction = action;
 		action = newAction;
-		if(eNotificationRequired())
-		{
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-					CspecPackage.ACTION_ATTRIBUTE__ACTION, oldAction, newAction);
-			if(msgs == null)
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CspecPackage.ACTION_ATTRIBUTE__ACTION, oldAction,
+					newAction);
+			if (msgs == null)
 				msgs = notification;
 			else
 				msgs.add(notification);
@@ -111,16 +108,14 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ACTION_ATTRIBUTE__ALIAS:
-			return getAlias();
-		case CspecPackage.ACTION_ATTRIBUTE__ACTION:
-			if(resolve)
-				return getAction();
-			return basicGetAction();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CspecPackage.ACTION_ATTRIBUTE__ALIAS:
+				return getAlias();
+			case CspecPackage.ACTION_ATTRIBUTE__ACTION:
+				if (resolve)
+					return getAction();
+				return basicGetAction();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -131,14 +126,12 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ACTION_ATTRIBUTE__ACTION:
-			if(action != null)
-				msgs = ((InternalEObject)action).eInverseRemove(this, CspecPackage.ACTION__PRODUCTS, Action.class, msgs);
-			return basicSetAction((Action)otherEnd, msgs);
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.ACTION_ATTRIBUTE__ACTION:
+				if (action != null)
+					msgs = ((InternalEObject) action).eInverseRemove(this, CspecPackage.ACTION__PRODUCTS, Action.class, msgs);
+				return basicSetAction((Action) otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -149,12 +142,10 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ACTION_ATTRIBUTE__ACTION:
-			return basicSetAction(null, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.ACTION_ATTRIBUTE__ACTION:
+				return basicSetAction(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -165,16 +156,12 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ACTION_ATTRIBUTE__ALIAS:
-			return ALIAS_EDEFAULT == null
-					? alias != null
-					: !ALIAS_EDEFAULT.equals(alias);
-		case CspecPackage.ACTION_ATTRIBUTE__ACTION:
-			return action != null;
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ACTION_ATTRIBUTE__ALIAS:
+				return ALIAS_EDEFAULT == null ? alias != null : !ALIAS_EDEFAULT.equals(alias);
+			case CspecPackage.ACTION_ATTRIBUTE__ACTION:
+				return action != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -185,16 +172,14 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ACTION_ATTRIBUTE__ALIAS:
-			setAlias((String)newValue);
-			return;
-		case CspecPackage.ACTION_ATTRIBUTE__ACTION:
-			setAction((Action)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case CspecPackage.ACTION_ATTRIBUTE__ALIAS:
+				setAlias((String) newValue);
+				return;
+			case CspecPackage.ACTION_ATTRIBUTE__ACTION:
+				setAction((Action) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -205,16 +190,14 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ACTION_ATTRIBUTE__ALIAS:
-			setAlias(ALIAS_EDEFAULT);
-			return;
-		case CspecPackage.ACTION_ATTRIBUTE__ACTION:
-			setAction((Action)null);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ACTION_ATTRIBUTE__ALIAS:
+				setAlias(ALIAS_EDEFAULT);
+				return;
+			case CspecPackage.ACTION_ATTRIBUTE__ACTION:
+				setAction((Action) null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -224,17 +207,13 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
-	public Action getAction()
-	{
-		if(action != null && action.eIsProxy())
-		{
-			InternalEObject oldAction = (InternalEObject)action;
-			action = (Action)eResolveProxy(oldAction);
-			if(action != oldAction)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CspecPackage.ACTION_ATTRIBUTE__ACTION,
-							oldAction, action));
+	public Action getAction() {
+		if (action != null && action.eIsProxy()) {
+			InternalEObject oldAction = (InternalEObject) action;
+			action = (Action) eResolveProxy(oldAction);
+			if (action != oldAction) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CspecPackage.ACTION_ATTRIBUTE__ACTION, oldAction, action));
 			}
 		}
 		return action;
@@ -245,14 +224,12 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
-	public String getAlias()
-	{
+	public String getAlias() {
 		return alias;
 	}
 
 	@Override
-	public boolean isDerived(IContext context)
-	{
+	public boolean isDerived(IContext context) {
 		return true;
 	}
 
@@ -261,22 +238,18 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
-	public void setAction(Action newAction)
-	{
-		if(newAction != action)
-		{
+	public void setAction(Action newAction) {
+		if (newAction != action) {
 			NotificationChain msgs = null;
-			if(action != null)
-				msgs = ((InternalEObject)action).eInverseRemove(this, CspecPackage.ACTION__PRODUCTS, Action.class, msgs);
-			if(newAction != null)
-				msgs = ((InternalEObject)newAction).eInverseAdd(this, CspecPackage.ACTION__PRODUCTS, Action.class, msgs);
+			if (action != null)
+				msgs = ((InternalEObject) action).eInverseRemove(this, CspecPackage.ACTION__PRODUCTS, Action.class, msgs);
+			if (newAction != null)
+				msgs = ((InternalEObject) newAction).eInverseAdd(this, CspecPackage.ACTION__PRODUCTS, Action.class, msgs);
 			msgs = basicSetAction(newAction, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ACTION_ATTRIBUTE__ACTION, newAction,
-					newAction));
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ACTION_ATTRIBUTE__ACTION, newAction, newAction));
 	}
 
 	/**
@@ -284,11 +257,10 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
-	public void setAlias(String newAlias)
-	{
+	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ACTION_ATTRIBUTE__ALIAS, oldAlias, alias));
 	}
 
@@ -298,9 +270,8 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -316,8 +287,7 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.ACTION_ATTRIBUTE;
 	}
 

@@ -26,96 +26,83 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * 
  * @author Henrik Lindberg
  */
-public abstract class AbstractObjectAction<T> implements IObjectActionDelegate
-{
-	private IWorkbenchPart m_activePart;
+public abstract class AbstractObjectAction<T> implements IObjectActionDelegate {
+	private IWorkbenchPart activePart;
 
-	private T m_selected;
+	private T selected;
 
-	public Shell getShell()
-	{
-		if(m_activePart == null)
+	public Shell getShell() {
+		if (activePart == null)
 			throw new IllegalStateException(Messages.active_part_not_set);
-		return m_activePart.getSite().getShell();
+		return activePart.getSite().getShell();
 	}
 
-	public void run(IAction action)
-	{
-		if(m_activePart == null)
+	public void run(IAction action) {
+		if (activePart == null)
 			return;
 
-		IWorkbenchPartSite site = m_activePart.getSite();
+		IWorkbenchPartSite site = activePart.getSite();
 		final Shell shell = site.getShell();
-		if(m_selected == null)
-		{
+		if (selected == null) {
 			MessageDialog.openInformation(shell, null, Messages.nothing_selected);
 			return;
 		}
-		run(m_selected, m_activePart.getSite().getShell());
+		run(selected, activePart.getSite().getShell());
 	}
 
-	public void selectionChanged(IAction action, ISelection selection)
-	{
-		m_selected = null;
-		if(!(selection instanceof IStructuredSelection))
+	public void selectionChanged(IAction action, ISelection selection) {
+		selected = null;
+		if (!(selection instanceof IStructuredSelection))
 			return;
 
-		IStructuredSelection s = (IStructuredSelection)selection;
-		if(s.size() != 1)
+		IStructuredSelection s = (IStructuredSelection) selection;
+		if (s.size() != 1)
 			return;
 
 		Object first = s.getFirstElement();
-		// If the selected object is an instance of wanted type, or is adaptable to that type, use it.
+		// If the selected object is an instance of wanted type, or is adaptable
+		// to that type, use it.
 
-		if(getType().isInstance(first))
-			m_selected = getType().cast(first);
+		if (getType().isInstance(first))
+			selected = getType().cast(first);
 		else
-			m_selected = adapt(first);
+			selected = adapt(first);
 
-		action.setEnabled(m_selected != null);
+		action.setEnabled(selected != null);
 
 	}
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_activePart = targetPart;
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		activePart = targetPart;
 	}
 
-	protected T adapt(Object selected)
-	{
-		return getType().cast(((IAdaptable)selected).getAdapter(getType()));
+	protected T adapt(Object object) {
+		return getType().cast(((IAdaptable) object).getAdapter(getType()));
 	}
 
 	protected abstract Class<T> getType();
 
 	protected abstract void run(T instance, Shell shell);
 
-	protected void setSelected(T selected)
-	{
-		m_selected = selected;
+	protected void setSelected(T object) {
+		selected = object;
 	}
 
-	protected boolean showConfirm(String title, String question)
-	{
+	protected boolean showConfirm(String title, String question) {
 		return MessageDialog.openConfirm(getShell(), title, question);
 	}
 
-	protected void showError(String title, String message)
-	{
-		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR,
-				"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
+	protected void showError(String title, String message) {
+		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR, "org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
 				message));
 	}
 
-	protected void showError(String title, String message, Throwable e)
-	{
-		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR,
-				"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
+	protected void showError(String title, String message, Throwable e) {
+		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR, "org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
 				e.getMessage(), e));
 	}
 
-	protected void showMessage(String title, String message)
-	{
+	protected void showMessage(String title, String message) {
 		MessageDialog.openInformation(getShell(), title, message);
 	}
 

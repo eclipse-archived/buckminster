@@ -24,15 +24,16 @@ import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
 /**
- * A IComponentType knows how to find dependency information in the components that it represents, often in combination
- * with a {@link IResolutionBuilder}. A good example is the <code>eclipse.project</code> type that will choose a
- * <code>IResolutionBuilder</code> depending on the natures it finds in the .project file.
+ * A IComponentType knows how to find dependency information in the components
+ * that it represents, often in combination with a {@link IResolutionBuilder}. A
+ * good example is the <code>eclipse.project</code> type that will choose a
+ * <code>IResolutionBuilder</code> depending on the natures it finds in the
+ * .project file.
  * 
  * @see org.eclipse.buckminster.core.CorePlugin#getComponentType(String)
  * @author Thomas Hallgren
  */
-public interface IComponentType extends IBuckminsterExtension
-{
+public interface IComponentType extends IBuckminsterExtension {
 	public static final String OSGI_BUNDLE = "osgi.bundle"; //$NON-NLS-1$
 
 	public static final String ECLIPSE_FEATURE = "eclipse.feature"; //$NON-NLS-1$
@@ -58,8 +59,9 @@ public interface IComponentType extends IBuckminsterExtension
 	public static final String PREF_CQUERY_FILE = CorePlugin.getID() + ".cquery.file"; //$NON-NLS-1$
 
 	/**
-	 * Extracts the component version from artifacts found inside of the component. Component types where this is not
-	 * applicable will return <code>null</code>.
+	 * Extracts the component version from artifacts found inside of the
+	 * component. Component types where this is not applicable will return
+	 * <code>null</code>.
 	 * 
 	 * @param providerMatch
 	 *            The information needed to find the source.
@@ -71,30 +73,35 @@ public interface IComponentType extends IBuckminsterExtension
 	Version getComponentVersion(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * A regular expression that should match the name of the component. The project name will be subject to name
-	 * substitution using the {@link #getSubstituteNamePattern()} and {@link #getNameSubstitution()} when the name does
-	 * not match.
+	 * A regular expression that should match the name of the component. The
+	 * project name will be subject to name substitution using the
+	 * {@link #getSubstituteNamePattern()} and {@link #getNameSubstitution()}
+	 * when the name does not match.
 	 * 
-	 * @return The regular expression that controls if name substitution is needed or not.
+	 * @return The regular expression that controls if name substitution is
+	 *         needed or not.
 	 */
 	Pattern getDesiredNamePattern();
 
 	/**
-	 * Returns the meta files that this component make use of when creating the resolution
+	 * Returns the meta files that this component make use of when creating the
+	 * resolution
 	 * 
 	 * @return An array of meta files
 	 */
 	IMetaFile[] getMetaFiles();
 
 	/**
-	 * The substitution string for the pattern returned by {@link #getSubstituteNamePattern()}
+	 * The substitution string for the pattern returned by
+	 * {@link #getSubstituteNamePattern()}
 	 * 
 	 * @return The substitution string
 	 */
 	String getNameSubstitution();
 
 	/**
-	 * Returns what this component type would like to call a project containing the component named componentName.
+	 * Returns what this component type would like to call a project containing
+	 * the component named componentName.
 	 * 
 	 * @param componentName
 	 *            The name of the component
@@ -103,18 +110,22 @@ public interface IComponentType extends IBuckminsterExtension
 	String getProjectName(String componentName) throws CoreException;
 
 	/**
-	 * Suggested Workspace relative location to use when materializing, i.e. suggest
-	 * &amp;lt;workspace&amp;gt;/&amp;lt;relativeLocation&amp;gt;/&amp;lt;component name&amp;gt;
+	 * Suggested Workspace relative location to use when materializing, i.e.
+	 * suggest
+	 * &amp;lt;workspace&amp;gt;/&amp;lt;relativeLocation&amp;gt;/&amp;lt
+	 * ;component name&amp;gt;
 	 * 
 	 * @return The suggested workspace relative location
 	 */
 	IPath getRelativeLocation();
 
 	/**
-	 * Creates a {@link BOMNode} based on the dependency information in <code>providerMatch</code>. A provider will
-	 * normally create a node where only the top element is resolved but a provider can also find a previously resolved
-	 * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials BillOfMaterials}. When it does that instance
-	 * will be returned.
+	 * Creates a {@link BOMNode} based on the dependency information in
+	 * <code>providerMatch</code>. A provider will normally create a node where
+	 * only the top element is resolved but a provider can also find a
+	 * previously resolved
+	 * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials
+	 * BillOfMaterials}. When it does that instance will be returned.
 	 * 
 	 * @param providerMatch
 	 *            The information needed to find the source.
@@ -132,24 +143,26 @@ public interface IComponentType extends IBuckminsterExtension
 	IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * A regular expression used for substitution when the pattern returned by {@link #getDesiredNamePattern()} does not
-	 * match.
+	 * A regular expression used for substitution when the pattern returned by
+	 * {@link #getDesiredNamePattern()} does not match.
 	 * 
 	 * @return The expression to use for the name substitution
 	 */
 	Pattern getSubstituteNamePattern();
 
 	/**
-	 * Returns a designator that has been converted to suit the specific component type. Some component types put
-	 * special meaning to the qualifier of a version that affects the semantics of the designator (a typical example is
-	 * Mavens use of the keyword SNAPSHOT).
+	 * Returns a designator that has been converted to suit the specific
+	 * component type. Some component types put special meaning to the qualifier
+	 * of a version that affects the semantics of the designator (a typical
+	 * example is Mavens use of the keyword SNAPSHOT).
 	 * 
 	 * @return The converted designator
 	 */
 	VersionRange getTypeSpecificDesignator(VersionRange designator);
 
 	/**
-	 * Returns true if the component type can find all required meta files under the given <code>path</code>.
+	 * Returns true if the component type can find all required meta files under
+	 * the given <code>path</code>.
 	 * 
 	 * @param productPath
 	 *            The folder to scan for meta files
@@ -158,7 +171,8 @@ public interface IComponentType extends IBuckminsterExtension
 	boolean hasAllRequiredMetaFiles(IPath path);
 
 	/**
-	 * Returns true if this component type is producing a cspec based on other meta-data files found in the component.
+	 * Returns true if this component type is producing a cspec based on other
+	 * meta-data files found in the component.
 	 * 
 	 * @return true if a cspec is produced based on meta-files.
 	 */

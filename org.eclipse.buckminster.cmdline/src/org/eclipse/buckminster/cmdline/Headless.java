@@ -31,45 +31,36 @@ import org.eclipse.equinox.app.IApplicationContext;
 /**
  * This class controls all aspects of the application's execution
  */
-public class Headless implements IApplication, OptionValueType
-{
-	public static class Invocation
-	{
-		private final String m_name;
+public class Headless implements IApplication, OptionValueType {
+	public static class Invocation {
+		private final String name;
 
-		private final String[] m_args;
+		private final String[] args;
 
-		public Invocation(String name, String[] args)
-		{
-			m_name = name;
-			m_args = args == null
-					? Trivial.EMPTY_STRING_ARRAY
-					: args;
+		public Invocation(String name, String[] args) {
+			this.name = name;
+			this.args = args == null ? Trivial.EMPTY_STRING_ARRAY : args;
 		}
 
-		public String[] getArgs()
-		{
-			return m_args;
+		public String[] getArgs() {
+			return args;
 		}
 
-		public String getName()
-		{
-			return m_name;
+		public String getName() {
+			return name;
 		}
 
 		@Override
-		public String toString()
-		{
-			int nargs = m_args.length;
-			if(nargs == 0)
-				return m_name;
+		public String toString() {
+			int nargs = args.length;
+			if (nargs == 0)
+				return name;
 
 			StringBuffer bld = new StringBuffer();
-			bld.append(m_name);
-			for(int idx = 0; idx < nargs; ++idx)
-			{
+			bld.append(name);
+			for (int idx = 0; idx < nargs; ++idx) {
 				bld.append(" '"); //$NON-NLS-1$
-				bld.append(m_args[idx]);
+				bld.append(args[idx]);
 				bld.append('\'');
 			}
 			return bld.toString();
@@ -104,82 +95,62 @@ public class Headless implements IApplication, OptionValueType
 	//
 	private static final OptionDescriptor FILE = new OptionDescriptor('S', "scriptfile", REQUIRED); //$NON-NLS-1$
 
-	private final ArrayList<Invocation> m_invocations = new ArrayList<Invocation>();
+	private final ArrayList<Invocation> invocations = new ArrayList<Invocation>();
 
-	private boolean m_displayStackTrace = false;
+	private boolean displayStackTrace = false;
 
-	private boolean m_help = false;
+	private boolean help = false;
 
-	private boolean m_usingScript = false;
+	private boolean usingScript = false;
 
-	private int m_logLevel = Logger.INFO;
+	private int logLevel = Logger.INFO;
 
-	public Object run(Object objArgs) throws Exception
-	{
+	public Object run(Object objArgs) throws Exception {
 		Buckminster.setHeadless();
 		int exitValue = EXIT_FAIL;
-		try
-		{
-			exitValue = run((String[])objArgs);
-		}
-		catch(OperationCanceledException e)
-		{
+		try {
+			exitValue = run((String[]) objArgs);
+		} catch (OperationCanceledException e) {
 			System.err.println(Messages.Headless_Command_canceled);
-		}
-		catch(InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			System.err.println(Messages.Headless_Command_was_interrupted);
-		}
-		catch(SimpleErrorExitException e)
-		{
+		} catch (SimpleErrorExitException e) {
 			System.err.println(e.getMessage());
 			exitValue = e.getExitValue();
-		}
-		catch(UsageException e)
-		{
+		} catch (UsageException e) {
 			System.err.println(e.getMessage());
-			if(e.isEmitHelp())
+			if (e.isEmitHelp())
 				help(System.out);
-		}
-		catch(Throwable e)
-		{
-			BuckminsterException.deeplyPrint(e, System.err, m_displayStackTrace);
+		} catch (Throwable e) {
+			BuckminsterException.deeplyPrint(e, System.err, displayStackTrace);
 		}
 		return new Integer(exitValue);
 	}
 
-	public Object start(IApplicationContext context) throws Exception
-	{
+	public Object start(IApplicationContext context) throws Exception {
 		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
 	}
 
-	public void stop()
-	{
+	public void stop() {
 	}
 
-	protected void help(PrintStream ps) throws Exception
-	{
+	protected void help(PrintStream ps) throws Exception {
 		PrintStream out = System.out;
 		InputStream is = getClass().getResourceAsStream("Headless.help"); //$NON-NLS-1$
-		if(is == null)
+		if (is == null)
 			out.println(Messages.Headless_Help_is_not_available);
-		else
-		{
+		else {
 			out.println(Messages.Headless_Help_text_for_buckminster);
-			try
-			{
+			try {
 				IOUtils.copy(is, out, null);
 				out.flush();
-			}
-			finally
-			{
+			} finally {
 				IOUtils.close(is);
 			}
 		}
 	}
 
-	protected void parse(String[] args) throws Exception
-	{
+	protected void parse(String[] args) throws Exception {
 		ArrayList<OptionDescriptor> optionArr = new ArrayList<OptionDescriptor>();
 		optionArr.add(DISPLAY_STACKTRACE);
 		optionArr.add(FILE);
@@ -190,98 +161,83 @@ public class Headless implements IApplication, OptionValueType
 
 		Option[] options = pr.getOptions();
 		int top = options.length;
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			Option option = options[idx];
-			if(option.is(HELP))
-				m_help = true;
-			else if(option.is(DISPLAY_STACKTRACE))
-				m_displayStackTrace = true;
-			else if(option.is(FILE))
+			if (option.is(HELP))
+				help = true;
+			else if (option.is(DISPLAY_STACKTRACE))
+				displayStackTrace = true;
+			else if (option.is(FILE))
 				scriptFile = option.getValue();
-			else if(option.is(LOG_LEVEL))
-			{
-				int logLevel;
+			else if (option.is(LOG_LEVEL)) {
+				int level;
 				String arg = option.getValue();
-				if("info".equalsIgnoreCase(arg)) //$NON-NLS-1$
-					logLevel = Logger.INFO;
-				else if("warning".equalsIgnoreCase(arg)) //$NON-NLS-1$
-					logLevel = Logger.WARNING;
-				else if("error".equalsIgnoreCase(arg)) //$NON-NLS-1$
-					logLevel = Logger.ERROR;
-				else if("debug".equalsIgnoreCase(arg)) //$NON-NLS-1$
-					logLevel = Logger.DEBUG;
+				if ("info".equalsIgnoreCase(arg)) //$NON-NLS-1$
+					level = Logger.INFO;
+				else if ("warning".equalsIgnoreCase(arg)) //$NON-NLS-1$
+					level = Logger.WARNING;
+				else if ("error".equalsIgnoreCase(arg)) //$NON-NLS-1$
+					level = Logger.ERROR;
+				else if ("debug".equalsIgnoreCase(arg)) //$NON-NLS-1$
+					level = Logger.DEBUG;
 				else
 					throw new InvalidOptionValueException(option.getName(), option.getValue());
-				m_logLevel = logLevel;
-			}
-			else
+				logLevel = level;
+			} else
 				throw new InternalError(Messages.Headless_Unexpected_option);
 		}
 
 		String[] unparsed = pr.getUnparsed();
-		if(unparsed.length > 0)
-		{
-			if(scriptFile != null)
-				throw new UsageException(Messages.Headless_The_scriptfile_option_cannot_be_combined_with_a_command,
-						true);
+		if (unparsed.length > 0) {
+			if (scriptFile != null)
+				throw new UsageException(Messages.Headless_The_scriptfile_option_cannot_be_combined_with_a_command, true);
 
 			String[] commandArgs = new String[unparsed.length - 1];
 			System.arraycopy(unparsed, 1, commandArgs, 0, commandArgs.length);
-			m_invocations.add(new Invocation(unparsed[0], commandArgs));
-		}
-		else if(scriptFile != null)
-		{
+			invocations.add(new Invocation(unparsed[0], commandArgs));
+		} else if (scriptFile != null) {
 			InputStream lines = null;
-			try
-			{
-				if(scriptFile.equals("-")) //$NON-NLS-1$
+			try {
+				if (scriptFile.equals("-")) //$NON-NLS-1$
 					lines = System.in;
 				else
 					lines = new FileInputStream(scriptFile);
 
 				LineNumberReader reader = new LineNumberReader(new InputStreamReader(lines));
 				String line;
-				while((line = reader.readLine()) != null)
-				{
+				while ((line = reader.readLine()) != null) {
 					CommandLineParser tokenParser = new CommandLineParser(line);
-					if(tokenParser.hasNext())
-					{
+					if (tokenParser.hasNext()) {
 						String command = tokenParser.next();
 						ArrayList<String> tokens = new ArrayList<String>();
-						while(tokenParser.hasNext())
+						while (tokenParser.hasNext())
 							tokens.add(tokenParser.next());
-						m_invocations.add(new Invocation(command, tokens.toArray(new String[tokens.size()])));
-						m_usingScript = true;
+						invocations.add(new Invocation(command, tokens.toArray(new String[tokens.size()])));
+						usingScript = true;
 					}
 				}
-			}
-			finally
-			{
-				if(lines != System.in)
+			} finally {
+				if (lines != System.in)
 					IOUtils.close(lines);
 			}
 		}
 	}
 
-	protected int run(String[] args) throws Exception
-	{
+	protected int run(String[] args) throws Exception {
 		parse(args);
 
-		Logger.setConsoleLevelThreshold(m_logLevel);
-		Logger.setEclipseLoggerLevelThreshold(m_logLevel);
+		Logger.setConsoleLevelThreshold(logLevel);
+		Logger.setEclipseLoggerLevelThreshold(logLevel);
 		Logger.setEclipseLoggerToConsole(true);
 
-		if(m_help)
-		{
+		if (help) {
 			help(System.out);
 			return EXIT_OK;
 		}
 
 		final IJobManager jobMgr = Job.getJobManager();
-		int top = m_invocations.size();
-		if(top == 0)
-		{
+		int top = invocations.size();
+		if (top == 0) {
 			System.out.println(Messages.Headless_No_command_provided_Try_one_of);
 			System.out.println(Messages.Headless_buckminster__help);
 			System.out.println(Messages.Headless_buckminster_listcommands);
@@ -290,20 +246,19 @@ public class Headless implements IApplication, OptionValueType
 		}
 
 		Logger logger = Buckminster.getLogger();
-		for(int idx = 0; idx < top; ++idx)
-		{
-			Invocation invocation = m_invocations.get(idx);
+		for (int idx = 0; idx < top; ++idx) {
+			Invocation invocation = invocations.get(idx);
 			String commandName = invocation.getName();
 			CommandInfo ci = CommandInfo.getCommand(commandName);
 			AbstractCommand cmd = ci.createInstance();
 			jobMgr.setProgressProvider(cmd.getProgressProvider());
 
-			if(logger.isDebugEnabled())
+			if (logger.isDebugEnabled())
 				logger.debug(invocation.toString());
-			else if(m_usingScript)
+			else if (usingScript)
 				logger.info(invocation.toString());
 			int exitValue = cmd.basicRun(commandName, ci, invocation.getArgs());
-			if(exitValue != EXIT_OK)
+			if (exitValue != EXIT_OK)
 				return exitValue;
 		}
 		return EXIT_OK;

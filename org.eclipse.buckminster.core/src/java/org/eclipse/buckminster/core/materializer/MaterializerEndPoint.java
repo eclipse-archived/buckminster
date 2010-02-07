@@ -21,36 +21,29 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Thomas Hallgren
  * 
  */
-public class MaterializerEndPoint
-{
-	public static MaterializerEndPoint create(IPath location, String remoteName, Resolution resolution,
-			MaterializationContext ctx) throws CoreException
-	{
+public class MaterializerEndPoint {
+	public static MaterializerEndPoint create(IPath location, String remoteName, Resolution resolution, MaterializationContext ctx)
+			throws CoreException {
 		String suffixedName = ctx.getSuffixedName(resolution, remoteName);
-		Installer installer = (suffixedName == null)
-				? Installer.getPlainInstaller()
-				: Installer.getInstaller(suffixedName, resolution.isUnpack()
-						|| ctx.getMaterializationSpec().isExpand(resolution));
+		Installer installer = (suffixedName == null) ? Installer.getPlainInstaller() : Installer.getInstaller(suffixedName, resolution.isUnpack()
+				|| ctx.getMaterializationSpec().isExpand(resolution));
 		return new MaterializerEndPoint(location, installer);
 	}
 
-	private final IPath m_finalDestination;
+	private final IPath finalDestination;
 
-	private final Installer m_installer;
+	private final Installer installer;
 
-	MaterializerEndPoint(IPath finalLocation, Installer installer)
-	{
-		m_finalDestination = finalLocation;
-		m_installer = installer;
+	MaterializerEndPoint(IPath finalLocation, Installer installer) {
+		this.finalDestination = finalLocation;
+		this.installer = installer;
 	}
 
-	public IPath getFinalDestination()
-	{
-		return m_finalDestination;
+	public IPath getFinalDestination() {
+		return finalDestination;
 	}
 
-	public void unpack(InputStream input, IProgressMonitor monitor) throws IOException, CoreException
-	{
-		m_installer.install(input, m_finalDestination.toFile(), monitor);
+	public void unpack(InputStream input, IProgressMonitor monitor) throws IOException, CoreException {
+		installer.install(input, finalDestination.toFile(), monitor);
 	}
 }

@@ -16,220 +16,193 @@ import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 
 /**
- * A simple command line parser that implements a subset of the parsing that is performed by a normal bourne shell.
- * Environment substitution is performed only if the Java runtime is of version 1.5 or higher.
+ * A simple command line parser that implements a subset of the parsing that is
+ * performed by a normal bourne shell. Environment substitution is performed
+ * only if the Java runtime is of version 1.5 or higher.
  * 
  * @author Thomas Hallgren
  * @see java.util.Iterator
  */
-public class CommandLineParser implements Iterator<String>
-{
-	private static char getEscapedChar(char escaped)
-	{
-		switch(escaped)
-		{
-		case 't':
-			return '\t';
-		case 'n':
-			return '\n';
-		case 'r':
-			return '\r';
-		default:
-			return escaped;
+public class CommandLineParser implements Iterator<String> {
+	private static char getEscapedChar(char escaped) {
+		switch (escaped) {
+			case 't':
+				return '\t';
+			case 'n':
+				return '\n';
+			case 'r':
+				return '\r';
+			default:
+				return escaped;
 		}
 	}
 
-	private final StringBuffer m_innerBld = new StringBuffer();
+	private final StringBuffer innerBld = new StringBuffer();
 
-	private final StringBuffer m_outerBld = new StringBuffer();
+	private final StringBuffer outerBld = new StringBuffer();
 
-	private final String m_line;
+	private final String line;
 
-	private String m_nextToken;
+	private String nextToken;
 
-	private int m_pos;
+	private int pos;
 
-	public CommandLineParser(String line)
-	{
-		m_line = line;
-		int top = m_line.length();
-		while(m_pos < top)
-		{
-			char c = m_line.charAt(m_pos);
-			if(Character.isWhitespace(c))
-			{
-				++m_pos;
+	public CommandLineParser(String line) {
+		this.line = line;
+		int top = line.length();
+		while (pos < top) {
+			char c = line.charAt(pos);
+			if (Character.isWhitespace(c)) {
+				++pos;
 				continue;
 			}
 
 			// Lines where first non-space character is a '#' are considered
 			// to be comments
 			//
-			if(c == '#')
-				m_pos = top;
+			if (c == '#')
+				pos = top;
 			break;
 		}
 	}
 
-	public boolean hasNext()
-	{
-		if(m_nextToken == null)
-			m_nextToken = this.nextToken();
-		return m_nextToken != null;
+	public boolean hasNext() {
+		if (nextToken == null)
+			nextToken = this.nextToken();
+		return nextToken != null;
 	}
 
-	public String next()
-	{
-		if(!this.hasNext())
+	public String next() {
+		if (!this.hasNext())
 			throw new NoSuchElementException();
-		String nxt = m_nextToken;
-		m_nextToken = null;
+		String nxt = nextToken;
+		nextToken = null;
 		return nxt;
 	}
 
-	public void remove()
-	{
+	public void remove() {
 		throw new UnsupportedOperationException();
 	}
 
-	private void getExpanded(StringBuffer bld, String string)
-	{
+	private void getExpanded(StringBuffer bld, String string) {
 		Logger logger = Buckminster.getLogger();
 		int top = string.length();
 		int idx = 0;
-		while(idx < top)
-		{
+		while (idx < top) {
 			char c = string.charAt(idx++);
-			if(c != '$')
-			{
+			if (c != '$') {
 				bld.append(c);
 				continue;
 			}
-			if(idx == top)
+			if (idx == top)
 				break;
 
 			int start;
 			int end;
 			c = string.charAt(idx);
-			if(c == '{')
-			{
+			if (c == '{') {
 				start = ++idx;
-				while(idx < top && string.charAt(idx) != '}')
+				while (idx < top && string.charAt(idx) != '}')
 					++idx;
 				end = idx++; // Skip trailing '}'
-			}
-			else
-			{
+			} else {
 				start = idx;
-				while(idx < top && Character.isJavaIdentifierPart(string.charAt(idx)))
+				while (idx < top && Character.isJavaIdentifierPart(string.charAt(idx)))
 					++idx;
 				end = idx;
 			}
-			if(end > start)
-			{
+			if (end > start) {
 				String key = string.substring(start, end);
 				String value = (key.length() > 4 && "env:".equalsIgnoreCase(string.substring(0, 4))) //$NON-NLS-1$
-						? System.getenv(key.substring(4))
-						: System.getProperty(key);
+						? System.getenv(key.substring(4)) : System.getProperty(key);
 				logger.debug("key '%s' expanded to '%s'", key, value); //$NON-NLS-1$
-				if(value != null)
+				if (value != null)
 					bld.append(value);
 			}
 		}
 	}
 
-	private String getQuoted(char quote)
-	{
-		m_innerBld.setLength(0);
-		int top = m_line.length();
-		while(m_pos < top)
-		{
-			char c = m_line.charAt(m_pos++);
-			if(c == quote)
+	private String getQuoted(char quote) {
+		innerBld.setLength(0);
+		int top = line.length();
+		while (pos < top) {
+			char c = line.charAt(pos++);
+			if (c == quote)
 				break;
 
-			if(c == '\\')
-			{
-				if(m_pos == top)
+			if (c == '\\') {
+				if (pos == top)
 					break;
-				c = getEscapedChar(m_line.charAt(m_pos++));
+				c = getEscapedChar(line.charAt(pos++));
 			}
-			m_innerBld.append(c);
+			innerBld.append(c);
 		}
-		return m_innerBld.toString();
+		return innerBld.toString();
 	}
 
-	private String getSpaceDelimited()
-	{
-		m_innerBld.setLength(0);
-		int top = m_line.length();
-		while(m_pos < top)
-		{
-			char c = m_line.charAt(m_pos);
-			if(Character.isWhitespace(c) || c == '\'' || c == '"')
+	private String getSpaceDelimited() {
+		innerBld.setLength(0);
+		int top = line.length();
+		while (pos < top) {
+			char c = line.charAt(pos);
+			if (Character.isWhitespace(c) || c == '\'' || c == '"')
 				break;
 
-			++m_pos;
-			if(c == '\\')
-			{
-				if(m_pos == top)
+			++pos;
+			if (c == '\\') {
+				if (pos == top)
 					break;
 
 				// The sequence '\ ' should not cause a break since that
 				// is an escaped space. The sequence '\t' however, should
 				// since that is an unescaped tab
 				//
-				c = m_line.charAt(m_pos++);
-				if(!Character.isWhitespace(c))
-				{
+				c = line.charAt(pos++);
+				if (!Character.isWhitespace(c)) {
 					c = getEscapedChar(c);
-					if(Character.isWhitespace(c))
+					if (Character.isWhitespace(c))
 						break;
 				}
 			}
-			m_innerBld.append(c);
+			innerBld.append(c);
 		}
-		return m_innerBld.toString();
+		return innerBld.toString();
 	}
 
-	private String nextToken()
-	{
-		m_outerBld.setLength(0);
-		int top = m_line.length();
-		if(m_pos == top)
+	private String nextToken() {
+		outerBld.setLength(0);
+		int top = line.length();
+		if (pos == top)
 			return null;
 
-		while(m_pos < top)
-		{
-			char c = m_line.charAt(m_pos);
-			switch(c)
-			{
-			case '\'':
-				// Find matching end quote. No expansion is performed
-				//
-				++m_pos;
-				m_outerBld.append(getQuoted('\''));
-				continue;
-			case '"':
-				// Find matching end quote and perform expansion
-				//
-				++m_pos;
-				getExpanded(m_outerBld, getQuoted('"'));
-				continue;
+		while (pos < top) {
+			char c = line.charAt(pos);
+			switch (c) {
+				case '\'':
+					// Find matching end quote. No expansion is performed
+					//
+					++pos;
+					outerBld.append(getQuoted('\''));
+					continue;
+				case '"':
+					// Find matching end quote and perform expansion
+					//
+					++pos;
+					getExpanded(outerBld, getQuoted('"'));
+					continue;
 
-			default:
-				if(Character.isWhitespace(c))
-				{
-					++m_pos;
-					while(m_pos < top && Character.isWhitespace(m_line.charAt(m_pos)))
-						++m_pos;
-					break;
-				}
-				getExpanded(m_outerBld, getSpaceDelimited());
-				continue;
+				default:
+					if (Character.isWhitespace(c)) {
+						++pos;
+						while (pos < top && Character.isWhitespace(line.charAt(pos)))
+							++pos;
+						break;
+					}
+					getExpanded(outerBld, getSpaceDelimited());
+					continue;
 			}
 			break;
 		}
-		return m_outerBld.toString();
+		return outerBld.toString();
 	}
 }

@@ -21,24 +21,21 @@ import org.eclipse.jdt.launching.VMStandin;
 import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
-public class InstallJRE extends WorkspaceCommand
-{
+public class InstallJRE extends WorkspaceCommand {
 	static private final OptionDescriptor OPT_LOCATION = new OptionDescriptor('L', "location", OptionValueType.REQUIRED); //$NON-NLS-1$
 
 	static private final OptionDescriptor OPT_NAME = new OptionDescriptor('N', "name", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	static private final OptionDescriptor OPT_DEFAULT_ARGS = new OptionDescriptor('D',
-			"defaultArgs", OptionValueType.REQUIRED); //$NON-NLS-1$
+	static private final OptionDescriptor OPT_DEFAULT_ARGS = new OptionDescriptor('D', "defaultArgs", OptionValueType.REQUIRED); //$NON-NLS-1$
 
-	private File m_location;
+	private File location;
 
-	private String m_name;
+	private String name;
 
-	private String m_defaultArgs;
+	private String defaultArgs;
 
 	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(OPT_LOCATION);
 		appendHere.add(OPT_NAME);
 		appendHere.add(OPT_DEFAULT_ARGS);
@@ -46,62 +43,56 @@ public class InstallJRE extends WorkspaceCommand
 	}
 
 	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(OPT_LOCATION))
-			m_location = new File(option.getValue());
-		else if(option.is(OPT_NAME))
-			m_name = option.getValue();
-		else if(option.is(OPT_DEFAULT_ARGS))
-			m_name = option.getValue();
+	protected void handleOption(Option option) throws Exception {
+		if (option.is(OPT_LOCATION))
+			location = new File(option.getValue());
+		else if (option.is(OPT_NAME))
+			name = option.getValue();
+		else if (option.is(OPT_DEFAULT_ARGS))
+			name = option.getValue();
 		else
 			super.handleOption(option);
 	}
 
 	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		if(unparsed.length > 0)
+	protected void handleUnparsed(String[] unparsed) throws Exception {
+		if (unparsed.length > 0)
 			throw new UsageException(Messages.Too_many_arguments);
 	}
 
 	@Override
-	protected int internalRun(IProgressMonitor monitor) throws Exception
-	{
-		if(m_location == null)
+	protected int internalRun(IProgressMonitor monitor) throws Exception {
+		if (location == null)
 			throw new UsageException("Missing required option --location <JRE location>");
 
-		if(!m_location.isDirectory())
-			throw new UsageException(NLS.bind("JRE location {0} does not appoint a directory",
-					m_location.getAbsolutePath()));
+		if (!location.isDirectory())
+			throw new UsageException(NLS.bind("JRE location {0} does not appoint a directory", location.getAbsolutePath()));
 
-		if(m_name == null)
-			m_name = m_location.getName();
+		if (name == null)
+			name = location.getName();
 
 		IVMInstallType vmType = JavaRuntime.getVMInstallType(StandardVMType.ID_STANDARD_VM_TYPE);
-		IStatus status = vmType.validateInstallLocation(m_location);
-		if(!status.isOK())
+		IStatus status = vmType.validateInstallLocation(location);
+		if (!status.isOK())
 			throw new CoreException(status);
 
 		long unique = System.currentTimeMillis();
-		while(vmType.findVMInstall(String.valueOf(unique)) != null)
+		while (vmType.findVMInstall(String.valueOf(unique)) != null)
 			unique++;
 
 		VMStandin vm = new VMStandin(vmType, Long.toString(unique));
-		vm.setInstallLocation(m_location);
-		vm.setLibraryLocations(vmType.getDefaultLibraryLocations(m_location));
-		vm.setName(m_name);
-		if(vmType instanceof AbstractVMInstallType)
-		{
-			AbstractVMInstallType atype = (AbstractVMInstallType)vmType;
-			vm.setJavadocLocation(atype.getDefaultJavadocLocation(m_location));
-			String vmArgs = atype.getDefaultVMArguments(m_location);
-			if(m_defaultArgs != null)
-			{
-				if(vmArgs == null)
-					vmArgs = m_defaultArgs;
+		vm.setInstallLocation(location);
+		vm.setLibraryLocations(vmType.getDefaultLibraryLocations(location));
+		vm.setName(name);
+		if (vmType instanceof AbstractVMInstallType) {
+			AbstractVMInstallType atype = (AbstractVMInstallType) vmType;
+			vm.setJavadocLocation(atype.getDefaultJavadocLocation(location));
+			String vmArgs = atype.getDefaultVMArguments(location);
+			if (defaultArgs != null) {
+				if (vmArgs == null)
+					vmArgs = defaultArgs;
 				else
-					vmArgs = vmArgs + ' ' + m_defaultArgs;
+					vmArgs = vmArgs + ' ' + defaultArgs;
 			}
 			vm.setVMArgs(vmArgs);
 		}

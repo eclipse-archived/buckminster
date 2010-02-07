@@ -29,38 +29,29 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class BOMBuilder extends AbstractResolutionBuilder implements IStreamConsumer<BillOfMaterials>
-{
-	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly,
-			IProgressMonitor monitor) throws CoreException
-	{
+public class BOMBuilder extends AbstractResolutionBuilder implements IStreamConsumer<BillOfMaterials> {
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IComponentReader reader = readerHandle[0];
-		try
-		{
+		try {
 			BillOfMaterials bom;
-			if(reader instanceof ICatalogReader)
-				bom = ((ICatalogReader)reader).readFile(CorePlugin.BOM_FILE, this, monitor);
+			if (reader instanceof ICatalogReader)
+				bom = ((ICatalogReader) reader).readFile(CorePlugin.BOM_FILE, this, monitor);
 			else
-				bom = ((IFileReader)reader).readFile(this, monitor);
+				bom = ((IFileReader) reader).readFile(this, monitor);
 
-			if(bom.getResolution() == null)
+			if (bom.getResolution() == null)
 				throw new UnresolvedNodeException(reader.getNodeQuery().getComponentRequest());
 
 			return bom;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw new MissingCSpecSourceException(reader.getProviderMatch());
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public BillOfMaterials consumeStream(IComponentReader reader, String streamName, InputStream stream,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public BillOfMaterials consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
+			throws CoreException {
 		IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
 		return bomParser.parse(streamName, stream);
 	}

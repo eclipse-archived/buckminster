@@ -16,93 +16,74 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 /**
  * @author Thomas Hallgren
  */
-public abstract class TopLevelAttributeBuilder extends AttributeBuilder
-{
-	private boolean m_public = false;
+public abstract class TopLevelAttributeBuilder extends AttributeBuilder {
+	private boolean publ = false;
 
-	TopLevelAttributeBuilder(CSpecBuilder cspecBuilder)
-	{
+	TopLevelAttributeBuilder(CSpecBuilder cspecBuilder) {
 		super(cspecBuilder);
 	}
 
-	public final void addExternalPrerequisite(String name, String type, String attr)
-			throws PrerequisiteAlreadyDefinedException
-	{
+	public final void addExternalPrerequisite(String name, String type, String attr) throws PrerequisiteAlreadyDefinedException {
 		addPrerequisite(createPrerequisite(name, type, attr, null, null));
 	}
 
-	public final void addLocalPrerequisite(AttributeBuilder attr) throws PrerequisiteAlreadyDefinedException
-	{
+	public final void addLocalPrerequisite(AttributeBuilder attr) throws PrerequisiteAlreadyDefinedException {
 		addLocalPrerequisite(attr.getName());
 	}
 
-	public final void addLocalPrerequisite(String attr) throws PrerequisiteAlreadyDefinedException
-	{
+	public final void addLocalPrerequisite(String attr) throws PrerequisiteAlreadyDefinedException {
 		addPrerequisite(createPrerequisite(null, null, attr, null, null));
 	}
 
-	public final void addLocalPrerequisite(String attr, String alias) throws PrerequisiteAlreadyDefinedException
-	{
+	public final void addLocalPrerequisite(String attr, String alias) throws PrerequisiteAlreadyDefinedException {
 		addPrerequisite(createPrerequisite(null, null, attr, alias, null));
 	}
 
-	public final void addLocalPrerequisite(String attr, String alias, Filter filter)
-			throws PrerequisiteAlreadyDefinedException
-	{
+	public final void addLocalPrerequisite(String attr, String alias, Filter filter) throws PrerequisiteAlreadyDefinedException {
 		addPrerequisite(createPrerequisite(null, null, attr, alias, filter));
 	}
 
-	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException
-	{
+	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_public = false;
+		publ = false;
 	}
 
 	@Override
 	public abstract Attribute createAttribute();
 
-	public PrerequisiteBuilder createPrerequisiteBuilder()
-	{
+	public PrerequisiteBuilder createPrerequisiteBuilder() {
 		return new PrerequisiteBuilder(this);
 	}
 
 	@Override
-	public void initFrom(IAttribute attribute)
-	{
+	public void initFrom(IAttribute attribute) {
 		super.initFrom(attribute);
-		m_public = attribute.isPublic();
+		publ = attribute.isPublic();
 	}
 
 	@Override
-	public boolean isPublic()
-	{
-		return m_public;
+	public boolean isPublic() {
+		return publ;
 	}
 
-	public void removePrerequisite(IPrerequisite pq)
-	{
+	public void removePrerequisite(IPrerequisite pq) {
 		removePrerequisite(pq.toString());
 	}
 
-	public void removePrerequisite(String prerequisiteName)
-	{
+	public void removePrerequisite(String prerequisiteName) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void setPublic(boolean flag)
-	{
-		m_public = flag;
+	public void setPublic(boolean flag) {
+		publ = flag;
 	}
 
-	private PrerequisiteBuilder createPrerequisite(String component, String type, String name, String alias,
-			Filter filter)
-	{
+	private PrerequisiteBuilder createPrerequisite(String component, String type, String name, String alias, Filter filter) {
 		PrerequisiteBuilder bld = createPrerequisiteBuilder();
 		bld.setComponentName(component);
 		bld.setComponentType(type);

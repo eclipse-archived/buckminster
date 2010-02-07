@@ -17,22 +17,20 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
 /**
- * This filter removes all components that have been resolved from the target platform.
+ * This filter removes all components that have been resolved from the target
+ * platform.
  * 
  * @see Provider#getReaderTypeId()
  * @author Johannes Utzig
  * 
  */
-public class PlatformComponentsFilter extends ViewerFilter
-{
+public class PlatformComponentsFilter extends ViewerFilter {
 	@Override
-	public boolean select(Viewer viewer, Object parentElement, Object element)
-	{
-		if(element instanceof BOMNode)
-		{
-			BOMNode node = (BOMNode)element;
+	public boolean select(Viewer viewer, Object parentElement, Object element) {
+		if (element instanceof BOMNode) {
+			BOMNode node = (BOMNode) element;
 			Resolution resolution = node.getResolution();
-			if(resolution == null)
+			if (resolution == null)
 				return true;
 			return !"eclipse.platform".equals(resolution.getProvider().getReaderTypeId()); //$NON-NLS-1$
 

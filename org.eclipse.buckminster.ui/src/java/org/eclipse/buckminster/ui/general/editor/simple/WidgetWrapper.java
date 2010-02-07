@@ -16,42 +16,34 @@ import org.eclipse.swt.widgets.Widget;
  * @author Karel Brezina
  * 
  */
-public class WidgetWrapper implements IWidgetin
-{
-	private Widget m_widget;
+public class WidgetWrapper implements IWidgetin {
+	private final Widget widget;
 
-	public WidgetWrapper(Widget widget)
-	{
-		m_widget = widget;
+	public WidgetWrapper(Widget widget) {
+		this.widget = widget;
 	}
 
-	public void addListener(int eventType, Listener listener)
-	{
-		m_widget.addListener(eventType, listener);
+	public void addListener(int eventType, Listener listener) {
+		widget.addListener(eventType, listener);
 	}
 
-	public Object getData()
-	{
-		return m_widget.getData();
+	public Object getData() {
+		return widget.getData();
 	}
 
-	public Widget getWidget()
-	{
-		return m_widget;
+	public Widget getWidget() {
+		return widget;
 	}
 
-	public void notifyListeners(int eventType, Event event)
-	{
-		m_widget.notifyListeners(eventType, event);
+	public void notifyListeners(int eventType, Event event) {
+		widget.notifyListeners(eventType, event);
 	}
 
-	public void removeListener(int eventType, Listener listener)
-	{
-		m_widget.removeListener(eventType, listener);
+	public void removeListener(int eventType, Listener listener) {
+		widget.removeListener(eventType, listener);
 	}
 
-	public void setData(Object data)
-	{
-		m_widget.setData(data);
+	public void setData(Object data) {
+		widget.setData(data);
 	}
 }

@@ -16,39 +16,31 @@ import org.eclipse.buckminster.sax.ISaxable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.Version;
 
-public class CSpecEditorInput extends SaxableEditorInput
-{
-	private final CSpec m_cspec;
+public class CSpecEditorInput extends SaxableEditorInput {
+	private final CSpec cspec;
 
-	public CSpecEditorInput(CSpec cspec)
-	{
-		m_cspec = cspec;
+	public CSpecEditorInput(CSpec cspec) {
+		this.cspec = cspec;
 	}
 
 	@Override
-	public boolean equals(Object other)
-	{
-		return other == this
-				|| (other instanceof CSpecEditorInput && ((CSpecEditorInput)other).m_cspec.equals(m_cspec));
+	public boolean equals(Object other) {
+		return other == this || (other instanceof CSpecEditorInput && ((CSpecEditorInput) other).cspec.equals(cspec));
 	}
 
-	public boolean exists()
-	{
+	public boolean exists() {
 		return true;
 	}
 
-	public ICSpecData getCSpec()
-	{
-		return m_cspec;
+	public ICSpecData getCSpec() {
+		return cspec;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		StringBuilder bld = new StringBuilder();
-		bld.append(m_cspec.getName());
-		Version version = m_cspec.getVersion();
-		if(version != null)
-		{
+		bld.append(cspec.getName());
+		Version version = cspec.getVersion();
+		if (version != null) {
 			bld.append(':');
 			bld.append(VersionHelper.getHumanReadable(version));
 		}
@@ -56,20 +48,17 @@ public class CSpecEditorInput extends SaxableEditorInput
 		return bld.toString();
 	}
 
-	public String getToolTipText()
-	{
+	public String getToolTipText() {
 		return this.getName();
 	}
 
 	@Override
-	public int hashCode()
-	{
-		return m_cspec.hashCode();
+	public int hashCode() {
+		return cspec.hashCode();
 	}
 
 	@Override
-	protected ISaxable getContent() throws CoreException
-	{
-		return m_cspec;
+	protected ISaxable getContent() throws CoreException {
+		return cspec;
 	}
 }

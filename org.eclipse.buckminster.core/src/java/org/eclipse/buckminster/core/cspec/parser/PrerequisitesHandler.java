@@ -18,29 +18,24 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class PrerequisitesHandler extends GroupHandler
-{
+public class PrerequisitesHandler extends GroupHandler {
 	public static final String TAG = Prerequisites.TAG;
 
-	public PrerequisitesHandler(AbstractHandler parent)
-	{
+	public PrerequisitesHandler(AbstractHandler parent) {
 		super(parent, false);
 	}
 
 	@Override
-	protected TopLevelAttributeBuilder createAttributeBuilder()
-	{
+	protected TopLevelAttributeBuilder createAttributeBuilder() {
 		return getActionBuilder().getPrerequisitesBuilder();
 	}
 
 	@Override
-	protected String getNameAttribute(Attributes attrs) throws SAXException
-	{
+	protected String getNameAttribute(Attributes attrs) throws SAXException {
 		return getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS);
 	}
 
-	private ActionBuilder getActionBuilder()
-	{
-		return (ActionBuilder)((IAttributeBuilderSupport)this.getParentHandler()).getAttributeBuilder();
+	private ActionBuilder getActionBuilder() {
+		return (ActionBuilder) ((IAttributeBuilderSupport) this.getParentHandler()).getAttributeBuilder();
 	}
 }

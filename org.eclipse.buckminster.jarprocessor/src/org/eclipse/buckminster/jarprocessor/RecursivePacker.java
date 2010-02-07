@@ -18,38 +18,31 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 
-public class RecursivePacker extends RecursivePack200
-{
-	private final boolean m_useRedunantGZipping;
+public class RecursivePacker extends RecursivePack200 {
+	private final boolean useRedunantGZipping;
 
-	public RecursivePacker(List<String> defaultArgs, boolean useRedundantGZipping)
-	{
+	public RecursivePacker(List<String> defaultArgs, boolean useRedundantGZipping) {
 		super(defaultArgs);
-		this.m_useRedunantGZipping = useRedundantGZipping;
+		this.useRedunantGZipping = useRedundantGZipping;
 	}
 
-	public boolean pack(File jarFile) throws CoreException
-	{
+	public boolean pack(File jarFile) throws CoreException {
 		Logger log = Buckminster.getLogger();
 		String fileName = jarFile.getAbsolutePath();
 		InputStream input = null;
 		OutputStream output = null;
-		try
-		{
+		try {
 			input = new ZipInputStream(new FileInputStream(jarFile));
-			JarInfo jarInfo = JarInfo.getJarInfo(null, fileName, (ZipInputStream)input);
-			if(!(jarInfo.hasClasses() || (jarInfo.isNested() && !jarInfo.isExcludeChildrenPack())))
-			{
+			JarInfo jarInfo = JarInfo.getJarInfo(null, fileName, (ZipInputStream) input);
+			if (!(jarInfo.hasClasses() || (jarInfo.isNested() && !jarInfo.isExcludeChildrenPack()))) {
 				log.debug("Packer: Skipping %s since it contains no classes and no nested jars to pack", fileName); //$NON-NLS-1$
 				return false;
 			}
-			if(jarInfo.isExcludePack())
-			{
+			if (jarInfo.isExcludePack()) {
 				log.debug("Packer: Skipping %s since is excluded", fileName); //$NON-NLS-1$
 				return false;
 			}
-			if(jarInfo.isSigned() && !jarInfo.isConditioned())
-			{
+			if (jarInfo.isSigned() && !jarInfo.isConditioned()) {
 				log.debug("Packer: Skipping %s since is signed but not conditioned", fileName); //$NON-NLS-1$
 				return false;
 			}
@@ -59,77 +52,57 @@ public class RecursivePacker extends RecursivePack200
 			output = new FileOutputStream(fileName + PACK_GZ_SUFFIX);
 			output = new GZIPOutputStream(output);
 
-			if(jarInfo.isNested() && !jarInfo.isExcludeChildrenPack())
+			if (jarInfo.isNested() && !jarInfo.isExcludeChildrenPack())
 				nestedPack(input, jarInfo, output);
 			else
 				pack(jarInfo, input, output);
 			return true;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.fromMessage(e, "Unable to pack %s", fileName); //$NON-NLS-1$
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 			IOUtils.close(output);
 		}
 	}
 
-	private void nestedPack(final InputStream input, final JarInfo jarInfo, OutputStream packedOut)
-			throws CoreException
-	{
+	private void nestedPack(final InputStream input, final JarInfo jarInfo, OutputStream packedOut) throws CoreException {
 		ProducerThread pumper = new ProducerThread("Pack200 pumper") //$NON-NLS-1$
 		{
 			@Override
-			protected void internalRun(OutputStream writer) throws Exception
-			{
+			protected void internalRun(OutputStream writer) throws Exception {
 				ZipInputStream jarIn = new ZipInputStream(input);
 				processNestedJars(jarIn, jarInfo, writer);
 			}
 		};
 		pumper.start();
-		try
-		{
+		try {
 			pack(jarInfo, pumper.getReaderStream(), packedOut);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			pumper.drain(jarInfo, e);
 		}
 		pumper.drain(jarInfo, null);
 	}
 
-	private void processNestedJars(ZipInputStream jarIn, JarInfo jarInfo, OutputStream output) throws Exception
-	{
+	private void processNestedJars(ZipInputStream jarIn, JarInfo jarInfo, OutputStream output) throws Exception {
 		ZipOutputStream jarOut = new ZipOutputStream(output);
 		ZipEntry entry;
 		boolean packChildren = !jarInfo.isExcludeChildrenPack();
-		while((entry = jarIn.getNextEntry()) != null)
-		{
+		while ((entry = jarIn.getNextEntry()) != null) {
 			String name = entry.getName();
-			if(packChildren && name.endsWith(JAR_SUFFIX))
-			{
+			if (packChildren && name.endsWith(JAR_SUFFIX)) {
 				JarInfo nested = jarInfo.getNestedInfo(name);
-				if(nested != null)
-				{
-					if(nested.hasClasses() && !(nested.isSigned() && !nested.isConditioned()))
-					{
-						if(m_useRedunantGZipping)
-						{
+				if (nested != null) {
+					if (nested.hasClasses() && !(nested.isSigned() && !nested.isConditioned())) {
+						if (useRedunantGZipping) {
 							jarOut.putNextEntry(createEntry(entry, name + PACK_GZ_SUFFIX));
 							GZIPOutputStream gzipOut = new GZIPOutputStream(jarOut);
 							nestedPack(jarIn, nested, gzipOut);
 							gzipOut.finish();
-						}
-						else
-						{
+						} else {
 							jarOut.putNextEntry(createEntry(entry, name + PACK_SUFFIX));
 							nestedPack(jarIn, nested, jarOut);
 						}
-					}
-					else
-					{
+					} else {
 						jarOut.putNextEntry(createEntry(entry));
 						processNestedJars(jarIn, nested, jarOut);
 					}
@@ -137,7 +110,7 @@ public class RecursivePacker extends RecursivePack200
 				}
 			}
 			jarOut.putNextEntry(createEntry(entry));
-			if(!entry.isDirectory())
+			if (!entry.isDirectory())
 				IOUtils.copy(jarIn, jarOut, null);
 		}
 		jarOut.finish();

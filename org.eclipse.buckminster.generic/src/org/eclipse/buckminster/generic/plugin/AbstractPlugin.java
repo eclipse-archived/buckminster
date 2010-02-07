@@ -20,58 +20,48 @@ import org.osgi.framework.BundleContext;
  * @author Henrik Lindberg
  * 
  */
-public abstract class AbstractPlugin extends Plugin
-{
-	private AbstractPlugin m_plugin;
+public abstract class AbstractPlugin extends Plugin {
+	private AbstractPlugin plugin;
 
-	public IStatus createStatus(int severity, int code, String message, Throwable e)
-	{
+	public IStatus createStatus(int severity, int code, String message, Throwable e) {
 		return new Status(severity, getPluginId(), code, message, e);
 	}
 
-	public AbstractPlugin getDefault()
-	{
-		return m_plugin;
+	public AbstractPlugin getDefault() {
+		return plugin;
 	}
 
 	public abstract String getPluginId();
 
-	public void log(int severity, int code, String message, Throwable e)
-	{
+	public void log(int severity, int code, String message, Throwable e) {
 		log(createStatus(severity, code, message, e));
 	}
 
-	public void log(IStatus status)
-	{
+	public void log(IStatus status) {
 		getDefault().getLog().log(status);
 	}
 
-	public void logError(String message, Throwable e)
-	{
+	public void logError(String message, Throwable e) {
 		log(IStatus.ERROR, IStatus.OK, message, e);
 	}
 
-	public void logError(Throwable e)
-	{
+	public void logError(Throwable e) {
 		logError(Messages.unexpected_exception, e);
 	}
 
-	public void logInfo(String message)
-	{
+	public void logInfo(String message) {
 		log(IStatus.INFO, IStatus.OK, message, null);
 	}
 
 	@Override
-	public void start(BundleContext context) throws Exception
-	{
+	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		m_plugin = this;
+		plugin = this;
 	}
 
 	@Override
-	public void stop(BundleContext context) throws Exception
-	{
-		m_plugin = null;
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
 		super.stop(context);
 	}
 }

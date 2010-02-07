@@ -20,47 +20,38 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public abstract class CSpecElementHandler extends ExtensionAwareHandler implements IAttributeBuilderSupport,
-		ICSpecBuilderSupport
-{
-	private NamedElementBuilder m_builder;
+public abstract class CSpecElementHandler extends ExtensionAwareHandler implements IAttributeBuilderSupport, ICSpecBuilderSupport {
+	private NamedElementBuilder builder;
 
-	protected CSpecElementHandler(AbstractHandler parent)
-	{
+	protected CSpecElementHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public TopLevelAttributeBuilder getAttributeBuilder()
-	{
-		return ((IAttributeBuilderSupport)getParentHandler()).getAttributeBuilder();
+	public TopLevelAttributeBuilder getAttributeBuilder() {
+		return ((IAttributeBuilderSupport) getParentHandler()).getAttributeBuilder();
 	}
 
-	public NamedElementBuilder getBuilder()
-	{
-		return m_builder;
+	public NamedElementBuilder getBuilder() {
+		return builder;
 	}
 
-	public CSpecBuilder getCSpecBuilder()
-	{
-		return ((ICSpecBuilderSupport)getParentHandler()).getCSpecBuilder();
+	public CSpecBuilder getCSpecBuilder() {
+		return ((ICSpecBuilderSupport) getParentHandler()).getCSpecBuilder();
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_builder = this.createBuilder();
-		m_builder.setName(this.getNameAttribute(attrs));
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		builder = this.createBuilder();
+		builder.setName(this.getNameAttribute(attrs));
 	}
 
 	protected abstract NamedElementBuilder createBuilder();
 
-	protected CSpecElementBuilder getCSpecElementBuilder()
-	{
-		return (CSpecElementBuilder)this.getBuilder();
+	protected CSpecElementBuilder getCSpecElementBuilder() {
+		return (CSpecElementBuilder) this.getBuilder();
 	}
 
-	protected String getNameAttribute(Attributes attrs) throws SAXException
-	{
+	protected String getNameAttribute(Attributes attrs) throws SAXException {
 		return this.getStringValue(attrs, NamedElement.ATTR_NAME);
 	}
 }

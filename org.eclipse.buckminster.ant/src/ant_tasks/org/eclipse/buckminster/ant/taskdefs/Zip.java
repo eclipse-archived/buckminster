@@ -23,23 +23,18 @@ import org.eclipse.buckminster.ant.types.FileSetGroup;
 /**
  * @author Thomas Hallgren
  */
-public class Zip extends org.apache.tools.ant.taskdefs.Zip
-{
-	private ArrayList<FileSetGroup> m_fileSetGroups;
+public class Zip extends org.apache.tools.ant.taskdefs.Zip {
+	private ArrayList<FileSetGroup> fileSetGroups;
 
-	private ArrayList<FileSetGroup> m_zipGroupFileSetGroups;
+	private ArrayList<FileSetGroup> zipGroupFileSetGroups;
 
 	private static final Method File_canExecute;
 
-	static
-	{
+	static {
 		Method fce;
-		try
-		{
+		try {
 			fce = File.class.getMethod("canExecute");
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			fce = null;
 		}
 		File_canExecute = fce;
@@ -48,57 +43,48 @@ public class Zip extends org.apache.tools.ant.taskdefs.Zip
 	/**
 	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
 	 */
-	public void add(FileSetGroup fsGroup) throws BuildException
-	{
-		if(m_fileSetGroups == null)
-			m_fileSetGroups = new ArrayList<FileSetGroup>();
-		m_fileSetGroups.add(fsGroup);
+	public void add(FileSetGroup fsGroup) throws BuildException {
+		if (fileSetGroups == null)
+			fileSetGroups = new ArrayList<FileSetGroup>();
+		fileSetGroups.add(fsGroup);
 	}
 
 	/**
-	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element targeted for zipgroupfilesets.
+	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element targeted for
+	 * zipgroupfilesets.
 	 */
-	public void addZipGroupFilesetGroup(FileSetGroup setGroup)
-	{
-		if(m_zipGroupFileSetGroups == null)
-			m_zipGroupFileSetGroups = new ArrayList<FileSetGroup>();
-		m_zipGroupFileSetGroups.add(setGroup);
+	public void addZipGroupFilesetGroup(FileSetGroup setGroup) {
+		if (zipGroupFileSetGroups == null)
+			zipGroupFileSetGroups = new ArrayList<FileSetGroup>();
+		zipGroupFileSetGroups.add(setGroup);
 	}
 
 	@Override
-	public void execute() throws BuildException
-	{
-		if(m_fileSetGroups != null)
-		{
-			for(FileSetGroup fsg : m_fileSetGroups)
-				for(FileSet fs : fsg.getFileSets())
+	public void execute() throws BuildException {
+		if (fileSetGroups != null) {
+			for (FileSetGroup fsg : fileSetGroups)
+				for (FileSet fs : fsg.getFileSets())
 					this.addFileset(fs);
-			m_fileSetGroups = null;
+			fileSetGroups = null;
 		}
-		if(m_zipGroupFileSetGroups != null)
-		{
-			for(FileSetGroup fsg : m_zipGroupFileSetGroups)
-				for(FileSet fs : fsg.getFileSets())
+		if (zipGroupFileSetGroups != null) {
+			for (FileSetGroup fsg : zipGroupFileSetGroups)
+				for (FileSet fs : fsg.getFileSets())
 					this.addZipGroupFileset(fs);
-			m_zipGroupFileSetGroups = null;
+			zipGroupFileSetGroups = null;
 		}
 		super.execute();
 	}
 
 	@Override
-	protected void zipFile(File file, ZipOutputStream zOut, String vPath, int mode) throws IOException
-	{
+	protected void zipFile(File file, ZipOutputStream zOut, String vPath, int mode) throws IOException {
 
-		if(File_canExecute != null)
-		{
+		if (File_canExecute != null) {
 			// We're running Java 1.6 or higher. Check the execution bits
-			try
-			{
-				if(((Boolean)File_canExecute.invoke(file)).booleanValue())
+			try {
+				if (((Boolean) File_canExecute.invoke(file)).booleanValue())
 					mode |= 0111;
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 			}
 		}
 		super.zipFile(file, zOut, vPath, mode);

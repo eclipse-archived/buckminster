@@ -32,37 +32,36 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.emf.ecore.EObject} object. <!-- begin-user-doc --> <!--
- * end-user-doc -->
+ * This is the item provider adapter for a {@link org.eclipse.emf.ecore.EObject}
+ * object. <!-- begin-user-doc --> <!-- end-user-doc -->
  * 
  * @generated
  */
-public class DocumentRootItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider,
-		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource
-{
+public class DocumentRootItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
+		ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
 	/**
-	 * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This constructs an instance from a factory and a notifier. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public DocumentRootItemProvider(AdapterFactory adapterFactory)
-	{
+	public DocumentRootItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * This specifies how to implement {@link #getChildren} and is used to
+	 * deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand},
+	 * {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in
+	 * {@link #createCommand}. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object)
-	{
-		if(childrenFeatures == null)
-		{
+	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
+		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__MATCH);
 			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__GROUP);
@@ -80,56 +79,49 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 	}
 
 	/**
-	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * This returns the label text for
+	 * {@link org.eclipse.emf.edit.command.CreateChildCommand}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection)
-	{
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
 		Object childFeature = feature;
 		Object childObject = child;
 
-		boolean qualify = childFeature == RmapPackage.Literals.DOCUMENT_ROOT__MATCH
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__NAME
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__VERSION
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__REVISION
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__OS
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__WS
-				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__ARCH
+		boolean qualify = childFeature == RmapPackage.Literals.DOCUMENT_ROOT__MATCH || childFeature == RmapPackage.Literals.DOCUMENT_ROOT__NAME
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__VERSION || childFeature == RmapPackage.Literals.DOCUMENT_ROOT__REVISION
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP || childFeature == RmapPackage.Literals.DOCUMENT_ROOT__OS
+				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__WS || childFeature == RmapPackage.Literals.DOCUMENT_ROOT__ARCH
 				|| childFeature == RmapPackage.Literals.DOCUMENT_ROOT__NL;
 
-		if(qualify)
-		{
-			return getString("_UI_CreateChild_text2", new Object[] { getTypeText(childObject),
-					getFeatureText(childFeature), getTypeText(owner) });
+		if (qualify) {
+			return getString("_UI_CreateChild_text2", new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
 		}
 		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**
-	 * This returns DocumentRoot.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns DocumentRoot.gif. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	public Object getImage(Object object)
-	{
+	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/DocumentRoot"));
 	}
 
 	/**
-	 * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the property descriptors for the adapted class. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object)
-	{
-		if(itemPropertyDescriptors == null)
-		{
+	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
+		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 		}
@@ -137,101 +129,89 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Return the resource locator for this item provider's resources. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	public ResourceLocator getResourceLocator()
-	{
-		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
+	public ResourceLocator getResourceLocator() {
+		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
 	}
 
 	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	public String getText(Object object)
-	{
+	public String getText(Object object) {
 		return getString("_UI_DocumentRoot_type");
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
-	 * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	public void notifyChanged(Notification notification)
-	{
+	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch(notification.getFeatureID(EObject.class))
-		{
-		case RmapPackage.DOCUMENT_ROOT__MATCH:
-		case RmapPackage.DOCUMENT_ROOT__GROUP:
-		case RmapPackage.DOCUMENT_ROOT__NAME:
-		case RmapPackage.DOCUMENT_ROOT__VERSION:
-		case RmapPackage.DOCUMENT_ROOT__REVISION:
-		case RmapPackage.DOCUMENT_ROOT__TIMESTAMP:
-		case RmapPackage.DOCUMENT_ROOT__OS:
-		case RmapPackage.DOCUMENT_ROOT__WS:
-		case RmapPackage.DOCUMENT_ROOT__ARCH:
-		case RmapPackage.DOCUMENT_ROOT__NL:
-		case RmapPackage.DOCUMENT_ROOT__RMAP:
-			fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
-			return;
+		switch (notification.getFeatureID(EObject.class)) {
+			case RmapPackage.DOCUMENT_ROOT__MATCH:
+			case RmapPackage.DOCUMENT_ROOT__GROUP:
+			case RmapPackage.DOCUMENT_ROOT__NAME:
+			case RmapPackage.DOCUMENT_ROOT__VERSION:
+			case RmapPackage.DOCUMENT_ROOT__REVISION:
+			case RmapPackage.DOCUMENT_ROOT__TIMESTAMP:
+			case RmapPackage.DOCUMENT_ROOT__OS:
+			case RmapPackage.DOCUMENT_ROOT__WS:
+			case RmapPackage.DOCUMENT_ROOT__ARCH:
+			case RmapPackage.DOCUMENT_ROOT__NL:
+			case RmapPackage.DOCUMENT_ROOT__RMAP:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
+				return;
 		}
 		super.notifyChanged(notification);
 	}
 
 	/**
-	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created
-	 * under this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s
+	 * describing the children that can be created under this object. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object)
-	{
+	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__MATCH,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__MATCH, CommonFactory.eINSTANCE.createRxPattern()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__GROUP,
-				CommonFactory.eINSTANCE.createRxGroup()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__GROUP, CommonFactory.eINSTANCE.createRxGroup()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__NAME,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__NAME, CommonFactory.eINSTANCE.createRxPattern()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__VERSION,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__VERSION, CommonFactory.eINSTANCE.createRxPattern()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__REVISION,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__REVISION, CommonFactory.eINSTANCE.createRxPattern()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP, CommonFactory.eINSTANCE.createRxPattern()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__OS,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__OS, CommonFactory.eINSTANCE.createRxPattern()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__WS,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__WS, CommonFactory.eINSTANCE.createRxPattern()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__ARCH,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__ARCH, CommonFactory.eINSTANCE.createRxPattern()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__NL,
-				CommonFactory.eINSTANCE.createRxPattern()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__NL, CommonFactory.eINSTANCE.createRxPattern()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__RMAP,
-				RmapFactory.eINSTANCE.createResourceMap()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__RMAP, RmapFactory.eINSTANCE.createResourceMap()));
 	}
 
 	/**
@@ -240,9 +220,9 @@ public class DocumentRootItemProvider extends ItemProviderAdapter implements IEd
 	 * @generated
 	 */
 	@Override
-	protected EStructuralFeature getChildFeature(Object object, Object child)
-	{
-		// Check the type of the specified child object and return the proper feature to use for
+	protected EStructuralFeature getChildFeature(Object object, Object child) {
+		// Check the type of the specified child object and return the proper
+		// feature to use for
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);

@@ -37,209 +37,175 @@ import org.eclipse.swt.widgets.List;
  * @author Thomas Hallgren
  * 
  */
-public class ResolutionResolverListEditor extends FieldEditor
-{
-	private String m_value;
+public class ResolutionResolverListEditor extends FieldEditor {
+	private String value;
 
-	private Button m_addButton;
+	private Button addButton;
 
-	private Button m_moveDownButton;
+	private Button moveDownButton;
 
-	private Button m_moveUpButton;
+	private Button moveUpButton;
 
-	private ListViewer m_queryResolvers;
+	private ListViewer queryResolvers;
 
-	private ListViewer m_queryResolversToAdd;
+	private ListViewer queryResolversToAdd;
 
-	private String[] m_registeredResolverFactories;
+	private String[] registeredResolverFactories;
 
-	private Button m_removeButton;
+	private Button removeButton;
 
-	private Group m_resolveOrderGroup;
+	private Group resolveOrderGroup;
 
-	public ResolutionResolverListEditor(String name, String labelText, Composite parent)
-	{
+	public ResolutionResolverListEditor(String name, String labelText, Composite parent) {
 		init(name, labelText);
 		createControl(parent);
 	}
 
-	public Control getControl(Composite parent, int numColumns)
-	{
-		if(m_resolveOrderGroup == null)
-		{
-			m_resolveOrderGroup = new Group(parent, SWT.NONE);
-			m_resolveOrderGroup.setLayout(new GridLayout(3, false));
-			m_resolveOrderGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, numColumns, 1));
-			m_resolveOrderGroup.setText(Messages.order_of_resolution);
-			m_queryResolvers = new ListViewer(m_resolveOrderGroup, SWT.BORDER);
-			m_queryResolvers.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-			m_queryResolvers.setContentProvider(new ArrayContentProvider());
-			m_queryResolvers.setLabelProvider(new LabelProvider());
-			m_queryResolvers.addSelectionChangedListener(new ISelectionChangedListener()
-			{
-				public void selectionChanged(SelectionChangedEvent event)
-				{
+	public Control getControl(Composite parent, int numColumns) {
+		if (resolveOrderGroup == null) {
+			resolveOrderGroup = new Group(parent, SWT.NONE);
+			resolveOrderGroup.setLayout(new GridLayout(3, false));
+			resolveOrderGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, numColumns, 1));
+			resolveOrderGroup.setText(Messages.order_of_resolution);
+			queryResolvers = new ListViewer(resolveOrderGroup, SWT.BORDER);
+			queryResolvers.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			queryResolvers.setContentProvider(new ArrayContentProvider());
+			queryResolvers.setLabelProvider(new LabelProvider());
+			queryResolvers.addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
 					enableDisableUpDownButtons(true);
 				}
 			});
 
-			Composite buttonBox = new Composite(m_resolveOrderGroup, SWT.NONE);
+			Composite buttonBox = new Composite(resolveOrderGroup, SWT.NONE);
 			buttonBox.setLayout(new GridLayout(1, true));
 			buttonBox.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, true));
 
-			m_addButton = UiUtils.createPushButton(buttonBox, Messages.add_with_arrow_left, new SelectionAdapter()
-			{
+			addButton = UiUtils.createPushButton(buttonBox, Messages.add_with_arrow_left, new SelectionAdapter() {
 				@Override
-				public void widgetSelected(SelectionEvent e)
-				{
+				public void widgetSelected(SelectionEvent e) {
 					addResolver();
 				}
 			});
-			m_addButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+			addButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-			m_removeButton = UiUtils.createPushButton(buttonBox, Messages.remove_with_arrow_right,
-					new SelectionAdapter()
-					{
-						@Override
-						public void widgetSelected(SelectionEvent e)
-						{
-							removeResolver();
-						}
-					});
-			m_removeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-			m_moveUpButton = UiUtils.createPushButton(buttonBox, Messages.move_up, new SelectionAdapter()
-			{
+			removeButton = UiUtils.createPushButton(buttonBox, Messages.remove_with_arrow_right, new SelectionAdapter() {
 				@Override
-				public void widgetSelected(SelectionEvent e)
-				{
+				public void widgetSelected(SelectionEvent e) {
+					removeResolver();
+				}
+			});
+			removeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+			moveUpButton = UiUtils.createPushButton(buttonBox, Messages.move_up, new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
 					swapAndReselect(0, -1);
 				}
 			});
-			m_moveUpButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+			moveUpButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-			m_moveDownButton = UiUtils.createPushButton(buttonBox, Messages.move_down, new SelectionAdapter()
-			{
+			moveDownButton = UiUtils.createPushButton(buttonBox, Messages.move_down, new SelectionAdapter() {
 				@Override
-				public void widgetSelected(SelectionEvent e)
-				{
+				public void widgetSelected(SelectionEvent e) {
 					swapAndReselect(1, 0);
 				}
 			});
-			m_moveDownButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+			moveDownButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-			m_queryResolversToAdd = new ListViewer(m_resolveOrderGroup, SWT.BORDER);
-			m_queryResolversToAdd.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-			m_queryResolversToAdd.setContentProvider(new ArrayContentProvider());
-			m_queryResolversToAdd.setLabelProvider(new LabelProvider());
-			m_queryResolversToAdd.addSelectionChangedListener(new ISelectionChangedListener()
-			{
-				public void selectionChanged(SelectionChangedEvent event)
-				{
+			queryResolversToAdd = new ListViewer(resolveOrderGroup, SWT.BORDER);
+			queryResolversToAdd.getList().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			queryResolversToAdd.setContentProvider(new ArrayContentProvider());
+			queryResolversToAdd.setLabelProvider(new LabelProvider());
+			queryResolversToAdd.addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
 					enableDisableUpDownButtons(false);
 				}
 			});
 		}
-		return m_resolveOrderGroup;
+		return resolveOrderGroup;
 	}
 
 	@Override
-	public int getNumberOfControls()
-	{
+	public int getNumberOfControls() {
 		return 1;
 	}
 
 	@Override
-	protected void adjustForNumColumns(int numColumns)
-	{
-		((GridData)m_resolveOrderGroup.getLayoutData()).horizontalSpan = numColumns;
+	protected void adjustForNumColumns(int numColumns) {
+		((GridData) resolveOrderGroup.getLayoutData()).horizontalSpan = numColumns;
 	}
 
 	@Override
-	protected void doFillIntoGrid(Composite parent, int numColumns)
-	{
+	protected void doFillIntoGrid(Composite parent, int numColumns) {
 		getControl(parent, numColumns);
 	}
 
 	@Override
-	protected void doLoad()
-	{
+	protected void doLoad() {
 		loadLists(getPreferenceStore().getString(getPreferenceName()));
 	}
 
 	@Override
-	protected void doLoadDefault()
-	{
+	protected void doLoadDefault() {
 		ResolverFactoryMaintainer.getInstance().setDefaultResolutionOrder();
 		loadLists(getPreferenceStore().getString(getPreferenceName()));
 	}
 
 	@Override
-	protected void doStore()
-	{
-		String value = BuckminsterPreferences.createQueryResolverSortOrder((m_queryResolvers == null)
-				? getRegisteredResolverFactories()
-				: m_queryResolvers.getList().getItems());
+	protected void doStore() {
+		String v = BuckminsterPreferences.createQueryResolverSortOrder((queryResolvers == null) ? getRegisteredResolverFactories() : queryResolvers
+				.getList().getItems());
 
 		IPreferenceStore store = getPreferenceStore();
 		String prefName = getPreferenceName();
-		if(value == null)
-		{
+		if (v == null) {
 			store.setToDefault(prefName);
 			BuckminsterPreferences.setCustomQueryResolverSortOrder(false);
-		}
-		else
-		{
-			if(value.equals(store.getString(prefName)))
+		} else {
+			if (v.equals(store.getString(prefName)))
 				return;
 
-			store.setValue(prefName, value);
+			store.setValue(prefName, v);
 			BuckminsterPreferences.setCustomQueryResolverSortOrder(true);
 		}
 	}
 
-	void addResolver()
-	{
-		moveItem(m_queryResolversToAdd, m_queryResolvers);
+	void addResolver() {
+		moveItem(queryResolversToAdd, queryResolvers);
 	}
 
-	void enableDisableUpDownButtons(boolean fromResolvers)
-	{
-		String oldValue = m_value;
-		List list = m_queryResolvers.getList();
+	void enableDisableUpDownButtons(boolean fromResolvers) {
+		String oldValue = value;
+		List list = queryResolvers.getList();
 		int top = list.getItemCount();
 		int idx = list.getSelectionIndex();
-		if(fromResolvers)
-		{
-			m_value = idx >= 0
-					? list.getItem(idx)
-					: null;
-			if(!Trivial.equalsAllowNull(oldValue, m_value))
-				fireValueChanged(VALUE, oldValue, m_value);
+		if (fromResolvers) {
+			value = idx >= 0 ? list.getItem(idx) : null;
+			if (!Trivial.equalsAllowNull(oldValue, value))
+				fireValueChanged(VALUE, oldValue, value);
 		}
 
-		List addList = m_queryResolversToAdd.getList();
-		m_addButton.setEnabled(addList.getItemCount() > 0 && addList.getSelectionIndex() >= 0);
+		List addList = queryResolversToAdd.getList();
+		addButton.setEnabled(addList.getItemCount() > 0 && addList.getSelectionIndex() >= 0);
 
-		m_moveUpButton.setEnabled(idx > 0);
-		m_removeButton.setEnabled(idx >= 0);
-		m_moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
+		moveUpButton.setEnabled(idx > 0);
+		removeButton.setEnabled(idx >= 0);
+		moveDownButton.setEnabled(idx >= 0 && idx < top - 1);
 	}
 
-	void removeResolver()
-	{
-		moveItem(m_queryResolvers, m_queryResolversToAdd);
+	void removeResolver() {
+		moveItem(queryResolvers, queryResolversToAdd);
 	}
 
-	void swapAndReselect(int idxOffset, int selectionOffset)
-	{
-		List list = m_queryResolvers.getList();
+	void swapAndReselect(int idxOffset, int selectionOffset) {
+		List list = queryResolvers.getList();
 		int idx = list.getSelectionIndex() + idxOffset;
-		if(idx <= 0)
+		if (idx <= 0)
 			return;
 
 		String[] items = list.getItems();
-		if(idx >= items.length)
+		if (idx >= items.length)
 			return;
 
 		String moved = items[idx - 1];
@@ -250,62 +216,52 @@ public class ResolutionResolverListEditor extends FieldEditor
 		enableDisableUpDownButtons(true);
 	}
 
-	private String[] getPossibleResolverAdditions()
-	{
+	private String[] getPossibleResolverAdditions() {
 		String[] registered = getRegisteredResolverFactories();
-		String[] current = m_queryResolvers.getList().getItems();
+		String[] current = queryResolvers.getList().getItems();
 		ArrayList<String> possible = null;
-		for(String name : registered)
-		{
+		for (String name : registered) {
 			boolean found = false;
-			for(String currName : current)
-				if(currName.equals(name))
-				{
+			for (String currName : current)
+				if (currName.equals(name)) {
 					found = true;
 					break;
 				}
-			if(found)
+			if (found)
 				continue;
-			if(possible == null)
+			if (possible == null)
 				possible = new ArrayList<String>();
 			possible.add(name);
 		}
-		return possible == null
-				? Trivial.EMPTY_STRING_ARRAY
-				: possible.toArray(new String[possible.size()]);
+		return possible == null ? Trivial.EMPTY_STRING_ARRAY : possible.toArray(new String[possible.size()]);
 	}
 
-	private synchronized String[] getRegisteredResolverFactories()
-	{
-		if(m_registeredResolverFactories == null)
-			m_registeredResolverFactories = ResolverFactoryMaintainer.getRegisterFactoryIDs();
-		return m_registeredResolverFactories;
+	private synchronized String[] getRegisteredResolverFactories() {
+		if (registeredResolverFactories == null)
+			registeredResolverFactories = ResolverFactoryMaintainer.getRegisterFactoryIDs();
+		return registeredResolverFactories;
 	}
 
-	private void loadLists(String prefValue)
-	{
-		String[] resolvers = (prefValue == null || prefValue.length() == 0)
-				? Trivial.EMPTY_STRING_ARRAY
-				: prefValue.split(","); //$NON-NLS-1$
-		m_queryResolvers.setInput(resolvers);
-		m_queryResolvers.getList().select(0);
-		m_queryResolversToAdd.setInput(getPossibleResolverAdditions());
+	private void loadLists(String prefValue) {
+		String[] resolvers = (prefValue == null || prefValue.length() == 0) ? Trivial.EMPTY_STRING_ARRAY : prefValue.split(","); //$NON-NLS-1$
+		queryResolvers.setInput(resolvers);
+		queryResolvers.getList().select(0);
+		queryResolversToAdd.setInput(getPossibleResolverAdditions());
 		enableDisableUpDownButtons(true);
 	}
 
-	private void moveItem(ListViewer from, ListViewer to)
-	{
+	private void moveItem(ListViewer from, ListViewer to) {
 		List list = from.getList();
 		int idx = list.getSelectionIndex();
-		if(idx < 0)
+		if (idx < 0)
 			return;
 
 		to.add(list.getItem(idx));
 		list.remove(idx);
 		int top = list.getItemCount();
-		if(idx >= top)
+		if (idx >= top)
 			idx = top - 1;
-		if(idx >= 0)
+		if (idx >= 0)
 			list.select(idx);
 		enableDisableUpDownButtons(true);
 	}

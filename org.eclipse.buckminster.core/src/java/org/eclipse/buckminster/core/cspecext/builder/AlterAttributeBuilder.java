@@ -18,72 +18,60 @@ import org.eclipse.buckminster.core.cspecext.model.AlterAttribute;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AlterAttributeBuilder
-{
-	private final AttributeBuilder m_baseBuilder;
+public abstract class AlterAttributeBuilder {
+	private final AttributeBuilder baseBuilder;
 
-	private final HashSet<String> m_removedHints = new HashSet<String>();
+	private final HashSet<String> removedHints = new HashSet<String>();
 
-	private final ExpandingProperties<String> m_alteredHints = new ExpandingProperties<String>();
+	private final ExpandingProperties<String> alteredHints = new ExpandingProperties<String>();
 
-	private String m_cspecName = null;
+	private String cspecName = null;
 
-	protected AlterAttributeBuilder(AttributeBuilder baseBuilder)
-	{
-		m_baseBuilder = baseBuilder;
+	protected AlterAttributeBuilder(AttributeBuilder baseBuilder) {
+		this.baseBuilder = baseBuilder;
 	}
 
-	public void addAlteredInstallerHInt(String key, String value)
-	{
-		m_alteredHints.put(key, value);
+	public void addAlteredInstallerHInt(String key, String value) {
+		alteredHints.put(key, value);
 	}
 
-	public void addRemovedInstallerHint(String key)
-	{
-		m_removedHints.add(key);
+	public void addRemovedInstallerHint(String key) {
+		removedHints.add(key);
 	}
 
-	public void clear()
-	{
-		m_removedHints.clear();
-		m_alteredHints.clear();
-		m_baseBuilder.clear();
+	public void clear() {
+		removedHints.clear();
+		alteredHints.clear();
+		baseBuilder.clear();
 	}
 
 	public abstract AlterAttribute<?> createAlterAttribute();
 
-	public ExpandingProperties<String> getAlteredHints()
-	{
-		return m_alteredHints;
+	public ExpandingProperties<String> getAlteredHints() {
+		return alteredHints;
 	}
 
-	public AttributeBuilder getBaseBuilder()
-	{
-		return m_baseBuilder;
+	public AttributeBuilder getBaseBuilder() {
+		return baseBuilder;
 	}
 
-	public String getCSpecName()
-	{
-		return m_cspecName;
+	public String getCSpecName() {
+		return cspecName;
 	}
 
-	public String getName()
-	{
-		return m_baseBuilder.getName();
+	public String getName() {
+		return baseBuilder.getName();
 	}
 
-	public Set<String> getRemovedHints()
-	{
-		return m_removedHints;
+	public Set<String> getRemovedHints() {
+		return removedHints;
 	}
 
-	public void setCSpecName(String cspecName)
-	{
-		m_cspecName = cspecName;
+	public void setCSpecName(String cspecName) {
+		this.cspecName = cspecName;
 	}
 
-	IAttribute createBase()
-	{
+	IAttribute createBase() {
 		return getBaseBuilder().createAttribute();
 	}
 }

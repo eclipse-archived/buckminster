@@ -9,26 +9,20 @@ package org.eclipse.buckminster.core.cspec.builder;
 
 import org.eclipse.buckminster.core.cspec.model.Group;
 
-public class PrerequisitesBuilder extends GroupBuilder
-{
-	PrerequisitesBuilder(CSpecBuilder cspecBuilder)
-	{
+public class PrerequisitesBuilder extends GroupBuilder {
+	PrerequisitesBuilder(CSpecBuilder cspecBuilder) {
 		super(cspecBuilder);
 	}
 
 	@Override
-	public Group createAttribute()
-	{
+	public Group createAttribute() {
 		// Must be created by the owner action
 		//
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
-	{
-		return specBuilder == getCSpecBuilder()
-				? this
-				: new PrerequisitesBuilder(specBuilder);
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder) {
+		return specBuilder == getCSpecBuilder() ? this : new PrerequisitesBuilder(specBuilder);
 	}
 }

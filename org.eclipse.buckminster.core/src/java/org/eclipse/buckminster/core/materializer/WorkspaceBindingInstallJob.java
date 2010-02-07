@@ -26,43 +26,37 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 /**
  * @author Thomas Hallgren
  */
-public class WorkspaceBindingInstallJob extends WorkspaceJob
-{
-	private static class Repeater extends JobChangeAdapter
-	{
+public class WorkspaceBindingInstallJob extends WorkspaceJob {
+	private static class Repeater extends JobChangeAdapter {
 		@Override
-		public void done(IJobChangeEvent event)
-		{
-			Job active = s_active;
-			if(active != null)
-				active.schedule(REPEAT_DELAY);
+		public void done(IJobChangeEvent event) {
+			Job job = active;
+			if (job != null)
+				job.schedule(REPEAT_DELAY);
 		}
 	}
 
-	private static WorkspaceBindingInstallJob s_active = null;
+	private static WorkspaceBindingInstallJob active = null;
 
 	public static final int REPEAT_DELAY = 60000;
 
-	public static void start()
-	{
-		if(s_active != null)
+	public static void start() {
+		if (active != null)
 			return;
 
-		s_active = new WorkspaceBindingInstallJob();
-		s_active.addJobChangeListener(new Repeater());
-		s_active.schedule(5000);
+		active = new WorkspaceBindingInstallJob();
+		active.addJobChangeListener(new Repeater());
+		active.schedule(5000);
 	}
 
-	public static void stop()
-	{
-		Job active = s_active;
-		s_active = null;
-		if(active != null)
-			active.cancel();
+	public static void stop() {
+		Job job = active;
+		active = null;
+		if (job != null)
+			job.cancel();
 	}
 
-	private WorkspaceBindingInstallJob()
-	{
+	private WorkspaceBindingInstallJob() {
 		super(Messages.Workspace_binding_installer);
 		setPriority(Job.BUILD);
 		setSystem(true);
@@ -70,12 +64,10 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 	}
 
 	@Override
-	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException
-	{
+	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		StorageManager sm = StorageManager.getDefault();
 		WorkspaceBinding[] wsBindings = sm.getWorkspaceBindings().getElements();
-		if(wsBindings.length == 0)
-		{
+		if (wsBindings.length == 0) {
 			MonitorUtils.complete(monitor);
 			return Status.OK_STATUS;
 		}
@@ -86,10 +78,8 @@ public class WorkspaceBindingInstallJob extends WorkspaceJob
 		// Sort by timestamp
 		//
 		Arrays.sort(wsBindings);
-		for(WorkspaceBinding wsBinding : wsBindings)
-		{
-			wsMaterializer.installLocal(wsBinding, new RMContext(wsBinding.getProperties()), MonitorUtils.subMonitor(
-					monitor, 100));
+		for (WorkspaceBinding wsBinding : wsBindings) {
+			wsMaterializer.installLocal(wsBinding, new RMContext(wsBinding.getProperties()), MonitorUtils.subMonitor(monitor, 100));
 			wsBinding.remove(sm);
 		}
 		monitor.done();

@@ -14,13 +14,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class PrerequisiteAlreadyDefinedException extends LocalizedException
-{
+public class PrerequisiteAlreadyDefinedException extends LocalizedException {
 	private static final long serialVersionUID = 1892270697205823409L;
 
-	public PrerequisiteAlreadyDefinedException(String name, String attribute, String prerequisite)
-	{
-		super(NLS.bind(Messages.CSpec_0_attribute_1_already_has_a_prerequisite_named_2, new Object[] { name, attribute,
-				prerequisite }));
+	public PrerequisiteAlreadyDefinedException(String name, String attribute, String prerequisite) {
+		super(NLS.bind(Messages.CSpec_0_attribute_1_already_has_a_prerequisite_named_2, new Object[] { name, attribute, prerequisite }));
 	}
 }

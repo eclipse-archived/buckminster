@@ -27,25 +27,30 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Attribute</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Attribute</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#getName <em>Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#isPublic <em>Public</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#getFilter <em>Filter</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#getCspec <em>Cspec</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#getDocumentation <em>Documentation</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#getName <em>Name
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#isPublic <em>
+ * Public</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#getFilter <em>
+ * Filter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#getCspec <em>
+ * Cspec</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.AttributeImpl#getDocumentation
+ * <em>Documentation</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public abstract class AttributeImpl extends EObjectImpl implements Attribute
-{
+public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -54,8 +59,8 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	protected static final String NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -64,8 +69,8 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isPublic() <em>Public</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #isPublic() <em>Public</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isPublic()
 	 * @generated
@@ -74,8 +79,8 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	protected static final boolean PUBLIC_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #isPublic() <em>Public</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #isPublic() <em>Public</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isPublic()
 	 * @generated
@@ -84,8 +89,8 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	protected boolean public_ = PUBLIC_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getFilter() <em>Filter</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -94,8 +99,8 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	protected static final Filter FILTER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -104,8 +109,9 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	protected Filter filter = FILTER_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' containment reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getDocumentation()
+	 * <em>Documentation</em>}' containment reference. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @see #getDocumentation()
 	 * @generated
@@ -118,8 +124,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	protected AttributeImpl()
-	{
+	protected AttributeImpl() {
 		super();
 	}
 
@@ -128,9 +133,8 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetCspec(CSpec newCspec, NotificationChain msgs)
-	{
-		msgs = eBasicSetContainer((InternalEObject)newCspec, CspecPackage.ATTRIBUTE__CSPEC, msgs);
+	public NotificationChain basicSetCspec(CSpec newCspec, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject) newCspec, CspecPackage.ATTRIBUTE__CSPEC, msgs);
 		return msgs;
 	}
 
@@ -139,15 +143,13 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs)
-	{
+	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs) {
 		Documentation oldDocumentation = documentation;
 		documentation = newDocumentation;
-		if(eNotificationRequired())
-		{
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-					CspecPackage.ATTRIBUTE__DOCUMENTATION, oldDocumentation, newDocumentation);
-			if(msgs == null)
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CspecPackage.ATTRIBUTE__DOCUMENTATION, oldDocumentation,
+					newDocumentation);
+			if (msgs == null)
 				msgs = notification;
 			else
 				msgs.add(notification);
@@ -161,12 +163,10 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs)
-	{
-		switch(eContainerFeatureID())
-		{
-		case CspecPackage.ATTRIBUTE__CSPEC:
-			return eInternalContainer().eInverseRemove(this, CspecPackage.CSPEC__ATTRIBUTES, CSpec.class, msgs);
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case CspecPackage.ATTRIBUTE__CSPEC:
+				return eInternalContainer().eInverseRemove(this, CspecPackage.CSPEC__ATTRIBUTES, CSpec.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -177,20 +177,18 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ATTRIBUTE__NAME:
-			return getName();
-		case CspecPackage.ATTRIBUTE__PUBLIC:
-			return isPublic();
-		case CspecPackage.ATTRIBUTE__FILTER:
-			return getFilter();
-		case CspecPackage.ATTRIBUTE__CSPEC:
-			return getCspec();
-		case CspecPackage.ATTRIBUTE__DOCUMENTATION:
-			return getDocumentation();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CspecPackage.ATTRIBUTE__NAME:
+				return getName();
+			case CspecPackage.ATTRIBUTE__PUBLIC:
+				return isPublic();
+			case CspecPackage.ATTRIBUTE__FILTER:
+				return getFilter();
+			case CspecPackage.ATTRIBUTE__CSPEC:
+				return getCspec();
+			case CspecPackage.ATTRIBUTE__DOCUMENTATION:
+				return getDocumentation();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -201,14 +199,12 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ATTRIBUTE__CSPEC:
-			if(eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			return basicSetCspec((CSpec)otherEnd, msgs);
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.ATTRIBUTE__CSPEC:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetCspec((CSpec) otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -219,14 +215,12 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ATTRIBUTE__CSPEC:
-			return basicSetCspec(null, msgs);
-		case CspecPackage.ATTRIBUTE__DOCUMENTATION:
-			return basicSetDocumentation(null, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.ATTRIBUTE__CSPEC:
+				return basicSetCspec(null, msgs);
+			case CspecPackage.ATTRIBUTE__DOCUMENTATION:
+				return basicSetDocumentation(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -237,24 +231,18 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ATTRIBUTE__NAME:
-			return NAME_EDEFAULT == null
-					? name != null
-					: !NAME_EDEFAULT.equals(name);
-		case CspecPackage.ATTRIBUTE__PUBLIC:
-			return public_ != PUBLIC_EDEFAULT;
-		case CspecPackage.ATTRIBUTE__FILTER:
-			return FILTER_EDEFAULT == null
-					? filter != null
-					: !FILTER_EDEFAULT.equals(filter);
-		case CspecPackage.ATTRIBUTE__CSPEC:
-			return getCspec() != null;
-		case CspecPackage.ATTRIBUTE__DOCUMENTATION:
-			return documentation != null;
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ATTRIBUTE__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case CspecPackage.ATTRIBUTE__PUBLIC:
+				return public_ != PUBLIC_EDEFAULT;
+			case CspecPackage.ATTRIBUTE__FILTER:
+				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
+			case CspecPackage.ATTRIBUTE__CSPEC:
+				return getCspec() != null;
+			case CspecPackage.ATTRIBUTE__DOCUMENTATION:
+				return documentation != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -265,25 +253,23 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ATTRIBUTE__NAME:
-			setName((String)newValue);
-			return;
-		case CspecPackage.ATTRIBUTE__PUBLIC:
-			setPublic((Boolean)newValue);
-			return;
-		case CspecPackage.ATTRIBUTE__FILTER:
-			setFilter((Filter)newValue);
-			return;
-		case CspecPackage.ATTRIBUTE__CSPEC:
-			setCspec((CSpec)newValue);
-			return;
-		case CspecPackage.ATTRIBUTE__DOCUMENTATION:
-			setDocumentation((Documentation)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case CspecPackage.ATTRIBUTE__NAME:
+				setName((String) newValue);
+				return;
+			case CspecPackage.ATTRIBUTE__PUBLIC:
+				setPublic((Boolean) newValue);
+				return;
+			case CspecPackage.ATTRIBUTE__FILTER:
+				setFilter((Filter) newValue);
+				return;
+			case CspecPackage.ATTRIBUTE__CSPEC:
+				setCspec((CSpec) newValue);
+				return;
+			case CspecPackage.ATTRIBUTE__DOCUMENTATION:
+				setDocumentation((Documentation) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -294,25 +280,23 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ATTRIBUTE__NAME:
-			setName(NAME_EDEFAULT);
-			return;
-		case CspecPackage.ATTRIBUTE__PUBLIC:
-			setPublic(PUBLIC_EDEFAULT);
-			return;
-		case CspecPackage.ATTRIBUTE__FILTER:
-			setFilter(FILTER_EDEFAULT);
-			return;
-		case CspecPackage.ATTRIBUTE__CSPEC:
-			setCspec((CSpec)null);
-			return;
-		case CspecPackage.ATTRIBUTE__DOCUMENTATION:
-			setDocumentation((Documentation)null);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ATTRIBUTE__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case CspecPackage.ATTRIBUTE__PUBLIC:
+				setPublic(PUBLIC_EDEFAULT);
+				return;
+			case CspecPackage.ATTRIBUTE__FILTER:
+				setFilter(FILTER_EDEFAULT);
+				return;
+			case CspecPackage.ATTRIBUTE__CSPEC:
+				setCspec((CSpec) null);
+				return;
+			case CspecPackage.ATTRIBUTE__DOCUMENTATION:
+				setDocumentation((Documentation) null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -322,11 +306,10 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public CSpec getCspec()
-	{
-		if(eContainerFeatureID() != CspecPackage.ATTRIBUTE__CSPEC)
+	public CSpec getCspec() {
+		if (eContainerFeatureID() != CspecPackage.ATTRIBUTE__CSPEC)
 			return null;
-		return (CSpec)eContainer();
+		return (CSpec) eContainer();
 	}
 
 	/**
@@ -334,8 +317,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public Documentation getDocumentation()
-	{
+	public Documentation getDocumentation() {
 		return documentation;
 	}
 
@@ -344,8 +326,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public Filter getFilter()
-	{
+	public Filter getFilter() {
 		return filter;
 	}
 
@@ -354,8 +335,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
@@ -364,8 +344,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated NOT
 	 */
-	public boolean isDerived(IContext context)
-	{
+	public boolean isDerived(IContext context) {
 		return false;
 	}
 
@@ -374,8 +353,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public boolean isPublic()
-	{
+	public boolean isPublic() {
 		return public_;
 	}
 
@@ -384,23 +362,19 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public void setCspec(CSpec newCspec)
-	{
-		if(newCspec != eInternalContainer()
-				|| (eContainerFeatureID() != CspecPackage.ATTRIBUTE__CSPEC && newCspec != null))
-		{
-			if(EcoreUtil.isAncestor(this, newCspec))
+	public void setCspec(CSpec newCspec) {
+		if (newCspec != eInternalContainer() || (eContainerFeatureID() != CspecPackage.ATTRIBUTE__CSPEC && newCspec != null)) {
+			if (EcoreUtil.isAncestor(this, newCspec))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if(eInternalContainer() != null)
+			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
-			if(newCspec != null)
-				msgs = ((InternalEObject)newCspec).eInverseAdd(this, CspecPackage.CSPEC__ATTRIBUTES, CSpec.class, msgs);
+			if (newCspec != null)
+				msgs = ((InternalEObject) newCspec).eInverseAdd(this, CspecPackage.CSPEC__ATTRIBUTES, CSpec.class, msgs);
 			msgs = basicSetCspec(newCspec, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
+		} else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ATTRIBUTE__CSPEC, newCspec, newCspec));
 	}
 
@@ -409,24 +383,20 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public void setDocumentation(Documentation newDocumentation)
-	{
-		if(newDocumentation != documentation)
-		{
+	public void setDocumentation(Documentation newDocumentation) {
+		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
-			if(documentation != null)
-				msgs = ((InternalEObject)documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
-						- CspecPackage.ATTRIBUTE__DOCUMENTATION, null, msgs);
-			if(newDocumentation != null)
-				msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
-						- CspecPackage.ATTRIBUTE__DOCUMENTATION, null, msgs);
+			if (documentation != null)
+				msgs = ((InternalEObject) documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CspecPackage.ATTRIBUTE__DOCUMENTATION, null,
+						msgs);
+			if (newDocumentation != null)
+				msgs = ((InternalEObject) newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CspecPackage.ATTRIBUTE__DOCUMENTATION, null,
+						msgs);
 			msgs = basicSetDocumentation(newDocumentation, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ATTRIBUTE__DOCUMENTATION,
-					newDocumentation, newDocumentation));
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ATTRIBUTE__DOCUMENTATION, newDocumentation, newDocumentation));
 	}
 
 	/**
@@ -434,11 +404,10 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public void setFilter(Filter newFilter)
-	{
+	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ATTRIBUTE__FILTER, oldFilter, filter));
 	}
 
@@ -447,11 +416,10 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public void setName(String newName)
-	{
+	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ATTRIBUTE__NAME, oldName, name));
 	}
 
@@ -460,11 +428,10 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * 
 	 * @generated
 	 */
-	public void setPublic(boolean newPublic)
-	{
+	public void setPublic(boolean newPublic) {
 		boolean oldPublic = public_;
 		public_ = newPublic;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ATTRIBUTE__PUBLIC, oldPublic, public_));
 	}
 
@@ -474,9 +441,8 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -496,8 +462,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.ATTRIBUTE;
 	}
 

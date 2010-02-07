@@ -9,12 +9,14 @@ package org.eclipse.buckminster.cspec;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Alter Attribute</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Alter Attribute</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.AlterAttribute#getCspecext <em>Cspecext</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.AlterAttribute#getCspecext <em>
+ * Cspecext</em>}</li>
  * </ul>
  * </p>
  * 
@@ -22,15 +24,15 @@ import org.eclipse.emf.ecore.EObject;
  * @model abstract="true"
  * @generated
  */
-public interface AlterAttribute extends EObject
-{
+public interface AlterAttribute extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Cspecext</b></em>' container reference. It is bidirectional and its opposite is
-	 * '{@link org.eclipse.buckminster.cspec.CSpecExtension#getAttributeAlterations <em>Attribute Alterations</em>}'.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Cspecext</b></em>' container reference.
+	 * It is bidirectional and its opposite is '
+	 * {@link org.eclipse.buckminster.cspec.CSpecExtension#getAttributeAlterations
+	 * <em>Attribute Alterations</em>}'. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Cspecext</em>' container reference isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Cspecext</em>' container reference isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -44,8 +46,10 @@ public interface AlterAttribute extends EObject
 	CSpecExtension getCspecext();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.AlterAttribute#getCspecext <em>Cspecext</em>}'
-	 * container reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.AlterAttribute#getCspecext
+	 * <em>Cspecext</em>}' container reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Cspecext</em>' container reference.

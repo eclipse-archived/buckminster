@@ -25,8 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author kolwing
  * 
  */
-public class GetPreference extends AbstractCommand
-{
+public class GetPreference extends AbstractCommand {
 	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE); //$NON-NLS-1$
 
 	static private final OptionDescriptor DEFAULT_DESCRIPTOR = new OptionDescriptor('d', "default", //$NON-NLS-1$
@@ -35,54 +34,50 @@ public class GetPreference extends AbstractCommand
 	static private final OptionDescriptor ONLYVALUE_DESCRIPTOR = new OptionDescriptor(null, "onlyvalue", //$NON-NLS-1$
 			OptionValueType.NONE);
 
-	private boolean m_test = false;
+	private boolean test = false;
 
-	private boolean m_onlyValue = false;
+	private boolean onlyValue = false;
 
-	private String m_name;
+	private String name;
 
-	private String m_default;
+	private String defaultValue;
 
 	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(TEST_DESCRIPTOR);
 		appendHere.add(DEFAULT_DESCRIPTOR);
 		appendHere.add(ONLYVALUE_DESCRIPTOR);
 	}
 
 	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(TEST_DESCRIPTOR))
-			m_test = true;
-		else if(option.is(DEFAULT_DESCRIPTOR))
-			m_default = option.getValue();
-		else if(option.is(ONLYVALUE_DESCRIPTOR))
-			m_onlyValue = true;
+	protected void handleOption(Option option) throws Exception {
+		if (option.is(TEST_DESCRIPTOR))
+			test = true;
+		else if (option.is(DEFAULT_DESCRIPTOR))
+			defaultValue = option.getValue();
+		else if (option.is(ONLYVALUE_DESCRIPTOR))
+			onlyValue = true;
 	}
 
 	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
+	protected void handleUnparsed(String[] unparsed) throws Exception {
 		int len = unparsed.length;
-		if(len > 1)
+		if (len > 1)
 			throw new SimpleErrorExitException(Messages.Too_many_arguments);
-		if(len == 1)
-			m_name = unparsed[0];
+		if (len == 1)
+			name = unparsed[0];
 	}
 
 	@Override
-	protected int run(IProgressMonitor monitor) throws Exception
-	{
-		if(m_name == null)
+	protected int run(IProgressMonitor monitor) throws Exception {
+		if (name == null)
 			throw new SimpleErrorExitException(Messages.You_must_provide_a_preference_name);
 
-		BasicPreferenceHandler bph = PreferenceMappingManager.getInstance(m_test).getHandler(m_name);
-		String v = bph.get(m_default);
-		if(!m_onlyValue)
+		BasicPreferenceHandler bph = PreferenceMappingManager.getInstance(test).getHandler(name);
+		String v = bph.get(defaultValue);
+		if (!onlyValue)
 			System.out.print(bph.getName() + "="); //$NON-NLS-1$
-		if(v != null)
+		if (v != null)
 			System.out.println(v);
 		return 0;
 	}

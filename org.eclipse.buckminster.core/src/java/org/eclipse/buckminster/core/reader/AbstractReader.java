@@ -28,74 +28,60 @@ import org.eclipse.ecf.core.security.IConnectContext;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractReader implements IComponentReader
-{
-	private final ProviderMatch m_providerMatch;
+public abstract class AbstractReader implements IComponentReader {
+	private final ProviderMatch providerMatch;
 
-	private final IReaderType m_readerType;
+	private final IReaderType readerType;
 
-	protected AbstractReader(IReaderType readerType, ProviderMatch providerMatch)
-	{
-		m_providerMatch = providerMatch;
-		m_readerType = readerType;
+	protected AbstractReader(IReaderType readerType, ProviderMatch providerMatch) {
+		this.providerMatch = providerMatch;
+		this.readerType = readerType;
 	}
 
-	public boolean canMaterialize()
-	{
+	public boolean canMaterialize() {
 		return true;
 	}
 
-	public void close()
-	{
+	public void close() {
 	}
 
-	public IComponentType getComponentType()
-	{
-		return m_providerMatch.getComponentType();
+	public IComponentType getComponentType() {
+		return providerMatch.getComponentType();
 	}
 
-	public IConnectContext getConnectContext()
-	{
-		return m_providerMatch.getConnectContext();
+	public IConnectContext getConnectContext() {
+		return providerMatch.getConnectContext();
 	}
 
-	public NodeQuery getNodeQuery()
-	{
-		return m_providerMatch.getNodeQuery();
+	public NodeQuery getNodeQuery() {
+		return providerMatch.getNodeQuery();
 	}
 
-	public ProviderMatch getProviderMatch()
-	{
-		return m_providerMatch;
+	public ProviderMatch getProviderMatch() {
+		return providerMatch;
 	}
 
-	public IReaderType getReaderType()
-	{
-		return m_readerType;
+	public IReaderType getReaderType() {
+		return readerType;
 	}
 
-	public IVersionConverter getVersionConverter() throws CoreException
-	{
+	public IVersionConverter getVersionConverter() throws CoreException {
 		return this.getProviderMatch().getVersionConverter();
 	}
 
-	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
-	{
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
 		return getNodeQuery().logDecision(request, decisionType, args);
 	}
 
-	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
-	{
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
 		return getNodeQuery().logDecision(decisionType, args);
 	}
 
-	protected void copyOverlay(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
+	protected void copyOverlay(IPath destination, IProgressMonitor monitor) throws CoreException {
 		// TODO: Handle file overlays
 	}
 
-	protected File createTempFile() throws IOException
-	{
+	protected File createTempFile() throws IOException {
 		return File.createTempFile(this.getReaderType().getId() + '-', ".tmp"); //$NON-NLS-1$
 	}
 }

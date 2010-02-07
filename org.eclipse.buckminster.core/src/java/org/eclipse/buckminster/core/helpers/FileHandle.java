@@ -14,33 +14,28 @@ import java.io.File;
  * @author Thomas Hallgren
  * 
  */
-public class FileHandle
-{
-	private final String m_name;
+public class FileHandle {
+	private final String name;
 
-	private final File m_file;
+	private final File file;
 
-	private final boolean m_isTemporary;
+	private final boolean isTemporary;
 
-	public FileHandle(String name, File file, boolean isTemporary)
-	{
-		m_name = name;
-		m_file = file;
-		m_isTemporary = isTemporary;
+	public FileHandle(String name, File file, boolean isTemporary) {
+		this.name = name;
+		this.file = file;
+		this.isTemporary = isTemporary;
 	}
 
-	public File getFile()
-	{
-		return m_file;
+	public File getFile() {
+		return file;
 	}
 
-	public String getName()
-	{
-		return m_name;
+	public String getName() {
+		return name;
 	}
 
-	public boolean isTemporary()
-	{
-		return m_isTemporary;
+	public boolean isTemporary() {
+		return isTemporary;
 	}
 }

@@ -23,34 +23,34 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class MavenPackageImpl extends EPackageImpl implements MavenPackage
-{
+public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	/**
-	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
+	 * Creates, registers, and initializes the <b>Package</b> for this model,
+	 * and for any others upon which it depends.
 	 * 
 	 * <p>
-	 * This method is used to initialize {@link MavenPackage#eINSTANCE} when that field is accessed. Clients should not
-	 * invoke it directly. Instead, they should simply access that field to obtain the package. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * This method is used to initialize {@link MavenPackage#eINSTANCE} when
+	 * that field is accessed. Clients should not invoke it directly. Instead,
+	 * they should simply access that field to obtain the package. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #eNS_URI
 	 * @see #createPackageContents()
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static MavenPackage init()
-	{
-		if(isInited)
-			return (MavenPackage)EPackage.Registry.INSTANCE.getEPackage(MavenPackage.eNS_URI);
+	public static MavenPackage init() {
+		if (isInited)
+			return (MavenPackage) EPackage.Registry.INSTANCE.getEPackage(MavenPackage.eNS_URI);
 
 		// Obtain or create and register package
-		MavenPackageImpl theMavenPackage = (MavenPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof MavenPackageImpl
-				? EPackage.Registry.INSTANCE.get(eNS_URI)
-				: new MavenPackageImpl());
+		MavenPackageImpl theMavenPackage = (MavenPackageImpl) (EPackage.Registry.INSTANCE.get(eNS_URI) instanceof MavenPackageImpl
+				? EPackage.Registry.INSTANCE.get(eNS_URI) : new MavenPackageImpl());
 
 		isInited = true;
 
@@ -121,11 +121,13 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	private boolean isInitialized = false;
 
 	/**
-	 * Creates an instance of the model <b>Package</b>, registered with {@link org.eclipse.emf.ecore.EPackage.Registry
-	 * EPackage.Registry} by the package package URI value.
+	 * Creates an instance of the model <b>Package</b>, registered with
+	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the
+	 * package package URI value.
 	 * <p>
-	 * Note: the correct way to create the package is via the static factory method {@link #init init()}, which also
-	 * performs initialization of the package, or returns the registered package, if one already exists. <!--
+	 * Note: the correct way to create the package is via the static factory
+	 * method {@link #init init()}, which also performs initialization of the
+	 * package, or returns the registered package, if one already exists. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
@@ -133,20 +135,19 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * @see #init()
 	 * @generated
 	 */
-	private MavenPackageImpl()
-	{
+	private MavenPackageImpl() {
 		super(eNS_URI, MavenFactory.eINSTANCE);
 	}
 
 	/**
-	 * Creates the meta-model objects for the package. This method is guarded to have no affect on any invocation but
-	 * its first. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates the meta-model objects for the package. This method is guarded to
+	 * have no affect on any invocation but its first. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void createPackageContents()
-	{
-		if(isCreated)
+	public void createPackageContents() {
+		if (isCreated)
 			return;
 		isCreated = true;
 
@@ -172,8 +173,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getGroupAndArtifact()
-	{
+	public EClass getGroupAndArtifact() {
 		return groupAndArtifactEClass;
 	}
 
@@ -182,9 +182,8 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getGroupAndArtifact_ArtifactId()
-	{
-		return (EAttribute)groupAndArtifactEClass.getEStructuralFeatures().get(0);
+	public EAttribute getGroupAndArtifact_ArtifactId() {
+		return (EAttribute) groupAndArtifactEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -192,9 +191,8 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getGroupAndArtifact_GroupId()
-	{
-		return (EAttribute)groupAndArtifactEClass.getEStructuralFeatures().get(1);
+	public EAttribute getGroupAndArtifact_GroupId() {
+		return (EAttribute) groupAndArtifactEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -202,8 +200,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getMapEntry()
-	{
+	public EClass getMapEntry() {
 		return mapEntryEClass;
 	}
 
@@ -212,9 +209,8 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getMapEntry_Aliases()
-	{
-		return (EReference)mapEntryEClass.getEStructuralFeatures().get(1);
+	public EReference getMapEntry_Aliases() {
+		return (EReference) mapEntryEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -222,9 +218,8 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getMapEntry_Name()
-	{
-		return (EAttribute)mapEntryEClass.getEStructuralFeatures().get(0);
+	public EAttribute getMapEntry_Name() {
+		return (EAttribute) mapEntryEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -232,8 +227,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getMappings()
-	{
+	public EClass getMappings() {
 		return mappingsEClass;
 	}
 
@@ -242,9 +236,8 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getMappings_Entries()
-	{
-		return (EReference)mappingsEClass.getEStructuralFeatures().get(0);
+	public EReference getMappings_Entries() {
+		return (EReference) mappingsEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -252,9 +245,8 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getMappings_Rules()
-	{
-		return (EReference)mappingsEClass.getEStructuralFeatures().get(1);
+	public EReference getMappings_Rules() {
+		return (EReference) mappingsEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -262,9 +254,8 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public MavenFactory getMavenFactory()
-	{
-		return (MavenFactory)getEFactoryInstance();
+	public MavenFactory getMavenFactory() {
+		return (MavenFactory) getEFactoryInstance();
 	}
 
 	/**
@@ -272,8 +263,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getMavenProvider()
-	{
+	public EClass getMavenProvider() {
 		return mavenProviderEClass;
 	}
 
@@ -282,20 +272,19 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getMavenProvider_Mappings()
-	{
-		return (EReference)mavenProviderEClass.getEStructuralFeatures().get(0);
+	public EReference getMavenProvider_Mappings() {
+		return (EReference) mavenProviderEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
-	 * Complete the initialization of the package and its meta-model. This method is guarded to have no affect on any
-	 * invocation but its first. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Complete the initialization of the package and its meta-model. This
+	 * method is guarded to have no affect on any invocation but its first. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void initializePackageContents()
-	{
-		if(isInitialized)
+	public void initializePackageContents() {
+		if (isInitialized)
 			return;
 		isInitialized = true;
 
@@ -305,7 +294,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
-		RmapPackage theRmapPackage = (RmapPackage)EPackage.Registry.INSTANCE.getEPackage(RmapPackage.eNS_URI);
+		RmapPackage theRmapPackage = (RmapPackage) EPackage.Registry.INSTANCE.getEPackage(RmapPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -316,35 +305,27 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 		mavenProviderEClass.getESuperTypes().add(theRmapPackage.getProvider());
 
 		// Initialize classes and features; add operations and parameters
-		initEClass(groupAndArtifactEClass, GroupAndArtifact.class, "GroupAndArtifact", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getGroupAndArtifact_ArtifactId(), ecorePackage.getEString(), "artifactId", null, 0, 1,
-				GroupAndArtifact.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGroupAndArtifact_GroupId(), ecorePackage.getEString(), "groupId", null, 0, 1,
-				GroupAndArtifact.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
+		initEClass(groupAndArtifactEClass, GroupAndArtifact.class, "GroupAndArtifact", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getGroupAndArtifact_ArtifactId(), ecorePackage.getEString(), "artifactId", null, 0, 1, GroupAndArtifact.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGroupAndArtifact_GroupId(), ecorePackage.getEString(), "groupId", null, 0, 1, GroupAndArtifact.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(mapEntryEClass, MapEntry.class, "MapEntry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getMapEntry_Name(), ecorePackage.getEString(), "name", null, 0, 1, MapEntry.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getMapEntry_Aliases(), this.getGroupAndArtifact(), null, "aliases", null, 0, -1, MapEntry.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMapEntry_Name(), ecorePackage.getEString(), "name", null, 0, 1, MapEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMapEntry_Aliases(), this.getGroupAndArtifact(), null, "aliases", null, 0, -1, MapEntry.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(mappingsEClass, Mappings.class, "Mappings", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getMappings_Entries(), this.getMapEntry(), null, "entries", null, 0, -1, Mappings.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getMappings_Rules(), theRmapPackage.getTransform(), null, "rules", null, 0, -1, Mappings.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMappings_Entries(), this.getMapEntry(), null, "entries", null, 0, -1, Mappings.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMappings_Rules(), theRmapPackage.getTransform(), null, "rules", null, 0, -1, Mappings.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(mavenProviderEClass, MavenProvider.class, "MavenProvider", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getMavenProvider_Mappings(), this.getMappings(), null, "mappings", null, 0, 1,
-				MavenProvider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(mavenProviderEClass, MavenProvider.class, "MavenProvider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getMavenProvider_Mappings(), this.getMappings(), null, "mappings", null, 0, 1, MavenProvider.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -355,13 +336,13 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage
 	}
 
 	/**
-	 * Initializes the annotations for <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * Initializes the annotations for
+	 * <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void createExtendedMetaDataAnnotations()
-	{
+	protected void createExtendedMetaDataAnnotations() {
 		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
 		addAnnotation(getMapEntry_Aliases(), source, new String[] { "name", "alias", "kind", "element" });
 		addAnnotation(getMappings_Entries(), source, new String[] { "kind", "element", "name", "entry" });

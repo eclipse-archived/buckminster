@@ -13,17 +13,14 @@ package org.eclipse.buckminster.ui.general.editor.structured;
  * 
  * @author Karel Brezina
  */
-public class FieldModifyEvent
-{
-	private final Object m_originalEvent;
+public class FieldModifyEvent {
+	private final Object originalEvent;
 
-	public FieldModifyEvent(Object originalEvent)
-	{
-		this.m_originalEvent = originalEvent;
+	public FieldModifyEvent(Object originalEvent) {
+		this.originalEvent = originalEvent;
 	}
 
-	public Object getOriginalEvent()
-	{
-		return m_originalEvent;
+	public Object getOriginalEvent() {
+		return originalEvent;
 	}
 }

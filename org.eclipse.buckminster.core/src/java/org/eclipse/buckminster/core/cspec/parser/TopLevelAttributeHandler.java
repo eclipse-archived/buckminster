@@ -14,29 +14,25 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 /**
  * @author Thomas Hallgren
  */
-public abstract class TopLevelAttributeHandler extends AttributeHandler
-{
-	private final boolean m_public;
+public abstract class TopLevelAttributeHandler extends AttributeHandler {
+	private final boolean publ;
 
-	public TopLevelAttributeHandler(AbstractHandler parent, boolean publ)
-	{
+	public TopLevelAttributeHandler(AbstractHandler parent, boolean publ) {
 		super(parent);
-		m_public = publ;
+		this.publ = publ;
 	}
 
 	@Override
-	public final TopLevelAttributeBuilder getAttributeBuilder()
-	{
-		return (TopLevelAttributeBuilder)getBuilder();
+	public final TopLevelAttributeBuilder getAttributeBuilder() {
+		return (TopLevelAttributeBuilder) getBuilder();
 	}
 
 	protected abstract TopLevelAttributeBuilder createAttributeBuilder();
 
 	@Override
-	protected CSpecElementBuilder createBuilder()
-	{
+	protected CSpecElementBuilder createBuilder() {
 		TopLevelAttributeBuilder bld = createAttributeBuilder();
-		bld.setPublic(m_public);
+		bld.setPublic(publ);
 		return bld;
 	}
 }

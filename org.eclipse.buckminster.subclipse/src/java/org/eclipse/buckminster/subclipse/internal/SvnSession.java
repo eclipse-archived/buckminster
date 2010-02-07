@@ -53,134 +53,125 @@ import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 /**
  * <p>
- * The SVN repository will be able to use reader checks if a repository contains the three recommended directories
- * <code>trunk</code>, <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is
- * interpreted as no <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. In
- * order to use <code>trunk</code>, <code>tags</code>, and <code>branches</code> repository identifier must contain the
- * path element <code>trunk</code>. Anything that follows the <code>trunk</code> element in the path will be considered
- * a <code>module</code> path. If no <code>trunk</code> element is present in the path, the last element will be
- * considered the <code>module</code>
+ * The SVN repository will be able to use reader checks if a repository contains
+ * the three recommended directories <code>trunk</code>, <code>tags</code>, and
+ * <code>branches</code>. A missing <code>tags</code> directory is interpreted
+ * as no <code>tags</code>. A missing <code>branches</code> directory is
+ * interpreted as no branches. In order to use <code>trunk</code>,
+ * <code>tags</code>, and <code>branches</code> repository identifier must
+ * contain the path element <code>trunk</code>. Anything that follows the
+ * <code>trunk</code> element in the path will be considered a
+ * <code>module</code> path. If no <code>trunk</code> element is present in the
+ * path, the last element will be considered the <code>module</code>
  * </p>
  * <p>
- * The repository URL may also contain a query part that in turn may have four different flags:
+ * The repository URL may also contain a query part that in turn may have four
+ * different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
- * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
+ * <dd>When resolving a tag, put the module name between the <code>tags</code>
+ * directory and the actual tag</dd>
  * <dt>moduleAfterTag</dt>
  * <dd>When resolving a tag, append the module name after the actual tag</dd>
  * <dt>moduleBeforeBranch</dt>
- * <dd>When resolving a branch, put the module name between the <code>branches</code> directory and the actual branch</dd>
+ * <dd>When resolving a branch, put the module name between the
+ * <code>branches</code> directory and the actual branch</dd>
  * <dt>moduleAfterBranch</dt>
  * <dd>When resolving a branch, append the module name after the actual branch</dd>
  * </dl>
  * </p>
- * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end of the resolved URL.
+ * A fragment in the repository URL will be treated as a sub-module. It will be
+ * appended at the end of the resolved URL.
  * 
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEntry, SVNRevision>
-{
+public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEntry, SVNRevision> {
 
-	private class UnattendedPromptUserPassword implements ISVNPromptUserPassword
-	{
-		private int m_promptPasswordLimit = 3;
+	private class UnattendedPromptUserPassword implements ISVNPromptUserPassword {
+		private int promptPasswordLimit = 3;
 
-		private int m_promptUserLimit = 3;
+		private int promptUserLimit = 3;
 
-		public String askQuestion(String realm, String question, boolean showAnswer, boolean maySave)
-		{
+		public String askQuestion(String realm, String question, boolean showAnswer, boolean maySave) {
 			// We do not support questions
 			//
 			return null;
 		}
 
-		public int askTrustSSLServer(String info, boolean allowPermanently)
-		{
+		public int askTrustSSLServer(String info, boolean allowPermanently) {
 			return ISVNPromptUserPassword.AcceptTemporary;
 		}
 
-		public boolean askYesNo(String realm, String question, boolean yesIsDefault)
-		{
+		public boolean askYesNo(String realm, String question, boolean yesIsDefault) {
 			return yesIsDefault;
 		}
 
-		public String getPassword()
-		{
-			return m_password;
+		public String getPassword() {
+			return password;
 		}
 
-		public int getSSHPort()
-		{
+		public int getSSHPort() {
 			// We do not support SSH
 			//
 			return -1;
 		}
 
-		public String getSSHPrivateKeyPassphrase()
-		{
+		public String getSSHPrivateKeyPassphrase() {
 			// We do not support SSH
 			//
 			return null;
 		}
 
-		public String getSSHPrivateKeyPath()
-		{
+		public String getSSHPrivateKeyPath() {
 			// We do not support SSH
 			//
 			return null;
 		}
 
-		public String getSSLClientCertPassword()
-		{
+		public String getSSLClientCertPassword() {
 			// We do not support SSL
 			//
 			return null;
 		}
 
-		public String getSSLClientCertPath()
-		{
+		public String getSSLClientCertPath() {
 			// We do not support SSL
 			//
 			return null;
 		}
 
-		public String getUsername()
-		{
-			return m_username;
+		public String getUsername() {
+			return username;
 		}
 
-		public boolean prompt(String realm, String username, boolean maySave)
-		{
-			// We support the password prompt only if we actually know the password
+		public boolean prompt(String realm, String user, boolean maySave) {
+			// We support the password prompt only if we actually know the
+			// password
 			// and only a limited number of times
 			//
-			return m_password != null && --m_promptPasswordLimit >= 0;
+			return password != null && --promptPasswordLimit >= 0;
 		}
 
-		public boolean promptSSH(String realm, String username, int sshPort, boolean maySave)
-		{
+		public boolean promptSSH(String realm, String user, int sshPort, boolean maySave) {
 			// We do not support SSH prompt
 			//
 			return false;
 		}
 
-		public boolean promptSSL(String realm, boolean maySave)
-		{
+		public boolean promptSSL(String realm, boolean maySave) {
 			// We do not support SSL prompt
 			//
 			return false;
 		}
 
-		public boolean promptUser(String realm, String username, boolean maySave)
-		{
+		public boolean promptUser(String realm, String user, boolean maySave) {
 			// We do support the user prompt but only a limited number of times
 			//
-			return --m_promptUserLimit >= 0;
+			return --promptUserLimit >= 0;
 		}
 
-		public boolean userAllowedSave()
-		{
+		public boolean userAllowedSave() {
 			// No need to save anything
 			//
 			return false;
@@ -189,35 +180,35 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 
 	private static final SvnEntryHelper HELPER = new SvnEntryHelper();
 
-	private static final ISVNDirEntry[] s_emptyFolder = new ISVNDirEntry[0];
+	private static final ISVNDirEntry[] emptyFolder = new ISVNDirEntry[0];
 
 	/**
-	 * Different versions of subclipse have different signatures for this method. We want to cover them all.
+	 * Different versions of subclipse have different signatures for this
+	 * method. We want to cover them all.
 	 * 
 	 * @return
 	 */
-	private static Method s_getKnownRepositories;
+	private static Method getKnownRepositories;
 
-	private static Object[] s_getKnownRepositoriesArgs;
+	private static Object[] getKnownRepositoriesArgs;
 
-	private static SVNProviderPlugin getPlugin()
-	{
+	private static SVNProviderPlugin getPlugin() {
 		return SVNProviderPlugin.getPlugin();
 	}
 
-	private ISVNClientAdapter m_clientAdapter;
+	private ISVNClientAdapter clientAdapter;
 
 	private static final String UNKNOWN_ROOT_PREFIX = SvnSession.class.getPackage().getName() + ".root."; //$NON-NLS-1$
 
-	private static SVNRepositories getRepositories()
-	{
+	private static SVNRepositories getRepositories() {
 		return getPlugin().getRepositories();
 	}
 
 	/**
 	 * @param repositoryURI
-	 *            The string representation of the URI that appoints the trunk of repository module. No branch or tag
-	 *            information must be included.
+	 *            The string representation of the URI that appoints the trunk
+	 *            of repository module. No branch or tag information must be
+	 *            included.
 	 * @param branch
 	 *            The desired branch or <code>null</code> if not applicable.
 	 * @param tag
@@ -230,177 +221,134 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 	 *            The context used for the resolution/materialization operation
 	 * @throws CoreException
 	 */
-	public SvnSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
-			RMContext context) throws CoreException
-	{
+	public SvnSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp, RMContext context) throws CoreException {
 		super(repositoryURI, branchOrTag, revision, timestamp, context);
 	}
 
-	public void close()
-	{
-		m_clientAdapter.dispose();
+	public void close() {
+		clientAdapter.dispose();
 	}
 
 	@Override
-	public ISVNRepositoryLocation[] getKnownRepositories() throws CoreException
-	{
+	public ISVNRepositoryLocation[] getKnownRepositories() throws CoreException {
 		SVNRepositories repos = getRepositories();
 		Class<? extends SVNRepositories> reposClass = repos.getClass();
 
-		try
-		{
+		try {
 			Method getter;
 			Object[] args;
-			synchronized(reposClass)
-			{
-				if(s_getKnownRepositories == null)
-				{
-					try
-					{
+			synchronized (reposClass) {
+				if (getKnownRepositories == null) {
+					try {
 						// Newer versions use the IProgressMonitor parameter
 						//
-						s_getKnownRepositories = reposClass.getMethod("getKnownRepositories", //$NON-NLS-1$
+						getKnownRepositories = reposClass.getMethod("getKnownRepositories", //$NON-NLS-1$
 								new Class[] { IProgressMonitor.class });
-						s_getKnownRepositoriesArgs = new Object[] { new NullProgressMonitor() };
-					}
-					catch(NoSuchMethodException e)
-					{
+						getKnownRepositoriesArgs = new Object[] { new NullProgressMonitor() };
+					} catch (NoSuchMethodException e) {
 						// Older versions have no parameter.
-						s_getKnownRepositories = reposClass.getMethod("getKnownRepositories", //$NON-NLS-1$
+						getKnownRepositories = reposClass.getMethod("getKnownRepositories", //$NON-NLS-1$
 								Trivial.EMPTY_CLASS_ARRAY);
-						s_getKnownRepositoriesArgs = Trivial.EMPTY_OBJECT_ARRAY;
+						getKnownRepositoriesArgs = Trivial.EMPTY_OBJECT_ARRAY;
 					}
 				}
-				getter = s_getKnownRepositories;
-				args = s_getKnownRepositoriesArgs;
+				getter = getKnownRepositories;
+				args = getKnownRepositoriesArgs;
 			}
-			return (ISVNRepositoryLocation[])getter.invoke(repos, args);
-		}
-		catch(Exception e)
-		{
+			return (ISVNRepositoryLocation[]) getter.invoke(repos, args);
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public long getLastChangeNumber() throws CoreException
-	{
-		try
-		{
+	public long getLastChangeNumber() throws CoreException {
+		try {
 			SVNUrl svnURL = TypeTranslator.from(getSVNUrl(null));
-			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, getRevision());
-			if(root == null)
+			ISVNDirEntry root = clientAdapter.getDirEntry(svnURL, getRevision());
+			if (root == null)
 				throw new FileNotFoundException(svnURL.toString());
 			return root.getLastChangedRevision().getNumber();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public long getLastChangeNumber(File workingCopy) throws CoreException
-	{
-		try
-		{
-			return m_clientAdapter.getInfoFromWorkingCopy(workingCopy).getLastChangedRevision().getNumber();
-		}
-		catch(Exception e)
-		{
+	public long getLastChangeNumber(File workingCopy) throws CoreException {
+		try {
+			return clientAdapter.getInfoFromWorkingCopy(workingCopy).getLastChangedRevision().getNumber();
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public Date getLastTimestamp() throws CoreException
-	{
-		try
-		{
+	public Date getLastTimestamp() throws CoreException {
+		try {
 			SVNUrl svnURL = TypeTranslator.from(getSVNUrl(null));
-			ISVNDirEntry root = m_clientAdapter.getDirEntry(svnURL, getRevision());
-			if(root == null)
+			ISVNDirEntry root = clientAdapter.getDirEntry(svnURL, getRevision());
+			if (root == null)
 				throw new FileNotFoundException(svnURL.toString());
 			return root.getLastChangedDate();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public SVNRevision.Number getRepositoryRevision(IProgressMonitor monitor) throws CoreException
-	{
+	public SVNRevision.Number getRepositoryRevision(IProgressMonitor monitor) throws CoreException {
 		SVNRevision.Number repoRev = null;
 
-		if(getRevision() instanceof SVNRevision.Number)
-		{
-			repoRev = (SVNRevision.Number)getRevision();
+		if (getRevision() instanceof SVNRevision.Number) {
+			repoRev = (SVNRevision.Number) getRevision();
 			MonitorUtils.complete(monitor);
-		}
-		else
-		{
+		} else {
 			monitor.beginTask(null, 1);
-			try
-			{
-				for(int retries = 0;; ++retries)
-				{
-					try
-					{
+			try {
+				for (int retries = 0;; ++retries) {
+					try {
 						SVNUrl svnURL = TypeTranslator.from(getSVNUrl(null));
-						ISVNInfo info = m_clientAdapter.getInfo(svnURL);
-						if(info == null)
+						ISVNInfo info = clientAdapter.getInfo(svnURL);
+						if (info == null)
 							return null;
 						repoRev = info.getRevision();
 						break;
-					}
-					catch(SVNClientException e)
-					{
-						if(++retries < 3)
-						{
-							try
-							{
+					} catch (SVNClientException e) {
+						if (++retries < 3) {
+							try {
 								Thread.sleep(2000);
-							}
-							catch(InterruptedException e1)
-							{
+							} catch (InterruptedException e1) {
 							}
 							continue;
 						}
 						throw BuckminsterException.wrap(e);
 					}
 				}
-			}
-			finally
-			{
+			} finally {
 				monitor.done();
 			}
 		}
 		return repoRev;
 	}
 
-	public ISVNDirEntry getRootEntry(IProgressMonitor monitor) throws CoreException
-	{
+	public ISVNDirEntry getRootEntry(IProgressMonitor monitor) throws CoreException {
 		// Synchronizing on an interned string should make it impossible for two
 		// sessions to request the same entry from the remote server
 		//
 		SVNUrl url = TypeTranslator.from(getSVNUrl(null));
 		SVNUrl parent = url.getParent();
-		if(parent != null)
-		{
+		if (parent != null) {
 			// List the parent instead of fetching the folder explicitly. This
 			// will save us a lot of calls since the list is cached.
 			//
 			String lastEntry = url.getLastPathSegment();
 			ISVNDirEntry[] dirEntries;
-			try
-			{
+			try {
 				dirEntries = innerListFolder(TypeTranslator.from(url.getParent()), monitor);
 			}
 
-			catch(CoreException e)
-			{
-				dirEntries = s_emptyFolder;
+			catch (CoreException e) {
+				dirEntries = emptyFolder;
 			}
-			for(ISVNDirEntry dirEntry : dirEntries)
-				if(dirEntry.getPath().equals(lastEntry))
+			for (ISVNDirEntry dirEntry : dirEntries)
+				if (dirEntry.getPath().equals(lastEntry))
 					return dirEntry;
 
 			// Parent was not accessible. Perhaps we have no permissions.
@@ -408,27 +356,22 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 
 		SVNRevision revision = getRevision();
 		String key = GenericCache.cacheKey(TypeTranslator.from(url), getRevision()).intern();
-		synchronized(key)
-		{
+		synchronized (key) {
 			// Check the cache. We use containsKey since it might have
 			// valid null entries
 			//
-			if(getCache().dirContainsKey(key))
+			if (getCache().dirContainsKey(key))
 				return getCache().getDir(key);
 
 			Logger logger = CorePlugin.getLogger();
 			monitor.beginTask(null, 1);
-			try
-			{
+			try {
 				logger.debug("Obtaining remote folder %s[%s]", url, revision); //$NON-NLS-1$
 				ISVNDirEntry entry = getClientAdapter().getDirEntry(url, revision);
 				getCache().putDir(key, entry);
 				return entry;
-			}
-			catch(SVNClientException e)
-			{
-				if(SvnExceptionHandler.hasSvnException(e))
-				{
+			} catch (SVNClientException e) {
+				if (SvnExceptionHandler.hasSvnException(e)) {
 					logger.debug("Remote folder does not exist %s[%s]", url, revision); //$NON-NLS-1$
 					getCache().putDir(key, null);
 					return null;
@@ -438,97 +381,79 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		}
 	}
 
-	public ISvnEntryHelper<ISVNDirEntry> getSvnEntryHelper()
-	{
+	public ISvnEntryHelper<ISVNDirEntry> getSvnEntryHelper() {
 		return HELPER;
 	}
 
 	@Override
-	public SVNRevision getSVNRevision(long revision, Date timestamp)
-	{
-		if(revision == -1)
-		{
-			if(timestamp == null)
+	public SVNRevision getSVNRevision(long revision, Date timestamp) {
+		if (revision == -1) {
+			if (timestamp == null)
 				return SVNRevision.HEAD;
 
 			return new SVNRevision.DateSpec(timestamp);
 		}
-		if(timestamp != null)
-			throw new IllegalArgumentException(
-					org.eclipse.buckminster.subversion.Messages.svn_session_cannot_use_both_timestamp_and_revision_number);
+		if (timestamp != null)
+			throw new IllegalArgumentException(org.eclipse.buckminster.subversion.Messages.svn_session_cannot_use_both_timestamp_and_revision_number);
 		return new SVNRevision.Number(revision);
 	}
 
 	@Override
-	public String toString()
-	{
-		try
-		{
+	public String toString() {
+		try {
 			return getSVNUrl(null).toString();
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			return super.toString();
 		}
 	}
 
 	@Override
-	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException
-	{
+	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException {
 		SVNRepositories repos = getRepositories();
-		for(RepositoryAccess root : sourceRoots)
-		{
+		for (RepositoryAccess root : sourceRoots) {
 			Properties configuration = new Properties();
 			configuration.setProperty("url", root.getSvnURL().toString()); //$NON-NLS-1$
 			String user = root.getUser();
-			if(user != null)
+			if (user != null)
 				configuration.setProperty("user", user); //$NON-NLS-1$
-			String password = root.getPassword();
-			if(password != null)
-				configuration.setProperty("password", password); //$NON-NLS-1$
+			String pwd = root.getPassword();
+			if (pwd != null)
+				configuration.setProperty("password", pwd); //$NON-NLS-1$
 
-			try
-			{
+			try {
 				final ISVNRepositoryLocation repoLocation = repos.createRepository(configuration);
 				repos.addOrUpdateRepository(repoLocation);
-			}
-			catch(SVNException e)
-			{
+			} catch (SVNException e) {
 				// Repository already exists
 			}
 		}
 	}
 
 	@Override
-	protected ISubversionCache<ISVNDirEntry> getCache(Map<UUID, Object> userCache)
-	{
-		assert (m_cache == null);
-		final SvnCache cache = new SvnCache();
-		cache.initialize(userCache);
-		return cache;
+	protected ISubversionCache<ISVNDirEntry> getCache(Map<UUID, Object> userCache) {
+		assert (cache == null);
+		final SvnCache svnCache = new SvnCache();
+		svnCache.initialize(userCache);
+		return svnCache;
 	}
 
 	@Override
-	protected ISVNDirEntry[] getEmptyEntryList()
-	{
-		return s_emptyFolder;
+	protected ISVNDirEntry[] getEmptyEntryList() {
+		return emptyFolder;
 	}
 
 	@Override
-	protected String getRootUrl(ISVNRepositoryLocation location)
-	{
+	protected String getRootUrl(ISVNRepositoryLocation location) {
 		return location.getRepositoryRoot().toString();
 	}
 
 	@Override
-	protected String getUnknownRootPrefix()
-	{
+	protected String getUnknownRootPrefix() {
 		return UNKNOWN_ROOT_PREFIX;
 	}
 
 	@Override
-	protected void initializeSvn(RMContext context, URI ourRoot, ISVNRepositoryLocation bestMatch) throws CoreException
-	{
+	protected void initializeSvn(RMContext context, URI ourRoot, ISVNRepositoryLocation bestMatch) throws CoreException {
 		final SVNProviderPlugin plugin = getPlugin();
 		final ISVNClientAdapter client = getClientAdapter();
 
@@ -536,52 +461,41 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		// the authentication data (at least the username) is actually
 		// specified in the URL
 		//
-		ISVNPromptUserPassword pwCb = (m_username == null)
-				? plugin.getSvnPromptUserPassword()
-				: new UnattendedPromptUserPassword();
+		ISVNPromptUserPassword pwCb = (username == null) ? plugin.getSvnPromptUserPassword() : new UnattendedPromptUserPassword();
 
-		if(pwCb != null)
+		if (pwCb != null)
 			client.addPasswordCallback(plugin.getSvnPromptUserPassword());
 
-		m_clientAdapter = client;
-		if(bestMatch == null)
-			addUnknownRoot(context.getBindingProperties(), new RepositoryAccess(ourRoot, m_username, m_password));
+		clientAdapter = client;
+		if (bestMatch == null)
+			addUnknownRoot(context.getBindingProperties(), new RepositoryAccess(ourRoot, username, password));
 	}
 
 	@Override
-	protected ISVNDirEntry[] innerListFolder(URI url, IProgressMonitor monitor) throws CoreException
-	{
+	protected ISVNDirEntry[] innerListFolder(URI url, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 1);
-		try
-		{
-			return m_clientAdapter.getList(TypeTranslator.from(url), getRevision(), false);
-		}
-		catch(SVNClientException e)
-		{
+		try {
+			return clientAdapter.getList(TypeTranslator.from(url), getRevision(), false);
+		} catch (SVNClientException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			monitor.worked(1);
 		}
 	}
 
-	ISVNClientAdapter getClientAdapter() throws CoreException
-	{
-		if(m_clientAdapter == null)
-		{
+	ISVNClientAdapter getClientAdapter() throws CoreException {
+		if (clientAdapter == null) {
 			final SVNClientManager clientManager = getPlugin().getSVNClientManager();
-			m_clientAdapter = Activator.getDefault().getClientAdapter(clientManager.getSvnClientInterface());
-			if(m_clientAdapter == null)
-				m_clientAdapter = Activator.getDefault().getAnyClientAdapter();
-			if(m_clientAdapter == null)
+			clientAdapter = Activator.getDefault().getClientAdapter(clientManager.getSvnClientInterface());
+			if (clientAdapter == null)
+				clientAdapter = Activator.getDefault().getAnyClientAdapter();
+			if (clientAdapter == null)
 				throw BuckminsterException.fromMessage(Messages.unable_to_load_default_svn_client);
 		}
-		return m_clientAdapter;
+		return clientAdapter;
 	}
 
-	private SvnCache getCache()
-	{
-		return ((SvnCache)m_cache);
+	private SvnCache getCache() {
+		return ((SvnCache) cache);
 	}
 }

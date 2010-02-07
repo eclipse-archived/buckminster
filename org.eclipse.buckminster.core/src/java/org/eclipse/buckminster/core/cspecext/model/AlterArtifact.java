@@ -22,35 +22,29 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class AlterArtifact extends AlterAttribute<Artifact>
-{
+public class AlterArtifact extends AlterAttribute<Artifact> {
 	public static final String ELEM_REMOVE_PATH = "removePath"; //$NON-NLS-1$
 
-	private final Set<IPath> m_removedPaths;
+	private final Set<IPath> removedPaths;
 
-	public AlterArtifact(Artifact base, Set<String> removedHints, Map<String, String> alteredHints,
-			Set<IPath> removedPaths)
-	{
+	public AlterArtifact(Artifact base, Set<String> removedHints, Map<String, String> alteredHints, Set<IPath> removedPaths) {
 		super(base, removedHints, alteredHints);
-		m_removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
+		this.removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
 	}
 
 	@Override
-	public void alterAttribute(TopLevelAttributeBuilder original) throws CoreException
-	{
-		if(!(original instanceof ArtifactBuilder))
+	public void alterAttribute(TopLevelAttributeBuilder original) throws CoreException {
+		if (!(original instanceof ArtifactBuilder))
 			throw BuckminsterException.fromMessage("%s is not an artifact", original.getQualifiedName()); //$NON-NLS-1$
 
 		IArtifact base = getBase();
-		ArtifactBuilder aBld = (ArtifactBuilder)original;
+		ArtifactBuilder aBld = (ArtifactBuilder) original;
 		alterPaths(aBld);
 		alterDocumentation(aBld);
 		aBld.setBase(CSpecExtension.overrideCheckNull(aBld.getBase(), base.getBase()));
 	}
 
-	protected void alterPaths(ArtifactBuilder original) throws CoreException
-	{
-		alterPaths(original.getCSpecName(), original.getName(), original.getPaths(), this.getBase().getPaths(),
-				m_removedPaths);
+	protected void alterPaths(ArtifactBuilder original) throws CoreException {
+		alterPaths(original.getCSpecName(), original.getName(), original.getPaths(), this.getBase().getPaths(), removedPaths);
 	}
 }

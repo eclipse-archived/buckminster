@@ -26,9 +26,8 @@ import org.eclipse.osgi.service.datalocation.Location;
 /**
  * @author Thomas Hallgren
  */
-public class TargetPlatform extends AbstractExtension implements ITargetPlatform
-{
-	private static ITargetPlatform s_instance = null;
+public class TargetPlatform extends AbstractExtension implements ITargetPlatform {
+	private static ITargetPlatform instance = null;
 
 	public static final String TARGET_PLATFORM_PROVIDERS_POINT = CorePlugin.CORE_NAMESPACE + ".targetPlatformProviders"; //$NON-NLS-1$
 
@@ -44,98 +43,82 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 
 	public static final String TARGET_LOCATION = TARGET_PREFIX + ".location"; //$NON-NLS-1$
 
-	public static synchronized ITargetPlatform getInstance() throws CoreException
-	{
-		if(s_instance == null)
-		{
+	public static synchronized ITargetPlatform getInstance() throws CoreException {
+		if (instance == null) {
 			IExtensionRegistry exReg = Platform.getExtensionRegistry();
 			IConfigurationElement[] elems = exReg.getConfigurationElementsFor(TARGET_PLATFORM_PROVIDERS_POINT);
 
 			IConfigurationElement candidate = null;
 			int maxPrio = -1;
-			for(IConfigurationElement elem : elems)
-			{
+			for (IConfigurationElement elem : elems) {
 				String prioStr = elem.getAttribute("priority"); //$NON-NLS-1$
-				if(prioStr == null)
+				if (prioStr == null)
 					//
 					// Bogus entry. The priority attribute is mandatory
 					//
 					continue;
 
-				try
-				{
+				try {
 					int prio = Integer.parseInt(prioStr);
-					if(prio > maxPrio)
-					{
+					if (prio > maxPrio) {
 						maxPrio = prio;
 						candidate = elem;
 					}
-				}
-				catch(NumberFormatException e)
-				{
+				} catch (NumberFormatException e) {
 					continue;
 				}
 			}
 
-			if(candidate == null)
+			if (candidate == null)
 				throw BuckminsterException.fromMessage(Messages.No_targetPlatformProvider_registered_with_targetPlatformProviders_extension_point);
-			s_instance = (ITargetPlatform)candidate.createExecutableExtension("class"); //$NON-NLS-1$
-			CorePlugin.getLogger().debug("Target platform provided by %s", s_instance.getClass()); //$NON-NLS-1$
+			instance = (ITargetPlatform) candidate.createExecutableExtension("class"); //$NON-NLS-1$
+			CorePlugin.getLogger().debug("Target platform provided by %s", instance.getClass()); //$NON-NLS-1$
 		}
-		return s_instance;
+		return instance;
 	}
 
-	public static File getPlatformInstallLocation()
-	{
+	public static File getPlatformInstallLocation() {
 		Location location = Platform.getInstallLocation();
-		if(location == null)
+		if (location == null)
 			return null;
 
 		URL eclipseHome = location.getURL();
-		if(eclipseHome == null)
+		if (eclipseHome == null)
 			return null;
 
 		assert ("file".equals(eclipseHome.getProtocol())); //$NON-NLS-1$
 		return FileUtils.getFile(eclipseHome);
 	}
 
-	public String getArch()
-	{
+	public String getArch() {
 		return Platform.getOSArch();
 	}
 
-	public final List<ComponentIdentifier> getComponents() throws CoreException
-	{
+	public final List<ComponentIdentifier> getComponents() throws CoreException {
 		return Collections.emptyList();
 	}
 
-	public File getDefaultPlatformLocation(boolean asActive) throws CoreException
-	{
+	public File getDefaultPlatformLocation(boolean asActive) throws CoreException {
 		return null;
 	}
 
-	public File getLocation()
-	{
+	public File getLocation() {
 		return getPlatformInstallLocation();
 	}
 
-	public String getNL()
-	{
+	public String getNL() {
 		return Platform.getNL();
 	}
 
-	public String getOS()
-	{
+	public String getOS() {
 		return Platform.getOS();
 	}
 
-	public String getWS()
-	{
+	public String getWS() {
 		return Platform.getWS();
 	}
 
-	public void locationsChanged(Set<File> locations)
-	{
+	public void locationsChanged(Set<File> locations) {
 		// Nothing to do here.
 	}
 }

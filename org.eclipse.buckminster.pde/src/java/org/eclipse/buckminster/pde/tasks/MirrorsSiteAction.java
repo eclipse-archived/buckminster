@@ -19,24 +19,21 @@ import org.eclipse.equinox.p2.repository.IRepository;
  * Action that generates referenced repositories for a p2 MDR
  */
 @SuppressWarnings("restriction")
-public class MirrorsSiteAction extends AbstractPublisherAction
-{
-	private final String m_mirrors;
+public class MirrorsSiteAction extends AbstractPublisherAction {
+	private final String mirrors;
 
-	public MirrorsSiteAction(String mirrors)
-	{
-		m_mirrors = mirrors;
+	public MirrorsSiteAction(String mirrors) {
+		this.mirrors = mirrors;
 	}
 
 	@Override
-	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
-	{
-		if(m_mirrors != null)
-		{
-			publisherInfo.getMetadataRepository().setProperty(IRepository.PROP_MIRRORS_URL, m_mirrors);
-			// there does not really need to be an artifact repo but if there is, setup its mirrors.
-			if(publisherInfo.getArtifactRepository() != null)
-				publisherInfo.getArtifactRepository().setProperty(IRepository.PROP_MIRRORS_URL, m_mirrors);
+	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
+		if (mirrors != null) {
+			publisherInfo.getMetadataRepository().setProperty(IRepository.PROP_MIRRORS_URL, mirrors);
+			// there does not really need to be an artifact repo but if there
+			// is, setup its mirrors.
+			if (publisherInfo.getArtifactRepository() != null)
+				publisherInfo.getArtifactRepository().setProperty(IRepository.PROP_MIRRORS_URL, mirrors);
 		}
 		return Status.OK_STATUS;
 	}

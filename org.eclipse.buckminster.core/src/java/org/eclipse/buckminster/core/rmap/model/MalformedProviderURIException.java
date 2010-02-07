@@ -16,12 +16,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MalformedProviderURIException extends LocalizedException
-{
+public class MalformedProviderURIException extends LocalizedException {
 	private static final long serialVersionUID = -17898613113143719L;
 
-	public MalformedProviderURIException(IReaderType readerType, String uri)
-	{
+	public MalformedProviderURIException(IReaderType readerType, String uri) {
 		super(NLS.bind(Messages.A_reader_of_type_0_cannot_use_the_uri_1, readerType.getId(), uri));
 	}
 }

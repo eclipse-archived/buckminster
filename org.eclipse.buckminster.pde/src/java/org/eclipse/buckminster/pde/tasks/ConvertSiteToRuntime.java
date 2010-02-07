@@ -40,185 +40,148 @@ import org.osgi.framework.Constants;
  * 
  */
 @SuppressWarnings("restriction")
-public class ConvertSiteToRuntime
-{
+public class ConvertSiteToRuntime {
 	private static final String FEATURES_DIR = "features"; //$NON-NLS-1$
 
 	private static final String FEATURE_FILE = "feature.xml"; //$NON-NLS-1$
 
 	private static final String PLUGINS_DIR = "plugins"; //$NON-NLS-1$
 
-	private final File m_productRoot;
+	private final File productRoot;
 
-	public ConvertSiteToRuntime(File productRoot)
-	{
-		m_productRoot = productRoot;
+	public ConvertSiteToRuntime(File productRoot) {
+		this.productRoot = productRoot;
 	}
 
-	public boolean guessUnpack(File bundleJar) throws CoreException
-	{
-		try
-		{
+	public boolean guessUnpack(File bundleJar) throws CoreException {
+		try {
 			JarFile jf = new JarFile(bundleJar);
-			try
-			{
+			try {
 				Manifest mf = jf.getManifest();
-				if(mf == null)
+				if (mf == null)
 					return false;
 
 				Attributes attrs = mf.getMainAttributes();
 				String value = attrs.getValue(Constants.FRAGMENT_HOST);
-				if(value != null)
-				{
+				if (value != null) {
 					ManifestElement[] elements = ManifestElement.parseHeader(Constants.FRAGMENT_HOST, value);
-					if(elements.length > 0)
-					{
-						if("org.eclipse.equinox.launcher".equals(elements[0].getValue())) //$NON-NLS-1$
+					if (elements.length > 0) {
+						if ("org.eclipse.equinox.launcher".equals(elements[0].getValue())) //$NON-NLS-1$
 							return true;
 					}
 				}
 
 				value = attrs.getValue(Constants.BUNDLE_CLASSPATH);
-				if(value != null)
-				{
-					for(ManifestElement elem : ManifestElement.parseHeader(Constants.BUNDLE_CLASSPATH, value))
-					{
-						if(elem.getValue().equals(".")) //$NON-NLS-1$
+				if (value != null) {
+					for (ManifestElement elem : ManifestElement.parseHeader(Constants.BUNDLE_CLASSPATH, value)) {
+						if (elem.getValue().equals(".")) //$NON-NLS-1$
 							return false;
 					}
 					return true;
 				}
 
 				value = attrs.getValue(IPDEBuildConstants.ECLIPSE_BUNDLE_SHAPE);
-				if(value != null)
+				if (value != null)
 					return value.equals("dir"); //$NON-NLS-1$
-			}
-			finally
-			{
+			} finally {
 				jf.close();
 			}
-		}
-		catch(BundleException e)
-		{
+		} catch (BundleException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 		return false;
 	}
 
-	public void run() throws CoreException
-	{
+	public void run() throws CoreException {
 		IProgressMonitor nullMonitor = new NullProgressMonitor();
 
-		File pluginsDir = new File(m_productRoot, PLUGINS_DIR);
+		File pluginsDir = new File(productRoot, PLUGINS_DIR);
 		String[] pluginCandiates = pluginsDir.list();
-		if(pluginCandiates == null)
+		if (pluginCandiates == null)
 			return;
 
-		File featuresDir = new File(m_productRoot, FEATURES_DIR);
+		File featuresDir = new File(productRoot, FEATURES_DIR);
 		String[] featureCandiates = featuresDir.list();
 		ArrayList<String> pluginsToUnpack = null;
 		HashSet<String> seenPlugins = new HashSet<String>();
 
-		if(featureCandiates != null && featureCandiates.length > 0)
-		{
-			for(String featureCandidate : featureCandiates)
-			{
-				if(!featureCandidate.endsWith(".jar")) //$NON-NLS-1$
+		if (featureCandiates != null && featureCandiates.length > 0) {
+			for (String featureCandidate : featureCandiates) {
+				if (!featureCandidate.endsWith(".jar")) //$NON-NLS-1$
 					continue;
 
 				File featureJar = new File(featuresDir, featureCandidate);
 				File featureDir = new File(featuresDir, featureCandidate.substring(0, featureCandidate.length() - 4));
 				InputStream input = null;
-				try
-				{
+				try {
 					input = new BufferedInputStream(new FileInputStream(featureJar));
 					FileUtils.unzip(input, null, featureDir, ConflictResolution.REPLACE, nullMonitor);
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 					throw BuckminsterException.wrap(e);
-				}
-				finally
-				{
+				} finally {
 					IOUtils.close(input);
 					featureJar.delete();
 				}
 			}
 
-			for(File featureCandidate : featuresDir.listFiles())
-			{
-				if(!featureCandidate.isDirectory())
+			for (File featureCandidate : featuresDir.listFiles()) {
+				if (!featureCandidate.isDirectory())
 					continue;
 
 				InputStream input = null;
-				try
-				{
+				try {
 					input = new BufferedInputStream(new FileInputStream(new File(featureCandidate, FEATURE_FILE)));
 					IFeatureModel feature = FeatureModelReader.readFeatureModel(input);
-					for(IFeaturePlugin plugin : feature.getFeature().getPlugins())
-					{
+					for (IFeaturePlugin plugin : feature.getFeature().getPlugins()) {
 						String fullName = plugin.getId() + '_' + plugin.getVersion();
-						if(seenPlugins.contains(fullName))
+						if (seenPlugins.contains(fullName))
 							continue;
 
 						seenPlugins.add(fullName);
-						if(plugin.isUnpack())
-						{
-							if(pluginsToUnpack == null)
+						if (plugin.isUnpack()) {
+							if (pluginsToUnpack == null)
 								pluginsToUnpack = new ArrayList<String>();
 							pluginsToUnpack.add(fullName);
 						}
 					}
-				}
-				catch(FileNotFoundException e)
-				{
+				} catch (FileNotFoundException e) {
 					continue;
 				}
 			}
 		}
 
-		for(String pluginCandidate : pluginCandiates)
-		{
-			if(!pluginCandidate.endsWith(".jar")) //$NON-NLS-1$
+		for (String pluginCandidate : pluginCandiates) {
+			if (!pluginCandidate.endsWith(".jar")) //$NON-NLS-1$
 				continue;
 
 			String fullName = pluginCandidate.substring(0, pluginCandidate.length() - 4);
-			if(seenPlugins.contains(fullName))
+			if (seenPlugins.contains(fullName))
 				continue;
 
 			seenPlugins.add(fullName);
 			File pluginJar = new File(pluginsDir, pluginCandidate);
-			if(guessUnpack(pluginJar))
-			{
-				if(pluginsToUnpack == null)
+			if (guessUnpack(pluginJar)) {
+				if (pluginsToUnpack == null)
 					pluginsToUnpack = new ArrayList<String>();
 				pluginsToUnpack.add(fullName);
 			}
 		}
 
-		if(pluginsToUnpack == null)
+		if (pluginsToUnpack == null)
 			return;
 
-		for(String pluginToUnpack : pluginsToUnpack)
-		{
+		for (String pluginToUnpack : pluginsToUnpack) {
 			File pluginJar = new File(pluginsDir, pluginToUnpack + ".jar"); //$NON-NLS-1$
 			File pluginDir = new File(pluginsDir, pluginToUnpack);
 			InputStream input = null;
-			try
-			{
+			try {
 				input = new BufferedInputStream(new FileInputStream(pluginJar));
 				FileUtils.unzip(input, null, pluginDir, ConflictResolution.REPLACE, nullMonitor);
-			}
-			catch(FileNotFoundException e)
-			{
+			} catch (FileNotFoundException e) {
 				continue;
-			}
-			finally
-			{
+			} finally {
 				IOUtils.close(input);
 				pluginJar.delete();
 			}

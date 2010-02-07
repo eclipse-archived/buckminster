@@ -6,30 +6,25 @@ import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
 
-public class NamespaceDeprecationFilter extends XMLFilterImpl
-{
-	private final String m_oldNamespace;
+public class NamespaceDeprecationFilter extends XMLFilterImpl {
+	private final String oldNamespace;
 
-	private final String m_newNamespace;
+	private final String newNamespace;
 
-	private final String m_systemID;
+	private final String systemID;
 
-	public NamespaceDeprecationFilter(String systemID, String oldNamespace, String newNamespace)
-	{
-		m_oldNamespace = oldNamespace;
-		m_newNamespace = newNamespace;
-		m_systemID = systemID;
+	public NamespaceDeprecationFilter(String systemID, String oldNamespace, String newNamespace) {
+		this.oldNamespace = oldNamespace;
+		this.newNamespace = newNamespace;
+		this.systemID = systemID;
 	}
 
 	@Override
-	public void startPrefixMapping(String prefix, String namespace) throws SAXException
-	{
-		if(m_oldNamespace.equals(namespace))
-		{
+	public void startPrefixMapping(String prefix, String namespace) throws SAXException {
+		if (oldNamespace.equals(namespace)) {
 			CorePlugin.getLogger().warning(
-					NLS.bind(Messages.XML_namespace_0_deprecated_Use_1_instead_2, new Object[] { m_oldNamespace,
-							m_newNamespace, m_systemID }));
-			namespace = m_newNamespace;
+					NLS.bind(Messages.XML_namespace_0_deprecated_Use_1_instead_2, new Object[] { oldNamespace, newNamespace, systemID }));
+			namespace = newNamespace;
 		}
 		super.startPrefixMapping(prefix, namespace);
 	}

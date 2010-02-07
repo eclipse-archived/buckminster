@@ -18,29 +18,22 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 
-public class DisconnectChosenCSpecAction extends AbstractChosenCSpecAction
-{
+public class DisconnectChosenCSpecAction extends AbstractChosenCSpecAction {
 	@Override
-	protected void run(CSpec cspec, IWorkbenchWindow wbWin)
-	{
+	protected void run(CSpec cspec, IWorkbenchWindow wbWin) {
 		IWorkbenchPage page = wbWin.getActivePage();
-		if(page == null)
+		if (page == null)
 			return;
 
-		try
-		{
+		try {
 			ComponentIdentifier wanted = cspec.getComponentIdentifier();
-			for(Resolution res : WorkspaceInfo.getAllResolutions())
-			{
+			for (Resolution res : WorkspaceInfo.getAllResolutions()) {
 				ComponentIdentifier cid = res.getCSpec().getComponentIdentifier();
-				if(wanted.matches(cid))
-				{
+				if (wanted.matches(cid)) {
 					res.remove(StorageManager.getDefault());
 				}
 			}
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			UiUtils.openError(page.getWorkbenchWindow().getShell(), Messages.unable_to_open_editor, e);
 		}
 	}

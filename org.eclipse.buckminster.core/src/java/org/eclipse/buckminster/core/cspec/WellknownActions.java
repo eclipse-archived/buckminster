@@ -16,124 +16,104 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author kolwing
  */
-public abstract class WellknownActions
-{
-	public enum BUCKMINSTER
-	{
-		CLEAN
-		{
+public abstract class WellknownActions {
+	public enum BUCKMINSTER {
+		CLEAN {
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				return "buckminster.clean"; //$NON-NLS-1$
 			}
 		},
 
 		/**
-		 * The prebind action is executed just prior to when a component is bound into the Eclipse workspace. The result
-		 * of the prebind action is ignored.
+		 * The prebind action is executed just prior to when a component is
+		 * bound into the Eclipse workspace. The result of the prebind action is
+		 * ignored.
 		 */
-		PREBIND
-		{
+		PREBIND {
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				return "buckminster.prebind"; //$NON-NLS-1$
 			}
 		},
 
 		/**
-		 * Similar to the {@link #PREBIND}, this action is executed just prior to when a component is bound into the
-		 * Eclipse workspace. The difference is that the result of this action will be bound to the workspace instead of
-		 * the component root.
+		 * Similar to the {@link #PREBIND}, this action is executed just prior
+		 * to when a component is bound into the Eclipse workspace. The
+		 * difference is that the result of this action will be bound to the
+		 * workspace instead of the component root.
 		 */
-		BIND_ENTRYPOINT
-		{
+		BIND_ENTRYPOINT {
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				return "buckminster.bind.entrypoint"; //$NON-NLS-1$
 			}
 		}
 	}
 
-	public enum ECLIPSE
-	{
-		CLEAN
-		{
+	public enum ECLIPSE {
+		CLEAN {
 			@Override
-			public int kind()
-			{
+			public int kind() {
 				return IncrementalProjectBuilder.CLEAN_BUILD;
 			}
 
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				return "eclipse.clean"; //$NON-NLS-1$
 			}
 		},
 		AUTO // not used as an actual action
 		{
 			@Override
-			public int kind()
-			{
+			public int kind() {
 				return IncrementalProjectBuilder.AUTO_BUILD;
 			}
 
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				return "eclipse.auto"; //$NON-NLS-1$
 			}
 		},
 		INCREMENTAL // not used as an actual action
 		{
 			@Override
-			public int kind()
-			{
+			public int kind() {
 				return IncrementalProjectBuilder.INCREMENTAL_BUILD;
 			}
 
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				return "eclipse.incremental"; //$NON-NLS-1$
 			}
 		},
 		FULL // not used as an actual action
 		{
 			@Override
-			public int kind()
-			{
+			public int kind() {
 				return IncrementalProjectBuilder.FULL_BUILD;
 			}
 
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				return "eclipse.full"; //$NON-NLS-1$
 			}
 		},
-		BUILD
-		{
+		BUILD {
 			@Override
-			public int kind()
-			{
+			public int kind() {
 				return IncrementalProjectBuilder.FULL_BUILD;
 			}
 
 			@Override
-			public String toString()
-			{
+			public String toString() {
 				return "eclipse.build"; //$NON-NLS-1$
 			}
 		};
 
-		public static int name2Kind(String name)
-		{
-			for(ECLIPSE e : ECLIPSE.values())
-				if(name.equals(e.toString()))
+		public static int name2Kind(String name) {
+			for (ECLIPSE e : ECLIPSE.values())
+				if (name.equals(e.toString()))
 					return e.kind();
 			throw new InternalError(NLS.bind(Messages.Unexpected_name_0, name));
 		}

@@ -19,17 +19,18 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Thomas Hallgren
  * @author Guillaume CHATELET
  */
-public interface IExpander
-{
+public interface IExpander {
 	/**
-	 * Expands the content read from the <code>input</code> stream into a folder structure rooted at
-	 * <code>finalLocation</code>. The finalLocation can be null to indicate a dry run that just verifies the
-	 * consistency of the <code>input</code>.
+	 * Expands the content read from the <code>input</code> stream into a folder
+	 * structure rooted at <code>finalLocation</code>. The finalLocation can be
+	 * null to indicate a dry run that just verifies the consistency of the
+	 * <code>input</code>.
 	 * 
 	 * @param input
 	 *            The stream to expand into folders and files
 	 * @param finalLocation
-	 *            The root location for the folder structure or <code>null</code> for verification only
+	 *            The root location for the folder structure or
+	 *            <code>null</code> for verification only
 	 * @param monitor
 	 *            The progress monitor. May be <code>null</code>.
 	 * @throws IOException
@@ -46,7 +47,8 @@ public interface IExpander
 	void setFilter(FileFilter filter);
 
 	/**
-	 * Specify whether the folder hierarchy within the archive should be flatten or not. Default is no.
+	 * Specify whether the folder hierarchy within the archive should be flatten
+	 * or not. Default is no.
 	 * 
 	 * @param shouldFlatten
 	 */

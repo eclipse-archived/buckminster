@@ -23,49 +23,39 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * A IStreamConsumer responsible for reading and parsing a <code>.project</code> file.
+ * A IStreamConsumer responsible for reading and parsing a <code>.project</code>
+ * file.
  * 
  * @author thhal
  */
-public class ProjectDescReader implements IStreamConsumer<IProjectDescription>
-{
-	public static IProjectDescription getProjectDescription(IComponentReader reader, IProgressMonitor monitor)
-			throws CoreException
-	{
+public class ProjectDescReader implements IStreamConsumer<IProjectDescription> {
+	public static IProjectDescription getProjectDescription(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		ProjectDescReader pdr = new ProjectDescReader();
-		try
-		{
+		try {
 			IProjectDescription projDesc;
-			if(reader instanceof ICatalogReader)
-				projDesc = ((ICatalogReader)reader).readFile(IProjectDescription.DESCRIPTION_FILE_NAME, pdr, monitor);
+			if (reader instanceof ICatalogReader)
+				projDesc = ((ICatalogReader) reader).readFile(IProjectDescription.DESCRIPTION_FILE_NAME, pdr, monitor);
 			else
-				projDesc = ((IFileReader)reader).readFile(pdr, monitor);
+				projDesc = ((IFileReader) reader).readFile(pdr, monitor);
 			return projDesc;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public IProjectDescription consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IProjectDescription consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
+			throws CoreException {
 		monitor = MonitorUtils.ensureNotNull(monitor);
-		try
-		{
+		try {
 			monitor.beginTask(null, 1);
 			monitor.subTask(Messages.Loading_project_description);
 			IWorkspace ws = ResourcesPlugin.getWorkspace();
-			synchronized(ws)
-			{
+			synchronized (ws) {
 				IProjectDescription pd = ws.loadProjectDescription(stream);
 				MonitorUtils.worked(monitor, 1);
 				return pd;
 			}
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}

@@ -17,24 +17,28 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Item</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Item</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.ItemImpl#getFactoryID <em>Factory ID</em>}</li>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.ItemImpl#getElementID <em>Element ID</em>}</li>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.ItemImpl#getPath <em>Path</em>}</li>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.ItemImpl#getType <em>Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.ItemImpl#getFactoryID <em>
+ * Factory ID</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.ItemImpl#getElementID <em>
+ * Element ID</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.ItemImpl#getPath <em>Path
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.ItemImpl#getType <em>Type
+ * </em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ItemImpl extends EObjectImpl implements Item
-{
+public class ItemImpl extends EObjectImpl implements Item {
 	/**
-	 * The default value of the '{@link #getFactoryID() <em>Factory ID</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getFactoryID() <em>Factory ID</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFactoryID()
 	 * @generated
@@ -43,8 +47,8 @@ public class ItemImpl extends EObjectImpl implements Item
 	protected static final String FACTORY_ID_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFactoryID() <em>Factory ID</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFactoryID() <em>Factory ID</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFactoryID()
 	 * @generated
@@ -53,8 +57,8 @@ public class ItemImpl extends EObjectImpl implements Item
 	protected String factoryID = FACTORY_ID_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getElementID() <em>Element ID</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getElementID() <em>Element ID</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getElementID()
 	 * @generated
@@ -63,8 +67,8 @@ public class ItemImpl extends EObjectImpl implements Item
 	protected static final String ELEMENT_ID_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getElementID() <em>Element ID</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getElementID() <em>Element ID</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getElementID()
 	 * @generated
@@ -73,8 +77,8 @@ public class ItemImpl extends EObjectImpl implements Item
 	protected String elementID = ELEMENT_ID_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getPath() <em>Path</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getPath() <em>Path</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPath()
 	 * @generated
@@ -83,8 +87,8 @@ public class ItemImpl extends EObjectImpl implements Item
 	protected static final String PATH_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPath() <em>Path</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getPath() <em>Path</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPath()
 	 * @generated
@@ -93,8 +97,8 @@ public class ItemImpl extends EObjectImpl implements Item
 	protected String path = PATH_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getType()
 	 * @generated
@@ -103,8 +107,8 @@ public class ItemImpl extends EObjectImpl implements Item
 	protected static final int TYPE_EDEFAULT = 0;
 
 	/**
-	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getType()
 	 * @generated
@@ -117,8 +121,7 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * 
 	 * @generated
 	 */
-	protected ItemImpl()
-	{
+	protected ItemImpl() {
 		super();
 	}
 
@@ -128,18 +131,16 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.ITEM__FACTORY_ID:
-			return getFactoryID();
-		case PsfPackage.ITEM__ELEMENT_ID:
-			return getElementID();
-		case PsfPackage.ITEM__PATH:
-			return getPath();
-		case PsfPackage.ITEM__TYPE:
-			return getType();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case PsfPackage.ITEM__FACTORY_ID:
+				return getFactoryID();
+			case PsfPackage.ITEM__ELEMENT_ID:
+				return getElementID();
+			case PsfPackage.ITEM__PATH:
+				return getPath();
+			case PsfPackage.ITEM__TYPE:
+				return getType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -150,24 +151,16 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.ITEM__FACTORY_ID:
-			return FACTORY_ID_EDEFAULT == null
-					? factoryID != null
-					: !FACTORY_ID_EDEFAULT.equals(factoryID);
-		case PsfPackage.ITEM__ELEMENT_ID:
-			return ELEMENT_ID_EDEFAULT == null
-					? elementID != null
-					: !ELEMENT_ID_EDEFAULT.equals(elementID);
-		case PsfPackage.ITEM__PATH:
-			return PATH_EDEFAULT == null
-					? path != null
-					: !PATH_EDEFAULT.equals(path);
-		case PsfPackage.ITEM__TYPE:
-			return type != TYPE_EDEFAULT;
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case PsfPackage.ITEM__FACTORY_ID:
+				return FACTORY_ID_EDEFAULT == null ? factoryID != null : !FACTORY_ID_EDEFAULT.equals(factoryID);
+			case PsfPackage.ITEM__ELEMENT_ID:
+				return ELEMENT_ID_EDEFAULT == null ? elementID != null : !ELEMENT_ID_EDEFAULT.equals(elementID);
+			case PsfPackage.ITEM__PATH:
+				return PATH_EDEFAULT == null ? path != null : !PATH_EDEFAULT.equals(path);
+			case PsfPackage.ITEM__TYPE:
+				return type != TYPE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -178,22 +171,20 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.ITEM__FACTORY_ID:
-			setFactoryID((String)newValue);
-			return;
-		case PsfPackage.ITEM__ELEMENT_ID:
-			setElementID((String)newValue);
-			return;
-		case PsfPackage.ITEM__PATH:
-			setPath((String)newValue);
-			return;
-		case PsfPackage.ITEM__TYPE:
-			setType((Integer)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case PsfPackage.ITEM__FACTORY_ID:
+				setFactoryID((String) newValue);
+				return;
+			case PsfPackage.ITEM__ELEMENT_ID:
+				setElementID((String) newValue);
+				return;
+			case PsfPackage.ITEM__PATH:
+				setPath((String) newValue);
+				return;
+			case PsfPackage.ITEM__TYPE:
+				setType((Integer) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -204,22 +195,20 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.ITEM__FACTORY_ID:
-			setFactoryID(FACTORY_ID_EDEFAULT);
-			return;
-		case PsfPackage.ITEM__ELEMENT_ID:
-			setElementID(ELEMENT_ID_EDEFAULT);
-			return;
-		case PsfPackage.ITEM__PATH:
-			setPath(PATH_EDEFAULT);
-			return;
-		case PsfPackage.ITEM__TYPE:
-			setType(TYPE_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case PsfPackage.ITEM__FACTORY_ID:
+				setFactoryID(FACTORY_ID_EDEFAULT);
+				return;
+			case PsfPackage.ITEM__ELEMENT_ID:
+				setElementID(ELEMENT_ID_EDEFAULT);
+				return;
+			case PsfPackage.ITEM__PATH:
+				setPath(PATH_EDEFAULT);
+				return;
+			case PsfPackage.ITEM__TYPE:
+				setType(TYPE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -229,8 +218,7 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * 
 	 * @generated
 	 */
-	public String getElementID()
-	{
+	public String getElementID() {
 		return elementID;
 	}
 
@@ -239,8 +227,7 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * 
 	 * @generated
 	 */
-	public String getFactoryID()
-	{
+	public String getFactoryID() {
 		return factoryID;
 	}
 
@@ -249,8 +236,7 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * 
 	 * @generated
 	 */
-	public String getPath()
-	{
+	public String getPath() {
 		return path;
 	}
 
@@ -259,8 +245,7 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * 
 	 * @generated
 	 */
-	public int getType()
-	{
+	public int getType() {
 		return type;
 	}
 
@@ -269,11 +254,10 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * 
 	 * @generated
 	 */
-	public void setElementID(String newElementID)
-	{
+	public void setElementID(String newElementID) {
 		String oldElementID = elementID;
 		elementID = newElementID;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.ITEM__ELEMENT_ID, oldElementID, elementID));
 	}
 
@@ -282,11 +266,10 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * 
 	 * @generated
 	 */
-	public void setFactoryID(String newFactoryID)
-	{
+	public void setFactoryID(String newFactoryID) {
 		String oldFactoryID = factoryID;
 		factoryID = newFactoryID;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.ITEM__FACTORY_ID, oldFactoryID, factoryID));
 	}
 
@@ -295,11 +278,10 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * 
 	 * @generated
 	 */
-	public void setPath(String newPath)
-	{
+	public void setPath(String newPath) {
 		String oldPath = path;
 		path = newPath;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.ITEM__PATH, oldPath, path));
 	}
 
@@ -308,11 +290,10 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * 
 	 * @generated
 	 */
-	public void setType(int newType)
-	{
+	public void setType(int newType) {
 		int oldType = type;
 		type = newType;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.ITEM__TYPE, oldType, type));
 	}
 
@@ -322,9 +303,8 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -346,8 +326,7 @@ public class ItemImpl extends EObjectImpl implements Item
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return PsfPackage.Literals.ITEM;
 	}
 

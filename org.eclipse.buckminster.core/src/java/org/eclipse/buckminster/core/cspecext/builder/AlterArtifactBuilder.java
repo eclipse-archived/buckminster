@@ -19,35 +19,29 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class AlterArtifactBuilder extends AlterAttributeBuilder
-{
-	private final HashSet<IPath> m_removedPaths = new HashSet<IPath>();
+public class AlterArtifactBuilder extends AlterAttributeBuilder {
+	private final HashSet<IPath> removedPaths = new HashSet<IPath>();
 
-	public AlterArtifactBuilder(AttributeBuilder baseBuilder)
-	{
+	public AlterArtifactBuilder(AttributeBuilder baseBuilder) {
 		super(baseBuilder);
 	}
 
-	public void addRemovedPath(IPath path)
-	{
-		m_removedPaths.add(path);
+	public void addRemovedPath(IPath path) {
+		removedPaths.add(path);
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_removedPaths.clear();
+		removedPaths.clear();
 	}
 
 	@Override
-	public AlterAttribute<?> createAlterAttribute()
-	{
-		return new AlterArtifact((Artifact)createBase(), getRemovedHints(), getAlteredHints(), m_removedPaths);
+	public AlterAttribute<?> createAlterAttribute() {
+		return new AlterArtifact((Artifact) createBase(), getRemovedHints(), getAlteredHints(), removedPaths);
 	}
 
-	public Set<IPath> getRemovedPaths()
-	{
-		return m_removedPaths;
+	public Set<IPath> getRemovedPaths() {
+		return removedPaths;
 	}
 }

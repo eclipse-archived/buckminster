@@ -18,44 +18,38 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
-public class QualifiedDependency
-{
-	private final ComponentRequest m_request;
+public class QualifiedDependency {
+	private final ComponentRequest request;
 
-	private final Set<String> m_attributes;
+	private final Set<String> attributes;
 
-	public QualifiedDependency(ComponentRequest request, Collection<String> attributes)
-	{
-		m_request = request;
-		m_attributes = Utils.createUnmodifiableSet(attributes);
+	public QualifiedDependency(ComponentRequest request, Collection<String> attributes) {
+		this.request = request;
+		this.attributes = Utils.createUnmodifiableSet(attributes);
 	}
 
-	public QualifiedDependency applyAdvice(IAdvisorNode advice)
-	{
-		if(advice == null)
+	public QualifiedDependency applyAdvice(IAdvisorNode advice) {
+		if (advice == null)
 			return this;
 
 		boolean change = false;
-		ComponentRequest request = m_request;
+		ComponentRequest rq = request;
 		VersionRange dsg = advice.getVersionOverride();
-		if(dsg != null)
-		{
+		if (dsg != null) {
 			change = true;
-			request = new ComponentRequest(request.getName(), request.getComponentTypeID(), dsg);
+			rq = new ComponentRequest(rq.getName(), rq.getComponentTypeID(), dsg);
 		}
 
 		Collection<String> attrs = advice.getAttributes();
-		if(attrs.size() > 0)
-		{
+		if (attrs.size() > 0) {
 			change = true;
-			if(advice.isPrune() && m_attributes.size() > 0 && !m_attributes.containsAll(attrs))
-			{
+			if (advice.isPrune() && attributes.size() > 0 && !attributes.containsAll(attrs)) {
 				HashSet<String> pruned = new HashSet<String>();
-				for(String attrName : attrs)
-					if(m_attributes.contains(attrName))
+				for (String attrName : attrs)
+					if (attributes.contains(attrName))
 						pruned.add(attrName);
 
-				if(pruned.size() == 0)
+				if (pruned.size() == 0)
 					//
 					// We don't want anything from this cspec
 					//
@@ -63,79 +57,69 @@ public class QualifiedDependency
 
 				attrs = pruned;
 			}
-		}
-		else
-			attrs = m_attributes;
+		} else
+			attrs = attributes;
 
-		return change
-				? new QualifiedDependency(request, attrs)
-				: this;
+		return change ? new QualifiedDependency(rq, attrs) : this;
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o)
+	public boolean equals(Object o) {
+		if (this == o)
 			return true;
-		if(!(o instanceof QualifiedDependency))
+		if (!(o instanceof QualifiedDependency))
 			return false;
 
-		QualifiedDependency that = (QualifiedDependency)o;
-		return m_request.equals(that.m_request) && m_attributes.equals(that.m_attributes);
+		QualifiedDependency that = (QualifiedDependency) o;
+		return request.equals(that.request) && attributes.equals(that.attributes);
 	}
 
-	public final Set<String> getAttributeNames()
-	{
-		return m_attributes;
+	public final Set<String> getAttributeNames() {
+		return attributes;
 	}
 
-	public final ComponentRequest getRequest()
-	{
-		return m_request;
+	public final ComponentRequest getRequest() {
+		return request;
 	}
 
-	public boolean hasAllAttributes(Collection<String> attributes)
-	{
-		return m_attributes.containsAll(attributes);
+	public boolean hasAllAttributes(Collection<String> attrs) {
+		return attributes.containsAll(attrs);
 	}
 
-	public boolean hasAllAttributes(String[] attributes)
-	{
-		return hasAllAttributes(Arrays.asList(attributes));
+	public boolean hasAllAttributes(String[] attrs) {
+		return hasAllAttributes(Arrays.asList(attrs));
 	}
 
 	@Override
-	public int hashCode()
-	{
-		return m_request.hashCode() * 31 + m_attributes.hashCode();
+	public int hashCode() {
+		return request.hashCode() * 31 + attributes.hashCode();
 	}
 
 	/**
-	 * Merges the version designator and the attributes of the new dependency with the current one. The method will
-	 * return this instance if the merge is a no-op.
+	 * Merges the version designator and the attributes of the new dependency
+	 * with the current one. The method will return this instance if the merge
+	 * is a no-op.
 	 * 
 	 * @param newQDep
 	 *            the new qualified depenency
 	 * @return This instance or a new instance if modifications where necessary.
 	 * @throws CoreException
-	 *             if the qualification is in conflict with the previously defined dependency with respect to its
-	 *             version designator
+	 *             if the qualification is in conflict with the previously
+	 *             defined dependency with respect to its version designator
 	 */
-	public QualifiedDependency mergeDependency(QualifiedDependency newQDep) throws CoreException
-	{
+	public QualifiedDependency mergeDependency(QualifiedDependency newQDep) throws CoreException {
 		Set<String> attrs = newQDep.getAttributeNames();
-		ComponentRequest newRequest = m_request.mergeDesignator(newQDep.getRequest());
-		if(newRequest == m_request && hasAllAttributes(attrs))
+		ComponentRequest newRequest = request.mergeDesignator(newQDep.getRequest());
+		if (newRequest == request && hasAllAttributes(attrs))
 			return this;
 
 		Set<String> allAttrs;
-		if(m_attributes.size() == 0)
+		if (attributes.size() == 0)
 			allAttrs = attrs;
-		else if(attrs.size() == 0)
-			allAttrs = m_attributes;
-		else
-		{
-			allAttrs = new HashSet<String>(m_attributes);
+		else if (attrs.size() == 0)
+			allAttrs = attributes;
+		else {
+			allAttrs = new HashSet<String>(attributes);
 			allAttrs.addAll(attrs);
 		}
 		return new QualifiedDependency(newRequest, allAttrs);

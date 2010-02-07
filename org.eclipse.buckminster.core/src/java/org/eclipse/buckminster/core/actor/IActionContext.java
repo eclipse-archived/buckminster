@@ -19,8 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public interface IActionContext extends IModelCache
-{
+public interface IActionContext extends IModelCache {
 	/**
 	 * Add all named prerequisite path groups
 	 * 
@@ -82,30 +81,34 @@ public interface IActionContext extends IModelCache
 	Map<String, PathGroup[]> getNamedPathGroupArrays() throws CoreException;
 
 	/**
-	 * Returns the stream that should be used for information and debug messages.
+	 * Returns the stream that should be used for information and debug
+	 * messages.
 	 * 
 	 * @return A stream for information and debug messages.
 	 */
 	PrintStream getOutputStream();
 
 	/**
-	 * Returns <code>true</code> if the action is forced. An action that is forced is executed regardless of if the
-	 * product is newer then all prerequisites.
+	 * Returns <code>true</code> if the action is forced. An action that is
+	 * forced is executed regardless of if the product is newer then all
+	 * prerequisites.
 	 * 
 	 * @return <code>true</code> if the build is forced.
 	 */
 	boolean isForced();
 
 	/**
-	 * Returns <code>true</code> if the perform was issued with the quite flag set to true.
+	 * Returns <code>true</code> if the perform was issued with the quite flag
+	 * set to true.
 	 * 
 	 * @return <code>true</code> if the build is quite.
 	 */
 	boolean isQuiet();
 
 	/**
-	 * Return the absolute path of <code>path</code>. If path is already absolut, it is returend unaltered. If it is
-	 * relative it will be made absolute using the component root.
+	 * Return the absolute path of <code>path</code>. If path is already
+	 * absolut, it is returend unaltered. If it is relative it will be made
+	 * absolute using the component root.
 	 * 
 	 * @param path
 	 *            The path to make absolute. Cannot be <code>null</code>.
@@ -115,8 +118,9 @@ public interface IActionContext extends IModelCache
 	File makeAbsolute(File path) throws CoreException;
 
 	/**
-	 * Return the absolute path of <code>path</code>. If path is already absolut, it is returend unaltered. If it is
-	 * relative it will be made absolute using the component root.
+	 * Return the absolute path of <code>path</code>. If path is already
+	 * absolut, it is returend unaltered. If it is relative it will be made
+	 * absolute using the component root.
 	 * 
 	 * @param path
 	 *            The path to make absolute. Cannot be <code>null</code>.

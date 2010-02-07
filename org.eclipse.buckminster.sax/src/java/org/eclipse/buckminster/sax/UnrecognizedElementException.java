@@ -11,16 +11,15 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
 
 /**
- * Thrown when an element is encountered for which no corresponding {@link ChildHandler} can be found.
+ * Thrown when an element is encountered for which no corresponding
+ * {@link ChildHandler} can be found.
  * 
  * @author Thomas Hallgren
  */
-public class UnrecognizedElementException extends SAXParseException
-{
+public class UnrecognizedElementException extends SAXParseException {
 	private static final long serialVersionUID = 3689917275172059185L;
 
-	public UnrecognizedElementException(String inTag, String qName, Locator locator)
-	{
+	public UnrecognizedElementException(String inTag, String qName, Locator locator) {
 		super("Unrecognized element <" + qName + "> encountered in tag <" + inTag + ">", locator); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 }

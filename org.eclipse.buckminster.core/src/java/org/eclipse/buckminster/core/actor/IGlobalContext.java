@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 
-public interface IGlobalContext extends IModelCache
-{
+public interface IGlobalContext extends IModelCache {
 	/**
-	 * Adds a generated resolution to the context that will be available througout the perform call.
+	 * Adds a generated resolution to the context that will be available
+	 * througout the perform call.
 	 * 
 	 * @param resolution
 	 *            The resolution to add
@@ -42,12 +42,13 @@ public interface IGlobalContext extends IModelCache
 	Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException;
 
 	/**
-	 * Obtains a generated materialization from the context for the given identifier
+	 * Obtains a generated materialization from the context for the given
+	 * identifier
 	 * 
 	 * @param cid
 	 *            The component identifier
-	 * @return A generated materialization or <code>null</code> if no materialization for the given cid has been added
-	 *         to this context.
+	 * @return A generated materialization or <code>null</code> if no
+	 *         materialization for the given cid has been added to this context.
 	 */
 	Materialization getGeneratedMaterialization(IComponentIdentifier cid);
 
@@ -56,7 +57,8 @@ public interface IGlobalContext extends IModelCache
 	 * 
 	 * @param request
 	 *            A request for the resolution
-	 * @return A generated resolution or <code>null</code> if no matching resolution has been added to this context.
+	 * @return A generated resolution or <code>null</code> if no matching
+	 *         resolution has been added to this context.
 	 */
 	Resolution getGeneratedResolution(IComponentRequest request);
 
@@ -75,8 +77,8 @@ public interface IGlobalContext extends IModelCache
 	IStatus getStatus();
 
 	/**
-	 * Schedule the removal of <code>path</code> when the top build invocation ends. The <code>path</code> must be an
-	 * absolute path.
+	 * Schedule the removal of <code>path</code> when the top build invocation
+	 * ends. The <code>path</code> must be an absolute path.
 	 * 
 	 * @param path
 	 *            The absolute path of the file or directory to remove

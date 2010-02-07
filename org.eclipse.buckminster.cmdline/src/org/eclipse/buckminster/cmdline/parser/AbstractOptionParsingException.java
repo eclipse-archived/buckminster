@@ -10,12 +10,10 @@
 
 package org.eclipse.buckminster.cmdline.parser;
 
-abstract public class AbstractOptionParsingException extends Exception
-{
+abstract public class AbstractOptionParsingException extends Exception {
 	private static final long serialVersionUID = -37903329402103164L;
 
-	public AbstractOptionParsingException(String message)
-	{
+	public AbstractOptionParsingException(String message) {
 		super(message);
 	}
 }

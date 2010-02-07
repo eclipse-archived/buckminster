@@ -30,109 +30,87 @@ import org.eclipse.osgi.util.NLS;
  * @author Thomas Hallgren
  * @author Guillaume CHATELET
  */
-public class ZipExpander implements IExpander
-{
-	private FileFilter m_filter;
+public class ZipExpander implements IExpander {
+	private FileFilter filter;
 
-	private boolean m_flatten = false;
+	private boolean flatten = false;
 
-	public void expand(InputStream inputs, File destinationFolder, IProgressMonitor monitor) throws CoreException
-	{
+	public void expand(InputStream inputs, File destinationFolder, IProgressMonitor monitor) throws CoreException {
 		ZipEntry entry;
 		ZipInputStream input = null;
 		int ticksLeft = 600;
 		MonitorUtils.begin(monitor, ticksLeft);
-		if(destinationFolder != null)
-		{
-			if(!(destinationFolder.isDirectory() || destinationFolder.mkdirs()))
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_unzip_into_directory_0,
-						destinationFolder));
+		if (destinationFolder != null) {
+			if (!(destinationFolder.isDirectory() || destinationFolder.mkdirs()))
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_unzip_into_directory_0, destinationFolder));
 			MonitorUtils.worked(monitor, 10);
 			ticksLeft -= 10;
 		}
-		try
-		{
+		try {
 			input = new ZipInputStream(inputs);
-			while((entry = input.getNextEntry()) != null)
-			{
-				if(entry.isDirectory() && m_flatten)
+			while ((entry = input.getNextEntry()) != null) {
+				if (entry.isDirectory() && flatten)
 					continue;
 				String name = getName(entry);
-				if(entry.isDirectory())
-				{
-					if(destinationFolder == null)
+				if (entry.isDirectory()) {
+					if (destinationFolder == null)
 						continue;
 					File subDir = new File(destinationFolder, name);
-					if(!(subDir.isDirectory() || subDir.mkdirs()))
-						throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_unzip_into_directory_0,
-								destinationFolder));
-					if(ticksLeft >= 10)
-					{
+					if (!(subDir.isDirectory() || subDir.mkdirs()))
+						throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_unzip_into_directory_0, destinationFolder));
+					if (ticksLeft >= 10) {
 						MonitorUtils.worked(monitor, 10);
 						ticksLeft -= 10;
 					}
 					continue;
 				}
 				OutputStream output = null;
-				try
-				{
-					if(destinationFolder == null)
+				try {
+					if (destinationFolder == null)
 						output = NullOutputStream.INSTANCE;
-					else
-					{
-						// ZipEntry can contain e.g. "exo-enterprise-webos-r20927-tomcat\webapps\ROOT\build.xml" -
+					else {
+						// ZipEntry can contain e.g.
+						// "exo-enterprise-webos-r20927-tomcat\webapps\ROOT\build.xml"
+						// -
 						// folders need to be created
 						File subDir = new File(destinationFolder, name).getParentFile();
-						if(subDir != null && !(subDir.isDirectory() || subDir.mkdirs()))
-							throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_unzip_into_directory_0,
-									destinationFolder));
+						if (subDir != null && !(subDir.isDirectory() || subDir.mkdirs()))
+							throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_unzip_into_directory_0, destinationFolder));
 
-						if(m_filter == null || m_filter.accept(new File(entry.getName())))
+						if (filter == null || filter.accept(new File(entry.getName())))
 							output = new FileOutputStream(new File(destinationFolder, name));
 						else
 							output = NullOutputStream.INSTANCE;
 					}
 					IProgressMonitor subMon = null;
-					if(ticksLeft >= 20)
-					{
+					if (ticksLeft >= 20) {
 						subMon = MonitorUtils.subMonitor(monitor, 10);
 						ticksLeft -= 10;
 					}
 					IOUtils.copy(input, output, subMon);
-				}
-				finally
-				{
+				} finally {
 					IOUtils.close(output);
 				}
 			}
-			if(ticksLeft > 0)
+			if (ticksLeft > 0)
 				MonitorUtils.worked(monitor, ticksLeft);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			MonitorUtils.done(monitor);
 		}
 	}
 
-	public void setFilter(FileFilter filter)
-	{
-		m_filter = filter;
+	public void setFilter(FileFilter filter) {
+		this.filter = filter;
 	}
 
-	public void setFlattenHierarchy(boolean shouldFlatten)
-	{
-		m_flatten = shouldFlatten;
+	public void setFlattenHierarchy(boolean shouldFlatten) {
+		flatten = shouldFlatten;
 	}
 
-	private String getName(ZipEntry entry)
-	{
+	private String getName(ZipEntry entry) {
 		String name = entry.getName();
-		return m_flatten
-				? new File(name).getName()
-				: name;
+		return flatten ? new File(name).getName() : name;
 	}
 }

@@ -16,42 +16,34 @@ import java.io.OutputStream;
 /**
  * @author kolwing
  */
-public class StreamPump extends Thread
-{
-	private final InputStream m_is;
+public class StreamPump extends Thread {
+	private final InputStream is;
 
-	private final OutputStream m_os;
+	private final OutputStream os;
 
-	private final boolean m_flush;
+	private final boolean flush;
 
-	public StreamPump(InputStream is, OutputStream os)
-	{
+	public StreamPump(InputStream is, OutputStream os) {
 		this(is, os, false);
 	}
 
-	public StreamPump(InputStream is, OutputStream os, boolean flush)
-	{
+	public StreamPump(InputStream is, OutputStream os, boolean flush) {
 		super("StreamPump"); //$NON-NLS-1$
-		m_is = is;
-		m_os = os;
-		m_flush = flush;
+		this.is = is;
+		this.os = os;
+		this.flush = flush;
 	}
 
 	@Override
-	public void run()
-	{
-		try
-		{
+	public void run() {
+		try {
 			int c;
-			while((c = m_is.read()) != -1)
-			{
-				m_os.write(c);
-				if(m_flush || c == '\n')
-					m_os.flush();
+			while ((c = is.read()) != -1) {
+				os.write(c);
+				if (flush || c == '\n')
+					os.flush();
 			}
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			// ignore
 		}
 	}

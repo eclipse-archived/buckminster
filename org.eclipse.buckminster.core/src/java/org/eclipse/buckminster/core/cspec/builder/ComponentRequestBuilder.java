@@ -17,81 +17,67 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
 /**
  * @author Thomas Hallgren
  */
-public class ComponentRequestBuilder implements IComponentRequest
-{
-	private String m_name;
+public class ComponentRequestBuilder implements IComponentRequest {
+	private String name;
 
-	private String m_componentType;
+	private String componentType;
 
-	private VersionRange m_versionRange;
+	private VersionRange versionRange;
 
-	private Filter m_filter;
+	private Filter filter;
 
-	public void clear()
-	{
-		m_name = null;
-		m_componentType = null;
-		m_versionRange = null;
-		m_filter = null;
+	public void clear() {
+		name = null;
+		componentType = null;
+		versionRange = null;
+		filter = null;
 	}
 
-	public ComponentRequest createComponentRequest()
-	{
+	public ComponentRequest createComponentRequest() {
 		return new ComponentRequest(this);
 	}
 
-	public boolean designates(IComponentIdentifier id)
-	{
-		return Trivial.equalsAllowNull(getName(), id.getName())
-				&& (m_componentType == null || m_componentType.equals(id.getComponentTypeID()))
-				&& (m_versionRange == null || m_versionRange.isIncluded(id.getVersion()));
+	public boolean designates(IComponentIdentifier id) {
+		return Trivial.equalsAllowNull(getName(), id.getName()) && (componentType == null || componentType.equals(id.getComponentTypeID()))
+				&& (versionRange == null || versionRange.isIncluded(id.getVersion()));
 	}
 
-	public String getComponentTypeID()
-	{
-		return m_componentType;
+	public String getComponentTypeID() {
+		return componentType;
 	}
 
-	public Filter getFilter()
-	{
-		return m_filter;
+	public Filter getFilter() {
+		return filter;
 	}
 
-	public String getName()
-	{
-		return m_name;
+	public String getName() {
+		return name;
 	}
 
-	public VersionRange getVersionRange()
-	{
-		return m_versionRange;
+	public VersionRange getVersionRange() {
+		return versionRange;
 	}
 
-	public void initFrom(IComponentRequest request)
-	{
-		m_name = request.getName();
-		m_componentType = request.getComponentTypeID();
-		m_versionRange = request.getVersionRange();
-		m_filter = request.getFilter();
+	public void initFrom(IComponentRequest request) {
+		name = request.getName();
+		componentType = request.getComponentTypeID();
+		versionRange = request.getVersionRange();
+		filter = request.getFilter();
 	}
 
-	public void setComponentTypeID(String componentType)
-	{
-		m_componentType = componentType;
+	public void setComponentTypeID(String componentType) {
+		this.componentType = componentType;
 	}
 
-	public void setFilter(Filter filter)
-	{
-		m_filter = filter;
+	public void setFilter(Filter filter) {
+		this.filter = filter;
 	}
 
-	public void setName(String name)
-	{
-		m_name = name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setVersionRange(VersionRange versionRange)
-	{
-		m_versionRange = versionRange;
+	public void setVersionRange(VersionRange versionRange) {
+		this.versionRange = versionRange;
 	}
 }

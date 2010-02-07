@@ -46,144 +46,122 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class FileReader extends FileTransferJob implements IFileTransferListener
-{
-	private boolean m_closeStreamWhenFinished = false;
+public class FileReader extends FileTransferJob implements IFileTransferListener {
+	private boolean closeStreamWhenFinished = false;
 
-	private Exception m_exception;
+	private Exception exception;
 
-	private IFileInfo m_fileInfo;
+	private IFileInfo fileInfo;
 
-	private long m_lastProgressCount;
+	private long lastProgressCount;
 
-	private long m_lastStatsCount;
+	private long lastStatsCount;
 
-	private IProgressMonitor m_monitor;
+	private IProgressMonitor monitor;
 
-	private boolean m_onlyGetInfo = false;
+	private boolean onlyGetInfo = false;
 
-	private OutputStream m_outputStream;
+	private OutputStream outputStream;
 
-	private ProgressStatistics m_statistics;
+	private ProgressStatistics statistics;
 
-	private final int m_connectionRetryCount;
+	private final int connectionRetryCount;
 
-	private final long m_connectionRetryDelay;
+	private final long connectionRetryDelay;
 
-	private final IConnectContext m_connectContext;
+	private final IConnectContext connectContext;
 
 	/**
-	 * Create a new FileReader that will retry failed connection attempts and sleep some amount of time between each
-	 * attempt.
+	 * Create a new FileReader that will retry failed connection attempts and
+	 * sleep some amount of time between each attempt.
 	 * 
 	 * @param connectionRetryCount
-	 *            The number of times to retry the connection. Set to zero to fail on first attempt.
+	 *            The number of times to retry the connection. Set to zero to
+	 *            fail on first attempt.
 	 * @param connectionRetryDelay
 	 *            The number of milliseconds to sleep between each attempt.
 	 */
-	public FileReader(IConnectContext connectContext)
-	{
+	public FileReader(IConnectContext connectContext) {
 		super(Messages.URL_reader);
 
 		// Hide this job.
 		setSystem(true);
 		setUser(false);
-		m_connectionRetryCount = BuckminsterPreferences.getConnectionRetryCount();
-		m_connectionRetryDelay = BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
-		m_connectContext = connectContext;
+		this.connectionRetryCount = BuckminsterPreferences.getConnectionRetryCount();
+		this.connectionRetryDelay = BuckminsterPreferences.getConnectionRetryDelay() * 1000L;
+		this.connectContext = connectContext;
 	}
 
-	public IFileInfo getLastFileInfo()
-	{
-		return m_fileInfo;
+	public IFileInfo getLastFileInfo() {
+		return fileInfo;
 	}
 
-	public synchronized void handleTransferEvent(IFileTransferEvent event)
-	{
-		if(event instanceof IIncomingFileTransferReceiveStartEvent)
-		{
-			IIncomingFileTransfer source = ((IIncomingFileTransferEvent)event).getSource();
-			try
-			{
+	public synchronized void handleTransferEvent(IFileTransferEvent event) {
+		if (event instanceof IIncomingFileTransferReceiveStartEvent) {
+			IIncomingFileTransfer source = ((IIncomingFileTransferEvent) event).getSource();
+			try {
 				FileInfoBuilder fi = new FileInfoBuilder();
 				Date lastModified = source.getRemoteLastModified();
-				if(lastModified != null)
+				if (lastModified != null)
 					fi.setLastModified(lastModified.getTime());
 				fi.setName(source.getRemoteFileName());
 				fi.setSize(source.getFileLength());
-				m_fileInfo = fi;
+				fileInfo = fi;
 
-				if(m_onlyGetInfo)
-				{
+				if (onlyGetInfo) {
 					source.cancel();
-				}
-				else
-					((IIncomingFileTransferReceiveStartEvent)event).receive(m_outputStream, this);
-			}
-			catch(IOException e)
-			{
-				m_exception = e;
+				} else
+					((IIncomingFileTransferReceiveStartEvent) event).receive(outputStream, this);
+			} catch (IOException e) {
+				exception = e;
 				return;
 			}
 
-			if(m_monitor != null)
-			{
+			if (monitor != null) {
 				long fileLength = source.getFileLength();
-				m_statistics = new ProgressStatistics(source.getRemoteFileName(), fileLength);
-				m_monitor.beginTask(null, 1000);
-				m_monitor.subTask(m_statistics.report());
-				m_lastStatsCount = 0;
-				m_lastProgressCount = 0;
+				statistics = new ProgressStatistics(source.getRemoteFileName(), fileLength);
+				monitor.beginTask(null, 1000);
+				monitor.subTask(statistics.report());
+				lastStatsCount = 0;
+				lastProgressCount = 0;
 			}
-		}
-		else if(event instanceof IIncomingFileTransferReceiveDataEvent)
-		{
-			IIncomingFileTransfer source = ((IIncomingFileTransferEvent)event).getSource();
-			if(m_monitor != null)
-			{
-				if(m_monitor.isCanceled())
-				{
+		} else if (event instanceof IIncomingFileTransferReceiveDataEvent) {
+			IIncomingFileTransfer source = ((IIncomingFileTransferEvent) event).getSource();
+			if (monitor != null) {
+				if (monitor.isCanceled()) {
 					source.cancel();
 					return;
 				}
 
 				long br = source.getBytesReceived();
-				long count = br - m_lastStatsCount;
-				m_lastStatsCount = br;
-				m_statistics.increase(count);
-				if(m_statistics.shouldReport())
-				{
-					count = br - m_lastProgressCount;
-					m_lastProgressCount = br;
-					m_monitor.subTask(m_statistics.report());
-					m_monitor.worked((int)(1000 * count / m_statistics.getTotal()));
+				long count = br - lastStatsCount;
+				lastStatsCount = br;
+				statistics.increase(count);
+				if (statistics.shouldReport()) {
+					count = br - lastProgressCount;
+					lastProgressCount = br;
+					monitor.subTask(statistics.report());
+					monitor.worked((int) (1000 * count / statistics.getTotal()));
 				}
 			}
-		}
-		else if(event instanceof IIncomingFileTransferReceiveDoneEvent)
-		{
-			if(m_closeStreamWhenFinished)
-				IOUtils.close(m_outputStream);
+		} else if (event instanceof IIncomingFileTransferReceiveDoneEvent) {
+			if (closeStreamWhenFinished)
+				IOUtils.close(outputStream);
 
-			if(m_exception == null)
-			{
-				m_exception = ((IIncomingFileTransferReceiveDoneEvent)event).getException();
-				if(m_exception instanceof UserCancelledException)
-					m_exception = null;
+			if (exception == null) {
+				exception = ((IIncomingFileTransferReceiveDoneEvent) event).getException();
+				if (exception instanceof UserCancelledException)
+					exception = null;
 			}
 		}
 	}
 
-	public InputStream read(URL url) throws CoreException, FileNotFoundException
-	{
+	public InputStream read(URL url) throws CoreException, FileNotFoundException {
 		final PipedInputStream input = new PipedInputStream();
 		PipedOutputStream output;
-		try
-		{
+		try {
 			output = new PipedOutputStream(input);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 		Buckminster.getLogger().debug("Downloading %s", url); //$NON-NLS-1$
@@ -191,81 +169,69 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		final IProgressMonitor cancellationMonitor = new NullProgressMonitor();
 		sendRetrieveRequest(url, output, true, false, cancellationMonitor);
 
-		return new InputStream()
-		{
+		return new InputStream() {
 			@Override
-			public int available() throws IOException
-			{
+			public int available() throws IOException {
 				checkException();
 				return input.available();
 			}
 
 			@Override
-			public void close() throws IOException
-			{
+			public void close() throws IOException {
 				cancellationMonitor.setCanceled(true);
 				IOUtils.close(input);
 				checkException();
 			}
 
 			@Override
-			public void mark(int readlimit)
-			{
+			public void mark(int readlimit) {
 				input.mark(readlimit);
 			}
 
 			@Override
-			public boolean markSupported()
-			{
+			public boolean markSupported() {
 				return input.markSupported();
 			}
 
 			@Override
-			public int read() throws IOException
-			{
+			public int read() throws IOException {
 				checkException();
 				return input.read();
 			}
 
 			@Override
-			public int read(byte b[]) throws IOException
-			{
+			public int read(byte b[]) throws IOException {
 				checkException();
 				return input.read(b);
 			}
 
 			@Override
-			public int read(byte b[], int off, int len) throws IOException
-			{
+			public int read(byte b[], int off, int len) throws IOException {
 				checkException();
 				return input.read(b, off, len);
 			}
 
 			@Override
-			public void reset() throws IOException
-			{
+			public void reset() throws IOException {
 				checkException();
 				input.reset();
 			}
 
 			@Override
-			public long skip(long n) throws IOException
-			{
+			public long skip(long n) throws IOException {
 				checkException();
 				return input.skip(n);
 			}
 
-			private void checkException() throws IOException
-			{
-				if(m_exception == null)
+			private void checkException() throws IOException {
+				if (exception == null)
 					return;
 
 				IOException e;
-				Throwable t = BuckminsterException.unwind(m_exception);
-				if(t instanceof IOException)
-					e = (IOException)t;
-				else
-				{
+				Throwable t = BuckminsterException.unwind(exception);
+				if (t instanceof IOException)
+					e = (IOException) t;
+				else {
 					e = new IOException(t.getMessage());
 					e.initCause(t);
 				}
@@ -274,109 +240,89 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		};
 	}
 
-	public IFileInfo readInfo(URL url) throws CoreException, FileNotFoundException
-	{
+	public IFileInfo readInfo(URL url) throws CoreException, FileNotFoundException {
 		sendRetrieveRequest(url, null, false, true, null);
 		return getLastFileInfo();
 	}
 
-	public void readInto(URL url, OutputStream outputStream, IProgressMonitor monitor) throws CoreException,
-			FileNotFoundException
-	{
-		try
-		{
-			sendRetrieveRequest(url, outputStream, false, false, monitor);
+	public void readInto(URL url, OutputStream out, IProgressMonitor mon) throws CoreException, FileNotFoundException {
+		try {
+			sendRetrieveRequest(url, out, false, false, mon);
 			join();
-		}
-		catch(InterruptedException e)
-		{
-			monitor.setCanceled(true);
+		} catch (InterruptedException e) {
+			mon.setCanceled(true);
 			throw new OperationCanceledException();
-		}
-		finally
-		{
-			if(monitor != null)
-			{
-				if(m_statistics == null)
+		} finally {
+			if (mon != null) {
+				if (statistics == null)
 					//
 					// Monitor was never started. See to that it's balanced
 					//
-					monitor.beginTask(null, 1);
+					mon.beginTask(null, 1);
 				else
-					m_statistics = null;
-				monitor.done();
+					statistics = null;
+				mon.done();
 			}
 		}
 	}
 
-	protected void sendRetrieveRequest(URL url, OutputStream outputStream, boolean closeStreamWhenFinished,
-			boolean onlyGetInfo, IProgressMonitor monitor) throws CoreException, FileNotFoundException
-	{
+	protected void sendRetrieveRequest(URL url, OutputStream out, boolean closeWhenFinished, boolean onlyInfo, IProgressMonitor mon)
+			throws CoreException, FileNotFoundException {
 		IRetrieveFileTransferContainerAdapter adapter = Activator.getDefault().createRetrieveFileTransfer();
-		adapter.setConnectContextForAuthentication(m_connectContext);
+		adapter.setConnectContextForAuthentication(connectContext);
 
-		m_exception = null;
-		m_closeStreamWhenFinished = closeStreamWhenFinished;
-		m_onlyGetInfo = onlyGetInfo;
-		m_fileInfo = null;
-		m_statistics = null;
-		m_lastProgressCount = 0L;
-		m_lastStatsCount = 0L;
-		m_monitor = monitor;
-		m_outputStream = outputStream;
+		exception = null;
+		closeStreamWhenFinished = closeWhenFinished;
+		onlyGetInfo = onlyInfo;
+		fileInfo = null;
+		statistics = null;
+		lastProgressCount = 0L;
+		lastStatsCount = 0L;
+		monitor = mon;
+		outputStream = out;
 
-		for(int retryCount = 0;;)
-		{
-			if(monitor != null && monitor.isCanceled())
+		for (int retryCount = 0;;) {
+			if (monitor != null && monitor.isCanceled())
 				throw new OperationCanceledException();
 
-			try
-			{
+			try {
 				IFileID fileID = FileIDFactory.getDefault().createFileID(adapter.getRetrieveNamespace(), url);
 				adapter.sendRetrieveRequest(fileID, this, null);
-			}
-			catch(IncomingFileTransferException e)
-			{
-				m_exception = e;
+			} catch (IncomingFileTransferException e) {
+				exception = e;
 			}
 
-			if(m_exception != null)
-			{
-				Throwable t = BuckminsterException.unwind(m_exception);
-				while(t instanceof CoreException)
-				{
-					Throwable t2 = ((CoreException)t).getStatus().getException();
-					if(t2 == null)
-						throw (CoreException)t;
+			if (exception != null) {
+				Throwable t = BuckminsterException.unwind(exception);
+				while (t instanceof CoreException) {
+					Throwable t2 = ((CoreException) t).getStatus().getException();
+					if (t2 == null)
+						throw (CoreException) t;
 					t = t2;
 				}
 
-				if(t instanceof FileNotFoundException)
+				if (t instanceof FileNotFoundException)
 					//
 					// Connection succeeded but the target doesn't exist
 					//
-					throw (FileNotFoundException)t;
+					throw (FileNotFoundException) t;
 
-				if(t instanceof IOException && retryCount < m_connectionRetryCount)
-				{
+				if (t instanceof IOException && retryCount < connectionRetryCount) {
 					// TODO: Retry only certain exceptions or filter out
 					// some exceptions not worth retrying
 					//
 					++retryCount;
-					m_exception = null;
-					try
-					{
+					exception = null;
+					try {
 						Buckminster.getLogger().warning(
-								NLS.bind(Messages.connection_to_0_failed_on_1_retry_attempt_2, new String[] {
-										url.toString(), t.getMessage(), String.valueOf(retryCount) }));
-						Thread.sleep(m_connectionRetryDelay);
+								NLS.bind(Messages.connection_to_0_failed_on_1_retry_attempt_2, new String[] { url.toString(), t.getMessage(),
+										String.valueOf(retryCount) }));
+						Thread.sleep(connectionRetryDelay);
 						continue;
-					}
-					catch(InterruptedException e)
-					{
+					} catch (InterruptedException e) {
 					}
 				}
-				throw BuckminsterException.wrap(m_exception);
+				throw BuckminsterException.wrap(exception);
 			}
 			break;
 		}

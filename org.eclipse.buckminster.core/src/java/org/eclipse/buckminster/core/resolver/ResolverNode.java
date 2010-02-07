@@ -35,237 +35,207 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
-public class ResolverNode
-{
-	private static final ResolverNode[] s_noChildren = new ResolverNode[0];
+public class ResolverNode {
+	private static final ResolverNode[] noChildren = new ResolverNode[0];
 
-	private ResolverNode[] m_children;
+	private ResolverNode[] children;
 
-	private GeneratorNode m_generatorNode;
+	private GeneratorNode generatorNode;
 
-	private boolean m_invalidateRun;
+	private boolean invalidateRun;
 
-	private NodeQuery m_query;
+	private NodeQuery query;
 
-	private Resolution m_resolution;
+	private Resolution resolution;
 
-	private boolean m_forceUnresolved;
+	private boolean forceUnresolved;
 
-	private final String m_tagInfo;
+	private final String tagInfo;
 
-	public ResolverNode(NodeQuery query, String tagInfo)
-	{
-		m_query = query;
-		m_children = s_noChildren;
-		m_tagInfo = tagInfo;
-		if(tagInfo != null)
+	public ResolverNode(NodeQuery query, String tagInfo) {
+		this.query = query;
+		this.children = noChildren;
+		this.tagInfo = tagInfo;
+		if (tagInfo != null)
 			query.getContext().addTagInfo(query.getComponentRequest(), tagInfo);
 	}
 
-	public synchronized void addDependencyQualification(QualifiedDependency newQDep, String tagInfo)
-			throws CoreException
-	{
-		NodeQuery query = m_query.addDependencyQualification(newQDep);
-		if(query == m_query)
+	public synchronized void addDependencyQualification(QualifiedDependency newQDep, String tagInf) throws CoreException {
+		NodeQuery qualifiedQuery = query.addDependencyQualification(newQDep);
+		if (qualifiedQuery == query)
 			//
 			// Old query already declared the needed purposes.
 			//
 			return;
 
-		VersionRange newVd = query.getVersionRange();
-		if(m_resolution != null)
-		{
+		VersionRange newVd = qualifiedQuery.getVersionRange();
+		if (resolution != null) {
 			// Re-resolve might be necessary
 			//
-			if((newVd == null || newVd.isIncluded(m_resolution.getVersion()))
-					&& m_query.getQualifiedDependency().hasAllAttributes(query.getRequiredAttributes()))
-			{
+			if ((newVd == null || newVd.isIncluded(resolution.getVersion()))
+					&& query.getQualifiedDependency().hasAllAttributes(qualifiedQuery.getRequiredAttributes())) {
 				// Nope, the resolution is still valid for this new query
 				//
-				m_query = query;
-				if(tagInfo != null)
-					query.getContext().addTagInfo(query.getComponentRequest(), tagInfo);
+				query = qualifiedQuery;
+				if (tagInfo != null)
+					qualifiedQuery.getContext().addTagInfo(qualifiedQuery.getComponentRequest(), tagInf);
 				return;
 			}
 		}
 
-		// New version constraints or new attributes were introduced that invalidated the
-		// current resolution. We need to invalidate what we have and make sure its done
+		// New version constraints or new attributes were introduced that
+		// invalidated the
+		// current resolution. We need to invalidate what we have and make sure
+		// its done
 		// again.
 		//
-		m_resolution = null;
-		m_children = s_noChildren;
-		m_query = query;
-		m_invalidateRun = true;
-		if(tagInfo != null)
-			query.getContext().addTagInfo(query.getComponentRequest(), tagInfo);
+		resolution = null;
+		children = noChildren;
+		query = qualifiedQuery;
+		invalidateRun = true;
+		if (tagInfo != null)
+			qualifiedQuery.getContext().addTagInfo(qualifiedQuery.getComponentRequest(), tagInf);
 	}
 
-	public BOMNode collectNodes(Map<UUID, BOMNode> nodeMap, Stack<Resolution> circularDepTrap, boolean sameTop)
-			throws CoreException
-	{
-		if(m_query.skipComponent())
+	public BOMNode collectNodes(Map<UUID, BOMNode> nodeMap, Stack<Resolution> circularDepTrap, boolean sameTop) throws CoreException {
+		if (query.skipComponent())
 			return null;
 
-		if(m_generatorNode != null)
-			return m_generatorNode;
+		if (generatorNode != null)
+			return generatorNode;
 
-		if(m_resolution == null)
-			return new UnresolvedNode(m_query.getQualifiedDependency());
+		if (resolution == null)
+			return new UnresolvedNode(query.getQualifiedDependency());
 
-		UUID myID = m_resolution.getId();
+		UUID myID = resolution.getId();
 		BOMNode node = nodeMap.get(myID);
-		if(node != null)
+		if (node != null)
 			return node;
 
-		if(circularDepTrap.contains(m_resolution))
-		{
-			if(m_query.allowCircularDependency())
+		if (circularDepTrap.contains(resolution)) {
+			if (query.allowCircularDependency())
 				return null;
 
 			ArrayList<String> attrs = new ArrayList<String>(circularDepTrap.size());
-			for(Resolution res : circularDepTrap)
+			for (Resolution res : circularDepTrap)
 				attrs.add(res.getCSpec().getName());
-			attrs.add(m_resolution.getName());
+			attrs.add(resolution.getName());
 			throw new CircularDependencyException(attrs);
 		}
 
 		List<BOMNode> childNodes;
-		int top = m_children.length;
-		ComponentQuery cquery = m_query.getComponentQuery();
-		if(top > 0)
-		{
-			try
-			{
+		int top = children.length;
+		ComponentQuery cquery = query.getComponentQuery();
+		if (top > 0) {
+			try {
 				ArrayList<BOMNode> childNodeArr = new ArrayList<BOMNode>(top);
-				circularDepTrap.push(m_resolution);
-				for(ResolverNode child : m_children)
-				{
-					boolean sameChildTop = cquery.equals(child.m_query.getComponentQuery());
+				circularDepTrap.push(resolution);
+				for (ResolverNode child : children) {
+					boolean sameChildTop = cquery.equals(child.query.getComponentQuery());
 					BOMNode childNode = child.collectNodes(nodeMap, circularDepTrap, sameChildTop);
-					if(childNode == null)
-					{
-						// We encountered a skipped component or an allowed circular dependency. This
+					if (childNode == null) {
+						// We encountered a skipped component or an allowed
+						// circular dependency. This
 						// means we must alter the resolution of this node
 						//
 						String depName = child.getQuery().getComponentRequest().getName();
-						CSpec cspec = m_resolution.getCSpec();
+						CSpec cspec = resolution.getCSpec();
 						CSpecBuilder bld = new CSpecBuilder();
 						bld.initFrom(cspec);
-						for(IAttribute attr : cspec.getAttributes().values())
-						{
-							for(IPrerequisite pq : attr.getPrerequisites())
-							{
-								if(depName.equals(pq.getComponentName()))
-									((TopLevelAttributeBuilder)bld.getAttribute(attr.getName())).removePrerequisite(pq);
+						for (IAttribute attr : cspec.getAttributes().values()) {
+							for (IPrerequisite pq : attr.getPrerequisites()) {
+								if (depName.equals(pq.getComponentName()))
+									((TopLevelAttributeBuilder) bld.getAttribute(attr.getName())).removePrerequisite(pq);
 							}
 						}
 						bld.removeDependency(depName);
 						cspec = bld.createCSpec();
-						m_resolution = new Resolution(cspec, m_resolution);
-					}
-					else
+						resolution = new Resolution(cspec, resolution);
+					} else
 						childNodeArr.add(childNode);
 				}
 				circularDepTrap.pop();
 				childNodes = childNodeArr;
-			}
-			catch(CircularDependencyException e)
-			{
-				if(m_query.allowCircularDependency())
+			} catch (CircularDependencyException e) {
+				if (query.allowCircularDependency())
 					return null;
 				throw e;
 			}
-		}
-		else
+		} else
 			childNodes = Collections.emptyList();
 
-		node = new ResolvedNode(m_resolution, childNodes);
-		if(!sameTop)
+		node = new ResolvedNode(resolution, childNodes);
+		if (!sameTop)
 			node = BillOfMaterials.create(node, cquery);
 
 		nodeMap.put(myID, node);
 		return node;
 	}
 
-	public synchronized void forceUnresolved()
-	{
-		m_resolution = null;
-		m_children = s_noChildren;
-		m_invalidateRun = true;
-		m_forceUnresolved = true;
+	public synchronized void forceUnresolved() {
+		resolution = null;
+		children = noChildren;
+		invalidateRun = true;
+		forceUnresolved = true;
 	}
 
-	public boolean isForceUnresolved()
-	{
-		return m_forceUnresolved;
+	public boolean isForceUnresolved() {
+		return forceUnresolved;
 	}
 
-	public boolean isResolved()
-	{
-		return m_resolution != null;
+	public boolean isResolved() {
+		return resolution != null;
 	}
 
-	public synchronized void setResolution(Resolution resolution, ResolverNode[] children)
-	{
-		if(!m_invalidateRun)
-		{
-			m_resolution = resolution;
-			m_children = (children == null)
-					? s_noChildren
-					: children;
+	public synchronized void setResolution(Resolution resolution, ResolverNode[] children) {
+		if (!invalidateRun) {
+			this.resolution = resolution;
+			this.children = (children == null) ? noChildren : children;
 		}
 	}
 
-	public synchronized ResolutionContext startResolvingChildren(BOMNode node) throws CoreException
-	{
-		Resolution resolution = node.getResolution();
-		if(m_invalidateRun || resolution == null)
+	public synchronized ResolutionContext startResolvingChildren(BOMNode node) throws CoreException {
+		Resolution nodeRes = node.getResolution();
+		if (invalidateRun || nodeRes == null)
 			return null;
 
 		ComponentQuery cquery = node.getQuery();
-		ResolutionContext originalContext = m_query.getResolutionContext();
+		ResolutionContext originalContext = query.getResolutionContext();
 		ResolutionContext context = originalContext;
-		if(!(cquery == null || cquery.equals(context.getComponentQuery())))
+		if (!(cquery == null || cquery.equals(context.getComponentQuery())))
 			context = new ResolutionContext(cquery, context);
 
-		CSpec cspec = resolution.getCSpec();
+		CSpec cspec = nodeRes.getCSpec();
 		Collection<Generator> generators = cspec.getGeneratorList();
-		if(generators.size() > 0)
-		{
-			if(context == originalContext)
+		if (generators.size() > 0) {
+			if (context == originalContext)
 				context = new ResolutionContext(originalContext.getComponentQuery(), originalContext);
 			context.setGenerators(cspec, generators);
 		}
 
-		if(context != originalContext)
-			m_query = context.getNodeQuery(m_query.getQualifiedDependency());
+		if (context != originalContext)
+			query = context.getNodeQuery(query.getQualifiedDependency());
 		return context;
 	}
 
-	synchronized void clearInvalidationFlag()
-	{
-		if(!m_forceUnresolved)
-			m_invalidateRun = false;
+	synchronized void clearInvalidationFlag() {
+		if (!forceUnresolved)
+			invalidateRun = false;
 	}
 
-	NodeQuery getQuery()
-	{
-		return m_query;
+	NodeQuery getQuery() {
+		return query;
 	}
 
-	String getTagInfo()
-	{
-		return m_tagInfo;
+	String getTagInfo() {
+		return tagInfo;
 	}
 
-	boolean isInvalidated()
-	{
-		return m_invalidateRun;
+	boolean isInvalidated() {
+		return invalidateRun;
 	}
 
-	void setGeneratorNode(GeneratorNode generatorNode)
-	{
-		m_generatorNode = generatorNode;
+	void setGeneratorNode(GeneratorNode generatorNode) {
+		this.generatorNode = generatorNode;
 	}
 }

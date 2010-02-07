@@ -2,8 +2,7 @@ package org.eclipse.buckminster.cvspkg;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.cvspkg.messages"; //$NON-NLS-1$
 
 	public static String cvs_module;
@@ -44,13 +43,11 @@ public class Messages extends NLS
 
 	public static String unable_to_create_directory_0;
 
-	static
-	{
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
-	{
+	private Messages() {
 	}
 }

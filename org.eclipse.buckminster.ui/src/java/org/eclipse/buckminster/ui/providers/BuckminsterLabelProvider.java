@@ -31,198 +31,175 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelP
 import org.eclipse.swt.graphics.Image;
 
 /**
- * A default LabelProvider for data elements found in Buckminster artifacts and views.
+ * A default LabelProvider for data elements found in Buckminster artifacts and
+ * views.
  * 
  * @author Henrik Lindberg
  * 
  */
-public class BuckminsterLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider
-{
-	private Image m_projectImage;
+public class BuckminsterLabelProvider extends ColumnLabelProvider implements IStyledLabelProvider {
+	private Image projectImage;
 
-	private Image m_folderImage;
+	private Image folderImage;
 
-	private Image m_fileImage;
+	private Image fileImage;
 
-	private Image m_cspecImage;
+	private Image cspecImage;
 
-	private Image m_componentImage;
+	private Image componentImage;
 
-	private Image m_dependantImage;
+	private Image dependantImage;
 
-	private Image m_dependencyImage;
+	private Image dependencyImage;
 
-	public BuckminsterLabelProvider()
-	{
+	public BuckminsterLabelProvider() {
 	}
 
 	@Override
-	public void dispose()
-	{
-		if(m_projectImage != null)
-			m_projectImage.dispose();
-		if(m_folderImage != null)
-			m_folderImage.dispose();
-		if(m_fileImage != null)
-			m_fileImage.dispose();
-		if(m_cspecImage != null)
-			m_cspecImage.dispose();
-		if(m_componentImage != null)
-			m_componentImage.dispose();
-		if(m_dependencyImage != null)
-			m_dependencyImage.dispose();
-		if(m_dependantImage != null)
-			m_dependantImage.dispose();
+	public void dispose() {
+		if (projectImage != null)
+			projectImage.dispose();
+		if (folderImage != null)
+			folderImage.dispose();
+		if (fileImage != null)
+			fileImage.dispose();
+		if (cspecImage != null)
+			cspecImage.dispose();
+		if (componentImage != null)
+			componentImage.dispose();
+		if (dependencyImage != null)
+			dependencyImage.dispose();
+		if (dependantImage != null)
+			dependantImage.dispose();
 
 		// note - do not dispose of images that were not created !
 		super.dispose();
 	}
 
 	@Override
-	public Image getImage(Object selected)
-	{
+	public Image getImage(Object selected) {
 		Object element = selected;
-		if(selected instanceof ITreeDataNode)
-			element = ((ITreeDataNode)element).getData();
+		if (selected instanceof ITreeDataNode)
+			element = ((ITreeDataNode) element).getData();
 
-		if(element instanceof IProject)
+		if (element instanceof IProject)
 			return getProjectImage();
 
-		if(element instanceof IFolder)
+		if (element instanceof IFolder)
 			return getFolderImage();
 
-		if(element instanceof IFile)
-		{
-			IFile file = (IFile)element;
+		if (element instanceof IFile) {
+			IFile file = (IFile) element;
 			ImageDescriptor imageDescriptor = UiUtils.getImageDescriptor(file);
-			return imageDescriptor == null
-					? getFileImage()
-					: UiUtils.getImage(imageDescriptor);
+			return imageDescriptor == null ? getFileImage() : UiUtils.getImage(imageDescriptor);
 		}
 
-		if(element instanceof ICSpecData)
+		if (element instanceof ICSpecData)
 			return getCspecImage();
 
-		if(element instanceof IResolution)
+		if (element instanceof IResolution)
 			return getComponentImage();
 
-		if(element instanceof ComponentReference)
-			return ((ComponentReference)element).getMode() == ComponentReference.Mode.IN
-					? getDependantImage()
-					: getDependencyImage();
+		if (element instanceof ComponentReference)
+			return ((ComponentReference) element).getMode() == ComponentReference.Mode.IN ? getDependantImage() : getDependencyImage();
 
 		// Parents default to Folder
-		if(selected instanceof BasicTreeParentDataNode)
+		if (selected instanceof BasicTreeParentDataNode)
 			return getFolderImage();
 
 		return null;
 	}
 
-	public StyledString getStyledText(Object element)
-	{
-		if(element instanceof ITreeDataNode)
-			element = ((ITreeDataNode)element).getData();
-		if(element instanceof IResource)
-			return new StyledString(((IResource)element).getName());
+	public StyledString getStyledText(Object element) {
+		if (element instanceof ITreeDataNode)
+			element = ((ITreeDataNode) element).getData();
+		if (element instanceof IResource)
+			return new StyledString(((IResource) element).getName());
 
-		if(element instanceof IResolution)
-		{
-			Resolution r = (Resolution)element;
+		if (element instanceof IResolution) {
+			Resolution r = (Resolution) element;
 			StyledString bld = new StyledString(r.getName());
 			String type = r.getComponentTypeId();
-			if(type != null)
-			{
+			if (type != null) {
 				bld.append(" : ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(type, StyledString.DECORATIONS_STYLER);
 			}
 			Version version = r.getVersion();
-			if(version != null)
-			{
+			if (version != null) {
 				bld.append(" - ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(VersionHelper.getHumanReadable(version), StyledString.DECORATIONS_STYLER);
 			}
 			return bld;
 		}
-		if(element instanceof ComponentReference)
-		{
-			ComponentReference ref = (ComponentReference)element;
+		if (element instanceof ComponentReference) {
+			ComponentReference ref = (ComponentReference) element;
 			StyledString bld = new StyledString(ref.getComponentName());
 			ComponentRequest req = ref.getComponentRequest();
-			if(req.getComponentTypeID() != null)
-			{
+			if (req.getComponentTypeID() != null) {
 				bld.append(" : ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(req.getComponentTypeID(), StyledString.DECORATIONS_STYLER);
 			}
-			if(req.getVersionRange() != null)
-			{
+			if (req.getVersionRange() != null) {
 				bld.append(" - ", StyledString.DECORATIONS_STYLER); //$NON-NLS-1$
 				bld.append(req.getVersionRange().toString(), StyledString.DECORATIONS_STYLER);
 			}
 			return bld;
 		}
 
-		if(element instanceof ICSpecData)
-		{
+		if (element instanceof ICSpecData) {
 			return new StyledString(Messages.component_specification_and_cspec_in_paranthesis);
 		}
 		return new StyledString(element.toString());
 	}
 
 	/**
-	 * Returns the name of an IResourceElement using getName(), else element.toString() is used.
+	 * Returns the name of an IResourceElement using getName(), else
+	 * element.toString() is used.
 	 */
 	@Override
-	public String getText(Object element)
-	{
+	public String getText(Object element) {
 		return getStyledText(element).toString();
 	}
 
-	private Image getComponentImage()
-	{
-		if(m_componentImage == null)
-			m_componentImage = UiPlugin.getImageDescriptor("icons/component.png").createImage(); //$NON-NLS-1$
-		return m_componentImage;
+	private Image getComponentImage() {
+		if (componentImage == null)
+			componentImage = UiPlugin.getImageDescriptor("icons/component.png").createImage(); //$NON-NLS-1$
+		return componentImage;
 	}
 
-	private Image getCspecImage()
-	{
-		if(m_cspecImage == null)
-			m_cspecImage = UiPlugin.getImageDescriptor("icons/cspec.png").createImage(); //$NON-NLS-1$
-		return m_cspecImage;
+	private Image getCspecImage() {
+		if (cspecImage == null)
+			cspecImage = UiPlugin.getImageDescriptor("icons/cspec.png").createImage(); //$NON-NLS-1$
+		return cspecImage;
 	}
 
-	private Image getDependantImage()
-	{
-		if(m_dependantImage == null)
-			m_dependantImage = UiPlugin.getImageDescriptor("icons/dependent.png").createImage(); //$NON-NLS-1$
-		return m_dependantImage;
+	private Image getDependantImage() {
+		if (dependantImage == null)
+			dependantImage = UiPlugin.getImageDescriptor("icons/dependent.png").createImage(); //$NON-NLS-1$
+		return dependantImage;
 	}
 
-	private Image getDependencyImage()
-	{
-		if(m_dependencyImage == null)
-			m_dependencyImage = UiPlugin.getImageDescriptor("icons/dependency.png").createImage(); //$NON-NLS-1$
-		return m_dependencyImage;
+	private Image getDependencyImage() {
+		if (dependencyImage == null)
+			dependencyImage = UiPlugin.getImageDescriptor("icons/dependency.png").createImage(); //$NON-NLS-1$
+		return dependencyImage;
 	}
 
-	private Image getFileImage()
-	{
-		if(m_fileImage == null)
-			m_fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage(); //$NON-NLS-1$
-		return m_fileImage;
+	private Image getFileImage() {
+		if (fileImage == null)
+			fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage(); //$NON-NLS-1$
+		return fileImage;
 	}
 
-	private Image getFolderImage()
-	{
-		if(m_folderImage == null)
-			m_folderImage = UiPlugin.getImageDescriptor("icons/fldr_obj.gif").createImage(); //$NON-NLS-1$
-		return m_folderImage;
+	private Image getFolderImage() {
+		if (folderImage == null)
+			folderImage = UiPlugin.getImageDescriptor("icons/fldr_obj.gif").createImage(); //$NON-NLS-1$
+		return folderImage;
 	}
 
-	private Image getProjectImage()
-	{
-		if(m_projectImage == null)
-			m_projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage(); //$NON-NLS-1$
-		return m_projectImage;
+	private Image getProjectImage() {
+		if (projectImage == null)
+			projectImage = UiPlugin.getImageDescriptor("icons/prj_obj.gif").createImage(); //$NON-NLS-1$
+		return projectImage;
 	}
 }

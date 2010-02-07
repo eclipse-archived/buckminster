@@ -16,38 +16,32 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
  * @author Henrik Lindberg
  * 
  */
-public class ComponentReference
-{
-	public enum Mode
-	{
+public class ComponentReference {
+	public enum Mode {
 		IN, OUT, ;
 	}
 
-	private String m_componentName;
+	private String componentName;
 
-	private ComponentRequest m_componentRequest;
+	private ComponentRequest componentRequest;
 
-	private Mode m_mode;
+	private Mode mode;
 
-	public ComponentReference(String name, ComponentRequest request, Mode mode)
-	{
-		m_componentName = name;
-		m_componentRequest = request;
-		m_mode = mode;
+	public ComponentReference(String name, ComponentRequest request, Mode mode) {
+		this.componentName = name;
+		this.componentRequest = request;
+		this.mode = mode;
 	}
 
-	public String getComponentName()
-	{
-		return m_componentName;
+	public String getComponentName() {
+		return componentName;
 	}
 
-	public ComponentRequest getComponentRequest()
-	{
-		return m_componentRequest;
+	public ComponentRequest getComponentRequest() {
+		return componentRequest;
 	}
 
-	public Mode getMode()
-	{
-		return m_mode;
+	public Mode getMode() {
+		return mode;
 	}
 }

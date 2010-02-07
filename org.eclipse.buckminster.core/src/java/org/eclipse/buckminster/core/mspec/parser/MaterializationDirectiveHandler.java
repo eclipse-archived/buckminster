@@ -27,80 +27,67 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public abstract class MaterializationDirectiveHandler extends PropertyManagerHandler
-{
-	private DocumentationHandler m_documentationHandler;
+public abstract class MaterializationDirectiveHandler extends PropertyManagerHandler {
+	private DocumentationHandler documentationHandler;
 
-	private final MaterializationDirectiveBuilder m_builder;
+	private final MaterializationDirectiveBuilder builder;
 
-	public MaterializationDirectiveHandler(AbstractHandler parent, String tag, MaterializationDirectiveBuilder builder)
-	{
+	public MaterializationDirectiveHandler(AbstractHandler parent, String tag, MaterializationDirectiveBuilder builder) {
 		super(parent, tag);
-		m_builder = builder;
+		this.builder = builder;
 	}
 
 	@Override
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_documentationHandler)
-			m_builder.setDocumentation(m_documentationHandler.createDocumentation());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == documentationHandler)
+			builder.setDocumentation(documentationHandler.createDocumentation());
 		else
 			super.childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(DocumentationHandler.TAG.equals(localName))
-		{
-			if(m_documentationHandler == null)
-				m_documentationHandler = new DocumentationHandler(this);
-			ch = m_documentationHandler;
-		}
-		else
+		if (DocumentationHandler.TAG.equals(localName)) {
+			if (documentationHandler == null)
+				documentationHandler = new DocumentationHandler(this);
+			ch = documentationHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	public Map<String, String> getProperties()
-	{
-		return m_builder.getProperties();
+	public Map<String, String> getProperties() {
+		return builder.getProperties();
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_builder.clear();
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		builder.clear();
 		String tmp = getOptionalStringValue(attrs, MaterializationDirective.ATTR_INSTALL_LOCATION);
-		if(tmp != null)
-			m_builder.setInstallLocation(Path.fromPortableString(tmp));
+		if (tmp != null)
+			builder.setInstallLocation(Path.fromPortableString(tmp));
 
 		tmp = getOptionalStringValue(attrs, MaterializationDirective.ATTR_WORKSPACE_LOCATION);
-		if(tmp != null)
-			m_builder.setWorkspaceLocation(Path.fromPortableString(tmp));
+		if (tmp != null)
+			builder.setWorkspaceLocation(Path.fromPortableString(tmp));
 
-		m_builder.setMaterializerID(getOptionalStringValue(attrs, MaterializationDirective.ATTR_MATERIALIZER));
-		m_builder.setMaxParallelJobs(getOptionalIntValue(attrs, MaterializationDirective.ATTR_MAX_PARALLEL_JOBS, -1));
+		builder.setMaterializerID(getOptionalStringValue(attrs, MaterializationDirective.ATTR_MATERIALIZER));
+		builder.setMaxParallelJobs(getOptionalIntValue(attrs, MaterializationDirective.ATTR_MAX_PARALLEL_JOBS, -1));
 
 		tmp = getOptionalStringValue(attrs, MaterializationDirective.ATTR_CONFLICT_RESOLUTION);
-		if(tmp != null)
-		{
-			try
-			{
-				m_builder.setConflictResolution(ConflictResolution.valueOf(tmp));
-			}
-			catch(IllegalArgumentException e)
-			{
-				throw new SAXParseException(NLS.bind(Messages.Invalid_value_for_attribute_0,
-						MaterializationDirective.ATTR_CONFLICT_RESOLUTION), this.getDocumentLocator());
+		if (tmp != null) {
+			try {
+				builder.setConflictResolution(ConflictResolution.valueOf(tmp));
+			} catch (IllegalArgumentException e) {
+				throw new SAXParseException(NLS.bind(Messages.Invalid_value_for_attribute_0, MaterializationDirective.ATTR_CONFLICT_RESOLUTION), this
+						.getDocumentLocator());
 			}
 		}
 	}
 
-	MaterializationDirectiveBuilder getBuilder()
-	{
-		return m_builder;
+	MaterializationDirectiveBuilder getBuilder() {
+		return builder;
 	}
 }

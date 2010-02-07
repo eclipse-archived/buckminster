@@ -26,151 +26,120 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-class ResolverNodeWithJob extends ResolverNode
-{
-	class NodeResolutionJob extends Job
-	{
-		private boolean m_scheduled;
+class ResolverNodeWithJob extends ResolverNode {
+	class NodeResolutionJob extends Job {
+		private boolean scheduled;
 
-		NodeResolutionJob(String name)
-		{
+		NodeResolutionJob(String name) {
 			super(name);
 		}
 
 		@Override
-		public boolean belongsTo(Object family)
-		{
-			return family == m_resolver;
+		public boolean belongsTo(Object family) {
+			return family == resolver;
 		}
 
 		@Override
-		protected IStatus run(IProgressMonitor monitor)
-		{
+		protected IStatus run(IProgressMonitor monitor) {
 			return ResolverNodeWithJob.this.run(monitor);
 		}
 
-		ResolverNodeWithJob getNode()
-		{
+		ResolverNodeWithJob getNode() {
 			return ResolverNodeWithJob.this;
 		}
 
-		boolean isScheduled()
-		{
-			return m_scheduled;
+		boolean isScheduled() {
+			return scheduled;
 		}
 
-		void setScheduled(boolean flag)
-		{
-			m_scheduled = flag;
+		void setScheduled(boolean flag) {
+			scheduled = flag;
 		}
 	}
 
-	private final ResourceMapResolver m_resolver;
+	private final ResourceMapResolver resolver;
 
-	private final NodeResolutionJob m_job;
+	private final NodeResolutionJob job;
 
-	ResolverNodeWithJob(ResourceMapResolver resolver, ResolutionContext context, QualifiedDependency qDep,
-			String requestorInfo)
-	{
+	ResolverNodeWithJob(ResourceMapResolver resolver, ResolutionContext context, QualifiedDependency qDep, String requestorInfo) {
 		super(context.getNodeQuery(qDep), requestorInfo);
-		m_job = new NodeResolutionJob(qDep.getRequest().toString());
-		m_resolver = resolver;
+		this.job = new NodeResolutionJob(qDep.getRequest().toString());
+		this.resolver = resolver;
 	}
 
 	@Override
-	public synchronized void addDependencyQualification(QualifiedDependency newQDep, String tagInfo)
-			throws CoreException
-	{
+	public synchronized void addDependencyQualification(QualifiedDependency newQDep, String tagInfo) throws CoreException {
 		super.addDependencyQualification(newQDep, tagInfo);
-		if(isInvalidated() && !(isForceUnresolved() || isScheduled()))
-			m_resolver.schedule(this);
+		if (isInvalidated() && !(isForceUnresolved() || isScheduled()))
+			resolver.schedule(this);
 	}
 
-	protected IStatus run(IProgressMonitor monitor)
-	{
-		if(isForceUnresolved())
-		{
-			m_resolver.resolutionPartDone();
+	protected IStatus run(IProgressMonitor monitor) {
+		if (isForceUnresolved()) {
+			resolver.resolutionPartDone();
 			return Status.OK_STATUS;
 		}
 
 		clearInvalidationFlag();
-		m_resolver.addJobMonitor(monitor);
+		resolver.addJobMonitor(monitor);
 		BOMNode node = null;
-		try
-		{
+		try {
 			node = resolve(monitor);
-			if(node != null)
-			{
-				m_resolver.resolutionPartDone();
+			if (node != null) {
+				resolver.resolutionPartDone();
 				buildTree(node);
 			}
-		}
-		catch(CoreException e)
-		{
-			RMContext context = m_resolver.getContext();
+		} catch (CoreException e) {
+			RMContext context = resolver.getContext();
 			context.addRequestStatus(getQuery().getComponentRequest(), e.getStatus());
-			if(!context.isContinueOnError())
-				m_resolver.cancelTopMonitor();
-		}
-		catch(OperationCanceledException e)
-		{
+			if (!context.isContinueOnError())
+				resolver.cancelTopMonitor();
+		} catch (OperationCanceledException e) {
 			return Status.CANCEL_STATUS;
-		}
-		catch(Throwable e)
-		{
-			m_resolver.getContext().addRequestStatus(getQuery().getComponentRequest(),
-					BuckminsterException.wrap(e).getStatus());
-		}
-		finally
-		{
-			m_resolver.removeJobMonitor(monitor);
-			if(node == null)
-				m_resolver.resolutionPartDone();
+		} catch (Throwable e) {
+			resolver.getContext().addRequestStatus(getQuery().getComponentRequest(), BuckminsterException.wrap(e).getStatus());
+		} finally {
+			resolver.removeJobMonitor(monitor);
+			if (node == null)
+				resolver.resolutionPartDone();
 		}
 		return Status.OK_STATUS;
 	}
 
-	NodeResolutionJob getJob()
-	{
-		return m_job;
+	NodeResolutionJob getJob() {
+		return job;
 	}
 
-	boolean isScheduled()
-	{
-		return m_job.isScheduled();
+	boolean isScheduled() {
+		return job.isScheduled();
 	}
 
-	boolean rebuildTree(BOMNode node) throws CoreException
-	{
+	boolean rebuildTree(BOMNode node) throws CoreException {
 		clearInvalidationFlag();
 		return buildTree(node);
 	}
 
-	void setScheduled(boolean scheduled)
-	{
-		m_job.setScheduled(scheduled);
+	void setScheduled(boolean scheduled) {
+		job.setScheduled(scheduled);
 	}
 
-	private boolean buildTree(BOMNode node) throws CoreException
-	{
-		if(isInvalidated())
+	private boolean buildTree(BOMNode node) throws CoreException {
+		if (isInvalidated())
 			return false;
 
 		ResolutionContext context = getQuery().getResolutionContext();
 		GeneratorNode generatorNode = context.getGeneratorNode(node.getRequest());
-		if(generatorNode != null)
-		{
+		if (generatorNode != null) {
 			setGeneratorNode(generatorNode);
 			return false;
 		}
 
 		Resolution resolution = node.getResolution();
-		if(resolution == null)
-			return m_resolver.schedule(this);
+		if (resolution == null)
+			return resolver.schedule(this);
 
 		context = startResolvingChildren(node);
-		if(context == null)
+		if (context == null)
 			//
 			// Must have been invalidated
 			//
@@ -178,52 +147,46 @@ class ResolverNodeWithJob extends ResolverNode
 
 		List<BOMNode> nodeChildren = node.getChildren();
 		int top = nodeChildren.size();
-		if(top == 0)
-		{
+		if (top == 0) {
 			setResolution(resolution, null);
 			return false;
 		}
 
-		// This section can *not* be synchronized. If it is, we risk running into
+		// This section can *not* be synchronized. If it is, we risk running
+		// into
 		// deadlocks.
 		//
 		String tagInfo = resolution.getCSpec().getTagInfo(getTagInfo());
 		ResolverNode[] children = new ResolverNode[top];
 		boolean didSchedule = false;
-		for(int idx = 0; idx < top; ++idx)
-		{
-			if(isInvalidated())
+		for (int idx = 0; idx < top; ++idx) {
+			if (isInvalidated())
 				return false;
 
 			BOMNode childNode = nodeChildren.get(idx);
 			ComponentQuery childQuery = childNode.getQuery();
-			ResolutionContext childContext = (childQuery == null)
-					? context
-					: new ResolutionContext(childQuery, context);
-			ResolverNode child = m_resolver.getResolverNode(childContext, childNode.getQualifiedDependency(), tagInfo);
+			ResolutionContext childContext = (childQuery == null) ? context : new ResolutionContext(childQuery, context);
+			ResolverNode child = resolver.getResolverNode(childContext, childNode.getQualifiedDependency(), tagInfo);
 			children[idx] = child;
-			if(((ResolverNodeWithJob)child).buildTree(childNode))
+			if (((ResolverNodeWithJob) child).buildTree(childNode))
 				didSchedule = true;
 		}
 		setResolution(resolution, children);
 		return didSchedule;
 	}
 
-	private BOMNode resolve(IProgressMonitor monitor) throws CoreException
-	{
+	private BOMNode resolve(IProgressMonitor monitor) throws CoreException {
 		NodeQuery query;
-		synchronized(this)
-		{
+		synchronized (this) {
 			query = getQuery();
-			if(query.skipComponent() || isResolved())
-			{
+			if (query.skipComponent() || isResolved()) {
 				MonitorUtils.complete(monitor);
 				return null;
 			}
 		}
-		if(isInvalidated())
+		if (isInvalidated())
 			return null;
 
-		return m_resolver.innerResolve(query, monitor);
+		return resolver.innerResolve(query, monitor);
 	}
 }

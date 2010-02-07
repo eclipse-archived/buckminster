@@ -19,71 +19,52 @@ import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 
-public class P2Reader extends AbstractCatalogReader
-{
-	public static IArtifactRepository getArtifactRepository(URI repoLocation, IProgressMonitor monitor)
-			throws CoreException
-	{
-		IArtifactRepositoryManager manager = (IArtifactRepositoryManager)CorePlugin.getDefault().getResolverAgent().getService(
+public class P2Reader extends AbstractCatalogReader {
+	public static IArtifactRepository getArtifactRepository(URI repoLocation, IProgressMonitor monitor) throws CoreException {
+		IArtifactRepositoryManager manager = (IArtifactRepositoryManager) CorePlugin.getDefault().getResolverAgent().getService(
 				IArtifactRepositoryManager.SERVICE_NAME);
-		if(manager == null)
+		if (manager == null)
 			throw new IllegalStateException("No artifact repository manager found"); //$NON-NLS-1$
 
 		SubMonitor subMon = SubMonitor.convert(monitor, 200);
-		try
-		{
+		try {
 			return manager.loadRepository(repoLocation, subMon.newChild(100));
-		}
-		catch(ProvisionException e)
-		{
+		} catch (ProvisionException e) {
 			return manager.refreshRepository(repoLocation, subMon.newChild(100));
-		}
-		finally
-		{
-			if(monitor != null)
+		} finally {
+			if (monitor != null)
 				monitor.done();
 		}
 	}
 
-	public P2Reader(IReaderType readerType, ProviderMatch providerMatch)
-	{
+	public P2Reader(IReaderType readerType, ProviderMatch providerMatch) {
 		super(readerType, providerMatch);
 	}
 
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		IArtifactRepository ar = getArtifactRepository(getURI(), monitor);
 		OutputStream out = null;
-		try
-		{
+		try {
 			out = new BufferedOutputStream(new FileOutputStream(destination.toFile()));
 			ar.getArtifact(null, out, monitor);
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(out);
 		}
 	}
 
 	@Override
-	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
-	{
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
 		return false;
 	}
 
 	@Override
-	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		return null;
 	}
 
-	URI getURI()
-	{
+	URI getURI() {
 		ProviderMatch pm = getProviderMatch();
 		return URI.create(pm.getProvider().getURI(pm.getNodeQuery().getProperties()));
 	}

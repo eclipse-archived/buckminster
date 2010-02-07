@@ -35,122 +35,109 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @author Thomas Hallgren
  * @author Henrik Lindberg
  */
-public abstract class AbstractCSpecAction implements IObjectActionDelegate
-{
-	protected IWorkbenchPart m_activePart;
+public abstract class AbstractCSpecAction implements IObjectActionDelegate {
+	protected IWorkbenchPart activePart;
 
-	private CSpec m_selectedComponent;
+	private CSpec selectedComponent;
 
-	private IAdaptable m_selection;
+	private IAdaptable selection;
 
 	/**
-	 * tries to obtain a CSpec from the current selection. This operation is potentially long running if
-	 * {@link WorkspaceInfo} has not been initialized yet.
+	 * tries to obtain a CSpec from the current selection. This operation is
+	 * potentially long running if {@link WorkspaceInfo} has not been
+	 * initialized yet.
 	 * 
 	 * @param progressMonitor
-	 * @return the cspec for the given component or <code>null</code> if not available
+	 * @return the cspec for the given component or <code>null</code> if not
+	 *         available
 	 * @see WorkspaceInfo#isFullyInitialized()
 	 */
-	public CSpec fetchCSpec(final IProgressMonitor progressMonitor)
-	{
-		if(m_selectedComponent != null)
-		{
-			return m_selectedComponent;
-		}
-		else if(m_selection != null)
-		{
-			if(WorkspaceInfo.isFullyInitialized() || Job.getJobManager().isSuspended())
-			{
-				// Query the cspec directly if the WorkspaceInfo is already initialized or fall back to
+	public CSpec fetchCSpec(final IProgressMonitor progressMonitor) {
+		if (selectedComponent != null) {
+			return selectedComponent;
+		} else if (selection != null) {
+			if (WorkspaceInfo.isFullyInitialized() || Job.getJobManager().isSuspended()) {
+				// Query the cspec directly if the WorkspaceInfo is already
+				// initialized or fall back to
 				// blocking mode if the job manager is currently suspended.
-				m_selectedComponent = (CSpec)m_selection.getAdapter(CSpec.class);
+				selectedComponent = (CSpec) selection.getAdapter(CSpec.class);
 				progressMonitor.done();
-			}
-			else
-			{
-				// if WorkspaceInfo has not been initialized and the JobManager is not suspended we try to attach the
+			} else {
+				// if WorkspaceInfo has not been initialized and the JobManager
+				// is not suspended we try to attach the
 				// given progress monitor to the CatchUpWorkspaceJob
 				IJobChangeListener listener = new JobListener(progressMonitor);
 				Job.getJobManager().addJobChangeListener(listener);
-				m_selectedComponent = (CSpec)m_selection.getAdapter(CSpec.class);
+				selectedComponent = (CSpec) selection.getAdapter(CSpec.class);
 				Job.getJobManager().removeJobChangeListener(listener);
 			}
 
 		}
-		return m_selectedComponent;
+		return selectedComponent;
 	}
 
-	public void run(IAction action)
-	{
-		if(m_activePart == null)
+	public void run(IAction action) {
+		if (activePart == null)
 			return;
 
-		IWorkbenchPartSite site = m_activePart.getSite();
+		IWorkbenchPartSite site = activePart.getSite();
 		final Shell shell = site.getShell();
-		if(m_selectedComponent == null)
-		{
+		if (selectedComponent == null) {
 			run(shell);
-		}
-		else
-		{
-			run(m_selectedComponent, shell);
+		} else {
+			run(selectedComponent, shell);
 		}
 
 	}
 
-	public void selectionChanged(IAction action, ISelection selection)
-	{
-		m_selectedComponent = null;
-		if(!(selection instanceof IStructuredSelection))
+	public void selectionChanged(IAction action, ISelection _selection) {
+		selectedComponent = null;
+		if (!(_selection instanceof IStructuredSelection))
 			return;
 
-		IStructuredSelection s = (IStructuredSelection)selection;
-		if(s.size() != 1)
+		IStructuredSelection s = (IStructuredSelection) _selection;
+		if (s.size() != 1)
 			return;
 
 		Object first = s.getFirstElement();
 		// If the selected object is a CSpec, or adaptable to CSpec, use it.
-		if(first instanceof IAdaptable)
-		{
-			// if the WorkspaceInfo is already initialized, it's safe to query directly for the adapter
-			if(WorkspaceInfo.isFullyInitialized())
-			{
-				m_selectedComponent = (CSpec)((IAdaptable)first).getAdapter(CSpec.class);
-				action.setEnabled(m_selectedComponent != null);
-			}
-			else
-			{
+		if (first instanceof IAdaptable) {
+			// if the WorkspaceInfo is already initialized, it's safe to query
+			// directly for the adapter
+			if (WorkspaceInfo.isFullyInitialized()) {
+				selectedComponent = (CSpec) ((IAdaptable) first).getAdapter(CSpec.class);
+				action.setEnabled(selectedComponent != null);
+			} else {
 				action.setEnabled(true);
 			}
 
-			m_selection = (IAdaptable)first;
+			selection = (IAdaptable) first;
 		}
 
 	}
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_activePart = targetPart;
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		activePart = targetPart;
 	}
 
 	protected abstract void run(CSpec cspec, Shell shell);
 
-	protected void run(Shell shell)
-	{
+	protected void run(Shell shell) {
 		MessageDialog.openInformation(shell, null, Messages.no_component_is_selected);
 
 	}
 
-	protected void setSelectedComponent(CSpec cspec)
-	{
-		m_selectedComponent = cspec;
+	protected void setSelectedComponent(CSpec cspec) {
+		selectedComponent = cspec;
 	}
 }
 
 /**
- * Monitors the jobs that are changed to running and scheduled state until it finds the WorkspaceCatchUpJob. Once this
- * job is found, it is asked for an {@link AttachableProgressMonitor}. The given {@link IProgressMonitor} will be
- * attached to the # {@link AttachableProgressMonitor} and the listener removes itself from the {@link IJobManager}
+ * Monitors the jobs that are changed to running and scheduled state until it
+ * finds the WorkspaceCatchUpJob. Once this job is found, it is asked for an
+ * {@link AttachableProgressMonitor}. The given {@link IProgressMonitor} will be
+ * attached to the # {@link AttachableProgressMonitor} and the listener removes
+ * itself from the {@link IJobManager}
  * 
  * 
  * @see AttachableProgressMonitor
@@ -158,46 +145,39 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate
  * @author Johannes Utzig
  * 
  */
-class JobListener extends JobChangeAdapter
-{
+class JobListener extends JobChangeAdapter {
 
-	private IProgressMonitor m_monitorToAttach;
+	private IProgressMonitor monitorToAttach;
 
-	private static final QualifiedName QN_ATTACHABLE_PROGRESS_MONITOR = new QualifiedName(CorePlugin.getID(),
-			"attachableProgressMonitor"); //$NON-NLS-1$
+	private static final QualifiedName QN_ATTACHABLE_PROGRESS_MONITOR = new QualifiedName(CorePlugin.getID(), "attachableProgressMonitor"); //$NON-NLS-1$
 
-	public JobListener(IProgressMonitor monitorToAttach)
-	{
+	public JobListener(IProgressMonitor monitorToAttach) {
 		super();
-		this.m_monitorToAttach = monitorToAttach;
+		this.monitorToAttach = monitorToAttach;
 	}
 
 	@Override
-	public void running(IJobChangeEvent event)
-	{
+	public void running(IJobChangeEvent event) {
 		handleEvent(event);
 	}
 
 	@Override
-	public void scheduled(IJobChangeEvent event)
-	{
+	public void scheduled(IJobChangeEvent event) {
 		handleEvent(event);
 	}
 
-	private void handleEvent(IJobChangeEvent event)
-	{
-		if(event.getJob().belongsTo(MetadataSynchronizer.class))
-		{
+	private void handleEvent(IJobChangeEvent event) {
+		if (event.getJob().belongsTo(MetadataSynchronizer.class)) {
 			Job job = event.getJob();
 
 			Object o = job.getProperty(QN_ATTACHABLE_PROGRESS_MONITOR);
-			if(o instanceof AttachableProgressMonitor)
-			{
-				// that we got here means that we found the CatchUpWorkspaceJob so the listener can deregister itself
+			if (o instanceof AttachableProgressMonitor) {
+				// that we got here means that we found the CatchUpWorkspaceJob
+				// so the listener can deregister itself
 				// now
-				AttachableProgressMonitor monitor = (AttachableProgressMonitor)o;
+				AttachableProgressMonitor monitor = (AttachableProgressMonitor) o;
 				Job.getJobManager().removeJobChangeListener(this);
-				monitor.attachProgressMonitor(m_monitorToAttach);
+				monitor.attachProgressMonitor(monitorToAttach);
 
 			}
 		}

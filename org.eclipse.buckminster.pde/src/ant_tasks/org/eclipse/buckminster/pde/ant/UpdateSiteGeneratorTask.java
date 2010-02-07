@@ -10,93 +10,77 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.eclipse.buckminster.ant.types.FileSetGroup;
-import org.eclipse.buckminster.pde.ant.VersionConsolidatorTask;
 import org.eclipse.buckminster.pde.tasks.UpdateSiteGenerator;
 import org.eclipse.equinox.p2.metadata.Version;
 
-public class UpdateSiteGeneratorTask extends VersionConsolidatorTask
-{
-	private String m_versionProperty;
+public class UpdateSiteGeneratorTask extends VersionConsolidatorTask {
+	private String versionProperty;
 
-	private ArrayList<FileSet> m_fileSets;
+	private ArrayList<FileSet> fileSets;
 
-	private ArrayList<FileSetGroup> m_fileSetGroups;
+	private ArrayList<FileSetGroup> fileSetGroups;
 
 	/**
 	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
 	 */
-	public void add(FileSetGroup fsGroup) throws BuildException
-	{
-		if(m_fileSetGroups == null)
-			m_fileSetGroups = new ArrayList<FileSetGroup>();
-		m_fileSetGroups.add(fsGroup);
+	public void add(FileSetGroup fsGroup) throws BuildException {
+		if (fileSetGroups == null)
+			fileSetGroups = new ArrayList<FileSetGroup>();
+		fileSetGroups.add(fsGroup);
 	}
 
 	/**
 	 * Adds a nested <code>&lt;fileset&gt;</code> element.
 	 */
-	public void addFileset(FileSet fs) throws BuildException
-	{
-		if(m_fileSets == null)
-			m_fileSets = new ArrayList<FileSet>();
-		m_fileSets.add(fs);
+	public void addFileset(FileSet fs) throws BuildException {
+		if (fileSets == null)
+			fileSets = new ArrayList<FileSet>();
+		fileSets.add(fs);
 	}
 
 	@Override
-	public void execute() throws BuildException
-	{
-		try
-		{
-			if(m_fileSetGroups != null)
-			{
-				for(FileSetGroup fsg : m_fileSetGroups)
-					for(FileSet fs : fsg.getFileSets())
+	public void execute() throws BuildException {
+		try {
+			if (fileSetGroups != null) {
+				for (FileSetGroup fsg : fileSetGroups)
+					for (FileSet fs : fsg.getFileSets())
 						addFileset(fs);
-				m_fileSetGroups = null;
+				fileSetGroups = null;
 			}
 
 			Project proj = getProject();
 			List<File> features;
-			if(m_fileSets == null)
+			if (fileSets == null)
 				features = Collections.emptyList();
-			else
-			{
+			else {
 				features = new ArrayList<File>();
-				for(FileSet fs : m_fileSets)
-				{
+				for (FileSet fs : fileSets) {
 					DirectoryScanner ds = fs.getDirectoryScanner(proj);
 					File dir = fs.getDir(proj);
-					for(String file : ds.getIncludedFiles())
+					for (String file : ds.getIncludedFiles())
 						features.add(new File(dir, file));
 				}
 			}
 
-			UpdateSiteGenerator generator = new UpdateSiteGenerator(features, getInput(), getOutput(),
-					getPropertiesFile(), getQualifier());
-			if(m_versionProperty != null)
-			{
+			UpdateSiteGenerator generator = new UpdateSiteGenerator(features, getInput(), getOutput(), getPropertiesFile(), getQualifier());
+			if (versionProperty != null) {
 				Version version = generator.run(true);
-				if(version != null)
-					getProject().setUserProperty(m_versionProperty, version.toString());
-			}
-			else
+				if (version != null)
+					getProject().setUserProperty(versionProperty, version.toString());
+			} else
 				generator.run(false);
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 
-	public void setTemplate(String template)
-	{
-		if(template != null && template.length() == 0)
+	public void setTemplate(String template) {
+		if (template != null && template.length() == 0)
 			template = null;
 		setInputFile(new File(template));
 	}
 
-	public void setVersionProperty(String versionProperty)
-	{
-		m_versionProperty = versionProperty;
+	public void setVersionProperty(String versionProperty) {
+		this.versionProperty = versionProperty;
 	}
 }

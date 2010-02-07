@@ -22,13 +22,12 @@ import org.eclipse.core.runtime.IAdaptable;
  * @author Henrik Lindberg
  * 
  */
-public interface ITreeDataNode extends PropertyChangeListener, IAdaptable
-{
+public interface ITreeDataNode extends PropertyChangeListener, IAdaptable {
 	static final ITreeDataNode[] EMPTY_NODE_ARRAY = new ITreeDataNode[0];
 
 	/**
-	 * Should be called when a node has been changed - either this node, or a node below. The event should bubble up to
-	 * the root of the tree.
+	 * Should be called when a node has been changed - either this node, or a
+	 * node below. The event should bubble up to the root of the tree.
 	 */
 	void childNodeChanged(ITreeDataNode child);
 

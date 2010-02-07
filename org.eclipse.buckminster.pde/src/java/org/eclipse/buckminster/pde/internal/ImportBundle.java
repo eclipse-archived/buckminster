@@ -33,63 +33,58 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class ImportBundle
-{
-	private final URL m_siteURL;
+public class ImportBundle {
+	private final URL siteURL;
 
-	private final IPath m_outputDir;
+	private final IPath outputDir;
 
-	private final String m_bundleName;
+	private final String bundleName;
 
-	public ImportBundle(String bundleName, URL siteURL, IPath outputDir)
-	{
-		m_bundleName = bundleName;
-		m_outputDir = outputDir.addTrailingSeparator();
-		m_siteURL = siteURL;
+	public ImportBundle(String bundleName, URL siteURL, IPath outputDir) {
+		this.bundleName = bundleName;
+		this.outputDir = outputDir.addTrailingSeparator();
+		this.siteURL = siteURL;
 	}
 
-	public void execute() throws Exception
-	{
+	public void execute() throws Exception {
 		// First we need a component query. It will not really be used in order
 		// to resolve, but we have to make it look that way for now.
 		//
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest(m_bundleName, IComponentType.OSGI_BUNDLE, null));
+		queryBld.setRootRequest(new ComponentRequest(bundleName, IComponentType.OSGI_BUNDLE, null));
 		queryBld.setPlatformAgnostic(true);
 		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 
 		// Create the provider that will perform the import.
 		//
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.OSGI_BUNDLE);
-		Provider provider = Provider.immutableProvider(IReaderType.ECLIPSE_IMPORT, ctype.getId(), m_siteURL.toString());
+		Provider provider = Provider.immutableProvider(IReaderType.ECLIPSE_IMPORT, ctype.getId(), siteURL.toString());
 
-		// Next, we need a reader and a Resolution builder in order to create the real resolution
+		// Next, we need a reader and a Resolution builder in order to create
+		// the real resolution
 		// from witch we can derive the origin of the component etc.
 		//
 		IProgressMonitor monitor = new NullProgressMonitor();
 		IReaderType rt = provider.getReaderType();
 		IComponentReader[] reader = new IComponentReader[1];
 		reader[0] = rt.getReader(provider, ctype, context.getRootNodeQuery(), VersionMatch.DEFAULT, monitor);
-		try
-		{
+		try {
 			IResolutionBuilder builder = CorePlugin.getDefault().getResolutionBuilder(IResolutionBuilder.PLUGIN2CSPEC);
 			BOMNode node = builder.build(reader, false, monitor);
 
 			// Materialize the plugin, i.e. import it into the workspace
 			//
-			reader[0].materialize(m_outputDir, null, null, monitor);
+			reader[0].materialize(outputDir, null, null, monitor);
 
 			// Fetch the cspec from the materialized component (it's changed)
 			//
 			StorageManager sm = StorageManager.getDefault();
-			Resolution newRes = LocalResolver.fromPath(m_outputDir, m_bundleName);
+			Resolution newRes = LocalResolver.fromPath(outputDir, bundleName);
 			newRes = new Resolution(newRes.getCSpec(), node.getResolution());
 			newRes.store(sm);
-			Materialization mat = new Materialization(m_outputDir, newRes.getComponentIdentifier());
+			Materialization mat = new Materialization(outputDir, newRes.getComponentIdentifier());
 			mat.store(sm);
-		}
-		finally
-		{
+		} finally {
 			reader[0].close();
 		}
 		rt.postMaterialization(null, monitor);

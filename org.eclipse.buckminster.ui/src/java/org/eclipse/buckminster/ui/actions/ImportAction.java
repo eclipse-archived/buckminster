@@ -16,39 +16,33 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-public class ImportAction implements IObjectActionDelegate
-{
-	private IWorkbenchPart m_workbenchPart;
+public class ImportAction implements IObjectActionDelegate {
+	private IWorkbenchPart workbenchPart;
 
-	private IFile m_fileToImport;
+	private IFile fileToImport;
 
-	public void dispose()
-	{
+	public void dispose() {
 	}
 
-	public void run(IAction action)
-	{
-		if(m_fileToImport != null)
-			QueryWizard.openWizard(m_workbenchPart, new StructuredSelection(m_fileToImport));
+	public void run(IAction action) {
+		if (fileToImport != null)
+			QueryWizard.openWizard(workbenchPart, new StructuredSelection(fileToImport));
 	}
 
-	public void selectionChanged(IAction action, ISelection sel)
-	{
-		m_fileToImport = null;
-		if(!(sel instanceof IStructuredSelection))
+	public void selectionChanged(IAction action, ISelection sel) {
+		fileToImport = null;
+		if (!(sel instanceof IStructuredSelection))
 			return;
 
-		IStructuredSelection selection = (IStructuredSelection)sel;
-		if(selection.size() == 1)
-		{
+		IStructuredSelection selection = (IStructuredSelection) sel;
+		if (selection.size() == 1) {
 			Object selected = selection.getFirstElement();
-			if(selected instanceof IFile)
-				m_fileToImport = (IFile)selected;
+			if (selected instanceof IFile)
+				fileToImport = (IFile) selected;
 		}
 	}
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_workbenchPart = targetPart;
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		workbenchPart = targetPart;
 	}
 }

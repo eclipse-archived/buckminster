@@ -16,23 +16,19 @@ import org.eclipse.buckminster.sax.ISaxableElement;
  * @author Thomas Hallgren
  * 
  */
-public class DocumentationHandler extends FlowHandler
-{
+public class DocumentationHandler extends FlowHandler {
 	public static final String TAG = Documentation.BM_TAG;
 
-	public DocumentationHandler(AbstractHandler parentHandler)
-	{
+	public DocumentationHandler(AbstractHandler parentHandler) {
 		super(parentHandler, TAG);
 	}
 
-	public Documentation createDocumentation()
-	{
-		return (Documentation)this.createElement();
+	public Documentation createDocumentation() {
+		return (Documentation) this.createElement();
 	}
 
 	@Override
-	Flow createFlowElement(String localName, String[] keyValuePairs, ISaxableElement[] children)
-	{
+	Flow createFlowElement(String localName, String[] keyValuePairs, ISaxableElement[] children) {
 		return new Documentation(children, keyValuePairs);
 	}
 }

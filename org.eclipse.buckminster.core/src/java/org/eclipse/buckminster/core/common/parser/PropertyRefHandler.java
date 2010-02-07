@@ -15,18 +15,15 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class PropertyRefHandler extends ValueHandler
-{
+public class PropertyRefHandler extends ValueHandler {
 	static final String TAG = PropertyRef.TAG;
 
-	public PropertyRefHandler(AbstractHandler parent)
-	{
+	public PropertyRefHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		setValueHolder(new PropertyRef<String>(String.class, getStringValue(attrs, PropertyRef.ATTR_KEY)));
 	}
 }

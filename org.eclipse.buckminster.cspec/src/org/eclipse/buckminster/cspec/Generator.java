@@ -12,14 +12,18 @@ import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Generator</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Generator</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.Generator#getAttribute <em>Attribute</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Generator#getComponent <em>Component</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Generator#getGenerates <em>Generates</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Generator#getAttribute <em>Attribute
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Generator#getComponent <em>Component
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Generator#getGenerates <em>Generates
+ * </em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.Generator#getCspec <em>Cspec</em>}</li>
  * </ul>
  * </p>
@@ -28,13 +32,13 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Generator extends EObject
-{
+public interface Generator extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Attribute</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Attribute</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Attribute</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Attribute</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -47,10 +51,11 @@ public interface Generator extends EObject
 	String getAttribute();
 
 	/**
-	 * Returns the value of the '<em><b>Component</b></em>' reference. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Component</b></em>' reference. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Component</em>' reference isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Component</em>' reference isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -63,11 +68,13 @@ public interface Generator extends EObject
 	ComponentRequest getComponent();
 
 	/**
-	 * Returns the value of the '<em><b>Cspec</b></em>' container reference. It is bidirectional and its opposite is '
-	 * {@link org.eclipse.buckminster.cspec.CSpec#getGenerators <em>Generators</em>}'. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Cspec</b></em>' container reference. It
+	 * is bidirectional and its opposite is '
+	 * {@link org.eclipse.buckminster.cspec.CSpec#getGenerators
+	 * <em>Generators</em>}'. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Cspec</em>' container reference isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Cspec</em>' container reference isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -81,10 +88,11 @@ public interface Generator extends EObject
 	CSpec getCspec();
 
 	/**
-	 * Returns the value of the '<em><b>Generates</b></em>' containment reference. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Generates</b></em>' containment
+	 * reference. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generates</em>' containment reference isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Generates</em>' containment reference isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -97,8 +105,10 @@ public interface Generator extends EObject
 	ComponentIdentifier getGenerates();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Generator#getAttribute <em>Attribute</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Generator#getAttribute
+	 * <em>Attribute</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Attribute</em>' attribute.
@@ -108,8 +118,10 @@ public interface Generator extends EObject
 	void setAttribute(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Generator#getComponent <em>Component</em>}'
-	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Generator#getComponent
+	 * <em>Component</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Component</em>' reference.
@@ -119,8 +131,9 @@ public interface Generator extends EObject
 	void setComponent(ComponentRequest value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Generator#getCspec <em>Cspec</em>}' container
-	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Generator#getCspec <em>Cspec</em>}'
+	 * container reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Cspec</em>' container reference.
@@ -130,11 +143,14 @@ public interface Generator extends EObject
 	void setCspec(CSpec value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Generator#getGenerates <em>Generates</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Generator#getGenerates
+	 * <em>Generates</em>}' containment reference. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
-	 *            the new value of the '<em>Generates</em>' containment reference.
+	 *            the new value of the '<em>Generates</em>' containment
+	 *            reference.
 	 * @see #getGenerates()
 	 * @generated
 	 */

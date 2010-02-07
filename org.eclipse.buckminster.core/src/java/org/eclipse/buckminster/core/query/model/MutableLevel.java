@@ -11,34 +11,38 @@
 package org.eclipse.buckminster.core.query.model;
 
 /**
- * The MutableLevel is used when choosing the {@link IProvider} that will be the best fit for a component requirement.
+ * The MutableLevel is used when choosing the {@link IProvider} that will be the
+ * best fit for a component requirement.
  * 
  * @author Thomas Hallgren
  */
-public enum MutableLevel
-{
+public enum MutableLevel {
 	/**
 	 * Don't care if the provider is mutable or not.
 	 */
 	INDIFFERENT,
 
 	/**
-	 * Reject a mutable provider. This is used when the found component must be stable.
+	 * Reject a mutable provider. This is used when the found component must be
+	 * stable.
 	 */
 	REJECT,
 
 	/**
-	 * A mutable provider will score higher than an immutable provider. Both are ok.
+	 * A mutable provider will score higher than an immutable provider. Both are
+	 * ok.
 	 */
 	DESIRE,
 
 	/**
-	 * A mutable provider will score higher than an immutable provider. Both are ok.
+	 * A mutable provider will score higher than an immutable provider. Both are
+	 * ok.
 	 */
 	AVOID,
 
 	/**
-	 * Reject an immutable provider. Typically used when the intention is to modify source.
+	 * Reject an immutable provider. Typically used when the intention is to
+	 * modify source.
 	 */
 	REQUIRE
 }

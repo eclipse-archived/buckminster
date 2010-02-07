@@ -18,46 +18,42 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-abstract class AlterAttributesHandler extends AlterHandler
-{
-	private final AlterAttributeHandler m_publicHandler;
+abstract class AlterAttributesHandler extends AlterHandler {
+	private final AlterAttributeHandler publicHandler;
 
-	private final AlterAttributeHandler m_privateHandler;
+	private final AlterAttributeHandler privateHandler;
 
-	private final RemoveHandler m_removeHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME); //$NON-NLS-1$
+	private final RemoveHandler removeHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME); //$NON-NLS-1$
 
-	private final RenameHandler m_renameHandler = new RenameHandler(this);
+	private final RenameHandler renameHandler = new RenameHandler(this);
 
-	AlterAttributesHandler(AbstractHandler parent)
-	{
+	AlterAttributesHandler(AbstractHandler parent) {
 		super(parent);
-		m_publicHandler = this.createAttributeHandler(true);
-		m_privateHandler = this.createAttributeHandler(false);
+		publicHandler = this.createAttributeHandler(true);
+		privateHandler = this.createAttributeHandler(false);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		AlterCSpecBuilder alterCSpec = ((AlterCSpecHandler)getParentHandler()).getAlterCSpecBuilder();
-		if(child == m_removeHandler)
-			alterCSpec.addRemoveAttribute(m_removeHandler.getValue());
-		else if(child == m_renameHandler)
-			alterCSpec.addRenameAttribute(m_renameHandler.getOldName(), m_renameHandler.getNewName());
+	public void childPopped(ChildHandler child) throws SAXException {
+		AlterCSpecBuilder alterCSpec = ((AlterCSpecHandler) getParentHandler()).getAlterCSpecBuilder();
+		if (child == removeHandler)
+			alterCSpec.addRemoveAttribute(removeHandler.getValue());
+		else if (child == renameHandler)
+			alterCSpec.addRenameAttribute(renameHandler.getOldName(), renameHandler.getNewName());
 		else
-			alterCSpec.addAlterAttribute(((AlterAttributeHandler)child).getBuilder());
+			alterCSpec.addAlterAttribute(((AlterAttributeHandler) child).getBuilder());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(TopLevelAttribute.PUBLIC_TAG.equals(localName))
-			ch = m_publicHandler;
-		else if(TopLevelAttribute.PRIVATE_TAG.equals(localName))
-			ch = m_privateHandler;
-		else if(m_removeHandler.getTAG().equals(localName))
-			ch = m_removeHandler;
-		else if(m_renameHandler.getTAG().equals(localName))
-			ch = m_renameHandler;
+		if (TopLevelAttribute.PUBLIC_TAG.equals(localName))
+			ch = publicHandler;
+		else if (TopLevelAttribute.PRIVATE_TAG.equals(localName))
+			ch = privateHandler;
+		else if (removeHandler.getTAG().equals(localName))
+			ch = removeHandler;
+		else if (renameHandler.getTAG().equals(localName))
+			ch = renameHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;

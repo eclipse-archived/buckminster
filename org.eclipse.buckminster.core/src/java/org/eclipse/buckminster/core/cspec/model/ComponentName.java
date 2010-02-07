@@ -20,74 +20,63 @@ import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * A Component Name is something that identifies a component irrespective of version.
+ * A Component Name is something that identifies a component irrespective of
+ * version.
  * 
  * @author Thomas Hallgren
  */
-public class ComponentName extends NamedElement implements Comparable<IComponentName>, IComponentName
-{
+public class ComponentName extends NamedElement implements Comparable<IComponentName>, IComponentName {
 	public static final String TAG = "componentName"; //$NON-NLS-1$
 
 	public static final String ATTR_COMPONENT_TYPE = "componentType"; //$NON-NLS-1$
 
-	private final String m_componentType;
+	private final String componentType;
 
-	public ComponentName(String name, String componentType)
-	{
+	public ComponentName(String name, String componentType) {
 		super(name);
-		m_componentType = componentType;
+		this.componentType = componentType;
 	}
 
-	ComponentName(ComponentName other)
-	{
+	ComponentName(ComponentName other) {
 		super(other.getName());
-		m_componentType = other.getComponentTypeID();
+		componentType = other.getComponentTypeID();
 	}
 
-	public int compareTo(IComponentName o)
-	{
+	public int compareTo(IComponentName o) {
 		int cmp = Trivial.compareAllowNull(getName(), o.getName());
-		if(cmp == 0)
-			cmp = Trivial.compareAllowNull(m_componentType, o.getComponentTypeID());
+		if (cmp == 0)
+			cmp = Trivial.compareAllowNull(componentType, o.getComponentTypeID());
 		return cmp;
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		if(this == o)
+	public boolean equals(Object o) {
+		if (this == o)
 			return true;
-		if(!(o instanceof ComponentName))
+		if (!(o instanceof ComponentName))
 			return false;
 
-		ComponentName that = (ComponentName)o;
-		return Trivial.equalsAllowNull(getName(), that.getName())
-				&& Trivial.equalsAllowNull(m_componentType, that.m_componentType);
+		ComponentName that = (ComponentName) o;
+		return Trivial.equalsAllowNull(getName(), that.getName()) && Trivial.equalsAllowNull(componentType, that.componentType);
 	}
 
-	public IComponentType getComponentType() throws CoreException
-	{
-		return m_componentType == null
-				? null
-				: CorePlugin.getDefault().getComponentType(m_componentType);
+	public IComponentType getComponentType() throws CoreException {
+		return componentType == null ? null : CorePlugin.getDefault().getComponentType(componentType);
 	}
 
-	public String getComponentTypeID()
-	{
-		return m_componentType;
+	public String getComponentTypeID() {
+		return componentType;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public String getProjectName() throws CoreException
-	{
+	public String getProjectName() throws CoreException {
 		String name = getName();
 
 		IComponentType ctype = getComponentType();
-		if(name == null || ctype == null)
+		if (name == null || ctype == null)
 			//
 			// No component type.
 			//
@@ -95,26 +84,21 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 		return ctype.getProjectName(name);
 	}
 
-	public Map<String, String> getProperties()
-	{
+	public Map<String, String> getProperties() {
 		HashMap<String, String> p = new HashMap<String, String>();
-		if(getName() != null)
+		if (getName() != null)
 			p.put(KeyConstants.COMPONENT_NAME, getName());
-		if(m_componentType != null)
-			p.put(KeyConstants.COMPONENT_TYPE, m_componentType);
+		if (componentType != null)
+			p.put(KeyConstants.COMPONENT_TYPE, componentType);
 		return p;
 	}
 
 	@Override
-	public int hashCode()
-	{
-		int hc = getName() == null
-				? 31
-				: getName().hashCode();
-		if(m_componentType != null)
-		{
+	public int hashCode() {
+		int hc = getName() == null ? 31 : getName().hashCode();
+		if (componentType != null) {
 			hc *= 37;
-			hc += m_componentType.hashCode();
+			hc += componentType.hashCode();
 		}
 		return hc;
 	}
@@ -126,52 +110,48 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 	 * <ul>
 	 * <li>If names are not equal, the match is always false</li>
 	 * <li>If both instances have a component type, it must be equal</li>
-	 * <li>If one instance lacks a component type, the types are not considered part of the match</p>
+	 * <li>If one instance lacks a component type, the types are not considered
+	 * part of the match</p>
 	 * 
 	 * @param o
 	 *            The name to match with this one
 	 * @return <code>true</code> if the name match
 	 */
-	public boolean matches(ComponentName o)
-	{
+	public boolean matches(ComponentName o) {
 		return Trivial.equalsAllowNull(getName(), o.getName())
-				&& (m_componentType == null || o.m_componentType == null || m_componentType.equals(o.m_componentType));
+				&& (componentType == null || o.componentType == null || componentType.equals(o.componentType));
 	}
 
 	/**
-	 * Returns this instance as an explicit {@link ComponentName}, i.e. not as one of its subclasses. This method should
-	 * be used when component names are used as keys where only the component name part is significant.
+	 * Returns this instance as an explicit {@link ComponentName}, i.e. not as
+	 * one of its subclasses. This method should be used when component names
+	 * are used as keys where only the component name part is significant.
 	 * 
 	 * @return A pure component name.
 	 */
-	public IComponentName toPureComponentName()
-	{
+	public IComponentName toPureComponentName() {
 		return this;
 	}
 
 	@Override
-	public final String toString()
-	{
+	public final String toString() {
 		StringBuilder bld = new StringBuilder();
 		toString(bld);
 		return bld.toString();
 	}
 
-	public void toString(StringBuilder bld)
-	{
+	public void toString(StringBuilder bld) {
 		bld.append(getName());
-		if(m_componentType != null)
-		{
+		if (componentType != null) {
 			bld.append(':');
-			bld.append(m_componentType);
+			bld.append(componentType);
 		}
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
+	protected void addAttributes(AttributesImpl attrs) {
 		super.addAttributes(attrs);
-		if(m_componentType != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentType);
+		if (componentType != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, componentType);
 	}
 }

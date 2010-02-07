@@ -24,71 +24,63 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
-abstract class RecursivePack200 implements IConstants
-{
+abstract class RecursivePack200 implements IConstants {
 	/**
 	 * An input stream that ignores the call to close().
 	 */
-	static class NonClosingInputStream extends FilterInputStream
-	{
-		public NonClosingInputStream(InputStream wrapped) throws IOException
-		{
+	static class NonClosingInputStream extends FilterInputStream {
+		public NonClosingInputStream(InputStream wrapped) throws IOException {
 			super(wrapped);
 		}
 
 		@Override
-		public void close() throws IOException
-		{
+		public void close() throws IOException {
 		}
 	}
 
-	private final List<String> m_defaultArgs;
+	private final List<String> defaultArgs;
 
 	static final Pattern EFFORT_PATTERN = Pattern.compile("^-(?:E|-effort=)([0-9])$"); //$NON-NLS-1$
 
-	private static final Pattern s_stripDebugPattern = Pattern.compile("^-(?:G|-strip-debug)$"); //$NON-NLS-1$
+	private static final Pattern stripDebugPattern = Pattern.compile("^-(?:G|-strip-debug)$"); //$NON-NLS-1$
 
-	private static final Pattern s_noKeepFileOrderPattern = Pattern.compile("^-(?:O|-no-keep-file-order)$"); //$NON-NLS-1$
+	private static final Pattern noKeepFileOrderPattern = Pattern.compile("^-(?:O|-no-keep-file-order)$"); //$NON-NLS-1$
 
-	private static final Pattern s_keepFileOrderPattern = Pattern.compile("^--keep-file-order$"); //$NON-NLS-1$
+	private static final Pattern keepFileOrderPattern = Pattern.compile("^--keep-file-order$"); //$NON-NLS-1$
 
-	private static final Pattern s_segmentLimitPattern = Pattern.compile("^-(?:S|-segment-limit=)([0-9]+)$"); //$NON-NLS-1$
+	private static final Pattern segmentLimitPattern = Pattern.compile("^-(?:S|-segment-limit=)([0-9]+)$"); //$NON-NLS-1$
 
-	private static final Pattern s_deflateHintPattern = Pattern.compile("^-(?:H|-deflate-hint=)(true|false|keep)$"); //$NON-NLS-1$
+	private static final Pattern deflateHintPattern = Pattern.compile("^-(?:H|-deflate-hint=)(true|false|keep)$"); //$NON-NLS-1$
 
-	private static final Pattern s_modificationTimePatter = Pattern.compile("^-(?:m|-modification-time=)(latest|keep)$"); //$NON-NLS-1$
+	private static final Pattern modificationTimePatter = Pattern.compile("^-(?:m|-modification-time=)(latest|keep)$"); //$NON-NLS-1$
 
-	private static final Pattern s_passFilePatter = Pattern.compile("^-(?:P|-pass-file=)(.+)$"); //$NON-NLS-1$
+	private static final Pattern passFilePatter = Pattern.compile("^-(?:P|-pass-file=)(.+)$"); //$NON-NLS-1$
 
-	static ZipEntry createEntry(ZipEntry original)
-	{
+	static ZipEntry createEntry(ZipEntry original) {
 		ZipEntry copy = createEntry(original, original.getName());
 		copy.setExtra(original.getExtra());
 		return copy;
 	}
 
-	static ZipEntry createEntry(ZipEntry original, String name)
-	{
+	static ZipEntry createEntry(ZipEntry original, String name) {
 		ZipEntry copy = new ZipEntry(name);
 		copy.setComment(original.getComment());
 		copy.setTime(original.getTime());
 		return copy;
 	}
 
-	RecursivePack200(List<String> defaultArgs)
-	{
-		if(defaultArgs == null || defaultArgs.isEmpty())
-			m_defaultArgs = Collections.emptyList();
+	RecursivePack200(List<String> defaultArgs) {
+		if (defaultArgs == null || defaultArgs.isEmpty())
+			this.defaultArgs = Collections.emptyList();
 		else
-			m_defaultArgs = new ArrayList<String>(defaultArgs);
+			this.defaultArgs = new ArrayList<String>(defaultArgs);
 	}
 
-	Packer getPacker(JarInfo jarInfo)
-	{
+	Packer getPacker(JarInfo jarInfo) {
 		int passFileSuffix = 1;
 		List<String> args = new ArrayList<String>();
 		jarInfo.appendArgs(args);
-		args.addAll(m_defaultArgs);
+		args.addAll(defaultArgs);
 
 		// Default arguments are last in the list. This HashSet
 		// guarantees that only the first occurrence is used for
@@ -99,51 +91,44 @@ abstract class RecursivePack200 implements IConstants
 		Packer packer = Pack200.newPacker();
 		Map<String, String> properties = packer.properties();
 
-		if(!jarInfo.hasClasses())
-		{
+		if (!jarInfo.hasClasses()) {
 			// This is a parent of a nested pack. No need to pack again.
 			propsAdded.add(Packer.EFFORT);
 			properties.put(Packer.EFFORT, "0"); //$NON-NLS-1$
 		}
 
-		for(String arg : args)
-		{
+		for (String arg : args) {
 			Matcher m = EFFORT_PATTERN.matcher(arg);
-			if(m.matches())
-			{
-				if(propsAdded.add(Packer.EFFORT))
+			if (m.matches()) {
+				if (propsAdded.add(Packer.EFFORT))
 					properties.put(Packer.EFFORT, m.group(1));
 				continue;
 			}
 
-			m = s_segmentLimitPattern.matcher(arg);
-			if(m.matches())
-			{
-				if(propsAdded.add(Packer.SEGMENT_LIMIT))
+			m = segmentLimitPattern.matcher(arg);
+			if (m.matches()) {
+				if (propsAdded.add(Packer.SEGMENT_LIMIT))
 					properties.put(Packer.SEGMENT_LIMIT, m.group(1));
 				continue;
 			}
 
-			m = s_noKeepFileOrderPattern.matcher(arg);
-			if(m.matches())
-			{
-				if(propsAdded.add(Packer.KEEP_FILE_ORDER))
+			m = noKeepFileOrderPattern.matcher(arg);
+			if (m.matches()) {
+				if (propsAdded.add(Packer.KEEP_FILE_ORDER))
 					properties.put(Packer.KEEP_FILE_ORDER, Packer.FALSE);
 				continue;
 			}
 
-			m = s_keepFileOrderPattern.matcher(arg);
-			if(m.matches())
-			{
-				if(propsAdded.add(Packer.KEEP_FILE_ORDER))
+			m = keepFileOrderPattern.matcher(arg);
+			if (m.matches()) {
+				if (propsAdded.add(Packer.KEEP_FILE_ORDER))
 					properties.put(Packer.KEEP_FILE_ORDER, Packer.TRUE);
 				continue;
 			}
 
-			m = s_stripDebugPattern.matcher(arg);
-			if(m.matches())
-			{
-				if(propsAdded.add("strip.debug")) //$NON-NLS-1$
+			m = stripDebugPattern.matcher(arg);
+			if (m.matches()) {
+				if (propsAdded.add("strip.debug")) //$NON-NLS-1$
 				{
 					properties.put(Packer.CODE_ATTRIBUTE_PFX + "LineNumberTable", Packer.STRIP); //$NON-NLS-1$
 					properties.put(Packer.CODE_ATTRIBUTE_PFX + "LocalVariableTable", Packer.STRIP); //$NON-NLS-1$
@@ -152,25 +137,22 @@ abstract class RecursivePack200 implements IConstants
 				continue;
 			}
 
-			m = s_deflateHintPattern.matcher(arg);
-			if(m.matches())
-			{
-				if(propsAdded.add(Packer.DEFLATE_HINT))
+			m = deflateHintPattern.matcher(arg);
+			if (m.matches()) {
+				if (propsAdded.add(Packer.DEFLATE_HINT))
 					properties.put(Packer.DEFLATE_HINT, m.group(1));
 				continue;
 			}
 
-			m = s_modificationTimePatter.matcher(arg);
-			if(m.matches())
-			{
-				if(propsAdded.add(Packer.MODIFICATION_TIME))
+			m = modificationTimePatter.matcher(arg);
+			if (m.matches()) {
+				if (propsAdded.add(Packer.MODIFICATION_TIME))
 					properties.put(Packer.MODIFICATION_TIME, m.group(1));
 				continue;
 			}
 
-			m = s_passFilePatter.matcher(arg);
-			if(m.matches())
-			{
+			m = passFilePatter.matcher(arg);
+			if (m.matches()) {
 				IPath path = Path.fromOSString(m.group(1));
 				properties.put(Packer.PASS_FILE_PFX + '.' + passFileSuffix++, path.toPortableString());
 				continue;
@@ -179,37 +161,29 @@ abstract class RecursivePack200 implements IConstants
 		return packer;
 	}
 
-	Unpacker getUnpacker()
-	{
+	Unpacker getUnpacker() {
 		return Pack200.newUnpacker();
 	}
 
-	void pack(JarInfo jarInfo, InputStream in, OutputStream out) throws IOException
-	{
+	void pack(JarInfo jarInfo, InputStream in, OutputStream out) throws IOException {
 		File temp = null;
-		try
-		{
+		try {
 			// We need a temp file here since the Packer will alter the
 			// META-INF/MANIFEST.MF if we pass it an JarInputStream. Not
 			// good if the jar is signed...
 			temp = File.createTempFile("conditionFile", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
 			OutputStream tempOut = null;
-			try
-			{
+			try {
 				tempOut = new FileOutputStream(temp);
 				IOUtils.copy(in, tempOut, new NullProgressMonitor());
-			}
-			finally
-			{
+			} finally {
 				IOUtils.close(tempOut);
 			}
 			Packer packer = getPacker(jarInfo);
 			packer.pack(new JarFile(temp), out);
 			out.flush();
-		}
-		finally
-		{
-			if(temp != null)
+		} finally {
+			if (temp != null)
 				temp.delete();
 		}
 	}

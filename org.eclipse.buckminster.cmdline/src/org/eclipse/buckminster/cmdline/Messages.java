@@ -2,8 +2,7 @@ package org.eclipse.buckminster.cmdline;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.cmdline.messages"; //$NON-NLS-1$
 
 	public static String AbstractCommand_Help_missing_for_0;
@@ -67,13 +66,11 @@ public class Messages extends NLS
 	public static String OptionRequiresValueException_The_option_0_requires_a_value;
 
 	public static String ParseResult_Unknown_OptionValueType;
-	static
-	{
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
-	{
+	private Messages() {
 	}
 }

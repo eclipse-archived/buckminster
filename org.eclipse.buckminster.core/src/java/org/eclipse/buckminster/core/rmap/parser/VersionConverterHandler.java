@@ -30,77 +30,61 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class VersionConverterHandler extends ExtensionAwareHandler implements ChildPoppedListener
-{
+public class VersionConverterHandler extends ExtensionAwareHandler implements ChildPoppedListener {
 	static final String TAG = VersionConverterDesc.TAG;
 
-	private String m_type;
+	private String type;
 
-	private IVersionFormat m_versionFormat;
+	private IVersionFormat versionFormat;
 
-	private final BidirectionalTransformerHandler m_transformerHandler = new BidirectionalTransformerHandler(this);
+	private final BidirectionalTransformerHandler transformerHandler = new BidirectionalTransformerHandler(this);
 
-	private final ArrayList<BidirectionalTransformer> m_transformers = new ArrayList<BidirectionalTransformer>();
+	private final ArrayList<BidirectionalTransformer> transformers = new ArrayList<BidirectionalTransformer>();
 
-	public VersionConverterHandler(AbstractHandler parent)
-	{
+	public VersionConverterHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof BidirectionalTransformerHandler)
-			m_transformers.add(((BidirectionalTransformerHandler)child).getTransformer());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child instanceof BidirectionalTransformerHandler)
+			transformers.add(((BidirectionalTransformerHandler) child).getTransformer());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(BidirectionalTransformerHandler.TAG.equals(localName))
-			ch = m_transformerHandler;
+		if (BidirectionalTransformerHandler.TAG.equals(localName))
+			ch = transformerHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public VersionConverterDesc getVersionConverter()
-	{
-		return new VersionConverterDesc(m_type, m_versionFormat,
-				m_transformers.toArray(new BidirectionalTransformer[m_transformers.size()]));
+	public VersionConverterDesc getVersionConverter() {
+		return new VersionConverterDesc(type, versionFormat, transformers.toArray(new BidirectionalTransformer[transformers.size()]));
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_type = this.getStringValue(attrs, VersionConverterDesc.ATTR_TYPE);
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		type = this.getStringValue(attrs, VersionConverterDesc.ATTR_TYPE);
 		String tmp = getOptionalStringValue(attrs, VersionConverterDesc.ATTR_VERSION_FORMAT);
-		if(tmp != null)
-		{
-			try
-			{
-				m_versionFormat = Version.compile(tmp);
-			}
-			catch(VersionFormatException e)
-			{
+		if (tmp != null) {
+			try {
+				versionFormat = Version.compile(tmp);
+			} catch (VersionFormatException e) {
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}
-		}
-		else
-		{
+		} else {
 			tmp = getOptionalStringValue(attrs, VersionConverterDesc.ATTR_VERSION_TYPE);
-			if(tmp == null)
-				m_versionFormat = null;
+			if (tmp == null)
+				versionFormat = null;
 			else
-				try
-				{
-					m_versionFormat = VersionHelper.getVersionType(tmp).getFormat();
-				}
-				catch(CoreException e)
-				{
+				try {
+					versionFormat = VersionHelper.getVersionType(tmp).getFormat();
+				} catch (CoreException e) {
 					throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 				}
 		}
-		m_transformers.clear();
+		transformers.clear();
 	}
 }

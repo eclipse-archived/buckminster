@@ -35,60 +35,50 @@ import org.eclipse.pde.internal.build.IPDEBuildConstants;
  * Action that generates version adjusted products
  */
 @SuppressWarnings("restriction")
-public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.ProductAction implements IPDEBuildConstants
-{
-	public ProductAction(String src, IProductDescriptor productDesc, String flvor, File exeFeatureLocation)
-	{
+public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.ProductAction implements IPDEBuildConstants {
+	public ProductAction(String src, IProductDescriptor productDesc, String flvor, File exeFeatureLocation) {
 		super(src, new ProductVersionPatcher(productDesc), flvor, exeFeatureLocation);
 	}
 
 	@Override
-	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
-	{
-		((ProductVersionPatcher)product).setQueryable(results);
+	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
+		((ProductVersionPatcher) product).setQueryable(results);
 
 		IPublisherResult innerResult = new PublisherResult();
 		PublisherInfo innerInfo = new PublisherInfo();
 		String[] configs = publisherInfo.getConfigurations();
-		if(executablesFeatureLocation == null)
-		{
-			// We can only create one single configuration and that's the one of the running platform
+		if (executablesFeatureLocation == null) {
+			// We can only create one single configuration and that's the one of
+			// the running platform
 			//
 			Logger log = Buckminster.getLogger();
 			String availableConfig = Platform.getWS() + '.' + Platform.getOS() + '.' + Platform.getOSArch();
 			boolean warningsPrinted = false;
 			boolean availConfigFound = false;
-			for(String config : configs)
-			{
-				if(config.equals(availableConfig))
-				{
+			for (String config : configs) {
+				if (config.equals(availableConfig)) {
 					availConfigFound = true;
 					continue;
 				}
 				log.warning(NLS.bind(Messages.Missing_exe_launcher_for_config_0, config));
 				warningsPrinted = true;
 			}
-			if(warningsPrinted)
+			if (warningsPrinted)
 				log.warning(Messages.Suggest_install_launchers_feature);
 
-			if(!availConfigFound)
+			if (!availConfigFound)
 				return Status.OK_STATUS;
 
 			innerInfo.setConfigurations(new String[] { availableConfig });
-			if(Platform.inDevelopmentMode())
-			{
+			if (Platform.inDevelopmentMode()) {
 				String ilProp = System.getProperty("eclipse.host.location"); //$NON-NLS-1$
-				if(ilProp == null)
-				{
+				if (ilProp == null) {
 					log.warning(Messages.Please_use_selfhost_vmargs);
-				}
-				else
+				} else
 					source = ilProp;
-			}
-			else
+			} else
 				source = TargetPlatform.getPlatformInstallLocation().getAbsolutePath();
-		}
-		else
+		} else
 			innerInfo.setConfigurations(configs);
 
 		innerInfo.setArtifactOptions(publisherInfo.getArtifactOptions());
@@ -97,54 +87,48 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		innerInfo.setContextArtifactRepository(publisherInfo.getContextArtifactRepository());
 		innerInfo.setContextMetadataRepository(innerInfo.getContextMetadataRepository());
 
-		// The inner result must see the launchers since the EquinoxLauncherCUAction created by the
-		// ApplicationLauncherAction must find them in order to generate the correct CU's
+		// The inner result must see the launchers since the
+		// EquinoxLauncherCUAction created by the
+		// ApplicationLauncherAction must find them in order to generate the
+		// correct CU's
 		//
 		ConfigData dfltStartInfos = new ConfigData(null, null, null, null);
-		for(Object iu : results.getIUs(null, IPublisherResult.ROOT))
-		{
-			IInstallableUnit tmp = (IInstallableUnit)iu;
-			if(tmp.getId().startsWith(EquinoxLauncherCUAction.ORG_ECLIPSE_EQUINOX_LAUNCHER))
-			{
+		for (Object iu : results.getIUs(null, IPublisherResult.ROOT)) {
+			IInstallableUnit tmp = (IInstallableUnit) iu;
+			if (tmp.getId().startsWith(EquinoxLauncherCUAction.ORG_ECLIPSE_EQUINOX_LAUNCHER)) {
 				innerResult.addIU(tmp, IPublisherResult.ROOT);
 				continue;
 			}
 
-			for(BundleInfo bi : product.getBundleInfos())
-			{
-				if(tmp.getId().equals(bi.getSymbolicName()))
-				{
+			for (BundleInfo bi : product.getBundleInfos()) {
+				if (tmp.getId().equals(bi.getSymbolicName())) {
 					innerResult.addIU(tmp, IPublisherResult.ROOT);
 					break;
 				}
 			}
 
-			for(BundleInfo bi : getDefaultStartInfo())
-			{
-				if(tmp.getId().equals(bi.getSymbolicName()))
-				{
+			for (BundleInfo bi : getDefaultStartInfo()) {
+				if (tmp.getId().equals(bi.getSymbolicName())) {
 					innerResult.addIU(tmp, IPublisherResult.ROOT);
 					dfltStartInfos.addBundle(bi);
 					break;
 				}
 			}
 		}
-		if(dfltStartInfos.getBundles().length > 0)
-			for(String configSpec : innerInfo.getConfigurations())
+		if (dfltStartInfos.getBundles().length > 0)
+			for (String configSpec : innerInfo.getConfigurations())
 				innerInfo.addAdvice(new ConfigAdvice(dfltStartInfos, configSpec));
 
 		IStatus status = super.perform(innerInfo, innerResult, monitor);
-		if(status.getSeverity() != IStatus.ERROR)
+		if (status.getSeverity() != IStatus.ERROR)
 			results.merge(innerResult, IPublisherResult.MERGE_MATCHING);
 		return status;
 	}
 
 	@Override
-	protected IPublisherAction[] createActions(IPublisherResult results)
-	{
+	protected IPublisherAction[] createActions(IPublisherResult results) {
 		IPublisherAction[] actions = super.createActions(results);
-		if(getExecutablesLocation() == null)
-		{
+		if (getExecutablesLocation() == null) {
 			IPublisherAction[] newActions = new IPublisherAction[actions.length + 1];
 			System.arraycopy(actions, 0, newActions, 1, actions.length);
 			actions = newActions;
@@ -154,13 +138,11 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 	}
 
 	@Override
-	protected IPublisherAction createApplicationExecutableAction(String[] configSpecs)
-	{
+	protected IPublisherAction createApplicationExecutableAction(String[] configSpecs) {
 		return new ApplicationLauncherAction(id, version, flavor, executableName, getExecutablesLocation(), configSpecs);
 	}
 
-	private BundleInfo[] getDefaultStartInfo()
-	{
+	private BundleInfo[] getDefaultStartInfo() {
 		BundleInfo[] defaults = new BundleInfo[6];
 		defaults[0] = new BundleInfo(BUNDLE_SIMPLE_CONFIGURATOR, null, null, 1, true);
 		defaults[1] = new BundleInfo(BUNDLE_EQUINOX_COMMON, null, null, 2, true);

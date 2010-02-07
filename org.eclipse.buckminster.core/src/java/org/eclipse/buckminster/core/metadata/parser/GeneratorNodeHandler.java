@@ -25,23 +25,19 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class GeneratorNodeHandler extends BomNodeHandler
-{
+class GeneratorNodeHandler extends BomNodeHandler {
 	public static final String TAG = GeneratorNode.TAG;
 
-	private GeneratorNode m_node;
+	private GeneratorNode node;
 
-	GeneratorNodeHandler(AbstractHandler parent)
-	{
+	GeneratorNodeHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		UUID cspecId = null;
-		try
-		{
+		try {
 			cspecId = UUID.fromString(this.getStringValue(attrs, GeneratorNode.ATTR_DECLARING_CSPEC_ID));
 			String component = getOptionalStringValue(attrs, GeneratorNode.ATTR_COMPONENT);
 			String attribute = getStringValue(attrs, GeneratorNode.ATTR_ATTRIBUTE);
@@ -49,30 +45,23 @@ class GeneratorNodeHandler extends BomNodeHandler
 			String generatesType = getOptionalStringValue(attrs, GeneratorNode.ATTR_GENERATES_TYPE);
 			String tmp = getOptionalStringValue(attrs, GeneratorNode.ATTR_GENERATES_VERSION);
 			Version generatesVersion = null;
-			if(tmp != null)
-			{
-				try
-				{
+			if (tmp != null) {
+				try {
 					generatesVersion = VersionHelper.parseVersion(tmp);
-				}
-				catch(IllegalArgumentException e)
-				{
+				} catch (IllegalArgumentException e) {
 					throw new SAXParseException(e.getMessage(), getDocumentLocator());
 				}
 			}
 
-			m_node = new GeneratorNode((CSpec)getWrapped(cspecId), component, attribute, new ComponentIdentifier(
-					generates, generatesType, generatesVersion));
-		}
-		catch(ClassCastException e)
-		{
+			node = new GeneratorNode((CSpec) getWrapped(cspecId), component, attribute, new ComponentIdentifier(generates, generatesType,
+					generatesVersion));
+		} catch (ClassCastException e) {
 			throw new SAXParseException(NLS.bind(Messages.Wrapper_0_does_not_wrap_cspec, cspecId), getDocumentLocator());
 		}
 	}
 
 	@Override
-	BOMNode getDepNode()
-	{
-		return m_node;
+	BOMNode getDepNode() {
+		return node;
 	}
 }

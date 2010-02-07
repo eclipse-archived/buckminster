@@ -9,46 +9,39 @@ package org.eclipse.buckminster.osgi.filter.impl;
 
 import java.util.Map;
 
-class SubstringFilterImpl extends FilterImpl
-{
-	private final String[] m_value;
+class SubstringFilterImpl extends FilterImpl {
+	private final String[] strings;
 
-	SubstringFilterImpl(String attr, String[] value)
-	{
+	SubstringFilterImpl(String attr, String[] value) {
 		super(FilterImpl.SUBSTRING, attr);
-		m_value = value;
+		this.strings = value;
 	}
 
-	public int compareTo(FilterImpl filter)
-	{
+	public int compareTo(FilterImpl filter) {
 		int cmp = internalCompareTo(filter);
-		if(cmp != 0)
+		if (cmp != 0)
 			return cmp;
 
-		String[] o_value = ((SubstringFilterImpl)filter).m_value;
-		int top = m_value.length;
-		if(top > o_value.length)
+		String[] o_value = ((SubstringFilterImpl) filter).strings;
+		int top = strings.length;
+		if (top > o_value.length)
 			return 1;
 
-		if(top < o_value.length)
+		if (top < o_value.length)
 			return -1;
 
-		for(int idx = 0; idx < top; ++idx)
-		{
-			String m = m_value[idx];
+		for (int idx = 0; idx < top; ++idx) {
+			String m = strings[idx];
 			String o = o_value[idx];
-			if(m == null)
-			{
-				if(o != null)
+			if (m == null) {
+				if (o != null)
 					return -1;
-			}
-			else
-			{
-				if(o == null)
+			} else {
+				if (o == null)
 					return 1;
 
 				cmp = m.compareTo(o);
-				if(cmp != 0)
+				if (cmp != 0)
 					return cmp;
 			}
 		}
@@ -56,14 +49,12 @@ class SubstringFilterImpl extends FilterImpl
 	}
 
 	@Override
-	String getValueAsString()
-	{
+	String getValueAsString() {
 		StringBuilder bld = new StringBuilder();
-		int size = m_value.length;
-		for(int i = 0; i < size; i++)
-		{
-			String substr = m_value[i];
-			if(substr == null)
+		int size = strings.length;
+		for (int i = 0; i < size; i++) {
+			String substr = strings[i];
+			if (substr == null)
 				bld.append('*');
 			else
 				bld.append(substr);
@@ -72,54 +63,47 @@ class SubstringFilterImpl extends FilterImpl
 	}
 
 	@Override
-	boolean internalCompare(Object value)
-	{
-		if(!(value instanceof String))
+	boolean internalCompare(Object value) {
+		if (!(value instanceof String))
 			return false;
 
-		String string = (String)value;
+		String string = (String) value;
 		int pos = 0;
-		for(int i = 0, size = m_value.length; i < size; i++)
-		{
-			String substr = m_value[i];
+		for (int i = 0, size = strings.length; i < size; i++) {
+			String substr = strings[i];
 
-			if(i + 1 < size) /* if this is not that last substr */
+			if (i + 1 < size) /* if this is not that last substr */
 			{
-				if(substr == null) /* * */
+				if (substr == null) /* * */
 				{
-					String substr2 = m_value[i + 1];
+					String substr2 = strings[i + 1];
 
-					if(substr2 == null) /* ** */
+					if (substr2 == null) /* ** */
 						continue; /* ignore first star */
 					/* xxx */
 					int index = string.indexOf(substr2, pos);
-					if(index == -1)
-					{
+					if (index == -1) {
 						return false;
 					}
 
 					pos = index + substr2.length();
-					if(i + 2 < size) // if there are more substrings, increment over the string we just matched;
+					if (i + 2 < size) // if there are more substrings, increment
+										// over the string we just matched;
 						// otherwise need to do the last substr check
 						i++;
-				}
-				else
+				} else
 				/* xxx */{
 					int len = substr.length();
 
-					if(string.regionMatches(pos, substr, 0, len))
-					{
+					if (string.regionMatches(pos, substr, 0, len)) {
 						pos += len;
-					}
-					else
-					{
+					} else {
 						return false;
 					}
 				}
-			}
-			else
+			} else
 			/* last substr */{
-				if(substr == null) /* * */
+				if (substr == null) /* * */
 				{
 					return true;
 				}
@@ -132,28 +116,21 @@ class SubstringFilterImpl extends FilterImpl
 	}
 
 	@Override
-	boolean match0(Map<String, ? extends Object> properties)
-	{
-		Object prop = (properties == null)
-				? null
-				: properties.get(getAttr());
-		return prop instanceof String
-				? compare(prop)
-				: false;
+	boolean match0(Map<String, ? extends Object> properties) {
+		Object prop = (properties == null) ? null : properties.get(getAttr());
+		return prop instanceof String ? compare(prop) : false;
 	}
 
 	@Override
-	void toString(StringBuilder sb)
-	{
+	void toString(StringBuilder sb) {
 		sb.append('(');
 		sb.append(getAttr());
 		sb.append('=');
 
-		for(int i = 0, size = m_value.length; i < size; i++)
-		{
-			String substr = m_value[i];
+		for (int i = 0, size = strings.length; i < size; i++) {
+			String substr = strings[i];
 
-			if(substr == null) /* * */
+			if (substr == null) /* * */
 				sb.append('*');
 			else
 				sb.append(encodeValue(substr));

@@ -20,13 +20,13 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Filip Hrbek
  * 
- *         The <CODE>SmartArrayList</CODE> class extends class ArrayList. It has the same counstructors. It has methods
- *         list transformations (reverse, rotate, shuffle) and easy-to-use formatted printing its values (using the
- *         constructor with element mapper).<BR>
+ *         The <CODE>SmartArrayList</CODE> class extends class ArrayList. It has
+ *         the same counstructors. It has methods list transformations (reverse,
+ *         rotate, shuffle) and easy-to-use formatted printing its values (using
+ *         the constructor with element mapper).<BR>
  */
 
-public class SmartArrayList<E> extends ArrayList<E>
-{
+public class SmartArrayList<E> extends ArrayList<E> {
 
 	/**
 	 * Serial UID
@@ -34,8 +34,9 @@ public class SmartArrayList<E> extends ArrayList<E>
 	private static final long serialVersionUID = 5853596854483494180L;
 
 	/**
-	 * Creates a SmartArrayList of String from comma separated values. If a value should contain spaces, commas or
-	 * double quotes, it should be double quoted. Any backslashes must be doubled unless they are used as escape
+	 * Creates a SmartArrayList of String from comma separated values. If a
+	 * value should contain spaces, commas or double quotes, it should be double
+	 * quoted. Any backslashes must be doubled unless they are used as escape
 	 * characters for double quotes inside a string.<BR>
 	 * 
 	 * Examples:<BR>
@@ -48,20 +49,21 @@ public class SmartArrayList<E> extends ArrayList<E>
 	 * @throws Exception
 	 *             if the string cannot be parsed
 	 */
-	public static SmartArrayList<String> fromCommaSeparatedStrings(String values) throws Exception
-	{
+	public static SmartArrayList<String> fromCommaSeparatedStrings(String values) throws Exception {
 		return fromSeparatedStrings(values, ',');
 	}
 
 	/**
-	 * Creates a SmartArrayList of String from delimiter separated values. If a value should contain spaces, delimiters
-	 * itself or double quotes, it should be double quoted. Any backslashes must be doubled unless they are used as
-	 * escape characters for double quotes inside a string.<BR>
+	 * Creates a SmartArrayList of String from delimiter separated values. If a
+	 * value should contain spaces, delimiters itself or double quotes, it
+	 * should be double quoted. Any backslashes must be doubled unless they are
+	 * used as escape characters for double quotes inside a string.<BR>
 	 * 
 	 * Examples:<BR>
 	 * fromSeparatedStrings("abc, def, ghi", ',');<BR>
 	 * fromSeparatedStrings("\"ab c\", \"de\\\"f\", \"gh,i\"", ',');<BR>
-	 * fromSeparatedStrings("\"ab c\"def, abc\"de\\\"f\", abcdef\"gh,i\"jkl", ',');<BR>
+	 * fromSeparatedStrings("\"ab c\"def, abc\"de\\\"f\", abcdef\"gh,i\"jkl",
+	 * ',');<BR>
 	 * 
 	 * @param values
 	 *            Initial comma separated values
@@ -71,8 +73,7 @@ public class SmartArrayList<E> extends ArrayList<E>
 	 * @throws Exception
 	 *             if the string cannot be parsed
 	 */
-	public static SmartArrayList<String> fromSeparatedStrings(String values, char delimiter) throws Exception
-	{
+	public static SmartArrayList<String> fromSeparatedStrings(String values, char delimiter) throws Exception {
 		final String bareStringPattern = "(?:[^\\\\\"" + delimiter + "]|\\\\.)+"; //$NON-NLS-1$ //$NON-NLS-2$
 		final String doubleQuotedStringPattern = "\"(?:[^\"\\\\]|\\\\.)*\""; //$NON-NLS-1$
 		final Pattern tokenPattern = Pattern.compile("^\\s*((?:" + bareStringPattern + "|" + doubleQuotedStringPattern //$NON-NLS-1$ //$NON-NLS-2$
@@ -83,19 +84,17 @@ public class SmartArrayList<E> extends ArrayList<E>
 		SmartArrayList<String> result = new SmartArrayList<String>();
 		boolean firstMatch = false;
 
-		while(tokenMatcher.matches())
-		{
+		while (tokenMatcher.matches()) {
 			firstMatch = true;
 			String value = tokenMatcher.group(1);
 			StringBuilder strippedValue = new StringBuilder();
 			Matcher elementMatcher = elementPattern.matcher(value);
 
-			while(elementMatcher.find())
-			{
+			while (elementMatcher.find()) {
 				String aux = elementMatcher.group(1);
-				if(aux.startsWith("\"")) //$NON-NLS-1$
+				if (aux.startsWith("\"")) //$NON-NLS-1$
 				{
-					if(!aux.endsWith("\"")) //$NON-NLS-1$
+					if (!aux.endsWith("\"")) //$NON-NLS-1$
 					{
 						throw new Exception(NLS.bind(Messages.Unbalanced_double_quotes_0, values));
 					}
@@ -106,15 +105,13 @@ public class SmartArrayList<E> extends ArrayList<E>
 
 			result.add(StringUtil.stripBackslashes(strippedValue.toString()));
 			String rest = tokenMatcher.group(2);
-			if(rest == null)
-			{
+			if (rest == null) {
 				break;
 			}
 			tokenMatcher = tokenPattern.matcher(tokenMatcher.group(2));
 		}
 
-		if(!firstMatch)
-		{
+		if (!firstMatch) {
 			throw new Exception(NLS.bind(Messages.Bad_value_list_0, values));
 		}
 
@@ -125,27 +122,27 @@ public class SmartArrayList<E> extends ArrayList<E>
 	 * Constructs an empty list with an initial capacity of ten.
 	 */
 
-	public SmartArrayList()
-	{
+	public SmartArrayList() {
 		super();
 	}
 
 	/**
-	 * Constructs a list containing the elements of the specified collection, in the order they are returned by the
-	 * collection's iterator. The SmartArrayList instance has an initial capacity of 110% the size of the specified
-	 * collection.
+	 * Constructs a list containing the elements of the specified collection, in
+	 * the order they are returned by the collection's iterator. The
+	 * SmartArrayList instance has an initial capacity of 110% the size of the
+	 * specified collection.
 	 * 
 	 * @param c
 	 *            the collection whose elements are to be placed into this list
 	 */
 
-	public SmartArrayList(Collection<? extends E> c)
-	{
+	public SmartArrayList(Collection<? extends E> c) {
 		super(c);
 	}
 
 	/**
-	 * Constructs a list containing the result of the specified mapping applied on the elements of the specified list
+	 * Constructs a list containing the result of the specified mapping applied
+	 * on the elements of the specified list
 	 * 
 	 * @param c
 	 *            The list whose data are to be mapped into this list
@@ -154,29 +151,27 @@ public class SmartArrayList<E> extends ArrayList<E>
 	 * @throws MappingException
 	 */
 
-	public <S> SmartArrayList(Collection<? extends S> c, ElementMapper<S, E> m) throws MappingException
-	{
+	public <S> SmartArrayList(Collection<? extends S> c, ElementMapper<S, E> m) throws MappingException {
 		super(c.size());
 
 		E newElem;
 
-		for(S elem : c)
-		{
-			if((newElem = m.mapping(elem)) != null)
+		for (S elem : c) {
+			if ((newElem = m.mapping(elem)) != null)
 				add(newElem);
 		}
 	}
 
 	/**
-	 * Constructs a list containing the elements of the specified list of arguments, in the order they are specified.
-	 * The SmartArrayList instance has an initial capacity of 110% the size of the specified collection.
+	 * Constructs a list containing the elements of the specified list of
+	 * arguments, in the order they are specified. The SmartArrayList instance
+	 * has an initial capacity of 110% the size of the specified collection.
 	 * 
 	 * @param args
 	 *            the list of elements which are to be placed into this list
 	 */
 
-	public SmartArrayList(E... args)
-	{
+	public SmartArrayList(E... args) {
 		super(Arrays.asList(args));
 	}
 
@@ -189,32 +184,27 @@ public class SmartArrayList<E> extends ArrayList<E>
 	 *             if the specified initial capacity is negative
 	 */
 
-	public SmartArrayList(int initialCapacity)
-	{
+	public SmartArrayList(int initialCapacity) {
 		super(initialCapacity);
 	}
 
 	/**
-	 * The same as equals but the lists does not have to have the same element order
+	 * The same as equals but the lists does not have to have the same element
+	 * order
 	 * 
 	 * @param otherList
 	 * @return
 	 */
-	public boolean hasEqualContent(SmartArrayList<E> otherList)
-	{
+	public boolean hasEqualContent(SmartArrayList<E> otherList) {
 
-		for(E item : this)
-		{
-			if(!otherList.contains(item))
-			{
+		for (E item : this) {
+			if (!otherList.contains(item)) {
 				return false;
 			}
 		}
 
-		for(E item : otherList)
-		{
-			if(!this.contains(item))
-			{
+		for (E item : otherList) {
+			if (!this.contains(item)) {
 				return false;
 			}
 		}
@@ -227,22 +217,22 @@ public class SmartArrayList<E> extends ArrayList<E>
 	 * 
 	 * @return reversed SmartArrayList
 	 */
-	public SmartArrayList<E> reverse()
-	{
+	public SmartArrayList<E> reverse() {
 		Collections.reverse(this);
 
 		return this;
 	}
 
 	/**
-	 * Rotates the elements of the SmartArrayList's elements by the specified distance.
+	 * Rotates the elements of the SmartArrayList's elements by the specified
+	 * distance.
 	 * 
 	 * @param distance
-	 *            the distance to rotate the list. There are no constraints on this value.
+	 *            the distance to rotate the list. There are no constraints on
+	 *            this value.
 	 * @return changed SmartArrayList
 	 */
-	public SmartArrayList<E> rotate(int distance)
-	{
+	public SmartArrayList<E> rotate(int distance) {
 		Collections.rotate(this, distance);
 
 		return this;
@@ -253,42 +243,39 @@ public class SmartArrayList<E> extends ArrayList<E>
 	 * 
 	 * @return changed SmartArrayList
 	 */
-	public SmartArrayList<E> shuffle()
-	{
+	public SmartArrayList<E> shuffle() {
 		Collections.shuffle(this);
 
 		return this;
 	}
 
 	/**
-	 * Creates a string, which contains all values of an instance separated by ', '.
+	 * Creates a string, which contains all values of an instance separated by
+	 * ', '.
 	 * 
 	 * @return a string containing all values of an instance separated by ', '
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return toString(", "); //$NON-NLS-1$
 	}
 
 	/**
-	 * Creates a string, which contains all values of an instance separated by specified delimeter.
+	 * Creates a string, which contains all values of an instance separated by
+	 * specified delimeter.
 	 * 
 	 * @param delimiter
 	 *            delimiter to separate the values
-	 * @return a string containing all values of an instance separated by the specified delimiter
+	 * @return a string containing all values of an instance separated by the
+	 *         specified delimiter
 	 */
 
-	public String toString(String delimiter)
-	{
+	public String toString(String delimiter) {
 		Object[] arr = toArray();
 		StringBuffer result = new StringBuffer();
 
-		for(int i = 0; i < arr.length; i++)
-		{
-			result.append((i > 0
-					? delimiter
-					: "") + arr[i]); //$NON-NLS-1$
+		for (int i = 0; i < arr.length; i++) {
+			result.append((i > 0 ? delimiter : "") + arr[i]); //$NON-NLS-1$
 		}
 
 		return result.toString();

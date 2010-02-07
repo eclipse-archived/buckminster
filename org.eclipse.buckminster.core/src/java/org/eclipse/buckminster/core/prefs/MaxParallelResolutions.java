@@ -19,37 +19,28 @@ import org.osgi.service.prefs.BackingStoreException;
  * @author thhal
  * 
  */
-public class MaxParallelResolutions extends BasicPreferenceHandler
-{
+public class MaxParallelResolutions extends BasicPreferenceHandler {
 	@Override
-	public String get(String defaultValue) throws CoreException
-	{
+	public String get(String defaultValue) throws CoreException {
 		return super.get(Integer.toString(ResourceMapResolverFactory.RESOLVER_THREADS_MAX_DEFAULT));
 	}
 
 	@Override
-	public void set(String prefValue) throws BackingStoreException
-	{
-		try
-		{
+	public void set(String prefValue) throws BackingStoreException {
+		try {
 			int maxJobs = Integer.parseInt(prefValue);
-			if(maxJobs > 0 && maxJobs <= 20)
-			{
+			if (maxJobs > 0 && maxJobs <= 20) {
 				super.set(prefValue);
 				return;
 			}
+		} catch (NumberFormatException e) {
 		}
-		catch(NumberFormatException e)
-		{
-		}
-		throw new IllegalArgumentException(String.format(NLS.bind(Messages._0_illegal_value_for_maxParallelResolutions,
-				prefValue)));
+		throw new IllegalArgumentException(String.format(NLS.bind(Messages._0_illegal_value_for_maxParallelResolutions, prefValue)));
 
 	}
 
 	@Override
-	public void unset() throws BackingStoreException
-	{
+	public void unset() throws BackingStoreException {
 		set(Integer.toString(ResourceMapResolverFactory.RESOLVER_THREADS_MAX_DEFAULT));
 	}
 }

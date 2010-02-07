@@ -17,18 +17,19 @@ import java.util.Set;
 /**
  * @author Thomas Hallgren
  */
-public interface IProperties<T> extends Map<String, T>
-{
+public interface IProperties<T> extends Map<String, T> {
 	/**
-	 * Returns the set of keys that are immutable in this map. If the implementation doesn't support immutable keys, it
-	 * will return an empty set.
+	 * Returns the set of keys that are immutable in this map. If the
+	 * implementation doesn't support immutable keys, it will return an empty
+	 * set.
 	 * 
 	 * @return A set of immutable keys.
 	 */
 	Set<String> immutableKeySet();
 
 	/**
-	 * Returns true if the value stored by key is either mutable or does not exist.
+	 * Returns true if the value stored by key is either mutable or does not
+	 * exist.
 	 * 
 	 * @param key
 	 *            The key to check for
@@ -37,16 +38,18 @@ public interface IProperties<T> extends Map<String, T>
 	boolean isMutable(String key);
 
 	/**
-	 * Returns the set of keys that are mutable in this map. If the implementation doesn't support immutable keys, it
-	 * will return the full key set.
+	 * Returns the set of keys that are mutable in this map. If the
+	 * implementation doesn't support immutable keys, it will return the full
+	 * key set.
 	 * 
 	 * @return A set of mutable keys.
 	 */
 	Set<String> mutableKeySet();
 
 	/**
-	 * Some property maps are created as an overlay on another map. This method will return the keys of the overlay
-	 * only, i.e. the keys from the overaied map will not be included. If overlay is not supported, this method will
+	 * Some property maps are created as an overlay on another map. This method
+	 * will return the keys of the overlay only, i.e. the keys from the overaied
+	 * map will not be included. If overlay is not supported, this method will
 	 * return the full key set.
 	 * 
 	 * @return A set representing the keys in the overlay.
@@ -70,19 +73,22 @@ public interface IProperties<T> extends Map<String, T>
 	T put(String key, T value, boolean mutable);
 
 	/**
-	 * Provided this map supports mutability and holds a value with the name <code>key</code>, the status of that value
-	 * will be changed according to <code>flag</code>.
+	 * Provided this map supports mutability and holds a value with the name
+	 * <code>key</code>, the status of that value will be changed according to
+	 * <code>flag</code>.
 	 * 
 	 * @param key
 	 * @param flag
 	 * @throws UnsupportedOperationException
-	 *             if the <code>mutable</code> flag is <code>false</code> and this map does not support mutability
+	 *             if the <code>mutable</code> flag is <code>false</code> and
+	 *             this map does not support mutability
 	 */
 	void setMutable(String key, boolean flag) throws UnsupportedOperationException;
 
 	/**
-	 * Same as {@link java.lang.Properties#store(java.io.OutputStream, java.lang.String)} but without escapes for
-	 * &quot;:&quot;
+	 * Same as
+	 * {@link java.lang.Properties#store(java.io.OutputStream, java.lang.String)}
+	 * but without escapes for &quot;:&quot;
 	 * 
 	 * @param theString
 	 *            the String to convert.

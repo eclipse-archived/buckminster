@@ -13,92 +13,79 @@ import java.util.Collections;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
-public class VersionQualifier extends Task
-{
-	private String m_componentName;
+public class VersionQualifier extends Task {
+	private String componentName;
 
-	private String m_componentType;
+	private String componentType;
 
-	private File m_propertiesFile;
+	private File propertiesFile;
 
-	private String m_property;
+	private String property;
 
-	private String m_qualifier;
+	private String qualifier;
 
-	private String m_version;
+	private String version;
 
-	private String m_versionType;
+	private String versionType;
 
 	@Override
-	public void execute() throws BuildException
-	{
-		try
-		{
-	    	if(m_componentName == null)
+	public void execute() throws BuildException {
+		try {
+			if (componentName == null)
 				throw new BuildException("Missing attribute componentName", getLocation());
-			if(m_version == null)
+			if (version == null)
 				throw new BuildException("Missing attribute version", getLocation());
-			if(m_property == null)
+			if (property == null)
 				throw new BuildException("Missing attribute property", getLocation());
 
-			Version v = VersionHelper.createVersion(m_versionType, m_version);
-			ComponentIdentifier cid = new ComponentIdentifier(m_componentName, m_componentType, v);
-			VersionQualifierTask vq = new VersionQualifierTask(m_propertiesFile, m_qualifier);
-			v = vq.replaceQualifier(cid, Collections.<ComponentIdentifier>emptyList());
-			String prop = (v == null ? m_version : v.toString());
-			getProject().setUserProperty(m_property, prop);
-		}
-		catch(Exception e)
-		{
+			Version v = VersionHelper.createVersion(versionType, version);
+			ComponentIdentifier cid = new ComponentIdentifier(componentName, componentType, v);
+			VersionQualifierTask vq = new VersionQualifierTask(propertiesFile, qualifier);
+			v = vq.replaceQualifier(cid, Collections.<ComponentIdentifier> emptyList());
+			String prop = (v == null ? version : v.toString());
+			getProject().setUserProperty(property, prop);
+		} catch (Exception e) {
 			throw new BuildException(e.toString(), this.getLocation());
 		}
 	}
 
-	public void setComponentName(String componentName)
-	{
-		m_componentName = componentName;
+	public void setComponentName(String componentName) {
+		this.componentName = componentName;
 	}
 
-	public void setComponentType(String componentType)
-	{
-		m_componentType = componentType;
+	public void setComponentType(String componentType) {
+		this.componentType = componentType;
 	}
 
-	public void setProperty(String property)
-	{
-		m_property = property;
-	}
-
-	public void setQualifier(String qualifier)
-	{
-		m_qualifier = qualifier;
-	}
-
-	public void setPropertiesFile(String propertiesFile)
-	{
-		if(propertiesFile == null || propertiesFile.length() == 0)
-			m_propertiesFile = null;
+	public void setPropertiesFile(String propertiesFile) {
+		if (propertiesFile == null || propertiesFile.length() == 0)
+			this.propertiesFile = null;
 		else
-			m_propertiesFile = new File(propertiesFile);
+			this.propertiesFile = new File(propertiesFile);
 	}
 
-	public void setVersion(String version)
-	{
-		m_version = version;
+	public void setProperty(String property) {
+		this.property = property;
 	}
 
-	public void setVersionType(String versionType)
-	{
-		m_versionType = versionType;
+	public void setQualifier(String qualifier) {
+		this.qualifier = qualifier;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public void setVersionType(String versionType) {
+		this.versionType = versionType;
 	}
 
 }

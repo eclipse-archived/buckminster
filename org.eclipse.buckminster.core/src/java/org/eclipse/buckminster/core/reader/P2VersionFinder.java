@@ -16,36 +16,31 @@ import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 
-public class P2VersionFinder extends AbstractVersionFinder
-{
-	private final IMetadataRepository m_mdr;
+public class P2VersionFinder extends AbstractVersionFinder {
+	private final IMetadataRepository mdr;
 
-	public P2VersionFinder(Provider provider, IComponentType componentType, NodeQuery query, IMetadataRepository mdr)
-	{
+	public P2VersionFinder(Provider provider, IComponentType componentType, NodeQuery query, IMetadataRepository mdr) {
 		super(provider, componentType, query);
-		m_mdr = mdr;
+		this.mdr = mdr;
 	}
 
-	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
-	{
+	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException {
 		ComponentRequest request = getQuery().getComponentRequest();
 		IComponentType ctype = request.getComponentType();
 		boolean isFeature = (ctype != null && ctype.getId().equals(IComponentType.ECLIPSE_FEATURE));
 
 		String name = request.getName();
-		if(isFeature)
-		{
-			if(!name.endsWith(P2Constants.FEATURE_GROUP))
+		if (isFeature) {
+			if (!name.endsWith(P2Constants.FEATURE_GROUP))
 				name += P2Constants.FEATURE_GROUP;
 		}
 
 		VersionRange range = request.getVersionRange();
-		IQuery<IInstallableUnit> query = (range == null || range.equals(VersionRange.emptyRange))
-				? new QLContextQuery<IInstallableUnit>(IInstallableUnit.class, "select(x | x.id == $0).latest()", name) //$NON-NLS-1$
-				: new QLContextQuery<IInstallableUnit>(IInstallableUnit.class,
-						"select(x | x.id == $0 && x.version ~= $1).latest()", name, range); //$NON-NLS-1$
-		IQueryResult<IInstallableUnit> result = m_mdr.query(query, monitor);
-		if(result.isEmpty())
+		IQuery<IInstallableUnit> query = (range == null || range.equals(VersionRange.emptyRange)) ? new QLContextQuery<IInstallableUnit>(
+				IInstallableUnit.class, "select(x | x.id == $0).latest()", name) //$NON-NLS-1$
+				: new QLContextQuery<IInstallableUnit>(IInstallableUnit.class, "select(x | x.id == $0 && x.version ~= $1).latest()", name, range); //$NON-NLS-1$
+		IQueryResult<IInstallableUnit> result = mdr.query(query, monitor);
+		if (result.isEmpty())
 			return null;
 
 		IInstallableUnit best = result.iterator().next();

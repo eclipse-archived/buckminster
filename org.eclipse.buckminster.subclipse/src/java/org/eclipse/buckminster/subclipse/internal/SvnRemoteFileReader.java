@@ -39,29 +39,34 @@ import org.tigris.subversion.svnclientadapter.SVNRevision;
 import org.tigris.subversion.svnclientadapter.SVNUrl;
 
 /**
- * The SVN repository reader assumes that any repository contains the three recommended directories <code>trunk</code>,
- * <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is interpreted as no
- * <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. The URL used as the
- * repository identifier must contain the path element trunk. Anything that follows the <code>trunk</code> element in
- * the path will be considered a <code>module</code> path. The repository URL may also contain a query part that in turn
- * may have four different flags:
+ * The SVN repository reader assumes that any repository contains the three
+ * recommended directories <code>trunk</code>, <code>tags</code>, and
+ * <code>branches</code>. A missing <code>tags</code> directory is interpreted
+ * as no <code>tags</code>. A missing <code>branches</code> directory is
+ * interpreted as no branches. The URL used as the repository identifier must
+ * contain the path element trunk. Anything that follows the <code>trunk</code>
+ * element in the path will be considered a <code>module</code> path. The
+ * repository URL may also contain a query part that in turn may have four
+ * different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
- * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
+ * <dd>When resolving a tag, put the module name between the <code>tags</code>
+ * directory and the actual tag</dd>
  * <dt>moduleAfterTag</dt>
  * <dd>When resolving a tag, append the module name after the actual tag</dd>
  * <dt>moduleBeforeBranch</dt>
- * <dd>When resolving a branch, put the module name between the <code>branches</code> directory and the actual branch</dd>
+ * <dd>When resolving a branch, put the module name between the
+ * <code>branches</code> directory and the actual branch</dd>
  * <dt>moduleAfterBranch</dt>
  * <dd>When resolving a branch, append the module name after the actual branch</dd>
  * </dl>
- * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end of the resolved URL.
+ * A fragment in the repository URL will be treated as a sub-module. It will be
+ * appended at the end of the resolved URL.
  * 
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry, SVNRevision>
-{
+public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry, SVNRevision> {
 
 	/**
 	 * @param readerType
@@ -69,58 +74,11 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry, SVNRe
 	 * @param withResolvedBranch
 	 * @throws CoreException
 	 */
-	public SvnRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public SvnRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException {
 		super(readerType, rInfo, monitor);
 	}
 
-	@Override
-	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor monitor)
-			throws Exception
-	{
-		int ticksLeft = 3;
-		InputStream input = null;
-		byte[] buf = new byte[0x1000];
-		final ISVNClientAdapter clientAdapter = getSession().getClientAdapter();
-		input = clientAdapter.getContent(TypeTranslator.from(url), revision);
-		int bytesRead = input.read(buf);
-
-		while(bytesRead > 0)
-		{
-			output.write(buf, 0, bytesRead);
-			bytesRead = input.read(buf);
-			if(ticksLeft > 0)
-			{
-				MonitorUtils.worked(monitor, 1);
-				--ticksLeft;
-			}
-			else
-				MonitorUtils.testCancelStatus(monitor);
-		}
-	}
-
-	private SvnSession getSession()
-	{
-		return (SvnSession)m_session;
-	}
-
-	@Override
-	protected ISubversionSession<ISVNDirEntry, SVNRevision> getSession(String repositoryURI,
-			VersionSelector branchOrTag, long revision, Date timestamp, RMContext context) throws CoreException
-	{
-		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
-	}
-
-	@Override
-	protected ISVNDirEntry[] getTopEntries(IProgressMonitor monitor) throws CoreException
-	{
-		final URI url = getSession().getSVNUrl(null);
-		return getSession().innerListFolder(url, monitor);
-	}
-
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		boolean success = false;
 		final File destDir = destination.toFile();
 		final Object[] resultSlot = new Object[1];
@@ -130,63 +88,46 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry, SVNRe
 		// We need to run the checkout in a separate thread to be able
 		// to cancel.
 		//
-		Thread worker = new Thread()
-		{
+		Thread worker = new Thread() {
 			@Override
-			public void run()
-			{
-				try
-				{
+			public void run() {
+				try {
 					SVNUrl svnURL = TypeTranslator.from(getSession().getSVNUrl(null));
 					SVNRevision svnRev = getSession().getRevision();
 					CorePlugin.getLogger().debug("Checking out %s using revision %s", svnURL, svnRev); //$NON-NLS-1$
 					getSession().getClientAdapter().checkout(svnURL, destDir, svnRev, true);
 					resultSlot[0] = Boolean.TRUE;
-				}
-				catch(Throwable e)
-				{
+				} catch (Throwable e) {
 					resultSlot[0] = e;
 				}
 			}
 		};
 
-		try
-		{
+		try {
 			worker.start();
 			Object result;
 			int workAmount = 0;
-			while((result = resultSlot[0]) == null)
-			{
-				if(monitor.isCanceled())
-				{
+			while ((result = resultSlot[0]) == null) {
+				if (monitor.isCanceled()) {
 					worker.interrupt();
 					throw new OperationCanceledException();
 				}
 				Thread.sleep(500);
-				if(workAmount < 10)
-				{
+				if (workAmount < 10) {
 					MonitorUtils.worked(monitor, 1);
 					++workAmount;
 				}
 			}
-			if(result instanceof Throwable)
-				throw BuckminsterException.wrap((Throwable)result);
+			if (result instanceof Throwable)
+				throw BuckminsterException.wrap((Throwable) result);
 			success = true;
-		}
-		catch(InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 			throw BuckminsterException.fromMessage(Messages.svn_checkout_timed_out);
-		}
-		finally
-		{
-			if(!success)
-			{
-				try
-				{
+		} finally {
+			if (!success) {
+				try {
 					FileUtils.deleteRecursive(destDir, new NullProgressMonitor());
-				}
-				catch(Throwable t)
-				{
+				} catch (Throwable t) {
 					t.printStackTrace();
 				}
 			}
@@ -195,23 +136,54 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry, SVNRe
 	}
 
 	@Override
-	protected boolean remoteFileExists(URI url, SVNRevision revision, IProgressMonitor monitor) throws CoreException
-	{
-		try
-		{
+	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor monitor) throws Exception {
+		int ticksLeft = 3;
+		InputStream input = null;
+		byte[] buf = new byte[0x1000];
+		final ISVNClientAdapter clientAdapter = getSession().getClientAdapter();
+		input = clientAdapter.getContent(TypeTranslator.from(url), revision);
+		int bytesRead = input.read(buf);
+
+		while (bytesRead > 0) {
+			output.write(buf, 0, bytesRead);
+			bytesRead = input.read(buf);
+			if (ticksLeft > 0) {
+				MonitorUtils.worked(monitor, 1);
+				--ticksLeft;
+			} else
+				MonitorUtils.testCancelStatus(monitor);
+		}
+	}
+
+	@Override
+	protected ISubversionSession<ISVNDirEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag, long revision,
+			Date timestamp, RMContext context) throws CoreException {
+		return new SvnSession(repositoryURI, branchOrTag, revision, timestamp, context);
+	}
+
+	@Override
+	protected ISVNDirEntry[] getTopEntries(IProgressMonitor monitor) throws CoreException {
+		final URI url = getSession().getSVNUrl(null);
+		return getSession().innerListFolder(url, monitor);
+	}
+
+	@Override
+	protected boolean remoteFileExists(URI url, SVNRevision revision, IProgressMonitor monitor) throws CoreException {
+		try {
 			final ISVNClientAdapter clientAdapter = getSession().getClientAdapter();
 			return clientAdapter.getDirEntry(TypeTranslator.from(url), revision) != null;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
 	@Override
-	protected String storeInCache(String fileName) throws CoreException
-	{
-		final SvnSession session = getSession();
-		return GenericCache.cacheKey(session.getSVNUrl(fileName), session.getRevision());
+	protected String storeInCache(String fileName) throws CoreException {
+		final SvnSession svnSession = getSession();
+		return GenericCache.cacheKey(svnSession.getSVNUrl(fileName), svnSession.getRevision());
+	}
+
+	private SvnSession getSession() {
+		return (SvnSession) session;
 	}
 }

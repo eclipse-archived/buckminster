@@ -40,62 +40,53 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
-public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActionDelegate
-{
-	static class ComponentLabelProvider extends LabelProvider implements ITableLabelProvider
-	{
-		public Image getColumnImage(Object element, int columnIndex)
-		{
+public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActionDelegate {
+	static class ComponentLabelProvider extends LabelProvider implements ITableLabelProvider {
+		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
-		public String getColumnText(Object element, int columnIndex)
-		{
-			Resolution cr = (Resolution)element;
+		public String getColumnText(Object element, int columnIndex) {
+			Resolution cr = (Resolution) element;
 			String lbl;
-			switch(columnIndex)
-			{
-			case 0:
-				lbl = cr.getRequest().getViewName();
-				break;
-			case 1:
-				lbl = VersionHelper.getHumanReadable(cr.getVersion());
-				break;
-			default:
-				lbl = null;
+			switch (columnIndex) {
+				case 0:
+					lbl = cr.getRequest().getViewName();
+					break;
+				case 1:
+					lbl = VersionHelper.getHumanReadable(cr.getVersion());
+					break;
+				default:
+					lbl = null;
 			}
 			return lbl;
 		}
 	}
 
-	static class ComponentsDialog extends Dialog
-	{
-		private final List<Resolution> m_resolutions;
+	static class ComponentsDialog extends Dialog {
+		private final List<Resolution> resolutions;
 
-		private Resolution m_selectedComponent;
+		private Resolution selectedComponent;
 
-		private String m_title;
+		private String title;
 
-		private TableViewer m_viewer;
+		private TableViewer viewer;
 
-		ComponentsDialog(Shell parentShell, String title, List<Resolution> resolutions)
-		{
+		ComponentsDialog(Shell parentShell, String title, List<Resolution> resolutions) {
 			super(parentShell);
-			m_title = title;
-			m_resolutions = resolutions;
+			this.title = title;
+			this.resolutions = resolutions;
 		}
 
 		@Override
-		protected void configureShell(Shell newShell)
-		{
+		protected void configureShell(Shell newShell) {
 			super.configureShell(newShell);
-			newShell.setText(m_title);
+			newShell.setText(title);
 		}
 
 		@Override
-		protected Control createDialogArea(Composite parent)
-		{
-			Composite superArea = (Composite)super.createDialogArea(parent);
+		protected Control createDialogArea(Composite parent) {
+			Composite superArea = (Composite) super.createDialogArea(parent);
 			Table table = new Table(superArea, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
 
 			String[] columnNames = new String[] { Messages.name, Messages.version };
@@ -103,8 +94,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 
 			table.setHeaderVisible(true);
 			DynamicTableLayout layout = new DynamicTableLayout(450);
-			for(int idx = 0; idx < columnNames.length; idx++)
-			{
+			for (int idx = 0; idx < columnNames.length; idx++) {
 				TableColumn tableColumn = new TableColumn(table, SWT.LEFT, idx);
 				tableColumn.setText(columnNames[idx]);
 				layout.addColumnData(new ColumnWeightData(columnWeights[idx], true));
@@ -113,82 +103,66 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 			table.setSize(450, 450);
 			table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-			m_viewer = new TableViewer(table);
-			m_viewer.setLabelProvider(new ComponentLabelProvider());
-			m_viewer.setContentProvider(new ArrayContentProvider());
-			m_viewer.addSelectionChangedListener(new ISelectionChangedListener()
-			{
-				public void selectionChanged(SelectionChangedEvent event)
-				{
-					IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+			viewer = new TableViewer(table);
+			viewer.setLabelProvider(new ComponentLabelProvider());
+			viewer.setContentProvider(new ArrayContentProvider());
+			viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+				public void selectionChanged(SelectionChangedEvent event) {
+					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 					getButton(IDialogConstants.OK_ID).setEnabled(selection.size() == 1);
 				}
 			});
-			List<Resolution> input = m_resolutions.size() > 15
-					? m_resolutions.subList(0, 15)
-					: m_resolutions;
-			m_viewer.setInput(input);
+			List<Resolution> input = resolutions.size() > 15 ? resolutions.subList(0, 15) : resolutions;
+			viewer.setInput(input);
 			return superArea;
 		}
 
 		@Override
-		protected void initializeBounds()
-		{
+		protected void initializeBounds() {
 			super.initializeBounds();
-			m_viewer.setInput(m_resolutions);
-			((Table)m_viewer.getControl()).select(0);
+			viewer.setInput(resolutions);
+			((Table) viewer.getControl()).select(0);
 		}
 
 		@Override
-		protected void okPressed()
-		{
-			IStructuredSelection selection = (IStructuredSelection)m_viewer.getSelection();
-			if(selection.size() == 1)
-			{
-				m_selectedComponent = (Resolution)selection.getFirstElement();
+		protected void okPressed() {
+			IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+			if (selection.size() == 1) {
+				selectedComponent = (Resolution) selection.getFirstElement();
 				super.okPressed();
 			}
 		}
 
-		Resolution getSelectedComponent()
-		{
-			return m_selectedComponent;
+		Resolution getSelectedComponent() {
+			return selectedComponent;
 		}
 	}
 
-	private IWorkbenchWindow m_window;
+	private IWorkbenchWindow window;
 
-	public void dispose()
-	{
+	public void dispose() {
 	}
 
-	public void init(IWorkbenchWindow window)
-	{
-		m_window = window;
+	public void init(IWorkbenchWindow w) {
+		window = w;
 	}
 
-	public void run(IAction action)
-	{
-		Shell shell = m_window.getShell();
-		try
-		{
-			ComponentsDialog dialog = new ComponentsDialog(shell, Messages.components_known_to_buckminster,
-					WorkspaceInfo.getAllResolutions());
-			if(dialog.open() != Window.OK)
+	public void run(IAction action) {
+		Shell shell = window.getShell();
+		try {
+			ComponentsDialog dialog = new ComponentsDialog(shell, Messages.components_known_to_buckminster, WorkspaceInfo.getAllResolutions());
+			if (dialog.open() != Window.OK)
 				return;
 
 			Resolution cinfo = dialog.getSelectedComponent();
-			if(cinfo != null)
-				run(cinfo.getCSpec(), m_window);
-		}
-		catch(Exception e)
-		{
+			if (cinfo != null)
+				run(cinfo.getCSpec(), window);
+		} catch (Exception e) {
 			UiUtils.openError(shell, Messages.errors_during_loading, e);
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection)
-	{
+	public void selectionChanged(IAction action, ISelection selection) {
 	}
 
 	protected abstract void run(CSpec cspec, IWorkbenchWindow wbWin);

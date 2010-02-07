@@ -17,18 +17,25 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.emf.common.util.EList;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>CSpec</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>CSpec</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.CSpec#getDependencies <em>Dependencies</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.CSpec#getGenerators <em>Generators</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.CSpec#getAttributes <em>Attributes</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.CSpec#getDocumentation <em>Documentation</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.CSpec#getShortDesc <em>Short Desc</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.CSpec#getDependencies <em>
+ * Dependencies</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.CSpec#getGenerators <em>Generators
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.CSpec#getAttributes <em>Attributes
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.CSpec#getDocumentation <em>
+ * Documentation</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.CSpec#getShortDesc <em>Short Desc
+ * </em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.CSpec#getFilter <em>Filter</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.CSpec#getProjectInfo <em>Project Info</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.CSpec#getProjectInfo <em>Project
+ * Info</em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.CSpec#getSelf <em>Self</em>}</li>
  * </ul>
  * </p>
@@ -37,8 +44,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface CSpec extends ComponentIdentifier
-{
+public interface CSpec extends ComponentIdentifier {
 	public static final String SELF_ARTIFACT = "buckminster.component.self"; //$NON-NLS-1$
 
 	/**
@@ -50,16 +56,20 @@ public interface CSpec extends ComponentIdentifier
 	Attribute getAttribute(String name);
 
 	/**
-	 * Returns the value of the '<em><b>Attributes</b></em>' containment reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.cspec.Attribute}. It is bidirectional and its opposite is '
-	 * {@link org.eclipse.buckminster.cspec.Attribute#getCspec <em>Cspec</em>}'. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Attributes</b></em>' containment
+	 * reference list. The list contents are of type
+	 * {@link org.eclipse.buckminster.cspec.Attribute}. It is bidirectional and
+	 * its opposite is '
+	 * {@link org.eclipse.buckminster.cspec.Attribute#getCspec <em>Cspec</em>}'.
+	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Attributes</em>' containment reference list isn't clear, there really should be more
-	 * of a description here...
+	 * If the meaning of the '<em>Attributes</em>' containment reference list
+	 * isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Attributes</em>' containment reference list.
+	 * @return the value of the '<em>Attributes</em>' containment reference
+	 *         list.
 	 * @see org.eclipse.buckminster.cspec.CspecPackage#getCSpec_Attributes()
 	 * @see org.eclipse.buckminster.cspec.Attribute#getCspec
 	 * @model opposite="cspec" containment="true"
@@ -68,15 +78,18 @@ public interface CSpec extends ComponentIdentifier
 	EList<Attribute> getAttributes();
 
 	/**
-	 * Returns the value of the '<em><b>Dependencies</b></em>' containment reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.model.common.ComponentRequest}. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Dependencies</b></em>' containment
+	 * reference list. The list contents are of type
+	 * {@link org.eclipse.buckminster.model.common.ComponentRequest}. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Dependencies</em>' containment reference list isn't clear, there really should be more
-	 * of a description here...
+	 * If the meaning of the '<em>Dependencies</em>' containment reference list
+	 * isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Dependencies</em>' containment reference list.
+	 * @return the value of the '<em>Dependencies</em>' containment reference
+	 *         list.
 	 * @see org.eclipse.buckminster.cspec.CspecPackage#getCSpec_Dependencies()
 	 * @model containment="true"
 	 * @generated
@@ -92,10 +105,11 @@ public interface CSpec extends ComponentIdentifier
 	EList<Attribute> getDerivedAttributes(IContext context, boolean includePrivate);
 
 	/**
-	 * Returns the value of the '<em><b>Documentation</b></em>' containment reference. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Documentation</b></em>' containment
+	 * reference. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Documentation</em>' containment reference isn't clear, there really should be more of
-	 * a description here...
+	 * If the meaning of the '<em>Documentation</em>' containment reference
+	 * isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -108,10 +122,11 @@ public interface CSpec extends ComponentIdentifier
 	Documentation getDocumentation();
 
 	/**
-	 * Returns the value of the '<em><b>Filter</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Filter</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Filter</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Filter</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -124,16 +139,20 @@ public interface CSpec extends ComponentIdentifier
 	Filter getFilter();
 
 	/**
-	 * Returns the value of the '<em><b>Generators</b></em>' containment reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.cspec.Generator}. It is bidirectional and its opposite is '
-	 * {@link org.eclipse.buckminster.cspec.Generator#getCspec <em>Cspec</em>}'. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Generators</b></em>' containment
+	 * reference list. The list contents are of type
+	 * {@link org.eclipse.buckminster.cspec.Generator}. It is bidirectional and
+	 * its opposite is '
+	 * {@link org.eclipse.buckminster.cspec.Generator#getCspec <em>Cspec</em>}'.
+	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Generators</em>' containment reference list isn't clear, there really should be more
-	 * of a description here...
+	 * If the meaning of the '<em>Generators</em>' containment reference list
+	 * isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Generators</em>' containment reference list.
+	 * @return the value of the '<em>Generators</em>' containment reference
+	 *         list.
 	 * @see org.eclipse.buckminster.cspec.CspecPackage#getCSpec_Generators()
 	 * @see org.eclipse.buckminster.cspec.Generator#getCspec
 	 * @model opposite="cspec" containment="true"
@@ -142,10 +161,11 @@ public interface CSpec extends ComponentIdentifier
 	EList<Generator> getGenerators();
 
 	/**
-	 * Returns the value of the '<em><b>Project Info</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Project Info</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Project Info</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Project Info</em>' attribute isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -158,26 +178,29 @@ public interface CSpec extends ComponentIdentifier
 	URL getProjectInfo();
 
 	/**
-	 * Returns the value of the '<em><b>Self</b></em>' reference. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Self</b></em>' reference. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Self</em>' reference isn't clear, there really should be more of a description here...
+	 * If the meaning of the '<em>Self</em>' reference isn't clear, there really
+	 * should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Self</em>' reference.
 	 * @see #isSetSelf()
 	 * @see org.eclipse.buckminster.cspec.CspecPackage#getCSpec_Self()
-	 * @model resolveProxies="false" unsettable="true" required="true" transient="true" changeable="false"
-	 *        volatile="true" derived="true"
+	 * @model resolveProxies="false" unsettable="true" required="true"
+	 *        transient="true" changeable="false" volatile="true" derived="true"
 	 * @generated
 	 */
 	SelfArtifact getSelf();
 
 	/**
-	 * Returns the value of the '<em><b>Short Desc</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Short Desc</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Short Desc</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Short Desc</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -190,8 +213,9 @@ public interface CSpec extends ComponentIdentifier
 	String getShortDesc();
 
 	/**
-	 * Returns whether the value of the '{@link org.eclipse.buckminster.cspec.CSpec#getSelf <em>Self</em>}' reference is
-	 * set. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns whether the value of the '
+	 * {@link org.eclipse.buckminster.cspec.CSpec#getSelf <em>Self</em>}'
+	 * reference is set. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return whether the value of the '<em>Self</em>' reference is set.
 	 * @see #getSelf()
@@ -200,19 +224,23 @@ public interface CSpec extends ComponentIdentifier
 	boolean isSetSelf();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.CSpec#getDocumentation <em>Documentation</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.CSpec#getDocumentation
+	 * <em>Documentation</em>}' containment reference. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @param value
-	 *            the new value of the '<em>Documentation</em>' containment reference.
+	 *            the new value of the '<em>Documentation</em>' containment
+	 *            reference.
 	 * @see #getDocumentation()
 	 * @generated
 	 */
 	void setDocumentation(Documentation value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.CSpec#getFilter <em>Filter</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.CSpec#getFilter <em>Filter</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Filter</em>' attribute.
@@ -222,8 +250,10 @@ public interface CSpec extends ComponentIdentifier
 	void setFilter(Filter value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.CSpec#getProjectInfo <em>Project Info</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.CSpec#getProjectInfo
+	 * <em>Project Info</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Project Info</em>' attribute.
@@ -233,8 +263,10 @@ public interface CSpec extends ComponentIdentifier
 	void setProjectInfo(URL value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.CSpec#getShortDesc <em>Short Desc</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.CSpec#getShortDesc
+	 * <em>Short Desc</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Short Desc</em>' attribute.

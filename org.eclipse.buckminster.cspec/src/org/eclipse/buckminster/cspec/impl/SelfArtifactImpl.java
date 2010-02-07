@@ -15,41 +15,37 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.EClass;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Self Artifact</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Self Artifact</b></em>'. <!-- end-user-doc -->
  * <p>
  * </p>
  * 
  * @generated
  */
-public class SelfArtifactImpl extends ArtifactImpl implements SelfArtifact
-{
+public class SelfArtifactImpl extends ArtifactImpl implements SelfArtifact {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected SelfArtifactImpl()
-	{
+	protected SelfArtifactImpl() {
 		super();
 	}
 
 	@Override
-	public String getName()
-	{
+	public String getName() {
 		return CSpec.SELF_ARTIFACT;
 	}
 
 	@Override
-	public PathGroup resolve(IPath path)
-	{
+	public PathGroup resolve(IPath path) {
 		PathGroup resolved = new PathGroupImpl();
-		if(path.hasTrailingSeparator())
+		if (path.hasTrailingSeparator())
 			//
 			// A folder will act as the base for the component
 			//
 			resolved.setBase(path);
-		else
-		{
+		else {
 			// The parent folder will be the base since the component itself
 			// is a file.
 			//
@@ -65,8 +61,7 @@ public class SelfArtifactImpl extends ArtifactImpl implements SelfArtifact
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.SELF_ARTIFACT;
 	}
 } // SelfArtifactImpl

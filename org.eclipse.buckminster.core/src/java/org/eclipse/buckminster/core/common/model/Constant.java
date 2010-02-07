@@ -18,66 +18,54 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * An instance of this class will produce the resolved value of the constant that it holds on to.
+ * An instance of this class will produce the resolved value of the constant
+ * that it holds on to.
  * 
  * @author Thomas Hallgren
  */
-public class Constant<T> extends ValueHolder<T>
-{
+public class Constant<T> extends ValueHolder<T> {
 	public static final String TAG = "constant"; //$NON-NLS-1$
 
 	public static final String ATTR_VALUE = "value"; //$NON-NLS-1$
 
-	private final T m_value;
+	private final T value;
 
-	public Constant(T value)
-	{
-		m_value = value;
+	public Constant(T value) {
+		this.value = value;
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		return super.equals(o) && Trivial.equalsAllowNull(m_value, ((Constant<?>)o).m_value);
+	public boolean equals(Object o) {
+		return super.equals(o) && Trivial.equalsAllowNull(value, ((Constant<?>) o).value);
 	}
 
-	public T getConstantValue()
-	{
-		return m_value;
+	public T getConstantValue() {
+		return value;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int hc = super.hashCode();
-		hc = 37 * hc + (m_value == null
-				? 0
-				: m_value.hashCode());
+		hc = 37 * hc + (value == null ? 0 : value.hashCode());
 		return hc;
 	}
 
 	@Override
-	public String toString()
-	{
-		return m_value == null
-				? null
-				: m_value.toString();
+	public String toString() {
+		return value == null ? null : value.toString();
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
 		Utils.addAttribute(attrs, ATTR_VALUE, toString());
 	}
 
 	@Override
-	protected T checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard)
-	{
-		return ExpandingProperties.expand(properties, m_value, recursionGuard + 1);
+	protected T checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard) {
+		return ExpandingProperties.expand(properties, value, recursionGuard + 1);
 	}
 }

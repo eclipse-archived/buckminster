@@ -16,25 +16,21 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class CircularDependencyException extends LocalizedException
-{
+public class CircularDependencyException extends LocalizedException {
 	private static final long serialVersionUID = -6927435120101723921L;
 
-	private static String buildChain(List<String> componentNames)
-	{
+	private static String buildChain(List<String> componentNames) {
 		StringBuilder bld = new StringBuilder();
 		bld.append(componentNames.get(0));
 		int top = componentNames.size();
-		for(int idx = 1; idx < top; ++idx)
-		{
+		for (int idx = 1; idx < top; ++idx) {
 			bld.append(" -> "); //$NON-NLS-1$
 			bld.append(componentNames.get(idx));
 		}
 		return bld.toString();
 	}
 
-	public CircularDependencyException(List<String> componentNames)
-	{
+	public CircularDependencyException(List<String> componentNames) {
 		super(NLS.bind(Messages.Circular_component_dependency_detected_Chain_is_0, buildChain(componentNames)));
 	}
 }

@@ -21,8 +21,7 @@ import org.eclipse.osgi.util.NLS;
  * @author Karel Brezina
  * 
  */
-public class CryptoUtils
-{
+public class CryptoUtils {
 	private static String ENCODING_UTF8 = "UTF-8"; //$NON-NLS-1$
 
 	/**
@@ -32,17 +31,13 @@ public class CryptoUtils
 	 * @param algorithmName
 	 * @return
 	 */
-	public static String encrypt(byte[] bytes, String algorithmName)
-	{
+	public static String encrypt(byte[] bytes, String algorithmName) {
 		String md5val = ""; //$NON-NLS-1$
 		MessageDigest algorithm = null;
 
-		try
-		{
+		try {
 			algorithm = MessageDigest.getInstance(algorithmName);
-		}
-		catch(NoSuchAlgorithmException nsae)
-		{
+		} catch (NoSuchAlgorithmException nsae) {
 			throw new IllegalArgumentException(NLS.bind(Messages.Unknown_encrypt_algorithm_0, algorithmName));
 		}
 
@@ -51,11 +46,9 @@ public class CryptoUtils
 		byte messageDigest[] = algorithm.digest();
 		StringBuffer hexString = new StringBuffer();
 
-		for(int i = 0; i < messageDigest.length; i++)
-		{
+		for (int i = 0; i < messageDigest.length; i++) {
 			String hex = Integer.toHexString(0xFF & messageDigest[i]);
-			if(hex.length() == 1)
-			{
+			if (hex.length() == 1) {
 				hexString.append('0');
 			}
 			hexString.append(hex);
@@ -71,8 +64,7 @@ public class CryptoUtils
 	 * @param algorithmName
 	 * @return
 	 */
-	public static String encrypt(String input, String algorithmName)
-	{
+	public static String encrypt(String input, String algorithmName) {
 		return encrypt(input, ENCODING_UTF8, algorithmName);
 	}
 
@@ -84,14 +76,10 @@ public class CryptoUtils
 	 * @param algorithmName
 	 * @return
 	 */
-	public static String encrypt(String input, String encodingCharsetName, String algorithmName)
-	{
-		try
-		{
+	public static String encrypt(String input, String encodingCharsetName, String algorithmName) {
+		try {
 			return encrypt(input.getBytes(encodingCharsetName), algorithmName);
-		}
-		catch(UnsupportedEncodingException e)
-		{
+		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(NLS.bind(Messages.Internal_error_0_is_not_supported_encoding, ENCODING_UTF8), e);
 		}
 	}

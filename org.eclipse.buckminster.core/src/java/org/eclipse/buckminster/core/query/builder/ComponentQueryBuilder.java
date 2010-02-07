@@ -29,162 +29,137 @@ import org.eclipse.buckminster.runtime.Trivial;
 /**
  * @author Thomas Hallgren
  */
-public class ComponentQueryBuilder implements IComponentQuery
-{
-	private final ArrayList<AdvisorNodeBuilder> m_advisorNodes = new ArrayList<AdvisorNodeBuilder>();
+public class ComponentQueryBuilder implements IComponentQuery {
+	private final ArrayList<AdvisorNodeBuilder> advisorNodes = new ArrayList<AdvisorNodeBuilder>();
 
-	private final ComponentRequestBuilder m_rootRequest = new ComponentRequestBuilder();
+	private final ComponentRequestBuilder rootRequest = new ComponentRequestBuilder();
 
-	private Documentation m_documentation;
+	private Documentation documentation;
 
-	private Map<String, String> m_properties;
+	private Map<String, String> properties;
 
-	private URL m_contextURL;
+	private URL contextURL;
 
-	private String m_propertiesURL;
+	private String propertiesURL;
 
-	private String m_resourceMapURL;
+	private String resourceMapURL;
 
-	private String m_shortDesc;
+	private String shortDesc;
 
-	public AdvisorNodeBuilder addAdvisorNode()
-	{
+	public AdvisorNodeBuilder addAdvisorNode() {
 		AdvisorNodeBuilder node = new AdvisorNodeBuilder();
-		m_advisorNodes.add(node);
+		advisorNodes.add(node);
 		return node;
 	}
 
-	public void addAdvisorNode(AdvisorNodeBuilder node)
-	{
-		m_advisorNodes.add(node);
+	public void addAdvisorNode(AdvisorNodeBuilder node) {
+		advisorNodes.add(node);
 	}
 
-	public void clear()
-	{
-		m_rootRequest.clear();
-		m_advisorNodes.clear();
-		m_contextURL = null;
-		m_properties = null;
-		m_propertiesURL = null;
-		m_resourceMapURL = null;
-		m_documentation = null;
-		m_shortDesc = null;
+	public void clear() {
+		rootRequest.clear();
+		advisorNodes.clear();
+		contextURL = null;
+		properties = null;
+		propertiesURL = null;
+		resourceMapURL = null;
+		documentation = null;
+		shortDesc = null;
 	}
 
-	public ComponentQuery createComponentQuery()
-	{
+	public ComponentQuery createComponentQuery() {
 		return new ComponentQuery(this);
 	}
 
-	public List<AdvisorNodeBuilder> getAdvisoryNodes()
-	{
-		return m_advisorNodes;
+	public List<AdvisorNodeBuilder> getAdvisoryNodes() {
+		return advisorNodes;
 	}
 
-	public URL getContextURL()
-	{
-		return m_contextURL;
+	public URL getContextURL() {
+		return contextURL;
 	}
 
-	public Map<String, String> getDeclaredProperties()
-	{
-		if(m_properties == null)
-			m_properties = new HashMap<String, String>();
-		return m_properties;
+	public Map<String, String> getDeclaredProperties() {
+		if (properties == null)
+			properties = new HashMap<String, String>();
+		return properties;
 	}
 
-	public Documentation getDocumentation()
-	{
-		return m_documentation;
+	public Documentation getDocumentation() {
+		return documentation;
 	}
 
-	public AdvisorNodeBuilder getNodeByCriteria(Pattern pattern, String componentType, Filter filter)
-	{
-		for(AdvisorNodeBuilder node : m_advisorNodes)
-			if(Trivial.equalsAllowNull(node.getNamePattern(), pattern)
-					&& Trivial.equalsAllowNull(node.getComponentTypeID(), componentType)
+	public AdvisorNodeBuilder getNodeByCriteria(Pattern pattern, String componentType, Filter filter) {
+		for (AdvisorNodeBuilder node : advisorNodes)
+			if (Trivial.equalsAllowNull(node.getNamePattern(), pattern) && Trivial.equalsAllowNull(node.getComponentTypeID(), componentType)
 					&& Trivial.equalsAllowNull(node.getFilter(), filter))
 				return node;
 		return null;
 	}
 
-	public String getPropertiesURL()
-	{
-		return m_propertiesURL;
+	public String getPropertiesURL() {
+		return propertiesURL;
 	}
 
-	public String getResourceMapURL()
-	{
-		return m_resourceMapURL;
+	public String getResourceMapURL() {
+		return resourceMapURL;
 	}
 
-	public ComponentRequest getRootRequest()
-	{
-		return m_rootRequest.createComponentRequest();
+	public ComponentRequest getRootRequest() {
+		return rootRequest.createComponentRequest();
 	}
 
-	public ComponentRequestBuilder getRootRequestBuilder()
-	{
-		return m_rootRequest;
+	public ComponentRequestBuilder getRootRequestBuilder() {
+		return rootRequest;
 	}
 
-	public String getShortDesc()
-	{
-		return m_shortDesc;
+	public String getShortDesc() {
+		return shortDesc;
 	}
 
-	public void initFrom(IComponentQuery query)
-	{
+	public void initFrom(IComponentQuery query) {
 		this.clear();
-		for(IAdvisorNode node : query.getAdvisoryNodes())
-		{
+		for (IAdvisorNode node : query.getAdvisoryNodes()) {
 			AdvisorNodeBuilder bld = new AdvisorNodeBuilder();
 			bld.initFrom(node);
-			m_advisorNodes.add(bld);
+			advisorNodes.add(bld);
 		}
 
 		Map<String, String> props = query.getDeclaredProperties();
-		if(props.size() > 0)
-			m_properties = new HashMap<String, String>(props);
+		if (props.size() > 0)
+			properties = new HashMap<String, String>(props);
 
-		m_contextURL = query.getContextURL();
-		m_propertiesURL = query.getPropertiesURL();
-		m_resourceMapURL = query.getResourceMapURL();
-		m_rootRequest.initFrom(query.getRootRequest());
-		m_documentation = query.getDocumentation();
-		m_shortDesc = query.getShortDesc();
+		contextURL = query.getContextURL();
+		propertiesURL = query.getPropertiesURL();
+		resourceMapURL = query.getResourceMapURL();
+		rootRequest.initFrom(query.getRootRequest());
+		documentation = query.getDocumentation();
+		shortDesc = query.getShortDesc();
 	}
 
-	public void removeAdvisorNode(AdvisorNodeBuilder node)
-	{
-		m_advisorNodes.remove(node);
+	public void removeAdvisorNode(AdvisorNodeBuilder node) {
+		advisorNodes.remove(node);
 	}
 
-	public final void setContextURL(URL contextURL)
-	{
-		m_contextURL = contextURL;
+	public final void setContextURL(URL contextURL) {
+		this.contextURL = contextURL;
 	}
 
-	public void setDocumentation(Documentation documentation)
-	{
-		m_documentation = documentation;
+	public void setDocumentation(Documentation documentation) {
+		this.documentation = documentation;
 	}
 
-	public void setPlatformAgnostic(boolean flag)
-	{
-		if(flag == false)
-		{
-			if(m_properties == null)
+	public void setPlatformAgnostic(boolean flag) {
+		if (flag == false) {
+			if (properties == null)
 				return;
-			m_properties.remove(TargetPlatform.TARGET_OS);
-			m_properties.remove(TargetPlatform.TARGET_WS);
-			m_properties.remove(TargetPlatform.TARGET_ARCH);
-			m_properties.remove(TargetPlatform.TARGET_NL);
-			if(m_properties.size() == 0)
-				m_properties = null;
-		}
-		else
-		{
+			properties.remove(TargetPlatform.TARGET_OS);
+			properties.remove(TargetPlatform.TARGET_WS);
+			properties.remove(TargetPlatform.TARGET_ARCH);
+			properties.remove(TargetPlatform.TARGET_NL);
+			if (properties.size() == 0)
+				properties = null;
+		} else {
 			Map<String, String> props = getDeclaredProperties();
 			props.put(TargetPlatform.TARGET_OS, FilterUtils.MATCH_ALL);
 			props.put(TargetPlatform.TARGET_WS, FilterUtils.MATCH_ALL);
@@ -193,23 +168,19 @@ public class ComponentQueryBuilder implements IComponentQuery
 		}
 	}
 
-	public final void setPropertiesURL(String propertiesURL)
-	{
-		m_propertiesURL = propertiesURL;
+	public final void setPropertiesURL(String propertiesURL) {
+		this.propertiesURL = propertiesURL;
 	}
 
-	public final void setResourceMapURL(String resourceMapURL)
-	{
-		m_resourceMapURL = resourceMapURL;
+	public final void setResourceMapURL(String resourceMapURL) {
+		this.resourceMapURL = resourceMapURL;
 	}
 
-	public final void setRootRequest(IComponentRequest rootRequest)
-	{
-		m_rootRequest.initFrom(rootRequest);
+	public final void setRootRequest(IComponentRequest rootRequest) {
+		this.rootRequest.initFrom(rootRequest);
 	}
 
-	public void setShortDesc(String shortDesc)
-	{
-		m_shortDesc = shortDesc;
+	public void setShortDesc(String shortDesc) {
+		this.shortDesc = shortDesc;
 	}
 }

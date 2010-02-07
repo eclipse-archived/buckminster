@@ -21,125 +21,110 @@ import java.util.Set;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.osgi.framework.ServiceReference;
 
-abstract class FilterImpl implements Filter, Comparable<FilterImpl>
-{
+abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 	/**
-	 * A Map that performs case insensitive String lookups on the Map that it contains.
+	 * A Map that performs case insensitive String lookups on the Map that it
+	 * contains.
 	 */
-	private static class CaseInsensitiveMap<V> extends AbstractMap<String, V>
-	{
-		private final Map<String, String> m_ciMap;
+	private static class CaseInsensitiveMap<V> extends AbstractMap<String, V> {
+		private final Map<String, String> lowerCaseMap;
 
-		private final Map<String, ? extends V> m_map;
+		private final Map<String, ? extends V> map;
 
-		CaseInsensitiveMap(Map<String, ? extends V> map)
-		{
+		CaseInsensitiveMap(Map<String, ? extends V> map) {
 			int top = map.size();
-			Map<String, String> ciMap = null;
-			for(String key : map.keySet())
-			{
+			Map<String, String> lcMap = null;
+			for (String key : map.keySet()) {
 				String lowKey = key.toLowerCase();
-				if(key != lowKey)
-				{
-					if(ciMap == null)
-						ciMap = new HashMap<String, String>(top);
-					if(ciMap.put(lowKey, key) != null || map.containsKey(lowKey))
+				if (key != lowKey) {
+					if (lcMap == null)
+						lcMap = new HashMap<String, String>(top);
+					if (lcMap.put(lowKey, key) != null || map.containsKey(lowKey))
 						throw new IllegalArgumentException("case variants of key: " + lowKey); //$NON-NLS-1$
 				}
 			}
-			m_ciMap = ciMap;
-			m_map = map;
+			this.lowerCaseMap = lcMap;
+			this.map = map;
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public Set<Map.Entry<String, V>> entrySet()
-		{
-			return ((Map<String, V>)m_map).entrySet();
+		public Set<Map.Entry<String, V>> entrySet() {
+			return ((Map<String, V>) map).entrySet();
 		}
 
 		@Override
-		public V get(Object key)
-		{
-			String stringKey = ((String)key).toLowerCase();
-			if(m_ciMap != null)
-			{
-				String realKey = m_ciMap.get(stringKey);
-				if(realKey != null)
+		public V get(Object key) {
+			String stringKey = ((String) key).toLowerCase();
+			if (lowerCaseMap != null) {
+				String realKey = lowerCaseMap.get(stringKey);
+				if (realKey != null)
 					stringKey = realKey;
 			}
-			return m_map.get(stringKey);
+			return map.get(stringKey);
 		}
 	}
 
 	/**
-	 * This Map is used for key lookup from {@link Dictionary} instances that do not implement the {@link Map} interface
-	 * (most implementations do since they extend the {@link HashMap}). The implementation only supports the get
-	 * operation using a String key as no other operations are used by the Filter implementation.
+	 * This Map is used for key lookup from {@link Dictionary} instances that do
+	 * not implement the {@link Map} interface (most implementations do since
+	 * they extend the {@link HashMap}). The implementation only supports the
+	 * get operation using a String key as no other operations are used by the
+	 * Filter implementation.
 	 */
 	@SuppressWarnings("serial")
-	private static class DictionaryMap extends HashMap<String, Object>
-	{
-		private final boolean m_caseSensitive;
+	private static class DictionaryMap extends HashMap<String, Object> {
+		private final boolean caseSensitive;
 
-		DictionaryMap(Dictionary<String, ? extends Object> dictionary, boolean caseSensitive)
-		{
+		DictionaryMap(Dictionary<String, ? extends Object> dictionary, boolean caseSensitive) {
 			super(dictionary.size());
 			Enumeration<String> keys = dictionary.keys();
-			while(keys.hasMoreElements())
-			{
+			while (keys.hasMoreElements()) {
 				String key = keys.nextElement();
 				Object value = dictionary.get(key);
-				if(!caseSensitive)
-				{
+				if (!caseSensitive) {
 					String lowKey = key.toLowerCase();
-					if(containsKey(lowKey))
+					if (containsKey(lowKey))
 						throw new IllegalArgumentException("case variants of key: " + lowKey); //$NON-NLS-1$
 					key = lowKey;
 				}
 				put(key, value);
 			}
-			m_caseSensitive = caseSensitive;
+			this.caseSensitive = caseSensitive;
 		}
 
 		@Override
-		public Set<Map.Entry<String, Object>> entrySet()
-		{
+		public Set<Map.Entry<String, Object>> entrySet() {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Object get(Object key)
-		{
-			return m_caseSensitive
-					? super.get(key)
-					: super.get(((String)key).toLowerCase());
+		public Object get(Object key) {
+			return caseSensitive ? super.get(key) : super.get(((String) key).toLowerCase());
 		}
 	}
 
 	/**
-	 * This Map is used for key lookup from a ServiceReference during filter evaluation. The Map implementation only
-	 * supports the get operation using a String key as no other operations are used by the Filter implementation.
+	 * This Map is used for key lookup from a ServiceReference during filter
+	 * evaluation. The Map implementation only supports the get operation using
+	 * a String key as no other operations are used by the Filter
+	 * implementation.
 	 */
-	private static class ServiceReferenceMap extends AbstractMap<String, Object>
-	{
-		private final ServiceReference m_reference;
+	private static class ServiceReferenceMap extends AbstractMap<String, Object> {
+		private final ServiceReference reference;
 
-		ServiceReferenceMap(ServiceReference reference)
-		{
-			m_reference = reference;
+		ServiceReferenceMap(ServiceReference reference) {
+			this.reference = reference;
 		}
 
 		@Override
-		public Set<Map.Entry<String, Object>> entrySet()
-		{
+		public Set<Map.Entry<String, Object>> entrySet() {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Object get(Object key)
-		{
-			return m_reference.getProperty((String)key);
+		public Object get(Object key) {
+			return reference.getProperty((String) key);
 		}
 	}
 
@@ -158,23 +143,21 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 	/**
 	 * Map a string for an APPROX (~=) comparison.
 	 * 
-	 * This implementation removes white spaces. This is the minimum implementation allowed by the OSGi spec.
+	 * This implementation removes white spaces. This is the minimum
+	 * implementation allowed by the OSGi spec.
 	 * 
 	 * @param input
 	 *            Input string.
 	 * @return String ready for APPROX comparison.
 	 */
-	static String approxString(String input)
-	{
+	static String approxString(String input) {
 		boolean changed = false;
 		char[] output = input.toCharArray();
 		int cursor = 0;
-		for(int i = 0, length = output.length; i < length; i++)
-		{
+		for (int i = 0, length = output.length; i < length; i++) {
 			char c = output[i];
 
-			if(Character.isWhitespace(c))
-			{
+			if (Character.isWhitespace(c)) {
 				changed = true;
 				continue;
 			}
@@ -183,9 +166,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 			cursor++;
 		}
 
-		return changed
-				? new String(output, 0, cursor)
-				: input;
+		return changed ? new String(output, 0, cursor) : input;
 	}
 
 	/**
@@ -195,41 +176,34 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 	 *            unencoded value string.
 	 * @return encoded value string.
 	 */
-	static String encodeValue(String value)
-	{
+	static String encodeValue(String value) {
 		int inlen = value.length();
 		char[] output = null;
 		int cursor = 0;
-		for(int i = 0; i < inlen; i++)
-		{
+		for (int i = 0; i < inlen; i++) {
 			char c = value.charAt(i);
-			switch(c)
-			{
-			case '(':
-			case '*':
-			case ')':
-			case '\\':
-				if(output == null)
-				{
-					output = new char[inlen << 2];
-					if(i > 0)
-					{
-						value.getChars(0, i, output, 0);
-						cursor = i;
+			switch (c) {
+				case '(':
+				case '*':
+				case ')':
+				case '\\':
+					if (output == null) {
+						output = new char[inlen << 2];
+						if (i > 0) {
+							value.getChars(0, i, output, 0);
+							cursor = i;
+						}
 					}
-				}
-				output[cursor++] = '\\';
-				break;
+					output[cursor++] = '\\';
+					break;
 			}
-			if(output != null)
+			if (output != null)
 				output[cursor++] = c;
 		}
-		return output == null
-				? value
-				: new String(output, 0, cursor);
+		return output == null ? value : new String(output, 0, cursor);
 	}
 
-	private final int m_op;
+	private final int op;
 
 	static final int EQUAL = 1;
 
@@ -238,34 +212,30 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 	static final int GREATER = 3;
 
 	/** filter attribute or null if operation AND, OR or NOT */
-	private final String m_attr;
+	private final String attr;
 
-	FilterImpl(int operation, String attr)
-	{
-		m_op = operation;
-		m_attr = attr;
+	FilterImpl(int operation, String attr) {
+		this.op = operation;
+		this.attr = attr;
 	}
 
-	public void addConsultedAttributes(Map<String, String[]> propertyChoices)
-	{
+	public void addConsultedAttributes(Map<String, String[]> propertyChoices) {
 		String stringValue = getValueAsString();
 
 		// Add the attribute value as a valid choice for the attribute
 		// unless it's already present.
 		//
-		synchronized(propertyChoices)
-		{
+		synchronized (propertyChoices) {
 			String[] choices = propertyChoices.get(getAttr());
-			if(choices == null)
-			{
+			if (choices == null) {
 				propertyChoices.put(getAttr(), new String[] { stringValue });
 				return;
 			}
 
 			int top = choices.length;
 			int idx = top;
-			while(--idx >= 0)
-				if(stringValue.equals(choices[idx]))
+			while (--idx >= 0)
+				if (stringValue.equals(choices[idx]))
 					return;
 
 			String[] newChoices = new String[top + 1];
@@ -275,161 +245,118 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 		}
 	}
 
-	public Filter addFilterWithAnd(Filter subFilter)
-	{
-		return subFilter == null
-				? this
-				: addFilter((FilterImpl)subFilter, AND);
+	public Filter addFilterWithAnd(Filter subFilter) {
+		return subFilter == null ? this : addFilter((FilterImpl) subFilter, AND);
 	}
 
-	public Filter addFilterWithOr(Filter subFilter)
-	{
-		return subFilter == null
-				? this
-				: addFilter((FilterImpl)subFilter, OR);
+	public Filter addFilterWithOr(Filter subFilter) {
+		return subFilter == null ? this : addFilter((FilterImpl) subFilter, OR);
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		return obj == this || (obj instanceof FilterImpl && compareTo((FilterImpl)obj) == 0)
+	public boolean equals(Object obj) {
+		return obj == this || (obj instanceof FilterImpl && compareTo((FilterImpl) obj) == 0)
 				|| (obj instanceof Filter && toString().equals(obj.toString()));
 	}
 
-	public int getOp()
-	{
-		return m_op;
+	public int getOp() {
+		return op;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return 11 * toString().hashCode();
 	}
 
 	@SuppressWarnings("rawtypes")
-	public boolean match(Dictionary properties)
-	{
+	public boolean match(Dictionary properties) {
 		return match(properties, false);
 	}
 
-	public boolean match(Map<String, ? extends Object> properties)
-	{
-		return match0(properties == null
-				? Collections.<String, Object> emptyMap()
-				: new CaseInsensitiveMap<Object>(properties));
+	public boolean match(Map<String, ? extends Object> properties) {
+		return match0(properties == null ? Collections.<String, Object> emptyMap() : new CaseInsensitiveMap<Object>(properties));
 	}
 
-	public boolean match(ServiceReference reference)
-	{
-		return match0(reference == null
-				? Collections.<String, Object> emptyMap()
-				: new ServiceReferenceMap(reference));
+	public boolean match(ServiceReference reference) {
+		return match0(reference == null ? Collections.<String, Object> emptyMap() : new ServiceReferenceMap(reference));
 	}
 
 	@SuppressWarnings("rawtypes")
-	public boolean matchCase(Dictionary dictionary)
-	{
+	public boolean matchCase(Dictionary dictionary) {
 		return match(dictionary, true);
 	}
 
-	public boolean matchCase(Map<String, ? extends Object> properties)
-	{
-		return match0(properties == null
-				? Collections.<String, Object> emptyMap()
-				: properties);
+	public boolean matchCase(Map<String, ? extends Object> properties) {
+		return match0(properties == null ? Collections.<String, Object> emptyMap() : properties);
 	}
 
-	public Filter stripFilter(Filter subFilter)
-	{
-		return equals(subFilter)
-				? null
-				: this;
+	public Filter stripFilter(Filter subFilter) {
+		return equals(subFilter) ? null : this;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder bld = new StringBuilder();
 		toString(bld);
 		return bld.toString();
 	}
 
-	FilterImpl addFilter(FilterImpl subFilter, int op)
-	{
+	FilterImpl addFilter(FilterImpl subFilter, int operator) {
 		int cmp = compareTo(subFilter);
-		if(cmp == 0)
+		if (cmp == 0)
 			return this;
 
 		ArrayList<FilterImpl> filters = new ArrayList<FilterImpl>(2);
 		filters.add(this);
 		filters.add(subFilter);
-		return Parser.normalize(filters, op);
+		return Parser.normalize(filters, operator);
 	}
 
-	final boolean compare(Object value1)
-	{
-		if(value1 == null)
+	final boolean compare(Object value1) {
+		if (value1 == null)
 			return false;
 
-		if(value1 instanceof Collection<?>)
-		{
-			for(Iterator<?> iterator = ((Collection<?>)value1).iterator(); iterator.hasNext();)
-				if(compare(iterator.next()))
+		if (value1 instanceof Collection<?>) {
+			for (Iterator<?> iterator = ((Collection<?>) value1).iterator(); iterator.hasNext();)
+				if (compare(iterator.next()))
 					return true;
 			return false;
 		}
 
-		if(value1 instanceof Object[])
-		{
-			Object[] array = (Object[])value1;
-			for(int i = 0, size = array.length; i < size; i++)
-				if(compare(array[i]))
+		if (value1 instanceof Object[]) {
+			Object[] array = (Object[]) value1;
+			for (int i = 0, size = array.length; i < size; i++)
+				if (compare(array[i]))
 					return true;
 			return false;
 		}
 		return internalCompare(value1);
 	}
 
-	String getAttr()
-	{
-		return m_attr;
+	String getAttr() {
+		return attr;
 	}
 
-	FilterImpl[] getFilterImpls()
-	{
+	FilterImpl[] getFilterImpls() {
 		return new FilterImpl[] { this };
 	}
 
-	String getValueAsString()
-	{
+	String getValueAsString() {
 		return null;
 	}
 
-	boolean internalCompare(Object value)
-	{
+	boolean internalCompare(Object value) {
 		return false;
 	}
 
-	int internalCompareTo(FilterImpl o)
-	{
-		int cmp = m_op > o.m_op
-				? 1
-				: (m_op < o.m_op
-						? -1
-						: 0);
-		if(cmp == 0)
-		{
-			if(m_attr == null)
-			{
-				if(o.m_attr != null)
+	int internalCompareTo(FilterImpl o) {
+		int cmp = op > o.op ? 1 : (op < o.op ? -1 : 0);
+		if (cmp == 0) {
+			if (attr == null) {
+				if (o.attr != null)
 					cmp = -1;
-			}
-			else
-			{
-				cmp = o.m_attr == null
-						? 1
-						: m_attr.compareTo(o.m_attr);
+			} else {
+				cmp = o.attr == null ? 1 : attr.compareTo(o.attr);
 			}
 		}
 		return cmp;
@@ -440,16 +367,13 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl>
 	abstract void toString(StringBuilder bld);
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private boolean match(Dictionary dictionary, boolean caseSensitive)
-	{
+	private boolean match(Dictionary dictionary, boolean caseSensitive) {
 		Map props = null;
-		if(dictionary instanceof Map)
-		{
-			props = (Map)dictionary;
-			if(!caseSensitive)
+		if (dictionary instanceof Map) {
+			props = (Map) dictionary;
+			if (!caseSensitive)
 				props = new CaseInsensitiveMap(props);
-		}
-		else if(dictionary == null)
+		} else if (dictionary == null)
 			props = Collections.emptyMap();
 		else
 			props = new DictionaryMap(dictionary, caseSensitive);

@@ -26,8 +26,7 @@ import org.eclipse.buckminster.core.metadata.model.BOMNode;
  * @author Johannes Utzig
  * 
  */
-public class ShortesPathCalculation
-{
+public class ShortesPathCalculation {
 
 	private static final Integer VERY_LARGE_NUMBER = Integer.valueOf(1000000000);
 
@@ -38,17 +37,14 @@ public class ShortesPathCalculation
 	 * @param target
 	 * @return a list with the path segments
 	 */
-	public static List<BOMNode> calculatePath(BOMNode root, BOMNode target)
-	{
+	public static List<BOMNode> calculatePath(BOMNode root, BOMNode target) {
 		List<BOMNode> queue = new LinkedList<BOMNode>();
 		Set<BOMNode> nodes = new HashSet<BOMNode>();
 		LinkedList<BOMNode> orderedList = new LinkedList<BOMNode>();
 		queue.add(root);
-		while(!queue.isEmpty())
-		{
+		while (!queue.isEmpty()) {
 			BOMNode head = queue.remove(0);
-			if(!nodes.contains(head))
-			{
+			if (!nodes.contains(head)) {
 				nodes.add(head);
 				orderedList.add(head);
 				queue.addAll(head.getChildren());
@@ -58,32 +54,26 @@ public class ShortesPathCalculation
 		return path;
 	}
 
-	private static Map<BOMNode, Integer> initializeLengthMap(List<BOMNode> queue, BOMNode root)
-	{
+	private static Map<BOMNode, Integer> initializeLengthMap(List<BOMNode> queue, BOMNode root) {
 		Map<BOMNode, Integer> map = new HashMap<BOMNode, Integer>();
-		for(BOMNode bomNode : queue)
-		{
+		for (BOMNode bomNode : queue) {
 			map.put(bomNode, VERY_LARGE_NUMBER);
 			map.put(root, Integer.valueOf(0));
 		}
 		return map;
 	}
 
-	private static List<BOMNode> internalCalulcation(List<BOMNode> queue, BOMNode root, BOMNode target)
-	{
+	private static List<BOMNode> internalCalulcation(List<BOMNode> queue, BOMNode root, BOMNode target) {
 		Map<BOMNode, BOMNode> previous = new HashMap<BOMNode, BOMNode>();
 		Map<BOMNode, Integer> lengthMap = initializeLengthMap(queue, root);
 
-		while(!queue.isEmpty())
-		{
+		while (!queue.isEmpty()) {
 			BOMNode head = queue.remove(0);
 			List<BOMNode> outgoing = head.getChildren();
-			for(BOMNode current : outgoing)
-			{
+			for (BOMNode current : outgoing) {
 				int headLength = lengthMap.get(head).intValue();
 				int currentLength = lengthMap.get(current).intValue();
-				if(headLength + 1 < currentLength)
-				{
+				if (headLength + 1 < currentLength) {
 					previous.put(current, head);
 					lengthMap.put(current, Integer.valueOf(headLength + 1));
 				}
@@ -91,8 +81,7 @@ public class ShortesPathCalculation
 		}
 		List<BOMNode> path = new ArrayList<BOMNode>(previous.size());
 
-		while(previous.containsKey(target))
-		{
+		while (previous.containsKey(target)) {
 			path.add(target);
 			target = previous.get(target);
 		}

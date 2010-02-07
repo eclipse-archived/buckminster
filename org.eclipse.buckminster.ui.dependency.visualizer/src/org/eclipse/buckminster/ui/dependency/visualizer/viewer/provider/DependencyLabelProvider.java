@@ -18,34 +18,31 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 /**
- * A simple {@link LabelProvider} that computes text and icon for a given {@link BOMNode}
+ * A simple {@link LabelProvider} that computes text and icon for a given
+ * {@link BOMNode}
  * 
  * @author Johannes Utzig
  * 
  */
-public class DependencyLabelProvider extends LabelProvider
-{
+public class DependencyLabelProvider extends LabelProvider {
 
 	@Override
-	public Image getImage(Object element)
-	{
-		if(element instanceof BOMNode)
-		{
-			BOMNode node = (BOMNode)element;
+	public Image getImage(Object element) {
+		if (element instanceof BOMNode) {
+			BOMNode node = (BOMNode) element;
 			String componentTypeID = node.getRequest().getComponentTypeID();
 			Resolution resolution = node.getResolution();
-			if(resolution != null)
-			{
+			if (resolution != null) {
 				componentTypeID = resolution.getComponentTypeId();
 			}
-			if("osgi.bundle".equals(componentTypeID)) //$NON-NLS-1$
+			if ("osgi.bundle".equals(componentTypeID)) //$NON-NLS-1$
 				return ImageCache.getImage("icons/osgi16x16.png"); //$NON-NLS-1$
-			else if("maven".equals(componentTypeID)) //$NON-NLS-1$
+			else if ("maven".equals(componentTypeID)) //$NON-NLS-1$
 				return ImageCache.getImage("icons/apache.png"); //$NON-NLS-1$
 
-			else if("buckminster".equals(componentTypeID)) //$NON-NLS-1$
+			else if ("buckminster".equals(componentTypeID)) //$NON-NLS-1$
 				return ImageCache.getImage("icons/component.png"); //$NON-NLS-1$
-			else if("eclipse.feature".equals(componentTypeID)) //$NON-NLS-1$
+			else if ("eclipse.feature".equals(componentTypeID)) //$NON-NLS-1$
 				return ImageCache.getImage("icons/eclipse.gif"); //$NON-NLS-1$
 
 		}
@@ -53,17 +50,14 @@ public class DependencyLabelProvider extends LabelProvider
 	}
 
 	@Override
-	public String getText(Object element)
-	{
+	public String getText(Object element) {
 
-		if(element instanceof BOMNode)
-		{
-			BOMNode node = (BOMNode)element;
+		if (element instanceof BOMNode) {
+			BOMNode node = (BOMNode) element;
 			return node.getRequest().getName();
 
 		}
-		if(element instanceof EntityConnectionData)
-		{
+		if (element instanceof EntityConnectionData) {
 
 			return ""; //$NON-NLS-1$
 		}

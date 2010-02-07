@@ -19,43 +19,35 @@ import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public abstract class PropertyManagerHandler extends ExtensionAwareHandler implements ChildPoppedListener
-{
-	private PropertyConstantHandler m_propertyConstantHandler;
+public abstract class PropertyManagerHandler extends ExtensionAwareHandler implements ChildPoppedListener {
+	private PropertyConstantHandler propertyConstantHandler;
 
-	private PropertyElementHandler m_propertyElementHandler;
+	private PropertyElementHandler propertyElementHandler;
 
-	private final String m_tag;
+	private final String tag;
 
-	public PropertyManagerHandler(AbstractHandler parent, String tag)
-	{
+	public PropertyManagerHandler(AbstractHandler parent, String tag) {
 		super(parent);
-		m_tag = tag;
+		this.tag = tag;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof PropertyHandler)
-			((PropertyHandler)child).addYourself(getProperties());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child instanceof PropertyHandler)
+			((PropertyHandler) child).addYourself(getProperties());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(PropertyConstantHandler.TAG.equals(localName))
-		{
-			if(m_propertyConstantHandler == null)
-				m_propertyConstantHandler = new PropertyConstantHandler(this);
-			ch = m_propertyConstantHandler;
-		}
-		else if(PropertyElementHandler.TAG.equals(localName))
-		{
-			if(m_propertyElementHandler == null)
-				m_propertyElementHandler = new PropertyElementHandler(this);
-			ch = m_propertyElementHandler;
-		}
-		else
+		if (PropertyConstantHandler.TAG.equals(localName)) {
+			if (propertyConstantHandler == null)
+				propertyConstantHandler = new PropertyConstantHandler(this);
+			ch = propertyConstantHandler;
+		} else if (PropertyElementHandler.TAG.equals(localName)) {
+			if (propertyElementHandler == null)
+				propertyElementHandler = new PropertyElementHandler(this);
+			ch = propertyElementHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
@@ -63,8 +55,7 @@ public abstract class PropertyManagerHandler extends ExtensionAwareHandler imple
 	public abstract Map<String, String> getProperties();
 
 	@Override
-	public String getTAG()
-	{
-		return m_tag;
+	public String getTAG() {
+		return tag;
 	}
 }

@@ -25,60 +25,50 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
-{
+class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener {
 	public static final String TAG = ResolvedNode.TAG;
 
-	private UUID m_resolutionId;
+	private UUID resolutionId;
 
-	private final ArrayList<UUID> m_children = new ArrayList<UUID>();
+	private final ArrayList<UUID> children = new ArrayList<UUID>();
 
-	private final ElementRefHandler m_childHandler = new ElementRefHandler(this, ResolvedNode.CHILD_TAG);
+	private final ElementRefHandler childHandler = new ElementRefHandler(this, ResolvedNode.CHILD_TAG);
 
-	ResolvedNodeHandler(AbstractHandler parent)
-	{
+	ResolvedNodeHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXParseException
-	{
-		if(child == m_childHandler)
-			m_children.add(m_childHandler.getRefId());
+	public void childPopped(ChildHandler child) throws SAXParseException {
+		if (child == childHandler)
+			children.add(childHandler.getRefId());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(m_childHandler.getTAG().equals(localName))
-			ch = m_childHandler;
+		if (childHandler.getTAG().equals(localName))
+			ch = childHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_resolutionId = UUID.fromString(this.getStringValue(attrs, ResolvedNode.ATTR_RESOLUTION_ID));
-		m_children.clear();
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		resolutionId = UUID.fromString(this.getStringValue(attrs, ResolvedNode.ATTR_RESOLUTION_ID));
+		children.clear();
 	}
 
 	@Override
-	BOMNode getDepNode() throws SAXException
-	{
-		ArrayList<BOMNode> childNodes = new ArrayList<BOMNode>(m_children.size());
-		for(UUID childId : m_children)
-			childNodes.add((BOMNode)getWrapped(childId));
+	BOMNode getDepNode() throws SAXException {
+		ArrayList<BOMNode> childNodes = new ArrayList<BOMNode>(children.size());
+		for (UUID childId : children)
+			childNodes.add((BOMNode) getWrapped(childId));
 
-		try
-		{
-			return new ResolvedNode((Resolution)getWrapped(m_resolutionId), childNodes);
-		}
-		catch(ClassCastException e)
-		{
-			throw new SAXParseException(NLS.bind(Messages.Wrapper_0_does_not_wrap_resolution, m_resolutionId),
-					getDocumentLocator());
+		try {
+			return new ResolvedNode((Resolution) getWrapped(resolutionId), childNodes);
+		} catch (ClassCastException e) {
+			throw new SAXParseException(NLS.bind(Messages.Wrapper_0_does_not_wrap_resolution, resolutionId), getDocumentLocator());
 		}
 	}
 }

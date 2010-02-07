@@ -32,16 +32,12 @@ import org.w3c.dom.Document;
 /**
  * @author Thomas Hallgren
  */
-public class Maven2VersionFinder extends MavenVersionFinder
-{
-	public static IPath getDefaultLocalRepoPath()
-	{
+public class Maven2VersionFinder extends MavenVersionFinder {
+	public static IPath getDefaultLocalRepoPath() {
 		return new Path(System.getProperty("user.home")).append(".m2").append("repository"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
-	public Maven2VersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
-			throws CoreException
-	{
+	public Maven2VersionFinder(MavenReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query) throws CoreException {
 		super(readerType, provider, ctype, query);
 	}
 
@@ -52,13 +48,11 @@ public class Maven2VersionFinder extends MavenVersionFinder
 	 * @throws CoreException
 	 */
 	@Override
-	List<VersionMatch> getComponentVersions(IProgressMonitor monitor) throws CoreException
-	{
+	List<VersionMatch> getComponentVersions(IProgressMonitor monitor) throws CoreException {
 		NodeQuery query = getQuery();
 		VersionRange range = query.getVersionRange();
-		if(range != null)
-		{
-			if(range.getFormat().equals(VersionHelper.getOSGiFormat()))
+		if (range != null) {
+			if (range.getFormat().equals(VersionHelper.getOSGiFormat()))
 				//
 				// Convert the OSGi version to a Triplet version instead.
 				//
@@ -66,7 +60,7 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		}
 
 		List<VersionMatch> versions = new ArrayList<VersionMatch>();
-		Maven2ReaderType readerType = (Maven2ReaderType)getReaderType();
+		Maven2ReaderType readerType = (Maven2ReaderType) getReaderType();
 		MapEntry mapEntry = getMapEntry();
 		URI uri = getURI();
 		StringBuilder pbld = new StringBuilder();
@@ -75,30 +69,21 @@ public class Maven2VersionFinder extends MavenVersionFinder
 		String rootPath = pbld.toString();
 		LocalCache lc = getReaderType().getLocalCache();
 		monitor.beginTask(null, 2000);
-		try
-		{
+		try {
 			DocumentBuilder docBld = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document doc = Maven2ReaderType.getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath
-					+ "maven-metadata.xml"), //$NON-NLS-1$
+			Document doc = Maven2ReaderType.getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + "maven-metadata.xml"), //$NON-NLS-1$
 					lc, getConnectContext(), monitor);
-			for(String versionStr : Maven2ReaderType.getVersions(doc))
-			{
+			for (String versionStr : Maven2ReaderType.getVersions(doc)) {
 				VersionMatch vm = readerType.createVersionMatch(docBld, this, mapEntry, range, versionStr);
-				if(vm != null)
+				if (vm != null)
 					versions.add(vm);
 			}
 			return versions;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		catch(ParserConfigurationException e)
-		{
+		} catch (ParserConfigurationException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}

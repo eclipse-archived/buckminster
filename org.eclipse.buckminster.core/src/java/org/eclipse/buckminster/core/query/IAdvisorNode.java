@@ -13,8 +13,7 @@ import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
-public interface IAdvisorNode
-{
+public interface IAdvisorNode {
 
 	public static final int PRIO_VERSION_DESIGNATOR = 1;
 

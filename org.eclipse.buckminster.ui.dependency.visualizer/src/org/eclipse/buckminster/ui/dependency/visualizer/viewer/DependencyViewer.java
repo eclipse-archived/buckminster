@@ -40,45 +40,39 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 
-public class DependencyViewer extends GraphViewer implements IViewerSettingChangeListener
-{
+public class DependencyViewer extends GraphViewer implements IViewerSettingChangeListener {
 
 	private IDependencyVisualizationLabelProvider labelProvider;
 
-	public DependencyViewer(Composite composite, int style)
-	{
+	public DependencyViewer(Composite composite, int style) {
 		super(composite, SWT.NONE);
-		// setLayoutAlgorithm(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
-		// setLayoutAlgorithm(new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
+		// setLayoutAlgorithm(new
+		// RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
+		// setLayoutAlgorithm(new
+		// TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
 		setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 		// labelProvider = new HighlightDependencyLableProvider(this, null);
 		labelProvider = new SimpleDependencyVisualizationLabelProvider(new DependencyLabelProvider(), this);
 		setLabelProvider(labelProvider);
 		setContentProvider(new DependencyContentProvider());
-		getGraphControl().addDisposeListener(new DisposeListener()
-		{
+		getGraphControl().addDisposeListener(new DisposeListener() {
 
-			public void widgetDisposed(DisposeEvent e)
-			{
+			public void widgetDisposed(DisposeEvent e) {
 				labelProvider.dispose();
 
 			}
 		});
-		addSelectionChangedListener(new ISelectionChangedListener()
-		{
+		addSelectionChangedListener(new ISelectionChangedListener() {
 
-			public void selectionChanged(SelectionChangedEvent event)
-			{
+			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
-				if(selection.isEmpty())
+				if (selection.isEmpty())
 					labelProvider.highlightSelection(null);
-				if(selection instanceof IStructuredSelection)
-				{
-					IStructuredSelection sel = (IStructuredSelection)selection;
+				if (selection instanceof IStructuredSelection) {
+					IStructuredSelection sel = (IStructuredSelection) selection;
 					Object o = sel.getFirstElement();
-					if(o instanceof BOMNode)
-					{
-						BOMNode node = (BOMNode)o;
+					if (o instanceof BOMNode) {
+						BOMNode node = (BOMNode) o;
 						labelProvider.highlightSelection(node);
 					}
 
@@ -89,22 +83,17 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 			}
 		});
 
-		addDoubleClickListener(new IDoubleClickListener()
-		{
+		addDoubleClickListener(new IDoubleClickListener() {
 
-			public void doubleClick(DoubleClickEvent event)
-			{
-				Object o = ((IStructuredSelection)event.getSelection()).getFirstElement();
-				if(o instanceof BOMNode)
-				{
-					BOMNode node = (BOMNode)o;
+			public void doubleClick(DoubleClickEvent event) {
+				Object o = ((IStructuredSelection) event.getSelection()).getFirstElement();
+				if (o instanceof BOMNode) {
+					BOMNode node = (BOMNode) o;
 
 					// Bug 291963 - NPE when clicking on an unresolved node
-					if(node.getResolution() != null && node.getResolution().getCSpec() != null)
-					{
+					if (node.getResolution() != null && node.getResolution().getCSpec() != null) {
 						DirtyViewCSpecAction action = new DirtyViewCSpecAction();
-						action.run(node.getResolution().getCSpec(),
-								PlatformUI.getWorkbench().getActiveWorkbenchWindow());
+						action.run(node.getResolution().getCSpec(), PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 					}
 
 				}
@@ -115,14 +104,14 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 	}
 
 	/**
-	 * calls {@link GraphViewer#setInput(Object)} and {@link IDependencyVisualizationLabelProvider#setRoot(BOMNode)}
+	 * calls {@link GraphViewer#setInput(Object)} and
+	 * {@link IDependencyVisualizationLabelProvider#setRoot(BOMNode)}
 	 * 
 	 * @param input
 	 *            - a list of boms with (currently) exactly one {@link BOMNode}
 	 */
-	public void setInputAndRoot(List<? extends BOMNode> input)
-	{
-		if(input.size() != 1)
+	public void setInputAndRoot(List<? extends BOMNode> input) {
+		if (input.size() != 1)
 			throw new IllegalArgumentException(Messages.ListMustContainExactlyOneBom);
 		labelProvider.clear();
 		setInput(input);
@@ -133,58 +122,54 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 	}
 
 	/**
-	 * overriden to inform the {@link IDependencyVisualizationLabelProvider} about the new selection
+	 * overriden to inform the {@link IDependencyVisualizationLabelProvider}
+	 * about the new selection
 	 */
 	@Override
-	public void setSelection(ISelection selection, boolean reveal)
-	{
+	public void setSelection(ISelection selection, boolean reveal) {
 		super.setSelection(selection, reveal);
-		if(selection.isEmpty())
+		if (selection.isEmpty())
 			labelProvider.highlightSelection(null);
-		if(selection instanceof IStructuredSelection)
-		{
-			IStructuredSelection sel = (IStructuredSelection)selection;
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection sel = (IStructuredSelection) selection;
 			Object o = sel.getFirstElement();
-			if(o instanceof BOMNode)
-			{
-				BOMNode node = (BOMNode)o;
+			if (o instanceof BOMNode) {
+				BOMNode node = (BOMNode) o;
 				labelProvider.highlightSelection(node);
 			}
 
 		}
 	}
 
-	public void viewerSettingChanged(ViewerSettingChangeEvent event)
-	{
-		switch(event.getType())
-		{
-		case PATH_HIGHLIGHTING:
-			setRelationshipProvider((IRelationshipProvider)event.getData());
-			break;
-		case FILTER_ADDED:
-			addFilter((ViewerFilter)event.getData());
-			applyLayout();
-			break;
-		case FILTER_REMOVED:
-			removeFilter((ViewerFilter)event.getData());
-			applyLayout();
-			break;
-		case LAYOUT_CHANGED:
-			setLayoutAlgorithm((LayoutAlgorithm)event.getData());
-			applyLayout();
-		default:
-			break;
+	public void viewerSettingChanged(ViewerSettingChangeEvent event) {
+		switch (event.getType()) {
+			case PATH_HIGHLIGHTING:
+				setRelationshipProvider((IRelationshipProvider) event.getData());
+				break;
+			case FILTER_ADDED:
+				addFilter((ViewerFilter) event.getData());
+				applyLayout();
+				break;
+			case FILTER_REMOVED:
+				removeFilter((ViewerFilter) event.getData());
+				applyLayout();
+				break;
+			case LAYOUT_CHANGED:
+				setLayoutAlgorithm((LayoutAlgorithm) event.getData());
+				applyLayout();
+			default:
+				break;
 		}
 
 	}
 
 	/**
-	 * sets the {@link IRelationshipProvider} that is responsible for highlighting interesting paths on selection
+	 * sets the {@link IRelationshipProvider} that is responsible for
+	 * highlighting interesting paths on selection
 	 * 
 	 * @param provider
 	 */
-	private void setRelationshipProvider(IRelationshipProvider provider)
-	{
+	private void setRelationshipProvider(IRelationshipProvider provider) {
 		labelProvider.setRelationshipProvider(provider);
 
 	}
@@ -193,11 +178,9 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 
 // XXX: this is a hack. The CSpecEditorInput is not exported
 // so ViewChosenCspecAction is subclassed instead to view a cspec
-class DirtyViewCSpecAction extends ViewChosenCSpecAction
-{
+class DirtyViewCSpecAction extends ViewChosenCSpecAction {
 	@Override
-	public void run(CSpec cspec, IWorkbenchWindow wbWin)
-	{
+	public void run(CSpec cspec, IWorkbenchWindow wbWin) {
 		super.run(cspec, wbWin);
 	}
 }

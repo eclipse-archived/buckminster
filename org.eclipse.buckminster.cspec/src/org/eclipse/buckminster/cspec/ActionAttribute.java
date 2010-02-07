@@ -7,14 +7,16 @@
 package org.eclipse.buckminster.cspec;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Action Attribute</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Action Attribute</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.ActionAttribute#getAlias <em>Alias</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.ActionAttribute#getAction <em>Action</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.ActionAttribute#getAlias <em>Alias
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.ActionAttribute#getAction <em>Action
+ * </em>}</li>
  * </ul>
  * </p>
  * 
@@ -22,14 +24,15 @@ package org.eclipse.buckminster.cspec;
  * @model
  * @generated
  */
-public interface ActionAttribute extends Artifact
-{
+public interface ActionAttribute extends Artifact {
 	/**
-	 * Returns the value of the '<em><b>Action</b></em>' reference. It is bidirectional and its opposite is '
-	 * {@link org.eclipse.buckminster.cspec.Action#getProducts <em>Products</em>}'. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Action</b></em>' reference. It is
+	 * bidirectional and its opposite is '
+	 * {@link org.eclipse.buckminster.cspec.Action#getProducts
+	 * <em>Products</em>}'. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Action</em>' reference isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Action</em>' reference isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -43,10 +46,11 @@ public interface ActionAttribute extends Artifact
 	Action getAction();
 
 	/**
-	 * Returns the value of the '<em><b>Alias</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Alias</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Alias</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Alias</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -59,8 +63,10 @@ public interface ActionAttribute extends Artifact
 	String getAlias();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.ActionAttribute#getAction <em>Action</em>}'
-	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.ActionAttribute#getAction
+	 * <em>Action</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Action</em>' reference.
@@ -70,8 +76,9 @@ public interface ActionAttribute extends Artifact
 	void setAction(Action value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.ActionAttribute#getAlias <em>Alias</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.ActionAttribute#getAlias
+	 * <em>Alias</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Alias</em>' attribute.

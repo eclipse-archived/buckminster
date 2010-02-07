@@ -18,41 +18,32 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class SaxablePath extends Path implements ISaxableElement
-{
+public class SaxablePath extends Path implements ISaxableElement {
 	public static final String ATTR_PATH = "path"; //$NON-NLS-1$
 
 	public static final String TAG = "path"; //$NON-NLS-1$
 
-	public static SaxablePath coerce(IPath path)
-	{
-		return path instanceof SaxablePath
-				? (SaxablePath)path
-				: new SaxablePath(path.toOSString());
+	public static SaxablePath coerce(IPath path) {
+		return path instanceof SaxablePath ? (SaxablePath) path : new SaxablePath(path.toOSString());
 	}
 
-	public static SaxablePath fromPortableString(String pathString)
-	{
+	public static SaxablePath fromPortableString(String pathString) {
 		return new SaxablePath(Path.fromPortableString(pathString).toOSString());
 	}
 
-	public SaxablePath(String device, String path)
-	{
+	public SaxablePath(String device, String path) {
 		super(device, path);
 	}
 
-	private SaxablePath(String fullPath)
-	{
+	private SaxablePath(String fullPath) {
 		super(fullPath);
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
-	{
+	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException {
 		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ATTR_PATH, this.toPortableString());
 		String qName = Utils.makeQualifiedName(prefix, localName);

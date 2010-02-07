@@ -22,43 +22,34 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport
-{
+class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport {
 	public static final String TAG = CSpec.ELEM_DEPENDENCIES;
 
-	DependenciesHandler(AbstractHandler parent)
-	{
+	DependenciesHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof ComponentRequestHandler)
-		{
-			try
-			{
-				getCSpecBuilder().addDependency(((ComponentRequestHandler)child).getBuilder());
-			}
-			catch(CoreException e)
-			{
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child instanceof ComponentRequestHandler) {
+			try {
+				getCSpecBuilder().addDependency(((ComponentRequestHandler) child).getBuilder());
+			} catch (CoreException e) {
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
 		}
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(CSpec.ELEM_DEPENDENCY.equals(localName))
+		if (CSpec.ELEM_DEPENDENCY.equals(localName))
 			ch = new ComponentRequestHandler(this, new ComponentRequestBuilder());
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public CSpecBuilder getCSpecBuilder()
-	{
-		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
+	public CSpecBuilder getCSpecBuilder() {
+		return ((ICSpecBuilderSupport) this.getParentHandler()).getCSpecBuilder();
 	}
 }

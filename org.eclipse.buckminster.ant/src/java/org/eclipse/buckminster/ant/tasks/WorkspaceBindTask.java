@@ -40,40 +40,33 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
 /**
- * Makes Buckminster aware of a project and performs a workspace bind. This task is ment to be used when projects are
- * created on the fly as the result of a prebind action.
+ * Makes Buckminster aware of a project and performs a workspace bind. This task
+ * is ment to be used when projects are created on the fly as the result of a
+ * prebind action.
  * 
  * @author Thomas Hallgren
  */
-public class WorkspaceBindTask
-{
-	private final File m_projectDir;
+public class WorkspaceBindTask {
+	private final File projectDir;
 
-	public WorkspaceBindTask(File projectDir)
-	{
-		m_projectDir = projectDir;
+	public WorkspaceBindTask(File projectDir) {
+		this.projectDir = projectDir;
 	}
 
-	public void execute() throws CoreException
-	{
+	public void execute() throws CoreException {
 		InputStream input = null;
 		IProjectDescription projDesc = null;
-		try
-		{
-			input = new BufferedInputStream(new FileInputStream(new File(m_projectDir,
-					IProjectDescription.DESCRIPTION_FILE_NAME)));
+		try {
+			input = new BufferedInputStream(new FileInputStream(new File(projectDir, IProjectDescription.DESCRIPTION_FILE_NAME)));
 			projDesc = ResourcesPlugin.getWorkspace().loadProjectDescription(input);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			FileUtils.close(input);
 		}
 
-		// Set up whats needed to simulate a cquery that resolved to a local reader
+		// Set up whats needed to simulate a cquery that resolved to a local
+		// reader
 		// with eclipse.installed component type.
 		//
 		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
@@ -83,7 +76,7 @@ public class WorkspaceBindTask
 		ResolutionContext context = new ResolutionContext(query);
 		NodeQuery topQuery = context.getRootNodeQuery();
 
-		IPath projectPath = Path.fromOSString(m_projectDir.toString()).addTrailingSeparator();
+		IPath projectPath = Path.fromOSString(projectDir.toString()).addTrailingSeparator();
 		Resolution resolution = LocalResolver.fromPath(topQuery, projectPath, null);
 
 		Materialization mat = new Materialization(projectPath, resolution.getComponentIdentifier());
@@ -100,7 +93,7 @@ public class WorkspaceBindTask
 		MaterializationContext matCtx = new MaterializationContext(bom, mspec, context);
 		wsMat.performInstallAction(mat.getResolution(), matCtx, new NullProgressMonitor());
 		IStatus status = matCtx.getStatus();
-		if(status.getSeverity() == IStatus.ERROR)
+		if (status.getSeverity() == IStatus.ERROR)
 			throw new CoreException(status);
 	}
 }

@@ -29,42 +29,37 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 
-public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRemoteReader
-{
-	protected final ISubversionSession<SVNENTRY, REVISION> m_session;
+public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRemoteReader {
+	protected final ISubversionSession<SVNENTRY, REVISION> session;
 
-	private final SVNENTRY[] m_topEntries;
+	private final SVNENTRY[] topEntries;
 
-	protected GenericRemoteReader(IReaderType readerType, ProviderMatch provider, IProgressMonitor monitor)
-			throws CoreException
-	{
+	protected GenericRemoteReader(IReaderType readerType, ProviderMatch provider, IProgressMonitor monitor) throws CoreException {
 		super(readerType, provider);
 		VersionMatch vm = provider.getVersionMatch();
 		VersionSelector branchOrTag = vm.getBranchOrTag();
-		m_session = getSession(provider.getRepositoryURI(), branchOrTag, vm.getNumericRevision(), vm.getTimestamp(),
-				provider.getNodeQuery().getContext());
-		m_topEntries = getTopEntries(monitor);
-		if(m_topEntries.length == 0)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_at_0, m_session));
+		session = getSession(provider.getRepositoryURI(), branchOrTag, vm.getNumericRevision(), vm.getTimestamp(), provider.getNodeQuery()
+				.getContext());
+		topEntries = getTopEntries(monitor);
+		if (topEntries.length == 0)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_artifacts_at_0, session));
 	}
 
 	@Override
-	final public void close()
-	{
-		m_session.close();
+	final public void close() {
+		session.close();
 	}
 
 	@Override
-	final public String toString()
-	{
-		return m_session.toString();
+	final public String toString() {
+		return session.toString();
 	}
 
-	abstract protected void fetchRemoteFile(URI url, REVISION revision, OutputStream output, IProgressMonitor subMonitor)
-			throws Exception;
+	abstract protected void fetchRemoteFile(URI url, REVISION revision, OutputStream output, IProgressMonitor subMonitor) throws Exception;
 
 	/**
-	 * Implemented by subclasses. Used to retrieve a particular a concrete session instance.
+	 * Implemented by subclasses. Used to retrieve a particular a concrete
+	 * session instance.
 	 * 
 	 * @param repositoryURI
 	 * @param branchOrTag
@@ -74,49 +69,42 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 	 * @return
 	 * @throws CoreException
 	 */
-	protected abstract ISubversionSession<SVNENTRY, REVISION> getSession(String repositoryURI,
-			VersionSelector branchOrTag, long revision, Date timestamp, RMContext context) throws CoreException;
+	protected abstract ISubversionSession<SVNENTRY, REVISION> getSession(String repositoryURI, VersionSelector branchOrTag, long revision,
+			Date timestamp, RMContext context) throws CoreException;
 
 	abstract protected SVNENTRY[] getTopEntries(IProgressMonitor monitor) throws CoreException;
 
 	@Override
-	final protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException,
-			IOException
-	{
+	final protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException {
 		Logger logger = CorePlugin.getLogger();
 		IPath path = Path.fromPortableString(fileName);
 		String topEntry = path.segment(0);
 
 		boolean found = false;
-		for(SVNENTRY dirEntry : m_topEntries)
-		{
-			if(topEntry.equals(m_session.getSvnEntryHelper().getEntryPath(dirEntry)))
-			{
+		for (SVNENTRY dirEntry : topEntries) {
+			if (topEntry.equals(session.getSvnEntryHelper().getEntryPath(dirEntry))) {
 				found = true;
 				break;
 			}
 		}
 
-		URI url = m_session.getSVNUrl(fileName);
+		URI url = session.getSVNUrl(fileName);
 		String key = storeInCache(fileName);
-		if(!found)
+		if (!found)
 			throw new FileNotFoundException(key);
 		// now copying file to temporary file
 		OutputStream output = null;
 		File destFile = null;
-		try
-		{
+		try {
 			logger.debug("Reading remote file %s", key); //$NON-NLS-1$
 			destFile = createTempFile();
 			output = new FileOutputStream(destFile);
-			final REVISION revision = m_session.getRevision();
+			final REVISION revision = session.getRevision();
 			fetchRemoteFile(url, revision, output, MonitorUtils.subMonitor(monitor, 10));
 			IOUtils.close(output);
-			if(destFile.length() == 0)
-			{
+			if (destFile.length() == 0) {
 				// Suspect file not found
-				if(!remoteFileExists(url, revision, monitor))
-				{
+				if (!remoteFileExists(url, revision, monitor)) {
 					logger.debug("Remote file not found: %s", key); //$NON-NLS-1$
 					throw new FileNotFoundException(url.toString());
 				}
@@ -124,81 +112,65 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 			final FileHandle fh = new FileHandle(fileName, destFile, true);
 			destFile = null;
 			return fh;
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			throw e;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw e;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			final Throwable rootCause = SvnExceptionHandler.getRootCause(e);
-			if(SvnExceptionHandler.hasSvnException(rootCause))
-			{
+			if (SvnExceptionHandler.hasSvnException(rootCause)) {
 				logger.debug("Remote file not found: %s", key); //$NON-NLS-1$
 				throw new FileNotFoundException(key);
 			}
 			IOException ioe = new IOException(rootCause.getMessage());
 			ioe.initCause(rootCause);
 			throw ioe;
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(output);
-			if(destFile != null)
+			if (destFile != null)
 				destFile.delete();
 			monitor.done();
 		}
 	}
 
 	@Override
-	final protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
+	final protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor) throws CoreException,
+			IOException {
 		ArrayList<String> names = null;
-		ISvnEntryHelper<SVNENTRY> helper = m_session.getSvnEntryHelper();
-		for(SVNENTRY dirEntry : m_topEntries)
-		{
+		ISvnEntryHelper<SVNENTRY> helper = session.getSvnEntryHelper();
+		for (SVNENTRY dirEntry : topEntries) {
 			final String fileName = helper.getEntryPath(dirEntry);
-			if(pattern.matcher(fileName).matches())
-			{
-				if(names == null)
+			if (pattern.matcher(fileName).matches()) {
+				if (names == null)
 					names = new ArrayList<String>();
 				names.add(fileName);
 			}
 		}
-		if(names == null)
+		if (names == null)
 			return;
 
-		if(names.size() == 1)
+		if (names.size() == 1)
 			files.add(innerGetContents(names.get(0), monitor));
-		else
-		{
+		else {
 			monitor.beginTask(null, names.size() * 100);
-			for(String name : names)
+			for (String name : names)
 				files.add(innerGetContents(name, MonitorUtils.subMonitor(monitor, 100)));
 			monitor.done();
 		}
 	}
 
 	@Override
-	final protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
-	{
-		ISvnEntryHelper<SVNENTRY> helper = m_session.getSvnEntryHelper();
-		for(SVNENTRY dirEntry : m_topEntries)
-		{
+	final protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException {
+		ISvnEntryHelper<SVNENTRY> helper = session.getSvnEntryHelper();
+		for (SVNENTRY dirEntry : topEntries) {
 			String fileName = helper.getEntryPath(dirEntry);
-			if(helper.getEntryKind(dirEntry) == ISvnEntryHelper.DIR && !fileName.endsWith("/")) //$NON-NLS-1$
-				fileName = fileName + '/'; //$NON-NLS-1$
+			if (helper.getEntryKind(dirEntry) == ISvnEntryHelper.DIR && !fileName.endsWith("/")) //$NON-NLS-1$
+				fileName = fileName + '/'; 
 			files.add(fileName);
 		}
 	}
 
-	abstract protected boolean remoteFileExists(URI url, REVISION revision, IProgressMonitor monitor)
-			throws CoreException;
+	abstract protected boolean remoteFileExists(URI url, REVISION revision, IProgressMonitor monitor) throws CoreException;
 
 	abstract protected String storeInCache(String fileName) throws CoreException;
 

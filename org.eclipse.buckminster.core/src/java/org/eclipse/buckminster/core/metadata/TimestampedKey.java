@@ -12,25 +12,21 @@ import java.util.UUID;
 /**
  * @author Thomas Hallgren
  */
-public class TimestampedKey
-{
-	private final UUID m_uuid;
+public class TimestampedKey {
+	private final UUID uuid;
 
-	private final long m_creationTime;
+	private final long creationTime;
 
-	public TimestampedKey(UUID uuid, long creationTime)
-	{
-		m_uuid = uuid;
-		m_creationTime = creationTime;
+	public TimestampedKey(UUID uuid, long creationTime) {
+		this.uuid = uuid;
+		this.creationTime = creationTime;
 	}
 
-	public long getCreationTime()
-	{
-		return m_creationTime;
+	public long getCreationTime() {
+		return creationTime;
 	}
 
-	public UUID getKey()
-	{
-		return m_uuid;
+	public UUID getKey() {
+		return uuid;
 	}
 }

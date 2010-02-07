@@ -7,24 +7,20 @@ import org.eclipse.buckminster.subversion.GenericCache;
 import org.eclipse.buckminster.subversion.ISubversionCache;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 
-public class SubversiveCache implements ISubversionCache<SVNEntry>
-{
-	private Map<String, SVNEntry[]> m_listCache;
+public class SubversiveCache implements ISubversionCache<SVNEntry> {
+	private Map<String, SVNEntry[]> listCache;
 
 	private static final UUID CACHE_KEY_LIST_CACHE = UUID.randomUUID();
 
-	public SVNEntry[] get(String key)
-	{
-		return m_listCache.get(key);
+	public SVNEntry[] get(String key) {
+		return listCache.get(key);
 	}
 
-	public void initialize(Map<UUID, Object> userCache)
-	{
-		m_listCache = GenericCache.getCache(userCache, CACHE_KEY_LIST_CACHE);
+	public void initialize(Map<UUID, Object> userCache) {
+		listCache = GenericCache.getCache(userCache, CACHE_KEY_LIST_CACHE);
 	}
 
-	public void put(String key, SVNEntry[] value)
-	{
-		m_listCache.put(key, value);
+	public void put(String key, SVNEntry[] value) {
+		listCache.put(key, value);
 	}
 }

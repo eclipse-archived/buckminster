@@ -58,8 +58,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Provider extends UUIDKeyed implements IUUIDPersisted
-{
+public class Provider extends UUIDKeyed implements IUUIDPersisted {
 	public static final String ATTR_COMPONENT_TYPES = "componentTypes"; //$NON-NLS-1$
 
 	public static final String ATTR_ALGORITHM = "algorithm"; //$NON-NLS-1$
@@ -78,42 +77,38 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 
 	public static final String TAG_DIGEST = "digest"; //$NON-NLS-1$
 
-	public static Provider immutableProvider(String readerType, String componentType, String uri)
-	{
+	public static Provider immutableProvider(String readerType, String componentType, String uri) {
 		return immutableProvider(readerType, componentType, uri, null);
 	}
 
-	public static Provider immutableProvider(String readerType, String componentType, String uri,
-			Filter resolutionFilter)
-	{
+	public static Provider immutableProvider(String readerType, String componentType, String uri, Filter resolutionFilter) {
 		Map<String, String> props = new HashMap<String, String>(2);
 		props.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
 		props.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
-		return new Provider(null, readerType, new String[] { componentType }, null, new Format(uri), null, null,
-				resolutionFilter, props, null, null);
+		return new Provider(null, readerType, new String[] { componentType }, null, new Format(uri), null, null, resolutionFilter, props, null, null);
 	}
 
-	private final Documentation m_documentation;
+	private final Documentation documentation;
 
-	private final String[] m_componentTypeIDs;
+	private final String[] componentTypeIDs;
 
-	private final String m_readerTypeId;
+	private final String readerTypeId;
 
-	private final Format m_uri;
+	private final Format uri;
 
-	private final Format m_digest;
+	private final Format digest;
 
-	private final String m_digestAlgorithm;
+	private final String digestAlgorithm;
 
-	private final VersionConverterDesc m_versionConverter;
+	private final VersionConverterDesc versionConverter;
 
-	private final SearchPath m_searchPath;
+	private final SearchPath searchPath;
 
-	private final URIMatcher m_uriMatcher;
+	private final URIMatcher uriMatcher;
 
-	private final Filter m_resolutionFilter;
+	private final Filter resolutionFilter;
 
-	private final Map<String, String> m_properties;
+	private final Map<String, String> properties;
 
 	/**
 	 * Creates a new fully initialized Provider
@@ -125,7 +120,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 * @param componentTypeIDs
 	 *            An array of component types supported by this provider
 	 * @param versionConverterDesc
-	 *            The description of the version converter or <code>null</code> if not applicable.
+	 *            The description of the version converter or <code>null</code>
+	 *            if not applicable.
 	 * @param uri
 	 *            The URI used by the reader type.
 	 * @param digest
@@ -137,56 +133,47 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	 * @param properties
 	 *            Provider specific properties
 	 * @param uriMatcher
-	 *            The URI matcher for the provider or <code>null</code> if not applicable.
+	 *            The URI matcher for the provider or <code>null</code> if not
+	 *            applicable.
 	 * @param documentation
 	 *            Documentation in xhtml format.
 	 */
-	public Provider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
-			VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm,
-			Filter resolutionFilter, Map<String, String> properties, URIMatcher uriMatcher, Documentation documentation)
-	{
-		m_searchPath = searchPath;
-		m_readerTypeId = remoteReaderType;
-		m_componentTypeIDs = componentTypeIDs == null
-				? Trivial.EMPTY_STRING_ARRAY
-				: componentTypeIDs;
-		m_versionConverter = versionConverterDesc;
-		m_uri = uri;
-		m_digest = digest;
-		m_digestAlgorithm = digestAlgorithm;
-		m_resolutionFilter = resolutionFilter;
-		m_properties = properties == null
-				? Collections.<String, String> emptyMap()
-				: properties;
-		m_uriMatcher = uriMatcher;
-		m_documentation = documentation;
+	public Provider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs, VersionConverterDesc versionConverterDesc, Format uri,
+			Format digest, String digestAlgorithm, Filter resolutionFilter, Map<String, String> properties, URIMatcher uriMatcher,
+			Documentation documentation) {
+		this.searchPath = searchPath;
+		this.readerTypeId = remoteReaderType;
+		this.componentTypeIDs = componentTypeIDs == null ? Trivial.EMPTY_STRING_ARRAY : componentTypeIDs;
+		this.versionConverter = versionConverterDesc;
+		this.uri = uri;
+		this.digest = digest;
+		this.digestAlgorithm = digestAlgorithm;
+		this.resolutionFilter = resolutionFilter;
+		this.properties = properties == null ? Collections.<String, String> emptyMap() : properties;
+		this.uriMatcher = uriMatcher;
+		this.documentation = documentation;
 	}
 
-	public void addPrefixMappings(HashMap<String, String> prefixMappings)
-	{
+	public void addPrefixMappings(HashMap<String, String> prefixMappings) {
 		prefixMappings.put("xsi", javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI); //$NON-NLS-1$
 	}
 
-	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException {
 		String readerType = getReaderTypeId();
 		ProviderScore score = query.getProviderScore(isMutable(), hasSource());
-		if(score == ProviderScore.REJECTED)
-		{
-			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType,
-					getURI(), Messages.Score_is_below_threshold);
+		if (score == ProviderScore.REJECTED) {
+			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(),
+					Messages.Score_is_below_threshold);
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 			return null;
 		}
 
-		if(m_uriMatcher != null)
-			return m_uriMatcher.getMatch(this, query, monitor);
+		if (uriMatcher != null)
+			return uriMatcher.getMatch(this, query, monitor);
 
 		IVersionFinder versionFinder = null;
 		monitor.beginTask(null, 120);
-		try
-		{
+		try {
 			ComponentRequest request = query.getComponentRequest();
 			String componentTypeID = request.getComponentTypeID();
 
@@ -194,15 +181,12 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			// match the types that this provider provides.
 			//
 			IComponentType[] componentTypes = getComponentTypes();
-			if(componentTypeID != null)
-			{
+			if (componentTypeID != null) {
 				boolean found = false;
 				int idx = componentTypes.length;
-				while(--idx >= 0)
-				{
+				while (--idx >= 0) {
 					IComponentType ctype = componentTypes[idx];
-					if(ctype.getId().equals(componentTypeID))
-					{
+					if (ctype.getId().equals(componentTypeID)) {
 						// Limit the component types to this one type
 						//
 						componentTypes = new IComponentType[] { ctype };
@@ -211,17 +195,14 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 					}
 				}
 
-				if(!found)
-				{
-					// The ECLIPSE_PLATFORM reader is silent here since it is always consulted
+				if (!found) {
+					// The ECLIPSE_PLATFORM reader is silent here since it is
+					// always consulted
 					//
-					if(!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-					{
-						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER,
-								readerType, getURI(), String.format(NLS.bind(
-										Messages.Components_of_type_0_are_not_supported, componentTypeID)));
-						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK,
-								decision.toString(), null));
+					if (!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(), String
+								.format(NLS.bind(Messages.Components_of_type_0_are_not_supported, componentTypeID)));
+						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 					}
 					return null;
 				}
@@ -230,199 +211,163 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 			VersionMatch candidate = null;
 			IComponentType ctypeUsed = null;
 			CoreException problem = null;
-			try
-			{
-				for(IComponentType ctype : componentTypes)
-				{
-					try
-					{
-						versionFinder = getReaderType().getVersionFinder(this, ctype, query,
-								MonitorUtils.subMonitor(monitor, 20));
+			try {
+				for (IComponentType ctype : componentTypes) {
+					try {
+						versionFinder = getReaderType().getVersionFinder(this, ctype, query, MonitorUtils.subMonitor(monitor, 20));
 						candidate = versionFinder.getBestVersion(MonitorUtils.subMonitor(monitor, 80));
-						if(candidate == null)
+						if (candidate == null)
 							continue;
 						ctypeUsed = ctype;
-					}
-					catch(MissingCSpecSourceException e)
-					{
+					} catch (MissingCSpecSourceException e) {
 						continue;
 					}
 					break;
 				}
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				problem = e;
 			}
 
-			if(candidate == null)
-			{
-				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType,
-						getURI(), Messages.No_component_match_was_found);
-				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(),
-						problem == null
-								? null
-								: BuckminsterException.unwind(problem)));
+			if (candidate == null) {
+				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, getURI(),
+						Messages.No_component_match_was_found);
+				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), problem == null ? null
+						: BuckminsterException.unwind(problem)));
 				return null;
 			}
 			query.logDecision(ResolverDecisionType.MATCH_FOUND, candidate);
 			return versionFinder.getProviderMatch(candidate, ctypeUsed, score);
-		}
-		finally
-		{
-			if(versionFinder != null)
+		} finally {
+			if (versionFinder != null)
 				versionFinder.close();
 			monitor.done();
 		}
 	}
 
-	public final String[] getComponentTypeIDs()
-	{
-		return m_componentTypeIDs;
+	public final String[] getComponentTypeIDs() {
+		return componentTypeIDs;
 	}
 
-	public final IComponentType[] getComponentTypes() throws CoreException
-	{
+	public final IComponentType[] getComponentTypes() throws CoreException {
 		CorePlugin plugin = CorePlugin.getDefault();
-		int idx = m_componentTypeIDs.length;
+		int idx = componentTypeIDs.length;
 		IComponentType[] ctypes = new IComponentType[idx];
-		while(--idx >= 0)
-			ctypes[idx] = plugin.getComponentType(m_componentTypeIDs[idx]);
+		while (--idx >= 0)
+			ctypes[idx] = plugin.getComponentType(componentTypeIDs[idx]);
 		return ctypes;
 	}
 
-	public IConnectContext getConnectContext()
-	{
+	public IConnectContext getConnectContext() {
 		return null;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
 	/**
 	 * @return Returns the Digest URI.
 	 */
-	public final String getDigest(Map<String, String> properties)
-	{
-		return m_digest == null
-				? null
-				: m_digest.getValue(getProperties(properties));
+	public final String getDigest(Map<String, String> props) {
+		return digest == null ? null : digest.getValue(getProperties(props));
 	}
 
-	public final String getDigestAlgorithm()
-	{
-		return m_digestAlgorithm;
+	public final String getDigestAlgorithm() {
+		return digestAlgorithm;
 	}
 
-	public Documentation getDocumentation()
-	{
-		return m_documentation;
+	public Documentation getDocumentation() {
+		return documentation;
 	}
 
-	public Map<String, ? extends Object> getProperties(Map<String, ? extends Object> properties)
-	{
-		if(m_searchPath != null)
-			properties = m_searchPath.getResourceMap().getProperties(properties);
+	public Map<String, ? extends Object> getProperties(Map<String, ? extends Object> props) {
+		if (searchPath != null)
+			props = searchPath.getResourceMap().getProperties(props);
+		return props;
+	}
+
+	public Map<String, String> getProviderProperties() {
 		return properties;
 	}
 
-	public Map<String, String> getProviderProperties()
-	{
-		return m_properties;
+	public final IReaderType getReaderType() throws CoreException {
+		return CorePlugin.getDefault().getReaderType(readerTypeId);
 	}
 
-	public final IReaderType getReaderType() throws CoreException
-	{
-		return CorePlugin.getDefault().getReaderType(m_readerTypeId);
+	public final String getReaderTypeId() {
+		return readerTypeId;
 	}
 
-	public final String getReaderTypeId()
-	{
-		return m_readerTypeId;
+	public Filter getResolutionFilter() {
+		return resolutionFilter;
 	}
 
-	public Filter getResolutionFilter()
-	{
-		return m_resolutionFilter;
-	}
-
-	public final SearchPath getSearchPath()
-	{
-		return m_searchPath;
+	public final SearchPath getSearchPath() {
+		return searchPath;
 	}
 
 	/**
-	 * @return Returns the possibly parameterized <code>Format</code> instance that represents File or Repository URI.
+	 * @return Returns the possibly parameterized <code>Format</code> instance
+	 *         that represents File or Repository URI.
 	 */
-	public final Format getURI()
-	{
-		return m_uri;
+	public final Format getURI() {
+		return uri;
 	}
 
 	/**
 	 * @return Returns expanded the File or Repository URI.
 	 */
-	public final String getURI(Map<String, ? extends Object> properties)
-	{
-		return m_uri.getValue(getProperties(properties));
+	public final String getURI(Map<String, ? extends Object> props) {
+		return uri.getValue(getProperties(props));
 	}
 
-	public URIMatcher getURIMatcher()
-	{
-		return m_uriMatcher;
+	public URIMatcher getURIMatcher() {
+		return uriMatcher;
 	}
 
-	public IVersionConverter getVersionConverter() throws CoreException
-	{
+	public IVersionConverter getVersionConverter() throws CoreException {
 		VersionConverterDesc vcd = getVersionConverterDesc();
-		return vcd == null
-				? null
-				: vcd.getVersionConverter();
+		return vcd == null ? null : vcd.getVersionConverter();
 	}
 
-	public final VersionConverterDesc getVersionConverterDesc()
-	{
-		return m_versionConverter;
+	public final VersionConverterDesc getVersionConverterDesc() {
+		return versionConverter;
 	}
 
 	/**
 	 * @return Returns the hasSource.
 	 */
-	public final boolean hasSource()
-	{
-		String source = m_properties.get(KeyConstants.IS_SOURCE);
-		return source == null
-				? true
-				: Boolean.parseBoolean(source);
+	public final boolean hasSource() {
+		String source = properties.get(KeyConstants.IS_SOURCE);
+		return source == null ? true : Boolean.parseBoolean(source);
 	}
 
 	/**
-	 * Returns true if this provider is a match for the given <code>query</code> with respect to provided properties.
-	 * The method will update the filter attributes map of the query context.
+	 * Returns true if this provider is a match for the given <code>query</code>
+	 * with respect to provided properties. The method will update the filter
+	 * attributes map of the query context.
 	 * 
 	 * @param The
 	 *            query to match
 	 * @param A
-	 *            one element array that will receive the failing filter. Can be <code>null</code>.
+	 *            one element array that will receive the failing filter. Can be
+	 *            <code>null</code>.
 	 * @return True if this resolution is a match for the given query.
 	 * @see RMContext#getFilterAttributeUsageMap()
 	 */
-	public boolean isFilterMatchFor(NodeQuery query, Filter[] failingFilter)
-	{
-		if(m_resolutionFilter == null)
+	public boolean isFilterMatchFor(NodeQuery query, Filter[] failingFilter) {
+		if (resolutionFilter == null)
 			return true;
 
 		Map<String, String[]> attributeUsageMap = query.getContext().getFilterAttributeUsageMap();
 		Filter resFilter = getResolutionFilter();
-		Map<String, ? extends Object> properties = query.getProperties();
+		Map<String, ? extends Object> props = query.getProperties();
 
-		m_resolutionFilter.addConsultedAttributes(attributeUsageMap);
-		if(m_resolutionFilter.matchCase(properties))
+		resolutionFilter.addConsultedAttributes(attributeUsageMap);
+		if (resolutionFilter.matchCase(props))
 			return true;
 
-		if(failingFilter != null)
+		if (failingFilter != null)
 			failingFilter[0] = resFilter;
 		return false;
 	}
@@ -430,95 +375,83 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted
 	/**
 	 * @return Returns the readOnly.
 	 */
-	public final boolean isMutable()
-	{
-		String mutable = m_properties.get(KeyConstants.IS_MUTABLE);
-		return mutable == null
-				? true
-				: Boolean.parseBoolean(mutable);
+	public final boolean isMutable() {
+		String mutable = properties.get(KeyConstants.IS_MUTABLE);
+		return mutable == null ? true : Boolean.parseBoolean(mutable);
 	}
 
-	public boolean isPersisted(StorageManager sm) throws CoreException
-	{
+	public boolean isPersisted(StorageManager sm) throws CoreException {
 		return sm.getProviders().contains(this);
 	}
 
-	public void remove(StorageManager sm) throws CoreException
-	{
+	public void remove(StorageManager sm) throws CoreException {
 		UUID thisId = getId();
-		if(!sm.getResolutions().getReferencingKeys(thisId, "providerId").isEmpty()) //$NON-NLS-1$
+		if (!sm.getResolutions().getReferencingKeys(thisId, "providerId").isEmpty()) //$NON-NLS-1$
 			throw new ReferentialIntegrityException(this, "remove", Messages.Referenced_from_Resolution); //$NON-NLS-1$
 
 		sm.getProviders().removeElement(thisId);
 	}
 
-	public void store(StorageManager sm) throws CoreException
-	{
+	public void store(StorageManager sm) throws CoreException {
 		sm.getProviders().putElement(this);
 	}
 
-	public void toSax(ContentHandler handler) throws SAXException
-	{
+	public void toSax(ContentHandler handler) throws SAXException {
 		handler.startDocument();
 
 		HashMap<String, String> prefixMappings = new HashMap<String, String>();
 		addPrefixMappings(prefixMappings);
-		for(Map.Entry<String, String> pfxMapping : prefixMappings.entrySet())
+		for (Map.Entry<String, String> pfxMapping : prefixMappings.entrySet())
 			handler.startPrefixMapping(pfxMapping.getKey(), pfxMapping.getValue());
 
 		toSax(handler, XMLConstants.BM_RMAP_NS, XMLConstants.BM_RMAP_PREFIX, getDefaultTag());
-		for(String pfx : prefixMappings.keySet())
+		for (String pfx : prefixMappings.keySet())
 			handler.endPrefixMapping(pfx);
 
 		handler.endDocument();
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_READER_TYPE, m_readerTypeId);
-		if(m_componentTypeIDs.length > 0)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(m_componentTypeIDs, ",")); //$NON-NLS-1$
-		if(m_resolutionFilter != null)
-			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, m_resolutionFilter.toString());
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_READER_TYPE, readerTypeId);
+		if (componentTypeIDs.length > 0)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPES, TextUtils.concat(componentTypeIDs, ",")); //$NON-NLS-1$
+		if (resolutionFilter != null)
+			Utils.addAttribute(attrs, ATTR_RESOLUTION_FILTER, resolutionFilter.toString());
 	}
 
 	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
+		if (documentation != null)
+			documentation.toSax(handler, namespace, prefix, documentation.getDefaultTag());
 
-		if(m_uriMatcher != null)
-			m_uriMatcher.toSax(handler, namespace, prefix, m_uriMatcher.getDefaultTag());
+		if (uriMatcher != null)
+			uriMatcher.toSax(handler, namespace, prefix, uriMatcher.getDefaultTag());
 
-		m_uri.toSax(handler, namespace, prefix, TAG_URI);
+		uri.toSax(handler, namespace, prefix, TAG_URI);
 
-		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+		SAXEmitter.emitProperties(handler, properties, namespace, prefix, true, false);
 
-		if(m_digest != null)
-		{
+		if (digest != null) {
 			AttributesImpl attrs = new AttributesImpl();
-			Utils.addAttribute(attrs, Format.ATTR_FORMAT, m_digest.getFormat());
-			Utils.addAttribute(attrs, ATTR_ALGORITHM, m_digestAlgorithm);
+			Utils.addAttribute(attrs, Format.ATTR_FORMAT, digest.getFormat());
+			Utils.addAttribute(attrs, ATTR_ALGORITHM, digestAlgorithm);
 			String qName = Utils.makeQualifiedName(prefix, TAG_DIGEST);
 			handler.startElement(namespace, TAG_DIGEST, qName, attrs);
 			handler.endElement(namespace, TAG_DIGEST, qName);
 		}
 
-		if(m_versionConverter != null)
-			m_versionConverter.toSax(handler, namespace, prefix, m_versionConverter.getDefaultTag());
+		if (versionConverter != null)
+			versionConverter.toSax(handler, namespace, prefix, versionConverter.getDefaultTag());
 	}
 
 	@Override
-	protected String getElementNamespace(String namespace)
-	{
+	protected String getElementNamespace(String namespace) {
 		return XMLConstants.BM_RMAP_NS;
 	}
 
 	@Override
-	protected String getElementPrefix(String prefix)
-	{
+	protected String getElementPrefix(String prefix) {
 		return XMLConstants.BM_RMAP_PREFIX;
 	}
 }

@@ -9,8 +9,7 @@ package org.eclipse.buckminster.pde;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.pde.messages"; //$NON-NLS-1$
 
 	public static String IU_0_1_has_no_artifacts;
@@ -147,8 +146,7 @@ public class Messages extends NLS
 
 	public static String rootAdviceForConfig_0_in_1_at_2_does_not_appoint_existing_artifacts;
 
-	static
-	{
+	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 }

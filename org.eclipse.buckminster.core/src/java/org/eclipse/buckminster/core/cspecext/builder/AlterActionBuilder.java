@@ -25,104 +25,89 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class AlterActionBuilder extends AlterAttributeBuilder
-{
-	private final HashMap<String, Prerequisite> m_alteredPrerequisites = new HashMap<String, Prerequisite>();
+public class AlterActionBuilder extends AlterAttributeBuilder {
+	private final HashMap<String, Prerequisite> alteredPrerequisites = new HashMap<String, Prerequisite>();
 
-	private final HashSet<String> m_removedPrerequisites = new HashSet<String>();
+	private final HashSet<String> removedPrerequisites = new HashSet<String>();
 
-	private final ExpandingProperties<String> m_alteredActorProperties = new ExpandingProperties<String>();
+	private final ExpandingProperties<String> alteredActorProperties = new ExpandingProperties<String>();
 
-	private final HashSet<String> m_removedActorProperties = new HashSet<String>();
+	private final HashSet<String> removedActorProperties = new HashSet<String>();
 
-	private final ExpandingProperties<String> m_alteredProperties = new ExpandingProperties<String>();
+	private final ExpandingProperties<String> alteredProperties = new ExpandingProperties<String>();
 
-	private final HashSet<String> m_removedProperties = new HashSet<String>();
+	private final HashSet<String> removedProperties = new HashSet<String>();
 
-	private final HashSet<IPath> m_removedPaths = new HashSet<IPath>();
+	private final HashSet<IPath> removedPaths = new HashSet<IPath>();
 
-	public AlterActionBuilder(ActionBuilder baseBuilder)
-	{
+	public AlterActionBuilder(ActionBuilder baseBuilder) {
 		super(baseBuilder);
 	}
 
-	public void addAlterActorProperty(String key, String value)
-	{
-		m_alteredActorProperties.put(key, value);
+	public void addAlterActorProperty(String key, String value) {
+		alteredActorProperties.put(key, value);
 	}
 
-	public void addAlterPrerequisite(Prerequisite value) throws PrerequisiteAlreadyDefinedException
-	{
+	public void addAlterPrerequisite(Prerequisite value) throws PrerequisiteAlreadyDefinedException {
 		String key = value.toString();
-		if(m_alteredPrerequisites.containsKey(key))
+		if (alteredPrerequisites.containsKey(key))
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
 
-		List<? extends IPrerequisite> basePreqs = ((ActionBuilder)getBaseBuilder()).getPrerequisitesBuilder().getPrerequisites();
-		if(GroupBuilder.indexOfPrerequisite(basePreqs, key) >= 0)
+		List<? extends IPrerequisite> basePreqs = ((ActionBuilder) getBaseBuilder()).getPrerequisitesBuilder().getPrerequisites();
+		if (GroupBuilder.indexOfPrerequisite(basePreqs, key) >= 0)
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
 
-		m_alteredPrerequisites.put(key, value);
+		alteredPrerequisites.put(key, value);
 	}
 
-	public void addAlterProperty(String key, String value)
-	{
-		m_alteredProperties.put(key, value);
+	public void addAlterProperty(String key, String value) {
+		alteredProperties.put(key, value);
 	}
 
-	public void addRemoveActorProperty(String key)
-	{
-		m_removedActorProperties.add(key);
+	public void addRemoveActorProperty(String key) {
+		removedActorProperties.add(key);
 	}
 
-	public void addRemovePrerequisite(String key)
-	{
-		m_removedPrerequisites.add(key);
+	public void addRemovePrerequisite(String key) {
+		removedPrerequisites.add(key);
 	}
 
-	public void addRemoveProductPath(IPath path)
-	{
-		m_removedPaths.add(path);
+	public void addRemoveProductPath(IPath path) {
+		removedPaths.add(path);
 	}
 
-	public void addRemoveProperty(String key)
-	{
-		m_removedProperties.add(key);
+	public void addRemoveProperty(String key) {
+		removedProperties.add(key);
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_alteredPrerequisites.clear();
-		m_removedPrerequisites.clear();
-		m_alteredActorProperties.clear();
-		m_removedActorProperties.clear();
-		m_alteredProperties.clear();
-		m_removedProperties.clear();
-		m_removedPaths.clear();
+		alteredPrerequisites.clear();
+		removedPrerequisites.clear();
+		alteredActorProperties.clear();
+		removedActorProperties.clear();
+		alteredProperties.clear();
+		removedProperties.clear();
+		removedPaths.clear();
 	}
 
 	@Override
-	public AlterAttribute<?> createAlterAttribute()
-	{
-		return new AlterAction(createBase(), getRemovedHints(), getAlteredHints(), m_removedPrerequisites,
-				m_alteredPrerequisites, m_removedActorProperties, m_alteredActorProperties, m_removedProperties,
-				m_alteredProperties, m_removedPaths);
+	public AlterAttribute<?> createAlterAttribute() {
+		return new AlterAction(createBase(), getRemovedHints(), getAlteredHints(), removedPrerequisites, alteredPrerequisites,
+				removedActorProperties, alteredActorProperties, removedProperties, alteredProperties, removedPaths);
 	}
 
-	public ExpandingProperties<String> getAlterActorProperties()
-	{
-		return m_alteredActorProperties;
+	public ExpandingProperties<String> getAlterActorProperties() {
+		return alteredActorProperties;
 	}
 
-	public ExpandingProperties<String> getAlterProperties()
-	{
-		return m_alteredProperties;
+	public ExpandingProperties<String> getAlterProperties() {
+		return alteredProperties;
 	}
 
 	@Override
-	Action createBase()
-	{
-		return ((ActionBuilder)getBaseBuilder()).createAttribute();
+	Action createBase() {
+		return ((ActionBuilder) getBaseBuilder()).createAttribute();
 	}
 }

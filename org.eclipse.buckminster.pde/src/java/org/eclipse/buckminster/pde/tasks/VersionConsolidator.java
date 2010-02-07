@@ -15,18 +15,15 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-abstract class VersionConsolidator extends VersionQualifierTask
-{
-	private final File m_outputFile;
+abstract class VersionConsolidator extends VersionQualifierTask {
+	private final File outputFile;
 
-	VersionConsolidator(File outputFile, File propertiesFile, String qualifier) throws CoreException
-	{
+	VersionConsolidator(File outputFile, File propertiesFile, String qualifier) throws CoreException {
 		super(propertiesFile, qualifier);
-		m_outputFile = outputFile;
+		this.outputFile = outputFile;
 	}
 
-	File getOutputFile()
-	{
-		return m_outputFile;
+	File getOutputFile() {
+		return outputFile;
 	}
 }

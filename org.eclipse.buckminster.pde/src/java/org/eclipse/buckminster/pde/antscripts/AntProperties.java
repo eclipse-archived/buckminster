@@ -4,20 +4,14 @@ import org.eclipse.ant.core.IAntPropertyValueProvider;
 import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.core.runtime.CoreException;
 
-public class AntProperties implements IAntPropertyValueProvider
-{
+public class AntProperties implements IAntPropertyValueProvider {
 	static private final String BUILD_SCRIPT = "buckminster.pdetasks"; //$NON-NLS-1$
 
-	public String getAntPropertyValue(String antPropertyName)
-	{
-		if(BUILD_SCRIPT.equals(antPropertyName))
-		{
-			try
-			{
+	public String getAntPropertyValue(String antPropertyName) {
+		if (BUILD_SCRIPT.equals(antPropertyName)) {
+			try {
 				return AntActor.getBuildFileExtension(antPropertyName).toOSString();
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 			}
 		}
 		return null;

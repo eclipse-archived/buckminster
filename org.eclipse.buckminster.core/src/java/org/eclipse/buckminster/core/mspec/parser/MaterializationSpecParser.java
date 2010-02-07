@@ -26,46 +26,35 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class MaterializationSpecParser extends MetaDataParser<MaterializationSpec> implements ChildPoppedListener
-{
-	private URL m_contextURL;
+public class MaterializationSpecParser extends MetaDataParser<MaterializationSpec> implements ChildPoppedListener {
+	private URL contextURL;
 
-	private MaterializationSpec m_materializationSpec;
+	private MaterializationSpec materializationSpec;
 
-	public MaterializationSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-			throws CoreException
-	{
+	public MaterializationSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating) throws CoreException {
 		super(parserExtensions, validating);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_materializationSpec = ((MaterializationSpecHandler)child).getMaterializationSpec();
+	public void childPopped(ChildHandler child) throws SAXException {
+		materializationSpec = ((MaterializationSpecHandler) child).getMaterializationSpec();
 	}
 
-	public MaterializationSpec parse(String systemId, InputStream input) throws CoreException
-	{
-		try
-		{
-			m_contextURL = URLUtils.normalizeToURL(systemId);
-		}
-		catch(MalformedURLException e)
-		{
-			m_contextURL = null;
+	public MaterializationSpec parse(String systemId, InputStream input) throws CoreException {
+		try {
+			contextURL = URLUtils.normalizeToURL(systemId);
+		} catch (MalformedURLException e) {
+			contextURL = null;
 		}
 		this.parseInput(systemId, input);
-		return m_materializationSpec;
+		return materializationSpec;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(MaterializationSpec.TAG.equals(localName))
-		{
-			MaterializationSpecHandler rmh = new MaterializationSpecHandler(this, m_contextURL);
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if (MaterializationSpec.TAG.equals(localName)) {
+			MaterializationSpecHandler rmh = new MaterializationSpecHandler(this, contextURL);
 			this.pushHandler(rmh, attrs);
-		}
-		else
+		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
 }

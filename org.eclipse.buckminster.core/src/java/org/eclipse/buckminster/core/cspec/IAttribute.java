@@ -14,8 +14,7 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.osgi.filter.Filter;
 
-public interface IAttribute
-{
+public interface IAttribute {
 	AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder);
 
 	Documentation getDocumentation();

@@ -24,77 +24,64 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-abstract class AlterAttributeHandler extends AlterHandler implements IAttributeBuilderSupport
-{
-	private final AttributeHandler m_baseHandler;
+abstract class AlterAttributeHandler extends AlterHandler implements IAttributeBuilderSupport {
+	private final AttributeHandler baseHandler;
 
-	private final AlterPropertiesHandler m_alterInstallationHints = new AlterPropertiesHandler(this,
-			AlterAttribute.ELEM_ALTER_INSTALLER_HINTS)
-	{
+	private final AlterPropertiesHandler alterInstallationHints = new AlterPropertiesHandler(this, AlterAttribute.ELEM_ALTER_INSTALLER_HINTS) {
 		@Override
-		public ExpandingProperties<String> getProperties()
-		{
-			return m_builder.getAlteredHints();
+		public ExpandingProperties<String> getProperties() {
+			return builder.getAlteredHints();
 		}
 
 		@Override
-		protected void addRemovedProperty(String key) throws SAXException
-		{
-			m_builder.addRemovedInstallerHint(key);
+		protected void addRemovedProperty(String key) throws SAXException {
+			builder.addRemovedInstallerHint(key);
 		}
 	};
 
-	private AlterAttributeBuilder m_builder;
+	private AlterAttributeBuilder builder;
 
-	AlterAttributeHandler(AbstractHandler parent, AttributeHandler baseHandler)
-	{
+	AlterAttributeHandler(AbstractHandler parent, AttributeHandler baseHandler) {
 		super(parent);
-		m_baseHandler = baseHandler;
+		this.baseHandler = baseHandler;
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		((ChildPoppedListener)m_baseHandler).childPopped(child);
+	public void childPopped(ChildHandler child) throws SAXException {
+		((ChildPoppedListener) baseHandler).childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(m_alterInstallationHints.getTAG().equals(localName))
-			ch = m_alterInstallationHints;
+		if (alterInstallationHints.getTAG().equals(localName))
+			ch = alterInstallationHints;
 		else
-			ch = m_baseHandler.createHandler(uri, localName, attrs);
+			ch = baseHandler.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public TopLevelAttributeBuilder getAttributeBuilder()
-	{
-		return m_baseHandler.getAttributeBuilder();
+	public TopLevelAttributeBuilder getAttributeBuilder() {
+		return baseHandler.getAttributeBuilder();
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_baseHandler.handleAttributes(attrs);
-		m_builder = this.createAlterAttributeBuilder(m_baseHandler.getAttributeBuilder());
-		m_builder.setCSpecName(this.getCSpecExtensionName());
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		baseHandler.handleAttributes(attrs);
+		builder = this.createAlterAttributeBuilder(baseHandler.getAttributeBuilder());
+		builder.setCSpecName(this.getCSpecExtensionName());
 	}
 
 	abstract AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder);
 
-	AlterAttribute<? extends TopLevelAttribute> getAlterAttribute()
-	{
-		return m_builder.createAlterAttribute();
+	AlterAttribute<? extends TopLevelAttribute> getAlterAttribute() {
+		return builder.createAlterAttribute();
 	}
 
-	AttributeHandler getBaseHandler()
-	{
-		return m_baseHandler;
+	AttributeHandler getBaseHandler() {
+		return baseHandler;
 	}
 
-	AlterAttributeBuilder getBuilder()
-	{
-		return m_builder;
+	AlterAttributeBuilder getBuilder() {
+		return builder;
 	}
 }

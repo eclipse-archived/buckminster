@@ -7,8 +7,7 @@ import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.sax.ISaxable;
 
-public interface IMaterializationSpec extends IMaterializationDirective, ISaxable
-{
+public interface IMaterializationSpec extends IMaterializationDirective, ISaxable {
 	URL getContextURL();
 
 	IMaterializationNode getMatchingNode(IComponentName cName);

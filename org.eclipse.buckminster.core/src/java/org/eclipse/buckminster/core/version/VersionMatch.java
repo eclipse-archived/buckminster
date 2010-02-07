@@ -23,8 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class VersionMatch extends AbstractSaxableElement
-{
+public class VersionMatch extends AbstractSaxableElement {
 	public static final VersionMatch DEFAULT = new VersionMatch(null, null, -1L, null, null);
 
 	public static final String TAG = "versionMatch"; //$NON-NLS-1$
@@ -37,158 +36,131 @@ public class VersionMatch extends AbstractSaxableElement
 
 	public static final String ATTR_TIMESTAMP = "timestamp"; //$NON-NLS-1$
 
-	public static boolean satisfiesRevision(String revision, String satisfiedBy)
-	{
-		if(revision == null)
+	public static boolean satisfiesRevision(String revision, String satisfiedBy) {
+		if (revision == null)
 			return true;
-		if(satisfiedBy == null)
+		if (satisfiedBy == null)
 			return false;
-		if(revision.equals(satisfiedBy))
+		if (revision.equals(satisfiedBy))
 			return true;
 
-		try
-		{
+		try {
 			return Long.parseLong(revision) >= Long.parseLong(satisfiedBy);
-		}
-		catch(NumberFormatException e)
-		{
+		} catch (NumberFormatException e) {
 			return false;
 		}
 	}
 
-	private final String m_artifactInfo;
+	private final String artifactInfo;
 
-	private final VersionSelector m_branchOrTag;
+	private final VersionSelector branchOrTag;
 
-	private final String m_revision;
+	private final String revision;
 
-	private final Date m_timestamp;
+	private final Date timestamp;
 
-	private final Version m_version;
+	private final Version version;
 
-	public VersionMatch(Version version, VersionSelector branchOrTag, long revision, Date timestamp, String artifactInfo)
-	{
-		this(version, branchOrTag, revision == -1
-				? null
-				: Long.toString(revision), timestamp, artifactInfo);
+	public VersionMatch(Version version, VersionSelector branchOrTag, long revision, Date timestamp, String artifactInfo) {
+		this(version, branchOrTag, revision == -1 ? null : Long.toString(revision), timestamp, artifactInfo);
 	}
 
-	public VersionMatch(Version version, VersionSelector branchOrTag, String revision, Date timestamp,
-			String artifactInfo)
-	{
-		m_version = version;
+	public VersionMatch(Version version, VersionSelector branchOrTag, String revision, Date timestamp, String artifactInfo) {
+		this.version = version;
 
-		if(branchOrTag != null && branchOrTag.isDefault())
+		if (branchOrTag != null && branchOrTag.isDefault())
 			branchOrTag = null;
 
-		m_branchOrTag = branchOrTag;
-		m_revision = revision;
-		m_timestamp = timestamp;
-		m_artifactInfo = artifactInfo;
+		this.branchOrTag = branchOrTag;
+		this.revision = revision;
+		this.timestamp = timestamp;
+		this.artifactInfo = artifactInfo;
 	}
 
-	public VersionMatch copyWithVersion(Version version)
-	{
-		if(Trivial.equalsAllowNull(version, m_version))
+	public VersionMatch copyWithVersion(Version newVersion) {
+		if (Trivial.equalsAllowNull(version, newVersion))
 			return this;
 
-		return new VersionMatch(version, m_branchOrTag, -1, null, m_artifactInfo);
+		return new VersionMatch(newVersion, branchOrTag, -1, null, artifactInfo);
 	}
 
-	public String getArtifactInfo()
-	{
-		return m_artifactInfo;
+	public String getArtifactInfo() {
+		return artifactInfo;
 	}
 
-	public VersionSelector getBranchOrTag()
-	{
-		return m_branchOrTag;
+	public VersionSelector getBranchOrTag() {
+		return branchOrTag;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public long getNumericRevision()
-	{
-		return m_revision == null
-				? -1
-				: Long.parseLong(m_revision);
+	public long getNumericRevision() {
+		return revision == null ? -1 : Long.parseLong(revision);
 	}
 
-	public String getRevision()
-	{
-		return m_revision;
+	public String getRevision() {
+		return revision;
 	}
 
-	public Date getTimestamp()
-	{
-		return m_timestamp;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
-	public Version getVersion()
-	{
-		return m_version;
+	public Version getVersion() {
+		return version;
 	}
 
-	public boolean satisfiesRevision(String revision)
-	{
-		return satisfiesRevision(revision, m_revision);
+	public boolean satisfiesRevision(String rev) {
+		return satisfiesRevision(rev, revision);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder bld = new StringBuilder();
 		toString(bld);
 		return bld.toString();
 	}
 
-	public void toString(StringBuilder bld)
-	{
+	public void toString(StringBuilder bld) {
 		boolean needSep = false;
-		if(m_version != null)
-		{
-			bld.append(VersionHelper.getHumanReadable(m_version));
+		if (version != null) {
+			bld.append(VersionHelper.getHumanReadable(version));
 			needSep = true;
 		}
-		if(m_branchOrTag != null)
-		{
-			if(needSep)
+		if (branchOrTag != null) {
+			if (needSep)
 				bld.append(':');
-			m_branchOrTag.toString(bld);
+			branchOrTag.toString(bld);
 		}
-		if(m_revision != null)
-		{
-			if(needSep)
+		if (revision != null) {
+			if (needSep)
 				bld.append(':');
 			bld.append('#');
-			bld.append(m_revision);
+			bld.append(revision);
 		}
-		if(m_timestamp != null)
-		{
+		if (timestamp != null) {
 			bld.append(':');
-			bld.append(DateAndTimeUtils.toISOFormat(m_timestamp));
+			bld.append(DateAndTimeUtils.toISOFormat(timestamp));
 		}
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		if(m_artifactInfo != null)
-			Utils.addAttribute(attrs, ATTR_ARTIFACT_INFO, m_artifactInfo);
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		if (artifactInfo != null)
+			Utils.addAttribute(attrs, ATTR_ARTIFACT_INFO, artifactInfo);
 
-		if(m_branchOrTag != null)
-			Utils.addAttribute(attrs, ATTR_BRANCH_OR_TAG, m_branchOrTag.toString());
+		if (branchOrTag != null)
+			Utils.addAttribute(attrs, ATTR_BRANCH_OR_TAG, branchOrTag.toString());
 
-		if(m_revision != null)
-			Utils.addAttribute(attrs, ATTR_REVISION, m_revision);
+		if (revision != null)
+			Utils.addAttribute(attrs, ATTR_REVISION, revision);
 
-		if(m_timestamp != null)
-			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
+		if (timestamp != null)
+			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(timestamp));
 
-		if(m_version != null)
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, m_version.toString());
+		if (version != null)
+			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
 	}
 }

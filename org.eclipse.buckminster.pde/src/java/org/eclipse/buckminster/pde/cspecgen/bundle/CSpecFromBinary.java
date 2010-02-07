@@ -43,36 +43,33 @@ import org.eclipse.pde.internal.core.ibundle.IBundle;
 import org.osgi.framework.Constants;
 
 /**
- * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF, plugin.xml and fragment.xml files.
+ * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF,
+ * plugin.xml and fragment.xml files.
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class CSpecFromBinary extends CSpecGenerator
-{
+public class CSpecFromBinary extends CSpecGenerator {
 	private static final String SYSTEM_BUNDLE = "org.eclipse.osgi"; //$NON-NLS-1$
 
-	private static final ComponentName SYSTEM_BUNDLE_CNAME = new ComponentName(SYSTEM_BUNDLE,
-			IComponentType.OSGI_BUNDLE);
+	private static final ComponentName SYSTEM_BUNDLE_CNAME = new ComponentName(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE);
 
-	private final IPluginBase m_plugin;
+	private final IPluginBase plugin;
 
-	public CSpecFromBinary(CSpecBuilder cspecBuilder, ICatalogReader reader, IPluginBase plugin)
-	{
+	public CSpecFromBinary(CSpecBuilder cspecBuilder, ICatalogReader reader, IPluginBase plugin) {
 		super(cspecBuilder, reader);
-		m_plugin = plugin;
+		this.plugin = plugin;
 	}
 
 	/**
-	 * Creates the attributes needed for a prebuilt bundle. The target bundle can be represented as a folder or a jar
-	 * file.
+	 * Creates the attributes needed for a prebuilt bundle. The target bundle
+	 * can be represented as a folder or a jar file.
 	 * 
 	 * @param monitor
 	 * @throws CoreException
 	 */
 	@Override
-	public void generate(IProgressMonitor monitor) throws CoreException
-	{
+	public void generate(IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 20);
 
 		CSpecBuilder cspec = getCSpec();
@@ -86,20 +83,19 @@ public class CSpecFromBinary extends CSpecGenerator
 		cspec.addGroup(ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE, true);
 		cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS, true);
 
-		IPluginModelBase model = m_plugin.getPluginModel();
-		if(model instanceof IFragmentModel)
-			addBundleHostDependency((IFragmentModel)model);
-		else
-		{
-			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false,
-					ACTOR_COPY_TARGET_FRAGMENTS, false);
+		IPluginModelBase model = plugin.getPluginModel();
+		if (model instanceof IFragmentModel)
+			addBundleHostDependency((IFragmentModel) model);
+		else {
+			ActionBuilder copyTargetFragments = cspec.addAction(ATTRIBUTE_TARGET_FRAGMENTS, false, ACTOR_COPY_TARGET_FRAGMENTS, false);
 			copyTargetFragments.setProductAlias(ALIAS_OUTPUT);
 			copyTargetFragments.setProductBase(OUTPUT_DIR_FRAGMENTS);
 			copyTargetFragments.setUpToDatePolicy(UpToDatePolicy.ACTOR);
 			bundleAndFragments.addLocalPrerequisite(copyTargetFragments);
 		}
 
-		// There are two types of binaries. The one that contain jar files (and must be unpacked
+		// There are two types of binaries. The one that contain jar files (and
+		// must be unpacked
 		// in order to function) and the one that is a jar file in itself.
 		//
 		addImports();
@@ -107,56 +103,46 @@ public class CSpecFromBinary extends CSpecGenerator
 
 		IPath parentDir = new Path(".."); //$NON-NLS-1$
 		String location = model.getInstallLocation();
-		File locationFile = (location != null)
-				? new File(location)
-				: null;
+		File locationFile = (location != null) ? new File(location) : null;
 		boolean isFile = (locationFile != null) && locationFile.isFile();
 
-		cspec.setShortDesc(expand(m_plugin.getName()));
+		cspec.setShortDesc(expand(plugin.getName()));
 
-		if(isFile)
-		{
-			// No unpacked bundle exists (or should ever exist). We're happy with what we have.
+		if (isFile) {
+			// No unpacked bundle exists (or should ever exist). We're happy
+			// with what we have.
 			//
 			cspec.addGroup(ATTRIBUTE_FULL_CLEAN, true);
 			ArtifactBuilder pluginExport = cspec.addArtifact(ATTRIBUTE_BUNDLE_JAR, true, null);
 			pluginExport.addPath(Path.fromOSString(locationFile.getName()));
-			pluginExport.setBase(parentDir); // we want the site/plugins folder, i.e. the parent of the jar
+			pluginExport.setBase(parentDir); // we want the site/plugins folder,
+												// i.e. the parent of the jar
 			classpath.addLocalPrerequisite(pluginExport);
 			bundleAndFragments.addLocalPrerequisite(pluginExport);
-		}
-		else
-		{
-			// This bundle is a folder. Gather artifacts to be included in the classpath
+		} else {
+			// This bundle is a folder. Gather artifacts to be included in the
+			// classpath
 			//
 			IBundle bundle = null;
-			if(m_plugin instanceof BundlePluginBase)
-				bundle = ((BundlePluginBase)m_plugin).getBundle();
-			else
-			{
-				if(locationFile != null && locationFile.isDirectory())
-				{
+			if (plugin instanceof BundlePluginBase)
+				bundle = ((BundlePluginBase) plugin).getBundle();
+			else {
+				if (locationFile != null && locationFile.isDirectory()) {
 					InputStream input = null;
-					try
-					{
+					try {
 						input = new BufferedInputStream(new FileInputStream(new File(locationFile, BUNDLE_FILE)));
 						ExternalBundleModel ebm = new ExternalBundleModel(locationFile);
 						ebm.load(input, false);
 						bundle = ebm.getBundle();
-					}
-					catch(IOException e)
-					{
-					}
-					finally
-					{
+					} catch (IOException e) {
+					} finally {
 						IOUtils.close(input);
 					}
 				}
 			}
 
 			String bundleClassPath = null;
-			if(bundle != null)
-			{
+			if (bundle != null) {
 				bundleClassPath = bundle.getHeader(Constants.BUNDLE_CLASSPATH);
 				setFilter(bundle.getHeader(ICoreConstants.PLATFORM_FILTER));
 			}
@@ -165,18 +151,17 @@ public class CSpecFromBinary extends CSpecGenerator
 			boolean isImportedBundle = false;
 
 			ArtifactBuilder bundleClasspath = null;
-			if(bundleClassPath == null)
+			if (bundleClassPath == null)
 				classpath.addSelfRequirement();
-			else
-			{
-				// Create an artifact that contains all entries listed in the classpath
+			else {
+				// Create an artifact that contains all entries listed in the
+				// classpath
 				//
 				bundleClasspath = cspec.addArtifact(ATTRIBUTE_BUNDLE_CLASSPATH, false, null);
 				StringTokenizer tokens = new StringTokenizer(bundleClassPath, ","); //$NON-NLS-1$
-				while(tokens.hasMoreTokens())
-				{
+				while (tokens.hasMoreTokens()) {
 					String token = tokens.nextToken().trim();
-					if(token.equals(jarName))
+					if (token.equals(jarName))
 						isImportedBundle = true;
 					bundleClasspath.addPath(new Path(token));
 				}
@@ -184,22 +169,19 @@ public class CSpecFromBinary extends CSpecGenerator
 			}
 
 			ActionBuilder bundleExport;
-			if(!isImportedBundle)
-			{
-				// In order to create a jar of the unpackedPlugin, we need a temporary directory
+			if (!isImportedBundle) {
+				// In order to create a jar of the unpackedPlugin, we need a
+				// temporary directory
 				// since this artifact is not a workspace artifact
 				//
 				bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_RECREATE_JAR, true);
 				bundleExport.addProductPath(Path.fromPortableString(jarName));
 				bundleExport.getPrerequisitesBuilder().addSelfRequirement();
-			}
-			else
-			{
+			} else {
 				bundleExport = addAntAction(ATTRIBUTE_BUNDLE_JAR, TASK_COPY_GROUP, true);
-				if(bundleClasspath.getPaths().size() == 1)
+				if (bundleClasspath.getPaths().size() == 1)
 					bundleExport.getPrerequisitesBuilder().addLocalPrerequisite(bundleClasspath);
-				else
-				{
+				else {
 					ArtifactBuilder importedJar = cspec.addArtifact(ATTRIBUTE_IMPORTED_JAR, false, null);
 					importedJar.addPath(Path.fromPortableString(jarName));
 					bundleExport.getPrerequisitesBuilder().addLocalPrerequisite(importedJar);
@@ -215,20 +197,17 @@ public class CSpecFromBinary extends CSpecGenerator
 	}
 
 	@Override
-	protected String getProductOutputFolder(String productId)
-	{
+	protected String getProductOutputFolder(String productId) {
 		return null;
 	}
 
 	@Override
-	protected String getPropertyFileName()
-	{
+	protected String getPropertyFileName() {
 		return PLUGIN_PROPERTIES_FILE;
 	}
 
-	private void addImports() throws CoreException
-	{
-		IPluginModelBase model = m_plugin.getPluginModel();
+	private void addImports() throws CoreException {
+		IPluginModelBase model = plugin.getPluginModel();
 		boolean isFragment = model.isFragmentModel();
 
 		NodeQuery query = getReader().getNodeQuery();
@@ -238,21 +217,18 @@ public class CSpecFromBinary extends CSpecGenerator
 		GroupBuilder reExports = cspec.getRequiredGroup(ATTRIBUTE_JAVA_BINARIES);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
 
-		ImportSpecification[] imports = getImports(m_plugin);
-		if(imports.length == 0)
-		{
+		ImportSpecification[] imports = getImports(plugin);
+		if (imports.length == 0) {
 			// Just add the mandatory system bundle. It's needed since
 			// that bundle defines the execution environments.
 			//
-			if(!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName()) || cquery.skipComponent(SYSTEM_BUNDLE_CNAME,
-					query.getContext())))
-				cspec.addDependency(createDependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, (String)null, null));
+			if (!(isFragment || SYSTEM_BUNDLE.equals(cspec.getName()) || cquery.skipComponent(SYSTEM_BUNDLE_CNAME, query.getContext())))
+				cspec.addDependency(createDependency(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE, (String) null, null));
 			return;
 		}
 
-		for(ImportSpecification pluginImport : imports)
-		{
-			if(pluginImport.isOptional())
+		for (ImportSpecification pluginImport : imports) {
+			if (pluginImport.isOptional())
 				//
 				// We don't care about expressing dependencies to
 				// optional plugins when we peruse the runtime
@@ -261,31 +237,29 @@ public class CSpecFromBinary extends CSpecGenerator
 				continue;
 
 			String pluginId = pluginImport.getName();
-			if(pluginId.equals(Constants.SYSTEM_BUNDLE_SYMBOLICNAME))
+			if (pluginId.equals(Constants.SYSTEM_BUNDLE_SYMBOLICNAME))
 				continue;
 
 			ComponentRequestBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
-			if(skipComponent(cquery, dependency) || !addDependency(dependency))
+			if (skipComponent(cquery, dependency) || !addDependency(dependency))
 				continue;
 
 			String component = dependency.getName();
 			addExternalPrerequisite(bundleJars, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS);
-			if(pluginImport.isExported())
+			if (pluginImport.isExported())
 				addExternalPrerequisite(reExports, component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_JAVA_BINARIES);
 		}
 	}
 
-	private String buildArtifactName(boolean asJar)
-	{
+	private String buildArtifactName(boolean asJar) {
 		StringBuilder bld = new StringBuilder();
-		bld.append(m_plugin.getId());
-		String ver = m_plugin.getVersion();
-		if(ver != null)
-		{
+		bld.append(plugin.getId());
+		String ver = plugin.getVersion();
+		if (ver != null) {
 			bld.append('_');
 			bld.append(ver);
 		}
-		if(asJar)
+		if (asJar)
 			bld.append(".jar"); //$NON-NLS-1$
 		else
 			bld.append('/');

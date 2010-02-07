@@ -13,23 +13,21 @@ import java.io.File;
 import org.eclipse.ui.IEditorInput;
 
 /**
- * <code>ExternalFileEditorInput</code> that is derived from another <code>IEditorInput</code>
+ * <code>ExternalFileEditorInput</code> that is derived from another
+ * <code>IEditorInput</code>
  * 
  * @author Karel Brezina
  */
-public class DerivedExternalFileEditorInput extends ExternalFileEditorInput implements IDerivedEditorInput
-{
-	private IEditorInput m_originalInput;
+public class DerivedExternalFileEditorInput extends ExternalFileEditorInput implements IDerivedEditorInput {
+	private IEditorInput originalInput;
 
-	public DerivedExternalFileEditorInput(IEditorInput originalInput, File file, String label, String tooltipText)
-	{
+	public DerivedExternalFileEditorInput(IEditorInput originalInput, File file, String label, String tooltipText) {
 		super(file, label, tooltipText);
-		m_originalInput = originalInput;
+		this.originalInput = originalInput;
 	}
 
-	public IEditorInput getOriginalInput()
-	{
-		return m_originalInput;
+	public IEditorInput getOriginalInput() {
+		return originalInput;
 	}
 
 }

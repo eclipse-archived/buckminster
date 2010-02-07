@@ -13,12 +13,10 @@ package org.eclipse.buckminster.core.common.model;
 /**
  * @author Thomas Hallgren
  */
-public class CircularExpansionException extends RuntimeException
-{
+public class CircularExpansionException extends RuntimeException {
 	private static final long serialVersionUID = 4071760256419163007L;
 
-	CircularExpansionException(String propVal)
-	{
+	CircularExpansionException(String propVal) {
 		super(propVal);
 	}
 }

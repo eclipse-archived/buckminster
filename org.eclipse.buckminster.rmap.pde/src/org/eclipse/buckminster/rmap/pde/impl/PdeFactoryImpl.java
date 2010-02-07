@@ -17,12 +17,12 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class PdeFactoryImpl extends EFactoryImpl implements PdeFactory
-{
+public class PdeFactoryImpl extends EFactoryImpl implements PdeFactory {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -30,40 +30,35 @@ public class PdeFactoryImpl extends EFactoryImpl implements PdeFactory
 	 * @generated
 	 */
 	@Deprecated
-	public static PdePackage getPackage()
-	{
+	public static PdePackage getPackage() {
 		return PdePackage.eINSTANCE;
 	}
 
 	/**
-	 * Creates the default factory implementation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates the default factory implementation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static PdeFactory init()
-	{
-		try
-		{
-			PdeFactory thePdeFactory = (PdeFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/PDEMapProvider-1.0");
-			if(thePdeFactory != null)
-			{
+	public static PdeFactory init() {
+		try {
+			PdeFactory thePdeFactory = (PdeFactory) EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/PDEMapProvider-1.0");
+			if (thePdeFactory != null) {
 				return thePdeFactory;
 			}
-		}
-		catch(Exception exception)
-		{
+		} catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new PdeFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public PdeFactoryImpl()
-	{
+	public PdeFactoryImpl() {
 		super();
 	}
 
@@ -73,14 +68,12 @@ public class PdeFactoryImpl extends EFactoryImpl implements PdeFactory
 	 * @generated
 	 */
 	@Override
-	public EObject create(EClass eClass)
-	{
-		switch(eClass.getClassifierID())
-		{
-		case PdePackage.PDE_MAP_PROVIDER:
-			return createPDEMapProvider();
-		default:
-			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+	public EObject create(EClass eClass) {
+		switch (eClass.getClassifierID()) {
+			case PdePackage.PDE_MAP_PROVIDER:
+				return createPDEMapProvider();
+			default:
+				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -89,8 +82,7 @@ public class PdeFactoryImpl extends EFactoryImpl implements PdeFactory
 	 * 
 	 * @generated
 	 */
-	public PDEMapProvider createPDEMapProvider()
-	{
+	public PDEMapProvider createPDEMapProvider() {
 		PDEMapProviderImpl pdeMapProvider = new PDEMapProviderImpl();
 		return pdeMapProvider;
 	}
@@ -100,9 +92,8 @@ public class PdeFactoryImpl extends EFactoryImpl implements PdeFactory
 	 * 
 	 * @generated
 	 */
-	public PdePackage getPdePackage()
-	{
-		return (PdePackage)getEPackage();
+	public PdePackage getPdePackage() {
+		return (PdePackage) getEPackage();
 	}
 
 } // PdeFactoryImpl

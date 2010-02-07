@@ -17,14 +17,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class BOMComponentType extends AbstractComponentType
-{
-	private static final IResolutionBuilder s_builder = new BOMBuilder();
+public class BOMComponentType extends AbstractComponentType {
+	private static final IResolutionBuilder builder = new BOMBuilder();
 
-	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
-		return s_builder;
+		return builder;
 	}
 }

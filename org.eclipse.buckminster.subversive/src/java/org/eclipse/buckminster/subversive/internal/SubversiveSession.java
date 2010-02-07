@@ -41,208 +41,186 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
 
 /**
  * <p>
- * The Subversive repository will be able to use reader checks if a repository contains the three recommended
- * directories <code>trunk</code>, <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory
- * is interpreted as no <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. In
- * order to use <code>trunk</code>, <code>tags</code>, and <code>branches</code> repository identifier must contain the
- * path element <code>trunk</code>. Anything that follows the <code>trunk</code> element in the path will be considered
- * a <code>module</code> path. If no <code>trunk</code> element is present in the path, the last element will be
- * considered the <code>module</code>
+ * The Subversive repository will be able to use reader checks if a repository
+ * contains the three recommended directories <code>trunk</code>,
+ * <code>tags</code>, and <code>branches</code>. A missing <code>tags</code>
+ * directory is interpreted as no <code>tags</code>. A missing
+ * <code>branches</code> directory is interpreted as no branches. In order to
+ * use <code>trunk</code>, <code>tags</code>, and <code>branches</code>
+ * repository identifier must contain the path element <code>trunk</code>.
+ * Anything that follows the <code>trunk</code> element in the path will be
+ * considered a <code>module</code> path. If no <code>trunk</code> element is
+ * present in the path, the last element will be considered the
+ * <code>module</code>
  * </p>
  * <p>
- * The repository URL may also contain a query part that in turn may have four different flags:
+ * The repository URL may also contain a query part that in turn may have four
+ * different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
- * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
+ * <dd>When resolving a tag, put the module name between the <code>tags</code>
+ * directory and the actual tag</dd>
  * <dt>moduleAfterTag</dt>
  * <dd>When resolving a tag, append the module name after the actual tag</dd>
  * <dt>moduleBeforeBranch</dt>
- * <dd>When resolving a branch, put the module name between the <code>branches</code> directory and the actual branch</dd>
+ * <dd>When resolving a branch, put the module name between the
+ * <code>branches</code> directory and the actual branch</dd>
  * <dt>moduleAfterBranch</dt>
  * <dd>When resolving a branch, append the module name after the actual branch</dd>
  * </dl>
  * </p>
- * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end of the resolved URL.
+ * A fragment in the repository URL will be treated as a sub-module. It will be
+ * appended at the end of the resolved URL.
  * 
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEntry, SVNRevision>
-{
-	private class UnattendedPromptUserPassword implements ISVNCredentialsPrompt
-	{
-		private int m_promptLimit = 3;
+public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEntry, SVNRevision> {
+	private class UnattendedPromptUserPassword implements ISVNCredentialsPrompt {
+		private int promptLimit = 3;
 
-		public int askTrustSSLServer(Object location, String info, boolean allowPermanently)
-		{
+		public int askTrustSSLServer(Object location, String info, boolean allowPermanently) {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.askTrustSSLServer(location, info, allowPermanently);
 		}
 
-		public String getPassword()
-		{
-			return m_password;
+		public String getPassword() {
+			return password;
 		}
 
-		public String getProxyHost()
-		{
+		public String getProxyHost() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyHost();
 		}
 
-		public String getProxyPassword()
-		{
+		public String getProxyPassword() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyPassword();
 		}
 
-		public int getProxyPort()
-		{
+		public int getProxyPort() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyPort();
 		}
 
-		public String getProxyUserName()
-		{
+		public String getProxyUserName() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyUserName();
 		}
 
-		public String getRealmToSave()
-		{
+		public String getRealmToSave() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getRealmToSave();
 		}
 
-		public int getSSHPort()
-		{
+		public int getSSHPort() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSHPort();
 		}
 
-		public String getSSHPrivateKeyPassphrase()
-		{
+		public String getSSHPrivateKeyPassphrase() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSHPrivateKeyPassphrase();
 		}
 
-		public String getSSHPrivateKeyPath()
-		{
+		public String getSSHPrivateKeyPath() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSHPrivateKeyPath();
 		}
 
-		public String getSSLClientCertPassword()
-		{
+		public String getSSLClientCertPassword() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSLClientCertPassword();
 		}
 
-		public String getSSLClientCertPath()
-		{
+		public String getSSLClientCertPath() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSLClientCertPath();
 		}
 
-		public String getUsername()
-		{
-			return m_username;
+		public String getUsername() {
+			return username;
 		}
 
-		public boolean isProxyAuthenticationEnabled()
-		{
+		public boolean isProxyAuthenticationEnabled() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isProxyAuthenticationEnabled();
 		}
 
-		public boolean isProxyEnabled()
-		{
+		public boolean isProxyEnabled() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isProxyEnabled();
 		}
 
-		public boolean isSaveCredentialsEnabled()
-		{
+		public boolean isSaveCredentialsEnabled() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSaveCredentialsEnabled();
 		}
 
-		public boolean isSaveProxyPassword()
-		{
+		public boolean isSaveProxyPassword() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSaveProxyPassword();
 		}
 
-		public boolean isSSHPrivateKeyPassphraseSaved()
-		{
+		public boolean isSSHPrivateKeyPassphraseSaved() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSSHPrivateKeyPassphraseSaved();
 		}
 
-		public boolean isSSHPublicKeySelected()
-		{
+		public boolean isSSHPublicKeySelected() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSSHPublicKeySelected();
 		}
 
-		public boolean isSSLAuthenticationEnabled()
-		{
+		public boolean isSSLAuthenticationEnabled() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSSLAuthenticationEnabled();
 		}
 
-		public boolean isSSLSavePassphrase()
-		{
+		public boolean isSSLSavePassphrase() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSSLSavePassphrase();
 		}
 
-		public boolean prompt(Object arg0, String arg1)
-		{
-			// We support the password prompt only if we actually know the password
+		public boolean prompt(Object arg0, String arg1) {
+			// We support the password prompt only if we actually know the
+			// password
 			// and only a limited number of times
 			//
-			return m_password != null && --m_promptLimit >= 0;
+			return password != null && --promptLimit >= 0;
 		}
 
-		public boolean promptProxy(Object location)
-		{
+		public boolean promptProxy(Object location) {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.promptProxy(location);
 		}
 
-		public boolean promptSSH(Object location, String realm)
-		{
+		public boolean promptSSH(Object location, String realm) {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.promptSSH(location, realm);
 		}
 
-		public boolean promptSSL(Object location, String realm)
-		{
+		public boolean promptSSL(Object location, String realm) {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.promptSSL(location, realm);
 		}
 	}
 
 	private static final SubversiveEntryHelper HELPER = new SubversiveEntryHelper();
 
-	private static final SVNEntry[] s_emptyFolder = new SVNEntry[0];
+	private static final SVNEntry[] emptyFolder = new SVNEntry[0];
 
 	private static final String UNKNOWN_ROOT_PREFIX = SubversiveSession.class.getPackage().getName() + ".root."; //$NON-NLS-1$
 
-	public static URI getURIParent(URI uri)
-	{
-		if(uri == null)
+	public static URI getURIParent(URI uri) {
+		if (uri == null)
 			return null;
 
 		String path = uri.toString();
-		if(path == null)
+		if (path == null)
 			return null;
 
 		int lastSlash = path.lastIndexOf('/');
-		if(lastSlash == path.length() - 1 && lastSlash > 0)
-		{
+		if (lastSlash == path.length() - 1 && lastSlash > 0) {
 			path = path.substring(0, path.length() - 1);
 			lastSlash = path.lastIndexOf('/');
 		}
-		if(lastSlash < 0)
+		if (lastSlash < 0)
 			return null;
 
 		String parentPath = path.substring(0, lastSlash);
-		try
-		{
+		try {
 			return new URI(parentPath);
-		}
-		catch(URISyntaxException e)
-		{
+		} catch (URISyntaxException e) {
 			return null;
 		}
 	}
 
-	private ISVNConnector m_proxy;
+	private ISVNConnector proxy;
 
 	/**
 	 * @param repositoryURI
-	 *            The string representation of the URI that appoints the trunk of repository module. No branch or tag
-	 *            information must be included.
+	 *            The string representation of the URI that appoints the trunk
+	 *            of repository module. No branch or tag information must be
+	 *            included.
 	 * @param branch
 	 *            The desired branch or <code>null</code> if not applicable.
 	 * @param tag
@@ -255,201 +233,165 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 	 *            The context used for the resolution/materialization operation
 	 * @throws CoreException
 	 */
-	public SubversiveSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
-			RMContext context) throws CoreException
-	{
+	public SubversiveSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp, RMContext context)
+			throws CoreException {
 		super(repositoryURI, branchOrTag, revision, timestamp, context);
 	}
 
-	public void close()
-	{
-		m_proxy.dispose();
+	public void close() {
+		proxy.dispose();
+	}
+
+	public SVNEntry getDirEntry(URI uri, SVNRevision revision, IProgressMonitor monitor) throws CoreException {
+		final URI parent = getURIParent(uri);
+		if (parent == null)
+			return null;
+
+		final String path = uri.getPath();
+		final String entryPath = path.substring(path.lastIndexOf('/') + 1);
+		final SVNEntry[] entries = listFolder(parent, monitor);
+		for (SVNEntry entry : entries)
+			if (entryPath.equals(entry.path))
+				return entry;
+		return null;
+	}
+
+	public long getLastChangeNumber() throws CoreException {
+		try {
+			URI svnURL = getSVNUrl(null);
+			SVNEntry root = getDirEntry(svnURL, getRevision(), null);
+			if (root == null)
+				throw new FileNotFoundException(svnURL.toString());
+			return root.revision;
+		} catch (Exception e) {
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	public Date getLastTimestamp() throws CoreException {
+		try {
+			URI svnURL = getSVNUrl(null);
+			SVNEntry root = getDirEntry(svnURL, getRevision(), null);
+			if (root == null)
+				throw new FileNotFoundException(svnURL.toString());
+			return new Date(root.date);
+		} catch (Exception e) {
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	public SVNEntry getRootEntry(IProgressMonitor monitor) throws CoreException {
+		return getDirEntry(getSVNUrl(null), getRevision(), monitor);
+	}
+
+	public ISvnEntryHelper<SVNEntry> getSvnEntryHelper() {
+		return HELPER;
 	}
 
 	@Override
-	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException
-	{
+	public SVNRevision getSVNRevision(long revision, Date timestamp) {
+		if (revision == -1) {
+			if (timestamp == null)
+				return SVNRevision.HEAD;
+
+			return SVNRevision.fromDate(timestamp.getTime());
+		}
+		if (timestamp != null)
+			throw new IllegalArgumentException(org.eclipse.buckminster.subversion.Messages.svn_session_cannot_use_both_timestamp_and_revision_number);
+		return SVNRevision.fromNumber(revision);
+	}
+
+	@Override
+	public String toString() {
+		try {
+			return getSVNUrl(null).toString();
+		} catch (CoreException e) {
+			return super.toString();
+		}
+	}
+
+	@Override
+	protected void createRoots(Collection<RepositoryAccess> sourceRoots) throws CoreException {
 		final SVNRemoteStorage storage = SVNRemoteStorage.instance();
-		for(RepositoryAccess root : sourceRoots)
-		{
+		for (RepositoryAccess root : sourceRoots) {
 			IRepositoryLocation location = storage.newRepositoryLocation();
 			location.setUrl(root.getSvnURL().toString());
 			location.setPassword(root.getPassword());
 			location.setUsername(root.getUser());
 			storage.addRepositoryLocation(location);
 		}
-		try
-		{
+		try {
 			storage.saveConfiguration();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
 	@Override
-	protected ISubversionCache<SVNEntry> getCache(Map<UUID, Object> userCache)
-	{
-		assert (m_cache == null);
-		final SubversiveCache cache = new SubversiveCache();
-		cache.initialize(userCache);
-		return cache;
-	}
-
-	public SVNEntry getDirEntry(URI uri, SVNRevision revision, IProgressMonitor monitor) throws CoreException
-	{
-		final URI parent = getURIParent(uri);
-		if(parent == null)
-			return null;
-
-		final String path = uri.getPath();
-		final String entryPath = path.substring(path.lastIndexOf('/') + 1);
-		final SVNEntry[] entries = listFolder(parent, monitor);
-		for(SVNEntry entry : entries)
-			if(entryPath.equals(entry.path))
-				return entry;
-		return null;
+	protected ISubversionCache<SVNEntry> getCache(Map<UUID, Object> userCache) {
+		assert (cache == null);
+		final SubversiveCache svnCache = new SubversiveCache();
+		svnCache.initialize(userCache);
+		return svnCache;
 	}
 
 	@Override
-	protected SVNEntry[] getEmptyEntryList()
-	{
-		return s_emptyFolder;
+	protected SVNEntry[] getEmptyEntryList() {
+		return emptyFolder;
 	}
 
 	@Override
-	protected IRepositoryLocation[] getKnownRepositories()
-	{
+	protected IRepositoryLocation[] getKnownRepositories() {
 		return SVNRemoteStorage.instance().getRepositoryLocations();
 	}
 
-	public long getLastChangeNumber() throws CoreException
-	{
-		try
-		{
-			URI svnURL = getSVNUrl(null);
-			SVNEntry root = getDirEntry(svnURL, getRevision(), null);
-			if(root == null)
-				throw new FileNotFoundException(svnURL.toString());
-			return root.revision;
-		}
-		catch(Exception e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
-	public Date getLastTimestamp() throws CoreException
-	{
-		try
-		{
-			URI svnURL = getSVNUrl(null);
-			SVNEntry root = getDirEntry(svnURL, getRevision(), null);
-			if(root == null)
-				throw new FileNotFoundException(svnURL.toString());
-			return new Date(root.date);
-		}
-		catch(Exception e)
-		{
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
-	public SVNEntry getRootEntry(IProgressMonitor monitor) throws CoreException
-	{
-		return getDirEntry(getSVNUrl(null), getRevision(), monitor);
-	}
-
 	@Override
-	protected String getRootUrl(IRepositoryLocation location)
-	{
+	protected String getRootUrl(IRepositoryLocation location) {
 		return location.getRoot().getUrl();
 	}
 
-	public ISvnEntryHelper<SVNEntry> getSvnEntryHelper()
-	{
-		return HELPER;
-	}
-
-	ISVNConnector getSVNProxy()
-	{
-		if(m_proxy == null)
-			m_proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
-		return m_proxy;
-	}
-
 	@Override
-	public SVNRevision getSVNRevision(long revision, Date timestamp)
-	{
-		if(revision == -1)
-		{
-			if(timestamp == null)
-				return SVNRevision.HEAD;
-
-			return SVNRevision.fromDate(timestamp.getTime());
-		}
-		if(timestamp != null)
-			throw new IllegalArgumentException(
-					org.eclipse.buckminster.subversion.Messages.svn_session_cannot_use_both_timestamp_and_revision_number);
-		return SVNRevision.fromNumber(revision);
-	}
-
-	@Override
-	protected String getUnknownRootPrefix()
-	{
+	protected String getUnknownRootPrefix() {
 		return UNKNOWN_ROOT_PREFIX;
 	}
 
 	@Override
-	protected void initializeSvn(RMContext context, URI ourRoot, IRepositoryLocation bestMatch)
-	{
-		final ISVNConnector proxy = getSVNProxy();
-		proxy.setTouchUnresolved(false);
-		proxy.setCommitMissingFiles(false);
-		proxy.setSSLCertificateCacheEnabled(true);
-		proxy.setUsername(m_username);
-		proxy.setPassword(m_password);
-		proxy.setCredentialsCacheEnabled(true);
-		if(bestMatch == null)
-		{
-			addUnknownRoot(context.getBindingProperties(), new RepositoryAccess(ourRoot, m_username, m_password));
-		}
-		else
-		{
-			SVNUtility.configureProxy(proxy, m_repositoryLocation);
+	protected void initializeSvn(RMContext context, URI ourRoot, IRepositoryLocation bestMatch) {
+		final ISVNConnector svnProxy = getSVNProxy();
+		svnProxy.setTouchUnresolved(false);
+		svnProxy.setCommitMissingFiles(false);
+		svnProxy.setSSLCertificateCacheEnabled(true);
+		svnProxy.setUsername(username);
+		svnProxy.setPassword(password);
+		svnProxy.setCredentialsCacheEnabled(true);
+		if (bestMatch == null) {
+			addUnknownRoot(context.getBindingProperties(), new RepositoryAccess(ourRoot, username, password));
+		} else {
+			SVNUtility.configureProxy(svnProxy, repositoryLocation);
 			IOptionProvider optionProvider = SVNTeamPlugin.instance().getOptionProvider();
 			ISVNCredentialsPrompt externalPrompt = optionProvider.getCredentialsPrompt();
-			if(externalPrompt != null)
-				proxy.setPrompt(new BaseCredentialsPromptWrapper(externalPrompt, m_repositoryLocation));
+			if (externalPrompt != null)
+				svnProxy.setPrompt(new BaseCredentialsPromptWrapper(externalPrompt, repositoryLocation));
 		}
 		// Add the UnattendedPromptUserPassword callback only in case
 		// the authentication data (at least the username) is actually
 		// specified in the URL
 		//
-		if(m_username != null)
-			proxy.setPrompt(new UnattendedPromptUserPassword());
+		if (username != null)
+			svnProxy.setPrompt(new UnattendedPromptUserPassword());
 	}
 
 	@Override
-	protected SVNEntry[] innerListFolder(URI url, IProgressMonitor monitor) throws Exception
-	{
+	protected SVNEntry[] innerListFolder(URI url, IProgressMonitor monitor) throws Exception {
 		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 100);
-		return SVNUtility.list(m_proxy, new SVNEntryRevisionReference(url.toString(), null, getRevision()),
-				ISVNConnector.Depth.IMMEDIATES, SVNEntry.Fields.ALL, ISVNConnector.Options.NONE, svnMon);
+		return SVNUtility.list(proxy, new SVNEntryRevisionReference(url.toString(), null, getRevision()), ISVNConnector.Depth.IMMEDIATES,
+				SVNEntry.Fields.ALL, ISVNConnector.Options.NONE, svnMon);
 
 	}
 
-	@Override
-	public String toString()
-	{
-		try
-		{
-			return getSVNUrl(null).toString();
-		}
-		catch(CoreException e)
-		{
-			return super.toString();
-		}
+	ISVNConnector getSVNProxy() {
+		if (proxy == null)
+			proxy = CoreExtensionsManager.instance().getSVNConnectorFactory().newInstance();
+		return proxy;
 	}
 }

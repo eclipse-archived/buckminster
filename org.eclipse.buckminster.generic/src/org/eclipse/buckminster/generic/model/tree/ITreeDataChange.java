@@ -18,8 +18,7 @@ package org.eclipse.buckminster.generic.model.tree;
  * @author Henrik Lindberg
  * 
  */
-public interface ITreeDataChange
-{
+public interface ITreeDataChange {
 	public void addTreeDataListener(ITreeDataListener listener);
 
 	public void removeTreeDataListener(ITreeDataListener listener);

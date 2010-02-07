@@ -23,69 +23,56 @@ import org.eclipse.equinox.p2.metadata.Version;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractVersionFinder implements IVersionFinder
-{
-	private final Provider m_provider;
+public abstract class AbstractVersionFinder implements IVersionFinder {
+	private final Provider provider;
 
-	private final NodeQuery m_query;
+	private final NodeQuery query;
 
-	private final IComponentType m_componentType;
+	private final IComponentType componentType;
 
-	public AbstractVersionFinder(Provider provider, IComponentType componentType, NodeQuery query)
-	{
-		m_provider = provider;
-		m_query = query;
-		m_componentType = componentType;
+	public AbstractVersionFinder(Provider provider, IComponentType componentType, NodeQuery query) {
+		this.provider = provider;
+		this.query = query;
+		this.componentType = componentType;
 	}
 
-	public void close()
-	{
+	public void close() {
 	}
 
-	public IComponentType getComponentType()
-	{
-		return m_componentType;
+	public IComponentType getComponentType() {
+		return componentType;
 	}
 
-	public IConnectContext getConnectContext()
-	{
-		IConnectContext cctx = m_provider.getConnectContext();
-		if(cctx == null)
-			cctx = m_query.getComponentQuery().getConnectContext();
+	public IConnectContext getConnectContext() {
+		IConnectContext cctx = provider.getConnectContext();
+		if (cctx == null)
+			cctx = query.getComponentQuery().getConnectContext();
 		return cctx;
 	}
 
-	public Provider getProvider()
-	{
-		return m_provider;
+	public Provider getProvider() {
+		return provider;
 	}
 
-	public ProviderMatch getProviderMatch(VersionMatch versionMatch, IComponentType ctypeUsed, ProviderScore score)
-			throws CoreException
-	{
-		return new ProviderMatch(m_provider, ctypeUsed, versionMatch, score, m_query);
+	public ProviderMatch getProviderMatch(VersionMatch versionMatch, IComponentType ctypeUsed, ProviderScore score) throws CoreException {
+		return new ProviderMatch(provider, ctypeUsed, versionMatch, score, query);
 	}
 
-	public NodeQuery getQuery()
-	{
-		return m_query;
+	public NodeQuery getQuery() {
+		return query;
 	}
 
-	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
-	{
-		return m_query.logDecision(decisionType, args);
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
+		return query.logDecision(decisionType, args);
 	}
 
-	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
-	{
-		return m_query.logDecision(decisionType, args);
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
+		return query.logDecision(decisionType, args);
 	}
 
-	protected Version getVersionFromArtifacts(VersionSelector branchOrTag, IProgressMonitor monitor)
-			throws CoreException
-	{
-		VersionMatch match = new VersionMatch(null, branchOrTag, m_query.getRevision(), m_query.getTimestamp(), null);
-		ProviderMatch rInfo = new ProviderMatch(m_provider, m_componentType, match, m_query);
-		return m_componentType.getComponentVersion(rInfo, monitor);
+	protected Version getVersionFromArtifacts(VersionSelector branchOrTag, IProgressMonitor monitor) throws CoreException {
+		VersionMatch match = new VersionMatch(null, branchOrTag, query.getRevision(), query.getTimestamp(), null);
+		ProviderMatch rInfo = new ProviderMatch(provider, componentType, match, query);
+		return componentType.getComponentVersion(rInfo, monitor);
 	}
 }

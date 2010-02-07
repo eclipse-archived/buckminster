@@ -37,133 +37,116 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
 
-public class GlobalContext extends ModelCache implements IGlobalContext
-{
-	private final ArrayList<Integer> m_executedEclipseKinds = new ArrayList<Integer>();
+public class GlobalContext extends ModelCache implements IGlobalContext {
+	private final ArrayList<Integer> executedEclipseKinds = new ArrayList<Integer>();
 
-	private final ArrayList<IPath> m_scheduledRemovals = new ArrayList<IPath>();
+	private final ArrayList<IPath> scheduledRemovals = new ArrayList<IPath>();
 
-	private final Map<UUID, Object> m_invocationCache = new HashMap<UUID, Object>();
+	private final Map<UUID, Object> invocationCache = new HashMap<UUID, Object>();
 
-	private final HashSet<Action> m_actionsPerformed = new HashSet<Action>();
+	private final HashSet<Action> actionsPerformed = new HashSet<Action>();
 
-	private final Map<String, ? extends Object> m_globalProps;
+	private final Map<String, ? extends Object> globalProps;
 
-	private final boolean m_forcedExecution;
+	private final boolean forcedExecution;
 
-	private final boolean m_quietExecution;
+	private final boolean quietExecution;
 
-	private boolean m_workspaceRefreshPending;
+	private boolean workspaceRefreshPending;
 
-	private IStatus m_status;
+	private IStatus status;
 
-	private List<Resolution> m_generatedResolutions;
+	private List<Resolution> generatedResolutions;
 
-	private List<Materialization> m_generatedMaterializations;
+	private List<Materialization> generatedMaterializations;
 
-	public GlobalContext(Map<String, ? extends Object> userProps, boolean forcedExecution, boolean quietExecution)
-	{
+	public GlobalContext(Map<String, ? extends Object> userProps, boolean forcedExecution, boolean quietExecution) {
 		super(userProps);
-		m_globalProps = RMContext.getGlobalPropertyAdditions();
-		m_forcedExecution = forcedExecution;
-		m_quietExecution = quietExecution;
+		this.globalProps = RMContext.getGlobalPropertyAdditions();
+		this.forcedExecution = forcedExecution;
+		this.quietExecution = quietExecution;
 	}
 
-	public synchronized void addGeneratedResolution(Resolution resolution, IPath location)
-	{
-		if(m_generatedResolutions == null)
-		{
-			m_generatedResolutions = new ArrayList<Resolution>();
-			m_generatedMaterializations = new ArrayList<Materialization>();
+	public synchronized void addGeneratedResolution(Resolution resolution, IPath location) {
+		if (generatedResolutions == null) {
+			generatedResolutions = new ArrayList<Resolution>();
+			generatedMaterializations = new ArrayList<Materialization>();
 		}
-		m_generatedResolutions.add(resolution);
-		m_generatedMaterializations.add(new Materialization(location, resolution.getComponentIdentifier()));
+		generatedResolutions.add(resolution);
+		generatedMaterializations.add(new Materialization(location, resolution.getComponentIdentifier()));
 	}
 
-	public Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException
-	{
-		Map<String, String> actionProps = (attribute instanceof IAction)
-				? ((IAction)attribute).getProperties()
-				: Collections.<String, String> emptyMap();
-		int mapSize = m_globalProps.size() + actionProps.size() + 10;
+	public Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException {
+		Map<String, String> actionProps = (attribute instanceof IAction) ? ((IAction) attribute).getProperties() : Collections
+				.<String, String> emptyMap();
+		int mapSize = globalProps.size() + actionProps.size() + 10;
 		ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(mapSize);
-		allProps.putAll(m_globalProps, true);
+		allProps.putAll(globalProps, true);
 		allProps.putAll(actionProps, true);
 		allProps.putAll(super.getProperties());
 		attribute.addDynamicProperties(allProps);
 		return allProps;
 	}
 
-	public synchronized Materialization getGeneratedMaterialization(IComponentIdentifier ci)
-	{
-		if(m_generatedMaterializations != null)
-		{
-			for(Materialization mat : m_generatedMaterializations)
-				if(ci.equals(mat.getComponentIdentifier()))
+	public synchronized Materialization getGeneratedMaterialization(IComponentIdentifier ci) {
+		if (generatedMaterializations != null) {
+			for (Materialization mat : generatedMaterializations)
+				if (ci.equals(mat.getComponentIdentifier()))
 					return mat;
 		}
 		return null;
 	}
 
-	public synchronized Resolution getGeneratedResolution(IComponentRequest request)
-	{
-		if(m_generatedResolutions != null)
-		{
-			for(Resolution res : m_generatedResolutions)
-				if(request.designates(res.getComponentIdentifier()))
+	public synchronized Resolution getGeneratedResolution(IComponentRequest request) {
+		if (generatedResolutions != null) {
+			for (Resolution res : generatedResolutions)
+				if (request.designates(res.getComponentIdentifier()))
 					return res;
 		}
 		return null;
 	}
 
-	public Map<UUID, Object> getInvocationCache()
-	{
-		return m_invocationCache;
+	public Map<UUID, Object> getInvocationCache() {
+		return invocationCache;
 	}
 
 	/**
 	 * Adding global properties to user properties<br>
-	 * <a href=https://bugs.eclipse.org/bugs/show_bug.cgi?id=252146>Bug 252146</a>
+	 * <a href=https://bugs.eclipse.org/bugs/show_bug.cgi?id=252146>Bug
+	 * 252146</a>
 	 * 
 	 * @author Guillaume CHATELET
 	 */
 	@Override
-	public synchronized Map<String, ? extends Object> getProperties()
-	{
+	public synchronized Map<String, ? extends Object> getProperties() {
 		Map<String, ? extends Object> userProperties = super.getProperties();
-		ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(userProperties.size()
-				+ m_globalProps.size());
-		allProps.putAll(m_globalProps, true);
+		ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(userProperties.size() + globalProps.size());
+		allProps.putAll(globalProps, true);
 		allProps.putAll(userProperties);
 		return allProps;
 	}
 
-	public IStatus getStatus()
-	{
-		return m_status;
+	public IStatus getStatus() {
+		return status;
 	}
 
-	public void scheduleRemoval(IPath path)
-	{
-		if(!path.isAbsolute())
-			throw new IllegalArgumentException(NLS.bind(Messages.Only_absolute_paths_can_be_scheduled_for_removal_0,
-					path.toOSString()));
+	public void scheduleRemoval(IPath path) {
+		if (!path.isAbsolute())
+			throw new IllegalArgumentException(NLS.bind(Messages.Only_absolute_paths_can_be_scheduled_for_removal_0, path.toOSString()));
 
-		int idx = m_scheduledRemovals.size();
-		while(--idx >= 0)
-		{
-			IPath alreadyScheduled = m_scheduledRemovals.get(idx);
-			if(alreadyScheduled.isPrefixOf(path))
+		int idx = scheduledRemovals.size();
+		while (--idx >= 0) {
+			IPath alreadyScheduled = scheduledRemovals.get(idx);
+			if (alreadyScheduled.isPrefixOf(path))
 				return;
-			if(path.isPrefixOf(alreadyScheduled))
-				m_scheduledRemovals.remove(idx);
+			if (path.isPrefixOf(alreadyScheduled))
+				scheduledRemovals.remove(idx);
 		}
-		m_scheduledRemovals.add(path);
+		scheduledRemovals.add(path);
 	}
 
-	public void setStatus(IStatus status)
-	{
-		m_status = status;
+	public void setStatus(IStatus status) {
+		this.status = status;
 	}
 
 	/**
@@ -172,79 +155,62 @@ public class GlobalContext extends ModelCache implements IGlobalContext
 	 * @param action
 	 *            The action to add.
 	 */
-	void addPerformedAction(Action action)
-	{
-		m_actionsPerformed.add(action);
+	void addPerformedAction(Action action) {
+		actionsPerformed.add(action);
 	}
 
-	boolean hasExecutedKind(int kind)
-	{
-		return m_executedEclipseKinds.contains(new Integer(kind));
+	boolean hasExecutedKind(int kind) {
+		return executedEclipseKinds.contains(new Integer(kind));
 	}
 
 	/**
-	 * Checks if the <code>action</code> is among the actions that were added using the
-	 * {@link #addPerformedAction(Action)} method.
+	 * Checks if the <code>action</code> is among the actions that were added
+	 * using the {@link #addPerformedAction(Action)} method.
 	 * 
 	 * @param action
 	 *            The action to check
 	 * @return <code>true</code> if the action has been added.
 	 */
-	boolean hasPerformedAction(IAction action)
-	{
-		return m_actionsPerformed.contains(action);
+	boolean hasPerformedAction(IAction action) {
+		return actionsPerformed.contains(action);
 	}
 
-	boolean isForcedExecution()
-	{
-		return m_forcedExecution;
+	boolean isForcedExecution() {
+		return forcedExecution;
 	}
 
-	boolean isQuietExecution()
-	{
-		return m_quietExecution;
+	boolean isQuietExecution() {
+		return quietExecution;
 	}
 
-	boolean isWorkspaceRefreshPending()
-	{
-		return m_workspaceRefreshPending;
+	boolean isWorkspaceRefreshPending() {
+		return workspaceRefreshPending;
 	}
 
-	void kindWasExecuted(int kind)
-	{
+	void kindWasExecuted(int kind) {
 		Integer objKind = new Integer(kind);
-		if(!m_executedEclipseKinds.contains(objKind))
-			m_executedEclipseKinds.add(objKind);
+		if (!executedEclipseKinds.contains(objKind))
+			executedEclipseKinds.add(objKind);
 	}
 
-	synchronized void removeScheduled(IProgressMonitor monitor)
-	{
-		int idx = m_scheduledRemovals.size();
+	synchronized void removeScheduled(IProgressMonitor monitor) {
+		int idx = scheduledRemovals.size();
 		monitor.beginTask(null, idx * 10);
-		try
-		{
-			while(--idx >= 0)
-			{
-				try
-				{
-					FileUtils.deleteRecursive(m_scheduledRemovals.get(idx).toFile(), MonitorUtils.subMonitor(monitor,
-							10));
-				}
-				catch(DeleteException e)
-				{
+		try {
+			while (--idx >= 0) {
+				try {
+					FileUtils.deleteRecursive(scheduledRemovals.get(idx).toFile(), MonitorUtils.subMonitor(monitor, 10));
+				} catch (DeleteException e) {
 					CorePlugin.getLogger().warning(e.getMessage());
 				}
 			}
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
-		m_scheduledRemovals.clear();
+		scheduledRemovals.clear();
 	}
 
-	void setWorkspaceRefreshPending(boolean flag)
-	{
-		m_workspaceRefreshPending = flag;
+	void setWorkspaceRefreshPending(boolean flag) {
+		workspaceRefreshPending = flag;
 	}
 }

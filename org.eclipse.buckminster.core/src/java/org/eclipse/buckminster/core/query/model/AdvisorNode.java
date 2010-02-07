@@ -32,8 +32,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IAdvisorNode
-{
+public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IAdvisorNode {
 	public static final String ATTR_ATTRIBUTES = "attributes"; //$NON-NLS-1$
 
 	public static final String ATTR_COMPONENT_TYPE = "componentType"; //$NON-NLS-1$
@@ -80,257 +79,229 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 
 	public static final String TAG = "advisorNode"; //$NON-NLS-1$
 
-	private final boolean m_allowCircularDependency;
+	private final boolean allowCircularDependency;
 
-	private final Documentation m_documentation;
+	private final Documentation documentation;
 
-	private final List<String> m_attributes;
+	private final List<String> attributes;
 
-	private final String m_componentTypeID;
+	private final String componentTypeID;
 
-	private final Filter m_filter;
+	private final Filter filter;
 
-	private final MutableLevel m_mutableLevel;
+	private final MutableLevel mutableLevel;
 
-	private final Pattern m_namePattern;
+	private final Pattern namePattern;
 
-	private final URL m_overlayFolder;
+	private final URL overlayFolder;
 
-	private final Map<String, String> m_properties;
+	private final Map<String, String> properties;
 
-	private final boolean m_prune;
+	private final boolean prune;
 
-	private final boolean m_skipComponent;
+	private final boolean skipComponent;
 
-	private final SourceLevel m_sourceLevel;
+	private final SourceLevel sourceLevel;
 
-	private final boolean m_useTargetPlatform;
+	private final boolean useTargetPlatform;
 
-	private final boolean m_useMaterialization;
+	private final boolean useMaterialization;
 
-	private final boolean m_useWorkspace;
+	private final boolean useWorkspace;
 
-	private final VersionRange m_versionOverride;
+	private final VersionRange versionOverride;
 
-	private final boolean m_useRemoteResolution;
+	private final boolean useRemoteResolution;
 
-	private final boolean m_systemDiscovery;
+	private final boolean systemDiscovery;
 
-	private final VersionSelector[] m_branchTagPath;
+	private final VersionSelector[] branchTagPath;
 
-	private final String m_revision;
+	private final String revision;
 
-	private final Date m_timestamp;
+	private final Date timestamp;
 
-	private final int[] m_resolutionPrio;
+	private final int[] resolutionPrio;
 
-	public AdvisorNode(AdvisorNodeBuilder bld)
-	{
-		m_documentation = bld.getDocumentation();
-		m_allowCircularDependency = bld.allowCircularDependency();
-		m_namePattern = bld.getNamePattern();
-		m_filter = bld.getFilter();
-		m_componentTypeID = bld.getComponentTypeID();
-		m_overlayFolder = bld.getOverlayFolder();
-		m_prune = bld.isPrune();
-		m_mutableLevel = bld.getMutableLevel();
-		m_sourceLevel = bld.getSourceLevel();
-		m_skipComponent = bld.skipComponent();
-		m_useMaterialization = bld.isUseMaterialization();
-		m_useTargetPlatform = bld.isUseTargetPlatform();
-		m_useWorkspace = bld.isUseWorkspace();
-		m_versionOverride = bld.getVersionOverride();
-		m_useRemoteResolution = bld.isUseRemoteResolution();
-		m_systemDiscovery = bld.isSystemDiscovery();
-		m_branchTagPath = bld.getBranchTagPath();
-		m_revision = bld.getRevision();
-		m_timestamp = bld.getTimestamp();
-		m_resolutionPrio = bld.getResolutionPrio();
-		m_attributes = Utils.createUnmodifiableList(bld.getAttributes());
-		m_properties = ExpandingProperties.createUnmodifiableProperties(bld.getProperties());
+	public AdvisorNode(AdvisorNodeBuilder bld) {
+		documentation = bld.getDocumentation();
+		allowCircularDependency = bld.allowCircularDependency();
+		namePattern = bld.getNamePattern();
+		filter = bld.getFilter();
+		componentTypeID = bld.getComponentTypeID();
+		overlayFolder = bld.getOverlayFolder();
+		prune = bld.isPrune();
+		mutableLevel = bld.getMutableLevel();
+		sourceLevel = bld.getSourceLevel();
+		skipComponent = bld.skipComponent();
+		useMaterialization = bld.isUseMaterialization();
+		useTargetPlatform = bld.isUseTargetPlatform();
+		useWorkspace = bld.isUseWorkspace();
+		versionOverride = bld.getVersionOverride();
+		useRemoteResolution = bld.isUseRemoteResolution();
+		systemDiscovery = bld.isSystemDiscovery();
+		branchTagPath = bld.getBranchTagPath();
+		revision = bld.getRevision();
+		timestamp = bld.getTimestamp();
+		resolutionPrio = bld.getResolutionPrio();
+		attributes = Utils.createUnmodifiableList(bld.getAttributes());
+		properties = ExpandingProperties.createUnmodifiableProperties(bld.getProperties());
 	}
 
-	public boolean allowCircularDependency()
-	{
-		return m_allowCircularDependency;
+	public boolean allowCircularDependency() {
+		return allowCircularDependency;
 	}
 
-	public final List<String> getAttributes()
-	{
-		return m_attributes;
+	public final List<String> getAttributes() {
+		return attributes;
 	}
 
-	public final VersionSelector[] getBranchTagPath()
-	{
-		return m_branchTagPath;
+	public final VersionSelector[] getBranchTagPath() {
+		return branchTagPath;
 	}
 
-	public final String getComponentTypeID()
-	{
-		return m_componentTypeID;
+	public final String getComponentTypeID() {
+		return componentTypeID;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public Documentation getDocumentation()
-	{
-		return m_documentation;
+	public Documentation getDocumentation() {
+		return documentation;
 	}
 
-	public Filter getFilter()
-	{
-		return m_filter;
+	public Filter getFilter() {
+		return filter;
 	}
 
-	public final MutableLevel getMutableLevel()
-	{
-		return m_mutableLevel;
+	public final MutableLevel getMutableLevel() {
+		return mutableLevel;
 	}
 
-	public final Pattern getNamePattern()
-	{
-		return m_namePattern;
+	public final Pattern getNamePattern() {
+		return namePattern;
 	}
 
-	public URL getOverlayFolder()
-	{
-		return m_overlayFolder;
+	public URL getOverlayFolder() {
+		return overlayFolder;
 	}
 
-	public Map<String, String> getProperties()
-	{
-		return m_properties;
+	public Map<String, String> getProperties() {
+		return properties;
 	}
 
-	public int[] getResolutionPrio()
-	{
-		return m_resolutionPrio;
+	public int[] getResolutionPrio() {
+		return resolutionPrio;
 	}
 
-	public String getRevision()
-	{
-		return m_revision;
+	public String getRevision() {
+		return revision;
 	}
 
-	public final SourceLevel getSourceLevel()
-	{
-		return m_sourceLevel;
+	public final SourceLevel getSourceLevel() {
+		return sourceLevel;
 	}
 
-	public Date getTimestamp()
-	{
-		return m_timestamp;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
-	public final VersionRange getVersionOverride()
-	{
-		return m_versionOverride;
+	public final VersionRange getVersionOverride() {
+		return versionOverride;
 	}
 
-	public final boolean isPrune()
-	{
-		return m_prune;
+	public final boolean isPrune() {
+		return prune;
 	}
 
-	public final boolean isSystemDiscovery()
-	{
-		return m_systemDiscovery;
+	public final boolean isSystemDiscovery() {
+		return systemDiscovery;
 	}
 
-	public final boolean isUseMaterialization()
-	{
-		return m_useMaterialization;
+	public final boolean isUseMaterialization() {
+		return useMaterialization;
 	}
 
-	public final boolean isUseRemoteResolution()
-	{
-		return m_useRemoteResolution;
+	public final boolean isUseRemoteResolution() {
+		return useRemoteResolution;
 	}
 
-	public final boolean isUseTargetPlatform()
-	{
-		return m_useTargetPlatform;
+	public final boolean isUseTargetPlatform() {
+		return useTargetPlatform;
 	}
 
-	public final boolean isUseWorkspace()
-	{
-		return m_useWorkspace;
+	public final boolean isUseWorkspace() {
+		return useWorkspace;
 	}
 
-	public final boolean skipComponent()
-	{
-		return m_skipComponent;
+	public final boolean skipComponent() {
+		return skipComponent;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		if(m_namePattern != null)
-			Utils.addAttribute(attrs, ATTR_NAME_PATTERN, m_namePattern.toString());
-		if(m_filter != null)
-			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
-		if(m_overlayFolder != null)
-			Utils.addAttribute(attrs, ATTR_OVERLAY_FOLDER, m_overlayFolder.toString());
-		if(m_componentTypeID != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeID);
-		if(m_mutableLevel != MutableLevel.INDIFFERENT)
-			Utils.addAttribute(attrs, ATTR_MUTABLE_LEVEL, m_mutableLevel.name());
-		if(m_sourceLevel != SourceLevel.INDIFFERENT)
-			Utils.addAttribute(attrs, ATTR_SOURCE_LEVEL, m_sourceLevel.name());
-		if(m_skipComponent)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		if (namePattern != null)
+			Utils.addAttribute(attrs, ATTR_NAME_PATTERN, namePattern.toString());
+		if (filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, filter.toString());
+		if (overlayFolder != null)
+			Utils.addAttribute(attrs, ATTR_OVERLAY_FOLDER, overlayFolder.toString());
+		if (componentTypeID != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, componentTypeID);
+		if (mutableLevel != MutableLevel.INDIFFERENT)
+			Utils.addAttribute(attrs, ATTR_MUTABLE_LEVEL, mutableLevel.name());
+		if (sourceLevel != SourceLevel.INDIFFERENT)
+			Utils.addAttribute(attrs, ATTR_SOURCE_LEVEL, sourceLevel.name());
+		if (skipComponent)
 			Utils.addAttribute(attrs, ATTR_SKIP_COMPONENT, "true"); //$NON-NLS-1$
-		if(m_allowCircularDependency)
+		if (allowCircularDependency)
 			Utils.addAttribute(attrs, ATTR_ALLOW_CIRCULAR_DEPENDENCY, "true"); //$NON-NLS-1$
-		if(!m_systemDiscovery)
+		if (!systemDiscovery)
 			Utils.addAttribute(attrs, ATTR_SYSTEM_DISCOVERY, "false"); //$NON-NLS-1$
-		if(!m_useMaterialization)
+		if (!useMaterialization)
 			Utils.addAttribute(attrs, ATTR_USE_MATERIALIZATION, "false"); //$NON-NLS-1$
-		if(!m_useRemoteResolution)
+		if (!useRemoteResolution)
 			Utils.addAttribute(attrs, ATTR_USE_REMOTE_RESOLUTION, "false"); //$NON-NLS-1$
-		if(!m_useTargetPlatform)
+		if (!useTargetPlatform)
 			Utils.addAttribute(attrs, ATTR_USE_TARGET_PLATFORM, "false"); //$NON-NLS-1$
-		if(!m_useWorkspace)
+		if (!useWorkspace)
 			Utils.addAttribute(attrs, ATTR_USE_WORKSPACE, "false"); //$NON-NLS-1$
 
-		if(m_versionOverride != null)
-			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE, m_versionOverride.toString());
-		String tmp = TextUtils.concat(m_attributes, ","); //$NON-NLS-1$
-		if(tmp != null)
+		if (versionOverride != null)
+			Utils.addAttribute(attrs, ATTR_VERSION_OVERRIDE, versionOverride.toString());
+		String tmp = TextUtils.concat(attributes, ","); //$NON-NLS-1$
+		if (tmp != null)
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
-		if(m_prune)
+		if (prune)
 			Utils.addAttribute(attrs, ATTR_PRUNE, "true"); //$NON-NLS-1$
 
-		tmp = VersionSelector.toString(m_branchTagPath);
-		if(tmp != null)
+		tmp = VersionSelector.toString(branchTagPath);
+		if (tmp != null)
 			Utils.addAttribute(attrs, ATTR_BRANCH_TAG_PATH, tmp);
 
-		if(!Arrays.equals(m_resolutionPrio, DEFAULT_RESOLUTION_PRIO))
-		{
+		if (!Arrays.equals(resolutionPrio, DEFAULT_RESOLUTION_PRIO)) {
 			StringBuilder bld = new StringBuilder();
-			bld.append(m_resolutionPrio[0]);
-			for(int idx = 1; idx < m_resolutionPrio.length; ++idx)
-			{
+			bld.append(resolutionPrio[0]);
+			for (int idx = 1; idx < resolutionPrio.length; ++idx) {
 				bld.append(',');
-				bld.append(m_resolutionPrio[idx]);
+				bld.append(resolutionPrio[idx]);
 			}
 			Utils.addAttribute(attrs, ATTR_RESOLUTION_PRIO, bld.toString());
 		}
 
-		if(m_revision != null)
-			Utils.addAttribute(attrs, ATTR_REVISION, m_revision);
+		if (revision != null)
+			Utils.addAttribute(attrs, ATTR_REVISION, revision);
 
-		if(m_timestamp != null)
-			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(m_timestamp));
+		if (timestamp != null)
+			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(timestamp));
 	}
 
 	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		if(m_documentation != null)
-			m_documentation.toSax(handler, namespace, prefix, m_documentation.getDefaultTag());
-		SAXEmitter.emitProperties(handler, m_properties, namespace, prefix, true, false);
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
+		if (documentation != null)
+			documentation.toSax(handler, namespace, prefix, documentation.getDefaultTag());
+		SAXEmitter.emitProperties(handler, properties, namespace, prefix, true, false);
 	}
 }

@@ -31,89 +31,75 @@ import org.eclipse.team.internal.ccvs.core.resources.RemoteFolderSandbox;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class CVSSession implements Closeable
-{
-	private final ICVSRepositoryLocation m_location;
+public class CVSSession implements Closeable {
+	private final ICVSRepositoryLocation location;
 
-	private final String m_moduleName;
+	private final String moduleName;
 
-	private Session m_readerSession;
+	private Session readerSession;
 
-	public CVSSession(String repositoryURI) throws CoreException
-	{
+	public CVSSession(String repositoryURI) throws CoreException {
 		StringTokenizer tokenizer = new StringTokenizer(repositoryURI, ","); //$NON-NLS-1$
-		try
-		{
+		try {
 			String repo = tokenizer.nextToken();
-			m_location = CVSReaderType.getLocationFromString(repo);
-			String module = tokenizer.hasMoreTokens()
-					? tokenizer.nextToken()
-					: null;
-			if(module != null && module.startsWith("/")) //$NON-NLS-1$
+			location = CVSReaderType.getLocationFromString(repo);
+			String module = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+			if (module != null && module.startsWith("/")) //$NON-NLS-1$
 				module = module.substring(1);
-			m_moduleName = module;
-		}
-		catch(NoSuchElementException e)
-		{
+			moduleName = module;
+		} catch (NoSuchElementException e) {
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.repository_URI_not_in_0_format, "<" //$NON-NLS-1$
 					+ Messages.cvs_root + ">,<" //$NON-NLS-1$
 					+ Messages.cvs_module + ">")); //$NON-NLS-1$
 		}
 	}
 
-	public synchronized void close()
-	{
-		if(m_readerSession != null)
-		{
-			m_readerSession.close();
-			m_readerSession = null;
+	public synchronized void close() {
+		if (readerSession != null) {
+			readerSession.close();
+			readerSession = null;
 		}
 	}
 
-	public String getFilePrefix()
-	{
-		StringBuilder bld = new StringBuilder(m_location.getRootDirectory());
+	public String getFilePrefix() {
+		StringBuilder bld = new StringBuilder(location.getRootDirectory());
 		bld.append('/');
-		if(m_moduleName != null)
-		{
-			bld.append(m_moduleName);
+		if (moduleName != null) {
+			bld.append(moduleName);
 			bld.append('/');
 		}
 		return bld.toString();
 	}
 
-	public final ICVSRepositoryLocation getLocation()
-	{
-		return m_location;
+	public final ICVSRepositoryLocation getLocation() {
+		return location;
 	}
 
-	public final String getModuleName()
-	{
-		return m_moduleName;
+	public final String getModuleName() {
+		return moduleName;
 	}
 
-	public String getRepository()
-	{
-		String location = m_location.getLocation(false);
-		if(m_moduleName == null)
-			return location;
+	public String getRepository() {
+		String repoURI = location.getLocation(false);
+		if (moduleName == null)
+			return repoURI;
 
-		return location + '/' + m_moduleName;
+		return repoURI + '/' + moduleName;
 	}
 
-	synchronized Session getReaderSession(IProgressMonitor monitor) throws CoreException
-	{
-		if(m_readerSession == null)
-		{
+	synchronized Session getReaderSession(IProgressMonitor monitor) throws CoreException {
+		if (readerSession == null) {
 			ICVSFolder root = CVSWorkspaceRoot.getCVSFolderFor(ResourcesPlugin.getWorkspace().getRoot());
-			m_readerSession = new Session(getLocation(), root, false /* output to console */);
-			m_readerSession.open(monitor, false);
+			readerSession = new Session(getLocation(), root, false /*
+																	 * output to
+																	 * console
+																	 */);
+			readerSession.open(monitor, false);
 		}
-		return m_readerSession;
+		return readerSession;
 	}
 
-	RemoteFolderSandbox getSandbox(CVSTag tag)
-	{
+	RemoteFolderSandbox getSandbox(CVSTag tag) {
 		return new RemoteFolderSandbox(null, this.getLocation(), this.getModuleName(), tag);
 	}
 }

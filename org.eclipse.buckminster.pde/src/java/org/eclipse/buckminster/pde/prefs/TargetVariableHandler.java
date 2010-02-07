@@ -23,52 +23,41 @@ import org.osgi.service.prefs.BackingStoreException;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-abstract class TargetVariableHandler extends BasicPreferenceHandler implements ICoreConstants
-{
+abstract class TargetVariableHandler extends BasicPreferenceHandler implements ICoreConstants {
 	@Override
-	public String get(String defaultValue) throws CoreException
-	{
+	public String get(String defaultValue) throws CoreException {
 		Buckminster bucky = Buckminster.getDefault();
 		ITargetPlatformService service = null;
-		try
-		{
+		try {
 			service = bucky.getService(ITargetPlatformService.class);
 			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
-			if(activeHandle == null)
+			if (activeHandle == null)
 				return defaultValue;
 			ITargetDefinition definition = activeHandle.getTargetDefinition();
 			String value = get(definition);
-			if(value == null)
+			if (value == null)
 				value = defaultValue;
 			return value;
-		}
-		finally
-		{
+		} finally {
 			bucky.ungetService(service);
 		}
 	}
 
 	@Override
-	public void set(String value) throws BackingStoreException
-	{
+	public void set(String value) throws BackingStoreException {
 		Buckminster bucky = Buckminster.getDefault();
 		ITargetPlatformService service = null;
-		try
-		{
+		try {
 			service = bucky.getService(ITargetPlatformService.class);
 			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
-			if(activeHandle == null)
+			if (activeHandle == null)
 				throw new BackingStoreException(Messages.No_active_target_platform);
 			ITargetDefinition definition = activeHandle.getTargetDefinition();
 			set(definition, value);
 			service.saveTargetDefinition(definition);
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			throw new BackingStoreException(e.getMessage(), e);
-		}
-		finally
-		{
+		} finally {
 			bucky.ungetService(service);
 		}
 	}

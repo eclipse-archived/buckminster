@@ -9,29 +9,22 @@ package org.eclipse.buckminster.osgi.filter.impl;
 
 import java.util.Map;
 
-class PresentFilterImpl extends FilterImpl
-{
-	PresentFilterImpl(String attr)
-	{
+class PresentFilterImpl extends FilterImpl {
+	PresentFilterImpl(String attr) {
 		super(FilterImpl.PRESENT, attr);
 	}
 
-	public int compareTo(FilterImpl o)
-	{
+	public int compareTo(FilterImpl o) {
 		return internalCompareTo(o);
 	}
 
 	@Override
-	boolean match0(Map<String, ? extends Object> properties)
-	{
-		return (properties == null)
-				? false
-				: properties.get(getAttr()) != null;
+	boolean match0(Map<String, ? extends Object> properties) {
+		return (properties == null) ? false : properties.get(getAttr()) != null;
 	}
 
 	@Override
-	void toString(StringBuilder sb)
-	{
+	void toString(StringBuilder sb) {
 		sb.append('(');
 		sb.append(getAttr());
 		sb.append("=*)"); //$NON-NLS-1$

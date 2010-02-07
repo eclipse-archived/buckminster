@@ -11,11 +11,10 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public interface IModelCache
-{
+public interface IModelCache {
 	/**
-	 * Returns the CSpec that corresponds to the given request. The method goes through a cache that is active
-	 * throughout the invocation.
+	 * Returns the CSpec that corresponds to the given request. The method goes
+	 * through a cache that is active throughout the invocation.
 	 * 
 	 * @param ownerCSpec
 	 *            The cspec where the request was declared

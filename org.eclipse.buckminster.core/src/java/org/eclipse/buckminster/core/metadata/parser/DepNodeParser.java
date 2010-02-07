@@ -20,50 +20,37 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class DepNodeParser extends MetaDataParser<BOMNode>
-{
-	private BOMNode m_resolvedNode;
+public class DepNodeParser extends MetaDataParser<BOMNode> {
+	private BOMNode resolvedNode;
 
-	public DepNodeParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException
-	{
+	public DepNodeParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException {
 		super(parserExtensions);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_resolvedNode = ((BomNodeHandler)child).getDepNode();
+	public void childPopped(ChildHandler child) throws SAXException {
+		resolvedNode = ((BomNodeHandler) child).getDepNode();
 	}
 
-	public BOMNode parse(String systemID, InputStream input) throws CoreException
-	{
+	public BOMNode parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
-		return m_resolvedNode;
+		return resolvedNode;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(ResolvedNodeHandler.TAG.equals(localName))
-		{
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if (ResolvedNodeHandler.TAG.equals(localName)) {
 			ResolvedNodeHandler rmh = new ResolvedNodeHandler(this);
 			this.pushHandler(rmh, attrs);
-		}
-		else if(UnresolvedNodeHandler.TAG.equals(localName))
-		{
+		} else if (UnresolvedNodeHandler.TAG.equals(localName)) {
 			UnresolvedNodeHandler rmh = new UnresolvedNodeHandler(this);
 			this.pushHandler(rmh, attrs);
-		}
-		else if(GeneratorNodeHandler.TAG.equals(localName))
-		{
+		} else if (GeneratorNodeHandler.TAG.equals(localName)) {
 			GeneratorNodeHandler rmh = new GeneratorNodeHandler(this);
 			this.pushHandler(rmh, attrs);
-		}
-		else if(BillOfMaterialsHandler.TAG.equals(localName))
-		{
+		} else if (BillOfMaterialsHandler.TAG.equals(localName)) {
 			BillOfMaterialsHandler rmh = new BillOfMaterialsHandler(this);
 			this.pushHandler(rmh, attrs);
-		}
-		else
+		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
 }

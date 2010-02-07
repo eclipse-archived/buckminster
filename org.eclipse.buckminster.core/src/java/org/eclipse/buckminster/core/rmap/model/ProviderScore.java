@@ -13,7 +13,6 @@ package org.eclipse.buckminster.core.rmap.model;
 /* 
  * @author Thomas Hallgren
  */
-public enum ProviderScore
-{
+public enum ProviderScore {
 	REJECTED, BAD, FAIR, GOOD, PREFERRED
 }

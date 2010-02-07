@@ -11,7 +11,8 @@ import java.util.regex.Pattern;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Matcher</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Matcher</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
@@ -24,13 +25,13 @@ import org.eclipse.emf.ecore.EObject;
  * @model abstract="true"
  * @generated
  */
-public interface Matcher extends EObject
-{
+public interface Matcher extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Pattern</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Pattern</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Pattern</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Pattern</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -43,8 +44,9 @@ public interface Matcher extends EObject
 	Pattern getPattern();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Matcher#getPattern <em>Pattern</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.rmap.Matcher#getPattern <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Pattern</em>' attribute.

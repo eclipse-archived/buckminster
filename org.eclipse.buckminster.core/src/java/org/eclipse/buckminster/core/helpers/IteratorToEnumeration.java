@@ -13,22 +13,18 @@ import java.util.Iterator;
 /**
  * @author Thomas Hallgren
  */
-public class IteratorToEnumeration<V> implements Enumeration<V>
-{
-	private final Iterator<V> m_wrappedIterator;
+public class IteratorToEnumeration<V> implements Enumeration<V> {
+	private final Iterator<V> wrappedIterator;
 
-	public IteratorToEnumeration(Iterator<V> wrappedIterator)
-	{
-		m_wrappedIterator = wrappedIterator;
+	public IteratorToEnumeration(Iterator<V> wrappedIterator) {
+		this.wrappedIterator = wrappedIterator;
 	}
 
-	public boolean hasMoreElements()
-	{
-		return m_wrappedIterator.hasNext();
+	public boolean hasMoreElements() {
+		return wrappedIterator.hasNext();
 	}
 
-	public V nextElement()
-	{
-		return m_wrappedIterator.next();
+	public V nextElement() {
+		return wrappedIterator.next();
 	}
 }

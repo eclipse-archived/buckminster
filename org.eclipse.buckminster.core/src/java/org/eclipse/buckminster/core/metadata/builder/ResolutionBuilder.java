@@ -26,256 +26,219 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public class ResolutionBuilder implements IResolution
-{
-	private String m_artifactInfo;
+public class ResolutionBuilder implements IResolution {
+	private String artifactInfo;
 
-	private final List<String> m_attributes = new ArrayList<String>();
+	private final List<String> attributes = new ArrayList<String>();
 
-	private VersionSelector m_branchOrTag;
+	private VersionSelector branchOrTag;
 
-	private String m_componentTypeId;
+	private String componentTypeId;
 
-	private String m_contentType;
+	private String contentType;
 
-	private final CSpecBuilder m_cspec;
+	private final CSpecBuilder cspec;
 
-	private long m_lastModified;
+	private long lastModified;
 
-	private boolean m_materializable = true;
+	private boolean materializable = true;
 
-	private String m_remoteName;
+	private String remoteName;
 
-	private Provider m_provider;
+	private Provider provider;
 
-	private String m_readerTypeId;
+	private String readerTypeId;
 
-	private String m_repository;
+	private String repository;
 
-	private final ComponentRequestBuilder m_request = new ComponentRequestBuilder();
+	private final ComponentRequestBuilder request = new ComponentRequestBuilder();
 
-	private Filter m_resolutionFilter;
+	private Filter resolutionFilter;
 
-	private String m_revision;
+	private String revision;
 
-	private long m_size = -1;
+	private long size = -1;
 
-	private Date m_timestamp;
+	private Date timestamp;
 
-	private boolean m_unpack = false;
+	private boolean unpack = false;
 
-	private String m_persistentId;
+	private String persistentId;
 
-	public ResolutionBuilder()
-	{
+	public ResolutionBuilder() {
 		this(new CSpecBuilder());
 	}
 
-	public ResolutionBuilder(CSpecBuilder cspecBuilder)
-	{
-		m_cspec = cspecBuilder;
+	public ResolutionBuilder(CSpecBuilder cspecBuilder) {
+		cspec = cspecBuilder;
 	}
 
-	public void addAttribute(String attribute)
-	{
-		m_attributes.add(attribute);
+	public void addAttribute(String attribute) {
+		attributes.add(attribute);
 	}
 
-	public void clear()
-	{
-		m_artifactInfo = null;
-		m_attributes.clear();
-		m_branchOrTag = null;
-		m_componentTypeId = null;
-		m_contentType = null;
-		m_cspec.clear();
-		m_lastModified = 0L;
-		m_materializable = true;
-		m_remoteName = null;
-		m_provider = null;
-		m_readerTypeId = null;
-		m_repository = null;
-		m_request.clear();
-		m_resolutionFilter = null;
-		m_revision = null;
-		m_size = -1L;
-		m_timestamp = null;
-		m_unpack = false;
+	public void clear() {
+		artifactInfo = null;
+		attributes.clear();
+		branchOrTag = null;
+		componentTypeId = null;
+		contentType = null;
+		cspec.clear();
+		lastModified = 0L;
+		materializable = true;
+		remoteName = null;
+		provider = null;
+		readerTypeId = null;
+		repository = null;
+		request.clear();
+		resolutionFilter = null;
+		revision = null;
+		size = -1L;
+		timestamp = null;
+		unpack = false;
 	}
 
-	public String getArtifactInfo()
-	{
-		return m_artifactInfo;
+	public String getArtifactInfo() {
+		return artifactInfo;
 	}
 
-	public List<String> getAttributes()
-	{
-		return m_attributes;
+	public List<String> getAttributes() {
+		return attributes;
 	}
 
-	public String getComponentTypeId()
-	{
-		return m_componentTypeId;
+	public String getComponentTypeId() {
+		return componentTypeId;
 	}
 
-	public String getContentType()
-	{
-		return m_contentType;
+	public String getContentType() {
+		return contentType;
 	}
 
-	public CSpec getCSpec()
-	{
-		return m_cspec.createCSpec();
+	public CSpec getCSpec() {
+		return cspec.createCSpec();
 	}
 
-	public CSpecBuilder getCSpecBuilder()
-	{
-		return m_cspec;
+	public CSpecBuilder getCSpecBuilder() {
+		return cspec;
 	}
 
-	public long getLastModified()
-	{
-		return m_lastModified;
+	public long getLastModified() {
+		return lastModified;
 	}
 
-	public VersionSelector getMatchedBranchOrTag()
-	{
-		return m_branchOrTag;
+	public VersionSelector getMatchedBranchOrTag() {
+		return branchOrTag;
 	}
 
-	public String getPersistentId()
-	{
-		return m_persistentId;
+	public String getPersistentId() {
+		return persistentId;
 	}
 
-	public Provider getProvider()
-	{
-		if(m_provider == null)
-		{
-			String componentType = m_cspec.getComponentTypeID();
-			if(componentType == null)
+	public Provider getProvider() {
+		if (provider == null) {
+			String componentType = cspec.getComponentTypeID();
+			if (componentType == null)
 				componentType = IComponentType.UNKNOWN;
-			return Provider.immutableProvider(m_readerTypeId, componentType, m_repository, m_resolutionFilter);
+			return Provider.immutableProvider(readerTypeId, componentType, repository, resolutionFilter);
 		}
-		return m_provider;
+		return provider;
 	}
 
-	public String getReaderTypeId()
-	{
-		return m_readerTypeId;
+	public String getReaderTypeId() {
+		return readerTypeId;
 	}
 
-	public String getRemoteName()
-	{
-		return m_remoteName;
+	public String getRemoteName() {
+		return remoteName;
 	}
 
-	public String getRepository()
-	{
-		return m_repository;
+	public String getRepository() {
+		return repository;
 	}
 
-	public ComponentRequestBuilder getRequest()
-	{
-		return m_request;
+	public ComponentRequestBuilder getRequest() {
+		return request;
 	}
 
-	public Filter getResolutionFilter()
-	{
-		return m_resolutionFilter;
+	public Filter getResolutionFilter() {
+		return resolutionFilter;
 	}
 
-	public String getSelectedRevision()
-	{
-		return m_revision;
+	public String getSelectedRevision() {
+		return revision;
 	}
 
-	public Date getSelectedTimestamp()
-	{
-		return m_timestamp;
+	public Date getSelectedTimestamp() {
+		return timestamp;
 	}
 
-	public long getSize()
-	{
-		return m_size;
+	public long getSize() {
+		return size;
 	}
 
-	public VersionMatch getVersionMatch()
-	{
-		return new VersionMatch(m_cspec.getVersion(), m_branchOrTag, m_revision, m_timestamp, m_artifactInfo);
+	public VersionMatch getVersionMatch() {
+		return new VersionMatch(cspec.getVersion(), branchOrTag, revision, timestamp, artifactInfo);
 	}
 
-	public void initFrom(IResolution resolution) throws CoreException
-	{
+	public void initFrom(IResolution resolution) throws CoreException {
 		clear();
-		m_attributes.addAll(resolution.getAttributes());
-		m_componentTypeId = resolution.getComponentTypeId();
-		m_contentType = resolution.getContentType();
-		m_cspec.initFrom(resolution.getCSpec());
-		m_lastModified = resolution.getLastModified();
-		m_materializable = resolution.isMaterializable();
-		m_persistentId = resolution.getPersistentId();
-		m_provider = resolution.getProvider();
-		m_resolutionFilter = resolution.getResolutionFilter();
-		m_remoteName = resolution.getRemoteName();
-		m_repository = resolution.getRepository();
-		m_request.initFrom(resolution.getRequest());
-		m_size = resolution.getSize();
-		m_artifactInfo = resolution.getArtifactInfo();
-		m_branchOrTag = resolution.getMatchedBranchOrTag();
-		m_revision = resolution.getSelectedRevision();
-		m_timestamp = resolution.getSelectedTimestamp();
-		m_unpack = resolution.isUnpack();
+		attributes.addAll(resolution.getAttributes());
+		componentTypeId = resolution.getComponentTypeId();
+		contentType = resolution.getContentType();
+		cspec.initFrom(resolution.getCSpec());
+		lastModified = resolution.getLastModified();
+		materializable = resolution.isMaterializable();
+		persistentId = resolution.getPersistentId();
+		provider = resolution.getProvider();
+		resolutionFilter = resolution.getResolutionFilter();
+		remoteName = resolution.getRemoteName();
+		repository = resolution.getRepository();
+		request.initFrom(resolution.getRequest());
+		size = resolution.getSize();
+		artifactInfo = resolution.getArtifactInfo();
+		branchOrTag = resolution.getMatchedBranchOrTag();
+		revision = resolution.getSelectedRevision();
+		timestamp = resolution.getSelectedTimestamp();
+		unpack = resolution.isUnpack();
 	}
 
-	public boolean isMaterializable()
-	{
-		return m_materializable;
+	public boolean isMaterializable() {
+		return materializable;
 	}
 
-	public boolean isUnpack()
-	{
-		return m_unpack;
+	public boolean isUnpack() {
+		return unpack;
 	}
 
-	public void setArtifactInfo(String artifactInfo)
-	{
-		m_artifactInfo = artifactInfo;
+	public void setArtifactInfo(String artifactInfo) {
+		this.artifactInfo = artifactInfo;
 	}
 
-	public void setAttributes(List<String> attributes)
-	{
-		m_attributes.clear();
-		if(attributes != null)
-			m_attributes.addAll(attributes);
+	public void setAttributes(List<String> attrs) {
+		attributes.clear();
+		if (attrs != null)
+			attributes.addAll(attrs);
 	}
 
-	public void setBranchOrTag(VersionSelector branchOrTag)
-	{
-		m_branchOrTag = branchOrTag;
+	public void setBranchOrTag(VersionSelector branchOrTag) {
+		this.branchOrTag = branchOrTag;
 	}
 
-	public void setComponentTypeId(String componentTypeId)
-	{
-		m_componentTypeId = componentTypeId;
+	public void setComponentTypeId(String componentTypeId) {
+		this.componentTypeId = componentTypeId;
 	}
 
-	public void setContentType(String contentType)
-	{
-		m_contentType = contentType;
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
-	public void setFileInfo(IFileInfo info)
-	{
-		if(info == null)
-		{
+	public void setFileInfo(IFileInfo info) {
+		if (info == null) {
 			setContentType(null);
 			setRemoteName(null);
 			setLastModified(0);
 			setSize(-1);
-		}
-		else
-		{
+		} else {
 			setContentType(info.getContentType());
 			setRemoteName(info.getRemoteName());
 			setLastModified(info.getLastModified());
@@ -284,81 +247,65 @@ public class ResolutionBuilder implements IResolution
 		}
 	}
 
-	public void setLastModified(long lastModified)
-	{
-		m_lastModified = lastModified;
+	public void setLastModified(long lastModified) {
+		this.lastModified = lastModified;
 	}
 
-	public void setMaterializable(boolean materializable)
-	{
-		m_materializable = materializable;
+	public void setMaterializable(boolean materializable) {
+		this.materializable = materializable;
 	}
 
-	public void setPersistentId(String persistentId)
-	{
-		m_persistentId = persistentId;
+	public void setPersistentId(String persistentId) {
+		this.persistentId = persistentId;
 	}
 
-	public void setProvider(Provider provider)
-	{
-		m_provider = provider;
+	public void setProvider(Provider provider) {
+		this.provider = provider;
 	}
 
-	public void setReaderTypeId(String readerTypeId)
-	{
-		m_readerTypeId = readerTypeId;
+	public void setReaderTypeId(String readerTypeId) {
+		this.readerTypeId = readerTypeId;
 	}
 
-	public void setRemoteName(String remoteName)
-	{
-		m_remoteName = remoteName;
+	public void setRemoteName(String remoteName) {
+		this.remoteName = remoteName;
 	}
 
-	public void setRepository(String repository)
-	{
-		m_repository = repository;
+	public void setRepository(String repository) {
+		this.repository = repository;
 	}
 
-	public void setResolutionFilter(Filter resolutionFilter)
-	{
-		m_resolutionFilter = resolutionFilter;
+	public void setResolutionFilter(Filter resolutionFilter) {
+		this.resolutionFilter = resolutionFilter;
 	}
 
-	public void setRevision(String revision)
-	{
-		m_revision = revision;
+	public void setRevision(String revision) {
+		this.revision = revision;
 	}
 
-	public void setSize(long size)
-	{
-		m_size = size;
+	public void setSize(long size) {
+		this.size = size;
 	}
 
-	public void setTimestamp(Date timestamp)
-	{
-		m_timestamp = timestamp;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
-	public void setUnpack(boolean unpack)
-	{
-		m_unpack = unpack;
+	public void setUnpack(boolean unpack) {
+		this.unpack = unpack;
 	}
 
-	public void setVersionMatch(VersionMatch versionMatch)
-	{
-		if(versionMatch == null)
-		{
-			m_artifactInfo = null;
-			m_branchOrTag = null;
-			m_revision = null;
-			m_timestamp = null;
-		}
-		else
-		{
-			m_artifactInfo = versionMatch.getArtifactInfo();
-			m_branchOrTag = versionMatch.getBranchOrTag();
-			m_revision = versionMatch.getRevision();
-			m_timestamp = versionMatch.getTimestamp();
+	public void setVersionMatch(VersionMatch versionMatch) {
+		if (versionMatch == null) {
+			artifactInfo = null;
+			branchOrTag = null;
+			revision = null;
+			timestamp = null;
+		} else {
+			artifactInfo = versionMatch.getArtifactInfo();
+			branchOrTag = versionMatch.getBranchOrTag();
+			revision = versionMatch.getRevision();
+			timestamp = versionMatch.getTimestamp();
 		}
 	}
 }

@@ -21,23 +21,17 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
 /**
  * @author ken1
  */
-public class EclipseConsoleLogReceiver implements ILogReceiver
-{
-	public OutputStream start(String title, String type, boolean activateOnWrite, boolean errorStream)
-	{
+public class EclipseConsoleLogReceiver implements ILogReceiver {
+	public OutputStream start(String title, String type, boolean activateOnWrite, boolean errorStream) {
 		IConsoleManager mgr = ConsolePlugin.getDefault().getConsoleManager();
 		BuckminsterIOConsole ourConsole = null;
-		for(IConsole console : mgr.getConsoles())
-		{
-			if(console instanceof BuckminsterIOConsole && title.equals(console.getName())
-					&& type.equals(console.getType()))
-			{
-				ourConsole = (BuckminsterIOConsole)console;
+		for (IConsole console : mgr.getConsoles()) {
+			if (console instanceof BuckminsterIOConsole && title.equals(console.getName()) && type.equals(console.getType())) {
+				ourConsole = (BuckminsterIOConsole) console;
 				break;
 			}
 		}
-		if(ourConsole == null)
-		{
+		if (ourConsole == null) {
 			ourConsole = new BuckminsterIOConsole(title, type);
 			mgr.addConsoles(new IConsole[] { ourConsole });
 

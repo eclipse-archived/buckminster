@@ -22,8 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 
  * @author Thomas Hallgren
  */
-public interface IFileReader extends IComponentReader
-{
+public interface IFileReader extends IComponentReader {
 	/**
 	 * Returns true if the artifact appointed by this reader exists
 	 */
@@ -32,7 +31,8 @@ public interface IFileReader extends IComponentReader
 	/**
 	 * Returns the info about the file, or null if it's not available.
 	 * 
-	 * @return file info associated with the stream, or null if no info is available
+	 * @return file info associated with the stream, or null if no info is
+	 *         available
 	 */
 	IFileInfo getFileInfo();
 

@@ -12,7 +12,8 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
 /**
- * <!-- begin-user-doc --> The <b>Package</b> for the model. It contains accessors for the meta objects to represent
+ * <!-- begin-user-doc --> The <b>Package</b> for the model. It contains
+ * accessors for the meta objects to represent
  * <ul>
  * <li>each class,</li>
  * <li>each feature of each class,</li>
@@ -25,10 +26,10 @@ import org.eclipse.emf.ecore.EReference;
  * @model kind="package" extendedMetaData="qualified='false'"
  * @generated
  */
-public interface PsfPackage extends EPackage
-{
+public interface PsfPackage extends EPackage {
 	/**
-	 * <!-- begin-user-doc --> Defines literals for the meta objects that represent
+	 * <!-- begin-user-doc --> Defines literals for the meta objects that
+	 * represent
 	 * <ul>
 	 * <li>each class,</li>
 	 * <li>each feature of each class,</li>
@@ -39,11 +40,11 @@ public interface PsfPackage extends EPackage
 	 * 
 	 * @generated
 	 */
-	interface Literals
-	{
+	interface Literals {
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.team.psf.impl.PSFImpl <em>PSF</em>}' class.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.team.psf.impl.PSFImpl <em>PSF</em>}'
+		 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.team.psf.impl.PSFImpl
 		 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getPSF()
@@ -52,32 +53,36 @@ public interface PsfPackage extends EPackage
 		EClass PSF = eINSTANCE.getPSF();
 
 		/**
-		 * The meta object literal for the '<em><b>Version</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Version</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute PSF__VERSION = eINSTANCE.getPSF_Version();
 
 		/**
-		 * The meta object literal for the '<em><b>Providers</b></em>' containment reference list feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Providers</b></em>'
+		 * containment reference list feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference PSF__PROVIDERS = eINSTANCE.getPSF_Providers();
 
 		/**
-		 * The meta object literal for the '<em><b>Working Sets</b></em>' containment reference list feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Working Sets</b></em>'
+		 * containment reference list feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference PSF__WORKING_SETS = eINSTANCE.getPSF_WorkingSets();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.team.psf.impl.RepositoryProviderImpl
-		 * <em>Repository Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.team.psf.impl.RepositoryProviderImpl
+		 * <em>Repository Provider</em>}' class. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.team.psf.impl.RepositoryProviderImpl
 		 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getRepositoryProvider()
@@ -86,24 +91,27 @@ public interface PsfPackage extends EPackage
 		EClass REPOSITORY_PROVIDER = eINSTANCE.getRepositoryProvider();
 
 		/**
-		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute REPOSITORY_PROVIDER__ID = eINSTANCE.getRepositoryProvider_Id();
 
 		/**
-		 * The meta object literal for the '<em><b>Projects</b></em>' containment reference list feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Projects</b></em>'
+		 * containment reference list feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference REPOSITORY_PROVIDER__PROJECTS = eINSTANCE.getRepositoryProvider_Projects();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl
-		 * <em>Working Set</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl
+		 * <em>Working Set</em>}' class. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.team.psf.impl.WorkingSetImpl
 		 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getWorkingSet()
@@ -112,48 +120,49 @@ public interface PsfPackage extends EPackage
 		EClass WORKING_SET = eINSTANCE.getWorkingSet();
 
 		/**
-		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute WORKING_SET__ID = eINSTANCE.getWorkingSet_Id();
 
 		/**
-		 * The meta object literal for the '<em><b>Label</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Label</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute WORKING_SET__LABEL = eINSTANCE.getWorkingSet_Label();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute WORKING_SET__NAME = eINSTANCE.getWorkingSet_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Edit Page Id</b></em>' attribute feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Edit Page Id</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute WORKING_SET__EDIT_PAGE_ID = eINSTANCE.getWorkingSet_EditPageId();
 
 		/**
-		 * The meta object literal for the '<em><b>Items</b></em>' containment reference list feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Items</b></em>' containment
+		 * reference list feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference WORKING_SET__ITEMS = eINSTANCE.getWorkingSet_Items();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.team.psf.impl.ItemImpl <em>Item</em>}' class.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.team.psf.impl.ItemImpl <em>Item</em>}'
+		 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.team.psf.impl.ItemImpl
 		 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getItem()
@@ -162,40 +171,42 @@ public interface PsfPackage extends EPackage
 		EClass ITEM = eINSTANCE.getItem();
 
 		/**
-		 * The meta object literal for the '<em><b>Factory ID</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Factory ID</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute ITEM__FACTORY_ID = eINSTANCE.getItem_FactoryID();
 
 		/**
-		 * The meta object literal for the '<em><b>Element ID</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Element ID</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute ITEM__ELEMENT_ID = eINSTANCE.getItem_ElementID();
 
 		/**
-		 * The meta object literal for the '<em><b>Path</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Path</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute ITEM__PATH = eINSTANCE.getItem_Path();
 
 		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute ITEM__TYPE = eINSTANCE.getItem_Type();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.team.psf.impl.ProjectImpl <em>Project</em>}'
-		 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.team.psf.impl.ProjectImpl
+		 * <em>Project</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc
+		 * -->
 		 * 
 		 * @see org.eclipse.buckminster.team.psf.impl.ProjectImpl
 		 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getProject()
@@ -204,16 +215,18 @@ public interface PsfPackage extends EPackage
 		EClass PROJECT = eINSTANCE.getProject();
 
 		/**
-		 * The meta object literal for the '<em><b>Reference</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Reference</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute PROJECT__REFERENCE = eINSTANCE.getProject_Reference();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.team.psf.impl.DocumentRootImpl
-		 * <em>Document Root</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.team.psf.impl.DocumentRootImpl
+		 * <em>Document Root</em>}' class. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.team.psf.impl.DocumentRootImpl
 		 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getDocumentRoot()
@@ -222,16 +235,16 @@ public interface PsfPackage extends EPackage
 		EClass DOCUMENT_ROOT = eINSTANCE.getDocumentRoot();
 
 		/**
-		 * The meta object literal for the '<em><b>Psf</b></em>' containment reference feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Psf</b></em>' containment
+		 * reference feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__PSF = eINSTANCE.getDocumentRoot_Psf();
 
 		/**
-		 * The meta object literal for the '<em><b>Mixed</b></em>' attribute list feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Mixed</b></em>' attribute
+		 * list feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
@@ -261,15 +274,17 @@ public interface PsfPackage extends EPackage
 	String eNS_PREFIX = "psf";
 
 	/**
-	 * The singleton instance of the package. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The singleton instance of the package. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	PsfPackage eINSTANCE = org.eclipse.buckminster.team.psf.impl.PsfPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.team.psf.impl.PSFImpl <em>PSF</em>}' class. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.team.psf.impl.PSFImpl <em>PSF</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.team.psf.impl.PSFImpl
 	 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getPSF()
@@ -278,7 +293,8 @@ public interface PsfPackage extends EPackage
 	int PSF = 0;
 
 	/**
-	 * The feature id for the '<em><b>Version</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Version</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -286,8 +302,8 @@ public interface PsfPackage extends EPackage
 	int PSF__VERSION = 0;
 
 	/**
-	 * The feature id for the '<em><b>Providers</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Providers</b></em>' containment reference
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -295,8 +311,8 @@ public interface PsfPackage extends EPackage
 	int PSF__PROVIDERS = 1;
 
 	/**
-	 * The feature id for the '<em><b>Working Sets</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Working Sets</b></em>' containment
+	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -304,7 +320,8 @@ public interface PsfPackage extends EPackage
 	int PSF__WORKING_SETS = 2;
 
 	/**
-	 * The number of structural features of the '<em>PSF</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The number of structural features of the '<em>PSF</em>' class. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -312,8 +329,10 @@ public interface PsfPackage extends EPackage
 	int PSF_FEATURE_COUNT = 3;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.team.psf.impl.RepositoryProviderImpl
-	 * <em>Repository Provider</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.team.psf.impl.RepositoryProviderImpl
+	 * <em>Repository Provider</em>}' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.team.psf.impl.RepositoryProviderImpl
 	 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getRepositoryProvider()
@@ -322,7 +341,8 @@ public interface PsfPackage extends EPackage
 	int REPOSITORY_PROVIDER = 1;
 
 	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Id</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -330,8 +350,8 @@ public interface PsfPackage extends EPackage
 	int REPOSITORY_PROVIDER__ID = 0;
 
 	/**
-	 * The feature id for the '<em><b>Projects</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Projects</b></em>' containment reference
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -339,8 +359,8 @@ public interface PsfPackage extends EPackage
 	int REPOSITORY_PROVIDER__PROJECTS = 1;
 
 	/**
-	 * The number of structural features of the '<em>Repository Provider</em>' class. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The number of structural features of the '<em>Repository Provider</em>'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -348,8 +368,10 @@ public interface PsfPackage extends EPackage
 	int REPOSITORY_PROVIDER_FEATURE_COUNT = 2;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl <em>Working Set</em>}'
-	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.team.psf.impl.WorkingSetImpl
+	 * <em>Working Set</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @see org.eclipse.buckminster.team.psf.impl.WorkingSetImpl
 	 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getWorkingSet()
@@ -358,7 +380,8 @@ public interface PsfPackage extends EPackage
 	int WORKING_SET = 2;
 
 	/**
-	 * The feature id for the '<em><b>Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Id</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -366,7 +389,8 @@ public interface PsfPackage extends EPackage
 	int WORKING_SET__ID = 0;
 
 	/**
-	 * The feature id for the '<em><b>Label</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Label</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -374,7 +398,8 @@ public interface PsfPackage extends EPackage
 	int WORKING_SET__LABEL = 1;
 
 	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Name</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -382,7 +407,8 @@ public interface PsfPackage extends EPackage
 	int WORKING_SET__NAME = 2;
 
 	/**
-	 * The feature id for the '<em><b>Edit Page Id</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Edit Page Id</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -390,8 +416,8 @@ public interface PsfPackage extends EPackage
 	int WORKING_SET__EDIT_PAGE_ID = 3;
 
 	/**
-	 * The feature id for the '<em><b>Items</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Items</b></em>' containment reference
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -399,8 +425,8 @@ public interface PsfPackage extends EPackage
 	int WORKING_SET__ITEMS = 4;
 
 	/**
-	 * The number of structural features of the '<em>Working Set</em>' class. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The number of structural features of the '<em>Working Set</em>' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -408,8 +434,9 @@ public interface PsfPackage extends EPackage
 	int WORKING_SET_FEATURE_COUNT = 5;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.team.psf.impl.ItemImpl <em>Item</em>}' class. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.team.psf.impl.ItemImpl <em>Item</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.team.psf.impl.ItemImpl
 	 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getItem()
@@ -418,7 +445,8 @@ public interface PsfPackage extends EPackage
 	int ITEM = 3;
 
 	/**
-	 * The feature id for the '<em><b>Factory ID</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Factory ID</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -426,7 +454,8 @@ public interface PsfPackage extends EPackage
 	int ITEM__FACTORY_ID = 0;
 
 	/**
-	 * The feature id for the '<em><b>Element ID</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Element ID</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -434,7 +463,8 @@ public interface PsfPackage extends EPackage
 	int ITEM__ELEMENT_ID = 1;
 
 	/**
-	 * The feature id for the '<em><b>Path</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Path</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -442,7 +472,8 @@ public interface PsfPackage extends EPackage
 	int ITEM__PATH = 2;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -450,7 +481,8 @@ public interface PsfPackage extends EPackage
 	int ITEM__TYPE = 3;
 
 	/**
-	 * The number of structural features of the '<em>Item</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The number of structural features of the '<em>Item</em>' class. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -458,8 +490,9 @@ public interface PsfPackage extends EPackage
 	int ITEM_FEATURE_COUNT = 4;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.team.psf.impl.ProjectImpl <em>Project</em>}' class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.team.psf.impl.ProjectImpl
+	 * <em>Project</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.team.psf.impl.ProjectImpl
 	 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getProject()
@@ -468,7 +501,8 @@ public interface PsfPackage extends EPackage
 	int PROJECT = 4;
 
 	/**
-	 * The feature id for the '<em><b>Reference</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Reference</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -476,7 +510,8 @@ public interface PsfPackage extends EPackage
 	int PROJECT__REFERENCE = 0;
 
 	/**
-	 * The number of structural features of the '<em>Project</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The number of structural features of the '<em>Project</em>' class. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -484,8 +519,10 @@ public interface PsfPackage extends EPackage
 	int PROJECT_FEATURE_COUNT = 1;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.team.psf.impl.DocumentRootImpl <em>Document Root</em>}
-	 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.team.psf.impl.DocumentRootImpl
+	 * <em>Document Root</em>} ' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.team.psf.impl.DocumentRootImpl
 	 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getDocumentRoot()
@@ -494,7 +531,8 @@ public interface PsfPackage extends EPackage
 	int DOCUMENT_ROOT = 5;
 
 	/**
-	 * The feature id for the '<em><b>Psf</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Psf</b></em>' containment reference. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -502,7 +540,8 @@ public interface PsfPackage extends EPackage
 	int DOCUMENT_ROOT__PSF = 0;
 
 	/**
-	 * The feature id for the '<em><b>Mixed</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Mixed</b></em>' attribute list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -510,8 +549,8 @@ public interface PsfPackage extends EPackage
 	int DOCUMENT_ROOT__MIXED = 1;
 
 	/**
-	 * The number of structural features of the '<em>Document Root</em>' class. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The number of structural features of the '<em>Document Root</em>' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -519,8 +558,8 @@ public interface PsfPackage extends EPackage
 	int DOCUMENT_ROOT_FEATURE_COUNT = 2;
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.emf.ecore.EObject <em>Document Root</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for class '{@link org.eclipse.emf.ecore.EObject
+	 * <em>Document Root</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Document Root</em>'.
 	 * @see org.eclipse.emf.ecore.EObject
@@ -530,8 +569,9 @@ public interface PsfPackage extends EPackage
 	EClass getDocumentRoot();
 
 	/**
-	 * Returns the meta object for the attribute list '{@link org.eclipse.emf.ecore.EObject#getMixed <em>Mixed</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the attribute list '
+	 * {@link org.eclipse.emf.ecore.EObject#getMixed <em>Mixed</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute list '<em>Mixed</em>'.
 	 * @see org.eclipse.emf.ecore.EObject#getMixed()
@@ -541,8 +581,9 @@ public interface PsfPackage extends EPackage
 	EAttribute getDocumentRoot_Mixed();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getPsf <em>Psf</em>}
-	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the containment reference '
+	 * {@link org.eclipse.emf.ecore.EObject#getPsf <em>Psf</em>} '. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the containment reference '<em>Psf</em>'.
 	 * @see org.eclipse.emf.ecore.EObject#getPsf()
@@ -552,7 +593,8 @@ public interface PsfPackage extends EPackage
 	EReference getDocumentRoot_Psf();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.team.psf.Item <em>Item</em>}'. <!--
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.team.psf.Item <em>Item</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Item</em>'.
@@ -562,7 +604,8 @@ public interface PsfPackage extends EPackage
 	EClass getItem();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.Item#getElementID
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.Item#getElementID
 	 * <em>Element ID</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Element ID</em>'.
@@ -573,7 +616,8 @@ public interface PsfPackage extends EPackage
 	EAttribute getItem_ElementID();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.Item#getFactoryID
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.Item#getFactoryID
 	 * <em>Factory ID</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Factory ID</em>'.
@@ -584,7 +628,8 @@ public interface PsfPackage extends EPackage
 	EAttribute getItem_FactoryID();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.Item#getPath <em>Path</em>}'.
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.Item#getPath <em>Path</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Path</em>'.
@@ -595,7 +640,8 @@ public interface PsfPackage extends EPackage
 	EAttribute getItem_Path();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.Item#getType <em>Type</em>}'.
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.Item#getType <em>Type</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Type</em>'.
@@ -606,7 +652,8 @@ public interface PsfPackage extends EPackage
 	EAttribute getItem_Type();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.team.psf.Project <em>Project</em>}'. <!--
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.team.psf.Project <em>Project</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Project</em>'.
@@ -616,7 +663,8 @@ public interface PsfPackage extends EPackage
 	EClass getProject();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.Project#getReference
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.Project#getReference
 	 * <em>Reference</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Reference</em>'.
@@ -627,7 +675,8 @@ public interface PsfPackage extends EPackage
 	EAttribute getProject_Reference();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.team.psf.PSF <em>PSF</em>}'. <!--
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.team.psf.PSF <em>PSF</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>PSF</em>'.
@@ -638,10 +687,11 @@ public interface PsfPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.team.psf.PSF#getProviders <em>Providers</em>}'. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * {@link org.eclipse.buckminster.team.psf.PSF#getProviders
+	 * <em>Providers</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference list '<em>Providers</em>'.
+	 * @return the meta object for the containment reference list '
+	 *         <em>Providers</em>'.
 	 * @see org.eclipse.buckminster.team.psf.PSF#getProviders()
 	 * @see #getPSF()
 	 * @generated
@@ -649,8 +699,9 @@ public interface PsfPackage extends EPackage
 	EReference getPSF_Providers();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.PSF#getVersion
-	 * <em>Version</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.PSF#getVersion <em>Version</em>}
+	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Version</em>'.
 	 * @see org.eclipse.buckminster.team.psf.PSF#getVersion()
@@ -661,10 +712,11 @@ public interface PsfPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.team.psf.PSF#getWorkingSets <em>Working Sets</em>}'. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * {@link org.eclipse.buckminster.team.psf.PSF#getWorkingSets
+	 * <em>Working Sets</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference list '<em>Working Sets</em>'.
+	 * @return the meta object for the containment reference list '
+	 *         <em>Working Sets</em>'.
 	 * @see org.eclipse.buckminster.team.psf.PSF#getWorkingSets()
 	 * @see #getPSF()
 	 * @generated
@@ -672,7 +724,8 @@ public interface PsfPackage extends EPackage
 	EReference getPSF_WorkingSets();
 
 	/**
-	 * Returns the factory that creates the instances of the model. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the factory that creates the instances of the model. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the factory that creates the instances of the model.
 	 * @generated
@@ -680,8 +733,10 @@ public interface PsfPackage extends EPackage
 	PsfFactory getPsfFactory();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.team.psf.RepositoryProvider
-	 * <em>Repository Provider</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.team.psf.RepositoryProvider
+	 * <em>Repository Provider</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @return the meta object for class '<em>Repository Provider</em>'.
 	 * @see org.eclipse.buckminster.team.psf.RepositoryProvider
@@ -690,7 +745,8 @@ public interface PsfPackage extends EPackage
 	EClass getRepositoryProvider();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.RepositoryProvider#getId
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.RepositoryProvider#getId
 	 * <em>Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Id</em>'.
@@ -702,10 +758,11 @@ public interface PsfPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.team.psf.RepositoryProvider#getProjects <em>Projects</em>}'. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.team.psf.RepositoryProvider#getProjects
+	 * <em>Projects</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference list '<em>Projects</em>'.
+	 * @return the meta object for the containment reference list '
+	 *         <em>Projects</em>'.
 	 * @see org.eclipse.buckminster.team.psf.RepositoryProvider#getProjects()
 	 * @see #getRepositoryProvider()
 	 * @generated
@@ -713,8 +770,9 @@ public interface PsfPackage extends EPackage
 	EReference getRepositoryProvider_Projects();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.team.psf.WorkingSet <em>Working Set</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.team.psf.WorkingSet <em>Working Set</em>}
+	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Working Set</em>'.
 	 * @see org.eclipse.buckminster.team.psf.WorkingSet
@@ -723,7 +781,8 @@ public interface PsfPackage extends EPackage
 	EClass getWorkingSet();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.WorkingSet#getEditPageId
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.WorkingSet#getEditPageId
 	 * <em>Edit Page Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Edit Page Id</em>'.
@@ -734,8 +793,9 @@ public interface PsfPackage extends EPackage
 	EAttribute getWorkingSet_EditPageId();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.WorkingSet#getId <em>Id</em>}
-	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.WorkingSet#getId <em>Id</em>} '.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Id</em>'.
 	 * @see org.eclipse.buckminster.team.psf.WorkingSet#getId()
@@ -746,10 +806,11 @@ public interface PsfPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.team.psf.WorkingSet#getItems <em>Items</em>}'. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * {@link org.eclipse.buckminster.team.psf.WorkingSet#getItems
+	 * <em>Items</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference list '<em>Items</em>'.
+	 * @return the meta object for the containment reference list '
+	 *         <em>Items</em>'.
 	 * @see org.eclipse.buckminster.team.psf.WorkingSet#getItems()
 	 * @see #getWorkingSet()
 	 * @generated
@@ -757,7 +818,8 @@ public interface PsfPackage extends EPackage
 	EReference getWorkingSet_Items();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.WorkingSet#getLabel
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.WorkingSet#getLabel
 	 * <em>Label</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Label</em>'.
@@ -768,8 +830,9 @@ public interface PsfPackage extends EPackage
 	EAttribute getWorkingSet_Label();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.team.psf.WorkingSet#getName
-	 * <em>Name</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.team.psf.WorkingSet#getName <em>Name</em>}
+	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Name</em>'.
 	 * @see org.eclipse.buckminster.team.psf.WorkingSet#getName()

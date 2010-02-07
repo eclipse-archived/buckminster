@@ -7,8 +7,7 @@ import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.core.runtime.IPath;
 
-public interface IAction extends IAttribute
-{
+public interface IAction extends IAttribute {
 	String getActorName();
 
 	Map<String, String> getActorProperties();

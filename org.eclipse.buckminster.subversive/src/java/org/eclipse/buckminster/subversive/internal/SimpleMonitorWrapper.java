@@ -18,43 +18,35 @@ import org.eclipse.team.svn.core.utility.SubProgressMonitorWithInfo;
 /**
  * @author Thomas Hallgren
  */
-public class SimpleMonitorWrapper implements ISVNProgressMonitor
-{
-	public static ISVNProgressMonitor beginTask(IProgressMonitor monitor, int ticks)
-	{
-		if(monitor == null)
+public class SimpleMonitorWrapper implements ISVNProgressMonitor {
+	public static ISVNProgressMonitor beginTask(IProgressMonitor monitor, int ticks) {
+		if (monitor == null)
 			return new SVNNullProgressMonitor();
 
 		monitor.beginTask(null, ticks);
 		return new SimpleMonitorWrapper(monitor, ticks);
 	}
 
-	private final SubProgressMonitorWithInfo m_monitor;
+	private final SubProgressMonitorWithInfo monitor;
 
-	private SimpleMonitorWrapper(IProgressMonitor monitor, int ticks)
-	{
-		m_monitor = new SubProgressMonitorWithInfo(monitor, ticks);
+	private SimpleMonitorWrapper(IProgressMonitor monitor, int ticks) {
+		this.monitor = new SubProgressMonitorWithInfo(monitor, ticks);
 	}
 
-	public boolean isActivityCancelled()
-	{
-		return m_monitor.isCanceled();
+	public boolean isActivityCancelled() {
+		return monitor.isCanceled();
 	}
 
-	public void progress(int current, int total, ItemState state)
-	{
-		if(total != IProgressMonitor.UNKNOWN)
-		{
+	public void progress(int current, int total, ItemState state) {
+		if (total != IProgressMonitor.UNKNOWN) {
 			int real = ProgressMonitorUtility.TOTAL_WORK * current / total;
-			real -= m_monitor.getCurrentProgress();
-			m_monitor.worked(real);
-		}
-		else
-			m_monitor.unknownProgress(current);
+			real -= monitor.getCurrentProgress();
+			monitor.worked(real);
+		} else
+			monitor.unknownProgress(current);
 	}
 
-	public void reportError(String msg)
-	{
+	public void reportError(String msg) {
 		Buckminster.getLogger().info("SVN error: " + msg);
 	}
 }

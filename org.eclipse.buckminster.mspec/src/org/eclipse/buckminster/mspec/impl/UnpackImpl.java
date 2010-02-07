@@ -17,22 +17,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Unpack</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Unpack</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.mspec.impl.UnpackImpl#isExpand <em>Expand</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.UnpackImpl#getSuffix <em>Suffix</em>}</li>
+ * <li>{@link org.eclipse.buckminster.mspec.impl.UnpackImpl#isExpand <em>Expand
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.mspec.impl.UnpackImpl#getSuffix <em>Suffix
+ * </em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class UnpackImpl extends EObjectImpl implements Unpack
-{
+public class UnpackImpl extends EObjectImpl implements Unpack {
 	/**
-	 * The default value of the '{@link #isExpand() <em>Expand</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #isExpand() <em>Expand</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isExpand()
 	 * @generated
@@ -41,8 +43,8 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	protected static final boolean EXPAND_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #isExpand() <em>Expand</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #isExpand() <em>Expand</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isExpand()
 	 * @generated
@@ -51,8 +53,8 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	protected boolean expand = EXPAND_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getSuffix() <em>Suffix</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getSuffix() <em>Suffix</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getSuffix()
 	 * @generated
@@ -61,8 +63,8 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	protected static final String SUFFIX_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getSuffix() <em>Suffix</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getSuffix() <em>Suffix</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getSuffix()
 	 * @generated
@@ -75,8 +77,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * 
 	 * @generated
 	 */
-	protected UnpackImpl()
-	{
+	protected UnpackImpl() {
 		super();
 	}
 
@@ -86,14 +87,12 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.UNPACK__EXPAND:
-			return isExpand();
-		case MspecPackage.UNPACK__SUFFIX:
-			return getSuffix();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case MspecPackage.UNPACK__EXPAND:
+				return isExpand();
+			case MspecPackage.UNPACK__SUFFIX:
+				return getSuffix();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -104,16 +103,12 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.UNPACK__EXPAND:
-			return expand != EXPAND_EDEFAULT;
-		case MspecPackage.UNPACK__SUFFIX:
-			return SUFFIX_EDEFAULT == null
-					? suffix != null
-					: !SUFFIX_EDEFAULT.equals(suffix);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case MspecPackage.UNPACK__EXPAND:
+				return expand != EXPAND_EDEFAULT;
+			case MspecPackage.UNPACK__SUFFIX:
+				return SUFFIX_EDEFAULT == null ? suffix != null : !SUFFIX_EDEFAULT.equals(suffix);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -124,16 +119,14 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.UNPACK__EXPAND:
-			setExpand((Boolean)newValue);
-			return;
-		case MspecPackage.UNPACK__SUFFIX:
-			setSuffix((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case MspecPackage.UNPACK__EXPAND:
+				setExpand((Boolean) newValue);
+				return;
+			case MspecPackage.UNPACK__SUFFIX:
+				setSuffix((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -144,16 +137,14 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.UNPACK__EXPAND:
-			setExpand(EXPAND_EDEFAULT);
-			return;
-		case MspecPackage.UNPACK__SUFFIX:
-			setSuffix(SUFFIX_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case MspecPackage.UNPACK__EXPAND:
+				setExpand(EXPAND_EDEFAULT);
+				return;
+			case MspecPackage.UNPACK__SUFFIX:
+				setSuffix(SUFFIX_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -163,8 +154,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * 
 	 * @generated
 	 */
-	public String getSuffix()
-	{
+	public String getSuffix() {
 		return suffix;
 	}
 
@@ -173,8 +163,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * 
 	 * @generated
 	 */
-	public boolean isExpand()
-	{
+	public boolean isExpand() {
 		return expand;
 	}
 
@@ -183,11 +172,10 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * 
 	 * @generated
 	 */
-	public void setExpand(boolean newExpand)
-	{
+	public void setExpand(boolean newExpand) {
 		boolean oldExpand = expand;
 		expand = newExpand;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.UNPACK__EXPAND, oldExpand, expand));
 	}
 
@@ -196,11 +184,10 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * 
 	 * @generated
 	 */
-	public void setSuffix(String newSuffix)
-	{
+	public void setSuffix(String newSuffix) {
 		String oldSuffix = suffix;
 		suffix = newSuffix;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.UNPACK__SUFFIX, oldSuffix, suffix));
 	}
 
@@ -210,9 +197,8 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -230,8 +216,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return MspecPackage.Literals.UNPACK;
 	}
 

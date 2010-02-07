@@ -9,14 +9,16 @@ package org.eclipse.buckminster.rmap.maven;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Group And Artifact</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Group And Artifact</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.maven.GroupAndArtifact#getArtifactId <em>Artifact Id</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.maven.GroupAndArtifact#getGroupId <em>Group Id</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.maven.GroupAndArtifact#getArtifactId
+ * <em>Artifact Id</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.maven.GroupAndArtifact#getGroupId
+ * <em>Group Id</em>}</li>
  * </ul>
  * </p>
  * 
@@ -24,13 +26,13 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface GroupAndArtifact extends EObject
-{
+public interface GroupAndArtifact extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Artifact Id</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Artifact Id</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Artifact Id</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Artifact Id</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -43,10 +45,11 @@ public interface GroupAndArtifact extends EObject
 	String getArtifactId();
 
 	/**
-	 * Returns the value of the '<em><b>Group Id</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Group Id</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Group Id</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Group Id</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -59,8 +62,10 @@ public interface GroupAndArtifact extends EObject
 	String getGroupId();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.maven.GroupAndArtifact#getArtifactId
-	 * <em>Artifact Id</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.rmap.maven.GroupAndArtifact#getArtifactId
+	 * <em>Artifact Id</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Artifact Id</em>' attribute.
@@ -70,8 +75,10 @@ public interface GroupAndArtifact extends EObject
 	void setArtifactId(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.maven.GroupAndArtifact#getGroupId <em>Group Id</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.rmap.maven.GroupAndArtifact#getGroupId
+	 * <em>Group Id</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Group Id</em>' attribute.

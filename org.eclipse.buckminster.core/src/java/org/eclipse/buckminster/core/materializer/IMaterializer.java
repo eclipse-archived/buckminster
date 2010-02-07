@@ -21,13 +21,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * The IMaterializer deals with the task of materializing the components of a
- * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials BillOfMaterials}.
+ * {@link org.eclipse.buckminster.core.metadata.model.BillOfMaterials
+ * BillOfMaterials}.
  * 
- * @see org.eclipse.buckminster.core.CorePlugin#getMaterializationService(String id)
+ * @see org.eclipse.buckminster.core.CorePlugin#getMaterializationService(String
+ *      id)
  * @author Thomas Hallgren
  */
-public interface IMaterializer
-{
+public interface IMaterializer {
 	static final String MATERIALIZERS_POINT = CorePlugin.CORE_NAMESPACE + ".materializers"; //$NON-NLS-1$
 
 	static final String FILE_SYSTEM = "filesystem"; //$NON-NLS-1$
@@ -39,7 +40,8 @@ public interface IMaterializer
 	static final String MATERIALIZER_PROPERTY = "buckminster.materializer.name"; //$NON-NLS-1$
 
 	/**
-	 * Returns true if this materializer can work in parallel with other materializers of the same type.
+	 * Returns true if this materializer can work in parallel with other
+	 * materializers of the same type.
 	 * 
 	 * @return true if materializers of this type can be parallelized.
 	 */
@@ -57,7 +59,8 @@ public interface IMaterializer
 	IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException;
 
 	/**
-	 * Returns the reader type to use for the materialization. This might differ from the type used for the resolution.
+	 * Returns the reader type to use for the materialization. This might differ
+	 * from the type used for the resolution.
 	 * 
 	 * @return The reader type to use for materialization
 	 */
@@ -65,27 +68,31 @@ public interface IMaterializer
 
 	/**
 	 * <p>
-	 * Perform install actions on the given node such as executing generators, binding projects to the Eclipse workspace
-	 * etc. The actions will be performed by on a leaf first basis.
+	 * Perform install actions on the given node such as executing generators,
+	 * binding projects to the Eclipse workspace etc. The actions will be
+	 * performed by on a leaf first basis.
 	 * </p>
 	 * <p>
-	 * While the called instance is guaranteed to be the one designated to manage the <code>node</code>, children of the
-	 * <code>node</code> might be managed by other instances. This is controlled by the mspec.
+	 * While the called instance is guaranteed to be the one designated to
+	 * manage the <code>node</code>, children of the <code>node</code> might be
+	 * managed by other instances. This is controlled by the mspec.
 	 * 
 	 * @param node
 	 *            The bill of material node. This is the root of the install.
 	 * @param context
 	 *            The context for the materialization.
 	 * @param generated
-	 *            Keeps track of nodes that has been generated to avoid multiple generations.
+	 *            Keeps track of nodes that has been generated to avoid multiple
+	 *            generations.
 	 * @param perused
-	 *            Keeps track of what has been installed to avoid multiple calls to the same node.
+	 *            Keeps track of what has been installed to avoid multiple calls
+	 *            to the same node.
 	 * @param monitor
 	 *            provides feedback to the user.
 	 * @throws CoreException
 	 */
-	void installRecursive(BOMNode node, MaterializationContext context, Set<String> generated, Set<Resolution> perused,
-			IProgressMonitor monitor) throws CoreException;
+	void installRecursive(BOMNode node, MaterializationContext context, Set<String> generated, Set<Resolution> perused, IProgressMonitor monitor)
+			throws CoreException;
 
 	/**
 	 * Materialize all resolutions from the bill of materials <code>bom</code>.
@@ -99,8 +106,7 @@ public interface IMaterializer
 	 * @return The list of materializations
 	 * @throws CoreException
 	 */
-	List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException;
+	List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Install the given resolution.
@@ -113,6 +119,5 @@ public interface IMaterializer
 	 *            provides feedback to the user.
 	 * @throws CoreException
 	 */
-	void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor)
-			throws CoreException;
+	void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException;
 }

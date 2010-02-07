@@ -40,15 +40,12 @@ import org.eclipse.core.runtime.Path;
 /**
  * @author Thomas Hallgren
  */
-public class URLReaderType extends AbstractReaderType
-{
-	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException
-	{
+public class URLReaderType extends AbstractReaderType {
+	public static IComponentReader getReader(URL externalFile, IProgressMonitor monitor) throws CoreException {
 		return getDirectReader(externalFile, IReaderType.URL, monitor);
 	}
 
-	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException
-	{
+	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException {
 		String urlString = url.toString();
 		ComponentRequest rq = new ComponentRequest(urlString, null, null);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
@@ -64,100 +61,79 @@ public class URLReaderType extends AbstractReaderType
 	}
 
 	@Override
-	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName)
-			throws CoreException
-	{
+	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
 		return fetchFactoryLocator.get("src"); //$NON-NLS-1$
 	}
 
 	@Override
-	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException
-	{
-		try
-		{
+	public URL convertToURL(String repositoryLocator, VersionMatch versionSelector) throws CoreException {
+		try {
 			return URLUtils.normalizeToURL(repositoryLocator);
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
-		try
-		{
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
+		try {
 			return new URI(resolution.getRepository());
-		}
-		catch(URISyntaxException e)
-		{
+		} catch (URISyntaxException e) {
 			return null;
 		}
 	}
 
-	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException
-	{
+	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException {
 		String name = resolution.getRemoteName();
-		if(name != null)
+		if (name != null)
 			return Path.fromPortableString(name);
 
 		URI uri = getURI(resolution.getRepository());
 		Map<String, String> params = URLUtils.queryAsParameters(uri.getQuery());
 		String pathStr = params.get("file"); //$NON-NLS-1$
-		if(pathStr == null)
+		if (pathStr == null)
 			pathStr = uri.getPath();
 
 		IPath path = Path.fromPortableString(pathStr);
 		int segCount = path.segmentCount();
-		if(segCount > 1)
+		if (segCount > 1)
 			path = path.removeFirstSegments(segCount - 1);
 		return path;
 	}
 
-	public IReaderType getLocalReaderType()
-	{
+	public IReaderType getLocalReaderType() {
 		return this;
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new URLFileReader(this, providerMatch, getURI(providerMatch));
 	}
 
 	@Override
-	public IComponentReader getReader(Resolution resolution, RMContext context, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public IComponentReader getReader(Resolution resolution, RMContext context, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new URLFileReader(this, resolution.getProviderMatch(context), getURI(resolution.getRepository()));
 	}
 
 	@Override
-	public String getRemotePath(String repositoryLocation) throws CoreException
-	{
+	public String getRemotePath(String repositoryLocation) throws CoreException {
 		return getURI(repositoryLocation).getPath();
 	}
 
-	public URI getURI(ProviderMatch providerMatch) throws CoreException
-	{
+	public URI getURI(ProviderMatch providerMatch) throws CoreException {
 		return getURI(providerMatch.getRepositoryURI());
 	}
 
-	public URI getURI(String repository) throws CoreException
-	{
+	public URI getURI(String repository) throws CoreException {
 		return URLUtils.normalizeToURI(repository, false);
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery query, IProgressMonitor monitor) throws CoreException {
 		return new DefaultVersionFinder(provider, ctype, query);
 	}
 
-	public boolean isFileReader()
-	{
+	public boolean isFileReader() {
 		return true;
 	}
 }

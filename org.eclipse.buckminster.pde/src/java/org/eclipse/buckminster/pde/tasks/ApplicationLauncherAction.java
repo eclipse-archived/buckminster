@@ -10,47 +10,41 @@ import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 
 @SuppressWarnings("restriction")
-public class ApplicationLauncherAction extends org.eclipse.equinox.p2.publisher.eclipse.ApplicationLauncherAction
-{
-	private final String m_id;
+public class ApplicationLauncherAction extends org.eclipse.equinox.p2.publisher.eclipse.ApplicationLauncherAction {
+	private final String id;
 
-	private final Version m_version;
+	private final Version version;
 
-	private final String m_flavor;
+	private final String flavor;
 
-	private final File m_location;
+	private final File location;
 
-	public ApplicationLauncherAction(String id, Version version, String flavor, String executableName, File location,
-			String[] configSpecs)
-	{
+	public ApplicationLauncherAction(String id, Version version, String flavor, String executableName, File location, String[] configSpecs) {
 		super(id, version, flavor, executableName, location, configSpecs);
-		m_id = id;
-		m_version = version;
-		m_flavor = flavor;
-		m_location = location;
+		this.id = id;
+		this.version = version;
+		this.flavor = flavor;
+		this.location = location;
 	}
 
 	@Override
-	protected ExecutablesDescriptor computeExecutables(String configSpec)
-	{
+	protected ExecutablesDescriptor computeExecutables(String configSpec) {
 		// See if we know about an executables feature then use it as the source
-		ExecutablesDescriptor result = ExecutablesDescriptor.createExecutablesFromFeature(m_location, configSpec);
-		if(result != null)
+		ExecutablesDescriptor result = ExecutablesDescriptor.createExecutablesFromFeature(location, configSpec);
+		if (result != null)
 			return result;
-		// otherwise, assume that we are running against an Eclipse install and do the default thing
+		// otherwise, assume that we are running against an Eclipse install and
+		// do the default thing
 		String os = AbstractPublisherAction.parseConfigSpec(configSpec)[1];
-		return ExecutablesDescriptor.createDescriptor(os, "eclipse", m_location); //$NON-NLS-1$
+		return ExecutablesDescriptor.createDescriptor(os, "eclipse", location); //$NON-NLS-1$
 	}
 
 	@Override
-	protected Collection<IPublisherAction> createExecutablesActions(String[] configSpecs)
-	{
+	protected Collection<IPublisherAction> createExecutablesActions(String[] configSpecs) {
 		Collection<IPublisherAction> actions = new ArrayList<IPublisherAction>(configSpecs.length);
-		for(int i = 0; i < configSpecs.length; i++)
-		{
+		for (int i = 0; i < configSpecs.length; i++) {
 			ExecutablesDescriptor executables = computeExecutables(configSpecs[i]);
-			IPublisherAction action = new EquinoxExecutableAction(executables, configSpecs[i], m_id, m_version,
-					m_flavor);
+			IPublisherAction action = new EquinoxExecutableAction(executables, configSpecs[i], id, version, flavor);
 			actions.add(action);
 		}
 		return actions;

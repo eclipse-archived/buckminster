@@ -22,63 +22,53 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class ActionArtifact extends Artifact implements IActionArtifact
-{
-	private final String m_actionName;
+public class ActionArtifact extends Artifact implements IActionArtifact {
+	private final String actionName;
 
-	private final String m_alias;
+	private final String alias;
 
-	public ActionArtifact(ActionArtifactBuilder builder)
-	{
+	public ActionArtifact(ActionArtifactBuilder builder) {
 		super(builder);
-		m_actionName = builder.getActionName();
-		m_alias = builder.getAlias();
+		actionName = builder.getActionName();
+		alias = builder.getAlias();
 	}
 
-	public final Action getAction() throws MissingAttributeException
-	{
-		return (Action)this.getCSpec().getRequiredAttribute(m_actionName);
+	public final Action getAction() throws MissingAttributeException {
+		return (Action) this.getCSpec().getRequiredAttribute(actionName);
 	}
 
-	public String getActionName()
-	{
-		return m_actionName;
+	public String getActionName() {
+		return actionName;
 	}
 
-	public String getAlias()
-	{
-		return m_alias;
+	public String getAlias() {
+		return alias;
 	}
 
 	@Override
-	public boolean isEnabled(IModelCache ctx) throws CoreException
-	{
+	public boolean isEnabled(IModelCache ctx) throws CoreException {
 		return getAction().isEnabled(ctx);
 	}
 
 	@Override
-	public boolean isProducedByActions(IModelCache ctx)
-	{
+	public boolean isProducedByActions(IModelCache ctx) {
 		return true;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
+	protected void addAttributes(AttributesImpl attrs) {
 		super.addAttributes(attrs);
-		if(m_alias != null)
-			Utils.addAttribute(attrs, Prerequisite.ATTR_ALIAS, m_alias);
+		if (alias != null)
+			Utils.addAttribute(attrs, Prerequisite.ATTR_ALIAS, alias);
 	}
 
 	@Override
-	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder)
-	{
+	protected AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder) {
 		return cspecBuilder.createActionArtifactBuilder();
 	}
 
 	@Override
-	protected IPath getExpandedBase(Map<String, ? extends Object> local) throws CoreException
-	{
+	protected IPath getExpandedBase(Map<String, ? extends Object> local) throws CoreException {
 		return getAction().getExpandedBase(getBase(), local);
 	}
 }

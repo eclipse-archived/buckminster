@@ -20,8 +20,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class VersionConverterDesc extends AbstractSaxableElement
-{
+public class VersionConverterDesc extends AbstractSaxableElement {
 	public static final String TAG = "versionConverter"; //$NON-NLS-1$
 
 	public static final String ATTR_TYPE = "type"; //$NON-NLS-1$
@@ -30,54 +29,47 @@ public class VersionConverterDesc extends AbstractSaxableElement
 
 	public static final String ATTR_VERSION_TYPE = "versionType"; //$NON-NLS-1$
 
-	private final String m_type;
+	private final String type;
 
-	private final BidirectionalTransformer[] m_transformers;
+	private final BidirectionalTransformer[] transformers;
 
-	private final IVersionFormat m_versionFormat;
+	private final IVersionFormat versionFormat;
 
-	public VersionConverterDesc(String type, IVersionFormat versionFormat, BidirectionalTransformer[] transformers)
-	{
-		m_type = type;
-		m_transformers = transformers;
-		m_versionFormat = versionFormat;
+	public VersionConverterDesc(String type, IVersionFormat versionFormat, BidirectionalTransformer[] transformers) {
+		this.type = type;
+		this.transformers = transformers;
+		this.versionFormat = versionFormat;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public final BidirectionalTransformer[] getTransformers()
-	{
-		return m_transformers;
+	public final BidirectionalTransformer[] getTransformers() {
+		return transformers;
 	}
 
-	public final String getType()
-	{
-		return m_type;
+	public final String getType() {
+		return type;
 	}
 
-	public IVersionConverter getVersionConverter() throws CoreException
-	{
-		AbstractConverter vct = (AbstractConverter)CorePlugin.getDefault().getVersionConverter(m_type);
-		vct.setTransformers(m_transformers);
-		vct.setVersionFormat(m_versionFormat);
+	public IVersionConverter getVersionConverter() throws CoreException {
+		AbstractConverter vct = (AbstractConverter) CorePlugin.getDefault().getVersionConverter(type);
+		vct.setTransformers(transformers);
+		vct.setVersionFormat(versionFormat);
 		return vct;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_TYPE, m_type);
-		if(m_versionFormat != null)
-			Utils.addAttribute(attrs, ATTR_VERSION_FORMAT, m_versionFormat.toString());
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_TYPE, type);
+		if (versionFormat != null)
+			Utils.addAttribute(attrs, ATTR_VERSION_FORMAT, versionFormat.toString());
 	}
 
 	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		for(BidirectionalTransformer transformer : m_transformers)
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
+		for (BidirectionalTransformer transformer : transformers)
 			transformer.toSax(handler, namespace, prefix, transformer.getDefaultTag());
 	}
 }

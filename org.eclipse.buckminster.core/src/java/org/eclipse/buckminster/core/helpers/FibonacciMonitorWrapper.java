@@ -15,54 +15,47 @@ import org.eclipse.core.runtime.ProgressMonitorWrapper;
 /**
  * @author Thomas Hallgren
  */
-public class FibonacciMonitorWrapper extends ProgressMonitorWrapper
-{
-	private int m_multiplier = 0x10000;
+public class FibonacciMonitorWrapper extends ProgressMonitorWrapper {
+	private int multiplier = 0x10000;
 
-	private double m_totalWork = 0;
+	private double totalWork = 0;
 
-	private double m_worked = 0;
+	private double worked = 0;
 
-	private static final double s_goldenRatio = 89.0 / 55.0;
+	private static final double goldenRatio = 89.0 / 55.0;
 
-	public FibonacciMonitorWrapper(IProgressMonitor monitor)
-	{
+	public FibonacciMonitorWrapper(IProgressMonitor monitor) {
 		super(monitor);
 	}
 
 	@Override
-	public void beginTask(String name, int totalWork)
-	{
-		totalWork *= m_multiplier;
-		m_totalWork = totalWork;
-		this.getWrappedProgressMonitor().beginTask(name, totalWork);
+	public void beginTask(String name, int work) {
+		totalWork *= multiplier;
+		totalWork = work;
+		this.getWrappedProgressMonitor().beginTask(name, work);
 	}
 
 	@Override
-	public void internalWorked(double work)
-	{
-		double attempt = work * m_multiplier;
-		while(m_worked + attempt > m_totalWork / s_goldenRatio && m_multiplier > 1)
-		{
-			m_multiplier >>= 1;
-			m_totalWork -= m_worked;
-			m_worked = 0;
-			attempt = work * m_multiplier;
+	public void internalWorked(double work) {
+		double attempt = work * multiplier;
+		while (worked + attempt > totalWork / goldenRatio && multiplier > 1) {
+			multiplier >>= 1;
+			totalWork -= worked;
+			worked = 0;
+			attempt = work * multiplier;
 			continue;
 		}
 
-		m_worked += attempt;
-		if(m_worked >= m_totalWork)
-		{
+		worked += attempt;
+		if (worked >= totalWork) {
 			attempt = 0;
-			m_worked = m_totalWork;
+			worked = totalWork;
 		}
 		this.getWrappedProgressMonitor().internalWorked(attempt);
 	}
 
 	@Override
-	public void worked(int work)
-	{
+	public void worked(int work) {
 		this.internalWorked(work);
 	}
 }

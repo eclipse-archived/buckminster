@@ -22,20 +22,17 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class PrerequisiteHandler extends CSpecElementHandler
-{
+public class PrerequisiteHandler extends CSpecElementHandler {
 	public static final String TAG = Prerequisite.TAG;
 
-	public PrerequisiteHandler(AbstractHandler parent)
-	{
+	public PrerequisiteHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		PrerequisiteBuilder builder = (PrerequisiteBuilder)this.getBuilder();
+		PrerequisiteBuilder builder = (PrerequisiteBuilder) this.getBuilder();
 		builder.setComponentName(getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT));
 		builder.setComponentType(getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT_TYPE));
 		builder.setContributor(getOptionalBooleanValue(attrs, Prerequisite.ATTR_CONTRIBUTOR, true));
@@ -43,30 +40,24 @@ public class PrerequisiteHandler extends CSpecElementHandler
 		builder.setExcludePattern(getOptionalPatternValue(attrs, Prerequisite.ATTR_EXCLUDE_PATTERN));
 		builder.setIncludePattern(getOptionalPatternValue(attrs, Prerequisite.ATTR_INCLUDE_PATTERN));
 		String filterStr = getOptionalStringValue(attrs, Prerequisite.ATTR_FILTER);
-		if(filterStr != null)
-		{
-			try
-			{
+		if (filterStr != null) {
+			try {
 				builder.setFilter(FilterFactory.newInstance(filterStr));
-			}
-			catch(InvalidSyntaxException e)
-			{
+			} catch (InvalidSyntaxException e) {
 				throw new SAXParseException(e.getMessage(), getDocumentLocator());
 			}
 		}
 	}
 
 	@Override
-	protected NamedElementBuilder createBuilder()
-	{
+	protected NamedElementBuilder createBuilder() {
 		return getAttributeBuilder().createPrerequisiteBuilder();
 	}
 
 	@Override
-	protected String getNameAttribute(Attributes attrs) throws SAXException
-	{
+	protected String getNameAttribute(Attributes attrs) throws SAXException {
 		String name = getOptionalStringValue(attrs, NamedElement.ATTR_NAME);
-		if(name == null)
+		if (name == null)
 			name = CSpec.SELF_ARTIFACT;
 		return name;
 	}

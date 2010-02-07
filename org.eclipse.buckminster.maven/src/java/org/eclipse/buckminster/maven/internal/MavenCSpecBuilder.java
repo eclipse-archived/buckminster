@@ -42,50 +42,37 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<Document>
-{
-	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
-			throws CoreException
-	{
+class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<Document> {
+	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IComponentReader reader = readerHandle[0];
 		ProviderMatch ri = reader.getProviderMatch();
 		monitor.beginTask(null, 3000);
 		monitor.subTask(Messages.generating_cspec_from_maven_artifact);
-		try
-		{
+		try {
 			Document pomDoc;
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 2000);
-			if(reader instanceof MavenReader)
-			{
+			if (reader instanceof MavenReader) {
 				// We are reading from a maven repository. In that case, we will
 				// allow a missing pom file.
 				//
-				pomDoc = ((MavenReader)reader).getPOMDocument(subMon);
-			}
-			else
-			{
-				// Some other reader is used. This reader is either reading a source
-				// directory (catalog reader) or a pom/project file directly. In any
+				pomDoc = ((MavenReader) reader).getPOMDocument(subMon);
+			} else {
+				// Some other reader is used. This reader is either reading a
+				// source
+				// directory (catalog reader) or a pom/project file directly. In
+				// any
 				// case, we consider a missing file an exceptional condition.
 				//
-				try
-				{
-					if(reader instanceof ICatalogReader)
-					{
-						try
-						{
-							pomDoc = ((ICatalogReader)reader).readFile("pom.xml", this, subMon); //$NON-NLS-1$
+				try {
+					if (reader instanceof ICatalogReader) {
+						try {
+							pomDoc = ((ICatalogReader) reader).readFile("pom.xml", this, subMon); //$NON-NLS-1$
+						} catch (FileNotFoundException e) {
+							pomDoc = ((ICatalogReader) reader).readFile("project.xml", this, subMon); //$NON-NLS-1$
 						}
-						catch(FileNotFoundException e)
-						{
-							pomDoc = ((ICatalogReader)reader).readFile("project.xml", this, subMon); //$NON-NLS-1$
-						}
-					}
-					else
-						pomDoc = ((IFileReader)reader).readFile(this, subMon);
-				}
-				catch(FileNotFoundException e2)
-				{
+					} else
+						pomDoc = ((IFileReader) reader).readFile(this, subMon);
+				} catch (FileNotFoundException e2) {
 					throw new MissingCSpecSourceException(reader.getProviderMatch());
 				}
 			}
@@ -93,45 +80,35 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			CSpecBuilder cspecBld = ri.createCSpec();
 			cspecBld.setComponentTypeID(MavenComponentType.ID);
 			GroupBuilder archives = AbstractComponentType.addSelfAsJarArtifactGroups(cspecBld);
-			if(pomDoc != null)
-			{
+			if (pomDoc != null) {
 				ExpandingProperties<String> properties = new ExpandingProperties<String>();
 				String packaging = MavenComponentType.addDependencies(reader, pomDoc, cspecBld, archives, properties);
-				if(reader instanceof MavenReader && !"jar".equals(packaging)) //$NON-NLS-1$
-					((MavenReader)reader).setPackaging(packaging);
+				if (reader instanceof MavenReader && !"jar".equals(packaging)) //$NON-NLS-1$
+					((MavenReader) reader).setPackaging(packaging);
 			}
 
 			applyExtensions(cspecBld, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
 			return createNode(reader, cspecBld);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	public Document consumeStream(IComponentReader reader, String streamName, InputStream stream,
-			IProgressMonitor monitor) throws CoreException, IOException
-	{
+	public Document consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor) throws CoreException,
+			IOException {
 		monitor.beginTask(streamName, 1);
-		try
-		{
+		try {
 			AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream(0x2000, 0x100000);
 			FileUtils.copyFile(stream, buffer, new byte[0x1000], monitor);
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBld = factory.newDocumentBuilder();
-			try
-			{
+			try {
 				return docBld.parse(buffer.getInputStream());
-			}
-			catch(SAXParseException e)
-			{
+			} catch (SAXParseException e) {
 				String msg = e.getMessage();
-				if(msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
+				if (msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
 					throw e;
 
 				InputSource input = new InputSource(buffer.getInputStream());
@@ -139,17 +116,11 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 				docBld.reset();
 				return docBld.parse(input);
 			}
-		}
-		catch(SAXException e)
-		{
+		} catch (SAXException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		catch(ParserConfigurationException e)
-		{
+		} catch (ParserConfigurationException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			MonitorUtils.worked(monitor, 1);
 			monitor.done();
 		}

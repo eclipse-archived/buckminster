@@ -22,68 +22,55 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  * 
  */
-public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWrapper>
-{
+public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWrapper> {
 	public static final String TAG = "idwrapper"; //$NON-NLS-1$
 
 	public static final String ATTR_ID = "id"; //$NON-NLS-1$
 
-	private final UUID m_id;
+	private final UUID id;
 
-	private final UUIDKeyed m_wrapped;
+	private final UUIDKeyed wrapped;
 
-	public IDWrapper(UUID id, UUIDKeyed wrapped)
-	{
-		m_id = id;
-		m_wrapped = wrapped;
+	public IDWrapper(UUID id, UUIDKeyed wrapped) {
+		this.id = id;
+		this.wrapped = wrapped;
 	}
 
-	public IDWrapper(UUIDKeyed wrapped)
-	{
+	public IDWrapper(UUIDKeyed wrapped) {
 		this(wrapped.getId(), wrapped);
 	}
 
-	public int compareTo(IDWrapper o)
-	{
-		return m_id.compareTo(o.m_id);
+	public int compareTo(IDWrapper o) {
+		return id.compareTo(o.id);
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public UUID getId()
-	{
-		return m_id;
+	public UUID getId() {
+		return id;
 	}
 
-	public UUIDKeyed getWrapped()
-	{
-		return m_wrapped;
-	}
-
-	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_ID, m_id.toString());
+	public UUIDKeyed getWrapped() {
+		return wrapped;
 	}
 
 	@Override
-	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException
-	{
-		if(m_wrapped instanceof BillOfMaterials)
-			((BillOfMaterials)m_wrapped).wrappedToSax(receiver, namespace, prefix,
-					((ISaxableElement)m_wrapped).getDefaultTag());
-		else if(m_wrapped instanceof ComponentQuery)
-		{
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_ID, id.toString());
+	}
+
+	@Override
+	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException {
+		if (wrapped instanceof BillOfMaterials)
+			((BillOfMaterials) wrapped).wrappedToSax(receiver, namespace, prefix, ((ISaxableElement) wrapped).getDefaultTag());
+		else if (wrapped instanceof ComponentQuery) {
 			// Relative paths must be resolved prior to inclusion
 			//
-			ComponentQuery query = ((ComponentQuery)m_wrapped).resolve();
+			ComponentQuery query = ((ComponentQuery) wrapped).resolve();
 			query.toSax(receiver, namespace, prefix, query.getDefaultTag());
-		}
-		else
-			((ISaxableElement)m_wrapped).toSax(receiver, namespace, prefix,
-					((ISaxableElement)m_wrapped).getDefaultTag());
+		} else
+			((ISaxableElement) wrapped).toSax(receiver, namespace, prefix, ((ISaxableElement) wrapped).getDefaultTag());
 	}
 }

@@ -28,13 +28,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.equinox.p2.metadata.Version;
 
 /**
- * This class will generate qualifiers based on the last modification timestamp. The timestamp is obtained using the
- * same @ IReaderType} that was used when the component was first materialized
+ * This class will generate qualifiers based on the last modification timestamp.
+ * The timestamp is obtained using the same @ IReaderType} that was used when
+ * the component was first materialized
  * 
  * @author Thomas Hallgren
  */
-public class TimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator
-{
+public class TimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator {
 	public static final String FORMAT_PROPERTY = "generator.lastModified.format"; //$NON-NLS-1$
 
 	public static final String DEFAULT_FORMAT = "'v'yyyyMMddHHmm"; //$NON-NLS-1$
@@ -48,12 +48,10 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 	//
 	private static final long SANITY_THRESHOLD = (10L * 365L + 5L) * 24L * 60L * 60L * 1000L;
 
-	static
-	{
+	static {
 		int idx = commonFormats.length;
 		commonFormatters = new DateFormat[idx];
-		while(--idx >= 0)
-		{
+		while (--idx >= 0) {
 			DateFormat dm = new SimpleDateFormat(commonFormats[idx]);
 			dm.setTimeZone(DateAndTimeUtils.UTC);
 			dm.setLenient(false);
@@ -61,108 +59,89 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 		}
 	}
 
-	private static Date getLastModification(ComponentIdentifier cid, IActionContext context) throws CoreException
-	{
+	private static Date getLastModification(ComponentIdentifier cid, IActionContext context) throws CoreException {
 		IPath location = WorkspaceInfo.getComponentLocation(cid);
 		IReaderType readerType = AbstractReaderType.getTypeForResource(WorkspaceInfo.getProject(cid));
-		if(readerType == null)
+		if (readerType == null)
 			return null;
 
 		return readerType.getLastModification(location.toFile(), context.getCancellationMonitor());
 	}
 
-	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException
-	{
+	private static Date parseSaneDate(DateFormat mf, String str) throws ParseException {
 		long now = System.currentTimeMillis();
 		long sanePast = now - SANITY_THRESHOLD;
 		Date dt = mf.parse(str);
 		long tm = dt.getTime();
-		if(tm > now || tm < sanePast)
+		if (tm > now || tm < sanePast)
 			throw new ParseException("Bogus", 0); //$NON-NLS-1$
 		return dt;
 	}
 
-	public Version generateQualifier(IActionContext context, ComponentIdentifier cid,
-			List<ComponentIdentifier> dependencies) throws CoreException
-	{
+	public Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException {
 		Version currentVersion = cid.getVersion();
-		if(currentVersion == null)
+		if (currentVersion == null)
 			return null;
 
-		try
-		{
+		try {
 			Date lastMod = getLastModification(cid, context);
-			if(lastMod == null)
+			if (lastMod == null)
 				return currentVersion;
 
 			Map<String, ? extends Object> props = context.getProperties();
-			String format = (String)props.get(FORMAT_PROPERTY);
-			if(format == null)
+			String format = (String) props.get(FORMAT_PROPERTY);
+			if (format == null)
 				format = DEFAULT_FORMAT;
 
 			DateFormat mf = new SimpleDateFormat(format);
 			mf.setTimeZone(DateAndTimeUtils.UTC);
 			mf.setLenient(false);
 
-			for(ComponentIdentifier dependency : dependencies)
-			{
+			for (ComponentIdentifier dependency : dependencies) {
 				Version depVer = dependency.getVersion();
-				if(depVer == null)
+				if (depVer == null)
 					continue;
 
 				String qualifier = VersionHelper.getQualifier(depVer);
-				if(qualifier == null)
+				if (qualifier == null)
 					continue;
 
 				Date depLastMod = null;
-				try
-				{
+				try {
 					depLastMod = parseSaneDate(mf, qualifier);
-				}
-				catch(ParseException e)
-				{
+				} catch (ParseException e) {
 					// Try the common formats. Use the first one that succeeds
 					//
-					synchronized(commonFormatters)
-					{
-						for(int idx = 0; idx < commonFormatters.length; ++idx)
-						{
-							try
-							{
+					synchronized (commonFormatters) {
+						for (int idx = 0; idx < commonFormatters.length; ++idx) {
+							try {
 								depLastMod = parseSaneDate(commonFormatters[idx], qualifier);
 								break;
-							}
-							catch(ParseException e1)
-							{
+							} catch (ParseException e1) {
 							}
 						}
 					}
 				}
-				if(depLastMod == null)
-				{
-					try
-					{
-						// Replace the qualifier and attempt to find the real source in the workspace. If
+				if (depLastMod == null) {
+					try {
+						// Replace the qualifier and attempt to find the real
+						// source in the workspace. If
 						// found, we use the SCM timestamp for that source.
 						//
 						depVer = VersionHelper.replaceQualifier(depVer, "qualifier"); //$NON-NLS-1$
-						depLastMod = getLastModification(new ComponentIdentifier(dependency.getName(),
-								dependency.getComponentTypeID(), depVer), context);
-					}
-					catch(CoreException e)
-					{
+						depLastMod = getLastModification(new ComponentIdentifier(dependency.getName(), dependency.getComponentTypeID(), depVer),
+								context);
+					} catch (CoreException e) {
 					}
 				}
 
-				if(depLastMod != null && depLastMod.compareTo(lastMod) > 0)
+				if (depLastMod != null && depLastMod.compareTo(lastMod) > 0)
 					lastMod = depLastMod;
 			}
 			String newQual = mf.format(lastMod);
 			newQual = VersionHelper.getQualifier(currentVersion).replace("qualifier", newQual); //$NON-NLS-1$
 			return VersionHelper.replaceQualifier(currentVersion, newQual);
-		}
-		catch(MissingComponentException e)
-		{
+		} catch (MissingComponentException e) {
 			return currentVersion;
 		}
 	}

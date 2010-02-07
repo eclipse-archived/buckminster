@@ -18,36 +18,30 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class GroupAndArtifactHandler extends ExtensionAwareHandler
-{
-	private String m_group;
+class GroupAndArtifactHandler extends ExtensionAwareHandler {
+	private String group;
 
-	private String m_artifact;
+	private String artifact;
 
-	public GroupAndArtifactHandler(AbstractHandler parent)
-	{
+	public GroupAndArtifactHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_group = this.getStringValue(attrs, GroupAndArtifact.ATTR_GROUP_ID);
-		m_artifact = this.getStringValue(attrs, GroupAndArtifact.ATTR_ARTIFACT_ID);
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		group = this.getStringValue(attrs, GroupAndArtifact.ATTR_GROUP_ID);
+		artifact = this.getStringValue(attrs, GroupAndArtifact.ATTR_ARTIFACT_ID);
 	}
 
-	GroupAndArtifact createEntry()
-	{
-		return new GroupAndArtifact(m_group, m_artifact);
+	GroupAndArtifact createEntry() {
+		return new GroupAndArtifact(group, artifact);
 	}
 
-	String getArtifact()
-	{
-		return m_artifact;
+	String getArtifact() {
+		return artifact;
 	}
 
-	String getGroup()
-	{
-		return m_group;
+	String getGroup() {
+		return group;
 	}
 }

@@ -18,54 +18,43 @@ import java.io.InputStream;
 
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.runtime.FileInfoBuilder;
-import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Thomas Hallgren
  */
-public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
-{
-	public interface Materializer
-	{
+public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry> {
+	public interface Materializer {
 		String getKey();
 
 		FileHandle materialize(IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException;
 	}
 
-	public ShortDurationFileCache(long keepAlive, String prefix, String suffix, File tempDir)
-	{
-		super(keepAlive, new TimedHashMap.EvictionPolicy<String, CacheEntry>()
-		{
-			public void evict(Entry<String, CacheEntry> entry)
-			{
+	public ShortDurationFileCache(long keepAlive, String prefix, String suffix, File tempDir) {
+		super(keepAlive, new TimedHashMap.EvictionPolicy<String, CacheEntry>() {
+			public void evict(Entry<String, CacheEntry> entry) {
 				CacheEntry ce = entry.getValue();
-				if(ce != null)
+				if (ce != null)
 					ce.remove();
 			}
 		});
 	}
 
-	public InputStream open(Materializer materializer, IProgressMonitor monitor) throws IOException, CoreException
-	{
+	public InputStream open(Materializer materializer, IProgressMonitor monitor) throws IOException, CoreException {
 		return open(materializer, monitor, null);
 	}
 
-	public InputStream open(Materializer materializer, IProgressMonitor monitor, FileInfoBuilder fileInfo)
-			throws IOException, CoreException
-	{
+	public InputStream open(Materializer materializer, IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException {
 		String key = materializer.getKey();
 		CacheEntry ce;
 
 		// Synchronize the actual cache access. Not the whole method. We do not
 		// want everyone to wait for every file.
 		//
-		synchronized(this)
-		{
+		synchronized (this) {
 			ce = get(key);
-			if(ce == null)
-			{
+			if (ce == null) {
 				ce = new CacheEntry();
 				put(key, ce);
 			}
@@ -74,85 +63,70 @@ public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry>
 		// This call is synchronized and will only do something for the first
 		// caller.
 		//
-		synchronized(ce)
-		{
+		synchronized (ce) {
 			ce.initialize(this, materializer, monitor, fileInfo);
 			return ce.open();
 		}
 	}
 
 	/**
-	 * This method will always return false since we want to defer scheduling until the completion of a materialization.
+	 * This method will always return false since we want to defer scheduling
+	 * until the completion of a materialization.
 	 * 
 	 * @return false
 	 */
 	@Override
-	public boolean scheduleOnPut()
-	{
+	public boolean scheduleOnPut() {
 		return false;
 	}
 }
 
-class CacheEntry
-{
-	class DeletingInputStream extends FileInputStream
-	{
-		DeletingInputStream(File file) throws FileNotFoundException
-		{
+class CacheEntry {
+	class DeletingInputStream extends FileInputStream {
+		DeletingInputStream(File file) throws FileNotFoundException {
 			super(file);
 		}
 
 		@Override
-		public void close() throws IOException
-		{
-			try
-			{
+		public void close() throws IOException {
+			try {
 				super.close();
-			}
-			finally
-			{
-				synchronized(CacheEntry.this)
-				{
-					if(--m_openFileCounter < 1 && m_removePending)
-						m_tempFile.getFile().delete();
+			} finally {
+				synchronized (CacheEntry.this) {
+					if (--openFileCounter < 1 && removePending)
+						tempFile.getFile().delete();
 				}
 			}
 		}
 	}
 
-	private int m_openFileCounter = 0;
+	private int openFileCounter = 0;
 
-	private boolean m_removePending = false;
+	private boolean removePending = false;
 
-	private FileHandle m_tempFile;
+	private FileHandle tempFile;
 
-	private IFileInfo m_fileInfo = null;
+	private FileInfoBuilder fileInfo = null;
 
-	public synchronized void initialize(ShortDurationFileCache cache, ShortDurationFileCache.Materializer materializer,
-			IProgressMonitor monitor, FileInfoBuilder fileInfo) throws CoreException, IOException
-	{
+	public synchronized void initialize(ShortDurationFileCache cache, ShortDurationFileCache.Materializer materializer, IProgressMonitor monitor,
+			FileInfoBuilder info) throws CoreException, IOException {
 		boolean success = false;
-		try
-		{
-			if(m_tempFile == null)
-			{
-				m_tempFile = materializer.materialize(monitor, fileInfo);
-				if(m_tempFile.isTemporary())
-					m_tempFile.getFile().deleteOnExit();
-				if(fileInfo != null)
-					m_fileInfo = new FileInfoBuilder(fileInfo);
+		try {
+			if (tempFile == null) {
+				tempFile = materializer.materialize(monitor, info);
+				if (tempFile.isTemporary())
+					tempFile.getFile().deleteOnExit();
+				if (info != null)
+					fileInfo = new FileInfoBuilder(info);
 				cache.schedule(materializer.getKey());
-			}
-			else if(fileInfo != null && m_fileInfo != null)
-				fileInfo.initFrom(m_fileInfo);
+			} else if (fileInfo != null && info != null)
+				fileInfo.initFrom(info);
 
 			// All is well. No exceptions will bring us here.
 			//
 			success = true;
-		}
-		finally
-		{
-			if(!success)
+		} finally {
+			if (!success)
 				//
 				// We're leaving because of some exception. Remove the
 				// entry immediately.
@@ -161,30 +135,26 @@ class CacheEntry
 		}
 	}
 
-	public synchronized InputStream open() throws FileNotFoundException
-	{
-		if(m_removePending)
+	public synchronized InputStream open() throws FileNotFoundException {
+		if (removePending)
 			throw new FileNotFoundException(Messages.File_is_closed);
 
-		if(m_tempFile.isTemporary())
-		{
-			++m_openFileCounter;
-			return new DeletingInputStream(m_tempFile.getFile());
+		if (tempFile.isTemporary()) {
+			++openFileCounter;
+			return new DeletingInputStream(tempFile.getFile());
 		}
-		return new FileInputStream(m_tempFile.getFile());
+		return new FileInputStream(tempFile.getFile());
 	}
 
-	public final synchronized void remove()
-	{
-		if(m_openFileCounter > 0)
+	public final synchronized void remove() {
+		if (openFileCounter > 0)
 			//
 			// Streams are currently open on this file
 			//
-			m_removePending = true;
-		else if(m_tempFile != null && m_tempFile.isTemporary() && !m_removePending)
-		{
-			m_removePending = true;
-			m_tempFile.getFile().delete();
+			removePending = true;
+		else if (tempFile != null && tempFile.isTemporary() && !removePending) {
+			removePending = true;
+			tempFile.getFile().delete();
 		}
 	}
 }

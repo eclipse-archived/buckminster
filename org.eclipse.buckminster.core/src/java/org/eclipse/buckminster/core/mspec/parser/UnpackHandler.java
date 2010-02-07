@@ -18,20 +18,17 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class UnpackHandler extends ChildHandler
-{
+public class UnpackHandler extends ChildHandler {
 	public static final String TAG = MaterializationNode.ELEM_UNPACK;
 
-	public UnpackHandler(AbstractHandler parent)
-	{
+	public UnpackHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		MaterializationNodeBuilder builder = ((MaterializationNodeHandler)getParentHandler()).getMaterializationNodeBuilder();
+		MaterializationNodeBuilder builder = ((MaterializationNodeHandler) getParentHandler()).getMaterializationNodeBuilder();
 		builder.setUnpack(true);
 		builder.setExpand(getOptionalBooleanValue(attrs, MaterializationNode.ATTR_EXPAND, true));
 		builder.setSuffix(getOptionalStringValue(attrs, MaterializationNode.ATTR_SUFFIX));

@@ -17,13 +17,13 @@ import org.eclipse.buckminster.ui.dependency.visualizer.connections.ConnectionCa
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 /**
- * IRelationshipProviders are used to compute all interesting relationships for a given {@link BOMNode}
+ * IRelationshipProviders are used to compute all interesting relationships for
+ * a given {@link BOMNode}
  * 
  * @author Johannes Utzig
  * 
  */
-public interface IRelationshipProvider
-{
+public interface IRelationshipProvider {
 
 	/**
 	 * 
@@ -33,9 +33,9 @@ public interface IRelationshipProvider
 	 *            - the selected node
 	 * @param connections
 	 *            - all connections in the graph
-	 * @return a map containing the interesting Entity Connections and a {@link ConnectionCategory} for each connection
+	 * @return a map containing the interesting Entity Connections and a
+	 *         {@link ConnectionCategory} for each connection
 	 */
-	Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection,
-			Object[] connections);
+	Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection, Object[] connections);
 
 }

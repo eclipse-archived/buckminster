@@ -16,31 +16,33 @@ import org.eclipse.ecf.core.security.IConnectContext;
 /**
  * @author Filip Hrbek
  */
-public interface IResourceMapResolverFactory extends IResolverFactory
-{
+public interface IResourceMapResolverFactory extends IResolverFactory {
 	public int getResolverThreadsMax();
 
 	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException;
 
 	/**
-	 * Obtains the {@link #RESOURCE_MAP_URL_PARAM} setting for this factory from the preference store. If not found
-	 * there, it defaults to the value set in the extension definition.
+	 * Obtains the {@link #RESOURCE_MAP_URL_PARAM} setting for this factory from
+	 * the preference store. If not found there, it defaults to the value set in
+	 * the extension definition.
 	 * 
 	 * @return The URL or <code>null</code> if it has not been set.
 	 */
 	public URL getResourceMapURL() throws CoreException;
 
 	/**
-	 * Obtains the {@link #LOCAL_RESOLVE_PARAM} setting for this factory from the preference store. If not found there,
-	 * it defaults to the value set in the extension definition.
+	 * Obtains the {@link #LOCAL_RESOLVE_PARAM} setting for this factory from
+	 * the preference store. If not found there, it defaults to the value set in
+	 * the extension definition.
 	 * 
 	 * @return <code>true</code>ue if local resolutions should be performed.
 	 */
 	public boolean isLocalResolve();
 
 	/**
-	 * Obtains the {@link #OVERRIDE_QUERY_URL_PARAM} setting for this factory from the preference store. If not found
-	 * there, it defaults to the value set in the extension definition.
+	 * Obtains the {@link #OVERRIDE_QUERY_URL_PARAM} setting for this factory
+	 * from the preference store. If not found there, it defaults to the value
+	 * set in the extension definition.
 	 * 
 	 * @return the overrideQueryURL
 	 */

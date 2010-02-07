@@ -31,67 +31,56 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.osgi.util.NLS;
 
-public class GetConfiguration extends WorkspaceCommand
-{
-	private URL m_url;
+public class GetConfiguration extends WorkspaceCommand {
+	private URL url;
 
-	private IConnectContext m_connectContext;
+	private IConnectContext connectContext;
 
 	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
+	protected void handleUnparsed(String[] unparsed) throws Exception {
 		int len = unparsed.length;
-		if(len > 1)
+		if (len > 1)
 			throw new UsageException(Messages.Too_many_arguments);
-		if(len == 1)
-			m_url = URLUtils.normalizeToURL(unparsed[0]);
+		if (len == 1)
+			url = URLUtils.normalizeToURL(unparsed[0]);
 	}
 
 	@Override
-	protected int internalRun(IProgressMonitor monitor) throws Exception
-	{
+	protected int internalRun(IProgressMonitor monitor) throws Exception {
 		System.out.println(NLS.bind(Messages.Using_workspace_at_0, Platform.getInstanceLocation().getURL().toString()));
 		monitor.beginTask(null, 3);
-		try
-		{
-			ComponentQuery query = ComponentQuery.fromURL(m_url, m_connectContext, true);
+		try {
+			ComponentQuery query = ComponentQuery.fromURL(url, connectContext, true);
 			MonitorUtils.worked(monitor, 1);
 			ResolutionContext context = new ResolutionContext(query);
 			MainResolver resolver = new MainResolver(context);
-			BillOfMaterials bom = resolver.resolve(query.getExpandedRootRequest(context), MonitorUtils.subMonitor(
-					monitor, 1));
+			BillOfMaterials bom = resolver.resolve(query.getExpandedRootRequest(context), MonitorUtils.subMonitor(monitor, 1));
 			IStatus status = context.getStatus();
-			switch(status.getSeverity())
-			{
-			case IStatus.ERROR:
-				throw new CoreException(status);
-			case IStatus.WARNING:
-				System.err.print(NLS.bind(Messages.GetConfiguration_Warning, status.getMessage()));
-				break;
-			case IStatus.INFO:
-				System.out.print(status.getMessage());
+			switch (status.getSeverity()) {
+				case IStatus.ERROR:
+					throw new CoreException(status);
+				case IStatus.WARNING:
+					System.err.print(NLS.bind(Messages.GetConfiguration_Warning, status.getMessage()));
+					break;
+				case IStatus.INFO:
+					System.out.print(status.getMessage());
 			}
 
 			MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 			mspecBuilder.setName(bom.getViewName());
 			bom.addMaterializationNodes(mspecBuilder);
-			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(),
-					context);
+			MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), context);
 			MaterializationJob.run(matCtx);
-			if(matCtx.getStatus().getSeverity() == IStatus.ERROR)
+			if (matCtx.getStatus().getSeverity() == IStatus.ERROR)
 				return 1;
 			MonitorUtils.worked(monitor, 1);
 			System.out.println(Messages.Query_complete);
-		}
-		catch(Throwable t)
-		{
+		} catch (Throwable t) {
 			CoreException be = BuckminsterException.wrap(t);
-			if(be.getCause() instanceof javax.net.ssl.SSLHandshakeException)
+			if (be.getCause() instanceof javax.net.ssl.SSLHandshakeException)
 				System.err.println(Messages.SSL_handshake_exception);
 			throw be;
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 		return 0;

@@ -13,25 +13,21 @@ package org.eclipse.buckminster.core.build;
  * @author kolwing
  * 
  */
-public class LauncherDefinition
-{
-	private final String m_pattern;
+public class LauncherDefinition {
+	private final String pattern;
 
-	private final String m_commandLine;
+	private final String commandLine;
 
-	public LauncherDefinition(String pattern, String commandLine)
-	{
-		m_pattern = pattern;
-		m_commandLine = commandLine;
+	public LauncherDefinition(String pattern, String commandLine) {
+		this.pattern = pattern;
+		this.commandLine = commandLine;
 	}
 
-	public String getCommandLine()
-	{
-		return m_commandLine;
+	public String getCommandLine() {
+		return commandLine;
 	}
 
-	public String getPattern()
-	{
-		return m_pattern;
+	public String getPattern() {
+		return pattern;
 	}
 }

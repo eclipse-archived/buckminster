@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author ken1
  */
-public interface ILogReceiver
-{
+public interface ILogReceiver {
 	OutputStream start(String title, String type, boolean activateOnWrite, boolean errorStream) throws CoreException;
 }

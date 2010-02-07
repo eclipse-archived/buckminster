@@ -78,82 +78,74 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
  * @author Kenneth Olwing
  * @author Thomas Hallgren
  */
-public class ResolverNodePage extends AbstractQueryPage
-{
-	class RequestLabelProvider extends LabelProvider implements ITableLabelProvider
-	{
-		public Image getColumnImage(Object element, int columnIndex)
-		{
+public class ResolverNodePage extends AbstractQueryPage {
+	class RequestLabelProvider extends LabelProvider implements ITableLabelProvider {
+		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
-		public String getColumnText(Object element, int columnIndex)
-		{
-			ComponentRequest rq = (ComponentRequest)element;
+		public String getColumnText(Object element, int columnIndex) {
+			ComponentRequest rq = (ComponentRequest) element;
 			String lbl;
-			switch(columnIndex)
-			{
-			case 0:
-				lbl = rq.getName();
-				break;
-			case 1:
-				VersionRange vd = rq.getVersionRange();
-				lbl = vd == null
-						? "" : VersionHelper.getHumanReadable(vd); //$NON-NLS-1$
-				break;
-			default:
-				lbl = rq.getComponentTypeID();
+			switch (columnIndex) {
+				case 0:
+					lbl = rq.getName();
+					break;
+				case 1:
+					VersionRange vd = rq.getVersionRange();
+					lbl = vd == null ? "" : VersionHelper.getHumanReadable(vd); //$NON-NLS-1$
+					break;
+				default:
+					lbl = rq.getComponentTypeID();
 			}
 			return lbl;
 		}
 	}
 
-	TableViewer m_dependenciesTable;
+	TableViewer dependenciesTable;
 
-	private Group m_detailGroup;
+	private Group detailGroup;
 
-	private Image m_grayDotImage;
+	private Image grayDotImage;
 
-	private Image m_grayDotWithRedExclamationImage;
+	private Image grayDotWithRedExclamationImage;
 
-	private Image m_greenDotImage;
+	private Image greenDotImage;
 
-	private Font m_itemItalicFont;
+	private Font itemItalicFont;
 
-	private final HashMap<Resolution, Integer> m_masterDups = new HashMap<Resolution, Integer>();
+	private final HashMap<Resolution, Integer> masterDups = new HashMap<Resolution, Integer>();
 
-	private Tree m_masterTree;
+	private Tree masterTree;
 
-	private Composite m_masterTreeComposite;
+	private Composite masterTreeComposite;
 
-	private final HashMap<Resolution, BOMNode> m_parentWhenFirstSeen = new HashMap<Resolution, BOMNode>();
+	private final HashMap<Resolution, BOMNode> parentWhenFirstSeen = new HashMap<Resolution, BOMNode>();
 
-	private Image m_redDotImage;
+	private Image redDotImage;
 
-	private Button m_reresolveButton;
+	private Button reresolveButton;
 
-	private Button m_showTargetPlatformButton;
+	private Button showTargetPlatformButton;
 
-	private Button m_unresolveButton;
+	private Button unresolveButton;
 
-	private Image m_yellowDotImage;
+	private Image yellowDotImage;
 
-	public ResolverNodePage()
-	{
+	public ResolverNodePage() {
 		super(""); //$NON-NLS-1$
 
-		m_redDotImage = UiPlugin.getImageDescriptor("images/red_dot_16x16.bmp").createImage(); //$NON-NLS-1$
-		m_greenDotImage = UiPlugin.getImageDescriptor("images/green_dot_16x16.bmp").createImage(); //$NON-NLS-1$
-		m_yellowDotImage = UiPlugin.getImageDescriptor("images/yellow_dot_16x16.bmp").createImage(); //$NON-NLS-1$
-		m_grayDotImage = UiPlugin.getImageDescriptor("images/gray_dot_16x16.bmp").createImage(); //$NON-NLS-1$
-		m_grayDotWithRedExclamationImage = UiPlugin.getImageDescriptor("images/gray_dot_with_red_exclamation_16x16.bmp").createImage(); //$NON-NLS-1$
+		redDotImage = UiPlugin.getImageDescriptor("images/red_dot_16x16.bmp").createImage(); //$NON-NLS-1$
+		greenDotImage = UiPlugin.getImageDescriptor("images/green_dot_16x16.bmp").createImage(); //$NON-NLS-1$
+		yellowDotImage = UiPlugin.getImageDescriptor("images/yellow_dot_16x16.bmp").createImage(); //$NON-NLS-1$
+		grayDotImage = UiPlugin.getImageDescriptor("images/gray_dot_16x16.bmp").createImage(); //$NON-NLS-1$
+		grayDotWithRedExclamationImage = UiPlugin.getImageDescriptor("images/gray_dot_with_red_exclamation_16x16.bmp").createImage(); //$NON-NLS-1$
 
 		setDescription(Messages.resolution_tree);
 	}
 
 	@Override
-	public Composite createControls(Composite parent)
-	{
+	public Composite createControls(Composite parent) {
 		Composite topComposite = new Composite(parent, SWT.NONE);
 		topComposite.setLayout(new GridLayout());
 		topComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -171,84 +163,71 @@ public class ResolverNodePage extends AbstractQueryPage
 	}
 
 	@Override
-	public void dispose()
-	{
-		m_redDotImage.dispose();
-		m_redDotImage = null;
-		m_greenDotImage.dispose();
-		m_greenDotImage = null;
-		m_grayDotImage.dispose();
-		m_grayDotImage = null;
-		m_grayDotWithRedExclamationImage.dispose();
-		m_grayDotWithRedExclamationImage = null;
-		m_yellowDotImage.dispose();
-		m_yellowDotImage = null;
-		if(m_itemItalicFont != null)
-			m_itemItalicFont.dispose();
-		m_itemItalicFont = null;
+	public void dispose() {
+		redDotImage.dispose();
+		redDotImage = null;
+		greenDotImage.dispose();
+		greenDotImage = null;
+		grayDotImage.dispose();
+		grayDotImage = null;
+		grayDotWithRedExclamationImage.dispose();
+		grayDotWithRedExclamationImage = null;
+		yellowDotImage.dispose();
+		yellowDotImage = null;
+		if (itemItalicFont != null)
+			itemItalicFont.dispose();
+		itemItalicFont = null;
 
 		super.dispose();
 	}
 
 	@Override
-	protected void pageIsShowing()
-	{
+	protected void pageIsShowing() {
 		super.pageIsShowing();
 		resetMaster();
 		BOMNode currentNode = getSelectedMasterNode();
 
 		TreeItem found = null;
-		for(TreeItem child : m_masterTree.getItems())
-		{
+		for (TreeItem child : masterTree.getItems()) {
 			TreeItem ti = findItemWithData(child, currentNode);
-			if(ti != null)
-			{
+			if (ti != null) {
 				found = ti;
 				break;
 			}
 		}
-		if(found == null)
-			found = m_masterTree.getItems()[0];
+		if (found == null)
+			found = masterTree.getItems()[0];
 
-		m_masterTree.setSelection(new TreeItem[] { found });
+		masterTree.setSelection(new TreeItem[] { found });
 		masterTreeSelectionEvent(found, false);
 
 		updatePageCompletion();
 		getControl().setVisible(true);
 	}
 
-	void masterTreeSelectionEvent(TreeItem ti, boolean checkEvent)
-	{
-		try
-		{
-			BOMNode node = (BOMNode)ti.getData();
+	void masterTreeSelectionEvent(TreeItem ti, boolean checkEvent) {
+		try {
+			BOMNode node = (BOMNode) ti.getData();
 			IResolution resolution = node.getResolution();
 			boolean isResolved = (resolution != null);
-			if(isResolved)
-			{
+			if (isResolved) {
 				ICSpecData cspec = resolution.getCSpec();
-				m_dependenciesTable.setInput(cspec.getDependencies());
-				m_detailGroup.setText(NLS.bind(Messages.dependencies_in_0, node.getViewName()));
-			}
-			else
-			{
-				m_dependenciesTable.setInput(null);
-				m_detailGroup.setText(""); //$NON-NLS-1$
+				dependenciesTable.setInput(cspec.getDependencies());
+				detailGroup.setText(NLS.bind(Messages.dependencies_in_0, node.getViewName()));
+			} else {
+				dependenciesTable.setInput(null);
+				detailGroup.setText(""); //$NON-NLS-1$
 			}
 			BillOfMaterials bom = getQueryWizard().getBOM();
-			m_reresolveButton.setEnabled(!bom.isFullyResolved(getContext()));
-			m_unresolveButton.setEnabled(isResolved);
-		}
-		catch(CoreException e)
-		{
+			reresolveButton.setEnabled(!bom.isFullyResolved(getContext()));
+			unresolveButton.setEnabled(isResolved);
+		} catch (CoreException e) {
 			displayException(e);
 		}
 	}
 
-	void reresolve()
-	{
-		try
-		{
+	void reresolve() {
+		try {
 			QueryWizard wizard = getQueryWizard();
 			BillOfMaterials bom = wizard.getBOM();
 			ResolutionContext context = new ResolutionContext(bom.getQuery());
@@ -256,77 +235,63 @@ public class ResolverNodePage extends AbstractQueryPage
 
 			final BillOfMaterials[] bin = new BillOfMaterials[] { bom };
 			final IResolver resolver = new MainResolver(context);
-			wizard.getContainer().run(true, true, new IRunnableWithProgress()
-			{
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException
-				{
-					try
-					{
+			wizard.getContainer().run(true, true, new IRunnableWithProgress() {
+				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+					try {
 						BillOfMaterials oldBOM = bin[0];
 						BillOfMaterials newBOM = oldBOM.fullyResolve(resolver, monitor);
-						if(oldBOM.equals(newBOM))
+						if (oldBOM.equals(newBOM))
 							bin[0] = null;
 						else
 							bin[0] = newBOM;
-					}
-					catch(Throwable t)
-					{
+					} catch (Throwable t) {
 						throw new InvocationTargetException(t);
 					}
 				}
 			});
 			CorePlugin.logWarningsAndErrors(context.getStatus());
 			bom = bin[0];
-			if(bom != null)
-			{
+			if (bom != null) {
 				wizard.setBOM(bom);
 				resetMaster();
 			}
-		}
-		catch(Throwable t)
-		{
+		} catch (Throwable t) {
 			displayException(BuckminsterException.wrap(t));
 		}
 	}
 
-	void resetMaster()
-	{
+	void resetMaster() {
 		QueryWizard wizard = getQueryWizard();
 		BillOfMaterials bom = wizard.getBOM();
-		try
-		{
-			m_masterDups.clear();
+		try {
+			masterDups.clear();
 			countDuplicates(null, bom, wizard.getMaterializationContext().getMaterializationSpec());
-			m_masterTree.removeAll();
-			m_masterTree.clearAll(false);
-			addMasterItem(new TreeItem(m_masterTree, SWT.NONE), null, bom);
-			m_reresolveButton.setEnabled(!bom.isFullyResolved(wizard.getContext()));
+			masterTree.removeAll();
+			masterTree.clearAll(false);
+			addMasterItem(new TreeItem(masterTree, SWT.NONE), null, bom);
+			reresolveButton.setEnabled(!bom.isFullyResolved(wizard.getContext()));
 			updatePageCompletion();
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			displayException(e);
 		}
 	}
 
-	void saveBOMInFileSystem()
-	{
+	void saveBOMInFileSystem() {
 		FileDialog dlg = new FileDialog(getShell(), SWT.SAVE);
 		dlg.setFilterExtensions(new String[] { "*.bom" }); //$NON-NLS-1$
 		String location = dlg.open();
-		if(location == null)
+		if (location == null)
 			return;
 		saveToPath(new Path(location));
 	}
 
-	void saveBOMInWorkspace()
-	{
+	void saveBOMInWorkspace() {
 		SaveAsDialog dialog = new SaveAsDialog(getShell());
-		if(dialog.open() == Window.CANCEL)
+		if (dialog.open() == Window.CANCEL)
 			return;
 
 		IPath filePath = dialog.getResult();
-		if(filePath == null)
+		if (filePath == null)
 			return;
 
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -334,58 +299,49 @@ public class ResolverNodePage extends AbstractQueryPage
 		saveToPath(file.getLocation());
 	}
 
-	void unresolveNode()
-	{
+	void unresolveNode() {
 		final BOMNode node = getSelectedMasterNode();
-		if(node == null || node.getResolution() == null)
+		if (node == null || node.getResolution() == null)
 			return;
 
 		QueryWizard queryWizard = getQueryWizard();
-		try
-		{
+		try {
 			queryWizard.setBOM(queryWizard.getBOM().replaceNode(new UnresolvedNode(node.getQualifiedDependency())));
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			displayException(e);
 		}
 		resetMaster();
 	}
 
-	private void addMasterItem(TreeItem ti, BOMNode parent, BOMNode node) throws CoreException
-	{
+	private void addMasterItem(TreeItem ti, BOMNode parent, BOMNode node) throws CoreException {
 		ti.removeAll();
 		ti.setText(node.getViewName());
 		ti.setData(node);
 
 		IResolution resolution = node.getResolution();
-		if(resolution == null)
-		{
-			if(node.isFullyResolved(getContext().getComponentQuery(), getContext()))
-				ti.setImage(m_yellowDotImage);
+		if (resolution == null) {
+			if (node.isFullyResolved(getContext().getComponentQuery(), getContext()))
+				ti.setImage(yellowDotImage);
 			else
-				ti.setImage(m_redDotImage);
+				ti.setImage(redDotImage);
 			ti.setFont(null);
 			return;
 		}
 
-		Integer nc = m_masterDups.get(resolution);
-		if(nc != null && nc.intValue() > 1 && !wasParentWhenFirstSeen(parent, node))
-		{
-			ti.setImage(m_grayDotImage);
-			ti.setFont(m_itemItalicFont);
+		Integer nc = masterDups.get(resolution);
+		if (nc != null && nc.intValue() > 1 && !wasParentWhenFirstSeen(parent, node)) {
+			ti.setImage(grayDotImage);
+			ti.setFont(itemItalicFont);
 			return;
 		}
 
-		ti.setImage(m_greenDotImage);
+		ti.setImage(greenDotImage);
 		ti.setFont(null);
-		boolean showPlatformTargets = m_showTargetPlatformButton.getSelection();
-		for(BOMNode child : getSortedChildren(node))
-		{
+		boolean showPlatformTargets = showTargetPlatformButton.getSelection();
+		for (BOMNode child : getSortedChildren(node)) {
 			IResolution ci = child.getResolution();
-			if(!showPlatformTargets && ci != null)
-			{
-				if(IReaderType.ECLIPSE_PLATFORM.equals(ci.getProvider().getReaderTypeId()))
+			if (!showPlatformTargets && ci != null) {
+				if (IReaderType.ECLIPSE_PLATFORM.equals(ci.getProvider().getReaderTypeId()))
 					continue;
 			}
 			addMasterItem(new TreeItem(ti, SWT.NONE), node, child);
@@ -393,78 +349,66 @@ public class ResolverNodePage extends AbstractQueryPage
 		ti.setExpanded(true);
 	}
 
-	private void countDuplicates(BOMNode parent, BOMNode node, MaterializationSpec mspec) throws CoreException
-	{
+	private void countDuplicates(BOMNode parent, BOMNode node, MaterializationSpec mspec) throws CoreException {
 		Resolution ci = node.getResolution();
-		if(ci == null)
+		if (ci == null)
 			return;
 
-		if(!mspec.isExcluded(ci))
-		{
-			Integer nc = m_masterDups.get(ci);
+		if (!mspec.isExcluded(ci)) {
+			Integer nc = masterDups.get(ci);
 			int nci;
-			if(nc == null)
-			{
+			if (nc == null) {
 				nci = 0;
-				if(parent != null)
-					m_parentWhenFirstSeen.put(ci, parent);
-			}
-			else
+				if (parent != null)
+					parentWhenFirstSeen.put(ci, parent);
+			} else
 				nci = nc.intValue();
 
-			m_masterDups.put(ci, new Integer(1 + nci));
-			if(nci == 0)
-			{
-				for(BOMNode child : getSortedChildren(node))
+			masterDups.put(ci, new Integer(1 + nci));
+			if (nci == 0) {
+				for (BOMNode child : getSortedChildren(node))
 					countDuplicates(node, child, mspec);
 			}
 		}
 	}
 
-	private void createButtonGroup(Composite parent)
-	{
+	private void createButtonGroup(Composite parent) {
 		Composite buttons = new Composite(parent, SWT.NONE);
 		buttons.setLayout(new GridLayout(3, false));
 		buttons.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
 
-		Button saveButton = UiUtils.createPushButton(buttons, Messages.save_bom, new SelectionAdapter()
-		{
+		Button saveButton = UiUtils.createPushButton(buttons, Messages.save_bom, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				saveBOMInWorkspace();
 			}
 		});
 		saveButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, true, false));
 
-		Button extSaveButton = UiUtils.createPushButton(buttons, Messages.external_save_bom, new SelectionAdapter()
-		{
+		Button extSaveButton = UiUtils.createPushButton(buttons, Messages.external_save_bom, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				saveBOMInFileSystem();
 			}
 		});
 		extSaveButton.setLayoutData(new GridData(SWT.TRAIL, SWT.TOP, false, false));
 	}
 
-	private void createDetailGroup(Composite parent)
-	{
-		m_detailGroup = new Group(parent, SWT.NONE);
-		m_detailGroup.setLayout(new GridLayout());
+	private void createDetailGroup(Composite parent) {
+		detailGroup = new Group(parent, SWT.NONE);
+		detailGroup.setLayout(new GridLayout());
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.heightHint = 100;
-		m_detailGroup.setLayoutData(gd);
+		detailGroup.setLayoutData(gd);
 
-		Table table = new Table(m_detailGroup, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
+		Table table = new Table(detailGroup, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
 
 		String[] columnNames = new String[] { Messages.name, Messages.version_designator, Messages.category };
 		int[] columnWeights = new int[] { 20, 10, 10 };
 
 		table.setHeaderVisible(true);
 		DynamicTableLayout layout = new DynamicTableLayout(150);
-		for(int idx = 0; idx < columnNames.length; idx++)
-		{
+		for (int idx = 0; idx < columnNames.length; idx++) {
 			TableColumn tableColumn = new TableColumn(table, SWT.LEFT, idx);
 			tableColumn.setText(columnNames[idx]);
 			layout.addColumnData(new ColumnWeightData(columnWeights[idx], true));
@@ -472,128 +416,104 @@ public class ResolverNodePage extends AbstractQueryPage
 		table.setLayout(layout);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		m_dependenciesTable = new TableViewer(table);
-		m_dependenciesTable.setLabelProvider(new RequestLabelProvider());
-		m_dependenciesTable.setContentProvider(new ArrayContentProvider());
+		dependenciesTable = new TableViewer(table);
+		dependenciesTable.setLabelProvider(new RequestLabelProvider());
+		dependenciesTable.setContentProvider(new ArrayContentProvider());
 	}
 
-	private void createMasterGroup(Composite parent)
-	{
+	private void createMasterGroup(Composite parent) {
 		Group masterGroup = new Group(parent, SWT.NONE);
 		masterGroup.setLayout(new GridLayout(3, false));
 		masterGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		masterGroup.setText(Messages.component_specification_selection);
 
-		m_masterTreeComposite = new Composite(masterGroup, SWT.NONE);
-		m_masterTreeComposite.setLayout(new GridLayout());
+		masterTreeComposite = new Composite(masterGroup, SWT.NONE);
+		masterTreeComposite.setLayout(new GridLayout());
 
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.heightHint = 100;
 		gd.horizontalSpan = 3;
-		m_masterTreeComposite.setLayoutData(gd);
+		masterTreeComposite.setLayoutData(gd);
 
-		m_masterTree = new Tree(m_masterTreeComposite, SWT.NONE | SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		m_masterTree.setLayout(new GridLayout());
-		m_masterTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		m_masterTree.addSelectionListener(new SelectionAdapter()
-		{
+		masterTree = new Tree(masterTreeComposite, SWT.NONE | SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		masterTree.setLayout(new GridLayout());
+		masterTree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		masterTree.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent se)
-			{
-				masterTreeSelectionEvent((TreeItem)se.item, false);
+			public void widgetSelected(SelectionEvent se) {
+				masterTreeSelectionEvent((TreeItem) se.item, false);
 			}
 		});
 
-		Font f = m_masterTreeComposite.getFont();
+		Font f = masterTreeComposite.getFont();
 		FontData[] fda = f.getFontData();
-		for(FontData fd : fda)
+		for (FontData fd : fda)
 			fd.setStyle(SWT.ITALIC);
-		m_itemItalicFont = new Font(Display.getCurrent(), fda);
+		itemItalicFont = new Font(Display.getCurrent(), fda);
 
 		Composite modifiersComposite = new Composite(masterGroup, SWT.NONE);
 		modifiersComposite.setLayout(new GridLayout(3, false));
 		modifiersComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
-		m_showTargetPlatformButton = UiUtils.createCheckButton(modifiersComposite,
-				Messages.show_target_platform_components, new SelectionAdapter()
-				{
-					@Override
-					public void widgetSelected(SelectionEvent se)
-					{
-						resetMaster();
-					}
-				});
-
-		m_reresolveButton = UiUtils.createPushButton(modifiersComposite, Messages.re_resolve, new SelectionAdapter()
-		{
+		showTargetPlatformButton = UiUtils.createCheckButton(modifiersComposite, Messages.show_target_platform_components, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent se)
-			{
+			public void widgetSelected(SelectionEvent se) {
+				resetMaster();
+			}
+		});
+
+		reresolveButton = UiUtils.createPushButton(modifiersComposite, Messages.re_resolve, new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent se) {
 				reresolve();
 			}
 		});
 
-		m_unresolveButton = UiUtils.createPushButton(modifiersComposite, Messages.unresolved_node,
-				new SelectionAdapter()
-				{
-					@Override
-					public void widgetSelected(SelectionEvent se)
-					{
-						unresolveNode();
-					}
-				});
+		unresolveButton = UiUtils.createPushButton(modifiersComposite, Messages.unresolved_node, new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent se) {
+				unresolveNode();
+			}
+		});
 	}
 
-	private TreeItem findItemWithData(TreeItem ti, BOMNode node)
-	{
-		if(ti.getData() == node)
+	private TreeItem findItemWithData(TreeItem ti, BOMNode node) {
+		if (ti.getData() == node)
 			return ti;
 
-		for(TreeItem child : ti.getItems())
-		{
+		for (TreeItem child : ti.getItems()) {
 			TreeItem answer = findItemWithData(child, node);
-			if(answer != null)
+			if (answer != null)
 				return answer;
 		}
 		return null;
 	}
 
-	private BOMNode getSelectedMasterNode()
-	{
-		TreeItem[] tia = m_masterTree.getSelection();
-		return (tia.length > 0)
-				? (BOMNode)tia[0].getData()
-				: null;
+	private BOMNode getSelectedMasterNode() {
+		TreeItem[] tia = masterTree.getSelection();
+		return (tia.length > 0) ? (BOMNode) tia[0].getData() : null;
 	}
 
-	private Collection<BOMNode> getSortedChildren(BOMNode parent) throws CoreException
-	{
+	private Collection<BOMNode> getSortedChildren(BOMNode parent) throws CoreException {
 		Collection<BOMNode> children = parent.getChildren();
-		if(children.size() > 1)
-		{
+		if (children.size() > 1) {
 			Map<String, BOMNode> sortedMap = new TreeMap<String, BOMNode>();
-			for(BOMNode child : children)
+			for (BOMNode child : children)
 				sortedMap.put(child.getViewName(), child);
 			children = sortedMap.values();
 		}
 		return children;
 	}
 
-	private void saveToPath(IPath path)
-	{
+	private void saveToPath(IPath path) {
 		QueryWizard wizard = getQueryWizard();
 		IWizardContainer container = wizard.getContainer();
-		try
-		{
+		try {
 			SaveRunnable sr = new SaveRunnable(wizard.getBOM(), path);
 			container.run(true, true, sr);
 			wizard.getMaterializationSpec().setURL(path.toFile().toURI().toString());
-		}
-		catch(InterruptedException e)
-		{
-		}
-		catch(Exception e)
-		{
+		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			CoreException t = BuckminsterException.wrap(e);
 			String msg = NLS.bind(Messages.unable_to_save_file_0, path);
 			CorePlugin.getLogger().error(t, msg);
@@ -601,43 +521,35 @@ public class ResolverNodePage extends AbstractQueryPage
 		}
 	}
 
-	private void updatePageCompletion()
-	{
+	private void updatePageCompletion() {
 		boolean complete;
 		String errorMsg = null;
 		QueryWizard qw = getQueryWizard();
 		BillOfMaterials bom = qw.getBOM();
-		try
-		{
+		try {
 			complete = (bom != null);
-			if(complete)
-			{
-				if(!bom.isFullyResolved(qw.getContext()))
+			if (complete) {
+				if (!bom.isFullyResolved(qw.getContext()))
 					complete = qw.getContext().isContinueOnError();
 			}
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			complete = false;
 			displayException(e);
 		}
-		if(!complete)
+		if (!complete)
 			errorMsg = Messages.a_selected_specification_is_unresolved;
 		setPageComplete(complete);
 		setErrorMessage(errorMsg);
 	}
 
-	private boolean wasParentWhenFirstSeen(BOMNode parent, BOMNode node) throws CoreException
-	{
-		if(parent == null)
+	private boolean wasParentWhenFirstSeen(BOMNode parent, BOMNode node) throws CoreException {
+		if (parent == null)
 			//
 			// Top node is never a duplicate
 			//
 			return true;
 
 		IResolution resolution = node.getResolution();
-		return (resolution == null)
-				? false
-				: m_parentWhenFirstSeen.get(resolution) == parent;
+		return (resolution == null) ? false : parentWhenFirstSeen.get(resolution) == parent;
 	}
 }

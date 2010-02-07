@@ -21,15 +21,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * A catalog reader knows how to read individual files from a component stored at a some arbitrary location.
+ * A catalog reader knows how to read individual files from a component stored
+ * at a some arbitrary location.
  * 
  * @author Thomas Hallgren
  */
-public interface ICatalogReader extends IComponentReader
-{
+public interface ICatalogReader extends IComponentReader {
 	/**
-	 * Returns <code>true</code> if a file with the given name exists within the component that this reader is
-	 * associated with.
+	 * Returns <code>true</code> if a file with the given name exists within the
+	 * component that this reader is associated with.
 	 * 
 	 * @param fileName
 	 * @param monitor
@@ -62,7 +62,8 @@ public interface ICatalogReader extends IComponentReader
 	List<FileHandle> getRootFiles(Pattern matchPattern, IProgressMonitor monitor) throws CoreException, IOException;
 
 	/**
-	 * Same as {@link #materialize(IPath, IProgressMonitor)} but overlay folders are not considered.
+	 * Same as {@link #materialize(IPath, IProgressMonitor)} but overlay folders
+	 * are not considered.
 	 * 
 	 * @param destination
 	 *            The destination for the materialization
@@ -73,7 +74,8 @@ public interface ICatalogReader extends IComponentReader
 	void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Returns a list of strings representing what is found at the root of this reader. Folders with end with a slash.
+	 * Returns a list of strings representing what is found at the root of this
+	 * reader. Folders with end with a slash.
 	 * 
 	 * @param monitor
 	 * @return
@@ -82,7 +84,8 @@ public interface ICatalogReader extends IComponentReader
 	List<String> list(IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Read the project specific preferences for Buckminster from the remote source.
+	 * Read the project specific preferences for Buckminster from the remote
+	 * source.
 	 * 
 	 * @param monitor
 	 * @return The found preferences or <code>null</code> if the file is missing
@@ -102,6 +105,5 @@ public interface ICatalogReader extends IComponentReader
 	 * @return The value returned by the consumer.
 	 * @throws CoreException
 	 */
-	<T> T readFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException,
-			IOException;
+	<T> T readFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException;
 }

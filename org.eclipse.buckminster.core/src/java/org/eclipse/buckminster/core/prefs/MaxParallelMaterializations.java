@@ -20,38 +20,29 @@ import org.osgi.service.prefs.BackingStoreException;
  * @author thhal
  * 
  */
-public class MaxParallelMaterializations extends BasicPreferenceHandler
-{
+public class MaxParallelMaterializations extends BasicPreferenceHandler {
 	@Override
-	public String get(String defaultValue) throws CoreException
-	{
+	public String get(String defaultValue) throws CoreException {
 		return Integer.toString(MaterializationJob.getMaxParallelJobs());
 	}
 
 	@Override
-	public void set(String prefValue) throws BackingStoreException
-	{
-		try
-		{
+	public void set(String prefValue) throws BackingStoreException {
+		try {
 			int maxJobs = Integer.parseInt(prefValue);
-			if(maxJobs > 0 && maxJobs <= 20)
-			{
+			if (maxJobs > 0 && maxJobs <= 20) {
 				MaterializationJob.setMaxParallelJobs(maxJobs);
 				BuckminsterPreferences.getNode().flush();
 				return;
 			}
+		} catch (NumberFormatException e) {
 		}
-		catch(NumberFormatException e)
-		{
-		}
-		throw new IllegalArgumentException(String.format(NLS.bind(
-				Messages._0_illegal_value_for_maxParallelMaterialisations, prefValue)));
+		throw new IllegalArgumentException(String.format(NLS.bind(Messages._0_illegal_value_for_maxParallelMaterialisations, prefValue)));
 
 	}
 
 	@Override
-	public void unset() throws BackingStoreException
-	{
+	public void unset() throws BackingStoreException {
 		MaterializationJob.setMaxParallelJobs(MaterializationJob.MAX_PARALLEL_JOBS_DEFAULT);
 		BuckminsterPreferences.getNode().flush();
 	}

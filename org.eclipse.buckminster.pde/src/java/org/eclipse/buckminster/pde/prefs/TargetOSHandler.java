@@ -17,23 +17,19 @@ import org.osgi.service.prefs.BackingStoreException;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class TargetOSHandler extends TargetVariableHandler
-{
+public class TargetOSHandler extends TargetVariableHandler {
 	@Override
-	public void unset() throws BackingStoreException
-	{
+	public void unset() throws BackingStoreException {
 		set(null);
 	}
 
 	@Override
-	protected String get(ITargetDefinition definition) throws CoreException
-	{
+	protected String get(ITargetDefinition definition) throws CoreException {
 		return definition.getOS();
 	}
 
 	@Override
-	protected void set(ITargetDefinition definition, String value) throws CoreException
-	{
+	protected void set(ITargetDefinition definition, String value) throws CoreException {
 		definition.setOS(value);
 	}
 }

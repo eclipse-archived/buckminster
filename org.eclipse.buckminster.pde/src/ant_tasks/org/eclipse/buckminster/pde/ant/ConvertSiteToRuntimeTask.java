@@ -16,33 +16,27 @@ import org.apache.tools.ant.Task;
 import org.eclipse.buckminster.pde.tasks.ConvertSiteToRuntime;
 
 /**
- * Ant task that unpacks all features, scans the feature.xml for bundles that needs to be
- * unpacked, and then unpacks them.
+ * Ant task that unpacks all features, scans the feature.xml for bundles that
+ * needs to be unpacked, and then unpacks them.
  * 
  * @author Thomas Hallgren
  */
-public class ConvertSiteToRuntimeTask extends Task
-{
-	private File m_siteDir;
+public class ConvertSiteToRuntimeTask extends Task {
+	private File siteDir;
 
 	@Override
-	public void execute() throws BuildException
-	{
-		try
-		{
-			if(m_siteDir == null)
-				throw new BuildException("Missing attribute siteDir", this.getLocation());
-			ConvertSiteToRuntime cstr = new ConvertSiteToRuntime(m_siteDir);
+	public void execute() throws BuildException {
+		try {
+			if (siteDir == null)
+				throw new BuildException("Missing attribute siteDir", this.getLocation()); //$NON-NLS-1$
+			ConvertSiteToRuntime cstr = new ConvertSiteToRuntime(siteDir);
 			cstr.run();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 
-	public void setSitedir(File siteDir)
-	{
-		m_siteDir = siteDir;
+	public void setSitedir(File siteDir) {
+		this.siteDir = siteDir;
 	}
 }

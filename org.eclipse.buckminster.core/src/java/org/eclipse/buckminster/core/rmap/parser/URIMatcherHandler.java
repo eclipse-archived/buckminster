@@ -15,66 +15,51 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class URIMatcherHandler extends RxAssemblyHandler
-{
+public class URIMatcherHandler extends RxAssemblyHandler {
 	public static final String TAG = URIMatcher.TAG;
 
-	private String m_base;
+	private String base;
 
-	private IVersionFormat m_versionFormat;
+	private IVersionFormat versionFormat;
 
-	private String m_componentType = IComponentType.UNKNOWN;
+	private String componentType = IComponentType.UNKNOWN;
 
-	public URIMatcherHandler(AbstractHandler parent)
-	{
+	public URIMatcherHandler(AbstractHandler parent) {
 		super(parent);
-		if(parent instanceof ProviderHandler)
-		{
-			ProviderHandler parentHandler = (ProviderHandler)getParentHandler();
+		if (parent instanceof ProviderHandler) {
+			ProviderHandler parentHandler = (ProviderHandler) getParentHandler();
 			String[] componentTypes = parentHandler.getComponentTypes();
-			if(componentTypes.length == 1)
-			{
-				m_componentType = componentTypes[0];
+			if (componentTypes.length == 1) {
+				componentType = componentTypes[0];
 			}
 		}
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		m_base = getStringValue(attrs, URIMatcher.ATTR_BASE);
+		base = getStringValue(attrs, URIMatcher.ATTR_BASE);
 		String tmp = getOptionalStringValue(attrs, URIMatcher.ATTR_VERSION_FORMAT);
-		if(tmp != null)
-		{
-			try
-			{
-				m_versionFormat = Version.compile(tmp);
-			}
-			catch(VersionFormatException e)
-			{
+		if (tmp != null) {
+			try {
+				versionFormat = Version.compile(tmp);
+			} catch (VersionFormatException e) {
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}
-		}
-		else
-		{
+		} else {
 			tmp = getOptionalStringValue(attrs, URIMatcher.ATTR_VERSION_TYPE);
-			if(tmp == null)
-				m_versionFormat = null;
+			if (tmp == null)
+				versionFormat = null;
 			else
-				try
-				{
-					m_versionFormat = VersionHelper.getVersionType(tmp).getFormat();
-				}
-				catch(CoreException e)
-				{
+				try {
+					versionFormat = VersionHelper.getVersionType(tmp).getFormat();
+				} catch (CoreException e) {
 					throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 				}
 		}
 	}
 
-	URIMatcher createURIMetaData() throws CoreException, PatternSyntaxException
-	{
-		return new URIMatcher(getParts(), m_base, m_versionFormat, m_componentType);
+	URIMatcher createURIMetaData() throws CoreException, PatternSyntaxException {
+		return new URIMatcher(getParts(), base, versionFormat, componentType);
 	}
 }

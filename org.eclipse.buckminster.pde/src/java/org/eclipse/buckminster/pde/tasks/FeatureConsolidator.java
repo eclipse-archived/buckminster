@@ -31,136 +31,116 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureImport;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
 @SuppressWarnings("restriction")
-public class FeatureConsolidator extends GroupConsolidator implements IModelChangedListener
-{
-	private final EditableFeatureModel m_featureModel;
+public class FeatureConsolidator extends GroupConsolidator implements IModelChangedListener {
+	private final EditableFeatureModel featureModel;
 
-	public FeatureConsolidator(File inputFile, File outputFile, File propertiesFile, List<File> featuresAndBundles,
-			String qualifier, boolean generateVersionSuffix, int maxVersionSuffixLength, int significantDigits)
-			throws CoreException
-	{
-		super(outputFile, propertiesFile, featuresAndBundles, qualifier, generateVersionSuffix, maxVersionSuffixLength,
-				significantDigits);
-		m_featureModel = FeatureModelReader.readEditableFeatureModel(inputFile);
-		m_featureModel.addModelChangedListener(this);
+	public FeatureConsolidator(File inputFile, File outputFile, File propertiesFile, List<File> featuresAndBundles, String qualifier,
+			boolean generateVersionSuffix, int maxVersionSuffixLength, int significantDigits) throws CoreException {
+		super(outputFile, propertiesFile, featuresAndBundles, qualifier, generateVersionSuffix, maxVersionSuffixLength, significantDigits);
+		featureModel = FeatureModelReader.readEditableFeatureModel(inputFile);
+		featureModel.addModelChangedListener(this);
 	}
 
-	public void modelChanged(IModelChangedEvent event)
-	{
-		m_featureModel.setDirty(true);
+	public void modelChanged(IModelChangedEvent event) {
+		featureModel.setDirty(true);
 	}
 
-	public void run() throws CoreException, FileNotFoundException
-	{
-		IFeature feature = m_featureModel.getFeature();
+	public void run() throws CoreException, FileNotFoundException {
+		IFeature feature = featureModel.getFeature();
 		String id = feature.getId();
 
 		Map<String, Version[]> featureVers = getFeatureVersions();
 		ArrayList<ComponentIdentifier> deps = new ArrayList<ComponentIdentifier>();
-		for(IFeatureChild ref : feature.getIncludedFeatures())
-		{
+		for (IFeatureChild ref : feature.getIncludedFeatures()) {
 			String vstr = ref.getVersion();
 			Version version = findBestVersion(featureVers, id, "feature", ref.getId(), vstr); //$NON-NLS-1$
-			if(version != null)
-			{
+			if (version != null) {
 				ComponentIdentifier cid = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
 				deps.add(cid);
 				String nvstr = cid.getVersion().toString();
-				if(!nvstr.equals(vstr))
+				if (!nvstr.equals(vstr))
 					ref.setVersion(nvstr);
 			}
 		}
 
 		Map<String, Version[]> pluginVers = getPluginVersions();
-		for(IFeaturePlugin ref : feature.getPlugins())
-		{
+		for (IFeaturePlugin ref : feature.getPlugins()) {
 			String vstr = ref.getVersion();
 			Version version = findBestVersion(pluginVers, id, "plugin", ref.getId(), vstr); //$NON-NLS-1$
-			if(version != null)
-			{
+			if (version != null) {
 				ComponentIdentifier cid = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
 				deps.add(cid);
 				String nvstr = cid.getVersion().toString();
-				if(!nvstr.equals(vstr))
+				if (!nvstr.equals(vstr))
 					ref.setVersion(nvstr);
 			}
 		}
 		consolidateFeatureVersion(deps);
-		m_featureModel.save(getOutputFile());
+		featureModel.save(getOutputFile());
 	}
 
-	private void consolidateFeatureVersion(List<ComponentIdentifier> deps) throws CoreException
-	{
-		IFeature feature = m_featureModel.getFeature();
+	private void consolidateFeatureVersion(List<ComponentIdentifier> deps) throws CoreException {
+		IFeature feature = featureModel.getFeature();
 		String versionStr = feature.getVersion();
-		if(versionStr == null)
+		if (versionStr == null)
 			return;
 
 		Version version;
-		try
-		{
+		try {
 			version = Version.parseVersion(versionStr);
-		}
-		catch(IllegalArgumentException e)
-		{
+		} catch (IllegalArgumentException e) {
 			return;
 		}
 
-		if(versionStr.endsWith(PROPERTY_QUALIFIER))
-		{
+		if (versionStr.endsWith(PROPERTY_QUALIFIER)) {
 			ComponentIdentifier ci = new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, version);
 			Version newVersion = replaceQualifier(ci, deps);
-			if(newVersion != null && !version.equals(newVersion))
-			{
+			if (newVersion != null && !version.equals(newVersion)) {
 				String newVersionStr = newVersion.toString();
 				feature.setVersion(newVersionStr);
-				if(isContextReplacement())
-				{
+				if (isContextReplacement()) {
 					int lastDot = versionStr.lastIndexOf("."); //$NON-NLS-1$
-					m_featureModel.setContextQualifierLength(newVersionStr.length() - lastDot - 1);
+					featureModel.setContextQualifierLength(newVersionStr.length() - lastDot - 1);
 				}
 				version = newVersion;
 			}
-			if(isUsingGenerator(ci))
+			if (isUsingGenerator(ci))
 				return;
 		}
 
-		if(m_featureModel.getContextQualifierLength() == -1)
+		if (featureModel.getContextQualifierLength() == -1)
 			return;
 
 		IFeatureChild[] features = feature.getIncludedFeatures();
 		List<IVersionedId> featureList;
-		if(features.length == 0)
+		if (features.length == 0)
 			featureList = Collections.emptyList();
-		else
-		{
+		else {
 			featureList = new ArrayList<IVersionedId>(features.length);
-			for(IFeatureChild f : features)
+			for (IFeatureChild f : features)
 				featureList.add(new VersionedId(f.getId(), f.getVersion()));
 		}
 
 		IFeatureImport[] bundles = feature.getImports();
 		List<IVersionedId> bundleList;
-		if(features.length == 0)
+		if (features.length == 0)
 			bundleList = Collections.emptyList();
-		else
-		{
+		else {
 			bundleList = new ArrayList<IVersionedId>(bundles.length);
-			for(IFeatureImport f : bundles)
+			for (IFeatureImport f : bundles)
 				bundleList.add(new VersionedId(f.getId(), f.getVersion()));
 		}
 
 		String suffix = generateFeatureVersionSuffix(featureList, bundleList);
-		if(suffix == null)
+		if (suffix == null)
 			return;
 
 		String qualifier = VersionHelper.getQualifier(version);
-		if(qualifier == null)
+		if (qualifier == null)
 			qualifier = suffix;
-		else
-		{
+		else {
 			StringBuilder bld = new StringBuilder();
-			bld.append(qualifier, 0, m_featureModel.getContextQualifierLength());
+			bld.append(qualifier, 0, featureModel.getContextQualifierLength());
 			bld.append('-');
 			bld.append(suffix);
 			qualifier = bld.toString();

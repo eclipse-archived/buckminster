@@ -2,8 +2,7 @@ package org.eclipse.buckminster.subversion;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.subversion.messages"; //$NON-NLS-1$
 
 	public static String branch_or_tag_0_not_found;
@@ -18,13 +17,11 @@ public class Messages extends NLS
 
 	public static String unable_to_find_artifacts_at_0;
 
-	static
-	{
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
-	{
+	private Messages() {
 	}
 }

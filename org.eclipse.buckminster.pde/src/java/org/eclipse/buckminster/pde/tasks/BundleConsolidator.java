@@ -36,69 +36,51 @@ import org.osgi.framework.Constants;
  * @author Thomas Hallgren
  * 
  */
-public class BundleConsolidator extends VersionConsolidator
-{
-	private final byte[] m_bytes;
+public class BundleConsolidator extends VersionConsolidator {
+	private final byte[] bytes;
 
-	public BundleConsolidator(File inputFile, File outputFile, File propertiesFile, String qualifier)
-			throws CoreException
-	{
+	public BundleConsolidator(File inputFile, File outputFile, File propertiesFile, String qualifier) throws CoreException {
 		super(outputFile, propertiesFile, qualifier);
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
 		InputStream input = null;
-		try
-		{
+		try {
 			input = new FileInputStream(inputFile);
 			IOUtils.copy(input, output, null);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_manifest_from_0, inputFile));
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
-		m_bytes = output.toByteArray();
+		bytes = output.toByteArray();
 	}
 
-	public void run() throws IOException
-	{
-		Manifest manifest = new Manifest(new ByteArrayInputStream(m_bytes));
+	public void run() throws IOException {
+		Manifest manifest = new Manifest(new ByteArrayInputStream(bytes));
 		Attributes a = manifest.getMainAttributes();
 		String symbolicName = a.getValue(Constants.BUNDLE_SYMBOLICNAME);
 		String id = null;
 		Version newVersion = null;
 		boolean changed = false;
-		if(symbolicName != null)
-		{
-			try
-			{
+		if (symbolicName != null) {
+			try {
 				ManifestElement[] elements = ManifestElement.parseHeader(Constants.BUNDLE_SYMBOLICNAME, symbolicName);
 				id = elements[0].getValue();
-			}
-			catch(BundleException be)
-			{
+			} catch (BundleException be) {
 				throw new IOException(be.getMessage());
 			}
 
 			String versionStr = a.getValue(Constants.BUNDLE_VERSION);
-			if(versionStr != null)
-			{
-				try
-				{
+			if (versionStr != null) {
+				try {
 					Version version = Version.parseVersion(versionStr);
 					ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
 					newVersion = replaceQualifier(ci, Collections.<ComponentIdentifier> emptyList());
 
-					if(!(newVersion == null || version.equals(newVersion)))
-					{
+					if (!(newVersion == null || version.equals(newVersion))) {
 						a.put(new Attributes.Name(Constants.BUNDLE_VERSION), newVersion.toString());
 						changed = true;
 					}
-				}
-				catch(IllegalArgumentException e)
-				{
+				} catch (IllegalArgumentException e) {
 				}
 			}
 		}
@@ -107,25 +89,21 @@ public class BundleConsolidator extends VersionConsolidator
 		changed = treatManifest(manifest, id, newVersion) || changed;
 
 		OutputStream out = null;
-		try
-		{
+		try {
 			out = new FileOutputStream(getOutputFile());
-			if(changed)
-			{
+			if (changed) {
 				out = new BufferedOutputStream(out);
 				manifest.write(out);
-			}
-			else
-				out.write(m_bytes);
-		}
-		finally
-		{
+			} else
+				out.write(bytes);
+		} finally {
 			IOUtils.close(out);
 		}
 	}
 
 	/**
-	 * Subclasses may override and treat the manifest in whichever way they like, as long as it stays valid.
+	 * Subclasses may override and treat the manifest in whichever way they
+	 * like, as long as it stays valid.
 	 * 
 	 * @param manifest
 	 *            The manifest to treat. Never null.
@@ -135,8 +113,7 @@ public class BundleConsolidator extends VersionConsolidator
 	 *            The (new) version of the bundle. May be null.
 	 * @return Whether the method has changed the manifest or not.
 	 */
-	protected boolean treatManifest(Manifest manifest, String symbolicName, Version version)
-	{
+	protected boolean treatManifest(Manifest manifest, String symbolicName, Version version) {
 		// empty default implementation
 		return false;
 	}

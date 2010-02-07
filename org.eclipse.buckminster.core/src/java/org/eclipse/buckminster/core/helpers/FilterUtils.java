@@ -15,29 +15,23 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.osgi.framework.InvalidSyntaxException;
 
-public class FilterUtils
-{
-	public static class MatchAll
-	{
-		public MatchAll(String v)
-		{
+public class FilterUtils {
+	public static class MatchAll {
+		public MatchAll(String v) {
 		}
 
 		@Override
-		public boolean equals(Object o)
-		{
+		public boolean equals(Object o) {
 			return true;
 		}
 
 		@Override
-		public int hashCode()
-		{
+		public int hashCode() {
 			return MATCH_ALL.hashCode();
 		}
 
 		@Override
-		public String toString()
-		{
+		public String toString() {
 			return MATCH_ALL;
 		}
 	}
@@ -46,36 +40,30 @@ public class FilterUtils
 
 	public static final MatchAll MATCH_ALL_OBJ = new MatchAll(MATCH_ALL);
 
-	public static Filter createFilter(String os, String ws, String arch, String nl)
-	{
+	public static Filter createFilter(String os, String ws, String arch, String nl) {
 		StringBuilder bld = new StringBuilder();
 
 		int cnt = 0;
-		if(addProperty(bld, TargetPlatform.TARGET_OS, os))
+		if (addProperty(bld, TargetPlatform.TARGET_OS, os))
 			cnt++;
-		if(addProperty(bld, TargetPlatform.TARGET_WS, ws))
+		if (addProperty(bld, TargetPlatform.TARGET_WS, ws))
 			cnt++;
-		if(addProperty(bld, TargetPlatform.TARGET_ARCH, arch))
+		if (addProperty(bld, TargetPlatform.TARGET_ARCH, arch))
 			cnt++;
-		if(addProperty(bld, TargetPlatform.TARGET_NL, nl))
+		if (addProperty(bld, TargetPlatform.TARGET_NL, nl))
 			cnt++;
 
-		if(cnt > 0)
-		{
-			if(cnt > 1)
-			{
+		if (cnt > 0) {
+			if (cnt > 1) {
 				StringBuilder and = new StringBuilder(bld.length() + 3);
 				and.append("(&"); //$NON-NLS-1$
 				and.append(bld);
 				and.append(')');
 				bld = and;
 			}
-			try
-			{
+			try {
 				return FilterFactory.newInstance(bld.toString());
-			}
-			catch(InvalidSyntaxException e)
-			{
+			} catch (InvalidSyntaxException e) {
 				// This should never happen
 				//
 				throw new RuntimeException(e);
@@ -84,16 +72,12 @@ public class FilterUtils
 		return null;
 	}
 
-	public static Filter replaceAttributeNames(org.osgi.framework.Filter filter, String from, String to)
-	{
-		if(filter == null)
+	public static Filter replaceAttributeNames(org.osgi.framework.Filter filter, String from, String to) {
+		if (filter == null)
 			return null;
-		try
-		{
+		try {
 			return FilterFactory.newInstance(replaceAttributeNames(filter.toString(), from, to));
-		}
-		catch(InvalidSyntaxException e)
-		{
+		} catch (InvalidSyntaxException e) {
 			// This should never happen since we don't change the actual syntax
 			//
 			throw new RuntimeException(e);
@@ -101,9 +85,11 @@ public class FilterUtils
 	}
 
 	/**
-	 * This method will parse the filter and potentially change the names of the attributes in that filter. No values
-	 * will be replaced. Attributes named <code>from</code> or attributes that uses a dotted notation where
-	 * <code>from</code> is one of the elements will have <code>from</code> replaced with <code>to</code>.
+	 * This method will parse the filter and potentially change the names of the
+	 * attributes in that filter. No values will be replaced. Attributes named
+	 * <code>from</code> or attributes that uses a dotted notation where
+	 * <code>from</code> is one of the elements will have <code>from</code>
+	 * replaced with <code>to</code>.
 	 * 
 	 * @param filter
 	 *            An LDAP filter in string format
@@ -113,41 +99,35 @@ public class FilterUtils
 	 *            The new attribute name
 	 * @return A string where the needed replacements has been made.
 	 */
-	public static String replaceAttributeNames(String filter, String from, String to)
-	{
-		if(filter == null)
+	public static String replaceAttributeNames(String filter, String from, String to) {
+		if (filter == null)
 			return null;
 
 		StringBuilder bld = new StringBuilder();
 		boolean lastWasFilterStart = false;
 		boolean lastWasEscape = false;
 		StringTokenizer tokens = new StringTokenizer(filter, "\\&|!~<>=(). \t\r\f\n", true); //$NON-NLS-1$
-		while(tokens.hasMoreTokens())
-		{
+		while (tokens.hasMoreTokens()) {
 			String token = tokens.nextToken();
-			if(lastWasFilterStart && token.equals(from))
+			if (lastWasFilterStart && token.equals(from))
 				bld.append(to);
 			else
 				bld.append(token);
 
-			if(token.length() == 1)
-			{
-				if(lastWasEscape)
+			if (token.length() == 1) {
+				if (lastWasEscape)
 					lastWasEscape = false;
-				else
-				{
+				else {
 					char c = token.charAt(0);
-					if(Character.isWhitespace(c))
+					if (Character.isWhitespace(c))
 						continue;
 
-					if(c == '(')
+					if (c == '(')
 						lastWasFilterStart = true;
 					else
 						lastWasEscape = (c == '\\');
 				}
-			}
-			else
-			{
+			} else {
 				lastWasEscape = false;
 				lastWasFilterStart = false;
 			}
@@ -155,22 +135,18 @@ public class FilterUtils
 		return bld.toString();
 	}
 
-	private static boolean addProperty(StringBuilder bld, String key, String value)
-	{
+	private static boolean addProperty(StringBuilder bld, String key, String value) {
 		value = TextUtils.notEmptyTrimmedString(value);
-		if(value == null)
+		if (value == null)
 			return false;
 
 		int bldStart = bld.length();
 		int top = value.length();
 		boolean startNew = true;
 		boolean multi = false;
-		for(int idx = 0; idx < top; ++idx)
-		{
-			if(startNew)
-			{
-				if(idx > 0)
-				{
+		for (int idx = 0; idx < top; ++idx) {
+			if (startNew) {
+				if (idx > 0) {
 					bld.append(')');
 					multi = true;
 				}
@@ -180,24 +156,22 @@ public class FilterUtils
 				startNew = false;
 			}
 			char c = value.charAt(idx);
-			switch(c)
-			{
-			case '(':
-			case ')':
-			case '\\':
-				bld.append('\\');
-				bld.append(c);
-				continue;
-			case ',':
-				startNew = true;
-				continue;
+			switch (c) {
+				case '(':
+				case ')':
+				case '\\':
+					bld.append('\\');
+					bld.append(c);
+					continue;
+				case ',':
+					startNew = true;
+					continue;
 			}
 			bld.append(c);
 		}
 
 		bld.append(')');
-		if(multi)
-		{
+		if (multi) {
 			String expr = bld.substring(bldStart);
 			bld.setLength(bldStart);
 			bld.append("(|"); //$NON-NLS-1$

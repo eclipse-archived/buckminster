@@ -14,13 +14,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class ProjectNameMismatchException extends LocalizedException
-{
+public class ProjectNameMismatchException extends LocalizedException {
 	private static final long serialVersionUID = -2168949402426015793L;
 
-	public ProjectNameMismatchException(String wantedName, String existingName)
-	{
-		super(NLS.bind(Messages.ProjectBinding_name_conflict_information_indicates_0_for_project_named_1, wantedName,
-				existingName));
+	public ProjectNameMismatchException(String wantedName, String existingName) {
+		super(NLS.bind(Messages.ProjectBinding_name_conflict_information_indicates_0_for_project_named_1, wantedName, existingName));
 	}
 }

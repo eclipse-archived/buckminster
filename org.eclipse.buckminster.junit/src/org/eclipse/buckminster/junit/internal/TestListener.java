@@ -21,121 +21,104 @@ import org.eclipse.osgi.util.NLS;
 
 import com.ibm.icu.text.MessageFormat;
 
-public class TestListener extends TestRunListener
-{
+public class TestListener extends TestRunListener {
 	private static final Logger logger = CorePlugin.getLogger();
 
-	private final boolean m_quiet;
+	private final boolean quiet;
 
-	private int m_successCount;
+	private int successCount;
 
-	private int m_failCount;
+	private int failCount;
 
-	private int m_errorCount;
+	private int errorCount;
 
-	private int m_ignoreCount;
+	private int ignoreCount;
 
-	private int m_overallCount;
+	private int overallCount;
 
-	private ITestRunSession m_session;
+	private ITestRunSession session;
 
-	public TestListener(boolean quiet)
-	{
-		this.m_quiet = quiet;
+	public TestListener(boolean quiet) {
+		this.quiet = quiet;
 	}
 
-	public int getErrorCount()
-	{
-		return m_errorCount;
+	public int getErrorCount() {
+		return errorCount;
 	}
 
-	public int getFailureCount()
-	{
-		return m_failCount;
+	public int getFailureCount() {
+		return failCount;
 	}
 
-	public int getIgnoreCount()
-	{
-		return m_ignoreCount;
+	public int getIgnoreCount() {
+		return ignoreCount;
 	}
 
-	public int getOverallCount()
-	{
-		return m_overallCount;
+	public int getOverallCount() {
+		return overallCount;
 	}
 
-	public ITestRunSession getTestRunSession()
-	{
-		return m_session;
+	public ITestRunSession getTestRunSession() {
+		return session;
 	}
 
 	@Override
-	public void sessionFinished(ITestRunSession session)
-	{
-		this.m_session = session;
-		if(!m_quiet)
-		{
+	public void sessionFinished(ITestRunSession testSession) {
+		this.session = testSession;
+		if (!quiet) {
 			logger.info(Messages.TestListener_Tests_finished);
-			logger.info(MessageFormat.format(Messages.TestListener_Elapsed_time,
-					new Object[] { Double.valueOf(session.getElapsedTimeInSeconds()) }));
-			logger.info(NLS.bind(Messages.TestListener_Total_number_of_tests, Integer.valueOf(m_overallCount)));
-			logger.info(NLS.bind(Messages.TestListener_Successful_tests, Integer.valueOf(m_successCount)));
-			logger.info(NLS.bind(Messages.TestListener_Failed_tests, Integer.valueOf(m_failCount)));
-			logger.info(NLS.bind(Messages.TestListener_Errors, Integer.valueOf(m_errorCount)));
-			logger.info(NLS.bind(Messages.TestListener_Ignored_tests, Integer.valueOf(m_ignoreCount)));
+			logger.info(MessageFormat.format(Messages.TestListener_Elapsed_time, new Object[] { Double.valueOf(session.getElapsedTimeInSeconds()) }));
+			logger.info(NLS.bind(Messages.TestListener_Total_number_of_tests, Integer.valueOf(overallCount)));
+			logger.info(NLS.bind(Messages.TestListener_Successful_tests, Integer.valueOf(successCount)));
+			logger.info(NLS.bind(Messages.TestListener_Failed_tests, Integer.valueOf(failCount)));
+			logger.info(NLS.bind(Messages.TestListener_Errors, Integer.valueOf(errorCount)));
+			logger.info(NLS.bind(Messages.TestListener_Ignored_tests, Integer.valueOf(ignoreCount)));
 			logger.info(NLS.bind(Messages.TestListener_Overall_status, session.getTestResult(true)));
 			logFailureTrace(session.getFailureTrace());
 		}
 	}
 
 	@Override
-	public void sessionStarted(ITestRunSession session)
-	{
-		if(!m_quiet)
-			logger.info(NLS.bind(Messages.TestListener_Starting_test_session, session.getTestRunName()));
+	public void sessionStarted(ITestRunSession testSession) {
+		if (!quiet)
+			logger.info(NLS.bind(Messages.TestListener_Starting_test_session, testSession.getTestRunName()));
 	}
 
 	@Override
-	public void testCaseFinished(ITestCaseElement testCaseElement)
-	{
-		m_overallCount++;
+	public void testCaseFinished(ITestCaseElement testCaseElement) {
+		overallCount++;
 		Result result = testCaseElement.getTestResult(false);
-		if(result == Result.ERROR)
-			m_errorCount++;
-		if(result == Result.FAILURE)
-			m_failCount++;
-		if(result == Result.IGNORED)
-			m_ignoreCount++;
-		if(result == Result.OK)
-			m_successCount++;
+		if (result == Result.ERROR)
+			errorCount++;
+		if (result == Result.FAILURE)
+			failCount++;
+		if (result == Result.IGNORED)
+			ignoreCount++;
+		if (result == Result.OK)
+			successCount++;
 
-		if(!m_quiet)
-		{
+		if (!quiet) {
 			logger.info("  ..." + testCaseElement.getTestResult(false) //$NON-NLS-1$
-					+ MessageFormat.format(
-							" [{0,number,###.###}s]", new Object[] { Double.valueOf(testCaseElement.getElapsedTimeInSeconds()) })); //$NON-NLS-1$
+					+ MessageFormat.format(" [{0,number,###.###}s]", new Object[] { Double.valueOf(testCaseElement.getElapsedTimeInSeconds()) })); //$NON-NLS-1$
 			logFailureTrace(testCaseElement.getFailureTrace());
 		}
 	}
 
 	@Override
-	public void testCaseStarted(ITestCaseElement testCaseElement)
-	{
-		if(!m_quiet)
-			logger.info(Messages.TestListener_Running_test + testCaseElement.getTestClassName()
-					+ "." + testCaseElement.getTestMethodName() + "..."); //$NON-NLS-1$//$NON-NLS-2$
+	public void testCaseStarted(ITestCaseElement testCaseElement) {
+		if (!quiet)
+			logger.info(Messages.TestListener_Running_test + testCaseElement.getTestClassName() + "." + testCaseElement.getTestMethodName() + "..."); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
-	private void logFailureTrace(FailureTrace failure)
-	{
-		if(failure == null)
+	private void logFailureTrace(FailureTrace failure) {
+		if (failure == null)
 			return;
 
-		if(failure.getActual() != null)
+		if (failure.getActual() != null)
 			logger.warning(NLS.bind(Messages.TestListener_Actual, failure.getActual()));
-		if(failure.getExpected() != null)
+		if (failure.getExpected() != null)
 			logger.warning(NLS.bind(Messages.TestListener_Expected, failure.getExpected()));
-		if(failure.getTrace() != null)
+		if (failure.getTrace() != null)
 			logger.warning(failure.getTrace());
 	}
 }

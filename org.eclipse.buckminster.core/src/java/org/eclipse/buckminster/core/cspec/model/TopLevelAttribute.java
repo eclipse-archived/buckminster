@@ -33,8 +33,7 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
-public abstract class TopLevelAttribute extends Attribute implements Cloneable
-{
+public abstract class TopLevelAttribute extends Attribute implements Cloneable {
 	public final static String PROPERTY_PREFIX = "buckminster."; //$NON-NLS-1$
 
 	public final static String INSTALLER_HINT_PREFIX = PROPERTY_PREFIX + "install."; //$NON-NLS-1$
@@ -47,57 +46,53 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 
 	public static final String DEFINE_TAG = "define"; //$NON-NLS-1$
 
-	private final boolean m_public;
+	private final boolean publ;
 
-	TopLevelAttribute(String name)
-	{
+	TopLevelAttribute(String name) {
 		super(name);
-		m_public = false;
+		publ = false;
 	}
 
-	TopLevelAttribute(TopLevelAttributeBuilder builder)
-	{
+	TopLevelAttribute(TopLevelAttributeBuilder builder) {
 		super(builder);
-		m_public = builder.isPublic();
+		publ = builder.isPublic();
 	}
 
 	@Override
-	public void addDynamicProperties(Map<String, Object> properties) throws CoreException
-	{
+	public void addDynamicProperties(Map<String, Object> properties) throws CoreException {
 		String actionOutput;
 		CSpec cspec = getCSpec();
 
-		// Create a unique folder name to use as sub-folder in the temporary area
+		// Create a unique folder name to use as sub-folder in the temporary
+		// area
 		// and under the output root
 		//
 		StringBuilder bld = new StringBuilder();
 
 		bld.append(cspec.getName());
 		Version version = cspec.getVersion();
-		if(version != null)
-		{
+		if (version != null) {
 			bld.append('_');
 			bld.append(VersionHelper.replaceQualifier(version, null));
 		}
 		String ctype = cspec.getComponentTypeID();
-		if(!IComponentType.UNKNOWN.equals(ctype))
-		{
+		if (!IComponentType.UNKNOWN.equals(ctype)) {
 			bld.append('-');
 			bld.append(cspec.getComponentTypeID());
 		}
 		String uniqueFolder = bld.toString();
 
-		String tempRootStr = (String)properties.get(KeyConstants.ACTION_TEMP_ROOT);
+		String tempRootStr = (String) properties.get(KeyConstants.ACTION_TEMP_ROOT);
 		IPath tempRoot;
-		if(tempRootStr == null)
+		if (tempRootStr == null)
 			tempRoot = Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster"); //$NON-NLS-1$ //$NON-NLS-2$
 		else
 			tempRoot = Path.fromOSString(tempRootStr);
 
 		String actionTemp = tempRoot.append(uniqueFolder).append("temp").toPortableString(); //$NON-NLS-1$
 
-		String outputRoot = (String)properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
-		if(outputRoot == null)
+		String outputRoot = (String) properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
+		if (outputRoot == null)
 			outputRoot = tempRoot.append("build").toOSString(); //$NON-NLS-1$
 
 		// Output root must be qualified with component name to avoid
@@ -111,65 +106,55 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		properties.putAll(cspec.getComponentIdentifier().getProperties());
 	}
 
-	public void appendRelativeFiles(IModelCache ctx, Map<String, Long> fileNames) throws CoreException
-	{
+	public void appendRelativeFiles(IModelCache ctx, Map<String, Long> fileNames) throws CoreException {
 		PathGroup[] pqs = getPathGroups(ctx, null);
 		int idx = pqs.length;
-		while(--idx >= 0)
+		while (--idx >= 0)
 			pqs[idx].appendRelativeFiles(fileNames);
 	}
 
 	@Override
-	public String getDefaultTag()
-	{
-		return isPublic()
-				? PUBLIC_TAG
-				: PRIVATE_TAG;
+	public String getDefaultTag() {
+		return isPublic() ? PUBLIC_TAG : PRIVATE_TAG;
 	}
 
-	public long getFirstModified(IModelCache ctx, int expectedFileCount, int[] fileCount) throws CoreException
-	{
+	public long getFirstModified(IModelCache ctx, int expectedFileCount, int[] fileCount) throws CoreException {
 		PathGroup[] pqs = getPathGroups(ctx, null);
 		int idx = pqs.length;
-		if(idx == 0)
+		if (idx == 0)
 			return 0L;
 
-		if(idx > 1 && expectedFileCount > 0)
+		if (idx > 1 && expectedFileCount > 0)
 			//
 			// We don't know how to distribute the count
 			//
 			expectedFileCount = -1;
 
 		long oldest = Long.MAX_VALUE;
-		while(--idx >= 0)
-		{
+		while (--idx >= 0) {
 			long pgModTime = pqs[idx].getFirstModified(expectedFileCount, fileCount);
-			if(pgModTime < oldest)
-			{
+			if (pgModTime < oldest) {
 				oldest = pgModTime;
-				if(oldest == 0)
+				if (oldest == 0)
 					break;
 			}
 		}
 		return oldest;
 	}
 
-	public long getLastModified(IModelCache ctx, long threshold, int[] fileCount) throws CoreException
-	{
+	public long getLastModified(IModelCache ctx, long threshold, int[] fileCount) throws CoreException {
 		PathGroup[] pqs = getPathGroups(ctx, null);
 		int count = 0;
 		int idx = pqs.length;
 		int[] countBin = new int[1];
 		long newest = 0L;
-		while(--idx >= 0)
-		{
+		while (--idx >= 0) {
 			countBin[0] = 0;
 			long pgModTime = pqs[idx].getLastModified(threshold, countBin);
 			count += countBin[0];
-			if(pgModTime > newest)
-			{
+			if (pgModTime > newest) {
 				newest = pgModTime;
-				if(newest > threshold)
+				if (newest > threshold)
 					break;
 			}
 		}
@@ -178,24 +163,19 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 	}
 
 	@Override
-	public final PathGroup[] getPathGroups(IModelCache ctx, Stack<IAttributeFilter> filters) throws CoreException
-	{
+	public final PathGroup[] getPathGroups(IModelCache ctx, Stack<IAttributeFilter> filters) throws CoreException {
 		PathGroup[] pga;
-		if(filters == null || filters.isEmpty())
-		{
+		if (filters == null || filters.isEmpty()) {
 			Map<String, PathGroup[]> cache = ctx.getPathGroupsCache();
 			String qName = getQualifiedName();
 			pga = cache.get(qName);
-			if(pga == null)
-			{
+			if (pga == null) {
 				ExpandingProperties<Object> local = new ExpandingProperties<Object>(ctx.getProperties());
 				addDynamicProperties(local);
 				pga = internalGetPathGroups(ctx, local, filters);
 				cache.put(qName, pga);
 			}
-		}
-		else
-		{
+		} else {
 			// Can't use the cache
 			//
 			ExpandingProperties<Object> local = new ExpandingProperties<Object>(ctx.getProperties());
@@ -205,44 +185,38 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable
 		return pga;
 	}
 
-	public IPath getUniquePath(IPath root, IModelCache modelCtx) throws CoreException
-	{
+	public IPath getUniquePath(IPath root, IModelCache modelCtx) throws CoreException {
 		IPath uniquePath = null;
 		PathGroup[] groups = getPathGroups(modelCtx, null);
-		if(groups.length == 1)
-		{
+		if (groups.length == 1) {
 			PathGroup group = groups[0];
 			IPath[] paths = group.getPaths();
-			if(paths.length == 1)
-			{
+			if (paths.length == 1) {
 				IPath base = group.getBase();
-				if(base == null || !base.isAbsolute())
-				{
-					if(root == null)
+				if (base == null || !base.isAbsolute()) {
+					if (root == null)
 						root = getCSpec().getComponentLocation();
-					if(base == null)
+					if (base == null)
 						base = root;
-					else if(!base.isAbsolute())
+					else if (!base.isAbsolute())
 						base = root.append(base);
 				}
 				uniquePath = base.append(paths[0]);
 			}
 		}
-		if(uniquePath == null)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_determine_a_unique_product_path_for_0,
-					this));
+		if (uniquePath == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_determine_a_unique_product_path_for_0, this));
 		return uniquePath;
 	}
 
 	@Override
-	public boolean isPublic()
-	{
-		return m_public;
+	public boolean isPublic() {
+		return publ;
 	}
 
 	@Override
 	protected abstract AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder);
 
-	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local,
-			Stack<IAttributeFilter> filters) throws CoreException;
+	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local, Stack<IAttributeFilter> filters)
+			throws CoreException;
 }

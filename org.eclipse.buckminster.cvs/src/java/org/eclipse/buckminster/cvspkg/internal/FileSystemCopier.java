@@ -38,99 +38,90 @@ import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class FileSystemCopier implements ICVSResourceVisitor
-{
+public class FileSystemCopier implements ICVSResourceVisitor {
 	/**
-	 * An instance of this class is created whenever we enter a folder and pushed on a stack. It manages all the sync
-	 * information for the elements of that folder.
+	 * An instance of this class is created whenever we enter a folder and
+	 * pushed on a stack. It manages all the sync information for the elements
+	 * of that folder.
 	 */
-	private static class FolderInfo
-	{
-		private final IPath m_path;
+	private static class FolderInfo {
+		private final IPath path;
 
-		private final ArrayList<byte[]> m_entries;
+		private final ArrayList<byte[]> entries;
 
-		private final ICVSFolder m_folder;
+		private final ICVSFolder folder;
 
-		private boolean m_isCreated;
+		private boolean isCreated;
 
-		FolderInfo(ICVSFolder folder, IPath path) throws CVSException
-		{
-			m_folder = folder;
-			m_entries = new ArrayList<byte[]>();
-			m_path = path;
+		FolderInfo(ICVSFolder folder, IPath path) throws CVSException {
+			this.folder = folder;
+			this.entries = new ArrayList<byte[]>();
+			this.path = path;
 		}
 
-		void addEntry(byte[] entry)
-		{
-			m_entries.add(entry);
+		void addEntry(byte[] entry) {
+			entries.add(entry);
 		}
 
-		void assertCreated() throws CVSException
-		{
-			if(!m_isCreated)
-			{
-				createDirectory(m_path);
-				m_isCreated = true;
+		void assertCreated() throws CVSException {
+			if (!isCreated) {
+				createDirectory(path);
+				isCreated = true;
 			}
 		}
 
-		byte[] getFolderSyncBytes() throws CVSException
-		{
-			return m_folder.getSyncInfo().getBytes();
+		byte[] getFolderSyncBytes() throws CVSException {
+			return folder.getSyncInfo().getBytes();
 		}
 
-		IPath getPath()
-		{
-			return m_path;
+		IPath getPath() {
+			return path;
 		}
 
-		boolean isEmpty()
-		{
-			return m_entries.isEmpty();
+		boolean isEmpty() {
+			return entries.isEmpty();
 		}
 
-		boolean isPrefixOf(IPath path)
-		{
-			return m_path.isPrefixOf(path);
+		boolean isPrefixOf(IPath test) {
+			return path.isPrefixOf(test);
 		}
 
 		/**
-		 * Writes the CVS/Root, CVS/Repository, CVS/Tag, CVS/Entries, and CVS/Entries.static files to the specified
-		 * folder using the data contained in the specified FolderSyncInfo instance.
+		 * Writes the CVS/Root, CVS/Repository, CVS/Tag, CVS/Entries, and
+		 * CVS/Entries.static files to the specified folder using the data
+		 * contained in the specified FolderSyncInfo instance.
 		 */
-		void writeSync() throws CVSException
-		{
+		void writeSync() throws CVSException {
 			this.assertCreated();
-			IPath cvsFolder = createDirectory(m_path.append(CVS_DIRNAME));
+			IPath cvsFolder = createDirectory(path.append(CVS_DIRNAME));
 
 			// format file contents
 			//
-			int idx = m_entries.size();
-			String[] entries = new String[idx];
-			while(--idx >= 0)
-				entries[idx] = new String(m_entries.get(idx));
+			int idx = entries.size();
+			String[] entryArray = new String[idx];
+			while (--idx >= 0)
+				entryArray[idx] = new String(entries.get(idx));
 
 			// write Entries
 			//
-			writeLines(cvsFolder, ENTRIES, entries);
+			writeLines(cvsFolder, ENTRIES, entryArray);
 
 			// write CVS/Root
 			//
-			FolderSyncInfo info = m_folder.getFolderSyncInfo();
+			FolderSyncInfo info = folder.getFolderSyncInfo();
 			writeLines(cvsFolder, ROOT, info.getRoot());
 
 			// write CVS/Repository
 			//
 			writeLines(cvsFolder, REPOSITORY, info.getRepository());
 
-			if(info.getTag() != null)
+			if (info.getTag() != null)
 				//
 				// write CVS/Tag
 				//
 				writeLines(cvsFolder, TAG, info.getTag().toEntryLineFormat(false));
 
-			if(info.getIsStatic())
+			if (info.getIsStatic())
 				//
 				// write CVS/Entries.Static
 				// the existence of the file is all that matters
@@ -154,91 +145,76 @@ public class FileSystemCopier implements ICVSResourceVisitor
 
 	public static final String ENTRIES = "Entries"; //$NON-NLS-1$
 
-	private static IPath createDirectory(IPath parentFolder) throws CVSException
-	{
+	private static IPath createDirectory(IPath parentFolder) throws CVSException {
 		File dir = parentFolder.toFile();
-		if(!dir.mkdirs() && !dir.exists())
+		if (!dir.mkdirs() && !dir.exists())
 			throw new CVSException(NLS.bind(Messages.unable_to_create_directory_0, dir));
 		return parentFolder;
 	}
 
-	private static void writeLines(IPath parentFolder, String metaFile, String... lines) throws CVSException
-	{
+	private static void writeLines(IPath parentFolder, String metaFile, String... lines) throws CVSException {
 		PrintWriter out = null;
-		try
-		{
+		try {
 			out = new PrintWriter(parentFolder.append(metaFile).toFile());
-			for(String line : lines)
+			for (String line : lines)
 				out.println(line);
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw CVSException.wrapException(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(out);
 		}
 	}
 
-	private final IPath m_fsRoot;
+	private final IPath fsRoot;
 
-	private final ICVSFolder m_cvsRoot;
+	private final ICVSFolder cvsRoot;
 
-	private final IProgressMonitor m_monitor;
+	private final IProgressMonitor monitor;
 
-	// This stack helps us keep track of what folder is current and when we leave
+	// This stack helps us keep track of what folder is current and when we
+	// leave
 	// that folder (the path of the top FolderInfo is no longer a prefix of the
 	// current element).
 	//
-	private final Stack<FolderInfo> m_currentPath = new Stack<FolderInfo>();
+	private final Stack<FolderInfo> currentPath = new Stack<FolderInfo>();
 
-	public FileSystemCopier(ICVSFolder cvsRoot, IPath fsRoot, IProgressMonitor monitor) throws CVSException
-	{
-		m_cvsRoot = cvsRoot;
-		m_fsRoot = fsRoot;
-		m_monitor = monitor;
-		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
+	public FileSystemCopier(ICVSFolder cvsRoot, IPath fsRoot, IProgressMonitor monitor) throws CVSException {
+		this.cvsRoot = cvsRoot;
+		this.fsRoot = fsRoot;
+		this.monitor = monitor;
+		this.monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 	}
 
-	public void done() throws CVSException
-	{
-		while(!m_currentPath.isEmpty())
+	public void done() throws CVSException {
+		while (!currentPath.isEmpty())
 			this.visitFolderEnd();
-		m_monitor.done();
+		monitor.done();
 	}
 
-	public void visitFile(ICVSFile file) throws CVSException
-	{
+	public void visitFile(ICVSFile file) throws CVSException {
 		this.checkFolderEnd(file.getParent());
-		FolderInfo fi = m_currentPath.peek();
+		FolderInfo fi = currentPath.peek();
 		fi.assertCreated();
 
 		OutputStream out = null;
 		InputStream in = null;
 		File osFile = fi.getPath().append(file.getName()).toFile();
-		try
-		{
+		try {
 			out = new FileOutputStream(osFile);
 			in = file.getContents();
-			FileUtils.copyFile(in, out, MonitorUtils.subMonitor(m_monitor, 10));
-		}
-		catch(IOException e)
-		{
+			FileUtils.copyFile(in, out, MonitorUtils.subMonitor(monitor, 10));
+		} catch (IOException e) {
 			throw CVSException.wrapException(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(in);
 			IOUtils.close(out);
 		}
 
 		ResourceSyncInfo syncInfo = file.getSyncInfo();
 		Date timestamp = syncInfo.getTimeStamp();
-		if(timestamp != null)
+		if (timestamp != null)
 			osFile.setLastModified(timestamp.getTime());
-		else
-		{
+		else {
 			MutableResourceSyncInfo mrsi = syncInfo.cloneMutable();
 			mrsi.setTimeStamp(new Date(osFile.lastModified()));
 			syncInfo = mrsi;
@@ -246,32 +222,28 @@ public class FileSystemCopier implements ICVSResourceVisitor
 		fi.addEntry(syncInfo.getBytes());
 	}
 
-	public void visitFolder(ICVSFolder folder) throws CVSException
-	{
+	public void visitFolder(ICVSFolder folder) throws CVSException {
 		this.checkFolderEnd(folder);
-		m_currentPath.push(new FolderInfo(folder, m_fsRoot.append(folder.getRelativePath(m_cvsRoot))));
+		currentPath.push(new FolderInfo(folder, fsRoot.append(folder.getRelativePath(cvsRoot))));
 	}
 
-	private void checkFolderEnd(ICVSFolder folder) throws CVSException
-	{
-		if(!m_currentPath.isEmpty())
-		{
-			IPath fullPath = m_fsRoot.append(folder.getRelativePath(m_cvsRoot));
-			while(!m_currentPath.peek().isPrefixOf(fullPath))
+	private void checkFolderEnd(ICVSFolder folder) throws CVSException {
+		if (!currentPath.isEmpty()) {
+			IPath fullPath = fsRoot.append(folder.getRelativePath(cvsRoot));
+			while (!currentPath.peek().isPrefixOf(fullPath))
 				this.visitFolderEnd();
 		}
 	}
 
-	private void visitFolderEnd() throws CVSException
-	{
-		FolderInfo info = m_currentPath.pop();
-		if(info.isEmpty())
+	private void visitFolderEnd() throws CVSException {
+		FolderInfo info = currentPath.pop();
+		if (info.isEmpty())
 			return;
 
 		info.writeSync();
-		MonitorUtils.worked(m_monitor, 5);
+		MonitorUtils.worked(monitor, 5);
 
-		if(!m_currentPath.isEmpty())
-			m_currentPath.peek().addEntry(info.getFolderSyncBytes());
+		if (!currentPath.isEmpty())
+			currentPath.peek().addEntry(info.getFolderSyncBytes());
 	}
 }

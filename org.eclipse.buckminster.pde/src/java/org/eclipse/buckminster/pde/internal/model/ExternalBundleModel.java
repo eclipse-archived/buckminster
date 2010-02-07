@@ -17,52 +17,43 @@ import org.eclipse.pde.internal.core.ibundle.IBundleModelFactory;
 import org.eclipse.pde.internal.core.text.bundle.BundleModelFactory;
 
 /**
- * A BundleModel found at some arbitrary location, i.e. not necessarily in the workspace.
+ * A BundleModel found at some arbitrary location, i.e. not necessarily in the
+ * workspace.
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class ExternalBundleModel extends BundleModel
-{
+public class ExternalBundleModel extends BundleModel {
 	private static final long serialVersionUID = 6529464212517724764L;
 
-	private final File m_installLocation;
+	private final File installLocation;
 
-	public ExternalBundleModel(File installLocation)
-	{
-		m_installLocation = installLocation;
+	public ExternalBundleModel(File installLocation) {
+		this.installLocation = installLocation;
 	}
 
-	public IBundleModelFactory getFactory()
-	{
+	public IBundleModelFactory getFactory() {
 		return new BundleModelFactory(this);
 	}
 
 	@Override
-	public String getInstallLocation()
-	{
-		return m_installLocation == null
-				? null
-				: m_installLocation.getAbsolutePath();
+	public String getInstallLocation() {
+		return installLocation == null ? null : installLocation.getAbsolutePath();
 	}
 
-	public boolean isEditable()
-	{
+	public boolean isEditable() {
 		return false;
 	}
 
-	public boolean isInSync()
-	{
+	public boolean isInSync() {
 		return true;
 	}
 
 	@Override
-	public void load()
-	{
+	public void load() {
 	}
 
 	@Override
-	protected void updateTimeStamp()
-	{
+	protected void updateTimeStamp() {
 	}
 }

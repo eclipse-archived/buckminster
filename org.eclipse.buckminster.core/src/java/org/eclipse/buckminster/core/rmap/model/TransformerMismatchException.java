@@ -14,14 +14,11 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class TransformerMismatchException extends LocalizedException
-{
+public class TransformerMismatchException extends LocalizedException {
 	private static final long serialVersionUID = -4031798723194792558L;
 
-	public TransformerMismatchException(BidirectionalTransformer invalid)
-	{
-		super(NLS.bind(Messages.The_substitution_0_1_is_not_reversed_by_2_3, new Object[] {
-				invalid.getFromPattern().toString(), invalid.getFromReplacement(), invalid.getToPattern().toString(),
-				invalid.getToReplacement() }));
+	public TransformerMismatchException(BidirectionalTransformer invalid) {
+		super(NLS.bind(Messages.The_substitution_0_1_is_not_reversed_by_2_3, new Object[] { invalid.getFromPattern().toString(),
+				invalid.getFromReplacement(), invalid.getToPattern().toString(), invalid.getToReplacement() }));
 	}
 }

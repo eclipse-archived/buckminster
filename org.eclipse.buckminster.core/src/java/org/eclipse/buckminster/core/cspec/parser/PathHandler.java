@@ -18,25 +18,21 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class PathHandler extends ExtensionAwareHandler
-{
+class PathHandler extends ExtensionAwareHandler {
 	public static final String TAG = SaxablePath.TAG;
 
-	private IPath m_path;
+	private IPath path;
 
-	PathHandler(AbstractHandler parent)
-	{
+	PathHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_path = Path.fromPortableString(this.getStringValue(attrs, SaxablePath.ATTR_PATH));
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		path = Path.fromPortableString(this.getStringValue(attrs, SaxablePath.ATTR_PATH));
 	}
 
-	final IPath getPath()
-	{
-		return m_path;
+	final IPath getPath() {
+		return path;
 	}
 }

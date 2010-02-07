@@ -2,8 +2,7 @@ package org.eclipse.buckminster.core.reader;
 
 import java.util.Map;
 
-public interface IMapBasedReader extends IComponentReader
-{
+public interface IMapBasedReader extends IComponentReader {
 	/**
 	 * Returns a map that contains entries in the following form:
 	 * 

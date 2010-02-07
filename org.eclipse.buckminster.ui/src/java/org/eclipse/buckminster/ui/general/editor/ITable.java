@@ -15,8 +15,7 @@ import java.util.List;
  * 
  * @author Karel Brezina
  */
-public interface ITable<T>
-{
+public interface ITable<T> {
 	/**
 	 * Adds table modify listener
 	 * 

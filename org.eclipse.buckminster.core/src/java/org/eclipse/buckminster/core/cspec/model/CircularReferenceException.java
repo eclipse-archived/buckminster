@@ -16,15 +16,12 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class CircularReferenceException extends LocalizedException
-{
+public class CircularReferenceException extends LocalizedException {
 	private static final long serialVersionUID = 7698765446267065328L;
 
-	private static String buildChain(List<String> attributeNames, String recursionStart)
-	{
+	private static String buildChain(List<String> attributeNames, String recursionStart) {
 		StringBuilder bld = new StringBuilder();
-		for(String attributeName : attributeNames)
-		{
+		for (String attributeName : attributeNames) {
 			bld.append(attributeName);
 			bld.append(" -> "); //$NON-NLS-1$
 		}
@@ -32,9 +29,8 @@ public class CircularReferenceException extends LocalizedException
 		return bld.toString();
 	}
 
-	public CircularReferenceException(String componentName, List<String> attributeNames, String recursionStart)
-	{
-		super(NLS.bind(Messages.Component_0_has_an_internal_circular_attribute_reference_Attribute_chain_is_1,
-				componentName, buildChain(attributeNames, recursionStart)));
+	public CircularReferenceException(String componentName, List<String> attributeNames, String recursionStart) {
+		super(NLS.bind(Messages.Component_0_has_an_internal_circular_attribute_reference_Attribute_chain_is_1, componentName, buildChain(
+				attributeNames, recursionStart)));
 	}
 }

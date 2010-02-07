@@ -13,15 +13,13 @@ package org.eclipse.buckminster.cmdline.parser;
 import org.eclipse.buckminster.cmdline.Messages;
 import org.eclipse.osgi.util.NLS;
 
-public class OptionRequiresValueException extends AbstractOptionParsingException
-{
+public class OptionRequiresValueException extends AbstractOptionParsingException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -323660388146104473L;
 
-	public OptionRequiresValueException(String message)
-	{
+	public OptionRequiresValueException(String message) {
 		super(NLS.bind(Messages.OptionRequiresValueException_The_option_0_requires_a_value, message));
 	}
 }

@@ -28,28 +28,21 @@ import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 
 @SuppressWarnings("restriction")
-public class CSpecFromSource extends CSpecFromFeature
-{
-	private final Map<String, String> m_buildProperties;
+public class CSpecFromSource extends CSpecFromFeature {
+	private final Map<String, String> buildProperties;
 
-	protected CSpecFromSource(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature,
-			Map<String, String> buildProperties)
-	{
+	protected CSpecFromSource(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature, Map<String, String> buildProperties) {
 		super(cspecBuilder, reader, feature);
-		m_buildProperties = buildProperties;
+		this.buildProperties = buildProperties;
 	}
 
 	@Override
-	protected String getProductOutputFolder(String productId)
-	{
-		return m_buildProperties == null
-				? null
-				: m_buildProperties.get(productId + TOP_FOLDER_SUFFIX);
+	protected String getProductOutputFolder(String productId) {
+		return buildProperties == null ? null : buildProperties.get(productId + TOP_FOLDER_SUFFIX);
 	}
 
 	@Override
-	void createFeatureJarAction(IProgressMonitor monitor) throws CoreException
-	{
+	void createFeatureJarAction(IProgressMonitor monitor) throws CoreException {
 		createBinIncludesArtifact(monitor);
 		createFeatureManifestAction();
 
@@ -60,7 +53,7 @@ public class CSpecFromSource extends CSpecFromFeature
 		ActionBuilder featureJarBuilder = addAntAction(ATTRIBUTE_FEATURE_JAR, TASK_CREATE_FEATURE_JAR, false);
 		featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
 
-		if(cspec.getArtifactBuilder(ATTRIBUTE_JAR_CONTENTS) != null)
+		if (cspec.getArtifactBuilder(ATTRIBUTE_JAR_CONTENTS) != null)
 			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_JAR_CONTENTS);
 		featureJarBuilder.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 
@@ -71,20 +64,20 @@ public class CSpecFromSource extends CSpecFromFeature
 	}
 
 	@Override
-	void createFeatureSourceJarAction() throws CoreException
-	{
+	void createFeatureSourceJarAction() throws CoreException {
 		createFeatureSourceManifestAction();
 
 		CSpecBuilder cspec = getCSpec();
 
-		// Create the action that builds the jar file with all source bundles for the feature
+		// Create the action that builds the jar file with all source bundles
+		// for the feature
 		//
 		ActionBuilder featureJarBuilder = addAntAction(ATTRIBUTE_SOURCE_FEATURE_JAR, TASK_CREATE_FEATURE_JAR, false);
 		featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_SOURCE_MANIFEST, ALIAS_MANIFEST);
 
 		// We use the same content as the original feature (i.e. license, etc.).
 		//
-		if(cspec.getArtifactBuilder(ATTRIBUTE_JAR_CONTENTS) != null)
+		if (cspec.getArtifactBuilder(ATTRIBUTE_JAR_CONTENTS) != null)
 			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_JAR_CONTENTS);
 		featureJarBuilder.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
 
@@ -101,12 +94,10 @@ public class CSpecFromSource extends CSpecFromFeature
 	}
 
 	@Override
-	void createSiteActions(IProgressMonitor monitor) throws CoreException
-	{
+	void createSiteActions(IProgressMonitor monitor) throws CoreException {
 		createSiteFeatureExportsAction();
 
-		if(!addProducts(MonitorUtils.subMonitor(monitor, 80)))
-		{
+		if (!addProducts(MonitorUtils.subMonitor(monitor, 80))) {
 			// No product defined a site so we add the actions for that
 			// here.
 			//
@@ -118,33 +109,26 @@ public class CSpecFromSource extends CSpecFromFeature
 		}
 	}
 
-	private void createBinIncludesArtifact(IProgressMonitor monitor) throws CoreException
-	{
+	private void createBinIncludesArtifact(IProgressMonitor monitor) throws CoreException {
 		CSpecBuilder cspec = getCSpec();
-		if(m_buildProperties == null)
-		{
+		if (buildProperties == null) {
 			ArtifactBuilder binIncludes = null;
-			for(String path : getReader().list(monitor))
-			{
-				if(FEATURE_FILE.equals(path))
+			for (String path : getReader().list(monitor)) {
+				if (FEATURE_FILE.equals(path))
 					//
 					// Handled separately
 					//
 					continue;
 
-				if(binIncludes == null)
+				if (binIncludes == null)
 					binIncludes = getCSpec().addArtifact(ATTRIBUTE_JAR_CONTENTS, false, null);
 				binIncludes.addPath(new Path(path));
 			}
-		}
-		else
-		{
+		} else {
 			cspec.addArtifact(ATTRIBUTE_BUILD_PROPERTIES, false, null).addPath(new Path(BUILD_PROPERTIES_FILE));
-			for(Map.Entry<String, String> entry : m_buildProperties.entrySet())
-			{
+			for (Map.Entry<String, String> entry : buildProperties.entrySet()) {
 				String key = entry.getKey();
-				if(IBuildEntry.BIN_INCLUDES.equals(key))
-				{
+				if (IBuildEntry.BIN_INCLUDES.equals(key)) {
 					createBinIncludesArtifact(entry.getValue());
 					continue;
 				}
@@ -153,28 +137,25 @@ public class CSpecFromSource extends CSpecFromFeature
 		}
 	}
 
-	private void createBinIncludesArtifact(String binIncludesStr) throws CoreException
-	{
+	private void createBinIncludesArtifact(String binIncludesStr) throws CoreException {
 		ArtifactBuilder binIncludes = null;
 		StringTokenizer tokens = new StringTokenizer(binIncludesStr, ","); //$NON-NLS-1$
-		while(tokens.hasMoreTokens())
-		{
+		while (tokens.hasMoreTokens()) {
 			String path = tokens.nextToken().trim();
-			if(FEATURE_FILE.equals(path))
+			if (FEATURE_FILE.equals(path))
 				//
 				// Handled separately
 				//
 				continue;
 
-			if(binIncludes == null)
+			if (binIncludes == null)
 				binIncludes = getCSpec().addArtifact(ATTRIBUTE_JAR_CONTENTS, false, null);
 
 			binIncludes.addPath(new Path(path));
 		}
 	}
 
-	private ActionBuilder createCopySiteFeaturesAction() throws CoreException
-	{
+	private ActionBuilder createCopySiteFeaturesAction() throws CoreException {
 		// Copy all features (excluding this one) to the features directory.
 		//
 		ActionBuilder copyFeatures = addAntAction(ACTION_COPY_SITE_FEATURES, TASK_COPY_GROUP, false);
@@ -189,8 +170,7 @@ public class CSpecFromSource extends CSpecFromFeature
 		return copyFeatures;
 	}
 
-	private void createFeatureManifestAction() throws CoreException
-	{
+	private void createFeatureManifestAction() throws CoreException {
 		// Create the artifact that represents the original feature.xml file
 		//
 		IPath featureFile = new Path(FEATURE_FILE);
@@ -203,7 +183,7 @@ public class CSpecFromSource extends CSpecFromFeature
 		manifest.addLocalPrerequisite(ATTRIBUTE_RAW_MANIFEST, ALIAS_MANIFEST);
 		manifest.addLocalPrerequisite(ATTRIBUTE_BUNDLE_JARS, ALIAS_BUNDLES);
 		manifest.addLocalPrerequisite(ATTRIBUTE_FEATURE_REFS, ALIAS_FEATURES);
-		if(getCSpec().getAttribute(ATTRIBUTE_BUILD_PROPERTIES) != null)
+		if (getCSpec().getAttribute(ATTRIBUTE_BUILD_PROPERTIES) != null)
 			manifest.addLocalPrerequisite(ATTRIBUTE_BUILD_PROPERTIES, ALIAS_PROPERTIES);
 
 		manifest.setProductAlias(ALIAS_OUTPUT);
@@ -211,9 +191,9 @@ public class CSpecFromSource extends CSpecFromFeature
 		manifest.addProductPath(featureFile);
 	}
 
-	private void createFeatureSourceManifestAction() throws CoreException
-	{
-		// Create the action that creates the version expanded feature.xml for features
+	private void createFeatureSourceManifestAction() throws CoreException {
+		// Create the action that creates the version expanded feature.xml for
+		// features
 		// and bundles that contains source code.
 		//
 		ActionBuilder manifest = addAntAction(ATTRIBUTE_SOURCE_MANIFEST, TASK_CREATE_SOURCE_FEATURE, true);
@@ -225,8 +205,7 @@ public class CSpecFromSource extends CSpecFromFeature
 		manifest.addProductPath(new Path(FEATURE_FILE));
 	}
 
-	private void createSiteFeatureExportsAction() throws CoreException
-	{
+	private void createSiteFeatureExportsAction() throws CoreException {
 		GroupBuilder featureExports = getCSpec().getRequiredGroup(ATTRIBUTE_SITE_FEATURE_EXPORTS);
 		featureExports.addLocalPrerequisite(createCopySiteFeaturesAction());
 		featureExports.addLocalPrerequisite(ACTION_COPY_PLUGINS);

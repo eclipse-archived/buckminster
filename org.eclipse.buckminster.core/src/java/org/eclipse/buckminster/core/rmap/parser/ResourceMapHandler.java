@@ -24,95 +24,78 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class ResourceMapHandler extends PropertyManagerHandler
-{
-	private URL m_contextURL;
+public class ResourceMapHandler extends PropertyManagerHandler {
+	private URL contextURL;
 
-	private SearchPathHandler m_searchPathHandler;
+	private SearchPathHandler searchPathHandler;
 
-	private MatcherHandler.LocatorHandler m_locatorHandler;
+	private MatcherHandler.LocatorHandler locatorHandler;
 
-	private MatcherHandler.RedirectHandler m_redirectHandler;
+	private MatcherHandler.RedirectHandler redirectHandler;
 
-	private DocumentationHandler m_documentationHandler;
+	private DocumentationHandler documentationHandler;
 
-	private ResourceMap m_resourceMap;
+	private ResourceMap resourceMap;
 
-	public ResourceMapHandler(AbstractHandler parent)
-	{
+	public ResourceMapHandler(AbstractHandler parent) {
 		super(parent, ResourceMap.TAG);
 	}
 
 	@Override
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_documentationHandler)
-			getResourceMap().setDocumentation(m_documentationHandler.createDocumentation());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == documentationHandler)
+			getResourceMap().setDocumentation(documentationHandler.createDocumentation());
 		else
 			super.childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(SearchPathHandler.TAG.equals(localName))
-		{
-			if(m_searchPathHandler == null)
-				m_searchPathHandler = new SearchPathHandler(this);
-			ch = m_searchPathHandler;
-		}
-		else if(MatcherHandler.LocatorHandler.TAG.equals(localName))
-		{
-			if(m_locatorHandler == null)
-				m_locatorHandler = new MatcherHandler.LocatorHandler(this);
-			ch = m_locatorHandler;
-		}
-		else if(MatcherHandler.RedirectHandler.TAG.equals(localName))
-		{
-			if(m_redirectHandler == null)
-				m_redirectHandler = new MatcherHandler.RedirectHandler(this);
-			ch = m_redirectHandler;
-		}
-		else if(DocumentationHandler.TAG.equals(localName))
-		{
-			if(m_documentationHandler == null)
-				m_documentationHandler = new DocumentationHandler(this);
-			ch = m_documentationHandler;
-		}
-		else
+		if (SearchPathHandler.TAG.equals(localName)) {
+			if (searchPathHandler == null)
+				searchPathHandler = new SearchPathHandler(this);
+			ch = searchPathHandler;
+		} else if (MatcherHandler.LocatorHandler.TAG.equals(localName)) {
+			if (locatorHandler == null)
+				locatorHandler = new MatcherHandler.LocatorHandler(this);
+			ch = locatorHandler;
+		} else if (MatcherHandler.RedirectHandler.TAG.equals(localName)) {
+			if (redirectHandler == null)
+				redirectHandler = new MatcherHandler.RedirectHandler(this);
+			ch = redirectHandler;
+		} else if (DocumentationHandler.TAG.equals(localName)) {
+			if (documentationHandler == null)
+				documentationHandler = new DocumentationHandler(this);
+			ch = documentationHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	public void endElement(String uri, String localName, String qName) throws SAXException
-	{
+	public void endElement(String uri, String localName, String qName) throws SAXException {
 		super.endElement(uri, localName, qName);
-		((ResourceMapParser)this.getTopHandler()).setResourceMap(this.getResourceMap());
+		((ResourceMapParser) this.getTopHandler()).setResourceMap(this.getResourceMap());
 	}
 
 	@Override
-	public ExpandingProperties<String> getProperties()
-	{
-		return (ExpandingProperties<String>)getResourceMap().getProperties();
+	public ExpandingProperties<String> getProperties() {
+		return (ExpandingProperties<String>) getResourceMap().getProperties();
 	}
 
-	public ResourceMap getResourceMap()
-	{
-		if(m_resourceMap == null)
-			m_resourceMap = new ResourceMap(m_contextURL);
-		return m_resourceMap;
+	public ResourceMap getResourceMap() {
+		if (resourceMap == null)
+			resourceMap = new ResourceMap(contextURL);
+		return resourceMap;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_resourceMap = null;
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		resourceMap = null;
 	}
 
-	void setContextURL(URL contextURL)
-	{
-		m_contextURL = contextURL;
+	void setContextURL(URL contextURL) {
+		this.contextURL = contextURL;
 	}
 }

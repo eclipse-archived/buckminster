@@ -60,82 +60,53 @@ import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class PDEMapProvider extends Provider
-{
+public class PDEMapProvider extends Provider {
 	public static final String BM_PDEMAP_PROVIDER_NS = XMLConstants.BM_PREFIX + "PDEMapProvider-1.0"; //$NON-NLS-1$
 
 	public static final String BM_PDEMAP_PROVIDER_PREFIX = "pmp"; //$NON-NLS-1$
 
-	private static void collectEntries(File mapFile, Map<ComponentIdentifier, MapFileEntry> map) throws CoreException
-	{
+	private static void collectEntries(File mapFile, Map<ComponentIdentifier, MapFileEntry> map) throws CoreException {
 		InputStream input = null;
-		try
-		{
+		try {
 			input = new FileInputStream(mapFile);
 			ArrayList<MapFileEntry> list = new ArrayList<MapFileEntry>();
 			MapFile.parse(input, mapFile.getCanonicalPath(), list);
-			for(MapFileEntry entry : list)
+			for (MapFileEntry entry : list)
 				map.put(entry.getComponentIdentifier(), entry);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 	}
 
-	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes,
-			VersionConverterDesc vcDesc, Format uri, Filter resolutionFilter, Map<String, String> properties,
-			Documentation documentation)
-	{
-		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, resolutionFilter, properties,
-				null, documentation);
+	public PDEMapProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc vcDesc, Format uri,
+			Filter resolutionFilter, Map<String, String> properties, Documentation documentation) {
+		super(searchPath, remoteReaderType, componentTypes, vcDesc, uri, null, null, resolutionFilter, properties, null, documentation);
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				BM_PDEMAP_PROVIDER_PREFIX + ":PDEMapProvider"); //$NON-NLS-1$
-	}
-
-	@Override
-	public void addPrefixMappings(HashMap<String, String> prefixMappings)
-	{
+	public void addPrefixMappings(HashMap<String, String> prefixMappings) {
 		super.addPrefixMappings(prefixMappings);
 		prefixMappings.put(BM_PDEMAP_PROVIDER_PREFIX, BM_PDEMAP_PROVIDER_NS);
 	}
 
-	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentIdentifier, MapFileEntry> map)
-	{
-		userCache.put(getId(), map);
-	}
-
 	@Override
-	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask("", 100); //$NON-NLS-1$
-		try
-		{
+		try {
 			String providerURI = getURI(query.getProperties());
 			String readerType = getReaderTypeId();
 			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
-			if(score == ProviderScore.REJECTED)
-			{
+			if (score == ProviderScore.REJECTED) {
 				String msg = NLS.bind(Messages.provider_0_for_1_score_below_treshold, readerType, providerURI);
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 				return null;
 			}
 
-			MapFileEntry tv = getMapFileEntry(query, problemCollector, getMap(query, problemCollector,
-					MonitorUtils.subMonitor(monitor, 50)));
+			MapFileEntry tv = getMapFileEntry(query, problemCollector, getMap(query, problemCollector, MonitorUtils.subMonitor(monitor, 50)));
 
-			if(tv == null)
+			if (tv == null)
 				//
 				// Map was not materialized
 				//
@@ -144,19 +115,16 @@ public class PDEMapProvider extends Provider
 			Map<String, String> properties = tv.getProperties();
 			Version v = null;
 			String tag = properties.get("tag"); //$NON-NLS-1$
-			VersionSelector vs = (tag == null)
-					? null
-					: VersionSelector.tag(tag);
+			VersionSelector vs = (tag == null) ? null : VersionSelector.tag(tag);
 			ComponentRequest rq = query.getComponentRequest();
 			IVersionConverter vc = getVersionConverter();
-			if(vc != null)
-			{
+			if (vc != null) {
 				// Let's check that the given tag matches what we are asking
 				// for.
 				//
 				v = vc.createVersion(vs);
 				VersionRange vd = query.getVersionRange();
-				if(!(vd == null || vd.isIncluded(v)))
+				if (!(vd == null || vd.isIncluded(v)))
 					return null;
 			}
 
@@ -164,12 +132,11 @@ public class PDEMapProvider extends Provider
 			IReaderType rt = tv.getReaderType();
 			String repoLocator = rt.convertFetchFactoryLocator(properties, rq.getName());
 			Format uri = new Format(repoLocator);
-			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(),
-					getVersionConverterDesc(), uri, null, null, getResolutionFilter(), getProviderProperties(), null,
-					null);
+			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null,
+					getResolutionFilter(), getProviderProperties(), null, null);
 
 			String ctypeID = rq.getComponentTypeID();
-			if(ctypeID == null)
+			if (ctypeID == null)
 				return delegated.findMatch(query, problemCollector, monitor);
 
 			IComponentType ctype = tv.getComponentIdentifier().getComponentType();
@@ -177,17 +144,9 @@ public class PDEMapProvider extends Provider
 			pm.setProvider(delegated);
 			pm.setComponentType(ctype);
 			return pm;
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private Map<ComponentIdentifier, MapFileEntry> getCachedMap(Map<UUID, Object> userCache)
-	{
-		return (Map<ComponentIdentifier, MapFileEntry>)userCache.get(getId());
 	}
 
 	/**
@@ -199,81 +158,82 @@ public class PDEMapProvider extends Provider
 	 * 
 	 * @return
 	 */
-	public Map<ComponentIdentifier, MapFileEntry> getMap(NodeQuery query, MultiStatus problemCollector,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public Map<ComponentIdentifier, MapFileEntry> getMap(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
+			throws CoreException {
 		monitor.beginTask(null, 700);
 		Map<UUID, Object> userCache = query.getContext().getUserCache();
-		synchronized(userCache)
-		{
+		synchronized (userCache) {
 			Map<ComponentIdentifier, MapFileEntry> map = getCachedMap(userCache);
-			if(map != null)
+			if (map != null)
 				return map;
 
 			File tempFolder = null;
-			try
-			{
+			try {
 				tempFolder = FileUtils.createTempFolder("bucky", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
 				VersionSelector[] btPath = query.getBranchTagPath();
-				if(btPath.length == 0)
+				if (btPath.length == 0)
 					materializeMaps(tempFolder, null, query, MonitorUtils.subMonitor(monitor, 500));
-				else
-				{
+				else {
 					CoreException lastException = null;
-					for(VersionSelector bt : btPath)
-					{
-						try
-						{
+					for (VersionSelector bt : btPath) {
+						try {
 							materializeMaps(tempFolder, bt, query, MonitorUtils.subMonitor(monitor, 500));
 							lastException = null;
 							break;
-						}
-						catch(CoreException e)
-						{
+						} catch (CoreException e) {
 							lastException = e;
 						}
 					}
-					if(lastException != null)
+					if (lastException != null)
 						throw lastException;
 				}
 
 				map = new HashMap<ComponentIdentifier, MapFileEntry>();
 				String[] mapFiles = tempFolder.list();
-				if(mapFiles == null || mapFiles.length == 0)
+				if (mapFiles == null || mapFiles.length == 0)
 					return null;
 
 				MonitorUtils.worked(monitor, 50);
 
 				int amountPerFile = 100 / mapFiles.length;
-				for(String file : mapFiles)
-				{
-					if(file.endsWith(".map")) //$NON-NLS-1$
+				for (String file : mapFiles) {
+					if (file.endsWith(".map")) //$NON-NLS-1$
 						collectEntries(new File(tempFolder, file), map);
 					MonitorUtils.worked(monitor, amountPerFile);
 				}
 				map = Collections.unmodifiableMap(map);
 				cacheMap(userCache, map);
 				return map;
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				problemCollector.add(e.getStatus());
 				PDEPlugin.getLogger().debug(e.getMessage());
 				return null;
-			}
-			finally
-			{
-				if(tempFolder != null)
+			} finally {
+				if (tempFolder != null)
 					FileUtils.deleteRecursive(tempFolder, MonitorUtils.subMonitor(monitor, 50));
 				monitor.done();
 			}
 		}
 	}
 
-	private MapFileEntry getMapFileEntry(NodeQuery query, MultiStatus problemCollector,
-			Map<ComponentIdentifier, MapFileEntry> map)
-	{
-		if(map == null)
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		super.addAttributes(attrs);
+		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				BM_PDEMAP_PROVIDER_PREFIX + ":PDEMapProvider"); //$NON-NLS-1$
+	}
+
+	private void cacheMap(Map<UUID, Object> userCache, Map<ComponentIdentifier, MapFileEntry> map) {
+		userCache.put(getId(), map);
+	}
+
+	@SuppressWarnings("unchecked")
+	private Map<ComponentIdentifier, MapFileEntry> getCachedMap(Map<UUID, Object> userCache) {
+		return (Map<ComponentIdentifier, MapFileEntry>) userCache.get(getId());
+	}
+
+	private MapFileEntry getMapFileEntry(NodeQuery query, MultiStatus problemCollector, Map<ComponentIdentifier, MapFileEntry> map) {
+		if (map == null)
 			return null;
 
 		ComponentRequest wanted = query.getComponentRequest();
@@ -283,24 +243,20 @@ public class PDEMapProvider extends Provider
 
 		IComponentIdentifier candidate = null;
 		MapFileEntry candidateEntry = null;
-		for(Map.Entry<ComponentIdentifier, MapFileEntry> entry : map.entrySet())
-		{
+		for (Map.Entry<ComponentIdentifier, MapFileEntry> entry : map.entrySet()) {
 			ComponentIdentifier cn = entry.getKey();
-			if(cn.getName().equals(name) && Trivial.equalsAllowNull(ctype, cn.getComponentTypeID()))
-			{
+			if (cn.getName().equals(name) && Trivial.equalsAllowNull(ctype, cn.getComponentTypeID())) {
 				Version v = cn.getVersion();
-				if(vd != null)
-				{
-					if(!(v == null || vd.isIncluded(v)))
+				if (vd != null) {
+					if (!(v == null || vd.isIncluded(v)))
 						continue;
 				}
 
-				if(candidate != null)
-				{
-					if(v == null)
+				if (candidate != null) {
+					if (v == null)
 						continue;
 
-					if(candidate.getVersion() != null && candidate.getVersion().compareTo(v) > 0)
+					if (candidate.getVersion() != null && candidate.getVersion().compareTo(v) > 0)
 						continue;
 				}
 				candidate = cn;
@@ -308,10 +264,9 @@ public class PDEMapProvider extends Provider
 			}
 		}
 
-		if(candidateEntry == null)
-		{
-			String msg = NLS.bind(Messages.PDEMapProvider_0_for_1_unable_to_find_2_in_map, new Object[] {
-					getReaderTypeId(), getURI(query.getProperties()), wanted });
+		if (candidateEntry == null) {
+			String msg = NLS.bind(Messages.PDEMapProvider_0_for_1_unable_to_find_2_in_map, new Object[] { getReaderTypeId(),
+					getURI(query.getProperties()), wanted });
 
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 			PDEPlugin.getLogger().debug(msg);
@@ -319,21 +274,15 @@ public class PDEMapProvider extends Provider
 		return candidateEntry;
 	}
 
-	private void materializeMaps(File tempFolder, VersionSelector vs, NodeQuery query, IProgressMonitor monitor)
-			throws CoreException
-	{
+	private void materializeMaps(File tempFolder, VersionSelector vs, NodeQuery query, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.begin(monitor, 500);
 
-		ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN),
-				new VersionMatch(null, vs, -1, new Date(), null), ProviderScore.GOOD, query);
+		ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN), new VersionMatch(null, vs,
+				-1, new Date(), null), ProviderScore.GOOD, query);
 		IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 100));
-		try
-		{
-			((ICatalogReader)reader).innerMaterialize(new Path(tempFolder.toString()), MonitorUtils.subMonitor(monitor,
-					400));
-		}
-		finally
-		{
+		try {
+			((ICatalogReader) reader).innerMaterialize(new Path(tempFolder.toString()), MonitorUtils.subMonitor(monitor, 400));
+		} finally {
 			IOUtils.close(reader);
 			MonitorUtils.done(monitor);
 		}

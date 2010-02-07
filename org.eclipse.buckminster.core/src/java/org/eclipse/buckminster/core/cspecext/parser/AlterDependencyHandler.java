@@ -22,52 +22,42 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class AlterDependencyHandler extends AlterHandler
-{
-	private final ComponentRequestHandler m_baseHandler;
+class AlterDependencyHandler extends AlterHandler {
+	private final ComponentRequestHandler baseHandler;
 
-	private AlterDependencyBuilder m_builder;
+	private AlterDependencyBuilder builder;
 
-	AlterDependencyHandler(AbstractHandler parent)
-	{
+	AlterDependencyHandler(AbstractHandler parent) {
 		super(parent);
-		m_baseHandler = new ComponentRequestHandler(parent, new ComponentRequestBuilder());
+		baseHandler = new ComponentRequestHandler(parent, new ComponentRequestBuilder());
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
+	public void childPopped(ChildHandler child) throws SAXException {
 
-		if(m_baseHandler instanceof ChildPoppedListener)
-			((ChildPoppedListener)m_baseHandler).childPopped(child);
-	}
-
-	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
-		return m_baseHandler.createHandler(uri, localName, attrs);
+		if (baseHandler instanceof ChildPoppedListener)
+			((ChildPoppedListener) baseHandler).childPopped(child);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_baseHandler.handleAttributes(attrs);
-		m_builder = new AlterDependencyBuilder(m_baseHandler.getBuilder());
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
+		return baseHandler.createHandler(uri, localName, attrs);
 	}
 
-	AlterDependency getAlterDependency() throws SAXException
-	{
-		try
-		{
-			return m_builder.createAlterDependency();
-		}
-		catch(CoreException e)
-		{
+	@Override
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		baseHandler.handleAttributes(attrs);
+		builder = new AlterDependencyBuilder(baseHandler.getBuilder());
+	}
+
+	AlterDependency getAlterDependency() throws SAXException {
+		try {
+			return builder.createAlterDependency();
+		} catch (CoreException e) {
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 		}
 	}
 
-	AlterDependencyBuilder getBuilder()
-	{
-		return m_builder;
+	AlterDependencyBuilder getBuilder() {
+		return builder;
 	}
 }

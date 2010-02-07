@@ -20,22 +20,18 @@ import org.eclipse.buckminster.ui.dependency.visualizer.viewer.provider.IRelatio
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 /**
- * The ShortestPathToRootRelationshipProvider returns the shortest path through the graph from a given {@link BOMNode}
- * to the root of the graph
+ * The ShortestPathToRootRelationshipProvider returns the shortest path through
+ * the graph from a given {@link BOMNode} to the root of the graph
  * 
  * @author Johannes Utzig
  * 
  */
-public class ShortestPathToRootRelationshipProvider implements IRelationshipProvider
-{
+public class ShortestPathToRootRelationshipProvider implements IRelationshipProvider {
 
-	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root,
-			BOMNode currentSelection, Object[] connections)
-	{
+	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection, Object[] connections) {
 		List<BOMNode> paths = ShortesPathCalculation.calculatePath(root, currentSelection);
 		HashMap<EntityConnectionData, ConnectionCategory> relations = new HashMap<EntityConnectionData, ConnectionCategory>();
-		for(int i = 0; i < paths.size() - 1; i++)
-		{
+		for (int i = 0; i < paths.size() - 1; i++) {
 			relations.put(new EntityConnectionData(paths.get(i + 1), paths.get(i)), ConnectionCategory.PATH_TO_ROOT);
 		}
 		return relations;

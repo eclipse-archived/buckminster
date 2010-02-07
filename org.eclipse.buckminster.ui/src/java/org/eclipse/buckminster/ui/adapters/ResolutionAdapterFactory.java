@@ -17,26 +17,23 @@ import org.eclipse.core.runtime.IAdapterFactory;
  * @author Henrik Lindberg
  * 
  */
-public class ResolutionAdapterFactory implements IAdapterFactory
-{
-	private static Class<?>[] s_adapterList = { Resolution.class, ResolutionDataNode.class };
+public class ResolutionAdapterFactory implements IAdapterFactory {
+	private static Class<?>[] adapterList = { Resolution.class, ResolutionDataNode.class };
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Object getAdapter(Object adaptableObject, Class adapterType)
-	{
-		if(adaptableObject instanceof Resolution && adapterType.isAssignableFrom(ResolutionDataNode.class))
-			return new ResolutionDataNode((Resolution)adaptableObject);
+	public Object getAdapter(Object adaptableObject, Class adapterType) {
+		if (adaptableObject instanceof Resolution && adapterType.isAssignableFrom(ResolutionDataNode.class))
+			return new ResolutionDataNode((Resolution) adaptableObject);
 
-		if(adaptableObject instanceof ResolutionDataNode && adapterType.isAssignableFrom(Resolution.class))
-			return ((ResolutionDataNode)adaptableObject).getData();
+		if (adaptableObject instanceof ResolutionDataNode && adapterType.isAssignableFrom(Resolution.class))
+			return ((ResolutionDataNode) adaptableObject).getData();
 
 		// give up
 		return null;
 	}
 
-	public Class<?>[] getAdapterList()
-	{
-		return s_adapterList;
+	public Class<?>[] getAdapterList() {
+		return adapterList;
 	}
 
 }

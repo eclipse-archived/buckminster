@@ -15,33 +15,31 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osgi.util.NLS;
-
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
 /**
- * Opens an internal or external browser for a selected object that is adaptable to IBrowseable, or to IBrowseableFeed
- * if the boolean flag feed is true.
+ * Opens an internal or external browser for a selected object that is adaptable
+ * to IBrowseable, or to IBrowseableFeed if the boolean flag feed is true.
  * 
  * @author Henrik Lindberg
  * 
  */
-public class ViewInBrowserAction extends AbstractAction
-{
-	private IWorkbenchBrowserSupport m_browserSupport;
+public class ViewInBrowserAction extends AbstractAction {
+	private IWorkbenchBrowserSupport browserSupport;
 
-	private boolean m_internal;
+	private boolean internal;
 
-	private boolean m_feed;
+	private boolean feed;
 
 	/**
-	 * @see ViewInBrowserAction#ViewInBrowserAction(Viewer, boolean, String, boolean)
+	 * @see ViewInBrowserAction#ViewInBrowserAction(Viewer, boolean, String,
+	 *      boolean)
 	 * @param viewer
 	 * @param internal
 	 */
-	public ViewInBrowserAction(Viewer viewer, boolean internal)
-	{
+	public ViewInBrowserAction(Viewer viewer, boolean internal) {
 		this(viewer, internal, null, false);
 	}
 
@@ -51,69 +49,56 @@ public class ViewInBrowserAction extends AbstractAction
 	 * @param viewer
 	 *            - the viewer where the action is performed
 	 * @param internal
-	 *            - true if internal browser should be used (may still open in external)
+	 *            - true if internal browser should be used (may still open in
+	 *            external)
 	 * @param what
-	 *            - a label for what is opened, can be null (e.g. "content", "feed", "page").
+	 *            - a label for what is opened, can be null (e.g. "content",
+	 *            "feed", "page").
 	 * @param feed
-	 *            - flag indicating that selected object is adapted to IBrowseableFeed instead of IBrowseable
+	 *            - flag indicating that selected object is adapted to
+	 *            IBrowseableFeed instead of IBrowseable
 	 */
-	public ViewInBrowserAction(Viewer viewer, boolean internal, String what, boolean feed)
-	{
+	public ViewInBrowserAction(Viewer viewer, boolean internal, String what, boolean feed) {
 		super(viewer);
-		IWorkbenchBrowserSupport browserSupport = UiUtils.getWorkbench().getBrowserSupport();
-		m_browserSupport = browserSupport;
-		m_internal = internal;
-		m_feed = feed;
-		String txt = what != null
-				? NLS.bind(Messages.view_0_in_1_, what, (internal
-						? Messages.browser_internal
-						: Messages.browser_external))
-				: NLS.bind(Messages.view_in_0_, (internal
-						? Messages.browser_internal
-						: Messages.browser_external));
+		this.browserSupport = UiUtils.getWorkbench().getBrowserSupport();
+		this.internal = internal;
+		this.feed = feed;
+		String txt = what != null ? NLS.bind(Messages.view_0_in_1_, what, (internal ? Messages.browser_internal : Messages.browser_external)) : NLS
+				.bind(Messages.view_in_0_, (internal ? Messages.browser_internal : Messages.browser_external));
 		setText(txt);
 		setToolTipText(txt);
-		setImageDescriptor(m_feed
-				? GenericUiPlugin.getImageDescriptor("icons/rssfeed.png") //$NON-NLS-1$
+		setImageDescriptor(feed ? GenericUiPlugin.getImageDescriptor("icons/rssfeed.png") //$NON-NLS-1$
 				: UiUtils.getImageDescriptor("file.html")); //$NON-NLS-1$
 	}
 
 	@Override
-	public void run()
-	{
+	public void run() {
 		IStructuredSelection selection = getStructuredSelection();
 		Object[] selected;
-		if(selection == null || (selected = selection.toArray()).length < 1)
-		{
+		if (selection == null || (selected = selection.toArray()).length < 1) {
 			showMessage(Messages.show_in_browser, Messages.nothing_was_selected);
 			return;
 		}
 		Object sel = selected[0];
 		IDescribedURL describedURL = null;
-		if(sel instanceof IAdaptable)
-		{
-			if(m_feed)
-				describedURL = (IDescribedURL)((IAdaptable)sel).getAdapter(IBrowseableFeed.class);
+		if (sel instanceof IAdaptable) {
+			if (feed)
+				describedURL = (IDescribedURL) ((IAdaptable) sel).getAdapter(IBrowseableFeed.class);
 			else
-				describedURL = (IDescribedURL)((IAdaptable)sel).getAdapter(IBrowseable.class);
+				describedURL = (IDescribedURL) ((IAdaptable) sel).getAdapter(IBrowseable.class);
 
 		}
-		if(describedURL == null)
-		{
+		if (describedURL == null) {
 			showError(Messages.can_not_open_browser, Messages.no_valid_URL_for_selected_object);
 			return;
 		}
 
 		IWebBrowser browser;
-		try
-		{
-			browser = m_browserSupport.createBrowser(m_internal
-					? IWorkbenchBrowserSupport.AS_EDITOR
-					: IWorkbenchBrowserSupport.AS_EXTERNAL, null, describedURL.getName(), describedURL.getTooltip());
+		try {
+			browser = browserSupport.createBrowser(internal ? IWorkbenchBrowserSupport.AS_EDITOR : IWorkbenchBrowserSupport.AS_EXTERNAL, null,
+					describedURL.getName(), describedURL.getTooltip());
 			browser.openURL(describedURL.getBrowseableURL());
-		}
-		catch(PartInitException e)
-		{
+		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
 

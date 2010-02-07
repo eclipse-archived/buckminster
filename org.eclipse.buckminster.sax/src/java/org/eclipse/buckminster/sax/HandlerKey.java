@@ -12,69 +12,55 @@ package org.eclipse.buckminster.sax;
  * 
  * @author Thomas Hallgren
  */
-class HandlerKey implements Cloneable
-{
-	static boolean nullEquals(String a, String b)
-	{
-		return (a == null)
-				? (b == null)
-				: (b != null) && a.equals(b);
+class HandlerKey implements Cloneable {
+	static boolean nullEquals(String a, String b) {
+		return (a == null) ? (b == null) : (b != null) && a.equals(b);
 	}
 
-	private String m_uri;
+	private String uri;
 
-	private String m_localName;
+	private String localName;
 
-	private String m_typeName;
+	private String typeName;
 
-	private int m_hash;
+	private int hash;
 
 	@Override
-	public Object clone()
-	{
-		try
-		{
+	public Object clone() {
+		try {
 			return super.clone();
-		}
-		catch(CloneNotSupportedException e)
-		{
+		} catch (CloneNotSupportedException e) {
 			return null;
 		}
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		if(this == obj)
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
 
-		if(!(obj instanceof HandlerKey))
+		if (!(obj instanceof HandlerKey))
 			return false;
 
-		HandlerKey other = (HandlerKey)obj;
-		return nullEquals(m_uri, other.m_uri) && nullEquals(m_typeName, other.m_typeName)
-				&& nullEquals(m_localName, other.m_localName);
+		HandlerKey other = (HandlerKey) obj;
+		return nullEquals(uri, other.uri) && nullEquals(typeName, other.typeName) && nullEquals(localName, other.localName);
 	}
 
 	@Override
-	public int hashCode()
-	{
-		return m_hash;
+	public int hashCode() {
+		return hash;
 	}
 
-	void init(String uri, String localName, String typeName)
-	{
-		int hash = (localName == null)
-				? 1
-				: 31 + localName.hashCode();
-		if(uri != null)
-			hash = 31 * hash + uri.hashCode();
-		if(typeName != null)
-			hash = 31 * hash + typeName.hashCode();
+	void init(String newURI, String newLocalName, String newTypeName) {
+		int newHash = (newLocalName == null) ? 1 : 31 + newLocalName.hashCode();
+		if (newURI != null)
+			newHash = 31 * newHash + newURI.hashCode();
+		if (newTypeName != null)
+			newHash = 31 * newHash + newTypeName.hashCode();
 
-		m_uri = uri;
-		m_localName = localName;
-		m_typeName = typeName;
-		m_hash = hash;
+		uri = newURI;
+		localName = newLocalName;
+		typeName = newTypeName;
+		hash = newHash;
 	}
 }

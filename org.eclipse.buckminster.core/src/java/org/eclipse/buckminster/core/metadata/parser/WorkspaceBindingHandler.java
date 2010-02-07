@@ -30,64 +30,55 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class WorkspaceBindingHandler extends PropertyManagerHandler
-{
+public class WorkspaceBindingHandler extends PropertyManagerHandler {
 	public static final String TAG = WorkspaceBinding.TAG;
 
-	private ComponentIdentifier m_cid;
+	private ComponentIdentifier cid;
 
-	private UUID m_resolutionId;
+	private UUID resolutionId;
 
-	private IPath m_location;
+	private IPath location;
 
-	private IPath m_wsRoot;
+	private IPath wsRoot;
 
-	private IPath m_wsRelativePath;
+	private IPath wsRelativePath;
 
-	private Map<String, String> m_properties;
+	private Map<String, String> properties;
 
-	private long m_timestamp;
+	private long timestamp;
 
-	public WorkspaceBindingHandler(AbstractHandler parent)
-	{
+	public WorkspaceBindingHandler(AbstractHandler parent) {
 		super(parent, TAG);
 	}
 
 	@Override
-	public Map<String, String> getProperties()
-	{
-		if(m_properties == null)
-			m_properties = new HashMap<String, String>();
-		return m_properties;
+	public Map<String, String> getProperties() {
+		if (properties == null)
+			properties = new HashMap<String, String>();
+		return properties;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
 		String name = getStringValue(attrs, NamedElement.ATTR_NAME);
 		String ctype = getOptionalStringValue(attrs, ComponentName.ATTR_COMPONENT_TYPE);
 		Version version;
-		try
-		{
+		try {
 			version = VersionHelper.parseVersionAttributes(attrs);
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			throw new SAXParseException(e.getMessage(), getDocumentLocator());
 		}
-		m_properties = null;
-		m_cid = new ComponentIdentifier(name, ctype, version);
-		m_location = Path.fromPortableString(this.getStringValue(attrs, Materialization.ATTR_LOCATION));
-		m_wsRoot = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_LOCATION));
-		m_wsRelativePath = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_RELATIVE_PATH));
-		m_timestamp = getLongValue(attrs, WorkspaceBinding.ATTR_TIMESTAMP);
-		m_resolutionId = UUID.fromString(this.getStringValue(attrs, WorkspaceBinding.ATTR_RESOLUTION_ID));
+		properties = null;
+		cid = new ComponentIdentifier(name, ctype, version);
+		location = Path.fromPortableString(this.getStringValue(attrs, Materialization.ATTR_LOCATION));
+		wsRoot = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_LOCATION));
+		wsRelativePath = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_RELATIVE_PATH));
+		timestamp = getLongValue(attrs, WorkspaceBinding.ATTR_TIMESTAMP);
+		resolutionId = UUID.fromString(this.getStringValue(attrs, WorkspaceBinding.ATTR_RESOLUTION_ID));
 	}
 
-	WorkspaceBinding getWorkspaceBinding() throws SAXException
-	{
-		return new WorkspaceBinding(m_location, m_cid, m_resolutionId, m_wsRoot, m_wsRelativePath, m_properties,
-				m_timestamp);
+	WorkspaceBinding getWorkspaceBinding() throws SAXException {
+		return new WorkspaceBinding(location, cid, resolutionId, wsRoot, wsRelativePath, properties, timestamp);
 	}
 }

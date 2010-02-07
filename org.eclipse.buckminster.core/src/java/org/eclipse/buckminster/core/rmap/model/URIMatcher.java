@@ -54,8 +54,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * @author Thomas Hallgren
  * 
  */
-public class URIMatcher extends RxAssembly
-{
+public class URIMatcher extends RxAssembly {
 	@SuppressWarnings("hiding")
 	public static final String TAG = "matcher"; //$NON-NLS-1$
 
@@ -87,46 +86,36 @@ public class URIMatcher extends RxAssembly
 
 	public static final String ARTIFACT_INFO_PREFIX = "URIMetaData:"; //$NON-NLS-1$
 
-	private static Filter getFilter(Map<String, String> matchMap)
-	{
-		return FilterUtils.createFilter(matchMap.get(OS_PARAM), matchMap.get(WS_PARAM), matchMap.get(ARCH_PARAM),
-				matchMap.get(NL_PARAM));
+	private static Filter getFilter(Map<String, String> matchMap) {
+		return FilterUtils.createFilter(matchMap.get(OS_PARAM), matchMap.get(WS_PARAM), matchMap.get(ARCH_PARAM), matchMap.get(NL_PARAM));
 	}
 
-	private final String m_base;
+	private final String base;
 
-	private final IVersionFormat m_versionFormat;
+	private final IVersionFormat versionFormat;
 
-	private final String m_componentType;
+	private final String componentType;
 
-	public URIMatcher(List<RxPart> parts, String base, IVersionFormat versionFormat, String componentType)
-			throws CoreException, PatternSyntaxException
-	{
+	public URIMatcher(List<RxPart> parts, String base, IVersionFormat versionFormat, String componentType) throws CoreException,
+			PatternSyntaxException {
 		super(parts);
-		m_base = base;
-		m_versionFormat = versionFormat == null
-				? VersionHelper.getOSGiFormat()
-				: versionFormat;
-		m_componentType = componentType;
+		this.base = base;
+		this.versionFormat = versionFormat == null ? VersionHelper.getOSGiFormat() : versionFormat;
+		this.componentType = componentType;
 	}
 
-	public Resolution createResolution(ProviderMatch pm) throws CoreException
-	{
+	public Resolution createResolution(ProviderMatch pm) throws CoreException {
 		Map<String, String> matchMap = pm.getMatcherMap();
-		if(matchMap == null)
+		if (matchMap == null)
 			return null;
 
 		CSpecBuilder bld = new CSpecBuilder();
 		bld.setName(matchMap.get(COMPONENT_NAME_PARAM));
 		String tmp = matchMap.get(COMPONENT_VERSION_PARAM);
-		if(tmp != null)
-		{
-			try
-			{
-				bld.setVersion(m_versionFormat.parse(tmp));
-			}
-			catch(IllegalArgumentException e)
-			{
+		if (tmp != null) {
+			try {
+				bld.setVersion(versionFormat.parse(tmp));
+			} catch (IllegalArgumentException e) {
 				throw BuckminsterException.wrap(e);
 			}
 		}
@@ -135,10 +124,8 @@ public class URIMatcher extends RxAssembly
 		bld.setComponentTypeID(ctype.getId());
 		bld.setFilter(getFilter(matchMap));
 
-		try
-		{
-			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()),
-					pm.getConnectContext());
+		try {
+			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()), pm.getConnectContext());
 			NodeQuery nq = pm.getNodeQuery();
 			ResolutionBuilder resBld = new ResolutionBuilder(bld);
 			resBld.getRequest().initFrom(nq.getComponentRequest());
@@ -149,156 +136,125 @@ public class URIMatcher extends RxAssembly
 			resBld.setVersionMatch(pm.getVersionMatch());
 			resBld.setFileInfo(info);
 			return new Resolution(resBld);
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			return null;
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public String getBase()
-	{
-		return m_base;
+	public String getBase() {
+		return base;
 	}
 
 	@Override
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public ProviderMatch getMatch(Provider provider, NodeQuery query, IProgressMonitor monitor) throws CoreException
-	{
+	public ProviderMatch getMatch(Provider provider, NodeQuery query, IProgressMonitor monitor) throws CoreException {
 		Logger logger = CorePlugin.getLogger();
 		ComponentRequest cq = query.getComponentRequest();
 		VersionMatch candidate = null;
 		Map<String, String> candidateMap = null;
 
 		URL baseURL;
-		try
-		{
-			baseURL = new URL(ExpandingProperties.expand(query.getProperties(), m_base, 0));
-		}
-		catch(MalformedURLException e)
-		{
+		try {
+			baseURL = new URL(ExpandingProperties.expand(query.getProperties(), base, 0));
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 
-		for(URL urlToMatch : URLCatalogReaderType.list(baseURL, query.getComponentQuery().getConnectContext(), monitor))
-		{
+		for (URL urlToMatch : URLCatalogReaderType.list(baseURL, query.getComponentQuery().getConnectContext(), monitor)) {
 			Map<String, String> matchMap = getMatchMap(urlToMatch.toString());
-			if(matchMap == null)
+			if (matchMap == null)
 				continue;
 
 			String matchedName = matchMap.get(COMPONENT_NAME_PARAM);
-			if(!cq.getName().equals(matchedName))
-			{
+			if (!cq.getName().equals(matchedName)) {
 				logger.debug("URI name %s does not match %s", matchedName, cq.getName()); //$NON-NLS-1$
 				continue;
 			}
 
 			Version version = null;
 			String tmp = matchMap.get(COMPONENT_VERSION_PARAM);
-			if(tmp != null)
-			{
-				try
-				{
-					version = m_versionFormat.parse(tmp);
+			if (tmp != null) {
+				try {
+					version = versionFormat.parse(tmp);
 					VersionRange vd = cq.getVersionRange();
-					if(!(vd == null || vd.isIncluded(version)))
-					{
+					if (!(vd == null || vd.isIncluded(version))) {
 						logger.debug("URI version %s is not designated by %s", version, vd); //$NON-NLS-1$
 						continue;
 					}
-				}
-				catch(IllegalArgumentException e)
-				{
+				} catch (IllegalArgumentException e) {
 					logger.warning(e, e.getMessage());
 					continue;
 				}
 			}
 
 			Filter filter = getFilter(matchMap);
-			if(!(filter == null || filter.matchCase(query.getProperties())))
-			{
+			if (!(filter == null || filter.matchCase(query.getProperties()))) {
 				logger.debug("URI filter %s does not match current environment", filter); //$NON-NLS-1$
 				continue;
 			}
 
 			VersionSelector vs = null;
 			tmp = matchMap.get(BRANCH_PARAM);
-			if(tmp != null)
+			if (tmp != null)
 				vs = VersionSelector.branch(tmp);
-			else
-			{
+			else {
 				tmp = matchMap.get(TAG_PARAM);
-				if(tmp != null)
+				if (tmp != null)
 					vs = VersionSelector.tag(tmp);
 			}
 
 			long revision = -1;
 			tmp = matchMap.get(REVISION_PARAM);
-			if(tmp != null)
-			{
-				try
-				{
+			if (tmp != null) {
+				try {
 					revision = Long.parseLong(tmp);
-				}
-				catch(NumberFormatException e)
-				{
+				} catch (NumberFormatException e) {
 					logger.warning(e, e.getMessage());
 				}
 			}
 
 			Date timestamp = null;
 			tmp = matchMap.get(TIMESTAMP_PARAM);
-			if(tmp != null)
-			{
-				try
-				{
+			if (tmp != null) {
+				try {
 					timestamp = DateAndTimeUtils.fromString(tmp);
-				}
-				catch(ParseException e)
-				{
+				} catch (ParseException e) {
 					logger.warning(e, e.getMessage());
 				}
 			}
 
 			VersionMatch vm = new VersionMatch(version, vs, revision, timestamp, null);
-			if(candidate == null || query.compare(vm, candidate) > 0)
-			{
+			if (candidate == null || query.compare(vm, candidate) > 0) {
 				// Verify that the URI created using this matchMap is readable
 				//
 				candidate = vm;
 				candidateMap = matchMap;
 			}
 		}
-		if(candidate == null)
+		if (candidate == null)
 			return null;
 
 		query = query.getContext().getNodeQuery(query.getQualifiedDependency());
 		query = new NodeQuery(query, candidateMap);
-		ProviderMatch pm = new ProviderMatch(provider, CorePlugin.getDefault().getComponentType(m_componentType),
-				candidate, query);
+		ProviderMatch pm = new ProviderMatch(provider, CorePlugin.getDefault().getComponentType(componentType), candidate, query);
 		pm.setMatcherMap(candidateMap);
 		return pm;
 	}
 
-	public IVersionFormat getVersionType()
-	{
-		return m_versionFormat;
+	public IVersionFormat getVersionType() {
+		return versionFormat;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
 		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_BASE, m_base);
-		if(!m_versionFormat.equals(VersionHelper.getOSGiFormat()))
-			Utils.addAttribute(attrs, ATTR_VERSION_FORMAT, m_versionFormat.toString());
+		Utils.addAttribute(attrs, ATTR_BASE, base);
+		if (!versionFormat.equals(VersionHelper.getOSGiFormat()))
+			Utils.addAttribute(attrs, ATTR_VERSION_FORMAT, versionFormat.toString());
 	}
 }

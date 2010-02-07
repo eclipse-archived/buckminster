@@ -22,57 +22,47 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-abstract class AbstractSaxableStorage<T extends UUIDKeyed> implements ISaxableStorage<T>
-{
-	private final Class<T> m_class;
+abstract class AbstractSaxableStorage<T extends UUIDKeyed> implements ISaxableStorage<T> {
+	private final Class<T> clazz;
 
-	private HashMap<String, Method> m_getters;
+	private HashMap<String, Method> getters;
 
-	AbstractSaxableStorage(Class<T> clazz)
-	{
-		m_class = clazz;
+	AbstractSaxableStorage(Class<T> clazz) {
+		this.clazz = clazz;
 	}
 
 	@SuppressWarnings("unchecked")
-	T[] createArray(int length)
-	{
-		return (T[])Array.newInstance(m_class, length);
+	T[] createArray(int length) {
+		return (T[]) Array.newInstance(clazz, length);
 	}
 
-	Class<T> getElementClass()
-	{
-		return m_class;
+	Class<T> getElementClass() {
+		return clazz;
 	}
 
-	synchronized Method getGetter(String keyName) throws CoreException
-	{
+	synchronized Method getGetter(String keyName) throws CoreException {
 		String key = keyName.toLowerCase();
-		if(m_getters == null)
-			m_getters = new HashMap<String, Method>();
-		else
-		{
-			Method getter = m_getters.get(key);
-			if(getter != null)
+		if (getters == null)
+			getters = new HashMap<String, Method>();
+		else {
+			Method getter = getters.get(key);
+			if (getter != null)
 				return getter;
 		}
 
 		Class<UUID> retType = UUID.class;
-		for(Method method : m_class.getMethods())
-		{
+		for (Method method : clazz.getMethods()) {
 			// The method has to be a non static, public method that
 			// returns an UUID and takes no arguments.
 			//
 			int mod = method.getModifiers();
-			if(Modifier.isPublic(mod) && !Modifier.isStatic(mod) && method.getReturnType().equals(retType)
-					&& method.getParameterTypes().length == 0)
-			{
+			if (Modifier.isPublic(mod) && !Modifier.isStatic(mod) && method.getReturnType().equals(retType) && method.getParameterTypes().length == 0) {
 				String name = method.getName().toLowerCase();
-				if(name.length() > 3 && name.startsWith("get")) //$NON-NLS-1$
+				if (name.length() > 3 && name.startsWith("get")) //$NON-NLS-1$
 				{
 					name = name.substring(3);
-					if(name.equals(key))
-					{
-						m_getters.put(key, method);
+					if (name.equals(key)) {
+						getters.put(key, method);
 						return method;
 					}
 				}

@@ -22,28 +22,24 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class SearchPathHandler extends ExtensionAwareHandler implements ChildPoppedListener
-{
+public class SearchPathHandler extends ExtensionAwareHandler implements ChildPoppedListener {
 	static final String TAG = SearchPath.TAG;
 
-	private SearchPath m_searchPath;
+	private SearchPath searchPath;
 
-	public SearchPathHandler(AbstractHandler parent)
-	{
+	public SearchPathHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof ProviderHandler)
-			m_searchPath.addProvider(((ProviderHandler)child).getProvider());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child instanceof ProviderHandler)
+			searchPath.addProvider(((ProviderHandler) child).getProvider());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(ProviderHandler.TAG.equals(localName))
+		if (ProviderHandler.TAG.equals(localName))
 			ch = createContentHandler(ProviderHandler.class, uri, attrs);
 		else
 			ch = super.createHandler(uri, localName, attrs);
@@ -51,16 +47,14 @@ public class SearchPathHandler extends ExtensionAwareHandler implements ChildPop
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		ResourceMap rmap = ((ResourceMapHandler)getParentHandler()).getResourceMap();
-		m_searchPath = new SearchPath(rmap, getStringValue(attrs, SearchPath.ATTR_NAME));
-		rmap.addSearchPath(m_searchPath);
+		ResourceMap rmap = ((ResourceMapHandler) getParentHandler()).getResourceMap();
+		searchPath = new SearchPath(rmap, getStringValue(attrs, SearchPath.ATTR_NAME));
+		rmap.addSearchPath(searchPath);
 	}
 
-	SearchPath getSearchPath()
-	{
-		return m_searchPath;
+	SearchPath getSearchPath() {
+		return searchPath;
 	}
 }

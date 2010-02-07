@@ -21,97 +21,76 @@ import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class PropertyElementHandler extends PropertyHandler implements ChildPoppedListener
-{
+public class PropertyElementHandler extends PropertyHandler implements ChildPoppedListener {
 	static final String TAG = "propertyElement"; //$NON-NLS-1$
 
-	private ConstantHandler m_constantHandler;
+	private ConstantHandler constantHandler;
 
-	private FormatHandler m_formatHandler;
+	private FormatHandler formatHandler;
 
-	private PropertyRefHandler m_propertyRefHandler;
+	private PropertyRefHandler propertyRefHandler;
 
-	private ReplaceHandler m_replaceHandler;
+	private ReplaceHandler replaceHandler;
 
-	private SplitHandler m_splitHandler;
+	private SplitHandler splitHandler;
 
-	private ToLowerHandler m_toLowerHandler;
+	private ToLowerHandler toLowerHandler;
 
-	private ToUpperHandler m_toUpperHandler;
+	private ToUpperHandler toUpperHandler;
 
-	private ValueHolder<String> m_source;
+	private ValueHolder<String> source;
 
-	public PropertyElementHandler(AbstractHandler parent)
-	{
+	public PropertyElementHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child)
-	{
-		m_source = ((ValueHandler)child).getValueHolder();
+	public void childPopped(ChildHandler child) {
+		source = ((ValueHandler) child).getValueHolder();
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(ConstantHandler.TAG.equals(localName))
-		{
-			if(m_constantHandler == null)
-				m_constantHandler = new ConstantHandler(this);
-			ch = m_constantHandler;
-		}
-		else if(Format.TAG.equals(localName))
-		{
-			if(m_formatHandler == null)
-				m_formatHandler = new FormatHandler(this);
-			ch = m_formatHandler;
-		}
-		else if(PropertyRefHandler.TAG.equals(localName))
-		{
-			if(m_propertyRefHandler == null)
-				m_propertyRefHandler = new PropertyRefHandler(this);
-			ch = m_propertyRefHandler;
-		}
-		else if(ReplaceHandler.TAG.equals(localName))
-		{
-			if(m_replaceHandler == null)
-				m_replaceHandler = new ReplaceHandler(this);
-			ch = m_replaceHandler;
-		}
-		else if(SplitHandler.TAG.equals(localName))
-		{
-			if(m_splitHandler == null)
-				m_splitHandler = new SplitHandler(this);
-			ch = m_splitHandler;
-		}
-		else if(ToLowerHandler.TAG.equals(localName))
-		{
-			if(m_toLowerHandler == null)
-				m_toLowerHandler = new ToLowerHandler(this);
-			ch = m_toLowerHandler;
-		}
-		else if(ToUpperHandler.TAG.equals(localName))
-		{
-			if(m_toUpperHandler == null)
-				m_toUpperHandler = new ToUpperHandler(this);
-			ch = m_toUpperHandler;
-		}
-		else
+		if (ConstantHandler.TAG.equals(localName)) {
+			if (constantHandler == null)
+				constantHandler = new ConstantHandler(this);
+			ch = constantHandler;
+		} else if (Format.TAG.equals(localName)) {
+			if (formatHandler == null)
+				formatHandler = new FormatHandler(this);
+			ch = formatHandler;
+		} else if (PropertyRefHandler.TAG.equals(localName)) {
+			if (propertyRefHandler == null)
+				propertyRefHandler = new PropertyRefHandler(this);
+			ch = propertyRefHandler;
+		} else if (ReplaceHandler.TAG.equals(localName)) {
+			if (replaceHandler == null)
+				replaceHandler = new ReplaceHandler(this);
+			ch = replaceHandler;
+		} else if (SplitHandler.TAG.equals(localName)) {
+			if (splitHandler == null)
+				splitHandler = new SplitHandler(this);
+			ch = splitHandler;
+		} else if (ToLowerHandler.TAG.equals(localName)) {
+			if (toLowerHandler == null)
+				toLowerHandler = new ToLowerHandler(this);
+			ch = toLowerHandler;
+		} else if (ToUpperHandler.TAG.equals(localName)) {
+			if (toUpperHandler == null)
+				toUpperHandler = new ToUpperHandler(this);
+			ch = toUpperHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	void addYourself(Map<String, String> props)
-	{
+	void addYourself(Map<String, String> props) {
 		String key = getKey();
-		if(props instanceof ExpandingProperties<?>)
-		{
-			m_source.setMutable(getMutable());
-			((ExpandingProperties<String>)props).setProperty(key, m_source);
-		}
-		else
-			props.put(key, m_source.getValue(props));
+		if (props instanceof ExpandingProperties<?>) {
+			source.setMutable(getMutable());
+			((ExpandingProperties<String>) props).setProperty(key, source);
+		} else
+			props.put(key, source.getValue(props));
 	}
 }

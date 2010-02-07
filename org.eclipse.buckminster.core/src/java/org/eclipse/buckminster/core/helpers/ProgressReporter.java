@@ -13,57 +13,49 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Filip Hrbek
  * 
- *         This class is used for reporting a good progress information even if the download is stalled for a while. If
- *         specified timeout expires before something is read from the input, a new progress message is generated. This
- *         enables e.g. reporting recalculated download speed which would be frozen if we simply waited for data.
+ *         This class is used for reporting a good progress information even if
+ *         the download is stalled for a while. If specified timeout expires
+ *         before something is read from the input, a new progress message is
+ *         generated. This enables e.g. reporting recalculated download speed
+ *         which would be frozen if we simply waited for data.
  */
-public class ProgressReporter extends Thread
-{
-	private final IProgressMonitor m_reporterMonitor;
+public class ProgressReporter extends Thread {
+	private final IProgressMonitor reporterMonitor;
 
-	private final ProgressStatistics m_reporterProgress;
+	private final ProgressStatistics reporterProgress;
 
-	private final String m_format;
+	private final String format;
 
-	private final int m_timeout;
+	private final int timeout;
 
-	private boolean m_running;
+	private boolean running;
 
-	public ProgressReporter(IProgressMonitor reporterMonitor, ProgressStatistics reporterProgress, String format,
-			int timeout)
-	{
-		m_reporterMonitor = reporterMonitor;
-		m_reporterProgress = reporterProgress;
-		m_format = format;
-		m_timeout = timeout;
-		m_running = true;
+	public ProgressReporter(IProgressMonitor reporterMonitor, ProgressStatistics reporterProgress, String format, int timeout) {
+		this.reporterMonitor = reporterMonitor;
+		this.reporterProgress = reporterProgress;
+		this.format = format;
+		this.timeout = timeout;
+		this.running = true;
 	}
 
 	@Override
-	public void run()
-	{
-		while(m_running && !m_reporterMonitor.isCanceled())
-		{
-			try
-			{
-				Thread.sleep(m_timeout);
-			}
-			catch(InterruptedException e)
-			{
+	public void run() {
+		while (running && !reporterMonitor.isCanceled()) {
+			try {
+				Thread.sleep(timeout);
+			} catch (InterruptedException e) {
 				// ignore, it's ok
 			}
 
-			synchronized(this)
-			{
-				if(m_running && m_reporterProgress.shouldReport())
-					m_reporterMonitor.subTask(String.format(m_format, m_reporterProgress.report()));
+			synchronized (this) {
+				if (running && reporterProgress.shouldReport())
+					reporterMonitor.subTask(String.format(format, reporterProgress.report()));
 			}
 		}
 	}
 
-	public synchronized void stopReporting()
-	{
-		m_running = false;
+	public synchronized void stopReporting() {
+		running = false;
 		interrupt();
 	}
 }

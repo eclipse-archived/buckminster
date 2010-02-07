@@ -7,16 +7,13 @@
  *****************************************************************************/
 package org.eclipse.buckminster.model.common.util;
 
-
 /**
  * @author Thomas Hallgren
  */
-public class MissingVersionTypeException extends RuntimeException
-{
+public class MissingVersionTypeException extends RuntimeException {
 	private static final long serialVersionUID = 2871945079212872308L;
 
-	public MissingVersionTypeException(String versionTypeId)
-	{
+	public MissingVersionTypeException(String versionTypeId) {
 		super(versionTypeId);
 	}
 }

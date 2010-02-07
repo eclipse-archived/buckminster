@@ -23,8 +23,7 @@ import org.osgi.service.prefs.Preferences;
  * @author kolwing
  * 
  */
-public class BasicPreferenceHandler implements IExecutableExtension
-{
+public class BasicPreferenceHandler implements IExecutableExtension {
 	private static final String NAME_ATTRIB = "name"; //$NON-NLS-1$
 
 	private static final String KEY_ATTRIB = "key"; //$NON-NLS-1$
@@ -33,68 +32,58 @@ public class BasicPreferenceHandler implements IExecutableExtension
 
 	private static final char SLASH = '/';
 
-	private String m_name;
+	private String name;
 
-	private String m_key;
+	private String key;
 
-	private String m_description;
+	private String description;
 
-	private static final IEclipsePreferences s_eclipsePrefs = Platform.getPreferencesService().getRootNode();
+	private static final IEclipsePreferences eclipsePrefs = Platform.getPreferencesService().getRootNode();
 
-	public String get(String defaultValue) throws CoreException
-	{
+	public String get(String defaultValue) throws CoreException {
 		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
-		return s_eclipsePrefs.node(prefNodeAndKey[0]).get(prefNodeAndKey[1], defaultValue);
+		return eclipsePrefs.node(prefNodeAndKey[0]).get(prefNodeAndKey[1], defaultValue);
 	}
 
-	public final String getDescription()
-	{
-		return m_description;
+	public final String getDescription() {
+		return description;
 	}
 
-	public final String getKey()
-	{
-		return m_key;
+	public final String getKey() {
+		return key;
 	}
 
-	public final String getName()
-	{
-		return m_name;
+	public final String getName() {
+		return name;
 	}
 
-	public void set(String value) throws BackingStoreException
-	{
-		String key = getKey();
-		if(key == null)
-			throw new IllegalArgumentException(NLS.bind(Messages.No_handler_registered_for_preference_0,
-					getName()));
-		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
-		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
+	public void set(String value) throws BackingStoreException {
+		String pk = getKey();
+		if (pk == null)
+			throw new IllegalArgumentException(NLS.bind(Messages.No_handler_registered_for_preference_0, getName()));
+		String[] prefNodeAndKey = pathAsNodeAndKey(pk);
+		Preferences node = eclipsePrefs.node(prefNodeAndKey[0]);
 		node.put(prefNodeAndKey[1], value);
 		node.flush();
 	}
 
-	public final void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-			throws CoreException
-	{
-		m_name = new StringBuffer(config.getDeclaringExtension().getNamespaceIdentifier()).append('.').append(
-				config.getAttribute(NAME_ATTRIB)).toString();
-		m_key = config.getAttribute(KEY_ATTRIB);
-		m_description = config.getAttribute(DESC_ATTRIB);
+	public final void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
+		name = new StringBuffer(config.getDeclaringExtension().getNamespaceIdentifier()).append('.').append(config.getAttribute(NAME_ATTRIB))
+				.toString();
+		key = config.getAttribute(KEY_ATTRIB);
+		description = config.getAttribute(DESC_ATTRIB);
 	}
 
-	public void unset() throws BackingStoreException
-	{
+	public void unset() throws BackingStoreException {
 		String[] prefNodeAndKey = pathAsNodeAndKey(getKey());
-		Preferences node = s_eclipsePrefs.node(prefNodeAndKey[0]);
+		Preferences node = eclipsePrefs.node(prefNodeAndKey[0]);
 		node.remove(prefNodeAndKey[1]);
 		node.flush();
 	}
 
-	protected final String[] pathAsNodeAndKey(String path)
-	{
+	protected final String[] pathAsNodeAndKey(String path) {
 		int lastSlash = path.lastIndexOf(SLASH);
-		if(lastSlash == -1)
+		if (lastSlash == -1)
 			throw new IllegalArgumentException(Messages.BasicPreferenceHandler_No_slash_in_preference_path);
 		return new String[] { path.substring(0, lastSlash), path.substring(lastSlash + 1) };
 	}

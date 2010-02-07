@@ -21,39 +21,32 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-abstract class MatcherHandler extends ExtensionAwareHandler
-{
-	static class LocatorHandler extends MatcherHandler
-	{
+abstract class MatcherHandler extends ExtensionAwareHandler {
+	static class LocatorHandler extends MatcherHandler {
 		static final String TAG = Locator.TAG;
 
-		public LocatorHandler(AbstractHandler parent)
-		{
+		public LocatorHandler(AbstractHandler parent) {
 			super(parent);
 		}
 
 		@Override
-		public void handleAttributes(Attributes attrs) throws SAXException
-		{
+		public void handleAttributes(Attributes attrs) throws SAXException {
 			super.handleAttributes(attrs);
 			ResourceMap rmap = getResourceMap();
-			rmap.addMatcher(new Locator(rmap, getPattern(), getStringValue(attrs, Locator.ATTR_SEARCH_PATH_REF),
-					getOptionalBooleanValue(attrs, Locator.ATTR_FAIL_ON_ERROR, true)));
+			rmap.addMatcher(new Locator(rmap, getPattern(), getStringValue(attrs, Locator.ATTR_SEARCH_PATH_REF), getOptionalBooleanValue(attrs,
+					Locator.ATTR_FAIL_ON_ERROR, true)));
 		}
 	}
 
-	static class RedirectHandler extends MatcherHandler
-	{
+	static class RedirectHandler extends MatcherHandler {
 		static final String TAG = Redirect.TAG;
 
-		public RedirectHandler(AbstractHandler parent)
-		{
+		public RedirectHandler(AbstractHandler parent) {
 			super(parent);
 		}
 
 		@Override
-		public void handleAttributes(Attributes attrs) throws SAXException
-		{
+		public void handleAttributes(Attributes attrs) throws SAXException {
 			super.handleAttributes(attrs);
 			ResourceMap rmap = getResourceMap();
 			String href = getStringValue(attrs, Redirect.ATTR_HREF);
@@ -61,26 +54,22 @@ abstract class MatcherHandler extends ExtensionAwareHandler
 		}
 	}
 
-	private String m_pattern;
+	private String pattern;
 
-	public MatcherHandler(AbstractHandler parent)
-	{
+	public MatcherHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_pattern = getOptionalStringValue(attrs, "pattern"); //$NON-NLS-1$
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		pattern = getOptionalStringValue(attrs, "pattern"); //$NON-NLS-1$
 	}
 
-	final String getPattern()
-	{
-		return m_pattern;
+	final String getPattern() {
+		return pattern;
 	}
 
-	final ResourceMap getResourceMap()
-	{
-		return ((ResourceMapHandler)getParentHandler()).getResourceMap();
+	final ResourceMap getResourceMap() {
+		return ((ResourceMapHandler) getParentHandler()).getResourceMap();
 	}
 }

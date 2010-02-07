@@ -33,32 +33,46 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Alter Action</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Alter Action</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getCspecext <em>Cspecext</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getReplacePrerequisites <em>Replace Prerequisites</em>}
- * </li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemovePrerequisites <em>Remove Prerequisites</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getReplaceProperties <em>Replace Properties</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getReplaceActorProperties <em>Replace Actor Properties
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemoveProperties <em>Remove Properties</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemoveActorProperties <em>Remove Actor Properties
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemoveProducts <em>Remove Products</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemovePaths <em>Remove Paths</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getCspecext
+ * <em>Cspecext</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getReplacePrerequisites
+ * <em>Replace Prerequisites</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemovePrerequisites
+ * <em>Remove Prerequisites</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getReplaceProperties
+ * <em>Replace Properties</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getReplaceActorProperties
+ * <em>Replace Actor Properties </em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemoveProperties
+ * <em>Remove Properties</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemoveActorProperties
+ * <em>Remove Actor Properties </em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemoveProducts
+ * <em>Remove Products</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemovePaths
+ * <em>Remove Paths</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class AlterActionImpl extends ActionImpl implements AlterAction
-{
+public class AlterActionImpl extends ActionImpl implements AlterAction {
 	/**
-	 * The cached value of the '{@link #getReplacePrerequisites() <em>Replace Prerequisites</em>}' containment reference
-	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getReplacePrerequisites()
+	 * <em>Replace Prerequisites</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getReplacePrerequisites()
 	 * @generated
@@ -67,8 +81,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	protected EList<Prerequisite> replacePrerequisites;
 
 	/**
-	 * The cached value of the '{@link #getRemovePrerequisites() <em>Remove Prerequisites</em>}' containment reference
-	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRemovePrerequisites()
+	 * <em>Remove Prerequisites</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRemovePrerequisites()
 	 * @generated
@@ -77,8 +92,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	protected EList<Remove> removePrerequisites;
 
 	/**
-	 * The cached value of the '{@link #getReplaceProperties() <em>Replace Properties</em>}' containment reference list.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getReplaceProperties()
+	 * <em>Replace Properties</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getReplaceProperties()
 	 * @generated
@@ -87,8 +103,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	protected EList<PropertyConstant> replaceProperties;
 
 	/**
-	 * The cached value of the '{@link #getReplaceActorProperties() <em>Replace Actor Properties</em>}' containment
-	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getReplaceActorProperties()
+	 * <em>Replace Actor Properties</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getReplaceActorProperties()
 	 * @generated
@@ -97,8 +114,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	protected EList<PropertyConstant> replaceActorProperties;
 
 	/**
-	 * The cached value of the '{@link #getRemoveProperties() <em>Remove Properties</em>}' containment reference list.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRemoveProperties()
+	 * <em>Remove Properties</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRemoveProperties()
 	 * @generated
@@ -107,8 +125,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	protected EList<Remove> removeProperties;
 
 	/**
-	 * The cached value of the '{@link #getRemoveActorProperties() <em>Remove Actor Properties</em>}' containment
-	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRemoveActorProperties()
+	 * <em>Remove Actor Properties</em>}' containment reference list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRemoveActorProperties()
 	 * @generated
@@ -117,7 +136,8 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	protected EList<Remove> removeActorProperties;
 
 	/**
-	 * The cached value of the '{@link #getRemoveProducts() <em>Remove Products</em>}' containment reference list. <!--
+	 * The cached value of the '{@link #getRemoveProducts()
+	 * <em>Remove Products</em>}' containment reference list. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRemoveProducts()
@@ -127,8 +147,8 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	protected EList<Remove> removeProducts;
 
 	/**
-	 * The cached value of the '{@link #getRemovePaths() <em>Remove Paths</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRemovePaths() <em>Remove Paths</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRemovePaths()
 	 * @generated
@@ -141,8 +161,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	protected AlterActionImpl()
-	{
+	protected AlterActionImpl() {
 		super();
 	}
 
@@ -151,9 +170,8 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetCspecext(CSpecExtension newCspecext, NotificationChain msgs)
-	{
-		msgs = eBasicSetContainer((InternalEObject)newCspecext, CspecPackage.ALTER_ACTION__CSPECEXT, msgs);
+	public NotificationChain basicSetCspecext(CSpecExtension newCspecext, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject) newCspecext, CspecPackage.ALTER_ACTION__CSPECEXT, msgs);
 		return msgs;
 	}
 
@@ -163,28 +181,23 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * @generated
 	 */
 	@Override
-	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
-	{
-		if(baseClass == AlterAttribute.class)
-		{
-			switch(derivedFeatureID)
-			{
-			case CspecPackage.ALTER_ACTION__CSPECEXT:
-				return CspecPackage.ALTER_ATTRIBUTE__CSPECEXT;
-			default:
-				return -1;
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+		if (baseClass == AlterAttribute.class) {
+			switch (derivedFeatureID) {
+				case CspecPackage.ALTER_ACTION__CSPECEXT:
+					return CspecPackage.ALTER_ATTRIBUTE__CSPECEXT;
+				default:
+					return -1;
 			}
 		}
-		if(baseClass == AlterGroup.class)
-		{
-			switch(derivedFeatureID)
-			{
-			case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
-				return CspecPackage.ALTER_GROUP__REPLACE_PREREQUISITES;
-			case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
-				return CspecPackage.ALTER_GROUP__REMOVE_PREREQUISITES;
-			default:
-				return -1;
+		if (baseClass == AlterGroup.class) {
+			switch (derivedFeatureID) {
+				case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
+					return CspecPackage.ALTER_GROUP__REPLACE_PREREQUISITES;
+				case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
+					return CspecPackage.ALTER_GROUP__REMOVE_PREREQUISITES;
+				default:
+					return -1;
 			}
 		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
@@ -196,13 +209,10 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs)
-	{
-		switch(eContainerFeatureID())
-		{
-		case CspecPackage.ALTER_ACTION__CSPECEXT:
-			return eInternalContainer().eInverseRemove(this, CspecPackage.CSPEC_EXTENSION__ATTRIBUTE_ALTERATIONS,
-					CSpecExtension.class, msgs);
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case CspecPackage.ALTER_ACTION__CSPECEXT:
+				return eInternalContainer().eInverseRemove(this, CspecPackage.CSPEC_EXTENSION__ATTRIBUTE_ALTERATIONS, CSpecExtension.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -213,28 +223,23 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * @generated
 	 */
 	@Override
-	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
-	{
-		if(baseClass == AlterAttribute.class)
-		{
-			switch(baseFeatureID)
-			{
-			case CspecPackage.ALTER_ATTRIBUTE__CSPECEXT:
-				return CspecPackage.ALTER_ACTION__CSPECEXT;
-			default:
-				return -1;
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+		if (baseClass == AlterAttribute.class) {
+			switch (baseFeatureID) {
+				case CspecPackage.ALTER_ATTRIBUTE__CSPECEXT:
+					return CspecPackage.ALTER_ACTION__CSPECEXT;
+				default:
+					return -1;
 			}
 		}
-		if(baseClass == AlterGroup.class)
-		{
-			switch(baseFeatureID)
-			{
-			case CspecPackage.ALTER_GROUP__REPLACE_PREREQUISITES:
-				return CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES;
-			case CspecPackage.ALTER_GROUP__REMOVE_PREREQUISITES:
-				return CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES;
-			default:
-				return -1;
+		if (baseClass == AlterGroup.class) {
+			switch (baseFeatureID) {
+				case CspecPackage.ALTER_GROUP__REPLACE_PREREQUISITES:
+					return CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES;
+				case CspecPackage.ALTER_GROUP__REMOVE_PREREQUISITES:
+					return CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES;
+				default:
+					return -1;
 			}
 		}
 		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
@@ -246,28 +251,26 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ACTION__CSPECEXT:
-			return getCspecext();
-		case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
-			return getReplacePrerequisites();
-		case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
-			return getRemovePrerequisites();
-		case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
-			return getReplaceProperties();
-		case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
-			return getReplaceActorProperties();
-		case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
-			return getRemoveProperties();
-		case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
-			return getRemoveActorProperties();
-		case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
-			return getRemoveProducts();
-		case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
-			return getRemovePaths();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ACTION__CSPECEXT:
+				return getCspecext();
+			case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
+				return getReplacePrerequisites();
+			case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
+				return getRemovePrerequisites();
+			case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
+				return getReplaceProperties();
+			case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
+				return getReplaceActorProperties();
+			case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
+				return getRemoveProperties();
+			case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
+				return getRemoveActorProperties();
+			case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
+				return getRemoveProducts();
+			case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
+				return getRemovePaths();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -278,14 +281,12 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ACTION__CSPECEXT:
-			if(eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			return basicSetCspecext((CSpecExtension)otherEnd, msgs);
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ACTION__CSPECEXT:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetCspecext((CSpecExtension) otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -296,28 +297,26 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ACTION__CSPECEXT:
-			return basicSetCspecext(null, msgs);
-		case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
-			return ((InternalEList<?>)getReplacePrerequisites()).basicRemove(otherEnd, msgs);
-		case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
-			return ((InternalEList<?>)getRemovePrerequisites()).basicRemove(otherEnd, msgs);
-		case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
-			return ((InternalEList<?>)getReplaceProperties()).basicRemove(otherEnd, msgs);
-		case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
-			return ((InternalEList<?>)getReplaceActorProperties()).basicRemove(otherEnd, msgs);
-		case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
-			return ((InternalEList<?>)getRemoveProperties()).basicRemove(otherEnd, msgs);
-		case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
-			return ((InternalEList<?>)getRemoveActorProperties()).basicRemove(otherEnd, msgs);
-		case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
-			return ((InternalEList<?>)getRemoveProducts()).basicRemove(otherEnd, msgs);
-		case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
-			return ((InternalEList<?>)getRemovePaths()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ACTION__CSPECEXT:
+				return basicSetCspecext(null, msgs);
+			case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
+				return ((InternalEList<?>) getReplacePrerequisites()).basicRemove(otherEnd, msgs);
+			case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
+				return ((InternalEList<?>) getRemovePrerequisites()).basicRemove(otherEnd, msgs);
+			case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
+				return ((InternalEList<?>) getReplaceProperties()).basicRemove(otherEnd, msgs);
+			case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
+				return ((InternalEList<?>) getReplaceActorProperties()).basicRemove(otherEnd, msgs);
+			case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
+				return ((InternalEList<?>) getRemoveProperties()).basicRemove(otherEnd, msgs);
+			case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
+				return ((InternalEList<?>) getRemoveActorProperties()).basicRemove(otherEnd, msgs);
+			case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
+				return ((InternalEList<?>) getRemoveProducts()).basicRemove(otherEnd, msgs);
+			case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
+				return ((InternalEList<?>) getRemovePaths()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -328,28 +327,26 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ACTION__CSPECEXT:
-			return getCspecext() != null;
-		case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
-			return replacePrerequisites != null && !replacePrerequisites.isEmpty();
-		case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
-			return removePrerequisites != null && !removePrerequisites.isEmpty();
-		case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
-			return replaceProperties != null && !replaceProperties.isEmpty();
-		case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
-			return replaceActorProperties != null && !replaceActorProperties.isEmpty();
-		case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
-			return removeProperties != null && !removeProperties.isEmpty();
-		case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
-			return removeActorProperties != null && !removeActorProperties.isEmpty();
-		case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
-			return removeProducts != null && !removeProducts.isEmpty();
-		case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
-			return removePaths != null && !removePaths.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ACTION__CSPECEXT:
+				return getCspecext() != null;
+			case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
+				return replacePrerequisites != null && !replacePrerequisites.isEmpty();
+			case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
+				return removePrerequisites != null && !removePrerequisites.isEmpty();
+			case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
+				return replaceProperties != null && !replaceProperties.isEmpty();
+			case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
+				return replaceActorProperties != null && !replaceActorProperties.isEmpty();
+			case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
+				return removeProperties != null && !removeProperties.isEmpty();
+			case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
+				return removeActorProperties != null && !removeActorProperties.isEmpty();
+			case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
+				return removeProducts != null && !removeProducts.isEmpty();
+			case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
+				return removePaths != null && !removePaths.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -361,45 +358,43 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ACTION__CSPECEXT:
-			setCspecext((CSpecExtension)newValue);
-			return;
-		case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
-			getReplacePrerequisites().clear();
-			getReplacePrerequisites().addAll((Collection<? extends Prerequisite>)newValue);
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
-			getRemovePrerequisites().clear();
-			getRemovePrerequisites().addAll((Collection<? extends Remove>)newValue);
-			return;
-		case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
-			getReplaceProperties().clear();
-			getReplaceProperties().addAll((Collection<? extends PropertyConstant>)newValue);
-			return;
-		case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
-			getReplaceActorProperties().clear();
-			getReplaceActorProperties().addAll((Collection<? extends PropertyConstant>)newValue);
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
-			getRemoveProperties().clear();
-			getRemoveProperties().addAll((Collection<? extends Remove>)newValue);
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
-			getRemoveActorProperties().clear();
-			getRemoveActorProperties().addAll((Collection<? extends Remove>)newValue);
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
-			getRemoveProducts().clear();
-			getRemoveProducts().addAll((Collection<? extends Remove>)newValue);
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
-			getRemovePaths().clear();
-			getRemovePaths().addAll((Collection<? extends Remove>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ACTION__CSPECEXT:
+				setCspecext((CSpecExtension) newValue);
+				return;
+			case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
+				getReplacePrerequisites().clear();
+				getReplacePrerequisites().addAll((Collection<? extends Prerequisite>) newValue);
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
+				getRemovePrerequisites().clear();
+				getRemovePrerequisites().addAll((Collection<? extends Remove>) newValue);
+				return;
+			case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
+				getReplaceProperties().clear();
+				getReplaceProperties().addAll((Collection<? extends PropertyConstant>) newValue);
+				return;
+			case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
+				getReplaceActorProperties().clear();
+				getReplaceActorProperties().addAll((Collection<? extends PropertyConstant>) newValue);
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
+				getRemoveProperties().clear();
+				getRemoveProperties().addAll((Collection<? extends Remove>) newValue);
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
+				getRemoveActorProperties().clear();
+				getRemoveActorProperties().addAll((Collection<? extends Remove>) newValue);
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
+				getRemoveProducts().clear();
+				getRemoveProducts().addAll((Collection<? extends Remove>) newValue);
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
+				getRemovePaths().clear();
+				getRemovePaths().addAll((Collection<? extends Remove>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -410,37 +405,35 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ACTION__CSPECEXT:
-			setCspecext((CSpecExtension)null);
-			return;
-		case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
-			getReplacePrerequisites().clear();
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
-			getRemovePrerequisites().clear();
-			return;
-		case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
-			getReplaceProperties().clear();
-			return;
-		case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
-			getReplaceActorProperties().clear();
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
-			getRemoveProperties().clear();
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
-			getRemoveActorProperties().clear();
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
-			getRemoveProducts().clear();
-			return;
-		case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
-			getRemovePaths().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ACTION__CSPECEXT:
+				setCspecext((CSpecExtension) null);
+				return;
+			case CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES:
+				getReplacePrerequisites().clear();
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES:
+				getRemovePrerequisites().clear();
+				return;
+			case CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES:
+				getReplaceProperties().clear();
+				return;
+			case CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES:
+				getReplaceActorProperties().clear();
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES:
+				getRemoveProperties().clear();
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES:
+				getRemoveActorProperties().clear();
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS:
+				getRemoveProducts().clear();
+				return;
+			case CspecPackage.ALTER_ACTION__REMOVE_PATHS:
+				getRemovePaths().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -450,11 +443,10 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public CSpecExtension getCspecext()
-	{
-		if(eContainerFeatureID() != CspecPackage.ALTER_ACTION__CSPECEXT)
+	public CSpecExtension getCspecext() {
+		if (eContainerFeatureID() != CspecPackage.ALTER_ACTION__CSPECEXT)
 			return null;
-		return (CSpecExtension)eContainer();
+		return (CSpecExtension) eContainer();
 	}
 
 	/**
@@ -462,12 +454,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public EList<Remove> getRemoveActorProperties()
-	{
-		if(removeActorProperties == null)
-		{
-			removeActorProperties = new EObjectContainmentEList<Remove>(Remove.class, this,
-					CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES);
+	public EList<Remove> getRemoveActorProperties() {
+		if (removeActorProperties == null) {
+			removeActorProperties = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES);
 		}
 		return removeActorProperties;
 	}
@@ -477,12 +466,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public EList<Remove> getRemovePaths()
-	{
-		if(removePaths == null)
-		{
-			removePaths = new EObjectContainmentEList<Remove>(Remove.class, this,
-					CspecPackage.ALTER_ACTION__REMOVE_PATHS);
+	public EList<Remove> getRemovePaths() {
+		if (removePaths == null) {
+			removePaths = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_PATHS);
 		}
 		return removePaths;
 	}
@@ -492,12 +478,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public EList<Remove> getRemovePrerequisites()
-	{
-		if(removePrerequisites == null)
-		{
-			removePrerequisites = new EObjectContainmentEList<Remove>(Remove.class, this,
-					CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES);
+	public EList<Remove> getRemovePrerequisites() {
+		if (removePrerequisites == null) {
+			removePrerequisites = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES);
 		}
 		return removePrerequisites;
 	}
@@ -507,12 +490,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public EList<Remove> getRemoveProducts()
-	{
-		if(removeProducts == null)
-		{
-			removeProducts = new EObjectContainmentEList<Remove>(Remove.class, this,
-					CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS);
+	public EList<Remove> getRemoveProducts() {
+		if (removeProducts == null) {
+			removeProducts = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS);
 		}
 		return removeProducts;
 	}
@@ -522,12 +502,9 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public EList<Remove> getRemoveProperties()
-	{
-		if(removeProperties == null)
-		{
-			removeProperties = new EObjectContainmentEList<Remove>(Remove.class, this,
-					CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES);
+	public EList<Remove> getRemoveProperties() {
+		if (removeProperties == null) {
+			removeProperties = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES);
 		}
 		return removeProperties;
 	}
@@ -537,10 +514,8 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public EList<PropertyConstant> getReplaceActorProperties()
-	{
-		if(replaceActorProperties == null)
-		{
+	public EList<PropertyConstant> getReplaceActorProperties() {
+		if (replaceActorProperties == null) {
 			replaceActorProperties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this,
 					CspecPackage.ALTER_ACTION__REPLACE_ACTOR_PROPERTIES);
 		}
@@ -552,10 +527,8 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public EList<Prerequisite> getReplacePrerequisites()
-	{
-		if(replacePrerequisites == null)
-		{
+	public EList<Prerequisite> getReplacePrerequisites() {
+		if (replacePrerequisites == null) {
 			replacePrerequisites = new EObjectContainmentEList<Prerequisite>(Prerequisite.class, this,
 					CspecPackage.ALTER_ACTION__REPLACE_PREREQUISITES);
 		}
@@ -567,10 +540,8 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public EList<PropertyConstant> getReplaceProperties()
-	{
-		if(replaceProperties == null)
-		{
+	public EList<PropertyConstant> getReplaceProperties() {
+		if (replaceProperties == null) {
 			replaceProperties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this,
 					CspecPackage.ALTER_ACTION__REPLACE_PROPERTIES);
 		}
@@ -582,26 +553,21 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * 
 	 * @generated
 	 */
-	public void setCspecext(CSpecExtension newCspecext)
-	{
-		if(newCspecext != eInternalContainer()
-				|| (eContainerFeatureID() != CspecPackage.ALTER_ACTION__CSPECEXT && newCspecext != null))
-		{
-			if(EcoreUtil.isAncestor(this, newCspecext))
+	public void setCspecext(CSpecExtension newCspecext) {
+		if (newCspecext != eInternalContainer() || (eContainerFeatureID() != CspecPackage.ALTER_ACTION__CSPECEXT && newCspecext != null)) {
+			if (EcoreUtil.isAncestor(this, newCspecext))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if(eInternalContainer() != null)
+			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
-			if(newCspecext != null)
-				msgs = ((InternalEObject)newCspecext).eInverseAdd(this,
-						CspecPackage.CSPEC_EXTENSION__ATTRIBUTE_ALTERATIONS, CSpecExtension.class, msgs);
+			if (newCspecext != null)
+				msgs = ((InternalEObject) newCspecext).eInverseAdd(this, CspecPackage.CSPEC_EXTENSION__ATTRIBUTE_ALTERATIONS, CSpecExtension.class,
+						msgs);
 			msgs = basicSetCspecext(newCspecext, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ALTER_ACTION__CSPECEXT, newCspecext,
-					newCspecext));
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ALTER_ACTION__CSPECEXT, newCspecext, newCspecext));
 	}
 
 	/**
@@ -610,8 +576,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.ALTER_ACTION;
 	}
 

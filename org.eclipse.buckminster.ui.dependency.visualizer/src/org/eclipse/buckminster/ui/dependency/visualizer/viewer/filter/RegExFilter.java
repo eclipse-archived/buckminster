@@ -17,37 +17,30 @@ import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
-public class RegExFilter extends ViewerFilter
-{
+public class RegExFilter extends ViewerFilter {
 
 	private Pattern pattern;
 
 	private boolean invert;
 
-	public RegExFilter(String regex, boolean invert)
-	{
+	public RegExFilter(String regex, boolean invert) {
 		this.invert = invert;
-		try
-		{
+		try {
 			pattern = Pattern.compile(regex);
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 
 		}
 
 	}
 
 	@Override
-	public boolean select(Viewer viewer, Object parentElement, Object element)
-	{
-		if(pattern == null)
+	public boolean select(Viewer viewer, Object parentElement, Object element) {
+		if (pattern == null)
 			return true;
-		if(element instanceof BOMNode)
-		{
-			BOMNode node = (BOMNode)element;
+		if (element instanceof BOMNode) {
+			BOMNode node = (BOMNode) element;
 			Matcher mat = pattern.matcher(node.getRequest().getName());
-			if(invert)
+			if (invert)
 				return !mat.find();
 			return mat.find();
 

@@ -62,14 +62,11 @@ import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class CVSReaderType extends CatalogReaderType
-{
+public class CVSReaderType extends CatalogReaderType {
 	// The constructors of Command.LocalOption are not public
 	//
-	static class MyLocalOption extends Command.LocalOption
-	{
-		MyLocalOption(String opt)
-		{
+	static class MyLocalOption extends Command.LocalOption {
+		MyLocalOption(String opt) {
 			super(opt);
 		}
 	}
@@ -78,21 +75,18 @@ public class CVSReaderType extends CatalogReaderType
 
 	public static final Command.LocalOption STDOUT = new MyLocalOption("-p"); //$NON-NLS-1$
 
-	public static CVSRepositoryLocation getLocationFromString(String repo) throws CVSException
-	{
+	public static CVSRepositoryLocation getLocationFromString(String repo) throws CVSException {
 		CVSRepositoryLocation wanted = CVSRepositoryLocation.fromString(repo);
 		String wantedUser = wanted.getUsername();
-		for(ICVSRepositoryLocation known : CVSProviderPlugin.getPlugin().getKnownRepositories())
-		{
-			if(known.getHost().equals(wanted.getHost()) && known.getPort() == wanted.getPort()
-					&& known.getRootDirectory().equals(wanted.getRootDirectory()))
-			{
+		for (ICVSRepositoryLocation known : CVSProviderPlugin.getPlugin().getKnownRepositories()) {
+			if (known.getHost().equals(wanted.getHost()) && known.getPort() == wanted.getPort()
+					&& known.getRootDirectory().equals(wanted.getRootDirectory())) {
 				String knownMethod = known.getMethod().getName();
 				String wantedMethod = wanted.getMethod().getName();
-				if(knownMethod.equals(wantedMethod) || ("extssh".equals(knownMethod) && "pserver".equals(wantedMethod))) //$NON-NLS-1$ //$NON-NLS-2$
+				if (knownMethod.equals(wantedMethod) || ("extssh".equals(knownMethod) && "pserver".equals(wantedMethod))) //$NON-NLS-1$ //$NON-NLS-2$
 				{
-					if(wantedUser == null || "anonymous".equals(wantedUser) || wantedUser.equals(known.getUsername())) //$NON-NLS-1$
-						return (CVSRepositoryLocation)known;
+					if (wantedUser == null || "anonymous".equals(wantedUser) || wantedUser.equals(known.getUsername())) //$NON-NLS-1$
+						return (CVSRepositoryLocation) known;
 				}
 			}
 		}
@@ -100,42 +94,36 @@ public class CVSReaderType extends CatalogReaderType
 		return wanted;
 	}
 
-	static CVSTag getCVSTag(VersionMatch match) throws CoreException
-	{
+	static CVSTag getCVSTag(VersionMatch match) throws CoreException {
 		CVSTag tag;
 		VersionSelector selector = match.getBranchOrTag();
 		Date timestamp;
-		if(selector == null && (timestamp = match.getTimestamp()) != null)
+		if (selector == null && (timestamp = match.getTimestamp()) != null)
 			tag = new CVSTag(timestamp);
 		else
 			tag = getCVSTag(selector);
 		return tag;
 	}
 
-	static CVSTag getCVSTag(VersionSelector selector) throws CoreException
-	{
+	static CVSTag getCVSTag(VersionSelector selector) throws CoreException {
 		CVSTag tag;
-		if(selector == null)
+		if (selector == null)
 			tag = CVSTag.DEFAULT;
 		else
-			tag = new CVSTag(selector.getName(), selector.getType() == VersionSelector.TAG
-					? CVSTag.VERSION
-					: CVSTag.BRANCH);
+			tag = new CVSTag(selector.getName(), selector.getType() == VersionSelector.TAG ? CVSTag.VERSION : CVSTag.BRANCH);
 		return tag;
 	}
 
 	@Override
-	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName)
-			throws CoreException
-	{
+	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
 		String cvsRoot = fetchFactoryLocator.get("cvsRoot"); //$NON-NLS-1$
-		if(cvsRoot == null)
+		if (cvsRoot == null)
 			throw BuckminsterException.fromMessage(Messages.illegal_fetch_factory_locator);
 
 		StringBuilder locator = new StringBuilder(cvsRoot);
 		String path = fetchFactoryLocator.get("path"); //$NON-NLS-1$
 		locator.append(',');
-		if(path != null)
+		if (path != null)
 			locator.append(path);
 		else
 			locator.append(componentName);
@@ -143,79 +131,69 @@ public class CVSReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public URL convertToURL(String repositoryLocator, VersionMatch versionMatch) throws CoreException
-	{
-		try
-		{
+	public URL convertToURL(String repositoryLocator, VersionMatch versionMatch) throws CoreException {
+		try {
 			VersionSelector versionSelector = versionMatch.getBranchOrTag();
 			CVSSession session = new CVSSession(repositoryLocator);
 			ICVSRepositoryLocation location = session.getLocation();
 
 			StringBuilder query = new StringBuilder();
 			String method = location.getMethod().getName();
-			if(!method.equals("pserver")) //$NON-NLS-1$
+			if (!method.equals("pserver")) //$NON-NLS-1$
 			{
 				query.append("method="); //$NON-NLS-1$
 				query.append(method);
 			}
-			if(versionSelector != null)
-			{
-				if(query.length() > 0)
+			if (versionSelector != null) {
+				if (query.length() > 0)
 					query.append('&');
 				query.append("version"); //$NON-NLS-1$
 				query.append(versionSelector.toString());
 			}
 
 			String user = location.getUsername();
-			if("anonymous".equals(user)) //$NON-NLS-1$
+			if ("anonymous".equals(user)) //$NON-NLS-1$
 				user = null;
 
 			IPath modulePath = new Path(session.getModuleName()).makeAbsolute();
 			URI uri = new URI("cvs", user, location.getHost(), -1, location.getRootDirectory(), query.toString(), //$NON-NLS-1$
 					modulePath.toPortableString());
 			return uri.toURL();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
 	@Override
-	public ReferenceInfo extractReferenceInfo(String reference) throws CoreException
-	{
+	public ReferenceInfo extractReferenceInfo(String reference) throws CoreException {
 		StringTokenizer tokenizer = new StringTokenizer(reference, ","); //$NON-NLS-1$
 		String version = tokenizer.nextToken();
 		// If this is a newer version, then ignore it
-		if(!version.equals("1.0")) //$NON-NLS-1$
+		if (!version.equals("1.0")) //$NON-NLS-1$
 			throw BuckminsterException.fromMessage("The cvs reader only understands version PSF project references of version 1.0");
 
 		String repositoryLocation = tokenizer.nextToken();
 		String module = tokenizer.nextToken();
 		String projectName = tokenizer.nextToken();
 		VersionSelector selector = null;
-		if(tokenizer.hasMoreElements())
-		{
+		if (tokenizer.hasMoreElements()) {
 			String branchInfo = tokenizer.nextToken();
-			if(!(branchInfo.length() == 0 || CVSTag.DEFAULT.toString().equals(branchInfo)))
+			if (!(branchInfo.length() == 0 || CVSTag.DEFAULT.toString().equals(branchInfo)))
 				selector = VersionSelector.branch(branchInfo);
 		}
 		return new ReferenceInfo(repositoryLocation + ',' + module, selector, projectName);
 	}
 
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
 	}
 
 	@Override
-	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 30);
 		File[] folders = workingCopy.listFiles();
 		MonitorUtils.worked(monitor, 10);
-		if(folders == null)
-		{
+		if (folders == null) {
 			// Folder was not a folder after all
 			//
 			monitor.done();
@@ -223,52 +201,38 @@ public class CVSReaderType extends CatalogReaderType
 		}
 
 		Date youngest = null;
-		if(folders.length > 0)
-		{
+		if (folders.length > 0) {
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 10);
 			subMon.beginTask(null, folders.length * 10);
-			for(File subFolder : folders)
-			{
+			for (File subFolder : folders) {
 				Date ts = getLastModification(subFolder, MonitorUtils.subMonitor(subMon, 10));
-				if(ts != null && (youngest == null || ts.compareTo(youngest) > 0))
+				if (ts != null && (youngest == null || ts.compareTo(youngest) > 0))
 					youngest = ts;
 			}
 			subMon.done();
-		}
-		else
+		} else
 			MonitorUtils.worked(monitor, 10);
 
 		File entries = new File(new File(workingCopy, FileSystemCopier.CVS_DIRNAME), FileSystemCopier.ENTRIES);
 		BufferedReader input = null;
-		try
-		{
+		try {
 			input = new BufferedReader(new FileReader(entries));
 			String line;
-			while((line = input.readLine()) != null)
-			{
-				try
-				{
+			while ((line = input.readLine()) != null) {
+				try {
 					ResourceSyncInfo info = new ResourceSyncInfo(line, null);
 					Date ts = info.getTimeStamp();
-					if(ts != null && (youngest == null || ts.compareTo(youngest) > 0))
+					if (ts != null && (youngest == null || ts.compareTo(youngest) > 0))
 						youngest = ts;
-				}
-				catch(CVSException e)
-				{
+				} catch (CVSException e) {
 				}
 			}
 			MonitorUtils.worked(monitor, 10);
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			// No Entries file present in this folder
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 			monitor.done();
 		}
@@ -276,67 +240,58 @@ public class CVSReaderType extends CatalogReaderType
 	}
 
 	@Override
-	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public Date getLastModification(String repositoryLocation, VersionSelector versionSelector, IProgressMonitor monitor) throws CoreException {
 		CVSSession session = null;
-		try
-		{
+		try {
 			session = new CVSSession(repositoryLocation);
 			RepositoryMetaData metaData = RepositoryMetaData.getMetaData(session, getCVSTag(versionSelector), monitor);
 			return metaData.getLastModification();
-		}
-		finally
-		{
-			if(session != null)
+		} finally {
+			if (session != null)
 				session.close();
 		}
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new CVSReader(this, providerMatch);
 	}
 
 	@Override
-	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException
-	{
+	public String getRemoteLocation(File workingCopy, IProgressMonitor monitor) throws CoreException {
 		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IPath location = Path.fromOSString(workingCopy.toString());
 		IResource resource = wsRoot.getContainerForLocation(location);
-		if(resource == null)
+		if (resource == null)
 			resource = wsRoot.getFileForLocation(location);
 
-		if(resource == null)
+		if (resource == null)
 			//
 			// We only support workspace resources at this time
 			//
 			return null;
 
 		ICVSRemoteResource cvsResource = CVSWorkspaceRoot.getRemoteResourceFor(resource);
-		if(cvsResource == null)
+		if (cvsResource == null)
 			return null;
 
 		return cvsResource.getRepository().getLocation(false) + ',' + cvsResource.getRepositoryRelativePath();
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
+			throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new VersionFinder(provider, ctype, nodeQuery);
 	}
 
 	@Override
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException {
 		// Register the project with the CVSTeamProvider.
 		//
 		String cvsTypeID = CVSProviderPlugin.getTypeId();
 		RepositoryProvider.map(project, cvsTypeID);
-		((CVSTeamProvider)RepositoryProvider.getProvider(project, cvsTypeID)).setWatchEditEnabled(CVSProviderPlugin.getPlugin().isWatchEditEnabled());
+		((CVSTeamProvider) RepositoryProvider.getProvider(project, cvsTypeID))
+				.setWatchEditEnabled(CVSProviderPlugin.getPlugin().isWatchEditEnabled());
 	}
 }

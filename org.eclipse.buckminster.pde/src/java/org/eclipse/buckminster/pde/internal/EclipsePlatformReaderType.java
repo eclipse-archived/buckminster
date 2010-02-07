@@ -44,61 +44,50 @@ import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
- * A Reader type that knows about features and plugins that are part of an Eclipse installation.
+ * A Reader type that knows about features and plugins that are part of an
+ * Eclipse installation.
  * 
  * @author thhal
  */
 @SuppressWarnings({ "restriction" })
-public class EclipsePlatformReaderType extends CatalogReaderType
-{
-	private static final Map<String, IPluginModelBase[]> s_activeMap = new HashMap<String, IPluginModelBase[]>();
+public class EclipsePlatformReaderType extends CatalogReaderType {
+	private static final Map<String, IPluginModelBase[]> activeMap = new HashMap<String, IPluginModelBase[]>();
 
-	static
-	{
-		PDECore.getDefault().getModelManager().addPluginModelListener(new IPluginModelListener()
-		{
-			public void modelsChanged(PluginModelDelta delta)
-			{
-				if(delta.getKind() != 0)
+	static {
+		PDECore.getDefault().getModelManager().addPluginModelListener(new IPluginModelListener() {
+			public void modelsChanged(PluginModelDelta delta) {
+				if (delta.getKind() != 0)
 					clearCache();
 			}
 		});
 	}
 
-	public static void clearCache()
-	{
-		synchronized(s_activeMap)
-		{
-			s_activeMap.clear();
+	public static void clearCache() {
+		synchronized (activeMap) {
+			activeMap.clear();
 		}
 	}
 
-	public static IFeatureModel getBestFeature(String componentName, VersionRange versionDesignator, NodeQuery query)
-	{
+	public static IFeatureModel getBestFeature(String componentName, VersionRange versionDesignator, NodeQuery query) {
 		IFeatureModel candidate = null;
 		Version candidateVersion = null;
-		for(IFeatureModel model : PDECore.getDefault().getFeatureModelManager().findFeatureModels(componentName))
-		{
+		for (IFeatureModel model : PDECore.getDefault().getFeatureModelManager().findFeatureModels(componentName)) {
 			IFeature feature = model.getFeature();
 			String ov = feature.getVersion();
-			if(ov == null)
-			{
-				if(candidate == null && versionDesignator == null)
+			if (ov == null) {
+				if (candidate == null && versionDesignator == null)
 					candidate = model;
 				continue;
 			}
 
 			Version v = VersionHelper.parseVersion(ov);
-			if(!(versionDesignator == null || versionDesignator.isIncluded(v)))
-			{
-				if(query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0,
-							versionDesignator));
+			if (!(versionDesignator == null || versionDesignator.isIncluded(v))) {
+				if (query != null)
+					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0, versionDesignator));
 				continue;
 			}
 
-			if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
-			{
+			if (candidateVersion == null || candidateVersion.compareTo(v) < 0) {
 				candidate = model;
 				candidateVersion = v;
 			}
@@ -106,60 +95,50 @@ public class EclipsePlatformReaderType extends CatalogReaderType
 		return candidate;
 	}
 
-	public static IPluginModelBase getBestPlugin(String componentName, VersionRange versionDesignator, NodeQuery query)
-	{
+	public static IPluginModelBase getBestPlugin(String componentName, VersionRange versionDesignator, NodeQuery query) {
 		IPluginModelBase candidate = null;
 		Version candidateVersion = null;
-		synchronized(s_activeMap)
-		{
-			if(s_activeMap.isEmpty())
-			{
-				for(IPluginModelBase model : PluginRegistry.getActiveModels())
-				{
+		synchronized (activeMap) {
+			if (activeMap.isEmpty()) {
+				for (IPluginModelBase model : PluginRegistry.getActiveModels()) {
 					BundleDescription desc = model.getBundleDescription();
 					String id = desc.getSymbolicName();
-					IPluginModelBase[] mbArr = s_activeMap.get(id);
-					if(mbArr == null)
+					IPluginModelBase[] mbArr = activeMap.get(id);
+					if (mbArr == null)
 						mbArr = new IPluginModelBase[] { model };
-					else
-					{
+					else {
 						IPluginModelBase[] newArr = new IPluginModelBase[mbArr.length + 1];
 						System.arraycopy(mbArr, 0, newArr, 0, mbArr.length);
 						newArr[mbArr.length] = model;
 						mbArr = newArr;
 					}
-					s_activeMap.put(id, mbArr);
+					activeMap.put(id, mbArr);
 				}
 			}
-			IPluginModelBase[] mbArr = s_activeMap.get(componentName);
-			if(mbArr == null)
+			IPluginModelBase[] mbArr = activeMap.get(componentName);
+			if (mbArr == null)
 				return null;
 
-			for(IPluginModelBase model : mbArr)
-			{
+			for (IPluginModelBase model : mbArr) {
 				BundleDescription desc = model.getBundleDescription();
-				if(desc == null)
+				if (desc == null)
 					continue;
 
 				org.osgi.framework.Version ov = desc.getVersion();
-				if(ov == null)
-				{
-					if(candidate == null && versionDesignator == null)
+				if (ov == null) {
+					if (candidate == null && versionDesignator == null)
 						candidate = model;
 					continue;
 				}
 
 				Version v = Version.fromOSGiVersion(ov);
-				if(!(versionDesignator == null || versionDesignator.isIncluded(v)))
-				{
-					if(query != null)
-						query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(
-								Messages.not_designated_by_0, versionDesignator));
+				if (!(versionDesignator == null || versionDesignator.isIncluded(v))) {
+					if (query != null)
+						query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0, versionDesignator));
 					continue;
 				}
 
-				if(candidateVersion == null || candidateVersion.compareTo(v) < 0)
-				{
+				if (candidateVersion == null || candidateVersion.compareTo(v) < 0) {
 					candidate = model;
 					candidateVersion = v;
 				}
@@ -168,55 +147,45 @@ public class EclipsePlatformReaderType extends CatalogReaderType
 		}
 	}
 
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
 	}
 
 	@Override
-	public IPath getFixedLocation(Resolution cr)
-	{
+	public IPath getFixedLocation(Resolution cr) {
 		Version version = cr.getVersion();
-		VersionRange vd = version == null
-				? null
-				: VersionHelper.exactRange(version);
+		VersionRange vd = version == null ? null : VersionHelper.exactRange(version);
 		String location;
 		ComponentRequest rq = cr.getRequest();
-		if(IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID()))
-		{
+		if (IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID())) {
 			IFeatureModel model = getBestFeature(rq.getName(), vd, null);
-			if(model == null)
+			if (model == null)
 				return null;
 			location = model.getInstallLocation();
-		}
-		else
-		{
+		} else {
 			IPluginModelBase model = getBestPlugin(rq.getName(), vd, null);
-			if(model == null)
+			if (model == null)
 				return null;
 			location = model.getInstallLocation();
 		}
 
 		IPath path = null;
-		if(location != null)
-		{
+		if (location != null) {
 			path = new Path(location);
-			if(path.toFile().isDirectory())
+			if (path.toFile().isDirectory())
 				path = path.addTrailingSeparator();
 		}
 		return path;
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new EclipsePlatformReader(this, providerMatch);
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
+			throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new EclipsePlatformVersionFinder(this, provider, ctype, nodeQuery);
 	}

@@ -28,8 +28,7 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author thhal
  */
-public interface IParserFactory
-{
+public interface IParserFactory {
 	/**
 	 * Creates a SAX parser that can parse a CSpecExtension.
 	 * 
@@ -37,7 +36,8 @@ public interface IParserFactory
 	 *            <code>true</code> if a validating parser is desired
 	 * @return a CSpecExtension parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<CSpecExtension> getAlterCSpecParser(boolean validating) throws CoreException;
 
@@ -48,7 +48,8 @@ public interface IParserFactory
 	 *            <code>true</code> if a validating parser is desired
 	 * @return a BillOfMaterial parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating) throws CoreException;
 
@@ -59,7 +60,8 @@ public interface IParserFactory
 	 *            <code>true</code> if a validating parser is desired
 	 * @return a ComponentQuery parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<ComponentQuery> getComponentQueryParser(boolean validating) throws CoreException;
 
@@ -70,7 +72,8 @@ public interface IParserFactory
 	 *            <code>true</code> if a validating parser is desired
 	 * @return a CSpec parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<CSpec> getCSpecParser(boolean validating) throws CoreException;
 
@@ -79,7 +82,8 @@ public interface IParserFactory
 	 * 
 	 * @return a DepNode parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<BOMNode> getDepNodeParser() throws CoreException;
 
@@ -88,7 +92,8 @@ public interface IParserFactory
 	 * 
 	 * @return a Materializations parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<Materialization> getMaterializationParser() throws CoreException;
 
@@ -99,7 +104,8 @@ public interface IParserFactory
 	 *            <code>true</code> if a validating parser is desired
 	 * @return a MaterializationSpec parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating) throws CoreException;
 
@@ -110,7 +116,8 @@ public interface IParserFactory
 	 *            <code>true</code> if a validating parser is desired
 	 * @return a IProvider parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<Provider> getProviderParser(boolean validating) throws CoreException;
 
@@ -119,7 +126,8 @@ public interface IParserFactory
 	 * 
 	 * @return a Resolution parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<Resolution> getResolutionParser() throws CoreException;
 
@@ -130,7 +138,8 @@ public interface IParserFactory
 	 *            <code>true</code> if a validating parser is desired
 	 * @return a CSpec parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<ResourceMap> getResourceMapParser(boolean validating) throws CoreException;
 
@@ -141,7 +150,8 @@ public interface IParserFactory
 	 *            <code>true</code> if a validating parser is desired
 	 * @return a IProvider parser.
 	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to configuration problems.
+	 *             if the Java Runtime cannot support SAX parsers due to
+	 *             configuration problems.
 	 */
 	IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating) throws CoreException;
 }

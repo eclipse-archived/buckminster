@@ -13,15 +13,13 @@ package org.eclipse.buckminster.cmdline.parser;
 import org.eclipse.buckminster.cmdline.Messages;
 import org.eclipse.osgi.util.NLS;
 
-public class AmbiguousOptionException extends AbstractOptionParsingException
-{
+public class AmbiguousOptionException extends AbstractOptionParsingException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7370921380105873719L;
 
-	public AmbiguousOptionException(String message)
-	{
+	public AmbiguousOptionException(String message) {
 		super(NLS.bind(Messages.AmbiguousOptionException_The_option_0_is_ambiguous, message));
 	}
 }

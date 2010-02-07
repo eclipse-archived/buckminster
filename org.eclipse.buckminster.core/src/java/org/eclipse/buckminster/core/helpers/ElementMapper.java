@@ -8,16 +8,17 @@
 package org.eclipse.buckminster.core.helpers;
 
 /**
- * @author Filip Hrbek Declares a method for mapping SmartArrayList elements in its map method.
+ * @author Filip Hrbek Declares a method for mapping SmartArrayList elements in
+ *         its map method.
  */
-public interface ElementMapper<E, M>
-{
+public interface ElementMapper<E, M> {
 
 	/**
 	 * Maps an element into another element.
 	 * 
 	 * @param element
-	 * @return mapped element, or null if the element should not be included in the result
+	 * @return mapped element, or null if the element should not be included in
+	 *         the result
 	 */
 	public M mapping(E element) throws MappingException;
 }

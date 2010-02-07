@@ -13,30 +13,25 @@ package org.eclipse.buckminster.core.helpers;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class NullOutputStream extends OutputStream
-{
+public class NullOutputStream extends OutputStream {
 	public static NullOutputStream INSTANCE = new NullOutputStream();
 
-	private NullOutputStream()
-	{
+	private NullOutputStream() {
 		// all we need is the singleton INSTANCE
 	}
 
 	@Override
-	public void write(byte[] b)
-	{
+	public void write(byte[] b) {
 		// throw away
 	}
 
 	@Override
-	public void write(byte[] b, int off, int len)
-	{
+	public void write(byte[] b, int off, int len) {
 		// throw away
 	}
 
 	@Override
-	public void write(int b) throws IOException
-	{
+	public void write(int b) throws IOException {
 		// throw away
 	}
 }

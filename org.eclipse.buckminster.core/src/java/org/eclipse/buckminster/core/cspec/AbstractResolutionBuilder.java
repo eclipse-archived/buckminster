@@ -38,142 +38,110 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractResolutionBuilder extends AbstractExtension implements IResolutionBuilder
-{
-	public static String getMetadataFile(ICatalogReader reader, String prefName, String defaultPath,
-			IProgressMonitor monitor) throws CoreException
-	{
+public abstract class AbstractResolutionBuilder extends AbstractExtension implements IResolutionBuilder {
+	public static String getMetadataFile(ICatalogReader reader, String prefName, String defaultPath, IProgressMonitor monitor) throws CoreException {
 		return getMetadataFile(reader.readBuckminsterPreferences(monitor), prefName, defaultPath);
 	}
 
-	public static String getMetadataFile(IEclipsePreferences prefs, String prefName, String defaultPath)
-	{
-		if(prefs == null)
+	public static String getMetadataFile(IEclipsePreferences prefs, String prefName, String defaultPath) {
+		if (prefs == null)
 			return defaultPath;
 
 		defaultPath = prefs.get(prefName, defaultPath);
 		IPath path = Path.fromPortableString(defaultPath);
-		if(!path.isAbsolute())
-		{
+		if (!path.isAbsolute()) {
 			String metadataFolder = prefs.get(IComponentType.PREF_METADATA_FOLDER, null);
-			if(metadataFolder != null)
+			if (metadataFolder != null)
 				path = Path.fromPortableString(metadataFolder).append(path);
 		}
 		return path.makeRelative().toPortableString();
 	}
 
-	private String m_nature;
+	private String nature;
 
-	private int m_weight = 0;
+	private int weight = 0;
 
-	public int compareTo(IResolutionBuilder o)
-	{
+	public int compareTo(IResolutionBuilder o) {
 		int ow = o.getWeight();
-		return m_weight > ow
-				? 1
-				: (m_weight == ow
-						? 0
-						: -1);
+		return weight > ow ? 1 : (weight == ow ? 0 : -1);
 	}
 
-	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException
-	{
+	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException {
 		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder));
 	}
 
-	public String getComponentTypeID()
-	{
+	public String getComponentTypeID() {
 		return null;
 	}
 
-	public String getNature()
-	{
-		return m_nature;
+	public String getNature() {
+		return nature;
 	}
 
-	public int getWeight()
-	{
-		return m_weight;
+	public int getWeight() {
+		return weight;
 	}
 
 	@Override
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-			throws CoreException
-	{
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		String tmp = config.getAttribute("weight"); //$NON-NLS-1$
-		if(tmp != null)
-			m_weight = Integer.parseInt(tmp);
-		m_nature = config.getAttribute("nature"); //$NON-NLS-1$
+		if (tmp != null)
+			weight = Integer.parseInt(tmp);
+		nature = config.getAttribute("nature"); //$NON-NLS-1$
 		super.setInitializationData(config, propertyName, data);
 	}
 
-	protected void applyExtensions(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, IComponentReader reader,
-			IProgressMonitor monitor) throws CoreException
-	{
-		if(!(reader instanceof ICatalogReader))
-		{
+	protected void applyExtensions(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, IComponentReader reader, IProgressMonitor monitor)
+			throws CoreException {
+		if (!(reader instanceof ICatalogReader)) {
 			MonitorUtils.complete(monitor);
 			return;
 		}
 
-		ICatalogReader catReader = (ICatalogReader)reader;
-		try
-		{
-			CSpecExtension cspecExt = catReader.readFile(CorePlugin.CSPECEXT_FILE,
-					new IStreamConsumer<CSpecExtension>()
-					{
-						public CSpecExtension consumeStream(IComponentReader rdr, String streamName,
-								InputStream stream, IProgressMonitor mon) throws CoreException
-						{
-							mon.beginTask(null, 1);
-							mon.subTask(streamName);
-							try
-							{
-								IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory().getAlterCSpecParser(
-										true);
-								CSpecExtension ce = cspecExtParser.parse(streamName, stream);
-								MonitorUtils.worked(mon, 1);
-								return ce;
-							}
-							finally
-							{
-								mon.done();
-							}
-						}
-					}, monitor);
+		ICatalogReader catReader = (ICatalogReader) reader;
+		try {
+			CSpecExtension cspecExt = catReader.readFile(CorePlugin.CSPECEXT_FILE, new IStreamConsumer<CSpecExtension>() {
+				public CSpecExtension consumeStream(IComponentReader rdr, String streamName, InputStream stream, IProgressMonitor mon)
+						throws CoreException {
+					mon.beginTask(null, 1);
+					mon.subTask(streamName);
+					try {
+						IParser<CSpecExtension> cspecExtParser = CorePlugin.getDefault().getParserFactory().getAlterCSpecParser(true);
+						CSpecExtension ce = cspecExtParser.parse(streamName, stream);
+						MonitorUtils.worked(mon, 1);
+						return ce;
+					} finally {
+						mon.done();
+					}
+				}
+			}, monitor);
 
-			// The cspec might be incomplete when the forResolutionOnly flag is set so
+			// The cspec might be incomplete when the forResolutionOnly flag is
+			// set so
 			// we only patch the top element when that is the case.
 			//
-			if(forResolutionAidOnly)
+			if (forResolutionAidOnly)
 				cspecExt.alterTopElement(cspecBuilder);
 			else
 				cspecExt.alterCSpec(cspecBuilder);
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			return;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException
-	{
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException {
 		return createResolution(reader, cspecBuilder, false);
 	}
 
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, boolean unpack)
-			throws CoreException
-	{
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, boolean unpack) throws CoreException {
 		ResolutionBuilder resBld = reader.getProviderMatch().createResolution(cspecBuilder, unpack);
 		resBld.setMaterializable(reader.canMaterialize());
-		if(reader instanceof ZipArchiveReader)
-			reader = ((ZipArchiveReader)reader).getFileReader();
-		if(reader instanceof IFileReader)
-			resBld.setFileInfo(((IFileReader)reader).getFileInfo());
+		if (reader instanceof ZipArchiveReader)
+			reader = ((ZipArchiveReader) reader).getFileReader();
+		if (reader instanceof IFileReader)
+			resBld.setFileInfo(((IFileReader) reader).getFileInfo());
 		return new Resolution(resBld);
 	}
 }

@@ -20,11 +20,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class DefaultResolutionBuilder extends AbstractResolutionBuilder
-{
-	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor)
-			throws CoreException
-	{
+public class DefaultResolutionBuilder extends AbstractResolutionBuilder {
+	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IComponentReader reader = readerHandle[0];
 		CSpecBuilder bld = reader.getProviderMatch().createCSpec();
 		applyExtensions(bld, forResolutionAidOnly, reader, monitor);

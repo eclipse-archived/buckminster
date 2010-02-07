@@ -29,18 +29,17 @@ import org.eclipse.swt.widgets.Text;
  * @author Karel Brezina
  * 
  */
-public class PropertyDialog extends Dialog
-{
+public class PropertyDialog extends Dialog {
 
-	private Property m_property = null;
+	private Property property = null;
 
-	private boolean m_newProperty = false;
+	private boolean newProperty = false;
 
-	private Text m_keyText;
+	private Text keyText;
 
-	private Text m_valueText;
+	private Text valueText;
 
-	private Button m_okButton;
+	private Button okButton;
 
 	/**
 	 * PropertyDialog constructor
@@ -48,17 +47,15 @@ public class PropertyDialog extends Dialog
 	 * @param parent
 	 *            the parent shell
 	 */
-	public PropertyDialog(Shell parent, Property property)
-	{
+	public PropertyDialog(Shell parent, Property property) {
 		super(parent);
 
-		m_property = property;
-		m_newProperty = property == null;
+		this.property = property;
+		this.newProperty = property == null;
 	}
 
-	public Property getProperty()
-	{
-		return m_property;
+	public Property getProperty() {
+		return property;
 	}
 
 	/**
@@ -68,16 +65,12 @@ public class PropertyDialog extends Dialog
 	 *            the ID of the pressed button
 	 */
 	@Override
-	protected void buttonPressed(int buttonId)
-	{
+	protected void buttonPressed(int buttonId) {
 		// If they press I Dunno, close the dialog
-		if(buttonId == IDialogConstants.CANCEL_ID)
-		{
-			m_property = null;
-		}
-		else
-		{
-			m_property = new Property(m_keyText.getText(), m_valueText.getText());
+		if (buttonId == IDialogConstants.CANCEL_ID) {
+			property = null;
+		} else {
+			property = new Property(keyText.getText(), valueText.getText());
 		}
 
 		setReturnCode(buttonId);
@@ -85,16 +78,12 @@ public class PropertyDialog extends Dialog
 	}
 
 	@Override
-	protected void configureShell(Shell newShell)
-	{
+	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 
-		if(m_newProperty)
-		{
+		if (newProperty) {
 			newShell.setText(Messages.new_property);
-		}
-		else
-		{
+		} else {
 			newShell.setText(Messages.edit_property);
 		}
 	}
@@ -106,11 +95,10 @@ public class PropertyDialog extends Dialog
 	 *            the parent composite
 	 */
 	@Override
-	protected void createButtonsForButtonBar(Composite parent)
-	{
-		m_okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+	protected void createButtonsForButtonBar(Composite parent) {
+		okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
-		m_keyText.notifyListeners(SWT.Modify, new Event());
+		keyText.notifyListeners(SWT.Modify, new Event());
 	}
 
 	/**
@@ -121,8 +109,7 @@ public class PropertyDialog extends Dialog
 	 * @return Control
 	 */
 	@Override
-	protected Control createDialogArea(Composite parent)
-	{
+	protected Control createDialogArea(Composite parent) {
 
 		Composite textComposite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
@@ -132,39 +119,31 @@ public class PropertyDialog extends Dialog
 		textComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		Label label = UiUtils.createGridLabel(textComposite, Messages.key_with_colon, 1, 0, SWT.NONE);
-		m_keyText = UiUtils.createGridText(textComposite, 1, 0, SWT.NONE);
-		GridData data = (GridData)m_keyText.getLayoutData();
+		keyText = UiUtils.createGridText(textComposite, 1, 0, SWT.NONE);
+		GridData data = (GridData) keyText.getLayoutData();
 		data.widthHint = 300;
-		m_keyText.setLayoutData(data);
+		keyText.setLayoutData(data);
 
-		if(!m_newProperty)
-		{
+		if (!newProperty) {
 			label.setEnabled(false);
-			m_keyText.setEnabled(false);
+			keyText.setEnabled(false);
 		}
 
 		UiUtils.createGridLabel(textComposite, Messages.value_with_colon, 1, 0, SWT.NONE);
-		m_valueText = UiUtils.createGridText(textComposite, 1, 0, SWT.NONE);
+		valueText = UiUtils.createGridText(textComposite, 1, 0, SWT.NONE);
 
-		m_keyText.setText(m_property == null
-				? "" : m_property.getKey()); //$NON-NLS-1$
-		m_valueText.setText(m_property == null
-				? "" : m_property.getValue()); //$NON-NLS-1$
+		keyText.setText(property == null ? "" : property.getKey()); //$NON-NLS-1$
+		valueText.setText(property == null ? "" : property.getValue()); //$NON-NLS-1$
 
-		m_keyText.addModifyListener(new ModifyListener()
-		{
+		keyText.addModifyListener(new ModifyListener() {
 
-			public void modifyText(ModifyEvent e)
-			{
-				String key = m_keyText.getText();
+			public void modifyText(ModifyEvent e) {
+				String key = keyText.getText();
 
-				if(key != null && key.length() > 0)
-				{
-					m_okButton.setEnabled(true);
-				}
-				else
-				{
-					m_okButton.setEnabled(false);
+				if (key != null && key.length() > 0) {
+					okButton.setEnabled(true);
+				} else {
+					okButton.setEnabled(false);
 				}
 			}
 		});

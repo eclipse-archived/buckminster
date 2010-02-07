@@ -13,8 +13,7 @@
 
 package org.eclipse.buckminster.junit.internal;
 
-public interface IXMLTags
-{
+public interface IXMLTags {
 
 	public static final String NODE_TESTSUITES = "testsuites"; //$NON-NLS-1$
 

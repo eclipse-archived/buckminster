@@ -14,48 +14,41 @@ import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-class GroupAndArtifact extends AbstractSaxableElement
-{
+class GroupAndArtifact extends AbstractSaxableElement {
 	public static final String ALIAS_TAG = "alias"; //$NON-NLS-1$
 
 	public static final String ATTR_GROUP_ID = "groupId"; //$NON-NLS-1$
 
 	public static final String ATTR_ARTIFACT_ID = "artifactId"; //$NON-NLS-1$
 
-	private final String m_groupId;
+	private final String groupId;
 
-	private final String m_artifactId;
+	private final String artifactId;
 
-	public GroupAndArtifact(String groupId, String artifactId)
-	{
-		m_groupId = groupId;
-		m_artifactId = artifactId;
+	public GroupAndArtifact(String groupId, String artifactId) {
+		this.groupId = groupId;
+		this.artifactId = artifactId;
 	}
 
-	public final String getArtifactId()
-	{
-		return m_artifactId;
+	public final String getArtifactId() {
+		return artifactId;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return ALIAS_TAG;
 	}
 
-	public final String getGroupId()
-	{
-		return m_groupId;
+	public final String getGroupId() {
+		return groupId;
 	}
 
-	public boolean isMatchFor(String groupId, String artifactId)
-	{
-		return m_groupId.equals(groupId) && m_artifactId.equals(artifactId);
+	public boolean isMatchFor(String gid, String aid) {
+		return groupId.equals(gid) && artifactId.equals(aid);
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_GROUP_ID, m_groupId);
-		Utils.addAttribute(attrs, ATTR_ARTIFACT_ID, m_artifactId);
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_GROUP_ID, groupId);
+		Utils.addAttribute(attrs, ATTR_ARTIFACT_ID, artifactId);
 	}
 }

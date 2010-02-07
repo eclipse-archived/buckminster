@@ -13,18 +13,15 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 /**
  * @author Thomas Hallgren
  */
-class ActionsHandler extends AttributesHandler
-{
+class ActionsHandler extends AttributesHandler {
 	public static final String TAG = CSpec.ELEM_ACTIONS;
 
-	ActionsHandler(AbstractHandler parent)
-	{
+	ActionsHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	TopLevelAttributeHandler createAttributeHandler(boolean publ)
-	{
+	TopLevelAttributeHandler createAttributeHandler(boolean publ) {
 		return new ActionHandler(this, publ);
 	}
 }

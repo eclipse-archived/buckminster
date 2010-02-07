@@ -23,8 +23,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Prerequisite extends NamedElement implements IPrerequisite
-{
+public class Prerequisite extends NamedElement implements IPrerequisite {
 	public static final String ATTR_ALIAS = "alias"; //$NON-NLS-1$
 
 	public static final String ATTR_COMPONENT = "component"; //$NON-NLS-1$
@@ -41,182 +40,155 @@ public class Prerequisite extends NamedElement implements IPrerequisite
 
 	public static final String TAG = "attribute"; //$NON-NLS-1$
 
-	public static boolean isMatch(String component, String attribute, Pattern excludePattern, Pattern includePattern)
-	{
+	public static boolean isMatch(String component, String attribute, Pattern excludePattern, Pattern includePattern) {
 		CharSequence tmp;
-		if(attribute == null && component == null)
+		if (attribute == null && component == null)
 			return false;
 
-		if(excludePattern == null && includePattern == null)
+		if (excludePattern == null && includePattern == null)
 			return true;
 
-		if(attribute == null)
+		if (attribute == null)
 			tmp = component;
-		else
-		{
+		else {
 			StringBuilder bld = new StringBuilder();
-			if(component != null)
+			if (component != null)
 				bld.append(component);
 			bld.append('#');
 			bld.append(attribute);
 			tmp = bld;
 		}
-		if(excludePattern != null)
-		{
+		if (excludePattern != null) {
 			Matcher m = excludePattern.matcher(tmp);
-			if(m.matches())
+			if (m.matches())
 				return false;
 		}
-		if(includePattern != null)
-		{
+		if (includePattern != null) {
 			Matcher m = includePattern.matcher(tmp);
-			if(!m.matches())
+			if (!m.matches())
 				return false;
 		}
 		return true;
 	}
 
-	private final String m_alias;
+	private final String alias;
 
-	private final String m_componentName;
+	private final String componentName;
 
-	private final String m_componentType;
+	private final String componentType;
 
-	private final boolean m_contributor;
+	private final boolean contributor;
 
-	private final Pattern m_excludePattern;
+	private final Pattern excludePattern;
 
-	private final Pattern m_includePattern;
+	private final Pattern includePattern;
 
-	private final Filter m_filter;
+	private final Filter filter;
 
-	public Prerequisite(PrerequisiteBuilder bld)
-	{
+	public Prerequisite(PrerequisiteBuilder bld) {
 		super(bld.getName());
-		m_alias = bld.getAlias();
-		m_contributor = bld.isContributor();
-		m_componentName = bld.getComponentName();
-		m_componentType = bld.getComponentType();
-		m_excludePattern = bld.getExcludePattern();
-		m_includePattern = bld.getIncludePattern();
-		m_filter = bld.getFilter();
+		alias = bld.getAlias();
+		contributor = bld.isContributor();
+		componentName = bld.getComponentName();
+		componentType = bld.getComponentType();
+		excludePattern = bld.getExcludePattern();
+		includePattern = bld.getIncludePattern();
+		filter = bld.getFilter();
 	}
 
-	public final String getAlias()
-	{
-		return m_alias;
+	public final String getAlias() {
+		return alias;
 	}
 
-	public final String getAttribute()
-	{
+	public final String getAttribute() {
 		return getName();
 	}
 
-	public final String getComponentName()
-	{
-		return m_componentName;
+	public final String getComponentName() {
+		return componentName;
 	}
 
-	public final String getComponentType()
-	{
-		return m_componentType;
+	public final String getComponentType() {
+		return componentType;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public Pattern getExcludePattern()
-	{
-		return m_excludePattern;
+	public Pattern getExcludePattern() {
+		return excludePattern;
 	}
 
-	public Filter getFilter()
-	{
-		return m_filter;
+	public Filter getFilter() {
+		return filter;
 	}
 
-	public Pattern getIncludePattern()
-	{
-		return m_includePattern;
+	public Pattern getIncludePattern() {
+		return includePattern;
 	}
 
-	public Attribute getReferencedAttribute(CSpec ownerCSpec, IModelCache ctx) throws CoreException
-	{
-		return (m_filter == null || m_filter.match(ctx.getProperties()))
-				? ownerCSpec.getReferencedAttribute(m_componentName, m_componentType, getName(), ctx)
+	public Attribute getReferencedAttribute(CSpec ownerCSpec, IModelCache ctx) throws CoreException {
+		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedAttribute(componentName, componentType,
+				getName(), ctx) : null;
+	}
+
+	public CSpec getReferencedCSpec(CSpec ownerCSpec, IModelCache ctx) throws CoreException {
+		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedCSpec(componentName, componentType, ctx)
 				: null;
 	}
 
-	public CSpec getReferencedCSpec(CSpec ownerCSpec, IModelCache ctx) throws CoreException
-	{
-		return (m_filter == null || m_filter.match(ctx.getProperties()))
-				? ownerCSpec.getReferencedCSpec(m_componentName, m_componentType, ctx)
-				: null;
+	public boolean isContributor() {
+		return contributor;
 	}
 
-	public boolean isContributor()
-	{
-		return m_contributor;
-	}
-
-	public boolean isEnabled(IModelCache cache, CSpec cspec) throws CoreException
-	{
-		if(!(m_filter == null || m_filter.match(cache.getProperties())))
+	public boolean isEnabled(IModelCache cache, CSpec cspec) throws CoreException {
+		if (!(filter == null || filter.match(cache.getProperties())))
 			return false;
 
-		return isExternal()
-				? (getReferencedAttribute(cspec, cache) != null)
-				: cspec.getAttribute(getAttribute()).isEnabled(cache);
+		return isExternal() ? (getReferencedAttribute(cspec, cache) != null) : cspec.getAttribute(getAttribute()).isEnabled(cache);
 	}
 
-	public boolean isExternal()
-	{
-		return m_componentName != null;
+	public boolean isExternal() {
+		return componentName != null;
 	}
 
-	public boolean isMatch(String component, String attribute)
-	{
-		return isMatch(component, attribute, m_excludePattern, m_includePattern);
+	public boolean isMatch(String component, String attribute) {
+		return isMatch(component, attribute, excludePattern, includePattern);
 	}
 
-	public boolean isPatternFilter()
-	{
-		return m_excludePattern != null || m_includePattern != null;
+	public boolean isPatternFilter() {
+		return excludePattern != null || includePattern != null;
 	}
 
 	@Override
-	public final String toString()
-	{
-		if(m_componentName == null)
+	public final String toString() {
+		if (componentName == null)
 			return getName();
 
-		return m_componentName + '#' + getAttribute();
+		return componentName + '#' + getAttribute();
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
+	protected void addAttributes(AttributesImpl attrs) {
 		super.addAttributes(attrs);
-		if(m_alias != null)
-			Utils.addAttribute(attrs, ATTR_ALIAS, m_alias);
-		if(!m_contributor)
+		if (alias != null)
+			Utils.addAttribute(attrs, ATTR_ALIAS, alias);
+		if (!contributor)
 			Utils.addAttribute(attrs, ATTR_CONTRIBUTOR, "false"); //$NON-NLS-1$
-		if(m_excludePattern != null)
-			Utils.addAttribute(attrs, ATTR_EXCLUDE_PATTERN, m_excludePattern.toString());
-		if(m_includePattern != null)
-			Utils.addAttribute(attrs, ATTR_INCLUDE_PATTERN, m_includePattern.toString());
-		if(m_componentName != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT, m_componentName);
-		if(m_componentType != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentType);
-		if(m_filter != null)
-			Utils.addAttribute(attrs, ATTR_FILTER, m_filter.toString());
+		if (excludePattern != null)
+			Utils.addAttribute(attrs, ATTR_EXCLUDE_PATTERN, excludePattern.toString());
+		if (includePattern != null)
+			Utils.addAttribute(attrs, ATTR_INCLUDE_PATTERN, includePattern.toString());
+		if (componentName != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT, componentName);
+		if (componentType != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, componentType);
+		if (filter != null)
+			Utils.addAttribute(attrs, ATTR_FILTER, filter.toString());
 	}
 
 	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
 	}
 }

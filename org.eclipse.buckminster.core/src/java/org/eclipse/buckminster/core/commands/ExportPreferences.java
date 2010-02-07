@@ -26,30 +26,23 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class ExportPreferences extends AbstractPreferencesCommand
-{
+public class ExportPreferences extends AbstractPreferencesCommand {
 	@Override
-	protected int internalRun(IProgressMonitor monitor) throws Exception
-	{
+	protected int internalRun(IProgressMonitor monitor) throws Exception {
 		OutputStream output = null;
 		File prefsFile = this.getFile();
-		try
-		{
-			if(prefsFile == null)
+		try {
+			if (prefsFile == null)
 				output = System.out;
 			else
 				output = new BufferedOutputStream(new FileOutputStream(prefsFile));
 
 			Platform.getPreferencesService().exportPreferences(this.getNode(), this.getFilter(), output);
 			return 0;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw new SimpleErrorExitException(NLS.bind(Messages.Unable_to_open_file_0, prefsFile));
-		}
-		finally
-		{
-			if(prefsFile != null)
+		} finally {
+			if (prefsFile != null)
 				IOUtils.close(output);
 		}
 	}

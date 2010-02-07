@@ -16,25 +16,21 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 
-public abstract class AbstractQueryPage extends WizardPage
-{
+public abstract class AbstractQueryPage extends WizardPage {
 
-	public AbstractQueryPage(String pageName)
-	{
+	public AbstractQueryPage(String pageName) {
 		super(pageName);
 	}
 
-	public void createControl(Composite parent)
-	{
+	public void createControl(Composite parent) {
 		this.setControl(this.createControls(parent));
 		this.setErrorMessage(null);
 	}
 
 	@Override
-	public void setVisible(boolean visible)
-	{
+	public void setVisible(boolean visible) {
 		super.setVisible(visible);
-		if(visible)
+		if (visible)
 			this.pageIsShowing();
 		else
 			this.pageIsHiding();
@@ -42,29 +38,24 @@ public abstract class AbstractQueryPage extends WizardPage
 
 	abstract protected Composite createControls(Composite parent);
 
-	protected final void displayException(CoreException e)
-	{
+	protected final void displayException(CoreException e) {
 		CorePlugin.getLogger().warning(e, e.getMessage());
 		setErrorMessage(e.getMessage());
 	}
 
-	protected RMContext getContext()
-	{
+	protected RMContext getContext() {
 		return this.getQueryWizard().getContext();
 	}
 
-	protected QueryWizard getQueryWizard()
-	{
-		return (QueryWizard)this.getWizard();
+	protected QueryWizard getQueryWizard() {
+		return (QueryWizard) this.getWizard();
 	}
 
-	protected void pageIsHiding()
-	{
+	protected void pageIsHiding() {
 		// noop
 	}
 
-	protected void pageIsShowing()
-	{
+	protected void pageIsShowing() {
 		// noop
 	}
 }

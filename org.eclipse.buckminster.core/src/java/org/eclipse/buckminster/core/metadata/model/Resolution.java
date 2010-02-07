@@ -49,8 +49,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
-{
+public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution {
 	public static final String ATTR_ATTRIBUTES = "attributes"; //$NON-NLS-1$
 
 	public static final String ATTR_COMPONENT_TYPE = "componentType"; //$NON-NLS-1$
@@ -83,131 +82,122 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	public static final String TAG = "resolution"; //$NON-NLS-1$
 
-	private final List<String> m_attributes;
+	private final List<String> attributes;
 
-	private final String m_componentTypeId;
+	private final String componentTypeId;
 
-	private final String m_contentType;
+	private final String contentType;
 
-	private transient CSpec m_cspec;
+	private transient CSpec cspec;
 
-	private final long m_lastModified;
+	private final long lastModified;
 
-	private final boolean m_materializable;
+	private final boolean materializable;
 
-	private final String m_persistentId;
+	private final String persistentId;
 
-	private transient Provider m_provider;
+	private transient Provider provider;
 
-	private final String m_remoteName;
+	private final String remoteName;
 
-	private final String m_repository;
+	private final String repository;
 
-	private final ComponentRequest m_request;
+	private final ComponentRequest request;
 
-	private final long m_size;
+	private final long size;
 
-	private final boolean m_unpack;
+	private final boolean unpack;
 
-	private final VersionMatch m_versionMatch;
+	private final VersionMatch versionMatch;
 
-	private Map<String, ? extends Object> m_properties;
+	private Map<String, ? extends Object> properties;
 
-	public Resolution(CSpec cspec, Resolution old)
-	{
-		m_cspec = cspec;
-		m_request = old.getRequest();
-		m_attributes = old.getAttributes();
-		m_persistentId = old.getPersistentId();
-		m_provider = old.getProvider();
-		m_componentTypeId = old.getComponentTypeId();
-		m_versionMatch = old.getVersionMatch().copyWithVersion(cspec.getVersion());
-		m_materializable = old.isMaterializable();
-		m_repository = old.getRepository();
-		m_remoteName = old.getRemoteName();
-		m_contentType = old.getContentType();
-		m_lastModified = old.getLastModified();
-		m_size = old.getSize();
-		m_unpack = old.isUnpack();
+	public Resolution(CSpec cspec, Resolution old) {
+		this.cspec = cspec;
+		this.request = old.getRequest();
+		this.attributes = old.getAttributes();
+		this.persistentId = old.getPersistentId();
+		this.provider = old.getProvider();
+		this.componentTypeId = old.getComponentTypeId();
+		this.versionMatch = old.getVersionMatch().copyWithVersion(cspec.getVersion());
+		this.materializable = old.isMaterializable();
+		this.repository = old.getRepository();
+		this.remoteName = old.getRemoteName();
+		this.contentType = old.getContentType();
+		this.lastModified = old.getLastModified();
+		this.size = old.getSize();
+		this.unpack = old.isUnpack();
 	}
 
-	public Resolution(CSpec cspec, String componentTypeId, VersionMatch versionMatch, Provider provider,
-			boolean materializeable, ComponentRequest request, List<String> attributes, String persistentId,
-			String repository, String remoteName, String contentType, long lastModified, long size, boolean unpack)
-	{
-		m_cspec = cspec;
-		m_provider = provider;
-		m_componentTypeId = componentTypeId;
-		m_versionMatch = versionMatch;
-		m_materializable = materializeable;
-		m_request = request;
-		m_attributes = Utils.createUnmodifiableList(attributes);
-		m_persistentId = persistentId;
-		m_repository = repository;
-		m_remoteName = remoteName;
-		m_contentType = contentType;
-		m_lastModified = lastModified;
-		m_size = size;
-		m_unpack = unpack;
+	public Resolution(CSpec cspec, String componentTypeId, VersionMatch versionMatch, Provider provider, boolean materializeable,
+			ComponentRequest request, List<String> attributes, String persistentId, String repository, String remoteName, String contentType,
+			long lastModified, long size, boolean unpack) {
+		this.cspec = cspec;
+		this.provider = provider;
+		this.componentTypeId = componentTypeId;
+		this.versionMatch = versionMatch;
+		this.materializable = materializeable;
+		this.request = request;
+		this.attributes = Utils.createUnmodifiableList(attributes);
+		this.persistentId = persistentId;
+		this.repository = repository;
+		this.remoteName = remoteName;
+		this.contentType = contentType;
+		this.lastModified = lastModified;
+		this.size = size;
+		this.unpack = unpack;
 	}
 
-	public Resolution(ResolutionBuilder bld)
-	{
-		m_attributes = Utils.createUnmodifiableList(bld.getAttributes());
-		m_componentTypeId = bld.getComponentTypeId();
-		m_contentType = bld.getContentType();
-		m_cspec = bld.getCSpec();
-		m_lastModified = bld.getLastModified();
-		m_materializable = bld.isMaterializable();
-		m_persistentId = bld.getPersistentId();
-		m_provider = bld.getProvider();
-		m_remoteName = bld.getRemoteName();
-		m_repository = bld.getRepository();
-		m_request = bld.getRequest().createComponentRequest();
-		m_size = bld.getSize();
-		m_versionMatch = bld.getVersionMatch();
-		m_unpack = bld.isUnpack();
+	public Resolution(ResolutionBuilder bld) {
+		this.attributes = Utils.createUnmodifiableList(bld.getAttributes());
+		this.componentTypeId = bld.getComponentTypeId();
+		this.contentType = bld.getContentType();
+		this.cspec = bld.getCSpec();
+		this.lastModified = bld.getLastModified();
+		this.materializable = bld.isMaterializable();
+		this.persistentId = bld.getPersistentId();
+		this.provider = bld.getProvider();
+		this.remoteName = bld.getRemoteName();
+		this.repository = bld.getRepository();
+		this.request = bld.getRequest().createComponentRequest();
+		this.size = bld.getSize();
+		this.versionMatch = bld.getVersionMatch();
+		this.unpack = bld.isUnpack();
 	}
 
-	public Resolution(Version version, Resolution old)
-	{
-		m_cspec = old.getCSpec();
-		m_request = old.getRequest();
-		m_attributes = old.getAttributes();
-		m_persistentId = old.getPersistentId();
-		m_provider = old.getProvider();
-		m_componentTypeId = old.getComponentTypeId();
-		m_versionMatch = old.getVersionMatch().copyWithVersion(version);
-		m_materializable = old.isMaterializable();
-		m_repository = old.getRepository();
-		m_remoteName = old.getRemoteName();
-		m_contentType = old.getContentType();
-		m_lastModified = old.getLastModified();
-		m_size = old.getSize();
-		m_unpack = old.isUnpack();
+	public Resolution(Version version, Resolution old) {
+		this.cspec = old.getCSpec();
+		this.request = old.getRequest();
+		this.attributes = old.getAttributes();
+		this.persistentId = old.getPersistentId();
+		this.provider = old.getProvider();
+		this.componentTypeId = old.getComponentTypeId();
+		this.versionMatch = old.getVersionMatch().copyWithVersion(version);
+		this.materializable = old.isMaterializable();
+		this.repository = old.getRepository();
+		this.remoteName = old.getRemoteName();
+		this.contentType = old.getContentType();
+		this.lastModified = old.getLastModified();
+		this.size = old.getSize();
+		this.unpack = old.isUnpack();
 	}
 
 	@Override
-	public void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		m_request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
-		m_versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX,
-				m_versionMatch.getDefaultTag());
+	public void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
+		request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
+		versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, versionMatch.getDefaultTag());
 	}
 
-	public String getArtifactInfo()
-	{
-		return m_versionMatch.getArtifactInfo();
+	public String getArtifactInfo() {
+		return versionMatch.getArtifactInfo();
 	}
 
-	public URI getArtifactURI(RMContext context) throws CoreException
-	{
+	public URI getArtifactURI(RMContext context) throws CoreException {
 		return getProvider().getReaderType().getArtifactURL(this, context);
 	}
 
-	public List<String> getAttributes()
-	{
-		return m_attributes;
+	public List<String> getAttributes() {
+		return attributes;
 	}
 
 	/**
@@ -216,35 +206,30 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * @return The component identifier
 	 * @throws CoreException
 	 */
-	public ComponentIdentifier getComponentIdentifier()
-	{
+	public ComponentIdentifier getComponentIdentifier() {
 		return getCSpec().getComponentIdentifier();
 	}
 
-	public IComponentType getComponentType() throws CoreException
-	{
-		return CorePlugin.getDefault().getComponentType(m_componentTypeId);
+	public IComponentType getComponentType() throws CoreException {
+		return CorePlugin.getDefault().getComponentType(componentTypeId);
 	}
 
-	public String getComponentTypeId()
-	{
-		return m_componentTypeId;
+	public String getComponentTypeId() {
+		return componentTypeId;
 	}
 
-	public String getContentType()
-	{
-		return m_contentType;
+	public String getContentType() {
+		return contentType;
 	}
 
 	/**
-	 * Returns the CSpec at the time when this resolution was created. The actual cspec in the workspace might have
-	 * changed since then.
+	 * Returns the CSpec at the time when this resolution was created. The
+	 * actual cspec in the workspace might have changed since then.
 	 * 
 	 * @return The resolved cspec.
 	 */
-	public CSpec getCSpec()
-	{
-		return m_cspec;
+	public CSpec getCSpec() {
+		return cspec;
 	}
 
 	/**
@@ -252,24 +237,20 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return The id of the contained CSpec.
 	 */
-	public UUID getCSpecId()
-	{
-		return m_cspec.getId();
+	public UUID getCSpecId() {
+		return cspec.getId();
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public long getLastModified()
-	{
-		return m_lastModified;
+	public long getLastModified() {
+		return lastModified;
 	}
 
-	public VersionSelector getMatchedBranchOrTag()
-	{
-		return m_versionMatch.getBranchOrTag();
+	public VersionSelector getMatchedBranchOrTag() {
+		return versionMatch.getBranchOrTag();
 	}
 
 	/**
@@ -277,28 +258,24 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return the name.
 	 */
-	public final String getName()
-	{
-		return m_request.getName();
+	public final String getName() {
+		return request.getName();
 	}
 
-	public String getPersistentId()
-	{
-		return m_persistentId;
+	public String getPersistentId() {
+		return persistentId;
 	}
 
-	public synchronized Map<String, ? extends Object> getProperties()
-	{
-		if(m_properties == null)
-		{
+	public synchronized Map<String, ? extends Object> getProperties() {
+		if (properties == null) {
 			HashMap<String, Object> props = new HashMap<String, Object>();
-			props.put(KeyConstants.READER_TYPE, m_provider.getReaderTypeId());
-			props.put(KeyConstants.IS_MUTABLE, Boolean.toString(m_provider.isMutable()));
-			props.put(KeyConstants.IS_SOURCE, Boolean.toString(m_provider.hasSource()));
-			props.putAll(m_cspec.getComponentIdentifier().getProperties());
-			m_properties = props;
+			props.put(KeyConstants.READER_TYPE, provider.getReaderTypeId());
+			props.put(KeyConstants.IS_MUTABLE, Boolean.toString(provider.isMutable()));
+			props.put(KeyConstants.IS_SOURCE, Boolean.toString(provider.hasSource()));
+			props.putAll(cspec.getComponentIdentifier().getProperties());
+			properties = props;
 		}
-		return m_properties;
+		return properties;
 	}
 
 	/**
@@ -306,9 +283,8 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return the repository provider.
 	 */
-	public Provider getProvider()
-	{
-		return m_provider;
+	public Provider getProvider() {
+		return provider;
 	}
 
 	/**
@@ -316,75 +292,63 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return the id of the contained provider
 	 */
-	public UUID getProviderId()
-	{
-		return m_provider.getId();
+	public UUID getProviderId() {
+		return provider.getId();
 	}
 
-	public ProviderMatch getProviderMatch(RMContext context) throws CoreException
-	{
-		ProviderMatch pm = new ProviderMatch(m_provider, getComponentType(), getVersionMatch(),
-				context.getNodeQuery(getQualifiedDependency()));
-		pm.setRepositoryURI(m_repository);
+	public ProviderMatch getProviderMatch(RMContext context) throws CoreException {
+		ProviderMatch pm = new ProviderMatch(provider, getComponentType(), getVersionMatch(), context.getNodeQuery(getQualifiedDependency()));
+		pm.setRepositoryURI(repository);
 		return pm;
 	}
 
-	public final QualifiedDependency getQualifiedDependency()
-	{
-		return new QualifiedDependency(m_request, m_attributes);
+	public final QualifiedDependency getQualifiedDependency() {
+		return new QualifiedDependency(request, attributes);
 	}
 
-	public String getReaderTypeId()
-	{
+	public String getReaderTypeId() {
 		return getProvider().getReaderTypeId();
 	}
 
-	public String getRemoteName()
-	{
-		return m_remoteName;
+	public String getRemoteName() {
+		return remoteName;
 	}
 
-	public String getRepository()
-	{
-		return m_repository;
+	public String getRepository() {
+		return repository;
 	}
 
 	/**
 	 * @return Returns the properties.
 	 */
-	public final ComponentRequest getRequest()
-	{
-		return m_request;
+	public final ComponentRequest getRequest() {
+		return request;
 	}
 
-	public Filter getResolutionFilter()
-	{
+	public Filter getResolutionFilter() {
 		return getProvider().getResolutionFilter();
 	}
 
-	public String getSelectedRevision()
-	{
-		return m_versionMatch.getRevision();
+	public String getSelectedRevision() {
+		return versionMatch.getRevision();
 	}
 
-	public Date getSelectedTimestamp()
-	{
+	public Date getSelectedTimestamp() {
 		return getVersionMatch().getTimestamp();
 	}
 
-	public long getSize()
-	{
-		return m_size;
+	public long getSize() {
+		return size;
 	}
 
 	/**
-	 * Returns the final version that was used when the specification was obtained.
+	 * Returns the final version that was used when the specification was
+	 * obtained.
 	 * 
 	 * @return the version used when retrieving the spec.
 	 */
-	public final Version getVersion()
-	{
-		return m_versionMatch.getVersion();
+	public final Version getVersion() {
+		return versionMatch.getVersion();
 	}
 
 	/**
@@ -392,208 +356,189 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return The original (unresolved) version designator
 	 */
-	public final VersionRange getVersionDesignator() throws CoreException
-	{
-		return m_request.getVersionRange();
+	public final VersionRange getVersionDesignator() throws CoreException {
+		return request.getVersionRange();
 	}
 
-	public VersionMatch getVersionMatch()
-	{
-		return m_versionMatch;
+	public VersionMatch getVersionMatch() {
+		return versionMatch;
 	}
 
 	/**
-	 * Check if the request designates the versioned component that this component info represents.
+	 * Check if the request designates the versioned component that this
+	 * component info represents.
 	 * 
-	 * @param request
+	 * @param rq
 	 *            the request that might appoint the component
 	 * @return <code>true</code> if the versioned component is designated
 	 * @throws CoreException
 	 */
-	public boolean isDesignatedBy(ComponentRequest request) throws CoreException
-	{
-		if(!request.getName().equals(m_request.getName()))
+	public boolean isDesignatedBy(ComponentRequest rq) throws CoreException {
+		if (!rq.getName().equals(request.getName()))
 			return false;
 
 		// If the request has a component type then it must match
 		//
-		String componentType = request.getComponentTypeID();
-		if(componentType != null && !componentType.equals(m_request.getComponentTypeID()))
+		String componentType = rq.getComponentTypeID();
+		if (componentType != null && !componentType.equals(request.getComponentTypeID()))
 			return false;
 
-		VersionRange vd = request.getVersionRange();
-		return vd == null
-				? true
-				: vd.isIncluded(getVersion());
+		VersionRange vd = rq.getVersionRange();
+		return vd == null ? true : vd.isIncluded(getVersion());
 	}
 
 	/**
-	 * Returns true if this resolution is a match for the given <code>query</code> with respect to provided properties.
-	 * The method will update the filter attributes map of the query context.
+	 * Returns true if this resolution is a match for the given
+	 * <code>query</code> with respect to provided properties. The method will
+	 * update the filter attributes map of the query context.
 	 * 
 	 * @param The
 	 *            query to match
 	 * @return True if this resolution is a match for the given query.
 	 * @see RMContext#getFilterAttributeUsageMap()
 	 */
-	public boolean isFilterMatchFor(NodeQuery query)
-	{
+	public boolean isFilterMatchFor(NodeQuery query) {
 		return isFilterMatchFor(query, null);
 	}
 
 	/**
-	 * Returns true if this resolution is a match for the given <code>query</code> with respect to provided properties.
-	 * The method will update the filter attributes map of the query context.
+	 * Returns true if this resolution is a match for the given
+	 * <code>query</code> with respect to provided properties. The method will
+	 * update the filter attributes map of the query context.
 	 * 
 	 * @param The
 	 *            query to match
 	 * @param A
-	 *            one element array that will receive the failing filter. Can be <code>null</code>.
+	 *            one element array that will receive the failing filter. Can be
+	 *            <code>null</code>.
 	 * @return True if this resolution is a match for the given query.
 	 * @see RMContext#getFilterAttributeUsageMap()
 	 */
-	public boolean isFilterMatchFor(NodeQuery query, Filter[] failingFilter)
-	{
+	public boolean isFilterMatchFor(NodeQuery query, Filter[] failingFilter) {
 		Filter cspecFilter = getCSpec().getFilter();
-		if(cspecFilter == null)
+		if (cspecFilter == null)
 			return true;
 
 		Map<String, String[]> attributeUsageMap = query.getContext().getFilterAttributeUsageMap();
-		Map<String, ? extends Object> properties = query.getProperties();
+		Map<String, ? extends Object> queryProps = query.getProperties();
 		cspecFilter.addConsultedAttributes(attributeUsageMap);
-		if(cspecFilter.matchCase(properties))
+		if (cspecFilter.matchCase(queryProps))
 			return true;
 
-		if(failingFilter != null)
+		if (failingFilter != null)
 			failingFilter[0] = cspecFilter;
 		return false;
 	}
 
 	/**
-	 * Returns <code>true</code> if the reader associated with the component will be able to materialized the component.
-	 * Readers that check for the existence of pre-installed components (such as Eclipse plugins that are already
-	 * present in the running eclipse installation) will return <code>false</code>.
+	 * Returns <code>true</code> if the reader associated with the component
+	 * will be able to materialized the component. Readers that check for the
+	 * existence of pre-installed components (such as Eclipse plugins that are
+	 * already present in the running eclipse installation) will return
+	 * <code>false</code>.
 	 * 
 	 * @return <code>true</code> if the component can be materialized on disk.
 	 */
-	public boolean isMaterializable()
-	{
-		return m_materializable;
+	public boolean isMaterializable() {
+		return materializable;
 	}
 
 	/**
-	 * Returns <code>true</code> if the component is materialized at the given location according to the workspace
-	 * meta-data.
+	 * Returns <code>true</code> if the component is materialized at the given
+	 * location according to the workspace meta-data.
 	 * 
 	 * @return <code>true</code> if the component is materialized.
 	 */
-	public boolean isMaterialized(IPath location) throws CoreException
-	{
-		try
-		{
+	public boolean isMaterialized(IPath location) throws CoreException {
+		try {
 			IPath myLocation = getCSpec().getComponentLocation();
 			return location.equals(myLocation);
-		}
-		catch(MissingComponentException e)
-		{
+		} catch (MissingComponentException e) {
 			return false;
 		}
 	}
 
-	public boolean isPersisted(StorageManager sm) throws CoreException
-	{
+	public boolean isPersisted(StorageManager sm) throws CoreException {
 		return sm.getResolutions().contains(this);
 	}
 
-	public boolean isUnpack()
-	{
-		return m_unpack;
+	public boolean isUnpack() {
+		return unpack;
 	}
 
-	public void remove(StorageManager sm) throws CoreException
-	{
+	public void remove(StorageManager sm) throws CoreException {
 		WorkspaceInfo.updateResolutionCache(getComponentIdentifier(), null);
-		synchronized(sm.getResolutions())
-		{
+		synchronized (sm.getResolutions()) {
 			sm.getResolutions().removeElement(getId());
 		}
 	}
 
-	public void store(StorageManager sm) throws CoreException
-	{
+	public void store(StorageManager sm) throws CoreException {
 		WorkspaceInfo.updateResolutionCache(getComponentIdentifier(), this);
-		m_cspec.store(sm);
-		m_provider.store(sm);
-		synchronized(sm.getResolutions())
-		{
+		cspec.store(sm);
+		provider.store(sm);
+		synchronized (sm.getResolutions()) {
 			sm.getResolutions().putElement(this);
 		}
 	}
 
-	public void toSax(ContentHandler receiver) throws SAXException
-	{
+	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());
 		receiver.endDocument();
 	}
 
 	@Override
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
-	{
+	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException {
 		handler.startPrefixMapping(XMLConstants.BM_METADATA_PREFIX, XMLConstants.BM_METADATA_NS);
 		super.toSax(handler, namespace, prefix, localName);
 		handler.endPrefixMapping(XMLConstants.BM_METADATA_PREFIX);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append(Messages.Name);
-		result.append(m_request.getName());
+		result.append(request.getName());
 		result.append(", "); //$NON-NLS-1$
-		m_versionMatch.toString(result);
+		versionMatch.toString(result);
 		return result.toString();
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_CSPEC_ID, m_cspec.getId().toString());
-		String tmp = TextUtils.concat(m_attributes, ","); //$NON-NLS-1$
-		if(tmp != null)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_CSPEC_ID, cspec.getId().toString());
+		String tmp = TextUtils.concat(attributes, ","); //$NON-NLS-1$
+		if (tmp != null)
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
-		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, m_materializable
-				? "true" //$NON-NLS-1$
+		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, materializable ? "true" //$NON-NLS-1$
 				: "false"); //$NON-NLS-1$
-		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, m_provider.getId().toString());
-		Utils.addAttribute(attrs, ATTR_REPOSITORY, m_repository);
+		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, provider.getId().toString());
+		Utils.addAttribute(attrs, ATTR_REPOSITORY, repository);
 
-		if(m_componentTypeId != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, m_componentTypeId);
-		if(m_persistentId != null)
-			Utils.addAttribute(attrs, ATTR_PERSISTENT_ID, m_persistentId);
-		if(m_remoteName != null)
-			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, m_remoteName);
-		if(m_contentType != null)
-			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, m_contentType);
-		if(m_lastModified != 0L)
-			Utils.addAttribute(attrs, ATTR_LAST_MODIFIED, Long.toString(m_lastModified));
-		if(m_size != -1L)
-			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(m_size));
-		if(m_unpack)
+		if (componentTypeId != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, componentTypeId);
+		if (persistentId != null)
+			Utils.addAttribute(attrs, ATTR_PERSISTENT_ID, persistentId);
+		if (remoteName != null)
+			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, remoteName);
+		if (contentType != null)
+			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, contentType);
+		if (lastModified != 0L)
+			Utils.addAttribute(attrs, ATTR_LAST_MODIFIED, Long.toString(lastModified));
+		if (size != -1L)
+			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(size));
+		if (unpack)
 			Utils.addAttribute(attrs, ATTR_UNPACK, "true"); //$NON-NLS-1$
 	}
 
 	@Override
-	protected String getElementNamespace(String namespace)
-	{
+	protected String getElementNamespace(String namespace) {
 		return XMLConstants.BM_METADATA_NS;
 	}
 
 	@Override
-	protected String getElementPrefix(String prefix)
-	{
+	protected String getElementPrefix(String prefix) {
 		return XMLConstants.BM_METADATA_PREFIX;
 	}
 }

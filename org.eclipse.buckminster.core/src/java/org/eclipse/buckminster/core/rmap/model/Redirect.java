@@ -25,39 +25,34 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Redirect extends Matcher
-{
+public class Redirect extends Matcher {
 	public static final String TAG = "redirect"; //$NON-NLS-1$
 
 	public static final String ATTR_HREF = "href"; //$NON-NLS-1$
 
-	private final String m_url;
+	private final String url;
 
-	public Redirect(ResourceMap owner, String pattern, String url)
-	{
+	public Redirect(ResourceMap owner, String pattern, String url) {
 		super(owner, pattern);
-		m_url = url;
+		this.url = url;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public ResourceMap getResourceMap(NodeQuery query) throws CoreException
-	{
+	public ResourceMap getResourceMap(NodeQuery query) throws CoreException {
 		ResourceMap rmap = getOwner();
-		String expanded = ExpandingProperties.expand(rmap.getProperties(query.getProperties()), m_url, 0);
-		URL url = URLUtils.resolveURL(rmap.getContextURL(), expanded);
-		query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, url);
-		return ResourceMapResolverFactory.getCachedResourceMap(query.getResolutionContext(), url,
-				query.getComponentQuery().getConnectContext());
+		String expanded = ExpandingProperties.expand(rmap.getProperties(query.getProperties()), url, 0);
+		URL resolvedURL = URLUtils.resolveURL(rmap.getContextURL(), expanded);
+		query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, resolvedURL);
+		return ResourceMapResolverFactory.getCachedResourceMap(query.getResolutionContext(), resolvedURL, query.getComponentQuery()
+				.getConnectContext());
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_HREF, m_url);
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_HREF, url);
 		super.addAttributes(attrs);
 	}
 }

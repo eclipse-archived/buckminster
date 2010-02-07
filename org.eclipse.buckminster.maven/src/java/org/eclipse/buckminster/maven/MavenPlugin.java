@@ -29,59 +29,48 @@ import org.w3c.dom.Document;
 /**
  * @author Thomas Hallgren
  */
-public class MavenPlugin extends LogAwarePlugin
-{
+public class MavenPlugin extends LogAwarePlugin {
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.maven"; //$NON-NLS-1$
 
-	private static MavenPlugin s_plugin;
+	private static MavenPlugin plugin;
 
-	public static Version createVersion(String versionStr) throws CoreException
-	{
+	public static Version createVersion(String versionStr) throws CoreException {
 		return MavenComponentType.createVersion(versionStr);
 	}
 
-	public static MavenPlugin getDefault()
-	{
-		return s_plugin;
+	public static MavenPlugin getDefault() {
+		return plugin;
 	}
 
-	public static Logger getLogger()
-	{
-		return s_plugin.getBundleLogger();
+	public static Logger getLogger() {
+		return plugin.getBundleLogger();
 	}
 
-	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx,
-			IProgressMonitor monitor) throws CoreException, FileNotFoundException
-	{
-		return Maven2ReaderType.getMetadataDocument(docBld, url, new LocalCache(
-				Maven2VersionFinder.getDefaultLocalRepoPath()), cctx, monitor);
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, IConnectContext cctx, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException {
+		return Maven2ReaderType.getMetadataDocument(docBld, url, new LocalCache(Maven2VersionFinder.getDefaultLocalRepoPath()), cctx, monitor);
 	}
 
-	public static String getSnapshotVersion(Document doc, String version) throws CoreException
-	{
+	public static String getSnapshotVersion(Document doc, String version) throws CoreException {
 		return Maven2ReaderType.getSnapshotVersion(doc, version);
 	}
 
-	public static List<String> getVersions(Document doc)
-	{
+	public static List<String> getVersions(Document doc) {
 		return Maven2ReaderType.getVersions(doc);
 	}
 
-	public MavenPlugin()
-	{
-		s_plugin = this;
+	public MavenPlugin() {
+		plugin = this;
 	}
 
 	@Override
-	public void start(BundleContext context) throws Exception
-	{
+	public void start(BundleContext context) throws Exception {
 		super.start(context);
 	}
 
 	@Override
-	public void stop(BundleContext context) throws Exception
-	{
+	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		s_plugin = null;
+		plugin = null;
 	}
 }

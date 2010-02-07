@@ -20,50 +20,43 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public class ModelCache implements IModelCache
-{
-	private Map<String, ? extends Object> m_properties;
+public class ModelCache implements IModelCache {
+	private Map<String, ? extends Object> properties;
 
-	private Map<String, PathGroup[]> m_pathGroupsCache;
+	private Map<String, PathGroup[]> pathGroupsCache;
 
-	private Map<ComponentRequest, CSpec> m_cspecCache;
+	private Map<ComponentRequest, CSpec> cspecCache;
 
-	public ModelCache()
-	{
+	public ModelCache() {
 	}
 
-	public ModelCache(Map<String, ? extends Object> properties)
-	{
-		m_properties = properties;
+	public ModelCache(Map<String, ? extends Object> properties) {
+		this.properties = properties;
 	}
 
-	public synchronized CSpec findCSpec(ICSpecData ownerCSpec, ComponentRequest request) throws CoreException
-	{
+	public synchronized CSpec findCSpec(ICSpecData ownerCSpec, ComponentRequest request) throws CoreException {
 		CSpec cspec = null;
-		if(m_cspecCache == null)
-			m_cspecCache = new HashMap<ComponentRequest, CSpec>();
+		if (cspecCache == null)
+			cspecCache = new HashMap<ComponentRequest, CSpec>();
 		else
-			cspec = m_cspecCache.get(request);
+			cspec = cspecCache.get(request);
 
-		if(cspec == null)
-		{
+		if (cspec == null) {
 			cspec = WorkspaceInfo.getResolution(request, false).getCSpec();
-			m_cspecCache.put(request, cspec);
+			cspecCache.put(request, cspec);
 		}
 		return cspec;
 	}
 
-	public synchronized Map<String, PathGroup[]> getPathGroupsCache()
-	{
-		if(m_pathGroupsCache == null)
-			m_pathGroupsCache = new HashMap<String, PathGroup[]>();
-		return m_pathGroupsCache;
+	public synchronized Map<String, PathGroup[]> getPathGroupsCache() {
+		if (pathGroupsCache == null)
+			pathGroupsCache = new HashMap<String, PathGroup[]>();
+		return pathGroupsCache;
 	}
 
-	public synchronized Map<String, ? extends Object> getProperties()
-	{
-		if(m_properties == null)
-			m_properties = new HashMap<String, String>();
-		return m_properties;
+	public synchronized Map<String, ? extends Object> getProperties() {
+		if (properties == null)
+			properties = new HashMap<String, String>();
+		return properties;
 	}
 }

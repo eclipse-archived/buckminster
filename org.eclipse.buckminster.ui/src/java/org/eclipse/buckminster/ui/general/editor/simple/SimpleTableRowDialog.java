@@ -28,15 +28,14 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Karel Brezina
  */
-public class SimpleTableRowDialog<T> extends TableRowDialog
-{
-	private final ISimpleTable<T> m_table;
+public class SimpleTableRowDialog<T> extends TableRowDialog {
+	private final ISimpleTable<T> table;
 
-	private final int m_row;
+	private final int row;
 
-	private final boolean m_newRow;
+	private final boolean newRow;
 
-	private IWidgetin[] m_widgetins;
+	private IWidgetin[] widgetins;
 
 	/**
 	 * Creates row editor
@@ -50,48 +49,39 @@ public class SimpleTableRowDialog<T> extends TableRowDialog
 	 * @param wizardImage
 	 *            wizard image
 	 * @param helpURL
-	 *            URL to help info. If not null - help link or icon is displayed for accessing help
+	 *            URL to help info. If not null - help link or icon is displayed
+	 *            for accessing help
 	 * @param table
 	 *            wrapped editor data
 	 * @param row
 	 *            table row number that will be edited or -1 for new row
 	 */
-	public SimpleTableRowDialog(Shell parent, Image windowImage, String windowTitle, Image wizardImage, String helpURL,
-			ISimpleTable<T> table, int row, boolean readOnly)
-	{
+	public SimpleTableRowDialog(Shell parent, Image windowImage, String windowTitle, Image wizardImage, String helpURL, ISimpleTable<T> table,
+			int row, boolean readOnly) {
 		super(parent, windowImage, windowTitle, wizardImage, helpURL, (row == -1), readOnly);
 
-		m_table = table;
-		m_row = row;
-		m_newRow = (row == -1);
-		m_widgetins = new IWidgetin[table.getColumns()];
+		this.table = table;
+		this.row = row;
+		this.newRow = (row == -1);
+		this.widgetins = new IWidgetin[table.getColumns()];
 	}
 
 	@Override
-	protected void buttonPressed(int buttonId)
-	{
-		if(buttonId == IDialogConstants.OK_ID)
-		{
-			Object[] fields = new Object[m_table.getColumns()];
+	protected void buttonPressed(int buttonId) {
+		if (buttonId == IDialogConstants.OK_ID) {
+			Object[] fields = new Object[table.getColumns()];
 
-			for(int i = 0; i < m_table.getColumns(); i++)
-			{
-				fields[i] = m_widgetins[i].getData();
+			for (int i = 0; i < table.getColumns(); i++) {
+				fields[i] = widgetins[i].getData();
 			}
 
-			try
-			{
-				if(m_newRow)
-				{
-					m_table.addRow(fields);
+			try {
+				if (newRow) {
+					table.addRow(fields);
+				} else {
+					table.setRow(row, fields);
 				}
-				else
-				{
-					m_table.setRow(m_row, fields);
-				}
-			}
-			catch(ValidatorException e)
-			{
+			} catch (ValidatorException e) {
 				setErrorMessage(e.getMessage());
 				getButton(IDialogConstants.OK_ID).setEnabled(false);
 
@@ -104,14 +94,11 @@ public class SimpleTableRowDialog<T> extends TableRowDialog
 	}
 
 	@Override
-	protected Control createDialogArea(Composite parent)
-	{
-		Composite composite = (Composite)super.createDialogArea(parent);
+	protected Control createDialogArea(Composite parent) {
+		Composite composite = (Composite) super.createDialogArea(parent);
 
-		Listener rowModifyListener = new Listener()
-		{
-			public void handleEvent(Event event)
-			{
+		Listener rowModifyListener = new Listener() {
+			public void handleEvent(Event event) {
 				setErrorMessage(event.text);
 				enableDisableOkButton();
 			}
@@ -126,42 +113,32 @@ public class SimpleTableRowDialog<T> extends TableRowDialog
 
 		Object[] fields = null;
 
-		if(!m_newRow)
-		{
-			fields = m_table.toRowArray(m_table.getRow(m_row));
-		}
-		else
-		{
-			fields = new Object[m_table.getColumns()];
+		if (!newRow) {
+			fields = table.toRowArray(table.getRow(row));
+		} else {
+			fields = new Object[table.getColumns()];
 			Arrays.fill(fields, null);
 		}
 
-		m_widgetins = m_table.fillGrid(textComposite, fields);
+		widgetins = table.fillGrid(textComposite, fields);
 
-		for(int i = 0; i < m_table.getColumns(); i++)
-		{
-			m_widgetins[i].addListener(ISimpleTable.ERROR_MESSAGE_EVENT_TYPE, rowModifyListener);
+		for (int i = 0; i < table.getColumns(); i++) {
+			widgetins[i].addListener(ISimpleTable.ERROR_MESSAGE_EVENT_TYPE, rowModifyListener);
 		}
 
 		return textComposite;
 	}
 
 	@Override
-	protected void enableDisableOkButton()
-	{
-		if(getButton(IDialogConstants.OK_ID) != null)
-		{
+	protected void enableDisableOkButton() {
+		if (getButton(IDialogConstants.OK_ID) != null) {
 			boolean valid = true;
 
-			try
-			{
-				for(int i = 0; i < m_table.getColumns(); i++)
-				{
-					m_table.getFieldValidator(i).validate(m_widgetins[i].getData());
+			try {
+				for (int i = 0; i < table.getColumns(); i++) {
+					table.getFieldValidator(i).validate(widgetins[i].getData());
 				}
-			}
-			catch(ValidatorException e1)
-			{
+			} catch (ValidatorException e1) {
 				valid = false;
 			}
 

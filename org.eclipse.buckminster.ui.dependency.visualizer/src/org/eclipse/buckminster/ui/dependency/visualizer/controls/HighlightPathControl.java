@@ -34,13 +34,13 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
- * this control allows the user to change what kinds of paths should be highlighted on selection in the viewer
+ * this control allows the user to change what kinds of paths should be
+ * highlighted on selection in the viewer
  * 
  * @author Johannes Utzig
  * 
  */
-public class HighlightPathControl extends AbstractViewerSettingControl implements SelectionListener
-{
+public class HighlightPathControl extends AbstractViewerSettingControl implements SelectionListener {
 
 	private Button dependencies;
 
@@ -54,15 +54,13 @@ public class HighlightPathControl extends AbstractViewerSettingControl implement
 
 	private Button noPath;
 
-	public HighlightPathControl(FormToolkit toolkit)
-	{
+	public HighlightPathControl(FormToolkit toolkit) {
 		super(toolkit);
 
 	}
 
 	@Override
-	public Control createControl(Composite parent)
-	{
+	public Control createControl(Composite parent) {
 		parent = getWidgetToolkit().createComposite(parent);
 		parent.setLayout(new GridLayout(1, true));
 		dependencies = getWidgetToolkit().createButton(parent, Messages.Dependencies, SWT.CHECK);
@@ -93,35 +91,28 @@ public class HighlightPathControl extends AbstractViewerSettingControl implement
 		return parent;
 	}
 
-	public void widgetDefaultSelected(SelectionEvent e)
-	{
+	public void widgetDefaultSelected(SelectionEvent e) {
 		// nothing to do
 
 	}
 
-	public void widgetSelected(SelectionEvent e)
-	{
+	public void widgetSelected(SelectionEvent e) {
 		IRelationshipProvider provider = createRelationshipProvider();
-		fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.PATH_HIGHLIGHTING,
-				provider, relationshipProvider));
+		fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.PATH_HIGHLIGHTING, provider, relationshipProvider));
 		relationshipProvider = provider;
 
 	}
 
-	private IRelationshipProvider createRelationshipProvider()
-	{
+	private IRelationshipProvider createRelationshipProvider() {
 		List<IRelationshipProvider> provider = new ArrayList<IRelationshipProvider>();
-		if(dependencies.getSelection())
+		if (dependencies.getSelection())
 			provider.add(new DirectRelationshipProvider());
-		if(usage.getSelection())
+		if (usage.getSelection())
 			provider.add(new UsageRelationshipProvider());
 
-		if(shortestPath.getSelection())
-		{
+		if (shortestPath.getSelection()) {
 			provider.add(new ShortestPathToRootRelationshipProvider());
-		}
-		else if(allPaths.getSelection())
-		{
+		} else if (allPaths.getSelection()) {
 			provider.add(new AllPathsToRootRelationshipProvider());
 		}
 

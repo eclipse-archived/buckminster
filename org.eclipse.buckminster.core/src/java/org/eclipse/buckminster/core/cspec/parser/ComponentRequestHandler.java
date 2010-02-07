@@ -23,46 +23,35 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class ComponentRequestHandler extends ExtensionAwareHandler
-{
+public class ComponentRequestHandler extends ExtensionAwareHandler {
 	public static final String TAG = ComponentRequest.TAG;
 
-	private final ComponentRequestBuilder m_builder;
+	private final ComponentRequestBuilder builder;
 
-	public ComponentRequestHandler(AbstractHandler parent, ComponentRequestBuilder builder)
-	{
+	public ComponentRequestHandler(AbstractHandler parent, ComponentRequestBuilder builder) {
 		super(parent);
-		m_builder = builder;
+		this.builder = builder;
 	}
 
-	public ComponentRequestBuilder getBuilder()
-	{
-		return m_builder;
+	public ComponentRequestBuilder getBuilder() {
+		return builder;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_builder.clear();
-		m_builder.setName(getStringValue(attrs, NamedElement.ATTR_NAME));
-		m_builder.setComponentTypeID(getComponentType(attrs));
-		try
-		{
-			m_builder.setVersionRange(VersionHelper.parseVersionRangeAttributes(attrs));
-		}
-		catch(CoreException e)
-		{
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		builder.clear();
+		builder.setName(getStringValue(attrs, NamedElement.ATTR_NAME));
+		builder.setComponentTypeID(getComponentType(attrs));
+		try {
+			builder.setVersionRange(VersionHelper.parseVersionRangeAttributes(attrs));
+		} catch (CoreException e) {
 			throw new SAXParseException(e.getMessage(), getDocumentLocator());
 		}
 		String filter = getOptionalStringValue(attrs, ComponentRequest.ATTR_FILTER);
-		if(filter != null)
-		{
-			try
-			{
-				m_builder.setFilter(FilterFactory.newInstance(filter));
-			}
-			catch(InvalidSyntaxException e)
-			{
+		if (filter != null) {
+			try {
+				builder.setFilter(FilterFactory.newInstance(filter));
+			} catch (InvalidSyntaxException e) {
 				throw new SAXParseException(e.getMessage(), getDocumentLocator());
 			}
 		}

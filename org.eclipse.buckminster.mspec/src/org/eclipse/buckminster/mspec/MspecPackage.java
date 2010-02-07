@@ -13,24 +13,26 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
 /**
- * <!-- begin-user-doc --> The <b>Package</b> for the model. It contains accessors for the meta objects to represent
+ * <!-- begin-user-doc --> The <b>Package</b> for the model. It contains
+ * accessors for the meta objects to represent
  * <ul>
  * <li>each class,</li>
  * <li>each feature of each class,</li>
  * <li>each enum,</li>
  * <li>and each data type</li>
  * </ul>
- * <!-- end-user-doc --> <!-- begin-model-doc --> A replacement pattern matched against the component name when creating
- * a workspace project name. Must be used in combination with bindingNameReplacement <!-- end-model-doc -->
+ * <!-- end-user-doc --> <!-- begin-model-doc --> A replacement pattern matched
+ * against the component name when creating a workspace project name. Must be
+ * used in combination with bindingNameReplacement <!-- end-model-doc -->
  * 
  * @see org.eclipse.buckminster.mspec.MspecFactory
  * @model kind="package"
  * @generated
  */
-public interface MspecPackage extends EPackage
-{
+public interface MspecPackage extends EPackage {
 	/**
-	 * <!-- begin-user-doc --> Defines literals for the meta objects that represent
+	 * <!-- begin-user-doc --> Defines literals for the meta objects that
+	 * represent
 	 * <ul>
 	 * <li>each class,</li>
 	 * <li>each feature of each class,</li>
@@ -41,11 +43,12 @@ public interface MspecPackage extends EPackage
 	 * 
 	 * @generated
 	 */
-	interface Literals
-	{
+	interface Literals {
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.mspec.impl.DocumentRootImpl
-		 * <em>Document Root</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.mspec.impl.DocumentRootImpl
+		 * <em>Document Root</em>}' class. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.mspec.impl.DocumentRootImpl
 		 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getDocumentRoot()
@@ -54,56 +57,60 @@ public interface MspecPackage extends EPackage
 		EClass DOCUMENT_ROOT = eINSTANCE.getDocumentRoot();
 
 		/**
-		 * The meta object literal for the '<em><b>Mixed</b></em>' attribute list feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Mixed</b></em>' attribute
+		 * list feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute DOCUMENT_ROOT__MIXED = eINSTANCE.getDocumentRoot_Mixed();
 
 		/**
-		 * The meta object literal for the '<em><b>XMLNS Prefix Map</b></em>' map feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>XMLNS Prefix Map</b></em>'
+		 * map feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__XMLNS_PREFIX_MAP = eINSTANCE.getDocumentRoot_XMLNSPrefixMap();
 
 		/**
-		 * The meta object literal for the '<em><b>XSI Schema Location</b></em>' map feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>XSI Schema Location</b></em>'
+		 * map feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = eINSTANCE.getDocumentRoot_XSISchemaLocation();
 
 		/**
-		 * The meta object literal for the '<em><b>Property</b></em>' containment reference feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Property</b></em>'
+		 * containment reference feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__PROPERTY = eINSTANCE.getDocumentRoot_Property();
 
 		/**
-		 * The meta object literal for the '<em><b>Property Element</b></em>' containment reference feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Property Element</b></em>'
+		 * containment reference feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__PROPERTY_ELEMENT = eINSTANCE.getDocumentRoot_PropertyElement();
 
 		/**
-		 * The meta object literal for the '<em><b>Mspec</b></em>' containment reference feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Mspec</b></em>' containment
+		 * reference feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__MSPEC = eINSTANCE.getDocumentRoot_Mspec();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.mspec.impl.MaterializationNodeImpl
-		 * <em>Materialization Node</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.mspec.impl.MaterializationNodeImpl
+		 * <em>Materialization Node</em>}' class. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.mspec.impl.MaterializationNodeImpl
 		 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getMaterializationNode()
@@ -112,55 +119,56 @@ public interface MspecPackage extends EPackage
 		EClass MATERIALIZATION_NODE = eINSTANCE.getMaterializationNode();
 
 		/**
-		 * The meta object literal for the '<em><b>Name Pattern</b></em>' attribute feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Name Pattern</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_NODE__NAME_PATTERN = eINSTANCE.getMaterializationNode_NamePattern();
 
 		/**
-		 * The meta object literal for the '<em><b>Leaf Artifact</b></em>' attribute feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Leaf Artifact</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_NODE__LEAF_ARTIFACT = eINSTANCE.getMaterializationNode_LeafArtifact();
 
 		/**
-		 * The meta object literal for the '<em><b>Component Type</b></em>' attribute feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Component Type</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_NODE__COMPONENT_TYPE = eINSTANCE.getMaterializationNode_ComponentType();
 
 		/**
-		 * The meta object literal for the '<em><b>Resource Path</b></em>' attribute feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Resource Path</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_NODE__RESOURCE_PATH = eINSTANCE.getMaterializationNode_ResourcePath();
 
 		/**
-		 * The meta object literal for the '<em><b>Exclude</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Exclude</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_NODE__EXCLUDE = eINSTANCE.getMaterializationNode_Exclude();
 
 		/**
-		 * The meta object literal for the '<em><b>Binding Name Pattern</b></em>' attribute feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Binding Name Pattern</b></em>
+		 * ' attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_NODE__BINDING_NAME_PATTERN = eINSTANCE.getMaterializationNode_BindingNamePattern();
 
 		/**
-		 * The meta object literal for the '<em><b>Binding Name Replacement</b></em>' attribute feature. <!--
+		 * The meta object literal for the '
+		 * <em><b>Binding Name Replacement</b></em>' attribute feature. <!--
 		 * begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
@@ -168,24 +176,26 @@ public interface MspecPackage extends EPackage
 		EAttribute MATERIALIZATION_NODE__BINDING_NAME_REPLACEMENT = eINSTANCE.getMaterializationNode_BindingNameReplacement();
 
 		/**
-		 * The meta object literal for the '<em><b>Unpack</b></em>' containment reference feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Unpack</b></em>' containment
+		 * reference feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference MATERIALIZATION_NODE__UNPACK = eINSTANCE.getMaterializationNode_Unpack();
 
 		/**
-		 * The meta object literal for the '<em><b>Filter</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Filter</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_NODE__FILTER = eINSTANCE.getMaterializationNode_Filter();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl
-		 * <em>Materialization Directive</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl
+		 * <em>Materialization Directive</em>}' class. <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl
 		 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getMaterializationDirective()
@@ -194,64 +204,68 @@ public interface MspecPackage extends EPackage
 		EClass MATERIALIZATION_DIRECTIVE = eINSTANCE.getMaterializationDirective();
 
 		/**
-		 * The meta object literal for the '<em><b>Documentation</b></em>' containment reference feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Documentation</b></em>'
+		 * containment reference feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference MATERIALIZATION_DIRECTIVE__DOCUMENTATION = eINSTANCE.getMaterializationDirective_Documentation();
 
 		/**
-		 * The meta object literal for the '<em><b>Property Group</b></em>' attribute list feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Property Group</b></em>'
+		 * attribute list feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP = eINSTANCE.getMaterializationDirective_PropertyGroup();
 
 		/**
-		 * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Properties</b></em>'
+		 * containment reference list feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference MATERIALIZATION_DIRECTIVE__PROPERTIES = eINSTANCE.getMaterializationDirective_Properties();
 
 		/**
-		 * The meta object literal for the '<em><b>Conflict Resolution</b></em>' attribute feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Conflict Resolution</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION = eINSTANCE.getMaterializationDirective_ConflictResolution();
 
 		/**
-		 * The meta object literal for the '<em><b>Install Location</b></em>' attribute feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Install Location</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION = eINSTANCE.getMaterializationDirective_InstallLocation();
 
 		/**
-		 * The meta object literal for the '<em><b>Materializer</b></em>' attribute feature. <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Materializer</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_DIRECTIVE__MATERIALIZER = eINSTANCE.getMaterializationDirective_Materializer();
 
 		/**
-		 * The meta object literal for the '<em><b>Workspace Location</b></em>' attribute feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Workspace Location</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION = eINSTANCE.getMaterializationDirective_WorkspaceLocation();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl
-		 * <em>Materialization Spec</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl
+		 * <em>Materialization Spec</em>}' class. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl
 		 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getMaterializationSpec()
@@ -260,48 +274,50 @@ public interface MspecPackage extends EPackage
 		EClass MATERIALIZATION_SPEC = eINSTANCE.getMaterializationSpec();
 
 		/**
-		 * The meta object literal for the '<em><b>Mspec Nodes</b></em>' containment reference list feature. <!--
-		 * begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Mspec Nodes</b></em>'
+		 * containment reference list feature. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EReference MATERIALIZATION_SPEC__MSPEC_NODES = eINSTANCE.getMaterializationSpec_MspecNodes();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_SPEC__NAME = eINSTANCE.getMaterializationSpec_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Short Desc</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Short Desc</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_SPEC__SHORT_DESC = eINSTANCE.getMaterializationSpec_ShortDesc();
 
 		/**
-		 * The meta object literal for the '<em><b>Url</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Url</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_SPEC__URL = eINSTANCE.getMaterializationSpec_Url();
 
 		/**
-		 * The meta object literal for the '<em><b>Max Parallel Jobs</b></em>' attribute feature. <!-- begin-user-doc
-		 * --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Max Parallel Jobs</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS = eINSTANCE.getMaterializationSpec_MaxParallelJobs();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.mspec.impl.UnpackImpl <em>Unpack</em>}'
-		 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.mspec.impl.UnpackImpl <em>Unpack</em>}
+		 * ' class. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.mspec.impl.UnpackImpl
 		 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getUnpack()
@@ -310,24 +326,26 @@ public interface MspecPackage extends EPackage
 		EClass UNPACK = eINSTANCE.getUnpack();
 
 		/**
-		 * The meta object literal for the '<em><b>Expand</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Expand</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute UNPACK__EXPAND = eINSTANCE.getUnpack_Expand();
 
 		/**
-		 * The meta object literal for the '<em><b>Suffix</b></em>' attribute feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * The meta object literal for the '<em><b>Suffix</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute UNPACK__SUFFIX = eINSTANCE.getUnpack_Suffix();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.buckminster.mspec.ConflictResolution
-		 * <em>Conflict Resolution</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.mspec.ConflictResolution
+		 * <em>Conflict Resolution</em>}' enum. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.mspec.ConflictResolution
 		 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getConflictResolution()
@@ -359,15 +377,18 @@ public interface MspecPackage extends EPackage
 	String eNS_PREFIX = "mspec";
 
 	/**
-	 * The singleton instance of the package. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The singleton instance of the package. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	MspecPackage eINSTANCE = org.eclipse.buckminster.mspec.impl.MspecPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.mspec.impl.DocumentRootImpl <em>Document Root</em>}'
-	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.mspec.impl.DocumentRootImpl
+	 * <em>Document Root</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @see org.eclipse.buckminster.mspec.impl.DocumentRootImpl
 	 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getDocumentRoot()
@@ -376,7 +397,8 @@ public interface MspecPackage extends EPackage
 	int DOCUMENT_ROOT = 0;
 
 	/**
-	 * The feature id for the '<em><b>Mixed</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Mixed</b></em>' attribute list. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -384,7 +406,8 @@ public interface MspecPackage extends EPackage
 	int DOCUMENT_ROOT__MIXED = 0;
 
 	/**
-	 * The feature id for the '<em><b>XMLNS Prefix Map</b></em>' map. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>XMLNS Prefix Map</b></em>' map. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -392,7 +415,8 @@ public interface MspecPackage extends EPackage
 	int DOCUMENT_ROOT__XMLNS_PREFIX_MAP = 1;
 
 	/**
-	 * The feature id for the '<em><b>XSI Schema Location</b></em>' map. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>XSI Schema Location</b></em>' map. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -400,8 +424,8 @@ public interface MspecPackage extends EPackage
 	int DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = 2;
 
 	/**
-	 * The feature id for the '<em><b>Property</b></em>' containment reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Property</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -409,8 +433,8 @@ public interface MspecPackage extends EPackage
 	int DOCUMENT_ROOT__PROPERTY = 3;
 
 	/**
-	 * The feature id for the '<em><b>Property Element</b></em>' containment reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Property Element</b></em>' containment
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -418,8 +442,8 @@ public interface MspecPackage extends EPackage
 	int DOCUMENT_ROOT__PROPERTY_ELEMENT = 4;
 
 	/**
-	 * The feature id for the '<em><b>Mspec</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Mspec</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -427,8 +451,8 @@ public interface MspecPackage extends EPackage
 	int DOCUMENT_ROOT__MSPEC = 5;
 
 	/**
-	 * The number of structural features of the '<em>Document Root</em>' class. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The number of structural features of the '<em>Document Root</em>' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -436,8 +460,10 @@ public interface MspecPackage extends EPackage
 	int DOCUMENT_ROOT_FEATURE_COUNT = 6;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl
-	 * <em>Materialization Directive</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl
+	 * <em>Materialization Directive</em>}' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl
 	 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getMaterializationDirective()
@@ -446,8 +472,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_DIRECTIVE = 2;
 
 	/**
-	 * The feature id for the '<em><b>Documentation</b></em>' containment reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Documentation</b></em>' containment
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -455,8 +481,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_DIRECTIVE__DOCUMENTATION = 0;
 
 	/**
-	 * The feature id for the '<em><b>Property Group</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Property Group</b></em>' attribute list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -464,8 +490,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP = 1;
 
 	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -473,8 +499,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_DIRECTIVE__PROPERTIES = 2;
 
 	/**
-	 * The feature id for the '<em><b>Conflict Resolution</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Conflict Resolution</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -482,8 +508,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION = 3;
 
 	/**
-	 * The feature id for the '<em><b>Install Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Install Location</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -491,7 +517,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION = 4;
 
 	/**
-	 * The feature id for the '<em><b>Materializer</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Materializer</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -499,8 +526,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_DIRECTIVE__MATERIALIZER = 5;
 
 	/**
-	 * The feature id for the '<em><b>Workspace Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Workspace Location</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -508,7 +535,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION = 6;
 
 	/**
-	 * The number of structural features of the '<em>Materialization Directive</em>' class. <!-- begin-user-doc --> <!--
+	 * The number of structural features of the '
+	 * <em>Materialization Directive</em>' class. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @generated
@@ -517,8 +545,10 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_DIRECTIVE_FEATURE_COUNT = 7;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.mspec.impl.MaterializationNodeImpl
-	 * <em>Materialization Node</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.mspec.impl.MaterializationNodeImpl
+	 * <em>Materialization Node</em>}' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.mspec.impl.MaterializationNodeImpl
 	 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getMaterializationNode()
@@ -527,8 +557,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE = 1;
 
 	/**
-	 * The feature id for the '<em><b>Documentation</b></em>' containment reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Documentation</b></em>' containment
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -536,8 +566,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__DOCUMENTATION = MATERIALIZATION_DIRECTIVE__DOCUMENTATION;
 
 	/**
-	 * The feature id for the '<em><b>Property Group</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Property Group</b></em>' attribute list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -545,8 +575,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__PROPERTY_GROUP = MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP;
 
 	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -554,8 +584,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__PROPERTIES = MATERIALIZATION_DIRECTIVE__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Conflict Resolution</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Conflict Resolution</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -563,8 +593,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__CONFLICT_RESOLUTION = MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION;
 
 	/**
-	 * The feature id for the '<em><b>Install Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Install Location</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -572,7 +602,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__INSTALL_LOCATION = MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION;
 
 	/**
-	 * The feature id for the '<em><b>Materializer</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Materializer</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -580,8 +611,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__MATERIALIZER = MATERIALIZATION_DIRECTIVE__MATERIALIZER;
 
 	/**
-	 * The feature id for the '<em><b>Workspace Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Workspace Location</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -589,7 +620,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__WORKSPACE_LOCATION = MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION;
 
 	/**
-	 * The feature id for the '<em><b>Name Pattern</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Name Pattern</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -597,7 +629,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__NAME_PATTERN = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Leaf Artifact</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Leaf Artifact</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -605,7 +638,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__LEAF_ARTIFACT = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Component Type</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Component Type</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -613,7 +647,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__COMPONENT_TYPE = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Resource Path</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Resource Path</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -621,7 +656,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__RESOURCE_PATH = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 3;
 
 	/**
-	 * The feature id for the '<em><b>Exclude</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Exclude</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -629,8 +665,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__EXCLUDE = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 4;
 
 	/**
-	 * The feature id for the '<em><b>Binding Name Pattern</b></em>' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Binding Name Pattern</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -638,8 +674,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__BINDING_NAME_PATTERN = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 5;
 
 	/**
-	 * The feature id for the '<em><b>Binding Name Replacement</b></em>' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Binding Name Replacement</b></em>'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -647,8 +683,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__BINDING_NAME_REPLACEMENT = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 6;
 
 	/**
-	 * The feature id for the '<em><b>Unpack</b></em>' containment reference. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Unpack</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -656,7 +692,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__UNPACK = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 7;
 
 	/**
-	 * The feature id for the '<em><b>Filter</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Filter</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -664,8 +701,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE__FILTER = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 8;
 
 	/**
-	 * The number of structural features of the '<em>Materialization Node</em>' class. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The number of structural features of the '<em>Materialization Node</em>'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -673,8 +710,10 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_NODE_FEATURE_COUNT = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 9;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl
-	 * <em>Materialization Spec</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl
+	 * <em>Materialization Spec</em>}' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl
 	 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getMaterializationSpec()
@@ -683,8 +722,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC = 3;
 
 	/**
-	 * The feature id for the '<em><b>Documentation</b></em>' containment reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Documentation</b></em>' containment
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -692,8 +731,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__DOCUMENTATION = MATERIALIZATION_DIRECTIVE__DOCUMENTATION;
 
 	/**
-	 * The feature id for the '<em><b>Property Group</b></em>' attribute list. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Property Group</b></em>' attribute list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -701,8 +740,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__PROPERTY_GROUP = MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP;
 
 	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -710,8 +749,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__PROPERTIES = MATERIALIZATION_DIRECTIVE__PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Conflict Resolution</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Conflict Resolution</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -719,8 +758,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__CONFLICT_RESOLUTION = MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION;
 
 	/**
-	 * The feature id for the '<em><b>Install Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Install Location</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -728,7 +767,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__INSTALL_LOCATION = MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION;
 
 	/**
-	 * The feature id for the '<em><b>Materializer</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Materializer</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -736,8 +776,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__MATERIALIZER = MATERIALIZATION_DIRECTIVE__MATERIALIZER;
 
 	/**
-	 * The feature id for the '<em><b>Workspace Location</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Workspace Location</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -745,8 +785,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__WORKSPACE_LOCATION = MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION;
 
 	/**
-	 * The feature id for the '<em><b>Mspec Nodes</b></em>' containment reference list. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The feature id for the '<em><b>Mspec Nodes</b></em>' containment
+	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -754,7 +794,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__MSPEC_NODES = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Name</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -762,7 +803,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__NAME = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Short Desc</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Short Desc</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -770,7 +812,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__SHORT_DESC = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Url</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Url</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -778,8 +821,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__URL = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 3;
 
 	/**
-	 * The feature id for the '<em><b>Max Parallel Jobs</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The feature id for the '<em><b>Max Parallel Jobs</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -787,8 +830,8 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 4;
 
 	/**
-	 * The number of structural features of the '<em>Materialization Spec</em>' class. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The number of structural features of the '<em>Materialization Spec</em>'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -796,8 +839,9 @@ public interface MspecPackage extends EPackage
 	int MATERIALIZATION_SPEC_FEATURE_COUNT = MATERIALIZATION_DIRECTIVE_FEATURE_COUNT + 5;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.mspec.impl.UnpackImpl <em>Unpack</em>}' class. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.mspec.impl.UnpackImpl <em>Unpack</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.mspec.impl.UnpackImpl
 	 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getUnpack()
@@ -806,7 +850,8 @@ public interface MspecPackage extends EPackage
 	int UNPACK = 4;
 
 	/**
-	 * The feature id for the '<em><b>Expand</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Expand</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -814,7 +859,8 @@ public interface MspecPackage extends EPackage
 	int UNPACK__EXPAND = 0;
 
 	/**
-	 * The feature id for the '<em><b>Suffix</b></em>' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Suffix</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -822,7 +868,8 @@ public interface MspecPackage extends EPackage
 	int UNPACK__SUFFIX = 1;
 
 	/**
-	 * The number of structural features of the '<em>Unpack</em>' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The number of structural features of the '<em>Unpack</em>' class. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -830,8 +877,10 @@ public interface MspecPackage extends EPackage
 	int UNPACK_FEATURE_COUNT = 2;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.buckminster.mspec.ConflictResolution <em>Conflict Resolution</em>}
-	 * ' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.mspec.ConflictResolution
+	 * <em>Conflict Resolution</em>} ' enum. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.mspec.ConflictResolution
 	 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getConflictResolution()
@@ -840,8 +889,10 @@ public interface MspecPackage extends EPackage
 	int CONFLICT_RESOLUTION = 5;
 
 	/**
-	 * Returns the meta object for enum '{@link org.eclipse.buckminster.mspec.ConflictResolution
-	 * <em>Conflict Resolution</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for enum '
+	 * {@link org.eclipse.buckminster.mspec.ConflictResolution
+	 * <em>Conflict Resolution</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @return the meta object for enum '<em>Conflict Resolution</em>'.
 	 * @see org.eclipse.buckminster.mspec.ConflictResolution
@@ -850,8 +901,8 @@ public interface MspecPackage extends EPackage
 	EEnum getConflictResolution();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.emf.ecore.EObject <em>Document Root</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for class '{@link org.eclipse.emf.ecore.EObject
+	 * <em>Document Root</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Document Root</em>'.
 	 * @see org.eclipse.emf.ecore.EObject
@@ -861,8 +912,9 @@ public interface MspecPackage extends EPackage
 	EClass getDocumentRoot();
 
 	/**
-	 * Returns the meta object for the attribute list '{@link org.eclipse.emf.ecore.EObject#getMixed <em>Mixed</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the attribute list '
+	 * {@link org.eclipse.emf.ecore.EObject#getMixed <em>Mixed</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute list '<em>Mixed</em>'.
 	 * @see org.eclipse.emf.ecore.EObject#getMixed()
@@ -872,8 +924,9 @@ public interface MspecPackage extends EPackage
 	EAttribute getDocumentRoot_Mixed();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getMspec
-	 * <em>Mspec</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the containment reference '
+	 * {@link org.eclipse.emf.ecore.EObject#getMspec <em>Mspec</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the containment reference '<em>Mspec</em>'.
 	 * @see org.eclipse.emf.ecore.EObject#getMspec()
@@ -883,10 +936,12 @@ public interface MspecPackage extends EPackage
 	EReference getDocumentRoot_Mspec();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getProperty
-	 * <em>Property</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the containment reference '
+	 * {@link org.eclipse.emf.ecore.EObject#getProperty <em>Property</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference '<em>Property</em>'.
+	 * @return the meta object for the containment reference '<em>Property</em>
+	 *         '.
 	 * @see org.eclipse.emf.ecore.EObject#getProperty()
 	 * @see #getDocumentRoot()
 	 * @generated
@@ -894,10 +949,13 @@ public interface MspecPackage extends EPackage
 	EReference getDocumentRoot_Property();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getPropertyElement
-	 * <em>Property Element</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the containment reference '
+	 * {@link org.eclipse.emf.ecore.EObject#getPropertyElement
+	 * <em>Property Element</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
-	 * @return the meta object for the containment reference '<em>Property Element</em>'.
+	 * @return the meta object for the containment reference '
+	 *         <em>Property Element</em>'.
 	 * @see org.eclipse.emf.ecore.EObject#getPropertyElement()
 	 * @see #getDocumentRoot()
 	 * @generated
@@ -905,8 +963,10 @@ public interface MspecPackage extends EPackage
 	EReference getDocumentRoot_PropertyElement();
 
 	/**
-	 * Returns the meta object for the map '{@link org.eclipse.emf.ecore.EObject#getXMLNSPrefixMap
-	 * <em>XMLNS Prefix Map</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the map '
+	 * {@link org.eclipse.emf.ecore.EObject#getXMLNSPrefixMap
+	 * <em>XMLNS Prefix Map</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @return the meta object for the map '<em>XMLNS Prefix Map</em>'.
 	 * @see org.eclipse.emf.ecore.EObject#getXMLNSPrefixMap()
@@ -916,8 +976,10 @@ public interface MspecPackage extends EPackage
 	EReference getDocumentRoot_XMLNSPrefixMap();
 
 	/**
-	 * Returns the meta object for the map '{@link org.eclipse.emf.ecore.EObject#getXSISchemaLocation
-	 * <em>XSI Schema Location</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the map '
+	 * {@link org.eclipse.emf.ecore.EObject#getXSISchemaLocation
+	 * <em>XSI Schema Location</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @return the meta object for the map '<em>XSI Schema Location</em>'.
 	 * @see org.eclipse.emf.ecore.EObject#getXSISchemaLocation()
@@ -927,8 +989,10 @@ public interface MspecPackage extends EPackage
 	EReference getDocumentRoot_XSISchemaLocation();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.mspec.MaterializationDirective
-	 * <em>Materialization Directive</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective
+	 * <em>Materialization Directive</em>}'. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Materialization Directive</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationDirective
@@ -938,8 +1002,9 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getConflictResolution <em>Conflict Resolution</em>}
-	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getConflictResolution
+	 * <em>Conflict Resolution</em>} '. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Conflict Resolution</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationDirective#getConflictResolution()
@@ -950,10 +1015,11 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the containment reference '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getDocumentation <em>Documentation</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getDocumentation
+	 * <em>Documentation</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference '<em>Documentation</em>'.
+	 * @return the meta object for the containment reference '
+	 *         <em>Documentation</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationDirective#getDocumentation()
 	 * @see #getMaterializationDirective()
 	 * @generated
@@ -962,8 +1028,9 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getInstallLocation <em>Install Location</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getInstallLocation
+	 * <em>Install Location</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @return the meta object for the attribute '<em>Install Location</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationDirective#getInstallLocation()
@@ -974,8 +1041,8 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getMaterializer <em>Materializer</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getMaterializer
+	 * <em>Materializer</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Materializer</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationDirective#getMaterializer()
@@ -986,10 +1053,11 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getProperties <em>Properties</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getProperties
+	 * <em>Properties</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference list '<em>Properties</em>'.
+	 * @return the meta object for the containment reference list '
+	 *         <em>Properties</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationDirective#getProperties()
 	 * @see #getMaterializationDirective()
 	 * @generated
@@ -998,8 +1066,8 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute list '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getPropertyGroup <em>Property Group</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getPropertyGroup
+	 * <em>Property Group</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute list '<em>Property Group</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationDirective#getPropertyGroup()
@@ -1010,8 +1078,9 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getWorkspaceLocation <em>Workspace Location</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getWorkspaceLocation
+	 * <em>Workspace Location</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @return the meta object for the attribute '<em>Workspace Location</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationDirective#getWorkspaceLocation()
@@ -1021,8 +1090,10 @@ public interface MspecPackage extends EPackage
 	EAttribute getMaterializationDirective_WorkspaceLocation();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.mspec.MaterializationNode
-	 * <em>Materialization Node</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.mspec.MaterializationNode
+	 * <em>Materialization Node</em>}'. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Materialization Node</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationNode
@@ -1032,10 +1103,12 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getBindingNamePattern <em>Binding Name Pattern</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getBindingNamePattern
+	 * <em>Binding Name Pattern</em>}'. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
-	 * @return the meta object for the attribute '<em>Binding Name Pattern</em>'.
+	 * @return the meta object for the attribute '<em>Binding Name Pattern</em>
+	 *         '.
 	 * @see org.eclipse.buckminster.mspec.MaterializationNode#getBindingNamePattern()
 	 * @see #getMaterializationNode()
 	 * @generated
@@ -1045,9 +1118,11 @@ public interface MspecPackage extends EPackage
 	/**
 	 * Returns the meta object for the attribute '
 	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getBindingNameReplacement
-	 * <em>Binding Name Replacement</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * <em>Binding Name Replacement</em>}'. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
-	 * @return the meta object for the attribute '<em>Binding Name Replacement</em>'.
+	 * @return the meta object for the attribute '
+	 *         <em>Binding Name Replacement</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationNode#getBindingNameReplacement()
 	 * @see #getMaterializationNode()
 	 * @generated
@@ -1056,8 +1131,8 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getComponentType <em>Component Type</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getComponentType
+	 * <em>Component Type</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Component Type</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationNode#getComponentType()
@@ -1067,7 +1142,8 @@ public interface MspecPackage extends EPackage
 	EAttribute getMaterializationNode_ComponentType();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.mspec.MaterializationNode#isExclude
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#isExclude
 	 * <em>Exclude</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Exclude</em>'.
@@ -1078,7 +1154,8 @@ public interface MspecPackage extends EPackage
 	EAttribute getMaterializationNode_Exclude();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.mspec.MaterializationNode#getFilter
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getFilter
 	 * <em>Filter</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Filter</em>'.
@@ -1090,8 +1167,8 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getLeafArtifact <em>Leaf Artifact</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getLeafArtifact
+	 * <em>Leaf Artifact</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Leaf Artifact</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationNode#getLeafArtifact()
@@ -1102,8 +1179,8 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getNamePattern <em>Name Pattern</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getNamePattern
+	 * <em>Name Pattern</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Name Pattern</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationNode#getNamePattern()
@@ -1114,8 +1191,8 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getResourcePath <em>Resource Path</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getResourcePath
+	 * <em>Resource Path</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Resource Path</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationNode#getResourcePath()
@@ -1126,8 +1203,8 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the containment reference '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getUnpack <em>Unpack</em>}'. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationNode#getUnpack
+	 * <em>Unpack</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the containment reference '<em>Unpack</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationNode#getUnpack()
@@ -1137,8 +1214,10 @@ public interface MspecPackage extends EPackage
 	EReference getMaterializationNode_Unpack();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.mspec.MaterializationSpec
-	 * <em>Materialization Spec</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.mspec.MaterializationSpec
+	 * <em>Materialization Spec</em>}'. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Materialization Spec</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationSpec
@@ -1148,8 +1227,9 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationSpec#getMaxParallelJobs <em>Max Parallel Jobs</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationSpec#getMaxParallelJobs
+	 * <em>Max Parallel Jobs</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @return the meta object for the attribute '<em>Max Parallel Jobs</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationSpec#getMaxParallelJobs()
@@ -1160,10 +1240,11 @@ public interface MspecPackage extends EPackage
 
 	/**
 	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.mspec.MaterializationSpec#getMspecNodes <em>Mspec Nodes</em>}'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.mspec.MaterializationSpec#getMspecNodes
+	 * <em>Mspec Nodes</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference list '<em>Mspec Nodes</em>'.
+	 * @return the meta object for the containment reference list '
+	 *         <em>Mspec Nodes</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationSpec#getMspecNodes()
 	 * @see #getMaterializationSpec()
 	 * @generated
@@ -1171,7 +1252,8 @@ public interface MspecPackage extends EPackage
 	EReference getMaterializationSpec_MspecNodes();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.mspec.MaterializationSpec#getName
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.mspec.MaterializationSpec#getName
 	 * <em>Name</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Name</em>'.
@@ -1182,7 +1264,8 @@ public interface MspecPackage extends EPackage
 	EAttribute getMaterializationSpec_Name();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.mspec.MaterializationSpec#getShortDesc
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.mspec.MaterializationSpec#getShortDesc
 	 * <em>Short Desc</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Short Desc</em>'.
@@ -1193,7 +1276,8 @@ public interface MspecPackage extends EPackage
 	EAttribute getMaterializationSpec_ShortDesc();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.mspec.MaterializationSpec#getUrl
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.mspec.MaterializationSpec#getUrl
 	 * <em>Url</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Url</em>'.
@@ -1204,7 +1288,8 @@ public interface MspecPackage extends EPackage
 	EAttribute getMaterializationSpec_Url();
 
 	/**
-	 * Returns the factory that creates the instances of the model. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the factory that creates the instances of the model. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the factory that creates the instances of the model.
 	 * @generated
@@ -1212,7 +1297,8 @@ public interface MspecPackage extends EPackage
 	MspecFactory getMspecFactory();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.buckminster.mspec.Unpack <em>Unpack</em>}'. <!--
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.mspec.Unpack <em>Unpack</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Unpack</em>'.
@@ -1222,8 +1308,9 @@ public interface MspecPackage extends EPackage
 	EClass getUnpack();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.mspec.Unpack#isExpand <em>Expand</em>}
-	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.mspec.Unpack#isExpand <em>Expand</em>} '.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Expand</em>'.
 	 * @see org.eclipse.buckminster.mspec.Unpack#isExpand()
@@ -1233,8 +1320,9 @@ public interface MspecPackage extends EPackage
 	EAttribute getUnpack_Expand();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.mspec.Unpack#getSuffix <em>Suffix</em>}
-	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.mspec.Unpack#getSuffix <em>Suffix</em>} '.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Suffix</em>'.
 	 * @see org.eclipse.buckminster.mspec.Unpack#getSuffix()

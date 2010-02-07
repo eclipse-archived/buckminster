@@ -20,29 +20,23 @@ import org.eclipse.buckminster.ui.dependency.visualizer.viewer.provider.IRelatio
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 /**
- * This relationship provider calculates the shortest paths from a given {@link BOMNode} to all direct dependencies of
- * the root request.
+ * This relationship provider calculates the shortest paths from a given
+ * {@link BOMNode} to all direct dependencies of the root request.
  * 
  * @author Johannes Utzig
  * 
  */
-public class AllPathsToRootRelationshipProvider implements IRelationshipProvider
-{
+public class AllPathsToRootRelationshipProvider implements IRelationshipProvider {
 
-	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root,
-			BOMNode currentSelection, Object[] connections)
-	{
+	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection, Object[] connections) {
 		Map<EntityConnectionData, ConnectionCategory> relationships = new HashMap<EntityConnectionData, ConnectionCategory>();
 		List<BOMNode> nodes = root.getChildren();
-		for(BOMNode bomNode : nodes)
-		{
+		for (BOMNode bomNode : nodes) {
 			List<BOMNode> path = ShortesPathCalculation.calculatePath(bomNode, currentSelection);
-			if(path.size() > 1)
-			{
+			if (path.size() > 1) {
 				EntityConnectionData data = new EntityConnectionData(root, bomNode);
 				relationships.put(data, ConnectionCategory.PATH_TO_ROOT);
-				for(int i = 0; i < path.size() - 1; i++)
-				{
+				for (int i = 0; i < path.size() - 1; i++) {
 					data = new EntityConnectionData(path.get(i + 1), path.get(i));
 					relationships.put(data, ConnectionCategory.PATH_TO_ROOT);
 				}

@@ -15,35 +15,30 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class RemoveHandler extends ExtensionAwareHandler
-{
-	private final String m_tag;
+class RemoveHandler extends ExtensionAwareHandler {
+	private final String tag;
 
-	private final String m_attrName;
+	private final String attrName;
 
-	private String m_name;
+	private String name;
 
-	RemoveHandler(AbstractHandler parent, String tag, String attrName)
-	{
+	RemoveHandler(AbstractHandler parent, String tag, String attrName) {
 		super(parent);
-		m_tag = tag;
-		m_attrName = attrName;
+		this.tag = tag;
+		this.attrName = attrName;
 	}
 
 	@Override
-	public final String getTAG()
-	{
-		return m_tag;
+	public final String getTAG() {
+		return tag;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_name = this.getStringValue(attrs, m_attrName);
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		name = this.getStringValue(attrs, attrName);
 	}
 
-	final String getValue()
-	{
-		return m_name;
+	final String getValue() {
+		return name;
 	}
 }

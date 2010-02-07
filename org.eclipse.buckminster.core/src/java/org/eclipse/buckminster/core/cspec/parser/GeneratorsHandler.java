@@ -22,43 +22,35 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class GeneratorsHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport
-{
+class GeneratorsHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport {
 	public static final String TAG = CSpec.ELEM_GENERATORS;
 
-	private final GeneratorHandler m_generatorHandler = new GeneratorHandler(this);
+	private final GeneratorHandler generatorHandler = new GeneratorHandler(this);
 
-	GeneratorsHandler(AbstractHandler parent)
-	{
+	GeneratorsHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_generatorHandler)
-			try
-			{
-				this.getCSpecBuilder().addGenerator((GeneratorBuilder)m_generatorHandler.getBuilder());
-			}
-			catch(GeneratorAlreadyDefinedException e)
-			{
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == generatorHandler)
+			try {
+				this.getCSpecBuilder().addGenerator((GeneratorBuilder) generatorHandler.getBuilder());
+			} catch (GeneratorAlreadyDefinedException e) {
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(GeneratorHandler.TAG.equals(localName))
-			ch = m_generatorHandler;
+		if (GeneratorHandler.TAG.equals(localName))
+			ch = generatorHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public CSpecBuilder getCSpecBuilder()
-	{
-		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
+	public CSpecBuilder getCSpecBuilder() {
+		return ((ICSpecBuilderSupport) this.getParentHandler()).getCSpecBuilder();
 	}
 }

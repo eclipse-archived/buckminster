@@ -22,29 +22,24 @@ import org.osgi.service.url.URLStreamHandlerService;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class CVSPlugin extends LogAwarePlugin
-{
-	private static CVSPlugin s_plugin;
+public class CVSPlugin extends LogAwarePlugin {
+	private static CVSPlugin plugin;
 
-	public static CVSPlugin getDefault()
-	{
-		return s_plugin;
+	public static CVSPlugin getDefault() {
+		return plugin;
 	}
 
-	public static Logger getLogger()
-	{
-		return s_plugin.getBundleLogger();
+	public static Logger getLogger() {
+		return plugin.getBundleLogger();
 	}
 
-	public CVSPlugin()
-	{
+	public CVSPlugin() {
 		super();
-		s_plugin = this;
+		plugin = this;
 	}
 
 	@Override
-	public void start(BundleContext context) throws Exception
-	{
+	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		Hashtable<String, String[]> properties = new Hashtable<String, String[]>(1);
 		properties.put(URLConstants.URL_HANDLER_PROTOCOL, new String[] { Handler.PROTOCOL });
@@ -53,9 +48,8 @@ public class CVSPlugin extends LogAwarePlugin
 	}
 
 	@Override
-	public void stop(BundleContext context) throws Exception
-	{
+	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		s_plugin = null;
+		plugin = null;
 	}
 }

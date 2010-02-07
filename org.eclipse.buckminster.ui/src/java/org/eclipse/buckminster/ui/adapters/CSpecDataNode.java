@@ -14,14 +14,12 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 
-public class CSpecDataNode extends BasicTreeParentDataNode
-{
+public class CSpecDataNode extends BasicTreeParentDataNode {
 
-	public CSpecDataNode(CSpec data)
-	{
+	public CSpecDataNode(CSpec data) {
 		super(data);
 		Collection<ComponentRequest> dependencies = data.getDependencies();
-		if(dependencies != null && dependencies.size() > 0)
+		if (dependencies != null && dependencies.size() > 0)
 			addChild(new DependenciesDataNode(dependencies));
 	}
 }

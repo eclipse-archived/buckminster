@@ -15,12 +15,10 @@ import org.eclipse.buckminster.core.helpers.LocalizedException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 
-public class MissingPathException extends LocalizedException
-{
+public class MissingPathException extends LocalizedException {
 	private static final long serialVersionUID = 3228454630316889796L;
 
-	public MissingPathException(String name, String attribute, IPath path)
-	{
+	public MissingPathException(String name, String attribute, IPath path) {
 		super(NLS.bind(Messages.CSpec_0_attribute_1_does_not_define_path_2, new Object[] { name, attribute, path }));
 	}
 }

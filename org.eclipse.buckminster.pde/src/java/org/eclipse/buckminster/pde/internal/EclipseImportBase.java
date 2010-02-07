@@ -34,47 +34,40 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 @SuppressWarnings("restriction")
-final class EclipseImportBase
-{
-	static class Key
-	{
-		private final String m_repositoryURI;
+final class EclipseImportBase {
+	static class Key {
+		private final String repositoryURI;
 
-		private final ComponentRequest m_request;
+		private final ComponentRequest request;
 
-		Key(String repositoryURI, ComponentRequest request)
-		{
-			m_repositoryURI = repositoryURI;
-			m_request = request;
+		Key(String repositoryURI, ComponentRequest request) {
+			this.repositoryURI = repositoryURI;
+			this.request = request;
 		}
 
 		@Override
-		public boolean equals(Object o)
-		{
-			return this == o || (o instanceof Key) && m_repositoryURI.equals(((Key)o).m_repositoryURI)
-					&& m_request.equals(((Key)o).m_request);
+		public boolean equals(Object o) {
+			return this == o || (o instanceof Key) && repositoryURI.equals(((Key) o).repositoryURI) && request.equals(((Key) o).request);
 		}
 
-		public String getRepositoryURI()
-		{
-			return m_repositoryURI;
+		public String getRepositoryURI() {
+			return repositoryURI;
 		}
 
-		public ComponentRequest getRequest()
-		{
-			return m_request;
+		public ComponentRequest getRequest() {
+			return request;
 		}
 
 		@Override
-		public int hashCode()
-		{
-			return m_repositoryURI.hashCode() * 37 + m_request.hashCode();
+		public int hashCode() {
+			return repositoryURI.hashCode() * 37 + request.hashCode();
 		}
 	}
 
 	/**
-	 * Parameter in the resource URI that determines the search order when resolving the component. Valid values are
-	 * &quot;binary&quot; and &quot;linked&quot; or &quot;source&quot;. Default is &quot;binary&quot;
+	 * Parameter in the resource URI that determines the search order when
+	 * resolving the component. Valid values are &quot;binary&quot; and
+	 * &quot;linked&quot; or &quot;source&quot;. Default is &quot;binary&quot;
 	 */
 	static final String PARAM_IMPORT_TYPE = "importType"; //$NON-NLS-1$
 
@@ -84,33 +77,30 @@ final class EclipseImportBase
 
 	static final String IMPORT_TYPE_SOURCE = "source"; //$NON-NLS-1$
 
-	private final int m_type;
+	private final int type;
 
-	private final boolean m_platform;
+	private final boolean platform;
 
-	private final boolean m_feature;
+	private final boolean feature;
 
-	private final Key m_key;
+	private final Key key;
 
-	private final String m_query;
+	private final String query;
 
-	private final File m_location;
+	private final File location;
 
-	private final URL m_remoteLocation;
+	private final URL remoteLocation;
 
-	private boolean m_unpack = false;
+	private boolean unpack = false;
 
 	private static final UUID CACHE_IMPORT_BASE_CACHE = UUID.randomUUID();
 
-	public static EclipseImportBase obtain(NodeQuery query, String repositoryURI) throws CoreException
-	{
+	public static EclipseImportBase obtain(NodeQuery query, String repositoryURI) throws CoreException {
 		Key key = new Key(repositoryURI, query.getComponentRequest());
 		Map<Key, EclipseImportBase> cache = getImportBaseCacheCache(query.getContext().getUserCache());
-		synchronized(cache)
-		{
+		synchronized (cache) {
 			EclipseImportBase importBase = cache.get(key);
-			if(importBase == null)
-			{
+			if (importBase == null) {
 				importBase = new EclipseImportBase(key);
 				cache.put(key, importBase);
 			}
@@ -119,13 +109,10 @@ final class EclipseImportBase
 	}
 
 	@SuppressWarnings("unchecked")
-	static Map<Key, EclipseImportBase> getImportBaseCacheCache(Map<UUID, Object> ctxUserCache)
-	{
-		synchronized(ctxUserCache)
-		{
-			Map<Key, EclipseImportBase> listCache = (Map<Key, EclipseImportBase>)ctxUserCache.get(CACHE_IMPORT_BASE_CACHE);
-			if(listCache == null)
-			{
+	static Map<Key, EclipseImportBase> getImportBaseCacheCache(Map<UUID, Object> ctxUserCache) {
+		synchronized (ctxUserCache) {
+			Map<Key, EclipseImportBase> listCache = (Map<Key, EclipseImportBase>) ctxUserCache.get(CACHE_IMPORT_BASE_CACHE);
+			if (listCache == null) {
 				listCache = Collections.synchronizedMap(new HashMap<Key, EclipseImportBase>());
 				ctxUserCache.put(CACHE_IMPORT_BASE_CACHE, listCache);
 			}
@@ -133,145 +120,117 @@ final class EclipseImportBase
 		}
 	}
 
-	private EclipseImportBase(Key key) throws CoreException
-	{
+	private EclipseImportBase(Key key) throws CoreException {
 		URI uri;
-		try
-		{
+		try {
 			uri = new URI(key.getRepositoryURI());
-		}
-		catch(URISyntaxException e)
-		{
+		} catch (URISyntaxException e) {
 			throw BuckminsterException.fromMessage(e.getMessage());
 		}
 
 		String scheme = uri.getScheme();
 		String path = uri.getPath();
-		URL remoteLocation = null;
-		File location = null;
-		boolean platform = false;
+		URL remoteLoc = null;
+		File loc = null;
+		boolean platf = false;
 
-		if(scheme == null)
-		{
-			if(path == null || path.length() == 0)
-				platform = true;
+		if (scheme == null) {
+			if (path == null || path.length() == 0)
+				platf = true;
 			else
-				location = new File(path);
-		}
-		else if("file".equalsIgnoreCase(scheme)) //$NON-NLS-1$
-			location = new File(path);
-		else
-		{
-			try
-			{
-				if(!(path.endsWith("/") || path.endsWith(".map") || path.endsWith(".xml") || path.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				loc = new File(path);
+		} else if ("file".equalsIgnoreCase(scheme)) //$NON-NLS-1$
+			loc = new File(path);
+		else {
+			try {
+				if (!(path.endsWith("/") || path.endsWith(".map") || path.endsWith(".xml") || path.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					path += '/';
-				remoteLocation = new URL(scheme, uri.getHost(), uri.getPort(), path);
-			}
-			catch(MalformedURLException e)
-			{
+				remoteLoc = new URL(scheme, uri.getHost(), uri.getPort(), path);
+			} catch (MalformedURLException e) {
 				throw BuckminsterException.fromMessage(e.getMessage());
 			}
 		}
 
-		m_location = location;
-		m_remoteLocation = remoteLocation;
-		m_platform = platform;
+		this.location = loc;
+		this.remoteLocation = remoteLoc;
+		this.platform = platf;
 
-		m_query = uri.getQuery();
-		m_key = key;
-		m_feature = IComponentType.ECLIPSE_FEATURE.equals(key.getRequest().getComponentTypeID());
+		this.query = uri.getQuery();
+		this.key = key;
+		this.feature = IComponentType.ECLIPSE_FEATURE.equals(key.getRequest().getComponentTypeID());
 
 		Map<String, String> params = URLUtils.queryAsParameters(uri.getQuery());
 		String importType = params.get(PARAM_IMPORT_TYPE);
-		if(importType == null)
-			m_type = PluginImportOperation.IMPORT_UNKNOWN;
-		else if(IMPORT_TYPE_BINARY.equalsIgnoreCase(importType))
-			m_type = PluginImportOperation.IMPORT_BINARY;
-		else if(IMPORT_TYPE_LINKED.equalsIgnoreCase(importType))
-			m_type = PluginImportOperation.IMPORT_BINARY_WITH_LINKS;
-		else if(IMPORT_TYPE_SOURCE.equalsIgnoreCase(importType))
-			m_type = PluginImportOperation.IMPORT_WITH_SOURCE;
+		if (importType == null)
+			type = PluginImportOperation.IMPORT_UNKNOWN;
+		else if (IMPORT_TYPE_BINARY.equalsIgnoreCase(importType))
+			type = PluginImportOperation.IMPORT_BINARY;
+		else if (IMPORT_TYPE_LINKED.equalsIgnoreCase(importType))
+			type = PluginImportOperation.IMPORT_BINARY_WITH_LINKS;
+		else if (IMPORT_TYPE_SOURCE.equalsIgnoreCase(importType))
+			type = PluginImportOperation.IMPORT_WITH_SOURCE;
 		else
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.invalid_import_type_0, importType));
 
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		return o == this || (o instanceof EclipseImportBase && ((EclipseImportBase)o).m_key.equals(m_key));
+	public boolean equals(Object o) {
+		return o == this || (o instanceof EclipseImportBase && ((EclipseImportBase) o).key.equals(key));
 	}
 
 	@Override
-	public int hashCode()
-	{
-		return m_key.hashCode();
+	public int hashCode() {
+		return key.hashCode();
 	}
 
-	String getComponentName()
-	{
-		return m_key.getRequest().getName();
+	String getComponentName() {
+		return key.getRequest().getName();
 	}
 
-	List<IFeatureModel> getFeatureModels(EclipseImportReaderType readerType, IProgressMonitor monitor)
-			throws CoreException
-	{
+	List<IFeatureModel> getFeatureModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException {
 		return readerType.getFeatureModels(getLocation(), getComponentName(), monitor);
 	}
 
-	Key getKey()
-	{
-		return m_key;
+	Key getKey() {
+		return key;
 	}
 
-	final File getLocation() throws CoreException
-	{
-		if(m_location == null && !m_platform)
+	final File getLocation() throws CoreException {
+		if (location == null && !platform)
 			throw BuckminsterException.fromMessage(Messages.site_is_not_local);
-		return m_location;
+		return location;
 	}
 
-	List<IPluginModelBase> getPluginModels(EclipseImportReaderType readerType, IProgressMonitor monitor)
-			throws CoreException
-	{
+	List<IPluginModelBase> getPluginModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException {
 		return readerType.getPluginModels(getLocation(), getComponentName(), monitor);
 	}
 
-	String getQuery()
-	{
-		return m_query;
+	String getQuery() {
+		return query;
 	}
 
-	final URL getRemoteLocation() throws CoreException
-	{
-		if(m_remoteLocation == null)
-		{
-			try
-			{
-				return m_location.toURI().toURL();
-			}
-			catch(MalformedURLException e)
-			{
+	final URL getRemoteLocation() throws CoreException {
+		if (remoteLocation == null) {
+			try {
+				return location.toURI().toURL();
+			} catch (MalformedURLException e) {
 				throw BuckminsterException.wrap(e);
 			}
 		}
-		return m_remoteLocation;
+		return remoteLocation;
 	}
 
-	int getType()
-	{
-		return m_type;
+	int getType() {
+		return type;
 	}
 
-	boolean isFeature()
-	{
-		return m_feature;
+	boolean isFeature() {
+		return feature;
 	}
 
-	boolean isLocal()
-	{
-		return m_remoteLocation == null;
+	boolean isLocal() {
+		return remoteLocation == null;
 	}
 
 	/**
@@ -279,9 +238,8 @@ final class EclipseImportBase
 	 * 
 	 * @return true if supposed to be unpacked
 	 */
-	boolean isUnpack()
-	{
-		return m_unpack;
+	boolean isUnpack() {
+		return unpack;
 	}
 
 	/**
@@ -289,8 +247,7 @@ final class EclipseImportBase
 	 * 
 	 * @param unpack
 	 */
-	void setUnpack(boolean unpack)
-	{
-		m_unpack = unpack;
+	void setUnpack(boolean unpack) {
+		this.unpack = unpack;
 	}
 }

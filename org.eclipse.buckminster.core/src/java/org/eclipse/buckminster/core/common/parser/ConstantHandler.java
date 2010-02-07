@@ -15,18 +15,15 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class ConstantHandler extends ValueHandler
-{
+public class ConstantHandler extends ValueHandler {
 	static final String TAG = Constant.TAG;
 
-	public ConstantHandler(AbstractHandler parent)
-	{
+	public ConstantHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		this.setValueHolder(new Constant<String>(this.getStringValue(attrs, Constant.ATTR_VALUE)));
 	}
 }

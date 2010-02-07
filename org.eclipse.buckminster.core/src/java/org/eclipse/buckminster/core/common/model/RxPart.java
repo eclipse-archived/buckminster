@@ -18,45 +18,39 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public abstract class RxPart extends AbstractSaxableElement
-{
+public abstract class RxPart extends AbstractSaxableElement {
 	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
 
 	public static final String ATTR_OPTIONAL = "optional"; //$NON-NLS-1$
 
-	private final String m_name;
+	private final String name;
 
-	private final boolean m_optional;
+	private final boolean optional;
 
-	protected RxPart(String name, boolean optional)
-	{
-		m_name = name;
-		m_optional = optional;
+	protected RxPart(String name, boolean optional) {
+		this.name = name;
+		this.optional = optional;
 	}
 
 	public abstract void addPattern(StringBuilder bld, List<RxPart> namedParts) throws CoreException;
 
-	public String getName()
-	{
-		return m_name;
+	public String getName() {
+		return name;
 	}
 
-	public boolean isOptional()
-	{
-		return m_optional;
+	public boolean isOptional() {
+		return optional;
 	}
 
-	public boolean isTagged()
-	{
+	public boolean isTagged() {
 		return false;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		if(!(isTagged() || m_name == null))
-			Utils.addAttribute(attrs, ATTR_NAME, m_name);
-		if(m_optional)
+	protected void addAttributes(AttributesImpl attrs) {
+		if (!(isTagged() || name == null))
+			Utils.addAttribute(attrs, ATTR_NAME, name);
+		if (optional)
 			Utils.addAttribute(attrs, ATTR_OPTIONAL, Boolean.TRUE.toString());
 	}
 }

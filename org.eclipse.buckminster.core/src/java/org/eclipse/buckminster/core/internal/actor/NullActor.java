@@ -19,13 +19,11 @@ import org.eclipse.core.runtime.Status;
  * @author kolwing
  * 
  */
-public class NullActor extends AbstractActor
-{
+public class NullActor extends AbstractActor {
 	public static final String ID = "null"; //$NON-NLS-1$
 
 	@Override
-	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
-	{
+	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return Status.OK_STATUS;
 	}

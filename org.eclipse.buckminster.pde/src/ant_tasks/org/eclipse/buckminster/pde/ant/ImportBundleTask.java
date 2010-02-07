@@ -20,71 +20,55 @@ import org.eclipse.core.runtime.Path;
 
 /**
  * @author Thomas Hallgren
- *
+ * 
  */
-public class ImportBundleTask extends Task
-{
-	private URL m_siteURL;
-	private File m_destdir;
-	private String m_bundleName;
+public class ImportBundleTask extends Task {
+	private URL siteURL;
+	private File destdir;
+	private String bundleName;
 
 	@Override
-	public void execute() throws BuildException
-	{
-		try
-		{
-			if(m_bundleName == null)
-				throw this.missingAttribute("bundleName");
-			if(m_destdir == null)
-				throw this.missingAttribute("destdir");
-			if(m_siteURL == null)
-				throw this.missingAttribute("siteURL");
+	public void execute() throws BuildException {
+		try {
+			if (bundleName == null)
+				throw this.missingAttribute("bundleName"); //$NON-NLS-1$
+			if (destdir == null)
+				throw this.missingAttribute("destdir"); //$NON-NLS-1$
+			if (siteURL == null)
+				throw this.missingAttribute("siteURL"); //$NON-NLS-1$
 
-			ImportBundle importBundle = new ImportBundle(m_bundleName, m_siteURL, new Path(m_destdir.toString()));
+			ImportBundle importBundle = new ImportBundle(bundleName, siteURL, new Path(destdir.toString()));
 			importBundle.execute();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 
-	public void setBundleName(String bundleName)
-	{
-		m_bundleName = bundleName;
+	public void setBundleName(String bundleName) {
+		this.bundleName = bundleName;
 	}
 
-	public void setDestdir(File destDir)
-	{
-		m_destdir = destDir;
+	public void setDestdir(File destDir) {
+		this.destdir = destDir;
 	}
 
-	public void setSiteDir(File siteDir) throws BuildException
-	{
-		try
-		{
-			m_siteURL = siteDir.toURI().toURL();
-		}
-		catch(MalformedURLException e)
-		{
+	public void setSiteDir(File siteDir) throws BuildException {
+		try {
+			this.siteURL = siteDir.toURI().toURL();
+		} catch (MalformedURLException e) {
 			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 
-	public void setSiteURL(String siteURL) throws BuildException
-	{
-		try
-		{
-			m_siteURL = new URL(siteURL);
-		}
-		catch(MalformedURLException e)
-		{
+	public void setSiteURL(String siteURL) throws BuildException {
+		try {
+			this.siteURL = new URL(siteURL);
+		} catch (MalformedURLException e) {
 			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 
-	protected BuildException missingAttribute(String property)
-	{
-		return new BuildException("Missing attribute \"" + property + '"', this.getLocation());
+	protected BuildException missingAttribute(String property) {
+		return new BuildException("Missing attribute \"" + property + '"', this.getLocation()); //$NON-NLS-1$
 	}
 }

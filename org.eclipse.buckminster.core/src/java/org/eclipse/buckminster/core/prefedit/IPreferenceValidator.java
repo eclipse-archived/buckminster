@@ -11,7 +11,6 @@ package org.eclipse.buckminster.core.prefedit;
 /**
  * @author Thomas Hallgren
  */
-public interface IPreferenceValidator
-{
+public interface IPreferenceValidator {
 	boolean validate(String value);
 }

@@ -17,23 +17,21 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractSaxableElement implements ISaxableElement, IAdaptable
-{
+public abstract class AbstractSaxableElement implements ISaxableElement, IAdaptable {
 	/**
-	 * Default implementation of IAdaptable.getAdapter() - if the data object is instance of the wanted class, it is
-	 * returned immediately, else the task is delegated to the Platform Adapter Manager which handles registered adapter
-	 * factories.
+	 * Default implementation of IAdaptable.getAdapter() - if the data object is
+	 * instance of the wanted class, it is returned immediately, else the task
+	 * is delegated to the Platform Adapter Manager which handles registered
+	 * adapter factories.
 	 */
 	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter)
-	{
-		if(adapter.isInstance(this))
+	public Object getAdapter(Class adapter) {
+		if (adapter.isInstance(this))
 			return this;
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
-	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException
-	{
+	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException {
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		AttributesImpl attrs = new AttributesImpl();
 		addAttributes(attrs);
@@ -42,21 +40,17 @@ public abstract class AbstractSaxableElement implements ISaxableElement, IAdapta
 		handler.endElement(namespace, localName, qName);
 	}
 
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
 	}
 
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
 	}
 
-	protected String getElementNamespace(String namespace) throws SAXException
-	{
+	protected String getElementNamespace(String namespace) throws SAXException {
 		return namespace;
 	}
 
-	protected String getElementPrefix(String prefix) throws SAXException
-	{
+	protected String getElementPrefix(String prefix) throws SAXException {
 		return prefix;
 	}
 }

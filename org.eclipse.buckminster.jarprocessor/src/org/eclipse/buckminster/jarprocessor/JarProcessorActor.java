@@ -23,8 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 
-public class JarProcessorActor extends AbstractActor
-{
+public class JarProcessorActor extends AbstractActor {
 	public static final String ACTOR_ID = "jarProcessor"; //$NON-NLS-1$
 
 	public static final String ALIAS_JAR_FOLDER = "jar.folder"; //$NON-NLS-1$
@@ -38,74 +37,62 @@ public class JarProcessorActor extends AbstractActor
 	public static final String COMMAND_UNPACK = "unpack"; //$NON-NLS-1$
 
 	@Override
-	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
-	{
+	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException {
 		Action action = ctx.getAction();
 		IPath outputPath = AbstractActor.getSingleAttributePath(ctx, action, false);
 		IPath jarFolder = null;
 		CSpec cspec = action.getCSpec();
 
-		for(Prerequisite preq : action.getPrerequisites())
-		{
-			if(ALIAS_JAR_FOLDER.equals(preq.getAlias()))
-			{
+		for (Prerequisite preq : action.getPrerequisites()) {
+			if (ALIAS_JAR_FOLDER.equals(preq.getAlias())) {
 				// This prerequisite should appoint the folder that contains
 				// the jar to be packed.
 				//
 				Attribute rt = preq.getReferencedAttribute(cspec, ctx);
-				if(rt != null)
+				if (rt != null)
 					jarFolder = AbstractActor.getSingleAttributePath(ctx, rt, true);
 				continue;
 			}
 			throw new IllegalPrerequisiteException(action, preq.getName());
 		}
 
-		if(jarFolder == null)
+		if (jarFolder == null)
 			throw new MissingPrerequisiteException(action, ALIAS_JAR_FOLDER);
 
 		Map<String, ? extends Object> props = ctx.getProperties();
-		String command = (String)props.get(PROP_COMMAND);
-		if(command == null)
+		String command = (String) props.get(PROP_COMMAND);
+		if (command == null)
 			throw new MissingPropertyException(action, PROP_COMMAND);
 
-		if(!jarFolder.hasTrailingSeparator())
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.input_of_action_0_must_be_folder,
-					action.getQualifiedName()));
+		if (!jarFolder.hasTrailingSeparator())
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.input_of_action_0_must_be_folder, action.getQualifiedName()));
 
-		if(!outputPath.hasTrailingSeparator())
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.output_of_action_0_must_be_folder,
-					action.getQualifiedName()));
+		if (!outputPath.hasTrailingSeparator())
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.output_of_action_0_must_be_folder, action.getQualifiedName()));
 
 		File outputDir = outputPath.toFile().getAbsoluteFile();
 		outputDir.mkdirs();
-		try
-		{
-			if(COMMAND_REPACK.equals(command))
+		try {
+			if (COMMAND_REPACK.equals(command))
 				repackJars(jarFolder.toFile(), outputDir);
-			else if(COMMAND_PACK.equals(command))
+			else if (COMMAND_PACK.equals(command))
 				packJars(jarFolder.toFile(), outputDir);
-			else if(COMMAND_UNPACK.equals(command))
+			else if (COMMAND_UNPACK.equals(command))
 				unpackJars(jarFolder.toFile(), outputDir);
 			else
-				throw BuckminsterException.fromMessage(NLS.bind(
-						org.eclipse.buckminster.jarprocessor.Messages.action_0_does_not_recognize_command_1,
+				throw BuckminsterException.fromMessage(NLS.bind(org.eclipse.buckminster.jarprocessor.Messages.action_0_does_not_recognize_command_1,
 						action.getQualifiedName(), command));
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 		return Status.OK_STATUS;
 	}
 
-	private void packJars(File inputDir, File outputDir) throws CoreException, IOException
-	{
+	private void packJars(File inputDir, File outputDir) throws CoreException, IOException {
 		File[] files = inputDir.listFiles();
-		for(File file : files)
-		{
+		for (File file : files) {
 			String name = file.getName();
-			if(file.isDirectory())
-			{
+			if (file.isDirectory()) {
 				File childOutputDir = new File(outputDir, name);
 				childOutputDir.mkdir();
 				packJars(file, childOutputDir);
@@ -113,7 +100,7 @@ public class JarProcessorActor extends AbstractActor
 			}
 
 			FileUtils.copyFile(file, outputDir, name, null);
-			if(!name.endsWith(IConstants.JAR_SUFFIX))
+			if (!name.endsWith(IConstants.JAR_SUFFIX))
 				continue;
 
 			RecursivePacker rpacker = new RecursivePacker(null, true);
@@ -121,31 +108,25 @@ public class JarProcessorActor extends AbstractActor
 		}
 	}
 
-	private void repackJars(File inputDir, File outputDir) throws CoreException, IOException
-	{
+	private void repackJars(File inputDir, File outputDir) throws CoreException, IOException {
 		File[] files = inputDir.listFiles();
-		for(File file : files)
-		{
+		for (File file : files) {
 			String name = file.getName();
-			if(file.isDirectory())
-			{
+			if (file.isDirectory()) {
 				File childOutputDir = new File(outputDir, name);
 				childOutputDir.mkdir();
 				repackJars(file, childOutputDir);
 				continue;
 			}
 
-			if(name.endsWith(IConstants.JAR_SUFFIX))
-			{
+			if (name.endsWith(IConstants.JAR_SUFFIX)) {
 				RecursiveConditioner rcond = new RecursiveConditioner(null);
 				rcond.condition(file, new File(outputDir, name));
-			}
-			else
+			} else
 				FileUtils.copyFile(file, outputDir, name, null);
 		}
 	}
 
-	private void unpackJars(File inputDir, File outputDir)
-	{
+	private void unpackJars(File inputDir, File outputDir) {
 	}
 }

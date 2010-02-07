@@ -15,12 +15,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingMaterializerException extends LocalizedException
-{
+public class MissingMaterializerException extends LocalizedException {
 	private static final long serialVersionUID = 5491355041991362604L;
 
-	public MissingMaterializerException(String materializerId)
-	{
+	public MissingMaterializerException(String materializerId) {
 		super(NLS.bind(Messages.No_materializer_with_id_0_has_been_registered_with_extension_point_1, materializerId,
 				IMaterializer.MATERIALIZERS_POINT));
 	}

@@ -17,35 +17,37 @@ import java.util.Map;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 
 /**
- * Abstract class for holder of values. The holder will produce either exactly one value (holders such as {@link Format}
- * , {@link Replace}, or {@link PropertyRef}) or it may produce multiple values (currently true only for {@link Split}.<br/>
- * If the {@link #getValue(Map<String,String>} method is called on a holder that produces multiple values and if the
- * result is exactly one value, that value is returned. If the result is zero values, the empty string is returned. If
- * the result is more then one value, the result of concatenating those values is returned.<br/>
- * Calling {@link #getValues(Map<String,String>)} on a holder that produces a single value will result in a one element
- * array.
+ * Abstract class for holder of values. The holder will produce either exactly
+ * one value (holders such as {@link Format} , {@link Replace}, or
+ * {@link PropertyRef}) or it may produce multiple values (currently true only
+ * for {@link Split}.<br/>
+ * If the {@link #getValue(Map<String,String>} method is called on a holder that
+ * produces multiple values and if the result is exactly one value, that value
+ * is returned. If the result is zero values, the empty string is returned. If
+ * the result is more then one value, the result of concatenating those values
+ * is returned.<br/>
+ * Calling {@link #getValues(Map<String,String>)} on a holder that produces a
+ * single value will result in a one element array.
  * 
  * @author Thomas Hallgren
  */
-public abstract class ValueHolder<T> extends AbstractSaxableElement
-{
+public abstract class ValueHolder<T> extends AbstractSaxableElement {
 	public static final String NO_VALUE = ""; //$NON-NLS-1$
 
-	private boolean m_mutable;
+	private boolean mutable;
 
-	protected ValueHolder()
-	{
-		m_mutable = false;
+	protected ValueHolder() {
+		mutable = false;
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		return o == this || (o != null && o.getClass() == getClass() && m_mutable == ((ValueHolder<?>)o).m_mutable);
+	public boolean equals(Object o) {
+		return o == this || (o != null && o.getClass() == getClass() && mutable == ((ValueHolder<?>) o).mutable);
 	}
 
 	/**
-	 * Returns the resolved value of this holder using <code>properties</code> as the scope.
+	 * Returns the resolved value of this holder using <code>properties</code>
+	 * as the scope.
 	 * 
 	 * @param properties
 	 *            The scope used when resolving the value.
@@ -53,13 +55,13 @@ public abstract class ValueHolder<T> extends AbstractSaxableElement
 	 * @throws CircularExpansionException
 	 *             if the <code>recursionGuard</code> reaches its threshold.
 	 */
-	public final T getValue(Map<String, ? extends Object> properties)
-	{
+	public final T getValue(Map<String, ? extends Object> properties) {
 		return checkedGetValue(properties, 0);
 	}
 
 	/**
-	 * Returns resolved value array of this holder using <code>properties</code> as the scope.
+	 * Returns resolved value array of this holder using <code>properties</code>
+	 * as the scope.
 	 * 
 	 * @param properties
 	 *            The scope used when resolving the values.
@@ -67,27 +69,24 @@ public abstract class ValueHolder<T> extends AbstractSaxableElement
 	 * @throws CircularExpansionException
 	 *             if the <code>recursionGuard</code> reaches its threshold.
 	 */
-	public final List<T> getValues(Map<String, ? extends Object> properties)
-	{
+	public final List<T> getValues(Map<String, ? extends Object> properties) {
 		return checkedGetValues(properties, 0);
 	}
 
 	@Override
-	public int hashCode()
-	{
-		return m_mutable
-				? 17
-				: 61;
+	public int hashCode() {
+		return mutable ? 17 : 61;
 	}
 
 	/**
-	 * This method will return <code>false</code> for all holders that produces exactly one value and <code>true</code>
-	 * if the holder may produce zero or many values.
+	 * This method will return <code>false</code> for all holders that produces
+	 * exactly one value and <code>true</code> if the holder may produce zero or
+	 * many values.
 	 * 
-	 * @return <code>true</code> if the producer may produce zero or many values.
+	 * @return <code>true</code> if the producer may produce zero or many
+	 *         values.
 	 */
-	public boolean isMultiValueProducer()
-	{
+	public boolean isMultiValueProducer() {
 		return false;
 	}
 
@@ -96,26 +95,26 @@ public abstract class ValueHolder<T> extends AbstractSaxableElement
 	 * 
 	 * @return <code>true</code> if the value is mutable
 	 */
-	public boolean isMutable()
-	{
-		return m_mutable;
+	public boolean isMutable() {
+		return mutable;
 	}
 
 	/**
 	 * Set the mutable status for the contained value
 	 */
-	public void setMutable(boolean flag)
-	{
-		m_mutable = flag;
+	public void setMutable(boolean flag) {
+		mutable = flag;
 	}
 
 	/**
-	 * Returns the resolved value of this holder using <code>properties</code> as the scope.
+	 * Returns the resolved value of this holder using <code>properties</code>
+	 * as the scope.
 	 * 
 	 * @param properties
 	 *            The scope used when resolving the value.
 	 * @param recursionGuard
-	 *            A guard that is increased for each recursive expansion that is made.
+	 *            A guard that is increased for each recursive expansion that is
+	 *            made.
 	 * @return A string representing the resolved value.
 	 * @throws CircularExpansionException
 	 *             if the <code>recursionGuard</code> reaches its threshold.
@@ -123,18 +122,19 @@ public abstract class ValueHolder<T> extends AbstractSaxableElement
 	protected abstract T checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard);
 
 	/**
-	 * Returns resolved value array of this holder using <code>properties</code> as the scope.
+	 * Returns resolved value array of this holder using <code>properties</code>
+	 * as the scope.
 	 * 
 	 * @param properties
 	 *            The scope used when resolving the values
 	 * @param recursionGuard
-	 *            A guard that is increased for each recursive expansion that is made.
+	 *            A guard that is increased for each recursive expansion that is
+	 *            made.
 	 * @return A string array representing the resolved values
 	 * @throws CircularExpansionException
 	 *             if the <code>recursionGuard</code> reaches its threshold.
 	 */
-	protected List<T> checkedGetValues(Map<String, ? extends Object> properties, int recursionGuard)
-	{
+	protected List<T> checkedGetValues(Map<String, ? extends Object> properties, int recursionGuard) {
 		return Collections.singletonList(checkedGetValue(properties, recursionGuard));
 	}
 }

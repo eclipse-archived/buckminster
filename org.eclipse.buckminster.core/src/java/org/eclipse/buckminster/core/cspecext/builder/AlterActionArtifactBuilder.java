@@ -16,17 +16,13 @@ import org.eclipse.buckminster.core.cspecext.model.AlterAttribute;
 /**
  * @author Thomas Hallgren
  */
-public class AlterActionArtifactBuilder extends AlterArtifactBuilder
-{
-	public AlterActionArtifactBuilder(ActionArtifactBuilder baseBuilder)
-	{
+public class AlterActionArtifactBuilder extends AlterArtifactBuilder {
+	public AlterActionArtifactBuilder(ActionArtifactBuilder baseBuilder) {
 		super(baseBuilder);
 	}
 
 	@Override
-	public AlterAttribute<Artifact> createAlterAttribute()
-	{
-		return new AlterActionArtifact((ActionArtifact)createBase(), getRemovedHints(), getAlteredHints(),
-				getRemovedPaths());
+	public AlterAttribute<Artifact> createAlterAttribute() {
+		return new AlterActionArtifact((ActionArtifact) createBase(), getRemovedHints(), getAlteredHints(), getRemovedPaths());
 	}
 }

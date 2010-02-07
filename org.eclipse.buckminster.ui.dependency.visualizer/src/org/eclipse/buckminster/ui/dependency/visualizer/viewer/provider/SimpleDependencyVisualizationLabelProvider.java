@@ -38,8 +38,7 @@ import org.eclipse.zest.core.widgets.ZestStyles;
  * @author Johannes Utzig
  * 
  */
-public class SimpleDependencyVisualizationLabelProvider implements IDependencyVisualizationLabelProvider
-{
+public class SimpleDependencyVisualizationLabelProvider implements IDependencyVisualizationLabelProvider {
 
 	private BOMNode root;
 
@@ -81,20 +80,17 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 
 	public Color DEFAULT_BORDER_HIGHLIGHT_COLOR = new Color(Display.getDefault(), 255, 255, 0);
 
-	public SimpleDependencyVisualizationLabelProvider(ILabelProvider baseLabelProvider, GraphViewer viewer)
-	{
+	public SimpleDependencyVisualizationLabelProvider(ILabelProvider baseLabelProvider, GraphViewer viewer) {
 		this.baseLabelProvider = baseLabelProvider;
 		this.graphViewer = viewer;
 	}
 
-	public void addListener(ILabelProviderListener listener)
-	{
+	public void addListener(ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void clear()
-	{
+	public void clear() {
 		unreveal(selection);
 		interestingConnections.clear();
 		interestingNodes.clear();
@@ -102,8 +98,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		selection = null;
 	}
 
-	public void dispose()
-	{
+	public void dispose() {
 		BLACK.dispose();
 		WHITE.dispose();
 		DEFAULT_BORDER_COLOR.dispose();
@@ -119,212 +114,180 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 
 	}
 
-	public boolean fisheyeNode(Object entity)
-	{
-		if(root == entity)
+	public boolean fisheyeNode(Object entity) {
+		if (root == entity)
 			return true;
-		if(selection == entity)
+		if (selection == entity)
 			return true;
 		return false;
 	}
 
-	public Color getBackgroundColour(Object entity)
-	{
-		if(entity instanceof BOMNode)
-		{
-			BOMNode node = (BOMNode)entity;
-			if(node.getResolution() == null)
-			{
+	public Color getBackgroundColour(Object entity) {
+		if (entity instanceof BOMNode) {
+			BOMNode node = (BOMNode) entity;
+			if (node.getResolution() == null) {
 				return UNRESOLVED_NODE_COLOR;
 			}
 		}
 
-		if(entity == root)
-		{
+		if (entity == root) {
 			return ROOT_REQUEST_COLOR;
 		}
-		if(entity == selection)
-		{
+		if (entity == selection) {
 			return SELECTION_COLOR;
 		}
 
 		return DEFAULT_NODE_COLOR;
 	}
 
-	public Color getBorderColor(Object entity)
-	{
+	public Color getBorderColor(Object entity) {
 		return DEFAULT_BORDER_COLOR;
 	}
 
-	public Color getBorderHighlightColor(Object entity)
-	{
+	public Color getBorderHighlightColor(Object entity) {
 		return DEFAULT_BORDER_HIGHLIGHT_COLOR;
 	}
 
-	public int getBorderWidth(Object entity)
-	{
+	public int getBorderWidth(Object entity) {
 		return 0;
 	}
 
-	public Color getColor(Object rel)
-	{
+	public Color getColor(Object rel) {
 		ConnectionCategory type = interestingConnections.get(rel);
-		if(type == null)
+		if (type == null)
 			return DEFAULT_CONNECTION_COLOR;
-		switch(type)
-		{
-		case DEPENDENCY:
-			return DEPENDENCY_COLOR;
-		case USAGE:
-			return USAGE_COLOR;
-		case PATH_TO_ROOT:
-			return PATH_TO_ROOT_COLOR;
+		switch (type) {
+			case DEPENDENCY:
+				return DEPENDENCY_COLOR;
+			case USAGE:
+				return USAGE_COLOR;
+			case PATH_TO_ROOT:
+				return PATH_TO_ROOT_COLOR;
 		}
 		return DEFAULT_CONNECTION_COLOR;
 	}
 
-	public int getConnectionStyle(Object rel)
-	{
-		if(interestingConnections.containsKey(rel))
-		{
+	public int getConnectionStyle(Object rel) {
+		if (interestingConnections.containsKey(rel)) {
 			return ZestStyles.CONNECTIONS_DASH | ZestStyles.CONNECTIONS_DIRECTED;
 		}
 		return ZestStyles.CONNECTIONS_DIRECTED;
 	}
 
-	public Color getForegroundColour(Object entity)
-	{
+	public Color getForegroundColour(Object entity) {
 		ConnectionCategory category = interestingNodes.get(entity);
-		if(category == null || entity == selection || entity == root)
+		if (category == null || entity == selection || entity == root)
 			return BLACK;
-		switch(category)
-		{
-		case PATH_TO_ROOT:
-			return WHITE;
-		default:
-			return BLACK;
+		switch (category) {
+			case PATH_TO_ROOT:
+				return WHITE;
+			default:
+				return BLACK;
 		}
 
 	}
 
-	public Color getHighlightColor(Object rel)
-	{
+	public Color getHighlightColor(Object rel) {
 		return HIGHLIGHT_CONNECTION_COLOR;
 	}
 
-	public Image getImage(Object element)
-	{
+	public Image getImage(Object element) {
 		return baseLabelProvider.getImage(element);
 	}
 
-	public int getLineWidth(Object rel)
-	{
-		if(interestingConnections.containsKey(rel))
-		{
+	public int getLineWidth(Object rel) {
+		if (interestingConnections.containsKey(rel)) {
 			return 2;
 		}
 		return -1;
 	}
 
-	public Color getNodeHighlightColor(Object entity)
-	{
-		if(entity == root)
+	public Color getNodeHighlightColor(Object entity) {
+		if (entity == root)
 			return ROOT_REQUEST_COLOR;
-		if(entity == selection)
+		if (entity == selection)
 			return SELECTION_COLOR;
 		ConnectionCategory category = interestingNodes.get(entity);
-		if(category == null)
+		if (category == null)
 			return DEFAULT_NODE_COLOR;
-		switch(category)
-		{
-		case DEPENDENCY:
-			return DEPENDENCY_COLOR;
-		case USAGE:
-			return USAGE_COLOR;
-		case PATH_TO_ROOT:
-			return PATH_TO_ROOT_COLOR;
-		default:
-			return DEFAULT_NODE_COLOR;
+		switch (category) {
+			case DEPENDENCY:
+				return DEPENDENCY_COLOR;
+			case USAGE:
+				return USAGE_COLOR;
+			case PATH_TO_ROOT:
+				return PATH_TO_ROOT_COLOR;
+			default:
+				return DEFAULT_NODE_COLOR;
 		}
 
 	}
 
-	public String getText(Object element)
-	{
+	public String getText(Object element) {
 		return baseLabelProvider.getText(element);
 	}
 
-	public IFigure getTooltip(Object entity)
-	{
-		if(entity instanceof BOMNode)
-		{
-			BOMNode node = (BOMNode)entity;
+	public IFigure getTooltip(Object entity) {
+		if (entity instanceof BOMNode) {
+			BOMNode node = (BOMNode) entity;
 			return new BOMNodeTooltipFigure(node);
 		}
 		return null;
 	}
 
-	public void highlightSelection(BOMNode nodeSelection)
-	{
-		if(nodeSelection == selection)
+	public void highlightSelection(BOMNode nodeSelection) {
+		if (nodeSelection == selection)
 			return;
 		highlightSelectionInternal(nodeSelection);
 
 	}
 
-	public boolean isLabelProperty(Object element, String property)
-	{
+	public boolean isLabelProperty(Object element, String property) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public void removeListener(ILabelProviderListener listener)
-	{
+	public void removeListener(ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void setRelationshipProvider(IRelationshipProvider provider)
-	{
+	public void setRelationshipProvider(IRelationshipProvider provider) {
 		this.relationshipProvider = provider;
 		highlightSelectionInternal(selection);
 	}
 
-	public void setRoot(BOMNode node)
-	{
+	public void setRoot(BOMNode node) {
 		BOMNode previousRoot = root;
 		this.root = node;
 
-		// make sure to update what used to be root to get rid of any highlighing
-		if(previousRoot != null)
-		{
+		// make sure to update what used to be root to get rid of any
+		// highlighing
+		if (previousRoot != null) {
 			graphViewer.unReveal(previousRoot);
 			graphViewer.update(previousRoot, null);
 		}
-		if(root != null)
-		{
+		if (root != null) {
 			graphViewer.reveal(root);
 			graphViewer.update(root, null);
 		}
 	}
 
-	private void highlightSelectionInternal(BOMNode nodeSelection)
-	{
+	private void highlightSelectionInternal(BOMNode nodeSelection) {
 		BOMNode previousSelection = selection;
 		selection = nodeSelection;
 		unreveal(previousSelection);
 
-		if(nodeSelection == null)
+		if (nodeSelection == null)
 			return;
 		Object[] connections = graphViewer.getConnectionElements();
-		interestingConnections = new HashMap<EntityConnectionData, ConnectionCategory>(
-				relationshipProvider.getInterestingRelationships(root, nodeSelection, connections));
+		interestingConnections = new HashMap<EntityConnectionData, ConnectionCategory>(relationshipProvider.getInterestingRelationships(root,
+				nodeSelection, connections));
 		interestingNodes.clear();
-		for(Entry<EntityConnectionData, ConnectionCategory> entry : interestingConnections.entrySet())
-		{
+		for (Entry<EntityConnectionData, ConnectionCategory> entry : interestingConnections.entrySet()) {
 			EntityConnectionData data = entry.getKey();
-			BOMNode dest = (BOMNode)data.dest;
-			BOMNode source = (BOMNode)data.source;
+			BOMNode dest = (BOMNode) data.dest;
+			BOMNode source = (BOMNode) data.source;
 			interestingNodes.put(dest, entry.getValue());
 			interestingNodes.put(source, entry.getValue());
 			graphViewer.reveal(dest);
@@ -340,29 +303,24 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 
 	}
 
-	private void unreveal(Object previousSelection)
-	{
+	private void unreveal(Object previousSelection) {
 		Iterator<BOMNode> nodeIterator = interestingNodes.keySet().iterator();
-		while(nodeIterator.hasNext())
-		{
+		while (nodeIterator.hasNext()) {
 			BOMNode node = nodeIterator.next();
 			nodeIterator.remove();
 			graphViewer.unReveal(node);
 			graphViewer.update(node, null);
 		}
-		if(root != null)
-		{
+		if (root != null) {
 			graphViewer.update(root, null);
 		}
-		if(previousSelection != null)
-		{
+		if (previousSelection != null) {
 			graphViewer.unReveal(previousSelection);
 			graphViewer.update(previousSelection, null);
 		}
 
 		Iterator<EntityConnectionData> connectionIterator = interestingConnections.keySet().iterator();
-		while(connectionIterator.hasNext())
-		{
+		while (connectionIterator.hasNext()) {
 			EntityConnectionData entityConnectionData = connectionIterator.next();
 			connectionIterator.remove();
 			graphViewer.unReveal(entityConnectionData);

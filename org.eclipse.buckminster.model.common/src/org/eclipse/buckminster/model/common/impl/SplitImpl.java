@@ -17,24 +17,27 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object ' <em><b>Split</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Split</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getLimit <em>Limit</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getPattern <em>Pattern</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getStyle <em>Style</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getLimit <em>
+ * Limit</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getPattern
+ * <em>Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getStyle <em>
+ * Style</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
-public class SplitImpl extends ValueFilterImpl implements Split
-{
+public class SplitImpl extends ValueFilterImpl implements Split {
 	/**
 	 * The default value of the '{@link #getLimit() <em>Limit</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getLimit()
 	 * @generated
 	 * @ordered
@@ -42,8 +45,8 @@ public class SplitImpl extends ValueFilterImpl implements Split
 	protected static final int LIMIT_EDEFAULT = 0;
 
 	/**
-	 * The cached value of the '{@link #getLimit() <em>Limit</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getLimit() <em>Limit</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getLimit()
 	 * @generated
@@ -52,9 +55,9 @@ public class SplitImpl extends ValueFilterImpl implements Split
 	protected int limit = LIMIT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -62,9 +65,9 @@ public class SplitImpl extends ValueFilterImpl implements Split
 	protected static final String PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -73,8 +76,8 @@ public class SplitImpl extends ValueFilterImpl implements Split
 
 	/**
 	 * The default value of the '{@link #getStyle() <em>Style</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getStyle()
 	 * @generated
 	 * @ordered
@@ -82,8 +85,8 @@ public class SplitImpl extends ValueFilterImpl implements Split
 	protected static final SplitType STYLE_EDEFAULT = SplitType.QUOTED;
 
 	/**
-	 * The cached value of the '{@link #getStyle() <em>Style</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getStyle() <em>Style</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getStyle()
 	 * @generated
@@ -92,8 +95,9 @@ public class SplitImpl extends ValueFilterImpl implements Split
 	protected SplitType style = STYLE_EDEFAULT;
 
 	/**
-	 * This is true if the Style attribute has been set.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This is true if the Style attribute has been set. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
@@ -101,20 +105,20 @@ public class SplitImpl extends ValueFilterImpl implements Split
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	protected SplitImpl()
-	{
+	protected SplitImpl() {
 		super();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case CommonPackage.SPLIT__LIMIT:
 				return getLimit();
@@ -128,11 +132,11 @@ public class SplitImpl extends ValueFilterImpl implements Split
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
+	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case CommonPackage.SPLIT__LIMIT:
 				return limit != LIMIT_EDEFAULT;
@@ -146,20 +150,20 @@ public class SplitImpl extends ValueFilterImpl implements Split
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
+	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.SPLIT__LIMIT:
-				setLimit((Integer)newValue);
+				setLimit((Integer) newValue);
 				return;
 			case CommonPackage.SPLIT__PATTERN:
-				setPattern((String)newValue);
+				setPattern((String) newValue);
 				return;
 			case CommonPackage.SPLIT__STYLE:
-				setStyle((SplitType)newValue);
+				setStyle((SplitType) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -167,11 +171,11 @@ public class SplitImpl extends ValueFilterImpl implements Split
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
+	public void eUnset(int featureID) {
 		switch (featureID) {
 			case CommonPackage.SPLIT__LIMIT:
 				setLimit(LIMIT_EDEFAULT);
@@ -188,46 +192,46 @@ public class SplitImpl extends ValueFilterImpl implements Split
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public int getLimit()
-	{
+	public int getLimit() {
 		return limit;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public String getPattern()
-	{
+	public String getPattern() {
 		return pattern;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public SplitType getStyle()
-	{
+	public SplitType getStyle() {
 		return style;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean isSetStyle()
-	{
+	public boolean isSetStyle() {
 		return styleESet;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public void setLimit(int newLimit)
-	{
+	public void setLimit(int newLimit) {
 		int oldLimit = limit;
 		limit = newLimit;
 		if (eNotificationRequired())
@@ -236,10 +240,10 @@ public class SplitImpl extends ValueFilterImpl implements Split
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public void setPattern(String newPattern)
-	{
+	public void setPattern(String newPattern) {
 		String oldPattern = pattern;
 		pattern = newPattern;
 		if (eNotificationRequired())
@@ -248,10 +252,10 @@ public class SplitImpl extends ValueFilterImpl implements Split
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public void setStyle(SplitType newStyle)
-	{
+	public void setStyle(SplitType newStyle) {
 		SplitType oldStyle = style;
 		style = newStyle == null ? STYLE_EDEFAULT : newStyle;
 		boolean oldStyleESet = styleESet;
@@ -260,35 +264,40 @@ public class SplitImpl extends ValueFilterImpl implements Split
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SPLIT__STYLE, oldStyle, style, !oldStyleESet));
 	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated NOT
-	 */
-	public String toStringGen()
-	{
-		return null;
-	}
-
 	@Override
-	public void toString(StringBuilder result)
-	{
-		if (eIsProxy()) { result.append(super.toString()); return; }
+	public void toString(StringBuilder result) {
+		if (eIsProxy()) {
+			result.append(super.toString());
+			return;
+		}
 
 		result.append(" (limit: ");
 		result.append(limit);
 		result.append(", pattern: ");
 		result.append(pattern);
 		result.append(", style: ");
-		if (styleESet) result.append(style); else result.append("<unset>");
+		if (styleESet)
+			result.append(style);
+		else
+			result.append("<unset>");
 		result.append(')');
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public String toStringGen() {
+		return null;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public void unsetStyle()
-	{
+	public void unsetStyle() {
 		SplitType oldStyle = style;
 		boolean oldStyleESet = styleESet;
 		style = STYLE_EDEFAULT;
@@ -299,11 +308,11 @@ public class SplitImpl extends ValueFilterImpl implements Split
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CommonPackage.Literals.SPLIT;
 	}
 

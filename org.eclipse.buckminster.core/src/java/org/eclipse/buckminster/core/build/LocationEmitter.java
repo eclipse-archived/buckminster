@@ -33,12 +33,12 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 /**
- * A Builder that emits the location of all components that are contained in, or referenced by, the current project.
+ * A Builder that emits the location of all components that are contained in, or
+ * referenced by, the current project.
  * 
  * @author Thomas Hallgren
  */
-public class LocationEmitter extends PropertiesEmitter
-{
+public class LocationEmitter extends PropertiesEmitter {
 	public static final String ARG_PURPOSE = "purpose"; //$NON-NLS-1$
 
 	public static final String ARG_FORMAT_LOCATION = "format.location"; //$NON-NLS-1$
@@ -49,102 +49,81 @@ public class LocationEmitter extends PropertiesEmitter
 
 	public static final Format FORMAT_LOCATION_ARTIFACT = new MessageFormat("bm.artifacts.{0}.{1}"); //$NON-NLS-1$
 
-	private static boolean s_stateKnown = false;
+	private static boolean stateKnown = false;
 
-	private static Method s_getDefaultOutputFolder;
+	private static Method getDefaultOutputFolder;
 
-	public static IPath getDefaultOutputFolder(IProject project) throws CoreException
-	{
-		if(!isJDTPresent())
+	public static IPath getDefaultOutputFolder(IProject project) throws CoreException {
+		if (!isJDTPresent())
 			return null;
 
-		try
-		{
-			return (IPath)s_getDefaultOutputFolder.invoke(null, new Object[] { project });
-		}
-		catch(Exception e)
-		{
+		try {
+			return (IPath) getDefaultOutputFolder.invoke(null, new Object[] { project });
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public static synchronized boolean isJDTPresent()
-	{
-		if(!s_stateKnown)
-		{
+	public static synchronized boolean isJDTPresent() {
+		if (!stateKnown) {
 			Bundle bundle = Platform.getBundle("org.eclipse.buckminster.jdt"); //$NON-NLS-1$
-			if(bundle == null)
-			{
-				s_stateKnown = true;
+			if (bundle == null) {
+				stateKnown = true;
 				return false;
 			}
 
-			try
-			{
+			try {
 				Class<?> classpathEmitterClass = bundle.loadClass("org.eclipse.buckminster.jdt.internal.ClasspathEmitter"); //$NON-NLS-1$
-				s_getDefaultOutputFolder = classpathEmitterClass.getMethod("getDefaultOutputFolder", //$NON-NLS-1$
+				getDefaultOutputFolder = classpathEmitterClass.getMethod("getDefaultOutputFolder", //$NON-NLS-1$
 						new Class[] { IProject.class });
+			} catch (Exception e) {
 			}
-			catch(Exception e)
-			{
-			}
-			s_stateKnown = true;
+			stateKnown = true;
 		}
-		return s_getDefaultOutputFolder != null;
+		return getDefaultOutputFolder != null;
 	}
 
 	@Override
-	protected void addFormatters()
-	{
+	protected void addFormatters() {
 		addFormat(ARG_FORMAT_LOCATION, FORMAT_LOCATION);
 		addFormat(ARG_FORMAT_ARTIFACTS, FORMAT_LOCATION_ARTIFACT);
 	}
 
 	@Override
-	protected void appendProperties() throws CoreException
-	{
-		try
-		{
+	protected void appendProperties() throws CoreException {
+		try {
 			IModelCache cache = new ModelCache();
 			CSpec cspec = WorkspaceInfo.getCSpec(getProject());
 			String attr = getArgument(ARG_PURPOSE);
-			Set<String> attrs = attr == null
-					? Collections.<String> emptySet()
-					: Collections.singleton(attr);
+			Set<String> attrs = attr == null ? Collections.<String> emptySet() : Collections.singleton(attr);
 			appendComponentProperties(cspec, attrs, cache, new HashSet<ComponentIdentifier>());
-		}
-		catch(MissingComponentException e)
-		{
+		} catch (MissingComponentException e) {
 		}
 	}
 
-	private void appendComponentProperties(CSpec cspec, Set<String> attributes, IModelCache cache,
-			HashSet<ComponentIdentifier> seenIds) throws CoreException
-	{
+	private void appendComponentProperties(CSpec cspec, Set<String> attributes, IModelCache cache, HashSet<ComponentIdentifier> seenIds)
+			throws CoreException {
 		IComponentIdentifier cid = cspec.getComponentIdentifier();
-		if(seenIds.contains(cid))
+		if (seenIds.contains(cid))
 			return;
 
 		IPath location = cspec.getComponentLocation();
 
 		String componentName = cspec.getName();
-		if(location.toFile().isFile())
-		{
+		if (location.toFile().isFile()) {
 			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location.removeLastSegments(1)));
 			addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, location.lastSegment()); //$NON-NLS-1$
-		}
-		else
-		{
+		} else {
 			IProject project = WorkspaceInfo.getProject(cid);
-			if(project != null)
-			{
-				// If this is a java project with a default output folder, then emitt that as a default
+			if (project != null) {
+				// If this is a java project with a default output folder, then
+				// emitt that as a default
 				// artifact.
 				//
 				IPath dfltOutput = getDefaultOutputFolder(project);
-				if(dfltOutput != null)
+				if (dfltOutput != null)
 					addProperty(ARG_FORMAT_ARTIFACTS, new String[] { componentName, "default" }, dfltOutput //$NON-NLS-1$
-					.toOSString());
+							.toOSString());
 			}
 			addProperty(ARG_FORMAT_LOCATION, new String[] { componentName }, formatPath(location));
 		}
@@ -152,8 +131,7 @@ public class LocationEmitter extends PropertiesEmitter
 		// Emit properties of all dependencies
 		//
 		cspec = cspec.prune(null, RMContext.getGlobalPropertyAdditions(), false, attributes);
-		for(QualifiedDependency dep : cspec.getQualifiedDependencies(false))
-		{
+		for (QualifiedDependency dep : cspec.getQualifiedDependencies(false)) {
 			CSpec childSpec = cache.findCSpec(cspec, dep.getRequest());
 			appendComponentProperties(childSpec, dep.getAttributeNames(), cache, seenIds);
 		}

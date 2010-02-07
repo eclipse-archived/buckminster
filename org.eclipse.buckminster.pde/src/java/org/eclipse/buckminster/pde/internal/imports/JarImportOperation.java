@@ -35,42 +35,32 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.pde.internal.core.util.CoreUtility;
 
 @SuppressWarnings({ "rawtypes", "unchecked", "restriction" })
-public abstract class JarImportOperation implements IWorkspaceRunnable
-{
+public abstract class JarImportOperation implements IWorkspaceRunnable {
 
-	protected void collectAdditionalResources(ZipFileStructureProvider provider, Object element, ArrayList collected)
-	{
+	protected void collectAdditionalResources(ZipFileStructureProvider provider, Object element, ArrayList collected) {
 		List children = provider.getChildren(element);
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr))
-				{
+				if (provider.isFolder(curr)) {
 					// ignore source folders
-					if(folderContainsFileExtension(provider, curr, ".java")) //$NON-NLS-1$
+					if (folderContainsFileExtension(provider, curr, ".java")) //$NON-NLS-1$
 						continue;
 					collected.add(curr);
-				}
-				else if(!provider.getLabel(curr).endsWith(".java")){ //$NON-NLS-1$
+				} else if (!provider.getLabel(curr).endsWith(".java")) { //$NON-NLS-1$
 					collected.add(curr);
 				}
 			}
 		}
 	}
 
-	protected void collectJavaFiles(ZipFileStructureProvider provider, Object element, ArrayList collected)
-	{
+	protected void collectJavaFiles(ZipFileStructureProvider provider, Object element, ArrayList collected) {
 		List children = provider.getChildren(element);
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr))
-				{
-					if(provider.getLabel(curr).equals("src")){ //$NON-NLS-1$
+				if (provider.isFolder(curr)) {
+					if (provider.getLabel(curr).equals("src")) { //$NON-NLS-1$
 						ArrayList list = new ArrayList();
 						collectResources(provider, curr, false, list);
 						collected.addAll(list);
@@ -80,18 +70,13 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		}
 	}
 
-	protected void collectJavaResources(ZipFileStructureProvider provider, Object element, ArrayList collected)
-	{
+	protected void collectJavaResources(ZipFileStructureProvider provider, Object element, ArrayList collected) {
 		List children = provider.getChildren(element);
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr))
-				{
-					if(isClassFolder(provider, curr))
-					{
+				if (provider.isFolder(curr)) {
+					if (isClassFolder(provider, curr)) {
 						ArrayList list = new ArrayList();
 						collectResources(provider, curr, false, list);
 						collected.addAll(list);
@@ -102,9 +87,10 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 	}
 
 	/**
-	 * Recursively searches the children of the given element inside of a zip file. If the folder path is in the set of
-	 * folders to ignore, the folder will be skipped. All files found, except for .class files, will be added. The given
-	 * list will be updated with the source files.
+	 * Recursively searches the children of the given element inside of a zip
+	 * file. If the folder path is in the set of folders to ignore, the folder
+	 * will be skipped. All files found, except for .class files, will be added.
+	 * The given list will be updated with the source files.
 	 * 
 	 * @param provider
 	 *            zip provider
@@ -116,46 +102,35 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 	 *            list to update with new files found to import
 	 * @since 3.4
 	 */
-	protected void collectJavaSource(ZipFileStructureProvider provider, Object element, List ignoreFolders,
-			ArrayList collected)
-	{
+	protected void collectJavaSource(ZipFileStructureProvider provider, Object element, List ignoreFolders, ArrayList collected) {
 		List children = provider.getChildren(element);
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr))
-				{
+				if (provider.isFolder(curr)) {
 					// Check if we are in an ignored folder
 					List ignoreSubFolders = new ArrayList();
 					boolean ignoreThisChild = false;
-					for(Iterator iterator = ignoreFolders.iterator(); iterator.hasNext();)
-					{
-						IPath currentPath = (IPath)iterator.next();
-						if(provider.getLabel(curr).equals(currentPath.segment(0)))
-						{
-							if(currentPath.segmentCount() > 1)
-							{
-								// There is a subfolder that should be ignored. Remove segment referencing current
+					for (Iterator iterator = ignoreFolders.iterator(); iterator.hasNext();) {
+						IPath currentPath = (IPath) iterator.next();
+						if (provider.getLabel(curr).equals(currentPath.segment(0))) {
+							if (currentPath.segmentCount() > 1) {
+								// There is a subfolder that should be ignored.
+								// Remove segment referencing current
 								// folder.
 								ignoreSubFolders.add(currentPath.removeFirstSegments(1));
-							}
-							else
-							{
+							} else {
 								// This folder should be ignored
 								ignoreThisChild = true;
 								break;
 							}
 						}
 					}
-					if(!ignoreThisChild)
-					{
+					if (!ignoreThisChild) {
 						collectJavaSource(provider, curr, ignoreSubFolders, collected);
 					}
 					// Add the file to the list
-				}
-				else if(!provider.getLabel(curr).endsWith(".class")){ //$NON-NLS-1$
+				} else if (!provider.getLabel(curr).endsWith(".class")) { //$NON-NLS-1$
 					collected.add(curr);
 				}
 			}
@@ -163,8 +138,9 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 	}
 
 	/**
-	 * Searches through the zip file for java source folders. Collects the files within the source folders. If a folder
-	 * is in the list of folder paths to ignore, the folder will be skipped.
+	 * Searches through the zip file for java source folders. Collects the files
+	 * within the source folders. If a folder is in the list of folder paths to
+	 * ignore, the folder will be skipped.
 	 * 
 	 * @param provider
 	 *            zip provider
@@ -174,38 +150,29 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 	 *            list that source files will be added to
 	 * @since 3.4
 	 */
-	protected void collectJavaSourceFromRoot(ZipFileStructureProvider provider, List ignoreFolders, ArrayList collected)
-	{
+	protected void collectJavaSourceFromRoot(ZipFileStructureProvider provider, List ignoreFolders, ArrayList collected) {
 		List children = provider.getChildren(provider.getRoot());
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr) && folderContainsFileExtension(provider, curr, ".java")){ //$NON-NLS-1$
+				if (provider.isFolder(curr) && folderContainsFileExtension(provider, curr, ".java")) { //$NON-NLS-1$
 					// Check if we are in an ignored folder
 					List ignoreSubFolders = new ArrayList();
 					boolean ignoreThisChild = false;
-					for(Iterator iterator = ignoreFolders.iterator(); iterator.hasNext();)
-					{
-						IPath currentPath = (IPath)iterator.next();
-						if(provider.getLabel(curr).equals(currentPath.segment(0)))
-						{
-							if(currentPath.segmentCount() > 1)
-							{
+					for (Iterator iterator = ignoreFolders.iterator(); iterator.hasNext();) {
+						IPath currentPath = (IPath) iterator.next();
+						if (provider.getLabel(curr).equals(currentPath.segment(0))) {
+							if (currentPath.segmentCount() > 1) {
 								// There is a subfolder that should be ignored
 								ignoreSubFolders.add(currentPath.removeFirstSegments(1));
-							}
-							else
-							{
+							} else {
 								// This folder should be ignored
 								ignoreThisChild = true;
 								break;
 							}
 						}
 					}
-					if(!ignoreThisChild)
-					{
+					if (!ignoreThisChild) {
 						collectJavaSource(provider, curr, ignoreSubFolders, collected);
 					}
 				}
@@ -213,23 +180,18 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		}
 	}
 
-	protected void collectNonJavaResources(ZipFileStructureProvider provider, Object element, ArrayList collected)
-	{
+	protected void collectNonJavaResources(ZipFileStructureProvider provider, Object element, ArrayList collected) {
 		List children = provider.getChildren(element);
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr))
-				{
-					if(!provider.getLabel(curr).equals("src") && !isClassFolder(provider, curr)){ //$NON-NLS-1$
+				if (provider.isFolder(curr)) {
+					if (!provider.getLabel(curr).equals("src") && !isClassFolder(provider, curr)) { //$NON-NLS-1$
 						ArrayList list = new ArrayList();
 						collectResources(provider, curr, false, list);
 						collected.addAll(list);
 					}
-				}
-				else if(!provider.getLabel(curr).endsWith(".class")){ //$NON-NLS-1$
+				} else if (!provider.getLabel(curr).endsWith(".class")) { //$NON-NLS-1$
 					collected.add(curr);
 				}
 			}
@@ -237,8 +199,8 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 	}
 
 	/**
-	 * Recursively searches through the zip files searching for files inside of the specified folder. The files found
-	 * will be added to the given list.
+	 * Recursively searches through the zip files searching for files inside of
+	 * the specified folder. The files found will be added to the given list.
 	 * 
 	 * @param provider
 	 *            zip provider
@@ -250,25 +212,16 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 	 *            list of files found
 	 * @since 3.4
 	 */
-	protected void collectResourcesFromFolder(ZipFileStructureProvider provider, Object element, IPath folderPath,
-			ArrayList collected)
-	{
+	protected void collectResourcesFromFolder(ZipFileStructureProvider provider, Object element, IPath folderPath, ArrayList collected) {
 		List children = provider.getChildren(element);
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr))
-				{
-					if(provider.getLabel(curr).equals(folderPath.segment(0)))
-					{
-						if(folderPath.segmentCount() > 1)
-						{
+				if (provider.isFolder(curr)) {
+					if (provider.getLabel(curr).equals(folderPath.segment(0))) {
+						if (folderPath.segmentCount() > 1) {
 							collectResourcesFromFolder(provider, curr, folderPath.removeFirstSegments(1), collected);
-						}
-						else
-						{
+						} else {
 							collectResources(provider, curr, false, collected);
 						}
 					}
@@ -277,43 +230,29 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		}
 	}
 
-	protected boolean containsCode(File file)
-	{
+	protected boolean containsCode(File file) {
 		ZipFile zipFile = null;
-		try
-		{
+		try {
 			zipFile = new ZipFile(file);
 			return containsCode(new ZipFileStructureProvider(zipFile));
-		}
-		catch(IOException e)
-		{
-		}
-		finally
-		{
-			if(zipFile != null)
-			{
-				try
-				{
+		} catch (IOException e) {
+		} finally {
+			if (zipFile != null) {
+				try {
 					zipFile.close();
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 				}
 			}
 		}
 		return true;
 	}
 
-	protected boolean containsCode(ZipFileStructureProvider provider)
-	{
+	protected boolean containsCode(ZipFileStructureProvider provider) {
 		List children = provider.getChildren(provider.getRoot());
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr) && isClassFolder(provider, curr))
-				{
+				if (provider.isFolder(curr) && isClassFolder(provider, curr)) {
 					return true;
 				}
 			}
@@ -321,40 +260,31 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		return false;
 	}
 
-	protected void extractJavaResources(File file, IResource dest, IProgressMonitor monitor) throws CoreException
-	{
+	protected void extractJavaResources(File file, IResource dest, IProgressMonitor monitor) throws CoreException {
 		ZipFile zipFile = null;
-		try
-		{
+		try {
 			zipFile = new ZipFile(file);
 			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
 			ArrayList collected = new ArrayList();
 			collectJavaResources(provider, provider.getRoot(), collected);
 			importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		}
-		finally
-		{
-			if(zipFile != null)
-			{
-				try
-				{
+		} finally {
+			if (zipFile != null) {
+				try {
 					zipFile.close();
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 				}
 			}
 		}
 	}
 
 	/**
-	 * Searches the given archive file for java source folders. Imports the files in the source folders to the specified
-	 * destination unless the folder is in the list of folders to exclude.
+	 * Searches the given archive file for java source folders. Imports the
+	 * files in the source folders to the specified destination unless the
+	 * folder is in the list of folders to exclude.
 	 * 
 	 * @param file
 	 *            archive file to search for source in
@@ -368,71 +298,51 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 	 *             if there is a problem extracting source from the zip
 	 * @since 3.4
 	 */
-	protected void extractJavaSource(File file, List excludeFolders, IResource dest, IProgressMonitor monitor)
-			throws CoreException
-	{
+	protected void extractJavaSource(File file, List excludeFolders, IResource dest, IProgressMonitor monitor) throws CoreException {
 		ZipFile zipFile = null;
-		try
-		{
+		try {
 			zipFile = new ZipFile(file);
 			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
 			ArrayList collected = new ArrayList();
 			collectJavaSourceFromRoot(provider, excludeFolders, collected);
 			importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		}
-		finally
-		{
-			if(zipFile != null)
-			{
-				try
-				{
+		} finally {
+			if (zipFile != null) {
+				try {
 					zipFile.close();
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 				}
 			}
 		}
 	}
 
-	protected void extractResources(File file, IResource dest, IProgressMonitor monitor) throws CoreException
-	{
+	protected void extractResources(File file, IResource dest, IProgressMonitor monitor) throws CoreException {
 		ZipFile zipFile = null;
-		try
-		{
+		try {
 			zipFile = new ZipFile(file);
 			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
 			ArrayList collected = new ArrayList();
 			collectResources(provider, provider.getRoot(), true, collected);
 			importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		}
-		finally
-		{
-			if(zipFile != null)
-			{
-				try
-				{
+		} finally {
+			if (zipFile != null) {
+				try {
 					zipFile.close();
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 				}
 			}
 		}
 	}
 
 	/**
-	 * Extracts all of the files and subfolders from a single folder within an archive file.
+	 * Extracts all of the files and subfolders from a single folder within an
+	 * archive file.
 	 * 
 	 * @param file
 	 *            archive file to search for files
@@ -446,126 +356,86 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 	 *             if a problem occurs while extracting
 	 * @since 3.4
 	 */
-	protected void extractResourcesFromFolder(File file, IPath folderPath, IResource dest, IProgressMonitor monitor)
-			throws CoreException
-	{
+	protected void extractResourcesFromFolder(File file, IPath folderPath, IResource dest, IProgressMonitor monitor) throws CoreException {
 		ZipFile zipFile = null;
-		try
-		{
+		try {
 			zipFile = new ZipFile(file);
 			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
 			ArrayList collected = new ArrayList();
 			collectResourcesFromFolder(provider, provider.getRoot(), folderPath, collected);
 			importContent(provider.getRoot(), dest.getFullPath(), provider, collected, monitor);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		}
-		finally
-		{
-			if(zipFile != null)
-			{
-				try
-				{
+		} finally {
+			if (zipFile != null) {
+				try {
 					zipFile.close();
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 				}
 			}
 		}
 	}
 
-	protected void extractZipFile(File file, IPath destPath, IProgressMonitor monitor) throws CoreException
-	{
+	protected void extractZipFile(File file, IPath destPath, IProgressMonitor monitor) throws CoreException {
 		ZipFile zipFile = null;
-		try
-		{
+		try {
 			zipFile = new ZipFile(file);
 			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
 			importContent(provider.getRoot(), destPath, provider, null, monitor);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.ERROR, e.getMessage(), e);
 			throw new CoreException(status);
-		}
-		finally
-		{
-			if(zipFile != null)
-			{
-				try
-				{
+		} finally {
+			if (zipFile != null) {
+				try {
 					zipFile.close();
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 				}
 			}
 		}
 	}
 
-	protected String[] getTopLevelResources(File file)
-	{
+	protected String[] getTopLevelResources(File file) {
 		ArrayList result = new ArrayList();
 		ZipFile zipFile = null;
-		try
-		{
+		try {
 			zipFile = new ZipFile(file);
 			ZipFileStructureProvider provider = new ZipFileStructureProvider(zipFile);
 			List children = provider.getChildren(provider.getRoot());
-			if(children != null && !children.isEmpty())
-			{
-				for(int i = 0; i < children.size(); i++)
-				{
+			if (children != null && !children.isEmpty()) {
+				for (int i = 0; i < children.size(); i++) {
 					Object curr = children.get(i);
-					if(provider.isFolder(curr))
-					{
-						if(!isClassFolder(provider, curr))
+					if (provider.isFolder(curr)) {
+						if (!isClassFolder(provider, curr))
 							result.add(provider.getLabel(curr) + "/"); //$NON-NLS-1$
-						else
-						{
-							if(!result.contains(".")) //$NON-NLS-1$
+						else {
+							if (!result.contains(".")) //$NON-NLS-1$
 								result.add("."); //$NON-NLS-1$
 						}
-					}
-					else
-					{
+					} else {
 						result.add(provider.getLabel(curr));
 					}
 				}
 			}
-		}
-		catch(IOException e)
-		{
-		}
-		finally
-		{
-			if(zipFile != null)
-			{
-				try
-				{
+		} catch (IOException e) {
+		} finally {
+			if (zipFile != null) {
+				try {
 					zipFile.close();
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 				}
 			}
 		}
-		return (String[])result.toArray(new String[result.size()]);
+		return (String[]) result.toArray(new String[result.size()]);
 	}
 
-	protected boolean hasEmbeddedSource(ZipFileStructureProvider provider)
-	{
+	protected boolean hasEmbeddedSource(ZipFileStructureProvider provider) {
 		List children = provider.getChildren(provider.getRoot());
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr) && provider.getLabel(curr).equals("src")){ //$NON-NLS-1$
+				if (provider.isFolder(curr) && provider.getLabel(curr).equals("src")) { //$NON-NLS-1$
 					return true;
 				}
 			}
@@ -573,87 +443,66 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		return false;
 	}
 
-	protected void importArchive(IProject project, File archive, IPath destPath) throws CoreException
-	{
-		try
-		{
-			if(destPath.segmentCount() > 2)
+	protected void importArchive(IProject project, File archive, IPath destPath) throws CoreException {
+		try {
+			if (destPath.segmentCount() > 2)
 				CoreUtility.createFolder(project.getFolder(destPath.removeLastSegments(1)));
 			IFile file = project.getFile(destPath);
 			FileInputStream fstream = new FileInputStream(archive);
-			if(file.exists())
+			if (file.exists())
 				file.setContents(fstream, true, false, null);
 			else
 				file.create(fstream, true, null);
 			fstream.close();
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			IStatus status = new Status(IStatus.ERROR, PDEPlugin.getPluginId(), IStatus.OK, e.getMessage(), e);
 			throw new CoreException(status);
 		}
 	}
 
-	protected void importContent(Object source, IPath destPath, IImportStructureProvider provider, List filesToImport,
-			IProgressMonitor monitor) throws CoreException
-	{
-		IOverwriteQuery query = new IOverwriteQuery()
-		{
-			public String queryOverwrite(String file)
-			{
+	protected void importContent(Object source, IPath destPath, IImportStructureProvider provider, List filesToImport, IProgressMonitor monitor)
+			throws CoreException {
+		IOverwriteQuery query = new IOverwriteQuery() {
+			public String queryOverwrite(String file) {
 				return ALL;
 			}
 		};
 		ImportOperation op = new ImportOperation(destPath, source, provider, query);
 		op.setCreateContainerStructure(false);
-		if(filesToImport != null)
-		{
+		if (filesToImport != null) {
 			op.setFilesToImport(filesToImport);
 		}
 		IStatus status = op.runInWorkspace(monitor);
-		if(status.getSeverity() == IStatus.ERROR)
+		if (status.getSeverity() == IStatus.ERROR)
 			throw new CoreException(status);
 	}
 
-	private void collectResources(ZipFileStructureProvider provider, Object element, boolean excludeMeta,
-			ArrayList collected)
-	{
+	private void collectResources(ZipFileStructureProvider provider, Object element, boolean excludeMeta, ArrayList collected) {
 		List children = provider.getChildren(element);
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr))
-				{
-					if(!excludeMeta || !provider.getLabel(curr).equals("META-INF")){ //$NON-NLS-1$
+				if (provider.isFolder(curr)) {
+					if (!excludeMeta || !provider.getLabel(curr).equals("META-INF")) { //$NON-NLS-1$
 						collectResources(provider, curr, excludeMeta, collected);
 					}
-				}
-				else if(!provider.getLabel(curr).endsWith(".class")){ //$NON-NLS-1$
+				} else if (!provider.getLabel(curr).endsWith(".class")) { //$NON-NLS-1$
 					collected.add(curr);
 				}
 			}
 		}
 	}
 
-	private boolean folderContainsFileExtension(ZipFileStructureProvider provider, Object element, String fileExtension)
-	{
+	private boolean folderContainsFileExtension(ZipFileStructureProvider provider, Object element, String fileExtension) {
 		List children = provider.getChildren(element);
-		if(children != null && !children.isEmpty())
-		{
-			for(int i = 0; i < children.size(); i++)
-			{
+		if (children != null && !children.isEmpty()) {
+			for (int i = 0; i < children.size(); i++) {
 				Object curr = children.get(i);
-				if(provider.isFolder(curr))
-				{
-					if(folderContainsFileExtension(provider, curr, fileExtension))
-					{
+				if (provider.isFolder(curr)) {
+					if (folderContainsFileExtension(provider, curr, fileExtension)) {
 						return true;
 					}
-				}
-				else if(provider.getLabel(curr).endsWith(fileExtension))
-				{
+				} else if (provider.getLabel(curr).endsWith(fileExtension)) {
 					return true;
 				}
 			}
@@ -661,8 +510,7 @@ public abstract class JarImportOperation implements IWorkspaceRunnable
 		return false;
 	}
 
-	private boolean isClassFolder(ZipFileStructureProvider provider, Object element)
-	{
+	private boolean isClassFolder(ZipFileStructureProvider provider, Object element) {
 		return folderContainsFileExtension(provider, element, ".class"); //$NON-NLS-1$
 	}
 

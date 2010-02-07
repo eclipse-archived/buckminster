@@ -20,54 +20,44 @@ import org.eclipse.swt.widgets.Listener;
  * @author Karel Brezina
  * 
  */
-public class Widgetin implements IWidgetin
-{
-	private Object m_data = null;
+public class Widgetin implements IWidgetin {
+	private Object data = null;
 
-	private Map<Integer, List<Listener>> m_listenersMap = new HashMap<Integer, List<Listener>>();
+	private final Map<Integer, List<Listener>> listenersMap = new HashMap<Integer, List<Listener>>();
 
-	public void addListener(int eventType, Listener listener)
-	{
-		List<Listener> eventListeners = m_listenersMap.get(Integer.valueOf(eventType));
+	public void addListener(int eventType, Listener listener) {
+		List<Listener> eventListeners = listenersMap.get(Integer.valueOf(eventType));
 
-		if(eventListeners == null)
-		{
+		if (eventListeners == null) {
 			eventListeners = new ArrayList<Listener>();
-			m_listenersMap.put(Integer.valueOf(eventType), eventListeners);
+			listenersMap.put(Integer.valueOf(eventType), eventListeners);
 		}
 
-		if(!eventListeners.contains(listener))
-		{
+		if (!eventListeners.contains(listener)) {
 			eventListeners.add(listener);
 		}
 	}
 
-	public Object getData()
-	{
-		return m_data;
+	public Object getData() {
+		return data;
 	}
 
-	public void notifyListeners(int eventType, Event event)
-	{
-		List<Listener> eventListeners = m_listenersMap.get(Integer.valueOf(eventType));
+	public void notifyListeners(int eventType, Event event) {
+		List<Listener> eventListeners = listenersMap.get(Integer.valueOf(eventType));
 
-		if(eventListeners != null)
-		{
-			for(Listener listener : eventListeners)
-			{
+		if (eventListeners != null) {
+			for (Listener listener : eventListeners) {
 				listener.handleEvent(event);
 			}
 		}
 	}
 
-	public void removeListener(int eventType, Listener listener)
-	{
-		m_listenersMap.remove(Integer.valueOf(eventType));
+	public void removeListener(int eventType, Listener listener) {
+		listenersMap.remove(Integer.valueOf(eventType));
 	}
 
-	public void setData(Object data)
-	{
-		m_data = data;
+	public void setData(Object data) {
+		this.data = data;
 	}
 
 }

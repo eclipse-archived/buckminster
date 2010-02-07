@@ -35,29 +35,34 @@ import org.eclipse.team.svn.core.connector.SVNRevision;
 import org.eclipse.team.svn.core.operation.file.GetFileContentOperation;
 
 /**
- * The SVN repository reader assumes that any repository contains the three recommended directories <code>trunk</code>,
- * <code>tags</code>, and <code>branches</code>. A missing <code>tags</code> directory is interpreted as no
- * <code>tags</code>. A missing <code>branches</code> directory is interpreted as no branches. The URL used as the
- * repository identifier must contain the path element trunk. Anything that follows the <code>trunk</code> element in
- * the path will be considered a <code>module</code> path. The repository URL may also contain a query part that in turn
- * may have four different flags:
+ * The SVN repository reader assumes that any repository contains the three
+ * recommended directories <code>trunk</code>, <code>tags</code>, and
+ * <code>branches</code>. A missing <code>tags</code> directory is interpreted
+ * as no <code>tags</code>. A missing <code>branches</code> directory is
+ * interpreted as no branches. The URL used as the repository identifier must
+ * contain the path element trunk. Anything that follows the <code>trunk</code>
+ * element in the path will be considered a <code>module</code> path. The
+ * repository URL may also contain a query part that in turn may have four
+ * different flags:
  * <dl>
  * <dt>moduleBeforeTag</dt>
- * <dd>When resolving a tag, put the module name between the <code>tags</code> directory and the actual tag</dd>
+ * <dd>When resolving a tag, put the module name between the <code>tags</code>
+ * directory and the actual tag</dd>
  * <dt>moduleAfterTag</dt>
  * <dd>When resolving a tag, append the module name after the actual tag</dd>
  * <dt>moduleBeforeBranch</dt>
- * <dd>When resolving a branch, put the module name between the <code>branches</code> directory and the actual branch</dd>
+ * <dd>When resolving a branch, put the module name between the
+ * <code>branches</code> directory and the actual branch</dd>
  * <dt>moduleAfterBranch</dt>
  * <dd>When resolving a branch, append the module name after the actual branch</dd>
  * </dl>
- * A fragment in the repository URL will be treated as a sub-module. It will be appended at the end of the resolved URL.
+ * A fragment in the repository URL will be treated as a sub-module. It will be
+ * appended at the end of the resolved URL.
  * 
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SVNRevision>
-{
+public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SVNRevision> {
 
 	/**
 	 * @param readerType
@@ -65,39 +70,26 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 	 * @param withResolvedBranch
 	 * @throws CoreException
 	 */
-	public SubversiveRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public SubversiveRemoteFileReader(IReaderType readerType, ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException {
 		super(readerType, rInfo, monitor);
 	}
 
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		boolean success = false;
 		File destDir = destination.toFile();
 
 		ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(monitor, 12);
-		try
-		{
-			getSession().getSVNProxy().checkout(
-					new SVNEntryRevisionReference(m_session.getSVNUrl().toString(), null, m_session.getRevision()),
+		try {
+			getSession().getSVNProxy().checkout(new SVNEntryRevisionReference(session.getSVNUrl().toString(), null, session.getRevision()),
 					destDir.toString(), ISVNConnector.Depth.INFINITY, ISVNConnector.Options.FORCE, svnMon);
 			success = true;
-		}
-		catch(SVNConnectorException e)
-		{
+		} catch (SVNConnectorException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			if(!success)
-			{
-				try
-				{
+		} finally {
+			if (!success) {
+				try {
 					FileUtils.deleteRecursive(destDir, new NullProgressMonitor());
-				}
-				catch(Throwable t)
-				{
+				} catch (Throwable t) {
 					t.printStackTrace();
 				}
 			}
@@ -106,9 +98,7 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 	}
 
 	@Override
-	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor subMonitor)
-			throws Exception
-	{
+	protected void fetchRemoteFile(URI url, SVNRevision revision, OutputStream output, IProgressMonitor subMonitor) throws Exception {
 		final ISVNProgressMonitor svnMon = SimpleMonitorWrapper.beginTask(subMonitor, 100);
 		final ISVNConnector proxy = getSession().getSVNProxy();
 		final SVNEntryRevisionReference entry = new SVNEntryRevisionReference(url.toString(), null, revision);
@@ -116,34 +106,29 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 	}
 
 	@Override
-	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag,
-			long revision, Date timestamp, RMContext context) throws CoreException
-	{
+	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
+			RMContext context) throws CoreException {
 		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
 	}
 
 	@Override
-	protected SVNEntry[] getTopEntries(IProgressMonitor monitor) throws CoreException
-	{
-		return m_session.listFolder(m_session.getSVNUrl(), monitor);
+	protected SVNEntry[] getTopEntries(IProgressMonitor monitor) throws CoreException {
+		return session.listFolder(session.getSVNUrl(), monitor);
 	}
 
 	@Override
-	protected boolean remoteFileExists(URI url, SVNRevision revision, IProgressMonitor monitor) throws CoreException
-	{
+	protected boolean remoteFileExists(URI url, SVNRevision revision, IProgressMonitor monitor) throws CoreException {
 		return getSession().getDirEntry(url, revision, monitor) != null;
 	}
 
 	@Override
-	protected String storeInCache(String fileName) throws CoreException
-	{
-		final URI url = m_session.getSVNUrl(fileName);
-		final SVNRevision revision = m_session.getRevision();
+	protected String storeInCache(String fileName) throws CoreException {
+		final URI url = session.getSVNUrl(fileName);
+		final SVNRevision revision = session.getRevision();
 		return GenericCache.cacheKey(url, revision);
 	}
 
-	private SubversiveSession getSession()
-	{
-		return (SubversiveSession)m_session;
+	private SubversiveSession getSession() {
+		return (SubversiveSession) session;
 	}
 }

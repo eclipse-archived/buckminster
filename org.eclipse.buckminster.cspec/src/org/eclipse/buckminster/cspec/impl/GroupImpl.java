@@ -25,22 +25,25 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Group</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Group</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.impl.GroupImpl#getPrerequisites <em>Prerequisites</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.GroupImpl#getRebase <em>Rebase</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.GroupImpl#getPrerequisites <em>
+ * Prerequisites</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.GroupImpl#getRebase <em>Rebase
+ * </em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class GroupImpl extends AttributeImpl implements Group
-{
+public class GroupImpl extends AttributeImpl implements Group {
 	/**
-	 * The cached value of the '{@link #getPrerequisites() <em>Prerequisites</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getPrerequisites()
+	 * <em>Prerequisites</em>}' containment reference list. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPrerequisites()
 	 * @generated
@@ -49,8 +52,8 @@ public class GroupImpl extends AttributeImpl implements Group
 	protected EList<Prerequisite> prerequisites;
 
 	/**
-	 * The default value of the '{@link #getRebase() <em>Rebase</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getRebase() <em>Rebase</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRebase()
 	 * @generated
@@ -59,8 +62,8 @@ public class GroupImpl extends AttributeImpl implements Group
 	protected static final IPath REBASE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getRebase() <em>Rebase</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getRebase() <em>Rebase</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRebase()
 	 * @generated
@@ -73,8 +76,7 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * 
 	 * @generated
 	 */
-	protected GroupImpl()
-	{
+	protected GroupImpl() {
 		super();
 	}
 
@@ -84,14 +86,12 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GROUP__PREREQUISITES:
-			return getPrerequisites();
-		case CspecPackage.GROUP__REBASE:
-			return getRebase();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CspecPackage.GROUP__PREREQUISITES:
+				return getPrerequisites();
+			case CspecPackage.GROUP__REBASE:
+				return getRebase();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -102,12 +102,10 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GROUP__PREREQUISITES:
-			return ((InternalEList<?>)getPrerequisites()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.GROUP__PREREQUISITES:
+				return ((InternalEList<?>) getPrerequisites()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -118,16 +116,12 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GROUP__PREREQUISITES:
-			return prerequisites != null && !prerequisites.isEmpty();
-		case CspecPackage.GROUP__REBASE:
-			return REBASE_EDEFAULT == null
-					? rebase != null
-					: !REBASE_EDEFAULT.equals(rebase);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case CspecPackage.GROUP__PREREQUISITES:
+				return prerequisites != null && !prerequisites.isEmpty();
+			case CspecPackage.GROUP__REBASE:
+				return REBASE_EDEFAULT == null ? rebase != null : !REBASE_EDEFAULT.equals(rebase);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -139,17 +133,15 @@ public class GroupImpl extends AttributeImpl implements Group
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GROUP__PREREQUISITES:
-			getPrerequisites().clear();
-			getPrerequisites().addAll((Collection<? extends Prerequisite>)newValue);
-			return;
-		case CspecPackage.GROUP__REBASE:
-			setRebase((IPath)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case CspecPackage.GROUP__PREREQUISITES:
+				getPrerequisites().clear();
+				getPrerequisites().addAll((Collection<? extends Prerequisite>) newValue);
+				return;
+			case CspecPackage.GROUP__REBASE:
+				setRebase((IPath) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -160,16 +152,14 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GROUP__PREREQUISITES:
-			getPrerequisites().clear();
-			return;
-		case CspecPackage.GROUP__REBASE:
-			setRebase(REBASE_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case CspecPackage.GROUP__PREREQUISITES:
+				getPrerequisites().clear();
+				return;
+			case CspecPackage.GROUP__REBASE:
+				setRebase(REBASE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -179,12 +169,9 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * 
 	 * @generated
 	 */
-	public EList<Prerequisite> getPrerequisites()
-	{
-		if(prerequisites == null)
-		{
-			prerequisites = new EObjectContainmentEList<Prerequisite>(Prerequisite.class, this,
-					CspecPackage.GROUP__PREREQUISITES);
+	public EList<Prerequisite> getPrerequisites() {
+		if (prerequisites == null) {
+			prerequisites = new EObjectContainmentEList<Prerequisite>(Prerequisite.class, this, CspecPackage.GROUP__PREREQUISITES);
 		}
 		return prerequisites;
 	}
@@ -194,26 +181,22 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * 
 	 * @generated
 	 */
-	public IPath getRebase()
-	{
+	public IPath getRebase() {
 		return rebase;
 	}
 
 	@Override
-	public boolean isDerived(IContext context)
-	{
-		for(Prerequisite preq : getPrerequisites())
-		{
+	public boolean isDerived(IContext context) {
+		for (Prerequisite preq : getPrerequisites()) {
 			Attribute attr = null;
-			if(preq.getComponent() == null)
+			if (preq.getComponent() == null)
 				attr = getCspec().getAttribute(preq.getAttribute());
-			else
-			{
+			else {
 				CSpec referenced = context.findBestMatch(preq.getComponent());
-				if(referenced != null)
+				if (referenced != null)
 					attr = referenced.getAttribute(preq.getAttribute());
 			}
-			if(attr != null && attr.isDerived(context))
+			if (attr != null && attr.isDerived(context))
 				return true;
 		}
 		return false;
@@ -224,11 +207,10 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * 
 	 * @generated
 	 */
-	public void setRebase(IPath newRebase)
-	{
+	public void setRebase(IPath newRebase) {
 		IPath oldRebase = rebase;
 		rebase = newRebase;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.GROUP__REBASE, oldRebase, rebase));
 	}
 
@@ -238,9 +220,8 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -256,8 +237,7 @@ public class GroupImpl extends AttributeImpl implements Group
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.GROUP;
 	}
 

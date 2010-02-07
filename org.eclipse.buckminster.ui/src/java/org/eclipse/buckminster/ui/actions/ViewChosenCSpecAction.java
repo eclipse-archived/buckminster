@@ -18,25 +18,19 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class ViewChosenCSpecAction extends AbstractChosenCSpecAction
-{
+public class ViewChosenCSpecAction extends AbstractChosenCSpecAction {
 	@Override
-	protected void run(CSpec cspec, IWorkbenchWindow wbWin)
-	{
+	protected void run(CSpec cspec, IWorkbenchWindow wbWin) {
 		IWorkbenchPage page = wbWin.getActivePage();
-		if(page == null)
+		if (page == null)
 			return;
 
 		IEditorRegistry editorRegistry = PlatformUI.getWorkbench().getEditorRegistry();
 		CSpecEditorInput input = new CSpecEditorInput(cspec);
-		IEditorDescriptor ed = editorRegistry.getDefaultEditor(input.getName(), input.getContentDescription()
-				.getContentType());
-		try
-		{
+		IEditorDescriptor ed = editorRegistry.getDefaultEditor(input.getName(), input.getContentDescription().getContentType());
+		try {
 			page.openEditor(input, ed.getId());
-		}
-		catch(PartInitException e)
-		{
+		} catch (PartInitException e) {
 			UiUtils.openError(page.getWorkbenchWindow().getShell(), Messages.unable_to_open_editor, e);
 		}
 	}

@@ -23,27 +23,19 @@ import org.eclipse.swt.widgets.Shell;
  * @author Karel Brezina
  * 
  */
-public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
-{
-	class EditRowDialog extends TableRowDialog
-	{
-		public EditRowDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage,
-				String helpURL, boolean newRow, boolean readOnly)
-		{
+public class TwoPagesTableEditor<T> extends StructuredTableEditor<T> {
+	class EditRowDialog extends TableRowDialog {
+		public EditRowDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage, String helpURL, boolean newRow,
+				boolean readOnly) {
 			super(parentShell, windowImage, windowTitle, wizardImage, helpURL, newRow, readOnly);
 		}
 
 		@Override
-		protected void buttonPressed(int buttonId)
-		{
-			if(buttonId == IDialogConstants.OK_ID)
-			{
-				try
-				{
+		protected void buttonPressed(int buttonId) {
+			if (buttonId == IDialogConstants.OK_ID) {
+				try {
 					saveRow();
-				}
-				catch(ValidatorException e)
-				{
+				} catch (ValidatorException e) {
 					setErrorMessage(e.getMessage());
 					return;
 				}
@@ -54,9 +46,8 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 		}
 
 		@Override
-		protected Control createDialogArea(Composite parent)
-		{
-			Composite composite = (Composite)super.createDialogArea(parent);
+		protected Control createDialogArea(Composite parent) {
+			Composite composite = (Composite) super.createDialogArea(parent);
 
 			Composite rowComposite = new Composite(composite, SWT.NONE);
 
@@ -80,41 +71,37 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 		}
 
 		@Override
-		protected void enableDisableOkButton()
-		{
-			if(isReadOnly())
+		protected void enableDisableOkButton() {
+			if (isReadOnly())
 				getButton(IDialogConstants.OK_ID).setEnabled(true);
 		}
 	}
 
-	private final Image m_windowImage;
+	private final Image windowImage;
 
-	private final String m_windowTitle;
+	private final String windowTitle;
 
-	private final Image m_wizardImage;
+	private final Image wizardImage;
 
-	private final String m_helpURL;
+	private final String helpURL;
 
-	public TwoPagesTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, Image windowImage,
-			String windowTitle, Image wizardImage, String helpURL, int style)
-	{
+	public TwoPagesTableEditor(Composite parent, IStructuredTable<T> table, boolean swapButtonsFlag, Image windowImage, String windowTitle,
+			Image wizardImage, String helpURL, int style) {
 		super(parent, table, swapButtonsFlag, style);
-		m_windowImage = windowImage;
-		m_windowTitle = windowTitle;
-		m_wizardImage = wizardImage;
-		m_helpURL = helpURL;
+		this.windowImage = windowImage;
+		this.windowTitle = windowTitle;
+		this.wizardImage = wizardImage;
+		this.helpURL = helpURL;
 	}
 
 	@Override
-	public void refresh()
-	{
+	public void refresh() {
 		refreshTable();
 		enableDisableButtonGroup();
 	}
 
-	public boolean show(T row)
-	{
-		if(!selectRow(row))
+	public boolean show(T row) {
+		if (!selectRow(row))
 			return false;
 
 		// editRow();
@@ -123,8 +110,7 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected Composite createTableGroupComposite(Composite parent)
-	{
+	protected Composite createTableGroupComposite(Composite parent) {
 		Composite componentTableGroup = new Composite(parent, SWT.NONE);
 		GridLayout gl = new GridLayout(2, false);
 		gl.marginHeight = gl.marginWidth = 0;
@@ -135,14 +121,12 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected void editRow(boolean newRow, boolean readOnly)
-	{
-		new EditRowDialog(this.getShell(), m_windowImage, m_windowTitle, m_wizardImage, m_helpURL, newRow, readOnly).open();
+	protected void editRow(boolean newRow, boolean readOnly) {
+		new EditRowDialog(this.getShell(), windowImage, windowTitle, wizardImage, helpURL, newRow, readOnly).open();
 	}
 
 	@Override
-	protected void initComposite()
-	{
+	protected void initComposite() {
 		GridLayout layout = new GridLayout(1, false);
 		layout.marginHeight = layout.marginWidth = 0;
 		setLayout(layout);
@@ -153,16 +137,14 @@ public class TwoPagesTableEditor<T> extends StructuredTableEditor<T>
 	}
 
 	@Override
-	protected void newRow()
-	{
+	protected void newRow() {
 		getTableViewer().getTable().deselectAll();
 		updateLastRow();
 		editRow(true, false);
 	}
 
 	@Override
-	protected boolean rowSelectionEvent()
-	{
+	protected boolean rowSelectionEvent() {
 		enableDisableButtonGroup();
 		return true;
 	}

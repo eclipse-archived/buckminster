@@ -19,8 +19,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
  * @author Henrik Lindberg
  * 
  */
-public class ProgressUtils
-{
+public class ProgressUtils {
 	/**
 	 * Check for cancellation.
 	 * 
@@ -29,21 +28,19 @@ public class ProgressUtils
 	 * @throws OperationCanceledException
 	 *             if the monitor is cancelled.
 	 */
-	public static void checkIfCancelled(IProgressMonitor monitor)
-	{
-		if(monitor.isCanceled())
+	public static void checkIfCancelled(IProgressMonitor monitor) {
+		if (monitor.isCanceled())
 			throw new OperationCanceledException();
 	}
 
 	/**
-	 * Check for cancellation, begin a new task, then end it. Used for monitors passed to methods that discovers that
-	 * they don't need to do any work.
+	 * Check for cancellation, begin a new task, then end it. Used for monitors
+	 * passed to methods that discovers that they don't need to do any work.
 	 * 
 	 * @param monitor
 	 *            The monitor to begin and end.
 	 */
-	public static void noop(IProgressMonitor monitor)
-	{
+	public static void noop(IProgressMonitor monitor) {
 		checkIfCancelled(monitor);
 		monitor.beginTask(null, 1);
 		monitor.done();
@@ -60,8 +57,7 @@ public class ProgressUtils
 	 * @throws OperationCanceledException
 	 *             if the monitor is canceled.
 	 */
-	public static IProgressMonitor submon(IProgressMonitor monitor, int ticks)
-	{
+	public static IProgressMonitor submon(IProgressMonitor monitor, int ticks) {
 		checkIfCancelled(monitor);
 		return new SubProgressMonitor(monitor, ticks);
 	}
@@ -76,8 +72,7 @@ public class ProgressUtils
 	 * @throws OperationCanceledException
 	 *             if the monitor is cancelled.
 	 */
-	public static void worked(IProgressMonitor monitor, int work)
-	{
+	public static void worked(IProgressMonitor monitor, int work) {
 		checkIfCancelled(monitor);
 		monitor.worked(work);
 	}

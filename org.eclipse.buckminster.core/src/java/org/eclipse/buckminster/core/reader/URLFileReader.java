@@ -41,50 +41,38 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
-public class URLFileReader extends AbstractReader implements IFileReader
-{
-	private final URI m_uri;
+public class URLFileReader extends AbstractReader implements IFileReader {
+	private final URI uri;
 
-	private IFileInfo m_fileInfo;
+	private IFileInfo fileInfo;
 
-	protected URLFileReader(IReaderType readerType, ProviderMatch rInfo, URI uri) throws CoreException
-	{
+	protected URLFileReader(IReaderType readerType, ProviderMatch rInfo, URI uri) throws CoreException {
 		super(readerType, rInfo);
-		m_uri = uri;
-		m_fileInfo = null;
+		this.uri = uri;
+		this.fileInfo = null;
 	}
 
-	public boolean exists(IProgressMonitor monitor) throws CoreException, IOException
-	{
+	public boolean exists(IProgressMonitor monitor) throws CoreException, IOException {
 		InputStream input = null;
-		try
-		{
+		try {
 			input = open(monitor);
 			return true;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			return false;
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 	}
 
-	public IFileInfo getFileInfo()
-	{
-		return m_fileInfo;
+	public IFileInfo getFileInfo() {
+		return fileInfo;
 	}
 
-	public final URI getURI()
-	{
-		return m_uri;
+	public final URI getURI() {
+		return uri;
 	}
 
-	public void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor) throws CoreException {
 		URL url = getURL();
 		IConnectContext cctx = getConnectContext();
 
@@ -92,17 +80,15 @@ public class URLFileReader extends AbstractReader implements IFileReader
 		monitor.subTask(NLS.bind(Messages.Copying_from_0, url));
 
 		InputStream in = null;
-		try
-		{
+		try {
 			IFileInfo[] fiHandle = new IFileInfo[1];
 			in = DownloadManager.getCache().open(url, cctx, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
-			m_fileInfo = fiHandle[0];
+			fileInfo = fiHandle[0];
 
-			MaterializerEndPoint unpacker = MaterializerEndPoint.create(location, m_fileInfo.getRemoteName(),
-					resolution, ctx);
+			MaterializerEndPoint unpacker = MaterializerEndPoint.create(location, fileInfo.getRemoteName(), resolution, ctx);
 			File destFile = unpacker.getFinalDestination().toFile();
 
-			if(destFile.toURI().toURL().equals(url))
+			if (destFile.toURI().toURL().equals(url))
 				//
 				// Materialization would result in copy onto self
 				//
@@ -112,65 +98,49 @@ public class URLFileReader extends AbstractReader implements IFileReader
 			// we are at the root.
 			//
 			File destDir = destFile.getParentFile();
-			if(destDir != null && !destDir.isDirectory())
+			if (destDir != null && !destDir.isDirectory())
 				FileUtils.createDirectory(destDir, MonitorUtils.subMonitor(monitor, 100));
 			else
 				MonitorUtils.worked(monitor, 100);
 
 			unpacker.unpack(in, MonitorUtils.subMonitor(monitor, 100));
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(in);
 			monitor.done();
 		}
 	}
 
-	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException
-	{
+	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException {
 		ICache cache = DownloadManager.getCache();
 		IFileInfo[] fiHandle = new IFileInfo[1];
-		InputStream input = cache.open(getURL(), getConnectContext(), null, fiHandle, MonitorUtils.subMonitor(monitor,
-				800));
-		m_fileInfo = fiHandle[0];
+		InputStream input = cache.open(getURL(), getConnectContext(), null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
+		fileInfo = fiHandle[0];
 		return input;
 	}
 
-	public final <T> T readFile(IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException,
-			IOException
-	{
+	public final <T> T readFile(IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		monitor.beginTask(null, 100);
 		InputStream input = null;
-		try
-		{
+		try {
 			input = open(MonitorUtils.subMonitor(monitor, 50));
 			return consumer.consumeStream(this, getURL().toString(), input, MonitorUtils.subMonitor(monitor, 50));
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 			monitor.done();
 		}
 	}
 
 	@Override
-	public String toString()
-	{
-		return m_uri.toString();
+	public String toString() {
+		return uri.toString();
 	}
 
-	protected URL getURL() throws CoreException
-	{
-		try
-		{
-			return m_uri.toURL();
-		}
-		catch(MalformedURLException e)
-		{
+	protected URL getURL() throws CoreException {
+		try {
+			return uri.toURL();
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}

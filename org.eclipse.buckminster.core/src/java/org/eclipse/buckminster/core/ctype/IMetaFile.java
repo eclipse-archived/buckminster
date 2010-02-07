@@ -15,8 +15,7 @@ import org.eclipse.core.runtime.IPath;
  * 
  * @author Thomas Hallgren
  */
-public interface IMetaFile
-{
+public interface IMetaFile {
 	/**
 	 * Return other names for the file (i.e. Maven uses pom.xml and project.xml)
 	 * 
@@ -32,8 +31,9 @@ public interface IMetaFile
 	IPath getPath();
 
 	/**
-	 * The component type will require some files in order to produce a cspec. Other files can be used to elaborate its
-	 * contents. Such files are often optional.
+	 * The component type will require some files in order to produce a cspec.
+	 * Other files can be used to elaborate its contents. Such files are often
+	 * optional.
 	 * 
 	 * @return <code>true</code> if the meta-file is optional.
 	 */

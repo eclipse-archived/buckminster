@@ -38,13 +38,11 @@ import org.eclipse.swt.graphics.Image;
  * @author Johannes Utzig
  * 
  */
-public class BOMNodeTooltipFigure extends RectangleFigure
-{
+public class BOMNodeTooltipFigure extends RectangleFigure {
 
 	private BOMNode node;
 
-	public BOMNodeTooltipFigure(BOMNode node)
-	{
+	public BOMNodeTooltipFigure(BOMNode node) {
 		this.node = node;
 		setBackgroundColor(ColorConstants.tooltipBackground);
 		setForegroundColor(ColorConstants.tooltipForeground);
@@ -54,21 +52,18 @@ public class BOMNodeTooltipFigure extends RectangleFigure
 		add(createBodyFigure(), BorderLayout.CENTER);
 	}
 
-	private IFigure createBodyFigure()
-	{
+	private IFigure createBodyFigure() {
 		Figure figure = new Figure();
 		figure.setBorder(new SchemeBorder(SCHEMES.RIDGED));
 		figure.setLayoutManager(new GridLayout(2, false));
 		Resolution resolution = node.getResolution();
 
-		if(resolution != null)
-		{
+		if (resolution != null) {
 			Label label = new Label(Messages.Type);
 			figure.add(label);
 			label = new Label(resolution.getComponentTypeId());
 			figure.add(label);
-			if(resolution.getVersion() != null)
-			{
+			if (resolution.getVersion() != null) {
 				label = new Label(Messages.Version);
 				figure.add(label);
 				label = new Label(resolution.getVersionMatch().toString());
@@ -76,8 +71,7 @@ public class BOMNodeTooltipFigure extends RectangleFigure
 			}
 
 			VersionRange designator = node.getRequest().getVersionRange();
-			if(designator != null)
-			{
+			if (designator != null) {
 				label = new Label(Messages.VersionRange);
 				figure.add(label);
 
@@ -90,23 +84,18 @@ public class BOMNodeTooltipFigure extends RectangleFigure
 			figure.add(label);
 			label = new Label(node.getResolution().getReaderTypeId());
 			figure.add(label);
-			if(resolution.getRepository() != null)
-			{
+			if (resolution.getRepository() != null) {
 				label = new Label(Messages.Repository);
 				figure.add(label);
 				label = new Label(node.getResolution().getRepository());
 				figure.add(label);
 			}
 
-			if(resolution.getMatchedBranchOrTag() != null)
-			{
+			if (resolution.getMatchedBranchOrTag() != null) {
 				VersionSelector selector = resolution.getMatchedBranchOrTag();
-				if(selector.getType() == VersionSelector.BRANCH)
-				{
+				if (selector.getType() == VersionSelector.BRANCH) {
 					label = new Label(Messages.Branch);
-				}
-				else
-				{
+				} else {
 					label = new Label(Messages.Tag);
 				}
 
@@ -115,24 +104,20 @@ public class BOMNodeTooltipFigure extends RectangleFigure
 				figure.add(label);
 			}
 
-			if(resolution.getSelectedRevision() != null)
-			{
+			if (resolution.getSelectedRevision() != null) {
 				label = new Label(Messages.SelectedRevision);
 				figure.add(label);
 				label = new Label(resolution.getSelectedRevision());
 				figure.add(label);
 			}
-			if(resolution.getSelectedTimestamp() != null)
-			{
+			if (resolution.getSelectedTimestamp() != null) {
 				label = new Label(Messages.SelectedDate);
 				figure.add(label);
 				label = new Label(DateFormat.getInstance().format(resolution.getSelectedTimestamp()));
 				figure.add(label);
 			}
 
-		}
-		else
-		{
+		} else {
 
 			ComponentRequest request = node.getRequest();
 			Label label = new Label(Messages.Type);
@@ -141,8 +126,7 @@ public class BOMNodeTooltipFigure extends RectangleFigure
 			figure.add(label);
 
 			VersionRange designator = node.getRequest().getVersionRange();
-			if(designator != null)
-			{
+			if (designator != null) {
 				label = new Label(Messages.VersionRange);
 				figure.add(label);
 
@@ -157,8 +141,7 @@ public class BOMNodeTooltipFigure extends RectangleFigure
 		return figure;
 	}
 
-	private IFigure createHeadFigure()
-	{
+	private IFigure createHeadFigure() {
 		LabelProvider provider = new DependencyLabelProvider();
 		Image image = provider.getImage(node);
 		String text = provider.getText(node);

@@ -13,28 +13,23 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 /**
  * @author Thomas Hallgren
  */
-public class AlterDependency
-{
-	private final ComponentRequest m_base;
+public class AlterDependency {
+	private final ComponentRequest base;
 
-	public AlterDependency(ComponentRequest base)
-	{
-		m_base = base;
+	public AlterDependency(ComponentRequest base) {
+		this.base = base;
 	}
 
-	public void alterDependency(ComponentRequestBuilder dep)
-	{
-		dep.setComponentTypeID(CSpecExtension.overrideCheckNull(m_base.getComponentTypeID(), dep.getComponentTypeID()));
-		dep.setVersionRange(CSpecExtension.overrideCheckNull(m_base.getVersionRange(), dep.getVersionRange()));
+	public void alterDependency(ComponentRequestBuilder dep) {
+		dep.setComponentTypeID(CSpecExtension.overrideCheckNull(base.getComponentTypeID(), dep.getComponentTypeID()));
+		dep.setVersionRange(CSpecExtension.overrideCheckNull(base.getVersionRange(), dep.getVersionRange()));
 	}
 
-	public String getComponentTypeID()
-	{
-		return m_base.getComponentTypeID();
+	public String getComponentTypeID() {
+		return base.getComponentTypeID();
 	}
 
-	public String getName()
-	{
-		return m_base.getName();
+	public String getName() {
+		return base.getName();
 	}
 }

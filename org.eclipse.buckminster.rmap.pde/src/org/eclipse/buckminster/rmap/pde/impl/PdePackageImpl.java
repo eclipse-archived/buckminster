@@ -18,12 +18,12 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class PdePackageImpl extends EPackageImpl implements PdePackage
-{
+public class PdePackageImpl extends EPackageImpl implements PdePackage {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -39,27 +39,27 @@ public class PdePackageImpl extends EPackageImpl implements PdePackage
 	private static boolean isInited = false;
 
 	/**
-	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
+	 * Creates, registers, and initializes the <b>Package</b> for this model,
+	 * and for any others upon which it depends.
 	 * 
 	 * <p>
-	 * This method is used to initialize {@link PdePackage#eINSTANCE} when that field is accessed. Clients should not
-	 * invoke it directly. Instead, they should simply access that field to obtain the package. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * This method is used to initialize {@link PdePackage#eINSTANCE} when that
+	 * field is accessed. Clients should not invoke it directly. Instead, they
+	 * should simply access that field to obtain the package. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #eNS_URI
 	 * @see #createPackageContents()
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static PdePackage init()
-	{
-		if(isInited)
-			return (PdePackage)EPackage.Registry.INSTANCE.getEPackage(PdePackage.eNS_URI);
+	public static PdePackage init() {
+		if (isInited)
+			return (PdePackage) EPackage.Registry.INSTANCE.getEPackage(PdePackage.eNS_URI);
 
 		// Obtain or create and register package
-		PdePackageImpl thePdePackage = (PdePackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof PdePackageImpl
-				? EPackage.Registry.INSTANCE.get(eNS_URI)
-				: new PdePackageImpl());
+		PdePackageImpl thePdePackage = (PdePackageImpl) (EPackage.Registry.INSTANCE.get(eNS_URI) instanceof PdePackageImpl
+				? EPackage.Registry.INSTANCE.get(eNS_URI) : new PdePackageImpl());
 
 		isInited = true;
 
@@ -95,11 +95,13 @@ public class PdePackageImpl extends EPackageImpl implements PdePackage
 	private boolean isInitialized = false;
 
 	/**
-	 * Creates an instance of the model <b>Package</b>, registered with {@link org.eclipse.emf.ecore.EPackage.Registry
-	 * EPackage.Registry} by the package package URI value.
+	 * Creates an instance of the model <b>Package</b>, registered with
+	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the
+	 * package package URI value.
 	 * <p>
-	 * Note: the correct way to create the package is via the static factory method {@link #init init()}, which also
-	 * performs initialization of the package, or returns the registered package, if one already exists. <!--
+	 * Note: the correct way to create the package is via the static factory
+	 * method {@link #init init()}, which also performs initialization of the
+	 * package, or returns the registered package, if one already exists. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
@@ -107,20 +109,19 @@ public class PdePackageImpl extends EPackageImpl implements PdePackage
 	 * @see #init()
 	 * @generated
 	 */
-	private PdePackageImpl()
-	{
+	private PdePackageImpl() {
 		super(eNS_URI, PdeFactory.eINSTANCE);
 	}
 
 	/**
-	 * Creates the meta-model objects for the package. This method is guarded to have no affect on any invocation but
-	 * its first. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates the meta-model objects for the package. This method is guarded to
+	 * have no affect on any invocation but its first. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void createPackageContents()
-	{
-		if(isCreated)
+	public void createPackageContents() {
+		if (isCreated)
 			return;
 		isCreated = true;
 
@@ -133,9 +134,8 @@ public class PdePackageImpl extends EPackageImpl implements PdePackage
 	 * 
 	 * @generated
 	 */
-	public PdeFactory getPdeFactory()
-	{
-		return (PdeFactory)getEFactoryInstance();
+	public PdeFactory getPdeFactory() {
+		return (PdeFactory) getEFactoryInstance();
 	}
 
 	/**
@@ -143,20 +143,19 @@ public class PdePackageImpl extends EPackageImpl implements PdePackage
 	 * 
 	 * @generated
 	 */
-	public EClass getPDEMapProvider()
-	{
+	public EClass getPDEMapProvider() {
 		return pdeMapProviderEClass;
 	}
 
 	/**
-	 * Complete the initialization of the package and its meta-model. This method is guarded to have no affect on any
-	 * invocation but its first. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Complete the initialization of the package and its meta-model. This
+	 * method is guarded to have no affect on any invocation but its first. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void initializePackageContents()
-	{
-		if(isInitialized)
+	public void initializePackageContents() {
+		if (isInitialized)
 			return;
 		isInitialized = true;
 
@@ -166,7 +165,7 @@ public class PdePackageImpl extends EPackageImpl implements PdePackage
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
-		RmapPackage theRmapPackage = (RmapPackage)EPackage.Registry.INSTANCE.getEPackage(RmapPackage.eNS_URI);
+		RmapPackage theRmapPackage = (RmapPackage) EPackage.Registry.INSTANCE.getEPackage(RmapPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -176,8 +175,7 @@ public class PdePackageImpl extends EPackageImpl implements PdePackage
 		pdeMapProviderEClass.getESuperTypes().add(theRmapPackage.getProvider());
 
 		// Initialize classes and features; add operations and parameters
-		initEClass(pdeMapProviderEClass, PDEMapProvider.class, "PDEMapProvider", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
+		initEClass(pdeMapProviderEClass, PDEMapProvider.class, "PDEMapProvider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

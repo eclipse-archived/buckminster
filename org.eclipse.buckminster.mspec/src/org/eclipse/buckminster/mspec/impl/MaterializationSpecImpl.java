@@ -26,26 +26,34 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Materialization Spec</b></em>'. <!--
- * end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Materialization Spec</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getMspecNodes <em>Mspec Nodes</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getName <em>Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getShortDesc <em>Short Desc</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getUrl <em>Url</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getMaxParallelJobs <em>Max Parallel Jobs</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getMspecNodes
+ * <em>Mspec Nodes</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getName
+ * <em>Name</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getShortDesc
+ * <em>Short Desc</em>}</li>
+ * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getUrl
+ * <em>Url</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationSpecImpl#getMaxParallelJobs
+ * <em>Max Parallel Jobs</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class MaterializationSpecImpl extends MaterializationDirectiveImpl implements MaterializationSpec
-{
+public class MaterializationSpecImpl extends MaterializationDirectiveImpl implements MaterializationSpec {
 	/**
-	 * The cached value of the '{@link #getMspecNodes() <em>Mspec Nodes</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getMspecNodes() <em>Mspec Nodes</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getMspecNodes()
 	 * @generated
@@ -54,8 +62,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	protected EList<MaterializationNode> mspecNodes;
 
 	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -64,8 +72,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	protected static final String NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getName()
 	 * @generated
@@ -74,8 +82,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getShortDesc() <em>Short Desc</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getShortDesc() <em>Short Desc</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getShortDesc()
 	 * @generated
@@ -84,8 +92,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	protected static final String SHORT_DESC_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getShortDesc() <em>Short Desc</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getShortDesc() <em>Short Desc</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getShortDesc()
 	 * @generated
@@ -94,8 +102,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	protected String shortDesc = SHORT_DESC_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getUrl() <em>Url</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getUrl() <em>Url</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getUrl()
 	 * @generated
@@ -104,7 +112,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	protected static final String URL_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getUrl() <em>Url</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getUrl() <em>Url</em>}' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getUrl()
 	 * @generated
@@ -113,8 +122,9 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	protected String url = URL_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getMaxParallelJobs() <em>Max Parallel Jobs</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getMaxParallelJobs()
+	 * <em>Max Parallel Jobs</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getMaxParallelJobs()
 	 * @generated
@@ -123,8 +133,9 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	protected static final int MAX_PARALLEL_JOBS_EDEFAULT = 0;
 
 	/**
-	 * The cached value of the '{@link #getMaxParallelJobs() <em>Max Parallel Jobs</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getMaxParallelJobs()
+	 * <em>Max Parallel Jobs</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getMaxParallelJobs()
 	 * @generated
@@ -137,8 +148,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	protected MaterializationSpecImpl()
-	{
+	protected MaterializationSpecImpl() {
 		super();
 	}
 
@@ -148,20 +158,18 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
-			return getMspecNodes();
-		case MspecPackage.MATERIALIZATION_SPEC__NAME:
-			return getName();
-		case MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC:
-			return getShortDesc();
-		case MspecPackage.MATERIALIZATION_SPEC__URL:
-			return getUrl();
-		case MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS:
-			return getMaxParallelJobs();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
+				return getMspecNodes();
+			case MspecPackage.MATERIALIZATION_SPEC__NAME:
+				return getName();
+			case MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC:
+				return getShortDesc();
+			case MspecPackage.MATERIALIZATION_SPEC__URL:
+				return getUrl();
+			case MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS:
+				return getMaxParallelJobs();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -172,12 +180,10 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
-			return ((InternalEList<?>)getMspecNodes()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
+				return ((InternalEList<?>) getMspecNodes()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -188,26 +194,18 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
-			return mspecNodes != null && !mspecNodes.isEmpty();
-		case MspecPackage.MATERIALIZATION_SPEC__NAME:
-			return NAME_EDEFAULT == null
-					? name != null
-					: !NAME_EDEFAULT.equals(name);
-		case MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC:
-			return SHORT_DESC_EDEFAULT == null
-					? shortDesc != null
-					: !SHORT_DESC_EDEFAULT.equals(shortDesc);
-		case MspecPackage.MATERIALIZATION_SPEC__URL:
-			return URL_EDEFAULT == null
-					? url != null
-					: !URL_EDEFAULT.equals(url);
-		case MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS:
-			return maxParallelJobs != MAX_PARALLEL_JOBS_EDEFAULT;
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
+				return mspecNodes != null && !mspecNodes.isEmpty();
+			case MspecPackage.MATERIALIZATION_SPEC__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC:
+				return SHORT_DESC_EDEFAULT == null ? shortDesc != null : !SHORT_DESC_EDEFAULT.equals(shortDesc);
+			case MspecPackage.MATERIALIZATION_SPEC__URL:
+				return URL_EDEFAULT == null ? url != null : !URL_EDEFAULT.equals(url);
+			case MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS:
+				return maxParallelJobs != MAX_PARALLEL_JOBS_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -219,26 +217,24 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
-			getMspecNodes().clear();
-			getMspecNodes().addAll((Collection<? extends MaterializationNode>)newValue);
-			return;
-		case MspecPackage.MATERIALIZATION_SPEC__NAME:
-			setName((String)newValue);
-			return;
-		case MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC:
-			setShortDesc((String)newValue);
-			return;
-		case MspecPackage.MATERIALIZATION_SPEC__URL:
-			setUrl((String)newValue);
-			return;
-		case MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS:
-			setMaxParallelJobs((Integer)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
+				getMspecNodes().clear();
+				getMspecNodes().addAll((Collection<? extends MaterializationNode>) newValue);
+				return;
+			case MspecPackage.MATERIALIZATION_SPEC__NAME:
+				setName((String) newValue);
+				return;
+			case MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC:
+				setShortDesc((String) newValue);
+				return;
+			case MspecPackage.MATERIALIZATION_SPEC__URL:
+				setUrl((String) newValue);
+				return;
+			case MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS:
+				setMaxParallelJobs((Integer) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -249,25 +245,23 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
-			getMspecNodes().clear();
-			return;
-		case MspecPackage.MATERIALIZATION_SPEC__NAME:
-			setName(NAME_EDEFAULT);
-			return;
-		case MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC:
-			setShortDesc(SHORT_DESC_EDEFAULT);
-			return;
-		case MspecPackage.MATERIALIZATION_SPEC__URL:
-			setUrl(URL_EDEFAULT);
-			return;
-		case MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS:
-			setMaxParallelJobs(MAX_PARALLEL_JOBS_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
+				getMspecNodes().clear();
+				return;
+			case MspecPackage.MATERIALIZATION_SPEC__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC:
+				setShortDesc(SHORT_DESC_EDEFAULT);
+				return;
+			case MspecPackage.MATERIALIZATION_SPEC__URL:
+				setUrl(URL_EDEFAULT);
+				return;
+			case MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS:
+				setMaxParallelJobs(MAX_PARALLEL_JOBS_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -277,8 +271,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	public int getMaxParallelJobs()
-	{
+	public int getMaxParallelJobs() {
 		return maxParallelJobs;
 	}
 
@@ -287,10 +280,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	public EList<MaterializationNode> getMspecNodes()
-	{
-		if(mspecNodes == null)
-		{
+	public EList<MaterializationNode> getMspecNodes() {
+		if (mspecNodes == null) {
 			mspecNodes = new EObjectContainmentEList<MaterializationNode>(MaterializationNode.class, this,
 					MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES);
 		}
@@ -302,8 +293,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
@@ -312,8 +302,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	public String getShortDesc()
-	{
+	public String getShortDesc() {
 		return shortDesc;
 	}
 
@@ -322,8 +311,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	public String getUrl()
-	{
+	public String getUrl() {
 		return url;
 	}
 
@@ -332,13 +320,12 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	public void setMaxParallelJobs(int newMaxParallelJobs)
-	{
+	public void setMaxParallelJobs(int newMaxParallelJobs) {
 		int oldMaxParallelJobs = maxParallelJobs;
 		maxParallelJobs = newMaxParallelJobs;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS,
-					oldMaxParallelJobs, maxParallelJobs));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS, oldMaxParallelJobs,
+					maxParallelJobs));
 	}
 
 	/**
@@ -346,13 +333,11 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	public void setName(String newName)
-	{
+	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_SPEC__NAME, oldName,
-					name));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_SPEC__NAME, oldName, name));
 	}
 
 	/**
@@ -360,13 +345,11 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	public void setShortDesc(String newShortDesc)
-	{
+	public void setShortDesc(String newShortDesc) {
 		String oldShortDesc = shortDesc;
 		shortDesc = newShortDesc;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC,
-					oldShortDesc, shortDesc));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_SPEC__SHORT_DESC, oldShortDesc, shortDesc));
 	}
 
 	/**
@@ -374,11 +357,10 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	public void setUrl(String newUrl)
-	{
+	public void setUrl(String newUrl) {
 		String oldUrl = url;
 		url = newUrl;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_SPEC__URL, oldUrl, url));
 	}
 
@@ -388,9 +370,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -412,8 +393,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return MspecPackage.Literals.MATERIALIZATION_SPEC;
 	}
 

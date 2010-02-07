@@ -19,8 +19,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin
-{
+public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.ui.dependency.visualizer"; //$NON-NLS-1$
@@ -33,43 +32,39 @@ public class Activator extends AbstractUIPlugin
 	 * 
 	 * @return the shared instance
 	 */
-	public static Activator getDefault()
-	{
+	public static Activator getDefault() {
 		return plugin;
 	}
 
 	/**
 	 * The constructor
 	 */
-	public Activator()
-	{
+	public Activator() {
 	}
 
-	public void log(int severity, String message, Throwable t)
-	{
+	public void log(int severity, String message, Throwable t) {
 		IStatus status = new Status(severity, PLUGIN_ID, message, t);
 		getLog().log(status);
 
 	}
 
-	public void log(int severity, Throwable t)
-	{
+	public void log(int severity, Throwable t) {
 		log(severity, t.getLocalizedMessage(), t);
 	}
 
-	public void log(Throwable t)
-	{
+	public void log(Throwable t) {
 		log(IStatus.ERROR, t);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
+	 * )
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception
-	{
+	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 	}
@@ -77,11 +72,12 @@ public class Activator extends AbstractUIPlugin
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
+	 * )
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception
-	{
+	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		ImageCache.dispose();
 		super.stop(context);

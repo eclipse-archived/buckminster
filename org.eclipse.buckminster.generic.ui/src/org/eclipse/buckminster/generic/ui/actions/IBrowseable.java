@@ -14,6 +14,5 @@ package org.eclipse.buckminster.generic.ui.actions;
  * @author Henrik Lindberg
  * 
  */
-public interface IBrowseable extends IDescribedURL
-{
+public interface IBrowseable extends IDescribedURL {
 }

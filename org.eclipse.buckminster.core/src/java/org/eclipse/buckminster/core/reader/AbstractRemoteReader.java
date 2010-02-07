@@ -25,50 +25,34 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractRemoteReader extends AbstractCatalogReader
-{
-	protected AbstractRemoteReader(IReaderType readerType, ProviderMatch rInfo) throws CoreException
-	{
+public abstract class AbstractRemoteReader extends AbstractCatalogReader {
+	protected AbstractRemoteReader(IReaderType readerType, ProviderMatch rInfo) throws CoreException {
 		super(readerType, rInfo);
 	}
 
 	@Override
-	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
-	{
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
 		InputStream input = null;
-		try
-		{
+		try {
 			input = CorePlugin.getDefault().openCachedRemoteFile(this, fileName, monitor);
 			return true;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			return false;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 	}
 
 	@Override
-	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		InputStream input = null;
 		monitor.beginTask(fileName, 2000);
-		try
-		{
+		try {
 			input = CorePlugin.getDefault().openCachedRemoteFile(this, fileName, MonitorUtils.subMonitor(monitor, 1000));
-			return consumer.consumeStream(this, this.toString() + ',' + fileName, input, MonitorUtils.subMonitor(
-					monitor, 1000));
-		}
-		finally
-		{
+			return consumer.consumeStream(this, this.toString() + ',' + fileName, input, MonitorUtils.subMonitor(monitor, 1000));
+		} finally {
 			IOUtils.close(input);
 			monitor.done();
 		}

@@ -66,8 +66,7 @@ import org.eclipse.ui.part.EditorPart;
  * @author Johannes Utzig
  * 
  */
-public class DependencyVisualizer extends EditorPart
-{
+public class DependencyVisualizer extends EditorPart {
 
 	private DependencyViewer graphViewer;
 
@@ -80,8 +79,7 @@ public class DependencyVisualizer extends EditorPart
 	public static final String ID = "org.eclipse.buckminster.dependency.visualizer.editor1"; //$NON-NLS-1$
 
 	@Override
-	public void createPartControl(Composite parent)
-	{
+	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout());
 
 		Form form = toolkit.createForm(parent);
@@ -91,8 +89,7 @@ public class DependencyVisualizer extends EditorPart
 		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(sashForm);
 		createNavigationSection(sashForm);
-		Section graphSection = toolkit.createSection(sashForm, ExpandableComposite.EXPANDED
-				| ExpandableComposite.TITLE_BAR);
+		Section graphSection = toolkit.createSection(sashForm, ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR);
 		sashForm.setWeights(new int[] { 25, 70 });
 
 		graphSection.setText(Messages.Graph);
@@ -112,8 +109,7 @@ public class DependencyVisualizer extends EditorPart
 	 * this implementation does nothing
 	 */
 	@Override
-	public void doSave(IProgressMonitor monitor)
-	{
+	public void doSave(IProgressMonitor monitor) {
 		// nothing to do
 
 	}
@@ -122,80 +118,63 @@ public class DependencyVisualizer extends EditorPart
 	 * this implementation does nothing
 	 */
 	@Override
-	public void doSaveAs()
-	{
+	public void doSaveAs() {
 		// nothing to do
 
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException
-	{
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		setSite(site);
 		setInput(input);
 
 		toolkit = new FormToolkit(site.getShell().getDisplay());
 
-		if(input instanceof IFileEditorInput)
-		{
-			IFileEditorInput editorInput = (IFileEditorInput)input;
-			try
-			{
-				IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(
-						true);
+		if (input instanceof IFileEditorInput) {
+			IFileEditorInput editorInput = (IFileEditorInput) input;
+			try {
+				IParser<BillOfMaterials> parser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);
 				InputStream in = editorInput.getFile().getContents();
 				bom = parser.parse(editorInput.getName(), in);
 				setPartName(bom.getViewName());
 				in.close();
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
+				Activator.getDefault().log(e);
+			} catch (IOException e) {
 				Activator.getDefault().log(e);
 			}
-			catch(IOException e)
-			{
-				Activator.getDefault().log(e);
-			}
-		}
-		else if(input instanceof BOMEditorInput)
-		{
-			BOMEditorInput editorInput = (BOMEditorInput)input;
+		} else if (input instanceof BOMEditorInput) {
+			BOMEditorInput editorInput = (BOMEditorInput) input;
 			bom = editorInput.getBillOfMaterials();
 		}
 
 	}
 
 	@Override
-	public boolean isDirty()
-	{
+	public boolean isDirty() {
 		return false;
 	}
 
 	@Override
-	public boolean isSaveAsAllowed()
-	{
+	public boolean isSaveAsAllowed() {
 		return false;
 	}
 
 	@Override
-	public void setFocus()
-	{
+	public void setFocus() {
 		graphViewer.getControl().setFocus();
 
 	}
 
-	private void createActionsSection(Composite parent)
-	{
-		Section actions = toolkit.createSection(parent, ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE
-				| ExpandableComposite.COMPACT | ExpandableComposite.TITLE_BAR);
+	private void createActionsSection(Composite parent) {
+		Section actions = toolkit.createSection(parent, ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE | ExpandableComposite.COMPACT
+				| ExpandableComposite.TITLE_BAR);
 
 		actions.setLayout(new FillLayout());
 
-		ScrolledComposite scroll = new ScrolledComposite(actions, SWT.V_SCROLL)
-		{
+		ScrolledComposite scroll = new ScrolledComposite(actions, SWT.V_SCROLL) {
 			@Override
-			public Point computeSize(int wHint, int hHint, boolean changed)
-			{
+			public Point computeSize(int wHint, int hHint, boolean changed) {
 				return new Point(getMinWidth(), 100);
 			}
 		};
@@ -212,22 +191,22 @@ public class DependencyVisualizer extends EditorPart
 		actionComposite.setLayout(layout);
 		GridDataFactory.fillDefaults().applyTo(actionComposite);
 
-		Section filterSection = toolkit.createSection(actionComposite, ExpandableComposite.COMPACT
-				| ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.EXPANDED);
+		Section filterSection = toolkit.createSection(actionComposite, ExpandableComposite.COMPACT | ExpandableComposite.SHORT_TITLE_BAR
+				| ExpandableComposite.EXPANDED);
 		filterSection.setText(Messages.Filters);
 		filterSection.setLayout(new GridLayout(1, true));
 		filterSection.setClient(createFilterComposite(filterSection));
 		GridDataFactory.fillDefaults().applyTo(filterSection);
 
-		Section layoutSection = toolkit.createSection(actionComposite, ExpandableComposite.COMPACT
-				| ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.EXPANDED);
+		Section layoutSection = toolkit.createSection(actionComposite, ExpandableComposite.COMPACT | ExpandableComposite.SHORT_TITLE_BAR
+				| ExpandableComposite.EXPANDED);
 		layoutSection.setLayout(new FillLayout());
 		layoutSection.setText(Messages.Layout);
 		layoutSection.setClient(createLayoutComposite(layoutSection));
 		GridDataFactory.fillDefaults().applyTo(layoutSection);
 
-		Section pathSection = toolkit.createSection(actionComposite, ExpandableComposite.COMPACT
-				| ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.EXPANDED);
+		Section pathSection = toolkit.createSection(actionComposite, ExpandableComposite.COMPACT | ExpandableComposite.SHORT_TITLE_BAR
+				| ExpandableComposite.EXPANDED);
 		pathSection.setLayout(new FillLayout());
 		pathSection.setText(Messages.PathHighlighting);
 		pathSection.setClient(createHighlightComposite(pathSection));
@@ -246,25 +225,21 @@ public class DependencyVisualizer extends EditorPart
 
 	}
 
-	private Control createFilterComposite(Section filterSection)
-	{
+	private Control createFilterComposite(Section filterSection) {
 		FilterControl control = new FilterControl(toolkit);
 		control.addViewerSettingChangeListener(graphViewer);
-		control.addViewerSettingChangeListener(new IViewerSettingChangeListener()
-		{
+		control.addViewerSettingChangeListener(new IViewerSettingChangeListener() {
 
-			public void viewerSettingChanged(ViewerSettingChangeEvent event)
-			{
-				switch(event.getType())
-				{
-				case FILTER_ADDED:
-					treeViewer.addFilter((ViewerFilter)event.getData());
-					break;
-				case FILTER_REMOVED:
-					treeViewer.removeFilter((ViewerFilter)event.getData());
-					break;
-				default:
-					break;
+			public void viewerSettingChanged(ViewerSettingChangeEvent event) {
+				switch (event.getType()) {
+					case FILTER_ADDED:
+						treeViewer.addFilter((ViewerFilter) event.getData());
+						break;
+					case FILTER_REMOVED:
+						treeViewer.removeFilter((ViewerFilter) event.getData());
+						break;
+					default:
+						break;
 				}
 
 			}
@@ -273,24 +248,21 @@ public class DependencyVisualizer extends EditorPart
 
 	}
 
-	private Control createHighlightComposite(Section layoutSection)
-	{
+	private Control createHighlightComposite(Section layoutSection) {
 		HighlightPathControl control = new HighlightPathControl(toolkit);
 		control.addViewerSettingChangeListener(graphViewer);
 		return control.createControl(layoutSection);
 	}
 
-	private Control createLayoutComposite(Section layoutSection)
-	{
+	private Control createLayoutComposite(Section layoutSection) {
 		LayoutControl control = new LayoutControl(toolkit);
 		control.addViewerSettingChangeListener(graphViewer);
 		return control.createControl(layoutSection);
 	}
 
-	private void createNavigationSection(Composite parent)
-	{
-		Section navigationSection = toolkit.createSection(parent, ExpandableComposite.EXPANDED
-				| ExpandableComposite.TITLE_BAR | ExpandableComposite.COMPACT | ExpandableComposite.TWISTIE);
+	private void createNavigationSection(Composite parent) {
+		Section navigationSection = toolkit.createSection(parent, ExpandableComposite.EXPANDED | ExpandableComposite.TITLE_BAR
+				| ExpandableComposite.COMPACT | ExpandableComposite.TWISTIE);
 		GridDataFactory.fillDefaults().grab(false, true).applyTo(navigationSection);
 		navigationSection.setText(Messages.Navigation);
 		navigationSection.setLayout(new FillLayout());
@@ -305,30 +277,23 @@ public class DependencyVisualizer extends EditorPart
 		List<BOMNode> input = new ArrayList<BOMNode>();
 		input.add(bom);
 		treeViewer.setInput(input);
-		treeViewer.addSelectionChangedListener(new ISelectionChangedListener()
-		{
+		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-			public void selectionChanged(SelectionChangedEvent event)
-			{
-				Object o = ((IStructuredSelection)event.getSelection()).getFirstElement();
-				// zest seems to have issues with only one element in the graph (and it wouldn't make much sense anyway)
-				if(treeContentProvider.hasChildren(o))
-				{
-					if(o instanceof BOMNode)
-					{
-						BOMNode node = (BOMNode)o;
+			public void selectionChanged(SelectionChangedEvent event) {
+				Object o = ((IStructuredSelection) event.getSelection()).getFirstElement();
+				// zest seems to have issues with only one element in the graph
+				// (and it wouldn't make much sense anyway)
+				if (treeContentProvider.hasChildren(o)) {
+					if (o instanceof BOMNode) {
+						BOMNode node = (BOMNode) o;
 						DependencyVisualizer.this.graphViewer.setInputAndRoot(Collections.singletonList(node));
 					}
-				}
-				else
-				{
+				} else {
 					// set selection to match the tree
-					if(event.getSelection() instanceof ITreeSelection)
-					{
-						ITreeSelection treeSelection = (ITreeSelection)event.getSelection();
+					if (event.getSelection() instanceof ITreeSelection) {
+						ITreeSelection treeSelection = (ITreeSelection) event.getSelection();
 						TreePath[] paths = treeSelection.getPaths();
-						if(paths == null || paths.length == 0)
-						{
+						if (paths == null || paths.length == 0) {
 							// the previously selected element got filtered out.
 							// fall back to the root
 							DependencyVisualizer.this.graphViewer.setInputAndRoot(Collections.singletonList(bom));
@@ -336,12 +301,10 @@ public class DependencyVisualizer extends EditorPart
 							return;
 						}
 						TreePath path = paths[0].getParentPath();
-						if(path != null)
-						{
+						if (path != null) {
 							Object nodeParent = path.getLastSegment();
-							if(nodeParent instanceof BOMNode)
-							{
-								BOMNode node = (BOMNode)nodeParent;
+							if (nodeParent instanceof BOMNode) {
+								BOMNode node = (BOMNode) nodeParent;
 								DependencyVisualizer.this.graphViewer.setInputAndRoot(Collections.singletonList(node));
 								DependencyVisualizer.this.graphViewer.setSelection(event.getSelection(), true);
 							}

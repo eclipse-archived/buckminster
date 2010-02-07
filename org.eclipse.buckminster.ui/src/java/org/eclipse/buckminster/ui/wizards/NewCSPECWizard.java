@@ -18,14 +18,12 @@ import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.ui.INewWizard;
 import org.xml.sax.SAXException;
 
-public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
-{
+public class NewCSPECWizard extends NewBMFileWizard implements INewWizard {
 	private final String INIT_COMPONENT_TYPE = "buckminster"; //$NON-NLS-1$
 
 	private final String INIT_VERSION_STRING = "1.0.0"; //$NON-NLS-1$
 
-	public NewCSPECWizard()
-	{
+	public NewCSPECWizard() {
 		super();
 	}
 
@@ -34,8 +32,7 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 	 */
 
 	@Override
-	public void addPages()
-	{
+	public void addPages() {
 		setPage(new NewCSPECWizardPage(getSelection()));
 	}
 
@@ -46,11 +43,10 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 	 */
 
 	@Override
-	protected InputStream openContentStream(String containerName, String fileName)
-	{
+	protected InputStream openContentStream(String containerName, String fileName) {
 		String name = containerName;
 		int lastSlash = name.lastIndexOf('/');
-		if(lastSlash >= 0)
+		if (lastSlash >= 0)
 			name = name.substring(lastSlash + 1);
 
 		CSpecBuilder builder = new CSpecBuilder();
@@ -61,12 +57,9 @@ public class NewCSPECWizard extends NewBMFileWizard implements INewWizard
 		CSpec cspec = new CSpec(builder);
 
 		AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
-		try
-		{
+		try {
 			Utils.serialize(cspec, bld);
-		}
-		catch(SAXException e)
-		{
+		} catch (SAXException e) {
 			throw new RuntimeException(Messages.cannot_create_a_new_buckminster_component_specification_file, e);
 		}
 

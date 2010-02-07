@@ -51,150 +51,120 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
-public class ParserFactory implements IParserFactory
-{
-	public static class ParserExtension
-	{
-		private final String m_namespace;
+public class ParserFactory implements IParserFactory {
+	public static class ParserExtension {
+		private final String namespace;
 
-		private final URL m_resource;
+		private final URL resource;
 
-		private final Map<String, Class<? extends ChildHandler>> m_handlers = new HashMap<String, Class<? extends ChildHandler>>();
+		private final Map<String, Class<? extends ChildHandler>> handlers = new HashMap<String, Class<? extends ChildHandler>>();
 
-		public ParserExtension(String namespace, URL resource)
-		{
-			m_namespace = namespace;
-			m_resource = resource;
+		public ParserExtension(String namespace, URL resource) {
+			this.namespace = namespace;
+			this.resource = resource;
 		}
 
-		public final ChildHandler getHandler(AbstractHandler parent, String xsiType) throws CoreException
-		{
-			Class<? extends ChildHandler> handlerClass = m_handlers.get(xsiType);
-			try
-			{
+		public final ChildHandler getHandler(AbstractHandler parent, String xsiType) throws CoreException {
+			Class<? extends ChildHandler> handlerClass = handlers.get(xsiType);
+			try {
 				Constructor<? extends ChildHandler> ctor = handlerClass.getConstructor(new Class[] { AbstractHandler.class });
 				return ctor.newInstance(new Object[] { parent });
-			}
-			catch(Exception e)
-			{
+			} catch (Exception e) {
 				throw BuckminsterException.wrap(e);
 			}
 		}
 
-		public final String getNamespace()
-		{
-			return m_namespace;
+		public final String getNamespace() {
+			return namespace;
 		}
 
-		public final URL getResource()
-		{
-			return m_resource;
+		public final URL getResource() {
+			return resource;
 		}
 
-		void addHandler(String xsiType, Class<? extends ChildHandler> clazz)
-		{
-			m_handlers.put(xsiType, clazz);
+		void addHandler(String xsiType, Class<? extends ChildHandler> clazz) {
+			handlers.put(xsiType, clazz);
 		}
 	}
 
 	public static final String PARSER_EXTENSIONS_POINT = CorePlugin.CORE_NAMESPACE + ".parserExtensions"; //$NON-NLS-1$
 
-	private static final ParserFactory s_instance = new ParserFactory();
+	private static final ParserFactory instance = new ParserFactory();
 
-	public static IParserFactory getDefault()
-	{
-		return s_instance;
+	public static IParserFactory getDefault() {
+		return instance;
 	}
 
-	private Map<String, List<ParserExtension>> m_parserExtensions;
+	private Map<String, List<ParserExtension>> parserExtensions;
 
-	public IParser<CSpecExtension> getAlterCSpecParser(boolean validating) throws CoreException
-	{
+	public IParser<CSpecExtension> getAlterCSpecParser(boolean validating) throws CoreException {
 		return new AlterCSpecParser(getParserExtensions(CSpec.TAG, CSpecExtension.TAG), validating);
 	}
 
-	public IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating) throws CoreException
-	{
-		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, Provider.TAG,
-				CSpec.TAG, Resolution.TAG, BOMNode.TAG), validating);
+	public IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating) throws CoreException {
+		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, Provider.TAG, CSpec.TAG, Resolution.TAG,
+				BOMNode.TAG), validating);
 	}
 
-	public IParser<ComponentQuery> getComponentQueryParser(boolean validating) throws CoreException
-	{
+	public IParser<ComponentQuery> getComponentQueryParser(boolean validating) throws CoreException {
 		return new ComponentQueryParser(getParserExtensions(ComponentQuery.TAG), validating);
 	}
 
-	public IParser<CSpec> getCSpecParser(boolean validating) throws CoreException
-	{
+	public IParser<CSpec> getCSpecParser(boolean validating) throws CoreException {
 		return new CSpecParser(getParserExtensions(CSpec.TAG), validating);
 	}
 
-	public IParser<BOMNode> getDepNodeParser() throws CoreException
-	{
+	public IParser<BOMNode> getDepNodeParser() throws CoreException {
 		return new DepNodeParser(getParserExtensions(Resolution.TAG, BOMNode.TAG));
 	}
 
-	public IParser<Materialization> getMaterializationParser() throws CoreException
-	{
+	public IParser<Materialization> getMaterializationParser() throws CoreException {
 		return new MaterializationParser(getParserExtensions(Materialization.TAG));
 	}
 
-	public IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating) throws CoreException
-	{
+	public IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating) throws CoreException {
 		return new MaterializationSpecParser(getParserExtensions(MaterializationSpec.TAG), validating);
 	}
 
-	public IParser<Provider> getProviderParser(boolean validating) throws CoreException
-	{
+	public IParser<Provider> getProviderParser(boolean validating) throws CoreException {
 		return new ProviderParser(getParserExtensions(Provider.TAG), validating);
 	}
 
-	public IParser<Resolution> getResolutionParser() throws CoreException
-	{
+	public IParser<Resolution> getResolutionParser() throws CoreException {
 		return new ResolutionParser(getParserExtensions(Resolution.TAG));
 	}
 
-	public IParser<ResourceMap> getResourceMapParser(boolean validating) throws CoreException
-	{
+	public IParser<ResourceMap> getResourceMapParser(boolean validating) throws CoreException {
 		return new ResourceMapParser(getParserExtensions(ResourceMap.TAG, Provider.TAG), validating);
 	}
 
-	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating) throws CoreException
-	{
+	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating) throws CoreException {
 		return new WorkspaceBindingParser(getParserExtensions(Provider.TAG, CSpec.TAG, Resolution.TAG), validating);
 	}
 
-	private synchronized List<ParserExtension> getParserExtensions(String... parserIds)
-	{
-		if(m_parserExtensions == null)
-		{
-			try
-			{
-				m_parserExtensions = loadParserExtensions();
-			}
-			catch(CoreException e)
-			{
+	private synchronized List<ParserExtension> getParserExtensions(String... parserIds) {
+		if (parserExtensions == null) {
+			try {
+				parserExtensions = loadParserExtensions();
+			} catch (CoreException e) {
 				CorePlugin.getLogger().warning(e, Messages.Unable_to_load_parser_extensions);
-				m_parserExtensions = Collections.emptyMap();
+				parserExtensions = Collections.emptyMap();
 			}
 		}
 
 		List<ParserExtension> result = null;
 		boolean mutable = false;
-		for(String parserId : parserIds)
-		{
-			List<ParserExtension> pel = m_parserExtensions.get(parserId);
-			if(pel == null)
+		for (String parserId : parserIds) {
+			List<ParserExtension> pel = parserExtensions.get(parserId);
+			if (pel == null)
 				continue;
 
-			if(result == null)
-			{
+			if (result == null) {
 				result = pel;
 				continue;
 			}
 
-			if(!mutable)
-			{
+			if (!mutable) {
 				ArrayList<ParserExtension> mutableList = new ArrayList<ParserExtension>();
 				mutableList.addAll(result);
 				result = mutableList;
@@ -202,38 +172,30 @@ public class ParserFactory implements IParserFactory
 			}
 			result.addAll(pel);
 		}
-		return (result == null || result.size() == 0)
-				? Collections.<ParserExtension> emptyList()
-				: result;
+		return (result == null || result.size() == 0) ? Collections.<ParserExtension> emptyList() : result;
 	}
 
-	private Map<String, List<ParserExtension>> loadParserExtensions() throws CoreException
-	{
+	private Map<String, List<ParserExtension>> loadParserExtensions() throws CoreException {
 		IExtensionRegistry exReg = Platform.getExtensionRegistry();
 		HashMap<String, List<ParserExtension>> peMap = new HashMap<String, List<ParserExtension>>();
-		for(IConfigurationElement namespace : exReg.getConfigurationElementsFor(PARSER_EXTENSIONS_POINT))
-		{
+		for (IConfigurationElement namespace : exReg.getConfigurationElementsFor(PARSER_EXTENSIONS_POINT)) {
 			Bundle bundle = Platform.getBundle(namespace.getNamespaceIdentifier());
 			URL resource = bundle.getResource(namespace.getAttribute("resource")); //$NON-NLS-1$
 			ParserExtension pe = new ParserExtension(namespace.getAttribute("namespace"), resource); //$NON-NLS-1$
-			for(IConfigurationElement handler : namespace.getChildren("handler")) //$NON-NLS-1$
+			for (IConfigurationElement handler : namespace.getChildren("handler")) //$NON-NLS-1$
 			{
-				try
-				{
-					pe.addHandler(handler.getAttribute("type"), ((Class<?>)bundle.loadClass(handler //$NON-NLS-1$
-					.getAttribute("class"))).asSubclass(ChildHandler.class)); //$NON-NLS-1$
-				}
-				catch(ClassNotFoundException e)
-				{
+				try {
+					pe.addHandler(handler.getAttribute("type"), ((Class<?>) bundle.loadClass(handler //$NON-NLS-1$
+							.getAttribute("class"))).asSubclass(ChildHandler.class)); //$NON-NLS-1$
+				} catch (ClassNotFoundException e) {
 					throw BuckminsterException.wrap(e);
 				}
 			}
 
-			for(String parserId : namespace.getAttribute("parserIds").split(",")) //$NON-NLS-1$ //$NON-NLS-2$
+			for (String parserId : namespace.getAttribute("parserIds").split(",")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
 				List<ParserExtension> peList = peMap.get(parserId);
-				if(peList == null)
-				{
+				if (peList == null) {
 					peList = new ArrayList<ParserExtension>();
 					peMap.put(parserId, peList);
 				}

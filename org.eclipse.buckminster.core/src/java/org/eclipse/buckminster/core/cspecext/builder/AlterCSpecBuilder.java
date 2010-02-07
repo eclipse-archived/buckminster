@@ -21,90 +21,77 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public class AlterCSpecBuilder
-{
-	private final CSpecBuilder m_baseBuilder;
+public class AlterCSpecBuilder {
+	private final CSpecBuilder baseBuilder;
 
-	private final HashSet<String> m_removedDependencies = new HashSet<String>();
+	private final HashSet<String> removedDependencies = new HashSet<String>();
 
-	private final HashSet<String> m_removedAttributes = new HashSet<String>();
+	private final HashSet<String> removedAttributes = new HashSet<String>();
 
-	private final Map<String, String> m_renamedAttributes = new HashMap<String, String>();
+	private final Map<String, String> renamedAttributes = new HashMap<String, String>();
 
-	private final Map<String, AlterAttributeBuilder> m_alteredAttributes = new HashMap<String, AlterAttributeBuilder>();
+	private final Map<String, AlterAttributeBuilder> alteredAttributes = new HashMap<String, AlterAttributeBuilder>();
 
-	private final Map<String, AlterDependencyBuilder> m_alteredDependencies = new HashMap<String, AlterDependencyBuilder>();
+	private final Map<String, AlterDependencyBuilder> alteredDependencies = new HashMap<String, AlterDependencyBuilder>();
 
-	private String m_name;
+	private String name;
 
-	public AlterCSpecBuilder(CSpecBuilder baseBuilder)
-	{
-		m_baseBuilder = baseBuilder;
+	public AlterCSpecBuilder(CSpecBuilder baseBuilder) {
+		this.baseBuilder = baseBuilder;
 	}
 
-	public void addAlterAttribute(AlterAttributeBuilder value)
-	{
-		m_alteredAttributes.put(value.getName(), value);
+	public void addAlterAttribute(AlterAttributeBuilder value) {
+		alteredAttributes.put(value.getName(), value);
 	}
 
-	public void addAlterDependency(AlterDependencyBuilder value)
-	{
-		m_alteredDependencies.put(value.getName(), value);
+	public void addAlterDependency(AlterDependencyBuilder value) {
+		alteredDependencies.put(value.getName(), value);
 	}
 
-	public void addRemoveAttribute(String key)
-	{
-		m_removedAttributes.add(key);
+	public void addRemoveAttribute(String key) {
+		removedAttributes.add(key);
 	}
 
-	public void addRemoveDependency(String key)
-	{
-		m_removedDependencies.add(key);
+	public void addRemoveDependency(String key) {
+		removedDependencies.add(key);
 	}
 
-	public void addRenameAttribute(String oldName, String newName)
-	{
-		m_renamedAttributes.put(oldName, newName);
+	public void addRenameAttribute(String oldName, String newName) {
+		renamedAttributes.put(oldName, newName);
 	}
 
-	public void clear()
-	{
-		m_removedAttributes.clear();
-		m_renamedAttributes.clear();
-		m_alteredAttributes.clear();
-		m_removedDependencies.clear();
-		m_alteredDependencies.clear();
-		m_baseBuilder.clear();
-		m_name = null;
+	public void clear() {
+		removedAttributes.clear();
+		renamedAttributes.clear();
+		alteredAttributes.clear();
+		removedDependencies.clear();
+		alteredDependencies.clear();
+		baseBuilder.clear();
+		name = null;
 	}
 
-	public CSpecExtension createAlteredCSpec() throws CoreException
-	{
+	public CSpecExtension createAlteredCSpec() throws CoreException {
 		HashMap<String, AlterAttribute<? extends TopLevelAttribute>> alterAttributes = new HashMap<String, AlterAttribute<? extends TopLevelAttribute>>(
-				m_alteredAttributes.size());
-		for(Map.Entry<String, AlterAttributeBuilder> entry : m_alteredAttributes.entrySet())
+				alteredAttributes.size());
+		for (Map.Entry<String, AlterAttributeBuilder> entry : alteredAttributes.entrySet())
 			alterAttributes.put(entry.getKey(), entry.getValue().createAlterAttribute());
 
-		HashMap<String, AlterDependency> alterDependencies = new HashMap<String, AlterDependency>(
-				m_alteredDependencies.size());
-		for(Map.Entry<String, AlterDependencyBuilder> entry : m_alteredDependencies.entrySet())
+		HashMap<String, AlterDependency> alterDependencies = new HashMap<String, AlterDependency>(alteredDependencies.size());
+		for (Map.Entry<String, AlterDependencyBuilder> entry : alteredDependencies.entrySet())
 			alterDependencies.put(entry.getKey(), entry.getValue().createAlterDependency());
-		return new CSpecExtension(m_baseBuilder.createCSpec(), m_removedDependencies, alterDependencies,
-				m_removedAttributes, m_renamedAttributes, alterAttributes);
+		return new CSpecExtension(baseBuilder.createCSpec(), removedDependencies, alterDependencies, removedAttributes, renamedAttributes,
+				alterAttributes);
 	}
 
-	public CSpecBuilder getBaseBuilder()
-	{
-		return m_baseBuilder;
+	public CSpecBuilder getBaseBuilder() {
+		return baseBuilder;
 	}
 
-	public final String getName()
-	{
-		return m_name;
+	public final String getName() {
+		return name;
 	}
 
-	public void setName(String name)
-	{
-		m_name = name;
+	public void setName(String name) {
+		this.name = name;
 	}
 }

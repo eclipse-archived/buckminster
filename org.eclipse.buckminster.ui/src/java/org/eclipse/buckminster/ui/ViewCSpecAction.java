@@ -22,45 +22,35 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-public class ViewCSpecAction extends AbstractCSpecAction
-{
+public class ViewCSpecAction extends AbstractCSpecAction {
 	@Override
-	protected void run(CSpec cspec, Shell shell)
-	{
+	protected void run(CSpec cspec, Shell shell) {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 
 		IWorkbenchWindow wbWin = workbench.getActiveWorkbenchWindow();
-		if(wbWin == null)
+		if (wbWin == null)
 			return;
 
 		IWorkbenchPage page = wbWin.getActivePage();
-		if(page == null)
+		if (page == null)
 			return;
 
 		IEditorRegistry editorRegistry = workbench.getEditorRegistry();
 		CSpecEditorInput input = new CSpecEditorInput(cspec);
-		IEditorDescriptor ed = editorRegistry.getDefaultEditor(input.getName(),
-				input.getContentDescription().getContentType());
-		try
-		{
+		IEditorDescriptor ed = editorRegistry.getDefaultEditor(input.getName(), input.getContentDescription().getContentType());
+		try {
 			page.openEditor(input, ed.getId());
-		}
-		catch(PartInitException e)
-		{
+		} catch (PartInitException e) {
 			UiUtils.openError(page.getWorkbenchWindow().getShell(), Messages.unable_to_open_editor, e);
 		}
 	}
 
 	@Override
-	protected void run(Shell shell)
-	{
+	protected void run(Shell shell) {
 		CSpec cspec = fetchCSpec(new NullProgressMonitor());
-		if(cspec == null)
-		{
+		if (cspec == null) {
 			super.run(shell);
-		}
-		else
-		{
+		} else {
 			run(cspec, shell);
 		}
 

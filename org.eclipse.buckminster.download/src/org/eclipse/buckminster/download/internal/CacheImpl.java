@@ -33,53 +33,39 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class CacheImpl implements ICache
-{
+public class CacheImpl implements ICache {
 	public static final String LAST_MODIFIED_HEADER = "Last-Modified"; //$NON-NLS-1$
 
-	private static File asLocal(URL url)
-	{
-		try
-		{
+	private static File asLocal(URL url) {
+		try {
 			url = FileLocator.resolve(url);
-			return "file".equalsIgnoreCase(url.getProtocol())
-					? new File(url.toURI())
-					: null;
-		}
-		catch(IOException e)
-		{
+			return "file".equalsIgnoreCase(url.getProtocol()) ? new File(url.toURI()) : null;
+		} catch (IOException e) {
 			return null;
-		}
-		catch(URISyntaxException e)
-		{
+		} catch (URISyntaxException e) {
 			return null;
 		}
 	}
 
-	private final File m_location;
+	private final File location;
 
-	public CacheImpl(File location) throws CoreException
-	{
-		m_location = location;
-		if(!(m_location.isDirectory() || m_location.mkdirs()))
+	public CacheImpl(File location) throws CoreException {
+		this.location = location;
+		if (!(location.isDirectory() || location.mkdirs()))
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_access_cache_0, location));
 	}
 
-	public UUID getHash(String urlStr)
-	{
+	public UUID getHash(String urlStr) {
 		return UUID.nameUUIDFromBytes(urlStr.getBytes());
 	}
 
-	public File getLocation()
-	{
-		return m_location;
+	public File getLocation() {
+		return location;
 	}
 
-	public IFileInfo getRemoteInfo(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException
-	{
+	public IFileInfo getRemoteInfo(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException {
 		File localFile = asLocal(remoteFile);
-		if(localFile != null)
-		{
+		if (localFile != null) {
 			FileInfoBuilder fib = new FileInfoBuilder();
 			fib.setLastModified(localFile.lastModified());
 			fib.setName(localFile.getAbsolutePath());
@@ -90,27 +76,22 @@ public class CacheImpl implements ICache
 		return reader.readInfo(remoteFile);
 	}
 
-	public File getSubFolder(String protocol, String domain)
-	{
-		File protoFolder = new File(m_location, protocol);
-		if(domain == null)
+	public File getSubFolder(String protocol, String domain) {
+		File protoFolder = new File(location, protocol);
+		if (domain == null)
 			domain = "localhost"; //$NON-NLS-1$
 		return new File(protoFolder, domain);
 	}
 
-	public File getSubFolder(URL url)
-	{
+	public File getSubFolder(URL url) {
 		return getSubFolder(url.getProtocol(), url.getHost());
 	}
 
-	public boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException,
-			FileNotFoundException
-	{
+	public boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException, FileNotFoundException {
 		String urlStr = remoteFile.toString().intern();
-		synchronized(urlStr)
-		{
+		synchronized (urlStr) {
 			File localFile = asLocal(remoteFile);
-			if(localFile != null)
+			if (localFile != null)
 				return localFile.canRead();
 
 			localFile = new File(getSubFolder(remoteFile), getHash(urlStr).toString());
@@ -118,52 +99,43 @@ public class CacheImpl implements ICache
 		}
 	}
 
-	public boolean isUpToDate(URL remoteFile, IConnectContext cctx, String remoteName, IProgressMonitor monitor)
-			throws CoreException, FileNotFoundException
-	{
+	public boolean isUpToDate(URL remoteFile, IConnectContext cctx, String remoteName, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException {
 		return isUpToDate(new ArchivePolicy(this, cctx, remoteName), remoteFile, monitor);
 	}
 
-	public boolean isUpToDate(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm,
-			IProgressMonitor monitor) throws CoreException, FileNotFoundException
-	{
-		return isUpToDate(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE),
-				remoteFile, monitor);
+	public boolean isUpToDate(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IProgressMonitor monitor)
+			throws CoreException, FileNotFoundException {
+		return isUpToDate(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile, monitor);
 	}
 
-	public InputStream open(IFetchPolicy policy, URL remoteFile, IFileInfo[] fiHandle, IProgressMonitor monitor)
-			throws CoreException, FileNotFoundException
-	{
+	public InputStream open(IFetchPolicy policy, URL remoteFile, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException {
 		File file = asLocal(remoteFile);
-		if(file != null)
+		if (file != null)
 			return new FileInputStream(file);
 
 		String urlStr = remoteFile.toString().intern();
-		synchronized(urlStr)
-		{
+		synchronized (urlStr) {
 			File localFile = new File(getSubFolder(remoteFile), getHash(urlStr).toString());
 			policy.update(remoteFile, localFile, false, fiHandle, monitor);
 			return new FileInputStream(localFile);
 		}
 	}
 
-	public InputStream open(URL remoteFile, IConnectContext cctx, String remoteName, IFileInfo[] fiHandle,
-			IProgressMonitor monitor) throws CoreException, FileNotFoundException
-	{
+	public InputStream open(URL remoteFile, IConnectContext cctx, String remoteName, IFileInfo[] fiHandle, IProgressMonitor monitor)
+			throws CoreException, FileNotFoundException {
 		return open(new ArchivePolicy(this, cctx, remoteName), remoteFile, fiHandle, monitor);
 	}
 
-	public InputStream open(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm,
-			IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException, FileNotFoundException
-	{
-		return open(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE),
-				remoteFile, fiHandle, monitor);
+	public InputStream open(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IFileInfo[] fiHandle, IProgressMonitor monitor)
+			throws CoreException, FileNotFoundException {
+		return open(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile, fiHandle, monitor);
 	}
 
-	public InputStream openRemote(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException
-	{
+	public InputStream openRemote(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException {
 		File file = asLocal(remoteFile);
-		if(file != null)
+		if (file != null)
 			return new FileInputStream(file);
 
 		FileReader reader = new FileReader(cctx);

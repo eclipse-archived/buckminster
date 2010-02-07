@@ -15,13 +15,11 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingVersionConverterException extends LocalizedException
-{
+public class MissingVersionConverterException extends LocalizedException {
 	private static final long serialVersionUID = 5414510222542515832L;
 
-	public MissingVersionConverterException(String versionConverterId)
-	{
-		super(NLS.bind(Messages.No_version_converter_with_id_0_has_been_registered_with_extension_point_1,
-				versionConverterId, CorePlugin.VERSION_CONVERTERS_POINT));
+	public MissingVersionConverterException(String versionConverterId) {
+		super(NLS.bind(Messages.No_version_converter_with_id_0_has_been_registered_with_extension_point_1, versionConverterId,
+				CorePlugin.VERSION_CONVERTERS_POINT));
 	}
 }

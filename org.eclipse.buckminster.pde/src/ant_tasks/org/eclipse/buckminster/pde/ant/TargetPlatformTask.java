@@ -13,42 +13,38 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.pde.internal.core.ICoreConstants;
 import org.eclipse.pde.internal.core.PDECore;
 
 /**
- * Ant task that assings the location of the target platform to
- * a given property.
- *
+ * Ant task that assings the location of the target platform to a given
+ * property.
+ * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public abstract class TargetPlatformTask extends Task
-{
+public abstract class TargetPlatformTask extends Task {
 	/**
 	 * Returns the location of the target platform
 	 */
-	public IPath getTargetLocation()
-	{
-		PDECore pdePlugin = PDECore.getDefault();
-		Preferences preferences = pdePlugin.getPluginPreferences();
+	public IPath getTargetLocation() {
 		IPath targetPath = null;
-		if(ICoreConstants.VALUE_USE_OTHER.equals(preferences.getString(ICoreConstants.TARGET_MODE)))
-		{
-			String targetPlatform = preferences.getString(ICoreConstants.PLATFORM_PATH);
-			if(targetPlatform != null)
+		IPreferencesService prefService = Platform.getPreferencesService();
+		if (ICoreConstants.VALUE_USE_OTHER.equals(prefService.getString(PDECore.PLUGIN_ID, ICoreConstants.TARGET_MODE, null, null))) {
+			String targetPlatform = prefService.getString(PDECore.PLUGIN_ID, ICoreConstants.PLATFORM_PATH, null, null);
+			if (targetPlatform != null)
 				targetPath = new Path(targetPlatform);
 		}
 
-		if(targetPath == null)
+		if (targetPath == null)
 			targetPath = new Path(TargetPlatform.getDefaultLocation());
 		return targetPath;
 	}
 
-	protected BuildException missingAttribute(String property)
-	{
-		return new BuildException("Missing attribute \"" + property + '"', this.getLocation());
+	protected BuildException missingAttribute(String property) {
+		return new BuildException("Missing attribute \"" + property + '"', this.getLocation()); //$NON-NLS-1$
 	}
 }

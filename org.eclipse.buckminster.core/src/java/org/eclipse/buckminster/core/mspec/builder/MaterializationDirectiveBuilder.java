@@ -20,107 +20,91 @@ import org.eclipse.core.runtime.IPath;
  * @author Thomas Hallgren
  * 
  */
-public abstract class MaterializationDirectiveBuilder implements IMaterializationDirective
-{
-	private Documentation m_documentation;
+public abstract class MaterializationDirectiveBuilder implements IMaterializationDirective {
+	private Documentation documentation;
 
-	private IPath m_installLocation;
+	private IPath installLocation;
 
-	private IPath m_workspaceLocation;
+	private IPath workspaceLocation;
 
-	private String m_materializerID;
+	private String materializerID;
 
-	private final HashMap<String, String> m_properties = new HashMap<String, String>();
+	private final HashMap<String, String> properties = new HashMap<String, String>();
 
-	private ConflictResolution m_conflictResolution;
+	private ConflictResolution conflictResolution;
 
-	private int m_maxParallelJobs = -1;
+	private int maxParallelJobs = -1;
 
-	public void clear()
-	{
-		m_maxParallelJobs = -1;
-		m_installLocation = null;
-		m_workspaceLocation = null;
-		m_materializerID = null;
-		m_conflictResolution = null;
-		m_documentation = null;
-		m_properties.clear();
+	public void clear() {
+		maxParallelJobs = -1;
+		installLocation = null;
+		workspaceLocation = null;
+		materializerID = null;
+		conflictResolution = null;
+		documentation = null;
+		properties.clear();
 	}
 
-	public ConflictResolution getConflictResolution()
-	{
-		return m_conflictResolution;
+	public ConflictResolution getConflictResolution() {
+		return conflictResolution;
 	}
 
-	public Documentation getDocumentation()
-	{
-		return m_documentation;
+	public Documentation getDocumentation() {
+		return documentation;
 	}
 
-	public IPath getInstallLocation()
-	{
-		return m_installLocation;
+	public IPath getInstallLocation() {
+		return installLocation;
 	}
 
-	public String getMaterializerID()
-	{
-		return m_materializerID;
+	public String getMaterializerID() {
+		return materializerID;
 	}
 
-	public int getMaxParallelJobs()
-	{
-		return m_maxParallelJobs;
+	public int getMaxParallelJobs() {
+		return maxParallelJobs;
 	}
 
-	public Map<String, String> getProperties()
-	{
-		return m_properties;
+	public Map<String, String> getProperties() {
+		return properties;
 	}
 
-	public IPath getWorkspaceLocation()
-	{
-		return m_workspaceLocation;
+	public IPath getWorkspaceLocation() {
+		return workspaceLocation;
 	}
 
-	public void initFrom(IMaterializationDirective md)
-	{
+	public void initFrom(IMaterializationDirective md) {
 		clear();
-		m_documentation = md.getDocumentation();
-		m_installLocation = md.getInstallLocation();
-		m_workspaceLocation = md.getWorkspaceLocation();
-		m_materializerID = md.getMaterializerID();
-		m_maxParallelJobs = md.getMaxParallelJobs();
-		m_conflictResolution = md.getConflictResolution();
-		m_properties.putAll(md.getProperties());
+		documentation = md.getDocumentation();
+		installLocation = md.getInstallLocation();
+		workspaceLocation = md.getWorkspaceLocation();
+		materializerID = md.getMaterializerID();
+		maxParallelJobs = md.getMaxParallelJobs();
+		conflictResolution = md.getConflictResolution();
+		properties.putAll(md.getProperties());
 	}
 
-	public void setConflictResolution(ConflictResolution whenPresent)
-	{
-		m_conflictResolution = whenPresent;
+	public void setConflictResolution(ConflictResolution conflictResolution) {
+		this.conflictResolution = conflictResolution;
 	}
 
-	public void setDocumentation(Documentation documentation)
-	{
-		m_documentation = documentation;
+	public void setDocumentation(Documentation documentation) {
+		this.documentation = documentation;
 	}
 
-	public void setInstallLocation(IPath installLocation)
-	{
-		m_installLocation = installLocation;
+	public void setInstallLocation(IPath installLocation) {
+		this.installLocation = installLocation;
 	}
 
-	public void setMaterializerID(String materializerID)
-	{
-		m_materializerID = materializerID;
+	public void setMaterializerID(String materializerID) {
+		this.materializerID = materializerID;
 	}
 
-	public void setMaxParallelJobs(int maxParallelJobs)
-	{
-		m_maxParallelJobs = maxParallelJobs;
+	public void setMaxParallelJobs(int maxParallelJobs) {
+		this.maxParallelJobs = maxParallelJobs;
 	}
 
-	public void setWorkspaceLocation(IPath workspaceLocation)
-	{
-		m_workspaceLocation = workspaceLocation;
+	public void setWorkspaceLocation(IPath workspaceLocation) {
+		this.workspaceLocation = workspaceLocation;
 	}
 }

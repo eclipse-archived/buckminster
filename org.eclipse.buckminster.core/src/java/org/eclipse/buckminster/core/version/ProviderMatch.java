@@ -26,46 +26,41 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
- * A <code>VersionSelectorMatch</code> is the result of a comparison between a desired version and an existing version
- * using a specific {@link MatchRule}. The rule denoted in a <code>VersionSelectorMatch</code> is often tighter then the
- * rule expressed as a rule when the match was performed.
+ * A <code>VersionSelectorMatch</code> is the result of a comparison between a
+ * desired version and an existing version using a specific {@link MatchRule}.
+ * The rule denoted in a <code>VersionSelectorMatch</code> is often tighter then
+ * the rule expressed as a rule when the match was performed.
  * 
  * @author Thomas Hallgren
  */
-public final class ProviderMatch implements Comparable<ProviderMatch>
-{
-	private IComponentType m_componentType;
+public final class ProviderMatch implements Comparable<ProviderMatch> {
+	private IComponentType componentType;
 
-	private final Provider m_originalProvider;
+	private final Provider originalProvider;
 
-	private Provider m_provider;
+	private Provider provider;
 
-	private final ProviderScore m_providerScore;
+	private final ProviderScore providerScore;
 
-	private final NodeQuery m_query;
+	private final NodeQuery query;
 
-	private VersionMatch m_versionMatch;
+	private VersionMatch versionMatch;
 
-	private Map<String, String> m_matcherMap;
+	private Map<String, String> matcherMap;
 
-	private String m_repositoryURI;
+	private String repositoryURI;
 
-	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, NodeQuery query)
-	{
+	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, NodeQuery query) {
 		this(provider, componentType, versionMatch, ProviderScore.PREFERRED, query);
 	}
 
-	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch,
-			ProviderScore providerScore, NodeQuery query)
-	{
-		m_provider = provider;
-		m_originalProvider = provider;
-		m_componentType = componentType;
-		m_versionMatch = versionMatch == null
-				? VersionMatch.DEFAULT
-				: versionMatch;
-		m_providerScore = providerScore;
-		m_query = query;
+	public ProviderMatch(Provider provider, IComponentType componentType, VersionMatch versionMatch, ProviderScore providerScore, NodeQuery query) {
+		this.provider = provider;
+		this.originalProvider = provider;
+		this.componentType = componentType;
+		this.versionMatch = versionMatch == null ? VersionMatch.DEFAULT : versionMatch;
+		this.providerScore = providerScore;
+		this.query = query;
 	}
 
 	/**
@@ -73,80 +68,70 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	 * 
 	 * @param o
 	 *            The match to compare to.
-	 * @return 1 if this instance is considered a better match than <code>o</code>, -1 if it's the opposite and 0 if the
-	 *         matches are considered equal.
+	 * @return 1 if this instance is considered a better match than
+	 *         <code>o</code>, -1 if it's the opposite and 0 if the matches are
+	 *         considered equal.
 	 */
-	public int compareTo(ProviderMatch o)
-	{
-		int versionCompare = m_query.compare(m_versionMatch, o.getVersionMatch());
-		return versionCompare == 0
-				? m_providerScore.compareTo(o.getProviderScore())
-				: versionCompare;
+	public int compareTo(ProviderMatch o) {
+		int versionCompare = query.compare(versionMatch, o.getVersionMatch());
+		return versionCompare == 0 ? providerScore.compareTo(o.getProviderScore()) : versionCompare;
 	}
 
 	/**
-	 * Create a CSPEC builder that is initialized with the name, type, and version from this match.
+	 * Create a CSPEC builder that is initialized with the name, type, and
+	 * version from this match.
 	 * 
 	 * @return The initialized builder
 	 */
-	public CSpecBuilder createCSpec()
-	{
+	public CSpecBuilder createCSpec() {
 		CSpecBuilder bld = new CSpecBuilder();
-		ComponentRequest request = m_query.getComponentRequest();
+		ComponentRequest request = query.getComponentRequest();
 		bld.setName(request.getName());
 		bld.setComponentTypeID(request.getComponentTypeID());
-		bld.setVersion(m_versionMatch.getVersion());
+		bld.setVersion(versionMatch.getVersion());
 		return bld;
 	}
 
-	public ResolutionBuilder createResolution(CSpecBuilder cspecBuilder, boolean unpack) throws CoreException
-	{
+	public ResolutionBuilder createResolution(CSpecBuilder cspecBuilder, boolean unpack) throws CoreException {
 		ResolutionBuilder resBld = new ResolutionBuilder(cspecBuilder);
 
-		Provider provider = getProvider();
 		NodeQuery nq = getNodeQuery();
 		resBld.setMaterializable(true);
 		resBld.setComponentTypeId(getComponentType().getId());
 		resBld.getRequest().initFrom(nq.getComponentRequest());
 		resBld.setAttributes(nq.getRequiredAttributes());
-		resBld.setProvider(provider);
+		resBld.setProvider(getProvider());
 		resBld.setVersionMatch(getVersionMatch());
 		resBld.setRepository(getRepositoryURI());
 		resBld.setUnpack(unpack);
 		return resBld;
 	}
 
-	public String getComponentName()
-	{
-		return m_query.getComponentRequest().getName();
+	public String getComponentName() {
+		return query.getComponentRequest().getName();
 	}
 
-	public IComponentType getComponentType()
-	{
-		return m_componentType;
+	public IComponentType getComponentType() {
+		return componentType;
 	}
 
-	public IConnectContext getConnectContext()
-	{
-		IConnectContext cctx = m_provider.getConnectContext();
-		if(cctx == null)
+	public IConnectContext getConnectContext() {
+		IConnectContext cctx = provider.getConnectContext();
+		if (cctx == null)
 			cctx = getNodeQuery().getComponentQuery().getConnectContext();
 		return cctx;
 	}
 
-	public Map<String, String> getMatcherMap()
-	{
-		return m_matcherMap;
+	public Map<String, String> getMatcherMap() {
+		return matcherMap;
 	}
 
-	public NodeQuery getNodeQuery()
-	{
-		return m_query;
+	public NodeQuery getNodeQuery() {
+		return query;
 	}
 
-	public Provider getOriginalProvider()
-	{
-		return m_originalProvider;
+	public Provider getOriginalProvider() {
+		return originalProvider;
 	}
 
 	/**
@@ -154,20 +139,19 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	 * 
 	 * @return the provider that matched
 	 */
-	public Provider getProvider()
-	{
-		return m_provider;
+	public Provider getProvider() {
+		return provider;
 	}
 
 	/**
-	 * Get the provider score for this match. The provider score is determined comparing the MutableLevel and
-	 * SourceLevel with the corresponding settings of a provider.
+	 * Get the provider score for this match. The provider score is determined
+	 * comparing the MutableLevel and SourceLevel with the corresponding
+	 * settings of a provider.
 	 * 
 	 * @return the provider score.
 	 */
-	public final ProviderScore getProviderScore()
-	{
-		return m_providerScore;
+	public final ProviderScore getProviderScore() {
+		return providerScore;
 	}
 
 	/**
@@ -175,9 +159,8 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	 * 
 	 * @return the query that was used.
 	 */
-	public NodeQuery getQuery()
-	{
-		return m_query;
+	public NodeQuery getQuery() {
+		return query;
 	}
 
 	/**
@@ -186,44 +169,38 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	 * @return
 	 * @throws CoreException
 	 */
-	public IComponentReader getReader(IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(IProgressMonitor monitor) throws CoreException {
 		return getReaderType().getReader(this, monitor);
 	}
 
-	public IReaderType getReaderType() throws CoreException
-	{
-		return m_provider.getReaderType();
+	public IReaderType getReaderType() throws CoreException {
+		return provider.getReaderType();
 	}
 
-	public synchronized String getRepositoryURI()
-	{
-		if(m_repositoryURI == null)
-			m_repositoryURI = m_provider.getURI(m_query.getProperties());
-		return m_repositoryURI;
+	public synchronized String getRepositoryURI() {
+		if (repositoryURI == null)
+			repositoryURI = provider.getURI(query.getProperties());
+		return repositoryURI;
 	}
 
-	public String getUniqueKey()
-	{
+	public String getUniqueKey() {
 		StringBuilder bld = new StringBuilder();
-		bld.append(m_provider.getId());
+		bld.append(provider.getId());
 		bld.append('[');
-		ComponentRequest rq = m_query.getComponentRequest();
+		ComponentRequest rq = query.getComponentRequest();
 		bld.append(rq.getName());
 		String type = rq.getComponentTypeID();
-		if(type != null)
-		{
+		if (type != null) {
 			bld.append(':');
 			bld.append(type);
 		}
-		m_versionMatch.toString(bld);
+		versionMatch.toString(bld);
 		bld.append(']');
 		return bld.toString();
 	}
 
-	public IVersionConverter getVersionConverter() throws CoreException
-	{
-		return m_provider.getVersionConverter();
+	public IVersionConverter getVersionConverter() throws CoreException {
+		return provider.getVersionConverter();
 	}
 
 	/**
@@ -231,45 +208,39 @@ public final class ProviderMatch implements Comparable<ProviderMatch>
 	 * 
 	 * @return the version that matched
 	 */
-	public VersionMatch getVersionMatch()
-	{
-		return m_versionMatch;
+	public VersionMatch getVersionMatch() {
+		return versionMatch;
 	}
 
-	public void setComponentType(IComponentType componentType)
-	{
-		m_componentType = componentType;
+	public void setComponentType(IComponentType componentType) {
+		this.componentType = componentType;
 	}
 
-	public void setMatcherMap(Map<String, String> matcherMap)
-	{
-		m_matcherMap = matcherMap;
+	public void setMatcherMap(Map<String, String> matcherMap) {
+		this.matcherMap = matcherMap;
 	}
 
-	public synchronized void setProvider(Provider provider)
-	{
-		m_provider = provider;
-		m_repositoryURI = null;
+	public synchronized void setProvider(Provider provider) {
+		this.provider = provider;
+		this.repositoryURI = null;
 	}
 
-	public synchronized void setRepositoryURI(String repositoryURI)
-	{
-		m_repositoryURI = repositoryURI;
+	public synchronized void setRepositoryURI(String repositoryURI) {
+		this.repositoryURI = repositoryURI;
 	}
 
-	public void setVersionMatch(VersionMatch versionMatch)
-	{
-		m_versionMatch = versionMatch;
+	public void setVersionMatch(VersionMatch versionMatch) {
+		this.versionMatch = versionMatch;
 	}
 
 	/**
-	 * Returns a string representation of the match. Only intended for debug purposes
+	 * Returns a string representation of the match. Only intended for debug
+	 * purposes
 	 * 
 	 * @return A string representation of the match
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getUniqueKey();
 	}
 }

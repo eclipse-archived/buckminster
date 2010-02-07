@@ -38,78 +38,55 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class FeatureBuilder extends PDEBuilder
-{
+public class FeatureBuilder extends PDEBuilder {
 	@Override
-	public int compareTo(IResolutionBuilder other)
-	{
+	public int compareTo(IResolutionBuilder other) {
 		return 1;
 	}
 
 	@Override
-	public String getComponentTypeID()
-	{
+	public String getComponentTypeID() {
 		return IComponentType.ECLIPSE_FEATURE;
 	}
 
 	@Override
-	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader,
-			IProgressMonitor monitor) throws CoreException
-	{
+	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor)
+			throws CoreException {
 		monitor.beginTask(null, 100);
 		IFeature feature;
-		try
-		{
+		try {
 			IFeatureModel model;
-			if(reader instanceof EclipsePlatformReader)
-			{
-				model = ((EclipsePlatformReader)reader).getFeatureModel();
+			if (reader instanceof EclipsePlatformReader) {
+				model = ((EclipsePlatformReader) reader).getFeatureModel();
 				MonitorUtils.worked(monitor, 40);
-			}
-			else
-			{
-				try
-				{
+			} else {
+				try {
 					model = reader.readFile("feature.xml", new FeatureModelReader(), MonitorUtils.subMonitor(monitor, //$NON-NLS-1$
 							40));
-				}
-				catch(FileNotFoundException e)
-				{
+				} catch (FileNotFoundException e) {
 					model = null;
 				}
 			}
-			if(model == null)
+			if (model == null)
 				throw new MissingCSpecSourceException(reader.getProviderMatch());
 			setModel(model);
 			feature = model.getFeature();
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 
 		CSpecGenerator generator;
-		if(reader instanceof ZipArchiveReader && ((ZipArchiveReader)reader).getFileReader() instanceof URLFileReader)
-		{
-			URI uri = ((URLFileReader)((ZipArchiveReader)reader).getFileReader()).getURI();
+		if (reader instanceof ZipArchiveReader && ((ZipArchiveReader) reader).getFileReader() instanceof URLFileReader) {
+			URI uri = ((URLFileReader) ((ZipArchiveReader) reader).getFileReader()).getURI();
 			generator = new CSpecFromBinary(cspecBuilder, reader, feature, uri);
-		}
-		else
-		{
+		} else {
 			Map<String, String> buildProperties = null;
-			if(!forResolutionAidOnly)
-			{
-				try
-				{
-					buildProperties = reader.readFile(
-							"build.properties", new PropertiesParser(), MonitorUtils.subMonitor( //$NON-NLS-1$
-									monitor, 40));
-				}
-				catch(FileNotFoundException e)
-				{
-				}
-				catch(IOException e)
-				{
+			if (!forResolutionAidOnly) {
+				try {
+					buildProperties = reader.readFile("build.properties", new PropertiesParser(), MonitorUtils.subMonitor( //$NON-NLS-1$
+							monitor, 40));
+				} catch (FileNotFoundException e) {
+				} catch (IOException e) {
 					throw BuckminsterException.wrap(e);
 				}
 			}

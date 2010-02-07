@@ -48,23 +48,26 @@ import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
 /**
- * <!-- begin-user-doc --> The <b>Validator</b> for the model. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> The <b>Validator</b> for the model. <!-- end-user-doc
+ * -->
+ * 
  * @see org.eclipse.buckminster.model.common.CommonPackage
  * @generated
  */
-public class CommonValidator extends EObjectValidator
-{
+public class CommonValidator extends EObjectValidator {
 	/**
-	 * The cached model package
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached model package <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static final CommonValidator INSTANCE = new CommonValidator();
 
 	/**
-	 * A constant for the {@link org.eclipse.emf.common.util.Diagnostic#getSource() source} of diagnostic {@link org.eclipse.emf.common.util.Diagnostic#getCode() codes} from this package.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * A constant for the
+	 * {@link org.eclipse.emf.common.util.Diagnostic#getSource() source} of
+	 * diagnostic {@link org.eclipse.emf.common.util.Diagnostic#getCode() codes}
+	 * from this package. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.common.util.Diagnostic#getSource()
 	 * @see org.eclipse.emf.common.util.Diagnostic#getCode()
 	 * @generated
@@ -72,445 +75,436 @@ public class CommonValidator extends EObjectValidator
 	public static final String DIAGNOSTIC_SOURCE = "org.eclipse.buckminster.model.common";
 
 	/**
-	 * A constant with a fixed name that can be used as the base value for additional hand written constants. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * A constant with a fixed name that can be used as the base value for
+	 * additional hand written constants. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	private static final int GENERATED_DIAGNOSTIC_CODE_COUNT = 0;
 
 	/**
-	 * A constant with a fixed name that can be used as the base value for additional hand written constants in a derived class.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * A constant with a fixed name that can be used as the base value for
+	 * additional hand written constants in a derived class. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected static final int DIAGNOSTIC_CODE_COUNT = GENERATED_DIAGNOSTIC_CODE_COUNT;
 
 	/**
-	 * The cached base package validator.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached base package validator. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected XMLTypeValidator xmlTypeValidator;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @see #validatePropertyKey_Pattern
 	 */
-	public static final PatternMatcher [][] PROPERTY_KEY__PATTERN__VALUES = new PatternMatcher [][] {
-			new PatternMatcher [] {
-				XMLTypeUtil.createPatternMatcher("[A-Za-z0-9_.${}/]+")
-			}
-		};
+	public static final PatternMatcher[][] PROPERTY_KEY__PATTERN__VALUES = new PatternMatcher[][] { new PatternMatcher[] { XMLTypeUtil
+			.createPatternMatcher("[A-Za-z0-9_.${}/]+") } };
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @see #validateUuid_Pattern
 	 */
-	public static final PatternMatcher [][] UUID__PATTERN__VALUES = new PatternMatcher [][] {
-			new PatternMatcher [] {
-				XMLTypeUtil.createPatternMatcher("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
-			}
-		};
+	public static final PatternMatcher[][] UUID__PATTERN__VALUES = new PatternMatcher[][] { new PatternMatcher[] { XMLTypeUtil
+			.createPatternMatcher("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}") } };
 
 	/**
-	 * Creates an instance of the switch.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the switch. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public CommonValidator()
-	{
+	public CommonValidator() {
 		super();
 		xmlTypeValidator = XMLTypeValidator.INSTANCE;
 	}
 
 	/**
-	 * Returns the resource locator that will be used to fetch messages for this validator's diagnostics. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the resource locator that will be used to fetch messages for this
+	 * validator's diagnostics. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	public ResourceLocator getResourceLocator()
-	{
+	public ResourceLocator getResourceLocator() {
 		// TODO
-		// Specialize this to return a resource locator for messages specific to this validator.
+		// Specialize this to return a resource locator for messages specific to
+		// this validator.
 		// Ensure that you remove @generated or mark it @generated NOT
 		return super.getResourceLocator();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateComparable(Comparable<?> comparable, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)comparable, diagnostics, context);
+	public boolean validateComparable(Comparable<?> comparable, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint((EObject) comparable, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateComponentIdentifier(ComponentIdentifier componentIdentifier, DiagnosticChain diagnostics,
-			Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)componentIdentifier, diagnostics, context);
+	public boolean validateComponentIdentifier(ComponentIdentifier componentIdentifier, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(componentIdentifier, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateComponentRequest(ComponentRequest componentRequest, DiagnosticChain diagnostics,
-			Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)componentRequest, diagnostics, context);
+	public boolean validateComponentRequest(ComponentRequest componentRequest, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(componentRequest, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateConstant(Constant constant, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)constant, diagnostics, context);
+	public boolean validateConstant(Constant constant, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(constant, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateDocumentation(Documentation documentation, DiagnosticChain diagnostics,
-			Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)documentation, diagnostics, context);
+	public boolean validateDocumentation(Documentation documentation, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(documentation, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateDocumentRoot(EObject documentRoot, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)documentRoot, diagnostics, context);
+	public boolean validateDocumentRoot(EObject documentRoot, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(documentRoot, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateFilter(Filter filter, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
+	public boolean validateFilter(Filter filter, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return true;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateFormat(Format format, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)format, diagnostics, context);
+	public boolean validateFormat(Format format, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(format, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateIVersionedId(IVersionedId iVersionedId, DiagnosticChain diagnostics,
-			Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)iVersionedId, diagnostics, context);
+	public boolean validateIVersionedId(IVersionedId iVersionedId, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint((EObject) iVersionedId, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateMatch(Match match, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)match, diagnostics, context);
+	public boolean validateMatch(Match match, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(match, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validatePattern(Pattern pattern, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
+	public boolean validatePattern(Pattern pattern, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return true;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateProperty(Property property, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)property, diagnostics, context);
+	public boolean validateProperty(Property property, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(property, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validatePropertyConstant(PropertyConstant propertyConstant, DiagnosticChain diagnostics,
-			Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)propertyConstant, diagnostics, context);
+	public boolean validatePropertyConstant(PropertyConstant propertyConstant, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(propertyConstant, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validatePropertyElement(PropertyElement propertyElement, DiagnosticChain diagnostics,
-			Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)propertyElement, diagnostics, context);
+	public boolean validatePropertyElement(PropertyElement propertyElement, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(propertyElement, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validatePropertyKey(String propertyKey, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
+	public boolean validatePropertyKey(String propertyKey, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		boolean result = validatePropertyKey_Pattern(propertyKey, diagnostics, context);
 		return result;
 	}
 
 	/**
-	 * Validates the Pattern constraint of '<em>Property Key</em>'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Validates the Pattern constraint of '<em>Property Key</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validatePropertyKey_Pattern(String propertyKey, DiagnosticChain diagnostics,
-			Map<Object, Object> context)
-	{
+	public boolean validatePropertyKey_Pattern(String propertyKey, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validatePattern(CommonPackage.Literals.PROPERTY_KEY, propertyKey, PROPERTY_KEY__PATTERN__VALUES, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validatePropertyRef(PropertyRef propertyRef, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)propertyRef, diagnostics, context);
+	public boolean validatePropertyRef(PropertyRef propertyRef, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(propertyRef, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateReplace(Replace replace, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)replace, diagnostics, context);
+	public boolean validateReplace(Replace replace, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(replace, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateRxGroup(RxGroup rxGroup, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)rxGroup, diagnostics, context);
+	public boolean validateRxGroup(RxGroup rxGroup, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(rxGroup, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateRxPart(RxPart rxPart, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)rxPart, diagnostics, context);
+	public boolean validateRxPart(RxPart rxPart, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(rxPart, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateRxPattern(RxPattern rxPattern, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)rxPattern, diagnostics, context);
+	public boolean validateRxPattern(RxPattern rxPattern, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(rxPattern, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateSplit(Split split, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)split, diagnostics, context);
+	public boolean validateSplit(Split split, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(split, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateSplitType(SplitType splitType, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
+	public boolean validateSplitType(SplitType splitType, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return true;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateToLower(ToLower toLower, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)toLower, diagnostics, context);
+	public boolean validateToLower(ToLower toLower, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(toLower, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateToUpper(ToUpper toUpper, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)toUpper, diagnostics, context);
+	public boolean validateToUpper(ToUpper toUpper, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(toUpper, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateURL(URL url, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
+	public boolean validateURL(URL url, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return true;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateUuid(UUID uuid, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
+	public boolean validateUuid(UUID uuid, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		boolean result = validateUuid_Pattern(uuid, diagnostics, context);
 		return result;
 	}
 
 	/**
-	 * Validates the Pattern constraint of '<em>Uuid</em>'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Validates the Pattern constraint of '<em>Uuid</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateUuid_Pattern(UUID uuid, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
+	public boolean validateUuid_Pattern(UUID uuid, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validatePattern(CommonPackage.Literals.UUID, uuid, UUID__PATTERN__VALUES, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateValueFilter(ValueFilter valueFilter, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
-		return validate_EveryDefaultConstraint((EObject)valueFilter, diagnostics, context);
+	public boolean validateValueFilter(ValueFilter valueFilter, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(valueFilter, diagnostics, context);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateVersion(Version version, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
+	public boolean validateVersion(Version version, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return true;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public boolean validateVersionRange(VersionRange versionRange, DiagnosticChain diagnostics,
-			Map<Object, Object> context)
-	{
+	public boolean validateVersionRange(VersionRange versionRange, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return true;
 	}
 
 	/**
-	 * Returns the package of this validator switch.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the package of this validator switch. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	protected EPackage getEPackage()
-	{
-	  return CommonPackage.eINSTANCE;
+	protected EPackage getEPackage() {
+		return CommonPackage.eINSTANCE;
 	}
 
 	/**
-	 * Calls <code>validateXXX</code> for the corresponding classifier of the model.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * Calls <code>validateXXX</code> for the corresponding classifier of the
+	 * model. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	protected boolean validate(int classifierID, Object value, DiagnosticChain diagnostics, Map<Object, Object> context)
-	{
+	protected boolean validate(int classifierID, Object value, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		switch (classifierID) {
 			case CommonPackage.CONSTANT:
-				return validateConstant((Constant)value, diagnostics, context);
+				return validateConstant((Constant) value, diagnostics, context);
 			case CommonPackage.DOCUMENTATION:
-				return validateDocumentation((Documentation)value, diagnostics, context);
+				return validateDocumentation((Documentation) value, diagnostics, context);
 			case CommonPackage.FORMAT:
-				return validateFormat((Format)value, diagnostics, context);
+				return validateFormat((Format) value, diagnostics, context);
 			case CommonPackage.MATCH:
-				return validateMatch((Match)value, diagnostics, context);
+				return validateMatch((Match) value, diagnostics, context);
 			case CommonPackage.PROPERTY:
-				return validateProperty((Property)value, diagnostics, context);
+				return validateProperty((Property) value, diagnostics, context);
 			case CommonPackage.PROPERTY_CONSTANT:
-				return validatePropertyConstant((PropertyConstant)value, diagnostics, context);
+				return validatePropertyConstant((PropertyConstant) value, diagnostics, context);
 			case CommonPackage.PROPERTY_ELEMENT:
-				return validatePropertyElement((PropertyElement)value, diagnostics, context);
+				return validatePropertyElement((PropertyElement) value, diagnostics, context);
 			case CommonPackage.PROPERTY_REF:
-				return validatePropertyRef((PropertyRef)value, diagnostics, context);
+				return validatePropertyRef((PropertyRef) value, diagnostics, context);
 			case CommonPackage.REPLACE:
-				return validateReplace((Replace)value, diagnostics, context);
+				return validateReplace((Replace) value, diagnostics, context);
 			case CommonPackage.RX_GROUP:
-				return validateRxGroup((RxGroup)value, diagnostics, context);
+				return validateRxGroup((RxGroup) value, diagnostics, context);
 			case CommonPackage.RX_PART:
-				return validateRxPart((RxPart)value, diagnostics, context);
+				return validateRxPart((RxPart) value, diagnostics, context);
 			case CommonPackage.RX_PATTERN:
-				return validateRxPattern((RxPattern)value, diagnostics, context);
+				return validateRxPattern((RxPattern) value, diagnostics, context);
 			case CommonPackage.SPLIT:
-				return validateSplit((Split)value, diagnostics, context);
+				return validateSplit((Split) value, diagnostics, context);
 			case CommonPackage.TO_LOWER:
-				return validateToLower((ToLower)value, diagnostics, context);
+				return validateToLower((ToLower) value, diagnostics, context);
 			case CommonPackage.TO_UPPER:
-				return validateToUpper((ToUpper)value, diagnostics, context);
+				return validateToUpper((ToUpper) value, diagnostics, context);
 			case CommonPackage.VALUE_FILTER:
-				return validateValueFilter((ValueFilter)value, diagnostics, context);
+				return validateValueFilter((ValueFilter) value, diagnostics, context);
 			case CommonPackage.DOCUMENT_ROOT:
-				return validateDocumentRoot((EObject)value, diagnostics, context);
+				return validateDocumentRoot((EObject) value, diagnostics, context);
 			case CommonPackage.IVERSIONED_ID:
-				return validateIVersionedId((IVersionedId)value, diagnostics, context);
+				return validateIVersionedId((IVersionedId) value, diagnostics, context);
 			case CommonPackage.COMPONENT_REQUEST:
-				return validateComponentRequest((ComponentRequest)value, diagnostics, context);
+				return validateComponentRequest((ComponentRequest) value, diagnostics, context);
 			case CommonPackage.COMPONENT_IDENTIFIER:
-				return validateComponentIdentifier((ComponentIdentifier)value, diagnostics, context);
+				return validateComponentIdentifier((ComponentIdentifier) value, diagnostics, context);
 			case CommonPackage.COMPARABLE:
-				return validateComparable((Comparable<?>)value, diagnostics, context);
+				return validateComparable((Comparable<?>) value, diagnostics, context);
 			case CommonPackage.SPLIT_TYPE:
-				return validateSplitType((SplitType)value, diagnostics, context);
+				return validateSplitType((SplitType) value, diagnostics, context);
 			case CommonPackage.PROPERTY_KEY:
-				return validatePropertyKey((String)value, diagnostics, context);
+				return validatePropertyKey((String) value, diagnostics, context);
 			case CommonPackage.UUID:
-				return validateUuid((UUID)value, diagnostics, context);
+				return validateUuid((UUID) value, diagnostics, context);
 			case CommonPackage.PATTERN:
-				return validatePattern((Pattern)value, diagnostics, context);
+				return validatePattern((Pattern) value, diagnostics, context);
 			case CommonPackage.FILTER:
-				return validateFilter((Filter)value, diagnostics, context);
+				return validateFilter((Filter) value, diagnostics, context);
 			case CommonPackage.VERSION:
-				return validateVersion((Version)value, diagnostics, context);
+				return validateVersion((Version) value, diagnostics, context);
 			case CommonPackage.VERSION_RANGE:
-				return validateVersionRange((VersionRange)value, diagnostics, context);
+				return validateVersionRange((VersionRange) value, diagnostics, context);
 			case CommonPackage.URL:
-				return validateURL((URL)value, diagnostics, context);
+				return validateURL((URL) value, diagnostics, context);
 			default:
 				return true;
 		}

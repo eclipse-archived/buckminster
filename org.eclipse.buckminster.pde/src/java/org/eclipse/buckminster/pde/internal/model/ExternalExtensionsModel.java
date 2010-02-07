@@ -16,48 +16,41 @@ import org.eclipse.pde.internal.core.NLResourceHelper;
 import org.eclipse.pde.internal.core.plugin.AbstractExtensionsModel;
 
 /**
- * An ExtensionsModel found at some arbitrary location, i.e. not necessarily in the workspace.
+ * An ExtensionsModel found at some arbitrary location, i.e. not necessarily in
+ * the workspace.
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class ExternalExtensionsModel extends AbstractExtensionsModel
-{
+public class ExternalExtensionsModel extends AbstractExtensionsModel {
 	private static final long serialVersionUID = 7673596323381247681L;
 
-	public String getInstallLocation()
-	{
+	public String getInstallLocation() {
 		return null;
 	}
 
 	@Override
-	public URL getNLLookupLocation()
-	{
+	public URL getNLLookupLocation() {
 		return null;
 	}
 
-	public boolean isEditable()
-	{
+	public boolean isEditable() {
 		return false;
 	}
 
-	public boolean isInSync()
-	{
+	public boolean isInSync() {
 		return true;
 	}
 
-	public void load()
-	{
+	public void load() {
 	}
 
 	@Override
-	protected NLResourceHelper createNLResourceHelper()
-	{
+	protected NLResourceHelper createNLResourceHelper() {
 		return null;
 	}
 
 	@Override
-	protected void updateTimeStamp()
-	{
+	protected void updateTimeStamp() {
 	}
 }

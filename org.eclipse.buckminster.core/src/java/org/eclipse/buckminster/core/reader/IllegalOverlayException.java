@@ -12,12 +12,10 @@ import org.eclipse.buckminster.core.helpers.LocalizedException;
 /**
  * @author Thomas Hallgren
  */
-public class IllegalOverlayException extends LocalizedException
-{
+public class IllegalOverlayException extends LocalizedException {
 	private static final long serialVersionUID = -999186541971422731L;
 
-	protected IllegalOverlayException(String message)
-	{
+	protected IllegalOverlayException(String message) {
 		super(message);
 	}
 }

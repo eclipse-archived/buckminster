@@ -28,36 +28,36 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.PropertySet;
 
 /**
- * This task will only care about the property values of the properties found
- * in the given property sets. Each property value is assumed to be in the
- * form &lt;include pattern&gt;:&lt;permission&gt; The <code>pattern</code> is used
- * when creating a fileset that is then passed to a normal chmod task
- * with the <code>permission</code>.
- *
+ * This task will only care about the property values of the properties found in
+ * the given property sets. Each property value is assumed to be in the form
+ * &lt;include pattern&gt;:&lt;permission&gt; The <code>pattern</code> is used
+ * when creating a fileset that is then passed to a normal chmod task with the
+ * <code>permission</code>.
+ * 
  * @author Thomas Hallgren
  */
-public class MultiChmod extends Task
-{
-	private static final Pattern s_fileAndPerm = Pattern.compile("^(.+):(\\d+)$");
+public class MultiChmod extends Task {
+	private static final Pattern fileAndPerm = Pattern.compile("^(.+):(\\d+)$");
 
-	private final ArrayList<PropertySet> m_propertySets = new ArrayList<PropertySet>();
+	private final ArrayList<PropertySet> propertySets = new ArrayList<PropertySet>();
 
-	private File m_dir;
+	private File dir;
+
+	public void addPropertySet(PropertySet propertySet) {
+		propertySets.add(propertySet);
+	}
 
 	@Override
-	public void execute() throws BuildException
-	{
-		Map<String,FileSet> entries = new HashMap<String, FileSet>();
-		for(PropertySet propertySet : m_propertySets)
-		{
+	public void execute() throws BuildException {
+		Map<String, FileSet> entries = new HashMap<String, FileSet>();
+		for (PropertySet propertySet : propertySets) {
 			Properties props = propertySet.getProperties();
 			Enumeration<?> propNames = props.propertyNames();
-			while(propNames.hasMoreElements())
-				addAllEntries(entries, props.getProperty((String)propNames.nextElement()));
+			while (propNames.hasMoreElements())
+				addAllEntries(entries, props.getProperty((String) propNames.nextElement()));
 		}
 		Project p = getProject();
-		for(Map.Entry<String, FileSet> entry : entries.entrySet())
-		{
+		for (Map.Entry<String, FileSet> entry : entries.entrySet()) {
 			Chmod chmod = new Chmod();
 			chmod.setProject(p);
 			chmod.setPerm(entry.getKey());
@@ -67,41 +67,32 @@ public class MultiChmod extends Task
 		}
 	}
 
-	public void addPropertySet(PropertySet propertySet)
-	{
-		m_propertySets.add(propertySet);
+	public void setDir(File dir) {
+		this.dir = dir;
 	}
 
-	public void setDir(File dir)
-	{
-		m_dir = dir;
-	}
-
-	private void addAllEntries(Map<String,FileSet> entries, String propVal) throws BuildException
-	{
-		if(propVal == null || propVal.length() == 0)
+	private void addAllEntries(Map<String, FileSet> entries, String propVal) throws BuildException {
+		if (propVal == null || propVal.length() == 0)
 			return;
-		
+
 		StringTokenizer tokens = new StringTokenizer(propVal, ",");
-		while(tokens.hasMoreTokens())
+		while (tokens.hasMoreTokens())
 			addEntry(entries, tokens.nextToken().trim());
 	}
 
-	private void addEntry(Map<String,FileSet> entries, String propVal) throws BuildException
-	{
-		Matcher m = s_fileAndPerm.matcher(propVal);
-		if(!m.matches())
+	private void addEntry(Map<String, FileSet> entries, String propVal) throws BuildException {
+		Matcher m = fileAndPerm.matcher(propVal);
+		if (!m.matches())
 			throw new BuildException("Illegal property value: " + propVal, getLocation());
 
 		Project p = getProject();
 		String include = m.group(1);
 		String perm = m.group(2);
 		FileSet fs = entries.get(perm);
-		if(fs == null)
-		{
+		if (fs == null) {
 			fs = new FileSet();
 			fs.setProject(p);
-			fs.setDir(m_dir);
+			fs.setDir(dir);
 			entries.put(perm, fs);
 		}
 		fs.createInclude().setName(p.replaceProperties(include));

@@ -35,32 +35,28 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.VerticalLayoutAlgorithm;
 
 /**
- * this control lets the user picked a {@link LayoutAlgorithm} for the graph viewer
+ * this control lets the user picked a {@link LayoutAlgorithm} for the graph
+ * viewer
  * 
  * @author Johannes Utzig
  * 
  */
-public class LayoutControl extends AbstractViewerSettingControl
-{
+public class LayoutControl extends AbstractViewerSettingControl {
 
-	class LayoutSelectionListener extends SelectionAdapter
-	{
+	class LayoutSelectionListener extends SelectionAdapter {
 		private LayoutAlgorithm algorithm;
 
-		public LayoutSelectionListener(LayoutAlgorithm algorithm)
-		{
+		public LayoutSelectionListener(LayoutAlgorithm algorithm) {
 			super();
 			this.algorithm = algorithm;
 		}
 
 		@Override
-		public void widgetSelected(SelectionEvent e)
-		{
-			if(currentSelection != algorithm)
-			{
+		public void widgetSelected(SelectionEvent e) {
+			if (currentSelection != algorithm) {
 				currentSelection = algorithm;
-				fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(LayoutControl.this,
-						ViewerSettingType.LAYOUT_CHANGED, algorithm, currentSelection));
+				fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(LayoutControl.this, ViewerSettingType.LAYOUT_CHANGED, algorithm,
+						currentSelection));
 			}
 
 		}
@@ -69,15 +65,13 @@ public class LayoutControl extends AbstractViewerSettingControl
 
 	private LayoutAlgorithm currentSelection;
 
-	public LayoutControl(FormToolkit toolkit)
-	{
+	public LayoutControl(FormToolkit toolkit) {
 		super(toolkit);
 
 	}
 
 	@Override
-	public Control createControl(Composite parent)
-	{
+	public Control createControl(Composite parent) {
 
 		Composite layoutComposite = getWidgetToolkit().createComposite(parent);
 		layoutComposite.setLayout(new GridLayout(1, true));
@@ -87,16 +81,14 @@ public class LayoutControl extends AbstractViewerSettingControl
 		final Button horizontal = getWidgetToolkit().createButton(layoutComposite, Messages.HorizontalLayout, SWT.RADIO);
 		final Button vertical = getWidgetToolkit().createButton(layoutComposite, Messages.VerticalLayout, SWT.RADIO);
 		final Button tree = getWidgetToolkit().createButton(layoutComposite, Messages.TreeLayout, SWT.RADIO);
-		final Button horizontalTree = getWidgetToolkit().createButton(layoutComposite, Messages.HorizontalTreeLayout,
-				SWT.RADIO);
+		final Button horizontalTree = getWidgetToolkit().createButton(layoutComposite, Messages.HorizontalTreeLayout, SWT.RADIO);
 		final Button radial = getWidgetToolkit().createButton(layoutComposite, Messages.RadialLayout, SWT.RADIO);
 
 		tree.setSelection(true);
 		LayoutAlgorithm algo = addHorizontalShift(new SpringLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
 		spring.addSelectionListener(new LayoutSelectionListener(algo));
 
-		algo = addHorizontalShift(addHorizontalShift(new DirectedGraphLayoutAlgorithm(
-				LayoutStyles.NO_LAYOUT_NODE_RESIZING)));
+		algo = addHorizontalShift(addHorizontalShift(new DirectedGraphLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING)));
 		directed.addSelectionListener(new LayoutSelectionListener(algo));
 
 		algo = addHorizontalShift(addHorizontalShift(new GridLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING)));
@@ -113,21 +105,17 @@ public class LayoutControl extends AbstractViewerSettingControl
 		currentSelection = algo;
 		tree.addSelectionListener(new LayoutSelectionListener(algo));
 
-		algo = addHorizontalShift(addHorizontalShift(new HorizontalTreeLayoutAlgorithm(
-				LayoutStyles.NO_LAYOUT_NODE_RESIZING)));
+		algo = addHorizontalShift(addHorizontalShift(new HorizontalTreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING)));
 		horizontalTree.addSelectionListener(new LayoutSelectionListener(algo));
 
 		algo = addHorizontalShift(addHorizontalShift(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING)));
 		radial.addSelectionListener(new LayoutSelectionListener(algo));
 
-		fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.LAYOUT_CHANGED,
-				currentSelection, null));
+		fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.LAYOUT_CHANGED, currentSelection, null));
 		return layoutComposite;
 	}
 
-	private LayoutAlgorithm addHorizontalShift(LayoutAlgorithm layoutAlgorithm)
-	{
-		return new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { layoutAlgorithm,
-				new HorizontalShift(LayoutStyles.NO_LAYOUT_NODE_RESIZING) });
+	private LayoutAlgorithm addHorizontalShift(LayoutAlgorithm layoutAlgorithm) {
+		return new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { layoutAlgorithm, new HorizontalShift(LayoutStyles.NO_LAYOUT_NODE_RESIZING) });
 	}
 }

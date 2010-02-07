@@ -14,12 +14,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class SearchPathNotFoundException extends LocalizedException
-{
+public class SearchPathNotFoundException extends LocalizedException {
 	private static final long serialVersionUID = 6638732630104642555L;
 
-	public SearchPathNotFoundException(String name)
-	{
+	public SearchPathNotFoundException(String name) {
 		super(NLS.bind(Messages.Unable_to_find_a_searchPath_for_0, name));
 	}
 }

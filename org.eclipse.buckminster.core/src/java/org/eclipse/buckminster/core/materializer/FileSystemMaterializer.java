@@ -47,17 +47,14 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Thomas Hallgren
  */
-public class FileSystemMaterializer extends AbstractMaterializer
-{
+public class FileSystemMaterializer extends AbstractMaterializer {
 	@Override
-	public String getMaterializerRootDir()
-	{
+	public String getMaterializerRootDir() {
 		return "downloads"; //$NON-NLS-1$
 	}
 
-	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor)
+			throws CoreException {
 		ArrayList<Materialization> adjustedMinfos = new ArrayList<Materialization>(resolutions.size());
 		HashMap<ComponentIdentifier, Resolution> resolutionPerID = new HashMap<ComponentIdentifier, Resolution>();
 
@@ -67,9 +64,9 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 		MaterializationStatistics statistics = context.getMaterializationStatistics();
 		monitor.beginTask(null, 1000);
-		try
-		{
-			// Group materialization infos per reader. Some readers use a common "view"
+		try {
+			// Group materialization infos per reader. Some readers use a common
+			// "view"
 			// for all materializations. They need to be initialized using all
 			// entries.
 			//
@@ -77,11 +74,12 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			Map<String, List<Materialization>> perReader = new TreeMap<String, List<Materialization>>();
 			MaterializationSpec mspec = context.getMaterializationSpec();
 
-			// Obtain some locations where we can feel it is OK to remove a subfolder.
+			// Obtain some locations where we can feel it is OK to remove a
+			// subfolder.
 			//
 			IPath filesRoot = mspec.getInstallLocation();
 			IPath workspaceRoot = mspec.getWorkspaceLocation();
-			if(workspaceRoot == null)
+			if (workspaceRoot == null)
 				workspaceRoot = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 
 			IPath userTemp = Path.fromOSString(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
@@ -89,27 +87,22 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 			IProgressMonitor prepMon = MonitorUtils.subMonitor(monitor, 100);
 			prepMon.beginTask(null, resolutions.size() * 10);
-			for(Resolution cr : resolutions)
-			{
+			for (Resolution cr : resolutions) {
 				ComponentIdentifier ci = null;
 
-				try
-				{
+				try {
 					cr.store(sm);
 					ci = cr.getComponentIdentifier();
 					ConflictResolution conflictRes = mspec.getConflictResolution(cr);
 					IPath artifactLocation = getArtifactLocation(context, cr);
 					String syncLock = artifactLocation.toOSString().intern();
-					synchronized(syncLock)
-					{
+					synchronized (syncLock) {
 						Materialization mat = WorkspaceInfo.getMaterialization(cr);
-						if(mat != null)
-						{
-							if(mat.getComponentLocation().equals(artifactLocation))
-							{
-								if(conflictRes == ConflictResolution.KEEP)
-								{
-									// The same component (name, version, and type) is already materialized to
+						if (mat != null) {
+							if (mat.getComponentLocation().equals(artifactLocation)) {
+								if (conflictRes == ConflictResolution.KEEP) {
+									// The same component (name, version, and
+									// type) is already materialized to
 									// the same location.
 									//
 									statistics.addKept(ci);
@@ -125,21 +118,18 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 						File file = artifactLocation.toFile().getAbsoluteFile();
 						boolean fileExists = file.exists();
-						if(fileExists && conflictRes == ConflictResolution.KEEP)
-						{
-							boolean pathTypeOK = artifactLocation.hasTrailingSeparator()
-									? file.isDirectory()
-									: !file.isDirectory();
+						if (fileExists && conflictRes == ConflictResolution.KEEP) {
+							boolean pathTypeOK = artifactLocation.hasTrailingSeparator() ? file.isDirectory() : !file.isDirectory();
 
-							if(!pathTypeOK)
+							if (!pathTypeOK)
 								throw new FileFolderMismatchException(ci, artifactLocation);
 
-							// Don't materialize this one. Instead, pretend that we
+							// Don't materialize this one. Instead, pretend that
+							// we
 							// just did.
 							//
 							statistics.addKept(ci);
-							logger.info(NLS.bind(Messages.Skipping_materialization_of_0_Instead_reusing_1, ci,
-									artifactLocation));
+							logger.info(NLS.bind(Messages.Skipping_materialization_of_0_Instead_reusing_1, ci, artifactLocation));
 
 							mat.store(sm);
 							adjustedMinfos.add(mat);
@@ -147,29 +137,30 @@ public class FileSystemMaterializer extends AbstractMaterializer
 							continue;
 						}
 
-						// Ensure that the destination exists and that it is empty. This might cause a
+						// Ensure that the destination exists and that it is
+						// empty. This might cause a
 						// DestinationNotEmpty exception to be thrown.
 						//
-						if(artifactLocation.hasTrailingSeparator())
-						{
+						if (artifactLocation.hasTrailingSeparator()) {
 							// We are installing into folder
 							//
 							IMaterializationNode node = mspec.getMatchingNode(cr);
-							if(node != null && node.isUnpack())
-							{
-								// An unpack must never clear the folder that it uses as parent for the unpack
-								// unless that parent has been explicitly stated.
+							if (node != null && node.isUnpack()) {
+								// An unpack must never clear the folder that it
+								// uses as parent for the unpack
+								// unless that parent has been explicitly
+								// stated.
 								//
-								if(node.getLeafArtifact() == null)
+								if (node.getLeafArtifact() == null)
 									conflictRes = ConflictResolution.UPDATE;
 							}
 
-							if(conflictRes.equals(ConflictResolution.REPLACE))
-							{
-								// Some precaution is needed here. We don't just remove folders.
+							if (conflictRes.equals(ConflictResolution.REPLACE)) {
+								// Some precaution is needed here. We don't just
+								// remove folders.
 								//
 								int alCount = artifactLocation.segmentCount();
-								if(!((userHome.isPrefixOf(artifactLocation) && userHome.segmentCount() < alCount)
+								if (!((userHome.isPrefixOf(artifactLocation) && userHome.segmentCount() < alCount)
 										|| (userTemp.isPrefixOf(artifactLocation) && userTemp.segmentCount() < alCount)
 										|| (workspaceRoot.isPrefixOf(artifactLocation) && workspaceRoot.segmentCount() < alCount) || (filesRoot != null
 										&& filesRoot.isPrefixOf(artifactLocation) && filesRoot.segmentCount() < alCount)))
@@ -178,56 +169,48 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 							FileUtils.prepareDestination(file, conflictRes, MonitorUtils.subMonitor(prepMon, 10));
 
-							// Make sure the destination is not completely empty.
+							// Make sure the destination is not completely
+							// empty.
 							//
-							if(file.list().length == 0)
-							{
+							if (file.list().length == 0) {
 								File mtFile = new File(file, ".mtlock"); //$NON-NLS-1$
-								try
-								{
+								try {
 									mtFile.createNewFile();
-								}
-								catch(IOException e)
-								{
+								} catch (IOException e) {
 									throw BuckminsterException.wrap(e);
 								}
 							}
 
-						}
-						else
-						{
-							// Assume that we are downloading a file and that the file should
+						} else {
+							// Assume that we are downloading a file and that
+							// the file should
 							// be given this name.
 							//
-							if(fileExists)
-							{
-								if(conflictRes == ConflictResolution.FAIL)
+							if (fileExists) {
+								if (conflictRes == ConflictResolution.FAIL)
 									throw new FileUtils.DestinationNotEmptyException(file);
-								if(!file.delete() && file.exists())
+								if (!file.delete() && file.exists())
 									throw new DeleteException(file);
 							}
 						}
 
-						if(fileExists && conflictRes == ConflictResolution.UPDATE)
+						if (fileExists && conflictRes == ConflictResolution.UPDATE)
 							updateCandidates.add(ci);
 
 						IReaderType readerType = getMaterializationReaderType(cr);
 						List<Materialization> readerGroup = perReader.get(readerType.getId());
-						if(readerGroup == null)
-						{
+						if (readerGroup == null) {
 							readerGroup = new ArrayList<Materialization>();
 							perReader.put(readerType.getId(), readerGroup);
 						}
 						readerGroup.add(mat);
 						totCount++;
 					}
-				}
-				catch(CoreException e)
-				{
-					if(ci != null)
+				} catch (CoreException e) {
+					if (ci != null)
 						statistics.addFailed(ci);
 
-					if(!context.isContinueOnError())
+					if (!context.isContinueOnError())
 						throw e;
 
 					context.addRequestStatus(cr.getRequest(), e.getStatus());
@@ -239,8 +222,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			IProgressMonitor matMon = MonitorUtils.subMonitor(monitor, 900);
 
 			matMon.beginTask(null, perReader.keySet().size() * 2 + perReader.entrySet().size() * 100);
-			for(Map.Entry<String, List<Materialization>> entry : perReader.entrySet())
-			{
+			for (Map.Entry<String, List<Materialization>> entry : perReader.entrySet()) {
 				List<Materialization> rg = entry.getValue();
 
 				// Prepare the reader type - i.e. set up a view if necessary.
@@ -249,48 +231,39 @@ public class FileSystemMaterializer extends AbstractMaterializer
 
 				matMon.subTask(NLS.bind(Messages.Preparing_type_0, readerType.getId()));
 				readerType.prepareMaterialization(rg, context, MonitorUtils.subMonitor(matMon, 8));
-				for(Materialization mi : rg)
-				{
+				for (Materialization mi : rg) {
 					ComponentIdentifier ci = mi.getComponentIdentifier();
 					Resolution cr = resolutionPerID.get(ci);
 					matMon.subTask(ci.getName());
 
 					boolean success = false;
 					IComponentReader reader = readerType.getReader(cr, context, MonitorUtils.subMonitor(matMon, 20));
-					try
-					{
+					try {
 						IPath location = mi.getComponentLocation();
 						IProgressMonitor matSubMon = MonitorUtils.subMonitor(matMon, 80);
 
-						if(!location.hasTrailingSeparator() && location.toFile().isDirectory())
+						if (!location.hasTrailingSeparator() && location.toFile().isDirectory())
 							mi = new Materialization(location.addTrailingSeparator(), ci);
 						mi.store(sm);
 						reader.materialize(location, cr, context, matSubMon);
 						adjustedMinfos.add(mi);
 						success = true;
-					}
-					catch(CoreException e)
-					{
-						if(!context.isContinueOnError())
+					} catch (CoreException e) {
+						if (!context.isContinueOnError())
 							throw e;
 						context.addRequestStatus(cr.getRequest(), e.getStatus());
-					}
-					finally
-					{
+					} finally {
 						IOUtils.close(reader);
 						IPath location = mi.getComponentLocation();
-						if(location.hasTrailingSeparator())
+						if (location.hasTrailingSeparator())
 							location.append(".mtlock").toFile().delete(); //$NON-NLS-1$
 
-						if(success)
-						{
-							if(updateCandidates.contains(ci))
+						if (success) {
+							if (updateCandidates.contains(ci))
 								statistics.addUpdated(ci);
 							else
 								statistics.addReplaced(ci);
-						}
-						else
-						{
+						} else {
 							statistics.addFailed(ci);
 							mi.remove(sm);
 						}
@@ -299,14 +272,11 @@ public class FileSystemMaterializer extends AbstractMaterializer
 			}
 			matMon.done();
 			return adjustedMinfos;
-		}
-		finally
-		{
-			for(Resolution res : resolutions)
-			{
+		} finally {
+			for (Resolution res : resolutions) {
 				ComponentIdentifier ci = res.getComponentIdentifier();
 
-				if(!statistics.isIncluded(ci))
+				if (!statistics.isIncluded(ci))
 					statistics.addFailed(ci);
 			}
 
@@ -314,8 +284,7 @@ public class FileSystemMaterializer extends AbstractMaterializer
 		}
 	}
 
-	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException
-	{
+	protected IPath getArtifactLocation(MaterializationContext context, Resolution resolution) throws CoreException {
 		return context.getArtifactLocation(resolution);
 	}
 }

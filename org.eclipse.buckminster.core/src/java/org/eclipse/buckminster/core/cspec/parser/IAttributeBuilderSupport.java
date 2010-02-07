@@ -9,7 +9,6 @@ package org.eclipse.buckminster.core.cspec.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 
-public interface IAttributeBuilderSupport
-{
+public interface IAttributeBuilderSupport {
 	public TopLevelAttributeBuilder getAttributeBuilder();
 }

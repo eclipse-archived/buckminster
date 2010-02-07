@@ -20,11 +20,9 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public class ZipReaderType extends URLReaderType
-{
+public class ZipReaderType extends URLReaderType {
 	@Override
-	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException
-	{
+	public void addMaterializationNode(MaterializationSpecBuilder bld, Resolution res) throws CoreException {
 		MaterializationNodeBuilder node = bld.addNodeBuilder();
 		node.setNamePattern(Pattern.compile(Pattern.quote(res.getName())));
 		node.setUnpack(true);

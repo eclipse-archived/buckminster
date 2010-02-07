@@ -31,100 +31,75 @@ import org.eclipse.jdt.internal.core.JavaModelManager;
 import org.eclipse.jdt.internal.core.JavaProject;
 
 /**
- * A IStreamConsumer responsible for reading and parsing a <code>.classpath</code> file.
+ * A IStreamConsumer responsible for reading and parsing a
+ * <code>.classpath</code> file.
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class ClasspathReader extends JavaProject implements IStreamConsumer<IClasspathEntry[]>
-{
-	private static Method s_decodeClasspathMethod;
+public class ClasspathReader extends JavaProject implements IStreamConsumer<IClasspathEntry[]> {
+	private static Method decodeClasspathMethod;
 
-	private static boolean s_isEclipse3_3 = false;
+	private static boolean isEclipse3_3 = false;
 
-	public static IClasspathEntry[] getClasspath(IComponentReader reader, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public static IClasspathEntry[] getClasspath(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		ClasspathReader rdr = new ClasspathReader();
-		try
-		{
-			return (reader instanceof ICatalogReader)
-					? ((ICatalogReader)reader).readFile(CLASSPATH_FILENAME, rdr, monitor)
-					: ((IFileReader)reader).readFile(rdr, monitor);
-		}
-		catch(IOException e)
-		{
+		try {
+			return (reader instanceof ICatalogReader) ? ((ICatalogReader) reader).readFile(CLASSPATH_FILENAME, rdr, monitor) : ((IFileReader) reader)
+					.readFile(rdr, monitor);
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public ClasspathReader()
-	{
-		super(
-				ResourcesPlugin.getWorkspace().getRoot().getProject(" "), JavaModelManager.getJavaModelManager().getJavaModel()); //$NON-NLS-1$
+	public ClasspathReader() {
+		super(ResourcesPlugin.getWorkspace().getRoot().getProject(" "), JavaModelManager.getJavaModelManager().getJavaModel()); //$NON-NLS-1$
 	}
 
-	public IClasspathEntry[] consumeStream(IComponentReader reader, String streamName, InputStream stream,
-			IProgressMonitor monitor) throws CoreException, IOException
-	{
+	public IClasspathEntry[] consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
+			throws CoreException, IOException {
 		monitor.beginTask(null, 150);
 		monitor.subTask(Messages.parsing_classpath);
-		try
-		{
+		try {
 			ByteArrayOutputStream builder = new ByteArrayOutputStream();
 			FileUtils.copyFile(stream, builder, MonitorUtils.subMonitor(monitor, 100));
 			return myDecodeClasspath(new String(builder.toByteArray()));
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	private IClasspathEntry[] myDecodeClasspath(String xmlClasspath) throws CoreException
-	{
-		if(s_decodeClasspathMethod == null)
-		{
+	private IClasspathEntry[] myDecodeClasspath(String xmlClasspath) throws CoreException {
+		if (decodeClasspathMethod == null) {
 			Class<? extends JavaProject> c = JavaProject.class;
-			synchronized(c)
-			{
-				try
-				{
+			synchronized (c) {
+				try {
 					// The 3.3.x signature is like this:
-					// IClasspathEntry[] decodeClasspath(String xmlClasspath, Map unknownElements) throws IOException,
+					// IClasspathEntry[] decodeClasspath(String xmlClasspath,
+					// Map unknownElements) throws IOException,
 					// AssertionFailedException {
 					//
-					s_decodeClasspathMethod = c.getDeclaredMethod("decodeClasspath", String.class, Map.class); //$NON-NLS-1$
-					s_isEclipse3_3 = true;
-				}
-				catch(NoSuchMethodException e)
-				{
-					try
-					{
+					decodeClasspathMethod = c.getDeclaredMethod("decodeClasspath", String.class, Map.class); //$NON-NLS-1$
+					isEclipse3_3 = true;
+				} catch (NoSuchMethodException e) {
+					try {
 						// The 3.2.1 signature is like this:
-						// IClasspathEntry[] decodeClasspath(String xmlClasspath, boolean createMarker, boolean
+						// IClasspathEntry[] decodeClasspath(String
+						// xmlClasspath, boolean createMarker, boolean
 						// logProblems)
 						//
-						s_decodeClasspathMethod = c.getDeclaredMethod(
-								"decodeClasspath", String.class, boolean.class, boolean.class); //$NON-NLS-1$
-						s_isEclipse3_3 = false;
-					}
-					catch(NoSuchMethodException e2)
-					{
+						decodeClasspathMethod = c.getDeclaredMethod("decodeClasspath", String.class, boolean.class, boolean.class); //$NON-NLS-1$
+						isEclipse3_3 = false;
+					} catch (NoSuchMethodException e2) {
 						throw BuckminsterException.wrap(e2);
 					}
 				}
 			}
 		}
-		try
-		{
-			Object[] args = s_isEclipse3_3
-					? new Object[] { xmlClasspath, null }
-					: new Object[] { xmlClasspath, Boolean.FALSE, Boolean.FALSE };
-			return (IClasspathEntry[])s_decodeClasspathMethod.invoke(this, args);
-		}
-		catch(Throwable t)
-		{
+		try {
+			Object[] args = isEclipse3_3 ? new Object[] { xmlClasspath, null } : new Object[] { xmlClasspath, Boolean.FALSE, Boolean.FALSE };
+			return (IClasspathEntry[]) decodeClasspathMethod.invoke(this, args);
+		} catch (Throwable t) {
 			throw BuckminsterException.wrap(t);
 		}
 	}

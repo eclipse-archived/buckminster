@@ -12,88 +12,76 @@ import org.eclipse.buckminster.download.Installer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class ArchivedResourceFetcher extends AbstractResourceFetcher
-{
-	private static class PatternFileFilter implements FileFilter
-	{
+public class ArchivedResourceFetcher extends AbstractResourceFetcher {
+	private static class PatternFileFilter implements FileFilter {
 		private static final String SEP = System.getProperty("file.separator"); //$NON-NLS-1$
 
-		private List<String> m_patterns = new ArrayList<String>();
+		private List<String> patterns = new ArrayList<String>();
 
-		public PatternFileFilter(Iterable<String> patternsToInclude)
-		{
-			for(String p : patternsToInclude)
-			{
+		public PatternFileFilter(Iterable<String> patternsToInclude) {
+			for (String p : patternsToInclude) {
 				p = p.replace(SEP, "/"); //$NON-NLS-1$
 				p = p.replace(".", "\\."); //$NON-NLS-1$ //$NON-NLS-2$
 				p = p.replace("*", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
 				p = p.replace("?", ".?"); //$NON-NLS-1$ //$NON-NLS-2$
-				m_patterns.add(p);
+				patterns.add(p);
 			}
 		}
 
-		public boolean accept(File pathname)
-		{
-			if(m_patterns.isEmpty())
+		public boolean accept(File pathname) {
+			if (patterns.isEmpty())
 				return true;
 			boolean ok = false;
-			for(String p : m_patterns)
-			{
+			for (String p : patterns) {
 				boolean subtract = isSubtract(p);
 				p = rawPatt(p);
 				boolean b = match(p, pathname);
-				if(b && subtract)
+				if (b && subtract)
 					return false;
-				if(b)
+				if (b)
 					ok = true;
 			}
 			return ok;
 		}
 
-		private boolean isSubtract(String patt)
-		{
+		private boolean isSubtract(String patt) {
 			return patt.startsWith("-"); //$NON-NLS-1$
 		}
 
-		private boolean match(String p, File rel)
-		{
+		private boolean match(String p, File rel) {
 			String s = rel.getName();
-			if(p.indexOf('/') >= 0)
+			if (p.indexOf('/') >= 0)
 				s = rel.toString();
 			s = s.replace(SEP, "/"); //$NON-NLS-1$
 			return s.matches(p);
 		}
 
-		private String rawPatt(String patt)
-		{
-			if(!isSubtract(patt))
+		private String rawPatt(String patt) {
+			if (!isSubtract(patt))
 				return patt;
 			return patt.substring(1);
 		}
 	}
 
-	private final String m_filename;
+	private final String filename;
 
-	private final FileFilter m_filter;
+	private final FileFilter filter;
 
-	private final boolean m_flatten;
+	private final boolean flatten;
 
-	public ArchivedResourceFetcher(URL url, String dir, boolean shouldFlatten, List<String> patternsToInclude)
-			throws CoreException
-	{
+	public ArchivedResourceFetcher(URL url, String dir, boolean shouldFlatten, List<String> patternsToInclude) throws CoreException {
 		super(url, dir);
-		m_filename = url.getFile();
-		if(patternsToInclude.isEmpty())
-			m_filter = null;
+		filename = url.getFile();
+		if (patternsToInclude.isEmpty())
+			filter = null;
 		else
-			m_filter = new PatternFileFilter(patternsToInclude);
-		m_flatten = shouldFlatten;
+			filter = new PatternFileFilter(patternsToInclude);
+		flatten = shouldFlatten;
 	}
 
 	@Override
-	protected void consume(InputStream stream, IProgressMonitor monitor) throws IOException, CoreException
-	{
-		final Installer installer = Installer.getInstaller(m_filename, true);
-		installer.install(stream, new File(getDestinationDir()), m_filter, m_flatten, monitor);
+	protected void consume(InputStream stream, IProgressMonitor monitor) throws IOException, CoreException {
+		final Installer installer = Installer.getInstaller(filename, true);
+		installer.install(stream, new File(getDestinationDir()), filter, flatten, monitor);
 	}
 }

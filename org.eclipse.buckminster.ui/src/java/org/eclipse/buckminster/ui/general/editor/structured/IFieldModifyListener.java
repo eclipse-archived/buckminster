@@ -14,7 +14,6 @@ package org.eclipse.buckminster.ui.general.editor.structured;
  * @author Karel Brezina
  * 
  */
-public interface IFieldModifyListener
-{
+public interface IFieldModifyListener {
 	void modifyField(FieldModifyEvent e);
 }

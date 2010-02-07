@@ -10,48 +10,36 @@ package org.eclipse.buckminster.ui.prefs;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.ui.internal.LabeledCombo;
 
-public enum LogLevel
-{
-	DEBUG
-	{
+public enum LogLevel {
+	DEBUG {
 		@Override
-		public int getLogLevel()
-		{
+		public int getLogLevel() {
 			return Logger.DEBUG;
 		}
 	},
-	INFO
-	{
+	INFO {
 		@Override
-		public int getLogLevel()
-		{
+		public int getLogLevel() {
 			return Logger.INFO;
 		}
 	},
-	WARNING
-	{
+	WARNING {
 		@Override
-		public int getLogLevel()
-		{
+		public int getLogLevel() {
 			return Logger.WARNING;
 		}
 	},
-	ERROR
-	{
+	ERROR {
 		@Override
-		public int getLogLevel()
-		{
+		public int getLogLevel() {
 			return Logger.ERROR;
 		}
 	};
-	public static void setComboLogLevel(LabeledCombo logLevelCombo, int logLevel)
-	{
+	public static void setComboLogLevel(LabeledCombo logLevelCombo, int logLevel) {
 		LogLevel[] levels = LogLevel.values();
 		int idx = levels.length;
-		while(--idx >= 0)
-		{
-			if(levels[idx].getLogLevel() == logLevel)
-			{
+		while (--idx >= 0) {
+			if (levels[idx].getLogLevel() == logLevel) {
 				logLevelCombo.select(idx);
 				return;
 			}

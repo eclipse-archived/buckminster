@@ -16,7 +16,6 @@ package org.eclipse.buckminster.ui.dependency.visualizer.connections;
  * @author Johannes Utzig
  * 
  */
-public enum ConnectionCategory
-{
+public enum ConnectionCategory {
 	USAGE, DEPENDENCY, PATH_TO_ROOT
 }

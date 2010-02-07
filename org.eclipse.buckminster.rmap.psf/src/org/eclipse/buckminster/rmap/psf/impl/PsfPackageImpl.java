@@ -19,12 +19,12 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class PsfPackageImpl extends EPackageImpl implements PsfPackage
-{
+public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -40,27 +40,27 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage
 	private static boolean isInited = false;
 
 	/**
-	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
+	 * Creates, registers, and initializes the <b>Package</b> for this model,
+	 * and for any others upon which it depends.
 	 * 
 	 * <p>
-	 * This method is used to initialize {@link PsfPackage#eINSTANCE} when that field is accessed. Clients should not
-	 * invoke it directly. Instead, they should simply access that field to obtain the package. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * This method is used to initialize {@link PsfPackage#eINSTANCE} when that
+	 * field is accessed. Clients should not invoke it directly. Instead, they
+	 * should simply access that field to obtain the package. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #eNS_URI
 	 * @see #createPackageContents()
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static PsfPackage init()
-	{
-		if(isInited)
-			return (PsfPackage)EPackage.Registry.INSTANCE.getEPackage(PsfPackage.eNS_URI);
+	public static PsfPackage init() {
+		if (isInited)
+			return (PsfPackage) EPackage.Registry.INSTANCE.getEPackage(PsfPackage.eNS_URI);
 
 		// Obtain or create and register package
-		PsfPackageImpl thePsfPackage = (PsfPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof PsfPackageImpl
-				? EPackage.Registry.INSTANCE.get(eNS_URI)
-				: new PsfPackageImpl());
+		PsfPackageImpl thePsfPackage = (PsfPackageImpl) (EPackage.Registry.INSTANCE.get(eNS_URI) instanceof PsfPackageImpl
+				? EPackage.Registry.INSTANCE.get(eNS_URI) : new PsfPackageImpl());
 
 		isInited = true;
 
@@ -96,11 +96,13 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage
 	private boolean isInitialized = false;
 
 	/**
-	 * Creates an instance of the model <b>Package</b>, registered with {@link org.eclipse.emf.ecore.EPackage.Registry
-	 * EPackage.Registry} by the package package URI value.
+	 * Creates an instance of the model <b>Package</b>, registered with
+	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the
+	 * package package URI value.
 	 * <p>
-	 * Note: the correct way to create the package is via the static factory method {@link #init init()}, which also
-	 * performs initialization of the package, or returns the registered package, if one already exists. <!--
+	 * Note: the correct way to create the package is via the static factory
+	 * method {@link #init init()}, which also performs initialization of the
+	 * package, or returns the registered package, if one already exists. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
@@ -108,32 +110,19 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage
 	 * @see #init()
 	 * @generated
 	 */
-	private PsfPackageImpl()
-	{
+	private PsfPackageImpl() {
 		super(eNS_URI, PsfFactory.eINSTANCE);
 	}
 
 	/**
-	 * Initializes the annotations for <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * Creates the meta-model objects for the package. This method is guarded to
+	 * have no affect on any invocation but its first. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void createExtendedMetaDataAnnotations()
-	{
-		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
-		addAnnotation(getPSFProvider_PsfFile(), source, new String[] { "kind", "attribute" });
-	}
-
-	/**
-	 * Creates the meta-model objects for the package. This method is guarded to have no affect on any invocation but
-	 * its first. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void createPackageContents()
-	{
-		if(isCreated)
+	public void createPackageContents() {
+		if (isCreated)
 			return;
 		isCreated = true;
 
@@ -147,9 +136,8 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage
 	 * 
 	 * @generated
 	 */
-	public PsfFactory getPsfFactory()
-	{
-		return (PsfFactory)getEFactoryInstance();
+	public PsfFactory getPsfFactory() {
+		return (PsfFactory) getEFactoryInstance();
 	}
 
 	/**
@@ -157,8 +145,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getPSFProvider()
-	{
+	public EClass getPSFProvider() {
 		return psfProviderEClass;
 	}
 
@@ -167,20 +154,19 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPSFProvider_PsfFile()
-	{
-		return (EAttribute)psfProviderEClass.getEStructuralFeatures().get(0);
+	public EAttribute getPSFProvider_PsfFile() {
+		return (EAttribute) psfProviderEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
-	 * Complete the initialization of the package and its meta-model. This method is guarded to have no affect on any
-	 * invocation but its first. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Complete the initialization of the package and its meta-model. This
+	 * method is guarded to have no affect on any invocation but its first. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void initializePackageContents()
-	{
-		if(isInitialized)
+	public void initializePackageContents() {
+		if (isInitialized)
 			return;
 		isInitialized = true;
 
@@ -190,7 +176,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
-		RmapPackage theRmapPackage = (RmapPackage)EPackage.Registry.INSTANCE.getEPackage(RmapPackage.eNS_URI);
+		RmapPackage theRmapPackage = (RmapPackage) EPackage.Registry.INSTANCE.getEPackage(RmapPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -200,10 +186,9 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage
 		psfProviderEClass.getESuperTypes().add(theRmapPackage.getProvider());
 
 		// Initialize classes and features; add operations and parameters
-		initEClass(psfProviderEClass, PSFProvider.class, "PSFProvider", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPSFProvider_PsfFile(), ecorePackage.getEString(), "psfFile", null, 0, 1, PSFProvider.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(psfProviderEClass, PSFProvider.class, "PSFProvider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getPSFProvider_PsfFile(), ecorePackage.getEString(), "psfFile", null, 0, 1, PSFProvider.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -211,6 +196,18 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage
 		// Create annotations
 		// http:///org/eclipse/emf/ecore/util/ExtendedMetaData
 		createExtendedMetaDataAnnotations();
+	}
+
+	/**
+	 * Initializes the annotations for
+	 * <b>http:///org/eclipse/emf/ecore/util/ExtendedMetaData</b>. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void createExtendedMetaDataAnnotations() {
+		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
+		addAnnotation(getPSFProvider_PsfFile(), source, new String[] { "kind", "attribute" });
 	}
 
 } // PsfPackageImpl

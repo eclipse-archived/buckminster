@@ -22,133 +22,110 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class AlterCSpecHandler extends AlterHandler
-{
+class AlterCSpecHandler extends AlterHandler {
 	public static final String TAG = CSpecExtension.TAG;
 
-	private final CSpecHandler m_baseHandler;
+	private final CSpecHandler baseHandler;
 
-	private AlterCSpecBuilder m_builder;
+	private AlterCSpecBuilder builder;
 
-	private final AlterAttributesHandler m_alterActionsHandler = new AlterAttributesHandler(this)
-	{
+	private final AlterAttributesHandler alterActionsHandler = new AlterAttributesHandler(this) {
 		@Override
-		public String getTAG()
-		{
+		public String getTAG() {
 			return CSpecExtension.ELEM_ALTER_ACTIONS;
 		}
 
 		@Override
-		AlterAttributeHandler createAttributeHandler(boolean publ)
-		{
+		AlterAttributeHandler createAttributeHandler(boolean publ) {
 			return new AlterActionHandler(this, publ);
 		}
 	};
 
-	private final AlterAttributesHandler m_alterArtifactsHandler = new AlterAttributesHandler(this)
-	{
+	private final AlterAttributesHandler alterArtifactsHandler = new AlterAttributesHandler(this) {
 		@Override
-		public String getTAG()
-		{
+		public String getTAG() {
 			return CSpecExtension.ELEM_ALTER_ARTIFACTS;
 		}
 
 		@Override
-		AlterAttributeHandler createAttributeHandler(boolean publ)
-		{
+		AlterAttributeHandler createAttributeHandler(boolean publ) {
 			return new AlterArtifactHandler(this, publ);
 		}
 	};
 
-	private final AlterAttributesHandler m_alterGroupsHandler = new AlterAttributesHandler(this)
-	{
+	private final AlterAttributesHandler alterGroupsHandler = new AlterAttributesHandler(this) {
 		@Override
-		public String getTAG()
-		{
+		public String getTAG() {
 			return CSpecExtension.ELEM_ALTER_GROUPS;
 		}
 
 		@Override
-		AlterAttributeHandler createAttributeHandler(boolean publ)
-		{
+		AlterAttributeHandler createAttributeHandler(boolean publ) {
 			return new AlterGroupHandler(this, publ);
 		}
 	};
 
-	private final AlterDependenciesHandler m_alterDependenciesHandler = new AlterDependenciesHandler(this);
+	private final AlterDependenciesHandler alterDependenciesHandler = new AlterDependenciesHandler(this);
 
-	AlterCSpecHandler(AbstractHandler parent)
-	{
+	AlterCSpecHandler(AbstractHandler parent) {
 		super(parent);
-		m_baseHandler = new CSpecHandler(parent);
+		baseHandler = new CSpecHandler(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		((ChildPoppedListener)m_baseHandler).childPopped(child);
+	public void childPopped(ChildHandler child) throws SAXException {
+		((ChildPoppedListener) baseHandler).childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(m_alterActionsHandler.getTAG().equals(localName))
-			ch = m_alterActionsHandler;
-		else if(m_alterGroupsHandler.getTAG().equals(localName))
-			ch = m_alterGroupsHandler;
-		else if(m_alterArtifactsHandler.getTAG().equals(localName))
-			ch = m_alterArtifactsHandler;
-		else if(AlterDependenciesHandler.TAG.equals(localName))
-			ch = m_alterDependenciesHandler;
+		if (alterActionsHandler.getTAG().equals(localName))
+			ch = alterActionsHandler;
+		else if (alterGroupsHandler.getTAG().equals(localName))
+			ch = alterGroupsHandler;
+		else if (alterArtifactsHandler.getTAG().equals(localName))
+			ch = alterArtifactsHandler;
+		else if (AlterDependenciesHandler.TAG.equals(localName))
+			ch = alterDependenciesHandler;
 		else
-			ch = m_baseHandler.createHandler(uri, localName, attrs);
+			ch = baseHandler.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	public CSpecBuilder getCSpecBuilder()
-	{
-		return m_baseHandler.getCSpecBuilder();
+	public CSpecBuilder getCSpecBuilder() {
+		return baseHandler.getCSpecBuilder();
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_baseHandler.handleAttributes(attrs);
-		m_builder = new AlterCSpecBuilder(m_baseHandler.getCSpecBuilder());
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		baseHandler.handleAttributes(attrs);
+		builder = new AlterCSpecBuilder(baseHandler.getCSpecBuilder());
 	}
 
-	final void addRemoveAttribute(String name)
-	{
-		m_builder.addRemoveAttribute(name);
+	final void addRemoveAttribute(String name) {
+		builder.addRemoveAttribute(name);
 	}
 
-	final void addRemoveDependency(String name)
-	{
-		m_builder.addRemoveDependency(name);
+	final void addRemoveDependency(String name) {
+		builder.addRemoveDependency(name);
 	}
 
 	@Override
-	final AlterCSpecBuilder getAlterCSpecBuilder()
-	{
-		return m_builder;
+	final AlterCSpecBuilder getAlterCSpecBuilder() {
+		return builder;
 	}
 
-	final CSpecExtension getCSpecExtension() throws SAXException
-	{
-		try
-		{
-			return m_builder.createAlteredCSpec();
-		}
-		catch(CoreException e)
-		{
+	final CSpecExtension getCSpecExtension() throws SAXException {
+		try {
+			return builder.createAlteredCSpec();
+		} catch (CoreException e) {
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 		}
 	}
 
 	@Override
-	final String getCSpecExtensionName()
-	{
-		return m_builder.getBaseBuilder().getName();
+	final String getCSpecExtensionName() {
+		return builder.getBaseBuilder().getName();
 	}
 }

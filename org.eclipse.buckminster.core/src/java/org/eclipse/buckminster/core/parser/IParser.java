@@ -14,8 +14,7 @@ import java.io.InputStream;
 
 import org.eclipse.core.runtime.CoreException;
 
-public interface IParser<T>
-{
+public interface IParser<T> {
 	/**
 	 * Parse the input stream and deliver a result.
 	 * 

@@ -13,7 +13,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Path Group</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Path Group</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
@@ -27,13 +28,13 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface PathGroup extends EObject
-{
+public interface PathGroup extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Base</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Base</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Base</em>' containment reference isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Base</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -46,11 +47,12 @@ public interface PathGroup extends EObject
 	IPath getBase();
 
 	/**
-	 * Returns the value of the '<em><b>Paths</b></em>' attribute list. The list contents are of type
-	 * {@link org.eclipse.core.runtime.IPath}. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Paths</b></em>' attribute list. The list
+	 * contents are of type {@link org.eclipse.core.runtime.IPath}. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Paths</em>' containment reference list isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Paths</em>' containment reference list isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -70,8 +72,9 @@ public interface PathGroup extends EObject
 	PathGroup resolve(IPath path);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.PathGroup#getBase <em>Base</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.PathGroup#getBase <em>Base</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Base</em>' attribute.

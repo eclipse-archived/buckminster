@@ -17,8 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public interface ISaxableStorage<T extends UUIDKeyed>
-{
+public interface ISaxableStorage<T extends UUIDKeyed> {
 	/**
 	 * Obtains an array of the key of all instances in this storage.
 	 * 
@@ -39,7 +38,8 @@ public interface ISaxableStorage<T extends UUIDKeyed>
 	boolean contains(T element) throws CoreException;
 
 	/**
-	 * Return the timestamp denoting the time when the element identified with <code>elementId</code> was created.
+	 * Return the timestamp denoting the time when the element identified with
+	 * <code>elementId</code> was created.
 	 * 
 	 * @param elementId
 	 *            The id to search for.
@@ -49,7 +49,8 @@ public interface ISaxableStorage<T extends UUIDKeyed>
 	long getCreationTime(UUID elementId) throws CoreException;
 
 	/**
-	 * Return the element that corresponds to <code>elementId</code>. an exception.
+	 * Return the element that corresponds to <code>elementId</code>. an
+	 * exception.
 	 * 
 	 * @param elementId
 	 *            The id to search for.
@@ -76,8 +77,8 @@ public interface ISaxableStorage<T extends UUIDKeyed>
 	String getName();
 
 	/**
-	 * Find all instances that has a property named <code>keyName</code> that appoints the <code>foreignKey</code>.
-	 * Analog to a SQL statement like:<br/>
+	 * Find all instances that has a property named <code>keyName</code> that
+	 * appoints the <code>foreignKey</code>. Analog to a SQL statement like:<br/>
 	 * <code>SELECT id FROM storage WHERE keyName = foreignKey</code>
 	 * 
 	 * @param foreignKey
@@ -89,9 +90,11 @@ public interface ISaxableStorage<T extends UUIDKeyed>
 	List<UUID> getReferencingKeys(UUID foreignKey, String keyName) throws CoreException;
 
 	/**
-	 * Obtains an array of all the timestamped key for all instances in this storage.
+	 * Obtains an array of all the timestamped key for all instances in this
+	 * storage.
 	 * 
-	 * @return The timestamped key array. It might be empty but never <code>null</code>.
+	 * @return The timestamped key array. It might be empty but never
+	 *         <code>null</code>.
 	 * @throws CoreException
 	 */
 	TimestampedKey[] getTimestampedKeys();
@@ -119,7 +122,8 @@ public interface ISaxableStorage<T extends UUIDKeyed>
 	void putElement(UUID id, T element) throws CoreException;
 
 	/**
-	 * Remove the element identified with <code>elementId</code> from this storage.
+	 * Remove the element identified with <code>elementId</code> from this
+	 * storage.
 	 * 
 	 * @param elementId
 	 *            The id of the element to be removed.
@@ -127,8 +131,9 @@ public interface ISaxableStorage<T extends UUIDKeyed>
 	void removeElement(UUID elementId) throws CoreException;
 
 	/**
-	 * Returns true if the sequence number of this storage changed since it was last used. The sequence number can be
-	 * regarded as a sequential version number.
+	 * Returns true if the sequence number of this storage changed since it was
+	 * last used. The sequence number can be regarded as a sequential version
+	 * number.
 	 * 
 	 * @return true if the sequence number changed
 	 */

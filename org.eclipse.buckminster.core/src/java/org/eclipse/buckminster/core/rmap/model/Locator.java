@@ -17,51 +17,44 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Locator extends Matcher
-{
+public class Locator extends Matcher {
 	public static final String TAG = "locator"; //$NON-NLS-1$
 
 	public static final String ATTR_FAIL_ON_ERROR = "failOnError"; //$NON-NLS-1$
 
 	public static final String ATTR_SEARCH_PATH_REF = "searchPathRef"; //$NON-NLS-1$
 
-	private final String m_searchPath;
+	private final String searchPath;
 
-	private final boolean m_failOnError;
+	private final boolean failOnError;
 
-	public Locator(ResourceMap owner, String pattern, String searchPath)
-	{
+	public Locator(ResourceMap owner, String pattern, String searchPath) {
 		this(owner, pattern, searchPath, true);
 	}
 
-	public Locator(ResourceMap owner, String pattern, String searchPath, boolean failOnError)
-	{
+	public Locator(ResourceMap owner, String pattern, String searchPath, boolean failOnError) {
 		super(owner, pattern);
-		m_searchPath = searchPath;
-		m_failOnError = failOnError;
+		this.searchPath = searchPath;
+		this.failOnError = failOnError;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public String getSearchPath()
-	{
-		return m_searchPath;
+	public String getSearchPath() {
+		return searchPath;
 	}
 
-	public boolean isFailOnError()
-	{
-		return m_failOnError;
+	public boolean isFailOnError() {
+		return failOnError;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_SEARCH_PATH_REF, m_searchPath);
-		if(!m_failOnError)
-			Utils.addAttribute(attrs, ATTR_FAIL_ON_ERROR, Boolean.toString(m_failOnError));
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_SEARCH_PATH_REF, searchPath);
+		if (!failOnError)
+			Utils.addAttribute(attrs, ATTR_FAIL_ON_ERROR, Boolean.toString(failOnError));
 		super.addAttributes(attrs);
 	}
 

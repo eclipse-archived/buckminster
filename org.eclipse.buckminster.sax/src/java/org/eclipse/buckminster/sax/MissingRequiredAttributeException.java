@@ -11,12 +11,12 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
 
 /**
- * This exception is thrown when a handler attempts to obtain the value of a required attribute that has not been set.
+ * This exception is thrown when a handler attempts to obtain the value of a
+ * required attribute that has not been set.
  * 
  * @author Thomas Hallgren
  */
-public class MissingRequiredAttributeException extends SAXParseException
-{
+public class MissingRequiredAttributeException extends SAXParseException {
 	private static final long serialVersionUID = 3905528185301841204L;
 
 	/**
@@ -27,8 +27,7 @@ public class MissingRequiredAttributeException extends SAXParseException
 	 * @param locator
 	 *            Location in input where the error was encountered
 	 */
-	public MissingRequiredAttributeException(String tagName, String attrName, Locator locator)
-	{
+	public MissingRequiredAttributeException(String tagName, String attrName, Locator locator) {
 		super("Element <" + tagName + "> is missing the required attribute: " + attrName, locator); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

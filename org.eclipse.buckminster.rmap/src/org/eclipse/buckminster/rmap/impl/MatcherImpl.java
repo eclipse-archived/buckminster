@@ -19,21 +19,22 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Matcher</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Matcher</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getPattern <em>Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getPattern <em>
+ * Pattern</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public abstract class MatcherImpl extends EObjectImpl implements Matcher
-{
+public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPattern()
 	 * @generated
@@ -42,8 +43,8 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	protected static final Pattern PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPattern()
 	 * @generated
@@ -56,8 +57,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	 * 
 	 * @generated
 	 */
-	protected MatcherImpl()
-	{
+	protected MatcherImpl() {
 		super();
 	}
 
@@ -67,12 +67,10 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.MATCHER__PATTERN:
-			return getPattern();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case RmapPackage.MATCHER__PATTERN:
+				return getPattern();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -83,14 +81,10 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.MATCHER__PATTERN:
-			return PATTERN_EDEFAULT == null
-					? pattern != null
-					: !PATTERN_EDEFAULT.equals(pattern);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case RmapPackage.MATCHER__PATTERN:
+				return PATTERN_EDEFAULT == null ? pattern != null : !PATTERN_EDEFAULT.equals(pattern);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -101,13 +95,11 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.MATCHER__PATTERN:
-			setPattern((Pattern)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case RmapPackage.MATCHER__PATTERN:
+				setPattern((Pattern) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -118,13 +110,11 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.MATCHER__PATTERN:
-			setPattern(PATTERN_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case RmapPackage.MATCHER__PATTERN:
+				setPattern(PATTERN_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -134,8 +124,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	 * 
 	 * @generated
 	 */
-	public Pattern getPattern()
-	{
+	public Pattern getPattern() {
 		return pattern;
 	}
 
@@ -144,11 +133,10 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	 * 
 	 * @generated
 	 */
-	public void setPattern(Pattern newPattern)
-	{
+	public void setPattern(Pattern newPattern) {
 		Pattern oldPattern = pattern;
 		pattern = newPattern;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.MATCHER__PATTERN, oldPattern, pattern));
 	}
 
@@ -158,9 +146,8 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -176,8 +163,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return RmapPackage.Literals.MATCHER;
 	}
 

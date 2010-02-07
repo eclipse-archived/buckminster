@@ -18,8 +18,7 @@ package org.eclipse.buckminster.generic.model.tree;
  * @author Henrik Lindberg
  * 
  */
-public interface ITreeParentDataNode extends ITreeDataNode
-{
+public interface ITreeParentDataNode extends ITreeDataNode {
 	/**
 	 * Return the child that represents the data
 	 * 

@@ -20,7 +20,6 @@ import java.util.EventListener;
  * @author Henrik Lindberg
  * 
  */
-public interface ITreeDataListener extends EventListener
-{
+public interface ITreeDataListener extends EventListener {
 	public void treeNodeChanged(TreeDataEvent event);
 }

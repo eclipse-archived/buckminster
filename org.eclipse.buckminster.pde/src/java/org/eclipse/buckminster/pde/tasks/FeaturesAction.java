@@ -51,58 +51,50 @@ import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.Utils;
 
 @SuppressWarnings("restriction")
-public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.FeaturesAction
-{
+public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.FeaturesAction {
 	private static final Project PROPERTY_REPLACER = new Project();
 
-	public static int getMatchRule(String matchRuleString)
-	{
-		if(matchRuleString == null)
+	public static int getMatchRule(String matchRuleString) {
+		if (matchRuleString == null)
 			return IMatchRules.NONE;
 
 		String[] table = IMatchRules.RULE_NAME_TABLE;
 		int idx = table.length;
-		while(--idx >= 0)
-			if(matchRuleString.equalsIgnoreCase(table[idx]))
+		while (--idx >= 0)
+			if (matchRuleString.equalsIgnoreCase(table[idx]))
 				return idx;
 		return IMatchRules.NONE;
 	}
 
-	public static Version limitWithMatchRule(Version v, int matchRule)
-	{
-		if(v == null || matchRule == IMatchRules.NONE || matchRule == IMatchRules.PERFECT)
+	public static Version limitWithMatchRule(Version v, int matchRule) {
+		if (v == null || matchRule == IMatchRules.NONE || matchRule == IMatchRules.PERFECT)
 			return v;
 
 		org.osgi.framework.Version ov = Version.toOSGiVersion(v);
-		switch(matchRule)
-		{
-		case IMatchRules.EQUIVALENT:
-			v = Version.createOSGi(ov.getMajor(), ov.getMinor(), 0);
-			break;
-		case IMatchRules.COMPATIBLE:
-			v = Version.createOSGi(ov.getMajor(), 0, 0);
-			break;
-		default:
-			v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro());
+		switch (matchRule) {
+			case IMatchRules.EQUIVALENT:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), 0);
+				break;
+			case IMatchRules.COMPATIBLE:
+				v = Version.createOSGi(ov.getMajor(), 0, 0);
+				break;
+			default:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro());
 		}
 		return v;
 	}
 
-	private static FeatureRootAdvice createRootAdvice(String featureId, Properties buildProperties,
-			IPath baseDirectory, String[] configs)
-	{
+	private static FeatureRootAdvice createRootAdvice(String featureId, Properties buildProperties, IPath baseDirectory, String[] configs) {
 		@SuppressWarnings("unchecked")
 		Map<String, Map<String, String>> configMap = Utils.processRootProperties(buildProperties, true);
-		if(configMap.size() == 1)
-		{
+		if (configMap.size() == 1) {
 			Map<String, String> entry = configMap.get(Utils.ROOT_COMMON);
-			if(entry != null && entry.isEmpty())
+			if (entry != null && entry.isEmpty())
 				return null;
 		}
 
 		FeatureRootAdvice advice = new FeatureRootAdvice(featureId);
-		for(Map.Entry<String, Map<String, String>> entry : configMap.entrySet())
-		{
+		for (Map.Entry<String, Map<String, String>> entry : configMap.entrySet()) {
 			String config = entry.getKey();
 			Map<String, String> rootMap = entry.getValue();
 			populateConfigAdvice(advice, config, rootMap, baseDirectory, configs);
@@ -110,20 +102,18 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		return advice;
 	}
 
-	private static void populateConfigAdvice(FeatureRootAdvice advice, String config, Map<String, String> rootMap,
-			IPath baseDirectory, String[] configs)
-	{
-		if(config.equals(Utils.ROOT_COMMON))
+	private static void populateConfigAdvice(FeatureRootAdvice advice, String config, Map<String, String> rootMap, IPath baseDirectory,
+			String[] configs) {
+		if (config.equals(Utils.ROOT_COMMON))
 			config = ""; //$NON-NLS-1$
-		else
-		{
+		else {
 			config = reorderConfig(config);
 			int idx = configs.length;
-			while(--idx >= 0)
-				if(config.equals(configs[idx]))
+			while (--idx >= 0)
+				if (config.equals(configs[idx]))
 					break;
 
-			if(idx < 0)
+			if (idx < 0)
 				// Config was not on the list
 				return;
 		}
@@ -131,33 +121,29 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		ConfigAdvice configAdvice = advice.getConfigAdvice(config);
 		FileSetDescriptor descriptor = configAdvice.getDescriptor();
 		List<String> permissionsKeys = new ArrayList<String>();
-		for(Map.Entry<String, String> rootEntry : rootMap.entrySet())
-		{
+		for (Map.Entry<String, String> rootEntry : rootMap.entrySet()) {
 			String key = rootEntry.getKey();
-			if(key.equals(Utils.ROOT_LINK))
-			{
+			if (key.equals(Utils.ROOT_LINK)) {
 				descriptor.setLinks(rootEntry.getValue());
 				continue;
 			}
 
-			if(key.startsWith(Utils.ROOT_PERMISSIONS))
-			{
+			if (key.startsWith(Utils.ROOT_PERMISSIONS)) {
 				permissionsKeys.add(key);
 				continue;
 			}
 
-			for(String rootValue : StringHelper.getArrayFromString(rootEntry.getValue(), ','))
-			{
+			for (String rootValue : StringHelper.getArrayFromString(rootEntry.getValue(), ',')) {
 				String rootName = rootValue;
 				boolean isAbsolute = rootName.startsWith("absolute:"); //$NON-NLS-1$
-				if(isAbsolute)
+				if (isAbsolute)
 					rootName = rootName.substring(9);
 
 				boolean isFile = rootName.startsWith("file:"); //$NON-NLS-1$
-				if(isFile)
+				if (isFile)
 					rootName = rootName.substring(5);
 
-				if(rootName.length() == 0)
+				if (rootName.length() == 0)
 					continue;
 
 				IPath basePath;
@@ -168,33 +154,26 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 				IPath rootPath = Path.fromPortableString(rootName);
 				int firstStar = -1;
 				int numSegs = rootPath.segmentCount();
-				for(int idx = 0; idx < numSegs; ++idx)
-					if(rootPath.segment(idx).indexOf('*') >= 0)
-					{
+				for (int idx = 0; idx < numSegs; ++idx)
+					if (rootPath.segment(idx).indexOf('*') >= 0) {
 						firstStar = idx;
 						break;
 					}
 
-				if(firstStar == -1)
-				{
-					if(isFile)
-					{
+				if (firstStar == -1) {
+					if (isFile) {
 						pattern = rootPath.lastSegment();
 						basePath = rootPath.removeLastSegments(1);
-					}
-					else
-					{
+					} else {
 						pattern = "**"; //$NON-NLS-1$
 						basePath = rootPath;
 					}
-				}
-				else
-				{
+				} else {
 					basePath = rootPath.removeLastSegments(rootPath.segmentCount() - (firstStar + 1));
 					pattern = rootPath.removeFirstSegments(firstStar).toPortableString();
 				}
 
-				if(!isAbsolute)
+				if (!isAbsolute)
 					basePath = baseDirectory.append(basePath.makeRelative());
 
 				FileSet fileset = new FileSet();
@@ -206,18 +185,15 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 				include.setName(pattern);
 
 				String[] files = fileset.getDirectoryScanner().getIncludedFiles();
-				if(files.length == 0)
-				{
+				if (files.length == 0) {
 					PDEPlugin.getLogger().warning(
-							NLS.bind(Messages.rootAdviceForConfig_0_in_1_at_2_does_not_appoint_existing_artifacts,
-									new Object[] { config, IPDEBuildConstants.PROPERTIES_FILE,
-											baseDirectory.toOSString() }));
+							NLS.bind(Messages.rootAdviceForConfig_0_in_1_at_2_does_not_appoint_existing_artifacts, new Object[] { config,
+									IPDEBuildConstants.PROPERTIES_FILE, baseDirectory.toOSString() }));
 					continue;
 				}
 
 				IPath destBaseDir = Path.fromPortableString(key);
-				for(String found : files)
-				{
+				for (String found : files) {
 					IPath foundFile = Path.fromPortableString(found);
 					String destDir = destBaseDir.append(foundFile.removeLastSegments(1)).toPortableString();
 					configAdvice.addRootfile(new File(base, found), destDir);
@@ -225,17 +201,16 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 			}
 		}
 
-		for(String permissionKey : permissionsKeys)
-		{
+		for (String permissionKey : permissionsKeys) {
 			String permissionString = rootMap.get(permissionKey);
 			String[] names = StringHelper.getArrayFromString(permissionString, ',');
 
 			OrSelector orSelector = new OrSelector();
 			orSelector.setProject(PROPERTY_REPLACER);
-			for(String name : names)
-			{
-				// Workaround for bogus entries in the equinox executable feature
-				if("${launcherName}.app/Contents/MacOS/${launcherName}".equals(name)) //$NON-NLS-1$
+			for (String name : names) {
+				// Workaround for bogus entries in the equinox executable
+				// feature
+				if ("${launcherName}.app/Contents/MacOS/${launcherName}".equals(name)) //$NON-NLS-1$
 					name = "Eclipse.app/Contents/MacOS/launcher"; //$NON-NLS-1$
 
 				FilenameSelector nameSelector = new FilenameSelector();
@@ -245,72 +220,55 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 			}
 
 			permissionKey = permissionKey.substring(Utils.ROOT_PERMISSIONS.length());
-			for(File file : configAdvice.getFiles())
-			{
+			for (File file : configAdvice.getFiles()) {
 				IPath finalFilePath = configAdvice.computePath(file);
-				if(orSelector.isSelected(null, finalFilePath.toOSString(), null))
+				if (orSelector.isSelected(null, finalFilePath.toOSString(), null))
 					descriptor.addPermissions(new String[] { permissionKey, finalFilePath.toPortableString() });
 			}
 		}
 	}
 
-	private static String reorderConfig(String config)
-	{
+	private static String reorderConfig(String config) {
 		String[] parsed = StringHelper.getArrayFromString(config, '.');
 		return parsed[1] + '.' + parsed[0] + '.' + parsed[2];
 	}
 
-	private final Map<IVersionedId, CSpec> m_cspecs;
+	private final Map<IVersionedId, CSpec> cspecs;
 
-	private final Map<IVersionedId, Properties> m_properties = new HashMap<IVersionedId, Properties>();
+	private final Map<IVersionedId, Properties> properties = new HashMap<IVersionedId, Properties>();
 
-	public FeaturesAction(File[] featureBinaries, Map<IVersionedId, CSpec> cspecs)
-	{
+	public FeaturesAction(File[] featureBinaries, Map<IVersionedId, CSpec> cspecs) {
 		super(featureBinaries);
-		m_cspecs = cspecs;
+		this.cspecs = cspecs;
 	}
 
 	@Override
-	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
-	{
-		for(Entry<IVersionedId, CSpec> entry : m_cspecs.entrySet())
-		{
+	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
+		for (Entry<IVersionedId, CSpec> entry : cspecs.entrySet()) {
 			CSpec cspec = entry.getValue();
-			try
-			{
+			try {
 				IPath location = cspec.getComponentLocation();
-				if(location.hasTrailingSeparator())
-				{
+				if (location.hasTrailingSeparator()) {
 					File buildProps = location.append(IPDEBuildConstants.PROPERTIES_FILE).toFile();
 					InputStream input = null;
 					IVersionedId vn = entry.getKey();
 					Properties props = new Properties();
-					m_properties.put(vn, props);
-					try
-					{
+					properties.put(vn, props);
+					try {
 						input = new BufferedInputStream(new FileInputStream(buildProps));
 						props.load(input);
-						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), props, location,
-								publisherInfo.getConfigurations());
-						if(rootAdvice != null)
+						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), props, location, publisherInfo.getConfigurations());
+						if (rootAdvice != null)
 							publisherInfo.addAdvice(rootAdvice);
-					}
-					catch(FileNotFoundException e)
-					{
+					} catch (FileNotFoundException e) {
 						// OK, we don't have any roots
-					}
-					catch(IOException e)
-					{
+					} catch (IOException e) {
 						throw BuckminsterException.wrap(e);
-					}
-					finally
-					{
+					} finally {
 						IOUtils.close(input);
 					}
 				}
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				return e.getStatus();
 			}
 		}
@@ -318,47 +276,39 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	}
 
 	@Override
-	protected IInstallableUnit createGroupIU(Feature feature, List<IInstallableUnit> childIUs,
-			IPublisherInfo publisherInfo)
-	{
+	protected IInstallableUnit createGroupIU(Feature feature, List<IInstallableUnit> childIUs, IPublisherInfo publisherInfo) {
 		IVersionedId vn = new VersionedId(feature.getId(), feature.getVersion());
-		Properties props = m_properties.get(vn);
+		Properties props = properties.get(vn);
 		boolean retainLowerBound = false;
 		int pdeMatchRule = IMatchRules.EQUIVALENT;
 
-		if(props != null)
-		{
+		if (props != null) {
 			String dfltMatchRule = props.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
 			String rtl = props.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
 			pdeMatchRule = getMatchRule(dfltMatchRule);
-			if(rtl != null)
+			if (rtl != null)
 				retainLowerBound = Boolean.parseBoolean(rtl);
 		}
-		if(pdeMatchRule == IMatchRules.NONE || pdeMatchRule == IMatchRules.PERFECT)
+		if (pdeMatchRule == IMatchRules.NONE || pdeMatchRule == IMatchRules.PERFECT)
 			return super.createGroupIU(feature, childIUs, publisherInfo);
 
 		Feature newFeature = new Feature(feature.getId(), feature.getVersion());
 		final String canonicalMatchRule = IMatchRules.RULE_NAME_TABLE[pdeMatchRule];
 		FeatureEntry[] entries = feature.getEntries();
 		int idx = entries.length;
-		while(--idx >= 0)
-		{
+		while (--idx >= 0) {
 			FeatureEntry entry = entries[idx];
-			if(entry.isPatch() || entry.isRequires() || getMatchRule(entry.getMatch()) != IMatchRules.NONE)
-			{
+			if (entry.isPatch() || entry.isRequires() || getMatchRule(entry.getMatch()) != IMatchRules.NONE) {
 				newFeature.addEntry(entry);
 				continue;
 			}
 
 			Version version = Version.create(entry.getVersion());
-			if(!retainLowerBound)
+			if (!retainLowerBound)
 				version = limitWithMatchRule(Version.create(entry.getVersion()), pdeMatchRule);
 
-			String vstr = version == null
-					? null
-					: version.toString();
-			FeatureEntry newEntry = FeatureEntry.createRequires(entry.getId(), vstr, canonicalMatchRule,
-					entry.getFilter(), entry.isPlugin());
+			String vstr = version == null ? null : version.toString();
+			FeatureEntry newEntry = FeatureEntry.createRequires(entry.getId(), vstr, canonicalMatchRule, entry.getFilter(), entry.isPlugin());
 			newEntry.setEnvironment(entry.getOS(), entry.getWS(), entry.getArch(), entry.getNL());
 			newEntry.setFragment(entry.isFragment());
 			newEntry.setOptional(entry.isOptional());
@@ -366,7 +316,7 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 			newEntry.setURL(entry.getURL());
 			newFeature.addEntry(newEntry);
 		}
-		for(URLEntry site : feature.getDiscoverySites())
+		for (URLEntry site : feature.getDiscoverySites())
 			newFeature.addDiscoverySite(site.getAnnotation(), site.getURL());
 		newFeature.setApplication(feature.getApplication());
 		newFeature.setColocationAffinity(feature.getColocationAffinity());
@@ -389,8 +339,7 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		newFeature.setPrimary(feature.isPrimary());
 		newFeature.setProviderName(feature.getProviderName());
 		URLEntry site = feature.getUpdateSite();
-		if(site != null)
-		{
+		if (site != null) {
 			newFeature.setUpdateSiteLabel(site.getAnnotation());
 			newFeature.setUpdateSiteURL(site.getURL());
 		}
@@ -398,34 +347,29 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	}
 
 	@Override
-	protected ArrayList<IInstallableUnit> generateRootFileIUs(Feature feature, IPublisherResult result,
-			IPublisherInfo publisherInfo)
-	{
+	protected ArrayList<IInstallableUnit> generateRootFileIUs(Feature feature, IPublisherResult result, IPublisherInfo publisherInfo) {
 		ArrayList<IInstallableUnit> ius = new ArrayList<IInstallableUnit>();
 
-		Collection<FeatureRootAdvice> collection = publisherInfo.getAdvice(null, false, feature.getId(),
-				Version.parseVersion(feature.getVersion()), FeatureRootAdvice.class);
-		if(collection.isEmpty())
+		Collection<FeatureRootAdvice> collection = publisherInfo.getAdvice(null, false, feature.getId(), Version.parseVersion(feature.getVersion()),
+				FeatureRootAdvice.class);
+		if (collection.isEmpty())
 			return ius;
 
-		for(FeatureRootAdvice advice : collection)
-		{
+		for (FeatureRootAdvice advice : collection) {
 			String[] configs = advice.getConfigs();
-			for(int i = 0; i < configs.length; i++)
-			{
+			for (int i = 0; i < configs.length; i++) {
 				String config = configs[i];
 				ConfigAdvice configAdvice = advice.getConfigAdvice(config);
-				if(configAdvice == null)
+				if (configAdvice == null)
 					continue;
 
 				File[] files = configAdvice.getFiles();
-				if(files.length == 0)
+				if (files.length == 0)
 					continue;
 
-				IInstallableUnit iu = createFeatureRootFileIU(feature.getId(), feature.getVersion(), null,
-						configAdvice.getDescriptor());
+				IInstallableUnit iu = createFeatureRootFileIU(feature.getId(), feature.getVersion(), null, configAdvice.getDescriptor());
 				Collection<IArtifactKey> keys = iu.getArtifacts();
-				if(keys.isEmpty())
+				if (keys.isEmpty())
 					continue;
 
 				IArtifactKey artifactKey = keys.iterator().next();

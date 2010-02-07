@@ -21,42 +21,36 @@ import org.eclipse.equinox.p2.repository.IRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 
 /**
- * Action which processes a feature.xml, build.properties, and feature localization files and generates categories,
- * mirrors url, and referenced repositories for a p2 MDR. The process relies on IUs for the various features to have
- * already been generated.
+ * Action which processes a feature.xml, build.properties, and feature
+ * localization files and generates categories, mirrors url, and referenced
+ * repositories for a p2 MDR. The process relies on IUs for the various features
+ * to have already been generated.
  */
 @SuppressWarnings("restriction")
-public class SiteReferencesAction extends AbstractPublisherAction
-{
-	private final URLEntry[] m_urlEntries;
+public class SiteReferencesAction extends AbstractPublisherAction {
+	private final URLEntry[] urlEntries;
 
-	public SiteReferencesAction(URLEntry[] urlEntries)
-	{
-		m_urlEntries = urlEntries;
+	public SiteReferencesAction(URLEntry[] urlEntries) {
+		this.urlEntries = urlEntries;
 	}
 
 	@Override
-	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor)
-	{
+	public IStatus perform(IPublisherInfo publisherInfo, IPublisherResult results, IProgressMonitor monitor) {
 		// publish the top feature discovery sites as repository references
 		IMetadataRepository mdr = publisherInfo.getMetadataRepository();
-		for(URLEntry refSite : m_urlEntries)
+		for (URLEntry refSite : urlEntries)
 			generateSiteReference(refSite.getURL(), refSite.getAnnotation(), null, mdr);
 		return Status.OK_STATUS;
 	}
 
-	private void generateSiteReference(String location, String label, String featureId, IMetadataRepository metadataRepo)
-	{
-		if(metadataRepo == null)
+	private void generateSiteReference(String location, String label, String featureId, IMetadataRepository metadataRepo) {
+		if (metadataRepo == null)
 			return;
-		try
-		{
+		try {
 			URI associateLocation = new URI(location);
 			metadataRepo.addReference(associateLocation, label, IRepository.TYPE_METADATA, IRepository.ENABLED);
 			metadataRepo.addReference(associateLocation, label, IRepository.TYPE_ARTIFACT, IRepository.ENABLED);
-		}
-		catch(URISyntaxException e)
-		{
+		} catch (URISyntaxException e) {
 		}
 	}
 }

@@ -15,63 +15,52 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
- * Adapter Factory that converts: CSpec and CSpecDataNode to each other, and to Resolution and ResolutionDataNode
- * IResource to CSpec, or CSpecDataNode.
+ * Adapter Factory that converts: CSpec and CSpecDataNode to each other, and to
+ * Resolution and ResolutionDataNode IResource to CSpec, or CSpecDataNode.
  * 
  * @author Henrik Lindberg
  * 
  */
-public class CSpecAdapterFactory implements IAdapterFactory
-{
-	private static Class<?>[] s_adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class,
-			ResolutionDataNode.class };
+public class CSpecAdapterFactory implements IAdapterFactory {
+	private static Class<?>[] adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class, ResolutionDataNode.class };
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object adaptCSpec(CSpec cspec, Class adapterType)
-	{
-		if(adapterType.isAssignableFrom(CSpec.class))
+	public Object adaptCSpec(CSpec cspec, Class adapterType) {
+		if (adapterType.isAssignableFrom(CSpec.class))
 			return cspec; // duh
 
-		if(adapterType.isAssignableFrom(CSpecDataNode.class))
+		if (adapterType.isAssignableFrom(CSpecDataNode.class))
 			return new CSpecDataNode(cspec);
 
-		if(adapterType.isAssignableFrom(Resolution.class))
-			try
-			{
+		if (adapterType.isAssignableFrom(Resolution.class))
+			try {
 				return WorkspaceInfo.getResolution(cspec.getComponentIdentifier());
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				return null;
 			}
-		if(adapterType.isAssignableFrom(ResolutionDataNode.class))
-			try
-			{
+		if (adapterType.isAssignableFrom(ResolutionDataNode.class))
+			try {
 				return new ResolutionDataNode(WorkspaceInfo.getResolution(cspec.getComponentIdentifier()));
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				return null;
 			}
 		return null;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Object adaptableObject, Class adapterType)
-	{
-		if(adaptableObject instanceof CSpec)
-			return adaptCSpec((CSpec)adaptableObject, adapterType);
+	public Object getAdapter(Object adaptableObject, Class adapterType) {
+		if (adaptableObject instanceof CSpec)
+			return adaptCSpec((CSpec) adaptableObject, adapterType);
 
-		if(adaptableObject instanceof CSpecDataNode)
-			return adaptCSpec((CSpec)((CSpecDataNode)adaptableObject).getData(), adapterType);
+		if (adaptableObject instanceof CSpecDataNode)
+			return adaptCSpec((CSpec) ((CSpecDataNode) adaptableObject).getData(), adapterType);
 
 		// give up
 		return null;
 	}
 
-	public Class<?>[] getAdapterList()
-	{
-		return s_adapterList;
+	public Class<?>[] getAdapterList() {
+		return adapterList;
 	}
 
 }

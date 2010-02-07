@@ -24,24 +24,21 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MaterializerJob extends Job implements IJobInfo
-{
-	private final IMaterializer m_materializer;
+public class MaterializerJob extends Job implements IJobInfo {
+	private final IMaterializer materializer;
 
-	private final MaterializationContext m_context;
+	private final MaterializationContext context;
 
-	private final List<Resolution> m_resolutions;
+	private final List<Resolution> resolutions;
 
-	public MaterializerJob(String id, IMaterializer materializer, List<Resolution> resolutions,
-			MaterializationContext context)
-	{
+	public MaterializerJob(String id, IMaterializer materializer, List<Resolution> resolutions, MaterializationContext context) {
 		super(id + " materializer"); //$NON-NLS-1$
-		if(resolutions.size() < 1)
+		if (resolutions.size() < 1)
 			throw new IllegalArgumentException();
 
-		m_materializer = materializer;
-		m_context = context;
-		m_resolutions = resolutions;
+		this.materializer = materializer;
+		this.context = context;
+		this.resolutions = resolutions;
 
 		// Report using the standard job reporter.
 		//
@@ -51,29 +48,22 @@ public class MaterializerJob extends Job implements IJobInfo
 	}
 
 	@Override
-	public boolean belongsTo(Object family)
-	{
-		return m_context == family;
+	public boolean belongsTo(Object family) {
+		return context == family;
 	}
 
-	public String getOperationName()
-	{
-		Resolution lastResolution = m_resolutions.get(m_resolutions.size() - 1);
+	public String getOperationName() {
+		Resolution lastResolution = resolutions.get(resolutions.size() - 1);
 		return NLS.bind(Messages.Materialization_of_0, lastResolution.getComponentIdentifier().toString());
 	}
 
 	@Override
-	protected IStatus run(IProgressMonitor monitor)
-	{
-		try
-		{
-			m_materializer.materialize(m_resolutions, m_context, monitor);
-		}
-		catch(CoreException e)
-		{
-			m_context.addRequestStatus(m_resolutions.get(m_resolutions.size() - 1).getRequest(),
-					BuckminsterException.wrap(e).getStatus());
-			if(!m_context.isContinueOnError())
+	protected IStatus run(IProgressMonitor monitor) {
+		try {
+			materializer.materialize(resolutions, context, monitor);
+		} catch (CoreException e) {
+			context.addRequestStatus(resolutions.get(resolutions.size() - 1).getRequest(), BuckminsterException.wrap(e).getStatus());
+			if (!context.isContinueOnError())
 				return e.getStatus();
 		}
 		return Status.OK_STATUS;

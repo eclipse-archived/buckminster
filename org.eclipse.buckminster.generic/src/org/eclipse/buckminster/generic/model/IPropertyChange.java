@@ -10,8 +10,7 @@ package org.eclipse.buckminster.generic.model;
 
 import java.beans.PropertyChangeListener;
 
-public interface IPropertyChange
-{
+public interface IPropertyChange {
 	void addPropertyChangeListener(PropertyChangeListener listener);
 
 	void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);

@@ -23,214 +23,172 @@ import java.util.TimerTask;
 /**
  * @author thhal
  */
-public class TimedHashMap<K, V> implements Map<K, V>
-{
-	public interface EvictionPolicy<EK, EV>
-	{
+public class TimedHashMap<K, V> implements Map<K, V> {
+	public interface EvictionPolicy<EK, EV> {
 		void evict(Entry<EK, EV> entry);
 	}
 
-	final class TimedEntry extends TimerTask implements Map.Entry<K, V>
-	{
-		private final K m_key;
+	final class TimedEntry extends TimerTask implements Map.Entry<K, V> {
+		private final K key;
 
-		private V m_value;
+		private V value;
 
-		TimedEntry(K key, V value)
-		{
-			m_key = key;
-			m_value = value;
+		TimedEntry(K key, V value) {
+			this.key = key;
+			this.value = value;
 		}
 
-		public K getKey()
-		{
-			return m_key;
+		public K getKey() {
+			return key;
 		}
 
-		public V getValue()
-		{
-			return m_value;
+		public V getValue() {
+			return value;
 		}
 
 		@Override
-		public void run()
-		{
+		public void run() {
 			TimedEntry val = null;
-			synchronized(m_map)
-			{
-				val = m_map.remove(m_key);
+			synchronized (map) {
+				val = map.remove(key);
 			}
-			if(val != null && m_evictionPolicy != null)
-				m_evictionPolicy.evict(val);
+			if (val != null && evictionPolicy != null)
+				evictionPolicy.evict(val);
 		}
 
-		public V setValue(V value)
-		{
-			V old = m_value;
+		public V setValue(V value) {
+			V old = value;
 			this.remove();
-			m_value = value;
-			s_timer.schedule(this, m_keepAliveTime);
+			this.value = value;
+			timer.schedule(this, keepAliveTime);
 			return old;
 		}
 
-		void remove()
-		{
+		void remove() {
 			this.cancel();
-			if(m_evictionPolicy != null)
-				m_evictionPolicy.evict(this);
+			if (evictionPolicy != null)
+				evictionPolicy.evict(this);
 		}
 	}
 
-	private static final Timer s_timer = new Timer();
+	private static final Timer timer = new Timer();
 
-	private final long m_keepAliveTime;
+	private final long keepAliveTime;
 
-	private final EvictionPolicy<K, V> m_evictionPolicy;
+	private final EvictionPolicy<K, V> evictionPolicy;
 
-	private final HashMap<K, TimedEntry> m_map = new HashMap<K, TimedEntry>();
+	private final HashMap<K, TimedEntry> map = new HashMap<K, TimedEntry>();
 
-	public TimedHashMap(long keepAliveTime, EvictionPolicy<K, V> evictionPolicy)
-	{
-		m_keepAliveTime = keepAliveTime;
-		m_evictionPolicy = evictionPolicy;
+	public TimedHashMap(long keepAliveTime, EvictionPolicy<K, V> evictionPolicy) {
+		this.keepAliveTime = keepAliveTime;
+		this.evictionPolicy = evictionPolicy;
 	}
 
-	public void cancel(K key)
-	{
-		TimedEntry entry = m_map.get(key);
-		if(entry != null)
+	public void cancel(K key) {
+		TimedEntry entry = map.get(key);
+		if (entry != null)
 			entry.cancel();
 	}
 
-	public void clear()
-	{
-		synchronized(m_map)
-		{
-			for(TimedEntry entry : m_map.values())
+	public void clear() {
+		synchronized (map) {
+			for (TimedEntry entry : map.values())
 				entry.remove();
-			m_map.clear();
+			map.clear();
 		}
 	}
 
-	public boolean containsKey(Object key)
-	{
-		synchronized(m_map)
-		{
-			return m_map.containsKey(key);
+	public boolean containsKey(Object key) {
+		synchronized (map) {
+			return map.containsKey(key);
 		}
 	}
 
-	public boolean containsValue(Object value)
-	{
-		synchronized(m_map)
-		{
-			for(Entry<K, V> te : m_map.values())
-			{
+	public boolean containsValue(Object value) {
+		synchronized (map) {
+			for (Entry<K, V> te : map.values()) {
 				Object tv = te.getValue();
-				if(value == null)
-				{
-					if(tv == null)
+				if (value == null) {
+					if (tv == null)
 						return true;
-				}
-				else if(value.equals(tv))
+				} else if (value.equals(tv))
 					return true;
 			}
 		}
 		return false;
 	}
 
-	public Set<Entry<K, V>> entrySet()
-	{
-		final Iterator<TimedEntry> entries = m_map.values().iterator();
-		return new AbstractSet<Entry<K, V>>()
-		{
+	public Set<Entry<K, V>> entrySet() {
+		final Iterator<TimedEntry> entries = map.values().iterator();
+		return new AbstractSet<Entry<K, V>>() {
 			@Override
-			public Iterator<Entry<K, V>> iterator()
-			{
-				return new Iterator<Entry<K, V>>()
-				{
+			public Iterator<Entry<K, V>> iterator() {
+				return new Iterator<Entry<K, V>>() {
 
-					public boolean hasNext()
-					{
+					public boolean hasNext() {
 						return entries.hasNext();
 					}
 
-					public Entry<K, V> next()
-					{
+					public Entry<K, V> next() {
 						return entries.next();
 					}
 
-					public void remove()
-					{
+					public void remove() {
 						entries.remove();
 					}
 				};
 			}
 
 			@Override
-			public int size()
-			{
-				return m_map.size();
+			public int size() {
+				return map.size();
 			}
 		};
 	}
 
-	public V get(Object key)
-	{
-		synchronized(m_map)
-		{
-			Entry<K, V> te = m_map.get(key);
-			return te == null
-					? null
-					: te.getValue();
+	public V get(Object key) {
+		synchronized (map) {
+			Entry<K, V> te = map.get(key);
+			return te == null ? null : te.getValue();
 		}
 	}
 
-	public boolean isEmpty()
-	{
-		return m_map.isEmpty();
+	public boolean isEmpty() {
+		return map.isEmpty();
 	}
 
-	public Set<K> keySet()
-	{
-		return m_map.keySet();
+	public Set<K> keySet() {
+		return map.keySet();
 	}
 
-	public V put(K key, V value)
-	{
+	public V put(K key, V value) {
 		V oldVal;
 		TimedEntry entry = new TimedEntry(key, value);
-		synchronized(m_map)
-		{
-			TimedEntry oldEntry = m_map.get(key);
+		synchronized (map) {
+			TimedEntry oldEntry = map.get(key);
 
-			if(oldEntry != null)
-			{
+			if (oldEntry != null) {
 				oldVal = oldEntry.getValue();
 				oldEntry.remove();
-			}
-			else
+			} else
 				oldVal = null;
 
-			m_map.put(key, entry);
+			map.put(key, entry);
 		}
-		if(scheduleOnPut())
-			s_timer.schedule(entry, m_keepAliveTime);
+		if (scheduleOnPut())
+			timer.schedule(entry, keepAliveTime);
 		return oldVal;
 	}
 
-	public void putAll(Map<? extends K, ? extends V> t)
-	{
-		for(Entry<? extends K, ? extends V> entry : t.entrySet())
+	public void putAll(Map<? extends K, ? extends V> t) {
+		for (Entry<? extends K, ? extends V> entry : t.entrySet())
 			this.put(entry.getKey(), entry.getValue());
 	}
 
-	public V remove(Object key)
-	{
-		synchronized(m_map)
-		{
-			TimedEntry te = m_map.remove(key);
-			if(te == null)
+	public V remove(Object key) {
+		synchronized (map) {
+			TimedEntry te = map.remove(key);
+			if (te == null)
 				return null;
 			V oldVal = te.getValue();
 			te.remove();
@@ -238,55 +196,44 @@ public class TimedHashMap<K, V> implements Map<K, V>
 		}
 	}
 
-	public void schedule(K key)
-	{
-		TimedEntry entry = m_map.get(key);
-		if(entry != null)
-			s_timer.schedule(entry, m_keepAliveTime);
+	public void schedule(K key) {
+		TimedEntry entry = map.get(key);
+		if (entry != null)
+			timer.schedule(entry, keepAliveTime);
 	}
 
-	public boolean scheduleOnPut()
-	{
+	public boolean scheduleOnPut() {
 		return true;
 	}
 
-	public int size()
-	{
-		return m_map.size();
+	public int size() {
+		return map.size();
 	}
 
-	public Collection<V> values()
-	{
-		final Iterator<TimedEntry> entries = m_map.values().iterator();
-		return new AbstractCollection<V>()
-		{
+	public Collection<V> values() {
+		final Iterator<TimedEntry> entries = map.values().iterator();
+		return new AbstractCollection<V>() {
 			@Override
-			public Iterator<V> iterator()
-			{
-				return new Iterator<V>()
-				{
+			public Iterator<V> iterator() {
+				return new Iterator<V>() {
 
-					public boolean hasNext()
-					{
+					public boolean hasNext() {
 						return entries.hasNext();
 					}
 
-					public V next()
-					{
+					public V next() {
 						return entries.next().getValue();
 					}
 
-					public void remove()
-					{
+					public void remove() {
 						entries.remove();
 					}
 				};
 			}
 
 			@Override
-			public int size()
-			{
-				return m_map.size();
+			public int size() {
+				return map.size();
 			}
 		};
 	}

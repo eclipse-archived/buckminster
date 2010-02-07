@@ -19,26 +19,21 @@ import org.eclipse.buckminster.ui.dependency.visualizer.viewer.provider.IRelatio
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 
 /**
- * The UsageRelationshipProvider gathers all connections to {@link BOMNode}s that directly depend on the given
- * {@link BOMNode}.
+ * The UsageRelationshipProvider gathers all connections to {@link BOMNode}s
+ * that directly depend on the given {@link BOMNode}.
  * 
  * @author Johannes Utzig
  * 
  */
-public class UsageRelationshipProvider implements IRelationshipProvider
-{
+public class UsageRelationshipProvider implements IRelationshipProvider {
 
-	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root,
-			BOMNode currentSelection, Object[] connections)
-	{
+	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection, Object[] connections) {
 		HashMap<EntityConnectionData, ConnectionCategory> relationships = new HashMap<EntityConnectionData, ConnectionCategory>();
-		for(int i = 0; i < connections.length; i++)
-		{
+		for (int i = 0; i < connections.length; i++) {
 			Object o = connections[i];
-			if(o instanceof EntityConnectionData)
-			{
-				EntityConnectionData data = (EntityConnectionData)o;
-				if(data.dest == currentSelection)
+			if (o instanceof EntityConnectionData) {
+				EntityConnectionData data = (EntityConnectionData) o;
+				if (data.dest == currentSelection)
 					relationships.put(data, ConnectionCategory.USAGE);
 
 			}

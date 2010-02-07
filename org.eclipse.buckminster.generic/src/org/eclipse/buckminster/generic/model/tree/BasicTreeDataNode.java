@@ -19,37 +19,32 @@ import org.eclipse.buckminster.generic.model.IPropertyChange;
  * @author Henrik Lindberg
  * 
  */
-public class BasicTreeDataNode extends AbstractTreeDataNode
-{
-	private final Object m_data;
+public class BasicTreeDataNode extends AbstractTreeDataNode {
+	private final Object data;
 
-	public BasicTreeDataNode(Object data)
-	{
-		m_data = data;
-		if(data instanceof IPropertyChange)
-			((IPropertyChange)data).addPropertyChangeListener(this);
+	public BasicTreeDataNode(Object data) {
+		this.data = data;
+		if (data instanceof IPropertyChange)
+			((IPropertyChange) data).addPropertyChangeListener(this);
 	}
 
 	@Override
-	public void dispose()
-	{
-		if(m_data instanceof IPropertyChange)
-			((IPropertyChange)m_data).removePropertyChangeListener(this);
+	public void dispose() {
+		if (data instanceof IPropertyChange)
+			((IPropertyChange) data).removePropertyChangeListener(this);
 		super.dispose();
 	}
 
 	@Override
-	public Object getData()
-	{
-		return m_data;
+	public Object getData() {
+		return data;
 	}
 
 	/**
 	 * Returns the data object "toString()"
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getData().toString();
 	}
 }

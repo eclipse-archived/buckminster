@@ -9,8 +9,7 @@ import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 
-public interface IComponentQuery
-{
+public interface IComponentQuery {
 	List<? extends IAdvisorNode> getAdvisoryNodes();
 
 	URL getContextURL();

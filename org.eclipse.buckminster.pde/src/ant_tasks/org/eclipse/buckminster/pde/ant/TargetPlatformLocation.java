@@ -12,25 +12,22 @@ package org.eclipse.buckminster.pde.ant;
 import org.apache.tools.ant.BuildException;
 
 /**
- * Ant task that assings the location of the target platform to
- * a given property.
- *
+ * Ant task that assings the location of the target platform to a given
+ * property.
+ * 
  * @author Thomas Hallgren
  */
-public class TargetPlatformLocation extends TargetPlatformTask
-{
-	private String m_property;
-
-	public void setProperty(String property)
-	{
-		m_property = property;
-	}
+public class TargetPlatformLocation extends TargetPlatformTask {
+	private String property;
 
 	@Override
-	public void execute() throws BuildException
-	{
-		if(m_property == null)
-			throw missingAttribute("property");
-		this.getProject().setProperty(m_property, this.getTargetLocation().toOSString());
+	public void execute() throws BuildException {
+		if (property == null)
+			throw missingAttribute("property"); //$NON-NLS-1$
+		this.getProject().setProperty(property, this.getTargetLocation().toOSString());
+	}
+
+	public void setProperty(String property) {
+		this.property = property;
 	}
 }

@@ -28,7 +28,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * For creating folder resources that currently do not exist, along a given workspace path.
+ * For creating folder resources that currently do not exist, along a given
+ * workspace path.
  * <p>
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
@@ -38,49 +39,45 @@ import org.eclipse.osgi.util.NLS;
  * <pre>
  * ContainerGenerator gen = new ContainerGenerator(new Path(&quot;/A/B&quot;));
  * IContainer res = null;
- * try
- * {
+ * try {
  * 	res = gen.getContainer(monitor); // creates project A and folder B if required
- * }
- * catch(CoreException e)
- * {
+ * } catch (CoreException e) {
  * 	// handle failure
- * }
- * catch(OperationCanceledException e)
- * {
+ * } catch (OperationCanceledException e) {
  * 	// handle cancelation
  * }
  * </pre>
  * 
  * </p>
  */
-public class ContainerGenerator
-{
+public class ContainerGenerator {
 	private IPath containerFullPath;
 
 	private IContainer container;
 
 	/**
-	 * Creates a generator for the container resource (folder or project) at the given workspace path. Assumes the path
-	 * has already been validated.
+	 * Creates a generator for the container resource (folder or project) at the
+	 * given workspace path. Assumes the path has already been validated.
 	 * <p>
-	 * Call <code>getContainer</code> to create any missing resources along the path.
+	 * Call <code>getContainer</code> to create any missing resources along the
+	 * path.
 	 * </p>
 	 * 
 	 * @param containerPath
 	 *            the workspace path of the container
 	 */
-	public ContainerGenerator(IPath containerPath)
-	{
+	public ContainerGenerator(IPath containerPath) {
 		super();
 		this.containerFullPath = containerPath;
 	}
 
 	/**
-	 * Ensures that this generator's container resource exists. Creates any missing resource containers along the path;
-	 * does nothing if the container resource already exists.
+	 * Ensures that this generator's container resource exists. Creates any
+	 * missing resource containers along the path; does nothing if the container
+	 * resource already exists.
 	 * <p>
-	 * Note: This method should be called within a workspace modify operation since it may create resources.
+	 * Note: This method should be called within a workspace modify operation
+	 * since it may create resources.
 	 * </p>
 	 * 
 	 * @param monitor
@@ -91,49 +88,38 @@ public class ContainerGenerator
 	 * @exception OperationCanceledException
 	 *                if the operation is canceled
 	 */
-	public IContainer generateContainer(IProgressMonitor topMonitor) throws CoreException
-	{
-		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable()
-		{
-			public void run(IProgressMonitor monitor) throws CoreException
-			{
+	public IContainer generateContainer(IProgressMonitor topMonitor) throws CoreException {
+		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+			public void run(IProgressMonitor monitor) throws CoreException {
 				monitor.beginTask("IDEWorkbenchMessages.ContainerGenerator_progressMessage", 1000 * containerFullPath //$NON-NLS-1$
 						.segmentCount());
-				if(container != null)
+				if (container != null)
 					return;
 
 				// Does the container exist already?
 				IWorkspaceRoot root = getWorkspaceRoot();
-				container = (IContainer)root.findMember(containerFullPath);
-				if(container != null)
+				container = (IContainer) root.findMember(containerFullPath);
+				if (container != null)
 					return;
 
 				// Create the container for the given path
 				container = root;
-				for(int i = 0; i < containerFullPath.segmentCount(); i++)
-				{
+				for (int i = 0; i < containerFullPath.segmentCount(); i++) {
 					String currentSegment = containerFullPath.segment(i);
 					IResource resource = container.findMember(currentSegment);
-					if(resource != null)
-					{
-						if(resource.getType() == IResource.FILE)
-						{
+					if (resource != null) {
+						if (resource.getType() == IResource.FILE) {
 							String msg = NLS.bind("IDEWorkbenchMessages.ContainerGenerator_pathOccupied", resource //$NON-NLS-1$
 									.getFullPath().makeRelative());
 							throw new CoreException(new Status(IStatus.ERROR, PDEPlugin.getPluginId(), 1, msg, null));
 						}
-						container = (IContainer)resource;
+						container = (IContainer) resource;
 						MonitorUtils.worked(monitor, 1000);
-					}
-					else
-					{
-						if(i == 0)
-						{
+					} else {
+						if (i == 0) {
 							IProject projectHandle = createProjectHandle(root, currentSegment);
 							container = createProject(projectHandle, MonitorUtils.subMonitor(monitor, 1000));
-						}
-						else
-						{
+						} else {
 							IFolder folderHandle = createFolderHandle(container, currentSegment);
 							container = createFolder(folderHandle, MonitorUtils.subMonitor(monitor, 1000));
 						}
@@ -155,16 +141,16 @@ public class ContainerGenerator
 	 * @throws CoreException
 	 *             if the operation fails
 	 */
-	private IFolder createFolder(IFolder folderHandle, IProgressMonitor monitor) throws CoreException
-	{
+	private IFolder createFolder(IFolder folderHandle, IProgressMonitor monitor) throws CoreException {
 		folderHandle.create(false, true, monitor);
 		MonitorUtils.testCancelStatus(monitor);
 		return folderHandle;
 	}
 
 	/**
-	 * Creates a folder resource handle for the folder with the given name. This method does not create the folder
-	 * resource; this is the responsibility of <code>createFolder</code>.
+	 * Creates a folder resource handle for the folder with the given name. This
+	 * method does not create the folder resource; this is the responsibility of
+	 * <code>createFolder</code>.
 	 * 
 	 * @param container
 	 *            the resource container
@@ -172,8 +158,7 @@ public class ContainerGenerator
 	 *            the name of the folder
 	 * @return the new folder resource handle
 	 */
-	private IFolder createFolderHandle(IContainer resourceContainer, String folderName)
-	{
+	private IFolder createFolderHandle(IContainer resourceContainer, String folderName) {
 		return resourceContainer.getFolder(new Path(folderName));
 	}
 
@@ -190,17 +175,13 @@ public class ContainerGenerator
 	 * @exception OperationCanceledException
 	 *                if the operation is canceled
 	 */
-	private IProject createProject(IProject projectHandle, IProgressMonitor monitor) throws CoreException
-	{
-		try
-		{
+	private IProject createProject(IProject projectHandle, IProgressMonitor monitor) throws CoreException {
+		try {
 			monitor.beginTask("", 2000);//$NON-NLS-1$
 
 			projectHandle.create(MonitorUtils.subMonitor(monitor, 1000));
 			projectHandle.open(MonitorUtils.subMonitor(monitor, 1000));
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 
@@ -208,8 +189,9 @@ public class ContainerGenerator
 	}
 
 	/**
-	 * Creates a project resource handle for the project with the given name. This method does not create the project
-	 * resource; this is the responsibility of <code>createProject</code>.
+	 * Creates a project resource handle for the project with the given name.
+	 * This method does not create the project resource; this is the
+	 * responsibility of <code>createProject</code>.
 	 * 
 	 * @param root
 	 *            the workspace root resource
@@ -217,8 +199,7 @@ public class ContainerGenerator
 	 *            the name of the project
 	 * @return the new project resource handle
 	 */
-	private IProject createProjectHandle(IWorkspaceRoot root, String projectName)
-	{
+	private IProject createProjectHandle(IWorkspaceRoot root, String projectName) {
 		return root.getProject(projectName);
 	}
 
@@ -227,8 +208,7 @@ public class ContainerGenerator
 	 * 
 	 * @return the workspace root resource handle
 	 */
-	private IWorkspaceRoot getWorkspaceRoot()
-	{
+	private IWorkspaceRoot getWorkspaceRoot() {
 		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 }

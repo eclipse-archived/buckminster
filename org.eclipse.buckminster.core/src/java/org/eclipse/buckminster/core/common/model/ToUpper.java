@@ -13,25 +13,21 @@ package org.eclipse.buckminster.core.common.model;
 import java.util.Map;
 
 /**
- * The ToUpper class will translate all lower case letters in its source to upper case.
+ * The ToUpper class will translate all lower case letters in its source to
+ * upper case.
  * 
  * @author Thomas Hallgren
  */
-public class ToUpper extends ValueHolderFilter
-{
+public class ToUpper extends ValueHolderFilter {
 	public static final String TAG = "toUpper"; //$NON-NLS-1$
 
 	@Override
-	public String checkedGetValue(Map<String, ? extends Object> props, int recursionGuard)
-	{
+	public String checkedGetValue(Map<String, ? extends Object> props, int recursionGuard) {
 		String resolved = this.checkedGetSourceValue(props, recursionGuard);
-		return (resolved == null || NO_VALUE.equals(resolved))
-				? NO_VALUE
-				: resolved.toUpperCase();
+		return (resolved == null || NO_VALUE.equals(resolved)) ? NO_VALUE : resolved.toUpperCase();
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 }

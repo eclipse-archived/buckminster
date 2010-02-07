@@ -13,13 +13,12 @@ import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * An instance of this class represents a branch or a tag in a Source Code Control System such as CVS, Subversion, or
- * Perforce.
+ * An instance of this class represents a branch or a tag in a Source Code
+ * Control System such as CVS, Subversion, or Perforce.
  * 
  * @author Thomas Hallgren
  */
-public abstract class VersionSelector
-{
+public abstract class VersionSelector {
 	/**
 	 * The name of the main (also know as default) branch.
 	 */
@@ -40,8 +39,7 @@ public abstract class VersionSelector
 	 *            string representation of the branch
 	 * @return A BranchOrTag instance that reflects a branch
 	 */
-	public static VersionSelector branch(String string)
-	{
+	public static VersionSelector branch(String string) {
 		return fromString(string, false);
 	}
 
@@ -52,28 +50,25 @@ public abstract class VersionSelector
 	 *            The comma separated string. Can be <code>null</code>
 	 * @return The path. It may be empty but it is never <code>null</code>.
 	 */
-	public static VersionSelector[] fromPath(String string)
-	{
+	public static VersionSelector[] fromPath(String string) {
 		String[] strings = TextUtils.split(string, ","); //$NON-NLS-1$
 		int idx = strings.length;
-		if(idx == 0)
+		if (idx == 0)
 			return EMPTY_PATH;
 
 		VersionSelector[] path = new VersionSelector[idx];
-		while(--idx >= 0)
+		while (--idx >= 0)
 			path[idx] = fromString(strings[idx]);
 		return path;
 	}
 
 	/**
-	 * Create an instance from a String. A string starting with &quot;/&quot; is considered a Tag. All other strings are
-	 * considered to be a Branch.
+	 * Create an instance from a String. A string starting with &quot;/&quot; is
+	 * considered a Tag. All other strings are considered to be a Branch.
 	 */
-	public static VersionSelector fromString(String string)
-	{
+	public static VersionSelector fromString(String string) {
 		boolean isTag = false;
-		if(string != null && string.length() > 0 && string.charAt(0) == '/')
-		{
+		if (string != null && string.length() > 0 && string.charAt(0) == '/') {
 			string = string.substring(1);
 			isTag = true;
 		}
@@ -81,8 +76,9 @@ public abstract class VersionSelector
 	}
 
 	/**
-	 * Returns the index of <code>branchOrTag</code> in the array <code>path</code> or <code>-1</code> if
-	 * <code>branchOrTag</code> is not equal to any of the <code>path</code> elements. The method will return
+	 * Returns the index of <code>branchOrTag</code> in the array
+	 * <code>path</code> or <code>-1</code> if <code>branchOrTag</code> is not
+	 * equal to any of the <code>path</code> elements. The method will return
 	 * <code>-1</code> if any of the arguments is <code>null</code>.
 	 * 
 	 * @param path
@@ -91,21 +87,17 @@ public abstract class VersionSelector
 	 *            The element to find
 	 * @return The index of the found element or <code>-1</code>
 	 */
-	public static int indexOf(VersionSelector[] path, VersionSelector branchOrTag)
-	{
-		if(path == null)
+	public static int indexOf(VersionSelector[] path, VersionSelector branchOrTag) {
+		if (path == null)
 			return -1;
 
 		int idx = path.length;
-		while(--idx >= 0)
-		{
+		while (--idx >= 0) {
 			VersionSelector pathEntry = path[idx];
-			if(branchOrTag == null)
-			{
-				if(pathEntry.isDefault())
+			if (branchOrTag == null) {
+				if (pathEntry.isDefault())
 					break;
-			}
-			else if(branchOrTag.equals(path[idx]))
+			} else if (branchOrTag.equals(path[idx]))
 				break;
 		}
 		return idx;
@@ -118,8 +110,7 @@ public abstract class VersionSelector
 	 *            string representation of the tag
 	 * @return A BranchOrTag instance that reflects a tag
 	 */
-	public static VersionSelector tag(String string)
-	{
+	public static VersionSelector tag(String string) {
 		return fromString(string, true);
 	}
 
@@ -128,68 +119,55 @@ public abstract class VersionSelector
 	 * 
 	 * @param path
 	 *            The array. Can be <code>null</code> or empty.
-	 * @return The comma separated string or <code>null</code> if the array was <code>null</code> or empty.
+	 * @return The comma separated string or <code>null</code> if the array was
+	 *         <code>null</code> or empty.
 	 */
-	public static String toString(VersionSelector[] path)
-	{
-		int top = (path == null)
-				? 0
-				: path.length;
-		if(top == 0)
+	public static String toString(VersionSelector[] path) {
+		int top = (path == null) ? 0 : path.length;
+		if (top == 0)
 			return null;
 
 		VersionSelector first = path[0];
-		if(top == 1)
+		if (top == 1)
 			return first.toString();
 
 		StringBuilder bld = new StringBuilder();
 		first.toString(bld);
-		for(int idx = 1; idx < top; ++idx)
-		{
+		for (int idx = 1; idx < top; ++idx) {
 			bld.append(',');
 			path[idx].toString(bld);
 		}
 		return bld.toString();
 	}
 
-	private static VersionSelector fromString(String string, boolean isTag)
-	{
-		if(string != null)
-		{
+	private static VersionSelector fromString(String string, boolean isTag) {
+		if (string != null) {
 			int top = string.length();
-			for(int idx = 0; idx < top; ++idx)
-			{
+			for (int idx = 0; idx < top; ++idx) {
 				char c = string.charAt(idx);
-				if(c == '/')
-					throw new IllegalArgumentException(
-							Messages.The_slash_character_only_legal_at_first_position_of_branch_tag_qualifier);
+				if (c == '/')
+					throw new IllegalArgumentException(Messages.The_slash_character_only_legal_at_first_position_of_branch_tag_qualifier);
 
-				if(c == ',' || Character.isWhitespace(c) || Character.isISOControl(c))
-					throw new IllegalArgumentException(NLS.bind(
-							Messages.The_0_character_is_illegal_in_branch_tag_qualifier, Character.valueOf(c)));
+				if (c == ',' || Character.isWhitespace(c) || Character.isISOControl(c))
+					throw new IllegalArgumentException(NLS.bind(Messages.The_0_character_is_illegal_in_branch_tag_qualifier, Character.valueOf(c)));
 			}
-			if(top > 0)
-				return isTag
-						? new Tag(string)
-						: new Branch(string);
+			if (top > 0)
+				return isTag ? new Tag(string) : new Branch(string);
 		}
 		throw new IllegalArgumentException(Messages.A_branch_tag_qualifier_cannot_be_empty);
 	}
 
-	private final String m_name;
+	private final String name;
 
-	VersionSelector(String name)
-	{
-		m_name = name;
+	VersionSelector(String name) {
+		this.name = name;
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		if(o instanceof VersionSelector)
-		{
-			VersionSelector that = (VersionSelector)o;
-			return getType() == that.getType() && m_name.equals(that.m_name);
+	public boolean equals(Object o) {
+		if (o instanceof VersionSelector) {
+			VersionSelector that = (VersionSelector) o;
+			return getType() == that.getType() && name.equals(that.name);
 		}
 		return false;
 	}
@@ -199,9 +177,8 @@ public abstract class VersionSelector
 	 * 
 	 * @return The name of the qualifier
 	 */
-	public String getName()
-	{
-		return m_name;
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -212,9 +189,8 @@ public abstract class VersionSelector
 	public abstract int getType();
 
 	@Override
-	public int hashCode()
-	{
-		return (m_name.hashCode() << 1) | getType();
+	public int hashCode() {
+		return (name.hashCode() << 1) | getType();
 	}
 
 	/**
@@ -230,8 +206,7 @@ public abstract class VersionSelector
 	 * @return The string form
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder bld = new StringBuilder();
 		toString(bld);
 		return bld.toString();
@@ -243,27 +218,27 @@ public abstract class VersionSelector
 	 * @param bld
 	 *            The buffer that will receive the string form of the instance
 	 */
-	public void toString(StringBuilder bld)
-	{
-		bld.append(m_name);
+	public void toString(StringBuilder bld) {
+		bld.append(name);
 	}
 
 	/**
-	 * Returns the verbose string form of the instance. The verbose form will be &quot;Branch: &lt;name&gt;&quot; or
-	 * &quot;Tag: &lt;name&gt;&quot;. of the instance.
+	 * Returns the verbose string form of the instance. The verbose form will be
+	 * &quot;Branch: &lt;name&gt;&quot; or &quot;Tag: &lt;name&gt;&quot;. of the
+	 * instance.
 	 * 
 	 * @return a verbose string
 	 */
-	public String viewNameToString()
-	{
+	public String viewNameToString() {
 		StringBuilder bld = new StringBuilder();
 		viewNameToString(bld);
 		return bld.toString();
 	}
 
 	/**
-	 * Appends the verbose string form of the instance onto the <code>bld</code> buffer. The verbose form will be
-	 * &quot;Branch: &lt;name&gt;&quot; or &quot;Tag: &lt;name&gt;&quot;.
+	 * Appends the verbose string form of the instance onto the <code>bld</code>
+	 * buffer. The verbose form will be &quot;Branch: &lt;name&gt;&quot; or
+	 * &quot;Tag: &lt;name&gt;&quot;.
 	 * 
 	 * @param bld
 	 *            The buffer that will receive the verbose string representation
@@ -271,70 +246,58 @@ public abstract class VersionSelector
 	public abstract void viewNameToString(StringBuilder bld);
 }
 
-class Branch extends VersionSelector
-{
-	Branch(String name)
-	{
+class Branch extends VersionSelector {
+	Branch(String name) {
 		super(name);
 	}
 
 	@Override
-	public int getType()
-	{
+	public int getType() {
 		return BRANCH;
 	}
 
 	@Override
-	public boolean isDefault()
-	{
+	public boolean isDefault() {
 		return getName().equals(DEFAULT_BRANCH);
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return getName();
 	}
 
 	@Override
-	public void viewNameToString(StringBuilder bld)
-	{
+	public void viewNameToString(StringBuilder bld) {
 		bld.append(Messages.Branch);
 		bld.append(getName());
 	}
 }
 
-class Tag extends VersionSelector
-{
-	Tag(String name)
-	{
+class Tag extends VersionSelector {
+	Tag(String name) {
 		super(name);
 	}
 
 	@Override
-	public int getType()
-	{
+	public int getType() {
 		return TAG;
 	}
 
 	@Override
-	public boolean isDefault()
-	{
+	public boolean isDefault() {
 		// There is no default tag
 		//
 		return false;
 	}
 
 	@Override
-	public void toString(StringBuilder bld)
-	{
+	public void toString(StringBuilder bld) {
 		bld.append('/');
 		super.toString(bld);
 	}
 
 	@Override
-	public void viewNameToString(StringBuilder bld)
-	{
+	public void viewNameToString(StringBuilder bld) {
 		bld.append(Messages.Tag);
 		bld.append(getName());
 	}

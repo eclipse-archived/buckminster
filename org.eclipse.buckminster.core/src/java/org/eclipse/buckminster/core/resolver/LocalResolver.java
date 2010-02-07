@@ -72,7 +72,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * The LocalResolver will attempt to resolve the query using locally available resources. This includes:
+ * The LocalResolver will attempt to resolve the query using locally available
+ * resources. This includes:
  * <ul>
  * <li>Projects in the Eclipse Workspace</li>
  * <li>Materializations previously done by Buckminster using this workspace</li>
@@ -82,75 +83,64 @@ import org.eclipse.osgi.util.NLS;
  * @author Thomas Hallgren
  */
 @SuppressWarnings({ "serial" })
-public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implements IResolver
-{
+public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implements IResolver {
 	public static final Provider INSTALLED_BUNDLE_PROVIDER;
 
 	public static final Provider INSTALLED_FEATURE_PROVIDER;
-	static
-	{
+	static {
 		Map<String, String> props = new HashMap<String, String>(2);
 		props.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
 		props.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
 		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", null, //$NON-NLS-1$
 				new BidirectionalTransformer[0]);
-		INSTALLED_BUNDLE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
-				new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter, new Format("plugin/${" //$NON-NLS-1$
+		INSTALLED_BUNDLE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM, new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter,
+				new Format("plugin/${" //$NON-NLS-1$
 						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, props, null, null); //$NON-NLS-1$
 
-		INSTALLED_FEATURE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM,
-				new String[] { IComponentType.ECLIPSE_FEATURE }, pdeConverter, new Format("feature/${" //$NON-NLS-1$
+		INSTALLED_FEATURE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM, new String[] { IComponentType.ECLIPSE_FEATURE }, pdeConverter,
+				new Format("feature/${" //$NON-NLS-1$
 						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, props, null, null); //$NON-NLS-1$
 	}
 
-	public static Resolution fromPath(IPath productPath, String name) throws CoreException
-	{
+	public static Resolution fromPath(IPath productPath, String name) throws CoreException {
 		return fromPath(productPath, name, null, new NullProgressMonitor());
 	}
 
-	public static Resolution fromPath(IPath productPath, String name, String givenCtypeId, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public static Resolution fromPath(IPath productPath, String name, String givenCtypeId, IProgressMonitor monitor) throws CoreException {
 		Set<String> possibleTypes;
-		if(givenCtypeId != null)
+		if (givenCtypeId != null)
 			possibleTypes = Collections.singleton(givenCtypeId);
-		else
-		{
+		else {
 			possibleTypes = new HashSet<String>();
-			for(IComponentType ctype : AbstractComponentType.getComponentTypes())
-			{
-				if(ctype.isMetaFileBased() && ctype.hasAllRequiredMetaFiles(productPath))
+			for (IComponentType ctype : AbstractComponentType.getComponentTypes()) {
+				if (ctype.isMetaFileBased() && ctype.hasAllRequiredMetaFiles(productPath))
 					possibleTypes.add(ctype.getId());
 			}
-			if(possibleTypes.isEmpty())
+			if (possibleTypes.isEmpty())
 				possibleTypes.add(IComponentType.UNKNOWN);
 		}
 
 		Format repoURI;
-		try
-		{
+		try {
 			String repoStr = productPath.toFile().toURI().toURL().toString();
 			int nameIndex = repoStr.lastIndexOf(name);
-			if(nameIndex > 0)
-			{
+			if (nameIndex > 0) {
 				String parameterized = repoStr.substring(0, nameIndex);
 				parameterized += "{0}"; //$NON-NLS-1$
 				nameIndex += name.length();
-				if(repoStr.length() > nameIndex)
+				if (repoStr.length() > nameIndex)
 					parameterized += repoStr.substring(nameIndex, repoStr.length());
 
 				repoURI = new Format(parameterized);
 				repoURI.addValueHolder(new PropertyRef<String>(String.class, KeyConstants.COMPONENT_NAME));
-			}
-			else
+			} else
 				repoURI = new Format(repoStr);
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 
-		// We might have more then one possible type. Select the one that produces the
+		// We might have more then one possible type. Select the one that
+		// produces the
 		// largest CSPEC (should be fast considering the IPath is local
 		//
 		ComponentRequest rq = new ComponentRequest(name, givenCtypeId, null);
@@ -160,332 +150,269 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
 		NodeQuery nq = new NodeQuery(context, rq, null);
-		Provider provider = new Provider(null, IReaderType.LOCAL,
-				possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, null, null, null, null,
-				null);
+		Provider provider = new Provider(null, IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, null,
+				null, null, null, null);
 		monitor.beginTask(null, possibleTypes.size() * 100);
 		int largestCSpecSize = -1;
 		Resolution bestMatch = null;
-		for(String ctypeId : possibleTypes)
-		{
+		for (String ctypeId : possibleTypes) {
 			IComponentType ctype = CorePlugin.getDefault().getComponentType(ctypeId);
 			ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
 
-			try
-			{
+			try {
 				BOMNode node = ctype.getResolution(pm, MonitorUtils.subMonitor(monitor, 100));
 				Resolution resolution = node.getResolution();
-				if(resolution == null)
+				if (resolution == null)
 					continue;
 
 				int imageSize = resolution.getCSpec().getImage().length;
-				if(bestMatch == null || largestCSpecSize < imageSize)
-				{
+				if (bestMatch == null || largestCSpecSize < imageSize) {
 					largestCSpecSize = imageSize;
 					bestMatch = resolution;
 				}
-			}
-			catch(MissingCSpecSourceException e)
-			{
+			} catch (MissingCSpecSourceException e) {
 				continue;
 			}
 		}
-		if(bestMatch == null)
+		if (bestMatch == null)
 			throw new MissingComponentException(rq.toString());
 		return bestMatch;
 	}
 
-	public static Resolution fromPath(NodeQuery query, IPath path, Resolution oldInfo) throws CoreException
-	{
+	public static Resolution fromPath(NodeQuery query, IPath path, Resolution oldInfo) throws CoreException {
 		ComponentRequest request = query.getComponentRequest();
-		Resolution resolution = fromPath(path, request.getName(), request.getComponentTypeID(),
-				new NullProgressMonitor());
+		Resolution resolution = fromPath(path, request.getName(), request.getComponentTypeID(), new NullProgressMonitor());
 
 		// Retain old component info if present. We only wanted the cspec
 		// changes
 		//
-		if(oldInfo != null)
+		if (oldInfo != null)
 			resolution = new Resolution(resolution.getCSpec(), oldInfo);
 		return resolution;
 	}
 
-	private final ResolutionContext m_context;
+	private final ResolutionContext context;
 
-	private boolean m_recursiveResolve = true;
+	private boolean recursiveResolve = true;
 
-	public LocalResolver(ComponentQuery componentQuery) throws CoreException
-	{
+	public LocalResolver(ComponentQuery componentQuery) throws CoreException {
 		this(new ResolutionContext(componentQuery));
 	}
 
-	public LocalResolver(ResolutionContext context) throws CoreException
-	{
-		m_context = context;
+	public LocalResolver(ResolutionContext context) throws CoreException {
+		this.context = context;
 	}
 
-	public ResolutionContext getContext()
-	{
-		return m_context;
+	public ResolutionContext getContext() {
+		return context;
 	}
 
-	public boolean isRecursiveResolve()
-	{
-		return m_recursiveResolve;
+	public boolean isRecursiveResolve() {
+		return recursiveResolve;
 	}
 
-	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args)
-	{
-		return m_context.logDecision(request, decisionType, args);
+	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
+		return context.logDecision(request, decisionType, args);
 	}
 
-	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
-	{
-		return m_context.logDecision(decisionType, args);
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
+		return context.logDecision(decisionType, args);
 	}
 
-	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException
-	{
+	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-		try
-		{
-			NodeQuery query = m_context.getNodeQuery(request);
-			ResolverNode node = deepResolve(m_context, new HashMap<ComponentName, ResolverNode>(), new UnresolvedNode(
-					query.getQualifiedDependency()), null, monitor);
+		try {
+			NodeQuery query = context.getNodeQuery(request);
+			ResolverNode node = deepResolve(context, new HashMap<ComponentName, ResolverNode>(), new UnresolvedNode(query.getQualifiedDependency()),
+					null, monitor);
 			return createBillOfMaterials(node);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	public BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException
-	{
-		return resolve(m_context.getComponentQuery().getExpandedRootRequest(m_context), monitor);
+	public BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException {
+		return resolve(context.getComponentQuery().getExpandedRootRequest(context), monitor);
 	}
 
-	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException
-	{
-		if(bom.isFullyResolved(m_context))
-		{
+	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException {
+		if (bom.isFullyResolved(context)) {
 			MonitorUtils.complete(monitor);
 			return bom;
 		}
 
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
-		try
-		{
+		try {
 			ComponentQuery cquery = bom.getQuery();
-			ResolutionContext context = (cquery == null || cquery.equals(m_context.getComponentQuery()))
-					? m_context
-					: new ResolutionContext(cquery, m_context);
-			BillOfMaterials newBom = createBillOfMaterials(deepResolve(context,
-					new HashMap<ComponentName, ResolverNode>(), bom, bom.getTagInfo(), monitor));
-			if(!newBom.contentEqual(bom))
+			ResolutionContext ctx = (cquery == null || cquery.equals(context.getComponentQuery())) ? context : new ResolutionContext(cquery, context);
+			BillOfMaterials newBom = createBillOfMaterials(deepResolve(ctx, new HashMap<ComponentName, ResolverNode>(), bom, bom.getTagInfo(),
+					monitor));
+			if (!newBom.contentEqual(bom))
 				bom = newBom;
 			return bom;
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	public void setRecursiveResolve(boolean flag)
-	{
-		m_recursiveResolve = flag;
+	public void setRecursiveResolve(boolean flag) {
+		recursiveResolve = flag;
 	}
 
-	protected BOMNode localResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException
-	{
+	protected BOMNode localResolve(NodeQuery query, IProgressMonitor monitor) throws CoreException {
 		boolean isSilent = query.getResolutionContext().isSilentStatus();
 		Logger log = Buckminster.getLogger();
 		ComponentRequest request = query.getComponentRequest();
 		IProject existingProject = null;
-		if(query.useMaterialization() || query.useWorkspace())
-		{
-			if(!isSilent)
+		if (query.useMaterialization() || query.useWorkspace()) {
+			if (!isSilent)
 				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "materialized"); //$NON-NLS-1$
 
-			try
-			{
+			try {
 				Materialization mat = WorkspaceInfo.getMaterialization(request);
-				if(mat == null)
-				{
-					if(!isSilent)
+				if (mat == null) {
+					if (!isSilent)
 						log.debug("No materialization found for %s", request); //$NON-NLS-1$
-				}
-				else
-				{
-					if(!isSilent)
+				} else {
+					if (!isSilent)
 						log.debug("Materialization found for %s", request); //$NON-NLS-1$
 					existingProject = WorkspaceInfo.getProject(mat);
-					if(existingProject == null)
-					{
-						if(!isSilent)
+					if (existingProject == null) {
+						if (!isSilent)
 							log.debug("No workspace project found at %s", mat.getComponentLocation()); //$NON-NLS-1$
 
 						Resolution res = fromPath(query, mat.getComponentLocation(), null);
-						if(!isSilent)
+						if (!isSilent)
 							query.logDecision(ResolverDecisionType.MATCH_FOUND, mat.getComponentIdentifier());
 
 						Filter[] failingFilter = new Filter[1];
-						if(res.isFilterMatchFor(query, failingFilter))
+						if (res.isFilterMatchFor(query, failingFilter))
 
 						{
 							MonitorUtils.complete(monitor);
 							return new ResolvedNode(query, res);
 						}
-						if(!isSilent)
-							query.logDecision(ResolverDecisionType.MATCH_REJECTED, mat.getComponentIdentifier(),
-									NLS.bind(Messages.Filter_0_does_not_match_the_current_property_set,
-											failingFilter[0]));
-					}
-					else if(!isSilent)
+						if (!isSilent)
+							query.logDecision(ResolverDecisionType.MATCH_REJECTED, mat.getComponentIdentifier(), NLS.bind(
+									Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
+					} else if (!isSilent)
 						log.debug("Workspace project found at %s", mat.getComponentLocation()); //$NON-NLS-1$
 				}
+			} catch (MissingComponentException e) {
 			}
-			catch(MissingComponentException e)
-			{
-			}
-		}
-		else if(!isSilent)
+		} else if (!isSilent)
 			query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, IReaderType.LOCAL, "materialized", //$NON-NLS-1$
 					Messages.materializations_disabled_in_query);
 
 		// If we get to this point, we didn't find any existing resolution that
 		// could be used.
 		//
-		if(query.useWorkspace())
-		{
+		if (query.useWorkspace()) {
 			// Generate the resolution from a project in the workspace
 			//
-			if(existingProject == null)
-			{
-				if(!isSilent)
+			if (existingProject == null) {
+				if (!isSilent)
 					query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "workspace"); //$NON-NLS-1$
 				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-				try
-				{
+				try {
 					existingProject = wsRoot.getProject(request.getProjectName());
-				}
-				catch(IllegalArgumentException e)
-				{
+				} catch (IllegalArgumentException e) {
 					// Query did not produce a name that is valid for a project
 				}
 			}
-			if(existingProject != null && existingProject.isOpen())
-			{
-				if(!isSilent)
+			if (existingProject != null && existingProject.isOpen()) {
+				if (!isSilent)
 					log.debug("Found workspace project for %s", request.getProjectName()); //$NON-NLS-1$
 				Resolution resolution = fromPath(query, existingProject.getLocation(), null);
 				ComponentIdentifier ci = resolution.getComponentIdentifier();
-				if(request.designates(ci))
-				{
-					if(!isSilent)
+				if (request.designates(ci)) {
+					if (!isSilent)
 						query.logDecision(ResolverDecisionType.MATCH_FOUND, ci);
 					Filter[] failingFilter = new Filter[1];
-					if(resolution.isFilterMatchFor(query, failingFilter))
-					{
+					if (resolution.isFilterMatchFor(query, failingFilter)) {
 						// Make sure we have a materialization for the project.
 						//
 						StorageManager sm = StorageManager.getDefault();
-						Materialization mat = new Materialization(existingProject.getLocation().addTrailingSeparator(),
-								ci);
+						Materialization mat = new Materialization(existingProject.getLocation().addTrailingSeparator(), ci);
 						mat.store(sm);
 						resolution.store(sm);
 						MonitorUtils.complete(monitor);
 						return new ResolvedNode(query, resolution);
 					}
-					if(!isSilent)
+					if (!isSilent)
 						query.logDecision(ResolverDecisionType.MATCH_REJECTED, ci, NLS.bind(
 								Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
-				}
-				else if(!isSilent)
+				} else if (!isSilent)
 					log.debug("Workspace project for %s is not designated by %s", request.getProjectName(), request); //$NON-NLS-1$
-			}
-			else if(!isSilent)
+			} else if (!isSilent)
 				log.debug("No open workspace project found that corresponds to %s", request); //$NON-NLS-1$
-		}
-		else if(!isSilent)
+		} else if (!isSilent)
 			query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, IReaderType.LOCAL, "workspace", //$NON-NLS-1$
 					Messages.workspace_disable_in_query);
 
-		if(query.useTargetPlatform())
-		{
-			if(!isSilent)
+		if (query.useTargetPlatform()) {
+			if (!isSilent)
 				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "target"); //$NON-NLS-1$
 			// Generate the resolution from the target platform
 			//
 			Provider provider;
 			String ctypeID = request.getComponentTypeID();
-			if(IComponentType.OSGI_BUNDLE.equals(ctypeID))
+			if (IComponentType.OSGI_BUNDLE.equals(ctypeID))
 				provider = INSTALLED_BUNDLE_PROVIDER;
-			else if(IComponentType.ECLIPSE_FEATURE.equals(ctypeID))
+			else if (IComponentType.ECLIPSE_FEATURE.equals(ctypeID))
 				provider = INSTALLED_FEATURE_PROVIDER;
-			else
-			{
+			else {
 				query.logDecision(ResolverDecisionType.COMPONENT_TYPE_MISMATCH, ctypeID);
 				return null;
 			}
 
 			MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null); //$NON-NLS-1$
 			ProviderMatch match = provider.findMatch(query, problemCollector, new NullProgressMonitor());
-			if(match == null)
+			if (match == null)
 				// The reason will have been logged already
 				return null;
 
 			monitor.beginTask(null, 30);
-			try
-			{
-				IComponentReader[] reader = new IComponentReader[] { match.getReader(MonitorUtils.subMonitor(monitor,
-						10)) };
-				BOMNode node = match.getComponentType().getResolutionBuilder(reader[0],
-						MonitorUtils.subMonitor(monitor, 10)).build(reader, false, MonitorUtils.subMonitor(monitor, 10));
+			try {
+				IComponentReader[] reader = new IComponentReader[] { match.getReader(MonitorUtils.subMonitor(monitor, 10)) };
+				BOMNode node = match.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10)).build(reader, false,
+						MonitorUtils.subMonitor(monitor, 10));
 				IOUtils.close(reader[0]);
 
 				Resolution res = node.getResolution();
 				Filter[] failingFilter = new Filter[1];
-				if(res.isFilterMatchFor(query, failingFilter))
-				{
-					if(!isSilent)
+				if (res.isFilterMatchFor(query, failingFilter)) {
+					if (!isSilent)
 						query.logDecision(ResolverDecisionType.MATCH_FOUND, res.getComponentIdentifier());
 					res.store(StorageManager.getDefault());
 					return node;
 				}
 				query.logDecision(ResolverDecisionType.FILTER_MISMATCH, failingFilter[0]);
 				return null;
-			}
-			finally
-			{
+			} finally {
 				monitor.done();
 			}
-		}
-		else if(!isSilent)
+		} else if (!isSilent)
 			query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, IReaderType.LOCAL, "target", //$NON-NLS-1$
 					Messages.target_platform_disabled_in_query);
 
 		return null;
 	}
 
-	BillOfMaterials createBillOfMaterials(ResolverNode topNode) throws CoreException
-	{
+	BillOfMaterials createBillOfMaterials(ResolverNode topNode) throws CoreException {
 		HashMap<UUID, BOMNode> nodeMap = new HashMap<UUID, BOMNode>();
 		Stack<Resolution> circularDepTrap = new Stack<Resolution>();
 		BOMNode node = topNode.collectNodes(nodeMap, circularDepTrap, true);
-		if(node == null)
+		if (node == null)
 			node = new UnresolvedNode(topNode.getQuery().getQualifiedDependency());
 		return BillOfMaterials.create(node, getContext().getComponentQuery());
 	}
 
-	ResolverNode createResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
-	{
-		return new ResolverNode(context.getNodeQuery(qDep), requestorInfo);
+	ResolverNode createResolverNode(ResolutionContext ctx, QualifiedDependency qDep, String requestorInfo) {
+		return new ResolverNode(ctx.getNodeQuery(qDep), requestorInfo);
 	}
 
-	ResolverNode getResolverNode(ResolutionContext context, QualifiedDependency qDep, String requestorInfo)
-			throws CoreException
-	{
+	ResolverNode getResolverNode(ResolutionContext ctx, QualifiedDependency qDep, String requestorInfo) throws CoreException {
 		// We use a ComponentName as the key since we don't want the
 		// designator to play a role here.
 		//
@@ -493,48 +420,41 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		ComponentName key = request.toPureComponentName();
 		ResolverNode[] nrs;
 		boolean infant;
-		synchronized(this)
-		{
+		synchronized (this) {
 			nrs = get(key);
 			infant = (nrs == null);
-			if(infant)
-			{
-				nrs = new ResolverNode[] { createResolverNode(context, qDep, requestorInfo) };
+			if (infant) {
+				nrs = new ResolverNode[] { createResolverNode(ctx, qDep, requestorInfo) };
 				put(key, nrs);
 			}
 		}
 
 		ResolverNode nr;
-		if(infant)
+		if (infant)
 			return nrs[0];
 
 		int top = nrs.length;
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			nr = nrs[idx];
-			if(qDep.equals(nr.getQuery().getQualifiedDependency()))
+			if (qDep.equals(nr.getQuery().getQualifiedDependency()))
 				return nr;
 		}
 
 		boolean newRqOptional = request.isOptional();
 		boolean invalidateInfant = false;
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			nr = nrs[idx];
 			ComponentRequest oldRq = nr.getQuery().getComponentRequest();
-			if(newRqOptional != oldRq.isOptional())
-			{
-				// We don't want a version conflict if one of the ranges are optional.
+			if (newRqOptional != oldRq.isOptional()) {
+				// We don't want a version conflict if one of the ranges are
+				// optional.
 				//
-				try
-				{
+				try {
 					request.mergeDesignator(oldRq);
-				}
-				catch(ComponentRequestConflictException e)
-				{
-					if(oldRq.isOptional())
-					{
-						// Previous request now in conflict and must be discarded.
+				} catch (ComponentRequestConflictException e) {
+					if (oldRq.isOptional()) {
+						// Previous request now in conflict and must be
+						// discarded.
 						//
 						nr.forceUnresolved();
 						continue;
@@ -548,40 +468,32 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 				}
 			}
 
-			try
-			{
+			try {
 				nr.addDependencyQualification(qDep, requestorInfo);
 				return nr;
-			}
-			catch(ComponentRequestConflictException e)
-			{
+			} catch (ComponentRequestConflictException e) {
 				// We have a conflict. Two components with the same
 				// name but incompatible versions or filters.
 				//
 				IStatus err = e.getStatus();
-				context.addRequestStatus(nr.getQuery().getComponentRequest(), new Status(IStatus.WARNING,
-						err.getPlugin(), err.getMessage()));
+				context.addRequestStatus(nr.getQuery().getComponentRequest(), new Status(IStatus.WARNING, err.getPlugin(), err.getMessage()));
 			}
 		}
 
-		synchronized(this)
-		{
+		synchronized (this) {
 			// No known ResolverNode could accommodate the requirements from
 			// this qualified dependency. We need a new one.
 			//
 			nrs = get(key);
-			if(nrs.length == top)
-			{
+			if (nrs.length == top) {
 				nr = createResolverNode(context, qDep, requestorInfo);
-				if(invalidateInfant)
+				if (invalidateInfant)
 					nr.forceUnresolved();
 				ResolverNode[] newNrs = new ResolverNode[top + 1];
 				System.arraycopy(nrs, 0, newNrs, 0, top);
 				newNrs[top] = nr;
 				put(key, newNrs);
-			}
-			else
-			{
+			} else {
 				// Someone beat us to it. Break out from the synchronization
 				// and try again from square one
 				//
@@ -589,7 +501,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 			}
 		}
 
-		if(nr == null)
+		if (nr == null)
 			//
 			// Start from square one.
 			//
@@ -598,62 +510,58 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		return nr;
 	}
 
-	private ResolverNode deepResolve(ResolutionContext context, Map<ComponentName, ResolverNode> visited,
-			BOMNode depNode, String tagInfo, IProgressMonitor monitor) throws CoreException
-	{
+	private ResolverNode deepResolve(ResolutionContext ctx, Map<ComponentName, ResolverNode> visited, BOMNode depNode, String tagInfo,
+			IProgressMonitor monitor) throws CoreException {
 		QualifiedDependency qDep = depNode.getQualifiedDependency();
 		ComponentName key = qDep.getRequest().toPureComponentName();
 
-		// The visited map is to prevent endless recursion. The LocalResolver needs this since the query is often
-		// created on-the-fly and without a chance to allow circular dependencies.
+		// The visited map is to prevent endless recursion. The LocalResolver
+		// needs this since the query is often
+		// created on-the-fly and without a chance to allow circular
+		// dependencies.
 		//
 		ResolverNode node = visited.get(key);
-		if(node != null)
+		if (node != null)
 			return node;
 
-		node = getResolverNode(context, qDep, tagInfo);
+		node = getResolverNode(ctx, qDep, tagInfo);
 		visited.put(key, node);
 
-		if(node.isResolved())
+		if (node.isResolved())
 			return node;
 
-		NodeQuery query = context.getNodeQuery(qDep);
-		if(query.skipComponent())
+		NodeQuery query = ctx.getNodeQuery(qDep);
+		if (query.skipComponent())
 			return node;
 
 		GeneratorNode generatorNode = query.getResolutionContext().getGeneratorNode(qDep.getRequest());
-		if(generatorNode != null)
-		{
+		if (generatorNode != null) {
 			node.setGeneratorNode(generatorNode);
 			return node;
 		}
 
 		Resolution res = depNode.getResolution();
-		if(res == null)
-		{
-			try
-			{
+		if (res == null) {
+			try {
 				depNode = localResolve(query, MonitorUtils.subMonitor(monitor, 1));
-			}
-			catch(CoreException e)
-			{
-				if(!context.isContinueOnError())
+			} catch (CoreException e) {
+				if (!context.isContinueOnError())
 					throw e;
 			}
 
-			if(depNode == null)
+			if (depNode == null)
 				//
 				// We don't get any further.
 				//
 				return node;
 
 			res = depNode.getResolution();
-			if(res == null)
+			if (res == null)
 				return node;
 		}
 
-		context = node.startResolvingChildren(depNode);
-		if(context == null)
+		ctx = node.startResolvingChildren(depNode);
+		if (ctx == null)
 			//
 			// Resolution was unsuccessful
 			//
@@ -661,25 +569,20 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 
 		List<BOMNode> children = depNode.getChildren();
 		int top = children.size();
-		if(top == 0)
-		{
+		if (top == 0) {
 			node.setResolution(res, null);
 			return node;
 		}
 
 		ResolverNode[] resolvedChildren = new ResolverNode[top];
 		String childTagInfo = res.getCSpec().getTagInfo(tagInfo);
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			BOMNode child = children.get(idx);
 			ComponentQuery cquery = child.getQuery();
-			ResolutionContext childContext = (cquery == null)
-					? context
-					: new ResolutionContext(cquery, context);
+			ResolutionContext childContext = (cquery == null) ? ctx : new ResolutionContext(cquery, ctx);
 
-			resolvedChildren[idx] = m_recursiveResolve
-					? deepResolve(childContext, visited, child, childTagInfo, monitor)
-					: getResolverNode(childContext, child.getQualifiedDependency(), childTagInfo);
+			resolvedChildren[idx] = recursiveResolve ? deepResolve(childContext, visited, child, childTagInfo, monitor) : getResolverNode(
+					childContext, child.getQualifiedDependency(), childTagInfo);
 		}
 		node.setResolution(res, resolvedChildren);
 		return node;

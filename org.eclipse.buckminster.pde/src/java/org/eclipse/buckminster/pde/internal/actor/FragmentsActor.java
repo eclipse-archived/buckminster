@@ -50,73 +50,64 @@ import org.osgi.framework.InvalidSyntaxException;
 /**
  * @author Thomas Hallgren
  */
-public class FragmentsActor extends AbstractActor
-{
+public class FragmentsActor extends AbstractActor {
 	public static final String ID = "copyTargetFragments"; //$NON-NLS-1$
 
 	public static final String PROP_FRAGMENT_ATTRIBUTE = "fragment.attribute"; //$NON-NLS-1$
 
 	@Override
-	public boolean isUpToDate(Action action, IModelCache ctx, long prerequisiteAge, long oldestTarget)
-			throws CoreException
-	{
+	public boolean isUpToDate(Action action, IModelCache ctx, long prerequisiteAge, long oldestTarget) throws CoreException {
 		ComponentIdentifier cid = action.getCSpec().getComponentIdentifier();
 		IPath outputDir = action.getProductBase();
-		if(outputDir == null)
+		if (outputDir == null)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.missing_product_base_in_0_actor, ID));
 
 		Map<String, ? extends Object> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
 		IPluginModelBase plugin = PluginRegistry.findModel(cid.getName());
-		if(plugin == null)
+		if (plugin == null)
 			return true;
 
 		BundleDescription bundle = plugin.getBundleDescription();
-		if(bundle == null)
+		if (bundle == null)
 			return true;
 
 		BundleDescription[] fragments = bundle.getFragments();
-		if(fragments == null || fragments.length == 0)
+		if (fragments == null || fragments.length == 0)
 			return true;
 
 		int count = 0;
-		for(BundleDescription fragment : fragments)
-		{
+		for (BundleDescription fragment : fragments) {
 			String fragmentName = fragment.getName();
-			if(fragmentName.contains(".compatibility") || fragmentName.endsWith(".test") || fragmentName.endsWith(".dummy")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			if (fragmentName.contains(".compatibility") || fragmentName.endsWith(".test") || fragmentName.endsWith(".dummy")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				//
 				// Compatibility fragments must be explicitly brought in using
 				// a product or a feature
 				//
 				continue;
 
-			ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE,
-					VersionHelper.exactRange(fragment.getVersion()));
+			ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionHelper.exactRange(fragment.getVersion()));
 
 			String filterStr = fragment.getPlatformFilter();
-			if(filterStr != null)
-			{
-				try
-				{
+			if (filterStr != null) {
+				try {
 					Filter filter = FilterFactory.newInstance(fragment.getPlatformFilter());
 					filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
-					if(!filter.match(properties))
+					if (!filter.match(properties))
 						continue;
-				}
-				catch(InvalidSyntaxException e)
-				{
+				} catch (InvalidSyntaxException e) {
 					throw BuckminsterException.wrap(e);
 				}
 			}
 
 			IResolution res = WorkspaceInfo.getResolution(request, false);
-			if(res == null)
+			if (res == null)
 				continue;
 
 			count++;
 		}
-		if(count == 0)
+		if (count == 0)
 			return true;
 
 		String[] fragFiles = outputDir.toFile().list();
@@ -124,103 +115,91 @@ public class FragmentsActor extends AbstractActor
 	}
 
 	@Override
-	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException
-	{
+	protected IStatus internalPerform(IActionContext ctx, IProgressMonitor monitor) throws CoreException {
 		ComponentIdentifier cid = ctx.getCSpec().getComponentIdentifier();
 
 		IPath outputDir = ctx.getAction().getProductBase();
-		if(outputDir == null)
+		if (outputDir == null)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.missing_product_base_in_0_actor, ID));
 
 		Map<String, ? extends Object> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
 		IPluginModelBase launcherPlugin = PluginRegistry.findModel(cid.getName());
-		if(launcherPlugin == null)
-		{
+		if (launcherPlugin == null) {
 			MonitorUtils.complete(monitor);
 			return Status.OK_STATUS;
 		}
 
 		BundleDescription bundle = launcherPlugin.getBundleDescription();
-		if(bundle == null)
-		{
+		if (bundle == null) {
 			MonitorUtils.complete(monitor);
 			return Status.OK_STATUS;
 		}
 
 		BundleDescription[] fragments = bundle.getFragments();
-		if(fragments == null || fragments.length == 0)
-		{
+		if (fragments == null || fragments.length == 0) {
 			MonitorUtils.complete(monitor);
 			return Status.OK_STATUS;
 		}
 
-		String fragmentAttribute = (String)properties.get(PROP_FRAGMENT_ATTRIBUTE);
-		if(fragmentAttribute == null)
+		String fragmentAttribute = (String) properties.get(PROP_FRAGMENT_ATTRIBUTE);
+		if (fragmentAttribute == null)
 			fragmentAttribute = IPDEConstants.ATTRIBUTE_BUNDLE_JAR;
 
 		monitor.beginTask(null, 100 + 100 * fragments.length);
 		IPerformManager performManager = CorePlugin.getPerformManager();
-		try
-		{
-			for(BundleDescription fragment : fragments)
-			{
+		try {
+			for (BundleDescription fragment : fragments) {
 				String fragmentName = fragment.getName();
-				if(fragmentName.contains(".compatibility")) //$NON-NLS-1$
+				if (fragmentName.contains(".compatibility")) //$NON-NLS-1$
 					//
-					// Compatibility fragments must be explicitly brought in using
+					// Compatibility fragments must be explicitly brought in
+					// using
 					// a product or a feature
 					//
 					continue;
 
-				ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE,
-						VersionHelper.exactRange(fragment.getVersion()));
+				ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionHelper.exactRange(fragment
+						.getVersion()));
 
 				String filterStr = fragment.getPlatformFilter();
-				if(filterStr != null)
-				{
-					try
-					{
+				if (filterStr != null) {
+					try {
 						Filter filter = FilterFactory.newInstance(fragment.getPlatformFilter());
 						filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
-						if(!filter.match(properties))
+						if (!filter.match(properties))
 							continue;
-					}
-					catch(InvalidSyntaxException e)
-					{
+					} catch (InvalidSyntaxException e) {
 						throw BuckminsterException.wrap(e);
 					}
 				}
 
 				Resolution res = WorkspaceInfo.getResolution(request, false);
-				if(res == null)
-				{
+				if (res == null) {
 					MonitorUtils.worked(monitor, 100);
 					continue;
 				}
 
-				// Obtain the bundle.jars attribute from the cspec. Make sure the action is executed
+				// Obtain the bundle.jars attribute from the cspec. Make sure
+				// the action is executed
 				// (if it indeed is an action)
 				//
 				CSpec cspec = res.getCSpec();
 				Attribute bundleJar = cspec.getAttribute(fragmentAttribute);
-				performManager.perform(Collections.singletonList(bundleJar), ctx.getGlobalContext(),
-						MonitorUtils.subMonitor(monitor, 70));
+				performManager.perform(Collections.singletonList(bundleJar), ctx.getGlobalContext(), MonitorUtils.subMonitor(monitor, 70));
 
 				// Copy the path groups to the given destination
 				//
 				PathGroup[] groups = bundleJar.getPathGroups(ctx, null);
 				IProgressMonitor copyMon = MonitorUtils.subMonitor(monitor, 30);
 				copyMon.beginTask(null, groups.length * 100);
-				for(PathGroup pathGroup : groups)
+				for (PathGroup pathGroup : groups)
 					pathGroup.copyTo(outputDir, MonitorUtils.subMonitor(copyMon, 100));
 				copyMon.done();
 			}
 			return Status.OK_STATUS;
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}

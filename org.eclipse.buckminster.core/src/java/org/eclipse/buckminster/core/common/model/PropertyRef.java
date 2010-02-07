@@ -21,65 +21,54 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * An instance of this class represents a reference to a property. The instance will resolve to the expanded value of
- * that property.
+ * An instance of this class represents a reference to a property. The instance
+ * will resolve to the expanded value of that property.
  * 
  * @author Thomas Hallgren
  */
-public class PropertyRef<T> extends ValueHolder<T>
-{
+public class PropertyRef<T> extends ValueHolder<T> {
 	public static final String TAG = "propertyRef"; //$NON-NLS-1$
 
 	public static final String ATTR_KEY = "key"; //$NON-NLS-1$
 
-	private final Class<T> m_refClass;
+	private final Class<T> refClass;
 
-	private final String m_key;
+	private final String key;
 
-	public PropertyRef(Class<T> refClass, String key)
-	{
-		m_key = key;
-		m_refClass = refClass;
+	public PropertyRef(Class<T> refClass, String key) {
+		this.key = key;
+		this.refClass = refClass;
 	}
 
 	@Override
-	public T checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard)
-	{
-		String expandedKey = ExpandingProperties.expand(properties, m_key, recursionGuard + 1);
-		if(properties instanceof ExpandingProperties<?>)
-			return m_refClass.cast(((ExpandingProperties<?>)properties).getExpandedProperty(expandedKey,
-					recursionGuard + 1));
+	public T checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard) {
+		String expandedKey = ExpandingProperties.expand(properties, key, recursionGuard + 1);
+		if (properties instanceof ExpandingProperties<?>)
+			return refClass.cast(((ExpandingProperties<?>) properties).getExpandedProperty(expandedKey, recursionGuard + 1));
 		final Object replacementValue = properties.get(expandedKey);
-		if(replacementValue == null)
-			CorePlugin.getLogger().warning(
-					NLS.bind(Messages.The_property_0_has_not_been_set_and_will_default_to_null, m_key));
-		return m_refClass.cast(ExpandingProperties.expand(properties, replacementValue, recursionGuard + 1));
+		if (replacementValue == null)
+			CorePlugin.getLogger().warning(NLS.bind(Messages.The_property_0_has_not_been_set_and_will_default_to_null, key));
+		return refClass.cast(ExpandingProperties.expand(properties, replacementValue, recursionGuard + 1));
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		return super.equals(o) && Trivial.equalsAllowNull(m_key, ((PropertyRef<?>)o).m_key);
+	public boolean equals(Object o) {
+		return super.equals(o) && Trivial.equalsAllowNull(key, ((PropertyRef<?>) o).key);
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int hc = super.hashCode();
-		hc = 37 * hc + (m_key == null
-				? 0
-				: m_key.hashCode());
+		hc = 37 * hc + (key == null ? 0 : key.hashCode());
 		return hc;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_KEY, m_key);
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_KEY, key);
 	}
 }

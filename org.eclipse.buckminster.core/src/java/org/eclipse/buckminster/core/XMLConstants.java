@@ -13,8 +13,7 @@ package org.eclipse.buckminster.core;
 /**
  * @author Thomas Hallgren
  */
-public interface XMLConstants
-{
+public interface XMLConstants {
 	String BM_PREFIX = "http://www.eclipse.org/buckminster/"; //$NON-NLS-1$
 
 	String BM_CSPEC_PREFIX = "cs"; //$NON-NLS-1$

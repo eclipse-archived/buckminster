@@ -14,34 +14,29 @@ import org.eclipse.buckminster.core.cspec.IComponentRequest;
  * @author Thomas Hallgren
  * 
  */
-public class ResolverDecision
-{
-	private final IComponentRequest m_request;
+public class ResolverDecision {
+	private final IComponentRequest request;
 
-	private final ResolverDecisionType m_type;
+	private final ResolverDecisionType type;
 
-	private final Object[] m_args;
+	private final Object[] args;
 
-	public ResolverDecision(IComponentRequest request, ResolverDecisionType type, Object[] args)
-	{
-		m_request = request;
-		m_type = type;
-		m_args = args;
+	public ResolverDecision(IComponentRequest request, ResolverDecisionType type, Object[] args) {
+		this.request = request;
+		this.type = type;
+		this.args = args;
 	}
 
-	public IComponentRequest getRequest()
-	{
-		return m_request;
+	public IComponentRequest getRequest() {
+		return request;
 	}
 
-	public ResolverDecisionType getType()
-	{
-		return m_type;
+	public ResolverDecisionType getType() {
+		return type;
 	}
 
 	@Override
-	public String toString()
-	{
-		return m_type.getMessage(m_args);
+	public String toString() {
+		return type.getMessage(args);
 	}
 }

@@ -22,18 +22,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.eclipse.team.svn.core.connector.SVNRevision;
 
-public class SubversiveVersionFinder extends GenericVersionFinder<SVNEntry, SVNRevision>
-{
+public class SubversiveVersionFinder extends GenericVersionFinder<SVNEntry, SVNRevision> {
 
-	public SubversiveVersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
-	{
+	public SubversiveVersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException {
 		super(provider, ctype, query);
 	}
 
 	@Override
-	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag,
-			long revision, Date timestamp, RMContext context) throws CoreException
-	{
+	protected ISubversionSession<SVNEntry, SVNRevision> getSession(String repositoryURI, VersionSelector branchOrTag, long revision, Date timestamp,
+			RMContext context) throws CoreException {
 		return new SubversiveSession(repositoryURI, branchOrTag, revision, timestamp, context);
 	}
 }

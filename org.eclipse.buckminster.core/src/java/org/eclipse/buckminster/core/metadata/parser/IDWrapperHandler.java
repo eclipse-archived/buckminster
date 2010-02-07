@@ -24,90 +24,81 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPoppedListener
-{
+public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPoppedListener {
 	public static final String TAG = IDWrapper.TAG;
 
-	private final CSpecHandler m_cspecHandler = new CSpecHandler(this);
+	private final CSpecHandler cspecHandler = new CSpecHandler(this);
 
-	private final ResolutionHandler m_resolutionHandler = new ResolutionHandler(this);
+	private final ResolutionHandler resolutionHandler = new ResolutionHandler(this);
 
-	private final ResolvedNodeHandler m_resolvedNodeHandler = new ResolvedNodeHandler(this);
+	private final ResolvedNodeHandler resolvedNodeHandler = new ResolvedNodeHandler(this);
 
-	private final UnresolvedNodeHandler m_unresolvedNodeHandler = new UnresolvedNodeHandler(this);
+	private final UnresolvedNodeHandler unresolvedNodeHandler = new UnresolvedNodeHandler(this);
 
-	private final GeneratorNodeHandler m_generatorNodeHandler = new GeneratorNodeHandler(this);
+	private final GeneratorNodeHandler generatorNodeHandler = new GeneratorNodeHandler(this);
 
-	private final ComponentQueryHandler m_componentQueryHandler = new ComponentQueryHandler(this, null);
+	private final ComponentQueryHandler componentQueryHandler = new ComponentQueryHandler(this, null);
 
-	private BillOfMaterialsHandler m_billOfMaterialsHandler;
+	private BillOfMaterialsHandler billOfMaterialsHandler;
 
-	private UUID m_id;
+	private UUID id;
 
-	private IDWrapper m_wrapper;
+	private IDWrapper wrapper;
 
-	public IDWrapperHandler(AbstractHandler parent)
-	{
+	public IDWrapperHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof BomNodeHandler)
-			m_wrapper = new IDWrapper(m_id, ((BomNodeHandler)child).getDepNode());
-		else if(child == m_cspecHandler)
-			m_wrapper = new IDWrapper(m_id, m_cspecHandler.getCSpec());
-		else if(child instanceof ProviderHandler)
-			m_wrapper = new IDWrapper(m_id, ((ProviderHandler)child).getProvider());
-		else if(child == m_resolutionHandler)
-			m_wrapper = new IDWrapper(m_id, m_resolutionHandler.getResolution());
-		else if(child == m_componentQueryHandler)
-			m_wrapper = new IDWrapper(m_id, m_componentQueryHandler.getComponentQuery());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child instanceof BomNodeHandler)
+			wrapper = new IDWrapper(id, ((BomNodeHandler) child).getDepNode());
+		else if (child == cspecHandler)
+			wrapper = new IDWrapper(id, cspecHandler.getCSpec());
+		else if (child instanceof ProviderHandler)
+			wrapper = new IDWrapper(id, ((ProviderHandler) child).getProvider());
+		else if (child == resolutionHandler)
+			wrapper = new IDWrapper(id, resolutionHandler.getResolution());
+		else if (child == componentQueryHandler)
+			wrapper = new IDWrapper(id, componentQueryHandler.getComponentQuery());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(CSpecHandler.TAG.equals(localName))
-			ch = m_cspecHandler;
-		else if(ProviderHandler.TAG.equals(localName))
+		if (CSpecHandler.TAG.equals(localName))
+			ch = cspecHandler;
+		else if (ProviderHandler.TAG.equals(localName))
 			ch = createContentHandler(ProviderHandler.class, uri, attrs);
-		else if(ResolutionHandler.TAG.equals(localName))
-			ch = m_resolutionHandler;
-		else if(ResolvedNodeHandler.TAG.equals(localName))
-			ch = m_resolvedNodeHandler;
-		else if(BillOfMaterialsHandler.TAG.equals(localName))
-		{
-			if(m_billOfMaterialsHandler == null)
-				m_billOfMaterialsHandler = new BillOfMaterialsHandler(this);
-			ch = m_billOfMaterialsHandler;
-		}
-		else if(UnresolvedNodeHandler.TAG.equals(localName))
-			ch = m_unresolvedNodeHandler;
-		else if(GeneratorNodeHandler.TAG.equals(localName))
-			ch = m_generatorNodeHandler;
-		else if(m_componentQueryHandler.getTAG().equals(localName))
-			ch = m_componentQueryHandler;
+		else if (ResolutionHandler.TAG.equals(localName))
+			ch = resolutionHandler;
+		else if (ResolvedNodeHandler.TAG.equals(localName))
+			ch = resolvedNodeHandler;
+		else if (BillOfMaterialsHandler.TAG.equals(localName)) {
+			if (billOfMaterialsHandler == null)
+				billOfMaterialsHandler = new BillOfMaterialsHandler(this);
+			ch = billOfMaterialsHandler;
+		} else if (UnresolvedNodeHandler.TAG.equals(localName))
+			ch = unresolvedNodeHandler;
+		else if (GeneratorNodeHandler.TAG.equals(localName))
+			ch = generatorNodeHandler;
+		else if (componentQueryHandler.getTAG().equals(localName))
+			ch = componentQueryHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public IDWrapper getWrapper()
-	{
-		return m_wrapper;
+	public IDWrapper getWrapper() {
+		return wrapper;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_id = UUID.fromString(this.getStringValue(attrs, IDWrapper.ATTR_ID));
-		m_wrapper = null;
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		id = UUID.fromString(this.getStringValue(attrs, IDWrapper.ATTR_ID));
+		wrapper = null;
 	}
 
-	UUIDKeyed getWrapped(UUID id) throws SAXException
-	{
-		return ((IWrapperParent)getParentHandler()).getWrapped(id);
+	UUIDKeyed getWrapped(UUID wid) throws SAXException {
+		return ((IWrapperParent) getParentHandler()).getWrapped(wid);
 	}
 }

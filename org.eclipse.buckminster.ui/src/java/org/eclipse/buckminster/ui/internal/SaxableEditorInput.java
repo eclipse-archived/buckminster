@@ -27,81 +27,59 @@ import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.xml.sax.SAXException;
 
-public abstract class SaxableEditorInput implements IStorageEditorInput
-{
+public abstract class SaxableEditorInput implements IStorageEditorInput {
 	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter)
-	{
+	public Object getAdapter(Class adapter) {
 		return null;
 	}
 
-	public IContentDescription getContentDescription()
-	{
+	public IContentDescription getContentDescription() {
 		InputStream contents = null;
-		try
-		{
+		try {
 			contents = this.getStorage().getContents();
 			return Platform.getContentTypeManager().getDescriptionFor(contents, this.getName(), IContentDescription.ALL);
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			throw new RuntimeException(e);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw new RuntimeException(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(contents);
 		}
 	}
 
-	public ImageDescriptor getImageDescriptor()
-	{
+	public ImageDescriptor getImageDescriptor() {
 		IContentDescription cd = this.getContentDescription();
 		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(this.getName(), cd.getContentType());
 	}
 
-	public IPersistableElement getPersistable()
-	{
+	public IPersistableElement getPersistable() {
 		return null;
 	}
 
-	public IStorage getStorage() throws CoreException
-	{
-		return new IStorage()
-		{
+	public IStorage getStorage() throws CoreException {
+		return new IStorage() {
 			@SuppressWarnings("rawtypes")
-			public Object getAdapter(Class adapter)
-			{
+			public Object getAdapter(Class adapter) {
 				return null;
 			}
 
-			public InputStream getContents() throws CoreException
-			{
-				try
-				{
+			public InputStream getContents() throws CoreException {
+				try {
 					return Utils.getInputStream(SaxableEditorInput.this.getContent());
-				}
-				catch(SAXException e)
-				{
+				} catch (SAXException e) {
 					throw BuckminsterException.wrap(e);
 				}
 			}
 
-			public IPath getFullPath()
-			{
+			public IPath getFullPath() {
 				return null;
 			}
 
-			public String getName()
-			{
+			public String getName() {
 				return SaxableEditorInput.this.getName();
 			}
 
-			public boolean isReadOnly()
-			{
+			public boolean isReadOnly() {
 				return true;
 			}
 

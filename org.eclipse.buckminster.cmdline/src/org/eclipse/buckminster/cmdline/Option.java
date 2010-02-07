@@ -10,56 +10,48 @@
 
 package org.eclipse.buckminster.cmdline;
 
-public class Option
-{
-	private final OptionDescriptor m_optionDescriptor;
+public class Option {
+	private final OptionDescriptor optionDescriptor;
 
-	private final String m_name;
+	private final String name;
 
-	private final String m_value;
+	private final String value;
 
-	private final boolean m_isLongName;
+	private final boolean isLongName;
 
-	public Option(OptionDescriptor optionDescriptor, String name, String value, boolean isLongName)
-	{
-		m_optionDescriptor = optionDescriptor;
-		m_name = name;
-		m_value = value;
-		m_isLongName = isLongName;
+	public Option(OptionDescriptor optionDescriptor, String name, String value, boolean isLongName) {
+		this.optionDescriptor = optionDescriptor;
+		this.name = name;
+		this.value = value;
+		this.isLongName = isLongName;
 	}
 
-	public String getName()
-	{
-		return m_name;
+	public String getName() {
+		return name;
 	}
 
-	public String getValue()
-	{
-		return m_value;
+	public String getValue() {
+		return value;
 	}
 
-	public boolean is(OptionDescriptor optionDescriptor)
-	{
-		return optionDescriptor == m_optionDescriptor;
+	public boolean is(OptionDescriptor descriptor) {
+		return optionDescriptor == descriptor;
 	}
 
-	public boolean isLongName()
-	{
-		return m_isLongName;
+	public boolean isLongName() {
+		return isLongName;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuffer bld = new StringBuffer();
 		bld.append('-');
-		if(m_isLongName)
+		if (isLongName)
 			bld.append('-');
-		bld.append(m_name);
-		if(m_value != null)
-		{
+		bld.append(name);
+		if (value != null) {
 			bld.append(' ');
-			bld.append(m_value);
+			bld.append(value);
 		}
 		return bld.toString();
 	}

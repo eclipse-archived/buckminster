@@ -22,56 +22,43 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-abstract class AttributesHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport
-{
-	private TopLevelAttributeHandler m_publicHandler;
+abstract class AttributesHandler extends ExtensionAwareHandler implements ChildPoppedListener, ICSpecBuilderSupport {
+	private TopLevelAttributeHandler publicHandler;
 
-	private TopLevelAttributeHandler m_privateHandler;
+	private TopLevelAttributeHandler privateHandler;
 
-	AttributesHandler(AbstractHandler parent)
-	{
+	AttributesHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		this.addAttribute(((AttributeHandler)child).getAttributeBuilder());
+	public void childPopped(ChildHandler child) throws SAXException {
+		this.addAttribute(((AttributeHandler) child).getAttributeBuilder());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(TopLevelAttribute.PUBLIC_TAG.equals(localName))
-		{
-			if(m_publicHandler == null)
-				m_publicHandler = createAttributeHandler(true);
-			ch = m_publicHandler;
-		}
-		else if(TopLevelAttribute.PRIVATE_TAG.equals(localName))
-		{
-			if(m_privateHandler == null)
-				m_privateHandler = createAttributeHandler(false);
-			ch = m_privateHandler;
-		}
-		else
+		if (TopLevelAttribute.PUBLIC_TAG.equals(localName)) {
+			if (publicHandler == null)
+				publicHandler = createAttributeHandler(true);
+			ch = publicHandler;
+		} else if (TopLevelAttribute.PRIVATE_TAG.equals(localName)) {
+			if (privateHandler == null)
+				privateHandler = createAttributeHandler(false);
+			ch = privateHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public CSpecBuilder getCSpecBuilder()
-	{
-		return ((ICSpecBuilderSupport)this.getParentHandler()).getCSpecBuilder();
+	public CSpecBuilder getCSpecBuilder() {
+		return ((ICSpecBuilderSupport) this.getParentHandler()).getCSpecBuilder();
 	}
 
-	final void addAttribute(AttributeBuilder attribute) throws SAXException
-	{
-		try
-		{
+	final void addAttribute(AttributeBuilder attribute) throws SAXException {
+		try {
 			this.getCSpecBuilder().addAttribute(attribute);
-		}
-		catch(AttributeAlreadyDefinedException e)
-		{
+		} catch (AttributeAlreadyDefinedException e) {
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 		}
 	}

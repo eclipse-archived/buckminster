@@ -24,15 +24,14 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author Thomas Hallgren
  */
-public class Split extends AbstractSplit
-{
+public class Split extends AbstractSplit {
 	public static final String ATTR_LIMIT = "limit"; //$NON-NLS-1$
 
-	private final int m_limit;
+	private final int limit;
 
 	/**
-	 * Create a <code>Split</code> that will split the value provided by a source around instances of
-	 * <code>splitter</code>.
+	 * Create a <code>Split</code> that will split the value provided by a
+	 * source around instances of <code>splitter</code>.
 	 * 
 	 * @param pattern
 	 *            The delimiting pattern
@@ -40,40 +39,33 @@ public class Split extends AbstractSplit
 	 *            The result threshold
 	 * @see java.util.regex.Pattern#split(CharSequence pattern, int limit)
 	 */
-	public Split(String splitter, int limit)
-	{
+	public Split(String splitter, int limit) {
 		super(splitter);
-		m_limit = limit;
+		this.limit = limit;
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		return super.equals(o) && m_limit == ((Split)o).m_limit;
+	public boolean equals(Object o) {
+		return super.equals(o) && limit == ((Split) o).limit;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int hc = super.hashCode();
-		hc = 37 * hc + m_limit;
+		hc = 37 * hc + limit;
 		return hc;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
 		super.addAttributes(attrs);
-		if(m_limit != 0)
-			Utils.addAttribute(attrs, ATTR_LIMIT, Integer.toString(m_limit));
+		if (limit != 0)
+			Utils.addAttribute(attrs, ATTR_LIMIT, Integer.toString(limit));
 	}
 
 	@Override
-	protected List<String> checkedGetValues(Map<String, ? extends Object> properties, int recursionGuard)
-	{
+	protected List<String> checkedGetValues(Map<String, ? extends Object> properties, int recursionGuard) {
 		String source = checkedGetSourceValue(properties, recursionGuard);
-		return source == null
-				? Collections.<String> emptyList()
-				: Arrays.asList(getPattern().split(source, m_limit));
+		return source == null ? Collections.<String> emptyList() : Arrays.asList(getPattern().split(source, limit));
 	}
 }

@@ -1,10 +1,10 @@
 /**************************************************************************
-* Copyright (c) 2006-2007, Cloudsmith Inc.
-* The code, documentation and other materials contained herein have been
-* licensed under the Eclipse Public License - v 1.0 by the copyright holder
-* listed above, as the Initial Contributor under such license. The text of
-* such license is available at www.eclipse.org.
-***************************************************************************/
+ * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * The code, documentation and other materials contained herein have been
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ ***************************************************************************/
 package org.eclipse.buckminster.ant.taskdefs;
 
 import java.text.DateFormat;
@@ -15,108 +15,94 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
- * Calculates the last timestamp for a repository and assigns the result to
- * a named property.
+ * Calculates the last timestamp for a repository and assigns the result to a
+ * named property.
+ * 
  * @author Thomas Hallgren
  */
-public class LastTimestamp extends Task
-{
-	private String m_property;
-	private String m_repositoryLocation;
-	private String m_readerType;
-	private String m_versionSelector;
-	private String m_dateFormat = "yyyy-MM-dd'T'HH:mm:ss";
-	private String m_timeZone = "UTC";
+public class LastTimestamp extends Task {
+	private String property;
+	private String repositoryLocation;
+	private String readerType;
+	private String versionSelector;
+	private String dateFormat = "yyyy-MM-dd'T'HH:mm:ss";
+	private String timeZone = "UTC";
 
 	@Override
-	public void execute()
-	throws BuildException
-	{
-		if(m_property == null)
+	public void execute() throws BuildException {
+		if (property == null)
 			throw new BuildException("\"property\" must be set", this.getLocation());
 
-		if(m_repositoryLocation == null)
+		if (repositoryLocation == null)
 			throw new BuildException("\"repositoryLocation\" must be set", this.getLocation());
 
-		if(m_readerType == null)
+		if (readerType == null)
 			throw new BuildException("\"readerType\" must be set", this.getLocation());
 
-		VersionSelector versionSelector = null;
-		if(m_versionSelector != null)
-			versionSelector = VersionSelector.fromString(m_versionSelector);
-		IVersionFinder versionFinder = null;
-		try
-		{
-			DateFormat fmt = new SimpleDateFormat(m_dateFormat);
-			fmt.setTimeZone(TimeZone.getTimeZone(m_timeZone));
+		VersionSelector vs = null;
+		if (versionSelector != null)
+			vs = VersionSelector.fromString(versionSelector);
+		try {
+			DateFormat fmt = new SimpleDateFormat(dateFormat);
+			fmt.setTimeZone(TimeZone.getTimeZone(timeZone));
 
 			IProgressMonitor nm = new NullProgressMonitor();
-			IReaderType readerType = CorePlugin.getDefault().getReaderType(m_readerType);
-			getProject().setProperty(m_property, fmt.format(readerType.getLastModification(m_repositoryLocation, versionSelector, nm)));
-		}
-		catch(Exception e)
-		{
+			IReaderType rd = CorePlugin.getDefault().getReaderType(readerType);
+			getProject().setProperty(property, fmt.format(rd.getLastModification(repositoryLocation, vs, nm)));
+		} catch (Exception e) {
 			Throwable c = BuckminsterException.unwind(e);
 			String msg = c.getMessage();
-			if(msg == null)
+			if (msg == null)
 				msg = c.toString();
 			throw new BuildException(msg, c, this.getLocation());
 		}
-		finally
-		{
-			if(versionFinder != null)
-				versionFinder.close();
-		}
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
 	}
 
 	/**
 	 * Sets the name of the property that will receive the substituted value.
-	 * @param property A property name.
+	 * 
+	 * @param property
+	 *            A property name.
 	 */
-	public void setProperty(String property)
-	{
-		m_property = property;
-	}
-
-	public void setDateFormat(String dateFormat)
-	{
-		m_dateFormat = dateFormat;
-	}
-
-	public void setTimeZone(String timeZone)
-	{
-		m_timeZone = timeZone;
+	public void setProperty(String property) {
+		this.property = property;
 	}
 
 	/**
-	 * @param readerType the readerType to set
+	 * @param readerType
+	 *            the readerType to set
 	 */
-	public void setReaderType(String readerType)
-	{
-		m_readerType = readerType;
+	public void setReaderType(String readerType) {
+		this.readerType = readerType;
 	}
 
 	/**
-	 * @param repositoryLocation the repositoryLocation to set
+	 * @param repositoryLocation
+	 *            the repositoryLocation to set
 	 */
-	public void setRepositoryLocation(String repositoryLocation)
-	{
-		m_repositoryLocation = repositoryLocation;
+	public void setRepositoryLocation(String repositoryLocation) {
+		this.repositoryLocation = repositoryLocation;
+	}
+
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
 	}
 
 	/**
-	 * @param versionSelector the versionSelector to set
+	 * @param versionSelector
+	 *            the versionSelector to set
 	 */
-	public void setVersionSelector(String versionSelector)
-	{
-		m_versionSelector = versionSelector;
+	public void setVersionSelector(String versionSelector) {
+		this.versionSelector = versionSelector;
 	}
 }

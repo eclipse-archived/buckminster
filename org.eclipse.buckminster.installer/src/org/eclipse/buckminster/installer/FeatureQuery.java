@@ -16,14 +16,12 @@ import org.eclipse.equinox.p2.query.MatchQuery;
  * 
  * @author Karel Brezina
  */
-public class FeatureQuery extends MatchQuery<IInstallableUnit>
-{
+public class FeatureQuery extends MatchQuery<IInstallableUnit> {
 	public static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
 
 	@Override
-	public boolean isMatch(IInstallableUnit candidate)
-	{
-		if(candidate.getId() == null || !candidate.getId().endsWith(FEATURE_GROUP))
+	public boolean isMatch(IInstallableUnit candidate) {
+		if (candidate.getId() == null || !candidate.getId().endsWith(FEATURE_GROUP))
 			return false;
 		return true;
 	}

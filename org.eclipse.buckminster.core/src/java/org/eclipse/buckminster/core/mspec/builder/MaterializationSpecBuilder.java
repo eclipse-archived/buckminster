@@ -30,102 +30,88 @@ import org.xml.sax.SAXException;
  * @author Thomas Hallgren
  * 
  */
-public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder implements IMaterializationSpec
-{
-	private final List<MaterializationNodeBuilder> m_nodes = new ArrayList<MaterializationNodeBuilder>();
+public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder implements IMaterializationSpec {
+	private final List<MaterializationNodeBuilder> nodes = new ArrayList<MaterializationNodeBuilder>();
 
-	private String m_shortDesc;
+	private String shortDesc;
 
-	private String m_name;
+	private String name;
 
-	private String m_url;
+	private String url;
 
-	private URL m_contextURL;
+	private URL contextURL;
 
-	public MaterializationNodeBuilder addNodeBuilder()
-	{
+	public MaterializationNodeBuilder addNodeBuilder() {
 		MaterializationNodeBuilder node = new MaterializationNodeBuilder();
-		m_nodes.add(node);
+		nodes.add(node);
 		return node;
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_name = null;
-		m_shortDesc = null;
-		m_url = null;
-		m_contextURL = null;
-		m_nodes.clear();
+		name = null;
+		shortDesc = null;
+		url = null;
+		contextURL = null;
+		nodes.clear();
 	}
 
-	public MaterializationSpec createMaterializationSpec()
-	{
+	public MaterializationSpec createMaterializationSpec() {
 		return new MaterializationSpec(this);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object getAdapter(Class adapter)
-	{
-		if(adapter.isInstance(this))
+	public Object getAdapter(Class adapter) {
+		if (adapter.isInstance(this))
 			return this;
-		if(adapter.isAssignableFrom(MaterializationSpec.class))
+		if (adapter.isAssignableFrom(MaterializationSpec.class))
 			return createMaterializationSpec();
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
-	public URL getContextURL()
-	{
-		return m_contextURL;
+	public URL getContextURL() {
+		return contextURL;
 	}
 
-	public IMaterializationNode getMatchingNode(IComponentName cName)
-	{
+	public IMaterializationNode getMatchingNode(IComponentName cName) {
 		return getMatchingNodeBuilder(cName);
 	}
 
-	public IMaterializationNode getMatchingNode(Resolution res)
-	{
+	public IMaterializationNode getMatchingNode(Resolution res) {
 		return getMatchingNodeBuilder(res);
 	}
 
-	public MaterializationNodeBuilder getMatchingNodeBuilder(IComponentName cName)
-	{
-		String name = cName.getName();
-		for(MaterializationNodeBuilder aNode : m_nodes)
-		{
+	public MaterializationNodeBuilder getMatchingNodeBuilder(IComponentName cName) {
+		String cn = cName.getName();
+		for (MaterializationNodeBuilder aNode : nodes) {
 			Pattern pattern = aNode.getNamePattern();
-			if(pattern != null && pattern.matcher(name).find())
-			{
+			if (pattern != null && pattern.matcher(cn).find()) {
 				String matchingCType = aNode.getComponentTypeID();
-				if(matchingCType == null || matchingCType.equals(cName.getComponentTypeID()))
+				if (matchingCType == null || matchingCType.equals(cName.getComponentTypeID()))
 					return aNode;
 			}
 		}
 		return null;
 	}
 
-	public MaterializationNodeBuilder getMatchingNodeBuilder(Resolution res)
-	{
+	public MaterializationNodeBuilder getMatchingNodeBuilder(Resolution res) {
 		Map<String, ? extends Object> props = null;
 		ComponentIdentifier ci = res.getComponentIdentifier();
-		for(MaterializationNodeBuilder aNode : m_nodes)
-		{
+		for (MaterializationNodeBuilder aNode : nodes) {
 			Pattern pattern = aNode.getNamePattern();
-			if(!(pattern == null || pattern.matcher(ci.getName()).find()))
+			if (!(pattern == null || pattern.matcher(ci.getName()).find()))
 				continue;
 
 			String matchingCType = aNode.getComponentTypeID();
-			if(!(matchingCType == null || matchingCType.equals(ci.getComponentTypeID())))
+			if (!(matchingCType == null || matchingCType.equals(ci.getComponentTypeID())))
 				continue;
 
 			Filter filter = aNode.getFilter();
-			if(filter != null)
-			{
-				if(props == null)
+			if (filter != null) {
+				if (props == null)
 					props = res.getProperties();
-				if(!filter.match(props))
+				if (!filter.match(props))
 					continue;
 			}
 			return aNode;
@@ -133,73 +119,60 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return null;
 	}
 
-	public String getName()
-	{
-		return m_name;
+	public String getName() {
+		return name;
 	}
 
-	public List<MaterializationNodeBuilder> getNodeBuilders()
-	{
-		return m_nodes;
+	public List<MaterializationNodeBuilder> getNodeBuilders() {
+		return nodes;
 	}
 
-	public List<? extends IMaterializationNode> getNodes()
-	{
+	public List<? extends IMaterializationNode> getNodes() {
 		return getNodeBuilders();
 	}
 
-	public URL getResolvedURL()
-	{
-		return URLUtils.resolveURL(m_contextURL, m_url);
+	public URL getResolvedURL() {
+		return URLUtils.resolveURL(contextURL, url);
 	}
 
-	public String getShortDesc()
-	{
-		return m_shortDesc;
+	public String getShortDesc() {
+		return shortDesc;
 	}
 
-	public String getURL()
-	{
-		return m_url;
+	public String getURL() {
+		return url;
 	}
 
-	public void initFrom(IMaterializationSpec mspec)
-	{
+	public void initFrom(IMaterializationSpec mspec) {
 		super.initFrom(mspec);
-		m_name = mspec.getName();
-		m_shortDesc = mspec.getShortDesc();
-		m_url = mspec.getURL();
-		m_contextURL = mspec.getContextURL();
-		for(IMaterializationNode node : mspec.getNodes())
-		{
+		name = mspec.getName();
+		shortDesc = mspec.getShortDesc();
+		url = mspec.getURL();
+		contextURL = mspec.getContextURL();
+		for (IMaterializationNode node : mspec.getNodes()) {
 			MaterializationNodeBuilder nodeBuilder = new MaterializationNodeBuilder();
 			nodeBuilder.initFrom(node);
-			m_nodes.add(nodeBuilder);
+			nodes.add(nodeBuilder);
 		}
 	}
 
-	public void setContextURL(URL contextURL)
-	{
-		m_contextURL = contextURL;
+	public void setContextURL(URL contextURL) {
+		this.contextURL = contextURL;
 	}
 
-	public void setName(String name)
-	{
-		m_name = name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setShortDesc(String shortDesc)
-	{
-		m_shortDesc = shortDesc;
+	public void setShortDesc(String shortDesc) {
+		this.shortDesc = shortDesc;
 	}
 
-	public void setURL(String url)
-	{
-		m_url = url;
+	public void setURL(String url) {
+		this.url = url;
 	}
 
-	public void toSax(ContentHandler receiver) throws SAXException
-	{
+	public void toSax(ContentHandler receiver) throws SAXException {
 		MaterializationSpec mspec = new MaterializationSpec(this);
 		mspec.toSax(receiver);
 	}

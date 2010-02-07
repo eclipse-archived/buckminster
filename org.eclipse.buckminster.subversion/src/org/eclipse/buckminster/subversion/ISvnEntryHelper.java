@@ -1,7 +1,6 @@
 package org.eclipse.buckminster.subversion;
 
-public interface ISvnEntryHelper<SVN_ENTRY_TYPE>
-{
+public interface ISvnEntryHelper<SVN_ENTRY_TYPE> {
 	static final int NONE = 0;
 
 	static final int FILE = 1;

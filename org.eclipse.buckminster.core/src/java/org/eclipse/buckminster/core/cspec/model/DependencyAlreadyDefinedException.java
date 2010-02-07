@@ -14,12 +14,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class DependencyAlreadyDefinedException extends LocalizedException
-{
+public class DependencyAlreadyDefinedException extends LocalizedException {
 	private static final long serialVersionUID = 8844107002854853175L;
 
-	public DependencyAlreadyDefinedException(String componentName, String dependencyName)
-	{
+	public DependencyAlreadyDefinedException(String componentName, String dependencyName) {
 		super(NLS.bind(Messages.Dependency_0_is_defined_more_then_once_in_component_1, dependencyName, componentName));
 	}
 }

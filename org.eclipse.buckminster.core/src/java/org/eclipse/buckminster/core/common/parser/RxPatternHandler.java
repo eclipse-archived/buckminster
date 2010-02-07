@@ -19,48 +19,41 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class RxPatternHandler extends RxPartHandler
-{
+public class RxPatternHandler extends RxPartHandler {
 	public static final String TAG = RxPattern.TAG;
 
-	private String m_pattern;
+	private String pattern;
 
-	private String m_prefix;
+	private String prefix;
 
-	private String m_suffix;
+	private String suffix;
 
-	public RxPatternHandler(AbstractHandler parent)
-	{
+	public RxPatternHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public RxPart createPart()
-	{
-		return new RxPattern(getName(), isOptional(), m_pattern, m_prefix, m_suffix);
+	public RxPart createPart() {
+		return new RxPattern(getName(), isOptional(), pattern, prefix, suffix);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		m_pattern = getStringValue(attrs, RxPattern.ATTR_PATTERN);
-		m_prefix = getOptionalStringValue(attrs, RxPattern.ATTR_PREFIX);
-		m_suffix = getOptionalStringValue(attrs, RxPattern.ATTR_SUFFIX);
+		pattern = getStringValue(attrs, RxPattern.ATTR_PATTERN);
+		prefix = getOptionalStringValue(attrs, RxPattern.ATTR_PREFIX);
+		suffix = getOptionalStringValue(attrs, RxPattern.ATTR_SUFFIX);
 	}
 
-	protected final String getPattern()
-	{
-		return m_pattern;
+	protected final String getPattern() {
+		return pattern;
 	}
 
-	protected final String getPrefix()
-	{
-		return m_prefix;
+	protected final String getPrefix() {
+		return prefix;
 	}
 
-	protected final String getSuffix()
-	{
-		return m_suffix;
+	protected final String getSuffix() {
+		return suffix;
 	}
 }

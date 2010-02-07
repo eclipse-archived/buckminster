@@ -30,115 +30,88 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
-public abstract class AbstractProjectAction implements IObjectActionDelegate
-{
-	private IProject[] m_selectedProjects;
+public abstract class AbstractProjectAction implements IObjectActionDelegate {
+	private IProject[] selectedProjects;
 
-	private IWorkbenchPart m_workbenchPart;
+	private IWorkbenchPart workbenchPart;
 
-	public void run(IAction action)
-	{
+	public void run(IAction action) {
 		final IProject[] projs = this.getSelectedProjects();
-		try
-		{
-			if(this.wantsMonitor())
-			{
+		try {
+			if (this.wantsMonitor()) {
 				final IAction internalAction = action;
 
-				WorkspaceModifyOperation op = new WorkspaceModifyOperation()
-				{
+				WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 					@Override
-					protected void execute(IProgressMonitor monitor) throws CoreException
-					{
+					protected void execute(IProgressMonitor monitor) throws CoreException {
 						monitor.beginTask(internalAction.getText(), projs.length * 1000);
 
-						try
-						{
-							for(IProject proj : projs)
+						try {
+							for (IProject proj : projs)
 								AbstractProjectAction.this.internalRun(proj, MonitorUtils.subMonitor(monitor, 1000));
-						}
-						finally
-						{
+						} finally {
 							monitor.done();
 						}
 					}
 				};
 
-				try
-				{
+				try {
 					this.getWorkbenchPart().getSite().getWorkbenchWindow().run(true, true, op);
-				}
-				catch(InterruptedException ie)
-				{
+				} catch (InterruptedException ie) {
 					// ignore - it was cancelled
-				}
-				catch(InvocationTargetException ite)
-				{
+				} catch (InvocationTargetException ite) {
 					Throwable t = ite.getTargetException();
-					if(t instanceof CoreException)
-					{
-						CoreException ce = (CoreException)t;
-						ErrorDialog.openError(this.getWorkbenchPart().getSite().getShell(),
-								Messages.an_error_occured_during_creation_of_the_project, null, ce.getStatus());
-					}
-					else
-					{
+					if (t instanceof CoreException) {
+						CoreException ce = (CoreException) t;
+						ErrorDialog.openError(this.getWorkbenchPart().getSite().getShell(), Messages.an_error_occured_during_creation_of_the_project,
+								null, ce.getStatus());
+					} else {
 						String title = Messages.an_error_occured_during_creation_of_the_project;
 						String rawMsg = t.getLocalizedMessage();
-						if(rawMsg == null)
+						if (rawMsg == null)
 							rawMsg = t.toString();
-						MessageDialog.openError(this.getWorkbenchPart().getSite().getShell(), title, NLS.bind(
-								Messages.internal_error_0, rawMsg));
+						MessageDialog.openError(this.getWorkbenchPart().getSite().getShell(), title, NLS.bind(Messages.internal_error_0, rawMsg));
 					}
 				}
-			}
-			else
-				for(IProject proj : projs)
+			} else
+				for (IProject proj : projs)
 					this.internalRun(proj, null);
-		}
-		catch(CoreException ce)
-		{
+		} catch (CoreException ce) {
 			throw new RuntimeException(ce);
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection)
-	{
-		m_selectedProjects = null;
-		if(selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection))
+	public void selectionChanged(IAction action, ISelection selection) {
+		selectedProjects = null;
+		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection))
 			return;
 
 		List<Object> projects = new ArrayList<Object>();
-		IStructuredSelection ss = (IStructuredSelection)selection;
+		IStructuredSelection ss = (IStructuredSelection) selection;
 		Iterator<?> iter = ss.iterator();
-		while(iter.hasNext())
-		{
+		while (iter.hasNext()) {
 			Object s = iter.next();
-			if(s instanceof IProject)
+			if (s instanceof IProject)
 				projects.add(s);
 		}
-		m_selectedProjects = projects.toArray(new IProject[0]);
+		selectedProjects = projects.toArray(new IProject[0]);
 	}
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart)
-	{
-		m_workbenchPart = targetPart;
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		workbenchPart = targetPart;
 	}
 
-	protected IProject[] getSelectedProjects()
-	{
-		return m_selectedProjects;
+	protected IProject[] getSelectedProjects() {
+		return selectedProjects;
 	}
 
-	protected IWorkbenchPart getWorkbenchPart()
-	{
-		return m_workbenchPart;
+	protected IWorkbenchPart getWorkbenchPart() {
+		return workbenchPart;
 	}
 
 	abstract protected void internalRun(IProject proj, IProgressMonitor monitor) throws CoreException;
 
-	protected boolean wantsMonitor()
-	{
+	protected boolean wantsMonitor() {
 		return true;
 	}
 }

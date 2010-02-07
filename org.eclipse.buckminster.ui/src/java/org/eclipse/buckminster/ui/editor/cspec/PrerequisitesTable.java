@@ -44,58 +44,49 @@ import org.osgi.framework.InvalidSyntaxException;
  * @author Karel Brezina
  * 
  */
-public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
-{
-	private CSpecEditor m_editor;
+public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder> {
+	private CSpecEditor editor;
 
-	private AttributesTable<?> m_parentAttributesTable;
+	private AttributesTable<?> parentAttributesTable;
 
-	private TopLevelAttributeBuilder m_attributeBuilder;
+	private TopLevelAttributeBuilder attributeBuilder;
 
-	private IWidgetin m_componentWidgetin = null;
+	private IWidgetin componentWidgetin = null;
 
-	private IWidgetin m_attributeWidgetin = null;
+	private IWidgetin attributeWidgetin = null;
 
-	public PrerequisitesTable(CSpecEditor editor, AttributesTable<?> parentAttributesTable,
-			List<PrerequisiteBuilder> data, TopLevelAttributeBuilder attributeBuilder, boolean readOnly)
-	{
+	public PrerequisitesTable(CSpecEditor editor, AttributesTable<?> parentAttributesTable, List<PrerequisiteBuilder> data,
+			TopLevelAttributeBuilder attributeBuilder, boolean readOnly) {
 		super(data, readOnly);
-		m_editor = editor;
-		m_parentAttributesTable = parentAttributesTable;
-		m_attributeBuilder = attributeBuilder;
+		this.editor = editor;
+		this.parentAttributesTable = parentAttributesTable;
+		this.attributeBuilder = attributeBuilder;
 	}
 
-	public PrerequisiteBuilder createRowClass()
-	{
-		return m_attributeBuilder.createPrerequisiteBuilder();
+	public PrerequisiteBuilder createRowClass() {
+		return attributeBuilder.createPrerequisiteBuilder();
 	}
 
-	public String[] getColumnHeaders()
-	{
-		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor,
-				Messages.filter, Messages.include_pattern, Messages.exclude_pattern };
+	public String[] getColumnHeaders() {
+		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor, Messages.filter,
+				Messages.include_pattern, Messages.exclude_pattern };
 	}
 
-	public int[] getColumnWeights()
-	{
+	public int[] getColumnWeights() {
 		return new int[] { 20, 10, 10, 0, 0, 0, 0 };
 	}
 
 	@Override
-	public IValidator getRowValidator()
-	{
-		return new IValidator()
-		{
+	public IValidator getRowValidator() {
+		return new IValidator() {
 
-			public void validate(Object... arg) throws ValidatorException
-			{
+			public void validate(Object... arg) throws ValidatorException {
 				// Integer rowNum = (Integer) arg[0];
 
-				PrerequisiteBuilder prerequisite = toRowClass((Object[])arg[1]);
+				PrerequisiteBuilder prerequisite = toRowClass((Object[]) arg[1]);
 
-				if((prerequisite.getName() == null || prerequisite.getName().length() == 0)
-						&& (prerequisite.getComponentName() == null || prerequisite.getComponentName().length() == 0))
-				{
+				if ((prerequisite.getName() == null || prerequisite.getName().length() == 0)
+						&& (prerequisite.getComponentName() == null || prerequisite.getComponentName().length() == 0)) {
 					throw new ValidatorException(Messages.name_or_component_has_to_be_entered);
 				}
 			}
@@ -103,109 +94,85 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 	}
 
 	@Override
-	public IWidgetin getWidgetin(Composite parent, int idx, Object value)
-	{
+	public IWidgetin getWidgetin(Composite parent, int idx, Object value) {
 
-		switch(idx)
-		{
-		case 0:
-			return m_componentWidgetin = getComponentWidgetin(parent, idx, value, m_editor.getComponentNames(),
-					SWT.NONE);
-		case 1:
-			m_attributeWidgetin = getAttributeWidgetin(parent, idx, value,
-					m_editor.getAttributeNames(m_parentAttributesTable.getCurrentBuilder().getName()), SWT.NONE);
+		switch (idx) {
+			case 0:
+				return componentWidgetin = getComponentWidgetin(parent, idx, value, editor.getComponentNames(), SWT.NONE);
+			case 1:
+				attributeWidgetin = getAttributeWidgetin(parent, idx, value, editor.getAttributeNames(parentAttributesTable.getCurrentBuilder()
+						.getName()), SWT.NONE);
 
-			setAttributeItems();
+				setAttributeItems();
 
-			return m_attributeWidgetin;
-		case 3:
-			return getBooleanCheckBoxWidgetin(parent, idx, (Boolean)value, Boolean.TRUE);
-		default:
-			return getTextWidgetin(parent, idx, value);
+				return attributeWidgetin;
+			case 3:
+				return getBooleanCheckBoxWidgetin(parent, idx, (Boolean) value, Boolean.TRUE);
+			default:
+				return getTextWidgetin(parent, idx, value);
 		}
 	}
 
-	public Object[] toRowArray(PrerequisiteBuilder t)
-	{
+	public Object[] toRowArray(PrerequisiteBuilder t) {
 		return new Object[] { t.getComponentName(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()),
 				TextUtils.notNullString(t.getFilter()), TextUtils.notNullString(t.getIncludePattern()),
 				TextUtils.notNullString(t.getExcludePattern()) };
 	}
 
-	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException
-	{
-		builder.setComponentName(TextUtils.notEmptyString((String)args[0]));
-		builder.setName(TextUtils.notEmptyString((String)args[1]));
-		builder.setAlias(TextUtils.notEmptyString((String)args[2]));
-		builder.setContributor(((Boolean)args[3]).booleanValue());
+	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException {
+		builder.setComponentName(TextUtils.notEmptyString((String) args[0]));
+		builder.setName(TextUtils.notEmptyString((String) args[1]));
+		builder.setAlias(TextUtils.notEmptyString((String) args[2]));
+		builder.setContributor(((Boolean) args[3]).booleanValue());
 
-		String filterStr = TextUtils.notEmptyString((String)args[4]);
-		if(filterStr != null)
-		{
-			try
-			{
+		String filterStr = TextUtils.notEmptyString((String) args[4]);
+		if (filterStr != null) {
+			try {
 				builder.setFilter(FilterFactory.newInstance(filterStr));
-			}
-			catch(InvalidSyntaxException e)
-			{
+			} catch (InvalidSyntaxException e) {
 				throw new ValidatorException(e.getMessage());
 			}
-		}
-		else
+		} else
 			builder.setFilter(null);
 
-		String includePatternStr = TextUtils.notEmptyString((String)args[5]);
-		if(includePatternStr != null)
-		{
-			try
-			{
+		String includePatternStr = TextUtils.notEmptyString((String) args[5]);
+		if (includePatternStr != null) {
+			try {
 				builder.setIncludePattern(Pattern.compile(includePatternStr));
-			}
-			catch(PatternSyntaxException e)
-			{
+			} catch (PatternSyntaxException e) {
 				throw new ValidatorException(e.getMessage());
 			}
-		}
-		else
+		} else
 			builder.setIncludePattern(null);
 
-		String excludePatternStr = TextUtils.notEmptyString((String)args[6]);
-		if(excludePatternStr != null)
-		{
-			try
-			{
+		String excludePatternStr = TextUtils.notEmptyString((String) args[6]);
+		if (excludePatternStr != null) {
+			try {
 				builder.setExcludePattern(Pattern.compile(excludePatternStr));
-			}
-			catch(PatternSyntaxException e)
-			{
+			} catch (PatternSyntaxException e) {
 				throw new ValidatorException(e.getMessage());
 			}
-		}
-		else
+		} else
 			builder.setExcludePattern(null);
 	}
 
-	protected IWidgetin getAttributeWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
-	{
+	protected IWidgetin getAttributeWidgetin(Composite parent, final int idx, Object value, String[] items, int style) {
 		final String ITEMS_KEY = "items"; //$NON-NLS-1$
 
 		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, isReadOnly(), null, null, style);
 
 		final IWidgetin widgetin = new WidgetWrapper(combo);
 
-		String stringValue = value == null
-				? "" //$NON-NLS-1$
+		String stringValue = value == null ? "" //$NON-NLS-1$
 				: value.toString();
 
 		combo.setText(stringValue);
 		combo.setData(stringValue);
 		combo.setData(ITEMS_KEY, items);
 
-		combo.addModifyListener(new ModifyListener()
-		{
+		combo.addModifyListener(new ModifyListener() {
 
-			public void modifyText(ModifyEvent e)
-			{
+			public void modifyText(ModifyEvent e) {
 				combo.setData(combo.getText());
 				validateFieldInFieldListener(widgetin, getFieldValidator(idx), combo.getText());
 			}
@@ -214,25 +181,21 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		return widgetin;
 	}
 
-	protected IWidgetin getComponentWidgetin(Composite parent, final int idx, Object value, String[] items, int style)
-	{
+	protected IWidgetin getComponentWidgetin(Composite parent, final int idx, Object value, String[] items, int style) {
 		final Combo combo = UiUtils.createGridCombo(parent, 0, 0, isReadOnly(), null, null, style);
 		final IWidgetin widgetin = new WidgetWrapper(combo);
 
 		combo.setItems(items);
 
-		String stringValue = value == null
-				? "" //$NON-NLS-1$
+		String stringValue = value == null ? "" //$NON-NLS-1$
 				: value.toString();
 
 		combo.setText(stringValue);
 		combo.setData(stringValue);
 
-		combo.addModifyListener(new ModifyListener()
-		{
+		combo.addModifyListener(new ModifyListener() {
 
-			public void modifyText(ModifyEvent e)
-			{
+			public void modifyText(ModifyEvent e) {
 				combo.setData(combo.getText());
 				validateFieldInFieldListener(widgetin, getFieldValidator(idx), combo.getText());
 				setAttributeItems();
@@ -242,45 +205,35 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder>
 		return widgetin;
 	}
 
-	private void setAttributeItems()
-	{
-		if(m_componentWidgetin == null || m_attributeWidgetin == null)
+	private void setAttributeItems() {
+		if (componentWidgetin == null || attributeWidgetin == null)
 			return;
 
-		Combo componentCombo = ((Combo)((WidgetWrapper)m_componentWidgetin).getWidget());
+		Combo componentCombo = ((Combo) ((WidgetWrapper) componentWidgetin).getWidget());
 
-		Combo attributeCombo = ((Combo)((WidgetWrapper)m_attributeWidgetin).getWidget());
+		Combo attributeCombo = ((Combo) ((WidgetWrapper) attributeWidgetin).getWidget());
 
 		String currentAttribute = attributeCombo.getText();
 
-		if(componentCombo.getText() == null || componentCombo.getText().length() == 0)
-		{
-			attributeCombo.setItems(((String[])attributeCombo.getData("items"))); //$NON-NLS-1$
-		}
-		else
-		{
-			ComponentRequestBuilder builder = m_editor.getDependencyBuilder(componentCombo.getText());
-			ComponentRequest cr = new ComponentRequest(builder.getName(), builder.getComponentTypeID(),
-					builder.getVersionRange());
+		if (componentCombo.getText() == null || componentCombo.getText().length() == 0) {
+			attributeCombo.setItems(((String[]) attributeCombo.getData("items"))); //$NON-NLS-1$
+		} else {
+			ComponentRequestBuilder builder = editor.getDependencyBuilder(componentCombo.getText());
+			ComponentRequest cr = new ComponentRequest(builder.getName(), builder.getComponentTypeID(), builder.getVersionRange());
 
 			TreeSet<String> prereqAttributes = new TreeSet<String>();
-			try
-			{
+			try {
 				Resolution prereqResolution = WorkspaceInfo.getResolution(cr, false);
 				CSpec prereqCSpec = prereqResolution.getCSpec();
 
-				for(Attribute attribute : prereqCSpec.getAttributes().values())
-					if(attribute.isPublic())
+				for (Attribute attribute : prereqCSpec.getAttributes().values())
+					if (attribute.isPublic())
 						prereqAttributes.add(attribute.getName());
-			}
-			catch(MissingComponentException e)
-			{
+			} catch (MissingComponentException e) {
 				// the component is not found - cannot show attribute names
-			}
-			catch(CoreException e)
-			{
-				ErrorDialog.openError(m_editor.getSite().getShell(), null,
-						Messages.cannot_get_attribute_names_for_the_selected_component, e.getStatus());
+			} catch (CoreException e) {
+				ErrorDialog.openError(editor.getSite().getShell(), null, Messages.cannot_get_attribute_names_for_the_selected_component, e
+						.getStatus());
 			}
 
 			attributeCombo.setItems(prereqAttributes.toArray(new String[0]));

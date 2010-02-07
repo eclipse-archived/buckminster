@@ -16,13 +16,10 @@ import org.eclipse.osgi.util.NLS;
  * @author Thomas Hallgren
  * 
  */
-public class DestinationChangeException extends LocalizedException
-{
+public class DestinationChangeException extends LocalizedException {
 	private static final long serialVersionUID = -7739997792455938561L;
 
-	public DestinationChangeException(IPath fixedDest, IPath wantedDest)
-	{
-		super(NLS.bind(Messages.Attempt_to_change_fixed_materialization_location_0_to_1, fixedDest.toPortableString(),
-				wantedDest.toPortableString()));
+	public DestinationChangeException(IPath fixedDest, IPath wantedDest) {
+		super(NLS.bind(Messages.Attempt_to_change_fixed_materialization_location_0_to_1, fixedDest.toPortableString(), wantedDest.toPortableString()));
 	}
 }

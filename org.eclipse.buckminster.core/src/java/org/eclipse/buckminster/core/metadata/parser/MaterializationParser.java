@@ -20,35 +20,28 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class MaterializationParser extends MetaDataParser<Materialization>
-{
-	private Materialization m_materialization;
+public class MaterializationParser extends MetaDataParser<Materialization> {
+	private Materialization materialization;
 
-	public MaterializationParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException
-	{
+	public MaterializationParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException {
 		super(parserExtensions);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_materialization = ((MaterializationHandler)child).getMaterialization();
+	public void childPopped(ChildHandler child) throws SAXException {
+		materialization = ((MaterializationHandler) child).getMaterialization();
 	}
 
-	public Materialization parse(String systemID, InputStream input) throws CoreException
-	{
+	public Materialization parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
-		return m_materialization;
+		return materialization;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(MaterializationHandler.TAG.equals(localName))
-		{
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if (MaterializationHandler.TAG.equals(localName)) {
 			MaterializationHandler rmh = new MaterializationHandler(this);
 			this.pushHandler(rmh, attrs);
-		}
-		else
+		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
 }

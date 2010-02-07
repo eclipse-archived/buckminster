@@ -27,49 +27,43 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author kolwing
  */
-public class ListPreferences extends AbstractCommand
-{
+public class ListPreferences extends AbstractCommand {
 	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", //$NON-NLS-1$
 			OptionValueType.NONE);
 
-	private boolean m_test = false;
+	private boolean test = false;
 
-	private String m_pattern = null;
+	private String pattern = null;
 
 	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(TEST_DESCRIPTOR);
 	}
 
 	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(TEST_DESCRIPTOR))
-			m_test = true;
+	protected void handleOption(Option option) throws Exception {
+		if (option.is(TEST_DESCRIPTOR))
+			test = true;
 	}
 
 	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
+	protected void handleUnparsed(String[] unparsed) throws Exception {
 		int len = unparsed.length;
-		if(len > 1)
+		if (len > 1)
 			throw new SimpleErrorExitException(Messages.Too_many_arguments);
-		if(len == 1)
-			m_pattern = unparsed[0];
+		if (len == 1)
+			pattern = unparsed[0];
 	}
 
 	@Override
-	protected int run(IProgressMonitor monitor) throws Exception
-	{
+	protected int run(IProgressMonitor monitor) throws Exception {
 		PrintStream out = System.out;
-		List<BasicPreferenceHandler> handlers = PreferenceMappingManager.getInstance(m_test).getAllHandlers(m_pattern);
+		List<BasicPreferenceHandler> handlers = PreferenceMappingManager.getInstance(test).getAllHandlers(pattern);
 		int top = handlers.size();
-		if(top == 0)
-		{
+		if (top == 0) {
 			out.print(Messages.No_preferences_found);
-			if(m_pattern != null)
-				out.format(NLS.bind(Messages.Is_the_pattern_0_correct, m_pattern));
+			if (pattern != null)
+				out.format(NLS.bind(Messages.Is_the_pattern_0_correct, pattern));
 			out.println();
 			return 0;
 		}
@@ -77,33 +71,26 @@ public class ListPreferences extends AbstractCommand
 		out.print(Messages.Found);
 		out.print(top);
 		out.println(Messages.Preferences);
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			BasicPreferenceHandler bph = handlers.get(idx);
 			out.println(bph.getName());
-			if(bph.getDescription() != null)
-			{
+			if (bph.getDescription() != null) {
 				out.print(Messages.Description);
 				out.println(bph.getDescription());
 			}
-			if(bph.getKey() != null)
-			{
+			if (bph.getKey() != null) {
 				out.print(Messages.Key);
 				out.println(bph.getKey());
 			}
 			String v;
-			try
-			{
+			try {
 				v = bph.get(null);
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				v = NLS.bind(Messages.Unable_to_obtain_value_0, e.getMessage());
 			}
-			if(v == null)
+			if (v == null)
 				out.println(Messages.No_value_set);
-			else
-			{
+			else {
 				out.print(Messages.Value);
 				out.println(v);
 			}

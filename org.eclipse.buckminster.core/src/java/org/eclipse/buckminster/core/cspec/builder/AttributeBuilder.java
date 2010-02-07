@@ -20,81 +20,65 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class AttributeBuilder extends CSpecElementBuilder implements IAttribute
-{
-	private Documentation m_documentation;
+public class AttributeBuilder extends CSpecElementBuilder implements IAttribute {
+	private Documentation documentation;
 
-	private Filter m_filter = null;
+	private Filter filter = null;
 
-	AttributeBuilder(CSpecBuilder cspecBuilder)
-	{
+	AttributeBuilder(CSpecBuilder cspecBuilder) {
 		super(cspecBuilder);
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_documentation = null;
-		m_filter = null;
+		documentation = null;
+		filter = null;
 	}
 
-	public Attribute createAttribute()
-	{
+	public Attribute createAttribute() {
 		return new Attribute(this);
 	}
 
-	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
-	{
-		return specBuilder == getCSpecBuilder()
-				? this
-				: new AttributeBuilder(specBuilder);
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder) {
+		return specBuilder == getCSpecBuilder() ? this : new AttributeBuilder(specBuilder);
 	}
 
-	public Documentation getDocumentation()
-	{
-		return m_documentation;
+	public Documentation getDocumentation() {
+		return documentation;
 	}
 
-	public Filter getFilter()
-	{
-		return m_filter;
+	public Filter getFilter() {
+		return filter;
 	}
 
-	public IPath getPrerequisiteRebase()
-	{
+	public IPath getPrerequisiteRebase() {
 		return null;
 	}
 
-	public List<? extends IPrerequisite> getPrerequisites()
-	{
+	public List<? extends IPrerequisite> getPrerequisites() {
 		return Collections.emptyList();
 	}
 
-	public String getQualifiedName()
-	{
+	public String getQualifiedName() {
 		return getCSpecBuilder().getComponentIdentifier().toString() + '#' + getName();
 	}
 
-	public void initFrom(IAttribute attribute)
-	{
+	public void initFrom(IAttribute attribute) {
 		super.initFrom(attribute.getName());
-		m_documentation = attribute.getDocumentation();
-		m_filter = attribute.getFilter();
+		documentation = attribute.getDocumentation();
+		filter = attribute.getFilter();
 	}
 
-	public boolean isPublic()
-	{
+	public boolean isPublic() {
 		return true;
 	}
 
-	public void setDocumentation(Documentation documentation)
-	{
-		m_documentation = documentation;
+	public void setDocumentation(Documentation documentation) {
+		this.documentation = documentation;
 	}
 
-	public void setFilter(Filter filter)
-	{
-		m_filter = filter;
+	public void setFilter(Filter filter) {
+		this.filter = filter;
 	}
 }

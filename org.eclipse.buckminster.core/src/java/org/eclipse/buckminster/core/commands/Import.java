@@ -48,130 +48,108 @@ import org.eclipse.ecf.core.security.IConnectContext;
 /**
  * @author Thomas Hallgren
  */
-public class Import extends WorkspaceInitCommand
-{
+public class Import extends WorkspaceInitCommand {
 	static private final OptionDescriptor BOM_FILE = new OptionDescriptor('B', "bomfile", OptionValueType.REQUIRED); //$NON-NLS-1$
 
 	static private final OptionDescriptor NO_IMPORT = new OptionDescriptor('N', "noimport", OptionValueType.NONE); //$NON-NLS-1$
 
-	private File m_bomFile;
+	private File bomFile;
 
-	private boolean m_resolveOnly;
+	private boolean resolveOnly;
 
-	private URL m_url;
+	private URL url;
 
-	private IConnectContext m_connectContext;
+	private IConnectContext connectContext;
 
-	public void setBomFile(File bomFile)
-	{
-		m_bomFile = bomFile;
+	public void setBomFile(File bomFile) {
+		this.bomFile = bomFile;
 	}
 
-	public void setConnectContext(IConnectContext cctx)
-	{
-		m_connectContext = cctx;
+	public void setConnectContext(IConnectContext cctx) {
+		connectContext = cctx;
 	}
 
-	public void setResolveOnly(boolean flag)
-	{
-		m_resolveOnly = flag;
+	public void setResolveOnly(boolean flag) {
+		resolveOnly = flag;
 	}
 
-	public void setURL(URL url)
-	{
-		m_url = url;
+	public void setURL(URL url) {
+		this.url = url;
 	}
 
 	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		super.getOptionDescriptors(appendHere);
 		appendHere.add(NO_IMPORT);
 		appendHere.add(BOM_FILE);
 	}
 
 	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		if(option.is(NO_IMPORT))
-		{
+	protected void handleOption(Option option) throws Exception {
+		if (option.is(NO_IMPORT)) {
 			setResolveOnly(true);
-		}
-		else if(option.is(BOM_FILE))
-		{
+		} else if (option.is(BOM_FILE)) {
 			setBomFile(new File(option.getValue()));
-		}
-		else
+		} else
 			super.handleOption(option);
 	}
 
 	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
+	protected void handleUnparsed(String[] unparsed) throws Exception {
 		int len = unparsed.length;
-		if(len > 1)
+		if (len > 1)
 			throw new UsageException(Messages.Too_many_arguments);
-		else if(len < 1)
+		else if (len < 1)
 			throw new UsageException(Messages.Missing_BOM_URL);
 		setURL(URLUtils.normalizeToURL(unparsed[0]));
 	}
 
 	@Override
-	protected int internalRun(boolean continueOnError, IProgressMonitor monitor) throws Exception
-	{
+	protected int internalRun(boolean continueOnError, IProgressMonitor monitor) throws Exception {
 		Logger logger = Buckminster.getLogger();
 		MonitorUtils.begin(monitor, 100);
 		OutputStream bomOut = null;
-		try
-		{
+		try {
 			IParserFactory pf = CorePlugin.getDefault().getParserFactory();
-			URL url = FileLocator.resolve(m_url);
+			URL resolvedURL = FileLocator.resolve(url);
 
 			AccessibleByteArrayOutputStream byteBld = new AccessibleByteArrayOutputStream();
-			DownloadManager.readInto(url, m_connectContext, byteBld, MonitorUtils.subMonitor(monitor, 20));
+			DownloadManager.readInto(resolvedURL, connectContext, byteBld, MonitorUtils.subMonitor(monitor, 20));
 
-			if(m_bomFile != null)
+			if (bomFile != null)
 				//
-				// We attempt to open this early. Don't want to fail because this file cannot
+				// We attempt to open this early. Don't want to fail because
+				// this file cannot
 				// be created and loose a completed resolve.
 				//
-				bomOut = new BufferedOutputStream(new FileOutputStream(m_bomFile));
+				bomOut = new BufferedOutputStream(new FileOutputStream(bomFile));
 
 			// Assume that the URL is pointing to an MSPEC.
 			//
 			MaterializationSpec mspec;
-			try
-			{
-				mspec = pf.getMaterializationSpecParser(true).parse(url.toString(), byteBld.getInputStream());
-			}
-			catch(CoreException e)
-			{
+			try {
+				mspec = pf.getMaterializationSpecParser(true).parse(resolvedURL.toString(), byteBld.getInputStream());
+			} catch (CoreException e) {
 				mspec = null;
 			}
 			MonitorUtils.worked(monitor, 5);
 
-			if(mspec != null)
-			{
+			if (mspec != null) {
 				// We have an MSPEC. Now let's parse whatever it points to.
 				//
-				url = mspec.getResolvedURL();
+				resolvedURL = mspec.getResolvedURL();
 				byteBld.reset();
-				DownloadManager.readInto(url, m_connectContext, byteBld, MonitorUtils.subMonitor(monitor, 20));
-			}
-			else
-			{
+				DownloadManager.readInto(resolvedURL, connectContext, byteBld, MonitorUtils.subMonitor(monitor, 20));
+			} else {
 				MonitorUtils.worked(monitor, 20);
 			}
 
 			// Let's see if we can parse a CQUERY
 			//
 			ComponentQuery cquery;
-			try
-			{
-				cquery = ComponentQuery.fromStream(url, m_connectContext, byteBld.getInputStream(), true);
-			}
-			catch(CoreException e)
-			{
+			try {
+				cquery = ComponentQuery.fromStream(resolvedURL, connectContext, byteBld.getInputStream(), true);
+			} catch (CoreException e) {
 				// Assume this was not a CQUERY, restart input
 				//
 				cquery = null;
@@ -179,33 +157,25 @@ public class Import extends WorkspaceInitCommand
 			MonitorUtils.worked(monitor, 5);
 
 			BillOfMaterials bom;
-			if(cquery != null)
-			{
-				ResolutionContext ctx = (mspec == null)
-						? new ResolutionContext(cquery)
-						: new ResolutionContext(mspec, cquery);
+			if (cquery != null) {
+				ResolutionContext ctx = (mspec == null) ? new ResolutionContext(cquery) : new ResolutionContext(mspec, cquery);
 				IResolver resolver = new MainResolver(ctx);
 				resolver.getContext().setContinueOnError(true);
-				try
-				{
+				try {
 					bom = resolver.resolve(MonitorUtils.subMonitor(monitor, 50));
-				}
-				finally
-				{
-					if(resolver.getContext().emitWarningAndErrorTags() && !continueOnError)
+				} finally {
+					if (resolver.getContext().emitWarningAndErrorTags() && !continueOnError)
 						return 1;
 				}
-			}
-			else
-			{
-				// If CQUERY parsing failed, our last attempt is to parse the BOM.
+			} else {
+				// If CQUERY parsing failed, our last attempt is to parse the
+				// BOM.
 				//
-				bom = pf.getBillOfMaterialsParser(true).parse(url.toString(), byteBld.getInputStream());
+				bom = pf.getBillOfMaterialsParser(true).parse(resolvedURL.toString(), byteBld.getInputStream());
 				MonitorUtils.worked(monitor, 50);
 			}
 
-			if(bomOut != null)
-			{
+			if (bomOut != null) {
 				Utils.serialize(bom, bomOut);
 
 				// Close now so it can be accessed during materialization
@@ -214,15 +184,14 @@ public class Import extends WorkspaceInitCommand
 				bomOut = null;
 			}
 
-			if(m_resolveOnly)
+			if (resolveOnly)
 				return 0;
 
-			if(mspec == null)
-			{
+			if (mspec == null) {
 				// Create a default MSPEC
 				//
 				MaterializationSpecBuilder mspecBld = new MaterializationSpecBuilder();
-				mspecBld.setURL(url.toString());
+				mspecBld.setURL(resolvedURL.toString());
 				mspecBld.setName(bom.getViewName());
 				mspecBld.setMaterializerID(getMaterializer());
 				bom.addMaterializationNodes(mspecBld);
@@ -232,11 +201,9 @@ public class Import extends WorkspaceInitCommand
 			MaterializationContext matCtx = new MaterializationContext(bom, mspec);
 			matCtx.setContinueOnError(continueOnError);
 			MaterializationJob.run(matCtx);
-			if(matCtx.getStatus().getSeverity() == IStatus.ERROR)
+			if (matCtx.getStatus().getSeverity() == IStatus.ERROR)
 				return 1;
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(bomOut); // If not closed earlier
 			MonitorUtils.done(monitor);
 		}

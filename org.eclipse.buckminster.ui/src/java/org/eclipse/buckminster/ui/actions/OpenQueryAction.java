@@ -35,24 +35,16 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
-public class OpenQueryAction implements IWorkbenchWindowActionDelegate
-{
-	private static class URLValidator implements IInputValidator
-	{
-		public String isValid(String newText)
-		{
-			if(newText != null)
-			{
+public class OpenQueryAction implements IWorkbenchWindowActionDelegate {
+	private static class URLValidator implements IInputValidator {
+		public String isValid(String newText) {
+			if (newText != null) {
 				newText = newText.trim();
-				if(newText.length() > 0)
-				{
-					try
-					{
+				if (newText.length() > 0) {
+					try {
 						new URL(newText);
 						return null;
-					}
-					catch(MalformedURLException e)
-					{
+					} catch (MalformedURLException e) {
 					}
 				}
 			}
@@ -67,49 +59,43 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 
 	private static final int MAX_REMEMBERED_CQUERIES = 5;
 
-	private IWorkbenchWindow m_workbenchWindow;
+	private IWorkbenchWindow workbenchWindow;
 
-	public void dispose()
-	{
+	public void dispose() {
 	}
 
-	public void init(IWorkbenchWindow window)
-	{
-		m_workbenchWindow = window;
+	public void init(IWorkbenchWindow window) {
+		workbenchWindow = window;
 	}
 
-	public void run(IAction action)
-	{
+	public void run(IAction action) {
 		IPreferenceStore preferences = UiPlugin.getDefault().getPreferenceStore();
-		Shell shell = m_workbenchWindow.getShell();
+		Shell shell = workbenchWindow.getShell();
 
 		String lastURLsString = preferences.getString(LAST_CQUERY_URLS);
 		String[] lastURLs = null;
 
-		if(lastURLsString != null && lastURLsString.length() > 0)
+		if (lastURLsString != null && lastURLsString.length() > 0)
 			lastURLs = lastURLsString.split(";"); //$NON-NLS-1$
-		else
-		{
+		else {
 			String lastURLString = preferences.getString(LAST_CQUERY_URL);
 
-			if(lastURLString != null)
+			if (lastURLString != null)
 				lastURLs = new String[] { lastURLString };
 		}
 
-		ComboInputDialog askURL = new ComboInputDialog(shell, null, Messages.url_for_query_with_colon, lastURLs,
-				lastURLs.length > 0
-						? lastURLs[0]
-						: null, new URLValidator());
+		ComboInputDialog askURL = new ComboInputDialog(shell, null, Messages.url_for_query_with_colon, lastURLs, lastURLs.length > 0 ? lastURLs[0]
+				: null, new URLValidator());
 
-		if(askURL.open() != Window.OK)
+		if (askURL.open() != Window.OK)
 			return;
 
 		String urlStr = askURL.getValue();
-		if(urlStr == null)
+		if (urlStr == null)
 			return;
 
 		urlStr = urlStr.trim();
-		if(urlStr.length() == 0)
+		if (urlStr.length() == 0)
 			return;
 
 		StringBuilder sb = new StringBuilder();
@@ -117,13 +103,11 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 		sb.append(urlStr);
 
 		int cnt = 1;
-		for(String str : lastURLs)
-		{
-			if(cnt >= MAX_REMEMBERED_CQUERIES)
+		for (String str : lastURLs) {
+			if (cnt >= MAX_REMEMBERED_CQUERIES)
 				break;
 
-			if(!urlStr.equals(str))
-			{
+			if (!urlStr.equals(str)) {
 				sb.append(';');
 				sb.append(str);
 				cnt++;
@@ -131,22 +115,17 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 		}
 
 		preferences.setValue(LAST_CQUERY_URLS, sb.toString());
-		try
-		{
+		try {
 			URL url = URLUtils.normalizeToURL(urlStr);
 			File cqueryFile = FileUtils.getFile(url);
-			if(cqueryFile == null)
-			{
+			if (cqueryFile == null) {
 				File tempFile = File.createTempFile(BlankQueryAction.TEMP_FILE_PREFIX, ".cquery"); //$NON-NLS-1$
 				tempFile.deleteOnExit();
 				OutputStream output = null;
-				try
-				{
+				try {
 					output = new FileOutputStream(tempFile);
 					DownloadManager.readInto(url, null, output, null);
-				}
-				finally
-				{
+				} finally {
 					IOUtils.close(output);
 				}
 				cqueryFile = tempFile;
@@ -154,17 +133,13 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate
 
 			IWorkbench workbench = PlatformUI.getWorkbench();
 			IEditorDescriptor ed = workbench.getEditorRegistry().getDefaultEditor("buckminster.cquery"); //$NON-NLS-1$
-			m_workbenchWindow.getActivePage().openEditor(
-					new ExternalFileEditorInput(cqueryFile, new Path(url.toURI().getPath()).lastSegment(), urlStr),
-					ed.getId());
-		}
-		catch(Exception e)
-		{
+			workbenchWindow.getActivePage().openEditor(
+					new ExternalFileEditorInput(cqueryFile, new Path(url.toURI().getPath()).lastSegment(), urlStr), ed.getId());
+		} catch (Exception e) {
 			UiUtils.openError(shell, Messages.unable_to_open_editor, e);
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection)
-	{
+	public void selectionChanged(IAction action, ISelection selection) {
 	}
 }

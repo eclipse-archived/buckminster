@@ -43,34 +43,34 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Package</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class CspecPackageImpl extends EPackageImpl implements CspecPackage
-{
+public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	/**
-	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
+	 * Creates, registers, and initializes the <b>Package</b> for this model,
+	 * and for any others upon which it depends.
 	 * 
 	 * <p>
-	 * This method is used to initialize {@link CspecPackage#eINSTANCE} when that field is accessed. Clients should not
-	 * invoke it directly. Instead, they should simply access that field to obtain the package. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * This method is used to initialize {@link CspecPackage#eINSTANCE} when
+	 * that field is accessed. Clients should not invoke it directly. Instead,
+	 * they should simply access that field to obtain the package. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #eNS_URI
 	 * @see #createPackageContents()
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static CspecPackage init()
-	{
-		if(isInited)
-			return (CspecPackage)EPackage.Registry.INSTANCE.getEPackage(CspecPackage.eNS_URI);
+	public static CspecPackage init() {
+		if (isInited)
+			return (CspecPackage) EPackage.Registry.INSTANCE.getEPackage(CspecPackage.eNS_URI);
 
 		// Obtain or create and register package
-		CspecPackageImpl theCspecPackage = (CspecPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof CspecPackageImpl
-				? EPackage.Registry.INSTANCE.get(eNS_URI)
-				: new CspecPackageImpl());
+		CspecPackageImpl theCspecPackage = (CspecPackageImpl) (EPackage.Registry.INSTANCE.get(eNS_URI) instanceof CspecPackageImpl
+				? EPackage.Registry.INSTANCE.get(eNS_URI) : new CspecPackageImpl());
 
 		isInited = true;
 
@@ -253,11 +253,13 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	private boolean isInitialized = false;
 
 	/**
-	 * Creates an instance of the model <b>Package</b>, registered with {@link org.eclipse.emf.ecore.EPackage.Registry
-	 * EPackage.Registry} by the package package URI value.
+	 * Creates an instance of the model <b>Package</b>, registered with
+	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the
+	 * package package URI value.
 	 * <p>
-	 * Note: the correct way to create the package is via the static factory method {@link #init init()}, which also
-	 * performs initialization of the package, or returns the registered package, if one already exists. <!--
+	 * Note: the correct way to create the package is via the static factory
+	 * method {@link #init init()}, which also performs initialization of the
+	 * package, or returns the registered package, if one already exists. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
@@ -265,20 +267,19 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * @see #init()
 	 * @generated
 	 */
-	private CspecPackageImpl()
-	{
+	private CspecPackageImpl() {
 		super(eNS_URI, CspecFactory.eINSTANCE);
 	}
 
 	/**
-	 * Creates the meta-model objects for the package. This method is guarded to have no affect on any invocation but
-	 * its first. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates the meta-model objects for the package. This method is guarded to
+	 * have no affect on any invocation but its first. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void createPackageContents()
-	{
-		if(isCreated)
+	public void createPackageContents() {
+		if (isCreated)
 			return;
 		isCreated = true;
 
@@ -393,8 +394,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getAction()
-	{
+	public EClass getAction() {
 		return actionEClass;
 	}
 
@@ -403,9 +403,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAction_Actor()
-	{
-		return (EAttribute)actionEClass.getEStructuralFeatures().get(2);
+	public EAttribute getAction_Actor() {
+		return (EAttribute) actionEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -413,9 +412,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAction_ActorProperties()
-	{
-		return (EReference)actionEClass.getEStructuralFeatures().get(1);
+	public EReference getAction_ActorProperties() {
+		return (EReference) actionEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -423,9 +421,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAction_Pattern()
-	{
-		return (EAttribute)actionEClass.getEStructuralFeatures().get(10);
+	public EAttribute getAction_Pattern() {
+		return (EAttribute) actionEClass.getEStructuralFeatures().get(10);
 	}
 
 	/**
@@ -433,9 +430,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAction_PrerequisitesAlias()
-	{
-		return (EAttribute)actionEClass.getEStructuralFeatures().get(5);
+	public EAttribute getAction_PrerequisitesAlias() {
+		return (EAttribute) actionEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -443,9 +439,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAction_PrerequisitesRebase()
-	{
-		return (EAttribute)actionEClass.getEStructuralFeatures().get(6);
+	public EAttribute getAction_PrerequisitesRebase() {
+		return (EAttribute) actionEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -453,9 +448,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAction_Product()
-	{
-		return (EReference)actionEClass.getEStructuralFeatures().get(3);
+	public EReference getAction_Product() {
+		return (EReference) actionEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -463,9 +457,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAction_ProductAlias()
-	{
-		return (EAttribute)actionEClass.getEStructuralFeatures().get(7);
+	public EAttribute getAction_ProductAlias() {
+		return (EAttribute) actionEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -473,9 +466,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAction_ProductFileCount()
-	{
-		return (EAttribute)actionEClass.getEStructuralFeatures().get(9);
+	public EAttribute getAction_ProductFileCount() {
+		return (EAttribute) actionEClass.getEStructuralFeatures().get(9);
 	}
 
 	/**
@@ -483,9 +475,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAction_Products()
-	{
-		return (EReference)actionEClass.getEStructuralFeatures().get(4);
+	public EReference getAction_Products() {
+		return (EReference) actionEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -493,9 +484,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAction_Properties()
-	{
-		return (EReference)actionEClass.getEStructuralFeatures().get(0);
+	public EReference getAction_Properties() {
+		return (EReference) actionEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -503,9 +493,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAction_Replacement()
-	{
-		return (EAttribute)actionEClass.getEStructuralFeatures().get(11);
+	public EAttribute getAction_Replacement() {
+		return (EAttribute) actionEClass.getEStructuralFeatures().get(11);
 	}
 
 	/**
@@ -513,9 +502,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAction_UpToDatePolicy()
-	{
-		return (EAttribute)actionEClass.getEStructuralFeatures().get(8);
+	public EAttribute getAction_UpToDatePolicy() {
+		return (EAttribute) actionEClass.getEStructuralFeatures().get(8);
 	}
 
 	/**
@@ -523,8 +511,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getActionAttribute()
-	{
+	public EClass getActionAttribute() {
 		return actionAttributeEClass;
 	}
 
@@ -533,9 +520,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getActionAttribute_Action()
-	{
-		return (EReference)actionAttributeEClass.getEStructuralFeatures().get(1);
+	public EReference getActionAttribute_Action() {
+		return (EReference) actionAttributeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -543,9 +529,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getActionAttribute_Alias()
-	{
-		return (EAttribute)actionAttributeEClass.getEStructuralFeatures().get(0);
+	public EAttribute getActionAttribute_Alias() {
+		return (EAttribute) actionAttributeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -553,8 +538,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getAlterAction()
-	{
+	public EClass getAlterAction() {
 		return alterActionEClass;
 	}
 
@@ -563,9 +547,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterAction_RemoveActorProperties()
-	{
-		return (EReference)alterActionEClass.getEStructuralFeatures().get(3);
+	public EReference getAlterAction_RemoveActorProperties() {
+		return (EReference) alterActionEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -573,9 +556,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterAction_RemovePaths()
-	{
-		return (EReference)alterActionEClass.getEStructuralFeatures().get(5);
+	public EReference getAlterAction_RemovePaths() {
+		return (EReference) alterActionEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -583,9 +565,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterAction_RemoveProducts()
-	{
-		return (EReference)alterActionEClass.getEStructuralFeatures().get(4);
+	public EReference getAlterAction_RemoveProducts() {
+		return (EReference) alterActionEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -593,9 +574,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterAction_RemoveProperties()
-	{
-		return (EReference)alterActionEClass.getEStructuralFeatures().get(2);
+	public EReference getAlterAction_RemoveProperties() {
+		return (EReference) alterActionEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -603,9 +583,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterAction_ReplaceActorProperties()
-	{
-		return (EReference)alterActionEClass.getEStructuralFeatures().get(1);
+	public EReference getAlterAction_ReplaceActorProperties() {
+		return (EReference) alterActionEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -613,9 +592,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterAction_ReplaceProperties()
-	{
-		return (EReference)alterActionEClass.getEStructuralFeatures().get(0);
+	public EReference getAlterAction_ReplaceProperties() {
+		return (EReference) alterActionEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -623,8 +601,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getAlterArtifact()
-	{
+	public EClass getAlterArtifact() {
 		return alterArtifactEClass;
 	}
 
@@ -633,9 +610,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterArtifact_RemovePaths()
-	{
-		return (EReference)alterArtifactEClass.getEStructuralFeatures().get(0);
+	public EReference getAlterArtifact_RemovePaths() {
+		return (EReference) alterArtifactEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -643,8 +619,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getAlterAttribute()
-	{
+	public EClass getAlterAttribute() {
 		return alterAttributeEClass;
 	}
 
@@ -653,9 +628,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterAttribute_Cspecext()
-	{
-		return (EReference)alterAttributeEClass.getEStructuralFeatures().get(0);
+	public EReference getAlterAttribute_Cspecext() {
+		return (EReference) alterAttributeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -663,8 +637,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getAlterGroup()
-	{
+	public EClass getAlterGroup() {
 		return alterGroupEClass;
 	}
 
@@ -673,9 +646,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterGroup_RemovePrerequisites()
-	{
-		return (EReference)alterGroupEClass.getEStructuralFeatures().get(1);
+	public EReference getAlterGroup_RemovePrerequisites() {
+		return (EReference) alterGroupEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -683,9 +655,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAlterGroup_ReplacePrerequisites()
-	{
-		return (EReference)alterGroupEClass.getEStructuralFeatures().get(0);
+	public EReference getAlterGroup_ReplacePrerequisites() {
+		return (EReference) alterGroupEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -693,8 +664,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getArtifact()
-	{
+	public EClass getArtifact() {
 		return artifactEClass;
 	}
 
@@ -703,8 +673,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getAttribute()
-	{
+	public EClass getAttribute() {
 		return attributeEClass;
 	}
 
@@ -713,9 +682,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAttribute_Cspec()
-	{
-		return (EReference)attributeEClass.getEStructuralFeatures().get(3);
+	public EReference getAttribute_Cspec() {
+		return (EReference) attributeEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -723,9 +691,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getAttribute_Documentation()
-	{
-		return (EReference)attributeEClass.getEStructuralFeatures().get(4);
+	public EReference getAttribute_Documentation() {
+		return (EReference) attributeEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -733,9 +700,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAttribute_Filter()
-	{
-		return (EAttribute)attributeEClass.getEStructuralFeatures().get(2);
+	public EAttribute getAttribute_Filter() {
+		return (EAttribute) attributeEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -743,9 +709,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAttribute_Name()
-	{
-		return (EAttribute)attributeEClass.getEStructuralFeatures().get(0);
+	public EAttribute getAttribute_Name() {
+		return (EAttribute) attributeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -753,9 +718,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getAttribute_Public()
-	{
-		return (EAttribute)attributeEClass.getEStructuralFeatures().get(1);
+	public EAttribute getAttribute_Public() {
+		return (EAttribute) attributeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -763,8 +727,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getCSpec()
-	{
+	public EClass getCSpec() {
 		return cSpecEClass;
 	}
 
@@ -773,9 +736,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpec_Attributes()
-	{
-		return (EReference)cSpecEClass.getEStructuralFeatures().get(2);
+	public EReference getCSpec_Attributes() {
+		return (EReference) cSpecEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -783,9 +745,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpec_Dependencies()
-	{
-		return (EReference)cSpecEClass.getEStructuralFeatures().get(0);
+	public EReference getCSpec_Dependencies() {
+		return (EReference) cSpecEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -793,9 +754,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpec_Documentation()
-	{
-		return (EReference)cSpecEClass.getEStructuralFeatures().get(3);
+	public EReference getCSpec_Documentation() {
+		return (EReference) cSpecEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -803,9 +763,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getCSpec_Filter()
-	{
-		return (EAttribute)cSpecEClass.getEStructuralFeatures().get(5);
+	public EAttribute getCSpec_Filter() {
+		return (EAttribute) cSpecEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -813,9 +772,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpec_Generators()
-	{
-		return (EReference)cSpecEClass.getEStructuralFeatures().get(1);
+	public EReference getCSpec_Generators() {
+		return (EReference) cSpecEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -823,9 +781,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getCSpec_ProjectInfo()
-	{
-		return (EAttribute)cSpecEClass.getEStructuralFeatures().get(6);
+	public EAttribute getCSpec_ProjectInfo() {
+		return (EAttribute) cSpecEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -833,9 +790,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpec_Self()
-	{
-		return (EReference)cSpecEClass.getEStructuralFeatures().get(7);
+	public EReference getCSpec_Self() {
+		return (EReference) cSpecEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -843,9 +799,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getCSpec_ShortDesc()
-	{
-		return (EAttribute)cSpecEClass.getEStructuralFeatures().get(4);
+	public EAttribute getCSpec_ShortDesc() {
+		return (EAttribute) cSpecEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -853,8 +808,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getCSpecExtension()
-	{
+	public EClass getCSpecExtension() {
 		return cSpecExtensionEClass;
 	}
 
@@ -863,9 +817,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpecExtension_AttributeAlterations()
-	{
-		return (EReference)cSpecExtensionEClass.getEStructuralFeatures().get(0);
+	public EReference getCSpecExtension_AttributeAlterations() {
+		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -873,9 +826,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpecExtension_RemoveDependencies()
-	{
-		return (EReference)cSpecExtensionEClass.getEStructuralFeatures().get(2);
+	public EReference getCSpecExtension_RemoveDependencies() {
+		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -883,9 +835,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpecExtension_RemoveGenerators()
-	{
-		return (EReference)cSpecExtensionEClass.getEStructuralFeatures().get(3);
+	public EReference getCSpecExtension_RemoveGenerators() {
+		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -893,9 +844,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpecExtension_RenameAttributes()
-	{
-		return (EReference)cSpecExtensionEClass.getEStructuralFeatures().get(1);
+	public EReference getCSpecExtension_RenameAttributes() {
+		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -903,9 +853,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpecExtension_ReplaceDependencies()
-	{
-		return (EReference)cSpecExtensionEClass.getEStructuralFeatures().get(5);
+	public EReference getCSpecExtension_ReplaceDependencies() {
+		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -913,9 +862,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getCSpecExtension_ReplaceGenerators()
-	{
-		return (EReference)cSpecExtensionEClass.getEStructuralFeatures().get(4);
+	public EReference getCSpecExtension_ReplaceGenerators() {
+		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -923,9 +871,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public CspecFactory getCspecFactory()
-	{
-		return (CspecFactory)getEFactoryInstance();
+	public CspecFactory getCspecFactory() {
+		return (CspecFactory) getEFactoryInstance();
 	}
 
 	/**
@@ -933,8 +880,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getGenerator()
-	{
+	public EClass getGenerator() {
 		return generatorEClass;
 	}
 
@@ -943,9 +889,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getGenerator_Attribute()
-	{
-		return (EAttribute)generatorEClass.getEStructuralFeatures().get(0);
+	public EAttribute getGenerator_Attribute() {
+		return (EAttribute) generatorEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -953,9 +898,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getGenerator_Component()
-	{
-		return (EReference)generatorEClass.getEStructuralFeatures().get(1);
+	public EReference getGenerator_Component() {
+		return (EReference) generatorEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -963,9 +907,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getGenerator_Cspec()
-	{
-		return (EReference)generatorEClass.getEStructuralFeatures().get(3);
+	public EReference getGenerator_Cspec() {
+		return (EReference) generatorEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -973,9 +916,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getGenerator_Generates()
-	{
-		return (EReference)generatorEClass.getEStructuralFeatures().get(2);
+	public EReference getGenerator_Generates() {
+		return (EReference) generatorEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -983,8 +925,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getGroup()
-	{
+	public EClass getGroup() {
 		return groupEClass;
 	}
 
@@ -993,9 +934,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getGroup_Prerequisites()
-	{
-		return (EReference)groupEClass.getEStructuralFeatures().get(0);
+	public EReference getGroup_Prerequisites() {
+		return (EReference) groupEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1003,9 +943,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getGroup_Rebase()
-	{
-		return (EAttribute)groupEClass.getEStructuralFeatures().get(1);
+	public EAttribute getGroup_Rebase() {
+		return (EAttribute) groupEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1013,8 +952,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getIContext()
-	{
+	public EClass getIContext() {
 		return iContextEClass;
 	}
 
@@ -1023,8 +961,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EDataType getIPath()
-	{
+	public EDataType getIPath() {
 		return iPathEDataType;
 	}
 
@@ -1033,8 +970,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getPathGroup()
-	{
+	public EClass getPathGroup() {
 		return pathGroupEClass;
 	}
 
@@ -1043,9 +979,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPathGroup_Base()
-	{
-		return (EAttribute)pathGroupEClass.getEStructuralFeatures().get(0);
+	public EAttribute getPathGroup_Base() {
+		return (EAttribute) pathGroupEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1053,9 +988,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPathGroup_Paths()
-	{
-		return (EAttribute)pathGroupEClass.getEStructuralFeatures().get(1);
+	public EAttribute getPathGroup_Paths() {
+		return (EAttribute) pathGroupEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1063,8 +997,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getPrerequisite()
-	{
+	public EClass getPrerequisite() {
 		return prerequisiteEClass;
 	}
 
@@ -1073,9 +1006,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPrerequisite_Alias()
-	{
-		return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(2);
+	public EAttribute getPrerequisite_Alias() {
+		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -1083,9 +1015,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPrerequisite_Attribute()
-	{
-		return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(1);
+	public EAttribute getPrerequisite_Attribute() {
+		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1093,9 +1024,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EReference getPrerequisite_Component()
-	{
-		return (EReference)prerequisiteEClass.getEStructuralFeatures().get(0);
+	public EReference getPrerequisite_Component() {
+		return (EReference) prerequisiteEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1103,9 +1033,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPrerequisite_Contributor()
-	{
-		return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(3);
+	public EAttribute getPrerequisite_Contributor() {
+		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -1113,9 +1042,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPrerequisite_ExcludePattern()
-	{
-		return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(7);
+	public EAttribute getPrerequisite_ExcludePattern() {
+		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(7);
 	}
 
 	/**
@@ -1123,9 +1051,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPrerequisite_Filter()
-	{
-		return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(5);
+	public EAttribute getPrerequisite_Filter() {
+		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -1133,9 +1060,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPrerequisite_IncludePattern()
-	{
-		return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(6);
+	public EAttribute getPrerequisite_IncludePattern() {
+		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -1143,9 +1069,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getPrerequisite_Optional()
-	{
-		return (EAttribute)prerequisiteEClass.getEStructuralFeatures().get(4);
+	public EAttribute getPrerequisite_Optional() {
+		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -1153,8 +1078,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getRemove()
-	{
+	public EClass getRemove() {
 		return removeEClass;
 	}
 
@@ -1163,9 +1087,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getRemove_Name()
-	{
-		return (EAttribute)removeEClass.getEStructuralFeatures().get(0);
+	public EAttribute getRemove_Name() {
+		return (EAttribute) removeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1173,8 +1096,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getRename()
-	{
+	public EClass getRename() {
 		return renameEClass;
 	}
 
@@ -1183,9 +1105,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getRename_NewName()
-	{
-		return (EAttribute)renameEClass.getEStructuralFeatures().get(1);
+	public EAttribute getRename_NewName() {
+		return (EAttribute) renameEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1193,9 +1114,8 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EAttribute getRename_OldName()
-	{
-		return (EAttribute)renameEClass.getEStructuralFeatures().get(0);
+	public EAttribute getRename_OldName() {
+		return (EAttribute) renameEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1203,8 +1123,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EClass getSelfArtifact()
-	{
+	public EClass getSelfArtifact() {
 		return selfArtifactEClass;
 	}
 
@@ -1213,20 +1132,19 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 	 * 
 	 * @generated
 	 */
-	public EEnum getUpToDatePolicy()
-	{
+	public EEnum getUpToDatePolicy() {
 		return upToDatePolicyEEnum;
 	}
 
 	/**
-	 * Complete the initialization of the package and its meta-model. This method is guarded to have no affect on any
-	 * invocation but its first. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Complete the initialization of the package and its meta-model. This
+	 * method is guarded to have no affect on any invocation but its first. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public void initializePackageContents()
-	{
-		if(isInitialized)
+	public void initializePackageContents() {
+		if (isInitialized)
 			return;
 		isInitialized = true;
 
@@ -1236,7 +1154,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
-		CommonPackage theCommonPackage = (CommonPackage)EPackage.Registry.INSTANCE.getEPackage(CommonPackage.eNS_URI);
+		CommonPackage theCommonPackage = (CommonPackage) EPackage.Registry.INSTANCE.getEPackage(CommonPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -1260,238 +1178,185 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(cSpecEClass, CSpec.class, "CSpec", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getCSpec_Dependencies(), theCommonPackage.getComponentRequest(), null, "dependencies", null, 0,
-				-1, CSpec.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCSpec_Generators(), this.getGenerator(), this.getGenerator_Cspec(), "generators", null, 0,
-				-1, CSpec.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCSpec_Attributes(), this.getAttribute(), this.getAttribute_Cspec(), "attributes", null, 0,
-				-1, CSpec.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCSpec_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null, 0,
-				1, CSpec.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getCSpec_ShortDesc(), ecorePackage.getEString(), "shortDesc", null, 0, 1, CSpec.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getCSpec_Filter(), theCommonPackage.getFilter(), "filter", null, 0, 1, CSpec.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getCSpec_ProjectInfo(), theCommonPackage.getURL(), "projectInfo", null, 0, 1, CSpec.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCSpec_Self(), this.getSelfArtifact(), null, "self", null, 1, 1, CSpec.class, IS_TRANSIENT,
-				IS_VOLATILE, !IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED,
-				IS_ORDERED);
+		initEReference(getCSpec_Dependencies(), theCommonPackage.getComponentRequest(), null, "dependencies", null, 0, -1, CSpec.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpec_Generators(), this.getGenerator(), this.getGenerator_Cspec(), "generators", null, 0, -1, CSpec.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpec_Attributes(), this.getAttribute(), this.getAttribute_Cspec(), "attributes", null, 0, -1, CSpec.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpec_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null, 0, 1, CSpec.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCSpec_ShortDesc(), ecorePackage.getEString(), "shortDesc", null, 0, 1, CSpec.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCSpec_Filter(), theCommonPackage.getFilter(), "filter", null, 0, 1, CSpec.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCSpec_ProjectInfo(), theCommonPackage.getURL(), "projectInfo", null, 0, 1, CSpec.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpec_Self(), this.getSelfArtifact(), null, "self", null, 1, 1, CSpec.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE,
+				!IS_COMPOSITE, !IS_RESOLVE_PROXIES, IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
-		EOperation op = addEOperation(cSpecEClass, this.getAttribute(), "getDerivedAttributes", 0, -1, IS_UNIQUE,
-				IS_ORDERED);
+		EOperation op = addEOperation(cSpecEClass, this.getAttribute(), "getDerivedAttributes", 0, -1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIContext(), "context", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEBoolean(), "includePrivate", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = addEOperation(cSpecEClass, this.getAttribute(), "getAttribute", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(attributeEClass, Attribute.class, "Attribute", IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getAttribute_Name(), ecorePackage.getEString(), "name", null, 1, 1, Attribute.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAttribute_Public(), ecorePackage.getEBoolean(), "public", "true", 0, 1, Attribute.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAttribute_Filter(), theCommonPackage.getFilter(), "filter", null, 0, 1, Attribute.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAttribute_Cspec(), this.getCSpec(), this.getCSpec_Attributes(), "cspec", null, 1, 1,
-				Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAttribute_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null,
-				0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(attributeEClass, Attribute.class, "Attribute", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getAttribute_Name(), ecorePackage.getEString(), "name", null, 1, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAttribute_Public(), ecorePackage.getEBoolean(), "public", "true", 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAttribute_Filter(), theCommonPackage.getFilter(), "filter", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAttribute_Cspec(), this.getCSpec(), this.getCSpec_Attributes(), "cspec", null, 1, 1, Attribute.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAttribute_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null, 0, 1, Attribute.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		op = addEOperation(attributeEClass, ecorePackage.getEBoolean(), "isDerived", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIContext(), "context", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(groupEClass, Group.class, "Group", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getGroup_Prerequisites(), this.getPrerequisite(), null, "prerequisites", null, 0, -1,
-				Group.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getGroup_Rebase(), this.getIPath(), "rebase", null, 0, 1, Group.class, !IS_TRANSIENT,
-				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getGroup_Prerequisites(), this.getPrerequisite(), null, "prerequisites", null, 0, -1, Group.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGroup_Rebase(), this.getIPath(), "rebase", null, 0, 1, Group.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(prerequisiteEClass, Prerequisite.class, "Prerequisite", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getPrerequisite_Component(), theCommonPackage.getComponentRequest(), null, "component", null, 0,
-				1, Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPrerequisite_Attribute(), ecorePackage.getEString(), "attribute", null, 1, 1,
-				Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPrerequisite_Alias(), ecorePackage.getEString(), "alias", null, 0, 1, Prerequisite.class,
+		initEClass(prerequisiteEClass, Prerequisite.class, "Prerequisite", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getPrerequisite_Component(), theCommonPackage.getComponentRequest(), null, "component", null, 0, 1, Prerequisite.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPrerequisite_Attribute(), ecorePackage.getEString(), "attribute", null, 1, 1, Prerequisite.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPrerequisite_Alias(), ecorePackage.getEString(), "alias", null, 0, 1, Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPrerequisite_Contributor(), ecorePackage.getEBoolean(), "contributor", "true", 0, 1, Prerequisite.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPrerequisite_Optional(), ecorePackage.getEBoolean(), "optional", null, 0, 1, Prerequisite.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPrerequisite_Filter(), theCommonPackage.getFilter(), "filter", null, 0, 1, Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPrerequisite_IncludePattern(), theCommonPackage.getPattern(), "includePattern", null, 0, 1, Prerequisite.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPrerequisite_Contributor(), ecorePackage.getEBoolean(), "contributor", "true", 0, 1,
-				Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPrerequisite_Optional(), ecorePackage.getEBoolean(), "optional", null, 0, 1,
-				Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPrerequisite_Filter(), theCommonPackage.getFilter(), "filter", null, 0, 1,
-				Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPrerequisite_IncludePattern(), theCommonPackage.getPattern(), "includePattern", null, 0, 1,
-				Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPrerequisite_ExcludePattern(), theCommonPackage.getPattern(), "excludePattern", null, 0, 1,
-				Prerequisite.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPrerequisite_ExcludePattern(), theCommonPackage.getPattern(), "excludePattern", null, 0, 1, Prerequisite.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(actionEClass, Action.class, "Action", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getAction_Properties(), theCommonPackage.getPropertyConstant(), null, "properties", null, 0, -1,
-				Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAction_ActorProperties(), theCommonPackage.getPropertyConstant(), null, "actorProperties",
-				null, 0, -1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAction_Actor(), ecorePackage.getEString(), "actor", null, 0, 1, Action.class, !IS_TRANSIENT,
+		initEReference(getAction_Properties(), theCommonPackage.getPropertyConstant(), null, "properties", null, 0, -1, Action.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAction_ActorProperties(), theCommonPackage.getPropertyConstant(), null, "actorProperties", null, 0, -1, Action.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAction_Actor(), ecorePackage.getEString(), "actor", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAction_Product(), this.getPathGroup(), null, "product", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAction_Products(), this.getActionAttribute(), this.getActionAttribute_Action(), "products", null, 0, -1, Action.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAction_PrerequisitesAlias(), ecorePackage.getEString(), "prerequisitesAlias", null, 0, 1, Action.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAction_Product(), this.getPathGroup(), null, "product", null, 0, 1, Action.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAction_Products(), this.getActionAttribute(), this.getActionAttribute_Action(), "products",
-				null, 0, -1, Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE,
-				IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAction_PrerequisitesAlias(), ecorePackage.getEString(), "prerequisitesAlias", null, 0, 1,
-				Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAction_PrerequisitesRebase(), this.getIPath(), "prerequisitesRebase", null, 0, 1,
-				Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAction_ProductAlias(), ecorePackage.getEString(), "productAlias", null, 0, 1, Action.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAction_UpToDatePolicy(), this.getUpToDatePolicy(), "upToDatePolicy", "DEFAULT", 0, 1,
-				Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAction_ProductFileCount(), ecorePackage.getEInt(), "productFileCount", null, 0, 1,
-				Action.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAction_Pattern(), theCommonPackage.getPattern(), "pattern", null, 0, 1, Action.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getAction_Replacement(), ecorePackage.getEString(), "replacement", null, 0, 1, Action.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAction_PrerequisitesRebase(), this.getIPath(), "prerequisitesRebase", null, 0, 1, Action.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAction_ProductAlias(), ecorePackage.getEString(), "productAlias", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAction_UpToDatePolicy(), this.getUpToDatePolicy(), "upToDatePolicy", "DEFAULT", 0, 1, Action.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAction_ProductFileCount(), ecorePackage.getEInt(), "productFileCount", null, 0, 1, Action.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAction_Pattern(), theCommonPackage.getPattern(), "pattern", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getAction_Replacement(), ecorePackage.getEString(), "replacement", null, 0, 1, Action.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(artifactEClass, Artifact.class, "Artifact", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(actionAttributeEClass, ActionAttribute.class, "ActionAttribute", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getActionAttribute_Alias(), ecorePackage.getEString(), "alias", null, 0, 1,
-				ActionAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE,
-				!IS_DERIVED, IS_ORDERED);
-		initEReference(getActionAttribute_Action(), this.getAction(), this.getAction_Products(), "action", null, 1, 1,
-				ActionAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(actionAttributeEClass, ActionAttribute.class, "ActionAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getActionAttribute_Alias(), ecorePackage.getEString(), "alias", null, 0, 1, ActionAttribute.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getActionAttribute_Action(), this.getAction(), this.getAction_Products(), "action", null, 1, 1, ActionAttribute.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(pathGroupEClass, PathGroup.class, "PathGroup", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPathGroup_Base(), this.getIPath(), "base", null, 1, 1, PathGroup.class, !IS_TRANSIENT,
-				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPathGroup_Paths(), this.getIPath(), "paths", null, 0, -1, PathGroup.class, !IS_TRANSIENT,
-				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(pathGroupEClass, PathGroup.class, "PathGroup", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getPathGroup_Base(), this.getIPath(), "base", null, 1, 1, PathGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPathGroup_Paths(), this.getIPath(), "paths", null, 0, -1, PathGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		op = addEOperation(pathGroupEClass, this.getPathGroup(), "resolve", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getIPath(), "path", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(generatorEClass, Generator.class, "Generator", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getGenerator_Attribute(), ecorePackage.getEString(), "attribute", null, 1, 1, Generator.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getGenerator_Component(), theCommonPackage.getComponentRequest(), null, "component", null, 0, 1,
-				Generator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getGenerator_Generates(), theCommonPackage.getComponentIdentifier(), null, "generates", null, 1,
-				1, Generator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getGenerator_Cspec(), this.getCSpec(), this.getCSpec_Generators(), "cspec", null, 1, 1,
-				Generator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(generatorEClass, Generator.class, "Generator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getGenerator_Attribute(), ecorePackage.getEString(), "attribute", null, 1, 1, Generator.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getGenerator_Component(), theCommonPackage.getComponentRequest(), null, "component", null, 0, 1, Generator.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getGenerator_Generates(), theCommonPackage.getComponentIdentifier(), null, "generates", null, 1, 1, Generator.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getGenerator_Cspec(), this.getCSpec(), this.getCSpec_Generators(), "cspec", null, 1, 1, Generator.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(alterAttributeEClass, AlterAttribute.class, "AlterAttribute", IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getAlterAttribute_Cspecext(), this.getCSpecExtension(),
-				this.getCSpecExtension_AttributeAlterations(), "cspecext", null, 1, 1, AlterAttribute.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(alterAttributeEClass, AlterAttribute.class, "AlterAttribute", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getAlterAttribute_Cspecext(), this.getCSpecExtension(), this.getCSpecExtension_AttributeAlterations(), "cspecext", null, 1, 1,
+				AlterAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
 
-		initEClass(alterArtifactEClass, AlterArtifact.class, "AlterArtifact", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getAlterArtifact_RemovePaths(), this.getRemove(), null, "removePaths", null, 0, -1,
-				AlterArtifact.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(alterArtifactEClass, AlterArtifact.class, "AlterArtifact", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getAlterArtifact_RemovePaths(), this.getRemove(), null, "removePaths", null, 0, -1, AlterArtifact.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(alterGroupEClass, AlterGroup.class, "AlterGroup", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getAlterGroup_ReplacePrerequisites(), this.getPrerequisite(), null, "replacePrerequisites",
-				null, 0, -1, AlterGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAlterGroup_RemovePrerequisites(), this.getRemove(), null, "removePrerequisites", null, 0, -1,
-				AlterGroup.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(alterGroupEClass, AlterGroup.class, "AlterGroup", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getAlterGroup_ReplacePrerequisites(), this.getPrerequisite(), null, "replacePrerequisites", null, 0, -1, AlterGroup.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAlterGroup_RemovePrerequisites(), this.getRemove(), null, "removePrerequisites", null, 0, -1, AlterGroup.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(alterActionEClass, AlterAction.class, "AlterAction", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getAlterAction_ReplaceProperties(), theCommonPackage.getPropertyConstant(), null,
-				"replaceProperties", null, 0, -1, AlterAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-				IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAlterAction_ReplaceActorProperties(), theCommonPackage.getPropertyConstant(), null,
-				"replaceActorProperties", null, 0, -1, AlterAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-				IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAlterAction_RemoveProperties(), this.getRemove(), null, "removeProperties", null, 0, -1,
-				AlterAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAlterAction_RemoveActorProperties(), this.getRemove(), null, "removeActorProperties", null,
-				0, -1, AlterAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAlterAction_RemoveProducts(), this.getRemove(), null, "removeProducts", null, 0, -1,
-				AlterAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getAlterAction_RemovePaths(), this.getRemove(), null, "removePaths", null, 0, -1,
-				AlterAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(alterActionEClass, AlterAction.class, "AlterAction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getAlterAction_ReplaceProperties(), theCommonPackage.getPropertyConstant(), null, "replaceProperties", null, 0, -1,
+				AlterAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
+		initEReference(getAlterAction_ReplaceActorProperties(), theCommonPackage.getPropertyConstant(), null, "replaceActorProperties", null, 0, -1,
+				AlterAction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
+		initEReference(getAlterAction_RemoveProperties(), this.getRemove(), null, "removeProperties", null, 0, -1, AlterAction.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAlterAction_RemoveActorProperties(), this.getRemove(), null, "removeActorProperties", null, 0, -1, AlterAction.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAlterAction_RemoveProducts(), this.getRemove(), null, "removeProducts", null, 0, -1, AlterAction.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAlterAction_RemovePaths(), this.getRemove(), null, "removePaths", null, 0, -1, AlterAction.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(renameEClass, Rename.class, "Rename", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getRename_OldName(), ecorePackage.getEString(), "oldName", null, 1, 1, Rename.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getRename_NewName(), ecorePackage.getEString(), "newName", null, 1, 1, Rename.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRename_OldName(), ecorePackage.getEString(), "oldName", null, 1, 1, Rename.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRename_NewName(), ecorePackage.getEString(), "newName", null, 1, 1, Rename.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(removeEClass, Remove.class, "Remove", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getRemove_Name(), ecorePackage.getEString(), "name", null, 1, 1, Remove.class, !IS_TRANSIENT,
-				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRemove_Name(), ecorePackage.getEString(), "name", null, 1, 1, Remove.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(cSpecExtensionEClass, CSpecExtension.class, "CSpecExtension", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getCSpecExtension_AttributeAlterations(), this.getAlterAttribute(),
-				this.getAlterAttribute_Cspecext(), "attributeAlterations", null, 0, -1, CSpecExtension.class,
-				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+		initEClass(cSpecExtensionEClass, CSpecExtension.class, "CSpecExtension", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getCSpecExtension_AttributeAlterations(), this.getAlterAttribute(), this.getAlterAttribute_Cspecext(), "attributeAlterations",
+				null, 0, -1, CSpecExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
 				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCSpecExtension_RenameAttributes(), this.getRename(), null, "renameAttributes", null, 0, -1,
-				CSpecExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCSpecExtension_RemoveDependencies(), this.getRemove(), null, "removeDependencies", null, 0,
-				-1, CSpecExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCSpecExtension_RemoveGenerators(), this.getRemove(), null, "removeGenerators", null, 0, -1,
-				CSpecExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES,
-				!IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCSpecExtension_ReplaceGenerators(), this.getGenerator(), null, "replaceGenerators", null, 0,
-				-1, CSpecExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE,
-				!IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCSpecExtension_ReplaceDependencies(), theCommonPackage.getComponentRequest(), null,
-				"replaceDependencies", null, 0, -1, CSpecExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-				IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpecExtension_RenameAttributes(), this.getRename(), null, "renameAttributes", null, 0, -1, CSpecExtension.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpecExtension_RemoveDependencies(), this.getRemove(), null, "removeDependencies", null, 0, -1, CSpecExtension.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpecExtension_RemoveGenerators(), this.getRemove(), null, "removeGenerators", null, 0, -1, CSpecExtension.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpecExtension_ReplaceGenerators(), this.getGenerator(), null, "replaceGenerators", null, 0, -1, CSpecExtension.class,
+				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCSpecExtension_ReplaceDependencies(), theCommonPackage.getComponentRequest(), null, "replaceDependencies", null, 0, -1,
+				CSpecExtension.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE,
+				!IS_DERIVED, IS_ORDERED);
 
 		initEClass(iContextEClass, IContext.class, "IContext", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		op = addEOperation(iContextEClass, this.getCSpec(), "findBestMatch", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theCommonPackage.getComponentRequest(), "request", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(selfArtifactEClass, SelfArtifact.class, "SelfArtifact", !IS_ABSTRACT, !IS_INTERFACE,
-				IS_GENERATED_INSTANCE_CLASS);
+		initEClass(selfArtifactEClass, SelfArtifact.class, "SelfArtifact", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Initialize enums and add enum literals
 		initEEnum(upToDatePolicyEEnum, UpToDatePolicy.class, "UpToDatePolicy");

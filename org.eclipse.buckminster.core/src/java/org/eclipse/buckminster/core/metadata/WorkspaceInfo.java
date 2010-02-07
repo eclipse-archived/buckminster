@@ -59,59 +59,54 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
 /**
  * @author Thomas Hallgren
  */
-public class WorkspaceInfo
-{
+public class WorkspaceInfo {
 	/**
-	 * Qualified name of the project persistent property where the {@link UUID} of the component is stored.<br/>
-	 * This property will be set on IResource elements that represent component roots such as projects or resources that
-	 * is inner bindings in projects.
+	 * Qualified name of the project persistent property where the {@link UUID}
+	 * of the component is stored.<br/>
+	 * This property will be set on IResource elements that represent component
+	 * roots such as projects or resources that is inner bindings in projects.
 	 */
 	public static final QualifiedName PPKEY_COMPONENT_ID = new QualifiedName(CorePlugin.CORE_NAMESPACE, "componentID"); //$NON-NLS-1$
 
 	/**
-	 * Qualified name of the project persistent property where the a boolean value that indicates if the CSpec has been
-	 * generated from other artifacts is stored.<br/>
-	 * This property will be set on IResource elements that represent component roots such as projects or resources that
-	 * is inner bindings in projects.
+	 * Qualified name of the project persistent property where the a boolean
+	 * value that indicates if the CSpec has been generated from other artifacts
+	 * is stored.<br/>
+	 * This property will be set on IResource elements that represent component
+	 * roots such as projects or resources that is inner bindings in projects.
 	 */
-	public static final QualifiedName PPKEY_GENERATED_CSPEC = new QualifiedName(CorePlugin.CORE_NAMESPACE,
-			"generatedCSpec"); //$NON-NLS-1$
+	public static final QualifiedName PPKEY_GENERATED_CSPEC = new QualifiedName(CorePlugin.CORE_NAMESPACE, "generatedCSpec"); //$NON-NLS-1$
 
-	private static boolean s_hasBeenActivated;
+	private static boolean hasBeenActivated;
 
-	private static boolean s_hasBeenFullyInitialized;
+	private static boolean hasBeenFullyInitialized;
 
-	private static final HashMap<IComponentIdentifier, IPath> s_locationCache = new HashMap<IComponentIdentifier, IPath>();
+	private static final HashMap<IComponentIdentifier, IPath> locationCache = new HashMap<IComponentIdentifier, IPath>();
 
-	private static final IResource[] s_noResources = new IResource[0];
+	private static final IResource[] noResources = new IResource[0];
 
-	private static final HashMap<IComponentIdentifier, Resolution> s_resolutionCache = new HashMap<IComponentIdentifier, Resolution>();
+	private static final HashMap<IComponentIdentifier, Resolution> resolutionCache = new HashMap<IComponentIdentifier, Resolution>();
 
-	private static Stack<IGlobalContext> s_performContextStack;
+	private static Stack<IGlobalContext> performContextStack;
 
 	private static final Map<ComponentIdentifier, Resolution> tpResolutions = new HashMap<ComponentIdentifier, Resolution>();
 
-	public static void clearCachedLocation(IComponentIdentifier cid)
-	{
-		synchronized(s_locationCache)
-		{
-			s_locationCache.remove(cid);
+	public static void clearCachedLocation(IComponentIdentifier cid) {
+		synchronized (locationCache) {
+			locationCache.remove(cid);
 		}
 	}
 
-	public static void forceRefreshOnAll(IProgressMonitor monitor)
-	{
+	public static void forceRefreshOnAll(IProgressMonitor monitor) {
 		CorePlugin plugin = CorePlugin.getDefault();
-		if(plugin == null)
+		if (plugin == null)
 			// We're shutting down
 			return;
 
-		MultiStatus status = new MultiStatus(plugin.toString(), IStatus.OK, Messages.Problems_during_metadata_refresh,
-				null);
+		MultiStatus status = new MultiStatus(plugin.toString(), IStatus.OK, Messages.Problems_during_metadata_refresh, null);
 		monitor.beginTask(Messages.Refreshing_meta_data, 1000);
-		s_hasBeenActivated = true;
-		try
-		{
+		hasBeenActivated = true;
+		try {
 			IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 			wsRoot.accept(new MetadataSynchronizer.ResetVisitor());
 			MonitorUtils.worked(monitor, 50);
@@ -120,25 +115,17 @@ public class WorkspaceInfo
 			IResolution[] resolutions = StorageManager.getDefault().getResolutions().getElements();
 			MonitorUtils.worked(monitor, 50);
 
-			int ticksPerRefresh = 900 / (resolutions.length > 0
-					? resolutions.length
-					: (projects.length > 0
-							? projects.length
-							: 1));
+			int ticksPerRefresh = 900 / (resolutions.length > 0 ? resolutions.length : (projects.length > 0 ? projects.length : 1));
 
 			// Re-resolve all known bundles from the target platform
 			//
-			for(IResolution res : resolutions)
-			{
-				if(!IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
+			for (IResolution res : resolutions) {
+				if (!IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
 					continue;
 
-				try
-				{
+				try {
 					resolveLocal(res.getRequest(), false);
-				}
-				catch(CoreException e)
-				{
+				} catch (CoreException e) {
 					status.add(e.getStatus());
 				}
 				MonitorUtils.worked(monitor, ticksPerRefresh);
@@ -146,45 +133,33 @@ public class WorkspaceInfo
 
 			// Re-resolve all projects
 			//
-			for(IProject project : projects)
-			{
-				try
-				{
+			for (IProject project : projects) {
+				try {
 					MetadataSynchronizer.refreshProject(project, MonitorUtils.subMonitor(monitor, ticksPerRefresh));
-				}
-				catch(CoreException e)
-				{
+				} catch (CoreException e) {
 					status.add(e.getStatus());
 				}
 			}
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			status.add(e.getStatus());
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 		CorePlugin.logWarningsAndErrors(status);
 	}
 
-	public static List<Resolution> getAllResolutions() throws CoreException
-	{
+	public static List<Resolution> getAllResolutions() throws CoreException {
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
 		HashSet<Resolution> bld = new HashSet<Resolution>();
-		for(Resolution cr : getActiveResolutions(sm))
+		for (Resolution cr : getActiveResolutions(sm))
 			bld.add(cr);
 
-		synchronized(tpResolutions)
-		{
-			for(ComponentIdentifier ci : TargetPlatform.getInstance().getComponents())
-			{
+		synchronized (tpResolutions) {
+			for (ComponentIdentifier ci : TargetPlatform.getInstance().getComponents()) {
 				Resolution tpRes = tpResolutions.get(ci);
-				if(tpRes == null)
-				{
+				if (tpRes == null) {
 					tpRes = getResolution(ci);
 					tpResolutions.put(ci, tpRes);
 				}
@@ -193,20 +168,15 @@ public class WorkspaceInfo
 		}
 
 		ArrayList<Resolution> sorted = new ArrayList<Resolution>(bld);
-		Collections.sort(sorted, new Comparator<Resolution>()
-		{
-			public int compare(Resolution o1, Resolution o2)
-			{
+		Collections.sort(sorted, new Comparator<Resolution>() {
+			public int compare(Resolution o1, Resolution o2) {
 				int cmp = o1.getName().compareTo(o2.getName());
-				if(cmp == 0)
-				{
+				if (cmp == 0) {
 					Version v1 = o1.getVersion();
 					Version v2 = o2.getVersion();
-					if(v1 == null)
-						cmp = v2 == null
-								? 0
-								: -1;
-					else if(v2 == null)
+					if (v1 == null)
+						cmp = v2 == null ? 0 : -1;
+					else if (v2 == null)
 						cmp = 1;
 					else
 						cmp = v1.compareTo(v2);
@@ -217,25 +187,20 @@ public class WorkspaceInfo
 		return sorted;
 	}
 
-	public static ComponentIdentifier getComponentIdentifier(IResource resource)
-	{
+	public static ComponentIdentifier getComponentIdentifier(IResource resource) {
 		checkFirstUse();
 		String componentId = null;
-		try
-		{
+		try {
 			componentId = resource.getPersistentProperty(PPKEY_COMPONENT_ID);
-			return componentId == null
-					? null
-					: ComponentIdentifier.parse(componentId);
-		}
-		catch(CoreException e)
-		{
+			return componentId == null ? null : ComponentIdentifier.parse(componentId);
+		} catch (CoreException e) {
 			return null;
 		}
 	}
 
 	/**
-	 * Returns the full path of the materialization for the component denoted by the <code>componentIdentifier</code>
+	 * Returns the full path of the materialization for the component denoted by
+	 * the <code>componentIdentifier</code>
 	 * 
 	 * @param componentIdentifier
 	 *            The identifier of the component
@@ -247,48 +212,44 @@ public class WorkspaceInfo
 	 * @throws CoreException
 	 *             for other persistent storage related issues
 	 */
-	public static IPath getComponentLocation(ComponentIdentifier componentIdentifier) throws CoreException
-	{
+	public static IPath getComponentLocation(ComponentIdentifier componentIdentifier) throws CoreException {
 		// Obtain the storage manager outside of the synchronization to avoid
 		// possible deadlock.
 		//
 		StorageManager.getDefault();
 		checkFirstUse();
 
-		synchronized(s_locationCache)
-		{
-			IPath location = s_locationCache.get(componentIdentifier);
-			if(location != null)
+		synchronized (locationCache) {
+			IPath location = locationCache.get(componentIdentifier);
+			if (location != null)
 				return location;
 
 			Materialization mat = getMaterialization(componentIdentifier);
-			if(mat == null)
-			{
+			if (mat == null) {
 				Resolution resolution = getResolution(componentIdentifier);
 				location = resolution.getProvider().getReaderType().getFixedLocation(resolution);
-				if(location == null)
-				{
-					if(s_performContextStack != null)
-					{
-						mat = s_performContextStack.peek().getGeneratedMaterialization(componentIdentifier);
-						if(mat != null)
-							// We deliberately skip the cache here since generated
+				if (location == null) {
+					if (performContextStack != null) {
+						mat = performContextStack.peek().getGeneratedMaterialization(componentIdentifier);
+						if (mat != null)
+							// We deliberately skip the cache here since
+							// generated
 							// material doesn't belong there.
 							return mat.getComponentLocation();
 					}
 					throw new MissingComponentException(componentIdentifier.toString());
 				}
-			}
-			else
+			} else
 				location = mat.getComponentLocation();
 
-			s_locationCache.put(componentIdentifier, location);
+			locationCache.put(componentIdentifier, location);
 			return location;
 		}
 	}
 
 	/**
-	 * Returns the full path of the materialization for the component denoted by the <code>componentIdentifier</code>
+	 * Returns the full path of the materialization for the component denoted by
+	 * the <code>componentIdentifier</code>
 	 * 
 	 * @param cspec
 	 *            The cspec of the component
@@ -300,80 +261,65 @@ public class WorkspaceInfo
 	 * @throws CoreException
 	 *             for other persistent storage related issues
 	 */
-	public static IPath getComponentLocation(CSpec cspec) throws CoreException
-	{
+	public static IPath getComponentLocation(CSpec cspec) throws CoreException {
 		return getComponentLocation(cspec.getComponentIdentifier());
 	}
 
-	public static CSpec getCSpec(IResource resource) throws CoreException
-	{
+	public static CSpec getCSpec(IResource resource) throws CoreException {
 		checkFirstUse();
 		ComponentIdentifier id = getComponentIdentifier(resource);
-		return id == null
-				? null
-				: getResolution(id).getCSpec();
+		return id == null ? null : getResolution(id).getCSpec();
 	}
 
-	public static List<Generator> getGenerators(IComponentRequest request) throws CoreException
-	{
+	public static List<Generator> getGenerators(IComponentRequest request) throws CoreException {
 		List<Generator> generators = null;
-		for(Resolution res : getAllResolutions())
-		{
-			for(Generator generator : res.getCSpec().getGeneratorList())
-			{
-				if(request.designates(generator.getGeneratedIdentifier()))
-				{
-					if(generators == null)
+		for (Resolution res : getAllResolutions()) {
+			for (Generator generator : res.getCSpec().getGeneratorList()) {
+				if (request.designates(generator.getGeneratedIdentifier())) {
+					if (generators == null)
 						generators = new ArrayList<Generator>();
 					generators.add(generator);
 				}
 			}
 		}
-		if(generators == null)
+		if (generators == null)
 			generators = Collections.emptyList();
 		return generators;
 	}
 
-	public static Materialization getMaterialization(ComponentRequest request) throws CoreException
-	{
+	public static Materialization getMaterialization(ComponentRequest request) throws CoreException {
 		// Add all components for which we have a materialization
 		//
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
 		Materialization bestFit = null;
-		for(Materialization mat : sm.getMaterializations().getElements())
-		{
+		for (Materialization mat : sm.getMaterializations().getElements()) {
 			ComponentIdentifier ci = mat.getComponentIdentifier();
-			if(!request.designates(ci))
+			if (!request.designates(ci))
 				continue;
 
-			if(!mat.getComponentLocation().toFile().exists())
-			{
+			if (!mat.getComponentLocation().toFile().exists()) {
 				mat.remove(StorageManager.getDefault());
 				mat = null;
 				continue;
 			}
 
-			if(bestFit == null || ci.compareTo(bestFit.getComponentIdentifier()) > 0)
+			if (bestFit == null || ci.compareTo(bestFit.getComponentIdentifier()) > 0)
 				bestFit = mat;
 		}
 		return bestFit;
 	}
 
-	public static Materialization getMaterialization(IComponentIdentifier cid) throws CoreException
-	{
+	public static Materialization getMaterialization(IComponentIdentifier cid) throws CoreException {
 		// Add all components for which we have a materialization
 		//
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
-		for(Materialization mat : sm.getMaterializations().getElements())
-		{
-			if(cid.equals(mat.getComponentIdentifier()))
-			{
-				if(!mat.getComponentLocation().toFile().exists())
-				{
+		for (Materialization mat : sm.getMaterializations().getElements()) {
+			if (cid.equals(mat.getComponentIdentifier())) {
+				if (!mat.getComponentLocation().toFile().exists()) {
 					mat.remove(StorageManager.getDefault());
 					mat = null;
 				}
@@ -384,77 +330,72 @@ public class WorkspaceInfo
 	}
 
 	/**
-	 * Returns the optional <code>Materialization</code> for the component. Components found in the target platform will
-	 * not have a materialization.
+	 * Returns the optional <code>Materialization</code> for the component.
+	 * Components found in the target platform will not have a materialization.
 	 * 
 	 * @param resolution
 	 *            The resolution for which we want a Materialization
-	 * @return The materialization or <code>null</code> if it could not be found.
+	 * @return The materialization or <code>null</code> if it could not be
+	 *         found.
 	 * @throws CoreException
 	 */
-	public static Materialization getMaterialization(Resolution resolution) throws CoreException
-	{
+	public static Materialization getMaterialization(Resolution resolution) throws CoreException {
 		return getMaterialization(resolution.getComponentIdentifier());
 	}
 
 	/**
-	 * Finds the open project that corresponds to the <code>componentIdentifier</code> and return it.
+	 * Finds the open project that corresponds to the
+	 * <code>componentIdentifier</code> and return it.
 	 * 
 	 * @param componentIdentifier
-	 * @return The found project or <code>null</code> if no open project was found.
+	 * @return The found project or <code>null</code> if no open project was
+	 *         found.
 	 * @throws CoreException
 	 */
-	public static IProject getProject(IComponentIdentifier componentIdentifier) throws CoreException
-	{
+	public static IProject getProject(IComponentIdentifier componentIdentifier) throws CoreException {
 		return extractProject(getResources(componentIdentifier));
 	}
 
 	/**
-	 * Finds the open project that corresponds to the <code>materialization</code> and return it.
+	 * Finds the open project that corresponds to the
+	 * <code>materialization</code> and return it.
 	 * 
 	 * @param materialization
-	 * @return The found project or <code>null</code> if no open project was found.
+	 * @return The found project or <code>null</code> if no open project was
+	 *         found.
 	 * @throws CoreException
 	 */
-	public static IProject getProject(Materialization materialization) throws CoreException
-	{
+	public static IProject getProject(Materialization materialization) throws CoreException {
 		return extractProject(getResources(materialization));
 	}
 
-	public static Resolution getResolution(ComponentIdentifier wanted) throws CoreException
-	{
+	public static Resolution getResolution(ComponentIdentifier wanted) throws CoreException {
 		return getResolution(wanted, false);
 	}
 
-	public static Resolution getResolution(ComponentIdentifier wanted, boolean fromResolver) throws CoreException
-	{
+	public static Resolution getResolution(ComponentIdentifier wanted, boolean fromResolver) throws CoreException {
 		// Obtain the storage manager outside of the synchronization to avoid
 		// possible deadlock.
 		//
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
-		synchronized(s_resolutionCache)
-		{
-			Resolution candidate = s_resolutionCache.get(wanted);
-			if(candidate == null)
-			{
-				for(Resolution res : getActiveResolutions(sm))
-				{
+		synchronized (resolutionCache) {
+			Resolution candidate = resolutionCache.get(wanted);
+			if (candidate == null) {
+				for (Resolution res : getActiveResolutions(sm)) {
 					ComponentIdentifier cid = res.getCSpec().getComponentIdentifier();
-					if(!wanted.matches(cid))
+					if (!wanted.matches(cid))
 						continue;
 
-					if(wanted.getVersion() != null)
-					{
+					if (wanted.getVersion() != null) {
 						// This is an exact match
 						//
 						candidate = res;
 						break;
 					}
 
-					if(candidate == null)
-					{
+					if (candidate == null) {
 						candidate = res;
 						continue;
 					}
@@ -462,43 +403,36 @@ public class WorkspaceInfo
 					// Both are without version. One must be without type then
 					//
 					ComponentIdentifier candCid = candidate.getCSpec().getComponentIdentifier();
-					if(candCid.getComponentType() == null)
-					{
-						if(cid.getComponentType() == null)
+					if (candCid.getComponentType() == null) {
+						if (cid.getComponentType() == null)
 							throw new AmbigousComponentException(wanted.toString());
 						candidate = res;
-					}
-					else
-					{
-						if(cid.getComponentType() != null)
+					} else {
+						if (cid.getComponentType() != null)
 							throw new AmbigousComponentException(wanted.toString());
 					}
 				}
 			}
 
-			if(candidate != null)
-			{
-				s_resolutionCache.put(wanted, candidate);
+			if (candidate != null) {
+				resolutionCache.put(wanted, candidate);
 				return candidate;
 			}
 		}
-		if(!fromResolver)
-		{
+		if (!fromResolver) {
 			Version v = wanted.getVersion();
 			VersionRange vd = VersionHelper.exactRange(v);
-			try
-			{
+			try {
 				return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getComponentTypeID(), vd), true);
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 			}
 		}
 		throw new MissingComponentException(wanted.toString());
 	}
 
 	/**
-	 * Returns the <code>CSpec</code> that best corresponds to the given <code>request</code>.
+	 * Returns the <code>CSpec</code> that best corresponds to the given
+	 * <code>request</code>.
 	 * 
 	 * @param request
 	 *            The component request
@@ -510,36 +444,27 @@ public class WorkspaceInfo
 	 * @throws CoreException
 	 *             for other persistent storage related issues
 	 */
-	public static Resolution getResolution(ComponentRequest request, boolean fromResolver) throws CoreException
-	{
+	public static Resolution getResolution(ComponentRequest request, boolean fromResolver) throws CoreException {
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
 		Resolution candidate = null;
 		Resolution[] activeRess = getActiveResolutions(sm);
-		for(Resolution res : activeRess)
-		{
+		for (Resolution res : activeRess) {
 			ComponentIdentifier id = res.getCSpec().getComponentIdentifier();
-			if(request.designates(id)
-					&& (candidate == null || id.compareTo(candidate.getCSpec().getComponentIdentifier()) > 0))
+			if (request.designates(id) && (candidate == null || id.compareTo(candidate.getCSpec().getComponentIdentifier()) > 0))
 				candidate = res;
 		}
 
-		if(candidate == null)
-		{
-			if(fromResolver)
+		if (candidate == null) {
+			if (fromResolver)
 				throw new MissingComponentException(request.toString());
 
-			try
-			{
+			try {
 				candidate = resolveLocal(request, true);
-			}
-			catch(MissingComponentException e)
-			{
+			} catch (MissingComponentException e) {
 				throw e;
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				throw new MissingComponentException(request.toString());
 			}
 		}
@@ -547,49 +472,45 @@ public class WorkspaceInfo
 	}
 
 	/**
-	 * Obtains the resources currently bound to the given <code>componentIdentifier</code> and returns them. An empty
-	 * array is returned when no resource was found.
+	 * Obtains the resources currently bound to the given
+	 * <code>componentIdentifier</code> and returns them. An empty array is
+	 * returned when no resource was found.
 	 * 
 	 * @param componentIdentifier
 	 *            The component to search for
 	 * @return The found workspace resources.
 	 * @throws CoreException
 	 */
-	public static IResource[] getResources(IComponentIdentifier componentIdentifier) throws CoreException
-	{
+	public static IResource[] getResources(IComponentIdentifier componentIdentifier) throws CoreException {
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
 		ISaxableStorage<Materialization> mats = sm.getMaterializations();
-		for(Materialization mat : mats.getElements())
-		{
-			if(componentIdentifier.equals(mat.getComponentIdentifier()))
+		for (Materialization mat : mats.getElements()) {
+			if (componentIdentifier.equals(mat.getComponentIdentifier()))
 				return getResources(mat);
 		}
-		return s_noResources;
+		return noResources;
 	}
 
-	public static IResource[] getResources(IComponentRequest request) throws CoreException
-	{
+	public static IResource[] getResources(IComponentRequest request) throws CoreException {
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
-		IResource[] allFound = s_noResources;
+		IResource[] allFound = noResources;
 		ISaxableStorage<Materialization> mats = sm.getMaterializations();
-		for(Materialization mat : mats.getElements())
-		{
-			if(!request.designates(mat.getComponentIdentifier()))
+		for (Materialization mat : mats.getElements()) {
+			if (!request.designates(mat.getComponentIdentifier()))
 				continue;
 
 			IResource[] resources = getResources(mat);
 			int top = resources.length;
-			if(top == 0)
+			if (top == 0)
 				continue;
 
-			if(allFound == s_noResources)
+			if (allFound == noResources)
 				allFound = resources;
-			else
-			{
+			else {
 				IResource[] concat = new IResource[allFound.length + top];
 				System.arraycopy(allFound, 0, concat, 0, allFound.length);
 				System.arraycopy(resources, 0, concat, allFound.length, top);
@@ -599,55 +520,47 @@ public class WorkspaceInfo
 		return allFound;
 	}
 
-	public static IResource[] getResources(Materialization mat) throws CoreException
-	{
+	public static IResource[] getResources(Materialization mat) throws CoreException {
 		checkFirstUse();
 
 		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IPath location = mat.getComponentLocation();
 		URI locationURI = location.toFile().toURI();
-		return location.hasTrailingSeparator()
-				? wsRoot.findContainersForLocationURI(locationURI)
-				: wsRoot.findFilesForLocationURI(locationURI);
+		return location.hasTrailingSeparator() ? wsRoot.findContainersForLocationURI(locationURI) : wsRoot.findFilesForLocationURI(locationURI);
 	}
 
 	/**
-	 * Returns <code>true</code> if the workspace catch up job has been successfully run once and <code>false</code>
-	 * otherwise.
+	 * Returns <code>true</code> if the workspace catch up job has been
+	 * successfully run once and <code>false</code> otherwise.
 	 * 
 	 * @return if the workspace catch up job has been run or not
 	 * @see WorkspaceInfo#runWorkspaceCatchUpJob()
 	 */
-	public static boolean isFullyInitialized()
-	{
-		return s_hasBeenFullyInitialized;
+	public static boolean isFullyInitialized() {
+		return hasBeenFullyInitialized;
 	}
 
-	public static void popPerformContext()
-	{
-		if(s_performContextStack == null)
+	public static void popPerformContext() {
+		if (performContextStack == null)
 			throw new EmptyStackException();
 
-		s_performContextStack.pop();
-		if(s_performContextStack.isEmpty())
-			s_performContextStack = null;
+		performContextStack.pop();
+		if (performContextStack.isEmpty())
+			performContextStack = null;
 	}
 
-	public static void pushPerformContext(IGlobalContext context)
-	{
-		if(s_performContextStack == null)
-			s_performContextStack = new Stack<IGlobalContext>();
-		s_performContextStack.push(context);
+	public static void pushPerformContext(IGlobalContext context) {
+		if (performContextStack == null)
+			performContextStack = new Stack<IGlobalContext>();
+		performContextStack.push(context);
 	}
 
-	public static Resolution resolveLocal(IComponentRequest request, boolean useWorkspace) throws CoreException
-	{
+	public static Resolution resolveLocal(IComponentRequest request, boolean useWorkspace) throws CoreException {
 		checkFirstUse();
 
-		if(s_performContextStack != null)
-		{
-			Resolution res = s_performContextStack.peek().getGeneratedResolution(request);
-			if(res != null)
+		if (performContextStack != null) {
+			Resolution res = performContextStack.peek().getGeneratedResolution(request);
+			if (res != null)
 				return res;
 		}
 
@@ -666,7 +579,8 @@ public class WorkspaceInfo
 		nodeBld.setUseMaterialization(false);
 		nodeBld.setUseRemoteResolution(false);
 
-		// Add an advisor node that matches all remaining components and prohibits that we
+		// Add an advisor node that matches all remaining components and
+		// prohibits that we
 		// do something external.
 		//
 		nodeBld = qbld.addAdvisorNode();
@@ -680,124 +594,104 @@ public class WorkspaceInfo
 		ctx.setSilentStatus(true);
 		IResolver main = new MainResolver(ctx);
 		Resolution res = main.resolve(new NullProgressMonitor()).getResolution();
-		if(res == null)
+		if (res == null)
 			throw new MissingComponentException(request.toString());
 		return res;
 	}
 
-	public static void runWorkspaceCatchUpJob()
-	{
+	public static void runWorkspaceCatchUpJob() {
 		WorkspaceCatchUpJob catchUpJob = new WorkspaceCatchUpJob();
 		catchUpJob.schedule();
-		try
-		{
+		try {
 			catchUpJob.join();
+		} catch (InterruptedException e) {
 		}
-		catch(InterruptedException e)
-		{
-		}
-		s_hasBeenFullyInitialized = true;
+		hasBeenFullyInitialized = true;
 	}
 
-	public static void setComponentIdentifier(IResource resource, IComponentIdentifier identifier) throws CoreException
-	{
-		resource.setPersistentProperty(PPKEY_COMPONENT_ID, identifier == null
-				? null
-				: identifier.toString());
+	public static void setComponentIdentifier(IResource resource, IComponentIdentifier identifier) throws CoreException {
+		resource.setPersistentProperty(PPKEY_COMPONENT_ID, identifier == null ? null : identifier.toString());
 	}
 
-	public static void updateResolutionCache(IComponentIdentifier cid, Resolution resolution)
-	{
-		synchronized(s_resolutionCache)
-		{
-			if(resolution == null)
-				s_resolutionCache.remove(cid);
+	public static void updateResolutionCache(IComponentIdentifier cid, Resolution resolution) {
+		synchronized (resolutionCache) {
+			if (resolution == null)
+				resolutionCache.remove(cid);
 			else
-				s_resolutionCache.put(cid, resolution);
+				resolutionCache.put(cid, resolution);
 		}
 	}
 
-	public static void validateMaterializations() throws CoreException
-	{
+	public static void validateMaterializations() throws CoreException {
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
-		for(Materialization mt : sm.getMaterializations().getElements())
-			if(!mt.getComponentLocation().toFile().exists())
+		for (Materialization mt : sm.getMaterializations().getElements())
+			if (!mt.getComponentLocation().toFile().exists())
 				mt.remove(sm);
 	}
 
-	private static void checkFirstUse()
-	{
+	private static void checkFirstUse() {
 		// We want the first caller to star the job. That job in turn will
 		// result in recursive calls that should return immediately.
 		//
-		synchronized(WorkspaceInfo.class)
-		{
-			if(s_hasBeenActivated)
+		synchronized (WorkspaceInfo.class) {
+			if (hasBeenActivated)
 				return;
-			s_hasBeenActivated = true;
+			hasBeenActivated = true;
 		}
 		runWorkspaceCatchUpJob();
 	}
 
-	private static IProject extractProject(IResource[] resources)
-	{
+	private static IProject extractProject(IResource[] resources) {
 		int idx = resources.length;
-		while(--idx >= 0)
-		{
+		while (--idx >= 0) {
 			IResource resource = resources[idx];
-			if(resource instanceof IProject)
-			{
-				IProject project = (IProject)resource;
-				if(project.isOpen())
+			if (resource instanceof IProject) {
+				IProject project = (IProject) resource;
+				if (project.isOpen())
 					return project;
 			}
 		}
 		return null;
 	}
 
-	private static Resolution[] getActiveResolutions(StorageManager sm) throws CoreException
-	{
+	private static Resolution[] getActiveResolutions(StorageManager sm) throws CoreException {
 		// Add the newest version of each known resolution
 		//
 		HashMap<ComponentName, TimestampedKey> resolutionKeys = new HashMap<ComponentName, TimestampedKey>();
 		ArrayList<TimestampedKey> duplicates = null;
 		ISaxableStorage<Resolution> ress = sm.getResolutions();
 		ISaxableStorage<Materialization> mats = sm.getMaterializations();
-		synchronized(ress)
-		{
-			for(Resolution res : ress.getElements())
-			{
+		synchronized (ress) {
+			for (Resolution res : ress.getElements()) {
 				UUID resId = res.getId();
 				ComponentIdentifier ci = res.getComponentIdentifier();
 
 				IPath location = getResolutionLocation(mats, res);
-				if(location == null)
+				if (location == null)
 					continue;
 
 				ComponentName cn = ci.toPureComponentName();
 				TimestampedKey tsKey = new TimestampedKey(resId, ress.getCreationTime(resId));
 				TimestampedKey prevTsKey = resolutionKeys.put(cn, tsKey);
-				if(prevTsKey == null)
+				if (prevTsKey == null)
 					continue;
 
-				// Check real existence of locations. For performance reasons we only do
+				// Check real existence of locations. For performance reasons we
+				// only do
 				// this when ambiguities arise.
 				//
 				Resolution prevRes = ress.getElement(prevTsKey.getKey());
 				IPath prevLocation = getResolutionLocation(mats, prevRes);
-				if(prevLocation == null)
+				if (prevLocation == null)
 					continue;
 
-				if(location.toFile().exists())
-				{
-					if(location.equals(prevLocation))
-					{
+				if (location.toFile().exists()) {
+					if (location.equals(prevLocation)) {
 						// Discriminate using timestamp
 						//
-						if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
-						{
+						if (prevTsKey.getCreationTime() > tsKey.getCreationTime()) {
 							// We just replaced a newer entry. Put it back!
 							//
 							resolutionKeys.put(cn, prevTsKey);
@@ -805,21 +699,18 @@ public class WorkspaceInfo
 						continue;
 					}
 
-					if(!prevLocation.toFile().exists())
+					if (!prevLocation.toFile().exists())
 						continue;
 
-					// A resolution towards the target platform will always have a lower
+					// A resolution towards the target platform will always have
+					// a lower
 					// precedence.
 					//
-					if(prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-					{
-						if(!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+					if (prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
+						if (!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
 							continue;
-					}
-					else
-					{
-						if(res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-						{
+					} else {
+						if (res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
 							resolutionKeys.put(cn, prevTsKey);
 							continue;
 						}
@@ -827,11 +718,10 @@ public class WorkspaceInfo
 
 					Version currVersion = ci.getVersion();
 					Version prevVersion = prevRes.getComponentIdentifier().getVersion();
-					if(VersionHelper.equalsUnqualified(currVersion, prevVersion))
-					{
+					if (VersionHelper.equalsUnqualified(currVersion, prevVersion)) {
 						// Discriminate using timestamp
 						//
-						if(prevTsKey.getCreationTime() > tsKey.getCreationTime())
+						if (prevTsKey.getCreationTime() > tsKey.getCreationTime())
 							resolutionKeys.put(cn, prevTsKey);
 						continue;
 					}
@@ -839,23 +729,22 @@ public class WorkspaceInfo
 					// Apparently we have both locations present so we cannot
 					// discriminate one of them
 					//
-					if(duplicates == null)
+					if (duplicates == null)
 						duplicates = new ArrayList<TimestampedKey>();
 					duplicates.add(prevTsKey);
 
-					CorePlugin.getLogger().debug(
-							"Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation); //$NON-NLS-1$
+					CorePlugin
+							.getLogger()
+							.debug(
+									"Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation); //$NON-NLS-1$
 					continue;
 				}
 
-				if(prevLocation.toFile().exists())
-				{
+				if (prevLocation.toFile().exists()) {
 					// New entry is bogus and old entry is valid
 					//
 					resolutionKeys.put(cn, prevTsKey);
-				}
-				else
-				{
+				} else {
 					// None of the entries were valid. Simply remove the entry
 					//
 					resolutionKeys.remove(cn);
@@ -864,23 +753,21 @@ public class WorkspaceInfo
 		}
 
 		int top = resolutionKeys.size();
-		if(duplicates != null)
+		if (duplicates != null)
 			top += duplicates.size();
 
 		Resolution[] result = new Resolution[top];
 		int idx = 0;
-		for(TimestampedKey tsKey : resolutionKeys.values())
+		for (TimestampedKey tsKey : resolutionKeys.values())
 			result[idx++] = ress.getElement(tsKey.getKey());
 
-		if(duplicates != null)
-			for(TimestampedKey tsKey : duplicates)
+		if (duplicates != null)
+			for (TimestampedKey tsKey : duplicates)
 				result[idx++] = ress.getElement(tsKey.getKey());
 		return result;
 	}
 
-	private static IPath getResolutionLocation(ISaxableStorage<Materialization> mats, Resolution res)
-			throws CoreException
-	{
+	private static IPath getResolutionLocation(ISaxableStorage<Materialization> mats, Resolution res) throws CoreException {
 		// Obtain the storage manager outside of the synchronization to avoid
 		// possible deadlock.
 		//
@@ -889,23 +776,19 @@ public class WorkspaceInfo
 
 		IPath location;
 		ComponentIdentifier ci = res.getComponentIdentifier();
-		synchronized(s_locationCache)
-		{
-			location = s_locationCache.get(ci);
-			if(location == null)
-			{
-				for(Materialization mat : mats.getElements())
-				{
-					if(mat.getComponentIdentifier().equals(ci))
-					{
+		synchronized (locationCache) {
+			location = locationCache.get(ci);
+			if (location == null) {
+				for (Materialization mat : mats.getElements()) {
+					if (mat.getComponentIdentifier().equals(ci)) {
 						location = mat.getComponentLocation();
 						break;
 					}
 				}
-				if(location == null)
+				if (location == null)
 					location = res.getProvider().getReaderType().getFixedLocation(res);
-				if(location != null)
-					s_locationCache.put(ci, location);
+				if (location != null)
+					locationCache.put(ci, location);
 			}
 		}
 		return location;

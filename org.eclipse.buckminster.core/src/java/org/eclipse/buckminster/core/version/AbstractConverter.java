@@ -19,29 +19,25 @@ import org.eclipse.equinox.p2.metadata.Version;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractConverter extends AbstractExtension implements IVersionConverter
-{
-	private static final BidirectionalTransformer[] s_noTransformers = new BidirectionalTransformer[0];
+public abstract class AbstractConverter extends AbstractExtension implements IVersionConverter {
+	private static final BidirectionalTransformer[] noTransformers = new BidirectionalTransformer[0];
 
-	private BidirectionalTransformer[] m_transformers = s_noTransformers;
+	private BidirectionalTransformer[] transformers = noTransformers;
 
-	private IVersionFormat m_versionFormat = getDefaultVersionFormat();
+	private IVersionFormat versionFormat = getDefaultVersionFormat();
 
-	public IVersionFormat getVersionFormat()
-	{
-		return m_versionFormat;
+	public IVersionFormat getVersionFormat() {
+		return versionFormat;
 	}
 
 	/**
-	 * Assigns the transformer used when converting between plain versions and a version component.
+	 * Assigns the transformer used when converting between plain versions and a
+	 * version component.
 	 * 
 	 * @param transformer
 	 */
-	public final void setTransformers(BidirectionalTransformer[] transformers)
-	{
-		m_transformers = transformers == null
-				? s_noTransformers
-				: transformers;
+	public final void setTransformers(BidirectionalTransformer[] transformers) {
+		transformers = transformers == null ? noTransformers : transformers;
 	}
 
 	/**
@@ -49,39 +45,33 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 	 * 
 	 * @param versionFormat
 	 */
-	public final void setVersionFormat(IVersionFormat versionFormat)
-	{
-		m_versionFormat = versionFormat == null
-				? getDefaultVersionFormat()
-				: versionFormat;
+	public final void setVersionFormat(IVersionFormat versionFormat) {
+		versionFormat = versionFormat == null ? getDefaultVersionFormat() : versionFormat;
 	}
 
 	/**
-	 * Converts the version into a selector component, i.e. a branch or a branch qualifier such as a tag, timestamp, or
-	 * change number.
+	 * Converts the version into a selector component, i.e. a branch or a branch
+	 * qualifier such as a tag, timestamp, or change number.
 	 * 
 	 * @param source
 	 *            The version to convert.
-	 * @return The converted result or <code>null</code> if <code>source</code> did not match the <code>from</code>
-	 *         pattern of any of the contained transformers.
+	 * @return The converted result or <code>null</code> if <code>source</code>
+	 *         did not match the <code>from</code> pattern of any of the
+	 *         contained transformers.
 	 * @throws CoreException
 	 */
-	protected String createSelectorComponent(Version source) throws CoreException
-	{
+	protected String createSelectorComponent(Version source) throws CoreException {
 		String result = source.toString();
-		if(m_transformers.length > 0)
-		{
+		if (transformers.length > 0) {
 			boolean matchFound = false;
-			for(BidirectionalTransformer transformer : m_transformers)
-			{
+			for (BidirectionalTransformer transformer : transformers) {
 				String transformed = transformer.transformFrom(result);
-				if(transformed != null)
-				{
+				if (transformed != null) {
 					matchFound = true;
 					result = transformed;
 				}
 			}
-			if(!matchFound)
+			if (!matchFound)
 				return null;
 		}
 		return result;
@@ -94,33 +84,27 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 	 *            The version type for the version to create.
 	 * @param source
 	 *            The selector component to convert.
-	 * @return The converted result or <code>null</code> if <code>source</code> did not match the <code>to</code>
-	 *         pattern of any of the contained transformers.
+	 * @return The converted result or <code>null</code> if <code>source</code>
+	 *         did not match the <code>to</code> pattern of any of the contained
+	 *         transformers.
 	 * @throws CoreException
 	 */
-	protected Version createVersionFromSelectorComponent(String source) throws CoreException
-	{
-		if(m_transformers.length > 0)
-		{
+	protected Version createVersionFromSelectorComponent(String source) throws CoreException {
+		if (transformers.length > 0) {
 			boolean matchFound = false;
-			for(BidirectionalTransformer transformer : m_transformers)
-			{
+			for (BidirectionalTransformer transformer : transformers) {
 				String transformed = transformer.transformTo(source);
-				if(transformed != null)
-				{
+				if (transformed != null) {
 					matchFound = true;
 					source = transformed;
 				}
 			}
-			if(!matchFound)
+			if (!matchFound)
 				return null;
 		}
-		try
-		{
-			return m_versionFormat.parse(source);
-		}
-		catch(IllegalArgumentException e)
-		{
+		try {
+			return versionFormat.parse(source);
+		} catch (IllegalArgumentException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}

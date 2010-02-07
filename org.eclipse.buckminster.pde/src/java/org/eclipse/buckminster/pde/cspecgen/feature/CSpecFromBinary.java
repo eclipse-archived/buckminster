@@ -20,40 +20,34 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 
 @SuppressWarnings("restriction")
-public class CSpecFromBinary extends CSpecFromFeature
-{
-	private final URI m_location;
+public class CSpecFromBinary extends CSpecFromFeature {
+	private final URI location;
 
-	protected CSpecFromBinary(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature, URI uri)
-	{
+	protected CSpecFromBinary(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature, URI uri) {
 		super(cspecBuilder, reader, feature);
-		m_location = uri;
+		location = uri;
 	}
 
 	@Override
-	protected String getProductOutputFolder(String productId)
-	{
+	protected String getProductOutputFolder(String productId) {
 		return null;
 	}
 
 	@Override
-	void createFeatureJarAction(IProgressMonitor monitor) throws CoreException
-	{
+	void createFeatureJarAction(IProgressMonitor monitor) throws CoreException {
 		IPath parentDir = new Path(".."); //$NON-NLS-1$
 		ArtifactBuilder featureExport = getCSpec().addArtifact(ATTRIBUTE_FEATURE_JAR, true, null);
-		featureExport.addPath(new Path(new Path(m_location.getPath()).lastSegment()));
+		featureExport.addPath(new Path(new Path(location.getPath()).lastSegment()));
 		featureExport.setBase(parentDir);
 		MonitorUtils.complete(monitor);
 	}
 
 	@Override
-	void createFeatureSourceJarAction() throws CoreException
-	{
+	void createFeatureSourceJarAction() throws CoreException {
 		getCSpec().addGroup(ATTRIBUTE_SOURCE_FEATURE_JAR, true);
 	}
 
 	@Override
-	void createSiteActions(IProgressMonitor monitor) throws CoreException
-	{
+	void createSiteActions(IProgressMonitor monitor) throws CoreException {
 	}
 }

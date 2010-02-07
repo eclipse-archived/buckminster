@@ -16,12 +16,10 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Henrik Lindberg
  */
-public abstract class AbstractBrowseableFeedAction extends AbstractObjectAction<IBrowseableFeed>
-{
+public abstract class AbstractBrowseableFeedAction extends AbstractObjectAction<IBrowseableFeed> {
 
 	@Override
-	protected Class<IBrowseableFeed> getType()
-	{
+	protected Class<IBrowseableFeed> getType() {
 		return IBrowseableFeed.class;
 	}
 

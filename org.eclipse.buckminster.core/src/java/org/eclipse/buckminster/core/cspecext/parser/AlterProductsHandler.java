@@ -23,67 +23,58 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class AlterProductsHandler extends AlterHandler
-{
-	class AlterActionArtifactHandler extends AlterArtifactHandler
-	{
-		AlterActionArtifactHandler(AbstractHandler parent, boolean publ)
-		{
+class AlterProductsHandler extends AlterHandler {
+	class AlterActionArtifactHandler extends AlterArtifactHandler {
+		AlterActionArtifactHandler(AbstractHandler parent, boolean publ) {
 			super(parent, new ProductsHandler.ProductArtifactHandler(parent, publ));
 		}
 
 		@Override
-		AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
-		{
-			return new AlterActionArtifactBuilder((ActionArtifactBuilder)baseBuilder);
+		AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder) {
+			return new AlterActionArtifactBuilder((ActionArtifactBuilder) baseBuilder);
 		}
 	}
 
 	public static final String TAG = AlterAction.ELEM_ALTER_PRODUCTS;
 
-	private final RemoveHandler m_removeProductPathHandler = new RemoveHandler(this, "removeProductPath", "path"); //$NON-NLS-1$ //$NON-NLS-2$
+	private final RemoveHandler removeProductPathHandler = new RemoveHandler(this, "removeProductPath", "path"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	private final RemoveHandler m_removeAttributeHandler = new RemoveHandler(this, "removeAttribute", "name"); //$NON-NLS-1$ //$NON-NLS-2$
+	private final RemoveHandler removeAttributeHandler = new RemoveHandler(this, "removeAttribute", "name"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	private final AlterArtifactHandler m_publicAlterArtifactHandler = new AlterActionArtifactHandler(this, true);
+	private final AlterArtifactHandler publicAlterArtifactHandler = new AlterActionArtifactHandler(this, true);
 
-	private final AlterArtifactHandler m_privateAlterArtifactHandler = new AlterActionArtifactHandler(this, false);
+	private final AlterArtifactHandler privateAlterArtifactHandler = new AlterActionArtifactHandler(this, false);
 
-	AlterProductsHandler(AbstractHandler parent)
-	{
+	AlterProductsHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_removeProductPathHandler)
-			this.getAlterActionBuilder().addRemoveProductPath(
-					Path.fromPortableString(m_removeProductPathHandler.getValue()));
-		else if(child == m_removeAttributeHandler)
-			this.getAlterCSpecBuilder().addRemoveAttribute(m_removeAttributeHandler.getValue());
-		else if(child instanceof AlterActionArtifactHandler)
-			this.getAlterCSpecBuilder().addAlterAttribute(((AlterActionArtifactHandler)child).getBuilder());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == removeProductPathHandler)
+			this.getAlterActionBuilder().addRemoveProductPath(Path.fromPortableString(removeProductPathHandler.getValue()));
+		else if (child == removeAttributeHandler)
+			this.getAlterCSpecBuilder().addRemoveAttribute(removeAttributeHandler.getValue());
+		else if (child instanceof AlterActionArtifactHandler)
+			this.getAlterCSpecBuilder().addAlterAttribute(((AlterActionArtifactHandler) child).getBuilder());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(m_removeProductPathHandler.getTAG().equals(localName))
-			ch = m_removeProductPathHandler;
-		else if(m_removeAttributeHandler.getTAG().equals(localName))
-			ch = m_removeAttributeHandler;
-		else if(m_publicAlterArtifactHandler.getTAG().equals(localName))
-			ch = m_publicAlterArtifactHandler;
-		else if(m_privateAlterArtifactHandler.getTAG().equals(localName))
-			ch = m_privateAlterArtifactHandler;
+		if (removeProductPathHandler.getTAG().equals(localName))
+			ch = removeProductPathHandler;
+		else if (removeAttributeHandler.getTAG().equals(localName))
+			ch = removeAttributeHandler;
+		else if (publicAlterArtifactHandler.getTAG().equals(localName))
+			ch = publicAlterArtifactHandler;
+		else if (privateAlterArtifactHandler.getTAG().equals(localName))
+			ch = privateAlterArtifactHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	AlterActionBuilder getAlterActionBuilder()
-	{
-		return ((AlterActionHandler)this.getParentHandler()).getAlterActionBuilder();
+	AlterActionBuilder getAlterActionBuilder() {
+		return ((AlterActionHandler) this.getParentHandler()).getAlterActionBuilder();
 	}
 }

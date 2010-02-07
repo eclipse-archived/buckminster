@@ -48,23 +48,17 @@ import org.xml.sax.SAXParseException;
  * @author Thomas Hallgren
  * 
  */
-public class Maven2ReaderType extends MavenReaderType
-{
-	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx,
-			IProgressMonitor monitor) throws CoreException, FileNotFoundException
-	{
-		try
-		{
+public class Maven2ReaderType extends MavenReaderType {
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx, IProgressMonitor monitor)
+			throws CoreException, FileNotFoundException {
+		try {
 			AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream(0x2000, 0x100000);
-			try
-			{
+			try {
 				DownloadManager.readInto(url, cctx, buffer, monitor);
 				return docBld.parse(buffer.getInputStream());
-			}
-			catch(SAXParseException e)
-			{
+			} catch (SAXParseException e) {
 				String msg = e.getMessage();
-				if(msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
+				if (msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
 					throw e;
 
 				InputSource input = new InputSource(buffer.getInputStream());
@@ -72,124 +66,93 @@ public class Maven2ReaderType extends MavenReaderType
 				docBld.reset();
 				return docBld.parse(input);
 			}
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			docBld.reset();
 			throw e;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			docBld.reset();
 			throw e;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			docBld.reset();
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public static String getSnapshotVersion(Document doc, String version)
-	{
+	public static String getSnapshotVersion(Document doc, String version) {
 		String v = null;
 		Element versioningElement = getElement(doc, "versioning"); //$NON-NLS-1$
-		if(versioningElement != null)
-		{
+		if (versioningElement != null) {
 			Element snapshotElement = getElement(versioningElement, "snapshot"); //$NON-NLS-1$
-			if(snapshotElement != null)
-			{
+			if (snapshotElement != null) {
 				Element buildNum = getElement(snapshotElement, "buildNumber"); //$NON-NLS-1$
-				if(buildNum != null)
-				{
+				if (buildNum != null) {
 					Element ts = getElement(snapshotElement, "timestamp"); //$NON-NLS-1$
-					if(ts != null)
-						v = version.substring(0, version.length() - 8) + ts.getTextContent() + '-'
-								+ buildNum.getTextContent();
+					if (ts != null)
+						v = version.substring(0, version.length() - 8) + ts.getTextContent() + '-' + buildNum.getTextContent();
 				}
 			}
 		}
 		return v;
 	}
 
-	public static List<String> getVersions(Document doc)
-	{
+	public static List<String> getVersions(Document doc) {
 		List<String> versionList = null;
 
 		Element versioningElement = getElement(doc, "versioning"); //$NON-NLS-1$
-		if(versioningElement != null)
-		{
+		if (versioningElement != null) {
 			Element versionsElement = getElement(versioningElement, "versions"); //$NON-NLS-1$
-			if(versionsElement != null)
-			{
+			if (versionsElement != null) {
 				NodeList versions = versionsElement.getElementsByTagName("version"); //$NON-NLS-1$
 				int top = versions.getLength();
-				for(int i = 0; i < top; i++)
-				{
-					if(versionList == null)
+				for (int i = 0; i < top; i++) {
+					if (versionList == null)
 						versionList = new ArrayList<String>();
 					versionList.add(versions.item(i).getTextContent());
 				}
 			}
 		}
-		return versionList == null
-				? Collections.<String> emptyList()
-				: versionList;
+		return versionList == null ? Collections.<String> emptyList() : versionList;
 	}
 
-	private static Element getElement(Document doc, String elementName)
-	{
+	private static Element getElement(Document doc, String elementName) {
 		return getElement(doc.getElementsByTagName(elementName));
 	}
 
-	private static Element getElement(Element elem, String elementName)
-	{
-		return elem == null
-				? null
-				: getElement(elem.getElementsByTagName(elementName));
+	private static Element getElement(Element elem, String elementName) {
+		return elem == null ? null : getElement(elem.getElementsByTagName(elementName));
 	}
 
-	private static Element getElement(NodeList nodeList)
-	{
-		return (nodeList != null && nodeList.getLength() > 0)
-				? (Element)nodeList.item(0)
-				: null;
+	private static Element getElement(NodeList nodeList) {
+		return (nodeList != null && nodeList.getLength() > 0) ? (Element) nodeList.item(0) : null;
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
+			throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new Maven2VersionFinder(this, provider, ctype, nodeQuery);
 	}
 
 	@Override
-	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vm) throws CoreException
-	{
+	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vm) throws CoreException {
 		String artifactPath = vm.getArtifactInfo();
 		appendEntryFolder(pbld, mapEntry);
 		pbld.append(artifactPath, 0, artifactPath.lastIndexOf('/') + 1);
 	}
 
-	void appendEntryFolder(StringBuilder pbld, MapEntry mapEntry) throws CoreException
-	{
+	void appendEntryFolder(StringBuilder pbld, MapEntry mapEntry) throws CoreException {
 		StringTokenizer tokens = new StringTokenizer(mapEntry.getGroupId(), "."); //$NON-NLS-1$
-		while(tokens.hasMoreTokens())
+		while (tokens.hasMoreTokens())
 			appendFolder(pbld, tokens.nextToken());
 		appendFolder(pbld, mapEntry.getArtifactId());
 	}
 
 	@Override
-	void appendFileName(StringBuilder pbld, String artifactID, VersionMatch vm, String extension) throws CoreException
-	{
-		if(extension == null)
-		{
+	void appendFileName(StringBuilder pbld, String artifactID, VersionMatch vm, String extension) throws CoreException {
+		if (extension == null) {
 			String artifactPath = vm.getArtifactInfo();
 			pbld.append(artifactPath, artifactPath.lastIndexOf('/') + 1, artifactPath.length());
-		}
-		else
-		{
+		} else {
 			pbld.append(artifactID);
 			pbld.append('-');
 			pbld.append(VersionHelper.getOriginal(vm.getVersion()));
@@ -198,21 +161,18 @@ public class Maven2ReaderType extends MavenReaderType
 	}
 
 	@Override
-	void appendPathToArtifact(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
-	{
+	void appendPathToArtifact(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException {
 		appendEntryFolder(pbld, mapEntry);
 		pbld.append(vs.getArtifactInfo());
 	}
 
 	@Override
-	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException
-	{
+	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException {
 		appendArtifactFolder(pbld, mapEntry, vs);
 	}
 
-	VersionMatch createVersionMatch(DocumentBuilder docBld, ILocationResolver resolver, MapEntry mapEntry,
-			VersionRange range, String versionStr) throws CoreException
-	{
+	VersionMatch createVersionMatch(DocumentBuilder docBld, ILocationResolver resolver, MapEntry mapEntry, VersionRange range, String versionStr)
+			throws CoreException {
 		URI uri = resolver.getURI();
 		StringBuilder pbld = new StringBuilder();
 		appendFolder(pbld, uri.getPath());
@@ -220,42 +180,33 @@ public class Maven2ReaderType extends MavenReaderType
 		String rootPath = pbld.toString();
 
 		String v = versionStr;
-		if(v.endsWith("SNAPSHOT")) //$NON-NLS-1$
+		if (v.endsWith("SNAPSHOT")) //$NON-NLS-1$
 		{
-			try
-			{
+			try {
 				LocalCache lc = getLocalCache();
 				Document doc = getMetadataDocument(docBld, createURL(uri, rootPath + v + "/" //$NON-NLS-1$
 						+ "maven-metadata.xml"), lc, resolver.getConnectContext(), new NullProgressMonitor()); //$NON-NLS-1$
 				v = getSnapshotVersion(doc, v);
-				if(v == null)
+				if (v == null)
 					return null;
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				resolver.logDecision(ResolverDecisionType.VERSION_REJECTED, v, e.getMessage());
 				return null;
-			}
-			catch(FileNotFoundException e)
-			{
+			} catch (FileNotFoundException e) {
 				// Snapshot not present. This is a valid condition.
 				return null;
 			}
 		}
 
 		Version version;
-		if(range == null)
+		if (range == null)
 			version = MavenComponentType.createVersion(v);
-		else
-		{
-			try
-			{
+		else {
+			try {
 				version = range.getFormat().parse(v);
-				if(!range.isIncluded(version))
+				if (!range.isIncluded(version))
 					return null;
-			}
-			catch(IllegalArgumentException e)
-			{
+			} catch (IllegalArgumentException e) {
 				return null;
 			}
 		}
@@ -270,46 +221,36 @@ public class Maven2ReaderType extends MavenReaderType
 	}
 
 	@Override
-	VersionMatch createVersionMatch(ILocationResolver resolver, MapEntry mapEntry, String versionStr)
-			throws CoreException
-	{
-		if(versionStr == null)
+	VersionMatch createVersionMatch(ILocationResolver resolver, MapEntry mapEntry, String versionStr) throws CoreException {
+		if (versionStr == null)
 			return super.createVersionMatch(resolver, mapEntry, versionStr);
 
-		try
-		{
-			VersionMatch vm = createVersionMatch(DocumentBuilderFactory.newInstance().newDocumentBuilder(), resolver,
-					mapEntry, null, versionStr);
-			if(vm == null)
+		try {
+			VersionMatch vm = createVersionMatch(DocumentBuilderFactory.newInstance().newDocumentBuilder(), resolver, mapEntry, null, versionStr);
+			if (vm == null)
 				vm = super.createVersionMatch(resolver, mapEntry, versionStr);
 			return vm;
-		}
-		catch(ParserConfigurationException e)
-		{
+		} catch (ParserConfigurationException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
 	@Override
-	IPath getDefaultLocalRepoPath()
-	{
+	IPath getDefaultLocalRepoPath() {
 		return Maven2VersionFinder.getDefaultLocalRepoPath();
 	}
 
 	@Override
-	String getMaterializationFolder()
-	{
+	String getMaterializationFolder() {
 		return "maven2"; //$NON-NLS-1$
 	}
 
 	@Override
-	void setPackaging(ProviderMatch providerMatch, String packaging)
-	{
+	void setPackaging(ProviderMatch providerMatch, String packaging) {
 		VersionMatch vm = providerMatch.getVersionMatch();
 		String artifactInfo = vm.getArtifactInfo();
 		int suffixDelim = artifactInfo.lastIndexOf('.');
 		artifactInfo = artifactInfo.substring(0, suffixDelim + 1) + packaging;
-		providerMatch.setVersionMatch(new VersionMatch(vm.getVersion(), vm.getBranchOrTag(), vm.getRevision(),
-				vm.getTimestamp(), artifactInfo));
+		providerMatch.setVersionMatch(new VersionMatch(vm.getVersion(), vm.getBranchOrTag(), vm.getRevision(), vm.getTimestamp(), artifactInfo));
 	}
 }

@@ -1,7 +1,6 @@
 package org.eclipse.buckminster.jarprocessor;
 
-public interface IConstants
-{
+public interface IConstants {
 	static final String META_INF = "META-INF/"; //$NON-NLS-1$
 
 	static final String ECLIPSE_INF = "eclipse.inf"; //$NON-NLS-1$

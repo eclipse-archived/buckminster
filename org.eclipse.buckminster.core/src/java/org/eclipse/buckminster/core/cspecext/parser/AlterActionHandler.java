@@ -22,79 +22,65 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class AlterActionHandler extends AlterAttributeHandler
-{
-	private final AlterPropertiesHandler m_alterActorPropertiesHandler = new AlterPropertiesHandler(this,
-			AlterAction.ELEM_ALTER_ACTOR_PROPERTIES)
-	{
+class AlterActionHandler extends AlterAttributeHandler {
+	private final AlterPropertiesHandler alterActorPropertiesHandler = new AlterPropertiesHandler(this, AlterAction.ELEM_ALTER_ACTOR_PROPERTIES) {
 		@Override
-		public ExpandingProperties<String> getProperties()
-		{
+		public ExpandingProperties<String> getProperties() {
 			return getAlterActionBuilder().getAlterActorProperties();
 		}
 
 		@Override
-		protected void addRemovedProperty(String key) throws SAXException
-		{
+		protected void addRemovedProperty(String key) throws SAXException {
 			getAlterActionBuilder().addRemoveActorProperty(key);
 		}
 	};
 
-	private final AlterPropertiesHandler m_alterPropertiesHandler = new AlterPropertiesHandler(this,
-			AlterAction.ELEM_ALTER_PROPERTIES)
-	{
+	private final AlterPropertiesHandler alterPropertiesHandler = new AlterPropertiesHandler(this, AlterAction.ELEM_ALTER_PROPERTIES) {
 		@Override
-		public ExpandingProperties<String> getProperties()
-		{
+		public ExpandingProperties<String> getProperties() {
 			return getAlterActionBuilder().getAlterProperties();
 		}
 
 		@Override
-		protected void addRemovedProperty(String key) throws SAXException
-		{
+		protected void addRemovedProperty(String key) throws SAXException {
 			getAlterActionBuilder().addRemoveProperty(key);
 		}
 	};
 
-	private final AlterPrerequisitesHandler m_alterPrerequisitesHandler = new AlterPrerequisitesHandler(this);
+	private final AlterPrerequisitesHandler alterPrerequisitesHandler = new AlterPrerequisitesHandler(this);
 
-	private final AlterProductsHandler m_alterProductsHandler = new AlterProductsHandler(this);
+	private final AlterProductsHandler alterProductsHandler = new AlterProductsHandler(this);
 
-	AlterActionHandler(AbstractHandler parent, boolean publ)
-	{
+	AlterActionHandler(AbstractHandler parent, boolean publ) {
 		super(parent, new ActionHandler(parent, publ));
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(m_alterActorPropertiesHandler.getTAG().equals(localName))
-			ch = m_alterActorPropertiesHandler;
-		else if(m_alterPropertiesHandler.getTAG().equals(localName))
-			ch = m_alterPropertiesHandler;
-		else if(AlterPrerequisitesHandler.TAG.equals(localName))
-			ch = m_alterPrerequisitesHandler;
-		else if(AlterProductsHandler.TAG.equals(localName))
-			ch = m_alterProductsHandler;
+		if (alterActorPropertiesHandler.getTAG().equals(localName))
+			ch = alterActorPropertiesHandler;
+		else if (alterPropertiesHandler.getTAG().equals(localName))
+			ch = alterPropertiesHandler;
+		else if (AlterPrerequisitesHandler.TAG.equals(localName))
+			ch = alterPrerequisitesHandler;
+		else if (AlterProductsHandler.TAG.equals(localName))
+			ch = alterProductsHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public ActionBuilder getActionBuilder()
-	{
-		return (ActionBuilder)this.getBaseHandler().getAttributeBuilder();
+	public ActionBuilder getActionBuilder() {
+		return (ActionBuilder) this.getBaseHandler().getAttributeBuilder();
 	}
 
 	@Override
-	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder)
-	{
-		return new AlterActionBuilder((ActionBuilder)baseBuilder);
+	AlterAttributeBuilder createAlterAttributeBuilder(AttributeBuilder baseBuilder) {
+		return new AlterActionBuilder((ActionBuilder) baseBuilder);
 	}
 
-	AlterActionBuilder getAlterActionBuilder()
-	{
-		return (AlterActionBuilder)this.getBuilder();
+	AlterActionBuilder getAlterActionBuilder() {
+		return (AlterActionBuilder) this.getBuilder();
 	}
 }

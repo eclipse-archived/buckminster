@@ -16,21 +16,22 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Redirect</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Redirect</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RedirectImpl#getHref <em>Href</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.RedirectImpl#getHref <em>Href
+ * </em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class RedirectImpl extends MatcherImpl implements Redirect
-{
+public class RedirectImpl extends MatcherImpl implements Redirect {
 	/**
-	 * The default value of the '{@link #getHref() <em>Href</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The default value of the '{@link #getHref() <em>Href</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getHref()
 	 * @generated
@@ -39,8 +40,8 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	protected static final String HREF_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getHref() <em>Href</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getHref() <em>Href</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getHref()
 	 * @generated
@@ -53,8 +54,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * 
 	 * @generated
 	 */
-	protected RedirectImpl()
-	{
+	protected RedirectImpl() {
 		super();
 	}
 
@@ -64,12 +64,10 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.REDIRECT__HREF:
-			return getHref();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case RmapPackage.REDIRECT__HREF:
+				return getHref();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -80,14 +78,10 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.REDIRECT__HREF:
-			return HREF_EDEFAULT == null
-					? href != null
-					: !HREF_EDEFAULT.equals(href);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case RmapPackage.REDIRECT__HREF:
+				return HREF_EDEFAULT == null ? href != null : !HREF_EDEFAULT.equals(href);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -98,13 +92,11 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.REDIRECT__HREF:
-			setHref((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case RmapPackage.REDIRECT__HREF:
+				setHref((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -115,13 +107,11 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case RmapPackage.REDIRECT__HREF:
-			setHref(HREF_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case RmapPackage.REDIRECT__HREF:
+				setHref(HREF_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -131,8 +121,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * 
 	 * @generated
 	 */
-	public String getHref()
-	{
+	public String getHref() {
 		return href;
 	}
 
@@ -141,11 +130,10 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * 
 	 * @generated
 	 */
-	public void setHref(String newHref)
-	{
+	public void setHref(String newHref) {
 		String oldHref = href;
 		href = newHref;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.REDIRECT__HREF, oldHref, href));
 	}
 
@@ -155,9 +143,8 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -173,8 +160,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return RmapPackage.Literals.REDIRECT;
 	}
 

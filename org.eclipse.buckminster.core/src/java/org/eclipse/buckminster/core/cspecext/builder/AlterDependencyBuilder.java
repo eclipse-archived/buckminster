@@ -14,27 +14,22 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public class AlterDependencyBuilder
-{
-	private final ComponentRequestBuilder m_baseBuilder;
+public class AlterDependencyBuilder {
+	private final ComponentRequestBuilder baseBuilder;
 
-	public AlterDependencyBuilder(ComponentRequestBuilder baseBuilder)
-	{
-		m_baseBuilder = baseBuilder;
+	public AlterDependencyBuilder(ComponentRequestBuilder baseBuilder) {
+		this.baseBuilder = baseBuilder;
 	}
 
-	public void clear()
-	{
-		m_baseBuilder.clear();
+	public void clear() {
+		baseBuilder.clear();
 	}
 
-	public AlterDependency createAlterDependency() throws CoreException
-	{
-		return new AlterDependency(m_baseBuilder.createComponentRequest());
+	public AlterDependency createAlterDependency() throws CoreException {
+		return new AlterDependency(baseBuilder.createComponentRequest());
 	}
 
-	public String getName()
-	{
-		return m_baseBuilder.getName();
+	public String getName() {
+		return baseBuilder.getName();
 	}
 }

@@ -25,26 +25,22 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-@SuppressWarnings( { "restriction" })
-public class SaxableSite extends AbstractSaxableElement implements ISaxable
-{
+@SuppressWarnings({ "restriction" })
+public class SaxableSite extends AbstractSaxableElement implements ISaxable {
 	public static final String TAG = "site"; //$NON-NLS-1$
 
 	public static final String ATTR_ASSOCIATE_SITES_URL = "associateSitesURL"; //$NON-NLS-1$
 
 	public static final String ATTR_MIRRORS_URL = "mirrorsURL"; //$NON-NLS-1$
 
-	private static void addOptionalAttribute(AttributesImpl attrs, String name, String value)
-	{
-		if(value != null)
+	private static void addOptionalAttribute(AttributesImpl attrs, String name, String value) {
+		if (value != null)
 			Utils.addAttribute(attrs, name, value);
 	}
 
-	private static void writeArchives(ContentHandler handler, URLEntry[] archiveReferenceModels) throws SAXException
-	{
+	private static void writeArchives(ContentHandler handler, URLEntry[] archiveReferenceModels) throws SAXException {
 		int top = archiveReferenceModels.length;
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			URLEntry sm = archiveReferenceModels[idx];
 			AttributesImpl attrs = new AttributesImpl();
 			Utils.addAttribute(attrs, "path", sm.getAnnotation()); //$NON-NLS-1$
@@ -54,53 +50,46 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 		}
 	}
 
-	private static void writeCategories(ContentHandler handler, SiteCategory[] categoryModels) throws SAXException
-	{
+	private static void writeCategories(ContentHandler handler, SiteCategory[] categoryModels) throws SAXException {
 		int top = categoryModels.length;
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			SiteCategory cm = categoryModels[idx];
 			AttributesImpl attrs = new AttributesImpl();
 			String name = Trivial.trim(cm.getName());
-			if(name != null)
+			if (name != null)
 				Utils.addAttribute(attrs, "name", name); //$NON-NLS-1$
 			String label = Trivial.trim(cm.getLabel());
-			if(label != null)
+			if (label != null)
 				Utils.addAttribute(attrs, "label", label); //$NON-NLS-1$
 			handler.startElement("", "", "category-def", attrs); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			String desc = cm.getDescription();
-			if(desc != null)
+			if (desc != null)
 				writeDescription(handler, new URLEntry(null, desc));
 			handler.endElement("", "", "category-def"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 	}
 
-	private static void writeDescription(ContentHandler handler, URLEntry urlEntryModel) throws SAXException
-	{
+	private static void writeDescription(ContentHandler handler, URLEntry urlEntryModel) throws SAXException {
 		String url = Trivial.trim(urlEntryModel.getURL());
 		String text = Trivial.trim(urlEntryModel.getAnnotation());
-		if(url != null || text != null)
-		{
+		if (url != null || text != null) {
 			Attributes attrs;
-			if(url == null)
+			if (url == null)
 				attrs = ISaxableElement.EMPTY_ATTRIBUTES;
-			else
-			{
+			else {
 				attrs = new AttributesImpl();
-				Utils.addAttribute((AttributesImpl)attrs, "url", url); //$NON-NLS-1$
+				Utils.addAttribute((AttributesImpl) attrs, "url", url); //$NON-NLS-1$
 			}
 			handler.startElement("", "", "description", attrs); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			if(text != null)
+			if (text != null)
 				handler.characters(text.toCharArray(), 0, text.length());
 			handler.endElement("", "", "description"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 	}
 
-	private static void writeFeatures(ContentHandler handler, SiteFeature[] featureReferenceModels) throws SAXException
-	{
+	private static void writeFeatures(ContentHandler handler, SiteFeature[] featureReferenceModels) throws SAXException {
 		int top = featureReferenceModels.length;
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			SiteFeature sm = featureReferenceModels[idx];
 			AttributesImpl attrs = new AttributesImpl();
 			Utils.addAttribute(attrs, "url", sm.getURLString()); //$NON-NLS-1$
@@ -117,8 +106,7 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 
 			handler.startElement("", "", "feature", attrs); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			String[] categoryNames = sm.getCategoryNames();
-			for(int cn = 0; cn < categoryNames.length; cn++)
-			{
+			for (int cn = 0; cn < categoryNames.length; cn++) {
 				AttributesImpl nameAttr = new AttributesImpl();
 				Utils.addAttribute(nameAttr, "name", categoryNames[cn]); //$NON-NLS-1$
 				handler.startElement("", "", "category", nameAttr); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -128,67 +116,61 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 		}
 	}
 
-	private final SiteModel m_site;
+	private final SiteModel site;
 
-	private final String m_mirrorsURL;
+	private final String mirrorsURL;
 
-	private final String m_associateSitesURL;
+	private final String associateSitesURL;
 
-	public SaxableSite(SiteModel site)
-	{
+	public SaxableSite(SiteModel site) {
 		this(site, null, null);
 	}
 
-	public SaxableSite(SiteModel site, String mirrorsURL, String associateSitesURL)
-	{
-		m_site = site;
-		m_mirrorsURL = mirrorsURL;
-		m_associateSitesURL = associateSitesURL;
+	public SaxableSite(SiteModel site, String mirrorsURL, String associateSitesURL) {
+		this.site = site;
+		this.mirrorsURL = mirrorsURL;
+		this.associateSitesURL = associateSitesURL;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public SiteModel getSite()
-	{
-		return m_site;
+	public SiteModel getSite() {
+		return site;
 	}
 
-	public void toSax(ContentHandler receiver) throws SAXException
-	{
+	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		toSax(receiver, "", "", TAG); //$NON-NLS-1$ //$NON-NLS-2$
 		receiver.endDocument();
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		String type = m_site.getType();
-		if(type != null)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		String type = site.getType();
+		if (type != null)
 			Utils.addAttribute(attrs, "type", type); //$NON-NLS-1$
 
-		String urlStr = m_site.getLocationURIString();
-		if(urlStr != null)
+		String urlStr = site.getLocationURIString();
+		if (urlStr != null)
 			Utils.addAttribute(attrs, "url", urlStr); //$NON-NLS-1$
 
-		if(m_mirrorsURL != null)
-			Utils.addAttribute(attrs, ATTR_MIRRORS_URL, m_mirrorsURL);
+		if (mirrorsURL != null)
+			Utils.addAttribute(attrs, ATTR_MIRRORS_URL, mirrorsURL);
 
-		if(m_associateSitesURL != null)
-			Utils.addAttribute(attrs, ATTR_ASSOCIATE_SITES_URL, m_associateSitesURL);
+		if (associateSitesURL != null)
+			Utils.addAttribute(attrs, ATTR_ASSOCIATE_SITES_URL, associateSitesURL);
 
-		if(m_site.isPack200Supported())
+		if (site.isPack200Supported())
 			Utils.addAttribute(attrs, "pack200", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		String digestURL = Trivial.trim(m_site.getDigestURIString());
-		if(digestURL != null)
+		String digestURL = Trivial.trim(site.getDigestURIString());
+		if (digestURL != null)
 			Utils.addAttribute(attrs, "digestURL", digestURL); //$NON-NLS-1$
 
 		// TODO:
-		// String[] availableLocales = m_site.getAvailableLocales();
+		// String[] availableLocales = site.getAvailableLocales();
 		// if(availableLocales != null)
 		// {
 		// StringBuilder bld = new StringBuilder();
@@ -199,14 +181,13 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable
 	}
 
 	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
-		URLEntry description = m_site.getDescription();
-		if(description != null)
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
+		URLEntry description = site.getDescription();
+		if (description != null)
 			writeDescription(handler, description);
 
-		writeFeatures(handler, m_site.getFeatures());
-		writeCategories(handler, m_site.getCategories());
-		writeArchives(handler, m_site.getArchives());
+		writeFeatures(handler, site.getFeatures());
+		writeCategories(handler, site.getCategories());
+		writeArchives(handler, site.getArchives());
 	}
 }

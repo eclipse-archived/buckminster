@@ -27,60 +27,53 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Materialization extends UUIDKeyed implements IUUIDPersisted
-{
+public class Materialization extends UUIDKeyed implements IUUIDPersisted {
 	public static final String TAG = "materialization"; //$NON-NLS-1$
 
 	public static final String ATTR_LOCATION = "location"; //$NON-NLS-1$
 
 	public static final int SEQUENCE_NUMBER = 3;
 
-	private final IPath m_componentLocation;
+	private final IPath componentLocation;
 
-	private final ComponentIdentifier m_componentIdentifier;
+	private final ComponentIdentifier componentIdentifier;
 
-	public Materialization(IPath destination, ComponentIdentifier componentIdentifier)
-	{
-		if(destination == null || componentIdentifier == null)
+	public Materialization(IPath destination, ComponentIdentifier componentIdentifier) {
+		if (destination == null || componentIdentifier == null)
 			throw new NullPointerException();
-		m_componentLocation = destination;
-		m_componentIdentifier = componentIdentifier;
+		this.componentLocation = destination;
+		this.componentIdentifier = componentIdentifier;
 	}
 
-	public ComponentIdentifier getComponentIdentifier()
-	{
-		return m_componentIdentifier;
+	public ComponentIdentifier getComponentIdentifier() {
+		return componentIdentifier;
 	}
 
-	public final IPath getComponentLocation()
-	{
-		return m_componentLocation;
+	public final IPath getComponentLocation() {
+		return componentLocation;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public Resolution getResolution() throws CoreException
-	{
+	public Resolution getResolution() throws CoreException {
 		store(StorageManager.getDefault());
-		return WorkspaceInfo.getResolution(m_componentIdentifier);
+		return WorkspaceInfo.getResolution(componentIdentifier);
 	}
 
-	public boolean isPersisted(StorageManager sm) throws CoreException
-	{
+	public boolean isPersisted(StorageManager sm) throws CoreException {
 		return sm.getMaterializations().contains(this);
 	}
 
 	/**
-	 * Returns <code>true</code> if this <code>MaterializationInfo</code> is valid. It will be considered valid if the
-	 * destination appoints an existing file or a directory that is not empty.
+	 * Returns <code>true</code> if this <code>MaterializationInfo</code> is
+	 * valid. It will be considered valid if the destination appoints an
+	 * existing file or a directory that is not empty.
 	 * 
 	 * @return <code>true</code> if the destination is not empty.
 	 */
-	public boolean isValid()
-	{
+	public boolean isValid() {
 		IPath location = getComponentLocation();
 		File destFile = location.toFile();
 
@@ -88,41 +81,35 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted
 		// as few system calls as possible.
 		//
 		String[] list = destFile.list();
-		return (list == null)
-				? destFile.length() > 0
-				: list.length > 0;
+		return (list == null) ? destFile.length() > 0 : list.length > 0;
 	}
 
-	public synchronized void remove(StorageManager sm) throws CoreException
-	{
-		WorkspaceInfo.clearCachedLocation(m_componentIdentifier);
+	public synchronized void remove(StorageManager sm) throws CoreException {
+		WorkspaceInfo.clearCachedLocation(componentIdentifier);
 		sm.getMaterializations().removeElement(getId());
 	}
 
-	public void store(StorageManager sm) throws CoreException
-	{
-		WorkspaceInfo.clearCachedLocation(m_componentIdentifier);
+	public void store(StorageManager sm) throws CoreException {
+		WorkspaceInfo.clearCachedLocation(componentIdentifier);
 		sm.getMaterializations().putElement(this);
 	}
 
-	public void toSax(ContentHandler receiver) throws SAXException
-	{
+	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());
 		receiver.endDocument();
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_LOCATION, m_componentLocation.toPortableString());
-		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, m_componentIdentifier.getName());
-		String tmp = m_componentIdentifier.getComponentTypeID();
-		if(tmp != null)
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_LOCATION, componentLocation.toPortableString());
+		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, componentIdentifier.getName());
+		String tmp = componentIdentifier.getComponentTypeID();
+		if (tmp != null)
 			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, tmp);
 
-		Version version = m_componentIdentifier.getVersion();
-		if(version != null)
+		Version version = componentIdentifier.getVersion();
+		if (version != null)
 			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
 	}
 }

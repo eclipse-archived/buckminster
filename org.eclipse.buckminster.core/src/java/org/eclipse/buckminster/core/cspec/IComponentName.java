@@ -1,7 +1,6 @@
 package org.eclipse.buckminster.core.cspec;
 
-public interface IComponentName
-{
+public interface IComponentName {
 	String getComponentTypeID();
 
 	String getName();

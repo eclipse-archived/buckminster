@@ -12,18 +12,17 @@ import org.eclipse.ui.INewWizard;
 import java.io.*;
 
 /**
- * This is a new CSPEX wizard. Its role is to create a new file resource in the provided container. If the container
- * resource (a folder or a project) is selected in the workspace when the wizard is opened, it will accept it as the
+ * This is a new CSPEX wizard. Its role is to create a new file resource in the
+ * provided container. If the container resource (a folder or a project) is
+ * selected in the workspace when the wizard is opened, it will accept it as the
  * target container. The wizard creates one file with the extension "cspex".
  */
 
-public class NewCSPEXWizard extends NewBMFileWizard implements INewWizard
-{
+public class NewCSPEXWizard extends NewBMFileWizard implements INewWizard {
 	/**
 	 * Constructor for NewCSPEXWizard.
 	 */
-	public NewCSPEXWizard()
-	{
+	public NewCSPEXWizard() {
 		super();
 	}
 
@@ -32,8 +31,7 @@ public class NewCSPEXWizard extends NewBMFileWizard implements INewWizard
 	 */
 
 	@Override
-	public void addPages()
-	{
+	public void addPages() {
 		setPage(new NewCSPEXWizardPage(getSelection()));
 	}
 
@@ -42,8 +40,7 @@ public class NewCSPEXWizard extends NewBMFileWizard implements INewWizard
 	 */
 
 	@Override
-	protected InputStream openContentStream(String containerName, String fileName)
-	{
+	protected InputStream openContentStream(String containerName, String fileName) {
 		AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
 		PrintStream contents = new PrintStream(bld);
 		contents.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$

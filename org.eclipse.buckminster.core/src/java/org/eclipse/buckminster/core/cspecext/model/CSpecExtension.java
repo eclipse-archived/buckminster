@@ -31,8 +31,7 @@ import org.eclipse.equinox.p2.metadata.Version;
 /**
  * @author Thomas Hallgren
  */
-public class CSpecExtension
-{
+public class CSpecExtension {
 	public static final String TAG = "cspecExtension"; //$NON-NLS-1$
 
 	public static final String ELEM_ALTER_ACTIONS = "alterActions"; //$NON-NLS-1$
@@ -43,73 +42,64 @@ public class CSpecExtension
 
 	public static final String ELEM_ALTER_GROUPS = "alterGroups"; //$NON-NLS-1$
 
-	public static <T> T overrideCheckNull(T a, T b)
-	{
-		if(a == null)
+	public static <T> T overrideCheckNull(T a, T b) {
+		if (a == null)
 			return b;
-		if(b == null)
+		if (b == null)
 			return a;
-		if(b.toString().equalsIgnoreCase("null")) //$NON-NLS-1$
+		if (b.toString().equalsIgnoreCase("null")) //$NON-NLS-1$
 			return null;
 		return b;
 	}
 
-	private final ICSpecData m_base;
+	private final ICSpecData base;
 
-	private final Set<String> m_removedDependencies;
+	private final Set<String> removedDependencies;
 
-	private final Set<String> m_removedAttributes;
+	private final Set<String> removedAttributes;
 
-	private final Map<String, String> m_renamedAttributes;
+	private final Map<String, String> renamedAttributes;
 
-	private final Map<String, AlterAttribute<? extends TopLevelAttribute>> m_alteredAttributes;
+	private final Map<String, AlterAttribute<? extends TopLevelAttribute>> alteredAttributes;
 
-	private final Map<String, AlterDependency> m_alteredDependencies;
+	private final Map<String, AlterDependency> alteredDependencies;
 
-	public CSpecExtension(ICSpecData base, Set<String> removedDependencies,
-			Map<String, AlterDependency> alteredDependencies, Set<String> removedAttributes,
-			Map<String, String> renamedAttributes,
-			Map<String, AlterAttribute<? extends TopLevelAttribute>> alteredAttributes)
-	{
-		m_base = base;
-		m_removedDependencies = Utils.createUnmodifiableSet(removedDependencies);
-		m_removedAttributes = Utils.createUnmodifiableSet(removedAttributes);
-		m_renamedAttributes = Utils.createUnmodifiableMap(renamedAttributes);
-		m_alteredAttributes = Utils.createUnmodifiableMap(alteredAttributes);
-		m_alteredDependencies = Utils.createUnmodifiableMap(alteredDependencies);
+	public CSpecExtension(ICSpecData base, Set<String> removedDependencies, Map<String, AlterDependency> alteredDependencies,
+			Set<String> removedAttributes, Map<String, String> renamedAttributes,
+			Map<String, AlterAttribute<? extends TopLevelAttribute>> alteredAttributes) {
+		this.base = base;
+		this.removedDependencies = Utils.createUnmodifiableSet(removedDependencies);
+		this.removedAttributes = Utils.createUnmodifiableSet(removedAttributes);
+		this.renamedAttributes = Utils.createUnmodifiableMap(renamedAttributes);
+		this.alteredAttributes = Utils.createUnmodifiableMap(alteredAttributes);
+		this.alteredDependencies = Utils.createUnmodifiableMap(alteredDependencies);
 	}
 
-	public void alterCSpec(CSpecBuilder cspecBuilder) throws CoreException
-	{
-		for(String removedDep : m_removedDependencies)
-		{
+	public void alterCSpec(CSpecBuilder cspecBuilder) throws CoreException {
+		for (String removedDep : removedDependencies) {
 			cspecBuilder.getRequiredDependency(removedDep, null);
 			cspecBuilder.removeDependency(removedDep);
 		}
 
-		for(AlterDependency alterDep : m_alteredDependencies.values())
-			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName(),
-					alterDep.getComponentTypeID()));
+		for (AlterDependency alterDep : alteredDependencies.values())
+			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName(), alterDep.getComponentTypeID()));
 
-		Collection<? extends IComponentRequest> addedDeps = m_base.getDependencies();
-		for(IComponentRequest addedDep : addedDeps)
+		Collection<? extends IComponentRequest> addedDeps = base.getDependencies();
+		for (IComponentRequest addedDep : addedDeps)
 			cspecBuilder.addDependency(addedDep);
 
-		for(IGenerator addedGenerator : m_base.getGeneratorList())
-		{
+		for (IGenerator addedGenerator : base.getGeneratorList()) {
 			GeneratorBuilder bld = cspecBuilder.createGeneratorBuilder();
 			bld.initFrom(addedGenerator);
 			cspecBuilder.addGenerator(bld);
 		}
 
-		for(String removedAttr : m_removedAttributes)
-		{
+		for (String removedAttr : removedAttributes) {
 			cspecBuilder.getRequiredAttribute(removedAttr);
 			cspecBuilder.removeAttribute(removedAttr);
 		}
 
-		for(Map.Entry<String, String> renamedAttribute : m_renamedAttributes.entrySet())
-		{
+		for (Map.Entry<String, String> renamedAttribute : renamedAttributes.entrySet()) {
 			String oldName = renamedAttribute.getKey();
 			AttributeBuilder bld = cspecBuilder.getRequiredAttribute(oldName);
 			bld.setName(renamedAttribute.getValue());
@@ -117,18 +107,17 @@ public class CSpecExtension
 			cspecBuilder.addAttribute(bld);
 		}
 
-		for(AlterAttribute<?> alterAttr : m_alteredAttributes.values())
-			alterAttr.alterAttribute((TopLevelAttributeBuilder)cspecBuilder.getRequiredAttribute(alterAttr.getName()));
+		for (AlterAttribute<?> alterAttr : alteredAttributes.values())
+			alterAttr.alterAttribute((TopLevelAttributeBuilder) cspecBuilder.getRequiredAttribute(alterAttr.getName()));
 
-		Map<String, ? extends IAttribute> addedAttrs = m_base.getAttributes();
-		for(IAttribute addedAttr : addedAttrs.values())
-		{
+		Map<String, ? extends IAttribute> addedAttrs = base.getAttributes();
+		for (IAttribute addedAttr : addedAttrs.values()) {
 			AttributeBuilder attrBld;
-			if(addedAttr instanceof IActionArtifact)
+			if (addedAttr instanceof IActionArtifact)
 				attrBld = cspecBuilder.createActionArtifactBuilder();
-			else if(addedAttr instanceof IAction)
+			else if (addedAttr instanceof IAction)
 				attrBld = cspecBuilder.createActionBuilder();
-			else if(addedAttr instanceof IArtifact)
+			else if (addedAttr instanceof IArtifact)
 				attrBld = cspecBuilder.createArtifactBuilder();
 			else
 				attrBld = cspecBuilder.createGroupBuilder();
@@ -139,30 +128,27 @@ public class CSpecExtension
 		// On the top element, we never override a value with NULL unless it is
 		// explicitly set to the string "null"
 		//
-		cspecBuilder.setComponentTypeID(overrideCheckNull(cspecBuilder.getComponentTypeID(),
-				m_base.getComponentTypeID()));
-		cspecBuilder.setVersion(overrideCheckNull(cspecBuilder.getVersion(), m_base.getVersion()));
+		cspecBuilder.setComponentTypeID(overrideCheckNull(cspecBuilder.getComponentTypeID(), base.getComponentTypeID()));
+		cspecBuilder.setVersion(overrideCheckNull(cspecBuilder.getVersion(), base.getVersion()));
 
 		Documentation origDoc = cspecBuilder.getDocumentation();
-		Documentation baseDoc = m_base.getDocumentation();
-		cspecBuilder.setDocumentation(origDoc == null
-				? baseDoc
-				: origDoc.merge(baseDoc));
+		Documentation baseDoc = base.getDocumentation();
+		cspecBuilder.setDocumentation(origDoc == null ? baseDoc : origDoc.merge(baseDoc));
 	}
 
 	/**
-	 * Returns the CSPEC base that contains the top element attribute overrides and all pure additions
+	 * Returns the CSPEC base that contains the top element attribute overrides
+	 * and all pure additions
 	 * 
 	 * @return A Cspec that acts as the base for the extension
 	 */
-	public void alterTopElement(CSpecBuilder bld) throws CoreException
-	{
-		Version extVersion = m_base.getVersion();
-		if(extVersion != null)
+	public void alterTopElement(CSpecBuilder bld) throws CoreException {
+		Version extVersion = base.getVersion();
+		if (extVersion != null)
 			bld.setVersion(extVersion);
 
-		String ctype = m_base.getComponentTypeID();
-		if(ctype != null)
+		String ctype = base.getComponentTypeID();
+		if (ctype != null)
 			bld.setComponentTypeID(ctype);
 	}
 }

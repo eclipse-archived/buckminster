@@ -13,26 +13,22 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class PSFProviderHandler extends ProviderHandler
-{
-	private String m_psfFile;
+public class PSFProviderHandler extends ProviderHandler {
+	private String psfFile;
 
-	public PSFProviderHandler(AbstractHandler parent)
-	{
+	public PSFProviderHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public Provider getProvider()
-	{
-		return new PSFProvider(getSearchPath(), getReaderType(), getComponentTypes(), getVersionConverter(),
-				getUriFormat(), getDigestFormat(), getDigestAlgorithm(), getResolutionFilter(), getProperties(), null, getDocumentation(), m_psfFile);
+	public Provider getProvider() {
+		return new PSFProvider(getSearchPath(), getReaderType(), getComponentTypes(), getVersionConverter(), getUriFormat(), getDigestFormat(),
+				getDigestAlgorithm(), getResolutionFilter(), getProperties(), null, getDocumentation(), psfFile);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		m_psfFile = getOptionalStringValue(attrs, PSFProvider.ATTR_PSF_FILE);
+		psfFile = getOptionalStringValue(attrs, PSFProvider.ATTR_PSF_FILE);
 	}
 }

@@ -13,7 +13,6 @@ package org.eclipse.buckminster.ui.general.editor.structured;
  * 
  * @author Karel Brezina
  */
-public interface IActivator
-{
+public interface IActivator {
 	public void activate();
 }

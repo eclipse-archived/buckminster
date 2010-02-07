@@ -18,38 +18,33 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 
-public class ParseResult
-{
+public class ParseResult {
 	static private final String DASH = "-"; //$NON-NLS-1$
 
 	static private final String DOUBLEDASH = "--"; //$NON-NLS-1$
 
-	static public ParseResult parse(String[] args, List<OptionDescriptor> optionDescriptors)
-			throws NoOptionNameException, AmbiguousOptionException, InvalidOptionException,
-			OptionRequiresValueException
-	{
+	static public ParseResult parse(String[] args, List<OptionDescriptor> optionDescriptors) throws NoOptionNameException, AmbiguousOptionException,
+			InvalidOptionException, OptionRequiresValueException {
 		List<Option> options = new ArrayList<Option>();
 		int max = args.length;
 		int i;
 
-		for(i = 0; i < max; i++)
-		{
+		for (i = 0; i < max; i++) {
 			String arg = args[i].trim();
 
-			if(arg.equals(DOUBLEDASH))
-			{
+			if (arg.equals(DOUBLEDASH)) {
 				// if it's a lone doubledash:
 				//
 				i++; // consume the arg
 				break; // end parsing
 			}
 
-			if(!arg.startsWith(DASH))
+			if (!arg.startsWith(DASH))
 				// if it doesn't start with a dash at all:
 				//
 				break; // end parsing (but the arg is not 'consumed')
 
-			if(arg.length() == 1)
+			if (arg.length() == 1)
 				// if we reach this spot we only have a single dash which is
 				// not normally useful
 				// 
@@ -58,13 +53,13 @@ public class ParseResult
 			// PDE automatically tacks '-pdelaunch' on to the cmd line
 			// when starting from the pde. Just throw it away!
 			//
-			if(arg.equals("-pdelaunch")) //$NON-NLS-1$
+			if (arg.equals("-pdelaunch")) //$NON-NLS-1$
 				continue;
 
 			// Eclipse 3.3 adds a -launcher <path to executable>
 			// Skip those
 			//
-			if(arg.equals("-launcher")) //$NON-NLS-1$
+			if (arg.equals("-launcher")) //$NON-NLS-1$
 			{
 				++i;
 				continue;
@@ -73,7 +68,7 @@ public class ParseResult
 			// Eclipse 3.3 adds a -name Eclipse <number>
 			// Skip those
 			//
-			if(arg.equals("-name")) //$NON-NLS-1$
+			if (arg.equals("-name")) //$NON-NLS-1$
 			{
 				i += 2;
 				continue;
@@ -83,83 +78,70 @@ public class ParseResult
 
 			// strip the dash(es)
 			//
-			String argName = arg.substring(1 + (isLongName
-					? 1
-					: 0));
+			String argName = arg.substring(1 + (isLongName ? 1 : 0));
 
-			// keep everyone honest, ensure we only get one character if one dash. If
-			// there are more characters, we treat the rest as a possible optionValue
+			// keep everyone honest, ensure we only get one character if one
+			// dash. If
+			// there are more characters, we treat the rest as a possible
+			// optionValue
 			// (i.e. bunching).
 			//
 			String optionValue = null;
-			if(!isLongName && argName.length() > 1)
-			{
+			if (!isLongName && argName.length() > 1) {
 				optionValue = argName.substring(1);
 				argName = argName.substring(0, 1);
 			}
 
-			// match only *one* of the descriptors, complain if ambiguities are found
+			// match only *one* of the descriptors, complain if ambiguities are
+			// found
 			//
 			OptionDescriptor descriptorToUse = null;
 			int top = optionDescriptors.size();
-			for(int idx = 0; idx < top; ++idx)
-			{
+			for (int idx = 0; idx < top; ++idx) {
 				// ensure we give precedence to exact matches (long names only)
 				// thus, if --foo and --foobar are valid options, --foo must
 				// not be seen as an abbrev for --foobar
 				//
 				OptionDescriptor descriptor = optionDescriptors.get(idx);
-				if(descriptor.isAcceptableName(argName, isLongName, true))
-				{
+				if (descriptor.isAcceptableName(argName, isLongName, true)) {
 					descriptorToUse = descriptor;
 					break;
 				}
 
 				// in the event of long names used, try the abbreviation
 				//
-				if(isLongName && descriptor.isAcceptableName(argName, isLongName, false))
-				{
-					if(descriptorToUse != null)
+				if (isLongName && descriptor.isAcceptableName(argName, isLongName, false)) {
+					if (descriptorToUse != null)
 						throw new AmbiguousOptionException(arg);
 					descriptorToUse = descriptor;
 				}
 			}
 
-			if(descriptorToUse == null)
+			if (descriptorToUse == null)
 				throw new InvalidOptionException(arg);
 
-			if(optionValue != null)
-			{
+			if (optionValue != null) {
 				// 'bunched' option already provided a value
 				//
-				if(descriptorToUse.getType() == OptionValueType.NONE)
+				if (descriptorToUse.getType() == OptionValueType.NONE)
 					throw new InvalidOptionException(arg);
-			}
-			else if(descriptorToUse.getType() == OptionValueType.NONE)
-			{
+			} else if (descriptorToUse.getType() == OptionValueType.NONE) {
 				// nothing to do
-			}
-			else if(descriptorToUse.getType() == OptionValueType.OPTIONAL)
-			{
+			} else if (descriptorToUse.getType() == OptionValueType.OPTIONAL) {
 				// only use an existing next value if it doesn't start with -
 				//
-				if(i + 1 < max)
-				{
+				if (i + 1 < max) {
 					String s = args[i + 1];
-					if(!s.startsWith(DASH))
-					{
+					if (!s.startsWith(DASH)) {
 						i++;
 						optionValue = s;
 					}
 				}
-			}
-			else if(descriptorToUse.getType() == OptionValueType.REQUIRED)
-			{
-				if(i + 1 == max)
+			} else if (descriptorToUse.getType() == OptionValueType.REQUIRED) {
+				if (i + 1 == max)
 					throw new OptionRequiresValueException(arg);
 				optionValue = args[++i];
-			}
-			else
+			} else
 				throw new InternalError(Messages.ParseResult_Unknown_OptionValueType);
 
 			options.add(new Option(descriptorToUse, argName, optionValue, isLongName));
@@ -171,23 +153,20 @@ public class ParseResult
 		return new ParseResult(options.toArray(new Option[options.size()]), unparsed);
 	}
 
-	private final Option[] m_options;
+	private final Option[] options;
 
-	private final String[] m_unparsed;
+	private final String[] unparsed;
 
-	private ParseResult(Option[] options, String[] unparsed)
-	{
-		m_options = options;
-		m_unparsed = unparsed;
+	private ParseResult(Option[] options, String[] unparsed) {
+		this.options = options;
+		this.unparsed = unparsed;
 	}
 
-	public Option[] getOptions()
-	{
-		return m_options;
+	public Option[] getOptions() {
+		return options;
 	}
 
-	public String[] getUnparsed()
-	{
-		return m_unparsed;
+	public String[] getUnparsed() {
+		return unparsed;
 	}
 }

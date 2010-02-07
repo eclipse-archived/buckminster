@@ -12,94 +12,79 @@ package org.eclipse.buckminster.core.prefedit;
  * @author Thomas Hallgren
  * 
  */
-public class PreferenceDescriptor implements IPreferenceDescriptor
-{
-	private Enum<?>[] m_enums;
+public class PreferenceDescriptor implements IPreferenceDescriptor {
+	private Enum<?>[] enums;
 
-	private String m_label;
+	private String label;
 
-	private final String m_preferenceName;
+	private final String preferenceName;
 
-	private int m_textWidth = -1;
+	private int textWidth = -1;
 
-	private int[] m_integerRange;
+	private int[] integerRange;
 
-	private final PreferenceType m_type;
+	private final PreferenceType type;
 
-	private IPreferenceValidator m_validator;
+	private IPreferenceValidator validator;
 
-	public PreferenceDescriptor(String preferenceName, PreferenceType type)
-	{
+	public PreferenceDescriptor(String preferenceName, PreferenceType type) {
 		this(preferenceName, type, preferenceName);
 	}
 
-	public PreferenceDescriptor(String preferenceName, PreferenceType type, String label)
-	{
+	public PreferenceDescriptor(String preferenceName, PreferenceType type, String label) {
 		super();
-		m_preferenceName = preferenceName;
-		if(type == PreferenceType.Integer)
-			m_textWidth = 10;
-		m_type = type;
-		m_label = label;
+		this.preferenceName = preferenceName;
+		if (type == PreferenceType.Integer)
+			textWidth = 10;
+		this.type = type;
+		this.label = label;
 	}
 
-	public Enum<?>[] getEnums()
-	{
-		return m_enums;
+	public Enum<?>[] getEnums() {
+		return enums;
 	}
 
-	public int[] getIntegerRange()
-	{
-		return m_integerRange;
+	public int[] getIntegerRange() {
+		return integerRange;
 	}
 
-	public String getLabel()
-	{
-		return m_label;
+	public String getLabel() {
+		return label;
 	}
 
-	public String getName()
-	{
-		return m_preferenceName;
+	public String getName() {
+		return preferenceName;
 	}
 
-	public int getTextWidth()
-	{
-		return m_textWidth;
+	public int getTextWidth() {
+		return textWidth;
 	}
 
-	public PreferenceType getType()
-	{
-		return m_type;
+	public PreferenceType getType() {
+		return type;
 	}
 
-	public IPreferenceValidator getValidator()
-	{
-		return m_validator;
+	public IPreferenceValidator getValidator() {
+		return validator;
 	}
 
-	public void setEnums(Enum<?>[] enums)
-	{
-		m_enums = enums;
+	public void setEnums(Enum<?>[] enums) {
+		this.enums = enums;
 	}
 
-	public void setIntegerRange(int min, int max)
-	{
-		m_integerRange = new int[] { min, max };
+	public void setIntegerRange(int min, int max) {
+		this.integerRange = new int[] { min, max };
 	}
 
-	public void setLabel(String label)
-	{
-		m_label = label;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
-	public void setTextWidth(int textWidth)
-	{
-		m_textWidth = textWidth;
+	public void setTextWidth(int textWidth) {
+		this.textWidth = textWidth;
 	}
 
-	public void setValidator(IPreferenceValidator validator)
-	{
-		m_validator = validator;
+	public void setValidator(IPreferenceValidator validator) {
+		this.validator = validator;
 	}
 }

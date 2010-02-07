@@ -11,12 +11,11 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
- * The ISaxable interface is implemented by root models in Buckminster. It allows the models to serialize themselves in
- * XML format.
+ * The ISaxable interface is implemented by root models in Buckminster. It
+ * allows the models to serialize themselves in XML format.
  * 
  * @author Thomas Hallgren
  */
-public interface ISaxable
-{
+public interface ISaxable {
 	void toSax(ContentHandler receiver) throws SAXException;
 }

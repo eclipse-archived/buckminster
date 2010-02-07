@@ -12,12 +12,10 @@ package org.eclipse.buckminster.cmdline;
 
 import org.eclipse.osgi.util.NLS;
 
-class IllegalCommandAliasException extends RuntimeException
-{
+class IllegalCommandAliasException extends RuntimeException {
 	private static final long serialVersionUID = 680587450449028199L;
 
-	public IllegalCommandAliasException(String message)
-	{
+	public IllegalCommandAliasException(String message) {
 		super(NLS.bind(Messages.IllegalCommandAliasException_The_command_alias_0_is_illegal, message));
 	}
 }

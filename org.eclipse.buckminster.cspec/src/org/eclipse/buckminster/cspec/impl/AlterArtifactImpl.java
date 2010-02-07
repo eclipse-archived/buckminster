@@ -29,22 +29,25 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Alter Artifact</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Alter Artifact</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterArtifactImpl#getCspecext <em>Cspecext</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.AlterArtifactImpl#getRemovePaths <em>Remove Paths</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.AlterArtifactImpl#getCspecext
+ * <em>Cspecext</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.AlterArtifactImpl#getRemovePaths
+ * <em>Remove Paths</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
-{
+public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact {
 	/**
-	 * The cached value of the '{@link #getRemovePaths() <em>Remove Paths</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRemovePaths() <em>Remove Paths</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getRemovePaths()
 	 * @generated
@@ -57,8 +60,7 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * 
 	 * @generated
 	 */
-	protected AlterArtifactImpl()
-	{
+	protected AlterArtifactImpl() {
 		super();
 	}
 
@@ -67,9 +69,8 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetCspecext(CSpecExtension newCspecext, NotificationChain msgs)
-	{
-		msgs = eBasicSetContainer((InternalEObject)newCspecext, CspecPackage.ALTER_ARTIFACT__CSPECEXT, msgs);
+	public NotificationChain basicSetCspecext(CSpecExtension newCspecext, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject) newCspecext, CspecPackage.ALTER_ARTIFACT__CSPECEXT, msgs);
 		return msgs;
 	}
 
@@ -79,16 +80,13 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * @generated
 	 */
 	@Override
-	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
-	{
-		if(baseClass == AlterAttribute.class)
-		{
-			switch(derivedFeatureID)
-			{
-			case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
-				return CspecPackage.ALTER_ATTRIBUTE__CSPECEXT;
-			default:
-				return -1;
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+		if (baseClass == AlterAttribute.class) {
+			switch (derivedFeatureID) {
+				case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
+					return CspecPackage.ALTER_ATTRIBUTE__CSPECEXT;
+				default:
+					return -1;
 			}
 		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
@@ -100,13 +98,10 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs)
-	{
-		switch(eContainerFeatureID())
-		{
-		case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
-			return eInternalContainer().eInverseRemove(this, CspecPackage.CSPEC_EXTENSION__ATTRIBUTE_ALTERATIONS,
-					CSpecExtension.class, msgs);
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
+				return eInternalContainer().eInverseRemove(this, CspecPackage.CSPEC_EXTENSION__ATTRIBUTE_ALTERATIONS, CSpecExtension.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -117,16 +112,13 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * @generated
 	 */
 	@Override
-	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
-	{
-		if(baseClass == AlterAttribute.class)
-		{
-			switch(baseFeatureID)
-			{
-			case CspecPackage.ALTER_ATTRIBUTE__CSPECEXT:
-				return CspecPackage.ALTER_ARTIFACT__CSPECEXT;
-			default:
-				return -1;
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+		if (baseClass == AlterAttribute.class) {
+			switch (baseFeatureID) {
+				case CspecPackage.ALTER_ATTRIBUTE__CSPECEXT:
+					return CspecPackage.ALTER_ARTIFACT__CSPECEXT;
+				default:
+					return -1;
 			}
 		}
 		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
@@ -138,14 +130,12 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
-			return getCspecext();
-		case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
-			return getRemovePaths();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
+				return getCspecext();
+			case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
+				return getRemovePaths();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -156,14 +146,12 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
-			if(eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			return basicSetCspecext((CSpecExtension)otherEnd, msgs);
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetCspecext((CSpecExtension) otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -174,14 +162,12 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
-			return basicSetCspecext(null, msgs);
-		case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
-			return ((InternalEList<?>)getRemovePaths()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
+				return basicSetCspecext(null, msgs);
+			case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
+				return ((InternalEList<?>) getRemovePaths()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -192,14 +178,12 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
-			return getCspecext() != null;
-		case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
-			return removePaths != null && !removePaths.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
+				return getCspecext() != null;
+			case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
+				return removePaths != null && !removePaths.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -211,17 +195,15 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
-			setCspecext((CSpecExtension)newValue);
-			return;
-		case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
-			getRemovePaths().clear();
-			getRemovePaths().addAll((Collection<? extends Remove>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
+				setCspecext((CSpecExtension) newValue);
+				return;
+			case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
+				getRemovePaths().clear();
+				getRemovePaths().addAll((Collection<? extends Remove>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -232,16 +214,14 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
-			setCspecext((CSpecExtension)null);
-			return;
-		case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
-			getRemovePaths().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case CspecPackage.ALTER_ARTIFACT__CSPECEXT:
+				setCspecext((CSpecExtension) null);
+				return;
+			case CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS:
+				getRemovePaths().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -251,11 +231,10 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * 
 	 * @generated
 	 */
-	public CSpecExtension getCspecext()
-	{
-		if(eContainerFeatureID() != CspecPackage.ALTER_ARTIFACT__CSPECEXT)
+	public CSpecExtension getCspecext() {
+		if (eContainerFeatureID() != CspecPackage.ALTER_ARTIFACT__CSPECEXT)
 			return null;
-		return (CSpecExtension)eContainer();
+		return (CSpecExtension) eContainer();
 	}
 
 	/**
@@ -263,12 +242,9 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * 
 	 * @generated
 	 */
-	public EList<Remove> getRemovePaths()
-	{
-		if(removePaths == null)
-		{
-			removePaths = new EObjectContainmentEList<Remove>(Remove.class, this,
-					CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS);
+	public EList<Remove> getRemovePaths() {
+		if (removePaths == null) {
+			removePaths = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS);
 		}
 		return removePaths;
 	}
@@ -278,26 +254,21 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * 
 	 * @generated
 	 */
-	public void setCspecext(CSpecExtension newCspecext)
-	{
-		if(newCspecext != eInternalContainer()
-				|| (eContainerFeatureID() != CspecPackage.ALTER_ARTIFACT__CSPECEXT && newCspecext != null))
-		{
-			if(EcoreUtil.isAncestor(this, newCspecext))
+	public void setCspecext(CSpecExtension newCspecext) {
+		if (newCspecext != eInternalContainer() || (eContainerFeatureID() != CspecPackage.ALTER_ARTIFACT__CSPECEXT && newCspecext != null)) {
+			if (EcoreUtil.isAncestor(this, newCspecext))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if(eInternalContainer() != null)
+			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
-			if(newCspecext != null)
-				msgs = ((InternalEObject)newCspecext).eInverseAdd(this,
-						CspecPackage.CSPEC_EXTENSION__ATTRIBUTE_ALTERATIONS, CSpecExtension.class, msgs);
+			if (newCspecext != null)
+				msgs = ((InternalEObject) newCspecext).eInverseAdd(this, CspecPackage.CSPEC_EXTENSION__ATTRIBUTE_ALTERATIONS, CSpecExtension.class,
+						msgs);
 			msgs = basicSetCspecext(newCspecext, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ALTER_ARTIFACT__CSPECEXT, newCspecext,
-					newCspecext));
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.ALTER_ARTIFACT__CSPECEXT, newCspecext, newCspecext));
 	}
 
 	/**
@@ -306,8 +277,7 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.ALTER_ARTIFACT;
 	}
 

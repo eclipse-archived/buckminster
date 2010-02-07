@@ -38,61 +38,51 @@ import org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-public class ImportCSpexXML
-{
-	private static IPath createPathFromString(String path)
-	{
-		return path == null
-				? null
-				: Path.fromPortableString(path);
+public class ImportCSpexXML {
+	private static IPath createPathFromString(String path) {
+		return path == null ? null : Path.fromPortableString(path);
 	}
 
-	private CSpecImpl m_cspec;
+	private CSpecImpl cspec;
 
-	private IComponentSpec m_xmlSpec;
+	private IComponentSpec xmlSpec;
 
-	public CSpec importCSpec(IComponentSpec xmlSpec)
-	{
-		m_xmlSpec = xmlSpec;
-		m_cspec = (CSpecImpl)CspecFactory.eINSTANCE.createCSpec();
-		m_cspec.setId(xmlSpec.getName());
-		m_cspec.setType(xmlSpec.getComponentType());
-		m_cspec.setVersion(xmlSpec.getVersion());
-		m_cspec.setDocumentation(xmlSpec.getDocumentation());
-		m_cspec.setFilter(xmlSpec.getFilter());
-		m_cspec.setShortDesc(xmlSpec.getShortDesc());
-		m_cspec.setProjectInfo(xmlSpec.getProjectInfo());
-		m_cspec.getAttributes().add(CspecFactory.eINSTANCE.createSelfArtifact());
+	public CSpec importCSpec(IComponentSpec xmlSpec) {
+		this.xmlSpec = xmlSpec;
+		cspec = (CSpecImpl) CspecFactory.eINSTANCE.createCSpec();
+		cspec.setId(xmlSpec.getName());
+		cspec.setType(xmlSpec.getComponentType());
+		cspec.setVersion(xmlSpec.getVersion());
+		cspec.setDocumentation(xmlSpec.getDocumentation());
+		cspec.setFilter(xmlSpec.getFilter());
+		cspec.setShortDesc(xmlSpec.getShortDesc());
+		cspec.setProjectInfo(xmlSpec.getProjectInfo());
+		cspec.getAttributes().add(CspecFactory.eINSTANCE.createSelfArtifact());
 		copyDependencies();
 		copyGenerators();
 		copyArtifacts();
 		copyActions();
 		copyGroups();
-		return m_cspec;
+		return cspec;
 	}
 
-	private void copyAction(IAction xmlAttr, Action attr, boolean asPublic)
-	{
+	private void copyAction(IAction xmlAttr, Action attr, boolean asPublic) {
 		copyAttribute(xmlAttr, attr, asPublic);
 		attr.setFilter(xmlAttr.getFilter());
 		IPrerequisites xps = xmlAttr.getPrerequisites().get(0);
 		attr.setPrerequisitesAlias(xps.getAlias());
 		attr.setPrerequisitesRebase(createPathFromString(xps.getRebase()));
 		copyPrerequisites(xps.getAttribute(), attr.getPrerequisites());
-		if(!xmlAttr.getProducts().isEmpty())
-		{
+		if (!xmlAttr.getProducts().isEmpty()) {
 			IProductsType pt = xmlAttr.getProducts().get(0);
 			List<IActionArtifact> aaPriv = pt.getPrivate();
 			List<IActionArtifact> aaPubl = pt.getPublic();
-			if(aaPriv.isEmpty() && aaPubl.isEmpty())
-			{
+			if (aaPriv.isEmpty() && aaPubl.isEmpty()) {
 				// Single anonymous product. No actions
 				PathGroup pathGroup = CspecFactory.eINSTANCE.createPathGroup();
 				copyPathGroup(pt.getBase(), pt.getPath(), pathGroup);
 				attr.setProduct(pathGroup);
-			}
-			else
-			{
+			} else {
 				copyActionArtifacts(aaPriv, attr, false);
 				copyActionArtifacts(aaPubl, attr, true);
 			}
@@ -104,12 +94,10 @@ public class ImportCSpexXML
 		}
 	}
 
-	private void copyActionArtifacts(List<IActionArtifact> xmlAttrs, Action action, boolean asPublic)
-	{
-		List<Attribute> attrs = m_cspec.getAttributes();
+	private void copyActionArtifacts(List<IActionArtifact> xmlAttrs, Action action, boolean asPublic) {
+		List<Attribute> attrs = cspec.getAttributes();
 		CspecFactory cspecFactory = CspecFactory.eINSTANCE;
-		for(IActionArtifact xmlArtifact : xmlAttrs)
-		{
+		for (IActionArtifact xmlArtifact : xmlAttrs) {
 			ActionAttribute artifact = cspecFactory.createActionAttribute();
 			artifact.setAction(action);
 			artifact.setAlias(xmlArtifact.getAlias());
@@ -119,33 +107,27 @@ public class ImportCSpexXML
 		}
 	}
 
-	private void copyActions()
-	{
-		for(IActionsType at : m_xmlSpec.getActions())
-		{
+	private void copyActions() {
+		for (IActionsType at : xmlSpec.getActions()) {
 			copyActions(at.getPrivate(), false);
 			copyActions(at.getPublic(), true);
 		}
 	}
 
-	private void copyActions(List<IAction> xmlAttrs, boolean asPublic)
-	{
-		List<Attribute> attrs = m_cspec.getAttributes();
+	private void copyActions(List<IAction> xmlAttrs, boolean asPublic) {
+		List<Attribute> attrs = cspec.getAttributes();
 		CspecFactory cspecFactory = CspecFactory.eINSTANCE;
-		for(IAction xmlAttr : xmlAttrs)
-		{
+		for (IAction xmlAttr : xmlAttrs) {
 			Action attr = cspecFactory.createAction();
 			copyAction(xmlAttr, attr, asPublic);
 			attrs.add(attr);
 		}
 	}
 
-	private void copyArtifact(IArtifact xmlAttr, Artifact attr, boolean asPublic)
-	{
+	private void copyArtifact(IArtifact xmlAttr, Artifact attr, boolean asPublic) {
 		copyAttribute(xmlAttr, attr, asPublic);
 		List<org.eclipse.buckminster.cspecxml.IPath> paths = xmlAttr.getPath();
-		if(paths.isEmpty() && xmlAttr.getPath1() != null)
-		{
+		if (paths.isEmpty() && xmlAttr.getPath1() != null) {
 			org.eclipse.buckminster.cspecxml.IPath path = ICSpecXMLFactory.eINSTANCE.createPath();
 			path.setPath(xmlAttr.getPath1());
 			paths = Collections.singletonList(path);
@@ -154,42 +136,35 @@ public class ImportCSpexXML
 		attr.setFilter(xmlAttr.getFilter());
 	}
 
-	private void copyArtifacts()
-	{
-		for(IArtifactsType at : m_xmlSpec.getArtifacts())
-		{
+	private void copyArtifacts() {
+		for (IArtifactsType at : xmlSpec.getArtifacts()) {
 			copyArtifacts(at.getPrivate(), false);
 			copyArtifacts(at.getPublic(), true);
 		}
 	}
 
-	private void copyArtifacts(List<IArtifact> xmlAttrs, boolean asPublic)
-	{
-		List<Attribute> attrs = m_cspec.getAttributes();
+	private void copyArtifacts(List<IArtifact> xmlAttrs, boolean asPublic) {
+		List<Attribute> attrs = cspec.getAttributes();
 		CspecFactory cspecFactory = CspecFactory.eINSTANCE;
-		for(IArtifact xmlArtifact : xmlAttrs)
-		{
+		for (IArtifact xmlArtifact : xmlAttrs) {
 			Artifact artifact = cspecFactory.createArtifact();
 			copyArtifact(xmlArtifact, artifact, asPublic);
 			attrs.add(artifact);
 		}
 	}
 
-	private void copyAttribute(IAttribute xmlAttr, Attribute attr, boolean asPublic)
-	{
+	private void copyAttribute(IAttribute xmlAttr, Attribute attr, boolean asPublic) {
 		attr.setDocumentation(xmlAttr.getDocumentation());
 		attr.setName(xmlAttr.getName());
 		attr.setPublic(asPublic);
-		attr.setCspec(m_cspec);
+		attr.setCspec(cspec);
 	}
 
-	private void copyDependencies()
-	{
-		List<ComponentRequest> deps = m_cspec.getDependencies();
+	private void copyDependencies() {
+		List<ComponentRequest> deps = cspec.getDependencies();
 		CommonFactory commonFactory = CommonFactory.eINSTANCE;
-		for(IDependenciesType dt : m_xmlSpec.getDependencies())
-			for(IComponentRequest xmlDep : dt.getDependency())
-			{
+		for (IDependenciesType dt : xmlSpec.getDependencies())
+			for (IComponentRequest xmlDep : dt.getDependency()) {
 				ComponentRequest dep = commonFactory.createComponentRequest();
 				dep.setId(xmlDep.getName());
 				dep.setType(xmlDep.getComponentType());
@@ -199,18 +174,15 @@ public class ImportCSpexXML
 			}
 	}
 
-	private void copyGenerators()
-	{
+	private void copyGenerators() {
 		CommonFactory commonFactory = CommonFactory.eINSTANCE;
 		CspecFactory cspecFactory = CspecFactory.eINSTANCE;
-		List<Generator> generators = m_cspec.getGenerators();
-		for(IGeneratorsType gt : m_xmlSpec.getGenerators())
-		{
-			for(IGenerator xmlGen : gt.getGenerator())
-			{
+		List<Generator> generators = cspec.getGenerators();
+		for (IGeneratorsType gt : xmlSpec.getGenerators()) {
+			for (IGenerator xmlGen : gt.getGenerator()) {
 				Generator generator = cspecFactory.createGenerator();
-				generator.setCspec(m_cspec);
-				ComponentIdentifierImpl ciImpl = (ComponentIdentifierImpl)commonFactory.createComponentIdentifier();
+				generator.setCspec(cspec);
+				ComponentIdentifierImpl ciImpl = (ComponentIdentifierImpl) commonFactory.createComponentIdentifier();
 				ciImpl.setId(xmlGen.getGenerates());
 				ciImpl.setType(xmlGen.getGeneratesType());
 				ciImpl.setVersion(xmlGen.getGeneratesVersion());
@@ -222,48 +194,40 @@ public class ImportCSpexXML
 		}
 	}
 
-	private void copyGroup(IGroup xmlAttr, Group attr, boolean asPublic)
-	{
+	private void copyGroup(IGroup xmlAttr, Group attr, boolean asPublic) {
 		copyAttribute(xmlAttr, attr, asPublic);
 		attr.setFilter(xmlAttr.getFilter());
 		attr.setRebase(createPathFromString(xmlAttr.getRebase()));
 		copyPrerequisites(xmlAttr.getAttribute(), attr.getPrerequisites());
 	}
 
-	private void copyGroups()
-	{
-		for(IGroupsType at : m_xmlSpec.getGroups())
-		{
+	private void copyGroups() {
+		for (IGroupsType at : xmlSpec.getGroups()) {
 			copyGroups(at.getPrivate(), false);
 			copyGroups(at.getPublic(), true);
 		}
 	}
 
-	private void copyGroups(List<IGroup> xmlAttrs, boolean asPublic)
-	{
-		List<Attribute> attrs = m_cspec.getAttributes();
+	private void copyGroups(List<IGroup> xmlAttrs, boolean asPublic) {
+		List<Attribute> attrs = cspec.getAttributes();
 		CspecFactory cspecFactory = CspecFactory.eINSTANCE;
-		for(IGroup xmlAttr : xmlAttrs)
-		{
+		for (IGroup xmlAttr : xmlAttrs) {
 			Group attr = cspecFactory.createGroup();
 			copyGroup(xmlAttr, attr, asPublic);
 			attrs.add(attr);
 		}
 	}
 
-	private void copyPathGroup(String base, List<org.eclipse.buckminster.cspecxml.IPath> xmlPaths, PathGroup attr)
-	{
+	private void copyPathGroup(String base, List<org.eclipse.buckminster.cspecxml.IPath> xmlPaths, PathGroup attr) {
 		List<IPath> paths = attr.getPaths();
-		for(org.eclipse.buckminster.cspecxml.IPath xmlPath : xmlPaths)
+		for (org.eclipse.buckminster.cspecxml.IPath xmlPath : xmlPaths)
 			paths.add(createPathFromString(xmlPath.getPath()));
 		attr.setBase(createPathFromString(base));
 	}
 
-	private void copyPrerequisites(List<IPrerequisite> xmlPreqs, List<Prerequisite> preqs)
-	{
+	private void copyPrerequisites(List<IPrerequisite> xmlPreqs, List<Prerequisite> preqs) {
 		CspecFactory cspecFactory = CspecFactory.eINSTANCE;
-		for(IPrerequisite xmlPreq : xmlPreqs)
-		{
+		for (IPrerequisite xmlPreq : xmlPreqs) {
 			Prerequisite preq = cspecFactory.createPrerequisite();
 			preq.setAlias(xmlPreq.getAlias());
 			preq.setAttribute(xmlPreq.getName());
@@ -277,11 +241,10 @@ public class ImportCSpexXML
 		}
 	}
 
-	private ComponentRequest findComponent(String compId, String type)
-	{
-		if(compId != null)
-			for(ComponentRequest dep : m_cspec.getDependencies())
-				if(compId.equals(dep.getId()) && (type == null || type.equals(dep.getType())))
+	private ComponentRequest findComponent(String compId, String type) {
+		if (compId != null)
+			for (ComponentRequest dep : cspec.getDependencies())
+				if (compId.equals(dep.getId()) && (type == null || type.equals(dep.getType())))
 					return dep;
 		return null;
 	}

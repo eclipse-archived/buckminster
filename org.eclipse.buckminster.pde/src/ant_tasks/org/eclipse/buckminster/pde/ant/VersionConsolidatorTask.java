@@ -18,56 +18,47 @@ import org.apache.tools.ant.Task;
  * 
  * @author Thomas Hallgren
  */
-public abstract class VersionConsolidatorTask extends Task
-{
-	private File m_input;
+public abstract class VersionConsolidatorTask extends Task {
+	private File input;
 
-	private File m_output;
+	private File output;
 
-	private File m_propertiesFile;
-	
-	private String m_qualifier;
+	private File propertiesFile;
 
-	public File getInput()
-	{
-		return m_input;
+	private String qualifier;
+
+	public File getInput() {
+		return input;
 	}
 
-	public File getOutput()
-	{
-		return m_output;
+	public File getOutput() {
+		return output;
 	}
 
-	public File getPropertiesFile()
-	{
-		return m_propertiesFile;
+	public File getPropertiesFile() {
+		return propertiesFile;
 	}
 
-	public String getQualifier()
-	{
-		return m_qualifier;
+	public String getQualifier() {
+		return qualifier;
 	}
 
-	public void setInputFile(File input)
-	{
-		m_input = input;
+	public void setInputFile(File input) {
+		this.input = input;
 	}
 
-	public void setOutputFile(File output)
-	{
-		m_output = output;
+	public void setOutputFile(File output) {
+		this.output = output;
 	}
 
-	public void setPropertiesFile(String propertiesFile)
-	{
-		if(propertiesFile == null || propertiesFile.length() == 0)
-			m_propertiesFile = null;
+	public void setPropertiesFile(String propertiesFile) {
+		if (propertiesFile == null || propertiesFile.length() == 0)
+			this.propertiesFile = null;
 		else
-			m_propertiesFile = new File(propertiesFile);
+			this.propertiesFile = new File(propertiesFile);
 	}
 
-	public void setQualifier(String qualifier)
-	{
-		m_qualifier = qualifier;
+	public void setQualifier(String qualifier) {
+		this.qualifier = qualifier;
 	}
 }

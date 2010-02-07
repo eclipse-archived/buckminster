@@ -29,58 +29,50 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
  * @author Thomas Hallgren
  * 
  */
-public abstract class SelectionHelper
-{
-	public static CSpec selectionChanged(ISelection selection)
-	{
-		if(!(selection instanceof IStructuredSelection))
+public abstract class SelectionHelper {
+	public static CSpec selectionChanged(ISelection selection) {
+		if (!(selection instanceof IStructuredSelection))
 			return null;
 
-		IStructuredSelection s = (IStructuredSelection)selection;
-		if(s.size() != 1)
+		IStructuredSelection s = (IStructuredSelection) selection;
+		if (s.size() != 1)
 			return null;
 
 		Object first = s.getFirstElement();
-		try
-		{
+		try {
 			Resolution res = null;
-			if(first instanceof IPluginModelBase)
-				res = getResolution((IPluginModelBase)first);
-			else if(first instanceof IPluginBase)
-				res = getResolution((IPluginBase)first);
-			else if(first instanceof BundleSpecification)
-				res = getResolution((BundleSpecification)first);
+			if (first instanceof IPluginModelBase)
+				res = getResolution((IPluginModelBase) first);
+			else if (first instanceof IPluginBase)
+				res = getResolution((IPluginBase) first);
+			else if (first instanceof BundleSpecification)
+				res = getResolution((BundleSpecification) first);
 
-			if(res != null)
+			if (res != null)
 				return res.getCSpec();
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			CorePlugin.getLogger().warning(e, e.getMessage());
 		}
 		return null;
 	}
 
-	private static Resolution getResolution(BundleSpecification spec) throws CoreException
-	{
-		ComponentRequest cr = new ComponentRequest(spec.getName(), IComponentType.OSGI_BUNDLE,
-				VersionRange.fromOSGiVersionRange(spec.getVersionRange()));
+	private static Resolution getResolution(BundleSpecification spec) throws CoreException {
+		ComponentRequest cr = new ComponentRequest(spec.getName(), IComponentType.OSGI_BUNDLE, VersionRange.fromOSGiVersionRange(spec
+				.getVersionRange()));
 		return WorkspaceInfo.getResolution(cr, false);
 	}
 
-	private static Resolution getResolution(IPluginBase base) throws CoreException
-	{
-		return WorkspaceInfo.getResolution(new ComponentIdentifier(base.getId(), IComponentType.OSGI_BUNDLE,
-				Version.parseVersion(base.getVersion())));
+	private static Resolution getResolution(IPluginBase base) throws CoreException {
+		return WorkspaceInfo
+				.getResolution(new ComponentIdentifier(base.getId(), IComponentType.OSGI_BUNDLE, Version.parseVersion(base.getVersion())));
 	}
 
-	private static Resolution getResolution(IPluginModelBase model) throws CoreException
-	{
+	private static Resolution getResolution(IPluginModelBase model) throws CoreException {
 		BundleDescription bundleDesc = model.getBundleDescription();
-		if(bundleDesc == null)
+		if (bundleDesc == null)
 			return null;
 
-		return WorkspaceInfo.getResolution(new ComponentIdentifier(bundleDesc.getSymbolicName(),
-				IComponentType.OSGI_BUNDLE, Version.fromOSGiVersion(bundleDesc.getVersion())));
+		return WorkspaceInfo.getResolution(new ComponentIdentifier(bundleDesc.getSymbolicName(), IComponentType.OSGI_BUNDLE, Version
+				.fromOSGiVersion(bundleDesc.getVersion())));
 	}
 }

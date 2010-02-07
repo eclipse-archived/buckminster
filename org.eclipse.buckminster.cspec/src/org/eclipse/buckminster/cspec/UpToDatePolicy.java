@@ -13,17 +13,18 @@ import java.util.List;
 import org.eclipse.emf.common.util.Enumerator;
 
 /**
- * <!-- begin-user-doc --> A representation of the literals of the enumeration '<em><b>Up To Date Policy</b></em>', and
- * utility methods for working with them. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the literals of the enumeration '
+ * <em><b>Up To Date Policy</b></em>', and utility methods for working with
+ * them. <!-- end-user-doc -->
  * 
  * @see org.eclipse.buckminster.cspec.CspecPackage#getUpToDatePolicy()
  * @model
  * @generated
  */
-public enum UpToDatePolicy implements Enumerator
-{
+public enum UpToDatePolicy implements Enumerator {
 	/**
-	 * The '<em><b>DEFAULT</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The '<em><b>DEFAULT</b></em>' literal object. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @see #DEFAULT_VALUE
 	 * @generated
@@ -32,7 +33,8 @@ public enum UpToDatePolicy implements Enumerator
 	DEFAULT(0, "DEFAULT", "DEFAULT"),
 
 	/**
-	 * The '<em><b>ACTOR</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The '<em><b>ACTOR</b></em>' literal object. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #ACTOR_VALUE
 	 * @generated
@@ -41,7 +43,8 @@ public enum UpToDatePolicy implements Enumerator
 	ACTOR(1, "ACTOR", "ACTOR"),
 
 	/**
-	 * The '<em><b>COUNT</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The '<em><b>COUNT</b></em>' literal object. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #COUNT_VALUE
 	 * @generated
@@ -50,7 +53,8 @@ public enum UpToDatePolicy implements Enumerator
 	COUNT(2, "COUNT", "COUNT"),
 
 	/**
-	 * The '<em><b>MAPPER</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The '<em><b>MAPPER</b></em>' literal object. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #MAPPER_VALUE
 	 * @generated
@@ -59,7 +63,8 @@ public enum UpToDatePolicy implements Enumerator
 	MAPPER(3, "MAPPER", "MAPPER"),
 
 	/**
-	 * The '<em><b>NOT EMPTY</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The '<em><b>NOT EMPTY</b></em>' literal object. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @see #NOT_EMPTY_VALUE
 	 * @generated
@@ -68,15 +73,16 @@ public enum UpToDatePolicy implements Enumerator
 	NOT_EMPTY(4, "NOT_EMPTY", "NOT_EMPTY"),
 
 	/**
-	 * The '<em><b>NEVER</b></em>' literal object. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The '<em><b>NEVER</b></em>' literal object. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #NEVER_VALUE
 	 * @generated
 	 * @ordered
 	 */
 	NEVER(5, "NEVER", "NEVER"), /**
-	 * The '<em><b>EEnum Literal0</b></em>' literal object. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The '<em><b>EEnum Literal0</b></em>' literal
+	 * object. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #EENUM_LITERAL0_VALUE
 	 * @generated
@@ -85,9 +91,10 @@ public enum UpToDatePolicy implements Enumerator
 	EENUM_LITERAL0(6, "EEnumLiteral0", "EEnumLiteral0");
 
 	/**
-	 * The '<em><b>DEFAULT</b></em>' literal value. <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc
-	 * --> Never trust a product defined as a folder since the expected number of files is unknown <!-- end-model-doc
-	 * -->
+	 * The '<em><b>DEFAULT</b></em>' literal value. <!-- begin-user-doc --> <!--
+	 * end-user-doc --> <!-- begin-model-doc --> Never trust a product defined
+	 * as a folder since the expected number of files is unknown <!--
+	 * end-model-doc -->
 	 * 
 	 * @see #DEFAULT
 	 * @model
@@ -97,8 +104,9 @@ public enum UpToDatePolicy implements Enumerator
 	public static final int DEFAULT_VALUE = 0;
 
 	/**
-	 * The '<em><b>ACTOR</b></em>' literal value. <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc -->
-	 * Let the associated actor decide <!-- end-model-doc -->
+	 * The '<em><b>ACTOR</b></em>' literal value. <!-- begin-user-doc --> <!--
+	 * end-user-doc --> <!-- begin-model-doc --> Let the associated actor decide
+	 * <!-- end-model-doc -->
 	 * 
 	 * @see #ACTOR
 	 * @model
@@ -108,8 +116,9 @@ public enum UpToDatePolicy implements Enumerator
 	public static final int ACTOR_VALUE = 1;
 
 	/**
-	 * The '<em><b>COUNT</b></em>' literal value. <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc -->
-	 * Trust timestamp only when the product contains the number of files denoted in attribute 'count' <!--
+	 * The '<em><b>COUNT</b></em>' literal value. <!-- begin-user-doc --> <!--
+	 * end-user-doc --> <!-- begin-model-doc --> Trust timestamp only when the
+	 * product contains the number of files denoted in attribute 'count' <!--
 	 * end-model-doc -->
 	 * 
 	 * @see #COUNT
@@ -120,9 +129,11 @@ public enum UpToDatePolicy implements Enumerator
 	public static final int COUNT_VALUE = 2;
 
 	/**
-	 * The '<em><b>MAPPER</b></em>' literal value. <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc
-	 * --> Trust timestamp of a product that matches the action prerequisites in number and optional pattern. The
-	 * 'count' attribute may be used to denote file additions <!-- end-model-doc -->
+	 * The '<em><b>MAPPER</b></em>' literal value. <!-- begin-user-doc --> <!--
+	 * end-user-doc --> <!-- begin-model-doc --> Trust timestamp of a product
+	 * that matches the action prerequisites in number and optional pattern. The
+	 * 'count' attribute may be used to denote file additions <!-- end-model-doc
+	 * -->
 	 * 
 	 * @see #MAPPER
 	 * @model
@@ -132,8 +143,9 @@ public enum UpToDatePolicy implements Enumerator
 	public static final int MAPPER_VALUE = 3;
 
 	/**
-	 * The '<em><b>NOT EMPTY</b></em>' literal value. <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc
-	 * --> Trust timestamp of any product that contains at least one file <!-- end-model-doc -->
+	 * The '<em><b>NOT EMPTY</b></em>' literal value. <!-- begin-user-doc -->
+	 * <!-- end-user-doc --> <!-- begin-model-doc --> Trust timestamp of any
+	 * product that contains at least one file <!-- end-model-doc -->
 	 * 
 	 * @see #NOT_EMPTY
 	 * @model
@@ -143,9 +155,10 @@ public enum UpToDatePolicy implements Enumerator
 	public static final int NOT_EMPTY_VALUE = 4;
 
 	/**
-	 * The '<em><b>NEVER</b></em>' literal value. <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc -->
-	 * The product is never up to date. The action must always be executed when its product is requested <!--
-	 * end-model-doc -->
+	 * The '<em><b>NEVER</b></em>' literal value. <!-- begin-user-doc --> <!--
+	 * end-user-doc --> <!-- begin-model-doc --> The product is never up to
+	 * date. The action must always be executed when its product is requested
+	 * <!-- end-model-doc -->
 	 * 
 	 * @see #NEVER
 	 * @model
@@ -155,10 +168,11 @@ public enum UpToDatePolicy implements Enumerator
 	public static final int NEVER_VALUE = 5;
 
 	/**
-	 * The '<em><b>EEnum Literal0</b></em>' literal value. <!-- begin-user-doc -->
+	 * The '<em><b>EEnum Literal0</b></em>' literal value. <!-- begin-user-doc
+	 * -->
 	 * <p>
-	 * If the meaning of '<em><b>EEnum Literal0</b></em>' literal object isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of '<em><b>EEnum Literal0</b></em>' literal object isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -170,63 +184,57 @@ public enum UpToDatePolicy implements Enumerator
 	public static final int EENUM_LITERAL0_VALUE = 6;
 
 	/**
-	 * An array of all the '<em><b>Up To Date Policy</b></em>' enumerators. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * An array of all the '<em><b>Up To Date Policy</b></em>' enumerators. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	private static final UpToDatePolicy[] VALUES_ARRAY = new UpToDatePolicy[] { DEFAULT, ACTOR, COUNT, MAPPER,
-			NOT_EMPTY, NEVER, EENUM_LITERAL0, };
+	private static final UpToDatePolicy[] VALUES_ARRAY = new UpToDatePolicy[] { DEFAULT, ACTOR, COUNT, MAPPER, NOT_EMPTY, NEVER, EENUM_LITERAL0, };
 
 	/**
-	 * A public read-only list of all the '<em><b>Up To Date Policy</b></em>' enumerators. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * A public read-only list of all the '<em><b>Up To Date Policy</b></em>'
+	 * enumerators. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	public static final List<UpToDatePolicy> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Up To Date Policy</b></em>' literal with the specified integer value. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Returns the '<em><b>Up To Date Policy</b></em>' literal with the
+	 * specified integer value. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static UpToDatePolicy get(int value)
-	{
-		switch(value)
-		{
-		case DEFAULT_VALUE:
-			return DEFAULT;
-		case ACTOR_VALUE:
-			return ACTOR;
-		case COUNT_VALUE:
-			return COUNT;
-		case MAPPER_VALUE:
-			return MAPPER;
-		case NOT_EMPTY_VALUE:
-			return NOT_EMPTY;
-		case NEVER_VALUE:
-			return NEVER;
-		case EENUM_LITERAL0_VALUE:
-			return EENUM_LITERAL0;
+	public static UpToDatePolicy get(int value) {
+		switch (value) {
+			case DEFAULT_VALUE:
+				return DEFAULT;
+			case ACTOR_VALUE:
+				return ACTOR;
+			case COUNT_VALUE:
+				return COUNT;
+			case MAPPER_VALUE:
+				return MAPPER;
+			case NOT_EMPTY_VALUE:
+				return NOT_EMPTY;
+			case NEVER_VALUE:
+				return NEVER;
+			case EENUM_LITERAL0_VALUE:
+				return EENUM_LITERAL0;
 		}
 		return null;
 	}
 
 	/**
-	 * Returns the '<em><b>Up To Date Policy</b></em>' literal with the specified literal value. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Returns the '<em><b>Up To Date Policy</b></em>' literal with the
+	 * specified literal value. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static UpToDatePolicy get(String literal)
-	{
-		for(int i = 0; i < VALUES_ARRAY.length; ++i)
-		{
+	public static UpToDatePolicy get(String literal) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			UpToDatePolicy result = VALUES_ARRAY[i];
-			if(result.toString().equals(literal))
-			{
+			if (result.toString().equals(literal)) {
 				return result;
 			}
 		}
@@ -234,18 +242,15 @@ public enum UpToDatePolicy implements Enumerator
 	}
 
 	/**
-	 * Returns the '<em><b>Up To Date Policy</b></em>' literal with the specified name. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * Returns the '<em><b>Up To Date Policy</b></em>' literal with the
+	 * specified name. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static UpToDatePolicy getByName(String name)
-	{
-		for(int i = 0; i < VALUES_ARRAY.length; ++i)
-		{
+	public static UpToDatePolicy getByName(String name) {
+		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
 			UpToDatePolicy result = VALUES_ARRAY[i];
-			if(result.getName().equals(name))
-			{
+			if (result.getName().equals(name)) {
 				return result;
 			}
 		}
@@ -274,12 +279,12 @@ public enum UpToDatePolicy implements Enumerator
 	private final String literal;
 
 	/**
-	 * Only this class can construct instances. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Only this class can construct instances. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	private UpToDatePolicy(int value, String name, String literal)
-	{
+	private UpToDatePolicy(int value, String name, String literal) {
 		this.value = value;
 		this.name = name;
 		this.literal = literal;
@@ -290,8 +295,7 @@ public enum UpToDatePolicy implements Enumerator
 	 * 
 	 * @generated
 	 */
-	public String getLiteral()
-	{
+	public String getLiteral() {
 		return literal;
 	}
 
@@ -300,8 +304,7 @@ public enum UpToDatePolicy implements Enumerator
 	 * 
 	 * @generated
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
@@ -310,20 +313,18 @@ public enum UpToDatePolicy implements Enumerator
 	 * 
 	 * @generated
 	 */
-	public int getValue()
-	{
+	public int getValue() {
 		return value;
 	}
 
 	/**
-	 * Returns the literal value of the enumerator, which is its string representation. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * Returns the literal value of the enumerator, which is its string
+	 * representation. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return literal;
 	}
 

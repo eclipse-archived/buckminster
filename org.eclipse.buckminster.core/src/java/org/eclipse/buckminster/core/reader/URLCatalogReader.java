@@ -39,41 +39,32 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class URLCatalogReader extends AbstractCatalogReader
-{
-	private final URI m_uri;
+public class URLCatalogReader extends AbstractCatalogReader {
+	private final URI uri;
 
-	protected URLCatalogReader(URLCatalogReaderType readerType, ProviderMatch rInfo) throws CoreException
-	{
+	protected URLCatalogReader(URLCatalogReaderType readerType, ProviderMatch rInfo) throws CoreException {
 		super(readerType, rInfo);
-		m_uri = readerType.getURI(rInfo);
+		uri = readerType.getURI(rInfo);
 	}
 
-	public URL getURL() throws CoreException
-	{
-		try
-		{
-			return m_uri.toURL();
-		}
-		catch(MalformedURLException e)
-		{
+	public URL getURL() throws CoreException {
+		try {
+			return uri.toURL();
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		URL url = getURL();
 		File source = FileUtils.getFile(url);
-		if(source == null)
+		if (source == null)
 			throw new UnsupportedOperationException(Messages.Only_file_protocol_is_supported_at_this_time);
 
 		File destDir = destination.toFile();
 		boolean success = false;
-		try
-		{
-			if(destDir.toURI().toURL().equals(url))
-			{
+		try {
+			if (destDir.toURI().toURL().equals(url)) {
 				// Component is already where it's supposed to be.
 				//
 				success = true;
@@ -81,154 +72,120 @@ public class URLCatalogReader extends AbstractCatalogReader
 			}
 			FileUtils.deepCopy(source, destDir, ConflictResolution.UPDATE, monitor);
 			success = true;
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
-			if(!success)
-			{
+		} finally {
+			if (!success) {
 				// Remove any stray stuff. The materialization should be
 				// as atomic as possible.
 				//
-				try
-				{
+				try {
 					FileUtils.deleteRecursive(destDir, new NullProgressMonitor());
-				}
-				catch(Throwable t)
-				{
+				} catch (Throwable t) {
 					t.printStackTrace();
 				}
 			}
 		}
 	}
 
-	protected final URI getURI()
-	{
-		return m_uri;
+	protected final URI getURI() {
+		return uri;
 	}
 
 	@Override
-	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
-	{
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
 		InputStream input = null;
-		try
-		{
+		try {
 			File source = FileUtils.getFile(getURL());
-			if(source != null)
+			if (source != null)
 				return new File(source, fileName).exists();
 
 			URL fileUrl = new URL(getURL(), fileName);
 			input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(), monitor);
 			return true;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			return false;
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 	}
 
 	@Override
-	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException
-	{
+	protected FileHandle innerGetContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException {
 		File source = FileUtils.getFile(getURL());
-		if(source == null)
+		if (source == null)
 			return super.innerGetContents(fileName, monitor);
 
 		monitor.beginTask(null, 5);
-		try
-		{
+		try {
 			File file = new File(source, fileName);
-			if(!file.isFile())
+			if (!file.isFile())
 				throw new FileNotFoundException(file.getAbsolutePath());
 
 			return new FileHandle(fileName, file, false);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
 	@Override
-	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
+	protected void innerGetMatchingRootFiles(Pattern pattern, List<FileHandle> files, IProgressMonitor monitor) throws CoreException, IOException {
 		URL url = getURL();
 		File source = FileUtils.getFile(url);
-		if(source == null)
+		if (source == null)
 			return;
 
 		String[] rootFiles = source.list();
-		if(rootFiles == null)
+		if (rootFiles == null)
 			return;
 
-		for(String rootFile : rootFiles)
-		{
-			if(pattern.matcher(rootFile).matches())
-			{
+		for (String rootFile : rootFiles) {
+			if (pattern.matcher(rootFile).matches()) {
 				File f = new File(source, rootFile);
-				if(f.isFile() && f.canRead())
+				if (f.isFile() && f.canRead())
 					files.add(new FileHandle(rootFile, f, false));
 			}
 		}
 	}
 
 	@Override
-	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
-	{
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException {
 		URL url = getURL();
 		File source = FileUtils.getFile(url);
-		if(source == null)
+		if (source == null)
 			return;
 
 		File[] rootFiles = source.listFiles();
-		if(rootFiles == null)
+		if (rootFiles == null)
 			return;
 
-		for(File rootFile : rootFiles)
-		{
+		for (File rootFile : rootFiles) {
 			String name = rootFile.getName();
-			if(rootFile.isDirectory())
+			if (rootFile.isDirectory())
 				name += "/"; //$NON-NLS-1$
 			files.add(name);
 		}
 	}
 
 	@Override
-	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		InputStream input = null;
 		monitor.beginTask(fileName, 2);
-		try
-		{
+		try {
 			String fullName;
 			File source = FileUtils.getFile(getURL());
-			if(source != null)
-			{
+			if (source != null) {
 				File file = new File(source, fileName);
 				input = new FileInputStream(file);
 				fullName = file.getAbsolutePath();
-			}
-			else
-			{
+			} else {
 				URL fileUrl = new URL(getURL(), fileName);
-				input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(),
-						MonitorUtils.subMonitor(monitor, 1));
+				input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(), MonitorUtils.subMonitor(monitor, 1));
 				fullName = fileUrl.toString();
 			}
 			input = new BufferedInputStream(input);
 			return consumer.consumeStream(this, fullName, input, MonitorUtils.subMonitor(monitor, 1));
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 			monitor.done();
 		}

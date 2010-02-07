@@ -15,65 +15,53 @@ import org.eclipse.buckminster.core.cspec.model.Artifact;
 /**
  * @author Thomas Hallgren
  */
-public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArtifact
-{
-	private String m_actionName;
+public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArtifact {
+	private String actionName;
 
-	private String m_alias;
+	private String alias;
 
-	ActionArtifactBuilder(CSpecBuilder cspecBuilder)
-	{
+	ActionArtifactBuilder(CSpecBuilder cspecBuilder) {
 		super(cspecBuilder);
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_actionName = null;
-		m_alias = null;
+		actionName = null;
+		alias = null;
 	}
 
 	@Override
-	public Artifact createAttribute()
-	{
+	public Artifact createAttribute() {
 		return new ActionArtifact(this);
 	}
 
-	public String getActionName()
-	{
-		return m_actionName;
+	public String getActionName() {
+		return actionName;
 	}
 
-	public String getAlias()
-	{
-		return m_alias;
-	}
-
-	@Override
-	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
-	{
-		return specBuilder == getCSpecBuilder()
-				? this
-				: new ActionArtifactBuilder(specBuilder);
+	public String getAlias() {
+		return alias;
 	}
 
 	@Override
-	public void initFrom(IAttribute attribute)
-	{
-		IActionArtifact actionArtifact = (IActionArtifact)attribute;
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder) {
+		return specBuilder == getCSpecBuilder() ? this : new ActionArtifactBuilder(specBuilder);
+	}
+
+	@Override
+	public void initFrom(IAttribute attribute) {
+		IActionArtifact actionArtifact = (IActionArtifact) attribute;
 		super.initFrom(actionArtifact);
-		m_actionName = actionArtifact.getActionName();
-		m_alias = actionArtifact.getAlias();
+		actionName = actionArtifact.getActionName();
+		alias = actionArtifact.getAlias();
 	}
 
-	public void setActionName(String actionName)
-	{
-		m_actionName = actionName;
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
 	}
 
-	public void setAlias(String alias)
-	{
-		m_alias = alias;
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 }

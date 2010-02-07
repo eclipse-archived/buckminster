@@ -11,7 +11,6 @@ package org.eclipse.buckminster.core.internal.actor;
  * @author ken1
  * 
  */
-public class EclipseCleanActor extends AbstractBuildIntegrationActor
-{
+public class EclipseCleanActor extends AbstractBuildIntegrationActor {
 	public static final String ID = "eclipse.clean"; //$NON-NLS-1$
 }

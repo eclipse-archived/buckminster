@@ -9,23 +9,24 @@ package org.eclipse.buckminster.cspec;
 import org.eclipse.emf.ecore.EFactory;
 
 /**
- * <!-- begin-user-doc --> The <b>Factory</b> for the model. It provides a create method for each non-abstract class of
- * the model. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> The <b>Factory</b> for the model. It provides a
+ * create method for each non-abstract class of the model. <!-- end-user-doc -->
  * 
  * @see org.eclipse.buckminster.cspec.CspecPackage
  * @generated
  */
-public interface CspecFactory extends EFactory
-{
+public interface CspecFactory extends EFactory {
 	/**
-	 * The singleton instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The singleton instance of the factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
 	CspecFactory eINSTANCE = org.eclipse.buckminster.cspec.impl.CspecFactoryImpl.init();
 
 	/**
-	 * Returns a new object of class '<em>Action</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Action</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Action</em>'.
 	 * @generated
@@ -33,7 +34,8 @@ public interface CspecFactory extends EFactory
 	Action createAction();
 
 	/**
-	 * Returns a new object of class '<em>Action Attribute</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Action Attribute</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Action Attribute</em>'.
 	 * @generated
@@ -41,7 +43,8 @@ public interface CspecFactory extends EFactory
 	ActionAttribute createActionAttribute();
 
 	/**
-	 * Returns a new object of class '<em>Alter Action</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Action</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Action</em>'.
 	 * @generated
@@ -49,7 +52,8 @@ public interface CspecFactory extends EFactory
 	AlterAction createAlterAction();
 
 	/**
-	 * Returns a new object of class '<em>Alter Artifact</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Artifact</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Artifact</em>'.
 	 * @generated
@@ -57,7 +61,8 @@ public interface CspecFactory extends EFactory
 	AlterArtifact createAlterArtifact();
 
 	/**
-	 * Returns a new object of class '<em>Alter Group</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Alter Group</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Alter Group</em>'.
 	 * @generated
@@ -65,7 +70,8 @@ public interface CspecFactory extends EFactory
 	AlterGroup createAlterGroup();
 
 	/**
-	 * Returns a new object of class '<em>Artifact</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Artifact</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Artifact</em>'.
 	 * @generated
@@ -73,7 +79,8 @@ public interface CspecFactory extends EFactory
 	Artifact createArtifact();
 
 	/**
-	 * Returns a new object of class '<em>CSpec</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>CSpec</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>CSpec</em>'.
 	 * @generated
@@ -81,7 +88,8 @@ public interface CspecFactory extends EFactory
 	CSpec createCSpec();
 
 	/**
-	 * Returns a new object of class '<em>CSpec Extension</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>CSpec Extension</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>CSpec Extension</em>'.
 	 * @generated
@@ -89,7 +97,8 @@ public interface CspecFactory extends EFactory
 	CSpecExtension createCSpecExtension();
 
 	/**
-	 * Returns a new object of class '<em>Generator</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Generator</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Generator</em>'.
 	 * @generated
@@ -97,7 +106,8 @@ public interface CspecFactory extends EFactory
 	Generator createGenerator();
 
 	/**
-	 * Returns a new object of class '<em>Group</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Group</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Group</em>'.
 	 * @generated
@@ -105,7 +115,8 @@ public interface CspecFactory extends EFactory
 	Group createGroup();
 
 	/**
-	 * Returns a new object of class '<em>Path Group</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Path Group</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Path Group</em>'.
 	 * @generated
@@ -113,7 +124,8 @@ public interface CspecFactory extends EFactory
 	PathGroup createPathGroup();
 
 	/**
-	 * Returns a new object of class '<em>Prerequisite</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Prerequisite</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Prerequisite</em>'.
 	 * @generated
@@ -121,7 +133,8 @@ public interface CspecFactory extends EFactory
 	Prerequisite createPrerequisite();
 
 	/**
-	 * Returns a new object of class '<em>Remove</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Remove</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Remove</em>'.
 	 * @generated
@@ -129,7 +142,8 @@ public interface CspecFactory extends EFactory
 	Remove createRemove();
 
 	/**
-	 * Returns a new object of class '<em>Rename</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Rename</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Rename</em>'.
 	 * @generated
@@ -137,7 +151,8 @@ public interface CspecFactory extends EFactory
 	Rename createRename();
 
 	/**
-	 * Returns a new object of class '<em>Self Artifact</em>'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns a new object of class '<em>Self Artifact</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return a new object of class '<em>Self Artifact</em>'.
 	 * @generated
@@ -145,7 +160,8 @@ public interface CspecFactory extends EFactory
 	SelfArtifact createSelfArtifact();
 
 	/**
-	 * Returns the package supported by this factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Returns the package supported by this factory. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return the package supported by this factory.
 	 * @generated

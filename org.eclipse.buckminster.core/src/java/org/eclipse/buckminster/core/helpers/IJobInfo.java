@@ -13,10 +13,10 @@ package org.eclipse.buckminster.core.helpers;
  * 
  * @author Karel Brezina
  */
-public interface IJobInfo
-{
+public interface IJobInfo {
 	/**
-	 * Gets a name that can be used in a progress monitor. Usage: "subTask(getOperationName() + " completed");" or
+	 * Gets a name that can be used in a progress monitor. Usage:
+	 * "subTask(getOperationName() + " completed");" or
 	 * "subTask(getOperationName() + " canceled");"
 	 */
 	public String getOperationName();

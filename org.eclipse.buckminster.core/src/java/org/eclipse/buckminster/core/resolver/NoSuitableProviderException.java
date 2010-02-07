@@ -15,13 +15,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class NoSuitableProviderException extends LocalizedException
-{
+public class NoSuitableProviderException extends LocalizedException {
 	private static final long serialVersionUID = -8197425848026772914L;
 
-	public NoSuitableProviderException(String searchPathName, String componentName)
-	{
-		super(NLS.bind(Messages.No_suitable_provider_for_component_0_was_found_in_searchPath_1, componentName,
-				searchPathName));
+	public NoSuitableProviderException(String searchPathName, String componentName) {
+		super(NLS.bind(Messages.No_suitable_provider_for_component_0_was_found_in_searchPath_1, componentName, searchPathName));
 	}
 }

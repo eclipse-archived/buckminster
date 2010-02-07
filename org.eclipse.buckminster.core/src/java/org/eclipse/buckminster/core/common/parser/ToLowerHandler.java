@@ -15,18 +15,15 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class ToLowerHandler extends ValueFilterHandler
-{
+public class ToLowerHandler extends ValueFilterHandler {
 	static final String TAG = ToLower.TAG;
 
-	public ToLowerHandler(AbstractHandler parent)
-	{
+	public ToLowerHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		this.setValueHolder(new ToLower());
 	}
 }

@@ -14,104 +14,89 @@ import java.util.Properties;
  * @author Filip Hrbek
  * 
  */
-public class FileInfoBuilder implements IFileInfo
-{
-	private String m_contentType;
+public class FileInfoBuilder implements IFileInfo {
+	private String contentType;
 
-	private long m_lastModified = 0L;
+	private long lastModified = 0L;
 
-	private String m_name;
+	private String name;
 
-	private long m_size = -1L;
+	private long size = -1L;
 
-	public FileInfoBuilder()
-	{
+	public FileInfoBuilder() {
 	}
 
-	public FileInfoBuilder(IFileInfo fileInfo)
-	{
+	public FileInfoBuilder(IFileInfo fileInfo) {
 		initFrom(fileInfo);
 	}
 
-	public FileInfoBuilder(Properties properties)
-	{
-		m_name = properties.getProperty(PROPERTY_NAME);
-		m_contentType = properties.getProperty(PROPERTY_CONTENT_TYPE);
+	public FileInfoBuilder(Properties properties) {
+		name = properties.getProperty(PROPERTY_NAME);
+		contentType = properties.getProperty(PROPERTY_CONTENT_TYPE);
 
 		String v = properties.getProperty(PROPERTY_LAST_MODIFIED);
-		if(v != null)
-			m_lastModified = Long.parseLong(v);
+		if (v != null)
+			lastModified = Long.parseLong(v);
 
 		v = properties.getProperty(PROPERTY_SIZE);
-		if(v != null)
-			m_size = Long.parseLong(v);
+		if (v != null)
+			size = Long.parseLong(v);
 	}
 
-	public void addProperties(Properties properties)
-	{
-		if(m_contentType != null)
-			properties.setProperty(PROPERTY_CONTENT_TYPE, m_contentType);
-		if(m_lastModified != 0L)
-			properties.setProperty(PROPERTY_LAST_MODIFIED, Long.toString(m_lastModified));
-		if(m_name != null)
-			properties.setProperty(PROPERTY_NAME, m_name);
-		if(m_size != -1L)
-			properties.setProperty(PROPERTY_SIZE, Long.toString(m_size));
+	public void addProperties(Properties properties) {
+		if (contentType != null)
+			properties.setProperty(PROPERTY_CONTENT_TYPE, contentType);
+		if (lastModified != 0L)
+			properties.setProperty(PROPERTY_LAST_MODIFIED, Long.toString(lastModified));
+		if (name != null)
+			properties.setProperty(PROPERTY_NAME, name);
+		if (size != -1L)
+			properties.setProperty(PROPERTY_SIZE, Long.toString(size));
 	}
 
-	public final String getContentType()
-	{
-		return m_contentType;
+	public final String getContentType() {
+		return contentType;
 	}
 
-	public long getLastModified()
-	{
-		return m_lastModified;
+	public long getLastModified() {
+		return lastModified;
 	}
 
-	public final String getRemoteName()
-	{
-		return m_name;
+	public final String getRemoteName() {
+		return name;
 	}
 
-	public final long getSize()
-	{
-		return m_size;
+	public final long getSize() {
+		return size;
 	}
 
-	public void initFrom(IFileInfo info)
-	{
+	public void initFrom(IFileInfo info) {
 		setName(info.getRemoteName());
 		setContentType(info.getContentType());
 		setSize(info.getSize());
 		setLastModified(info.getLastModified());
 	}
 
-	public void reset()
-	{
-		m_name = null;
-		m_contentType = null;
-		m_size = -1;
-		m_lastModified = 0;
+	public void reset() {
+		name = null;
+		contentType = null;
+		size = -1;
+		lastModified = 0;
 	}
 
-	public final void setContentType(String contentType)
-	{
-		m_contentType = contentType;
+	public final void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
-	public void setLastModified(long timestamp)
-	{
-		m_lastModified = timestamp;
+	public void setLastModified(long timestamp) {
+		this.lastModified = timestamp;
 	}
 
-	public final void setName(String name)
-	{
-		m_name = name;
+	public final void setName(String name) {
+		this.name = name;
 	}
 
-	public final void setSize(long size)
-	{
-		m_size = size;
+	public final void setSize(long size) {
+		this.size = size;
 	}
 }

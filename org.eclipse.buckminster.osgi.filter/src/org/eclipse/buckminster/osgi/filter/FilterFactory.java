@@ -10,22 +10,21 @@ package org.eclipse.buckminster.osgi.filter;
 import org.eclipse.buckminster.osgi.filter.impl.Parser;
 import org.osgi.framework.InvalidSyntaxException;
 
-public class FilterFactory
-{
+public class FilterFactory {
 	/**
 	 * Constructs a {@link Filter} object.
 	 * 
 	 * <p>
-	 * If the filter cannot be parsed, an {@link InvalidSyntaxException} will be thrown with a human readable message
-	 * where the filter became unparsable.
+	 * If the filter cannot be parsed, an {@link InvalidSyntaxException} will be
+	 * thrown with a human readable message where the filter became unparsable.
 	 * 
 	 * @param filterString
 	 *            the filter string.
 	 * @exception InvalidSyntaxException
-	 *                If the filter parameter contains an invalid filter string that cannot be parsed.
+	 *                If the filter parameter contains an invalid filter string
+	 *                that cannot be parsed.
 	 */
-	public static Filter newInstance(String filterString) throws InvalidSyntaxException
-	{
+	public static Filter newInstance(String filterString) throws InvalidSyntaxException {
 		return Parser.parse(filterString);
 	}
 }

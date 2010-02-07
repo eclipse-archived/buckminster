@@ -17,78 +17,68 @@ import org.eclipse.core.runtime.IPath;
  * 
  * @author Guillaume CHATELET
  */
-public class PropertyExpander
-{
+public class PropertyExpander {
 	/**
-	 * Prepares a map with all the namedPath of the current action. The association is prerequisites.alias =
-	 * paths.comma.separated
+	 * Prepares a map with all the namedPath of the current action. The
+	 * association is prerequisites.alias = paths.comma.separated
 	 * 
 	 * @param ctx
 	 * @return
 	 * @throws CoreException
 	 */
-	final private static Map<String, String> getNamedPathMap(IActionContext ctx) throws CoreException
-	{
+	final private static Map<String, String> getNamedPathMap(IActionContext ctx) throws CoreException {
 		final Map<String, String> map = new HashMap<String, String>();
 		final Map<String, PathGroup[]> namedPathGroupArrays = ctx.getNamedPathGroupArrays();
 		final Set<String> keySet = namedPathGroupArrays.keySet();
-		for(String pathGroupKey : keySet)
-		{
+		for (String pathGroupKey : keySet) {
 			final PathGroup[] pathGroups = namedPathGroupArrays.get(pathGroupKey);
 			final Set<String> pathSet = new HashSet<String>(5);
-			for(PathGroup pathGroup : pathGroups)
-			{
+			for (PathGroup pathGroup : pathGroups) {
 				final String base = pathGroup.getBase().toOSString();
 				final IPath[] paths = pathGroup.getPaths();
 				// if only a base path, adding it
-				if(paths.length == 0)
-				{
+				if (paths.length == 0) {
 					pathSet.add(base);
-				}
-				else
+				} else
 				// otherwise adding all the paths
 				{
-					for(IPath path : paths)
+					for (IPath path : paths)
 						pathSet.add(base + path.toOSString());
 				}
 			}
 			final StringBuffer buffer = new StringBuffer();
-			for(String path : pathSet)
-			{
+			for (String path : pathSet) {
 				buffer.append(path).append(File.pathSeparatorChar);
 			}
 			final int lastCharIndex = buffer.length() - 1;
-			if(lastCharIndex > 0 && buffer.charAt(lastCharIndex) == File.pathSeparatorChar)
+			if (lastCharIndex > 0 && buffer.charAt(lastCharIndex) == File.pathSeparatorChar)
 				map.put(pathGroupKey, buffer.substring(0, lastCharIndex));
 		}
 		return map;
 	}
 
 	/**
-	 * Returns a map that contains variables to replace This contains the properties and the NamedPath defined in the
-	 * Action
+	 * Returns a map that contains variables to replace This contains the
+	 * properties and the NamedPath defined in the Action
 	 * 
 	 * @param ctx
 	 * @return
 	 * @throws CoreException
 	 */
-	final private static Map<String, ? extends Object> getVariables(IActionContext ctx) throws CoreException
-	{
+	final private static Map<String, ? extends Object> getVariables(IActionContext ctx) throws CoreException {
 		final Map<String, Object> map = new HashMap<String, Object>();
 		map.putAll(getNamedPathMap(ctx));
 		map.putAll(ctx.getProperties());
 		return map;
 	}
 
-	private final Map<String, ? extends Object> m_variableMap;
+	private final Map<String, ? extends Object> variableMap;
 
-	public PropertyExpander(IActionContext ctx) throws CoreException
-	{
-		m_variableMap = getVariables(ctx);
+	public PropertyExpander(IActionContext ctx) throws CoreException {
+		variableMap = getVariables(ctx);
 	}
 
-	public String expand(String string)
-	{
-		return ExpandingProperties.expand(m_variableMap, string, 1);
+	public String expand(String string) {
+		return ExpandingProperties.expand(variableMap, string, 1);
 	}
 }

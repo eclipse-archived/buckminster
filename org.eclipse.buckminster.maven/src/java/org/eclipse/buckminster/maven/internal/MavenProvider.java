@@ -35,8 +35,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class MavenProvider extends Provider
-{
+public class MavenProvider extends Provider {
 	public static final String BM_MAVEN_PROVIDER_NS = XMLConstants.BM_PREFIX + "MavenProvider-1.0"; //$NON-NLS-1$
 
 	public static final String BM_MAVEN_PROVIDER_PREFIX = "mp"; //$NON-NLS-1$
@@ -48,27 +47,28 @@ public class MavenProvider extends Provider
 	/**
 	 * Apply default rules. I.e.
 	 * <ul>
-	 * <li>If the component name contains a dot, then separate the group and artifact using the last dot.</li>
-	 * <li>If no dot is found, then use the same name for the group and artifact</li>
+	 * <li>If the component name contains a dot, then separate the group and
+	 * artifact using the last dot.</li>
+	 * <li>If no dot is found, then use the same name for the group and artifact
+	 * </li>
 	 * </ul>
 	 * 
 	 * @param name
 	 *            the name of the component
 	 * @return an entry with a Maven groupId and artifactId
 	 */
-	public static MapEntry getDefaultGroupAndArtifact(String name)
-	{
+	public static MapEntry getDefaultGroupAndArtifact(String name) {
 		int dotIdx = name.lastIndexOf('/');
-		return (dotIdx > 0)
-				? new MapEntry(name, name.substring(0, dotIdx), name.substring(dotIdx + 1), null)
-				: new MapEntry(name, name, name, null);
+		return (dotIdx > 0) ? new MapEntry(name, name.substring(0, dotIdx), name.substring(dotIdx + 1), null) : new MapEntry(name, name, name, null);
 	}
 
 	/**
 	 * Apply default rules. I.e.
 	 * <ul>
-	 * <li>If the <code>groupId</code> and <code>artifactId</code> are equal, use the <code>artifactId</code></li>
-	 * <li>If the <code>groupId</code> and <code>artifactId</code> are different, use <code>groupId.artifactId</code></li>
+	 * <li>If the <code>groupId</code> and <code>artifactId</code> are equal,
+	 * use the <code>artifactId</code></li>
+	 * <li>If the <code>groupId</code> and <code>artifactId</code> are
+	 * different, use <code>groupId.artifactId</code></li>
 	 * </ul>
 	 * 
 	 * @param groupId
@@ -77,14 +77,12 @@ public class MavenProvider extends Provider
 	 *            the Maven artifact id
 	 * @return The default component name.
 	 */
-	public static String getDefaultName(String groupId, String artifactId)
-	{
-		if(groupId.equals(artifactId))
-		{
+	public static String getDefaultName(String groupId, String artifactId) {
+		if (groupId.equals(artifactId)) {
 			// Contructs like <groupId>:<artifactId> are known to exist
 			//
 			int colonIdx = artifactId.indexOf(':');
-			if(colonIdx < 0)
+			if (colonIdx < 0)
 				return artifactId;
 
 			groupId = artifactId.substring(0, colonIdx);
@@ -93,114 +91,99 @@ public class MavenProvider extends Provider
 		return groupId + '/' + artifactId;
 	}
 
-	private final Map<String, MapEntry> m_mappings;
+	private final Map<String, MapEntry> mappings;
 
-	private final List<BidirectionalTransformer> m_rules;
+	private final List<BidirectionalTransformer> rules;
 
-	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes,
-			VersionConverterDesc versionConverterDesc, Format uri, Filter resolutionFilter,
-			Map<String, String> properties, Documentation documentation, Map<String, MapEntry> mappings,
-			List<BidirectionalTransformer> rules)
-	{
-		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, resolutionFilter,
-				properties, null, documentation);
-		if(mappings == null)
+	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc versionConverterDesc,
+			Format uri, Filter resolutionFilter, Map<String, String> properties, Documentation documentation, Map<String, MapEntry> mappings,
+			List<BidirectionalTransformer> rules) {
+		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, resolutionFilter, properties, null, documentation);
+		if (mappings == null)
 			mappings = Collections.emptyMap();
-		if(rules == null)
+		if (rules == null)
 			rules = Collections.emptyList();
-		m_mappings = mappings;
-		m_rules = rules;
+		this.mappings = mappings;
+		this.rules = rules;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
+	public void addPrefixMappings(HashMap<String, String> prefixMappings) {
+		super.addPrefixMappings(prefixMappings);
+		prefixMappings.put(BM_MAVEN_PROVIDER_PREFIX, BM_MAVEN_PROVIDER_NS);
+	}
+
+	@Override
+	public IVersionConverter getVersionConverter() throws CoreException {
+		return CorePlugin.getDefault().getVersionConverter(IVersionConverter.TAG);
+	}
+
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
 		super.addAttributes(attrs);
 		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", //$NON-NLS-1$ //$NON-NLS-2$
 				"CDATA", BM_MAVEN_PROVIDER_PREFIX + ":MavenProvider"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	@Override
-	public void addPrefixMappings(HashMap<String, String> prefixMappings)
-	{
-		super.addPrefixMappings(prefixMappings);
-		prefixMappings.put(BM_MAVEN_PROVIDER_PREFIX, BM_MAVEN_PROVIDER_NS);
-	}
-
-	@Override
-	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException
-	{
+	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
 		super.emitElements(handler, namespace, prefix);
-		if(m_mappings.size() == 0 && m_rules.size() == 0)
+		if (mappings.size() == 0 && rules.size() == 0)
 			return;
 
 		String qName = Utils.makeQualifiedName(BM_MAVEN_PROVIDER_PREFIX, ELEM_MAPPINGS);
 		handler.startElement(BM_MAVEN_PROVIDER_NS, ELEM_MAPPINGS, qName, ISaxableElement.EMPTY_ATTRIBUTES);
-		for(MapEntry mapping : m_mappings.values())
+		for (MapEntry mapping : mappings.values())
 			mapping.toSax(handler, BM_MAVEN_PROVIDER_NS, BM_MAVEN_PROVIDER_PREFIX, mapping.getDefaultTag());
-		for(BidirectionalTransformer rule : m_rules)
+		for (BidirectionalTransformer rule : rules)
 			rule.toSax(handler, BM_MAVEN_PROVIDER_NS, BM_MAVEN_PROVIDER_PREFIX, ELEM_RULE);
 		handler.endElement(BM_MAVEN_PROVIDER_NS, ELEM_MAPPINGS, qName);
 	}
 
-	String getComponentName(String groupId, String artifactId) throws CoreException
-	{
-		for(MapEntry me : m_mappings.values())
-		{
-			if(me.isMatchFor(groupId, artifactId))
+	String getComponentName(String groupId, String artifactId) throws CoreException {
+		for (MapEntry me : mappings.values()) {
+			if (me.isMatchFor(groupId, artifactId))
 				return me.getName();
 
 			List<GroupAndArtifact> aliases = me.getAliases();
 			int idx = aliases.size();
-			while(--idx >= 0)
-			{
+			while (--idx >= 0) {
 				GroupAndArtifact alias = aliases.get(idx);
-				if(alias.isMatchFor(groupId, artifactId))
+				if (alias.isMatchFor(groupId, artifactId))
 					return me.getName();
 			}
 		}
 
-		if(m_rules.size() > 0)
-		{
+		if (rules.size() > 0) {
 			String compiled = groupId + '/' + artifactId;
-			for(BidirectionalTransformer rule : m_rules)
-			{
+			for (BidirectionalTransformer rule : rules) {
 				String transformed = rule.transformTo(compiled);
-				if(transformed != null)
+				if (transformed != null)
 					return transformed;
 			}
 		}
 		return getDefaultName(groupId, artifactId);
 	}
 
-	MapEntry getGroupAndArtifact(String name) throws CoreException
-	{
-		MapEntry entry = m_mappings.get(name);
-		if(entry != null)
+	MapEntry getGroupAndArtifact(String name) throws CoreException {
+		MapEntry entry = mappings.get(name);
+		if (entry != null)
 			return entry;
 
 		String transformed = null;
-		for(BidirectionalTransformer rule : m_rules)
-		{
+		for (BidirectionalTransformer rule : rules) {
 			transformed = rule.transformFrom(name);
-			if(transformed != null)
+			if (transformed != null)
 				break;
 		}
 
-		if(transformed == null)
+		if (transformed == null)
 			return getDefaultGroupAndArtifact(name);
 
 		int slashPos = transformed.indexOf('/');
-		if(slashPos < 0)
-			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.the_result_of_applying_a_match_rule_had_no_separator_slash_0, transformed));
+		if (slashPos < 0)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.the_result_of_applying_a_match_rule_had_no_separator_slash_0, transformed));
 
 		return new MapEntry(name, transformed.substring(0, slashPos), transformed.substring(slashPos + 1), null);
-	}
-
-	@Override
-	public IVersionConverter getVersionConverter() throws CoreException
-	{
-		return CorePlugin.getDefault().getVersionConverter(IVersionConverter.TAG);
 	}
 }

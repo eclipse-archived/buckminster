@@ -21,75 +21,59 @@ import org.eclipse.core.runtime.Path;
  * @author Karel Brezina
  * 
  */
-public class PathsTable extends SimpleTable<PathWrapper>
-{
+public class PathsTable extends SimpleTable<PathWrapper> {
 
-	public PathsTable(List<PathWrapper> data, boolean readOnly)
-	{
+	public PathsTable(List<PathWrapper> data, boolean readOnly) {
 		super(data, readOnly);
 	}
 
-	public PathWrapper createRowClass()
-	{
+	public PathWrapper createRowClass() {
 		return new PathWrapper();
 	}
 
-	public String[] getColumnHeaders()
-	{
+	public String[] getColumnHeaders() {
 		return new String[] { Messages.path };
 	}
 
-	public int[] getColumnWeights()
-	{
+	public int[] getColumnWeights() {
 		return new int[] { 1 };
 	}
 
 	@Override
-	public IValidator getFieldValidator(int idx)
-	{
-		switch(idx)
-		{
-		case 0:
-			return SimpleTable.createNotEmptyStringValidator(Messages.path_cannot_be_empty);
-		default:
-			return SimpleTable.getEmptyValidator();
+	public IValidator getFieldValidator(int idx) {
+		switch (idx) {
+			case 0:
+				return SimpleTable.createNotEmptyStringValidator(Messages.path_cannot_be_empty);
+			default:
+				return SimpleTable.getEmptyValidator();
 		}
 	}
 
-	public Object[] toRowArray(PathWrapper t)
-	{
+	public Object[] toRowArray(PathWrapper t) {
 		return new Object[] { t.getPath().toOSString() };
 	}
 
-	public void updateRowClass(PathWrapper path, Object[] args) throws ValidatorException
-	{
-		String pathString = (String)args[0];
-		path.setPath(pathString == null
-				? null
-				: (IPath)Path.fromOSString(pathString));
+	public void updateRowClass(PathWrapper path, Object[] args) throws ValidatorException {
+		String pathString = (String) args[0];
+		path.setPath(pathString == null ? null : (IPath) Path.fromOSString(pathString));
 	}
 }
 
-class PathWrapper
-{
-	private IPath m_path;
+class PathWrapper {
+	private IPath path;
 
-	public PathWrapper()
-	{
+	public PathWrapper() {
 	}
 
-	public PathWrapper(IPath path)
-	{
-		m_path = path;
+	public PathWrapper(IPath path) {
+		this.path = path;
 	}
 
-	public IPath getPath()
-	{
-		return m_path;
+	public IPath getPath() {
+		return path;
 	}
 
-	public void setPath(IPath path)
-	{
-		m_path = path;
+	public void setPath(IPath path) {
+		this.path = path;
 	}
 }

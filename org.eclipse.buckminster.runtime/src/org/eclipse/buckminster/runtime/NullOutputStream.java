@@ -14,19 +14,16 @@ import java.io.OutputStream;
 /**
  * @author Thomas Hallgren
  */
-public class NullOutputStream extends OutputStream
-{
+public class NullOutputStream extends OutputStream {
 	public static NullOutputStream INSTANCE = new NullOutputStream();
 
 	@Override
-	public void write(byte[] b, int off, int len)
-	{
+	public void write(byte[] b, int off, int len) {
 		// throw away
 	}
 
 	@Override
-	public void write(int b) throws IOException
-	{
+	public void write(int b) throws IOException {
 		// throw away
 	}
 }

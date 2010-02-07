@@ -19,81 +19,66 @@ import org.eclipse.buckminster.ui.general.editor.simple.SimpleTable;
  * @author Karel Brezina
  * 
  */
-public class PropertiesTable extends SimpleTable<Property>
-{
-	public PropertiesTable(List<Property> data, boolean readOnly)
-	{
+public class PropertiesTable extends SimpleTable<Property> {
+	public PropertiesTable(List<Property> data, boolean readOnly) {
 		super(data, readOnly);
 	}
 
-	public Property createRowClass()
-	{
+	public Property createRowClass() {
 		return new Property(null, null);
 	}
 
-	public String[] getColumnHeaders()
-	{
+	public String[] getColumnHeaders() {
 		return new String[] { Messages.key, Messages.value };
 	}
 
-	public int[] getColumnWeights()
-	{
+	public int[] getColumnWeights() {
 		return new int[] { 20, 30 };
 	}
 
 	@Override
-	public IValidator getFieldValidator(int idx)
-	{
-		switch(idx)
-		{
-		case 0:
-			return SimpleTable.createNotEmptyStringValidator(Messages.key_cannot_be_empty);
-		default:
-			return SimpleTable.getEmptyValidator();
+	public IValidator getFieldValidator(int idx) {
+		switch (idx) {
+			case 0:
+				return SimpleTable.createNotEmptyStringValidator(Messages.key_cannot_be_empty);
+			default:
+				return SimpleTable.getEmptyValidator();
 		}
 	}
 
-	public Object[] toRowArray(Property t)
-	{
+	public Object[] toRowArray(Property t) {
 		return new Object[] { t.getKey(), t.getValue() };
 	}
 
-	public void updateRowClass(Property property, Object[] args) throws ValidatorException
-	{
-		property.setKey((String)args[0]);
-		property.setValue((String)args[1]);
+	public void updateRowClass(Property property, Object[] args) throws ValidatorException {
+		property.setKey((String) args[0]);
+		property.setValue((String) args[1]);
 	}
 }
 
-class Property
-{
-	private String m_key;
+class Property {
+	private String key;
 
-	private String m_value;
+	private String value;
 
-	public Property(String key, String value)
-	{
-		m_key = key;
-		m_value = value;
+	public Property(String key, String value) {
+		this.key = key;
+		this.value = value;
 	}
 
-	public String getKey()
-	{
-		return m_key;
+	public String getKey() {
+		return key;
 	}
 
-	public String getValue()
-	{
-		return m_value;
+	public String getValue() {
+		return value;
 	}
 
-	public void setKey(String key)
-	{
-		m_key = key;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
-	public void setValue(String value)
-	{
-		m_value = value;
+	public void setValue(String value) {
+		this.value = value;
 	}
 }

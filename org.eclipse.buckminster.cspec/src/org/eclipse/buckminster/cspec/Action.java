@@ -13,23 +13,33 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 
 /**
- * <!-- begin-user-doc --> A representation of the model object '<em><b>Action</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A representation of the model object '
+ * <em><b>Action</b></em>'. <!-- end-user-doc -->
  * 
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.Action#getProperties <em>Properties</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Action#getActorProperties <em>Actor Properties</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Action#getProperties <em>Properties
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Action#getActorProperties <em>Actor
+ * Properties</em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.Action#getActor <em>Actor</em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.Action#getProduct <em>Product</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Action#getProducts <em>Products</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Action#getPrerequisitesAlias <em>Prerequisites Alias</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Action#getPrerequisitesRebase <em>Prerequisites Rebase</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Action#getProductAlias <em>Product Alias</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Action#getUpToDatePolicy <em>Up To Date Policy</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Action#getProductFileCount <em>Product File Count</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Action#getProducts <em>Products
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Action#getPrerequisitesAlias <em>
+ * Prerequisites Alias</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Action#getPrerequisitesRebase <em>
+ * Prerequisites Rebase</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Action#getProductAlias <em>Product
+ * Alias</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Action#getUpToDatePolicy <em>Up To
+ * Date Policy</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Action#getProductFileCount <em>
+ * Product File Count</em>}</li>
  * <li>{@link org.eclipse.buckminster.cspec.Action#getPattern <em>Pattern</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.Action#getReplacement <em>Replacement</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.Action#getReplacement <em>
+ * Replacement</em>}</li>
  * </ul>
  * </p>
  * 
@@ -37,13 +47,13 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface Action extends Group
-{
+public interface Action extends Group {
 	/**
-	 * Returns the value of the '<em><b>Actor</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Actor</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Actor</em>' containment reference isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Actor</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -56,15 +66,18 @@ public interface Action extends Group
 	String getActor();
 
 	/**
-	 * Returns the value of the '<em><b>Actor Properties</b></em>' containment reference list. The list contents are of
-	 * type {@link org.eclipse.buckminster.model.common.PropertyConstant}. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Actor Properties</b></em>' containment
+	 * reference list. The list contents are of type
+	 * {@link org.eclipse.buckminster.model.common.PropertyConstant}. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Actor Properties</em>' containment reference list isn't clear, there really should be
-	 * more of a description here...
+	 * If the meaning of the '<em>Actor Properties</em>' containment reference
+	 * list isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Actor Properties</em>' containment reference list.
+	 * @return the value of the '<em>Actor Properties</em>' containment
+	 *         reference list.
 	 * @see org.eclipse.buckminster.cspec.CspecPackage#getAction_ActorProperties()
 	 * @model containment="true"
 	 * @generated
@@ -72,10 +85,11 @@ public interface Action extends Group
 	EList<PropertyConstant> getActorProperties();
 
 	/**
-	 * Returns the value of the '<em><b>Pattern</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Pattern</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Pattern</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Pattern</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -88,10 +102,11 @@ public interface Action extends Group
 	Pattern getPattern();
 
 	/**
-	 * Returns the value of the '<em><b>Prerequisites Alias</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Prerequisites Alias</b></em>' attribute.
+	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Prerequisites Alias</em>' attribute isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Prerequisites Alias</em>' attribute isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -104,10 +119,12 @@ public interface Action extends Group
 	String getPrerequisitesAlias();
 
 	/**
-	 * Returns the value of the '<em><b>Prerequisites Rebase</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Prerequisites Rebase</b></em>'
+	 * attribute. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Prerequisites Rebase</em>' containment reference isn't clear, there really should be
-	 * more of a description here...
+	 * If the meaning of the '<em>Prerequisites Rebase</em>' containment
+	 * reference isn't clear, there really should be more of a description
+	 * here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -120,10 +137,11 @@ public interface Action extends Group
 	IPath getPrerequisitesRebase();
 
 	/**
-	 * Returns the value of the '<em><b>Product</b></em>' containment reference. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Product</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Product</em>' containment reference isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Product</em>' containment reference isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -136,10 +154,11 @@ public interface Action extends Group
 	PathGroup getProduct();
 
 	/**
-	 * Returns the value of the '<em><b>Product Alias</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Product Alias</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Product Alias</em>' attribute isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Product Alias</em>' attribute isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -152,10 +171,11 @@ public interface Action extends Group
 	String getProductAlias();
 
 	/**
-	 * Returns the value of the '<em><b>Product File Count</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Product File Count</b></em>' attribute.
+	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Product File Count</em>' attribute isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Product File Count</em>' attribute isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -168,12 +188,15 @@ public interface Action extends Group
 	int getProductFileCount();
 
 	/**
-	 * Returns the value of the '<em><b>Products</b></em>' reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.cspec.ActionAttribute}. It is bidirectional and its opposite is '
-	 * {@link org.eclipse.buckminster.cspec.ActionAttribute#getAction <em>Action</em>}'. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Products</b></em>' reference list. The
+	 * list contents are of type
+	 * {@link org.eclipse.buckminster.cspec.ActionAttribute}. It is
+	 * bidirectional and its opposite is '
+	 * {@link org.eclipse.buckminster.cspec.ActionAttribute#getAction
+	 * <em>Action</em>}'. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Products</em>' reference list isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Products</em>' reference list isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -186,15 +209,18 @@ public interface Action extends Group
 	EList<ActionAttribute> getProducts();
 
 	/**
-	 * Returns the value of the '<em><b>Properties</b></em>' containment reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.model.common.PropertyConstant}. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Properties</b></em>' containment
+	 * reference list. The list contents are of type
+	 * {@link org.eclipse.buckminster.model.common.PropertyConstant}. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Properties</em>' containment reference list isn't clear, there really should be more
-	 * of a description here...
+	 * If the meaning of the '<em>Properties</em>' containment reference list
+	 * isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Properties</em>' containment reference list.
+	 * @return the value of the '<em>Properties</em>' containment reference
+	 *         list.
 	 * @see org.eclipse.buckminster.cspec.CspecPackage#getAction_Properties()
 	 * @model containment="true"
 	 * @generated
@@ -202,10 +228,11 @@ public interface Action extends Group
 	EList<PropertyConstant> getProperties();
 
 	/**
-	 * Returns the value of the '<em><b>Replacement</b></em>' attribute. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Replacement</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Replacement</em>' attribute isn't clear, there really should be more of a description
-	 * here...
+	 * If the meaning of the '<em>Replacement</em>' attribute isn't clear, there
+	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -218,12 +245,13 @@ public interface Action extends Group
 	String getReplacement();
 
 	/**
-	 * Returns the value of the '<em><b>Up To Date Policy</b></em>' attribute. The default value is
-	 * <code>"DEFAULT"</code>. The literals are from the enumeration
-	 * {@link org.eclipse.buckminster.cspec.UpToDatePolicy}. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Up To Date Policy</b></em>' attribute.
+	 * The default value is <code>"DEFAULT"</code>. The literals are from the
+	 * enumeration {@link org.eclipse.buckminster.cspec.UpToDatePolicy}. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Up To Date Policy</em>' attribute isn't clear, there really should be more of a
-	 * description here...
+	 * If the meaning of the '<em>Up To Date Policy</em>' attribute isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
@@ -237,8 +265,9 @@ public interface Action extends Group
 	UpToDatePolicy getUpToDatePolicy();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Action#getActor <em>Actor</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Action#getActor <em>Actor</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Actor</em>' attribute.
@@ -248,8 +277,9 @@ public interface Action extends Group
 	void setActor(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Action#getPattern <em>Pattern</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Action#getPattern <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Pattern</em>' attribute.
@@ -259,8 +289,10 @@ public interface Action extends Group
 	void setPattern(Pattern value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Action#getPrerequisitesAlias
-	 * <em>Prerequisites Alias</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Action#getPrerequisitesAlias
+	 * <em>Prerequisites Alias</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Prerequisites Alias</em>' attribute.
@@ -270,19 +302,23 @@ public interface Action extends Group
 	void setPrerequisitesAlias(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Action#getPrerequisitesRebase
-	 * <em>Prerequisites Rebase</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Action#getPrerequisitesRebase
+	 * <em>Prerequisites Rebase</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
-	 *            the new value of the '<em>Prerequisites Rebase</em>' attribute.
+	 *            the new value of the '<em>Prerequisites Rebase</em>'
+	 *            attribute.
 	 * @see #getPrerequisitesRebase()
 	 * @generated
 	 */
 	void setPrerequisitesRebase(IPath value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Action#getProduct <em>Product</em>}' containment
-	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Action#getProduct <em>Product</em>}'
+	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Product</em>' containment reference.
@@ -292,8 +328,10 @@ public interface Action extends Group
 	void setProduct(PathGroup value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Action#getProductAlias <em>Product Alias</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Action#getProductAlias
+	 * <em>Product Alias</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Product Alias</em>' attribute.
@@ -303,8 +341,10 @@ public interface Action extends Group
 	void setProductAlias(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Action#getProductFileCount
-	 * <em>Product File Count</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Action#getProductFileCount
+	 * <em>Product File Count</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Product File Count</em>' attribute.
@@ -314,8 +354,10 @@ public interface Action extends Group
 	void setProductFileCount(int value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Action#getReplacement <em>Replacement</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Action#getReplacement
+	 * <em>Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Replacement</em>' attribute.
@@ -325,8 +367,10 @@ public interface Action extends Group
 	void setReplacement(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.cspec.Action#getUpToDatePolicy <em>Up To Date Policy</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.cspec.Action#getUpToDatePolicy
+	 * <em>Up To Date Policy</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Up To Date Policy</em>' attribute.

@@ -13,12 +13,10 @@ package org.eclipse.buckminster.cmdline.parser;
 import org.eclipse.buckminster.cmdline.Messages;
 import org.eclipse.osgi.util.NLS;
 
-public class InvalidOptionException extends AbstractOptionParsingException
-{
+public class InvalidOptionException extends AbstractOptionParsingException {
 	private static final long serialVersionUID = -7991938945453812836L;
 
-	public InvalidOptionException(String message)
-	{
+	public InvalidOptionException(String message) {
 		super(NLS.bind(Messages.InvalidOptionException_The_option_0_is_invalid, message));
 	}
 }

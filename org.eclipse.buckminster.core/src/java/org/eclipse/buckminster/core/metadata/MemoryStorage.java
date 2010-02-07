@@ -14,125 +14,102 @@ import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.core.runtime.CoreException;
 
-public class MemoryStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T>
-{
-	static class TimestampedElement<ET extends UUIDKeyed> extends TimestampedKey
-	{
-		private final ET m_element;
+public class MemoryStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> {
+	static class TimestampedElement<ET extends UUIDKeyed> extends TimestampedKey {
+		private final ET element;
 
-		TimestampedElement(ET element)
-		{
+		TimestampedElement(ET element) {
 			super(element.getId(), System.currentTimeMillis());
-			m_element = element;
+			this.element = element;
 		}
 
-		ET getElement()
-		{
-			return m_element;
+		ET getElement() {
+			return element;
 		}
 	}
 
-	private final Map<UUID, TimestampedElement<T>> m_elements = new HashMap<UUID, TimestampedElement<T>>();
+	private final Map<UUID, TimestampedElement<T>> elements = new HashMap<UUID, TimestampedElement<T>>();
 
-	public MemoryStorage(Class<T> elementClass)
-	{
+	public MemoryStorage(Class<T> elementClass) {
 		super(elementClass);
 	}
 
-	public synchronized void clear()
-	{
-		m_elements.clear();
+	public synchronized void clear() {
+		elements.clear();
 	}
 
-	public synchronized boolean contains(T element) throws CoreException
-	{
-		return m_elements.containsKey(element.getId());
+	public synchronized boolean contains(T element) throws CoreException {
+		return elements.containsKey(element.getId());
 	}
 
-	public synchronized long getCreationTime(UUID elementId) throws CoreException
-	{
-		TimestampedElement<T> t = m_elements.get(elementId);
-		if(t == null)
+	public synchronized long getCreationTime(UUID elementId) throws CoreException {
+		TimestampedElement<T> t = elements.get(elementId);
+		if (t == null)
 			throw new ElementNotFoundException(this, elementId);
 		return t.getCreationTime();
 	}
 
-	public synchronized T getElement(UUID elementId) throws CoreException, ElementNotFoundException
-	{
-		TimestampedElement<T> t = m_elements.get(elementId);
-		if(t == null)
+	public synchronized T getElement(UUID elementId) throws CoreException, ElementNotFoundException {
+		TimestampedElement<T> t = elements.get(elementId);
+		if (t == null)
 			throw new ElementNotFoundException(this, elementId);
 		return t.getElement();
 	}
 
-	public synchronized T[] getElements() throws CoreException
-	{
-		T[] elems = createArray(m_elements.size());
+	public synchronized T[] getElements() throws CoreException {
+		T[] elems = createArray(elements.size());
 		int idx = 0;
-		for(TimestampedElement<T> te : m_elements.values())
+		for (TimestampedElement<T> te : elements.values())
 			elems[idx++] = te.getElement();
 		return elems;
 	}
 
-	public synchronized UUID[] getKeys()
-	{
-		return m_elements.keySet().toArray(new UUID[m_elements.size()]);
+	public synchronized UUID[] getKeys() {
+		return elements.keySet().toArray(new UUID[elements.size()]);
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return getClass().getName();
 	}
 
-	public synchronized List<UUID> getReferencingKeys(UUID foreignKey, String keyName) throws CoreException
-	{
+	public synchronized List<UUID> getReferencingKeys(UUID foreignKey, String keyName) throws CoreException {
 		List<UUID> result = null;
 		Method getter = getGetter(keyName);
-		try
-		{
-			for(TimestampedElement<T> et : m_elements.values())
-			{
+		try {
+			for (TimestampedElement<T> et : elements.values()) {
 				T element = et.getElement();
-				UUID fkey = (UUID)getter.invoke(element, Trivial.EMPTY_OBJECT_ARRAY);
-				if(fkey != null && fkey.equals(foreignKey))
-				{
-					if(result == null)
+				UUID fkey = (UUID) getter.invoke(element, Trivial.EMPTY_OBJECT_ARRAY);
+				if (fkey != null && fkey.equals(foreignKey)) {
+					if (result == null)
 						result = new ArrayList<UUID>();
 					result.add(element.getId());
 				}
 			}
-			if(result == null)
+			if (result == null)
 				result = Collections.emptyList();
 			return result;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public synchronized TimestampedKey[] getTimestampedKeys()
-	{
-		return m_elements.values().toArray(new TimestampedKey[m_elements.size()]);
+	public synchronized TimestampedKey[] getTimestampedKeys() {
+		return elements.values().toArray(new TimestampedKey[elements.size()]);
 	}
 
-	public void putElement(T element) throws CoreException
-	{
+	public void putElement(T element) throws CoreException {
 		putElement(element.getId(), element);
 	}
 
-	public synchronized void putElement(UUID id, T element) throws CoreException
-	{
-		m_elements.put(id, new TimestampedElement<T>(element));
+	public synchronized void putElement(UUID id, T element) throws CoreException {
+		elements.put(id, new TimestampedElement<T>(element));
 	}
 
-	public synchronized void removeElement(UUID elementId) throws CoreException
-	{
-		m_elements.remove(elementId);
+	public synchronized void removeElement(UUID elementId) throws CoreException {
+		elements.remove(elementId);
 	}
 
-	public boolean sequenceChanged()
-	{
+	public boolean sequenceChanged() {
 		return false;
 	}
 }

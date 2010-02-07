@@ -21,30 +21,23 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author Thomas Hallgren
  */
-public class PerformTask
-{
-	private final Perform m_command;
+public class PerformTask {
+	private final Perform command;
 
-	public PerformTask(String component, String attribute, boolean inWorkspace, boolean quiet,
-			Map<String, String> properties) throws CoreException
-	{
-		m_command = new Perform();
+	public PerformTask(String component, String attribute, boolean inWorkspace, boolean quiet, Map<String, String> properties) throws CoreException {
+		command = new Perform();
 
 		CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
-		m_command.addAttribute(cspec.getRequiredAttribute(attribute));
-		m_command.addProperties(properties);
-		m_command.setInWorkspace(inWorkspace);
-		m_command.setQuiet(true);
+		command.addAttribute(cspec.getRequiredAttribute(attribute));
+		command.addProperties(properties);
+		command.setInWorkspace(inWorkspace);
+		command.setQuiet(true);
 	}
 
-	public int execute() throws CoreException
-	{
-		try
-		{
-			return m_command.run("perform"); //$NON-NLS-1$
-		}
-		catch(Exception e)
-		{
+	public int execute() throws CoreException {
+		try {
+			return command.run("perform"); //$NON-NLS-1$
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}

@@ -18,26 +18,23 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 
 @SuppressWarnings("serial")
-public abstract class LocalizedException extends CoreException
-{
-	private static String getLocalizedFormat(Class<?> c, String defaultMessageFormat)
-	{
+public abstract class LocalizedException extends CoreException {
+	private static String getLocalizedFormat(Class<?> c, String defaultMessageFormat) {
 		CorePlugin core = CorePlugin.getDefault();
-		if(core == null)
+		if (core == null)
 			return defaultMessageFormat;
 
 		ResourceBundle bundle = core.getResourceBundle();
-		if(bundle == null)
+		if (bundle == null)
 			return defaultMessageFormat;
 
 		// Strip of package name from the class name
 		//
 		int pkgLen = 0;
 		Package p = c.getPackage();
-		if(p != null)
-		{
+		if (p != null) {
 			pkgLen = p.getName().length();
-			if(pkgLen > 0)
+			if (pkgLen > 0)
 				//
 				// Account for '.'
 				//
@@ -45,38 +42,32 @@ public abstract class LocalizedException extends CoreException
 		}
 
 		String name = c.getName();
-		if(pkgLen > 0)
+		if (pkgLen > 0)
 			name = name.substring(pkgLen);
 
-		try
-		{
+		try {
 			return bundle.getString(name);
-		}
-		catch(MissingResourceException e)
-		{
+		} catch (MissingResourceException e) {
 			return defaultMessageFormat;
 		}
 	}
 
-	private final String m_defaultMessageFormat;
+	private final String defaultMessageFormat;
 
-	private final Object[] m_arguments;
+	private final Object[] arguments;
 
-	protected LocalizedException(String defaultMessageFormat, Object... args)
-	{
+	protected LocalizedException(String defaultMessageFormat, Object... args) {
 		this(null, defaultMessageFormat, args);
 	}
 
-	protected LocalizedException(Throwable cause, String defaultMessageFormat, Object... args)
-	{
+	protected LocalizedException(Throwable cause, String defaultMessageFormat, Object... args) {
 		super(BuckminsterException.createStatus(defaultMessageFormat, args));
-		m_defaultMessageFormat = defaultMessageFormat;
-		m_arguments = args;
+		this.defaultMessageFormat = defaultMessageFormat;
+		this.arguments = args;
 	}
 
 	@Override
-	public String getLocalizedMessage()
-	{
-		return String.format(getLocalizedFormat(getClass(), m_defaultMessageFormat), m_arguments);
+	public String getLocalizedMessage() {
+		return String.format(getLocalizedFormat(getClass(), defaultMessageFormat), arguments);
 	}
 }

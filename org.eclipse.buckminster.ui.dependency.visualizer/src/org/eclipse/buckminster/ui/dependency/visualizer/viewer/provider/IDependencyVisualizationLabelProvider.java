@@ -21,9 +21,7 @@ import org.eclipse.zest.core.viewers.IEntityStyleProvider;
  * @author Johannes Utzig
  * 
  */
-public interface IDependencyVisualizationLabelProvider extends ILabelProvider, IConnectionStyleProvider,
-		IEntityStyleProvider
-{
+public interface IDependencyVisualizationLabelProvider extends ILabelProvider, IConnectionStyleProvider, IEntityStyleProvider {
 
 	/**
 	 * clear all cached data about the selection and the model
@@ -33,7 +31,8 @@ public interface IDependencyVisualizationLabelProvider extends ILabelProvider, I
 	/**
 	 * gets called on a selection change event.
 	 * <p>
-	 * The Label Provider is responsible for updating the visual representation of the underlaying {@link GraphViewer}
+	 * The Label Provider is responsible for updating the visual representation
+	 * of the underlaying {@link GraphViewer}
 	 * 
 	 * @param selection
 	 */
@@ -42,7 +41,8 @@ public interface IDependencyVisualizationLabelProvider extends ILabelProvider, I
 	/**
 	 * 
 	 * @param provider
-	 *            - the {@link IRelationshipProvider} provider to use for highlighting
+	 *            - the {@link IRelationshipProvider} provider to use for
+	 *            highlighting
 	 */
 	public void setRelationshipProvider(IRelationshipProvider provider);
 

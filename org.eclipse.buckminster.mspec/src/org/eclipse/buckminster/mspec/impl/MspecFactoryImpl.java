@@ -18,12 +18,12 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
-{
+public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -31,40 +31,35 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * @generated
 	 */
 	@Deprecated
-	public static MspecPackage getPackage()
-	{
+	public static MspecPackage getPackage() {
 		return MspecPackage.eINSTANCE;
 	}
 
 	/**
-	 * Creates the default factory implementation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates the default factory implementation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static MspecFactory init()
-	{
-		try
-		{
-			MspecFactory theMspecFactory = (MspecFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/MetaData-1.0");
-			if(theMspecFactory != null)
-			{
+	public static MspecFactory init() {
+		try {
+			MspecFactory theMspecFactory = (MspecFactory) EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/MetaData-1.0");
+			if (theMspecFactory != null) {
 				return theMspecFactory;
 			}
-		}
-		catch(Exception exception)
-		{
+		} catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new MspecFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public MspecFactoryImpl()
-	{
+	public MspecFactoryImpl() {
 		super();
 	}
 
@@ -73,11 +68,8 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * 
 	 * @generated
 	 */
-	public String convertConflictResolutionToString(EDataType eDataType, Object instanceValue)
-	{
-		return instanceValue == null
-				? null
-				: instanceValue.toString();
+	public String convertConflictResolutionToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
 	}
 
 	/**
@@ -86,14 +78,12 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * @generated
 	 */
 	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue)
-	{
-		switch(eDataType.getClassifierID())
-		{
-		case MspecPackage.CONFLICT_RESOLUTION:
-			return convertConflictResolutionToString(eDataType, instanceValue);
-		default:
-			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+	public String convertToString(EDataType eDataType, Object instanceValue) {
+		switch (eDataType.getClassifierID()) {
+			case MspecPackage.CONFLICT_RESOLUTION:
+				return convertConflictResolutionToString(eDataType, instanceValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -103,22 +93,20 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * @generated
 	 */
 	@Override
-	public EObject create(EClass eClass)
-	{
-		switch(eClass.getClassifierID())
-		{
-		case MspecPackage.DOCUMENT_ROOT:
-			return createDocumentRoot();
-		case MspecPackage.MATERIALIZATION_NODE:
-			return createMaterializationNode();
-		case MspecPackage.MATERIALIZATION_DIRECTIVE:
-			return createMaterializationDirective();
-		case MspecPackage.MATERIALIZATION_SPEC:
-			return createMaterializationSpec();
-		case MspecPackage.UNPACK:
-			return createUnpack();
-		default:
-			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+	public EObject create(EClass eClass) {
+		switch (eClass.getClassifierID()) {
+			case MspecPackage.DOCUMENT_ROOT:
+				return createDocumentRoot();
+			case MspecPackage.MATERIALIZATION_NODE:
+				return createMaterializationNode();
+			case MspecPackage.MATERIALIZATION_DIRECTIVE:
+				return createMaterializationDirective();
+			case MspecPackage.MATERIALIZATION_SPEC:
+				return createMaterializationSpec();
+			case MspecPackage.UNPACK:
+				return createUnpack();
+			default:
+				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -127,12 +115,10 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * 
 	 * @generated
 	 */
-	public ConflictResolution createConflictResolutionFromString(EDataType eDataType, String initialValue)
-	{
+	public ConflictResolution createConflictResolutionFromString(EDataType eDataType, String initialValue) {
 		ConflictResolution result = ConflictResolution.get(initialValue);
-		if(result == null)
-			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
-					+ eDataType.getName() + "'");
+		if (result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
 
@@ -141,8 +127,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * 
 	 * @generated
 	 */
-	public EObject createDocumentRoot()
-	{
+	public EObject createDocumentRoot() {
 		EObject documentRoot = super.create(MspecPackage.Literals.DOCUMENT_ROOT);
 		return documentRoot;
 	}
@@ -153,14 +138,12 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * @generated
 	 */
 	@Override
-	public Object createFromString(EDataType eDataType, String initialValue)
-	{
-		switch(eDataType.getClassifierID())
-		{
-		case MspecPackage.CONFLICT_RESOLUTION:
-			return createConflictResolutionFromString(eDataType, initialValue);
-		default:
-			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+	public Object createFromString(EDataType eDataType, String initialValue) {
+		switch (eDataType.getClassifierID()) {
+			case MspecPackage.CONFLICT_RESOLUTION:
+				return createConflictResolutionFromString(eDataType, initialValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -169,8 +152,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * 
 	 * @generated
 	 */
-	public MaterializationDirective createMaterializationDirective()
-	{
+	public MaterializationDirective createMaterializationDirective() {
 		MaterializationDirectiveImpl materializationDirective = new MaterializationDirectiveImpl();
 		return materializationDirective;
 	}
@@ -180,8 +162,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * 
 	 * @generated
 	 */
-	public MaterializationNode createMaterializationNode()
-	{
+	public MaterializationNode createMaterializationNode() {
 		MaterializationNodeImpl materializationNode = new MaterializationNodeImpl();
 		return materializationNode;
 	}
@@ -191,8 +172,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * 
 	 * @generated
 	 */
-	public MaterializationSpec createMaterializationSpec()
-	{
+	public MaterializationSpec createMaterializationSpec() {
 		MaterializationSpecImpl materializationSpec = new MaterializationSpecImpl();
 		return materializationSpec;
 	}
@@ -202,8 +182,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * 
 	 * @generated
 	 */
-	public Unpack createUnpack()
-	{
+	public Unpack createUnpack() {
 		UnpackImpl unpack = new UnpackImpl();
 		return unpack;
 	}
@@ -213,9 +192,8 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory
 	 * 
 	 * @generated
 	 */
-	public MspecPackage getMspecPackage()
-	{
-		return (MspecPackage)getEPackage();
+	public MspecPackage getMspecPackage() {
+		return (MspecPackage) getEPackage();
 	}
 
 } // MspecFactoryImpl

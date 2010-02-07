@@ -24,45 +24,38 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class RxGroupHandler extends RxPartHandler implements ChildPoppedListener
-{
+public class RxGroupHandler extends RxPartHandler implements ChildPoppedListener {
 	public static final String TAG = RxGroup.TAG;
 
-	private final HashMap<String, RxPartHandler> m_partHandlers = new HashMap<String, RxPartHandler>();
+	private final HashMap<String, RxPartHandler> partHandlers = new HashMap<String, RxPartHandler>();
 
-	private ArrayList<RxPart> m_parts;
+	private ArrayList<RxPart> parts;
 
-	public RxGroupHandler(AbstractHandler parent)
-	{
+	public RxGroupHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof RxPartHandler)
-		{
-			if(m_parts == null)
-				m_parts = new ArrayList<RxPart>();
-			m_parts.add(((RxPartHandler)child).createPart());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child instanceof RxPartHandler) {
+			if (parts == null)
+				parts = new ArrayList<RxPart>();
+			parts.add(((RxPartHandler) child).createPart());
 		}
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
-		return RxAssemblyHandler.getPartHandler(this, localName, m_partHandlers);
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
+		return RxAssemblyHandler.getPartHandler(this, localName, partHandlers);
 	}
 
 	@Override
-	public RxPart createPart()
-	{
-		return new RxGroup(getName(), isOptional(), m_parts);
+	public RxPart createPart() {
+		return new RxGroup(getName(), isOptional(), parts);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		m_parts = null;
+		parts = null;
 	}
 }

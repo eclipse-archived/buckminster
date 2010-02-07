@@ -17,23 +17,26 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Group And Artifact</b></em>'. <!-- end-user-doc
- * -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Group And Artifact</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.maven.impl.GroupAndArtifactImpl#getArtifactId <em>Artifact Id</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.maven.impl.GroupAndArtifactImpl#getGroupId <em>Group Id</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.maven.impl.GroupAndArtifactImpl#getArtifactId
+ * <em>Artifact Id</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.maven.impl.GroupAndArtifactImpl#getGroupId
+ * <em>Group Id</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifact
-{
+public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifact {
 	/**
-	 * The default value of the '{@link #getArtifactId() <em>Artifact Id</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getArtifactId() <em>Artifact Id</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getArtifactId()
 	 * @generated
@@ -42,8 +45,8 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	protected static final String ARTIFACT_ID_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getArtifactId() <em>Artifact Id</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getArtifactId() <em>Artifact Id</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getArtifactId()
 	 * @generated
@@ -52,8 +55,8 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	protected String artifactId = ARTIFACT_ID_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getGroupId() <em>Group Id</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getGroupId() <em>Group Id</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroupId()
 	 * @generated
@@ -62,8 +65,8 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	protected static final String GROUP_ID_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getGroupId() <em>Group Id</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getGroupId() <em>Group Id</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGroupId()
 	 * @generated
@@ -76,8 +79,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
-	protected GroupAndArtifactImpl()
-	{
+	protected GroupAndArtifactImpl() {
 		super();
 	}
 
@@ -87,14 +89,12 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID:
-			return getArtifactId();
-		case MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID:
-			return getGroupId();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID:
+				return getArtifactId();
+			case MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID:
+				return getGroupId();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -105,18 +105,12 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID:
-			return ARTIFACT_ID_EDEFAULT == null
-					? artifactId != null
-					: !ARTIFACT_ID_EDEFAULT.equals(artifactId);
-		case MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID:
-			return GROUP_ID_EDEFAULT == null
-					? groupId != null
-					: !GROUP_ID_EDEFAULT.equals(groupId);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID:
+				return ARTIFACT_ID_EDEFAULT == null ? artifactId != null : !ARTIFACT_ID_EDEFAULT.equals(artifactId);
+			case MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID:
+				return GROUP_ID_EDEFAULT == null ? groupId != null : !GROUP_ID_EDEFAULT.equals(groupId);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -127,16 +121,14 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID:
-			setArtifactId((String)newValue);
-			return;
-		case MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID:
-			setGroupId((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID:
+				setArtifactId((String) newValue);
+				return;
+			case MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID:
+				setGroupId((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -147,16 +139,14 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID:
-			setArtifactId(ARTIFACT_ID_EDEFAULT);
-			return;
-		case MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID:
-			setGroupId(GROUP_ID_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID:
+				setArtifactId(ARTIFACT_ID_EDEFAULT);
+				return;
+			case MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID:
+				setGroupId(GROUP_ID_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -166,8 +156,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
-	public String getArtifactId()
-	{
+	public String getArtifactId() {
 		return artifactId;
 	}
 
@@ -176,8 +165,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
-	public String getGroupId()
-	{
+	public String getGroupId() {
 		return groupId;
 	}
 
@@ -186,13 +174,11 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
-	public void setArtifactId(String newArtifactId)
-	{
+	public void setArtifactId(String newArtifactId) {
 		String oldArtifactId = artifactId;
 		artifactId = newArtifactId;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID,
-					oldArtifactId, artifactId));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MavenPackage.GROUP_AND_ARTIFACT__ARTIFACT_ID, oldArtifactId, artifactId));
 	}
 
 	/**
@@ -200,13 +186,11 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
-	public void setGroupId(String newGroupId)
-	{
+	public void setGroupId(String newGroupId) {
 		String oldGroupId = groupId;
 		groupId = newGroupId;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID,
-					oldGroupId, groupId));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MavenPackage.GROUP_AND_ARTIFACT__GROUP_ID, oldGroupId, groupId));
 	}
 
 	/**
@@ -215,9 +199,8 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -235,8 +218,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return MavenPackage.Literals.GROUP_AND_ARTIFACT;
 	}
 

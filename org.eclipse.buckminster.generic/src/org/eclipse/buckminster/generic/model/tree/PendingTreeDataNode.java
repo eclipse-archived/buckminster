@@ -21,13 +21,11 @@ import org.eclipse.core.runtime.jobs.Job;
  * @author Henrik Lindberg
  * 
  */
-public abstract class PendingTreeDataNode extends BasicTreeDataNode
-{
+public abstract class PendingTreeDataNode extends BasicTreeDataNode {
 
-	private Job m_getNodeJob;
+	private Job getNodeJob;
 
-	public PendingTreeDataNode()
-	{
+	public PendingTreeDataNode() {
 		super(Messages.pending_);
 	}
 
@@ -39,35 +37,29 @@ public abstract class PendingTreeDataNode extends BasicTreeDataNode
 	public abstract ITreeDataNode[] createNode(IProgressMonitor monitor);
 
 	/**
-	 * Schedules a job that replaces the pending node with the node created by the {@link #createNode(IProgressMonitor)}
-	 * method.
+	 * Schedules a job that replaces the pending node with the node created by
+	 * the {@link #createNode(IProgressMonitor)} method.
 	 */
-	public synchronized void schedule(final String jobName)
-	{
-		if(m_getNodeJob != null)
+	public synchronized void schedule(final String jobName) {
+		if (getNodeJob != null)
 			return; // already created and scheduled
-		m_getNodeJob = new Job(jobName)
-		{
+		getNodeJob = new Job(jobName) {
 
 			@Override
-			protected IStatus run(IProgressMonitor monitor)
-			{
-				try
-				{
+			protected IStatus run(IProgressMonitor monitor) {
+				try {
 					monitor.beginTask(jobName, IProgressMonitor.UNKNOWN);
 					ITreeDataNode[] nodes = createNode(monitor);
 					getParent().replaceChild(PendingTreeDataNode.this, nodes);
 					return Status.OK_STATUS;
-				}
-				finally
-				{
+				} finally {
 					monitor.done();
 				}
 			}
 		};
-		m_getNodeJob.setUser(false);
-		m_getNodeJob.setPriority(Job.LONG);
-		m_getNodeJob.schedule();
+		getNodeJob.setUser(false);
+		getNodeJob.setPriority(Job.LONG);
+		getNodeJob.schedule();
 	}
 
 }

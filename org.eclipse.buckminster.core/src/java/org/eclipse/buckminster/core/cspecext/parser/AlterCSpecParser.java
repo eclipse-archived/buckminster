@@ -23,38 +23,30 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class AlterCSpecParser extends AbstractParser<CSpecExtension> implements ChildPoppedListener
-{
-	private CSpecExtension m_cSpecExtension;
+public class AlterCSpecParser extends AbstractParser<CSpecExtension> implements ChildPoppedListener {
+	private CSpecExtension cSpecExtension;
 
-	public AlterCSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-			throws CoreException
-	{
-		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS,
-				XMLConstants.BM_CSPEC_NS }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE,
-				XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_CSPEC_RESOURCE }, validating);
+	public AlterCSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating) throws CoreException {
+		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS, XMLConstants.BM_CSPEC_NS },
+				new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE, XMLConstants.BM_COMMON_RESOURCE,
+						XMLConstants.BM_CSPEC_RESOURCE }, validating);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_cSpecExtension = ((AlterCSpecHandler)child).getCSpecExtension();
+	public void childPopped(ChildHandler child) throws SAXException {
+		cSpecExtension = ((AlterCSpecHandler) child).getCSpecExtension();
 	}
 
-	public CSpecExtension parse(String systemId, InputStream input) throws CoreException
-	{
+	public CSpecExtension parse(String systemId, InputStream input) throws CoreException {
 		this.parseInput(systemId, input);
-		return m_cSpecExtension;
+		return cSpecExtension;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(AlterCSpecHandler.TAG.equals(localName))
-		{
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if (AlterCSpecHandler.TAG.equals(localName)) {
 			AlterCSpecHandler rmh = new AlterCSpecHandler(this);
 			this.pushHandler(rmh, attrs);
-		}
-		else
+		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
 }

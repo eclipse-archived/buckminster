@@ -11,19 +11,18 @@ import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.jface.viewers.ISelection;
 
 /**
- * The "New" wizard page allows setting the container for the new file as well as the file name. The page will only
- * accept file name without the extension OR with the extension that matches the expected one (cspex).
+ * The "New" wizard page allows setting the container for the new file as well
+ * as the file name. The page will only accept file name without the extension
+ * OR with the extension that matches the expected one (cspex).
  */
 
-public class NewCSPEXWizardPage extends NewBMFileWizardPage
-{
+public class NewCSPEXWizardPage extends NewBMFileWizardPage {
 	/**
 	 * Constructor for NewCSPEXWizardPage.
 	 * 
 	 * @param pageName
 	 */
-	public NewCSPEXWizardPage(ISelection selection)
-	{
+	public NewCSPEXWizardPage(ISelection selection) {
 		super(selection, "buckminster.cspex", "cspex"); //$NON-NLS-1$ //$NON-NLS-2$
 		setTitle(Messages.new_buckminster_component_specification_extension_file);
 		setDescription(Messages.new_buckminster_cspex_wizard_explanation_article);

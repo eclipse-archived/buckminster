@@ -20,41 +20,33 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public abstract class Matcher extends AbstractSaxableElement
-{
+public abstract class Matcher extends AbstractSaxableElement {
 	public static final String ATTR_PATTERN = "pattern"; //$NON-NLS-1$
 
-	private final ResourceMap m_owner;
+	private final ResourceMap owner;
 
-	private final Pattern m_pattern;
+	private final Pattern pattern;
 
-	public Matcher(ResourceMap owner, String pattern)
-	{
-		m_owner = owner;
-		m_pattern = pattern == null
-				? null
-				: Pattern.compile(pattern);
+	public Matcher(ResourceMap owner, String pattern) {
+		this.owner = owner;
+		this.pattern = pattern == null ? null : Pattern.compile(pattern);
 	}
 
-	public final ResourceMap getOwner()
-	{
-		return m_owner;
+	public final ResourceMap getOwner() {
+		return owner;
 	}
 
-	public final Pattern getPattern()
-	{
-		return m_pattern;
+	public final Pattern getPattern() {
+		return pattern;
 	}
 
-	public final boolean matches(String componentName)
-	{
-		return m_pattern == null || m_pattern.matcher(componentName).find();
+	public final boolean matches(String componentName) {
+		return pattern == null || pattern.matcher(componentName).find();
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		if(m_pattern != null)
-			Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		if (pattern != null)
+			Utils.addAttribute(attrs, ATTR_PATTERN, pattern.toString());
 	}
 }

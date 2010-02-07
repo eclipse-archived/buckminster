@@ -36,128 +36,110 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Hallgren
  */
-public class JNLPVersionModel extends SAXModel
-{
-	public static class Platform extends Resource
-	{
-		private final String m_productVersionId;
+public class JNLPVersionModel extends SAXModel {
+	public static class Platform extends Resource {
+		private final String productVersionId;
 
-		Platform(String file, String name, String versionId, String productVersionId)
-		{
+		Platform(String file, String name, String versionId, String productVersionId) {
 			super(file, name, versionId);
-			m_productVersionId = productVersionId;
+			this.productVersionId = productVersionId;
 		}
 
 		@Override
-		public String getDefaultTag()
-		{
+		public String getDefaultTag() {
 			return "platform"; //$NON-NLS-1$
 		}
 
 		@Override
-		void emitContent(ContentHandler receiver) throws SAXException
-		{
+		void emitContent(ContentHandler receiver) throws SAXException {
 			super.emitContent(receiver);
-			emitTextElement(receiver, "product-version-id", m_productVersionId); //$NON-NLS-1$
+			emitTextElement(receiver, "product-version-id", productVersionId); //$NON-NLS-1$
 		}
 	}
 
-	public static class Resource implements ISaxableElement
-	{
-		private final String m_name;
+	public static class Resource implements ISaxableElement {
+		private final String name;
 
-		private final String m_file;
+		private final String file;
 
-		private final String m_versionId;
+		private final String versionId;
 
-		private List<String> m_oss;
+		private List<String> oss;
 
-		private List<String> m_archs;
+		private List<String> archs;
 
-		private List<String> m_locales;
+		private List<String> locales;
 
-		Resource(String file, String name, String versionId)
-		{
-			m_file = file;
-			m_name = name;
-			m_versionId = versionId;
+		Resource(String file, String name, String versionId) {
+			this.file = file;
+			this.name = name;
+			this.versionId = versionId;
 		}
 
-		public void addArch(String arch)
-		{
-			if(m_archs == null)
-				m_archs = new ArrayList<String>();
-			m_archs.add(arch);
+		public void addArch(String arch) {
+			if (archs == null)
+				archs = new ArrayList<String>();
+			archs.add(arch);
 		}
 
-		public void addLocale(String locale)
-		{
-			if(m_locales == null)
-				m_locales = new ArrayList<String>();
-			m_locales.add(locale);
+		public void addLocale(String locale) {
+			if (locales == null)
+				locales = new ArrayList<String>();
+			locales.add(locale);
 		}
 
-		public void addOs(String os)
-		{
-			if(m_oss == null)
-				m_oss = new ArrayList<String>();
-			m_oss.add(os);
+		public void addOs(String os) {
+			if (oss == null)
+				oss = new ArrayList<String>();
+			oss.add(os);
 		}
 
-		public String getDefaultTag()
-		{
+		public String getDefaultTag() {
 			return "resource"; //$NON-NLS-1$
 		}
 
-		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
-				throws SAXException
-		{
+		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException {
 			startElement(receiver, localName);
 			emitContent(receiver);
 			endElement(receiver, localName);
 		}
 
-		void emitContent(ContentHandler receiver) throws SAXException
-		{
+		void emitContent(ContentHandler receiver) throws SAXException {
 			startElement(receiver, "pattern"); //$NON-NLS-1$
-			emitTextElement(receiver, "name", m_name); //$NON-NLS-1$
-			emitTextElement(receiver, "version-id", m_versionId); //$NON-NLS-1$
-			emitTextElements(receiver, "os", m_oss); //$NON-NLS-1$
-			emitTextElements(receiver, "arch", m_archs); //$NON-NLS-1$
-			emitTextElements(receiver, "locale", m_locales); //$NON-NLS-1$
+			emitTextElement(receiver, "name", name); //$NON-NLS-1$
+			emitTextElement(receiver, "version-id", versionId); //$NON-NLS-1$
+			emitTextElements(receiver, "os", oss); //$NON-NLS-1$
+			emitTextElements(receiver, "arch", archs); //$NON-NLS-1$
+			emitTextElements(receiver, "locale", locales); //$NON-NLS-1$
 			endElement(receiver, "pattern"); //$NON-NLS-1$
-			emitTextElement(receiver, "file", m_file); //$NON-NLS-1$
+			emitTextElement(receiver, "file", file); //$NON-NLS-1$
 		}
 	}
 
-	private static void emitTextElements(ContentHandler receiver, String tag, List<String> values) throws SAXException
-	{
-		if(values != null)
-			for(String value : values)
+	private static void emitTextElements(ContentHandler receiver, String tag, List<String> values) throws SAXException {
+		if (values != null)
+			for (String value : values)
 				emitTextElement(receiver, tag, value);
 	}
 
-	private final ArrayList<Resource> m_resources = new ArrayList<Resource>();
+	private final ArrayList<Resource> resources = new ArrayList<Resource>();
 
-	public Platform addPlatform(String file, String name, String versionId, String productVersionId)
-	{
+	public Platform addPlatform(String file, String name, String versionId, String productVersionId) {
 		Platform platform = new Platform(file, name, versionId, productVersionId);
-		m_resources.add(platform);
+		resources.add(platform);
 		return platform;
 	}
 
-	public Resource addResource(String file, String name, String versionId)
-	{
+	public Resource addResource(String file, String name, String versionId) {
 		Resource resource = new Resource(file, name, versionId);
-		m_resources.add(resource);
+		resources.add(resource);
 		return resource;
 	}
 
-	public void toSax(ContentHandler receiver) throws SAXException
-	{
+	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		startElement(receiver, "jnlp-versions"); //$NON-NLS-1$
-		for(Resource resource : m_resources)
+		for (Resource resource : resources)
 			resource.toSax(receiver, null, null, resource.getDefaultTag());
 		endElement(receiver, "jnlp-versions"); //$NON-NLS-1$
 		receiver.endDocument();

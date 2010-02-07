@@ -26,119 +26,93 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilderSupport, ChildPoppedListener
-{
+public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilderSupport, ChildPoppedListener {
 	public static final String TAG = CSpec.TAG;
 
-	private DocumentationHandler m_documentationHandler;
+	private DocumentationHandler documentationHandler;
 
-	private DependenciesHandler m_dependenciesHandler;
+	private DependenciesHandler dependenciesHandler;
 
-	private GeneratorsHandler m_generatorsHandler;
+	private GeneratorsHandler generatorsHandler;
 
-	private ArtifactsHandler m_artifactsHandler;
+	private ArtifactsHandler artifactsHandler;
 
-	private ActionsHandler m_actionsHandler;
+	private ActionsHandler actionsHandler;
 
-	private GroupsHandler m_groupsHandler;
+	private GroupsHandler groupsHandler;
 
-	private CSpecBuilder m_builder;
+	private CSpecBuilder builder;
 
-	public CSpecHandler(AbstractHandler parent)
-	{
+	public CSpecHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof DocumentationHandler)
-			m_builder.setDocumentation(((DocumentationHandler)child).createDocumentation());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child instanceof DocumentationHandler)
+			builder.setDocumentation(((DocumentationHandler) child).createDocumentation());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(DocumentationHandler.TAG.equals(localName))
-		{
-			if(m_documentationHandler == null)
-				m_documentationHandler = new DocumentationHandler(this);
-			ch = m_documentationHandler;
-		}
-		else if(DependenciesHandler.TAG.equals(localName))
-		{
-			if(m_dependenciesHandler == null)
-				m_dependenciesHandler = new DependenciesHandler(this);
-			ch = m_dependenciesHandler;
-		}
-		else if(GeneratorsHandler.TAG.equals(localName))
-		{
-			if(m_generatorsHandler == null)
-				m_generatorsHandler = new GeneratorsHandler(this);
-			ch = m_generatorsHandler;
-		}
-		else if(ArtifactsHandler.TAG.equals(localName))
-		{
-			if(m_artifactsHandler == null)
-				m_artifactsHandler = new ArtifactsHandler(this);
-			ch = m_artifactsHandler;
-		}
-		else if(ActionsHandler.TAG.equals(localName))
-		{
-			if(m_actionsHandler == null)
-				m_actionsHandler = new ActionsHandler(this);
-			ch = m_actionsHandler;
-		}
-		else if(GroupsHandler.TAG.equals(localName))
-		{
-			if(m_groupsHandler == null)
-				m_groupsHandler = new GroupsHandler(this);
-			ch = m_groupsHandler;
-		}
-		else
+		if (DocumentationHandler.TAG.equals(localName)) {
+			if (documentationHandler == null)
+				documentationHandler = new DocumentationHandler(this);
+			ch = documentationHandler;
+		} else if (DependenciesHandler.TAG.equals(localName)) {
+			if (dependenciesHandler == null)
+				dependenciesHandler = new DependenciesHandler(this);
+			ch = dependenciesHandler;
+		} else if (GeneratorsHandler.TAG.equals(localName)) {
+			if (generatorsHandler == null)
+				generatorsHandler = new GeneratorsHandler(this);
+			ch = generatorsHandler;
+		} else if (ArtifactsHandler.TAG.equals(localName)) {
+			if (artifactsHandler == null)
+				artifactsHandler = new ArtifactsHandler(this);
+			ch = artifactsHandler;
+		} else if (ActionsHandler.TAG.equals(localName)) {
+			if (actionsHandler == null)
+				actionsHandler = new ActionsHandler(this);
+			ch = actionsHandler;
+		} else if (GroupsHandler.TAG.equals(localName)) {
+			if (groupsHandler == null)
+				groupsHandler = new GroupsHandler(this);
+			ch = groupsHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public final CSpec getCSpec()
-	{
-		return m_builder.createCSpec();
+	public final CSpec getCSpec() {
+		return builder.createCSpec();
 	}
 
-	public final CSpecBuilder getCSpecBuilder()
-	{
-		return m_builder;
+	public final CSpecBuilder getCSpecBuilder() {
+		return builder;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
 
-		m_builder = new CSpecBuilder();
-		m_builder.setName(getOptionalStringValue(attrs, NamedElement.ATTR_NAME));
-		m_builder.setComponentTypeID(getComponentType(attrs));
-		m_builder.setProjectInfo(getOptionalURLValue(attrs, CSpec.ATTR_PROJECT_INFO));
-		m_builder.setShortDesc(getOptionalStringValue(attrs, CSpec.ATTR_SHORT_DESC));
+		builder = new CSpecBuilder();
+		builder.setName(getOptionalStringValue(attrs, NamedElement.ATTR_NAME));
+		builder.setComponentTypeID(getComponentType(attrs));
+		builder.setProjectInfo(getOptionalURLValue(attrs, CSpec.ATTR_PROJECT_INFO));
+		builder.setShortDesc(getOptionalStringValue(attrs, CSpec.ATTR_SHORT_DESC));
 
-		try
-		{
-			m_builder.setVersion(VersionHelper.parseVersionAttributes(attrs));
-		}
-		catch(CoreException e)
-		{
+		try {
+			builder.setVersion(VersionHelper.parseVersionAttributes(attrs));
+		} catch (CoreException e) {
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 		}
 
 		String filter = getOptionalStringValue(attrs, CSpec.ATTR_FILTER);
-		if(filter != null)
-		{
-			try
-			{
-				m_builder.setFilter(FilterFactory.newInstance(filter));
-			}
-			catch(InvalidSyntaxException e)
-			{
+		if (filter != null) {
+			try {
+				builder.setFilter(FilterFactory.newInstance(filter));
+			} catch (InvalidSyntaxException e) {
 				throw new SAXParseException(e.getMessage(), getDocumentLocator());
 			}
 		}

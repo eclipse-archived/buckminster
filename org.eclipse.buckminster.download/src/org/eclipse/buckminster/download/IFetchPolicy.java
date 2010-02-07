@@ -19,10 +19,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public interface IFetchPolicy
-{
+public interface IFetchPolicy {
 	public static final int DEFAULT_MAX_LOCAL_AGE = 30000;
 
-	boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fileInfoHandle,
-			IProgressMonitor monitor) throws CoreException, FileNotFoundException;
+	boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fileInfoHandle, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException;
 }

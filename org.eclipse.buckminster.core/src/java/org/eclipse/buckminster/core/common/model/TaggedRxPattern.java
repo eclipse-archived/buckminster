@@ -11,27 +11,23 @@ package org.eclipse.buckminster.core.common.model;
 /**
  * @author Thomas Hallgren
  */
-public class TaggedRxPattern extends RxPattern
-{
+public class TaggedRxPattern extends RxPattern {
 	public static final String TAGGED_PREFIX = "tagged."; //$NON-NLS-1$
 
-	private final String m_tag;
+	private final String tag;
 
-	public TaggedRxPattern(String tag, String name, boolean optional, String pattern, String prefix, String suffix)
-	{
+	public TaggedRxPattern(String tag, String name, boolean optional, String pattern, String prefix, String suffix) {
 		super(name, optional, pattern, prefix, suffix);
-		m_tag = tag;
+		this.tag = tag;
 	}
 
 	@Override
-	public String getDefaultTag()
-	{
-		return m_tag;
+	public String getDefaultTag() {
+		return tag;
 	}
 
 	@Override
-	public boolean isTagged()
-	{
+	public boolean isTagged() {
 		return true;
 	}
 }

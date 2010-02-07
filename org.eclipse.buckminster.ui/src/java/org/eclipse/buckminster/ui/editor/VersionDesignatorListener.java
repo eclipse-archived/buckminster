@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.eclipse.buckminster.ui.editor;
 
-public interface VersionDesignatorListener
-{
+public interface VersionDesignatorListener {
 	void modifyVersionDesignator(VersionDesignatorEvent e);
 }

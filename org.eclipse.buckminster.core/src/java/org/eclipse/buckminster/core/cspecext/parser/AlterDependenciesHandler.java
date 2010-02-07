@@ -19,36 +19,32 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class AlterDependenciesHandler extends AlterHandler
-{
+class AlterDependenciesHandler extends AlterHandler {
 	public static final String TAG = CSpecExtension.ELEM_ALTER_DEPENDENCIES;
 
-	private final AlterDependencyHandler m_alterDependencyHandler = new AlterDependencyHandler(this);
+	private final AlterDependencyHandler alterDependencyHandler = new AlterDependencyHandler(this);
 
-	private final RemoveHandler m_removeDependencyHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME); //$NON-NLS-1$
+	private final RemoveHandler removeDependencyHandler = new RemoveHandler(this, "remove", NamedElement.ATTR_NAME); //$NON-NLS-1$
 
-	AlterDependenciesHandler(AbstractHandler parent)
-	{
+	AlterDependenciesHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		AlterCSpecBuilder alterCSpec = ((AlterCSpecHandler)this.getParentHandler()).getAlterCSpecBuilder();
-		if(child == m_alterDependencyHandler)
-			alterCSpec.addAlterDependency(m_alterDependencyHandler.getBuilder());
-		else if(child == m_removeDependencyHandler)
-			alterCSpec.addRemoveDependency(m_removeDependencyHandler.getValue());
+	public void childPopped(ChildHandler child) throws SAXException {
+		AlterCSpecBuilder alterCSpec = ((AlterCSpecHandler) this.getParentHandler()).getAlterCSpecBuilder();
+		if (child == alterDependencyHandler)
+			alterCSpec.addAlterDependency(alterDependencyHandler.getBuilder());
+		else if (child == removeDependencyHandler)
+			alterCSpec.addRemoveDependency(removeDependencyHandler.getValue());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(ComponentRequestHandler.TAG.equals(localName))
-			ch = m_alterDependencyHandler;
-		else if(m_removeDependencyHandler.getTAG().equals(localName))
-			ch = m_removeDependencyHandler;
+		if (ComponentRequestHandler.TAG.equals(localName))
+			ch = alterDependencyHandler;
+		else if (removeDependencyHandler.getTAG().equals(localName))
+			ch = removeDependencyHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;

@@ -12,8 +12,7 @@ package org.eclipse.buckminster.junit.internal;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.junit.internal.messages"; //$NON-NLS-1$
 
 	public static String JUnitCommand_Cannot_open_launch_config;
@@ -44,13 +43,11 @@ public class Messages extends NLS
 
 	public static String TestListener_Expected;
 
-	static
-	{
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
-	{
+	private Messages() {
 	}
 }

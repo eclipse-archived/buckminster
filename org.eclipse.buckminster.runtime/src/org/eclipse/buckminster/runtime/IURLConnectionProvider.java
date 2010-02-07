@@ -17,8 +17,7 @@ import java.net.URLConnection;
  * @author kolwing
  * 
  */
-public interface IURLConnectionProvider
-{
+public interface IURLConnectionProvider {
 
 	public static final int MAX_CONNECTION_ATTEMPTS = 3;
 

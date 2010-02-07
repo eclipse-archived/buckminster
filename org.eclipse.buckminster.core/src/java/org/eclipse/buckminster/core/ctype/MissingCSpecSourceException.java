@@ -16,21 +16,16 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingCSpecSourceException extends LocalizedException
-{
+public class MissingCSpecSourceException extends LocalizedException {
 	private static final long serialVersionUID = 1626761403125431482L;
 
-	public MissingCSpecSourceException(ProviderMatch providerMatch)
-	{
+	public MissingCSpecSourceException(ProviderMatch providerMatch) {
 		super(NLS.bind(Messages.Provider_0_1_Missing_CSpec_source_required_by_component_type_2, new Object[] {
-				providerMatch.getProvider().getReaderTypeId(),
-				providerMatch.getProvider().getURI(providerMatch.getNodeQuery().getProperties()),
+				providerMatch.getProvider().getReaderTypeId(), providerMatch.getProvider().getURI(providerMatch.getNodeQuery().getProperties()),
 				providerMatch.getComponentType().getId() }));
 	}
 
-	public MissingCSpecSourceException(String readerType, String uri, String ctypeId)
-	{
-		super(NLS.bind(Messages.Provider_0_1_Missing_CSpec_source_required_by_component_type_2, new Object[] {
-				readerType, uri, ctypeId }));
+	public MissingCSpecSourceException(String readerType, String uri, String ctypeId) {
+		super(NLS.bind(Messages.Provider_0_1_Missing_CSpec_source_required_by_component_type_2, new Object[] { readerType, uri, ctypeId }));
 	}
 }

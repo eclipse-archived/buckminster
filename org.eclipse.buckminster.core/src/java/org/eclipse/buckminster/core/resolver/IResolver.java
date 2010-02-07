@@ -15,15 +15,15 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public interface IResolver extends IResolverBackchannel
-{
+public interface IResolver extends IResolverBackchannel {
 	/**
 	 * Returns the context associated with this resolver
 	 */
 	ResolutionContext getContext();
 
 	/**
-	 * Returns <code>true</code> if this resolver will perform a recursive resolve.
+	 * Returns <code>true</code> if this resolver will perform a recursive
+	 * resolve.
 	 */
 	boolean isRecursiveResolve();
 
@@ -31,7 +31,8 @@ public interface IResolver extends IResolverBackchannel
 	 * Resolve the component denoted by <code>request</code>.
 	 * 
 	 * @param request
-	 *            The request that denotes the desired top component of the resulting <code>BillOfMaterials</code>.
+	 *            The request that denotes the desired top component of the
+	 *            resulting <code>BillOfMaterials</code>.
 	 * @param monitor
 	 *            The monitor used for progress reporting
 	 * @return The resulting bill of materials. Might be partly resolved.
@@ -54,9 +55,11 @@ public interface IResolver extends IResolverBackchannel
 	BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Attemt to resolve unresolved nodes of the <code>bom</code>. The resolution process will use the
-	 * {@link org.eclipse.buckminster.core.query.model.ComponentQuery ComponentQuery} passed in the <code>context</code>
-	 * , not the one stored in the <code>bom</code>.
+	 * Attemt to resolve unresolved nodes of the <code>bom</code>. The
+	 * resolution process will use the
+	 * {@link org.eclipse.buckminster.core.query.model.ComponentQuery
+	 * ComponentQuery} passed in the <code>context</code> , not the one stored
+	 * in the <code>bom</code>.
 	 * 
 	 * @param monitor
 	 *            The monitor used for progress reporting
@@ -66,8 +69,8 @@ public interface IResolver extends IResolverBackchannel
 	BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Tell the resolver to perform a one step resolve only or to traverse and attempt to resolve each dependency until
-	 * the complete graph is resolved.
+	 * Tell the resolver to perform a one step resolve only or to traverse and
+	 * attempt to resolve each dependency until the complete graph is resolved.
 	 * 
 	 * @param flag
 	 *            <code>true</code> if a full resolve is desired

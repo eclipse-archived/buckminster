@@ -17,12 +17,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * Interface used by the {@link IComponentReader} to pass an opened stream to some intended consumer.
+ * Interface used by the {@link IComponentReader} to pass an opened stream to
+ * some intended consumer.
  * 
  * @author thhal
  */
-public interface IStreamConsumer<T>
-{
-	T consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
-			throws CoreException, IOException;
+public interface IStreamConsumer<T> {
+	T consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor) throws CoreException, IOException;
 }

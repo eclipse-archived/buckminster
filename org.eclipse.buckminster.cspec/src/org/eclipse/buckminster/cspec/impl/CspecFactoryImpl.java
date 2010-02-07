@@ -19,12 +19,12 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
-{
+public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -32,40 +32,35 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * @generated
 	 */
 	@Deprecated
-	public static CspecPackage getPackage()
-	{
+	public static CspecPackage getPackage() {
 		return CspecPackage.eINSTANCE;
 	}
 
 	/**
-	 * Creates the default factory implementation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates the default factory implementation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static CspecFactory init()
-	{
-		try
-		{
-			CspecFactory theCspecFactory = (CspecFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/CSpec-2.0");
-			if(theCspecFactory != null)
-			{
+	public static CspecFactory init() {
+		try {
+			CspecFactory theCspecFactory = (CspecFactory) EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/CSpec-2.0");
+			if (theCspecFactory != null) {
 				return theCspecFactory;
 			}
-		}
-		catch(Exception exception)
-		{
+		} catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new CspecFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public CspecFactoryImpl()
-	{
+	public CspecFactoryImpl() {
 		super();
 	}
 
@@ -74,8 +69,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public String convertIPathToString(EDataType eDataType, Object instanceValue)
-	{
+	public String convertIPathToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 
@@ -85,16 +79,14 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * @generated
 	 */
 	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue)
-	{
-		switch(eDataType.getClassifierID())
-		{
-		case CspecPackage.UP_TO_DATE_POLICY:
-			return convertUpToDatePolicyToString(eDataType, instanceValue);
-		case CspecPackage.IPATH:
-			return convertIPathToString(eDataType, instanceValue);
-		default:
-			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+	public String convertToString(EDataType eDataType, Object instanceValue) {
+		switch (eDataType.getClassifierID()) {
+			case CspecPackage.UP_TO_DATE_POLICY:
+				return convertUpToDatePolicyToString(eDataType, instanceValue);
+			case CspecPackage.IPATH:
+				return convertIPathToString(eDataType, instanceValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -103,11 +95,8 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public String convertUpToDatePolicyToString(EDataType eDataType, Object instanceValue)
-	{
-		return instanceValue == null
-				? null
-				: instanceValue.toString();
+	public String convertUpToDatePolicyToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
 	}
 
 	/**
@@ -116,42 +105,40 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * @generated
 	 */
 	@Override
-	public EObject create(EClass eClass)
-	{
-		switch(eClass.getClassifierID())
-		{
-		case CspecPackage.CSPEC:
-			return createCSpec();
-		case CspecPackage.GROUP:
-			return createGroup();
-		case CspecPackage.PREREQUISITE:
-			return createPrerequisite();
-		case CspecPackage.ACTION:
-			return createAction();
-		case CspecPackage.ARTIFACT:
-			return createArtifact();
-		case CspecPackage.ACTION_ATTRIBUTE:
-			return createActionAttribute();
-		case CspecPackage.PATH_GROUP:
-			return createPathGroup();
-		case CspecPackage.GENERATOR:
-			return createGenerator();
-		case CspecPackage.ALTER_ARTIFACT:
-			return createAlterArtifact();
-		case CspecPackage.ALTER_GROUP:
-			return createAlterGroup();
-		case CspecPackage.ALTER_ACTION:
-			return createAlterAction();
-		case CspecPackage.RENAME:
-			return createRename();
-		case CspecPackage.REMOVE:
-			return createRemove();
-		case CspecPackage.CSPEC_EXTENSION:
-			return createCSpecExtension();
-		case CspecPackage.SELF_ARTIFACT:
-			return createSelfArtifact();
-		default:
-			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+	public EObject create(EClass eClass) {
+		switch (eClass.getClassifierID()) {
+			case CspecPackage.CSPEC:
+				return createCSpec();
+			case CspecPackage.GROUP:
+				return createGroup();
+			case CspecPackage.PREREQUISITE:
+				return createPrerequisite();
+			case CspecPackage.ACTION:
+				return createAction();
+			case CspecPackage.ARTIFACT:
+				return createArtifact();
+			case CspecPackage.ACTION_ATTRIBUTE:
+				return createActionAttribute();
+			case CspecPackage.PATH_GROUP:
+				return createPathGroup();
+			case CspecPackage.GENERATOR:
+				return createGenerator();
+			case CspecPackage.ALTER_ARTIFACT:
+				return createAlterArtifact();
+			case CspecPackage.ALTER_GROUP:
+				return createAlterGroup();
+			case CspecPackage.ALTER_ACTION:
+				return createAlterAction();
+			case CspecPackage.RENAME:
+				return createRename();
+			case CspecPackage.REMOVE:
+				return createRemove();
+			case CspecPackage.CSPEC_EXTENSION:
+				return createCSpecExtension();
+			case CspecPackage.SELF_ARTIFACT:
+				return createSelfArtifact();
+			default:
+				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -160,8 +147,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public Action createAction()
-	{
+	public Action createAction() {
 		ActionImpl action = new ActionImpl();
 		return action;
 	}
@@ -171,8 +157,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public ActionAttribute createActionAttribute()
-	{
+	public ActionAttribute createActionAttribute() {
 		ActionAttributeImpl actionAttribute = new ActionAttributeImpl();
 		return actionAttribute;
 	}
@@ -182,8 +167,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public AlterAction createAlterAction()
-	{
+	public AlterAction createAlterAction() {
 		AlterActionImpl alterAction = new AlterActionImpl();
 		return alterAction;
 	}
@@ -193,8 +177,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public AlterArtifact createAlterArtifact()
-	{
+	public AlterArtifact createAlterArtifact() {
 		AlterArtifactImpl alterArtifact = new AlterArtifactImpl();
 		return alterArtifact;
 	}
@@ -204,8 +187,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public AlterGroup createAlterGroup()
-	{
+	public AlterGroup createAlterGroup() {
 		AlterGroupImpl alterGroup = new AlterGroupImpl();
 		return alterGroup;
 	}
@@ -215,8 +197,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public Artifact createArtifact()
-	{
+	public Artifact createArtifact() {
 		ArtifactImpl artifact = new ArtifactImpl();
 		return artifact;
 	}
@@ -226,8 +207,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public CSpec createCSpec()
-	{
+	public CSpec createCSpec() {
 		CSpecImpl cSpec = new CSpecImpl();
 		return cSpec;
 	}
@@ -237,8 +217,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public CSpecExtension createCSpecExtension()
-	{
+	public CSpecExtension createCSpecExtension() {
 		CSpecExtensionImpl cSpecExtension = new CSpecExtensionImpl();
 		return cSpecExtension;
 	}
@@ -249,16 +228,14 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * @generated
 	 */
 	@Override
-	public Object createFromString(EDataType eDataType, String initialValue)
-	{
-		switch(eDataType.getClassifierID())
-		{
-		case CspecPackage.UP_TO_DATE_POLICY:
-			return createUpToDatePolicyFromString(eDataType, initialValue);
-		case CspecPackage.IPATH:
-			return createIPathFromString(eDataType, initialValue);
-		default:
-			throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
+	public Object createFromString(EDataType eDataType, String initialValue) {
+		switch (eDataType.getClassifierID()) {
+			case CspecPackage.UP_TO_DATE_POLICY:
+				return createUpToDatePolicyFromString(eDataType, initialValue);
+			case CspecPackage.IPATH:
+				return createIPathFromString(eDataType, initialValue);
+			default:
+				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -267,8 +244,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public Generator createGenerator()
-	{
+	public Generator createGenerator() {
 		GeneratorImpl generator = new GeneratorImpl();
 		return generator;
 	}
@@ -278,8 +254,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public Group createGroup()
-	{
+	public Group createGroup() {
 		GroupImpl group = new GroupImpl();
 		return group;
 	}
@@ -289,9 +264,8 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public IPath createIPathFromString(EDataType eDataType, String initialValue)
-	{
-		return (IPath)super.createFromString(eDataType, initialValue);
+	public IPath createIPathFromString(EDataType eDataType, String initialValue) {
+		return (IPath) super.createFromString(eDataType, initialValue);
 	}
 
 	/**
@@ -299,8 +273,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public PathGroup createPathGroup()
-	{
+	public PathGroup createPathGroup() {
 		PathGroupImpl pathGroup = new PathGroupImpl();
 		return pathGroup;
 	}
@@ -310,8 +283,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public Prerequisite createPrerequisite()
-	{
+	public Prerequisite createPrerequisite() {
 		PrerequisiteImpl prerequisite = new PrerequisiteImpl();
 		return prerequisite;
 	}
@@ -321,8 +293,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public Remove createRemove()
-	{
+	public Remove createRemove() {
 		RemoveImpl remove = new RemoveImpl();
 		return remove;
 	}
@@ -332,8 +303,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public Rename createRename()
-	{
+	public Rename createRename() {
 		RenameImpl rename = new RenameImpl();
 		return rename;
 	}
@@ -343,8 +313,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public SelfArtifact createSelfArtifact()
-	{
+	public SelfArtifact createSelfArtifact() {
 		SelfArtifactImpl selfArtifact = new SelfArtifactImpl();
 		return selfArtifact;
 	}
@@ -354,12 +323,10 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public UpToDatePolicy createUpToDatePolicyFromString(EDataType eDataType, String initialValue)
-	{
+	public UpToDatePolicy createUpToDatePolicyFromString(EDataType eDataType, String initialValue) {
 		UpToDatePolicy result = UpToDatePolicy.get(initialValue);
-		if(result == null)
-			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '"
-					+ eDataType.getName() + "'");
+		if (result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
 
@@ -368,9 +335,8 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory
 	 * 
 	 * @generated
 	 */
-	public CspecPackage getCspecPackage()
-	{
-		return (CspecPackage)getEPackage();
+	public CspecPackage getCspecPackage() {
+		return (CspecPackage) getEPackage();
 	}
 
 } // CspecFactoryImpl

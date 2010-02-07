@@ -19,11 +19,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class EclipseFeatureType extends AbstractComponentType
-{
-	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor)
-			throws CoreException
-	{
+public class EclipseFeatureType extends AbstractComponentType {
+	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return CorePlugin.getDefault().getResolutionBuilder(IResolutionBuilder.FEATURE2CSPEC);
 	}

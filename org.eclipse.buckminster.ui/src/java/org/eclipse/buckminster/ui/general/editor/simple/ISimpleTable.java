@@ -14,13 +14,13 @@ import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * Data wrapped for simple general table editor. If you need a table editor wrap your data into this instance
- * (preferably use intance of SimpleTable instead ISimpleTable) and start using SimpleTableEditor
+ * Data wrapped for simple general table editor. If you need a table editor wrap
+ * your data into this instance (preferably use intance of SimpleTable instead
+ * ISimpleTable) and start using SimpleTableEditor
  * 
  * @author Karel Brezina
  */
-public interface ISimpleTable<T> extends ITable<T>
-{
+public interface ISimpleTable<T> extends ITable<T> {
 	final int ERROR_MESSAGE_EVENT_TYPE = 954814;
 
 	/**
@@ -39,8 +39,9 @@ public interface ISimpleTable<T> extends ITable<T>
 	public T createRowClass();
 
 	/**
-	 * Fills a grid composite with widgeds and returns those widgets. For each column there must be just one widget.
-	 * It's used in TableRowDialog for creating a row editing dialog area
+	 * Fills a grid composite with widgeds and returns those widgets. For each
+	 * column there must be just one widget. It's used in TableRowDialog for
+	 * creating a row editing dialog area
 	 * 
 	 * @param parent
 	 *            parent grid composite
@@ -65,8 +66,9 @@ public interface ISimpleTable<T> extends ITable<T>
 	public int getColumns();
 
 	/**
-	 * Gets column weights of columns in TableEditor. Higher weight means larger space in table editor. Weight 0 means
-	 * that column will not be displayed in table editor (this value is accessible only thru row editing)
+	 * Gets column weights of columns in TableEditor. Higher weight means larger
+	 * space in table editor. Weight 0 means that column will not be displayed
+	 * in table editor (this value is accessible only thru row editing)
 	 * 
 	 * @return column weights
 	 */

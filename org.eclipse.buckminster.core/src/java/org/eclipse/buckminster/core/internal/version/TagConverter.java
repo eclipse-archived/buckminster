@@ -19,34 +19,25 @@ import org.eclipse.equinox.p2.metadata.Version;
 /**
  * @author Thomas Hallgren
  */
-public class TagConverter extends AbstractConverter
-{
-	public VersionSelector createSelector(Version version) throws CoreException
-	{
-		if(version == null)
+public class TagConverter extends AbstractConverter {
+	public VersionSelector createSelector(Version version) throws CoreException {
+		if (version == null)
 			return null;
 
 		String selectorComponent = createSelectorComponent(version);
-		return selectorComponent == null
-				? null
-				: VersionSelector.tag(selectorComponent);
+		return selectorComponent == null ? null : VersionSelector.tag(selectorComponent);
 	}
 
-	public Version createVersion(VersionSelector versionSelector) throws CoreException
-	{
-		return versionSelector == null
-				? null
-				: createVersionFromSelectorComponent(versionSelector.getName());
+	public Version createVersion(VersionSelector versionSelector) throws CoreException {
+		return versionSelector == null ? null : createVersionFromSelectorComponent(versionSelector.getName());
 	}
 
-	public int getSelectorType()
-	{
+	public int getSelectorType() {
 		return VersionSelector.TAG;
 	}
 
 	@Override
-	protected IVersionFormat getDefaultVersionFormat()
-	{
+	protected IVersionFormat getDefaultVersionFormat() {
 		return VersionHelper.getOSGiFormat();
 	}
 }

@@ -20,54 +20,46 @@ import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class MavenProviderHandler extends ProviderHandler
-{
-	private final MappingsHandler m_mappingsHandler = new MappingsHandler(this);
+public class MavenProviderHandler extends ProviderHandler {
+	private final MappingsHandler mappingsHandler = new MappingsHandler(this);
 
-	private Map<String, MapEntry> m_mappings;
+	private Map<String, MapEntry> mappings;
 
-	private List<BidirectionalTransformer> m_rules;
+	private List<BidirectionalTransformer> rules;
 
-	public MavenProviderHandler(AbstractHandler parent)
-	{
+	public MavenProviderHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child instanceof MappingsHandler)
-		{
-			m_mappings = ((MappingsHandler)child).getEntriesAndClear();
-			m_rules = ((MappingsHandler)child).getRuleAndClear();
-		}
-		else
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child instanceof MappingsHandler) {
+			mappings = ((MappingsHandler) child).getEntriesAndClear();
+			rules = ((MappingsHandler) child).getRuleAndClear();
+		} else
 			super.childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(MavenProvider.ELEM_MAPPINGS.equals(localName))
-			ch = m_mappingsHandler;
+		if (MavenProvider.ELEM_MAPPINGS.equals(localName))
+			ch = mappingsHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	public Provider getProvider()
-	{
-		return new MavenProvider(getSearchPath(), getReaderType(), getComponentTypes(), getVersionConverter(),
-				getUriFormat(), getResolutionFilter(), getProperties(), getDocumentation(), m_mappings, m_rules);
+	public Provider getProvider() {
+		return new MavenProvider(getSearchPath(), getReaderType(), getComponentTypes(), getVersionConverter(), getUriFormat(), getResolutionFilter(),
+				getProperties(), getDocumentation(), mappings, rules);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		m_mappings = null;
-		m_rules = null;
+		mappings = null;
+		rules = null;
 	}
 }

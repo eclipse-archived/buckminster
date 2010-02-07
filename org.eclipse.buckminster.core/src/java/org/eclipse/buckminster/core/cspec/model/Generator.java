@@ -40,8 +40,7 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class Generator extends NamedElement implements IGenerator
-{
+public class Generator extends NamedElement implements IGenerator {
 	public static final String ATTR_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 
 	public static final String ATTR_COMPONENT = "component"; //$NON-NLS-1$
@@ -54,73 +53,63 @@ public class Generator extends NamedElement implements IGenerator
 
 	public static final String TAG = "generator"; //$NON-NLS-1$
 
-	private final CSpec m_cspec;
+	private final CSpec cspec;
 
-	private final String m_attribute;
+	private final String attribute;
 
-	private final String m_component;
+	private final String component;
 
-	private final String m_generatesType;
+	private final String generatesType;
 
-	private final Version m_generatesVersion;
+	private final Version generatesVersion;
 
-	public Generator(CSpec cspec, String component, String attribute, ComponentIdentifier generates)
-	{
+	public Generator(CSpec cspec, String component, String attribute, ComponentIdentifier generates) {
 		super(generates);
-		m_cspec = cspec;
-		m_component = component;
-		m_attribute = attribute;
-		m_generatesType = generates.getComponentTypeID();
-		m_generatesVersion = generates.getVersion();
+		this.cspec = cspec;
+		this.component = component;
+		this.attribute = attribute;
+		this.generatesType = generates.getComponentTypeID();
+		this.generatesVersion = generates.getVersion();
 	}
 
-	public String getAttribute()
-	{
-		return m_attribute;
+	public String getAttribute() {
+		return attribute;
 	}
 
-	public String getComponent()
-	{
-		return m_component;
+	public String getComponent() {
+		return component;
 	}
 
-	public CSpec getCSpec()
-	{
-		return m_cspec;
+	public CSpec getCSpec() {
+		return cspec;
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
-	public IComponentIdentifier getGeneratedIdentifier()
-	{
-		return new ComponentIdentifier(getName(), m_generatesType, m_generatesVersion);
+	public IComponentIdentifier getGeneratedIdentifier() {
+		return new ComponentIdentifier(getName(), generatesType, generatesVersion);
 	}
 
-	public String getGenerates()
-	{
+	public String getGenerates() {
 		return getName();
 	}
 
 	@Override
-	public String getNameAttributeName()
-	{
+	public String getNameAttributeName() {
 		return ATTR_GENERATES;
 	}
 
-	public void registerGeneratedResolution(PathGroup[] result, IGlobalContext ctx, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public void registerGeneratedResolution(PathGroup[] result, IGlobalContext ctx, IProgressMonitor monitor) throws CoreException {
 		// Register the resolution from this generator
-		if(result.length != 1)
+		if (result.length != 1)
 			return;
 
 		PathGroup pg = result[0];
 		HashMap<String, Long> fileNames = new HashMap<String, Long>();
 		pg.appendRelativeFiles(fileNames);
-		if(fileNames.isEmpty())
+		if (fileNames.isEmpty())
 			return;
 
 		Set<String> paths = fileNames.keySet();
@@ -128,25 +117,20 @@ public class Generator extends NamedElement implements IGenerator
 		Format uri;
 		boolean isFile = false;
 		IPath componentLocation;
-		if(paths.size() == 1)
-		{
+		if (paths.size() == 1) {
 			IPath path = Path.fromOSString(paths.iterator().next());
 			String suffix = path.getFileExtension();
-			if("zip".equals(suffix) || "jar".equals(suffix)) //$NON-NLS-1$ //$NON-NLS-2$
+			if ("zip".equals(suffix) || "jar".equals(suffix)) //$NON-NLS-1$ //$NON-NLS-2$
 			{
 				readerType = IReaderType.URL_ZIPPED;
 				isFile = true;
 			}
 			componentLocation = pg.getBase().append(path);
-		}
-		else
+		} else
 			componentLocation = pg.getBase();
-		try
-		{
+		try {
 			uri = new Format(URLUtils.normalizeToURL(componentLocation.toOSString()).toString());
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 
@@ -157,8 +141,7 @@ public class Generator extends NamedElement implements IGenerator
 		Map<String, String> props = new HashMap<String, String>(2);
 		props.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
 		props.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
-		Provider provider = new Provider(searchPath, readerType, new String[] { cType }, null, uri, null, null, null,
-				props, null, null);
+		Provider provider = new Provider(searchPath, readerType, new String[] { cType }, null, uri, null, null, null, props, null, null);
 		searchPath.addProvider(provider);
 		rmap.addSearchPath(searchPath);
 		rmap.addMatcher(new Locator(rmap, null, "default")); //$NON-NLS-1$
@@ -167,26 +150,24 @@ public class Generator extends NamedElement implements IGenerator
 		ResolutionContext rctx = new ResolutionContext(query.createComponentQuery());
 		BOMNode node = rmap.resolve(rctx.getRootNodeQuery(), monitor);
 		Resolution res = node.getResolution();
-		if(res != null)
-		{
-			if(isFile)
+		if (res != null) {
+			if (isFile)
 				componentLocation = componentLocation.removeLastSegments(1);
 			ctx.addGeneratedResolution(res, componentLocation);
 		}
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
+	protected void addAttributes(AttributesImpl attrs) {
 		super.addAttributes(attrs);
-		Utils.addAttribute(attrs, ATTR_ATTRIBUTE, m_attribute);
-		if(m_component != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT, m_component);
+		Utils.addAttribute(attrs, ATTR_ATTRIBUTE, attribute);
+		if (component != null)
+			Utils.addAttribute(attrs, ATTR_COMPONENT, component);
 		Utils.addAttribute(attrs, ATTR_GENERATES, getName());
 
-		if(m_generatesType != null)
-			Utils.addAttribute(attrs, ATTR_GENERATES_TYPE, m_generatesType);
-		if(m_generatesVersion != null)
-			Utils.addAttribute(attrs, ATTR_GENERATES_VERSION, m_generatesVersion.toString());
+		if (generatesType != null)
+			Utils.addAttribute(attrs, ATTR_GENERATES_TYPE, generatesType);
+		if (generatesVersion != null)
+			Utils.addAttribute(attrs, ATTR_GENERATES_VERSION, generatesVersion.toString());
 	}
 }

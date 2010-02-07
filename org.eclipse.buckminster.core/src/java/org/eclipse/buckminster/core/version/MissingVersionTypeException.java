@@ -14,12 +14,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingVersionTypeException extends LocalizedException
-{
+public class MissingVersionTypeException extends LocalizedException {
 	private static final long serialVersionUID = -318573955585348638L;
 
-	public MissingVersionTypeException(String versionTypeId)
-	{
+	public MissingVersionTypeException(String versionTypeId) {
 		super(NLS.bind(Messages.No_version_type_with_id_0_has_been_registered_with_extension_point_1, versionTypeId,
 				VersionHelper.VERSION_TYPES_POINT));
 	}

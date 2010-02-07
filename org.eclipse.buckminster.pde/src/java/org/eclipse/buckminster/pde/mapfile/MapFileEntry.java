@@ -16,46 +16,39 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 /**
  * @author Thomas Hallgren
  */
-public class MapFileEntry
-{
-	private final ComponentIdentifier m_componentIdentifier;
+public class MapFileEntry {
+	private final ComponentIdentifier componentIdentifier;
 
-	private final IReaderType m_readerType;
+	private final IReaderType readerType;
 
-	private final Map<String, String> m_properties;
+	private final Map<String, String> properties;
 
-	protected MapFileEntry(ComponentIdentifier componentIdentifier, IReaderType readerType,
-			Map<String, String> properties)
-	{
-		m_componentIdentifier = componentIdentifier;
-		m_readerType = readerType;
-		m_properties = properties;
+	protected MapFileEntry(ComponentIdentifier componentIdentifier, IReaderType readerType, Map<String, String> properties) {
+		this.componentIdentifier = componentIdentifier;
+		this.readerType = readerType;
+		this.properties = properties;
 	}
 
-	public ComponentIdentifier getComponentIdentifier()
-	{
-		return m_componentIdentifier;
+	public ComponentIdentifier getComponentIdentifier() {
+		return componentIdentifier;
 	}
 
-	public Map<String, String> getProperties()
-	{
-		return m_properties;
+	public Map<String, String> getProperties() {
+		return properties;
 	}
 
-	public IReaderType getReaderType()
-	{
-		return m_readerType;
+	public IReaderType getReaderType() {
+		return readerType;
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuilder bld = new StringBuilder();
-		m_componentIdentifier.toString(bld);
+		componentIdentifier.toString(bld);
 		bld.append(", "); //$NON-NLS-1$
-		bld.append(m_readerType.getId());
+		bld.append(readerType.getId());
 		bld.append(", "); //$NON-NLS-1$
-		bld.append(m_properties);
+		bld.append(properties);
 		return bld.toString();
 	}
 }

@@ -23,20 +23,19 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * common base class for the sections of the 'settings' section in the {@link DependencyVisualizer} editor
+ * common base class for the sections of the 'settings' section in the
+ * {@link DependencyVisualizer} editor
  * 
  * @author Johannes Utzig
  * 
  */
-public abstract class AbstractViewerSettingControl
-{
+public abstract class AbstractViewerSettingControl {
 
 	private FormToolkit toolkit;
 
 	private Set<IViewerSettingChangeListener> listeners = new HashSet<IViewerSettingChangeListener>();
 
-	public AbstractViewerSettingControl(FormToolkit toolkit)
-	{
+	public AbstractViewerSettingControl(FormToolkit toolkit) {
 		super();
 		this.toolkit = toolkit;
 	}
@@ -48,15 +47,15 @@ public abstract class AbstractViewerSettingControl
 	 * 
 	 * @param listener
 	 */
-	public void addViewerSettingChangeListener(IViewerSettingChangeListener listener)
-	{
+	public void addViewerSettingChangeListener(IViewerSettingChangeListener listener) {
 		listeners.add(listener);
 	}
 
 	/**
 	 * Clients should override this method to have their controls created.
 	 * <p>
-	 * The given composite will usually be a {@link Section} with {@link FillLayout} applied.
+	 * The given composite will usually be a {@link Section} with
+	 * {@link FillLayout} applied.
 	 * 
 	 * @param parent
 	 * @return the only children of the parent
@@ -65,10 +64,10 @@ public abstract class AbstractViewerSettingControl
 
 	/**
 	 * 
-	 * @return the toolkit that should be used to create the widgets within this control
+	 * @return the toolkit that should be used to create the widgets within this
+	 *         control
 	 */
-	public FormToolkit getWidgetToolkit()
-	{
+	public FormToolkit getWidgetToolkit() {
 		return toolkit;
 	}
 
@@ -79,20 +78,18 @@ public abstract class AbstractViewerSettingControl
 	 * 
 	 * @param listener
 	 */
-	public void removeViewerSettingChangeListener(IViewerSettingChangeListener listener)
-	{
+	public void removeViewerSettingChangeListener(IViewerSettingChangeListener listener) {
 		listeners.remove(listener);
 	}
 
 	/**
-	 * informs the registered {@link IViewerSettingChangeListener} about setting changes
+	 * informs the registered {@link IViewerSettingChangeListener} about setting
+	 * changes
 	 * 
 	 * @param event
 	 */
-	protected void fireViewerSettingsChangedEvent(ViewerSettingChangeEvent event)
-	{
-		for(IViewerSettingChangeListener listener : listeners)
-		{
+	protected void fireViewerSettingsChangedEvent(ViewerSettingChangeEvent event) {
+		for (IViewerSettingChangeListener listener : listeners) {
 			listener.viewerSettingChanged(event);
 
 		}

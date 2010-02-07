@@ -24,45 +24,36 @@ import org.eclipse.jface.viewers.ViewerFilter;
  * @author Johannes Utzig
  * 
  */
-public class DependencyTreeContentProvider implements ITreeContentProvider
-{
+public class DependencyTreeContentProvider implements ITreeContentProvider {
 	private TreeViewer treeViewer;
 
-	public DependencyTreeContentProvider(TreeViewer treeViewer)
-	{
+	public DependencyTreeContentProvider(TreeViewer treeViewer) {
 		this.treeViewer = treeViewer;
 	}
 
-	public void dispose()
-	{
+	public void dispose() {
 		// nothing to dispose
 
 	}
 
-	public Object[] getChildren(Object parentElement)
-	{
+	public Object[] getChildren(Object parentElement) {
 
-		if(parentElement instanceof BillOfMaterials)
-		{
-			BillOfMaterials bom = (BillOfMaterials)parentElement;
+		if (parentElement instanceof BillOfMaterials) {
+			BillOfMaterials bom = (BillOfMaterials) parentElement;
 			return bom.getChildren().toArray();
 
-		}
-		else if(parentElement instanceof BOMNode)
-		{
-			BOMNode node = (BOMNode)parentElement;
+		} else if (parentElement instanceof BOMNode) {
+			BOMNode node = (BOMNode) parentElement;
 			return node.getChildren().toArray();
 
 		}
 		return null;
 	}
 
-	public Object[] getElements(Object inputElement)
-	{
+	public Object[] getElements(Object inputElement) {
 
-		if(inputElement instanceof Collection<?>)
-		{
-			Collection<?> collection = (Collection<?>)inputElement;
+		if (inputElement instanceof Collection<?>) {
+			Collection<?> collection = (Collection<?>) inputElement;
 			return collection.toArray();
 
 		}
@@ -71,27 +62,23 @@ public class DependencyTreeContentProvider implements ITreeContentProvider
 
 	}
 
-	public Object getParent(Object element)
-	{
+	public Object getParent(Object element) {
 		// TODO not implemented yet
 		return null;
 	}
 
-	public boolean hasChildren(Object element)
-	{
+	public boolean hasChildren(Object element) {
 		Object[] children = getChildren(element);
-		if(children == null || children.length == 0)
+		if (children == null || children.length == 0)
 			return false;
 		ViewerFilter[] filters = treeViewer.getFilters();
-		for(int i = 0; i < filters.length; i++)
-		{
+		for (int i = 0; i < filters.length; i++) {
 			children = filters[i].filter(treeViewer, element, children);
 		}
 		return children.length > 0;
 	}
 
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-	{
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		// nothing to do
 
 	}

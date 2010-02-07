@@ -35,12 +35,12 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Serializes a given {@link ITestRunSession} into an ant-junit-like XML file. Most of the code is copied from JDT
- * JUnit's TestRunSessionSerializer class, but it only uses public API and tries to conform to the (unspecified)
+ * Serializes a given {@link ITestRunSession} into an ant-junit-like XML file.
+ * Most of the code is copied from JDT JUnit's TestRunSessionSerializer class,
+ * but it only uses public API and tries to conform to the (unspecified)
  * ant-junit format.
  */
-public class ResultSerializer implements XMLReader
-{
+public class ResultSerializer implements XMLReader {
 	private static final String EMPTY = ""; //$NON-NLS-1$
 
 	private static final String CDATA = "CDATA"; //$NON-NLS-1$
@@ -49,198 +49,167 @@ public class ResultSerializer implements XMLReader
 
 	private static final Attributes NO_ATTS = new AttributesImpl();
 
-	private ITestRunSession m_testRunSession;
+	private ITestRunSession testRunSession;
 
-	private ContentHandler m_contentHandler;
+	private ContentHandler contentHandler;
 
-	private ErrorHandler m_errorHandler;
+	private ErrorHandler errorHandler;
 
-	private TestListener m_testListener;
+	private TestListener testListener;
 
-	private String m_stdOut;
+	private String stdOut;
 
-	private String m_stdErr;
+	private String stdErr;
 
-	public ResultSerializer(TestListener listener, String stdout, String stderr)
-	{
-		this.m_testListener = listener;
-		this.m_testRunSession = listener.getTestRunSession();
-		this.m_stdOut = stdout;
-		this.m_stdErr = stderr;
+	public ResultSerializer(TestListener listener, String stdout, String stderr) {
+		this.testListener = listener;
+		this.testRunSession = listener.getTestRunSession();
+		this.stdOut = stdout;
+		this.stdErr = stderr;
 	}
 
-	public ContentHandler getContentHandler()
-	{
-		return m_contentHandler;
+	public ContentHandler getContentHandler() {
+		return contentHandler;
 	}
 
-	public DTDHandler getDTDHandler()
-	{
+	public DTDHandler getDTDHandler() {
 		return null;
 	}
 
-	public EntityResolver getEntityResolver()
-	{
+	public EntityResolver getEntityResolver() {
 		return null;
 	}
 
-	public ErrorHandler getErrorHandler()
-	{
-		return m_errorHandler;
+	public ErrorHandler getErrorHandler() {
+		return errorHandler;
 	}
 
-	public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException
-	{
+	public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
 		return false;
 	}
 
-	public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException
-	{
+	public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
 		return null;
 	}
 
-	public void parse(InputSource input) throws IOException, SAXException
-	{
-		if(m_contentHandler == null)
+	public void parse(InputSource input) throws IOException, SAXException {
+		if (contentHandler == null)
 			throw new SAXException("ContentHandler missing"); //$NON-NLS-1$
 
-		m_contentHandler.startDocument();
+		contentHandler.startDocument();
 		handleTestRun();
-		m_contentHandler.endDocument();
+		contentHandler.endDocument();
 	}
 
-	public void parse(String systemId) throws IOException, SAXException
-	{
+	public void parse(String systemId) throws IOException, SAXException {
 		// ignore
 	}
 
-	public void setContentHandler(ContentHandler handler)
-	{
-		this.m_contentHandler = handler;
+	public void setContentHandler(ContentHandler handler) {
+		this.contentHandler = handler;
 	}
 
-	public void setDTDHandler(DTDHandler handler)
-	{
+	public void setDTDHandler(DTDHandler handler) {
 		// ignore
 	}
 
-	public void setEntityResolver(EntityResolver resolver)
-	{
+	public void setEntityResolver(EntityResolver resolver) {
 		// ignore
 	}
 
-	public void setErrorHandler(ErrorHandler handler)
-	{
-		this.m_errorHandler = handler;
+	public void setErrorHandler(ErrorHandler handler) {
+		this.errorHandler = handler;
 	}
 
-	public void setFeature(String name, boolean value) throws SAXNotRecognizedException, SAXNotSupportedException
-	{
+	public void setFeature(String name, boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
 		// ignore
 	}
 
-	public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException
-	{
+	public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
 		// ignore
 	}
 
-	private void addCDATA(AttributesImpl atts, String name, String value)
-	{
+	private void addCDATA(AttributesImpl atts, String name, String value) {
 		atts.addAttribute(EMPTY, EMPTY, name, CDATA, value);
 	}
 
-	private void addFailure(ITestElement testElement) throws SAXException
-	{
+	private void addFailure(ITestElement testElement) throws SAXException {
 		FailureTrace failureTrace = testElement.getFailureTrace();
-		if(failureTrace != null)
-		{
+		if (failureTrace != null) {
 			AttributesImpl failureAtts = new AttributesImpl();
-			String failureKind = testElement.getTestResult(false) == Result.ERROR
-					? IXMLTags.NODE_ERROR
-					: IXMLTags.NODE_FAILURE;
+			String failureKind = testElement.getTestResult(false) == Result.ERROR ? IXMLTags.NODE_ERROR : IXMLTags.NODE_FAILURE;
 			startElement(failureKind, failureAtts);
 			String expected = failureTrace.getExpected();
 			String actual = failureTrace.getActual();
-			if(expected != null)
-			{
+			if (expected != null) {
 				startElement(IXMLTags.NODE_EXPECTED, NO_ATTS);
-				m_contentHandler.characters(expected.toCharArray(), 0, expected.length());
+				contentHandler.characters(expected.toCharArray(), 0, expected.length());
 				endElement(IXMLTags.NODE_EXPECTED);
 			}
-			if(actual != null)
-			{
+			if (actual != null) {
 				startElement(IXMLTags.NODE_ACTUAL, NO_ATTS);
-				m_contentHandler.characters(actual.toCharArray(), 0, actual.length());
+				contentHandler.characters(actual.toCharArray(), 0, actual.length());
 				endElement(IXMLTags.NODE_ACTUAL);
 			}
 			String trace = failureTrace.getTrace();
-			m_contentHandler.characters(trace.toCharArray(), 0, trace.length());
+			contentHandler.characters(trace.toCharArray(), 0, trace.length());
 			endElement(failureKind);
 		}
 	}
 
-	private void endElement(String name) throws SAXException
-	{
-		m_contentHandler.endElement(EMPTY, name, name);
+	private void endElement(String name) throws SAXException {
+		contentHandler.endElement(EMPTY, name, name);
 	}
 
-	private void handleTestElement(ITestElement testElement) throws SAXException
-	{
-		if(testElement instanceof ITestSuiteElement)
-		{
-			ITestSuiteElement testSuiteElement = (ITestSuiteElement)testElement;
+	private void handleTestElement(ITestElement testElement) throws SAXException {
+		if (testElement instanceof ITestSuiteElement) {
+			ITestSuiteElement testSuiteElement = (ITestSuiteElement) testElement;
 
 			AttributesImpl atts = new AttributesImpl();
 			addCDATA(atts, IXMLTags.ATTR_NAME, testSuiteElement.getSuiteTypeName());
-			if(!Double.isNaN(testSuiteElement.getElapsedTimeInSeconds()))
+			if (!Double.isNaN(testSuiteElement.getElapsedTimeInSeconds()))
 				addCDATA(atts, IXMLTags.ATTR_TIME, timeFormat.format(testSuiteElement.getElapsedTimeInSeconds()));
 
 			startElement(IXMLTags.NODE_TESTSUITE, atts);
 			addFailure(testElement);
 
 			ITestElement[] children = testSuiteElement.getChildren();
-			for(int i = 0; i < children.length; i++)
-			{
+			for (int i = 0; i < children.length; i++) {
 				handleTestElement(children[i]);
 			}
 			endElement(IXMLTags.NODE_TESTSUITE);
 
-		}
-		else if(testElement instanceof ITestCaseElement)
-		{
-			ITestCaseElement testCaseElement = (ITestCaseElement)testElement;
+		} else if (testElement instanceof ITestCaseElement) {
+			ITestCaseElement testCaseElement = (ITestCaseElement) testElement;
 
 			AttributesImpl atts = new AttributesImpl();
 			addCDATA(atts, IXMLTags.ATTR_NAME, testCaseElement.getTestMethodName());
 			addCDATA(atts, IXMLTags.ATTR_CLASSNAME, testCaseElement.getTestClassName());
-			if(!Double.isNaN(testCaseElement.getElapsedTimeInSeconds()))
+			if (!Double.isNaN(testCaseElement.getElapsedTimeInSeconds()))
 				addCDATA(atts, IXMLTags.ATTR_TIME, timeFormat.format(testCaseElement.getElapsedTimeInSeconds()));
-			if(testCaseElement.getTestResult(false) == ITestElement.Result.IGNORED)
+			if (testCaseElement.getTestResult(false) == ITestElement.Result.IGNORED)
 				addCDATA(atts, IXMLTags.ATTR_IGNORED, Boolean.TRUE.toString());
 
 			startElement(IXMLTags.NODE_TESTCASE, atts);
 			addFailure(testElement);
 			endElement(IXMLTags.NODE_TESTCASE);
-		}
-		else
-		{
+		} else {
 			throw new IllegalStateException(String.valueOf(testElement));
 		}
 	}
 
-	private void handleTestRun() throws SAXException
-	{
+	private void handleTestRun() throws SAXException {
 		AttributesImpl atts = new AttributesImpl();
-		addCDATA(atts, IXMLTags.ATTR_NAME, m_testRunSession.getTestRunName());
-		addCDATA(atts, IXMLTags.ATTR_TESTS, String.valueOf(m_testListener.getOverallCount()));
-		addCDATA(atts, IXMLTags.ATTR_ERRORS, String.valueOf(m_testListener.getErrorCount()));
-		addCDATA(atts, IXMLTags.ATTR_FAILURES, String.valueOf(m_testListener.getFailureCount()));
-		addCDATA(atts, IXMLTags.ATTR_IGNORED, String.valueOf(m_testListener.getIgnoreCount()));
-		if(!Double.isNaN(m_testRunSession.getElapsedTimeInSeconds()))
-			addCDATA(atts, IXMLTags.ATTR_TIME, timeFormat.format(m_testRunSession.getElapsedTimeInSeconds()));
+		addCDATA(atts, IXMLTags.ATTR_NAME, testRunSession.getTestRunName());
+		addCDATA(atts, IXMLTags.ATTR_TESTS, String.valueOf(testListener.getOverallCount()));
+		addCDATA(atts, IXMLTags.ATTR_ERRORS, String.valueOf(testListener.getErrorCount()));
+		addCDATA(atts, IXMLTags.ATTR_FAILURES, String.valueOf(testListener.getFailureCount()));
+		addCDATA(atts, IXMLTags.ATTR_IGNORED, String.valueOf(testListener.getIgnoreCount()));
+		if (!Double.isNaN(testRunSession.getElapsedTimeInSeconds()))
+			addCDATA(atts, IXMLTags.ATTR_TIME, timeFormat.format(testRunSession.getElapsedTimeInSeconds()));
 		startElement(IXMLTags.NODE_TESTSUITES, atts);
 
-		for(ITestElement element : m_testRunSession.getChildren())
+		for (ITestElement element : testRunSession.getChildren())
 			handleTestElement(element);
 
 		writeStdOut();
@@ -249,27 +218,22 @@ public class ResultSerializer implements XMLReader
 		endElement(IXMLTags.NODE_TESTSUITES);
 	}
 
-	private void startElement(String name, Attributes atts) throws SAXException
-	{
-		m_contentHandler.startElement(EMPTY, name, name, atts);
+	private void startElement(String name, Attributes atts) throws SAXException {
+		contentHandler.startElement(EMPTY, name, name, atts);
 	}
 
-	private void writeStdErr() throws SAXException
-	{
-		if(m_stdErr != null && m_stdErr.length() > 0)
-		{
+	private void writeStdErr() throws SAXException {
+		if (stdErr != null && stdErr.length() > 0) {
 			startElement(IXMLTags.NODE_SYSTEM_ERR, NO_ATTS);
-			m_contentHandler.characters(m_stdErr.toCharArray(), 0, m_stdErr.length());
+			contentHandler.characters(stdErr.toCharArray(), 0, stdErr.length());
 			endElement(IXMLTags.NODE_SYSTEM_ERR);
 		}
 	}
 
-	private void writeStdOut() throws SAXException
-	{
-		if(m_stdOut != null && m_stdOut.length() > 0)
-		{
+	private void writeStdOut() throws SAXException {
+		if (stdOut != null && stdOut.length() > 0) {
 			startElement(IXMLTags.NODE_SYSTEM_OUT, NO_ATTS);
-			m_contentHandler.characters(m_stdOut.toCharArray(), 0, m_stdOut.length());
+			contentHandler.characters(stdOut.toCharArray(), 0, stdOut.length());
 			endElement(IXMLTags.NODE_SYSTEM_OUT);
 		}
 	}

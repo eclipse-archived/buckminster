@@ -11,12 +11,12 @@ package org.eclipse.buckminster.generic.ui.actions;
 import java.net.URI;
 
 /**
- * Interface implemented by something that is adressable. The URI does not have to be a URL.
+ * Interface implemented by something that is adressable. The URI does not have
+ * to be a URL.
  * 
  * @author Henrik Lindberg
  * 
  */
-public interface IAdressable
-{
+public interface IAdressable {
 	URI getURI();
 }

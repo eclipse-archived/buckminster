@@ -36,232 +36,193 @@ import org.osgi.framework.Constants;
 import org.xml.sax.SAXException;
 
 /**
- * Scans a folder for jar files containing an OSGi manifest or an Eclipse feature.xml and generates a JNLP version.xml
- * file based on the information in them. The version.xml file is output in the same folder.
+ * Scans a folder for jar files containing an OSGi manifest or an Eclipse
+ * feature.xml and generates a JNLP version.xml file based on the information in
+ * them. The version.xml file is output in the same folder.
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class JNLPSiteGenerator
-{
+public class JNLPSiteGenerator {
 	private static final String JNLP_SUFFIX = ".jnlp"; //$NON-NLS-1$
 
 	private static final String JAR_SUFFIX = ".jar"; //$NON-NLS-1$
 
-	private static void emitFolderVersions(File folder, JNLPVersionModel folderVersions) throws CoreException
-	{
-		if(folderVersions == null)
+	private static void emitFolderVersions(File folder, JNLPVersionModel folderVersions) throws CoreException {
+		if (folderVersions == null)
 			return;
 
 		File versionsFile = new File(folder, "version.xml"); //$NON-NLS-1$
 		OutputStream output = null;
-		try
-		{
+		try {
 			output = new BufferedOutputStream(new FileOutputStream(versionsFile));
 			Utils.serialize(folderVersions, output);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		catch(SAXException e)
-		{
+		} catch (SAXException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(output);
 		}
 	}
 
-	private final HashMap<String, JNLPModel.Resource> m_jnlpResources = new HashMap<String, JNLPModel.Resource>();
+	private final HashMap<String, JNLPModel.Resource> jnlpResources = new HashMap<String, JNLPModel.Resource>();
 
-	private final File m_directory;
+	private final File directory;
 
-	public JNLPSiteGenerator(File directory)
-	{
-		m_directory = directory;
+	public JNLPSiteGenerator(File directory) {
+		this.directory = directory;
 	}
 
-	public void run() throws CoreException
-	{
-		try
-		{
+	public void run() throws CoreException {
+		try {
 			JNLPVersionModel folderVersions = null;
-			File featuresFolder = new File(m_directory, IPDEConstants.FEATURES_FOLDER);
+			File featuresFolder = new File(directory, IPDEConstants.FEATURES_FOLDER);
 			File[] files = featuresFolder.listFiles();
-			if(files == null)
+			if (files == null)
 				return;
 
-			for(File file : files)
-			{
+			for (File file : files) {
 				IFeature feature;
-				if(file.isDirectory())
-				{
+				if (file.isDirectory()) {
 					File featureFile = new File(file, IPDEConstants.FEATURE_FILE);
-					if(!featureFile.exists())
+					if (!featureFile.exists())
 						continue;
 
 					InputStream input = null;
-					try
-					{
+					try {
 						input = new BufferedInputStream(new FileInputStream(featureFile));
 						IFeatureModel model = FeatureModelReader.readFeatureModel(input);
 						feature = model.getFeature();
-					}
-					finally
-					{
+					} finally {
 						IOUtils.close(input);
 					}
-				}
-				else
-				{
+				} else {
 					String leafName = file.getName();
-					if(!leafName.endsWith(JAR_SUFFIX))
+					if (!leafName.endsWith(JAR_SUFFIX))
 						continue;
 
 					JarFile jarFile = null;
-					try
-					{
+					try {
 						jarFile = new JarFile(file);
 
 						JarEntry entry = jarFile.getJarEntry(IPDEConstants.FEATURE_FILE);
-						if(entry == null)
+						if (entry == null)
 							continue;
 
 						IFeatureModel model = FeatureModelReader.readFeatureModel(jarFile.getInputStream(entry));
 						feature = model.getFeature();
-					}
-					finally
-					{
-						if(jarFile != null)
+					} finally {
+						if (jarFile != null)
 							jarFile.close();
 					}
 				}
-				if(folderVersions == null)
+				if (folderVersions == null)
 					folderVersions = new JNLPVersionModel();
 				generateFromFeature(folderVersions, featuresFolder, feature);
 			}
 
-			if(folderVersions != null)
-			{
-				emitFolderVersions(m_directory, folderVersions);
+			if (folderVersions != null) {
+				emitFolderVersions(directory, folderVersions);
 				folderVersions = null;
 			}
 
-			File pluginsFolder = new File(m_directory, IPDEConstants.PLUGINS_FOLDER);
+			File pluginsFolder = new File(directory, IPDEConstants.PLUGINS_FOLDER);
 			files = pluginsFolder.listFiles();
-			if(files == null)
+			if (files == null)
 				return;
 
-			for(File file : files)
-			{
+			for (File file : files) {
 				String leafName = file.getName();
-				if(!leafName.endsWith(JAR_SUFFIX))
+				if (!leafName.endsWith(JAR_SUFFIX))
 					continue;
 
 				JarFile jarFile = null;
-				try
-				{
+				try {
 					jarFile = new JarFile(file);
 					Manifest mf = jarFile.getManifest();
 					String symbolicName = mf.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
-					if(symbolicName == null)
+					if (symbolicName == null)
 						continue;
 
-					if(folderVersions == null)
+					if (folderVersions == null)
 						folderVersions = new JNLPVersionModel();
 					generateFromBundle(folderVersions, leafName, mf);
-				}
-				finally
-				{
-					if(jarFile != null)
+				} finally {
+					if (jarFile != null)
 						jarFile.close();
 				}
 			}
 			emitFolderVersions(pluginsFolder, folderVersions);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	private void generateFromBundle(JNLPVersionModel folderVersions, String file, Manifest mf) throws CoreException
-	{
+	private void generateFromBundle(JNLPVersionModel folderVersions, String file, Manifest mf) throws CoreException {
 		Attributes a = mf.getMainAttributes();
 		String id;
-		try
-		{
-			ManifestElement[] elements = ManifestElement.parseHeader(Constants.BUNDLE_SYMBOLICNAME, a
-					.getValue(Constants.BUNDLE_SYMBOLICNAME));
+		try {
+			ManifestElement[] elements = ManifestElement.parseHeader(Constants.BUNDLE_SYMBOLICNAME, a.getValue(Constants.BUNDLE_SYMBOLICNAME));
 			id = elements[0].getValue();
-		}
-		catch(BundleException be)
-		{
+		} catch (BundleException be) {
 			throw BuckminsterException.wrap(be);
 		}
 
 		String version = a.getValue(Constants.BUNDLE_VERSION);
-		if(version == null)
+		if (version == null)
 			version = "0.0.0"; //$NON-NLS-1$
 
 		/*
-		 * We don't do this now since the requests lack os/arch information for some reason.
+		 * We don't do this now since the requests lack os/arch information for
+		 * some reason.
 		 * 
-		 * JNLPVersionModel.Resource resource = folderVersions.addResource(file, id + ".jar", version);
-		 * JNLPModel.Resource jnlpResource = m_jnlpResources.get(id + "_B"); if(jnlpResource != null) { String os =
+		 * JNLPVersionModel.Resource resource = folderVersions.addResource(file,
+		 * id + ".jar", version); JNLPModel.Resource jnlpResource =
+		 * jnlpResources.get(id + "_B"); if(jnlpResource != null) { String os =
 		 * jnlpResource.getOs(); if(os != null) resource.addOs(os);
 		 * 
-		 * String arch = jnlpResource.getArch(); if(arch != null) resource.addArch(arch); }
+		 * String arch = jnlpResource.getArch(); if(arch != null)
+		 * resource.addArch(arch); }
 		 */
 		folderVersions.addResource(file, id + JAR_SUFFIX, version);
 	}
 
-	private void generateFromFeature(JNLPVersionModel folderVersions, File featuresFolder, IFeature feature)
-			throws CoreException
-	{
+	private void generateFromFeature(JNLPVersionModel folderVersions, File featuresFolder, IFeature feature) throws CoreException {
 		String id = feature.getId();
 		String version = feature.getVersion();
 		String file = id + '_' + version + JNLP_SUFFIX;
 
 		JNLPVersionModel.Resource resource = folderVersions.addResource(file, id + JNLP_SUFFIX, version);
 		String os = feature.getOS();
-		if(os == null)
+		if (os == null)
 			os = feature.getWS();
 		os = JNLPGenerator.convertOS(os);
-		if(os != null)
+		if (os != null)
 			resource.addOs(os);
 
 		String arch = JNLPGenerator.convertArch(feature.getArch());
-		if(arch != null)
+		if (arch != null)
 			resource.addArch(arch);
 
 		// Generate the JNLPModel for this feature
 		//
 		JNLPGenerator jnlpGen = new JNLPGenerator(feature);
 		JNLPModel jnlp = jnlpGen.generateJNLP();
-		m_jnlpResources.putAll(jnlp.getResources());
+		jnlpResources.putAll(jnlp.getResources());
 
 		// Serialize the JNLP xml
 		//
 		File jnlpFile = new File(featuresFolder.getParentFile(), file);
 		OutputStream jnlpOut = null;
-		try
-		{
+		try {
 			jnlpOut = new BufferedOutputStream(new FileOutputStream(jnlpFile));
 			Utils.serialize(jnlp, jnlpOut);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		catch(SAXException e)
-		{
+		} catch (SAXException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(jnlpOut);
 		}
 	}

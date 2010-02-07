@@ -48,119 +48,101 @@ import org.xml.sax.SAXException;
  * This class can perform two tasks.
  * </p>
  * <ul>
- * <li>Create a site.xml style file based on the list of features, a template, and the {@link CSpec} of the current
- * {@link IActionContext}.</li>
- * <li>Calculate the version qualifier of the feature and assign it to a property. The version is fetched from the
- * {@link CSpec} of the current {@link IActionContext} and if it ends with &quot;qualifier&quot; normal qualifier
- * replacement algorithms take place.</li>
+ * <li>Create a site.xml style file based on the list of features, a template,
+ * and the {@link CSpec} of the current {@link IActionContext}.</li>
+ * <li>Calculate the version qualifier of the feature and assign it to a
+ * property. The version is fetched from the {@link CSpec} of the current
+ * {@link IActionContext} and if it ends with &quot;qualifier&quot; normal
+ * qualifier replacement algorithms take place.</li>
  * </ul>
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class UpdateSiteGenerator extends VersionConsolidator
-{
-	private static boolean categoryExists(SiteCategory[] categories, String categoryName)
-	{
+public class UpdateSiteGenerator extends VersionConsolidator {
+	private static boolean categoryExists(SiteCategory[] categories, String categoryName) {
 		int idx = categories.length;
-		while(--idx >= 0)
-			if(categories[idx].getName().equals(categoryName))
+		while (--idx >= 0)
+			if (categories[idx].getName().equals(categoryName))
 				return true;
 		return false;
 	}
 
-	private final List<File> m_features;
+	private final List<File> features;
 
-	private final IActionContext m_actionContext;
+	private final IActionContext actionContext;
 
-	private final SaxableSite m_saxableSite;
+	private final SaxableSite saxableSite;
 
-	public UpdateSiteGenerator(List<File> features, File template, File outputFile, File propertiesFile,
-			String qualifier) throws CoreException, IOException
-	{
+	public UpdateSiteGenerator(List<File> features, File template, File outputFile, File propertiesFile, String qualifier) throws CoreException,
+			IOException {
 		super(outputFile, propertiesFile, qualifier);
-		m_features = features;
-		m_actionContext = AbstractActor.getActiveContext();
-		if(template != null)
-			m_saxableSite = new SaxableSite(SiteReader.getSite(template));
+		this.features = features;
+		this.actionContext = AbstractActor.getActiveContext();
+		if (template != null)
+			this.saxableSite = new SaxableSite(SiteReader.getSite(template));
 		else
-			m_saxableSite = new SaxableSite(new SiteModel());
+			this.saxableSite = new SaxableSite(new SiteModel());
 	}
 
-	public Version run(boolean generateQualifier) throws CoreException
-	{
+	public Version run(boolean generateQualifier) throws CoreException {
 		OutputStream output = null;
-		try
-		{
-			CSpec cspec = m_actionContext.getCSpec();
+		try {
+			CSpec cspec = actionContext.getCSpec();
 			ArrayList<ComponentIdentifier> deps = null;
-			if(generateQualifier)
+			if (generateQualifier)
 				deps = new ArrayList<ComponentIdentifier>();
 
 			File outputFile = getOutputFile();
-			if(outputFile != null)
+			if (outputFile != null)
 				output = new BufferedOutputStream(new FileOutputStream(outputFile));
-			else if(!generateQualifier)
+			else if (!generateQualifier)
 				//
 				// Nothing left to do
 				//
 				return null;
 
-			for(File file : m_features)
-			{
+			for (File file : features) {
 				String leafName = file.getName();
-				if(!leafName.endsWith(".jar")) //$NON-NLS-1$
+				if (!leafName.endsWith(".jar")) //$NON-NLS-1$
 					continue;
 
 				JarFile jarFile = null;
-				try
-				{
+				try {
 					jarFile = new JarFile(file);
 
 					JarEntry entry = jarFile.getJarEntry(IPDEConstants.FEATURE_FILE);
-					if(entry == null)
+					if (entry == null)
 						continue;
 
 					IFeatureModel model = FeatureModelReader.readFeatureModel(jarFile.getInputStream(entry));
 					IFeature feature = model.getFeature();
-					if(outputFile != null)
+					if (outputFile != null)
 						generateFromFeature(cspec, file, feature);
 
-					if(generateQualifier)
-						deps.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE,
-								Version.create(feature.getVersion())));
-				}
-				finally
-				{
-					if(jarFile != null)
+					if (generateQualifier)
+						deps.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, Version.create(feature.getVersion())));
+				} finally {
+					if (jarFile != null)
 						jarFile.close();
 				}
 			}
 
-			if(outputFile != null)
-				Utils.serialize(m_saxableSite, output);
+			if (outputFile != null)
+				Utils.serialize(saxableSite, output);
 
 			IComponentIdentifier ci = cspec.getComponentIdentifier();
-			return generateQualifier
-					? replaceQualifier(cspec.getComponentIdentifier(), deps)
-					: ci.getVersion();
-		}
-		catch(IOException e)
-		{
+			return generateQualifier ? replaceQualifier(cspec.getComponentIdentifier(), deps) : ci.getVersion();
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		catch(SAXException e)
-		{
+		} catch (SAXException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(output);
 		}
 	}
 
-	private void generateFromFeature(CSpec cspec, File file, IFeature feature) throws CoreException
-	{
+	private void generateFromFeature(CSpec cspec, File file, IFeature feature) throws CoreException {
 		String featureName = feature.getId();
 		StringBuilder urlBuilder = new StringBuilder(IPDEConstants.FEATURES_FOLDER);
 		urlBuilder.append('/');
@@ -168,48 +150,44 @@ public class UpdateSiteGenerator extends VersionConsolidator
 
 		// --We look for a category for the feature in two ways.
 		//
-		// First we check if an entry that matches the feature by name and unqualified version
+		// First we check if an entry that matches the feature by name and
+		// unqualified version
 		// exists in the template. If it does, we use that entry
 		//
 		Version ver = Version.parseVersion(feature.getVersion());
-		SiteModel site = m_saxableSite.getSite();
+		SiteModel site = saxableSite.getSite();
 		SiteFeature model = null;
-		for(SiteFeature oldModel : site.getFeatures())
-		{
-			if(featureName.equals(oldModel.getFeatureIdentifier()))
-			{
+		for (SiteFeature oldModel : site.getFeatures()) {
+			if (featureName.equals(oldModel.getFeatureIdentifier())) {
 				Version oldVer = Version.create(oldModel.getFeatureVersion());
-				if(VersionHelper.equalsUnqualified(ver, oldVer))
-				{
+				if (VersionHelper.equalsUnqualified(ver, oldVer)) {
 					model = oldModel;
 					break;
 				}
 			}
 		}
 
-		// When no entry was found, we check the cspec to see if the feature is represented
+		// When no entry was found, we check the cspec to see if the feature is
+		// represented
 		// in a group that maps to a category of the feature template
 		//
-		if(model == null)
-		{
+		if (model == null) {
 			SiteCategory[] categories = site.getCategories();
 			Collection<Attribute> attributes = cspec.getAttributes().values();
 
 			model = new SiteFeature();
 			model.setFeatureIdentifier(featureName);
 
-			for(Attribute attr : attributes)
-			{
-				if(!(attr instanceof IGroup))
+			for (Attribute attr : attributes) {
+				if (!(attr instanceof IGroup))
 					continue;
 
 				String categoryName = attr.getName();
-				if(!categoryExists(categories, attr.getName()))
+				if (!categoryExists(categories, attr.getName()))
 					continue;
 
-				for(IPrerequisite included : attr.getPrerequisites())
-				{
-					if(!featureName.equals(included.getComponentName()))
+				for (IPrerequisite included : attr.getPrerequisites()) {
+					if (!featureName.equals(included.getComponentName()))
 						continue;
 
 					model.addCategoryName(categoryName);

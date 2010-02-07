@@ -17,21 +17,22 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Project</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Project</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.ProjectImpl#getReference <em>Reference</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.ProjectImpl#getReference
+ * <em>Reference</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ProjectImpl extends EObjectImpl implements Project
-{
+public class ProjectImpl extends EObjectImpl implements Project {
 	/**
-	 * The default value of the '{@link #getReference() <em>Reference</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getReference() <em>Reference</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getReference()
 	 * @generated
@@ -40,8 +41,8 @@ public class ProjectImpl extends EObjectImpl implements Project
 	protected static final String REFERENCE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getReference() <em>Reference</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getReference() <em>Reference</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getReference()
 	 * @generated
@@ -54,8 +55,7 @@ public class ProjectImpl extends EObjectImpl implements Project
 	 * 
 	 * @generated
 	 */
-	protected ProjectImpl()
-	{
+	protected ProjectImpl() {
 		super();
 	}
 
@@ -65,12 +65,10 @@ public class ProjectImpl extends EObjectImpl implements Project
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.PROJECT__REFERENCE:
-			return getReference();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case PsfPackage.PROJECT__REFERENCE:
+				return getReference();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -81,14 +79,10 @@ public class ProjectImpl extends EObjectImpl implements Project
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.PROJECT__REFERENCE:
-			return REFERENCE_EDEFAULT == null
-					? reference != null
-					: !REFERENCE_EDEFAULT.equals(reference);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case PsfPackage.PROJECT__REFERENCE:
+				return REFERENCE_EDEFAULT == null ? reference != null : !REFERENCE_EDEFAULT.equals(reference);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -99,13 +93,11 @@ public class ProjectImpl extends EObjectImpl implements Project
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.PROJECT__REFERENCE:
-			setReference((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case PsfPackage.PROJECT__REFERENCE:
+				setReference((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -116,13 +108,11 @@ public class ProjectImpl extends EObjectImpl implements Project
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.PROJECT__REFERENCE:
-			setReference(REFERENCE_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case PsfPackage.PROJECT__REFERENCE:
+				setReference(REFERENCE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -132,8 +122,7 @@ public class ProjectImpl extends EObjectImpl implements Project
 	 * 
 	 * @generated
 	 */
-	public String getReference()
-	{
+	public String getReference() {
 		return reference;
 	}
 
@@ -142,13 +131,11 @@ public class ProjectImpl extends EObjectImpl implements Project
 	 * 
 	 * @generated
 	 */
-	public void setReference(String newReference)
-	{
+	public void setReference(String newReference) {
 		String oldReference = reference;
 		reference = newReference;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.PROJECT__REFERENCE, oldReference,
-					reference));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.PROJECT__REFERENCE, oldReference, reference));
 	}
 
 	/**
@@ -157,9 +144,8 @@ public class ProjectImpl extends EObjectImpl implements Project
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -175,8 +161,7 @@ public class ProjectImpl extends EObjectImpl implements Project
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return PsfPackage.Literals.PROJECT;
 	}
 

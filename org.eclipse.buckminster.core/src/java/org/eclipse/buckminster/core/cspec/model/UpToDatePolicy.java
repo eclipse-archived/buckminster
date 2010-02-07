@@ -8,15 +8,16 @@
 package org.eclipse.buckminster.core.cspec.model;
 
 /**
- * The up to date policy tells Buckminster how to go about determining the timestamp of a product when deciding if it is
- * up to date in respect to its prerequisites.
+ * The up to date policy tells Buckminster how to go about determining the
+ * timestamp of a product when deciding if it is up to date in respect to its
+ * prerequisites.
  * 
  * @author Thomas Hallgren
  */
-public enum UpToDatePolicy
-{
+public enum UpToDatePolicy {
 	/**
-	 * Never trust a product defined as a folder since the expected number of files is unknown
+	 * Never trust a product defined as a folder since the expected number of
+	 * files is unknown
 	 */
 	DEFAULT,
 
@@ -26,13 +27,15 @@ public enum UpToDatePolicy
 	ACTOR,
 
 	/**
-	 * Trust timestamp only when the product contains the number of files denoted in attribute 'count'
+	 * Trust timestamp only when the product contains the number of files
+	 * denoted in attribute 'count'
 	 */
 	COUNT,
 
 	/**
-	 * Trust timestamp of a product that matches the action prerequisites in number and optional pattern. The 'count'
-	 * attribute may be used to denote file additions
+	 * Trust timestamp of a product that matches the action prerequisites in
+	 * number and optional pattern. The 'count' attribute may be used to denote
+	 * file additions
 	 */
 	MAPPER,
 

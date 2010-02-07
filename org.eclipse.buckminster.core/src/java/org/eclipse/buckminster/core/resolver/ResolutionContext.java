@@ -34,180 +34,146 @@ import org.eclipse.core.runtime.IStatus;
 /**
  * @author Thomas Hallgren
  */
-public class ResolutionContext extends RMContext implements IResolverBackchannel
-{
-	private final ComponentQuery m_componentQuery;
+public class ResolutionContext extends RMContext implements IResolverBackchannel {
+	private final ComponentQuery componentQuery;
 
-	private HashMap<IComponentIdentifier, GeneratorNode> m_generators;
+	private HashMap<IComponentIdentifier, GeneratorNode> generators;
 
-	private final ResolutionContext m_parentContext;
+	private final ResolutionContext parentContext;
 
-	private final HashMap<ComponentRequest, List<ResolverDecision>> m_decisionLog = new HashMap<ComponentRequest, List<ResolverDecision>>();
+	private final HashMap<ComponentRequest, List<ResolverDecision>> decisionLog = new HashMap<ComponentRequest, List<ResolverDecision>>();
 
-	public ResolutionContext(ComponentQuery componentQuery)
-	{
+	public ResolutionContext(ComponentQuery componentQuery) {
 		this(componentQuery, null);
 	}
 
-	public ResolutionContext(ComponentQuery componentQuery, ResolutionContext parentContext)
-	{
-		super(parentContext == null
-				? componentQuery.getGlobalProperties()
-				: new UnmodifiableMapUnion<String, Object>(componentQuery.getGlobalProperties(), parentContext));
-		m_componentQuery = componentQuery;
-		m_parentContext = parentContext;
-		if(parentContext != null)
+	public ResolutionContext(ComponentQuery componentQuery, ResolutionContext parentContext) {
+		super(parentContext == null ? componentQuery.getGlobalProperties() : new UnmodifiableMapUnion<String, Object>(componentQuery
+				.getGlobalProperties(), parentContext));
+		this.componentQuery = componentQuery;
+		this.parentContext = parentContext;
+		if (parentContext != null)
 			setSilentStatus(parentContext.isSilentStatus());
 	}
 
-	public ResolutionContext(MaterializationSpec mspec, ComponentQuery componentQuery)
-	{
+	public ResolutionContext(MaterializationSpec mspec, ComponentQuery componentQuery) {
 		super(new UnmodifiableMapUnion<String, Object>(componentQuery.getGlobalProperties(), mspec.getProperties()));
-		m_componentQuery = componentQuery;
-		m_parentContext = null;
+		this.componentQuery = componentQuery;
+		this.parentContext = null;
 	}
 
 	@Override
-	public synchronized void addRequestStatus(IComponentRequest request, IStatus resolveStatus)
-	{
-		if(m_parentContext != null)
-			m_parentContext.addRequestStatus(request, resolveStatus);
+	public synchronized void addRequestStatus(IComponentRequest request, IStatus resolveStatus) {
+		if (parentContext != null)
+			parentContext.addRequestStatus(request, resolveStatus);
 		else
 			super.addRequestStatus(request, resolveStatus);
 	}
 
 	@Override
-	public synchronized void clearStatus()
-	{
-		if(m_parentContext != null)
-			m_parentContext.clearStatus();
+	public synchronized void clearStatus() {
+		if (parentContext != null)
+			parentContext.clearStatus();
 		else
 			super.clearStatus();
 	}
 
 	@Override
-	public synchronized Map<String, String> getBindingProperties()
-	{
-		return (m_parentContext != null)
-				? m_parentContext.getBindingProperties()
-				: super.getBindingProperties();
+	public synchronized Map<String, String> getBindingProperties() {
+		return (parentContext != null) ? parentContext.getBindingProperties() : super.getBindingProperties();
 	}
 
 	@Override
-	public ComponentQuery getComponentQuery()
-	{
-		return m_componentQuery;
+	public ComponentQuery getComponentQuery() {
+		return componentQuery;
 	}
 
-	public synchronized List<ResolverDecision> getDecisionLog(IComponentRequest request)
-	{
-		if(m_parentContext != null)
-			return m_parentContext.getDecisionLog(request);
-		return Utils.createUnmodifiableList(m_decisionLog.get(request));
+	public synchronized List<ResolverDecision> getDecisionLog(IComponentRequest request) {
+		if (parentContext != null)
+			return parentContext.getDecisionLog(request);
+		return Utils.createUnmodifiableList(decisionLog.get(request));
 	}
 
-	public GeneratorNode getGeneratorNode(ComponentRequest request)
-	{
-		if(m_generators != null)
-		{
-			for(GeneratorNode generator : m_generators.values())
-			{
-				if(request.designates(generator.getGeneratesId()))
+	public GeneratorNode getGeneratorNode(ComponentRequest request) {
+		if (generators != null) {
+			for (GeneratorNode generator : generators.values()) {
+				if (request.designates(generator.getGeneratesId()))
 					return generator;
 			}
 		}
-		return (m_parentContext == null)
-				? null
-				: m_parentContext.getGeneratorNode(request);
+		return (parentContext == null) ? null : parentContext.getGeneratorNode(request);
 	}
 
 	@Override
-	public Map<String, ? extends Object> getProperties(ComponentName cName)
-	{
+	public Map<String, ? extends Object> getProperties(ComponentName cName) {
 		IAdvisorNode parentNode = null;
 		IAdvisorNode node = null;
 		Map<String, ? extends Object> p = super.getProperties(cName);
-		if(m_parentContext != null)
-			parentNode = m_parentContext.getComponentQuery().getMatchingNode(cName, this);
+		if (parentContext != null)
+			parentNode = parentContext.getComponentQuery().getMatchingNode(cName, this);
 
 		node = getComponentQuery().getMatchingNode(cName, this);
-		if(parentNode == null && node == null)
+		if (parentNode == null && node == null)
 			return p;
 
-		if(parentNode != null)
+		if (parentNode != null)
 			p = new UnmodifiableMapUnion<String, Object>(parentNode.getProperties(), p);
 
-		if(node != null && node != parentNode)
+		if (node != null && node != parentNode)
 			p = new UnmodifiableMapUnion<String, Object>(node.getProperties(), p);
 
 		return p;
 	}
 
 	@Override
-	public synchronized IStatus getStatus()
-	{
-		return (m_parentContext != null)
-				? m_parentContext.getStatus()
-				: super.getStatus();
+	public synchronized IStatus getStatus() {
+		return (parentContext != null) ? parentContext.getStatus() : super.getStatus();
 	}
 
 	@Override
-	public synchronized Map<UUID, Object> getUserCache()
-	{
-		return (m_parentContext != null)
-				? m_parentContext.getUserCache()
-				: super.getUserCache();
+	public synchronized Map<UUID, Object> getUserCache() {
+		return (parentContext != null) ? parentContext.getUserCache() : super.getUserCache();
 	}
 
 	@Override
-	public synchronized boolean isContinueOnError()
-	{
-		return (m_parentContext != null)
-				? m_parentContext.isContinueOnError()
-				: super.isContinueOnError();
+	public synchronized boolean isContinueOnError() {
+		return (parentContext != null) ? parentContext.isContinueOnError() : super.isContinueOnError();
 	}
 
-	public synchronized ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType,
-			Object... args)
-	{
-		if(m_parentContext != null)
-			return m_parentContext.logDecision(request, decisionType, args);
+	public synchronized ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
+		if (parentContext != null)
+			return parentContext.logDecision(request, decisionType, args);
 
-		List<ResolverDecision> decisions = m_decisionLog.get(request);
-		if(decisions == null)
-		{
+		List<ResolverDecision> decisions = decisionLog.get(request);
+		if (decisions == null) {
 			decisions = new ArrayList<ResolverDecision>();
-			m_decisionLog.put(request, decisions);
+			decisionLog.put(request, decisions);
 		}
 
 		ResolverDecision decision = new ResolverDecision(request, decisionType, args);
 		decisions.add(decision);
-		if(!isSilentStatus())
+		if (!isSilentStatus())
 			CorePlugin.getLogger().debug("%s: %s", request, decision); //$NON-NLS-1$
 		return decision;
 	}
 
-	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args)
-	{
+	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
 		return logDecision(getComponentQuery().getExpandedRootRequest(this), decisionType, args);
 	}
 
 	@Override
-	public void setContinueOnError(boolean flag)
-	{
-		if(m_parentContext != null)
-			m_parentContext.setContinueOnError(flag);
+	public void setContinueOnError(boolean flag) {
+		if (parentContext != null)
+			parentContext.setContinueOnError(flag);
 		else
 			super.setContinueOnError(flag);
 	}
 
-	public void setGenerators(CSpec cspec, Collection<? extends IGenerator> generators)
-	{
-		for(IGenerator generator : generators)
-		{
-			if(m_generators == null)
-				m_generators = new HashMap<IComponentIdentifier, GeneratorNode>();
-			m_generators.put(generator.getGeneratedIdentifier(), new GeneratorNode(cspec, generator));
+	public void setGenerators(CSpec cspec, Collection<? extends IGenerator> generatorList) {
+		for (IGenerator generator : generatorList) {
+			if (generators == null)
+				generators = new HashMap<IComponentIdentifier, GeneratorNode>();
+			generators.put(generator.getGeneratedIdentifier(), new GeneratorNode(cspec, generator));
 		}
 	}
 }

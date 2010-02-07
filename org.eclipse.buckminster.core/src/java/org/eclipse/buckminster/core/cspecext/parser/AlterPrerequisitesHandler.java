@@ -16,24 +16,20 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 /**
  * @author Thomas Hallgren
  */
-class AlterPrerequisitesHandler extends AlterGroupHandler
-{
+class AlterPrerequisitesHandler extends AlterGroupHandler {
 	public static final String TAG = AlterAction.ELEM_ALTER_PREREQUISITES;
 
-	AlterPrerequisitesHandler(AbstractHandler parent)
-	{
+	AlterPrerequisitesHandler(AbstractHandler parent) {
 		super(parent, new PrerequisitesHandler(parent));
 	}
 
 	@Override
-	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException
-	{
-		((AlterActionHandler)this.getParentHandler()).getAlterActionBuilder().addAlterPrerequisite(prereq);
+	void addAlterPrerequisite(Prerequisite prereq) throws PrerequisiteAlreadyDefinedException {
+		((AlterActionHandler) this.getParentHandler()).getAlterActionBuilder().addAlterPrerequisite(prereq);
 	}
 
 	@Override
-	void addRemovePrerequisite(String key)
-	{
-		((AlterActionHandler)this.getParentHandler()).getAlterActionBuilder().addRemovePrerequisite(key);
+	void addRemovePrerequisite(String key) {
+		((AlterActionHandler) this.getParentHandler()).getAlterActionBuilder().addRemovePrerequisite(key);
 	}
 }

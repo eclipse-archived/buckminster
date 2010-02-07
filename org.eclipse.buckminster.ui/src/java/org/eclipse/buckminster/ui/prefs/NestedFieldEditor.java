@@ -21,75 +21,65 @@ import org.eclipse.swt.widgets.Layout;
  * 
  * @author Thomas Hallgren
  */
-public class NestedFieldEditor extends FieldEditor
-{
-	private Composite m_group;
+public class NestedFieldEditor extends FieldEditor {
+	private Composite group;
 
-	private Label m_label;
+	private Label label;
 
-	public NestedFieldEditor(String title, Composite parent)
-	{
+	public NestedFieldEditor(String title, Composite parent) {
 		init("", title); //$NON-NLS-1$
 		createControl(parent);
 	}
 
-	public Composite getControl()
-	{
-		return m_group;
+	public Composite getControl() {
+		return group;
 	}
 
 	@Override
-	public int getNumberOfControls()
-	{
+	public int getNumberOfControls() {
 		return 1;
 	}
 
 	@Override
-	protected void adjustForNumColumns(int numColumns)
-	{
-		Layout layout = m_group.getLayout();
-		if(layout instanceof GridLayout)
-		{
-			GridLayout gl = (GridLayout)layout;
+	protected void adjustForNumColumns(int numColumns) {
+		Layout layout = group.getLayout();
+		if (layout instanceof GridLayout) {
+			GridLayout gl = (GridLayout) layout;
 			gl.numColumns = numColumns;
 			gl.marginHeight = 0;
 			gl.marginWidth = 0;
 			gl.makeColumnsEqualWidth = false;
 		}
-		GridData gd = (GridData)m_group.getLayoutData();
+		GridData gd = (GridData) group.getLayoutData();
 		gd.horizontalSpan = numColumns;
-		gd = (GridData)m_label.getLayoutData();
+		gd = (GridData) label.getLayoutData();
 		gd.horizontalSpan = numColumns;
 	}
 
 	@Override
-	protected void doFillIntoGrid(Composite parent, int numColumns)
-	{
-		m_group = new Composite(parent, SWT.NONE);
+	protected void doFillIntoGrid(Composite parent, int numColumns) {
+		group = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = numColumns;
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
 		layout.makeColumnsEqualWidth = false;
-		m_group.setLayout(layout);
-		m_group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, numColumns, 1));
-		m_label = new Label(m_group, SWT.NONE);
-		m_label.setText(getLabelText());
-		m_label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, numColumns, 1));
+		group.setLayout(layout);
+		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, numColumns, 1));
+		label = new Label(group, SWT.NONE);
+		label.setText(getLabelText());
+		label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, numColumns, 1));
 	}
 
 	@Override
-	protected void doLoad()
-	{
+	protected void doLoad() {
 	}
 
 	@Override
-	protected void doLoadDefault()
-	{
+	protected void doLoadDefault() {
 	}
 
 	@Override
-	protected void doStore()
-	{
+	protected void doStore() {
 	}
 }

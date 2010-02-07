@@ -2,8 +2,7 @@ package org.eclipse.buckminster.ant;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.ant.messages"; //$NON-NLS-1$
 
 	public static String AntActor_Extension_found_using_0_1_appoints_non_existing_resource;
@@ -29,13 +28,11 @@ public class Messages extends NLS
 	public static String VersionQualifierTask_Unable_to_qualify_version;
 
 	public static String VersionQualifierTask_Unable_to_read_properties_from_0;
-	static
-	{
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
-	{
+	private Messages() {
 	}
 }

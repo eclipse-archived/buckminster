@@ -10,17 +10,13 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author Guillaume CHATELET
  */
-public class StreamProcessorFactory
-{
+public class StreamProcessorFactory {
 
-	public static IResourceFetcher getCopyInstance(URL url, String toDir, String filename)
-	{
+	public static IResourceFetcher getCopyInstance(URL url, String toDir, String filename) {
 		return new SimpleResourceFetcher(url, toDir, filename);
 	}
 
-	public static IResourceFetcher getUncompressInstance(URL url, String toDir, List<String> includes,
-			boolean shouldFlatten) throws CoreException
-	{
+	public static IResourceFetcher getUncompressInstance(URL url, String toDir, List<String> includes, boolean shouldFlatten) throws CoreException {
 		return new ArchivedResourceFetcher(url, toDir, shouldFlatten, includes);
 	}
 }

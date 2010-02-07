@@ -16,38 +16,32 @@ import org.osgi.framework.BundleContext;
 /**
  * @author Thomas Hallgren
  */
-public class Activator implements BundleActivator
-{
+public class Activator implements BundleActivator {
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.download"; //$NON-NLS-1$
 
-	private static Activator s_plugin;
+	private static Activator plugin;
 
-	private IContainer m_container;
+	private IContainer container;
 
 	public static final String EXPANDERS_POINT = PLUGIN_ID + ".expanders"; //$NON-NLS-1$
 
 	public static final String DECOMPRESSORS_POINT = PLUGIN_ID + ".decompressors"; //$NON-NLS-1$
 
-	public static Activator getDefault()
-	{
-		return s_plugin;
+	public static Activator getDefault() {
+		return plugin;
 	}
 
-	public synchronized IRetrieveFileTransferContainerAdapter createRetrieveFileTransfer()
-	{
-		return (IRetrieveFileTransferContainerAdapter)m_container
-				.getAdapter(IRetrieveFileTransferContainerAdapter.class);
+	public synchronized IRetrieveFileTransferContainerAdapter createRetrieveFileTransfer() {
+		return (IRetrieveFileTransferContainerAdapter) container.getAdapter(IRetrieveFileTransferContainerAdapter.class);
 	}
 
-	public void start(BundleContext context) throws Exception
-	{
-		s_plugin = this;
-		m_container = ContainerFactory.getDefault().createContainer();
+	public void start(BundleContext context) throws Exception {
+		plugin = this;
+		container = ContainerFactory.getDefault().createContainer();
 	}
 
-	public void stop(BundleContext context) throws Exception
-	{
-		s_plugin = null;
-		m_container = null;
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		container = null;
 	}
 }

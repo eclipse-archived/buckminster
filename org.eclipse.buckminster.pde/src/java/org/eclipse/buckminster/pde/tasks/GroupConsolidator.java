@@ -48,21 +48,18 @@ import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-abstract class GroupConsolidator extends VersionQualifierTask implements IPDEConstants, IBuildPropertiesConstants
-{
-	static void addVersion(Map<String, Version[]> versionMap, String id, String versionStr)
-	{
-		if(versionStr == null)
+abstract class GroupConsolidator extends VersionQualifierTask implements IPDEConstants, IBuildPropertiesConstants {
+	static void addVersion(Map<String, Version[]> versionMap, String id, String versionStr) {
+		if (versionStr == null)
 			return;
 
 		Version version = Version.parseVersion(versionStr);
 		Version[] arr = versionMap.get(id);
-		if(arr == null)
+		if (arr == null)
 			arr = new Version[] { version };
-		else
-		{
-			for(Version old : arr)
-				if(old.equals(version))
+		else {
+			for (Version old : arr)
+				if (old.equals(version))
 					return;
 
 			Version[] newArr = new Version[arr.length + 1];
@@ -73,39 +70,34 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 		versionMap.put(id, arr);
 	}
 
-	static Version findBestVersion(Map<String, Version[]> versionMap, String id, String componentType, String refId,
-			String vstr) throws CoreException
-	{
+	static Version findBestVersion(Map<String, Version[]> versionMap, String id, String componentType, String refId, String vstr)
+			throws CoreException {
 		Version version = Version.create(vstr);
-		if(version != null && Version.emptyVersion.equals(version))
+		if (version != null && Version.emptyVersion.equals(version))
 			version = null;
 
 		Version candidate = null;
 		Version[] versions = versionMap.get(refId);
-		if(versions != null)
-		{
-			for(Version v : versions)
-			{
-				if(v == null)
+		if (versions != null) {
+			for (Version v : versions) {
+				if (v == null)
 					continue;
 
-				if(version == null)
-				{
+				if (version == null) {
 					// Highest found version wins
 					//
-					if(candidate == null || v.compareTo(candidate) > 0)
+					if (candidate == null || v.compareTo(candidate) > 0)
 						candidate = v;
 					continue;
 				}
 
-				if(VersionHelper.equalsUnqualified(version, v))
-				{
-					if(candidate == null || v.compareTo(candidate) > 0)
+				if (VersionHelper.equalsUnqualified(version, v)) {
+					if (candidate == null || v.compareTo(candidate) > 0)
 						candidate = v;
 				}
 			}
 		}
-		if(candidate == null)
+		if (candidate == null)
 			//
 			// Nothing found that can replace the version
 			//
@@ -114,17 +106,15 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 		return candidate;
 	}
 
-	static InputStream getInput(File dirOrZip, String fileName) throws CoreException, FileNotFoundException
-	{
-		if(dirOrZip.isDirectory())
+	static InputStream getInput(File dirOrZip, String fileName) throws CoreException, FileNotFoundException {
+		if (dirOrZip.isDirectory())
 			return new BufferedInputStream(new FileInputStream(new File(dirOrZip, fileName)));
 
 		JarFile jarFile = null;
-		try
-		{
+		try {
 			jarFile = new JarFile(dirOrZip);
 			JarEntry entry = jarFile.getJarEntry(fileName);
-			if(entry == null)
+			if (entry == null)
 				throw new FileNotFoundException(String.format("%s[%s]", dirOrZip, fileName)); //$NON-NLS-1$
 
 			// Closing the jarFile is hereby the responsibility of the user of
@@ -132,70 +122,52 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 			//
 			final JarFile innerJarFile = jarFile;
 			jarFile = null;
-			return new FilterInputStream(innerJarFile.getInputStream(entry))
-			{
+			return new FilterInputStream(innerJarFile.getInputStream(entry)) {
 				@Override
-				public void close() throws IOException
-				{
-					try
-					{
+				public void close() throws IOException {
+					try {
 						super.close();
-					}
-					catch(IOException e)
-					{
+					} catch (IOException e) {
 					}
 					innerJarFile.close();
 				}
 			};
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw e;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.fromMessage(e, NLS.bind(Messages.unable_to_read_0, dirOrZip));
-		}
-		finally
-		{
-			if(jarFile != null)
-			{
-				try
-				{
+		} finally {
+			if (jarFile != null) {
+				try {
 					jarFile.close();
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 					PDEPlugin.getLogger().error(e, NLS.bind(Messages.error_while_closing_0, dirOrZip));
 				}
 			}
 		}
 	}
 
-	private final File m_outputFile;
+	private final File outputFile;
 
-	private final FeatureVersionSuffixGenerator m_suffixGenerator;
+	private final FeatureVersionSuffixGenerator suffixGenerator;
 
-	private final Map<String, Version[]> m_pluginVersions = new HashMap<String, Version[]>();
+	private final Map<String, Version[]> pluginVersions = new HashMap<String, Version[]>();
 
-	private final Map<String, Version[]> m_featureVersions = new HashMap<String, Version[]>();
+	private final Map<String, Version[]> featureVersions = new HashMap<String, Version[]>();
 
-	GroupConsolidator(File outputFile, File propertiesFile, List<File> featuresAndBundles, String qualifier,
-			boolean generateVersionSuffix, int maxVersionSuffixLength, int significantDigits) throws CoreException
-	{
+	GroupConsolidator(File outputFile, File propertiesFile, List<File> featuresAndBundles, String qualifier, boolean generateVersionSuffix,
+			int maxVersionSuffixLength, int significantDigits) throws CoreException {
 		super(propertiesFile, qualifier);
-		m_outputFile = outputFile;
-		if(generateVersionSuffix)
-			m_suffixGenerator = new FeatureVersionSuffixGenerator(getIntProperty(PROPERTY_GENERATED_VERSION_LENGTH,
-					maxVersionSuffixLength), getIntProperty(PROPERTY_SIGNIFICANT_VERSION_DIGITS, significantDigits));
+		this.outputFile = outputFile;
+		if (generateVersionSuffix)
+			this.suffixGenerator = new FeatureVersionSuffixGenerator(getIntProperty(PROPERTY_GENERATED_VERSION_LENGTH, maxVersionSuffixLength),
+					getIntProperty(PROPERTY_SIGNIFICANT_VERSION_DIGITS, significantDigits));
 		else
-			m_suffixGenerator = null;
+			this.suffixGenerator = null;
 
-		for(File featureOrBundle : featuresAndBundles)
-		{
+		for (File featureOrBundle : featuresAndBundles) {
 			InputStream input = null;
-			try
-			{
+			try {
 				input = getInput(featureOrBundle, FEATURE_FILE);
 				IFeatureModel model = FeatureModelReader.readFeatureModel(input);
 				IFeature feature = model.getFeature();
@@ -203,80 +175,58 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 				String version = feature.getVersion();
 
 				int ctxQualLen = -1;
-				if(version.indexOf('-') > 0)
-				{
+				if (version.indexOf('-') > 0) {
 					IOUtils.close(input);
 					input = getInput(featureOrBundle, FEATURE_FILE);
 					ctxQualLen = EditableFeatureModel.getContextQualifierLength(input);
 				}
-				if(m_suffixGenerator != null)
-					m_suffixGenerator.addContextQualifierLength(id, ctxQualLen);
-				addVersion(m_featureVersions, id, version);
+				if (suffixGenerator != null)
+					suffixGenerator.addContextQualifierLength(id, ctxQualLen);
+				addVersion(featureVersions, id, version);
 				continue;
-			}
-			catch(FileNotFoundException e)
-			{
-			}
-			finally
-			{
+			} catch (FileNotFoundException e) {
+			} finally {
 				IOUtils.close(input);
 				input = null;
 			}
-			try
-			{
+			try {
 				input = getInput(featureOrBundle, BUNDLE_FILE);
 				ExternalBundleModel model = new ExternalBundleModel(featureOrBundle);
 				model.load(input, true);
-				IBundlePluginModelBase bmodel = model.isFragmentModel()
-						? new BundleFragmentModel()
-						: new BundlePluginModel();
+				IBundlePluginModelBase bmodel = model.isFragmentModel() ? new BundleFragmentModel() : new BundlePluginModel();
 
 				bmodel.setEnabled(true);
 				bmodel.setBundleModel(model);
 				IPluginBase pb = bmodel.getPluginBase();
 
-				addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
+				addVersion(pluginVersions, pb.getId(), pb.getVersion());
 				continue;
-			}
-			catch(FileNotFoundException e)
-			{
-			}
-			finally
-			{
+			} catch (FileNotFoundException e) {
+			} finally {
 				IOUtils.close(input);
 				input = null;
 			}
-			try
-			{
+			try {
 				input = getInput(featureOrBundle, PLUGIN_FILE);
 				ExternalPluginModel model = new ExternalPluginModel();
 				model.load(input, true);
 				IPluginBase pb = model.getPluginBase();
-				addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
+				addVersion(pluginVersions, pb.getId(), pb.getVersion());
 				continue;
-			}
-			catch(FileNotFoundException e)
-			{
-			}
-			finally
-			{
+			} catch (FileNotFoundException e) {
+			} finally {
 				IOUtils.close(input);
 				input = null;
 			}
-			try
-			{
+			try {
 				input = getInput(featureOrBundle, FRAGMENT_FILE);
 				ExternalFragmentModel model = new ExternalFragmentModel();
 				model.load(input, true);
 				IPluginBase pb = model.getPluginBase();
-				addVersion(m_pluginVersions, pb.getId(), pb.getVersion());
+				addVersion(pluginVersions, pb.getId(), pb.getVersion());
 				continue;
-			}
-			catch(FileNotFoundException e)
-			{
-			}
-			finally
-			{
+			} catch (FileNotFoundException e) {
+			} finally {
 				IOUtils.close(input);
 			}
 		}
@@ -289,47 +239,36 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 	 * @return The generated suffix or <code>null</code>
 	 * @throws CoreException
 	 */
-	String generateFeatureVersionSuffix(List<IVersionedId> features, List<IVersionedId> bundles) throws CoreException
-	{
-		return m_suffixGenerator == null
-				? null
-				: m_suffixGenerator.generateSuffix(features, bundles);
+	String generateFeatureVersionSuffix(List<IVersionedId> features, List<IVersionedId> bundles) throws CoreException {
+		return suffixGenerator == null ? null : suffixGenerator.generateSuffix(features, bundles);
 	}
 
-	Map<String, Version[]> getFeatureVersions()
-	{
-		return m_featureVersions;
+	Map<String, Version[]> getFeatureVersions() {
+		return featureVersions;
 	}
 
-	int getIntProperty(String property, int defaultValue)
-	{
+	int getIntProperty(String property, int defaultValue) {
 		int result = defaultValue;
 
 		Object value = getProperties().get(property);
-		if(value instanceof String)
-		{
-			try
-			{
-				result = Integer.parseInt((String)value);
-				if(result < 1)
+		if (value instanceof String) {
+			try {
+				result = Integer.parseInt((String) value);
+				if (result < 1)
 					// It has to be a positive integer. Use the default.
 					result = defaultValue;
-			}
-			catch(NumberFormatException e)
-			{
+			} catch (NumberFormatException e) {
 				// Leave as default value
 			}
 		}
 		return result;
 	}
 
-	File getOutputFile()
-	{
-		return m_outputFile;
+	File getOutputFile() {
+		return outputFile;
 	}
 
-	Map<String, Version[]> getPluginVersions()
-	{
-		return m_pluginVersions;
+	Map<String, Version[]> getPluginVersions() {
+		return pluginVersions;
 	}
 }

@@ -15,12 +15,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class ComponentRequestConflictException extends LocalizedException
-{
+public class ComponentRequestConflictException extends LocalizedException {
 	private static final long serialVersionUID = -1279777286044718638L;
 
-	public ComponentRequestConflictException(IComponentRequest rq1, IComponentRequest rq2)
-	{
+	public ComponentRequestConflictException(IComponentRequest rq1, IComponentRequest rq2) {
 		super(NLS.bind(Messages.Component_request_0_is_in_conflict_with_request_1, rq1, rq2));
 	}
 }

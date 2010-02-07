@@ -37,68 +37,53 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @author Thomas Hallgren
  */
-public class InvokeAction extends AbstractCSpecAction
-{
-	class ActionJob extends WorkspaceJob
-	{
-		private final List<Attribute> m_attributes;
+public class InvokeAction extends AbstractCSpecAction {
+	class ActionJob extends WorkspaceJob {
+		private final List<Attribute> attributes;
 
-		private final File m_propertiesFile;
+		private final File propertiesFile;
 
-		private boolean m_forced;
+		private boolean forced;
 
-		ActionJob(String name, List<Attribute> attributes, File propertiesFile, boolean forced)
-		{
+		ActionJob(String name, List<Attribute> attributes, File propertiesFile, boolean forced) {
 			super(name);
 			setPriority(LONG);
 			setUser(true);
 			setSystem(false);
-			m_attributes = attributes;
-			m_propertiesFile = propertiesFile;
-			m_forced = forced;
+			this.attributes = attributes;
+			this.propertiesFile = propertiesFile;
+			this.forced = forced;
 		}
 
 		@Override
-		public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException
-		{
+		public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 			IPerformManager pm = CorePlugin.getPerformManager();
 			Map<String, Object> props = null;
-			if(m_propertiesFile != null)
-			{
+			if (propertiesFile != null) {
 				BufferedInputStream input = null;
-				try
-				{
-					input = new BufferedInputStream(new FileInputStream(m_propertiesFile));
+				try {
+					input = new BufferedInputStream(new FileInputStream(propertiesFile));
 					props = new HashMap<String, Object>(new BMProperties(input));
 
 					// Replace string value "*" with the special object that
 					// match all entries
 					//
-					for(Map.Entry<String, Object> entry : props.entrySet())
-						if("*".equals(entry.getValue())) //$NON-NLS-1$
+					for (Map.Entry<String, Object> entry : props.entrySet())
+						if ("*".equals(entry.getValue())) //$NON-NLS-1$
 							entry.setValue(FilterUtils.MATCH_ALL_OBJ);
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 					return BuckminsterException.wrap(e).getStatus();
-				}
-				finally
-				{
+				} finally {
 					IOUtils.close(input);
 				}
 			}
-			try
-			{
-				return pm.perform(m_attributes, props, m_forced, false, monitor).getStatus();
-			}
-			catch(Throwable e)
-			{
+			try {
+				return pm.perform(attributes, props, forced, false, monitor).getStatus();
+			} catch (Throwable e) {
 				final IStatus status = BuckminsterException.wrap(e).getStatus();
 				CorePlugin.logWarningsAndErrors(status);
-				Display.getDefault().asyncExec(new Runnable()
-				{
-					public void run()
-					{
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
 						ErrorDialog.openError(null, Messages.action_error, null, status);
 					}
 				});
@@ -108,41 +93,34 @@ public class InvokeAction extends AbstractCSpecAction
 	}
 
 	@Override
-	protected void run(CSpec cspec, Shell shell)
-	{
+	protected void run(CSpec cspec, Shell shell) {
 		List<Attribute> viableAttributes;
-		try
-		{
+		try {
 			viableAttributes = cspec.getAttributesProducedByActions(true);
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			UiUtils.openError(shell, Messages.error_during_action_perform, e);
 			return;
 		}
 
-		InvokeActionDialog dialog = new InvokeActionDialog(shell, Messages.actions_of + cspec.getName(),
-				viableAttributes);
+		InvokeActionDialog dialog = new InvokeActionDialog(shell, Messages.actions_of + cspec.getName(), viableAttributes);
 
 		openDialog(dialog);
 
 	}
 
 	@Override
-	protected void run(Shell shell)
-	{
+	protected void run(Shell shell) {
 		InvokeActionDialog dialog = new InvokeActionDialog(shell, this);
 		openDialog(dialog);
 	}
 
-	private void openDialog(InvokeActionDialog dialog)
-	{
-		if(dialog.open() != Window.OK)
+	private void openDialog(InvokeActionDialog dialog) {
+		if (dialog.open() != Window.OK)
 			return;
 		File propertiesFile = dialog.getPropertiesFile();
 		boolean forceRebuild = dialog.isForceRebuild();
 		List<Attribute> attributes = dialog.getSelectedAttributes();
-		if(attributes == null)
+		if (attributes == null)
 			return;
 		ActionJob job = new ActionJob(attributes.get(0).getName(), attributes, propertiesFile, forceRebuild);
 		job.schedule();

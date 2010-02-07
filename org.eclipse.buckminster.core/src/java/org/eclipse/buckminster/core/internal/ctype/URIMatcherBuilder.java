@@ -19,20 +19,15 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public class URIMatcherBuilder extends AbstractResolutionBuilder
-{
-	private final ProviderMatch m_pm;
+public class URIMatcherBuilder extends AbstractResolutionBuilder {
+	private final ProviderMatch pm;
 
-	public URIMatcherBuilder(ProviderMatch pm)
-	{
-		m_pm = pm;
+	public URIMatcherBuilder(ProviderMatch pm) {
+		this.pm = pm;
 	}
 
-	public BOMNode build(IComponentReader[] rdr, boolean forResolutionAidOnly, IProgressMonitor mon)
-			throws CoreException
-	{
+	public BOMNode build(IComponentReader[] rdr, boolean forResolutionAidOnly, IProgressMonitor mon) throws CoreException {
 		MonitorUtils.complete(mon);
-		return new ResolvedNode(m_pm.getProvider().getURIMatcher().createResolution(m_pm),
-				Collections.<BOMNode> emptyList());
+		return new ResolvedNode(pm.getProvider().getURIMatcher().createResolution(pm), Collections.<BOMNode> emptyList());
 	}
 }

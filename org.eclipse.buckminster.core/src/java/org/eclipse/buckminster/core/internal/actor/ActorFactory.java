@@ -25,8 +25,7 @@ import org.eclipse.core.runtime.Platform;
  * @author kolwing
  * 
  */
-public class ActorFactory
-{
+public class ActorFactory {
 	public static final String ACTOR_ID_ATTR = "ID"; //$NON-NLS-1$
 
 	public static final String ACTOR_CLASS_ATTR = "class"; //$NON-NLS-1$
@@ -37,46 +36,42 @@ public class ActorFactory
 
 	public static final String INTERNAL_ACTOR_ATTR = "actor"; //$NON-NLS-1$
 
-	private static ActorFactory s_instance = null;
+	private static ActorFactory instance = null;
 
-	public synchronized static ActorFactory getInstance()
-	{
-		if(s_instance == null)
-			s_instance = new ActorFactory();
-		return s_instance;
+	public synchronized static ActorFactory getInstance() {
+		if (instance == null)
+			instance = new ActorFactory();
+		return instance;
 	}
 
-	private final Map<String, String> m_fixedActionActorMappings;
+	private final Map<String, String> fixedActionActorMappings;
 
-	private final Map<IAction, IActor> m_liveActors = new HashMap<IAction, IActor>();
+	private final Map<IAction, IActor> liveActors = new HashMap<IAction, IActor>();
 
 	// only the one instance created inside the class
 	//
-	private ActorFactory()
-	{
+	private ActorFactory() {
 		// fill the fixed mapping and as a nice touch, make it unmodifiable
 		//
 		Map<String, String> mappings = new HashMap<String, String>();
 		mappings.put(WellknownActions.ECLIPSE.CLEAN.toString(), EclipseCleanActor.ID);
 		mappings.put(WellknownActions.ECLIPSE.BUILD.toString(), EclipseBuildActor.ID);
-		m_fixedActionActorMappings = Collections.unmodifiableMap(mappings);
+		fixedActionActorMappings = Collections.unmodifiableMap(mappings);
 	}
 
-	public String findInternalActionActorName(String actionName) throws CoreException
-	{
+	public String findInternalActionActorName(String actionName) throws CoreException {
 		// first try the fixed mappings
 		//
 
-		String aname = m_fixedActionActorMappings.get(actionName);
-		if(aname != null)
+		String aname = fixedActionActorMappings.get(actionName);
+		if (aname != null)
 			return aname;
 
 		// not a fixed wellknown - check if someone has provided an extension
 		// for it
 		//
-		for(IConfigurationElement elem : Platform.getExtensionRegistry().getConfigurationElementsFor(
-				CorePlugin.INTERNAL_ACTORS_POINT))
-			if(elem.getAttribute(INTERNAL_ACTION_ATTR).equals(actionName))
+		for (IConfigurationElement elem : Platform.getExtensionRegistry().getConfigurationElementsFor(CorePlugin.INTERNAL_ACTORS_POINT))
+			if (elem.getAttribute(INTERNAL_ACTION_ATTR).equals(actionName))
 				return elem.getAttribute(INTERNAL_ACTOR_ATTR);
 
 		// sorry, it's neither here nor there...
@@ -84,12 +79,11 @@ public class ActorFactory
 		return null;
 	}
 
-	public synchronized IActor getActor(IAction action) throws CoreException
-	{
+	public synchronized IActor getActor(IAction action) throws CoreException {
 		// try to find an existing actor for the component/action...
 		//
-		IActor actor = m_liveActors.get(action);
-		if(actor != null)
+		IActor actor = liveActors.get(action);
+		if (actor != null)
 			return actor;
 
 		// if we're here it means that there was no actor (or maybe not
@@ -100,25 +94,23 @@ public class ActorFactory
 
 		String actorName = action.getActorName();
 		actor = this.internalCreateActor(actorName);
-		if(actor == null)
+		if (actor == null)
 			throw new NoSuchActorException(actorName, action.toString());
 
 		// ensure the new actor is done right after creation
 		//
-		actor.init((Action)action);
+		actor.init((Action) action);
 
 		// now we can stuff the actor into the map(s)
 		//
-		m_liveActors.put(action, actor);
+		liveActors.put(action, actor);
 		return actor;
 	}
 
-	private IActor internalCreateActor(String actorName) throws CoreException
-	{
-		for(IConfigurationElement elem : Platform.getExtensionRegistry().getConfigurationElementsFor(
-				CorePlugin.ACTORS_POINT))
-			if(elem.getAttribute(ACTOR_ID_ATTR).equals(actorName))
-				return (IActor)elem.createExecutableExtension(ACTOR_CLASS_ATTR);
+	private IActor internalCreateActor(String actorName) throws CoreException {
+		for (IConfigurationElement elem : Platform.getExtensionRegistry().getConfigurationElementsFor(CorePlugin.ACTORS_POINT))
+			if (elem.getAttribute(ACTOR_ID_ATTR).equals(actorName))
+				return (IActor) elem.createExecutableExtension(ACTOR_CLASS_ATTR);
 		return null;
 	}
 }

@@ -23,28 +23,38 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Prerequisite</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Prerequisite</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getComponent <em>Component</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getAttribute <em>Attribute</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getAlias <em>Alias</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#isContributor <em>Contributor</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#isOptional <em>Optional</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getFilter <em>Filter</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getIncludePattern <em>Include Pattern</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getExcludePattern <em>Exclude Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getComponent
+ * <em>Component</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getAttribute
+ * <em>Attribute</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getAlias <em>
+ * Alias</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#isContributor
+ * <em>Contributor</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#isOptional
+ * <em>Optional</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getFilter <em>
+ * Filter</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getIncludePattern
+ * <em>Include Pattern</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.cspec.impl.PrerequisiteImpl#getExcludePattern
+ * <em>Exclude Pattern</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
-{
+public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	/**
-	 * The cached value of the '{@link #getComponent() <em>Component</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getComponent() <em>Component</em>}'
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getComponent()
 	 * @generated
@@ -53,8 +63,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected ComponentRequest component;
 
 	/**
-	 * The default value of the '{@link #getAttribute() <em>Attribute</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getAttribute() <em>Attribute</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAttribute()
 	 * @generated
@@ -63,8 +73,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected static final String ATTRIBUTE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getAttribute() <em>Attribute</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getAttribute() <em>Attribute</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAttribute()
 	 * @generated
@@ -73,8 +83,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected String attribute = ATTRIBUTE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getAlias() <em>Alias</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getAlias() <em>Alias</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAlias()
 	 * @generated
@@ -83,8 +93,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected static final String ALIAS_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getAlias() <em>Alias</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * The cached value of the '{@link #getAlias() <em>Alias</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAlias()
 	 * @generated
@@ -93,8 +103,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected String alias = ALIAS_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isContributor() <em>Contributor</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #isContributor() <em>Contributor</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isContributor()
 	 * @generated
@@ -103,8 +113,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected static final boolean CONTRIBUTOR_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #isContributor() <em>Contributor</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #isContributor() <em>Contributor</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isContributor()
 	 * @generated
@@ -113,8 +123,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected boolean contributor = CONTRIBUTOR_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isOptional() <em>Optional</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #isOptional() <em>Optional</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isOptional()
 	 * @generated
@@ -123,8 +133,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected static final boolean OPTIONAL_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isOptional() <em>Optional</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #isOptional() <em>Optional</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #isOptional()
 	 * @generated
@@ -133,8 +143,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected boolean optional = OPTIONAL_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getFilter() <em>Filter</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -143,8 +153,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected static final Filter FILTER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getFilter()
 	 * @generated
@@ -153,8 +163,9 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected Filter filter = FILTER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getIncludePattern() <em>Include Pattern</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getIncludePattern()
+	 * <em>Include Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getIncludePattern()
 	 * @generated
@@ -163,8 +174,9 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected static final Pattern INCLUDE_PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getIncludePattern() <em>Include Pattern</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getIncludePattern()
+	 * <em>Include Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getIncludePattern()
 	 * @generated
@@ -173,8 +185,9 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected Pattern includePattern = INCLUDE_PATTERN_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getExcludePattern() <em>Exclude Pattern</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getExcludePattern()
+	 * <em>Exclude Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getExcludePattern()
 	 * @generated
@@ -183,8 +196,9 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	protected static final Pattern EXCLUDE_PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getExcludePattern() <em>Exclude Pattern</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getExcludePattern()
+	 * <em>Exclude Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getExcludePattern()
 	 * @generated
@@ -197,8 +211,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	protected PrerequisiteImpl()
-	{
+	protected PrerequisiteImpl() {
 		super();
 	}
 
@@ -207,8 +220,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public ComponentRequest basicGetComponent()
-	{
+	public ComponentRequest basicGetComponent() {
 		return component;
 	}
 
@@ -218,28 +230,26 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.PREREQUISITE__COMPONENT:
-			if(resolve)
-				return getComponent();
-			return basicGetComponent();
-		case CspecPackage.PREREQUISITE__ATTRIBUTE:
-			return getAttribute();
-		case CspecPackage.PREREQUISITE__ALIAS:
-			return getAlias();
-		case CspecPackage.PREREQUISITE__CONTRIBUTOR:
-			return isContributor();
-		case CspecPackage.PREREQUISITE__OPTIONAL:
-			return isOptional();
-		case CspecPackage.PREREQUISITE__FILTER:
-			return getFilter();
-		case CspecPackage.PREREQUISITE__INCLUDE_PATTERN:
-			return getIncludePattern();
-		case CspecPackage.PREREQUISITE__EXCLUDE_PATTERN:
-			return getExcludePattern();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CspecPackage.PREREQUISITE__COMPONENT:
+				if (resolve)
+					return getComponent();
+				return basicGetComponent();
+			case CspecPackage.PREREQUISITE__ATTRIBUTE:
+				return getAttribute();
+			case CspecPackage.PREREQUISITE__ALIAS:
+				return getAlias();
+			case CspecPackage.PREREQUISITE__CONTRIBUTOR:
+				return isContributor();
+			case CspecPackage.PREREQUISITE__OPTIONAL:
+				return isOptional();
+			case CspecPackage.PREREQUISITE__FILTER:
+				return getFilter();
+			case CspecPackage.PREREQUISITE__INCLUDE_PATTERN:
+				return getIncludePattern();
+			case CspecPackage.PREREQUISITE__EXCLUDE_PATTERN:
+				return getExcludePattern();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -250,36 +260,24 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.PREREQUISITE__COMPONENT:
-			return component != null;
-		case CspecPackage.PREREQUISITE__ATTRIBUTE:
-			return ATTRIBUTE_EDEFAULT == null
-					? attribute != null
-					: !ATTRIBUTE_EDEFAULT.equals(attribute);
-		case CspecPackage.PREREQUISITE__ALIAS:
-			return ALIAS_EDEFAULT == null
-					? alias != null
-					: !ALIAS_EDEFAULT.equals(alias);
-		case CspecPackage.PREREQUISITE__CONTRIBUTOR:
-			return contributor != CONTRIBUTOR_EDEFAULT;
-		case CspecPackage.PREREQUISITE__OPTIONAL:
-			return optional != OPTIONAL_EDEFAULT;
-		case CspecPackage.PREREQUISITE__FILTER:
-			return FILTER_EDEFAULT == null
-					? filter != null
-					: !FILTER_EDEFAULT.equals(filter);
-		case CspecPackage.PREREQUISITE__INCLUDE_PATTERN:
-			return INCLUDE_PATTERN_EDEFAULT == null
-					? includePattern != null
-					: !INCLUDE_PATTERN_EDEFAULT.equals(includePattern);
-		case CspecPackage.PREREQUISITE__EXCLUDE_PATTERN:
-			return EXCLUDE_PATTERN_EDEFAULT == null
-					? excludePattern != null
-					: !EXCLUDE_PATTERN_EDEFAULT.equals(excludePattern);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case CspecPackage.PREREQUISITE__COMPONENT:
+				return component != null;
+			case CspecPackage.PREREQUISITE__ATTRIBUTE:
+				return ATTRIBUTE_EDEFAULT == null ? attribute != null : !ATTRIBUTE_EDEFAULT.equals(attribute);
+			case CspecPackage.PREREQUISITE__ALIAS:
+				return ALIAS_EDEFAULT == null ? alias != null : !ALIAS_EDEFAULT.equals(alias);
+			case CspecPackage.PREREQUISITE__CONTRIBUTOR:
+				return contributor != CONTRIBUTOR_EDEFAULT;
+			case CspecPackage.PREREQUISITE__OPTIONAL:
+				return optional != OPTIONAL_EDEFAULT;
+			case CspecPackage.PREREQUISITE__FILTER:
+				return FILTER_EDEFAULT == null ? filter != null : !FILTER_EDEFAULT.equals(filter);
+			case CspecPackage.PREREQUISITE__INCLUDE_PATTERN:
+				return INCLUDE_PATTERN_EDEFAULT == null ? includePattern != null : !INCLUDE_PATTERN_EDEFAULT.equals(includePattern);
+			case CspecPackage.PREREQUISITE__EXCLUDE_PATTERN:
+				return EXCLUDE_PATTERN_EDEFAULT == null ? excludePattern != null : !EXCLUDE_PATTERN_EDEFAULT.equals(excludePattern);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -290,34 +288,32 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.PREREQUISITE__COMPONENT:
-			setComponent((ComponentRequest)newValue);
-			return;
-		case CspecPackage.PREREQUISITE__ATTRIBUTE:
-			setAttribute((String)newValue);
-			return;
-		case CspecPackage.PREREQUISITE__ALIAS:
-			setAlias((String)newValue);
-			return;
-		case CspecPackage.PREREQUISITE__CONTRIBUTOR:
-			setContributor((Boolean)newValue);
-			return;
-		case CspecPackage.PREREQUISITE__OPTIONAL:
-			setOptional((Boolean)newValue);
-			return;
-		case CspecPackage.PREREQUISITE__FILTER:
-			setFilter((Filter)newValue);
-			return;
-		case CspecPackage.PREREQUISITE__INCLUDE_PATTERN:
-			setIncludePattern((Pattern)newValue);
-			return;
-		case CspecPackage.PREREQUISITE__EXCLUDE_PATTERN:
-			setExcludePattern((Pattern)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case CspecPackage.PREREQUISITE__COMPONENT:
+				setComponent((ComponentRequest) newValue);
+				return;
+			case CspecPackage.PREREQUISITE__ATTRIBUTE:
+				setAttribute((String) newValue);
+				return;
+			case CspecPackage.PREREQUISITE__ALIAS:
+				setAlias((String) newValue);
+				return;
+			case CspecPackage.PREREQUISITE__CONTRIBUTOR:
+				setContributor((Boolean) newValue);
+				return;
+			case CspecPackage.PREREQUISITE__OPTIONAL:
+				setOptional((Boolean) newValue);
+				return;
+			case CspecPackage.PREREQUISITE__FILTER:
+				setFilter((Filter) newValue);
+				return;
+			case CspecPackage.PREREQUISITE__INCLUDE_PATTERN:
+				setIncludePattern((Pattern) newValue);
+				return;
+			case CspecPackage.PREREQUISITE__EXCLUDE_PATTERN:
+				setExcludePattern((Pattern) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -328,34 +324,32 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.PREREQUISITE__COMPONENT:
-			setComponent((ComponentRequest)null);
-			return;
-		case CspecPackage.PREREQUISITE__ATTRIBUTE:
-			setAttribute(ATTRIBUTE_EDEFAULT);
-			return;
-		case CspecPackage.PREREQUISITE__ALIAS:
-			setAlias(ALIAS_EDEFAULT);
-			return;
-		case CspecPackage.PREREQUISITE__CONTRIBUTOR:
-			setContributor(CONTRIBUTOR_EDEFAULT);
-			return;
-		case CspecPackage.PREREQUISITE__OPTIONAL:
-			setOptional(OPTIONAL_EDEFAULT);
-			return;
-		case CspecPackage.PREREQUISITE__FILTER:
-			setFilter(FILTER_EDEFAULT);
-			return;
-		case CspecPackage.PREREQUISITE__INCLUDE_PATTERN:
-			setIncludePattern(INCLUDE_PATTERN_EDEFAULT);
-			return;
-		case CspecPackage.PREREQUISITE__EXCLUDE_PATTERN:
-			setExcludePattern(EXCLUDE_PATTERN_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case CspecPackage.PREREQUISITE__COMPONENT:
+				setComponent((ComponentRequest) null);
+				return;
+			case CspecPackage.PREREQUISITE__ATTRIBUTE:
+				setAttribute(ATTRIBUTE_EDEFAULT);
+				return;
+			case CspecPackage.PREREQUISITE__ALIAS:
+				setAlias(ALIAS_EDEFAULT);
+				return;
+			case CspecPackage.PREREQUISITE__CONTRIBUTOR:
+				setContributor(CONTRIBUTOR_EDEFAULT);
+				return;
+			case CspecPackage.PREREQUISITE__OPTIONAL:
+				setOptional(OPTIONAL_EDEFAULT);
+				return;
+			case CspecPackage.PREREQUISITE__FILTER:
+				setFilter(FILTER_EDEFAULT);
+				return;
+			case CspecPackage.PREREQUISITE__INCLUDE_PATTERN:
+				setIncludePattern(INCLUDE_PATTERN_EDEFAULT);
+				return;
+			case CspecPackage.PREREQUISITE__EXCLUDE_PATTERN:
+				setExcludePattern(EXCLUDE_PATTERN_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -365,8 +359,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public String getAlias()
-	{
+	public String getAlias() {
 		return alias;
 	}
 
@@ -375,8 +368,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public String getAttribute()
-	{
+	public String getAttribute() {
 		return attribute;
 	}
 
@@ -385,17 +377,13 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public ComponentRequest getComponent()
-	{
-		if(component != null && component.eIsProxy())
-		{
-			InternalEObject oldComponent = (InternalEObject)component;
-			component = (ComponentRequest)eResolveProxy(oldComponent);
-			if(component != oldComponent)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CspecPackage.PREREQUISITE__COMPONENT,
-							oldComponent, component));
+	public ComponentRequest getComponent() {
+		if (component != null && component.eIsProxy()) {
+			InternalEObject oldComponent = (InternalEObject) component;
+			component = (ComponentRequest) eResolveProxy(oldComponent);
+			if (component != oldComponent) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CspecPackage.PREREQUISITE__COMPONENT, oldComponent, component));
 			}
 		}
 		return component;
@@ -406,8 +394,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public Pattern getExcludePattern()
-	{
+	public Pattern getExcludePattern() {
 		return excludePattern;
 	}
 
@@ -416,8 +403,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public Filter getFilter()
-	{
+	public Filter getFilter() {
 		return filter;
 	}
 
@@ -426,8 +412,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public Pattern getIncludePattern()
-	{
+	public Pattern getIncludePattern() {
 		return includePattern;
 	}
 
@@ -436,8 +421,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public boolean isContributor()
-	{
+	public boolean isContributor() {
 		return contributor;
 	}
 
@@ -446,8 +430,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public boolean isOptional()
-	{
+	public boolean isOptional() {
 		return optional;
 	}
 
@@ -456,11 +439,10 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public void setAlias(String newAlias)
-	{
+	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__ALIAS, oldAlias, alias));
 	}
 
@@ -469,13 +451,11 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public void setAttribute(String newAttribute)
-	{
+	public void setAttribute(String newAttribute) {
 		String oldAttribute = attribute;
 		attribute = newAttribute;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__ATTRIBUTE, oldAttribute,
-					attribute));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__ATTRIBUTE, oldAttribute, attribute));
 	}
 
 	/**
@@ -483,13 +463,11 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public void setComponent(ComponentRequest newComponent)
-	{
+	public void setComponent(ComponentRequest newComponent) {
 		ComponentRequest oldComponent = component;
 		component = newComponent;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__COMPONENT, oldComponent,
-					component));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__COMPONENT, oldComponent, component));
 	}
 
 	/**
@@ -497,13 +475,11 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public void setContributor(boolean newContributor)
-	{
+	public void setContributor(boolean newContributor) {
 		boolean oldContributor = contributor;
 		contributor = newContributor;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__CONTRIBUTOR,
-					oldContributor, contributor));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__CONTRIBUTOR, oldContributor, contributor));
 	}
 
 	/**
@@ -511,13 +487,11 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public void setExcludePattern(Pattern newExcludePattern)
-	{
+	public void setExcludePattern(Pattern newExcludePattern) {
 		Pattern oldExcludePattern = excludePattern;
 		excludePattern = newExcludePattern;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__EXCLUDE_PATTERN,
-					oldExcludePattern, excludePattern));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__EXCLUDE_PATTERN, oldExcludePattern, excludePattern));
 	}
 
 	/**
@@ -525,11 +499,10 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public void setFilter(Filter newFilter)
-	{
+	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__FILTER, oldFilter, filter));
 	}
 
@@ -538,13 +511,11 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public void setIncludePattern(Pattern newIncludePattern)
-	{
+	public void setIncludePattern(Pattern newIncludePattern) {
 		Pattern oldIncludePattern = includePattern;
 		includePattern = newIncludePattern;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__INCLUDE_PATTERN,
-					oldIncludePattern, includePattern));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__INCLUDE_PATTERN, oldIncludePattern, includePattern));
 	}
 
 	/**
@@ -552,13 +523,11 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * 
 	 * @generated
 	 */
-	public void setOptional(boolean newOptional)
-	{
+	public void setOptional(boolean newOptional) {
 		boolean oldOptional = optional;
 		optional = newOptional;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__OPTIONAL, oldOptional,
-					optional));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.PREREQUISITE__OPTIONAL, oldOptional, optional));
 	}
 
 	/**
@@ -567,9 +536,8 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -597,8 +565,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.PREREQUISITE;
 	}
 

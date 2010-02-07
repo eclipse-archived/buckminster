@@ -13,111 +13,93 @@ import org.eclipse.buckminster.sax.ISaxableElement;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class FlowHandler extends ChildHandler implements ChildPoppedListener
-{
-	private static final ISaxableElement[] s_noChildren = new ISaxableElement[0];
+public class FlowHandler extends ChildHandler implements ChildPoppedListener {
+	private static final ISaxableElement[] noChildren = new ISaxableElement[0];
 
-	private final String m_localName;
+	private final String localName;
 
-	private String[] m_keyValuePairs;
+	private String[] keyValuePairs;
 
-	private ArrayList<ISaxableElement> m_elements;
+	private ArrayList<ISaxableElement> elements;
 
-	private StringBuilder m_text;
+	private StringBuilder text;
 
-	protected FlowHandler(AbstractHandler parentHandler, String localName)
-	{
+	protected FlowHandler(AbstractHandler parentHandler, String localName) {
 		super(parentHandler);
-		m_localName = localName;
+		this.localName = localName;
 	}
 
 	@Override
-	public void characters(char[] chars, int start, int length) throws SAXException
-	{
-		if(length == 0)
+	public void characters(char[] chars, int start, int length) throws SAXException {
+		if (length == 0)
 			return;
 
-		if(m_text == null)
-			m_text = new StringBuilder();
-		m_text.append(chars, start, length);
+		if (text == null)
+			text = new StringBuilder();
+		text.append(chars, start, length);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		addElement(((FlowHandler)child).createElement());
+	public void childPopped(ChildHandler child) throws SAXException {
+		addElement(((FlowHandler) child).createElement());
 	}
 
-	public Flow createElement()
-	{
+	public Flow createElement() {
 		addTextIfAny();
-		ISaxableElement[] children = (m_elements == null)
-				? s_noChildren
-				: m_elements.toArray(new ISaxableElement[m_elements.size()]);
+		ISaxableElement[] children = (elements == null) ? noChildren : elements.toArray(new ISaxableElement[elements.size()]);
 
-		return createFlowElement(m_localName, m_keyValuePairs, children);
+		return createFlowElement(localName, keyValuePairs, children);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String name, Attributes attrs) throws SAXException {
 		addTextIfAny();
-		return new FlowHandler(this, localName);
+		return new FlowHandler(this, name);
 	}
 
 	@Override
-	public String getTAG()
-	{
-		return m_localName;
+	public String getTAG() {
+		return localName;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs)
-	{
+	public void handleAttributes(Attributes attrs) {
 		int numAttrs = attrs.getLength();
-		if(m_elements != null)
-			m_elements.clear();
-		if(m_text != null)
-			m_text.setLength(0);
-		if(numAttrs > 0)
-		{
-			m_keyValuePairs = new String[numAttrs * 2];
-			for(int idx = 0; idx < numAttrs; ++idx)
-			{
+		if (elements != null)
+			elements.clear();
+		if (text != null)
+			text.setLength(0);
+		if (numAttrs > 0) {
+			keyValuePairs = new String[numAttrs * 2];
+			for (int idx = 0; idx < numAttrs; ++idx) {
 				int kaIdx = idx * 2;
-				m_keyValuePairs[kaIdx] = attrs.getLocalName(idx);
-				m_keyValuePairs[kaIdx + 1] = attrs.getValue(idx);
+				keyValuePairs[kaIdx] = attrs.getLocalName(idx);
+				keyValuePairs[kaIdx + 1] = attrs.getValue(idx);
 			}
-		}
-		else
-			m_keyValuePairs = Trivial.EMPTY_STRING_ARRAY;
+		} else
+			keyValuePairs = Trivial.EMPTY_STRING_ARRAY;
 	}
 
-	Flow createFlowElement(String localName, String[] keyValuePairs, ISaxableElement[] children)
-	{
-		return (keyValuePairs.length == 0)
-				? new Flow(localName, children)
-				: new FlowWithAttributes(localName, children, keyValuePairs);
+	Flow createFlowElement(String name, String[] keyValPairs, ISaxableElement[] children) {
+		return (keyValPairs.length == 0) ? new Flow(name, children) : new FlowWithAttributes(name, children, keyValPairs);
 	}
 
-	private void addElement(ISaxableElement element)
-	{
-		if(m_elements == null)
-			m_elements = new ArrayList<ISaxableElement>();
-		m_elements.add(element);
+	private void addElement(ISaxableElement element) {
+		if (elements == null)
+			elements = new ArrayList<ISaxableElement>();
+		elements.add(element);
 	}
 
-	private void addTextIfAny()
-	{
-		if(m_text == null)
+	private void addTextIfAny() {
+		if (text == null)
 			return;
 
-		int textLen = m_text.length();
-		if(textLen == 0)
+		int textLen = text.length();
+		if (textLen == 0)
 			return;
 
 		char[] buf = new char[textLen];
-		m_text.getChars(0, textLen, buf, 0);
+		text.getChars(0, textLen, buf, 0);
 		addElement(new Text(buf));
-		m_text.setLength(0);
+		text.setLength(0);
 	}
 }

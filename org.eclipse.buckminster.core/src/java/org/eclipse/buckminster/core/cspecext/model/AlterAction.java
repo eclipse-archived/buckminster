@@ -26,8 +26,7 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class AlterAction extends AlterAttribute<Action>
-{
+public class AlterAction extends AlterAttribute<Action> {
 	public static final String ELEM_ALTER_PREREQUISITES = "alterPrerequisites"; //$NON-NLS-1$
 
 	public static final String ELEM_ALTER_ACTOR_PROPERTIES = "alterActorProperties"; //$NON-NLS-1$
@@ -40,47 +39,43 @@ public class AlterAction extends AlterAttribute<Action>
 
 	public static final String ELEM_REMOVE_ATTRIBUTE = "removeAttribute"; //$NON-NLS-1$
 
-	private final Map<String, String> m_alteredActorProperties;
+	private final Map<String, String> alteredActorProperties;
 
-	private final Set<String> m_removedActorProperties;
+	private final Set<String> removedActorProperties;
 
-	private final Map<String, String> m_alteredProperties;
+	private final Map<String, String> alteredProperties;
 
-	private final Set<String> m_removedProperties;
+	private final Set<String> removedProperties;
 
-	private final Set<IPath> m_removedPaths;
+	private final Set<IPath> removedPaths;
 
-	private final Map<String, Prerequisite> m_alteredPrerequisites;
+	private final Map<String, Prerequisite> alteredPrerequisites;
 
-	private final Set<String> m_removedPrerequisites;
+	private final Set<String> removedPrerequisites;
 
-	public AlterAction(Action base, Set<String> removedHints, Map<String, String> alteredHints,
-			Set<String> removedPrerequisites, Map<String, Prerequisite> alteredPrerequisites,
-			Set<String> removedActorProperties, Map<String, String> alteredActorProperties,
-			Set<String> removedProperties, Map<String, String> alteredProperties, Set<IPath> removedPaths)
-	{
+	public AlterAction(Action base, Set<String> removedHints, Map<String, String> alteredHints, Set<String> removedPrerequisites,
+			Map<String, Prerequisite> alteredPrerequisites, Set<String> removedActorProperties, Map<String, String> alteredActorProperties,
+			Set<String> removedProperties, Map<String, String> alteredProperties, Set<IPath> removedPaths) {
 		super(base, removedHints, alteredHints);
-		m_alteredPrerequisites = Utils.createUnmodifiableMap(alteredPrerequisites);
-		m_removedPrerequisites = Utils.createUnmodifiableSet(removedPrerequisites);
-		m_alteredActorProperties = ExpandingProperties.createUnmodifiableProperties(alteredActorProperties);
-		m_removedActorProperties = Utils.createUnmodifiableSet(removedActorProperties);
-		m_alteredProperties = ExpandingProperties.createUnmodifiableProperties(alteredProperties);
-		m_removedProperties = Utils.createUnmodifiableSet(removedProperties);
-		m_removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
+		this.alteredPrerequisites = Utils.createUnmodifiableMap(alteredPrerequisites);
+		this.removedPrerequisites = Utils.createUnmodifiableSet(removedPrerequisites);
+		this.alteredActorProperties = ExpandingProperties.createUnmodifiableProperties(alteredActorProperties);
+		this.removedActorProperties = Utils.createUnmodifiableSet(removedActorProperties);
+		this.alteredProperties = ExpandingProperties.createUnmodifiableProperties(alteredProperties);
+		this.removedProperties = Utils.createUnmodifiableSet(removedProperties);
+		this.removedPaths = CSpec.createUnmodifiablePaths(removedPaths);
 	}
 
 	@Override
-	public void alterAttribute(TopLevelAttributeBuilder attrBld) throws CoreException
-	{
-		if(!(attrBld instanceof ActionBuilder))
+	public void alterAttribute(TopLevelAttributeBuilder attrBld) throws CoreException {
+		if (!(attrBld instanceof ActionBuilder))
 			throw BuckminsterException.fromMessage("%s is not an action", attrBld.getQualifiedName()); //$NON-NLS-1$
 
-		ActionBuilder actionBld = (ActionBuilder)attrBld;
+		ActionBuilder actionBld = (ActionBuilder) attrBld;
 		IAction base = getBase();
 
 		GroupBuilder groupBld = actionBld.getPrerequisitesBuilder();
-		AlterGroup ag = new AlterGroup(this.getBase().getPrerequisiteGroup(), null, null, m_removedPrerequisites,
-				m_alteredPrerequisites);
+		AlterGroup ag = new AlterGroup(this.getBase().getPrerequisiteGroup(), null, null, removedPrerequisites, alteredPrerequisites);
 		ag.alterAttribute(groupBld);
 
 		alterProductPaths(actionBld);
@@ -92,21 +87,17 @@ public class AlterAction extends AlterAttribute<Action>
 		actionBld.setProductBase(CSpecExtension.overrideCheckNull(actionBld.getProductBase(), base.getProductBase()));
 	}
 
-	protected void alterActorProperties(ActionBuilder original) throws CoreException
-	{
+	protected void alterActorProperties(ActionBuilder original) throws CoreException {
 		performPropertyAlterations(original.getCSpecName(), original.getName(), "actorProperty", original //$NON-NLS-1$
-		.getActorProperties(), m_alteredActorProperties, this.getBase().getActorProperties(), m_removedActorProperties);
+				.getActorProperties(), alteredActorProperties, this.getBase().getActorProperties(), removedActorProperties);
 	}
 
-	protected void alterProductPaths(ActionBuilder original) throws CoreException
-	{
-		alterPaths(original.getCSpecName(), original.getName(), original.getProductPaths(),
-				getBase().getProductPaths(), m_removedPaths);
+	protected void alterProductPaths(ActionBuilder original) throws CoreException {
+		alterPaths(original.getCSpecName(), original.getName(), original.getProductPaths(), getBase().getProductPaths(), removedPaths);
 	}
 
-	protected void alterProperties(ActionBuilder original) throws CoreException
-	{
+	protected void alterProperties(ActionBuilder original) throws CoreException {
 		performPropertyAlterations(original.getCSpecName(), original.getName(), "property", original.getProperties(), //$NON-NLS-1$
-				m_alteredProperties, this.getBase().getProperties(), m_removedProperties);
+				alteredProperties, this.getBase().getProperties(), removedProperties);
 	}
 }

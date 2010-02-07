@@ -14,31 +14,25 @@ import java.io.PrintStream;
  * 
  * @author Guillaume CHATELET
  */
-final class StreamGobblerRedirector extends Thread
-{
-	private final InputStream m_is;
+final class StreamGobblerRedirector extends Thread {
+	private final InputStream is;
 
-	private final PrintStream m_os;
+	private final PrintStream os;
 
-	StreamGobblerRedirector(InputStream is, PrintStream os)
-	{
-		m_is = is;
-		m_os = os;
+	StreamGobblerRedirector(InputStream is, PrintStream os) {
+		this.is = is;
+		this.os = os;
 	}
 
 	@Override
-	public void run()
-	{
-		try
-		{
-			final InputStreamReader isr = new InputStreamReader(m_is);
+	public void run() {
+		try {
+			final InputStreamReader isr = new InputStreamReader(is);
 			final BufferedReader bufferedReader = new BufferedReader(isr);
 			String readLine;
-			while((readLine = bufferedReader.readLine()) != null)
-				m_os.println(readLine);
-		}
-		catch(IOException ioe)
-		{
+			while ((readLine = bufferedReader.readLine()) != null)
+				os.println(readLine);
+		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
 	}

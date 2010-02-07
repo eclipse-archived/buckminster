@@ -29,31 +29,42 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Materialization Directive</b></em>'. <!--
- * end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Materialization Directive</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getDocumentation <em>Documentation</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getPropertyGroup <em>Property Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getProperties <em>Properties</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getConflictResolution <em>Conflict
- * Resolution</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getInstallLocation <em>Install Location
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getMaterializer <em>Materializer</em>}</li>
- * <li>{@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getWorkspaceLocation <em>Workspace
- * Location</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getDocumentation
+ * <em>Documentation</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getPropertyGroup
+ * <em>Property Group</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getProperties
+ * <em>Properties</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getConflictResolution
+ * <em>Conflict Resolution</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getInstallLocation
+ * <em>Install Location </em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getMaterializer
+ * <em>Materializer</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getWorkspaceLocation
+ * <em>Workspace Location</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class MaterializationDirectiveImpl extends EObjectImpl implements MaterializationDirective
-{
+public class MaterializationDirectiveImpl extends EObjectImpl implements MaterializationDirective {
 	/**
-	 * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' containment reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getDocumentation()
+	 * <em>Documentation</em>}' containment reference. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
 	 * @see #getDocumentation()
 	 * @generated
@@ -62,8 +73,9 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	protected Documentation documentation;
 
 	/**
-	 * The cached value of the '{@link #getPropertyGroup() <em>Property Group</em>}' attribute list. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getPropertyGroup()
+	 * <em>Property Group</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getPropertyGroup()
 	 * @generated
@@ -72,8 +84,9 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	protected FeatureMap propertyGroup;
 
 	/**
-	 * The default value of the '{@link #getConflictResolution() <em>Conflict Resolution</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getConflictResolution()
+	 * <em>Conflict Resolution</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getConflictResolution()
 	 * @generated
@@ -82,8 +95,9 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	protected static final ConflictResolution CONFLICT_RESOLUTION_EDEFAULT = ConflictResolution.UPDATE;
 
 	/**
-	 * The cached value of the '{@link #getConflictResolution() <em>Conflict Resolution</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getConflictResolution()
+	 * <em>Conflict Resolution</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getConflictResolution()
 	 * @generated
@@ -92,8 +106,9 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	protected ConflictResolution conflictResolution = CONFLICT_RESOLUTION_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getInstallLocation() <em>Install Location</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getInstallLocation()
+	 * <em>Install Location</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getInstallLocation()
 	 * @generated
@@ -102,8 +117,9 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	protected static final String INSTALL_LOCATION_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getInstallLocation() <em>Install Location</em>}' attribute. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getInstallLocation()
+	 * <em>Install Location</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getInstallLocation()
 	 * @generated
@@ -112,8 +128,9 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	protected String installLocation = INSTALL_LOCATION_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getMaterializer() <em>Materializer</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The default value of the '{@link #getMaterializer()
+	 * <em>Materializer</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getMaterializer()
 	 * @generated
@@ -122,8 +139,8 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	protected static final String MATERIALIZER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getMaterializer() <em>Materializer</em>}' attribute. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The cached value of the '{@link #getMaterializer() <em>Materializer</em>}
+	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getMaterializer()
 	 * @generated
@@ -132,8 +149,9 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	protected String materializer = MATERIALIZER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getWorkspaceLocation() <em>Workspace Location</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getWorkspaceLocation()
+	 * <em>Workspace Location</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getWorkspaceLocation()
 	 * @generated
@@ -142,8 +160,9 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	protected static final String WORKSPACE_LOCATION_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getWorkspaceLocation() <em>Workspace Location</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getWorkspaceLocation()
+	 * <em>Workspace Location</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @see #getWorkspaceLocation()
 	 * @generated
@@ -156,8 +175,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	protected MaterializationDirectiveImpl()
-	{
+	protected MaterializationDirectiveImpl() {
 		super();
 	}
 
@@ -166,15 +184,13 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs)
-	{
+	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs) {
 		Documentation oldDocumentation = documentation;
 		documentation = newDocumentation;
-		if(eNotificationRequired())
-		{
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-					MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION, oldDocumentation, newDocumentation);
-			if(msgs == null)
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION,
+					oldDocumentation, newDocumentation);
+			if (msgs == null)
 				msgs = notification;
 			else
 				msgs.add(notification);
@@ -188,26 +204,24 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
-			return getDocumentation();
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
-			if(coreType)
-				return getPropertyGroup();
-			return ((FeatureMap.Internal)getPropertyGroup()).getWrapper();
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTIES:
-			return getProperties();
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION:
-			return getConflictResolution();
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION:
-			return getInstallLocation();
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER:
-			return getMaterializer();
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION:
-			return getWorkspaceLocation();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
+				return getDocumentation();
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
+				if (coreType)
+					return getPropertyGroup();
+				return ((FeatureMap.Internal) getPropertyGroup()).getWrapper();
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTIES:
+				return getProperties();
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION:
+				return getConflictResolution();
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION:
+				return getInstallLocation();
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER:
+				return getMaterializer();
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION:
+				return getWorkspaceLocation();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -218,16 +232,14 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
-			return basicSetDocumentation(null, msgs);
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
-			return ((InternalEList<?>)getPropertyGroup()).basicRemove(otherEnd, msgs);
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTIES:
-			return ((InternalEList<?>)getProperties()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
+				return basicSetDocumentation(null, msgs);
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
+				return ((InternalEList<?>) getPropertyGroup()).basicRemove(otherEnd, msgs);
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTIES:
+				return ((InternalEList<?>) getProperties()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -238,30 +250,22 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
-			return documentation != null;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
-			return propertyGroup != null && !propertyGroup.isEmpty();
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTIES:
-			return !getProperties().isEmpty();
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION:
-			return conflictResolution != CONFLICT_RESOLUTION_EDEFAULT;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION:
-			return INSTALL_LOCATION_EDEFAULT == null
-					? installLocation != null
-					: !INSTALL_LOCATION_EDEFAULT.equals(installLocation);
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER:
-			return MATERIALIZER_EDEFAULT == null
-					? materializer != null
-					: !MATERIALIZER_EDEFAULT.equals(materializer);
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION:
-			return WORKSPACE_LOCATION_EDEFAULT == null
-					? workspaceLocation != null
-					: !WORKSPACE_LOCATION_EDEFAULT.equals(workspaceLocation);
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
+				return documentation != null;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
+				return propertyGroup != null && !propertyGroup.isEmpty();
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTIES:
+				return !getProperties().isEmpty();
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION:
+				return conflictResolution != CONFLICT_RESOLUTION_EDEFAULT;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION:
+				return INSTALL_LOCATION_EDEFAULT == null ? installLocation != null : !INSTALL_LOCATION_EDEFAULT.equals(installLocation);
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER:
+				return MATERIALIZER_EDEFAULT == null ? materializer != null : !MATERIALIZER_EDEFAULT.equals(materializer);
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION:
+				return WORKSPACE_LOCATION_EDEFAULT == null ? workspaceLocation != null : !WORKSPACE_LOCATION_EDEFAULT.equals(workspaceLocation);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -272,28 +276,26 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
-			setDocumentation((Documentation)newValue);
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
-			((FeatureMap.Internal)getPropertyGroup()).set(newValue);
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION:
-			setConflictResolution((ConflictResolution)newValue);
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION:
-			setInstallLocation((String)newValue);
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER:
-			setMaterializer((String)newValue);
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION:
-			setWorkspaceLocation((String)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
+				setDocumentation((Documentation) newValue);
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
+				((FeatureMap.Internal) getPropertyGroup()).set(newValue);
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION:
+				setConflictResolution((ConflictResolution) newValue);
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION:
+				setInstallLocation((String) newValue);
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER:
+				setMaterializer((String) newValue);
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION:
+				setWorkspaceLocation((String) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -304,28 +306,26 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
-			setDocumentation((Documentation)null);
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
-			getPropertyGroup().clear();
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION:
-			setConflictResolution(CONFLICT_RESOLUTION_EDEFAULT);
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION:
-			setInstallLocation(INSTALL_LOCATION_EDEFAULT);
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER:
-			setMaterializer(MATERIALIZER_EDEFAULT);
-			return;
-		case MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION:
-			setWorkspaceLocation(WORKSPACE_LOCATION_EDEFAULT);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
+				setDocumentation((Documentation) null);
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
+				getPropertyGroup().clear();
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION:
+				setConflictResolution(CONFLICT_RESOLUTION_EDEFAULT);
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION:
+				setInstallLocation(INSTALL_LOCATION_EDEFAULT);
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER:
+				setMaterializer(MATERIALIZER_EDEFAULT);
+				return;
+			case MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION:
+				setWorkspaceLocation(WORKSPACE_LOCATION_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -335,8 +335,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public ConflictResolution getConflictResolution()
-	{
+	public ConflictResolution getConflictResolution() {
 		return conflictResolution;
 	}
 
@@ -345,8 +344,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public Documentation getDocumentation()
-	{
+	public Documentation getDocumentation() {
 		return documentation;
 	}
 
@@ -355,8 +353,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public String getInstallLocation()
-	{
+	public String getInstallLocation() {
 		return installLocation;
 	}
 
@@ -365,8 +362,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public String getMaterializer()
-	{
+	public String getMaterializer() {
 		return materializer;
 	}
 
@@ -375,8 +371,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public EList<Property> getProperties()
-	{
+	public EList<Property> getProperties() {
 		return getPropertyGroup().list(MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__PROPERTIES);
 	}
 
@@ -385,10 +380,8 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public FeatureMap getPropertyGroup()
-	{
-		if(propertyGroup == null)
-		{
+	public FeatureMap getPropertyGroup() {
+		if (propertyGroup == null) {
 			propertyGroup = new BasicFeatureMap(this, MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP);
 		}
 		return propertyGroup;
@@ -399,8 +392,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public String getWorkspaceLocation()
-	{
+	public String getWorkspaceLocation() {
 		return workspaceLocation;
 	}
 
@@ -409,15 +401,11 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public void setConflictResolution(ConflictResolution newConflictResolution)
-	{
+	public void setConflictResolution(ConflictResolution newConflictResolution) {
 		ConflictResolution oldConflictResolution = conflictResolution;
-		conflictResolution = newConflictResolution == null
-				? CONFLICT_RESOLUTION_EDEFAULT
-				: newConflictResolution;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET,
-					MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION, oldConflictResolution,
+		conflictResolution = newConflictResolution == null ? CONFLICT_RESOLUTION_EDEFAULT : newConflictResolution;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION, oldConflictResolution,
 					conflictResolution));
 	}
 
@@ -426,24 +414,21 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public void setDocumentation(Documentation newDocumentation)
-	{
-		if(newDocumentation != documentation)
-		{
+	public void setDocumentation(Documentation newDocumentation) {
+		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
-			if(documentation != null)
-				msgs = ((InternalEObject)documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
+			if (documentation != null)
+				msgs = ((InternalEObject) documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
 						- MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION, null, msgs);
-			if(newDocumentation != null)
-				msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
+			if (newDocumentation != null)
+				msgs = ((InternalEObject) newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
 						- MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION, null, msgs);
 			msgs = basicSetDocumentation(newDocumentation, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET,
-					MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION, newDocumentation, newDocumentation));
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION, newDocumentation,
+					newDocumentation));
 	}
 
 	/**
@@ -451,13 +436,12 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public void setInstallLocation(String newInstallLocation)
-	{
+	public void setInstallLocation(String newInstallLocation) {
 		String oldInstallLocation = installLocation;
 		installLocation = newInstallLocation;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET,
-					MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION, oldInstallLocation, installLocation));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION, oldInstallLocation,
+					installLocation));
 	}
 
 	/**
@@ -465,13 +449,11 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public void setMaterializer(String newMaterializer)
-	{
+	public void setMaterializer(String newMaterializer) {
 		String oldMaterializer = materializer;
 		materializer = newMaterializer;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER,
-					oldMaterializer, materializer));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER, oldMaterializer, materializer));
 	}
 
 	/**
@@ -479,13 +461,12 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
-	public void setWorkspaceLocation(String newWorkspaceLocation)
-	{
+	public void setWorkspaceLocation(String newWorkspaceLocation) {
 		String oldWorkspaceLocation = workspaceLocation;
 		workspaceLocation = newWorkspaceLocation;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET,
-					MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION, oldWorkspaceLocation, workspaceLocation));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION, oldWorkspaceLocation,
+					workspaceLocation));
 	}
 
 	/**
@@ -494,9 +475,8 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -520,8 +500,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return MspecPackage.Literals.MATERIALIZATION_DIRECTIVE;
 	}
 

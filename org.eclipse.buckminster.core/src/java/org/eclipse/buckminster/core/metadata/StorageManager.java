@@ -22,81 +22,70 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class StorageManager
-{
-	private static StorageManager s_defaultManager;
+public class StorageManager {
+	private static StorageManager defaultManager;
 
-	public static synchronized StorageManager getDefault() throws CoreException
-	{
-		if(s_defaultManager == null)
-		{
-			s_defaultManager = new StorageManager(CorePlugin.getDefault().getStateLocation().toFile());
-			s_defaultManager.initialize();
+	public static synchronized StorageManager getDefault() throws CoreException {
+		if (defaultManager == null) {
+			defaultManager = new StorageManager(CorePlugin.getDefault().getStateLocation().toFile());
+			defaultManager.initialize();
 		}
-		return s_defaultManager;
+		return defaultManager;
 	}
 
-	private final ISaxableStorage<CSpec> m_cspecs;
+	private final ISaxableStorage<CSpec> cspecs;
 
-	private final ISaxableStorage<WorkspaceBinding> m_wsBindings;
+	private final ISaxableStorage<WorkspaceBinding> wsBindings;
 
-	private final ISaxableStorage<Resolution> m_resolutions;
+	private final ISaxableStorage<Resolution> resolutions;
 
-	private final ISaxableStorage<Provider> m_providers;
+	private final ISaxableStorage<Provider> providers;
 
-	private final ISaxableStorage<Materialization> m_materializations;
+	private final ISaxableStorage<Materialization> materializations;
 
-	public StorageManager(File baseLocation) throws CoreException
-	{
+	public StorageManager(File baseLocation) throws CoreException {
 		CorePlugin plugin = CorePlugin.getDefault();
 		IParserFactory pf = plugin.getParserFactory();
 
 		// NOTE: The order in which these entries are created and cleared
 		// in case of changes is important. It is in depencency order.
 		//
-		m_providers = new MemoryStorage<Provider>(Provider.class);
+		providers = new MemoryStorage<Provider>(Provider.class);
 
-		m_cspecs = new MemoryStorage<CSpec>(CSpec.class);
+		cspecs = new MemoryStorage<CSpec>(CSpec.class);
 
-		m_resolutions = new MemoryStorage<Resolution>(Resolution.class);
+		resolutions = new MemoryStorage<Resolution>(Resolution.class);
 
-		m_materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG),
-				pf.getMaterializationParser(), Materialization.class, Materialization.SEQUENCE_NUMBER);
+		materializations = new FileStorage<Materialization>(new File(baseLocation, Materialization.TAG), pf.getMaterializationParser(),
+				Materialization.class, Materialization.SEQUENCE_NUMBER);
 
-		m_wsBindings = new FileStorage<WorkspaceBinding>(new File(baseLocation, WorkspaceBinding.TAG),
-				pf.getWorkspaceBindingParser(false), WorkspaceBinding.class, WorkspaceBinding.SEQUENCE_NUMBER);
+		wsBindings = new FileStorage<WorkspaceBinding>(new File(baseLocation, WorkspaceBinding.TAG), pf.getWorkspaceBindingParser(false),
+				WorkspaceBinding.class, WorkspaceBinding.SEQUENCE_NUMBER);
 	}
 
-	public ISaxableStorage<CSpec> getCSpecs() throws CoreException
-	{
-		return m_cspecs;
+	public ISaxableStorage<CSpec> getCSpecs() throws CoreException {
+		return cspecs;
 	}
 
-	public ISaxableStorage<Materialization> getMaterializations() throws CoreException
-	{
-		return m_materializations;
+	public ISaxableStorage<Materialization> getMaterializations() throws CoreException {
+		return materializations;
 	}
 
-	public ISaxableStorage<Provider> getProviders() throws CoreException
-	{
-		return m_providers;
+	public ISaxableStorage<Provider> getProviders() throws CoreException {
+		return providers;
 	}
 
-	public ISaxableStorage<Resolution> getResolutions() throws CoreException
-	{
-		return m_resolutions;
+	public ISaxableStorage<Resolution> getResolutions() throws CoreException {
+		return resolutions;
 	}
 
-	public ISaxableStorage<WorkspaceBinding> getWorkspaceBindings() throws CoreException
-	{
-		return m_wsBindings;
+	public ISaxableStorage<WorkspaceBinding> getWorkspaceBindings() throws CoreException {
+		return wsBindings;
 	}
 
-	private void initialize() throws CoreException
-	{
-		if(m_materializations.sequenceChanged() || m_resolutions.sequenceChanged() || m_cspecs.sequenceChanged()
-				|| m_providers.sequenceChanged() || m_wsBindings.sequenceChanged())
-		{
+	private void initialize() throws CoreException {
+		if (materializations.sequenceChanged() || resolutions.sequenceChanged() || cspecs.sequenceChanged() || providers.sequenceChanged()
+				|| wsBindings.sequenceChanged()) {
 			// Don't use another thread here. It will deadlock
 			//
 			WorkspaceInfo.forceRefreshOnAll(new NullProgressMonitor());

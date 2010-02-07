@@ -31,23 +31,21 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-public class ConsolePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage
-{
+public class ConsolePreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-	private ColorFieldEditor m_messageColorEditor;
+	private ColorFieldEditor messageColorEditor;
 
-	private ColorFieldEditor m_errorColorEditor;
+	private ColorFieldEditor errorColorEditor;
 
-	private BooleanFieldEditor m_showOnMessage;
+	private BooleanFieldEditor showOnMessage;
 
-	private BooleanFieldEditor m_showOnError;
+	private BooleanFieldEditor showOnError;
 
-	private BooleanFieldEditor m_restrictOutput;
+	private BooleanFieldEditor restrictOutput;
 
-	private IntegerFieldEditor m_highWaterMark;
+	private IntegerFieldEditor highWaterMark;
 
-	public ConsolePreferencePage()
-	{
+	public ConsolePreferencePage() {
 		super(GRID);
 		setDescription(Messages.buckminster_console_preferences);
 		setPreferenceStore(UiPlugin.getDefault().getBuckminsterPreferenceStore());
@@ -56,81 +54,72 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 * @see
+	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	public void init(IWorkbench workbench)
-	{
+	public void init(IWorkbench workbench) {
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent event)
-	{
+	public void propertyChange(PropertyChangeEvent event) {
 		super.propertyChange(event);
-		m_highWaterMark.setEnabled(m_restrictOutput.getBooleanValue(), getFieldEditorParent());
+		highWaterMark.setEnabled(restrictOutput.getBooleanValue(), getFieldEditorParent());
 	}
 
 	@Override
-	protected void createFieldEditors()
-	{
+	protected void createFieldEditors() {
 		Composite composite = getFieldEditorParent();
 		IPreferenceStore store = getPreferenceStore();
 
 		createVerticalSeparator(composite);
 
-		m_restrictOutput = new BooleanFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_LIMIT_OUTPUT,
-				Messages.limit_console_output, composite);
-		addField(m_restrictOutput);
+		restrictOutput = new BooleanFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_LIMIT_OUTPUT, Messages.limit_console_output, composite);
+		addField(restrictOutput);
 
-		m_highWaterMark = new IntegerFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_HIGH_WATER_MARK,
+		highWaterMark = new IntegerFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_HIGH_WATER_MARK,
 				Messages.console_buffer_size_bracket_characters_bracket_with_colon, composite);
-		m_highWaterMark.setValidRange(1001, Integer.MAX_VALUE - 1);
-		addField(m_highWaterMark);
-		m_highWaterMark.setEnabled(store.getBoolean(IBuckminsterPreferenceConstants.PREF_CONSOLE_LIMIT_OUTPUT),
-				composite);
-		FocusListener focusListener = new FocusAdapter()
-		{
+		highWaterMark.setValidRange(1001, Integer.MAX_VALUE - 1);
+		addField(highWaterMark);
+		highWaterMark.setEnabled(store.getBoolean(IBuckminsterPreferenceConstants.PREF_CONSOLE_LIMIT_OUTPUT), composite);
+		FocusListener focusListener = new FocusAdapter() {
 			@Override
-			public void focusGained(FocusEvent e)
-			{
-				((Text)e.getSource()).selectAll();
+			public void focusGained(FocusEvent e) {
+				((Text) e.getSource()).selectAll();
 			}
 
 			@Override
-			public void focusLost(FocusEvent e)
-			{
-				((Text)e.getSource()).setText(((Text)e.getSource()).getText());
+			public void focusLost(FocusEvent e) {
+				((Text) e.getSource()).setText(((Text) e.getSource()).getText());
 			}
 		};
-		m_highWaterMark.getTextControl(composite).addFocusListener(focusListener);
+		highWaterMark.getTextControl(composite).addFocusListener(focusListener);
 
 		createVerticalSeparator(composite);
 
-		m_showOnMessage = new BooleanFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_SHOW_ON_MESSAGE,
+		showOnMessage = new BooleanFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_SHOW_ON_MESSAGE,
 				Messages.show_SVN_console_automatically_when_command_is_run, composite);
-		addField(m_showOnMessage);
+		addField(showOnMessage);
 
-		m_showOnError = new BooleanFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_SHOW_ON_ERROR,
+		showOnError = new BooleanFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_SHOW_ON_ERROR,
 				Messages.show_SVN_console_automatically_when_an_error_is_encountered, composite);
-		addField(m_showOnError);
+		addField(showOnError);
 
 		createVerticalSeparator(composite);
 
 		createLabel(composite, Messages.console_text_color_settings_with_colon);
 
-		m_messageColorEditor = createColorFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_MESSAGE_COLOR,
-				Messages.message_with_colon, composite);
-		addField(m_messageColorEditor);
+		messageColorEditor = createColorFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_MESSAGE_COLOR, Messages.message_with_colon,
+				composite);
+		addField(messageColorEditor);
 
-		m_errorColorEditor = createColorFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_ERROR_COLOR,
-				Messages.error_with_colon, composite);
-		addField(m_errorColorEditor);
+		errorColorEditor = createColorFieldEditor(IBuckminsterPreferenceConstants.PREF_CONSOLE_ERROR_COLOR, Messages.error_with_colon, composite);
+		addField(errorColorEditor);
 	}
 
 	/**
 	 * Creates a new color field editor.
 	 */
-	private ColorFieldEditor createColorFieldEditor(String preferenceName, String label, Composite parent)
-	{
+	private ColorFieldEditor createColorFieldEditor(String preferenceName, String label, Composite parent) {
 		ColorFieldEditor editor = new ColorFieldEditor(preferenceName, label, parent);
 		editor.setPage(this);
 		editor.setPreferenceStore(getPreferenceStore());
@@ -138,7 +127,8 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	}
 
 	/**
-	 * Utility method that creates a label instance and sets the default layout data.
+	 * Utility method that creates a label instance and sets the default layout
+	 * data.
 	 * 
 	 * @param parent
 	 *            the parent for the new label
@@ -146,8 +136,7 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 	 *            the text for the new label
 	 * @return the new label
 	 */
-	private Label createLabel(Composite parent, String text)
-	{
+	private Label createLabel(Composite parent, String text) {
 		Label label = new Label(parent, SWT.LEFT);
 		label.setText(text);
 		GridData data = new GridData();
@@ -157,8 +146,7 @@ public class ConsolePreferencePage extends FieldEditorPreferencePage implements 
 		return label;
 	}
 
-	private Label createVerticalSeparator(Composite parent)
-	{
+	private Label createVerticalSeparator(Composite parent) {
 		Label label = new Label(parent, SWT.NONE);
 		GridData data = new GridData();
 		data.horizontalSpan = 2;

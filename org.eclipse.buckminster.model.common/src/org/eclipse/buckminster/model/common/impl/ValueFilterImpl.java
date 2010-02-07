@@ -25,32 +25,45 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object ' <em><b>Value Filter</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Value Filter</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getConstants <em>Constants</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getFormats <em>Formats</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getPropertyRefs <em>Property Refs</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getReplacements <em>Replacements</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getSplits <em>Splits</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToLowers <em>To Lowers</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToUppers <em>To Uppers</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getConstants
+ * <em>Constants</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getFormats
+ * <em>Formats</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getPropertyRefs
+ * <em>Property Refs</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getReplacements
+ * <em>Replacements</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getSplits
+ * <em>Splits</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToLowers
+ * <em>To Lowers</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToUppers
+ * <em>To Uppers</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
-public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
-{
+public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter {
 	/**
-	 * The cached value of the '{@link #getConstants() <em>Constants</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getConstants() <em>Constants</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getConstants()
 	 * @generated
@@ -59,9 +72,9 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	protected EList<Constant> constants;
 
 	/**
-	 * The cached value of the '{@link #getFormats() <em>Formats</em>}' containment reference list.
-	 * <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getFormats() <em>Formats</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getFormats()
 	 * @generated
 	 * @ordered
@@ -69,8 +82,9 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	protected EList<Format> formats;
 
 	/**
-	 * The cached value of the '{@link #getPropertyRefs() <em>Property Refs</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getPropertyRefs()
+	 * <em>Property Refs</em>}' containment reference list. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
 	 * 
 	 * @see #getPropertyRefs()
 	 * @generated
@@ -79,8 +93,9 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	protected EList<PropertyRef> propertyRefs;
 
 	/**
-	 * The cached value of the '{@link #getReplacements() <em>Replacements</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getReplacements() <em>Replacements</em>}
+	 * ' containment reference list. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @see #getReplacements()
 	 * @generated
@@ -89,9 +104,9 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	protected EList<Replace> replacements;
 
 	/**
-	 * The cached value of the '{@link #getSplits() <em>Splits</em>}' containment reference list.
-	 * <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getSplits() <em>Splits</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getSplits()
 	 * @generated
 	 * @ordered
@@ -99,8 +114,8 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	protected EList<Split> splits;
 
 	/**
-	 * The cached value of the '{@link #getToLowers() <em>To Lowers</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getToLowers() <em>To Lowers</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getToLowers()
 	 * @generated
@@ -109,8 +124,8 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	protected EList<ToLower> toLowers;
 
 	/**
-	 * The cached value of the '{@link #getToUppers() <em>To Uppers</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getToUppers() <em>To Uppers</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getToUppers()
 	 * @generated
@@ -120,20 +135,20 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	protected ValueFilterImpl()
-	{
+	protected ValueFilterImpl() {
 		super();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case CommonPackage.VALUE_FILTER__CONSTANTS:
 				return getConstants();
@@ -155,37 +170,37 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case CommonPackage.VALUE_FILTER__CONSTANTS:
-				return ((InternalEList<?>)getConstants()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getConstants()).basicRemove(otherEnd, msgs);
 			case CommonPackage.VALUE_FILTER__FORMATS:
-				return ((InternalEList<?>)getFormats()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getFormats()).basicRemove(otherEnd, msgs);
 			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-				return ((InternalEList<?>)getPropertyRefs()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getPropertyRefs()).basicRemove(otherEnd, msgs);
 			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-				return ((InternalEList<?>)getReplacements()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getReplacements()).basicRemove(otherEnd, msgs);
 			case CommonPackage.VALUE_FILTER__SPLITS:
-				return ((InternalEList<?>)getSplits()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getSplits()).basicRemove(otherEnd, msgs);
 			case CommonPackage.VALUE_FILTER__TO_LOWERS:
-				return ((InternalEList<?>)getToLowers()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getToLowers()).basicRemove(otherEnd, msgs);
 			case CommonPackage.VALUE_FILTER__TO_UPPERS:
-				return ((InternalEList<?>)getToUppers()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getToUppers()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
+	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case CommonPackage.VALUE_FILTER__CONSTANTS:
 				return constants != null && !constants.isEmpty();
@@ -207,40 +222,40 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
+	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.VALUE_FILTER__CONSTANTS:
 				getConstants().clear();
-				getConstants().addAll((Collection<? extends Constant>)newValue);
+				getConstants().addAll((Collection<? extends Constant>) newValue);
 				return;
 			case CommonPackage.VALUE_FILTER__FORMATS:
 				getFormats().clear();
-				getFormats().addAll((Collection<? extends Format>)newValue);
+				getFormats().addAll((Collection<? extends Format>) newValue);
 				return;
 			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
 				getPropertyRefs().clear();
-				getPropertyRefs().addAll((Collection<? extends PropertyRef>)newValue);
+				getPropertyRefs().addAll((Collection<? extends PropertyRef>) newValue);
 				return;
 			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
 				getReplacements().clear();
-				getReplacements().addAll((Collection<? extends Replace>)newValue);
+				getReplacements().addAll((Collection<? extends Replace>) newValue);
 				return;
 			case CommonPackage.VALUE_FILTER__SPLITS:
 				getSplits().clear();
-				getSplits().addAll((Collection<? extends Split>)newValue);
+				getSplits().addAll((Collection<? extends Split>) newValue);
 				return;
 			case CommonPackage.VALUE_FILTER__TO_LOWERS:
 				getToLowers().clear();
-				getToLowers().addAll((Collection<? extends ToLower>)newValue);
+				getToLowers().addAll((Collection<? extends ToLower>) newValue);
 				return;
 			case CommonPackage.VALUE_FILTER__TO_UPPERS:
 				getToUppers().clear();
-				getToUppers().addAll((Collection<? extends ToUpper>)newValue);
+				getToUppers().addAll((Collection<? extends ToUpper>) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -248,11 +263,11 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
+	public void eUnset(int featureID) {
 		switch (featureID) {
 			case CommonPackage.VALUE_FILTER__CONSTANTS:
 				getConstants().clear();
@@ -281,10 +296,10 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public EList<Constant> getConstants()
-	{
+	public EList<Constant> getConstants() {
 		if (constants == null) {
 			constants = new EObjectContainmentEList<Constant>(Constant.class, this, CommonPackage.VALUE_FILTER__CONSTANTS);
 		}
@@ -293,10 +308,10 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public EList<Format> getFormats()
-	{
+	public EList<Format> getFormats() {
 		if (formats == null) {
 			formats = new EObjectContainmentEList<Format>(Format.class, this, CommonPackage.VALUE_FILTER__FORMATS);
 		}
@@ -305,10 +320,10 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public EList<PropertyRef> getPropertyRefs()
-	{
+	public EList<PropertyRef> getPropertyRefs() {
 		if (propertyRefs == null) {
 			propertyRefs = new EObjectContainmentEList<PropertyRef>(PropertyRef.class, this, CommonPackage.VALUE_FILTER__PROPERTY_REFS);
 		}
@@ -317,10 +332,10 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public EList<Replace> getReplacements()
-	{
+	public EList<Replace> getReplacements() {
 		if (replacements == null) {
 			replacements = new EObjectContainmentEList<Replace>(Replace.class, this, CommonPackage.VALUE_FILTER__REPLACEMENTS);
 		}
@@ -329,10 +344,10 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public EList<Split> getSplits()
-	{
+	public EList<Split> getSplits() {
 		if (splits == null) {
 			splits = new EObjectContainmentEList<Split>(Split.class, this, CommonPackage.VALUE_FILTER__SPLITS);
 		}
@@ -341,10 +356,10 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public EList<ToLower> getToLowers()
-	{
+	public EList<ToLower> getToLowers() {
 		if (toLowers == null) {
 			toLowers = new EObjectContainmentEList<ToLower>(ToLower.class, this, CommonPackage.VALUE_FILTER__TO_LOWERS);
 		}
@@ -353,29 +368,28 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public EList<ToUpper> getToUppers()
-	{
+	public EList<ToUpper> getToUppers() {
 		if (toUppers == null) {
 			toUppers = new EObjectContainmentEList<ToUpper>(ToUpper.class, this, CommonPackage.VALUE_FILTER__TO_UPPERS);
 		}
 		return toUppers;
 	}
 
+	@Override
+	public void toString(StringBuilder bld) {
+
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CommonPackage.Literals.VALUE_FILTER;
-	}
-
-	@Override
-	public void toString(StringBuilder bld)
-	{
-		
 	}
 } // ValueFilterImpl

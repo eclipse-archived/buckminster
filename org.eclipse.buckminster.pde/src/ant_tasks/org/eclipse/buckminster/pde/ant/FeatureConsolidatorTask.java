@@ -17,106 +17,93 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.eclipse.buckminster.ant.types.FileSetGroup;
-import org.eclipse.buckminster.pde.ant.VersionConsolidatorTask;
 import org.eclipse.buckminster.pde.tasks.FeatureConsolidator;
 
 /**
- * Ant task that updates the version of plugin- and feature references found in a feature.xml file to reflect the actual
- * plugin/feature that they appoint within a certain scope given by a set of paths that are used when resolving the
- * appointed components. The elements of the paths should be either a plugin folder, a feature folder, or a zipped
- * folder containing a plugin or feature.
+ * Ant task that updates the version of plugin- and feature references found in
+ * a feature.xml file to reflect the actual plugin/feature that they appoint
+ * within a certain scope given by a set of paths that are used when resolving
+ * the appointed components. The elements of the paths should be either a plugin
+ * folder, a feature folder, or a zipped folder containing a plugin or feature.
  * 
  * @author Thomas Hallgren
  */
-public class FeatureConsolidatorTask extends VersionConsolidatorTask
-{
-	private boolean m_generateVersionSuffix;
+public class FeatureConsolidatorTask extends VersionConsolidatorTask {
+	private boolean generateVersionSuffix;
 
-	private int m_maxVersionSuffixLength = -1;
+	private int maxVersionSuffixLength = -1;
 
-	private int m_significantDigits = -1;
+	private int significantDigits = -1;
 
-	private ArrayList<FileSet> m_fileSets;
+	private ArrayList<FileSet> fileSets;
 
-	private ArrayList<FileSetGroup> m_fileSetGroups;
+	private ArrayList<FileSetGroup> fileSetGroups;
 
 	/**
 	 * Adds a nested <code>&lt;filesetgroup&gt;</code> element.
 	 */
-	public void add(FileSetGroup fsGroup) throws BuildException
-	{
-		if(m_fileSetGroups == null)
-			m_fileSetGroups = new ArrayList<FileSetGroup>();
-		m_fileSetGroups.add(fsGroup);
+	public void add(FileSetGroup fsGroup) throws BuildException {
+		if (fileSetGroups == null)
+			fileSetGroups = new ArrayList<FileSetGroup>();
+		fileSetGroups.add(fsGroup);
 	}
 
 	/**
 	 * Adds a nested <code>&lt;fileset&gt;</code> element.
 	 */
-	public void addFileset(FileSet fs) throws BuildException
-	{
-		if(m_fileSets == null)
-			m_fileSets = new ArrayList<FileSet>();
-		m_fileSets.add(fs);
+	public void addFileset(FileSet fs) throws BuildException {
+		if (fileSets == null)
+			fileSets = new ArrayList<FileSet>();
+		fileSets.add(fs);
 	}
 
 	@Override
-	public void execute() throws BuildException
-	{
-		try
-		{
-	    	if(m_fileSetGroups != null)
-	    	{
-	    		for(FileSetGroup fsg : m_fileSetGroups)
-		    		for(FileSet fs : fsg.getFileSets())
-		    			addFileset(fs);
-	    		m_fileSetGroups = null;
-	    	}
+	public void execute() throws BuildException {
+		try {
+			if (fileSetGroups != null) {
+				for (FileSetGroup fsg : fileSetGroups)
+					for (FileSet fs : fsg.getFileSets())
+						addFileset(fs);
+				fileSetGroups = null;
+			}
 
-	    	if(getInput() == null)
-				throw new BuildException("Missing attribute input", getLocation());
-			if(getOutput() == null)
-				throw new BuildException("Missing attribute output", getLocation());
+			if (getInput() == null)
+				throw new BuildException("Missing attribute input", getLocation()); //$NON-NLS-1$
+			if (getOutput() == null)
+				throw new BuildException("Missing attribute output", getLocation()); //$NON-NLS-1$
 
 			Project proj = getProject();
 			List<File> featuresAndPlugins;
-			if(m_fileSets == null)
+			if (fileSets == null)
 				featuresAndPlugins = Collections.emptyList();
-			else
-			{
+			else {
 				featuresAndPlugins = new ArrayList<File>();
-				for(FileSet fs : m_fileSets)
-				{
-		            DirectoryScanner ds = fs.getDirectoryScanner(proj);
-		            File dir = fs.getDir(proj);
-		            for(String file : ds.getIncludedFiles())
-		            	featuresAndPlugins.add(new File(dir, file));
+				for (FileSet fs : fileSets) {
+					DirectoryScanner ds = fs.getDirectoryScanner(proj);
+					File dir = fs.getDir(proj);
+					for (String file : ds.getIncludedFiles())
+						featuresAndPlugins.add(new File(dir, file));
 				}
 			}
-			FeatureConsolidator fc = new FeatureConsolidator(getInput(), getOutput(), getPropertiesFile(), featuresAndPlugins, getQualifier(), m_generateVersionSuffix, m_maxVersionSuffixLength, m_significantDigits);
+			FeatureConsolidator fc = new FeatureConsolidator(getInput(), getOutput(), getPropertiesFile(), featuresAndPlugins, getQualifier(),
+					generateVersionSuffix, maxVersionSuffixLength, significantDigits);
 			fc.run();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw new BuildException(e.toString(), e, this.getLocation());
 		}
 	}
 
-	public void setGenerateVersionSuffix(boolean flag)
-	{
-		m_generateVersionSuffix = flag;
+	public void setGenerateVersionSuffix(boolean flag) {
+		generateVersionSuffix = flag;
 	}
 
-	public void setMaxVersionSuffixLength(int len)
-	{
-		m_maxVersionSuffixLength = len;
+	public void setMaxVersionSuffixLength(int len) {
+		maxVersionSuffixLength = len;
 	}
 
-	public void setSignificantDigits(int count)
-	{
-		m_significantDigits = count;
+	public void setSignificantDigits(int count) {
+		significantDigits = count;
 	}
 }

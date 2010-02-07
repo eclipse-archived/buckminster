@@ -24,61 +24,54 @@ import org.eclipse.pde.internal.core.target.provisional.LoadTargetDefinitionJob;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
- * This class is for backward compatibility. It creates a Directory bundle container based on a given path and sets that
- * as the currently active target platform
+ * This class is for backward compatibility. It creates a Directory bundle
+ * container based on a given path and sets that as the currently active target
+ * platform
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class TargetPlatformPathHandler extends BasicPreferenceHandler
-{
+public class TargetPlatformPathHandler extends BasicPreferenceHandler {
 	@Override
-	public String get(String defaultValue) throws CoreException
-	{
+	public String get(String defaultValue) throws CoreException {
 		Buckminster bucky = Buckminster.getDefault();
 		ITargetPlatformService service = bucky.getService(ITargetPlatformService.class);
 		ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
-		if(activeHandle == null)
+		if (activeHandle == null)
 			throw BuckminsterException.fromMessage(Messages.No_active_target_platform);
 
 		ITargetDefinition activeTarget = activeHandle.getTargetDefinition();
 		IBundleContainer[] containers = activeTarget.getBundleContainers();
-		if(containers == null || containers.length == 0)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.Active_target_0_has_no_containers,
-					activeTarget.getName()));
+		if (containers == null || containers.length == 0)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Active_target_0_has_no_containers, activeTarget.getName()));
 
-		if(containers.length > 1)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.Active_target_0_is_too_complex,
-					activeTarget.getName()));
+		if (containers.length > 1)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Active_target_0_is_too_complex, activeTarget.getName()));
 
 		IBundleContainer activeContainer = containers[0];
-		if(activeContainer instanceof AbstractBundleContainer)
-			return ((AbstractBundleContainer)activeContainer).getLocation(true);
+		if (activeContainer instanceof AbstractBundleContainer)
+			return ((AbstractBundleContainer) activeContainer).getLocation(true);
 
-		throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_determine_path_for_active_target_0,
-				activeTarget.getName()));
+		throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_determine_path_for_active_target_0, activeTarget.getName()));
 	}
 
 	@Override
-	public void set(String targetPlatform) throws BackingStoreException
-	{
+	public void set(String targetPlatform) throws BackingStoreException {
 		Buckminster bucky = Buckminster.getDefault();
 		ITargetPlatformService service = null;
-		try
-		{
+		try {
 			service = bucky.getService(ITargetPlatformService.class);
 			ITargetDefinition target = null;
-			for(ITargetHandle targetHandle : service.getTargets(new NullProgressMonitor()))
-			{
+			for (ITargetHandle targetHandle : service.getTargets(new NullProgressMonitor())) {
 				ITargetDefinition candidate = targetHandle.getTargetDefinition();
 				IBundleContainer[] containers = candidate.getBundleContainers();
-				if(containers == null || containers.length != 1)
+				if (containers == null || containers.length != 1)
 					continue;
-				if(targetPlatform.equals(((AbstractBundleContainer)containers[0]).getLocation(true)))
-				{
+				if (targetPlatform.equals(((AbstractBundleContainer) containers[0]).getLocation(true))) {
 					ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
-					if(activeHandle != null && activeHandle.equals(targetHandle))
-						// This target is already active. Nothing left to do here
+					if (activeHandle != null && activeHandle.equals(targetHandle))
+						// This target is already active. Nothing left to do
+						// here
 						return;
 
 					target = candidate;
@@ -86,8 +79,7 @@ public class TargetPlatformPathHandler extends BasicPreferenceHandler
 				}
 			}
 
-			if(target == null)
-			{
+			if (target == null) {
 				target = service.newTarget();
 				IBundleContainer container = service.newDirectoryContainer(targetPlatform);
 				target.setBundleContainers(new IBundleContainer[] { container });
@@ -97,21 +89,16 @@ public class TargetPlatformPathHandler extends BasicPreferenceHandler
 			service.saveTargetDefinition(target);
 			LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(target);
 			IStatus status = job.run(new NullProgressMonitor());
-			if(status.getSeverity() == IStatus.ERROR)
+			if (status.getSeverity() == IStatus.ERROR)
 				throw new CoreException(status);
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			throw new BackingStoreException(e.getMessage(), e);
-		}
-		finally
-		{
+		} finally {
 			bucky.ungetService(service);
 		}
 	}
 
 	@Override
-	public void unset()
-	{
+	public void unset() {
 	}
 }

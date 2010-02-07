@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class provides information regarding the structure and content of specified file system File objects.
+ * This class provides information regarding the structure and content of
+ * specified file system File objects.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class FileSystemStructureProvider implements IImportStructureProvider
-{
+public class FileSystemStructureProvider implements IImportStructureProvider {
 
 	/**
 	 * Holds a singleton instance of this class.
@@ -32,24 +32,20 @@ public class FileSystemStructureProvider implements IImportStructureProvider
 	/**
 	 * Creates an instance of <code>FileSystemStructureProvider</code>.
 	 */
-	private FileSystemStructureProvider()
-	{
+	private FileSystemStructureProvider() {
 		super();
 	}
 
 	/*
 	 * (non-Javadoc) Method declared on IImportStructureProvider
 	 */
-	public List getChildren(Object element)
-	{
-		File folder = (File)element;
+	public List getChildren(Object element) {
+		File folder = (File) element;
 		String[] children = folder.list();
-		int childrenLength = children == null
-				? 0
-				: children.length;
+		int childrenLength = children == null ? 0 : children.length;
 		List result = new ArrayList(childrenLength);
 
-		for(int i = 0; i < childrenLength; i++)
+		for (int i = 0; i < childrenLength; i++)
 			result.add(new File(folder, children[i]));
 
 		return result;
@@ -58,14 +54,10 @@ public class FileSystemStructureProvider implements IImportStructureProvider
 	/*
 	 * (non-Javadoc) Method declared on IImportStructureProvider
 	 */
-	public InputStream getContents(Object element)
-	{
-		try
-		{
-			return new FileInputStream((File)element);
-		}
-		catch(FileNotFoundException e)
-		{
+	public InputStream getContents(Object element) {
+		try {
+			return new FileInputStream((File) element);
+		} catch (FileNotFoundException e) {
 			return null;
 		}
 	}
@@ -73,21 +65,20 @@ public class FileSystemStructureProvider implements IImportStructureProvider
 	/*
 	 * (non-Javadoc) Method declared on IImportStructureProvider
 	 */
-	public String getFullPath(Object element)
-	{
-		return ((File)element).getPath();
+	public String getFullPath(Object element) {
+		return ((File) element).getPath();
 	}
 
 	/*
 	 * (non-Javadoc) Method declared on IImportStructureProvider
 	 */
-	public String getLabel(Object element)
-	{
+	public String getLabel(Object element) {
 
-		// Get the name - if it is empty then return the path as it is a file root
-		File file = (File)element;
+		// Get the name - if it is empty then return the path as it is a file
+		// root
+		File file = (File) element;
 		String name = file.getName();
-		if(name.length() == 0)
+		if (name.length() == 0)
 			return file.getPath();
 		return name;
 	}
@@ -95,8 +86,7 @@ public class FileSystemStructureProvider implements IImportStructureProvider
 	/*
 	 * (non-Javadoc) Method declared on IImportStructureProvider
 	 */
-	public boolean isFolder(Object element)
-	{
-		return ((File)element).isDirectory();
+	public boolean isFolder(Object element) {
+		return ((File) element).isDirectory();
 	}
 }

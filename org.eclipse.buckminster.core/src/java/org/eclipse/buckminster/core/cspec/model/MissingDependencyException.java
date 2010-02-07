@@ -14,12 +14,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingDependencyException extends LocalizedException
-{
+public class MissingDependencyException extends LocalizedException {
 	private static final long serialVersionUID = -3148257588863542456L;
 
-	public MissingDependencyException(String componentName, String dependencyName)
-	{
+	public MissingDependencyException(String componentName, String dependencyName) {
 		super(NLS.bind(Messages.Component_0_has_no_declared_dependency_to_component_1, componentName, dependencyName));
 	}
 }

@@ -19,25 +19,21 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class SplitHandler extends ValueFilterHandler
-{
+public class SplitHandler extends ValueFilterHandler {
 	static final String TAG = AbstractSplit.TAG;
 
-	public SplitHandler(AbstractHandler parent)
-	{
+	public SplitHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		String pattern = this.getStringValue(attrs, AbstractSplit.ATTR_PATTERN);
 		String style = getOptionalStringValue(attrs, AbstractSplit.ATTR_STYLE);
-		if("groups".equals(style)) //$NON-NLS-1$
+		if ("groups".equals(style)) //$NON-NLS-1$
 			this.setValueHolder(new GroupSplit(pattern));
-		else
-		{
-			if(style == null || "quoted".equals(style)) //$NON-NLS-1$
+		else {
+			if (style == null || "quoted".equals(style)) //$NON-NLS-1$
 				pattern = Pattern.quote(pattern);
 			this.setValueHolder(new Split(pattern, getOptionalIntValue(attrs, Split.ATTR_LIMIT, 0)));
 		}

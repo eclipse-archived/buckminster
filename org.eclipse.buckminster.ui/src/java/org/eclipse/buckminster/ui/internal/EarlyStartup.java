@@ -16,10 +16,8 @@ import org.eclipse.ui.IStartup;
  * @author Thomas Hallgren
  * 
  */
-public class EarlyStartup implements IStartup
-{
-	public void earlyStartup()
-	{
+public class EarlyStartup implements IStartup {
+	public void earlyStartup() {
 		// Referencing the CorePlugin will cause it to be loaded
 		// That's all we want here.
 		//

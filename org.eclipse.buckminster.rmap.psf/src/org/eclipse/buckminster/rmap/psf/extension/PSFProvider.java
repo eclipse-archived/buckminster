@@ -68,8 +68,7 @@ import org.eclipse.osgi.util.NLS;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class PSFProvider extends Provider
-{
+public class PSFProvider extends Provider {
 	public static final String BM_PFS_PROVIDER_NS = XMLConstants.BM_PREFIX + "PSFProvider-1.0"; //$NON-NLS-1$
 
 	public static final String BM_PFS_PROVIDER_PREFIX = "psf"; //$NON-NLS-1$
@@ -78,129 +77,98 @@ public class PSFProvider extends Provider
 
 	private final String psfFile;
 
-	public PSFProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs,
-			VersionConverterDesc versionConverterDesc, Format uri, Format digest, String digestAlgorithm,
-			Filter resolutionFilter, Map<String,String> properties, URIMatcher uriMatcher,
-			Documentation documentation, String pfsFile)
-	{
-		super(searchPath, remoteReaderType, componentTypeIDs, versionConverterDesc, uri, digest, digestAlgorithm,
-				resolutionFilter, properties, uriMatcher, documentation);
+	public PSFProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypeIDs, VersionConverterDesc versionConverterDesc,
+			Format uri, Format digest, String digestAlgorithm, Filter resolutionFilter, Map<String, String> properties, URIMatcher uriMatcher,
+			Documentation documentation, String pfsFile) {
+		super(searchPath, remoteReaderType, componentTypeIDs, versionConverterDesc, uri, digest, digestAlgorithm, resolutionFilter, properties,
+				uriMatcher, documentation);
 		this.psfFile = pfsFile;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		super.addAttributes(attrs);
-		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				BM_PFS_PROVIDER_PREFIX + ":PDEMapProvider"); //$NON-NLS-1$
-		if(psfFile != null)
-			Utils.addAttribute(attrs, ATTR_PSF_FILE, psfFile);
-	}
-
-	private void cachePSF(Map<UUID, Object> userCache, PSF psf)
-	{
-		userCache.put(getId(), psf);
-	}
-
-	@Override
-	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask("", 100); //$NON-NLS-1$
-		try
-		{
+		try {
 			URI providerURI = URI.createURI(getURI(query.getProperties()));
 			ProviderScore score = query.getProviderScore(isMutable(), hasSource());
-			if(score == ProviderScore.REJECTED)
-			{
+			if (score == ProviderScore.REJECTED) {
 				String msg = NLS.bind("Provider {0} for {1} score_below_treshold", getReaderTypeId(), providerURI);
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 				return null;
 			}
 
 			PSF psf = getPSF(query, problemCollector, MonitorUtils.subMonitor(monitor, 10));
-			if(psf == null)
+			if (psf == null)
 				return null;
 
 			ComponentRequest cr = query.getComponentRequest();
 			ProviderMatch found = null;
-			for(RepositoryProvider provider : psf.getProviders())
-			{
+			for (RepositoryProvider provider : psf.getProviders()) {
 				IReaderType rt = AbstractReaderType.getTypeForRepositoryProvider(provider.getId());
-				if(rt == null)
-				{
+				if (rt == null) {
 					query.logDecision(ResolverDecisionType.READER_TYPE_NOT_FOUND, provider.getId());
 					continue;
 				}
 
-				for(Project project : provider.getProjects())
-				{
+				for (Project project : provider.getProjects()) {
 					String ref = project.getReference();
 					ReferenceInfo refInfo = rt.extractReferenceInfo(ref);
 					String repoLocation = refInfo.getRepositoryLocation();
-					if(!(cr.getProjectName().equals(refInfo.getProjectName()) || cr.getName().equals(
-							refInfo.getProjectName())))
-					{
-						// Check if the leaf part of the repository location contains the name.
+					if (!(cr.getProjectName().equals(refInfo.getProjectName()) || cr.getName().equals(refInfo.getProjectName()))) {
+						// Check if the leaf part of the repository location
+						// contains the name.
 						//
 						int idx = repoLocation.lastIndexOf('/');
-						if(idx < 0)
+						if (idx < 0)
 							continue;
 
 						++idx;
 						boolean startsWithProjName = repoLocation.indexOf(cr.getProjectName(), idx) == idx;
 						boolean startsWithName = repoLocation.indexOf(cr.getName(), idx) == idx;
-						if(!(startsWithProjName || startsWithName))
+						if (!(startsWithProjName || startsWithName))
 							continue;
 
-						if(startsWithProjName)
+						if (startsWithProjName)
 							idx += cr.getProjectName().length();
 						else
 							idx += cr.getName().length();
 
-						char endChar = idx < repoLocation.length()
-								? repoLocation.charAt(idx)
-								: 0;
-						if((endChar >= '0' && endChar <= '9') || (endChar >= 'A' && endChar <= 'Z')
-								|| (endChar >= 'a' && endChar <= 'z') || endChar == '.')
+						char endChar = idx < repoLocation.length() ? repoLocation.charAt(idx) : 0;
+						if ((endChar >= '0' && endChar <= '9') || (endChar >= 'A' && endChar <= 'Z') || (endChar >= 'a' && endChar <= 'z')
+								|| endChar == '.')
 							continue;
 					}
 
-					if(!query.isMatch(refInfo.getSelector()))
+					if (!query.isMatch(refInfo.getSelector()))
 						continue;
 
 					Format uri = new Format(repoLocation);
-					Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(),
-							getVersionConverterDesc(), uri, null, null, getResolutionFilter(), getProviderProperties(), null, null);
+					Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null,
+							getResolutionFilter(), getProviderProperties(), null, null);
 
 					NodeQuery tmpQuery = query;
 					VersionSelector vs = refInfo.getSelector();
-					if(vs != null && query.getBranchTagPath().length == 0)
-					{
+					if (vs != null && query.getBranchTagPath().length == 0) {
 						ComponentQuery cquery = query.getComponentQuery();
 						ComponentQueryBuilder cqTmp = new ComponentQueryBuilder();
 						cqTmp.initFrom(cquery);
 						AdvisorNodeBuilder foundNode = null;
-						for(AdvisorNodeBuilder node : cqTmp.getAdvisoryNodes())
-						{
+						for (AdvisorNodeBuilder node : cqTmp.getAdvisoryNodes()) {
 							Pattern pattern = node.getNamePattern();
-							if(!(pattern == null || pattern.matcher(cr.getName()).find()))
+							if (!(pattern == null || pattern.matcher(cr.getName()).find()))
 								continue;
 
 							String matchingType = node.getComponentTypeID();
-							if(!(matchingType == null || matchingType.equals(cr.getComponentTypeID())))
+							if (!(matchingType == null || matchingType.equals(cr.getComponentTypeID())))
 								continue;
 
 							Filter filter = node.getFilter();
-							if(filter == null || filter.match(query.getContext()))
-							{
+							if (filter == null || filter.match(query.getContext())) {
 								foundNode = node;
 								break;
 							}
 						}
-						if(foundNode == null)
-						{
+						if (foundNode == null) {
 							foundNode = cqTmp.addAdvisorNode();
 							foundNode.setNamePattern(Pattern.compile(Pattern.quote(cr.getName())));
 						}
@@ -210,139 +178,122 @@ public class PSFProvider extends Provider
 					}
 
 					ProviderMatch candidate = delegated.findMatch(tmpQuery, problemCollector, monitor);
-					if(candidate == null)
+					if (candidate == null)
 						continue;
 
-					if(found == null)
+					if (found == null)
 						found = candidate;
-					else if(found.compareTo(candidate) < 0)
-					{
-						query.logDecision(ResolverDecisionType.MATCH_REJECTED, found.getVersionMatch(), NLS.bind(
-								"{0} is a better match", candidate.getVersionMatch()));
+					else if (found.compareTo(candidate) < 0) {
+						query.logDecision(ResolverDecisionType.MATCH_REJECTED, found.getVersionMatch(), NLS.bind("{0} is a better match", candidate
+								.getVersionMatch()));
 						found = candidate;
 					}
 				}
 			}
 			return found;
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	private PSF getCachedPSF(Map<UUID, Object> userCache)
-	{
-		return (PSF)userCache.get(getId());
-	}
-
-	public PSF getPSF(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException
-	{
+	public PSF getPSF(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 700);
 		Map<UUID, Object> userCache = query.getContext().getUserCache();
-		synchronized(userCache)
-		{
+		synchronized (userCache) {
 			PSF psf = getCachedPSF(userCache);
-			if(psf != null)
+			if (psf != null)
 				return psf;
 
-			try
-			{
+			try {
 				VersionSelector[] btPath = query.getBranchTagPath();
-				if(btPath.length == 0)
+				if (btPath.length == 0)
 					psf = getPSF(null, query, MonitorUtils.subMonitor(monitor, 100));
-				else
-				{
+				else {
 					CoreException lastException = null;
-					for(VersionSelector bt : btPath)
-					{
-						try
-						{
+					for (VersionSelector bt : btPath) {
+						try {
 							psf = getPSF(bt, query, MonitorUtils.subMonitor(monitor, 100));
 							lastException = null;
-						}
-						catch(CoreException e)
-						{
+						} catch (CoreException e) {
 							lastException = e;
 						}
 					}
-					if(lastException != null)
+					if (lastException != null)
 						throw lastException;
 				}
 				cachePSF(userCache, psf);
 				return psf;
-			}
-			catch(CoreException e)
-			{
+			} catch (CoreException e) {
 				problemCollector.add(e.getStatus());
 				Buckminster.getLogger().debug(e.getMessage());
 				return null;
-			}
-			finally
-			{
+			} finally {
 				monitor.done();
 			}
 		}
 	}
 
-	private PSF getPSF(VersionSelector vs, NodeQuery query, IProgressMonitor monitor) throws CoreException
-	{
-		ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN),
-				new VersionMatch(null, vs, -1, new Date(), null), ProviderScore.GOOD, query);
+	@Override
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		super.addAttributes(attrs);
+		attrs.addAttribute(javax.xml.XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type", "xsi:type", "CDATA", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				BM_PFS_PROVIDER_PREFIX + ":PDEMapProvider"); //$NON-NLS-1$
+		if (psfFile != null)
+			Utils.addAttribute(attrs, ATTR_PSF_FILE, psfFile);
+	}
+
+	private void cachePSF(Map<UUID, Object> userCache, PSF psf) {
+		userCache.put(getId(), psf);
+	}
+
+	private PSF getCachedPSF(Map<UUID, Object> userCache) {
+		return (PSF) userCache.get(getId());
+	}
+
+	private PSF getPSF(VersionSelector vs, NodeQuery query, IProgressMonitor monitor) throws CoreException {
+		ProviderMatch match = new ProviderMatch(this, CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN), new VersionMatch(null, vs,
+				-1, new Date(), null), ProviderScore.GOOD, query);
 
 		IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 10));
-		IStreamConsumer<PSF> psfReader = new IStreamConsumer<PSF>()
-		{
-			public PSF consumeStream(IComponentReader rdr, String streamName, InputStream stream,
-					IProgressMonitor consumerMon) throws CoreException, IOException
-			{
+		IStreamConsumer<PSF> psfReader = new IStreamConsumer<PSF>() {
+			public PSF consumeStream(IComponentReader rdr, String streamName, InputStream stream, IProgressMonitor consumerMon) throws CoreException,
+					IOException {
 				File tempFile = File.createTempFile("bm-", ".psf"); //$NON-NLS-1$ //$NON-NLS-2$
-				try
-				{
+				try {
 					OutputStream out = null;
-					try
-					{
+					try {
 						out = new FileOutputStream(tempFile);
 						IOUtils.copy(stream, out, consumerMon);
-					}
-					finally
-					{
+					} finally {
 						IOUtils.close(out);
 					}
 					ResourceSet rs = new ResourceSetImpl();
 					Resource resource = rs.getResource(URI.createFileURI(tempFile.getAbsolutePath()), true);
 					EList<EObject> content = resource.getContents();
-					if(content.size() != 1)
+					if (content.size() != 1)
 						throw BuckminsterException.fromMessage(NLS.bind("Unable to parse psf file from {0}", streamName));
 
-					return (PSF)content.get(0);
-				}
-				finally
-				{
+					return (PSF) content.get(0);
+				} finally {
 					tempFile.delete();
 				}
 			}
 		};
 
-		try
-		{
-			if(reader instanceof ICatalogReader)
-			{
-				if(psfFile == null)
-					throw BuckminsterException.fromMessage(NLS.bind(
-							"The psfFile attribute is mandatory when using reader of type {0}", getReaderTypeId()));
+		try {
+			if (reader instanceof ICatalogReader) {
+				if (psfFile == null)
+					throw BuckminsterException.fromMessage(NLS.bind("The psfFile attribute is mandatory when using reader of type {0}",
+							getReaderTypeId()));
 
-				return ((ICatalogReader)reader).readFile(psfFile, psfReader, MonitorUtils.subMonitor(monitor, 100));
+				return ((ICatalogReader) reader).readFile(psfFile, psfReader, MonitorUtils.subMonitor(monitor, 100));
 			}
 
-			if(psfFile != null)
-				throw BuckminsterException.fromMessage(NLS.bind(
-						"The psfFile attribute cannot be used in conjunction with reader of type {0}",
+			if (psfFile != null)
+				throw BuckminsterException.fromMessage(NLS.bind("The psfFile attribute cannot be used in conjunction with reader of type {0}",
 						getReaderTypeId()));
-			return ((IFileReader)reader).readFile(psfReader, MonitorUtils.subMonitor(monitor, 100));
-		}
-		catch(IOException e)
-		{
+			return ((IFileReader) reader).readFile(psfReader, MonitorUtils.subMonitor(monitor, 100));
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}

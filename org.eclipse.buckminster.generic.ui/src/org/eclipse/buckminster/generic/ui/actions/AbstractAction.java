@@ -20,7 +20,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -29,61 +28,50 @@ import org.eclipse.swt.widgets.Shell;
  * @author Henrik Lindberg
  * 
  */
-public abstract class AbstractAction extends Action
-{
-	private final Viewer m_viewer;
+public abstract class AbstractAction extends Action {
+	private final Viewer viewer;
 
-	public AbstractAction(Viewer viewer)
-	{
-		m_viewer = viewer;
+	public AbstractAction(Viewer viewer) {
+		this.viewer = viewer;
 	}
 
-	protected ISelection getSelection()
-	{
-		return m_viewer.getSelection();
+	protected ISelection getSelection() {
+		return viewer.getSelection();
 	}
 
-	protected Shell getShell()
-	{
-		return m_viewer.getControl().getShell();
+	protected Shell getShell() {
+		return viewer.getControl().getShell();
 	}
 
 	/**
-	 * If it is known that the selection is a structured selection it is conveniently obtained by this method.
+	 * If it is known that the selection is a structured selection it is
+	 * conveniently obtained by this method.
 	 * 
 	 * @return
 	 */
-	protected IStructuredSelection getStructuredSelection()
-	{
-		return (IStructuredSelection)(m_viewer.getSelection());
+	protected IStructuredSelection getStructuredSelection() {
+		return (IStructuredSelection) (viewer.getSelection());
 	}
 
-	protected Viewer getViewer()
-	{
-		return m_viewer;
+	protected Viewer getViewer() {
+		return viewer;
 	}
 
-	protected boolean showConfirm(String title, String question)
-	{
+	protected boolean showConfirm(String title, String question) {
 		return MessageDialog.openConfirm(getShell(), title, question);
 	}
 
-	protected void showError(String title, String message)
-	{
-		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR,
-				"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
+	protected void showError(String title, String message) {
+		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR, "org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
 				message));
 	}
 
-	protected void showError(String title, String message, Throwable e)
-	{
-		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR,
-				"org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
+	protected void showError(String title, String message, Throwable e) {
+		ErrorDialog.openError(getShell(), title, message, new Status(IStatus.ERROR, "org.eclipse.buckminster.generic.ui.actions", //$NON-NLS-1$
 				e.getMessage(), e));
 	}
 
-	protected void showMessage(String title, String message)
-	{
+	protected void showMessage(String title, String message) {
 		MessageDialog.openInformation(getShell(), title, message);
 	}
 }

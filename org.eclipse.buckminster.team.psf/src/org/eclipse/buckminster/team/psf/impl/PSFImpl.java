@@ -28,23 +28,26 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>PSF</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>PSF</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.PSFImpl#getVersion <em>Version</em>}</li>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.PSFImpl#getProviders <em>Providers</em>}</li>
- * <li>{@link org.eclipse.buckminster.team.psf.impl.PSFImpl#getWorkingSets <em>Working Sets</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.PSFImpl#getVersion <em>
+ * Version</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.PSFImpl#getProviders <em>
+ * Providers</em>}</li>
+ * <li>{@link org.eclipse.buckminster.team.psf.impl.PSFImpl#getWorkingSets <em>
+ * Working Sets</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class PSFImpl extends EObjectImpl implements PSF
-{
+public class PSFImpl extends EObjectImpl implements PSF {
 	/**
-	 * The default value of the '{@link #getVersion() <em>Version</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getVersion() <em>Version</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getVersion()
 	 * @generated
@@ -53,8 +56,8 @@ public class PSFImpl extends EObjectImpl implements PSF
 	protected static final String VERSION_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getVersion() <em>Version</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getVersion()
 	 * @generated
@@ -63,8 +66,8 @@ public class PSFImpl extends EObjectImpl implements PSF
 	protected String version = VERSION_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getProviders() <em>Providers</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getProviders() <em>Providers</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getProviders()
 	 * @generated
@@ -73,8 +76,8 @@ public class PSFImpl extends EObjectImpl implements PSF
 	protected EList<RepositoryProvider> providers;
 
 	/**
-	 * The cached value of the '{@link #getWorkingSets() <em>Working Sets</em>}' containment reference list. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getWorkingSets() <em>Working Sets</em>}'
+	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getWorkingSets()
 	 * @generated
@@ -87,8 +90,7 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * 
 	 * @generated
 	 */
-	protected PSFImpl()
-	{
+	protected PSFImpl() {
 		super();
 	}
 
@@ -98,16 +100,14 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.PSF__VERSION:
-			return getVersion();
-		case PsfPackage.PSF__PROVIDERS:
-			return getProviders();
-		case PsfPackage.PSF__WORKING_SETS:
-			return getWorkingSets();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case PsfPackage.PSF__VERSION:
+				return getVersion();
+			case PsfPackage.PSF__PROVIDERS:
+				return getProviders();
+			case PsfPackage.PSF__WORKING_SETS:
+				return getWorkingSets();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -118,14 +118,12 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.PSF__PROVIDERS:
-			return ((InternalEList<?>)getProviders()).basicRemove(otherEnd, msgs);
-		case PsfPackage.PSF__WORKING_SETS:
-			return ((InternalEList<?>)getWorkingSets()).basicRemove(otherEnd, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case PsfPackage.PSF__PROVIDERS:
+				return ((InternalEList<?>) getProviders()).basicRemove(otherEnd, msgs);
+			case PsfPackage.PSF__WORKING_SETS:
+				return ((InternalEList<?>) getWorkingSets()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -136,18 +134,14 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.PSF__VERSION:
-			return VERSION_EDEFAULT == null
-					? version != null
-					: !VERSION_EDEFAULT.equals(version);
-		case PsfPackage.PSF__PROVIDERS:
-			return providers != null && !providers.isEmpty();
-		case PsfPackage.PSF__WORKING_SETS:
-			return workingSets != null && !workingSets.isEmpty();
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case PsfPackage.PSF__VERSION:
+				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
+			case PsfPackage.PSF__PROVIDERS:
+				return providers != null && !providers.isEmpty();
+			case PsfPackage.PSF__WORKING_SETS:
+				return workingSets != null && !workingSets.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -159,21 +153,19 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.PSF__VERSION:
-			setVersion((String)newValue);
-			return;
-		case PsfPackage.PSF__PROVIDERS:
-			getProviders().clear();
-			getProviders().addAll((Collection<? extends RepositoryProvider>)newValue);
-			return;
-		case PsfPackage.PSF__WORKING_SETS:
-			getWorkingSets().clear();
-			getWorkingSets().addAll((Collection<? extends WorkingSet>)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case PsfPackage.PSF__VERSION:
+				setVersion((String) newValue);
+				return;
+			case PsfPackage.PSF__PROVIDERS:
+				getProviders().clear();
+				getProviders().addAll((Collection<? extends RepositoryProvider>) newValue);
+				return;
+			case PsfPackage.PSF__WORKING_SETS:
+				getWorkingSets().clear();
+				getWorkingSets().addAll((Collection<? extends WorkingSet>) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -184,19 +176,17 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case PsfPackage.PSF__VERSION:
-			setVersion(VERSION_EDEFAULT);
-			return;
-		case PsfPackage.PSF__PROVIDERS:
-			getProviders().clear();
-			return;
-		case PsfPackage.PSF__WORKING_SETS:
-			getWorkingSets().clear();
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case PsfPackage.PSF__VERSION:
+				setVersion(VERSION_EDEFAULT);
+				return;
+			case PsfPackage.PSF__PROVIDERS:
+				getProviders().clear();
+				return;
+			case PsfPackage.PSF__WORKING_SETS:
+				getWorkingSets().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -206,12 +196,9 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * 
 	 * @generated
 	 */
-	public EList<RepositoryProvider> getProviders()
-	{
-		if(providers == null)
-		{
-			providers = new EObjectContainmentEList<RepositoryProvider>(RepositoryProvider.class, this,
-					PsfPackage.PSF__PROVIDERS);
+	public EList<RepositoryProvider> getProviders() {
+		if (providers == null) {
+			providers = new EObjectContainmentEList<RepositoryProvider>(RepositoryProvider.class, this, PsfPackage.PSF__PROVIDERS);
 		}
 		return providers;
 	}
@@ -221,8 +208,7 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * 
 	 * @generated
 	 */
-	public String getVersion()
-	{
+	public String getVersion() {
 		return version;
 	}
 
@@ -231,10 +217,8 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * 
 	 * @generated
 	 */
-	public EList<WorkingSet> getWorkingSets()
-	{
-		if(workingSets == null)
-		{
+	public EList<WorkingSet> getWorkingSets() {
+		if (workingSets == null) {
 			workingSets = new EObjectContainmentEList<WorkingSet>(WorkingSet.class, this, PsfPackage.PSF__WORKING_SETS);
 		}
 		return workingSets;
@@ -245,11 +229,10 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * 
 	 * @generated
 	 */
-	public void setVersion(String newVersion)
-	{
+	public void setVersion(String newVersion) {
 		String oldVersion = version;
 		version = newVersion;
-		if(eNotificationRequired())
+		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, PsfPackage.PSF__VERSION, oldVersion, version));
 	}
 
@@ -259,9 +242,8 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -277,8 +259,7 @@ public class PSFImpl extends EObjectImpl implements PSF
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return PsfPackage.Literals.PSF;
 	}
 

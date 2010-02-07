@@ -6,26 +6,22 @@ import org.eclipse.buckminster.sax.AbstractHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class DigestHandler extends FormatHandler
-{
+public class DigestHandler extends FormatHandler {
 	public static final String TAG = Provider.TAG_DIGEST;
 
-	private String m_algorithm;
+	private String algorithm;
 
-	public DigestHandler(AbstractHandler parent)
-	{
+	public DigestHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		m_algorithm = getStringValue(attrs, Provider.ATTR_ALGORITHM);
+		algorithm = getStringValue(attrs, Provider.ATTR_ALGORITHM);
 	}
 
-	String getAlgorithm()
-	{
-		return m_algorithm;
+	String getAlgorithm() {
+		return algorithm;
 	}
 }

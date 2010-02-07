@@ -19,45 +19,35 @@ import org.eclipse.equinox.p2.metadata.VersionFormatException;
 /**
  * @author Thomas Hallgren
  */
-public class BranchConverter extends AbstractConverter
-{
-	public VersionSelector createSelector(Version version) throws CoreException
-	{
-		if(version == null)
+public class BranchConverter extends AbstractConverter {
+	public VersionSelector createSelector(Version version) throws CoreException {
+		if (version == null)
 			return null;
 
 		String selectorComponent = createSelectorComponent(version);
-		return selectorComponent == null
-				? null
-				: VersionSelector.branch(selectorComponent);
+		return selectorComponent == null ? null : VersionSelector.branch(selectorComponent);
 	}
 
-	public Version createVersion(VersionSelector versionSelector) throws CoreException
-	{
-		if(versionSelector == null)
+	public Version createVersion(VersionSelector versionSelector) throws CoreException {
+		if (versionSelector == null)
 			return null;
 
 		String name = versionSelector.getName();
-		if(name.equals(VersionSelector.DEFAULT_BRANCH))
+		if (name.equals(VersionSelector.DEFAULT_BRANCH))
 			return null;
 
 		return createVersionFromSelectorComponent(name);
 	}
 
-	public int getSelectorType()
-	{
+	public int getSelectorType() {
 		return VersionSelector.BRANCH;
 	}
 
 	@Override
-	protected IVersionFormat getDefaultVersionFormat()
-	{
-		try
-		{
+	protected IVersionFormat getDefaultVersionFormat() {
+		try {
 			return Version.compile("S"); //$NON-NLS-1$
-		}
-		catch(VersionFormatException e)
-		{
+		} catch (VersionFormatException e) {
 			return null;
 		}
 	}

@@ -10,8 +10,7 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.equinox.p2.metadata.Version;
 
-public interface ICSpecData extends IAdaptable
-{
+public interface ICSpecData extends IAdaptable {
 	IAttribute getAttribute(String name);
 
 	Map<String, ? extends IAttribute> getAttributes();

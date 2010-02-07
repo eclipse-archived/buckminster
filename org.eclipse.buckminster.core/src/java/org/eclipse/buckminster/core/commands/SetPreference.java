@@ -23,45 +23,39 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author kolwing
  */
-public class SetPreference extends WorkspaceCommand
-{
+public class SetPreference extends WorkspaceCommand {
 	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE); //$NON-NLS-1$
 
-	private boolean m_test = false;
+	private boolean test = false;
 
-	private String[] m_assignments;
+	private String[] assignments;
 
 	@Override
-	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception
-	{
+	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(TEST_DESCRIPTOR);
 		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
-	protected void handleOption(Option option) throws Exception
-	{
-		m_test = option.is(TEST_DESCRIPTOR);
+	protected void handleOption(Option option) throws Exception {
+		test = option.is(TEST_DESCRIPTOR);
 		super.handleOption(option);
 	}
 
 	@Override
-	protected void handleUnparsed(String[] unparsed) throws Exception
-	{
-		if(unparsed.length < 1)
+	protected void handleUnparsed(String[] unparsed) throws Exception {
+		if (unparsed.length < 1)
 			throw new UsageException(Messages.You_must_provide_at_least_one_preference_assignment);
-		m_assignments = unparsed;
+		assignments = unparsed;
 	}
 
 	@Override
-	protected int internalRun(IProgressMonitor monitor) throws Exception
-	{
-		PreferenceMappingManager prefManager = PreferenceMappingManager.getInstance(m_test);
-		for(int idx = 0; idx < m_assignments.length; ++idx)
-		{
-			String assignment = m_assignments[idx];
+	protected int internalRun(IProgressMonitor monitor) throws Exception {
+		PreferenceMappingManager prefManager = PreferenceMappingManager.getInstance(test);
+		for (int idx = 0; idx < assignments.length; ++idx) {
+			String assignment = assignments[idx];
 			int eqIdx = assignment.indexOf('=');
-			if(eqIdx < 1 || eqIdx >= assignment.length() - 1)
+			if (eqIdx < 1 || eqIdx >= assignment.length() - 1)
 				throw new UsageException(NLS.bind(Messages._0_is_not_an_assignment, assignment));
 			String key = assignment.substring(0, eqIdx);
 			String value = assignment.substring(eqIdx + 1);

@@ -26,7 +26,7 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
-import org.eclipse.buckminster.core.reader.LocalReaderType;
+import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
@@ -60,85 +60,69 @@ import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
 import org.osgi.framework.Constants;
 
 /**
- * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF, plugin.xml and fragment.xml files.
+ * A CSpec builder that creates a cspec using the META-INF/MANIFEST.MF,
+ * plugin.xml and fragment.xml files.
  * 
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstants
-{
-	private static IPath s_platformPluginsFolder = Path.fromOSString(
-			TargetPlatform.getPlatformInstallLocation().getAbsolutePath()).append(IPDEConstants.PLUGINS_FOLDER);
+public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstants {
+	private static IPath platformPluginsFolder = Path.fromOSString(TargetPlatform.getPlatformInstallLocation().getAbsolutePath()).append(
+			IPDEConstants.PLUGINS_FOLDER);
 
-	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly, IProgressMonitor monitor)
+			throws CoreException {
 		File locationFile = null;
-		if(reader instanceof EclipsePlatformReader)
-		{
+		if (reader instanceof EclipsePlatformReader) {
 			MonitorUtils.complete(monitor);
-			try
-			{
-				IPluginModelBase pluginModelBase = ((EclipsePlatformReader)reader).getPluginModelBase();
-				if(forResolutionAidOnly)
+			try {
+				IPluginModelBase pluginModelBase = ((EclipsePlatformReader) reader).getPluginModelBase();
+				if (forResolutionAidOnly)
 					return pluginModelBase;
 
 				String location = pluginModelBase.getInstallLocation();
-				if(location == null)
+				if (location == null)
 					throw new MissingCSpecSourceException(reader.getProviderMatch());
 
-				if(s_platformPluginsFolder.isPrefixOf(Path.fromOSString(location)))
+				if (platformPluginsFolder.isPrefixOf(Path.fromOSString(location)))
 					return pluginModelBase;
 
 				locationFile = new File(location);
-				if(locationFile.isFile())
+				if (locationFile.isFile())
 					return pluginModelBase;
 
-				// Self hosted from workspace. We can (and must) build this one from
+				// Self hosted from workspace. We can (and must) build this one
+				// from
 				// source
 				//
-				reader = (ICatalogReader)LocalReaderType.getReader(locationFile.toURI().toURL(), null);
-			}
-			catch(IllegalStateException e)
-			{
+				reader = (ICatalogReader) URLCatalogReaderType.getReader(locationFile.toURI().toURL(), null);
+			} catch (IllegalStateException e) {
 				throw new MissingCSpecSourceException(reader.getProviderMatch());
-			}
-			catch(MalformedURLException e)
-			{
+			} catch (MalformedURLException e) {
 				throw BuckminsterException.wrap(e);
 			}
 		}
 
 		monitor.beginTask(null, 7000);
-		try
-		{
+		try {
 			// This is an OSGi style plugin. Most of the dependencies and
 			// other
 			// info that we're interested in is stored in the
 			// META-INF/MANIFEST.MF
 			// file.
 			//
-			try
-			{
-				if(locationFile == null)
-				{
-					if(reader instanceof ZipArchiveReader)
-					{
-						IComponentReader fr = ((ZipArchiveReader)reader).getFileReader();
-						if(fr instanceof URLFileReader)
-						{
-							URI uri = ((URLFileReader)fr).getURI();
-							try
-							{
+			try {
+				if (locationFile == null) {
+					if (reader instanceof ZipArchiveReader) {
+						IComponentReader fr = ((ZipArchiveReader) reader).getFileReader();
+						if (fr instanceof URLFileReader) {
+							URI uri = ((URLFileReader) fr).getURI();
+							try {
 								URL url = FileLocator.resolve(uri.toURL());
-								if("file".equalsIgnoreCase(url.getProtocol())) //$NON-NLS-1$
+								if ("file".equalsIgnoreCase(url.getProtocol())) //$NON-NLS-1$
 									locationFile = new File(url.toURI());
-							}
-							catch(IOException e)
-							{
-							}
-							catch(URISyntaxException e)
-							{
+							} catch (IOException e) {
+							} catch (URISyntaxException e) {
 							}
 						}
 					}
@@ -146,151 +130,112 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				boolean fragment = false;
 				BundleModel model = new ExternalBundleModel(locationFile);
 				loadModel(reader, BUNDLE_FILE, model, MonitorUtils.subMonitor(monitor, 1000));
-				if(model.getBundle().getHeader(Constants.BUNDLE_SYMBOLICNAME) == null)
+				if (model.getBundle().getHeader(Constants.BUNDLE_SYMBOLICNAME) == null)
 					throw new FileNotFoundException(Messages.not_an_OSGi_manifest);
 
 				fragment = model.isFragmentModel();
-				BundlePluginModelBase bmodel = fragment
-						? new BundleFragmentModel()
-						: new BundlePluginModel();
+				BundlePluginModelBase bmodel = fragment ? new BundleFragmentModel() : new BundlePluginModel();
 				bmodel.setBundleModel(model);
 				bmodel.setEnabled(true);
 
-				if(forResolutionAidOnly)
+				if (forResolutionAidOnly)
 					return bmodel;
 
 				// Extensions etc. that are not part of the OSGi can still be
 				// found in the plugin.xml or fragment.xml
 				//
-				try
-				{
-					String extensionsFile = fragment
-							? FRAGMENT_FILE
-							: PLUGIN_FILE;
+				try {
+					String extensionsFile = fragment ? FRAGMENT_FILE : PLUGIN_FILE;
 					ExternalExtensionsModel extModel = new ExternalExtensionsModel();
 					loadModel(reader, extensionsFile, extModel, MonitorUtils.subMonitor(monitor, 1000));
 					bmodel.setExtensionsModel(extModel);
-				}
-				catch(FileNotFoundException e)
-				{
+				} catch (FileNotFoundException e) {
 				}
 
-				try
-				{
+				try {
 					IBuildModel buildModel = new ExternalBuildModel();
 					loadModel(reader, BUILD_PROPERTIES_FILE, buildModel, MonitorUtils.subMonitor(monitor, 1000));
 					bmodel.setBuildModel(buildModel);
-				}
-				catch(FileNotFoundException e)
-				{
+				} catch (FileNotFoundException e) {
 				}
 				return bmodel;
-			}
-			catch(FileNotFoundException e)
-			{
+			} catch (FileNotFoundException e) {
 			}
 
-			try
-			{
+			try {
 				ExternalPluginModel pm = new ExternalPluginModel();
 				loadModel(reader, PLUGIN_FILE, pm, MonitorUtils.subMonitor(monitor, 1000));
 				return pm;
-			}
-			catch(FileNotFoundException e1)
-			{
+			} catch (FileNotFoundException e1) {
 			}
 
-			try
-			{
+			try {
 				ExternalFragmentModel pm = new ExternalFragmentModel();
 				loadModel(reader, FRAGMENT_FILE, pm, MonitorUtils.subMonitor(monitor, 1000));
 				return pm;
-			}
-			catch(FileNotFoundException e1)
-			{
+			} catch (FileNotFoundException e1) {
 				throw new MissingCSpecSourceException(reader.getProviderMatch());
 			}
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	private static void loadModel(ICatalogReader reader, String file, final IModel model, IProgressMonitor monitor)
-			throws CoreException, FileNotFoundException
-	{
-		try
-		{
-			reader.readFile(file, new IStreamConsumer<Object>()
-			{
-				public Object consumeStream(IComponentReader fileReader, String streamName, InputStream stream,
-						IProgressMonitor mon) throws CoreException
-				{
+	private static void loadModel(ICatalogReader reader, String file, final IModel model, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException {
+		try {
+			reader.readFile(file, new IStreamConsumer<Object>() {
+				public Object consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor mon)
+						throws CoreException {
 					int len;
 					byte[] buf = new byte[4096];
 					AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
-					try
-					{
-						while((len = stream.read(buf)) > 0)
-						{
-							for(int idx = 0; idx < len; ++idx)
-							{
+					try {
+						while ((len = stream.read(buf)) > 0) {
+							for (int idx = 0; idx < len; ++idx) {
 								byte b = buf[idx];
-								if(b != '\r')
+								if (b != '\r')
 									bld.write(b);
 							}
 						}
-					}
-					catch(IOException e)
-					{
+					} catch (IOException e) {
 						throw BuckminsterException.wrap(e);
 					}
 					model.load(bld.getInputStream(), true);
 					return null;
 				}
 			}, monitor);
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw e;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
 	@Override
-	public String getComponentTypeID()
-	{
+	public String getComponentTypeID() {
 		return IComponentType.OSGI_BUNDLE;
 	}
 
 	@Override
-	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException
-	{
-		if(reader instanceof EclipseImportReader)
-		{
-			EclipseImportReader eclipseImportReader = (EclipseImportReader)reader;
+	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException {
+		if (reader instanceof EclipseImportReader) {
+			EclipseImportReader eclipseImportReader = (EclipseImportReader) reader;
 			return super.createResolution(reader, cspecBuilder, eclipseImportReader.isUnpack());
 		}
 		return super.createResolution(reader, cspecBuilder);
 	}
 
 	@Override
-	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader,
-			IProgressMonitor monitor) throws CoreException
-	{
+	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor)
+			throws CoreException {
 		monitor.beginTask(null, 100);
-		try
-		{
-			IPluginBase pluginBase = parsePluginModelBase(reader, forResolutionAidOnly,
-					MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
+		try {
+			IPluginBase pluginBase = parsePluginModelBase(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
 			cspecBuilder.setName(pluginBase.getId());
 			cspecBuilder.setComponentTypeID(getComponentTypeID());
 			cspecBuilder.setVersion(VersionHelper.parseVersion(pluginBase.getVersion()));
-			if(forResolutionAidOnly)
+			if (forResolutionAidOnly)
 				return;
 
 			IPluginModelBase model = pluginBase.getPluginModel();
@@ -299,14 +244,12 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			IBuildModel buildModel = model.getBuildModel();
 			boolean fromProject = (buildModel != null);
 			CSpecGenerator generator;
-			if(fromProject)
+			if (fromProject)
 				generator = new CSpecFromSource(cspecBuilder, reader, pluginBase, buildModel);
 			else
 				generator = new CSpecFromBinary(cspecBuilder, reader, pluginBase);
 			generator.generate(monitor);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}

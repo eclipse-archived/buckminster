@@ -14,35 +14,32 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * The AlterPropertiesHandler makes it possible to alter or remove properties from an existing property set. It must
- * always be used in a conjunction with a normal property handler that makes it possible to add properties.
+ * The AlterPropertiesHandler makes it possible to alter or remove properties
+ * from an existing property set. It must always be used in a conjunction with a
+ * normal property handler that makes it possible to add properties.
  * 
  * @author Thomas Hallgren
  */
-abstract class AlterPropertiesHandler extends PropertyManagerHandler
-{
-	private final RemoveHandler m_removeHandler = new RemoveHandler(this, "remove", "key"); //$NON-NLS-1$ //$NON-NLS-2$
+abstract class AlterPropertiesHandler extends PropertyManagerHandler {
+	private final RemoveHandler removeHandler = new RemoveHandler(this, "remove", "key"); //$NON-NLS-1$ //$NON-NLS-2$
 
-	AlterPropertiesHandler(AbstractHandler parent, String tag)
-	{
+	AlterPropertiesHandler(AbstractHandler parent, String tag) {
 		super(parent, tag);
 	}
 
 	@Override
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_removeHandler)
-			addRemovedProperty(m_removeHandler.getValue());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == removeHandler)
+			addRemovedProperty(removeHandler.getValue());
 		else
 			super.childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(m_removeHandler.getTAG().equals(localName))
-			ch = m_removeHandler;
+		if (removeHandler.getTAG().equals(localName))
+			ch = removeHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;

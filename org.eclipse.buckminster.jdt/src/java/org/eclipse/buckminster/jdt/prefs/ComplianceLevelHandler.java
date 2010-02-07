@@ -18,28 +18,29 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.JavaCore;
 import org.osgi.service.prefs.BackingStoreException;
 
-public class ComplianceLevelHandler extends BasicPreferenceHandler
-{
-	public static void setCompilanceOptions(String compliance) throws BackingStoreException
-	{
-		// We must hardcode these preferences into the instance store. Normally, only
-		// those that differs from the default settings will be stored but if we do that
-		// and the default java changes (which it does on the first build if the JVM is
-		// not a 1.4) then all settings that where equal to the default will change.
+public class ComplianceLevelHandler extends BasicPreferenceHandler {
+	public static void setCompilanceOptions(String compliance) throws BackingStoreException {
+		// We must hardcode these preferences into the instance store. Normally,
+		// only
+		// those that differs from the default settings will be stored but if we
+		// do that
+		// and the default java changes (which it does on the first build if the
+		// JVM is
+		// not a 1.4) then all settings that where equal to the default will
+		// change.
 		//
 		HashMap<String, String> options = new HashMap<String, String>();
 		JavaCore.setComplianceOptions(compliance, options);
-		if(options.isEmpty())
+		if (options.isEmpty())
 			throw new IllegalArgumentException("Unsupported compliance: " + compliance); //$NON-NLS-1$
 
 		IEclipsePreferences prefs = new InstanceScope().getNode(JavaCore.PLUGIN_ID);
 		IEclipsePreferences defaults = new DefaultScope().getNode(JavaCore.PLUGIN_ID);
-		for(Map.Entry<String, String> entry : options.entrySet())
-		{
+		for (Map.Entry<String, String> entry : options.entrySet()) {
 			String key = entry.getKey();
 			String value = entry.getValue();
 			String defaultValue = defaults.get(key, null);
-			if(value == null || (defaultValue != null && defaultValue.equals(value)))
+			if (value == null || (defaultValue != null && defaultValue.equals(value)))
 				prefs.remove(key);
 			else
 				prefs.put(key, value);
@@ -48,20 +49,17 @@ public class ComplianceLevelHandler extends BasicPreferenceHandler
 	}
 
 	@Override
-	public String get(String defaultValue) throws CoreException
-	{
+	public String get(String defaultValue) throws CoreException {
 		return JavaCore.getOption(JavaCore.COMPILER_COMPLIANCE);
 	}
 
 	@Override
-	public void set(String complianceLevel) throws BackingStoreException
-	{
+	public void set(String complianceLevel) throws BackingStoreException {
 		setCompilanceOptions(complianceLevel);
 	}
 
 	@Override
-	public void unset() throws BackingStoreException
-	{
-		setCompilanceOptions((String)JavaCore.getDefaultOptions().get(JavaCore.COMPILER_COMPLIANCE));
+	public void unset() throws BackingStoreException {
+		setCompilanceOptions((String) JavaCore.getDefaultOptions().get(JavaCore.COMPILER_COMPLIANCE));
 	}
 }

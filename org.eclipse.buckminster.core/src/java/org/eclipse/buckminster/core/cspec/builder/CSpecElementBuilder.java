@@ -10,22 +10,18 @@ package org.eclipse.buckminster.core.cspec.builder;
 /**
  * @author Thomas Hallgren
  */
-public abstract class CSpecElementBuilder extends NamedElementBuilder
-{
-	private final CSpecBuilder m_cspecBuilder;
+public abstract class CSpecElementBuilder extends NamedElementBuilder {
+	private final CSpecBuilder cspecBuilder;
 
-	CSpecElementBuilder(CSpecBuilder cspecBuilder)
-	{
-		m_cspecBuilder = cspecBuilder;
+	CSpecElementBuilder(CSpecBuilder cspecBuilder) {
+		this.cspecBuilder = cspecBuilder;
 	}
 
-	public final CSpecBuilder getCSpecBuilder()
-	{
-		return m_cspecBuilder;
+	public final CSpecBuilder getCSpecBuilder() {
+		return cspecBuilder;
 	}
 
-	public final String getCSpecName()
-	{
-		return m_cspecBuilder.getName();
+	public final String getCSpecName() {
+		return cspecBuilder.getName();
 	}
 }

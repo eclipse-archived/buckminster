@@ -14,12 +14,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class AmbigousComponentException extends LocalizedException
-{
+public class AmbigousComponentException extends LocalizedException {
 	private static final long serialVersionUID = -7828103645630248088L;
 
-	public AmbigousComponentException(String componentName)
-	{
+	public AmbigousComponentException(String componentName) {
 		super(NLS.bind(Messages.More_then_one_version_of_component_0_known_to_Buckminster, componentName));
 	}
 }

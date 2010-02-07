@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public interface IDecompressor
-{
+public interface IDecompressor {
 	InputStream decompress(InputStream input, IProgressMonitor monitor) throws IOException;
 }

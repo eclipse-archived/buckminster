@@ -20,40 +20,35 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class MaterializationSpecHandler extends MaterializationDirectiveHandler
-{
+public class MaterializationSpecHandler extends MaterializationDirectiveHandler {
 	public static final String TAG = MaterializationSpec.TAG;
 
-	private final URL m_contextURL;
+	private final URL contextURL;
 
-	public MaterializationSpecHandler(AbstractHandler parent, URL contextURL)
-	{
+	public MaterializationSpecHandler(AbstractHandler parent, URL contextURL) {
 		super(parent, TAG, new MaterializationSpecBuilder());
-		m_contextURL = contextURL;
+		this.contextURL = contextURL;
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(MaterializationNodeHandler.TAG.equals(localName))
-			ch = new MaterializationNodeHandler(this, ((MaterializationSpecBuilder)getBuilder()).addNodeBuilder());
+		if (MaterializationNodeHandler.TAG.equals(localName))
+			ch = new MaterializationNodeHandler(this, ((MaterializationSpecBuilder) getBuilder()).addNodeBuilder());
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public MaterializationSpec getMaterializationSpec()
-	{
-		return new MaterializationSpec((MaterializationSpecBuilder)getBuilder());
+	public MaterializationSpec getMaterializationSpec() {
+		return new MaterializationSpec((MaterializationSpecBuilder) getBuilder());
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		MaterializationSpecBuilder builder = (MaterializationSpecBuilder)getBuilder();
-		builder.setContextURL(m_contextURL);
+		MaterializationSpecBuilder builder = (MaterializationSpecBuilder) getBuilder();
+		builder.setContextURL(contextURL);
 		builder.setName(getStringValue(attrs, MaterializationSpec.ATTR_NAME));
 		builder.setShortDesc(getOptionalStringValue(attrs, MaterializationSpec.ATTR_SHORT_DESC));
 		builder.setURL(getStringValue(attrs, MaterializationSpec.ATTR_URL));

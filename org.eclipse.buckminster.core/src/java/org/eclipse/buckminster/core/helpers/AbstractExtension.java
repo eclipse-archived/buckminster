@@ -20,47 +20,38 @@ import org.eclipse.core.runtime.IExecutableExtension;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractExtension implements IBuckminsterExtension, IExecutableExtension
-{
+public abstract class AbstractExtension implements IBuckminsterExtension, IExecutableExtension {
 	@SuppressWarnings("unchecked")
-	private static Map<String, String> getInitializationParameters(Object data)
-	{
-		return (data instanceof Map<?, ?>)
-				? (Map<String, String>)data
-				: null;
+	private static Map<String, String> getInitializationParameters(Object data) {
+		return (data instanceof Map<?, ?>) ? (Map<String, String>) data : null;
 	}
 
-	private String m_id;
+	private String id;
 
 	/**
 	 * Returns the id as it was defined in the extension
 	 */
-	public String getId()
-	{
-		return m_id;
+	public String getId() {
+		return id;
 	}
 
 	/**
-	 * Assing a parameter that originates from the extension definition. Subclasses must override this method if they
-	 * want to receive parameters.
+	 * Assing a parameter that originates from the extension definition.
+	 * Subclasses must override this method if they want to receive parameters.
 	 * 
 	 * @param key
 	 *            The name of the parameter
 	 * @param value
 	 *            The parameter value
 	 */
-	public void setExtensionParameter(String key, String value) throws CoreException
-	{
+	public void setExtensionParameter(String key, String value) throws CoreException {
 	}
 
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-			throws CoreException
-	{
-		m_id = config.getAttribute("id"); //$NON-NLS-1$
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
+		id = config.getAttribute("id"); //$NON-NLS-1$
 		Map<String, String> initParams = getInitializationParameters(data);
-		if(initParams != null)
-		{
-			for(Map.Entry<String, String> entry : initParams.entrySet())
+		if (initParams != null) {
+			for (Map.Entry<String, String> entry : initParams.entrySet())
 				setExtensionParameter(entry.getKey(), entry.getValue());
 		}
 	}

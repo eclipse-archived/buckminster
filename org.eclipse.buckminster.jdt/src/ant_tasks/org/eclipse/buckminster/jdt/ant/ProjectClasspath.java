@@ -20,231 +20,185 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.xml.sax.SAXException;
 
-public class ProjectClasspath extends Task
-{
-	public abstract class Entry
-	{
-		private boolean m_exported;
-
-		private IPath m_path;
-
-		public abstract IClasspathEntry createEntry() throws BuildException;
-
-		public IPath getPath()
-		{
-			return m_path;
-		}
-
-		public boolean isExported()
-		{
-			return m_exported;
-		}
-
-		public void setExported(boolean exported)
-		{
-			m_exported = exported;
-		}
-
-		public void setPath(String path)
-		{
-			m_path = new Path(path);
-		}
-
-		public void setPath(IPath path)
-		{
-			m_path = path;
-		}
-
-		protected IPath getRequiredPath()
-		{
-			if(m_path == null)
-				throw missingRequiredAttribute("path");
-			return m_path;
-		}
-	}
-
-	public class ContainerEntry extends Entry
-	{
+public class ProjectClasspath extends Task {
+	public class ContainerEntry extends Entry {
 		@Override
-		public IClasspathEntry createEntry() throws BuildException
-		{
+		public IClasspathEntry createEntry() throws BuildException {
 			return JavaCore.newContainerEntry(getRequiredPath(), isExported());
 		}
 	}
 
-	public class LibraryEntry extends Entry
-	{
-		private IPath m_sourceAttachmentPath;
+	public abstract class Entry {
+		private boolean exported;
 
-		private IPath m_sourceAttachmentRootPath;
+		private IPath path;
 
-		@Override
-		public IClasspathEntry createEntry() throws BuildException
-		{
-			return JavaCore.newLibraryEntry(getRequiredPath(), m_sourceAttachmentPath,
-				m_sourceAttachmentRootPath, isExported());
+		public abstract IClasspathEntry createEntry() throws BuildException;
+
+		public IPath getPath() {
+			return path;
 		}
 
-		public IPath getSourceAttachmentPath()
-		{
-			return m_sourceAttachmentPath;
+		public boolean isExported() {
+			return exported;
 		}
 
-		public IPath getSourceAttachmentRootPath()
-		{
-			return m_sourceAttachmentRootPath;
+		public void setExported(boolean exported) {
+			this.exported = exported;
 		}
 
-		public void setSourceAttachmentPath(File sourceAttachmentPath)
-		{
-			m_sourceAttachmentPath = fileToPath(sourceAttachmentPath);
+		public void setPath(IPath path) {
+			this.path = path;
 		}
 
-		public void setSourceAttachmentRootPath(File sourceAttachmentRootPath)
-		{
-			m_sourceAttachmentRootPath = fileToPath(sourceAttachmentRootPath);
+		public void setPath(String path) {
+			this.path = new Path(path);
+		}
+
+		protected IPath getRequiredPath() {
+			if (path == null)
+				throw missingRequiredAttribute("path");
+			return path;
 		}
 	}
 
-	public class ProjectEntry extends Entry
-	{
+	public class LibraryEntry extends Entry {
+		private IPath sourceAttachmentPath;
+
+		private IPath sourceAttachmentRootPath;
+
 		@Override
-		public IClasspathEntry createEntry() throws BuildException
-		{
+		public IClasspathEntry createEntry() throws BuildException {
+			return JavaCore.newLibraryEntry(getRequiredPath(), sourceAttachmentPath, sourceAttachmentRootPath, isExported());
+		}
+
+		public IPath getSourceAttachmentPath() {
+			return sourceAttachmentPath;
+		}
+
+		public IPath getSourceAttachmentRootPath() {
+			return sourceAttachmentRootPath;
+		}
+
+		public void setSourceAttachmentPath(File sourceAttachmentPath) {
+			this.sourceAttachmentPath = fileToPath(sourceAttachmentPath);
+		}
+
+		public void setSourceAttachmentRootPath(File sourceAttachmentRootPath) {
+			this.sourceAttachmentRootPath = fileToPath(sourceAttachmentRootPath);
+		}
+	}
+
+	public class ProjectEntry extends Entry {
+		@Override
+		public IClasspathEntry createEntry() throws BuildException {
 			return JavaCore.newProjectEntry(getRequiredPath(), isExported());
 		}
 	}
 
-	public class VariableEntry extends LibraryEntry
-	{
+	public class VariableEntry extends LibraryEntry {
 		@Override
-		public IClasspathEntry createEntry() throws BuildException
-		{
-			return JavaCore.newVariableEntry(getRequiredPath(), getSourceAttachmentPath(),
-				getSourceAttachmentRootPath(), isExported());
+		public IClasspathEntry createEntry() throws BuildException {
+			return JavaCore.newVariableEntry(getRequiredPath(), getSourceAttachmentPath(), getSourceAttachmentRootPath(), isExported());
 		}
 	}
 
-	private IPath m_projectDir;
-
-	private ArrayList<Entry> m_entries;
-
-	private ArrayList<FileSet> m_librarySets;
-
-	private ArrayList<Entry> getEntries()
-	{
-		if(m_entries == null)
-			m_entries = new ArrayList<Entry>();
-		return m_entries;
+	static IPath fileToPath(File file) throws BuildException {
+		try {
+			return (file == null ? null : Path.fromOSString(file.getCanonicalPath().toString()));
+		} catch (IOException e) {
+			throw new BuildException(e);
+		}
 	}
 
-	public void addLibrarySet(FileSet fileSet)
-	{
-		if(m_librarySets == null)
-			m_librarySets = new ArrayList<FileSet>();
-		m_librarySets.add(fileSet);
+	private IPath projectDir;
+
+	private ArrayList<Entry> entries;
+
+	private ArrayList<FileSet> librarySets;
+
+	public void addLibrarySet(FileSet fileSet) {
+		if (librarySets == null)
+			librarySets = new ArrayList<FileSet>();
+		librarySets.add(fileSet);
 	}
 
-	public ContainerEntry createContainerEntry()
-	{
+	public ContainerEntry createContainerEntry() {
 		ContainerEntry entry = new ContainerEntry();
 		getEntries().add(entry);
 		return entry;
 	}
 
-	public LibraryEntry createLibraryEntry()
-	{
+	public LibraryEntry createLibraryEntry() {
 		LibraryEntry entry = new LibraryEntry();
 		getEntries().add(entry);
 		return entry;
 	}
 
-	public ProjectEntry createProjectEntry()
-	{
+	public ProjectEntry createProjectEntry() {
 		ProjectEntry entry = new ProjectEntry();
 		getEntries().add(entry);
 		return entry;
 	}
 
-	public VariableEntry createVariableEntry()
-	{
+	public VariableEntry createVariableEntry() {
 		VariableEntry entry = new VariableEntry();
 		getEntries().add(entry);
 		return entry;
 	}
 
 	@Override
-	public void execute() throws BuildException
-	{
-		if(m_projectDir == null)
+	public void execute() throws BuildException {
+		if (projectDir == null)
 			throw missingRequiredAttribute("projectDir");
 
-		if(m_librarySets != null)
-		{
-			for(FileSet fileSet : m_librarySets)
-			{
+		if (librarySets != null) {
+			for (FileSet fileSet : librarySets) {
 				DirectoryScanner ds = fileSet.getDirectoryScanner(getProject());
 				IPath base = fileToPath(ds.getBasedir());
-				for(String fileName : ds.getIncludedFiles())
-				{
+				for (String fileName : ds.getIncludedFiles()) {
 					LibraryEntry le = createLibraryEntry();
 					le.setPath(base.append(fileName));
 					le.setExported(true);
 				}
 			}
-			m_librarySets = null;
+			librarySets = null;
 		}
-	
-		OutputStream output = null;
-		try
-		{
-			output = new BufferedOutputStream(new FileOutputStream(m_projectDir.append(".classpath").toFile()));
 
-			IClasspathEntry[] entries;
-			if(m_entries == null)
-				entries = new IClasspathEntry[0];
-			else
-			{
-				int top = m_entries.size();
-				entries = new IClasspathEntry[top];
-				for(int idx = 0; idx < top; ++idx)
-					entries[idx] = m_entries.get(idx).createEntry();
+		OutputStream output = null;
+		try {
+			output = new BufferedOutputStream(new FileOutputStream(projectDir.append(".classpath").toFile()));
+
+			IClasspathEntry[] classPaths;
+			if (entries == null)
+				classPaths = new IClasspathEntry[0];
+			else {
+				int top = entries.size();
+				classPaths = new IClasspathEntry[top];
+				for (int idx = 0; idx < top; ++idx)
+					classPaths[idx] = entries.get(idx).createEntry();
 			}
-			Utils.serialize(new SaxableClasspath(m_projectDir, entries), output);
-		}
-		catch(SAXException e)
-		{
+			Utils.serialize(new SaxableClasspath(projectDir, classPaths), output);
+		} catch (SAXException e) {
 			throw new BuildException(e, getLocation());
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw new BuildException(e, getLocation());
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(output);
 		}
 	}
 
-	public void setProjectDir(File projectDir)
-	{
-		m_projectDir = fileToPath(projectDir);
+	public void setProjectDir(File projectDir) {
+		this.projectDir = fileToPath(projectDir);
 	}
 
-	BuildException missingRequiredAttribute(String attributeName)
-	{
+	BuildException missingRequiredAttribute(String attributeName) {
 		return new BuildException("Missing required attribute " + attributeName, getLocation());
 	}
 
-	static IPath fileToPath(File file) throws BuildException
-	{
-		try
-		{
-			return (file == null ? null : Path.fromOSString(file.getCanonicalPath().toString()));
-		}
-		catch(IOException e)
-		{
-			throw new BuildException(e);
-		}
+	private ArrayList<Entry> getEntries() {
+		if (entries == null)
+			entries = new ArrayList<Entry>();
+		return entries;
 	}
 }

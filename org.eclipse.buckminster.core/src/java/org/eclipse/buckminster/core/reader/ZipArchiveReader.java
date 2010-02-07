@@ -26,100 +26,75 @@ import org.eclipse.core.runtime.NullProgressMonitor;
  * @author Thomas Hallgren
  * 
  */
-public class ZipArchiveReader extends AbstractCatalogReader
-{
-	private final IFileReader m_zipFileReader;
+public class ZipArchiveReader extends AbstractCatalogReader {
+	private final IFileReader zipFileReader;
 
-	public ZipArchiveReader(IFileReader fileReader)
-	{
+	public ZipArchiveReader(IFileReader fileReader) {
 		super(fileReader.getReaderType(), fileReader.getProviderMatch());
-		m_zipFileReader = fileReader;
+		zipFileReader = fileReader;
 	}
 
-	public IComponentReader getFileReader()
-	{
-		return m_zipFileReader;
+	public IComponentReader getFileReader() {
+		return zipFileReader;
 	}
 
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		throw new UnsupportedOperationException(Messages.Cannot_materialize);
 	}
 
 	@Override
-	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
-	{
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
 		ZipInputStream zi = null;
-		try
-		{
+		try {
 			ZipEntry ze;
-			zi = new ZipInputStream(m_zipFileReader.open(monitor));
-			while((ze = zi.getNextEntry()) != null)
-				if(ze.getName().equals(fileName))
+			zi = new ZipInputStream(zipFileReader.open(monitor));
+			while ((ze = zi.getNextEntry()) != null)
+				if (ze.getName().equals(fileName))
 					return true;
 			return false;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			return false;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(zi);
 		}
 	}
 
 	@Override
-	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException
-	{
+	protected void innerList(List<String> files, IProgressMonitor monitor) throws CoreException {
 		ZipInputStream zi = null;
-		try
-		{
+		try {
 			ZipEntry ze;
-			zi = new ZipInputStream(m_zipFileReader.open(monitor));
-			while((ze = zi.getNextEntry()) != null)
-			{
+			zi = new ZipInputStream(zipFileReader.open(monitor));
+			while ((ze = zi.getNextEntry()) != null) {
 				String name = ze.getName();
-				if(name.endsWith("/")) //$NON-NLS-1$
+				if (name.endsWith("/")) //$NON-NLS-1$
 					name = name.substring(name.length() - 1);
-				if(name.indexOf('/', 1) < 0)
-				{
-					if(ze.isDirectory())
+				if (name.indexOf('/', 1) < 0) {
+					if (ze.isDirectory())
 						name = name + "/"; //$NON-NLS-1$
 					files.add(name);
 				}
 			}
-		}
-		catch(IOException e)
-		{
-		}
-		finally
-		{
+		} catch (IOException e) {
+		} finally {
 			IOUtils.close(zi);
 		}
 	}
 
 	@Override
-	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		ZipInputStream zi = null;
-		try
-		{
+		try {
 			ZipEntry ze;
-			zi = new ZipInputStream(m_zipFileReader.open(monitor));
-			while((ze = zi.getNextEntry()) != null)
-				if(ze.getName().equals(fileName))
+			zi = new ZipInputStream(zipFileReader.open(monitor));
+			while ((ze = zi.getNextEntry()) != null)
+				if (ze.getName().equals(fileName))
 					return consumer.consumeStream(this, fileName, zi, new NullProgressMonitor());
 
 			throw new FileNotFoundException(fileName);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(zi);
 		}
 	}

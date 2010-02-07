@@ -23,97 +23,81 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class GroupsTable extends AttributesTable<GroupBuilder>
-{
-	private Text m_rebasePathText;
+public class GroupsTable extends AttributesTable<GroupBuilder> {
+	private Text rebasePathText;
 
-	private List<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
+	private List<PrerequisiteBuilder> prerequisites = new ArrayList<PrerequisiteBuilder>();
 
-	private SimpleTableEditor<PrerequisiteBuilder> m_prerequisitesEditor;
+	private SimpleTableEditor<PrerequisiteBuilder> prerequisitesEditor;
 
-	public GroupsTable(CSpecEditor editor, List<GroupBuilder> data, CSpecBuilder cspec, boolean readOnly)
-	{
+	public GroupsTable(CSpecEditor editor, List<GroupBuilder> data, CSpecBuilder cspec, boolean readOnly) {
 		super(editor, data, cspec, readOnly);
 	}
 
 	@Override
-	public void enableFields(boolean enabled)
-	{
+	public void enableFields(boolean enabled) {
 		super.enableFields(enabled);
 
-		m_rebasePathText.setEnabled(enabled);
-		m_prerequisitesEditor.setEnabled(enabled);
+		rebasePathText.setEnabled(enabled);
+		prerequisitesEditor.setEnabled(enabled);
 	}
 
 	@Override
-	public void fillStack(Composite stackComposite)
-	{
+	public void fillStack(Composite stackComposite) {
 		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
 		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 
 	@Override
-	protected GroupBuilder createNewRow()
-	{
+	protected GroupBuilder createNewRow() {
 		return getCSpecBuilder().createGroupBuilder();
 	}
 
 	@Override
-	protected void refreshRow(GroupBuilder builder)
-	{
+	protected void refreshRow(GroupBuilder builder) {
 		super.refreshRow(builder);
 
 		IPath rebasePath = builder.getPrerequisiteRebase();
-		m_rebasePathText.setText(TextUtils.notNullString(rebasePath == null
-				? null
-				: rebasePath.toOSString()));
+		rebasePathText.setText(TextUtils.notNullString(rebasePath == null ? null : rebasePath.toOSString()));
 
-		CSpecEditorUtils.copyAndSortItems(builder.getPrerequisites(), m_prerequisites,
-				CSpecEditorUtils.getPrerequisiteComparator());
-		m_prerequisitesEditor.refresh();
+		CSpecEditorUtils.copyAndSortItems(builder.getPrerequisites(), prerequisites, CSpecEditorUtils.getPrerequisiteComparator());
+		prerequisitesEditor.refresh();
 	}
 
 	@Override
-	protected void setRowValues(GroupBuilder builder) throws ValidatorException
-	{
+	protected void setRowValues(GroupBuilder builder) throws ValidatorException {
 		super.setRowValues(builder);
 
-		String rebasePathString = UiUtils.trimmedValue(m_rebasePathText);
+		String rebasePathString = UiUtils.trimmedValue(rebasePathText);
 		IPath rebasePath = null;
 
-		if(rebasePathString != null)
-		{
+		if (rebasePathString != null) {
 			rebasePath = Path.fromOSString(rebasePathString);
 		}
 		builder.setPrerequisiteRebase(rebasePath);
 
-		List<PrerequisiteBuilder> prerequisites = builder.getPrerequisites();
+		List<PrerequisiteBuilder> prereqs = builder.getPrerequisites();
 
-		if(prerequisites != null)
-		{
-			prerequisites.clear();
+		if (prereqs != null) {
+			prereqs.clear();
 		}
-		for(PrerequisiteBuilder prerequisite : m_prerequisites)
-		{
-			// Original "prerequisite" is created with a different GroupBuilder (an empty one)
+		for (PrerequisiteBuilder prerequisite : prerequisites) {
+			// Original "prerequisite" is created with a different GroupBuilder
+			// (an empty one)
 			// Need to created again and copy attributes
 			PrerequisiteBuilder newPrerequisite = builder.createPrerequisiteBuilder();
 			newPrerequisite.initFrom(prerequisite.createPrerequisite());
 
-			try
-			{
+			try {
 				builder.addPrerequisite(newPrerequisite);
-			}
-			catch(PrerequisiteAlreadyDefinedException e)
-			{
+			} catch (PrerequisiteAlreadyDefinedException e) {
 				throw new ValidatorException(e.getMessage());
 			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private Control createGeneralStackLayer(Composite stackComposite)
-	{
+	private Control createGeneralStackLayer(Composite stackComposite) {
 		Composite geComposite = new Composite(stackComposite, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = layout.marginWidth = 0;
@@ -131,8 +115,8 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 
 		UiUtils.createGridLabel(geComposite, Messages.release_path_with_colon, 1, 0, SWT.NONE);
 
-		m_rebasePathText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
-		m_rebasePathText.addModifyListener(FIELD_LISTENER);
+		rebasePathText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
+		rebasePathText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
@@ -146,16 +130,15 @@ public class GroupsTable extends AttributesTable<GroupBuilder>
 		// "PrerequisiteBuilder"s will be created with this empty GroupBuilder
 		// Need to create "PrerequisiteBuilder"s again while saving them
 
-		GroupPrerequisitesTable preTable = new GroupPrerequisitesTable(getCSpecEditor(), this, m_prerequisites,
-				createNewRow(), isReadOnly());
+		GroupPrerequisitesTable preTable = new GroupPrerequisitesTable(getCSpecEditor(), this, prerequisites, createNewRow(), isReadOnly());
 		preTable.addTableModifyListener(FIELD_LISTENER);
 
-		m_prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(geComposite, preTable, null,
-				Messages.group_prerequisite_with_dash, null, null, SWT.NONE);
+		prerequisitesEditor = new SimpleTableEditor<PrerequisiteBuilder>(geComposite, preTable, null, Messages.group_prerequisite_with_dash, null,
+				null, SWT.NONE);
 
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;
-		m_prerequisitesEditor.setLayoutData(gridData);
+		prerequisitesEditor.setLayoutData(gridData);
 
 		geComposite.setData("focusControl", getNameText()); //$NON-NLS-1$
 

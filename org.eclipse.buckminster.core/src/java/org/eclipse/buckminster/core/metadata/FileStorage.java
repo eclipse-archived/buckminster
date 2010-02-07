@@ -44,339 +44,270 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T>
-{
-	public static class Lock
-	{
-		public static Lock lock(File file, boolean exclusive) throws CoreException
-		{
+public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> {
+	public static class Lock {
+		public static Lock lock(File file, boolean exclusive) throws CoreException {
 			return new Lock(file, exclusive);
 		}
 
-		private final RandomAccessFile m_lockFile;
+		private final RandomAccessFile lockFile;
 
-		private FileLock m_lock;
+		private FileLock lock;
 
-		private Lock(File file, boolean exclusive) throws CoreException
-		{
-			RandomAccessFile lockFile = null;
-			try
-			{
-				lockFile = new RandomAccessFile(file, "rws"); //$NON-NLS-1$
-				m_lock = lockFile.getChannel().lock(0, Long.MAX_VALUE, !exclusive);
-				m_lockFile = lockFile;
-			}
-			catch(IOException e)
-			{
-				IOUtils.close(lockFile);
+		private Lock(File file, boolean exclusive) throws CoreException {
+			RandomAccessFile raFile = null;
+			try {
+				raFile = new RandomAccessFile(file, "rws"); //$NON-NLS-1$
+				lock = raFile.getChannel().lock(0, Long.MAX_VALUE, !exclusive);
+				lockFile = raFile;
+			} catch (IOException e) {
+				IOUtils.close(raFile);
 				throw BuckminsterException.wrap(e);
 			}
 		}
 
-		public FileChannel getLockChannel()
-		{
-			return m_lock.channel();
+		public FileChannel getLockChannel() {
+			return lock.channel();
 		}
 
-		public RandomAccessFile getLockFile()
-		{
-			return m_lockFile;
+		public RandomAccessFile getLockFile() {
+			return lockFile;
 		}
 
-		public void migrateToExclusive() throws CoreException
-		{
-			if(m_lock.isShared())
-			{
-				FileLock shared = m_lock;
-				try
-				{
+		public void migrateToExclusive() throws CoreException {
+			if (lock.isShared()) {
+				FileLock shared = lock;
+				try {
 					FileChannel channel = shared.channel();
 					shared.release();
-					m_lock = channel.lock(0, Long.MAX_VALUE, true);
-				}
-				catch(IOException e)
-				{
+					lock = channel.lock(0, Long.MAX_VALUE, true);
+				} catch (IOException e) {
 					throw BuckminsterException.wrap(e);
 				}
 			}
 		}
 
-		public void release()
-		{
-			try
-			{
-				m_lock.release();
+		public void release() {
+			try {
+				lock.release();
+			} catch (IOException e) {
 			}
-			catch(IOException e)
-			{
-			}
-			IOUtils.close(m_lockFile);
+			IOUtils.close(lockFile);
 		}
 	}
 
-	private final HashMap<UUID, TimestampedKey> m_timestamps = new HashMap<UUID, TimestampedKey>();
+	private final HashMap<UUID, TimestampedKey> timestamps = new HashMap<UUID, TimestampedKey>();
 
 	private static final String SEQUENCE_FILE = ".sqfile"; //$NON-NLS-1$
 
-	private final File m_folder;
+	private final File folder;
 
-	private final File m_sqFile;
+	private final File sqFile;
 
-	private final HashMap<UUID, T> m_parsed = new HashMap<UUID, T>();
+	private final HashMap<UUID, T> parsed = new HashMap<UUID, T>();
 
-	private final int m_sequenceNumber;
+	private transient T[] allElements;
 
-	private transient T[] m_allElements;
+	private final IParser<T> parser;
 
-	private final IParser<T> m_parser;
+	private long cacheTime;
 
-	private long m_cacheTime;
+	private long lastChecked;
 
-	private long m_lastChecked;
+	private boolean sequenceChanged;
 
-	private boolean m_sequenceChanged;
-
-	public FileStorage(File folder, IParser<T> parser, Class<T> clazz, int sequenceNumber) throws CoreException
-	{
+	public FileStorage(File folder, IParser<T> parser, Class<T> clazz, int sequenceNumber) throws CoreException {
 		super(clazz);
-		m_folder = folder;
-		m_sqFile = new File(m_folder, SEQUENCE_FILE);
-		m_parser = parser;
-		m_sequenceNumber = sequenceNumber;
+		this.folder = folder;
+		this.sqFile = new File(folder, SEQUENCE_FILE);
+		this.parser = parser;
 
 		FileUtils.createDirectory(folder, null);
-		Lock lock = Lock.lock(m_sqFile, true);
-		try
-		{
+		Lock lock = Lock.lock(sqFile, true);
+		try {
 			ByteBuffer bf = ByteBuffer.allocateDirect(4);
 			bf.order(ByteOrder.LITTLE_ENDIAN);
 			FileChannel fc = lock.getLockChannel();
-			int foundSequenceNumber = fc.read(bf) == 4
-					? bf.getInt(0)
-					: -1;
+			int foundSequenceNumber = fc.read(bf) == 4 ? bf.getInt(0) : -1;
 
-			m_sequenceChanged = (foundSequenceNumber >= 0 && foundSequenceNumber != sequenceNumber);
-			if(foundSequenceNumber < 0 || m_sequenceChanged)
-			{
+			sequenceChanged = (foundSequenceNumber >= 0 && foundSequenceNumber != sequenceNumber);
+			if (foundSequenceNumber < 0 || sequenceChanged) {
 				// Use exclusive lock and write the new sequence number
 				//
 				bf.clear();
-				bf.putInt(m_sequenceNumber);
+				bf.putInt(sequenceNumber);
 				bf.flip();
 				fc.position(0);
 				fc.write(bf);
 			}
 
-			File[] files = m_folder.listFiles();
+			File[] files = folder.listFiles();
 			int idx = files.length;
-			while(--idx >= 0)
-			{
+			while (--idx >= 0) {
 				File file = files[idx];
 				String name = file.getName();
-				if(name.charAt(0) == '.')
+				if (name.charAt(0) == '.')
 					continue;
 				UUID id = UUID.fromString(name);
-				m_timestamps.put(id, new TimestampedKey(id, file.lastModified()));
+				timestamps.put(id, new TimestampedKey(id, file.lastModified()));
 			}
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			lock.release();
 		}
-		m_cacheTime = m_sqFile.lastModified();
-		m_lastChecked = System.currentTimeMillis();
+		cacheTime = sqFile.lastModified();
+		lastChecked = System.currentTimeMillis();
 	}
 
-	public synchronized void clear()
-	{
-		try
-		{
-			Lock lock = Lock.lock(m_sqFile, true);
-			try
-			{
-				for(File file : m_folder.listFiles())
-					if(!file.equals(m_sqFile))
+	public synchronized void clear() {
+		try {
+			Lock lock = Lock.lock(sqFile, true);
+			try {
+				for (File file : folder.listFiles())
+					if (!file.equals(sqFile))
 						file.delete();
-			}
-			finally
-			{
+			} finally {
 				lock.release();
 			}
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			CorePlugin.getLogger().error(e, e.toString());
 		}
-		m_parsed.clear();
-		m_timestamps.clear();
+		parsed.clear();
+		timestamps.clear();
 	}
 
-	public synchronized boolean contains(T element) throws CoreException
-	{
+	public synchronized boolean contains(T element) throws CoreException {
 		checkCache();
-		return m_timestamps.containsKey(element.getId());
+		return timestamps.containsKey(element.getId());
 	}
 
-	public synchronized long getCreationTime(UUID elementId) throws ElementNotFoundException
-	{
+	public synchronized long getCreationTime(UUID elementId) throws ElementNotFoundException {
 		checkCache();
-		TimestampedKey tsKey = m_timestamps.get(elementId);
-		if(tsKey == null)
+		TimestampedKey tsKey = timestamps.get(elementId);
+		if (tsKey == null)
 			throw new ElementNotFoundException(this, elementId);
 		return tsKey.getCreationTime();
 	}
 
-	public synchronized T getElement(UUID elementId) throws CoreException
-	{
+	public synchronized T getElement(UUID elementId) throws CoreException {
 		checkCache();
-		if(!m_timestamps.containsKey(elementId))
+		if (!timestamps.containsKey(elementId))
 			throw new ElementNotFoundException(this, elementId);
 
-		T element = m_parsed.get(elementId);
-		if(element != null)
+		T element = parsed.get(elementId);
+		if (element != null)
 			return element;
 
-		Lock lock = Lock.lock(m_sqFile, false);
+		Lock lock = Lock.lock(sqFile, false);
 		InputStream input = null;
-		try
-		{
+		try {
 			File elementFile = getElementFile(elementId);
 			input = new FileInputStream(elementFile);
-			element = m_parser.parse(elementFile.toString(), input);
+			element = parser.parse(elementFile.toString(), input);
 			element.setId(elementId);
-			m_parsed.put(elementId, element);
+			parsed.put(elementId, element);
 			return element;
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw new ElementNotFoundException(this, elementId);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 			lock.release();
 		}
 	}
 
-	public synchronized T[] getElements() throws CoreException
-	{
+	public synchronized T[] getElements() throws CoreException {
 		checkCache();
-		if(m_allElements == null)
-		{
-			Set<UUID> keys = m_timestamps.keySet();
+		if (allElements == null) {
+			Set<UUID> keys = timestamps.keySet();
 			Set<UUID> badKeys = null;
 			int idx = keys.size();
 			T[] elems = createArray(idx);
-			for(UUID key : keys)
-			{
-				try
-				{
+			for (UUID key : keys) {
+				try {
 					--idx;
 					elems[idx] = getElement(key);
-				}
-				catch(CoreException e)
-				{
-					CorePlugin.getLogger().warning(BuckminsterException.unwind(e),
-							NLS.bind(Messages.Unable_to_read_0, getElementClass().getName()));
-					if(badKeys == null)
+				} catch (CoreException e) {
+					CorePlugin.getLogger().warning(BuckminsterException.unwind(e), NLS.bind(Messages.Unable_to_read_0, getElementClass().getName()));
+					if (badKeys == null)
 						badKeys = new HashSet<UUID>();
 					badKeys.add(key);
 				}
 			}
 
-			if(badKeys != null)
-			{
+			if (badKeys != null) {
 				idx = elems.length;
 				int goodIdx = idx - badKeys.size();
 				T[] goodElems = createArray(goodIdx);
-				while(--idx >= 0)
-				{
+				while (--idx >= 0) {
 					T elem = elems[idx];
-					if(elem != null)
+					if (elem != null)
 						goodElems[--goodIdx] = elem;
 				}
 				elems = goodElems;
-				for(UUID badKey : badKeys)
-					m_timestamps.remove(badKey);
+				for (UUID badKey : badKeys)
+					timestamps.remove(badKey);
 			}
-			m_allElements = elems;
+			allElements = elems;
 		}
-		return m_allElements;
+		return allElements;
 	}
 
-	public synchronized UUID[] getKeys()
-	{
+	public synchronized UUID[] getKeys() {
 		checkCache();
-		Set<UUID> keys = m_timestamps.keySet();
+		Set<UUID> keys = timestamps.keySet();
 		return keys.toArray(new UUID[keys.size()]);
 	}
 
-	public String getName()
-	{
-		return m_folder.getName();
+	public String getName() {
+		return folder.getName();
 	}
 
-	public synchronized List<UUID> getReferencingKeys(UUID foreignKey, String keyName) throws CoreException
-	{
+	public synchronized List<UUID> getReferencingKeys(UUID foreignKey, String keyName) throws CoreException {
 		List<UUID> result = null;
 		Method getter = getGetter(keyName);
-		try
-		{
-			for(UUID elementId : m_timestamps.keySet())
-			{
+		try {
+			for (UUID elementId : timestamps.keySet()) {
 				T element = getElement(elementId);
-				UUID fkey = (UUID)getter.invoke(element, Trivial.EMPTY_OBJECT_ARRAY);
-				if(fkey != null && fkey.equals(foreignKey))
-				{
-					if(result == null)
+				UUID fkey = (UUID) getter.invoke(element, Trivial.EMPTY_OBJECT_ARRAY);
+				if (fkey != null && fkey.equals(foreignKey)) {
+					if (result == null)
 						result = new ArrayList<UUID>();
 					result.add(elementId);
 				}
 			}
-			if(result == null)
+			if (result == null)
 				result = Collections.emptyList();
 			return result;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public synchronized TimestampedKey[] getTimestampedKeys()
-	{
+	public synchronized TimestampedKey[] getTimestampedKeys() {
 		checkCache();
-		Collection<TimestampedKey> values = m_timestamps.values();
+		Collection<TimestampedKey> values = timestamps.values();
 		return values.toArray(new TimestampedKey[values.size()]);
 	}
 
-	public synchronized void putElement(T element) throws CoreException
-	{
+	public synchronized void putElement(T element) throws CoreException {
 		UUID id = element.getId();
 		long timestamp;
-		if(!m_timestamps.containsKey(id))
-		{
-			m_parsed.put(id, element);
+		if (!timestamps.containsKey(id)) {
+			parsed.put(id, element);
 			persistImage(id, element.getImage());
 			timestamp = System.currentTimeMillis();
-		}
-		else
-		{
+		} else {
 			timestamp = System.currentTimeMillis();
 			getElementFile(id).setLastModified(timestamp);
 		}
-		m_timestamps.put(id, new TimestampedKey(id, timestamp));
+		timestamps.put(id, new TimestampedKey(id, timestamp));
 	}
 
-	public synchronized void putElement(UUID id, T element) throws CoreException
-	{
+	public synchronized void putElement(UUID id, T element) throws CoreException {
 		UUID realId = element.getId();
 		putElement(element);
-		if(id.equals(realId))
+		if (id.equals(realId))
 			return;
 
 		// A discreprancy has occured between elements. Likely due to
@@ -384,117 +315,94 @@ public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T>
 		//
 		CorePlugin.getLogger().debug("Element id discrepancy in storage %s, expected %s, was %s", getName(), realId, id); //$NON-NLS-1$
 
-		if(m_timestamps.containsKey(id))
+		if (timestamps.containsKey(id))
 			return;
 
-		m_parsed.put(id, element);
+		parsed.put(id, element);
 		persistImage(id, element.getImage());
-		m_timestamps.put(id, new TimestampedKey(id, System.currentTimeMillis()));
+		timestamps.put(id, new TimestampedKey(id, System.currentTimeMillis()));
 	}
 
-	public synchronized void removeElement(UUID elementId) throws CoreException
-	{
-		m_parsed.remove(elementId);
+	public synchronized void removeElement(UUID elementId) throws CoreException {
+		parsed.remove(elementId);
 		persistImage(elementId, null);
 	}
 
-	public boolean sequenceChanged()
-	{
-		return m_sequenceChanged;
+	public boolean sequenceChanged() {
+		return sequenceChanged;
 	}
 
-	private void checkCache()
-	{
+	private void checkCache() {
 		// The lastModified() call is an IO call. We don't want that to happen
-		// too frequently so we use the m_lastChecked to limit it to no more then
+		// too frequently so we use the lastChecked to limit it to no more
+		// then
 		// once a second.
 		//
 		long now = System.currentTimeMillis();
-		if(now - m_lastChecked < 1000)
+		if (now - lastChecked < 1000)
 			return;
 
-		if(m_cacheTime >= m_sqFile.lastModified())
-		{
-			m_lastChecked = now;
+		if (cacheTime >= sqFile.lastModified()) {
+			lastChecked = now;
 			return;
 		}
 
-		try
-		{
-			Lock lock = Lock.lock(m_sqFile, false);
-			try
-			{
-				m_timestamps.clear();
-				m_parsed.clear();
-				m_allElements = null;
-				File[] files = m_folder.listFiles();
+		try {
+			Lock lock = Lock.lock(sqFile, false);
+			try {
+				timestamps.clear();
+				parsed.clear();
+				allElements = null;
+				File[] files = folder.listFiles();
 				int idx = files.length;
-				while(--idx >= 0)
-				{
+				while (--idx >= 0) {
 					File file = files[idx];
 					String name = file.getName();
-					if(name.charAt(0) == '.')
+					if (name.charAt(0) == '.')
 						continue;
 					UUID id = UUID.fromString(name);
-					m_timestamps.put(id, new TimestampedKey(id, file.lastModified()));
+					timestamps.put(id, new TimestampedKey(id, file.lastModified()));
 				}
-				m_cacheTime = m_sqFile.lastModified();
-				m_lastChecked = System.currentTimeMillis();
-			}
-			finally
-			{
+				cacheTime = sqFile.lastModified();
+				lastChecked = System.currentTimeMillis();
+			} finally {
 				lock.release();
 			}
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			CorePlugin.getLogger().error(e, e.getMessage());
 		}
 	}
 
-	private File getElementFile(UUID elementId)
-	{
-		return new File(m_folder, elementId.toString());
+	private File getElementFile(UUID elementId) {
+		return new File(folder, elementId.toString());
 	}
 
-	private void persistImage(UUID elementId, byte[] image) throws CoreException
-	{
-		Lock lock = Lock.lock(m_sqFile, true);
-		try
-		{
-			m_allElements = null;
+	private void persistImage(UUID elementId, byte[] image) throws CoreException {
+		Lock lock = Lock.lock(sqFile, true);
+		try {
+			allElements = null;
 			File elementFile = getElementFile(elementId);
-			if(image == null)
-			{
-				if(!elementFile.delete() && elementFile.exists())
+			if (image == null) {
+				if (!elementFile.delete() && elementFile.exists())
 					throw new FileUtils.DeleteException(elementFile);
 
-				m_timestamps.remove(elementId);
-			}
-			else
-			{
+				timestamps.remove(elementId);
+			} else {
 				OutputStream output = null;
-				try
-				{
+				try {
 					output = new FileOutputStream(elementFile);
 					output.write(image);
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 					elementFile.delete();
 					throw BuckminsterException.wrap(e);
-				}
-				finally
-				{
+				} finally {
 					IOUtils.close(output);
 				}
 			}
-			m_cacheTime = System.currentTimeMillis();
-			m_lastChecked = m_cacheTime;
-			m_sqFile.setLastModified(m_cacheTime);
-		}
-		finally
-		{
+			cacheTime = System.currentTimeMillis();
+			lastChecked = cacheTime;
+			sqFile.setLastModified(cacheTime);
+		} finally {
 			lock.release();
 		}
 	}

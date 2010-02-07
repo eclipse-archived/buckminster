@@ -25,67 +25,58 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.equinox.p2.metadata.Version;
 
 /**
- * This class will generate qualifiers based on component revisions. The revision is obtained using the same @
- * IReaderType} that was used when the component was first materialized
+ * This class will generate qualifiers based on component revisions. The
+ * revision is obtained using the same @ IReaderType} that was used when the
+ * component was first materialized
  * 
  * @author Thomas Hallgren
  */
-public class RevisionQualifierGenerator extends AbstractExtension implements IQualifierGenerator
-{
+public class RevisionQualifierGenerator extends AbstractExtension implements IQualifierGenerator {
 	public static String FORMAT_PROPERTY = "generator.lastRevision.format"; //$NON-NLS-1$
 
 	public static String DEFAULT_FORMAT = "r{0,number,##################}"; //$NON-NLS-1$
 
-	public Version generateQualifier(IActionContext context, ComponentIdentifier cid,
-			List<ComponentIdentifier> dependencies) throws CoreException
-	{
+	public Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException {
 		Version currentVersion = cid.getVersion();
-		if(currentVersion == null)
+		if (currentVersion == null)
 			return null;
 
-		try
-		{
+		try {
 			IPath location = WorkspaceInfo.getComponentLocation(cid);
 			IReaderType readerType = AbstractReaderType.getTypeForResource(WorkspaceInfo.getProject(cid));
-			if(readerType == null)
+			if (readerType == null)
 				return currentVersion;
 
 			long revision = readerType.getLastRevision(location.toFile(), context.getCancellationMonitor());
-			if(revision == -1)
+			if (revision == -1)
 				return currentVersion;
 
 			Map<String, ? extends Object> props = context.getProperties();
-			String format = (String)props.get(FORMAT_PROPERTY);
-			if(format == null)
+			String format = (String) props.get(FORMAT_PROPERTY);
+			if (format == null)
 				format = DEFAULT_FORMAT;
 
 			MessageFormat mf = new MessageFormat(format);
-			for(IComponentIdentifier dependency : dependencies)
-			{
+			for (IComponentIdentifier dependency : dependencies) {
 				Version depVer = dependency.getVersion();
-				if(depVer == null)
+				if (depVer == null)
 					continue;
 
 				String qualifier = VersionHelper.getQualifier(depVer);
-				if(qualifier == null)
+				if (qualifier == null)
 					continue;
 
-				try
-				{
-					long depRev = ((Number)(mf.parse(qualifier)[0])).longValue();
-					if(depRev > revision)
+				try {
+					long depRev = ((Number) (mf.parse(qualifier)[0])).longValue();
+					if (depRev > revision)
 						revision = depRev;
-				}
-				catch(Exception e)
-				{
+				} catch (Exception e) {
 				}
 			}
 			String newQual = mf.format(new Object[] { new Long(revision) });
 			newQual = VersionHelper.getQualifier(currentVersion).replace("qualifier", newQual); //$NON-NLS-1$
 			return VersionHelper.replaceQualifier(currentVersion, newQual);
-		}
-		catch(MissingComponentException e)
-		{
+		} catch (MissingComponentException e) {
 			return currentVersion;
 		}
 	}

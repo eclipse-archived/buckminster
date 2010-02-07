@@ -10,8 +10,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 
  * @author Guillaume CHATELET
  */
-public interface IResourceFetcher
-{
+public interface IResourceFetcher {
 	/**
 	 * Actually fetches the resource
 	 * 

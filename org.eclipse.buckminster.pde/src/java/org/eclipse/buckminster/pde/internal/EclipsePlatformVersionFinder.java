@@ -28,59 +28,48 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
- * A Reader that knows about features and plugins that are part of an Eclipse installation.
+ * A Reader that knows about features and plugins that are part of an Eclipse
+ * installation.
  * 
  * @author thhal
  */
 @SuppressWarnings("restriction")
-public class EclipsePlatformVersionFinder extends AbstractVersionFinder
-{
-	enum InstalledType
-	{
+public class EclipsePlatformVersionFinder extends AbstractVersionFinder {
+	enum InstalledType {
 		FEATURE, PLUGIN
 	}
 
-	private final String m_componentName;
+	private final String componentName;
 
-	private final InstalledType m_type;
+	private final InstalledType type;
 
-	public EclipsePlatformVersionFinder(IReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query)
-			throws CoreException
-	{
+	public EclipsePlatformVersionFinder(IReaderType readerType, Provider provider, IComponentType ctype, NodeQuery query) throws CoreException {
 		super(provider, ctype, query);
 		String uri = provider.getURI(query.getProperties());
 		IPath path = new Path(uri);
-		if(path.segmentCount() == 2)
-		{
-			m_type = InstalledType.valueOf(path.segment(0).toUpperCase());
-			if(m_type != null)
-			{
-				m_componentName = path.segment(1);
+		if (path.segmentCount() == 2) {
+			type = InstalledType.valueOf(path.segment(0).toUpperCase());
+			if (type != null) {
+				componentName = path.segment(1);
 				return;
 			}
 		}
 		throw new MalformedProviderURIException(readerType, uri);
 	}
 
-	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException
-	{
+	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException {
 		Version v = null;
 		NodeQuery query = getQuery();
 		VersionRange dsg = query.getVersionRange();
-		if(m_type == InstalledType.PLUGIN)
-		{
-			IPluginModelBase plugin = EclipsePlatformReaderType.getBestPlugin(m_componentName, dsg, query);
-			if(plugin != null)
+		if (type == InstalledType.PLUGIN) {
+			IPluginModelBase plugin = EclipsePlatformReaderType.getBestPlugin(componentName, dsg, query);
+			if (plugin != null)
 				v = Version.fromOSGiVersion(plugin.getBundleDescription().getVersion());
-		}
-		else
-		{
-			IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(m_componentName, dsg, query);
-			if(feature != null)
+		} else {
+			IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(componentName, dsg, query);
+			if (feature != null)
 				v = VersionHelper.parseVersion(feature.getFeature().getVersion());
 		}
-		return (v == null)
-				? null
-				: new VersionMatch(v, null, -1L, null, null);
+		return (v == null) ? null : new VersionMatch(v, null, -1L, null, null);
 	}
 }

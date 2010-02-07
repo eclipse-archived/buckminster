@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.ui.dependency.visualizer.controls.listener;
 
-public class ViewerSettingChangeEvent
-{
+public class ViewerSettingChangeEvent {
 
 	private Object source;
 
@@ -34,8 +33,7 @@ public class ViewerSettingChangeEvent
 	 * @see ViewerSettingType
 	 * @see IViewerSettingChangeListener
 	 */
-	public ViewerSettingChangeEvent(Object source, ViewerSettingType type, Object data, Object old)
-	{
+	public ViewerSettingChangeEvent(Object source, ViewerSettingType type, Object data, Object old) {
 		super();
 		this.source = source;
 		this.type = type;
@@ -48,8 +46,7 @@ public class ViewerSettingChangeEvent
 	 * @return the new value of the setting or <code>null</code>
 	 * @see ViewerSettingChangeEvent#getType()
 	 */
-	public Object getData()
-	{
+	public Object getData() {
 		return data;
 	}
 
@@ -58,8 +55,7 @@ public class ViewerSettingChangeEvent
 	 * @return the value if the setting before the change or <code>null</code>
 	 * @see ViewerSettingChangeEvent#getType()
 	 */
-	public Object getOld()
-	{
+	public Object getOld() {
 		return old;
 	}
 
@@ -67,8 +63,7 @@ public class ViewerSettingChangeEvent
 	 * 
 	 * @return the component that triggered the event or <code>null</code>
 	 */
-	public Object getSource()
-	{
+	public Object getSource() {
 		return source;
 	}
 
@@ -76,8 +71,7 @@ public class ViewerSettingChangeEvent
 	 * 
 	 * @return the {@link ViewerSettingType} of the event
 	 */
-	public ViewerSettingType getType()
-	{
+	public ViewerSettingType getType() {
 		return type;
 	}
 

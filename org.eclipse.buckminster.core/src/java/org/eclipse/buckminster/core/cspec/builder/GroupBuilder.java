@@ -24,128 +24,103 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup
-{
-	public static int indexOfPrerequisite(List<? extends IPrerequisite> prerequisites, String prerequisiteKey)
-	{
+public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup {
+	public static int indexOfPrerequisite(List<? extends IPrerequisite> prerequisites, String prerequisiteKey) {
 		int idx = prerequisites.size();
-		while(--idx >= 0)
-			if(prerequisites.get(idx).toString().equals(prerequisiteKey))
+		while (--idx >= 0)
+			if (prerequisites.get(idx).toString().equals(prerequisiteKey))
 				return idx;
 		return -1;
 	}
 
-	private final ArrayList<PrerequisiteBuilder> m_prerequisites = new ArrayList<PrerequisiteBuilder>();
+	private final ArrayList<PrerequisiteBuilder> prerequisites = new ArrayList<PrerequisiteBuilder>();
 
-	private IPath m_rebase;
+	private IPath rebase;
 
-	GroupBuilder(CSpecBuilder cspecBuilder)
-	{
+	GroupBuilder(CSpecBuilder cspecBuilder) {
 		super(cspecBuilder);
 	}
 
 	@Override
-	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException
-	{
+	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
 		String key = prerequisite.toString();
-		if(indexOfPrerequisite(m_prerequisites, key) >= 0)
+		if (indexOfPrerequisite(prerequisites, key) >= 0)
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
-		m_prerequisites.add(prerequisite);
+		prerequisites.add(prerequisite);
 	}
 
-	public void addSelfRequirement() throws PrerequisiteAlreadyDefinedException
-	{
+	public void addSelfRequirement() throws PrerequisiteAlreadyDefinedException {
 		addLocalPrerequisite(CSpec.SELF_ARTIFACT);
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_prerequisites.clear();
-		m_rebase = null;
+		prerequisites.clear();
+		rebase = null;
 	}
 
 	@Override
-	public Group createAttribute()
-	{
+	public Group createAttribute() {
 		return new Group(this);
 	}
 
 	@Override
-	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder)
-	{
-		return specBuilder == getCSpecBuilder()
-				? this
-				: new GroupBuilder(specBuilder);
+	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder) {
+		return specBuilder == getCSpecBuilder() ? this : new GroupBuilder(specBuilder);
 	}
 
-	public PrerequisiteBuilder getPrerequisite(String prerequisteName)
-	{
-		int idx = indexOfPrerequisite(m_prerequisites, prerequisteName);
-		return (idx < 0)
-				? null
-				: m_prerequisites.get(idx);
+	public PrerequisiteBuilder getPrerequisite(String prerequisteName) {
+		int idx = indexOfPrerequisite(prerequisites, prerequisteName);
+		return (idx < 0) ? null : prerequisites.get(idx);
 	}
 
-	public List<Prerequisite> getPrerequisiteList()
-	{
-		int top = (m_prerequisites == null)
-				? 0
-				: m_prerequisites.size();
-		if(top == 0)
+	public List<Prerequisite> getPrerequisiteList() {
+		int top = (prerequisites == null) ? 0 : prerequisites.size();
+		if (top == 0)
 			return Collections.emptyList();
 
 		ArrayList<Prerequisite> bld = new ArrayList<Prerequisite>(top);
-		for(int idx = 0; idx < top; ++idx)
-			bld.add(m_prerequisites.get(idx).createPrerequisite());
+		for (int idx = 0; idx < top; ++idx)
+			bld.add(prerequisites.get(idx).createPrerequisite());
 		return bld;
 	}
 
 	@Override
-	public IPath getPrerequisiteRebase()
-	{
-		return m_rebase;
+	public IPath getPrerequisiteRebase() {
+		return rebase;
 	}
 
 	@Override
-	public List<PrerequisiteBuilder> getPrerequisites()
-	{
-		return m_prerequisites;
+	public List<PrerequisiteBuilder> getPrerequisites() {
+		return prerequisites;
 	}
 
 	@Override
-	public void initFrom(IAttribute attribute)
-	{
-		IGroup group = (IGroup)attribute;
+	public void initFrom(IAttribute attribute) {
+		IGroup group = (IGroup) attribute;
 		super.initFrom(group);
-		for(IPrerequisite pq : group.getPrerequisites())
-		{
+		for (IPrerequisite pq : group.getPrerequisites()) {
 			PrerequisiteBuilder pb = createPrerequisiteBuilder();
 			pb.initFrom(pq);
-			m_prerequisites.add(pb);
+			prerequisites.add(pb);
 		}
-		m_rebase = group.getPrerequisiteRebase();
+		rebase = group.getPrerequisiteRebase();
 	}
 
 	@Override
-	public void removePrerequisite(String prerequisteName)
-	{
-		int idx = indexOfPrerequisite(m_prerequisites, prerequisteName);
-		if(idx >= 0)
-			m_prerequisites.remove(idx);
+	public void removePrerequisite(String prerequisteName) {
+		int idx = indexOfPrerequisite(prerequisites, prerequisteName);
+		if (idx >= 0)
+			prerequisites.remove(idx);
 	}
 
-	public void setPrerequisiteRebase(IPath rebase)
-	{
-		m_rebase = rebase == null
-				? null
-				: rebase.addTrailingSeparator();
+	public void setPrerequisiteRebase(IPath rebase) {
+		rebase = rebase == null ? null : rebase.addTrailingSeparator();
 	}
 
-	void finalWrapUp(Map<String, ComponentRequestBuilder> dependencies)
-	{
-		for(PrerequisiteBuilder pq : m_prerequisites)
+	void finalWrapUp(Map<String, ComponentRequestBuilder> dependencies) {
+		for (PrerequisiteBuilder pq : prerequisites)
 			pq.finalWrapUp(dependencies);
 	}
 }

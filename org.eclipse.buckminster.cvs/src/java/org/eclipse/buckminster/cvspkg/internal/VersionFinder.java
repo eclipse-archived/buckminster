@@ -26,85 +26,77 @@ import org.eclipse.team.internal.ccvs.core.CVSTag;
 import org.eclipse.team.internal.ccvs.core.client.Command;
 
 @SuppressWarnings("restriction")
-public class VersionFinder extends AbstractSCCSVersionFinder
-{
+public class VersionFinder extends AbstractSCCSVersionFinder {
 	public static final Command.LocalOption HEADERS_ONLY = new CVSReaderType.MyLocalOption("-h"); //$NON-NLS-1$
 
-	private RepositoryMetaData m_metaData;
+	private RepositoryMetaData metaData;
 
-	private final CVSSession m_session;
+	private final CVSSession session;
 
-	public VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException
-	{
+	public VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException {
 		super(provider, ctype, query);
-		m_session = new CVSSession(provider.getURI(query.getProperties()));
+		session = new CVSSession(provider.getURI(query.getProperties()));
 	}
 
 	@Override
-	public void close()
-	{
-		m_session.close();
+	public void close() {
+		session.close();
 	}
 
 	@Override
-	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException
-	{
-		// The component exists or we would not have been able to obtain its meta-data
+	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException {
+		// The component exists or we would not have been able to obtain its
+		// meta-data
 		//
 		MonitorUtils.complete(monitor);
 		return true;
 	}
 
 	@Override
-	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException
-	{
-		RepositoryMetaData metaData = getMetaData(monitor, null);
-		Date lastModTime = metaData.getLastModification();
-		if(lastModTime == null)
+	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException {
+		RepositoryMetaData repoMetaData = getMetaData(monitor, null);
+		Date lastModTime = repoMetaData.getLastModification();
+		if (lastModTime == null)
 			lastModTime = new Date();
 
 		// Limit the match results to a specific timestamp if that is supplied
 		//
 		Date timestamp = getQuery().getTimestamp();
-		if(timestamp != null && timestamp.compareTo(lastModTime) < 0)
+		if (timestamp != null && timestamp.compareTo(lastModTime) < 0)
 			lastModTime = timestamp;
 
-		String[] names = branches
-				? metaData.getBranchNames()
-				: metaData.getTagNames();
-		if(names.length == 0)
+		String[] names = branches ? repoMetaData.getBranchNames() : repoMetaData.getTagNames();
+		if (names.length == 0)
 			return Collections.emptyList();
 
 		ArrayList<RevisionEntry> entries = new ArrayList<RevisionEntry>(names.length);
-		for(String name : names)
+		for (String name : names)
 			entries.add(new RevisionEntry(name, lastModTime, -1));
 		return entries;
 	}
 
 	@Override
-	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException
-	{
+	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException {
 		CVSTag fixedTag = null;
 		Date timestamp = getQuery().getTimestamp();
-		if(timestamp != null)
+		if (timestamp != null)
 			fixedTag = new CVSTag(timestamp);
 
-		RepositoryMetaData metaData = getMetaData(monitor, fixedTag);
-		if(timestamp == null)
-		{
-			timestamp = metaData.getLastModification();
-			if(timestamp == null)
+		if (timestamp == null) {
+			RepositoryMetaData repoMetaData = getMetaData(monitor, fixedTag);
+			timestamp = repoMetaData.getLastModification();
+			if (timestamp == null)
 				timestamp = new Date();
-		}
+		} else
+			MonitorUtils.complete(monitor);
 		return new RevisionEntry(null, timestamp, -1);
 	}
 
-	private RepositoryMetaData getMetaData(IProgressMonitor monitor, CVSTag fixedTag) throws CoreException
-	{
-		if(m_metaData == null)
-			m_metaData = RepositoryMetaData.getMetaData(m_session, fixedTag, monitor);
+	private RepositoryMetaData getMetaData(IProgressMonitor monitor, CVSTag fixedTag) throws CoreException {
+		if (metaData == null)
+			metaData = RepositoryMetaData.getMetaData(session, fixedTag, monitor);
 		else
 			MonitorUtils.complete(monitor);
-		return m_metaData;
+		return metaData;
 	}
 }

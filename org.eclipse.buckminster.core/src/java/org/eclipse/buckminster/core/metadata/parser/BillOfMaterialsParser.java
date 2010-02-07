@@ -20,31 +20,25 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class BillOfMaterialsParser extends MetaDataParser<BillOfMaterials>
-{
-	private BillOfMaterials m_resolution;
+public class BillOfMaterialsParser extends MetaDataParser<BillOfMaterials> {
+	private BillOfMaterials resolution;
 
-	public BillOfMaterialsParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-			throws CoreException
-	{
+	public BillOfMaterialsParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating) throws CoreException {
 		super(parserExtensions, validating);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		m_resolution = (BillOfMaterials)((BillOfMaterialsHandler)child).getDepNode();
+	public void childPopped(ChildHandler child) throws SAXException {
+		resolution = (BillOfMaterials) ((BillOfMaterialsHandler) child).getDepNode();
 	}
 
-	public BillOfMaterials parse(String systemID, InputStream input) throws CoreException
-	{
+	public BillOfMaterials parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
-		return m_resolution;
+		return resolution;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(BillOfMaterialsHandler.TAG.equals(localName) || "exportedBillOfMaterials".equals(localName)) //$NON-NLS-1$
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if (BillOfMaterialsHandler.TAG.equals(localName) || "exportedBillOfMaterials".equals(localName)) //$NON-NLS-1$
 			this.pushHandler(new BillOfMaterialsHandler(this), attrs);
 		else
 			super.startElement(uri, localName, qName, attrs);

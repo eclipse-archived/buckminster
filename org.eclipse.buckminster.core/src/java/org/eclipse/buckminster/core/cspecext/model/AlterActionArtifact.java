@@ -21,22 +21,18 @@ import org.eclipse.core.runtime.IPath;
 /**
  * @author Thomas Hallgren
  */
-public class AlterActionArtifact extends AlterArtifact
-{
-	public AlterActionArtifact(ActionArtifact base, Set<String> removedHints, Map<String, String> alteredHints,
-			Set<IPath> removedPaths)
-	{
+public class AlterActionArtifact extends AlterArtifact {
+	public AlterActionArtifact(ActionArtifact base, Set<String> removedHints, Map<String, String> alteredHints, Set<IPath> removedPaths) {
 		super(base, removedHints, alteredHints, removedPaths);
 	}
 
 	@Override
-	public void alterAttribute(TopLevelAttributeBuilder original) throws CoreException
-	{
-		if(!(original instanceof ActionArtifactBuilder))
+	public void alterAttribute(TopLevelAttributeBuilder original) throws CoreException {
+		if (!(original instanceof ActionArtifactBuilder))
 			throw BuckminsterException.fromMessage("%s is not an action artifact", original.getQualifiedName()); //$NON-NLS-1$
 
 		IArtifact base = getBase();
-		ActionArtifactBuilder aaBld = (ActionArtifactBuilder)original;
+		ActionArtifactBuilder aaBld = (ActionArtifactBuilder) original;
 		alterPaths(aaBld);
 		alterDocumentation(aaBld);
 		aaBld.setBase(CSpecExtension.overrideCheckNull(aaBld.getBase(), base.getBase()));

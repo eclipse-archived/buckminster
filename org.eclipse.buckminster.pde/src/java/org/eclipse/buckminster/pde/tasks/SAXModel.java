@@ -17,33 +17,27 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public abstract class SAXModel implements ISaxable
-{
-	public static void emitBooleanElement(ContentHandler receiver, String tag) throws SAXException
-	{
+public abstract class SAXModel implements ISaxable {
+	public static void emitBooleanElement(ContentHandler receiver, String tag) throws SAXException {
 		startElement(receiver, tag);
 		endElement(receiver, tag);
 	}
 
-	public static void emitTextElement(ContentHandler receiver, String tag, String text) throws SAXException
-	{
+	public static void emitTextElement(ContentHandler receiver, String tag, String text) throws SAXException {
 		startElement(receiver, tag);
 		receiver.characters(text.toCharArray(), 0, text.length());
 		endElement(receiver, tag);
 	}
 
-	public static void endElement(ContentHandler receiver, String tag) throws SAXException
-	{
+	public static void endElement(ContentHandler receiver, String tag) throws SAXException {
 		receiver.endElement("", "", tag); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
-	public static void startElement(ContentHandler receiver, String tag) throws SAXException
-	{
+	public static void startElement(ContentHandler receiver, String tag) throws SAXException {
 		startElement(receiver, tag, ISaxableElement.EMPTY_ATTRIBUTES);
 	}
 
-	public static void startElement(ContentHandler receiver, String tag, Attributes attrs) throws SAXException
-	{
+	public static void startElement(ContentHandler receiver, String tag, Attributes attrs) throws SAXException {
 		receiver.startElement("", "", tag, attrs); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

@@ -25,64 +25,54 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener
-{
+class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener {
 	public static final String TAG = UnresolvedNode.TAG;
 
-	private ComponentRequest m_componentRequest;
+	private ComponentRequest componentRequest;
 
-	private final ComponentRequestHandler m_requestHandler = new ComponentRequestHandler(this,
-			new ComponentRequestBuilder());
+	private final ComponentRequestHandler requestHandler = new ComponentRequestHandler(this, new ComponentRequestBuilder());
 
-	private ArrayList<String> m_attributes;
+	private ArrayList<String> attributes;
 
-	private AttributeRefHandler m_attributeRefHandler;
+	private AttributeRefHandler attributeRefHandler;
 
-	UnresolvedNodeHandler(AbstractHandler parent)
-	{
+	UnresolvedNodeHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXParseException
-	{
-		if(child == m_requestHandler)
-			m_componentRequest = m_requestHandler.getBuilder().createComponentRequest();
-		else if(child == m_attributeRefHandler)
-		{
-			if(m_attributes == null)
-				m_attributes = new ArrayList<String>();
-			m_attributes.add(m_attributeRefHandler.getName());
+	public void childPopped(ChildHandler child) throws SAXParseException {
+		if (child == requestHandler)
+			componentRequest = requestHandler.getBuilder().createComponentRequest();
+		else if (child == attributeRefHandler) {
+			if (attributes == null)
+				attributes = new ArrayList<String>();
+			attributes.add(attributeRefHandler.getName());
 		}
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(ComponentRequestHandler.TAG.equals(localName))
-			ch = m_requestHandler;
-		else if(AttributeRefHandler.TAG.equals(localName))
-		{
-			if(m_attributeRefHandler == null)
-				m_attributeRefHandler = new AttributeRefHandler(this);
-			ch = m_attributeRefHandler;
-		}
-		else
+		if (ComponentRequestHandler.TAG.equals(localName))
+			ch = requestHandler;
+		else if (AttributeRefHandler.TAG.equals(localName)) {
+			if (attributeRefHandler == null)
+				attributeRefHandler = new AttributeRefHandler(this);
+			ch = attributeRefHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		if(m_attributes != null)
-			m_attributes.clear();
-		m_componentRequest = null;
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		if (attributes != null)
+			attributes.clear();
+		componentRequest = null;
 	}
 
 	@Override
-	BOMNode getDepNode()
-	{
-		return new UnresolvedNode(new QualifiedDependency(m_componentRequest, m_attributes));
+	BOMNode getDepNode() {
+		return new UnresolvedNode(new QualifiedDependency(componentRequest, attributes));
 	}
 }

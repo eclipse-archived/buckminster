@@ -18,84 +18,70 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-public class LabeledCombo extends Composite
-{
-	private final Label m_label;
+public class LabeledCombo extends Composite {
+	private final Label label;
 
-	private final Combo m_combo;
+	private final Combo combo;
 
-	public LabeledCombo(Composite parent, int style)
-	{
+	public LabeledCombo(Composite parent, int style) {
 		super(parent, style);
 		GridLayout gd = new GridLayout(2, false);
 		gd.marginWidth = gd.marginHeight = 0;
 		this.setLayout(gd);
-		m_label = new Label(this, SWT.NONE);
-		m_label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
-		m_combo = new Combo(this, style);
-		m_combo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		label = new Label(this, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
+		combo = new Combo(this, style);
+		combo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 	}
 
-	public void add(String string)
-	{
-		m_combo.add(string);
+	public void add(String string) {
+		combo.add(string);
 	}
 
-	public void add(String string, int index)
-	{
-		m_combo.add(string, index);
+	public void add(String string, int index) {
+		combo.add(string, index);
 	}
 
-	public void addSelectionListener(SelectionListener listener)
-	{
-		m_combo.addSelectionListener(listener);
+	public void addSelectionListener(SelectionListener listener) {
+		combo.addSelectionListener(listener);
 	}
 
-	public String getItem(int index)
-	{
-		return m_combo.getItem(index);
+	public String getItem(int index) {
+		return combo.getItem(index);
 	}
 
-	public Point getSelection()
-	{
-		return m_combo.getSelection();
+	public Point getSelection() {
+		return combo.getSelection();
 	}
 
-	public int getSelectionIndex()
-	{
-		return m_combo.getSelectionIndex();
+	public int getSelectionIndex() {
+		return combo.getSelectionIndex();
 	}
 
-	public int indexOf(String string)
-	{
-		return m_combo.indexOf(string);
+	public int indexOf(String string) {
+		return combo.indexOf(string);
 	}
 
-	public void removeSelectionListener(SelectionListener listener)
-	{
-		m_combo.removeSelectionListener(listener);
+	public void removeSelectionListener(SelectionListener listener) {
+		combo.removeSelectionListener(listener);
 	}
 
-	public void select(int index)
-	{
-		m_combo.select(index);
+	public void select(int index) {
+		combo.select(index);
 	}
 
 	@Override
-	public void setEnabled(boolean flag)
-	{
-		m_label.setEnabled(flag);
-		m_combo.setEnabled(flag);
+	public void setEnabled(boolean flag) {
+		label.setEnabled(flag);
+		combo.setEnabled(flag);
 		super.setEnabled(flag);
 	}
 
-	public void setItems(String[] items)
-	{
-		m_combo.setItems(items);
+	public void setItems(String[] items) {
+		combo.setItems(items);
 	}
 
-	public void setLabel(String labelText)
-	{
-		m_label.setText(labelText);
+	public void setLabel(String labelText) {
+		label.setText(labelText);
 	}
 }

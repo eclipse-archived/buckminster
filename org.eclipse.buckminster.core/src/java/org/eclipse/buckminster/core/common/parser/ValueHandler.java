@@ -14,22 +14,18 @@ import org.eclipse.buckminster.core.common.model.ValueHolder;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 
-public abstract class ValueHandler extends ExtensionAwareHandler
-{
-	private ValueHolder<String> m_valueHolder;
+public abstract class ValueHandler extends ExtensionAwareHandler {
+	private ValueHolder<String> valueHolder;
 
-	public ValueHandler(AbstractHandler parent)
-	{
+	public ValueHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public final ValueHolder<String> getValueHolder()
-	{
-		return m_valueHolder;
+	public final ValueHolder<String> getValueHolder() {
+		return valueHolder;
 	}
 
-	protected final void setValueHolder(ValueHolder<String> valueHolder)
-	{
-		m_valueHolder = valueHolder;
+	protected final void setValueHolder(ValueHolder<String> valueHolder) {
+		this.valueHolder = valueHolder;
 	}
 }

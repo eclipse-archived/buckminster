@@ -13,13 +13,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * The ISaxable interface is implemented by model elements in Buckminster. It allows the elements to serialize
- * themselves in XML format.
+ * The ISaxable interface is implemented by model elements in Buckminster. It
+ * allows the elements to serialize themselves in XML format.
  * 
  * @author Thomas Hallgren
  */
-public interface ISaxableElement
-{
+public interface ISaxableElement {
 	public static final Attributes EMPTY_ATTRIBUTES = new AttributesImpl();
 
 	/**

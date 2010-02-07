@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.prefedit;
 /**
  * @author Thomas Hallgren
  */
-public enum PreferenceType
-{
+public enum PreferenceType {
 	Boolean, Integer, String, Enum, Directory, File, Path, Password
 }

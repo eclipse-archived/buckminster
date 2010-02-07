@@ -25,24 +25,28 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object '<em><b>Generator</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Generator</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.cspec.impl.GeneratorImpl#getAttribute <em>Attribute</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.GeneratorImpl#getComponent <em>Component</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.GeneratorImpl#getGenerates <em>Generates</em>}</li>
- * <li>{@link org.eclipse.buckminster.cspec.impl.GeneratorImpl#getCspec <em>Cspec</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.GeneratorImpl#getAttribute <em>
+ * Attribute</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.GeneratorImpl#getComponent <em>
+ * Component</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.GeneratorImpl#getGenerates <em>
+ * Generates</em>}</li>
+ * <li>{@link org.eclipse.buckminster.cspec.impl.GeneratorImpl#getCspec <em>
+ * Cspec</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class GeneratorImpl extends EObjectImpl implements Generator
-{
+public class GeneratorImpl extends EObjectImpl implements Generator {
 	/**
-	 * The default value of the '{@link #getAttribute() <em>Attribute</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The default value of the '{@link #getAttribute() <em>Attribute</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAttribute()
 	 * @generated
@@ -51,8 +55,8 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	protected static final String ATTRIBUTE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getAttribute() <em>Attribute</em>}' attribute. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getAttribute() <em>Attribute</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getAttribute()
 	 * @generated
@@ -61,8 +65,8 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	protected String attribute = ATTRIBUTE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getComponent() <em>Component</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * The cached value of the '{@link #getComponent() <em>Component</em>}'
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getComponent()
 	 * @generated
@@ -71,8 +75,8 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	protected ComponentRequest component;
 
 	/**
-	 * The cached value of the '{@link #getGenerates() <em>Generates</em>}' containment reference. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getGenerates() <em>Generates</em>}'
+	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @see #getGenerates()
 	 * @generated
@@ -85,8 +89,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	protected GeneratorImpl()
-	{
+	protected GeneratorImpl() {
 		super();
 	}
 
@@ -95,8 +98,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public ComponentRequest basicGetComponent()
-	{
+	public ComponentRequest basicGetComponent() {
 		return component;
 	}
 
@@ -105,9 +107,8 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetCspec(CSpec newCspec, NotificationChain msgs)
-	{
-		msgs = eBasicSetContainer((InternalEObject)newCspec, CspecPackage.GENERATOR__CSPEC, msgs);
+	public NotificationChain basicSetCspec(CSpec newCspec, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject) newCspec, CspecPackage.GENERATOR__CSPEC, msgs);
 		return msgs;
 	}
 
@@ -116,15 +117,13 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetGenerates(ComponentIdentifier newGenerates, NotificationChain msgs)
-	{
+	public NotificationChain basicSetGenerates(ComponentIdentifier newGenerates, NotificationChain msgs) {
 		ComponentIdentifier oldGenerates = generates;
 		generates = newGenerates;
-		if(eNotificationRequired())
-		{
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET,
-					CspecPackage.GENERATOR__GENERATES, oldGenerates, newGenerates);
-			if(msgs == null)
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CspecPackage.GENERATOR__GENERATES, oldGenerates,
+					newGenerates);
+			if (msgs == null)
 				msgs = notification;
 			else
 				msgs.add(notification);
@@ -138,12 +137,10 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs)
-	{
-		switch(eContainerFeatureID())
-		{
-		case CspecPackage.GENERATOR__CSPEC:
-			return eInternalContainer().eInverseRemove(this, CspecPackage.CSPEC__GENERATORS, CSpec.class, msgs);
+	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case CspecPackage.GENERATOR__CSPEC:
+				return eInternalContainer().eInverseRemove(this, CspecPackage.CSPEC__GENERATORS, CSpec.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -154,20 +151,18 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GENERATOR__ATTRIBUTE:
-			return getAttribute();
-		case CspecPackage.GENERATOR__COMPONENT:
-			if(resolve)
-				return getComponent();
-			return basicGetComponent();
-		case CspecPackage.GENERATOR__GENERATES:
-			return getGenerates();
-		case CspecPackage.GENERATOR__CSPEC:
-			return getCspec();
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CspecPackage.GENERATOR__ATTRIBUTE:
+				return getAttribute();
+			case CspecPackage.GENERATOR__COMPONENT:
+				if (resolve)
+					return getComponent();
+				return basicGetComponent();
+			case CspecPackage.GENERATOR__GENERATES:
+				return getGenerates();
+			case CspecPackage.GENERATOR__CSPEC:
+				return getCspec();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -178,14 +173,12 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GENERATOR__CSPEC:
-			if(eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			return basicSetCspec((CSpec)otherEnd, msgs);
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.GENERATOR__CSPEC:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetCspec((CSpec) otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
@@ -196,14 +189,12 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GENERATOR__GENERATES:
-			return basicSetGenerates(null, msgs);
-		case CspecPackage.GENERATOR__CSPEC:
-			return basicSetCspec(null, msgs);
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CspecPackage.GENERATOR__GENERATES:
+				return basicSetGenerates(null, msgs);
+			case CspecPackage.GENERATOR__CSPEC:
+				return basicSetCspec(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -214,20 +205,16 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GENERATOR__ATTRIBUTE:
-			return ATTRIBUTE_EDEFAULT == null
-					? attribute != null
-					: !ATTRIBUTE_EDEFAULT.equals(attribute);
-		case CspecPackage.GENERATOR__COMPONENT:
-			return component != null;
-		case CspecPackage.GENERATOR__GENERATES:
-			return generates != null;
-		case CspecPackage.GENERATOR__CSPEC:
-			return getCspec() != null;
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case CspecPackage.GENERATOR__ATTRIBUTE:
+				return ATTRIBUTE_EDEFAULT == null ? attribute != null : !ATTRIBUTE_EDEFAULT.equals(attribute);
+			case CspecPackage.GENERATOR__COMPONENT:
+				return component != null;
+			case CspecPackage.GENERATOR__GENERATES:
+				return generates != null;
+			case CspecPackage.GENERATOR__CSPEC:
+				return getCspec() != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -238,22 +225,20 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * @generated
 	 */
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GENERATOR__ATTRIBUTE:
-			setAttribute((String)newValue);
-			return;
-		case CspecPackage.GENERATOR__COMPONENT:
-			setComponent((ComponentRequest)newValue);
-			return;
-		case CspecPackage.GENERATOR__GENERATES:
-			setGenerates((ComponentIdentifier)newValue);
-			return;
-		case CspecPackage.GENERATOR__CSPEC:
-			setCspec((CSpec)newValue);
-			return;
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case CspecPackage.GENERATOR__ATTRIBUTE:
+				setAttribute((String) newValue);
+				return;
+			case CspecPackage.GENERATOR__COMPONENT:
+				setComponent((ComponentRequest) newValue);
+				return;
+			case CspecPackage.GENERATOR__GENERATES:
+				setGenerates((ComponentIdentifier) newValue);
+				return;
+			case CspecPackage.GENERATOR__CSPEC:
+				setCspec((CSpec) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -264,22 +249,20 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
-		switch(featureID)
-		{
-		case CspecPackage.GENERATOR__ATTRIBUTE:
-			setAttribute(ATTRIBUTE_EDEFAULT);
-			return;
-		case CspecPackage.GENERATOR__COMPONENT:
-			setComponent((ComponentRequest)null);
-			return;
-		case CspecPackage.GENERATOR__GENERATES:
-			setGenerates((ComponentIdentifier)null);
-			return;
-		case CspecPackage.GENERATOR__CSPEC:
-			setCspec((CSpec)null);
-			return;
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case CspecPackage.GENERATOR__ATTRIBUTE:
+				setAttribute(ATTRIBUTE_EDEFAULT);
+				return;
+			case CspecPackage.GENERATOR__COMPONENT:
+				setComponent((ComponentRequest) null);
+				return;
+			case CspecPackage.GENERATOR__GENERATES:
+				setGenerates((ComponentIdentifier) null);
+				return;
+			case CspecPackage.GENERATOR__CSPEC:
+				setCspec((CSpec) null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -289,8 +272,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public String getAttribute()
-	{
+	public String getAttribute() {
 		return attribute;
 	}
 
@@ -299,17 +281,13 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public ComponentRequest getComponent()
-	{
-		if(component != null && component.eIsProxy())
-		{
-			InternalEObject oldComponent = (InternalEObject)component;
-			component = (ComponentRequest)eResolveProxy(oldComponent);
-			if(component != oldComponent)
-			{
-				if(eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CspecPackage.GENERATOR__COMPONENT,
-							oldComponent, component));
+	public ComponentRequest getComponent() {
+		if (component != null && component.eIsProxy()) {
+			InternalEObject oldComponent = (InternalEObject) component;
+			component = (ComponentRequest) eResolveProxy(oldComponent);
+			if (component != oldComponent) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CspecPackage.GENERATOR__COMPONENT, oldComponent, component));
 			}
 		}
 		return component;
@@ -320,11 +298,10 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public CSpec getCspec()
-	{
-		if(eContainerFeatureID() != CspecPackage.GENERATOR__CSPEC)
+	public CSpec getCspec() {
+		if (eContainerFeatureID() != CspecPackage.GENERATOR__CSPEC)
 			return null;
-		return (CSpec)eContainer();
+		return (CSpec) eContainer();
 	}
 
 	/**
@@ -332,8 +309,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public ComponentIdentifier getGenerates()
-	{
+	public ComponentIdentifier getGenerates() {
 		return generates;
 	}
 
@@ -342,13 +318,11 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public void setAttribute(String newAttribute)
-	{
+	public void setAttribute(String newAttribute) {
 		String oldAttribute = attribute;
 		attribute = newAttribute;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.GENERATOR__ATTRIBUTE, oldAttribute,
-					attribute));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.GENERATOR__ATTRIBUTE, oldAttribute, attribute));
 	}
 
 	/**
@@ -356,13 +330,11 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public void setComponent(ComponentRequest newComponent)
-	{
+	public void setComponent(ComponentRequest newComponent) {
 		ComponentRequest oldComponent = component;
 		component = newComponent;
-		if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.GENERATOR__COMPONENT, oldComponent,
-					component));
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.GENERATOR__COMPONENT, oldComponent, component));
 	}
 
 	/**
@@ -370,23 +342,19 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public void setCspec(CSpec newCspec)
-	{
-		if(newCspec != eInternalContainer()
-				|| (eContainerFeatureID() != CspecPackage.GENERATOR__CSPEC && newCspec != null))
-		{
-			if(EcoreUtil.isAncestor(this, newCspec))
+	public void setCspec(CSpec newCspec) {
+		if (newCspec != eInternalContainer() || (eContainerFeatureID() != CspecPackage.GENERATOR__CSPEC && newCspec != null)) {
+			if (EcoreUtil.isAncestor(this, newCspec))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
 			NotificationChain msgs = null;
-			if(eInternalContainer() != null)
+			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
-			if(newCspec != null)
-				msgs = ((InternalEObject)newCspec).eInverseAdd(this, CspecPackage.CSPEC__GENERATORS, CSpec.class, msgs);
+			if (newCspec != null)
+				msgs = ((InternalEObject) newCspec).eInverseAdd(this, CspecPackage.CSPEC__GENERATORS, CSpec.class, msgs);
 			msgs = basicSetCspec(newCspec, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
+		} else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.GENERATOR__CSPEC, newCspec, newCspec));
 	}
 
@@ -395,24 +363,18 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * 
 	 * @generated
 	 */
-	public void setGenerates(ComponentIdentifier newGenerates)
-	{
-		if(newGenerates != generates)
-		{
+	public void setGenerates(ComponentIdentifier newGenerates) {
+		if (newGenerates != generates) {
 			NotificationChain msgs = null;
-			if(generates != null)
-				msgs = ((InternalEObject)generates).eInverseRemove(this, EOPPOSITE_FEATURE_BASE
-						- CspecPackage.GENERATOR__GENERATES, null, msgs);
-			if(newGenerates != null)
-				msgs = ((InternalEObject)newGenerates).eInverseAdd(this, EOPPOSITE_FEATURE_BASE
-						- CspecPackage.GENERATOR__GENERATES, null, msgs);
+			if (generates != null)
+				msgs = ((InternalEObject) generates).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CspecPackage.GENERATOR__GENERATES, null, msgs);
+			if (newGenerates != null)
+				msgs = ((InternalEObject) newGenerates).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CspecPackage.GENERATOR__GENERATES, null, msgs);
 			msgs = basicSetGenerates(newGenerates, msgs);
-			if(msgs != null)
+			if (msgs != null)
 				msgs.dispatch();
-		}
-		else if(eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.GENERATOR__GENERATES, newGenerates,
-					newGenerates));
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CspecPackage.GENERATOR__GENERATES, newGenerates, newGenerates));
 	}
 
 	/**
@@ -421,9 +383,8 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * @generated
 	 */
 	@Override
-	public String toString()
-	{
-		if(eIsProxy())
+	public String toString() {
+		if (eIsProxy())
 			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
@@ -439,8 +400,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CspecPackage.Literals.GENERATOR;
 	}
 

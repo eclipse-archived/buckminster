@@ -12,8 +12,7 @@ package org.eclipse.buckminster.runtime;
  * @author Filip Hrbek
  * 
  */
-public interface IFileInfo
-{
+public interface IFileInfo {
 	public static final String PROPERTY_CONTENT_TYPE = "contentType"; //$NON-NLS-1$
 
 	public static final String PROPERTY_LAST_MODIFIED = "lastModified"; //$NON-NLS-1$

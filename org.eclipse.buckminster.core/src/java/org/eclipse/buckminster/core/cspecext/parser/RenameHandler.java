@@ -15,39 +15,33 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class RenameHandler extends ExtensionAwareHandler
-{
+class RenameHandler extends ExtensionAwareHandler {
 	public static final String TAG = "rename"; //$NON-NLS-1$
 
-	private String m_oldName;
+	private String oldName;
 
-	private String m_newName;
+	private String newName;
 
-	RenameHandler(AbstractHandler parent)
-	{
+	RenameHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public final String getTAG()
-	{
+	public final String getTAG() {
 		return TAG;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_oldName = getStringValue(attrs, "oldName"); //$NON-NLS-1$
-		m_newName = getStringValue(attrs, "newName"); //$NON-NLS-1$
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		oldName = getStringValue(attrs, "oldName"); //$NON-NLS-1$
+		newName = getStringValue(attrs, "newName"); //$NON-NLS-1$
 	}
 
-	String getNewName()
-	{
-		return m_newName;
+	String getNewName() {
+		return newName;
 	}
 
-	String getOldName()
-	{
-		return m_oldName;
+	String getOldName() {
+		return oldName;
 	}
 }

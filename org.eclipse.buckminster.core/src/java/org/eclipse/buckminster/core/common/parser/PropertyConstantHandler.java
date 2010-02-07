@@ -18,38 +18,34 @@ import org.eclipse.buckminster.sax.MissingRequiredAttributeException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class PropertyConstantHandler extends PropertyHandler
-{
+public class PropertyConstantHandler extends PropertyHandler {
 	static final String TAG = "property"; //$NON-NLS-1$
 
-	private String m_value;
+	private String value;
 
-	public PropertyConstantHandler(AbstractHandler parent)
-	{
+	public PropertyConstantHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
 
 		// Used to be 'getStringValue(...)', but that throws an exception
 		// if the value is empty string or just whitespace...
 		//
 		String qname = "value"; //$NON-NLS-1$
-		m_value = attrs.getValue(qname);
-		if(m_value == null)
+		value = attrs.getValue(qname);
+		if (value == null)
 			// considering the xsd, this should never happen...
 			throw new MissingRequiredAttributeException(this.getTAG(), qname, this.getDocumentLocator());
 	}
 
 	@Override
-	void addYourself(Map<String, String> props)
-	{
+	void addYourself(Map<String, String> props) {
 		String key = getKey();
-		props.put(key, m_value);
-		if(props instanceof ExpandingProperties<?>)
-			((ExpandingProperties<?>)props).setMutable(key, getMutable());
+		props.put(key, value);
+		if (props instanceof ExpandingProperties<?>)
+			((ExpandingProperties<?>) props).setMutable(key, getMutable());
 	}
 }

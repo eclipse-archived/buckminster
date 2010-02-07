@@ -39,18 +39,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements IStreamConsumer<ComponentQuery>
-{
+public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements IStreamConsumer<ComponentQuery> {
 	private static final UUID CACHE_KEY_BOM_CACHE = UUID.randomUUID();
 
 	@SuppressWarnings("unchecked")
-	private static Map<String, BillOfMaterials> getBOMCache(Map<UUID, Object> ctxUserCache)
-	{
-		synchronized(ctxUserCache)
-		{
-			Map<String, BillOfMaterials> bomCache = (Map<String, BillOfMaterials>)ctxUserCache.get(CACHE_KEY_BOM_CACHE);
-			if(bomCache == null)
-			{
+	private static Map<String, BillOfMaterials> getBOMCache(Map<UUID, Object> ctxUserCache) {
+		synchronized (ctxUserCache) {
+			Map<String, BillOfMaterials> bomCache = (Map<String, BillOfMaterials>) ctxUserCache.get(CACHE_KEY_BOM_CACHE);
+			if (bomCache == null) {
 				bomCache = Collections.synchronizedMap(new HashMap<String, BillOfMaterials>());
 				ctxUserCache.put(CACHE_KEY_BOM_CACHE, bomCache);
 			}
@@ -58,12 +54,9 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements I
 		}
 	}
 
-	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 2000);
-		try
-		{
+		try {
 			ComponentQuery cquery;
 			IComponentReader reader = readerHandle[0];
 
@@ -71,53 +64,42 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements I
 			ResolutionContext ctx = query.getResolutionContext();
 			Map<String, BillOfMaterials> bomCache = getBOMCache(ctx.getUserCache());
 			String key = reader.getProviderMatch().getUniqueKey().intern();
-			synchronized(key)
-			{
+			synchronized (key) {
 				BillOfMaterials bom = bomCache.get(key);
-				if(bom != null)
+				if (bom != null)
 					return bom;
 
-				if(reader instanceof ICatalogReader)
-				{
-					ICatalogReader catRdr = (ICatalogReader)reader;
-					String fileName = getMetadataFile(catRdr, IComponentType.PREF_CQUERY_FILE, CorePlugin.CQUERY_FILE,
-							MonitorUtils.subMonitor(monitor, 100));
+				if (reader instanceof ICatalogReader) {
+					ICatalogReader catRdr = (ICatalogReader) reader;
+					String fileName = getMetadataFile(catRdr, IComponentType.PREF_CQUERY_FILE, CorePlugin.CQUERY_FILE, MonitorUtils.subMonitor(
+							monitor, 100));
 					cquery = catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100));
-				}
-				else
-					cquery = ((IFileReader)reader).readFile(this, MonitorUtils.subMonitor(monitor, 200));
+				} else
+					cquery = ((IFileReader) reader).readFile(this, MonitorUtils.subMonitor(monitor, 200));
 				reader.close();
 				readerHandle[0] = null;
 
 				ResolutionContext newCtx = new ResolutionContext(cquery, ctx);
 				IResolver resolver = new MainResolver(newCtx);
 				bom = resolver.resolve(MonitorUtils.subMonitor(monitor, 1800));
-				if(bom.getResolution() == null)
+				if (bom.getResolution() == null)
 					throw new UnresolvedNodeException(query.getComponentRequest());
 				bomCache.put(key, bom);
 				return bom;
 			}
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	public ComponentQuery consumeStream(IComponentReader reader, String streamName, InputStream stream,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public ComponentQuery consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
+			throws CoreException {
 		URL url;
-		try
-		{
+		try {
 			url = URLUtils.normalizeToURL(streamName);
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			url = null;
 		}
 		return ComponentQuery.fromStream(url, null, stream, true);

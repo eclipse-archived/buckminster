@@ -20,187 +20,160 @@ import org.eclipse.core.runtime.Platform;
  * @author Thomas Hallgren
  * 
  */
-public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder implements IMaterializationNode
-{
-	private Pattern m_namePattern;
+public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder implements IMaterializationNode {
+	private Pattern namePattern;
 
-	private Filter m_filter;
+	private Filter filter;
 
-	private IPath m_leafArtifact;
+	private IPath leafArtifact;
 
-	private String m_componentTypeID;
+	private String componentTypeID;
 
-	private boolean m_exclude;
+	private boolean exclude;
 
-	private Pattern m_bindingNamePattern;
+	private Pattern bindingNamePattern;
 
-	private String m_bindingNameReplacement;
+	private String bindingNameReplacement;
 
-	private String m_suffix;
+	private String suffix;
 
-	private boolean m_unpack;
+	private boolean unpack;
 
-	private boolean m_expand = true;
+	private boolean expand = true;
 
 	// Only valid when materializing into workspace
 	//
-	private IPath m_resourcePath;
+	private IPath resourcePath;
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_namePattern = null;
-		m_filter = null;
-		m_leafArtifact = null;
-		m_componentTypeID = null;
-		m_resourcePath = null;
-		m_exclude = false;
-		m_bindingNamePattern = null;
-		m_bindingNameReplacement = null;
-		m_suffix = null;
-		m_unpack = false;
-		m_expand = true;
+		namePattern = null;
+		filter = null;
+		leafArtifact = null;
+		componentTypeID = null;
+		resourcePath = null;
+		exclude = false;
+		bindingNamePattern = null;
+		bindingNameReplacement = null;
+		suffix = null;
+		unpack = false;
+		expand = true;
 	}
 
-	public MaterializationNode createMaterializationNode()
-	{
+	public MaterializationNode createMaterializationNode() {
 		return new MaterializationNode(this);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Object getAdapter(Class adapter)
-	{
-		if(adapter.isInstance(this))
+	public Object getAdapter(Class adapter) {
+		if (adapter.isInstance(this))
 			return this;
-		if(adapter.isAssignableFrom(MaterializationNode.class))
+		if (adapter.isAssignableFrom(MaterializationNode.class))
 			return new MaterializationNode(this);
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
-	public Pattern getBindingNamePattern()
-	{
-		return m_bindingNamePattern;
+	public Pattern getBindingNamePattern() {
+		return bindingNamePattern;
 	}
 
-	public String getBindingNameReplacement()
-	{
-		return m_bindingNameReplacement;
+	public String getBindingNameReplacement() {
+		return bindingNameReplacement;
 	}
 
-	public String getComponentTypeID()
-	{
-		return m_componentTypeID;
+	public String getComponentTypeID() {
+		return componentTypeID;
 	}
 
-	public Filter getFilter()
-	{
-		return m_filter;
+	public Filter getFilter() {
+		return filter;
 	}
 
-	public IPath getLeafArtifact()
-	{
-		return m_leafArtifact;
+	public IPath getLeafArtifact() {
+		return leafArtifact;
 	}
 
-	public Pattern getNamePattern()
-	{
-		return m_namePattern;
+	public Pattern getNamePattern() {
+		return namePattern;
 	}
 
-	public IPath getResourcePath()
-	{
-		return m_resourcePath;
+	public IPath getResourcePath() {
+		return resourcePath;
 	}
 
-	public String getSuffix()
-	{
-		return m_suffix;
+	public String getSuffix() {
+		return suffix;
 	}
 
-	public void initFrom(IMaterializationNode mn)
-	{
+	public void initFrom(IMaterializationNode mn) {
 		super.initFrom(mn);
-		m_namePattern = mn.getNamePattern();
-		m_filter = mn.getFilter();
-		m_leafArtifact = mn.getLeafArtifact();
-		m_componentTypeID = mn.getComponentTypeID();
-		m_resourcePath = mn.getResourcePath();
-		m_exclude = mn.isExclude();
-		m_bindingNamePattern = mn.getBindingNamePattern();
-		m_bindingNameReplacement = mn.getBindingNameReplacement();
-		m_suffix = mn.getSuffix();
-		m_unpack = mn.isUnpack();
-		m_expand = mn.isExpand();
+		namePattern = mn.getNamePattern();
+		filter = mn.getFilter();
+		leafArtifact = mn.getLeafArtifact();
+		componentTypeID = mn.getComponentTypeID();
+		resourcePath = mn.getResourcePath();
+		exclude = mn.isExclude();
+		bindingNamePattern = mn.getBindingNamePattern();
+		bindingNameReplacement = mn.getBindingNameReplacement();
+		suffix = mn.getSuffix();
+		unpack = mn.isUnpack();
+		expand = mn.isExpand();
 	}
 
-	public boolean isExclude()
-	{
-		return m_exclude;
+	public boolean isExclude() {
+		return exclude;
 	}
 
-	public boolean isExpand()
-	{
-		return m_expand;
+	public boolean isExpand() {
+		return expand;
 	}
 
-	public boolean isUnpack()
-	{
-		return m_unpack;
+	public boolean isUnpack() {
+		return unpack;
 	}
 
-	public void setBindingNamePattern(Pattern bindingNamePattern)
-	{
-		m_bindingNamePattern = bindingNamePattern;
+	public void setBindingNamePattern(Pattern bindingNamePattern) {
+		this.bindingNamePattern = bindingNamePattern;
 	}
 
-	public void setBindingNameReplacement(String bindingNameReplacement)
-	{
-		m_bindingNameReplacement = bindingNameReplacement;
+	public void setBindingNameReplacement(String bindingNameReplacement) {
+		this.bindingNameReplacement = bindingNameReplacement;
 	}
 
-	public void setComponentTypeID(String componentTypeID)
-	{
-		m_componentTypeID = componentTypeID;
+	public void setComponentTypeID(String componentTypeID) {
+		this.componentTypeID = componentTypeID;
 	}
 
-	public void setExclude(boolean exclude)
-	{
-		m_exclude = exclude;
+	public void setExclude(boolean exclude) {
+		this.exclude = exclude;
 	}
 
-	public void setExpand(boolean expand)
-	{
-		m_expand = expand;
+	public void setExpand(boolean expand) {
+		this.expand = expand;
 	}
 
-	public void setFilter(Filter filter)
-	{
-		m_filter = filter;
+	public void setFilter(Filter filter) {
+		this.filter = filter;
 	}
 
-	public void setLeafArtifact(IPath leafArtifact)
-	{
-		m_leafArtifact = leafArtifact;
+	public void setLeafArtifact(IPath leafArtifact) {
+		this.leafArtifact = leafArtifact;
 	}
 
-	public void setNamePattern(Pattern namePattern)
-	{
-		m_namePattern = namePattern;
+	public void setNamePattern(Pattern namePattern) {
+		this.namePattern = namePattern;
 	}
 
-	public void setResourcePath(IPath resourcePath)
-	{
-		m_resourcePath = resourcePath;
+	public void setResourcePath(IPath resourcePath) {
+		this.resourcePath = resourcePath;
 	}
 
-	public void setSuffix(String suffix)
-	{
-		m_suffix = suffix;
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
-	public void setUnpack(boolean unpack)
-	{
-		m_unpack = unpack;
+	public void setUnpack(boolean unpack) {
+		this.unpack = unpack;
 	}
 }

@@ -18,20 +18,15 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public abstract class MetaDataParser<T> extends AbstractParser<T> implements ChildPoppedListener
-{
-	public MetaDataParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException
-	{
+public abstract class MetaDataParser<T> extends AbstractParser<T> implements ChildPoppedListener {
+	public MetaDataParser(List<ParserFactory.ParserExtension> parserExtensions) throws CoreException {
 		this(parserExtensions, false);
 	}
 
-	public MetaDataParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating)
-			throws CoreException
-	{
-		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS,
-				XMLConstants.BM_CQUERY_NS, XMLConstants.BM_CSPEC_NS, XMLConstants.BM_METADATA_NS,
-				XMLConstants.BM_RMAP_NS }, new String[] { XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE,
-				XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_CQUERY_RESOURCE, XMLConstants.BM_CSPEC_RESOURCE,
+	public MetaDataParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating) throws CoreException {
+		super(parserExtensions, new String[] { XMLConstants.XHTML_NS, XMLConstants.XML_NS, XMLConstants.BM_COMMON_NS, XMLConstants.BM_CQUERY_NS,
+				XMLConstants.BM_CSPEC_NS, XMLConstants.BM_METADATA_NS, XMLConstants.BM_RMAP_NS }, new String[] { XMLConstants.XHTML_RESOURCE,
+				XMLConstants.XML_RESOURCE, XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_CQUERY_RESOURCE, XMLConstants.BM_CSPEC_RESOURCE,
 				XMLConstants.BM_METADATA_RESOURCE, XMLConstants.BM_RMAP_RESOURCE }, validating);
 	}
 }

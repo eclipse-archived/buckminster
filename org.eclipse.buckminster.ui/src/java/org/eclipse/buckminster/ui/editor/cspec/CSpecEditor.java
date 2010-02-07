@@ -103,325 +103,281 @@ import org.eclipse.ui.part.EditorPart;
  * @author Karel Brezina
  * 
  */
-public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
-{
+public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy {
 	// don't need generics here - need just to setDirty
-	class CompoundModifyListener<T> implements ModifyListener, ITableModifyListener<T>, IFieldModifyListener
-	{
+	class CompoundModifyListener<T> implements ModifyListener, ITableModifyListener<T>, IFieldModifyListener {
 
-		public void modifyField(FieldModifyEvent e)
-		{
+		public void modifyField(FieldModifyEvent e) {
 			setDirty(true);
 		}
 
-		public void modifyTable(TableModifyEvent<T> e)
-		{
+		public void modifyTable(TableModifyEvent<T> e) {
 			setDirty(true);
 		}
 
-		public void modifyText(ModifyEvent e)
-		{
+		public void modifyText(ModifyEvent e) {
 			setDirty(true);
 		}
 	}
 
-	enum CSpecEditorTab
-	{
-		MAIN(0), ACTIONS(1), ARTIFACTS(2), GROUPS(3), ATTRIBUTES(4), DEPENDENCIES(5), GENERATORS(6), DOCUMENTATION(6), XML(
-				8);
+	enum CSpecEditorTab {
+		MAIN(0), ACTIONS(1), ARTIFACTS(2), GROUPS(3), ATTRIBUTES(4), DEPENDENCIES(5), GENERATORS(6), DOCUMENTATION(6), XML(8);
 
-		private int m_seqNum;
+		private int seqNum;
 
-		CSpecEditorTab(int seqNum)
-		{
-			m_seqNum = seqNum;
+		CSpecEditorTab(int seqNum) {
+			this.seqNum = seqNum;
 		}
 
-		public int getSeqNum()
-		{
-			return m_seqNum;
+		public int getSeqNum() {
+			return seqNum;
 		}
 	}
 
 	private static final String SAVEABLE_CSPEC_NAME = "buckminster.cspec"; //$NON-NLS-1$
 
-	private CSpecBuilder m_cspec;
+	private CSpecBuilder cspec;
 
-	private List<ActionBuilder> m_actionBuilders = new ArrayList<ActionBuilder>();
+	private List<ActionBuilder> actionBuilders = new ArrayList<ActionBuilder>();
 
-	private Map<ActionBuilder, List<ActionArtifactBuilder>> m_actionArtifactBuilders = new HashMap<ActionBuilder, List<ActionArtifactBuilder>>();
+	private Map<ActionBuilder, List<ActionArtifactBuilder>> actionArtifactBuilders = new HashMap<ActionBuilder, List<ActionArtifactBuilder>>();
 
-	private List<ArtifactBuilder> m_artifactBuilders = new ArrayList<ArtifactBuilder>();
+	private List<ArtifactBuilder> artifactBuilders = new ArrayList<ArtifactBuilder>();
 
-	private List<GroupBuilder> m_groupBuilders = new ArrayList<GroupBuilder>();
+	private List<GroupBuilder> groupBuilders = new ArrayList<GroupBuilder>();
 
-	private List<ComponentRequestBuilder> m_dependencyBuilders = new ArrayList<ComponentRequestBuilder>();
+	private List<ComponentRequestBuilder> dependencyBuilders = new ArrayList<ComponentRequestBuilder>();
 
-	private List<GeneratorBuilder> m_generatorBuilders = new ArrayList<GeneratorBuilder>();
+	private List<GeneratorBuilder> generatorBuilders = new ArrayList<GeneratorBuilder>();
 
 	@SuppressWarnings("rawtypes")
-	private CompoundModifyListener m_compoundModifyListener;
+	private CompoundModifyListener compoundModifyListener;
 
-	private boolean m_hasChanges = false;
+	private boolean hasChanges = false;
 
-	private boolean m_mute = false;
+	private boolean mute = false;
 
-	private boolean m_needsRefresh = false;
+	private boolean needsRefresh = false;
 
-	private boolean m_readOnly = true;
+	private boolean readOnly = true;
 
-	private CTabFolder m_tabFolder;
+	private CTabFolder tabFolder;
 
-	private CTabItem m_mainTab;
+	private CTabItem mainTab;
 
-	private CTabItem m_actionsTab;
+	private CTabItem actionsTab;
 
-	private CTabItem m_artifactsTab;
+	private CTabItem artifactsTab;
 
-	private CTabItem m_groupsTab;
+	private CTabItem groupsTab;
 
-	private CTabItem m_attributesTab;
+	private CTabItem attributesTab;
 
-	private CTabItem m_dependenciesTab;
+	private CTabItem dependenciesTab;
 
-	private CTabItem m_generatorsTab;
+	private CTabItem generatorsTab;
 
-	private CTabItem m_documentationTab;
+	private CTabItem documentationTab;
 
-	private CTabItem m_xmlTab;
+	private CTabItem xmlTab;
 
-	private Text m_componentName;
+	private Text componentName;
 
-	private Combo m_componentType;
+	private Combo componentType;
 
-	private Text m_versionString;
+	private Text versionString;
 
-	private Combo m_versionType;
+	private Combo versionType;
 
-	private ActionsTable m_actionsTable;
+	private ActionsTable actionsTable;
 
-	private OnePageTableEditor<ActionBuilder> m_actionsEditor;
+	private OnePageTableEditor<ActionBuilder> actionsEditor;
 
-	private OnePageTableEditor<ArtifactBuilder> m_artifactsEditor;
+	private OnePageTableEditor<ArtifactBuilder> artifactsEditor;
 
-	private OnePageTableEditor<GroupBuilder> m_groupsEditor;
+	private OnePageTableEditor<GroupBuilder> groupsEditor;
 
-	private AllAttributesView m_attributesView;
+	private AllAttributesView attributesView;
 
-	private SimpleTableEditor<ComponentRequestBuilder> m_dependenciesEditor;
+	private SimpleTableEditor<ComponentRequestBuilder> dependenciesEditor;
 
-	private SimpleTableEditor<GeneratorBuilder> m_generatorsEditor;
+	private SimpleTableEditor<GeneratorBuilder> generatorsEditor;
 
-	private Text m_shortDesc;
+	private Text shortDesc;
 
-	private Text m_documentation;
+	private Text documentation;
 
-	private Text m_xml;
+	private Text xml;
 
-	private Button m_externalSaveAsButton;
+	private Button externalSaveAsButton;
 
 	@Override
-	public void createPartControl(Composite parent)
-	{
+	public void createPartControl(Composite parent) {
 		Composite topComposite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(1, true);
 		layout.marginHeight = layout.marginWidth = 0;
 		topComposite.setLayout(layout);
 
-		m_tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
-		m_tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		tabFolder = new CTabFolder(topComposite, SWT.BOTTOM);
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		m_mainTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_mainTab.setText(Messages.main);
-		m_mainTab.setControl(getMainTabControl(m_tabFolder));
-		m_mainTab.setData(CSpecEditorTab.MAIN);
+		mainTab = new CTabItem(tabFolder, SWT.NONE);
+		mainTab.setText(Messages.main);
+		mainTab.setControl(getMainTabControl(tabFolder));
+		mainTab.setData(CSpecEditorTab.MAIN);
 
-		m_actionsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_actionsTab.setText(Messages.actions);
-		m_actionsTab.setControl(getActionsTabControl(m_tabFolder));
-		m_actionsTab.setData(CSpecEditorTab.ACTIONS);
+		actionsTab = new CTabItem(tabFolder, SWT.NONE);
+		actionsTab.setText(Messages.actions);
+		actionsTab.setControl(getActionsTabControl(tabFolder));
+		actionsTab.setData(CSpecEditorTab.ACTIONS);
 
-		m_artifactsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_artifactsTab.setText(Messages.artifacts);
-		m_artifactsTab.setControl(getArtifactsTabControl(m_tabFolder));
-		m_artifactsTab.setData(CSpecEditorTab.ARTIFACTS);
+		artifactsTab = new CTabItem(tabFolder, SWT.NONE);
+		artifactsTab.setText(Messages.artifacts);
+		artifactsTab.setControl(getArtifactsTabControl(tabFolder));
+		artifactsTab.setData(CSpecEditorTab.ARTIFACTS);
 
-		m_groupsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_groupsTab.setText(Messages.groups);
-		m_groupsTab.setControl(getGroupsTabControl(m_tabFolder));
-		m_groupsTab.setData(CSpecEditorTab.GROUPS);
+		groupsTab = new CTabItem(tabFolder, SWT.NONE);
+		groupsTab.setText(Messages.groups);
+		groupsTab.setControl(getGroupsTabControl(tabFolder));
+		groupsTab.setData(CSpecEditorTab.GROUPS);
 
-		m_attributesTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_attributesTab.setText(Messages.all_attributes);
-		m_attributesTab.setControl(getAttributesTabControl(m_tabFolder));
-		m_attributesTab.setData(CSpecEditorTab.ATTRIBUTES);
+		attributesTab = new CTabItem(tabFolder, SWT.NONE);
+		attributesTab.setText(Messages.all_attributes);
+		attributesTab.setControl(getAttributesTabControl(tabFolder));
+		attributesTab.setData(CSpecEditorTab.ATTRIBUTES);
 
-		m_dependenciesTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_dependenciesTab.setText(Messages.dependencies);
-		m_dependenciesTab.setControl(getDependenciesTabControl(m_tabFolder));
-		m_dependenciesTab.setData(CSpecEditorTab.DEPENDENCIES);
+		dependenciesTab = new CTabItem(tabFolder, SWT.NONE);
+		dependenciesTab.setText(Messages.dependencies);
+		dependenciesTab.setControl(getDependenciesTabControl(tabFolder));
+		dependenciesTab.setData(CSpecEditorTab.DEPENDENCIES);
 
-		m_generatorsTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_generatorsTab.setText(Messages.generators);
-		m_generatorsTab.setControl(getGeneratorsTabControl(m_tabFolder));
-		m_generatorsTab.setData(CSpecEditorTab.GENERATORS);
+		generatorsTab = new CTabItem(tabFolder, SWT.NONE);
+		generatorsTab.setText(Messages.generators);
+		generatorsTab.setControl(getGeneratorsTabControl(tabFolder));
+		generatorsTab.setData(CSpecEditorTab.GENERATORS);
 
-		m_documentationTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_documentationTab.setText(Messages.documentation);
-		m_documentationTab.setControl(getDocumentationTabControl(m_tabFolder));
-		m_documentationTab.setData(CSpecEditorTab.DOCUMENTATION);
+		documentationTab = new CTabItem(tabFolder, SWT.NONE);
+		documentationTab.setText(Messages.documentation);
+		documentationTab.setControl(getDocumentationTabControl(tabFolder));
+		documentationTab.setData(CSpecEditorTab.DOCUMENTATION);
 
-		m_xmlTab = new CTabItem(m_tabFolder, SWT.NONE);
-		m_xmlTab.setText(Messages.xml_content);
-		m_xmlTab.setControl(getXMLTabControl(m_tabFolder));
-		m_xmlTab.setData(CSpecEditorTab.XML);
+		xmlTab = new CTabItem(tabFolder, SWT.NONE);
+		xmlTab.setText(Messages.xml_content);
+		xmlTab.setControl(getXMLTabControl(tabFolder));
+		xmlTab.setData(CSpecEditorTab.XML);
 
-		m_tabFolder.addSelectionListener(new SelectionAdapter()
-		{
-			private final IActivator ACTIONS_ACTIVATOR = new IActivator()
-			{
-				public void activate()
-				{
+		tabFolder.addSelectionListener(new SelectionAdapter() {
+			private final IActivator ACTIONS_ACTIVATOR = new IActivator() {
+				public void activate() {
 					switchTab(CSpecEditorTab.ACTIONS);
 				}
 			};
 
-			private final IActivator ARTIFACTS_ACTIVATOR = new IActivator()
-			{
-				public void activate()
-				{
+			private final IActivator ARTIFACTS_ACTIVATOR = new IActivator() {
+				public void activate() {
 					switchTab(CSpecEditorTab.ARTIFACTS);
 				}
 			};
 
-			private final IActivator GROUPS_ACTIVATOR = new IActivator()
-			{
-				public void activate()
-				{
+			private final IActivator GROUPS_ACTIVATOR = new IActivator() {
+				public void activate() {
 					switchTab(CSpecEditorTab.GROUPS);
 				}
 			};
 
-			private CTabItem m_lastTab = m_mainTab;
+			private CTabItem lastTab = mainTab;
 
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				// save row
-				if(m_lastTab != e.item)
-				{
-					if(m_lastTab == m_actionsTab)
-						if(!m_actionsEditor.save(ACTIONS_ACTIVATOR))
+				if (lastTab != e.item) {
+					if (lastTab == actionsTab)
+						if (!actionsEditor.save(ACTIONS_ACTIVATOR))
 							return;
 
-					if(m_lastTab == m_artifactsTab)
-						if(!m_artifactsEditor.save(ARTIFACTS_ACTIVATOR))
+					if (lastTab == artifactsTab)
+						if (!artifactsEditor.save(ARTIFACTS_ACTIVATOR))
 							return;
 
-					if(m_lastTab == m_groupsTab)
-						if(!m_groupsEditor.save(GROUPS_ACTIVATOR))
+					if (lastTab == groupsTab)
+						if (!groupsEditor.save(GROUPS_ACTIVATOR))
 							return;
 				}
 
-				if(m_mainTab == e.item)
-				{
-					m_componentName.setFocus();
-				}
-				else if(m_actionsTab == e.item)
-				{
-					m_actionsEditor.setFocus();
-				}
-				else if(m_artifactsTab == e.item)
-				{
-					m_artifactsEditor.setFocus();
-				}
-				else if(m_groupsTab == e.item)
-				{
-					m_groupsEditor.setFocus();
-				}
-				else if(m_attributesTab == e.item)
-				{
-					m_attributesView.setFocus();
-				}
-				else if(m_dependenciesTab == e.item)
-				{
-					m_dependenciesEditor.setFocus();
-				}
-				else if(m_generatorsTab == e.item)
-				{
-					m_generatorsEditor.setFocus();
-				}
-				else if(m_documentationTab == e.item)
-				{
-					m_shortDesc.setFocus();
-				}
-				else if(m_xmlTab == e.item)
-				{
-					if(!commitChanges())
-						MessageDialog.openWarning(getSite().getShell(), null,
-								Messages.xml_content_was_not_updated_due_to_errors);
+				if (mainTab == e.item) {
+					componentName.setFocus();
+				} else if (actionsTab == e.item) {
+					actionsEditor.setFocus();
+				} else if (artifactsTab == e.item) {
+					artifactsEditor.setFocus();
+				} else if (groupsTab == e.item) {
+					groupsEditor.setFocus();
+				} else if (attributesTab == e.item) {
+					attributesView.setFocus();
+				} else if (dependenciesTab == e.item) {
+					dependenciesEditor.setFocus();
+				} else if (generatorsTab == e.item) {
+					generatorsEditor.setFocus();
+				} else if (documentationTab == e.item) {
+					shortDesc.setFocus();
+				} else if (xmlTab == e.item) {
+					if (!commitChanges())
+						MessageDialog.openWarning(getSite().getShell(), null, Messages.xml_content_was_not_updated_due_to_errors);
 					else
-						m_xml.setText(getCSpecXML());
+						xml.setText(getCSpecXML());
 				}
 
-				m_lastTab = (CTabItem)e.item;
+				lastTab = (CTabItem) e.item;
 			}
 		});
 
 		createActionButtons(topComposite);
 	}
 
-	public void doExternalSaveAs()
-	{
-		if(!commitChanges())
+	public void doExternalSaveAs() {
+		if (!commitChanges())
 			return;
 		FileDialog dlg = new FileDialog(getSite().getShell(), SWT.SAVE);
 		dlg.setFilterExtensions(new String[] { "*.cspec" }); //$NON-NLS-1$
 		final String location = dlg.open();
-		if(location == null)
+		if (location == null)
 			return;
 		saveToPath(new Path(location));
 	}
 
 	@Override
-	public void doSave(IProgressMonitor monitor)
-	{
-		if(!commitChanges())
+	public void doSave(IProgressMonitor monitor) {
+		if (!commitChanges())
 			return;
 
 		IEditorInput input = getEditorInput();
-		if(input == null)
+		if (input == null)
 			return;
 
-		IPath path = (input instanceof ILocationProvider)
-				? ((ILocationProvider)input).getPath(input)
-				: ((IPathEditorInput)input).getPath();
+		IPath path = (input instanceof ILocationProvider) ? ((ILocationProvider) input).getPath(input) : ((IPathEditorInput) input).getPath();
 
 		saveToPath(path);
 	}
 
 	@Override
-	public void doSaveAs()
-	{
-		if(!commitChanges())
+	public void doSaveAs() {
+		if (!commitChanges())
 			return;
 
 		IEditorInput input = getEditorInput();
-		if(input == null)
+		if (input == null)
 			return;
 
 		SaveAsDialog dialog = new SaveAsDialog(getSite().getShell());
-		IFile original = (input instanceof IFileEditorInput)
-				? ((IFileEditorInput)input).getFile()
-				: null;
-		if(original != null)
+		IFile original = (input instanceof IFileEditorInput) ? ((IFileEditorInput) input).getFile() : null;
+		if (original != null)
 			dialog.setOriginalFile(original);
 
-		if(dialog.open() == Window.CANCEL)
+		if (dialog.open() == Window.CANCEL)
 			return;
 
 		IPath filePath = dialog.getResult();
-		if(filePath == null)
+		if (filePath == null)
 			return;
 
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -430,101 +386,75 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 	}
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws PartInitException
-	{
-		if(!(input instanceof ILocationProvider || input instanceof IPathEditorInput
-				|| input instanceof IURIEditorInput || input instanceof CSpecEditorInput))
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+		if (!(input instanceof ILocationProvider || input instanceof IPathEditorInput || input instanceof IURIEditorInput || input instanceof CSpecEditorInput))
 			throw new PartInitException(Messages.invalid_input);
 		setSite(site);
 
-		if(input instanceof IURIEditorInput)
-		{
-			try
-			{
-				input = EditorUtils.getExternalFileEditorInput((IURIEditorInput)input, ArtifactType.CSPEC);
-			}
-			catch(Exception e)
-			{
+		if (input instanceof IURIEditorInput) {
+			try {
+				input = EditorUtils.getExternalFileEditorInput((IURIEditorInput) input, ArtifactType.CSPEC);
+			} catch (Exception e) {
 				throw new PartInitException(Messages.unable_to_open_editor, e);
 			}
 		}
 
 		InputStream stream = null;
-		try
-		{
-			m_cspec = new CSpecBuilder();
-			if(input instanceof CSpecEditorInput)
-			{
-				m_readOnly = true;
-				m_cspec.initFrom(((CSpecEditorInput)input).getCSpec());
-			}
-			else
-			{
-				IPath path = (input instanceof ILocationProvider)
-						? ((ILocationProvider)input).getPath(input)
-						: ((IPathEditorInput)input).getPath();
+		try {
+			cspec = new CSpecBuilder();
+			if (input instanceof CSpecEditorInput) {
+				readOnly = true;
+				cspec.initFrom(((CSpecEditorInput) input).getCSpec());
+			} else {
+				IPath path = (input instanceof ILocationProvider) ? ((ILocationProvider) input).getPath(input) : ((IPathEditorInput) input).getPath();
 
-				m_readOnly = (!SAVEABLE_CSPEC_NAME.equalsIgnoreCase(path.lastSegment()));
+				readOnly = (!SAVEABLE_CSPEC_NAME.equalsIgnoreCase(path.lastSegment()));
 
 				File file = path.toFile();
-				if(file.length() != 0)
-				{
+				if (file.length() != 0) {
 					String systemId = file.toString();
 					stream = new FileInputStream(file);
 					IParser<CSpec> parser = CorePlugin.getDefault().getParserFactory().getCSpecParser(true);
-					m_cspec.initFrom(parser.parse(systemId, stream));
+					cspec.initFrom(parser.parse(systemId, stream));
 				}
 			}
 
-			m_needsRefresh = true;
-			if(m_componentName != null)
-			{
+			needsRefresh = true;
+			if (componentName != null) {
 				refreshValues();
 			}
 
 			setInputWithNotify(input);
-			setPartName(input.getName() + (m_readOnly
-					? Messages.read_only_in_paranthesis
-					: "")); //$NON-NLS-1$
-		}
-		catch(Exception e)
-		{
+			setPartName(input.getName() + (readOnly ? Messages.read_only_in_paranthesis : "")); //$NON-NLS-1$
+		} catch (Exception e) {
 			throw new PartInitException(BuckminsterException.wrap(e).getMessage());
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(stream);
 		}
-		m_compoundModifyListener = new CompoundModifyListener<Object>();
+		compoundModifyListener = new CompoundModifyListener<Object>();
 	}
 
 	@Override
-	public boolean isDirty()
-	{
-		return m_hasChanges;
+	public boolean isDirty() {
+		return hasChanges;
 	}
 
 	@Override
-	public boolean isSaveAsAllowed()
-	{
-		return !m_readOnly;
+	public boolean isSaveAsAllowed() {
+		return !readOnly;
 	}
 
-	public boolean matches(IEditorReference editorRef, IEditorInput input)
-	{
-		IEditorPart part = (IEditorPart)editorRef.getPart(false);
-		if(part != null)
-		{
+	public boolean matches(IEditorReference editorRef, IEditorInput input) {
+		IEditorPart part = (IEditorPart) editorRef.getPart(false);
+		if (part != null) {
 			IEditorInput editorInput = part.getEditorInput();
-			if(editorInput != null)
-			{
-				if(editorInput.equals(input))
+			if (editorInput != null) {
+				if (editorInput.equals(input))
 					return true;
 
-				if(editorInput instanceof IDerivedEditorInput)
-				{
-					IEditorInput originalEditorInput = ((IDerivedEditorInput)editorInput).getOriginalInput();
-					if(originalEditorInput.equals(input))
+				if (editorInput instanceof IDerivedEditorInput) {
+					IEditorInput originalEditorInput = ((IDerivedEditorInput) editorInput).getOriginalInput();
+					if (originalEditorInput.equals(input))
 						return true;
 				}
 			}
@@ -533,103 +463,84 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return false;
 	}
 
-	public void setEnabled(boolean enabled)
-	{
-		m_componentName.setEnabled(enabled);
-		m_componentType.setEnabled(enabled);
-		m_versionString.setEnabled(enabled);
-		m_versionType.setEnabled(enabled);
-		m_actionsEditor.setEnabled(enabled);
-		m_artifactsEditor.setEnabled(enabled);
-		m_groupsEditor.setEnabled(enabled);
-		m_dependenciesEditor.setEnabled(enabled);
-		m_generatorsEditor.setEnabled(enabled);
-		m_shortDesc.setEnabled(enabled);
-		m_documentation.setEnabled(enabled);
+	public void setEnabled(boolean enabled) {
+		componentName.setEnabled(enabled);
+		componentType.setEnabled(enabled);
+		versionString.setEnabled(enabled);
+		versionType.setEnabled(enabled);
+		actionsEditor.setEnabled(enabled);
+		artifactsEditor.setEnabled(enabled);
+		groupsEditor.setEnabled(enabled);
+		dependenciesEditor.setEnabled(enabled);
+		generatorsEditor.setEnabled(enabled);
+		shortDesc.setEnabled(enabled);
+		documentation.setEnabled(enabled);
 	}
 
 	@Override
-	public void setFocus()
-	{
-		m_tabFolder.setFocus();
+	public void setFocus() {
+		tabFolder.setFocus();
 
-		if(m_needsRefresh)
-		{
+		if (needsRefresh) {
 			refreshValues();
 		}
 	}
 
-	Map<ActionBuilder, List<ActionArtifactBuilder>> getActionArtifactBuilders()
-	{
-		return m_actionArtifactBuilders;
+	Map<ActionBuilder, List<ActionArtifactBuilder>> getActionArtifactBuilders() {
+		return actionArtifactBuilders;
 	}
 
-	List<ActionBuilder> getActionBuilders()
-	{
-		return m_actionBuilders;
+	List<ActionBuilder> getActionBuilders() {
+		return actionBuilders;
 	}
 
-	OnePageTableEditor<ActionBuilder> getActionsEditor()
-	{
-		return m_actionsEditor;
+	OnePageTableEditor<ActionBuilder> getActionsEditor() {
+		return actionsEditor;
 	}
 
-	ActionsTable getActionsTable()
-	{
-		return m_actionsTable;
+	ActionsTable getActionsTable() {
+		return actionsTable;
 	}
 
-	List<ArtifactBuilder> getArtifactBuilders()
-	{
-		return m_artifactBuilders;
+	List<ArtifactBuilder> getArtifactBuilders() {
+		return artifactBuilders;
 	}
 
-	OnePageTableEditor<ArtifactBuilder> getArtifactsEditor()
-	{
-		return m_artifactsEditor;
+	OnePageTableEditor<ArtifactBuilder> getArtifactsEditor() {
+		return artifactsEditor;
 	}
 
-	String[] getAttributeNames(String excludeName)
-	{
+	String[] getAttributeNames(String excludeName) {
 		List<String> nameList = new ArrayList<String>();
 
-		for(ActionBuilder builder : m_actionBuilders)
-		{
-			if(builder.getName() != null)
-			{
+		for (ActionBuilder builder : actionBuilders) {
+			if (builder.getName() != null) {
 				nameList.add(builder.getName());
 			}
 		}
-		for(List<ActionArtifactBuilder> list : m_actionArtifactBuilders.values())
-			for(ActionArtifactBuilder builder : list)
+		for (List<ActionArtifactBuilder> list : actionArtifactBuilders.values())
+			for (ActionArtifactBuilder builder : list)
 				nameList.add(builder.getName());
 
-		for(ArtifactBuilder builder : m_artifactBuilders)
-		{
-			if(builder.getName() != null)
-			{
+		for (ArtifactBuilder builder : artifactBuilders) {
+			if (builder.getName() != null) {
 				nameList.add(builder.getName());
 			}
 		}
-		for(GroupBuilder builder : m_groupBuilders)
-		{
-			if(builder.getName() != null)
-			{
+		for (GroupBuilder builder : groupBuilders) {
+			if (builder.getName() != null) {
 				nameList.add(builder.getName());
 			}
 		}
 
-		if(excludeName != null)
-		{
+		if (excludeName != null) {
 			nameList.remove(excludeName);
 		}
 
 		String[] array = nameList.toArray(new String[0]);
-		Arrays.sort(array, new Comparator<String>()
-		{
+		Arrays.sort(array, new Comparator<String>() {
 
-			public int compare(String o1, String o2)
-			{
+			public int compare(String o1, String o2) {
 				return o1.compareTo(o2);
 			}
 		});
@@ -637,24 +548,19 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return array;
 	}
 
-	String[] getComponentNames()
-	{
+	String[] getComponentNames() {
 		List<String> list = new ArrayList<String>();
 
-		for(ComponentRequestBuilder builder : m_dependencyBuilders)
-		{
-			if(builder.getName() != null)
-			{
+		for (ComponentRequestBuilder builder : dependencyBuilders) {
+			if (builder.getName() != null) {
 				list.add(builder.getName());
 			}
 		}
 
 		String[] array = list.toArray(new String[0]);
-		Arrays.sort(array, new Comparator<String>()
-		{
+		Arrays.sort(array, new Comparator<String>() {
 
-			public int compare(String o1, String o2)
-			{
+			public int compare(String o1, String o2) {
 				return o1.compareTo(o2);
 			}
 		});
@@ -662,15 +568,12 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return array;
 	}
 
-	ComponentRequestBuilder getDependencyBuilder(String componentName)
-	{
-		if(componentName == null)
+	ComponentRequestBuilder getDependencyBuilder(String cname) {
+		if (cname == null)
 			return null;
 
-		for(ComponentRequestBuilder builder : m_dependencyBuilders)
-		{
-			if(componentName.equals(builder.getName()))
-			{
+		for (ComponentRequestBuilder builder : dependencyBuilders) {
+			if (cname.equals(builder.getName())) {
 				return builder;
 			}
 		}
@@ -678,186 +581,147 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return null;
 	}
 
-	List<ComponentRequestBuilder> getDependencyBuilders()
-	{
-		return m_dependencyBuilders;
+	List<ComponentRequestBuilder> getDependencyBuilders() {
+		return dependencyBuilders;
 	}
 
-	List<GeneratorBuilder> getGeneratorBuilders()
-	{
-		return m_generatorBuilders;
+	List<GeneratorBuilder> getGeneratorBuilders() {
+		return generatorBuilders;
 	}
 
-	List<GroupBuilder> getGroupBuilders()
-	{
-		return m_groupBuilders;
+	List<GroupBuilder> getGroupBuilders() {
+		return groupBuilders;
 	}
 
-	OnePageTableEditor<GroupBuilder> getGroupsEditor()
-	{
-		return m_groupsEditor;
+	OnePageTableEditor<GroupBuilder> getGroupsEditor() {
+		return groupsEditor;
 	}
 
-	void switchTab(CSpecEditorTab tab)
-	{
-		m_tabFolder.setSelection(tab.getSeqNum());
+	void switchTab(CSpecEditorTab tab) {
+		tabFolder.setSelection(tab.getSeqNum());
 	}
 
-	private void addToActionArtifactBuilderMap(ActionArtifactBuilder actionArtifactbuilder)
-	{
-		if(actionArtifactbuilder.getActionName() == null)
+	private void addToActionArtifactBuilderMap(ActionArtifactBuilder actionArtifactbuilder) {
+		if (actionArtifactbuilder.getActionName() == null)
 			return;
 
 		ActionBuilder actionBuilder = findActionBuilder(actionArtifactbuilder.getActionName());
 
-		if(actionBuilder != null)
-		{
-			List<ActionArtifactBuilder> list = m_actionArtifactBuilders.get(actionBuilder);
+		if (actionBuilder != null) {
+			List<ActionArtifactBuilder> list = actionArtifactBuilders.get(actionBuilder);
 
-			if(list == null)
-			{
+			if (list == null) {
 				list = new ArrayList<ActionArtifactBuilder>();
-				m_actionArtifactBuilders.put(actionBuilder, list);
+				actionArtifactBuilders.put(actionBuilder, list);
 			}
 
 			list.add(actionArtifactbuilder);
 		}
 	}
 
-	private boolean commitChanges()
-	{
-		if(m_actionsEditor.isVisible())
-			if(!m_actionsEditor.save())
+	private boolean commitChanges() {
+		if (actionsEditor.isVisible())
+			if (!actionsEditor.save())
 				return false;
 
-		if(m_artifactsEditor.isVisible())
-			if(!m_artifactsEditor.save())
+		if (artifactsEditor.isVisible())
+			if (!artifactsEditor.save())
 				return false;
 
-		if(m_groupsEditor.isVisible())
-			if(!m_groupsEditor.save())
+		if (groupsEditor.isVisible())
+			if (!groupsEditor.save())
 				return false;
 
-		String name = UiUtils.trimmedValue(m_componentName);
-		if(name == null)
-		{
+		String name = UiUtils.trimmedValue(componentName);
+		if (name == null) {
 			MessageDialog.openError(getSite().getShell(), null, Messages.the_component_must_have_a_name);
 			return false;
 		}
-		m_cspec.setName(name);
+		cspec.setName(name);
 
-		String componentType = m_componentType.getItem(m_componentType.getSelectionIndex());
-		if(componentType.length() == 0)
-			componentType = null;
-		m_cspec.setComponentTypeID(componentType);
+		String cType = componentType.getItem(componentType.getSelectionIndex());
+		if (cType.length() == 0)
+			cType = null;
+		cspec.setComponentTypeID(cType);
 
-		try
-		{
-			m_cspec.setVersion(VersionHelper.createVersion(m_versionType.getItem(m_versionType.getSelectionIndex()),
-					UiUtils.trimmedValue(m_versionString)));
-		}
-		catch(CoreException e)
-		{
+		try {
+			cspec.setVersion(VersionHelper.createVersion(versionType.getItem(versionType.getSelectionIndex()), UiUtils.trimmedValue(versionString)));
+		} catch (CoreException e) {
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
 
-		try
-		{
-			Map<String, AttributeBuilder> attributesMap = m_cspec.getAttributes();
+		try {
+			Map<String, AttributeBuilder> attributesMap = cspec.getAttributes();
 
-			if(attributesMap != null)
-			{
+			if (attributesMap != null) {
 				attributesMap.clear();
 			}
 
-			for(ActionBuilder action : m_actionBuilders)
-			{
-				m_cspec.addAttribute(action);
+			for (ActionBuilder action : actionBuilders) {
+				cspec.addAttribute(action);
 			}
 
-			for(List<ActionArtifactBuilder> list : m_actionArtifactBuilders.values())
-				for(ActionArtifactBuilder item : list)
-					m_cspec.addAttribute(item);
+			for (List<ActionArtifactBuilder> list : actionArtifactBuilders.values())
+				for (ActionArtifactBuilder item : list)
+					cspec.addAttribute(item);
 
-			for(ArtifactBuilder artifact : m_artifactBuilders)
-			{
-				m_cspec.addAttribute(artifact);
+			for (ArtifactBuilder artifact : artifactBuilders) {
+				cspec.addAttribute(artifact);
 			}
 
-			for(GroupBuilder group : m_groupBuilders)
-			{
-				m_cspec.addAttribute(group);
+			for (GroupBuilder group : groupBuilders) {
+				cspec.addAttribute(group);
 			}
-		}
-		catch(AttributeAlreadyDefinedException e)
-		{
+		} catch (AttributeAlreadyDefinedException e) {
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
 
-		try
-		{
-			Map<String, ComponentRequestBuilder> dependeciesMap = m_cspec.getDependencyMap();
+		try {
+			Map<String, ComponentRequestBuilder> dependeciesMap = cspec.getDependencyMap();
 
-			if(dependeciesMap != null)
-			{
+			if (dependeciesMap != null) {
 				dependeciesMap.clear();
 			}
 
-			for(ComponentRequestBuilder dependency : m_dependencyBuilders)
-			{
-				m_cspec.addDependency(dependency);
+			for (ComponentRequestBuilder dependency : dependencyBuilders) {
+				cspec.addDependency(dependency);
 			}
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
 
-		try
-		{
-			Collection<GeneratorBuilder> generators = m_cspec.getGeneratorList();
+		try {
+			Collection<GeneratorBuilder> generators = cspec.getGeneratorList();
 
-			if(generators.size() > 0)
-			{
+			if (generators.size() > 0) {
 				generators.clear();
 			}
 
-			for(GeneratorBuilder generator : m_generatorBuilders)
-			{
-				m_cspec.addGenerator(generator);
+			for (GeneratorBuilder generator : generatorBuilders) {
+				cspec.addGenerator(generator);
 			}
-		}
-		catch(GeneratorAlreadyDefinedException e)
-		{
+		} catch (GeneratorAlreadyDefinedException e) {
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
 
-		String doc = UiUtils.trimmedValue(m_shortDesc);
-		m_cspec.setShortDesc(doc);
+		String doc = UiUtils.trimmedValue(shortDesc);
+		cspec.setShortDesc(doc);
 
-		doc = UiUtils.trimmedValue(m_documentation);
-		try
-		{
-			m_cspec.setDocumentation(doc == null
-					? null
-					: Documentation.parse(doc));
-		}
-		catch(CoreException e)
-		{
+		doc = UiUtils.trimmedValue(documentation);
+		try {
+			cspec.setDocumentation(doc == null ? null : Documentation.parse(doc));
+		} catch (CoreException e) {
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
 
-		try
-		{
-			m_cspec.createCSpec().verifyConsistency();
-		}
-		catch(CoreException e)
-		{
+		try {
+			cspec.createCSpec().verifyConsistency();
+		} catch (CoreException e) {
 			MessageDialog.openError(getSite().getShell(), null, e.getMessage());
 			return false;
 		}
@@ -865,8 +729,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		return true;
 	}
 
-	private void createActionButtons(Composite parent)
-	{
+	private void createActionButtons(Composite parent) {
 		Composite allButtonsBox = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		// layout.marginHeight = layout.marginWidth = 0;
@@ -879,95 +742,81 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		pressButtonsBox.setLayout(layout);
 		pressButtonsBox.setLayoutData(new GridData(SWT.END, SWT.FILL, true, false));
 
-		m_externalSaveAsButton = UiUtils.createPushButton(pressButtonsBox, Messages.external_save_as,
-				new SelectionAdapter()
-				{
-					@Override
-					public void widgetSelected(SelectionEvent e)
-					{
-						doExternalSaveAs();
-					}
-				});
-		m_externalSaveAsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		externalSaveAsButton = UiUtils.createPushButton(pressButtonsBox, Messages.external_save_as, new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				doExternalSaveAs();
+			}
+		});
+		externalSaveAsButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 	}
 
-	private ActionBuilder findActionBuilder(String actionName)
-	{
-		for(ActionBuilder builder : m_actionBuilders)
-			if(actionName.equals(builder.getName()))
+	private ActionBuilder findActionBuilder(String actionName) {
+		for (ActionBuilder builder : actionBuilders)
+			if (actionName.equals(builder.getName()))
 				return builder;
 
 		return null;
 	}
 
-	private Control getActionsTabControl(Composite parent)
-	{
+	private Control getActionsTabControl(Composite parent) {
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.actions);
 
-		ActionsTable table = new ActionsTable(this, m_actionBuilders, m_actionArtifactBuilders, m_cspec,
-				!isSaveAsAllowed());
-		table.addFieldModifyListener(m_compoundModifyListener);
+		ActionsTable table = new ActionsTable(this, actionBuilders, actionArtifactBuilders, cspec, !isSaveAsAllowed());
+		table.addFieldModifyListener(compoundModifyListener);
 
-		m_actionsEditor = new OnePageTableEditor<ActionBuilder>(tabComposite, table, false, SWT.NONE);
+		actionsEditor = new OnePageTableEditor<ActionBuilder>(tabComposite, table, false, SWT.NONE);
 
-		m_actionsTable = table;
+		actionsTable = table;
 
 		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
-	private Control getArtifactsTabControl(Composite parent)
-	{
+	private Control getArtifactsTabControl(Composite parent) {
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.artifacts);
 
-		ArtifactsTable table = new ArtifactsTable(this, m_artifactBuilders, m_cspec, !isSaveAsAllowed());
-		table.addFieldModifyListener(m_compoundModifyListener);
+		ArtifactsTable table = new ArtifactsTable(this, artifactBuilders, cspec, !isSaveAsAllowed());
+		table.addFieldModifyListener(compoundModifyListener);
 
-		m_artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(tabComposite, table, false, SWT.NONE);
+		artifactsEditor = new OnePageTableEditor<ArtifactBuilder>(tabComposite, table, false, SWT.NONE);
 
 		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
-	private Control getAttributesTabControl(Composite parent)
-	{
+	private Control getAttributesTabControl(Composite parent) {
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.all_attributes);
 
-		m_attributesView = new AllAttributesView(tabComposite, SWT.NONE, this);
+		attributesView = new AllAttributesView(tabComposite, SWT.NONE, this);
 
 		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
-	private String getCSpecXML()
-	{
+	private String getCSpecXML() {
 		String cspecXML = ""; //$NON-NLS-1$
-		try
-		{
+		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Utils.serialize(m_cspec.createCSpec(), baos);
+			Utils.serialize(cspec.createCSpec(), baos);
 			cspecXML = baos.toString();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			// nothing
 		}
 		return cspecXML;
 	}
 
 	@SuppressWarnings("unchecked")
-	private Control getDependenciesTabControl(Composite parent)
-	{
+	private Control getDependenciesTabControl(Composite parent) {
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.dependencies);
 
-		DependenciesTable table = new DependenciesTable(m_dependencyBuilders, m_cspec, !isSaveAsAllowed());
-		table.addTableModifyListener(m_compoundModifyListener);
+		DependenciesTable table = new DependenciesTable(dependencyBuilders, cspec, !isSaveAsAllowed());
+		table.addTableModifyListener(compoundModifyListener);
 
-		m_dependenciesEditor = new SimpleTableEditor<ComponentRequestBuilder>(tabComposite, table, null,
-				Messages.cspec_editor_dependency, null, null, SWT.NONE);
+		dependenciesEditor = new SimpleTableEditor<ComponentRequestBuilder>(tabComposite, table, null, Messages.cspec_editor_dependency, null, null,
+				SWT.NONE);
 
 		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
-	private Control getDocumentationTabControl(Composite parent)
-	{
+	private Control getDocumentationTabControl(Composite parent) {
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.documentation);
 
 		Composite descComposite = new Composite(tabComposite, SWT.NONE);
@@ -977,48 +826,41 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		descComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		UiUtils.createGridLabel(descComposite, Messages.short_description_with_colon, 1, 0, SWT.NONE);
-		m_shortDesc = UiUtils.createGridText(descComposite, 1, 0, isSaveAsAllowed()
-				? SWT.NONE
-				: SWT.READ_ONLY, m_compoundModifyListener);
+		shortDesc = UiUtils.createGridText(descComposite, 1, 0, isSaveAsAllowed() ? SWT.NONE : SWT.READ_ONLY, compoundModifyListener);
 
 		Label label = UiUtils.createGridLabel(descComposite, Messages.documentation_with_colon, 1, 0, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, false));
-		m_documentation = UiUtils.createGridText(descComposite, 1, 0, (isSaveAsAllowed()
-				? SWT.NONE
-				: SWT.READ_ONLY) | SWT.MULTI | SWT.V_SCROLL, m_compoundModifyListener);
-		m_documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		documentation = UiUtils.createGridText(descComposite, 1, 0, (isSaveAsAllowed() ? SWT.NONE : SWT.READ_ONLY) | SWT.MULTI | SWT.V_SCROLL,
+				compoundModifyListener);
+		documentation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
 	@SuppressWarnings("unchecked")
-	private Control getGeneratorsTabControl(Composite parent)
-	{
+	private Control getGeneratorsTabControl(Composite parent) {
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.generators);
 
-		GeneratorsTable table = new GeneratorsTable(this, m_generatorBuilders, m_cspec, !isSaveAsAllowed());
-		table.addTableModifyListener(m_compoundModifyListener);
+		GeneratorsTable table = new GeneratorsTable(this, generatorBuilders, cspec, !isSaveAsAllowed());
+		table.addTableModifyListener(compoundModifyListener);
 
-		m_generatorsEditor = new SimpleTableEditor<GeneratorBuilder>(tabComposite, table, null,
-				Messages.cspec_editor_generator, null, null, SWT.NONE);
+		generatorsEditor = new SimpleTableEditor<GeneratorBuilder>(tabComposite, table, null, Messages.cspec_editor_generator, null, null, SWT.NONE);
 
 		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
-	private Control getGroupsTabControl(Composite parent)
-	{
+	private Control getGroupsTabControl(Composite parent) {
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.groups);
 
-		GroupsTable table = new GroupsTable(this, m_groupBuilders, m_cspec, !isSaveAsAllowed());
-		table.addFieldModifyListener(m_compoundModifyListener);
+		GroupsTable table = new GroupsTable(this, groupBuilders, cspec, !isSaveAsAllowed());
+		table.addFieldModifyListener(compoundModifyListener);
 
-		m_groupsEditor = new OnePageTableEditor<GroupBuilder>(tabComposite, table, false, SWT.NONE);
+		groupsEditor = new OnePageTableEditor<GroupBuilder>(tabComposite, table, false, SWT.NONE);
 
 		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
-	private Control getMainTabControl(CTabFolder parent)
-	{
+	private Control getMainTabControl(CTabFolder parent) {
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.main);
 
 		Composite nameComposite = new Composite(tabComposite, SWT.NONE);
@@ -1034,24 +876,24 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		gridData.widthHint = labelWidth;
 		label.setLayoutData(gridData);
 
-		m_componentName = UiUtils.createGridText(nameComposite, 1, 0, isSaveAsAllowed()
-				? SWT.NONE
-				: SWT.READ_ONLY, m_compoundModifyListener);
+		componentName = UiUtils.createGridText(nameComposite, 1, 0, isSaveAsAllowed() ? SWT.NONE : SWT.READ_ONLY, compoundModifyListener);
 
 		UiUtils.createGridLabel(nameComposite, Messages.component_type_with_colon, 1, 0, SWT.NONE);
-		m_componentType = UiUtils.createGridCombo(nameComposite, 1, 0, !isSaveAsAllowed(), null, null, SWT.DROP_DOWN
-				| SWT.READ_ONLY | SWT.SIMPLE);
+		componentType = UiUtils.createGridCombo(nameComposite, 1, 0, !isSaveAsAllowed(), null, null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
 
-		m_componentType.setItems(AbstractComponentType.getComponentTypeIDs(true));
-		m_componentType.addModifyListener(m_compoundModifyListener);
+		componentType.setItems(AbstractComponentType.getComponentTypeIDs(true));
+		componentType.addModifyListener(compoundModifyListener);
 
 		/*
-		 * // not nice but I had to make equal 2 columns form different Composites // the purpose of hlpComposite is to
-		 * create empty space, the same size // as m_componentCategory UiUtils.createEmptyPanel(nameComposite);
+		 * // not nice but I had to make equal 2 columns form different
+		 * Composites // the purpose of hlpComposite is to create empty space,
+		 * the same size // as componentCategory
+		 * UiUtils.createEmptyPanel(nameComposite);
 		 * 
-		 * int textWidth = m_componentCategory.computeSize(SWT.DEFAULT, SWT.DEFAULT).x; gridData =
-		 * (GridData)m_componentCategory.getLayoutData(); gridData.widthHint = textWidth;
-		 * m_componentCategory.setLayoutData(gridData);
+		 * int textWidth = componentCategory.computeSize(SWT.DEFAULT,
+		 * SWT.DEFAULT).x; gridData =
+		 * (GridData)componentCategory.getLayoutData(); gridData.widthHint =
+		 * textWidth; componentCategory.setLayoutData(gridData);
 		 */
 		Group versionGroup = new Group(tabComposite, SWT.NONE);
 		versionGroup.setText(Messages.version);
@@ -1060,40 +902,37 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 
 		Label versionLabel = UiUtils.createGridLabel(versionGroup, Messages.version_with_colon, 1, 0, SWT.NONE);
-		gridData = (GridData)versionLabel.getLayoutData();
+		gridData = (GridData) versionLabel.getLayoutData();
 		gridData.widthHint = labelWidth - layout.marginWidth - 3;
 		versionLabel.setLayoutData(gridData);
 
-		m_versionString = UiUtils.createGridText(versionGroup, 1, 0, isSaveAsAllowed()
-				? SWT.NONE
-				: SWT.READ_ONLY, m_compoundModifyListener);
+		versionString = UiUtils.createGridText(versionGroup, 1, 0, isSaveAsAllowed() ? SWT.NONE : SWT.READ_ONLY, compoundModifyListener);
 		/*
-		 * gridData = (GridData)m_versionString.getLayoutData(); gridData.widthHint = textWidth;
-		 * m_versionString.setLayoutData(gridData);
+		 * gridData = (GridData)versionString.getLayoutData();
+		 * gridData.widthHint = textWidth;
+		 * versionString.setLayoutData(gridData);
 		 * 
 		 * UiUtils.createEmptyPanel(versionGroup);
 		 */
 		UiUtils.createGridLabel(versionGroup, Messages.type_with_colon, 1, 0, SWT.NONE);
-		m_versionType = UiUtils.createGridCombo(versionGroup, 1, 0, !isSaveAsAllowed(), null, null, SWT.DROP_DOWN
-				| SWT.READ_ONLY | SWT.SIMPLE);
+		versionType = UiUtils.createGridCombo(versionGroup, 1, 0, !isSaveAsAllowed(), null, null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
 
 		List<VersionType> knownTypes = VersionHelper.getKnownTypes();
 		int idx = knownTypes.size();
 		String[] versionTypes = new String[idx];
-		while(--idx >= 0)
+		while (--idx >= 0)
 			versionTypes[idx] = knownTypes.get(idx).getId();
 
-		m_versionType.setItems(versionTypes);
-		m_versionType.select(m_versionType.indexOf("OSGi")); //$NON-NLS-1$
-		m_versionType.addModifyListener(m_compoundModifyListener);
+		versionType.setItems(versionTypes);
+		versionType.select(versionType.indexOf("OSGi")); //$NON-NLS-1$
+		versionType.addModifyListener(compoundModifyListener);
 		/*
 		 * UiUtils.createEmptyPanel(versionGroup);
 		 */
 		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
-	private Control getXMLTabControl(Composite parent)
-	{
+	private Control getXMLTabControl(Composite parent) {
 		Composite tabComposite = EditorUtils.getNamedTabComposite(parent, Messages.xml_content);
 
 		Composite xmlComposite = new Composite(tabComposite, SWT.NONE);
@@ -1102,143 +941,113 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy
 		xmlComposite.setLayout(layout);
 		xmlComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		m_xml = UiUtils.createGridText(xmlComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY,
-				null);
-		m_xml.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		xml = UiUtils.createGridText(xmlComposite, 1, 0, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY, null);
+		xml.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		return EditorUtils.getOptimizedControl(tabComposite);
 	}
 
-	private void refreshValues()
-	{
+	private void refreshValues() {
 		setDirty(false);
-		m_mute = true;
-		try
-		{
-			m_componentName.setText(TextUtils.notNullString(m_cspec.getName()));
-			m_componentType.select(m_componentType.indexOf(TextUtils.notNullString(m_cspec.getComponentTypeID())));
-			Version version = m_cspec.getVersion();
-			if(version == null)
-			{
-				m_versionString.setText(""); //$NON-NLS-1$
-				m_versionType.select(m_versionType.indexOf(VersionType.OSGI));
-			}
-			else
-			{
-				m_versionString.setText(TextUtils.notNullString(VersionHelper.getHumanReadable(version)));
-				m_versionType.select(m_versionType.indexOf(VersionHelper.getVersionType(version).getId()));
+		mute = true;
+		try {
+			componentName.setText(TextUtils.notNullString(cspec.getName()));
+			componentType.select(componentType.indexOf(TextUtils.notNullString(cspec.getComponentTypeID())));
+			Version version = cspec.getVersion();
+			if (version == null) {
+				versionString.setText(""); //$NON-NLS-1$
+				versionType.select(versionType.indexOf(VersionType.OSGI));
+			} else {
+				versionString.setText(TextUtils.notNullString(VersionHelper.getHumanReadable(version)));
+				versionType.select(versionType.indexOf(VersionHelper.getVersionType(version).getId()));
 			}
 
-			m_actionBuilders.clear();
-			m_actionArtifactBuilders.clear();
-			m_artifactBuilders.clear();
-			m_groupBuilders.clear();
-			Map<String, AttributeBuilder> attributesMap = m_cspec.getAttributes();
-			if(attributesMap != null)
-			{
+			actionBuilders.clear();
+			actionArtifactBuilders.clear();
+			artifactBuilders.clear();
+			groupBuilders.clear();
+			Map<String, AttributeBuilder> attributesMap = cspec.getAttributes();
+			if (attributesMap != null) {
 				AttributeBuilder[] builders = attributesMap.values().toArray(new AttributeBuilder[0]);
 				Arrays.sort(builders, CSpecEditorUtils.getAttributeComparator());
 				List<ActionArtifactBuilder> tmp_actionArtifactBuilders = new ArrayList<ActionArtifactBuilder>();
-				for(AttributeBuilder attribute : builders)
-				{
-					if(attribute instanceof ActionBuilder)
-					{
-						m_actionBuilders.add((ActionBuilder)attribute);
-					}
-					else if(attribute instanceof ActionArtifactBuilder)
-					{
-						tmp_actionArtifactBuilders.add((ActionArtifactBuilder)attribute);
-					}
-					else if(attribute instanceof ArtifactBuilder)
-					{
-						m_artifactBuilders.add((ArtifactBuilder)attribute);
-					}
-					else if(attribute instanceof GroupBuilder)
-					{
-						m_groupBuilders.add((GroupBuilder)attribute);
+				for (AttributeBuilder attribute : builders) {
+					if (attribute instanceof ActionBuilder) {
+						actionBuilders.add((ActionBuilder) attribute);
+					} else if (attribute instanceof ActionArtifactBuilder) {
+						tmp_actionArtifactBuilders.add((ActionArtifactBuilder) attribute);
+					} else if (attribute instanceof ArtifactBuilder) {
+						artifactBuilders.add((ArtifactBuilder) attribute);
+					} else if (attribute instanceof GroupBuilder) {
+						groupBuilders.add((GroupBuilder) attribute);
 					}
 				}
-				for(ActionArtifactBuilder builder : tmp_actionArtifactBuilders)
-				{
+				for (ActionArtifactBuilder builder : tmp_actionArtifactBuilders) {
 					addToActionArtifactBuilderMap(builder);
 				}
 			}
 
-			m_dependencyBuilders.clear();
-			Collection<ComponentRequestBuilder> dependencies = m_cspec.getDependencies();
-			if(dependencies != null)
-			{
+			dependencyBuilders.clear();
+			Collection<ComponentRequestBuilder> dependencies = cspec.getDependencies();
+			if (dependencies != null) {
 				ComponentRequestBuilder[] builders = dependencies.toArray(new ComponentRequestBuilder[0]);
 				Arrays.sort(builders, CSpecEditorUtils.getComponentComparator());
-				for(ComponentRequestBuilder dependency : builders)
-				{
-					m_dependencyBuilders.add(dependency);
+				for (ComponentRequestBuilder dependency : builders) {
+					dependencyBuilders.add(dependency);
 				}
 			}
 
-			m_generatorBuilders.clear();
-			Collection<GeneratorBuilder> generatorsSet = m_cspec.getGeneratorList();
-			if(generatorsSet != null)
-			{
+			generatorBuilders.clear();
+			Collection<GeneratorBuilder> generatorsSet = cspec.getGeneratorList();
+			if (generatorsSet != null) {
 				GeneratorBuilder[] generators = generatorsSet.toArray(new GeneratorBuilder[0]);
 				Arrays.sort(generators, CSpecEditorUtils.getCSpecElementComparator());
-				for(GeneratorBuilder generator : generators)
-				{
-					m_generatorBuilders.add(generator);
+				for (GeneratorBuilder generator : generators) {
+					generatorBuilders.add(generator);
 				}
 			}
 
-			m_shortDesc.setText(TextUtils.notNullString(m_cspec.getShortDesc()));
-			Documentation doc = m_cspec.getDocumentation();
-			m_documentation.setText(TextUtils.notNullString(doc == null
-					? "" //$NON-NLS-1$
+			shortDesc.setText(TextUtils.notNullString(cspec.getShortDesc()));
+			Documentation doc = cspec.getDocumentation();
+			documentation.setText(TextUtils.notNullString(doc == null ? "" //$NON-NLS-1$
 					: doc.toString()));
 
-			m_xml.setText(getCSpecXML());
+			xml.setText(getCSpecXML());
 
-			m_actionsEditor.refresh();
-			m_artifactsEditor.refresh();
-			m_groupsEditor.refresh();
-			m_dependenciesEditor.refresh();
-			m_generatorsEditor.refresh();
+			actionsEditor.refresh();
+			artifactsEditor.refresh();
+			groupsEditor.refresh();
+			dependenciesEditor.refresh();
+			generatorsEditor.refresh();
 
-			m_needsRefresh = false;
-		}
-		finally
-		{
-			m_mute = false;
+			needsRefresh = false;
+		} finally {
+			mute = false;
 		}
 	}
 
-	private void saveToPath(IPath path)
-	{
-		try
-		{
-			SaveRunnable sr = new SaveRunnable(m_cspec.createCSpec(), path);
+	private void saveToPath(IPath path) {
+		try {
+			SaveRunnable sr = new SaveRunnable(cspec.createCSpec(), path);
 			getSite().getWorkbenchWindow().run(true, true, sr);
 			setInputWithNotify(sr.getSavedInput());
 			setDirty(false);
 			setPartName(path.lastSegment());
 			firePropertyChange(IWorkbenchPart.PROP_TITLE);
-		}
-		catch(InvocationTargetException e)
-		{
+		} catch (InvocationTargetException e) {
 			CoreException t = BuckminsterException.wrap(e);
 			String msg = NLS.bind(Messages.unable_to_save_file_0, path);
 			CorePlugin.getLogger().error(t, msg);
 			ErrorDialog.openError(getSite().getShell(), null, msg, t.getStatus());
-		}
-		catch(InterruptedException e)
-		{
+		} catch (InterruptedException e) {
 		}
 	}
 
-	private void setDirty(boolean flag)
-	{
-		if(m_readOnly || m_mute || m_hasChanges == flag)
+	private void setDirty(boolean flag) {
+		if (readOnly || mute || hasChanges == flag)
 			return;
 
-		m_hasChanges = flag;
+		hasChanges = flag;
 		firePropertyChange(PROP_DIRTY);
 	}
 }

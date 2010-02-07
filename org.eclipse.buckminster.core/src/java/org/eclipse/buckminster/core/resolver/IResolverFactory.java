@@ -9,8 +9,7 @@ import org.eclipse.core.runtime.CoreException;
  * 
  * @author Thomas Hallgren
  */
-public interface IResolverFactory extends IBuckminsterExtension
-{
+public interface IResolverFactory extends IBuckminsterExtension {
 	/**
 	 * Create an IResolver implementation and associate it with the context
 	 * 
@@ -28,9 +27,11 @@ public interface IResolverFactory extends IBuckminsterExtension
 	IPreferenceDescriptor[] getPreferenceDescriptors();
 
 	/**
-	 * Returns the priority for the resolver. The priority determines the order in which the resolver will be placed
-	 * into the active resolver list. A negative value indicates that the resolver is optional and must be added
-	 * manually. The resolver with the value zero will be placed first in the list.
+	 * Returns the priority for the resolver. The priority determines the order
+	 * in which the resolver will be placed into the active resolver list. A
+	 * negative value indicates that the resolver is optional and must be added
+	 * manually. The resolver with the value zero will be placed first in the
+	 * list.
 	 * 
 	 * @return The resolver priority
 	 */

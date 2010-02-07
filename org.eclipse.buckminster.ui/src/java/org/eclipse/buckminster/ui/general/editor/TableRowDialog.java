@@ -23,55 +23,48 @@ import org.eclipse.swt.widgets.Shell;
  * @author Karel Brezina
  * 
  */
-public abstract class TableRowDialog extends TitleAreaDialog
-{
-	private final Image m_windowImage;
+public abstract class TableRowDialog extends TitleAreaDialog {
+	private final Image windowImage;
 
-	private final String m_windowTitle;
+	private final String windowTitle;
 
-	private final Image m_wizardImage;
+	private final Image wizardImage;
 
-	private final String m_helpURL;
+	private final String helpURL;
 
-	private final boolean m_newRow;
+	private final boolean newRow;
 
-	private final boolean m_readOnly;
+	private final boolean readOnly;
 
-	public TableRowDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage, String helpURL,
-			boolean newRow, boolean readOnly)
-	{
+	public TableRowDialog(Shell parentShell, Image windowImage, String windowTitle, Image wizardImage, String helpURL, boolean newRow,
+			boolean readOnly) {
 		super(parentShell);
-		m_windowImage = windowImage;
-		m_windowTitle = windowTitle;
-		m_wizardImage = wizardImage;
-		m_helpURL = helpURL;
-		m_newRow = newRow;
-		m_readOnly = readOnly;
+		this.windowImage = windowImage;
+		this.windowTitle = windowTitle;
+		this.wizardImage = wizardImage;
+		this.helpURL = helpURL;
+		this.newRow = newRow;
+		this.readOnly = readOnly;
 	}
 
 	@Override
-	public boolean isHelpAvailable()
-	{
-		return m_helpURL != null;
+	public boolean isHelpAvailable() {
+		return helpURL != null;
 	}
 
 	@Override
-	protected void configureShell(Shell newShell)
-	{
+	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(m_windowTitle);
+		newShell.setText(windowTitle);
 
-		if(m_windowImage != null)
-		{
-			newShell.setImage(m_windowImage);
+		if (windowImage != null) {
+			newShell.setImage(windowImage);
 		}
 	}
 
 	@Override
-	protected void createButtonsForButtonBar(Composite parent)
-	{
-		if(!isReadOnly())
-		{
+	protected void createButtonsForButtonBar(Composite parent) {
+		if (!isReadOnly()) {
 			createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
 			enableDisableOkButton();
 		}
@@ -79,29 +72,21 @@ public abstract class TableRowDialog extends TitleAreaDialog
 	}
 
 	@Override
-	protected Control createContents(Composite parent)
-	{
+	protected Control createContents(Composite parent) {
 		Control contents = super.createContents(parent);
 
-		if(m_wizardImage != null)
-		{
-			setTitleImage(m_wizardImage);
+		if (wizardImage != null) {
+			setTitleImage(wizardImage);
 		}
 
-		if(isReadOnly())
-		{
+		if (isReadOnly()) {
 			setTitle(Messages.view_row);
 			setMessage(Messages.view_row_fields);
-		}
-		else
-		{
-			if(m_newRow)
-			{
+		} else {
+			if (newRow) {
 				setTitle(Messages.new_row);
 				setMessage(Messages.enter_new_row_fields);
-			}
-			else
-			{
+			} else {
 				setTitle(Messages.edit_row);
 				setMessage(Messages.edit_row_fields);
 			}
@@ -110,17 +95,13 @@ public abstract class TableRowDialog extends TitleAreaDialog
 	}
 
 	@Override
-	protected Control createHelpControl(Composite parent)
-	{
+	protected Control createHelpControl(Composite parent) {
 		Control helpControl = super.createHelpControl(parent);
-		helpControl.addHelpListener(new HelpListener()
-		{
+		helpControl.addHelpListener(new HelpListener() {
 
-			public void helpRequested(HelpEvent e)
-			{
-				if(m_helpURL != null)
-				{
-					Program.launch(m_helpURL);
+			public void helpRequested(HelpEvent e) {
+				if (helpURL != null) {
+					Program.launch(helpURL);
 				}
 			}
 		});
@@ -130,8 +111,7 @@ public abstract class TableRowDialog extends TitleAreaDialog
 
 	protected abstract void enableDisableOkButton();
 
-	protected boolean isReadOnly()
-	{
-		return m_readOnly;
+	protected boolean isReadOnly() {
+		return readOnly;
 	}
 }

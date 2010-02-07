@@ -13,16 +13,16 @@ package org.eclipse.buckminster.ui.dependency.visualizer.controls.listener;
 import org.eclipse.buckminster.ui.dependency.visualizer.controls.AbstractViewerSettingControl;
 
 /**
- * IViewerSettingChangeListeners can be registered on {@link AbstractViewerSettingControl}s.
+ * IViewerSettingChangeListeners can be registered on
+ * {@link AbstractViewerSettingControl}s.
  * <p>
- * Clients that are interested in setting change events for the dependency visualization need to implement this
- * interface.
+ * Clients that are interested in setting change events for the dependency
+ * visualization need to implement this interface.
  * 
  * @author Johannes Utzig
  * 
  */
-public interface IViewerSettingChangeListener
-{
+public interface IViewerSettingChangeListener {
 	void viewerSettingChanged(ViewerSettingChangeEvent event);
 
 }

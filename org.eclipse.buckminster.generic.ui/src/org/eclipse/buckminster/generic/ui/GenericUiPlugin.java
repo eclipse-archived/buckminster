@@ -20,44 +20,40 @@ import org.osgi.framework.BundleContext;
 /**
  * Plugin with generic UI functionality.
  */
-public class GenericUiPlugin extends AbstractUIPlugin
-{
-	private static GenericUiPlugin s_plugin;
+public class GenericUiPlugin extends AbstractUIPlugin {
+	private static GenericUiPlugin plugin;
 
 	// must be the same as the id in plugin.xml
 	//
-	static private final String s_id = "org.eclipse.buckminster.generic.ui"; //$NON-NLS-1$
+	static private final String id = "org.eclipse.buckminster.generic.ui"; //$NON-NLS-1$
 
 	/**
 	 * Returns the shared instance.
 	 */
-	public static GenericUiPlugin getDefault()
-	{
-		return s_plugin;
+	public static GenericUiPlugin getDefault() {
+		return plugin;
 	}
 
-	static public String getID()
-	{
-		return s_id;
+	static public String getID() {
+		return id;
 	}
 
 	/**
-	 * Returns an image descriptor for the image file at the given plug-in relative path.
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path.
 	 * 
 	 * @param path
 	 *            the path
 	 * @return the image descriptor
 	 */
-	public static ImageDescriptor getImageDescriptor(String path)
-	{
-		return AbstractUIPlugin.imageDescriptorFromPlugin(getID(), path); 
+	public static ImageDescriptor getImageDescriptor(String path) {
+		return AbstractUIPlugin.imageDescriptorFromPlugin(getID(), path);
 	}
 
-	public static IStatus toStatus(Throwable t)
-	{
+	public static IStatus toStatus(Throwable t) {
 		IStatus status = null;
-		if(t instanceof CoreException)
-			status = ((CoreException)t).getStatus();
+		if (t instanceof CoreException)
+			status = ((CoreException) t).getStatus();
 		else
 			status = new Status(IStatus.ERROR, getID(), -1, t.getMessage(), t);
 		return status;
@@ -66,18 +62,16 @@ public class GenericUiPlugin extends AbstractUIPlugin
 	/**
 	 * The constructor.
 	 */
-	public GenericUiPlugin()
-	{
+	public GenericUiPlugin() {
 		super();
-		s_plugin = this;
+		plugin = this;
 	}
 
 	/**
 	 * This method is called upon plug-in activation
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception
-	{
+	public void start(BundleContext context) throws Exception {
 		super.start(context);
 	}
 
@@ -85,9 +79,8 @@ public class GenericUiPlugin extends AbstractUIPlugin
 	 * This method is called when the plug-in is stopped
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception
-	{
+	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		s_plugin = null;
+		plugin = null;
 	}
 }

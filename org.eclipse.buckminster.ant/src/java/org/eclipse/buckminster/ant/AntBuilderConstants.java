@@ -12,8 +12,7 @@ package org.eclipse.buckminster.ant;
 /**
  * @author kolwing
  */
-public interface AntBuilderConstants
-{
+public interface AntBuilderConstants {
 	static final String PLUGIN_ID = "org.eclipse.buckminster.ant"; //$NON-NLS-1$
 
 	static final String ARG_SCRIPT_FILE_KEY = "script.file"; //$NON-NLS-1$

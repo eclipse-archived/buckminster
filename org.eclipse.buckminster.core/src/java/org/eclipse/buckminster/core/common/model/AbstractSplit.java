@@ -23,76 +23,68 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author Thomas Hallgren
  */
-public abstract class AbstractSplit extends ValueHolderFilter
-{
+public abstract class AbstractSplit extends ValueHolderFilter {
 	public static final String TAG = "split"; //$NON-NLS-1$
 
 	public static final String ATTR_STYLE = "style"; //$NON-NLS-1$
 
 	public static final String ATTR_PATTERN = "pattern"; //$NON-NLS-1$
 
-	private final Pattern m_pattern;
+	private final Pattern pattern;
 
-	AbstractSplit(String splitter)
-	{
-		m_pattern = Pattern.compile(splitter);
+	AbstractSplit(String splitter) {
+		pattern = Pattern.compile(splitter);
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
-		return super.equals(o) && m_pattern.equals(((AbstractSplit)o).m_pattern);
+	public boolean equals(Object o) {
+		return super.equals(o) && pattern.equals(((AbstractSplit) o).pattern);
 	}
 
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int hc = super.hashCode();
-		hc = 37 * hc + m_pattern.hashCode();
+		hc = 37 * hc + pattern.hashCode();
 		return hc;
 	}
 
 	/**
-	 * This method will always return <code>true</code> since a split may produce more then one value.
+	 * This method will always return <code>true</code> since a split may
+	 * produce more then one value.
 	 * 
 	 * @return <code>true</code>, always.
 	 */
 	@Override
-	public boolean isMultiValueProducer()
-	{
+	public boolean isMultiValueProducer() {
 		return true;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs) throws SAXException
-	{
-		Utils.addAttribute(attrs, ATTR_PATTERN, m_pattern.toString());
+	protected void addAttributes(AttributesImpl attrs) throws SAXException {
+		Utils.addAttribute(attrs, ATTR_PATTERN, pattern.toString());
 	}
 
 	@Override
-	protected String checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard)
-	{
+	protected String checkedGetValue(Map<String, ? extends Object> properties, int recursionGuard) {
 		List<String> values = checkedGetValues(properties, recursionGuard);
 		int top = values.size();
-		if(top == 0)
+		if (top == 0)
 			return NO_VALUE;
 
-		if(top == 1)
+		if (top == 1)
 			return values.get(0);
 
 		StringBuilder bld = new StringBuilder();
-		for(int idx = 0; idx < top; ++idx)
+		for (int idx = 0; idx < top; ++idx)
 			bld.append(values.get(idx));
 		return bld.toString();
 	}
 
-	final Pattern getPattern()
-	{
-		return m_pattern;
+	final Pattern getPattern() {
+		return pattern;
 	}
 }

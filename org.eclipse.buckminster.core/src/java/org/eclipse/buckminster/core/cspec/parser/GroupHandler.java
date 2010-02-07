@@ -23,61 +23,49 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class GroupHandler extends TopLevelAttributeHandler implements ChildPoppedListener
-{
-	private final PrerequisiteHandler m_prerequisiteHandler = new PrerequisiteHandler(this);
+public class GroupHandler extends TopLevelAttributeHandler implements ChildPoppedListener {
+	private final PrerequisiteHandler prerequisiteHandler = new PrerequisiteHandler(this);
 
-	public GroupHandler(AbstractHandler parent, boolean publ)
-	{
+	public GroupHandler(AbstractHandler parent, boolean publ) {
 		super(parent, publ);
 	}
 
 	@Override
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_prerequisiteHandler)
-		{
-			try
-			{
-				((GroupBuilder)this.getBuilder()).addPrerequisite((PrerequisiteBuilder)m_prerequisiteHandler.getBuilder());
-			}
-			catch(PrerequisiteAlreadyDefinedException e)
-			{
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == prerequisiteHandler) {
+			try {
+				((GroupBuilder) this.getBuilder()).addPrerequisite((PrerequisiteBuilder) prerequisiteHandler.getBuilder());
+			} catch (PrerequisiteAlreadyDefinedException e) {
 				throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 			}
-		}
-		else
+		} else
 			super.childPopped(child);
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(PrerequisiteHandler.TAG.equals(localName))
-			ch = m_prerequisiteHandler;
+		if (PrerequisiteHandler.TAG.equals(localName))
+			ch = prerequisiteHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
 		String tmp = getOptionalStringValue(attrs, Group.ATTR_REBASE);
-		if(tmp != null)
+		if (tmp != null)
 			this.getGroupBuilder().setPrerequisiteRebase(Path.fromPortableString(tmp));
 	}
 
 	@Override
-	protected TopLevelAttributeBuilder createAttributeBuilder()
-	{
+	protected TopLevelAttributeBuilder createAttributeBuilder() {
 		return this.getCSpecBuilder().createGroupBuilder();
 	}
 
-	final GroupBuilder getGroupBuilder()
-	{
-		return (GroupBuilder)this.getBuilder();
+	final GroupBuilder getGroupBuilder() {
+		return (GroupBuilder) this.getBuilder();
 	}
 }

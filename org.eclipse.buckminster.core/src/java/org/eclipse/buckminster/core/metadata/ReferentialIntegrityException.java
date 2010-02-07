@@ -15,13 +15,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class ReferentialIntegrityException extends LocalizedException
-{
+public class ReferentialIntegrityException extends LocalizedException {
 	private static final long serialVersionUID = 7053885060385428942L;
 
-	public ReferentialIntegrityException(IUUIDPersisted instance, String operation, String reason)
-	{
-		super(NLS.bind(Messages.Unable_to_0_the_1_with_id_2_3, new Object[] { operation, instance.getClass().getName(),
-				instance.getId(), reason }));
+	public ReferentialIntegrityException(IUUIDPersisted instance, String operation, String reason) {
+		super(NLS.bind(Messages.Unable_to_0_the_1_with_id_2_3, new Object[] { operation, instance.getClass().getName(), instance.getId(), reason }));
 	}
 }

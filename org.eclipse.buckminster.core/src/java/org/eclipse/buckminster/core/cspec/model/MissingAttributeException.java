@@ -14,21 +14,16 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingAttributeException extends LocalizedException
-{
+public class MissingAttributeException extends LocalizedException {
 	private static final long serialVersionUID = 7072912960847819828L;
 
-	public MissingAttributeException(String name, String target)
-	{
+	public MissingAttributeException(String name, String target) {
 		this(name, target, false);
 	}
 
-	public MissingAttributeException(String name, String target, boolean withVisibility)
-	{
+	public MissingAttributeException(String name, String target, boolean withVisibility) {
 
-		super(NLS.bind(Messages.CSpec_0_has_no_1_action_group_or_local_artifact_named_2, new Object[] { name,
-				withVisibility
-						? "public " //$NON-NLS-1$
-						: "", target })); //$NON-NLS-1$
+		super(NLS.bind(Messages.CSpec_0_has_no_1_action_group_or_local_artifact_named_2, new Object[] { name, withVisibility ? "public " //$NON-NLS-1$
+				: "", target })); //$NON-NLS-1$
 	}
 }

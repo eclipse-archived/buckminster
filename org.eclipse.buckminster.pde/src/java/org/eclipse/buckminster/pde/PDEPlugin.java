@@ -19,112 +19,94 @@ import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class PDEPlugin extends LogAwarePlugin implements IPDEConstants
-{
-	private static final HashSet<String> s_namesOfInterest = new HashSet<String>();
+public class PDEPlugin extends LogAwarePlugin implements IPDEConstants {
+	private static final HashSet<String> namesOfInterest = new HashSet<String>();
 
-	private static PDEPlugin s_plugin;
+	private static PDEPlugin plugin;
 
-	private static BundleContext s_context;
+	private static BundleContext context;
 
-	static
-	{
-		s_namesOfInterest.add(PLUGIN_FILE.toLowerCase());
-		s_namesOfInterest.add(FEATURE_FILE.toLowerCase());
-		s_namesOfInterest.add(SITE_FILE.toLowerCase());
-		s_namesOfInterest.add(FRAGMENT_FILE.toLowerCase());
-		s_namesOfInterest.add(BUILD_PROPERTIES_FILE.toLowerCase());
-		s_namesOfInterest.add(MANIFEST.toLowerCase());
+	static {
+		namesOfInterest.add(PLUGIN_FILE.toLowerCase());
+		namesOfInterest.add(FEATURE_FILE.toLowerCase());
+		namesOfInterest.add(SITE_FILE.toLowerCase());
+		namesOfInterest.add(FRAGMENT_FILE.toLowerCase());
+		namesOfInterest.add(BUILD_PROPERTIES_FILE.toLowerCase());
+		namesOfInterest.add(MANIFEST.toLowerCase());
 	}
 
-	public static BundleContext getContext()
-	{
-		return s_context;
+	public static BundleContext getContext() {
+		return context;
 	}
 
 	/**
 	 * Returns the shared instance.
 	 */
-	public static PDEPlugin getDefault()
-	{
-		return s_plugin;
+	public static PDEPlugin getDefault() {
+		return plugin;
 	}
 
-	public static Logger getLogger()
-	{
-		return s_plugin.getBundleLogger();
+	public static Logger getLogger() {
+		return plugin.getBundleLogger();
 	}
 
-	public static String getPluginId()
-	{
-		return s_plugin.getBundle().getSymbolicName();
+	public static String getPluginId() {
+		return plugin.getBundle().getSymbolicName();
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not found.
+	 * Returns the string from the plugin's resource bundle, or 'key' if not
+	 * found.
 	 */
-	public static String getResourceString(String key)
-	{
+	public static String getResourceString(String key) {
 		ResourceBundle bundle = PDEPlugin.getDefault().getResourceBundle();
-		try
-		{
-			return (bundle != null)
-					? bundle.getString(key)
-					: key;
-		}
-		catch(MissingResourceException e)
-		{
+		try {
+			return (bundle != null) ? bundle.getString(key) : key;
+		} catch (MissingResourceException e) {
 			return key;
 		}
 	}
 
-	private ResourceBundle m_resourceBundle;
+	private ResourceBundle resourceBundle;
 
 	/**
 	 * The constructor.
 	 */
-	public PDEPlugin()
-	{
+	public PDEPlugin() {
 		super();
-		s_plugin = this;
+		plugin = this;
 	}
 
 	/**
 	 * Returns the plugin's resource bundle,
 	 */
-	public ResourceBundle getResourceBundle()
-	{
-		try
-		{
-			if(m_resourceBundle == null)
-				m_resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.pde.PdePluginResources"); //$NON-NLS-1$
+	public ResourceBundle getResourceBundle() {
+		try {
+			if (resourceBundle == null)
+				resourceBundle = ResourceBundle.getBundle("org.eclipse.buckminster.pde.PdePluginResources"); //$NON-NLS-1$
+		} catch (MissingResourceException x) {
+			resourceBundle = null;
 		}
-		catch(MissingResourceException x)
-		{
-			m_resourceBundle = null;
-		}
-		return m_resourceBundle;
+		return resourceBundle;
 	}
 
 	/**
 	 * This method is called upon plug-in activation
 	 */
 	@Override
-	public void start(BundleContext context) throws Exception
-	{
-		s_context = context;
-		super.start(context);
+	public void start(BundleContext ctx) throws Exception {
+		context = ctx;
+		super.start(ctx);
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	@Override
-	public void stop(BundleContext context) throws Exception
-	{
-		super.stop(context);
-		s_context = null;
-		s_plugin = null;
-		m_resourceBundle = null;
+	public void stop(BundleContext ctx) throws Exception {
+		super.stop(ctx);
+		context = null;
+		plugin = null;
+		resourceBundle = null;
 	}
 }

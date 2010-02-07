@@ -32,46 +32,32 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<CSpec>
-{
-	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly,
-			IProgressMonitor monitor) throws CoreException
-	{
+public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<CSpec> {
+	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 2000);
 		IComponentReader reader = readerHandle[0];
-		try
-		{
+		try {
 			CSpecBuilder cspecBld = new CSpecBuilder();
-			if(reader instanceof ICatalogReader)
-			{
-				ICatalogReader catRdr = (ICatalogReader)reader;
-				String fileName = getMetadataFile(catRdr, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE,
-						MonitorUtils.subMonitor(monitor, 100));
+			if (reader instanceof ICatalogReader) {
+				ICatalogReader catRdr = (ICatalogReader) reader;
+				String fileName = getMetadataFile(catRdr, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE, MonitorUtils
+						.subMonitor(monitor, 100));
 				cspecBld.initFrom(catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100)));
-			}
-			else
-				cspecBld.initFrom(((IFileReader)reader).readFile(this, MonitorUtils.subMonitor(monitor, 1000)));
+			} else
+				cspecBld.initFrom(((IFileReader) reader).readFile(this, MonitorUtils.subMonitor(monitor, 1000)));
 
 			applyExtensions(cspecBld, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
 			return createNode(reader, cspecBld);
-		}
-		catch(FileNotFoundException e)
-		{
+		} catch (FileNotFoundException e) {
 			throw new MissingCSpecSourceException(reader.getProviderMatch());
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			monitor.done();
 		}
 	}
 
-	public CSpec consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public CSpec consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor) throws CoreException {
 		IParser<CSpec> cspecParser = CorePlugin.getDefault().getParserFactory().getCSpecParser(true);
 		return cspecParser.parse(streamName, stream);
 	}

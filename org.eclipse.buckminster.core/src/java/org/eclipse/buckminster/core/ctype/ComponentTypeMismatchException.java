@@ -14,13 +14,11 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class ComponentTypeMismatchException extends LocalizedException
-{
+public class ComponentTypeMismatchException extends LocalizedException {
 	private static final long serialVersionUID = 5479744816736527579L;
 
-	public ComponentTypeMismatchException(String componentName, String expectedType, String actualType)
-	{
-		super(NLS.bind(Messages.Component_type_mismatch_exception_for_component_0_Expected_1_but_actual_2,
-				new Object[] { componentName, expectedType, actualType }));
+	public ComponentTypeMismatchException(String componentName, String expectedType, String actualType) {
+		super(NLS.bind(Messages.Component_type_mismatch_exception_for_component_0_Expected_1_but_actual_2, new Object[] { componentName,
+				expectedType, actualType }));
 	}
 }

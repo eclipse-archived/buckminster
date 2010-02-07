@@ -17,29 +17,29 @@ import org.eclipse.buckminster.core.Messages;
  * @author Thomas Hallgren
  * 
  */
-public class UUIDUtil
-{
+public class UUIDUtil {
 	/**
-	 * Create an UUID from a byte array of length 16 that is the raw data for the UUID.
+	 * Create an UUID from a byte array of length 16 that is the raw data for
+	 * the UUID.
 	 * 
 	 * @param data
 	 *            The raw data for the UUID
 	 * @return The created UUID.
 	 */
-	public static UUID fromRawBytes(byte[] data)
-	{
+	public static UUID fromRawBytes(byte[] data) {
 		long msb = 0;
 		long lsb = 0;
 		assert data.length == 16;
-		for(int i = 0; i < 8; i++)
+		for (int i = 0; i < 8; i++)
 			msb = (msb << 8) | (data[i] & 0xff);
-		for(int i = 8; i < 16; i++)
+		for (int i = 8; i < 16; i++)
 			lsb = (lsb << 8) | (data[i] & 0xff);
 		return new UUID(msb, lsb);
 	}
 
 	/**
-	 * Static factory to retrieve a type 3 (name based) <tt>UUID</tt> based on the specified byte array.
+	 * Static factory to retrieve a type 3 (name based) <tt>UUID</tt> based on
+	 * the specified byte array.
 	 * 
 	 * @param name
 	 *            a byte array to be used to construct a <tt>UUID</tt>.
@@ -51,15 +51,11 @@ public class UUIDUtil
 	 * @return a <tt>UUID</tt> generated from the specified array.
 	 * @see UUID#nameUUIDFromBytes(byte[])
 	 */
-	public static UUID nameUUIDFromBytes(byte[] name, int offset, int len)
-	{
+	public static UUID nameUUIDFromBytes(byte[] name, int offset, int len) {
 		MessageDigest md;
-		try
-		{
+		try {
 			md = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
-		}
-		catch(NoSuchAlgorithmException nsae)
-		{
+		} catch (NoSuchAlgorithmException nsae) {
 			throw new InternalError(Messages.MD5_not_supported);
 		}
 		md.update(name, offset, len);

@@ -39,23 +39,19 @@ import org.eclipse.osgi.util.NLS;
  * @author Thomas Hallgren
  * 
  */
-public class DigestPolicy extends AbstractFetchPolicy
-{
-	static class BytesFromHexBuilder extends ByteArrayOutputStream
-	{
-		private final int m_byteCount;
+public class DigestPolicy extends AbstractFetchPolicy {
+	static class BytesFromHexBuilder extends ByteArrayOutputStream {
+		private final int byteCount;
 
-		public BytesFromHexBuilder(int digestLength)
-		{
-			m_byteCount = digestLength * 2;
+		public BytesFromHexBuilder(int digestLength) {
+			byteCount = digestLength * 2;
 		}
 
-		public synchronized byte[] getBytes() throws CoreException
-		{
-			if(m_byteCount > count)
-				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_not_fully_read_expected_0_got_1, String
-						.valueOf(m_byteCount), String.valueOf(count)));
-			return Hex.decode(buf, m_byteCount);
+		public synchronized byte[] getBytes() throws CoreException {
+			if (byteCount > count)
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_not_fully_read_expected_0_got_1, String.valueOf(byteCount), String
+						.valueOf(count)));
+			return Hex.decode(buf, byteCount);
 		}
 	}
 
@@ -63,113 +59,90 @@ public class DigestPolicy extends AbstractFetchPolicy
 
 	public static final int MAX_RETRIES = 3;
 
-	private final String m_algorithm;
+	private final String algorithm;
 
-	private final URL m_remoteDigest;
+	private final URL remoteDigest;
 
-	private final IConnectContext m_connectContext;
+	private final IConnectContext connectContext;
 
-	private final int m_digestLength;
+	private final int digestLength;
 
-	private final int m_maxDigestAge;
+	private final int maxDigestAge;
 
-	public DigestPolicy(ICache cache, URL remoteDigest, IConnectContext cctx, String algorithm, int maxDigestAge)
-			throws CoreException
-	{
+	public DigestPolicy(ICache cache, URL remoteDigest, IConnectContext cctx, String algorithm, int maxDigestAge) throws CoreException {
 		super(cache);
-		m_remoteDigest = remoteDigest;
-		m_algorithm = algorithm;
-		m_maxDigestAge = maxDigestAge;
-		m_connectContext = cctx;
-		try
-		{
-			m_digestLength = MessageDigest.getInstance(algorithm).getDigestLength();
-		}
-		catch(NoSuchAlgorithmException e)
-		{
+		this.remoteDigest = remoteDigest;
+		this.algorithm = algorithm;
+		this.maxDigestAge = maxDigestAge;
+		this.connectContext = cctx;
+		try {
+			this.digestLength = MessageDigest.getInstance(algorithm).getDigestLength();
+		} catch (NoSuchAlgorithmException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle,
-			IProgressMonitor monitor) throws CoreException, FileNotFoundException
-	{
+	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException {
 		byte[] localDigest;
-		byte[] remoteDigest = null;
+		byte[] remoteDgst = null;
 
-		MonitorUtils.begin(monitor, checkOnly
-				? 100
-				: 1000);
-		try
-		{
+		MonitorUtils.begin(monitor, checkOnly ? 100 : 1000);
+		try {
 			File localDigestFile = getLocalDigest(localFile);
-			if(localFile.exists())
-			{
+			if (localFile.exists()) {
 				boolean localDigestCalculated = false;
 				long digestTS = localDigestFile.lastModified();
-				if(digestTS != 0L)
-				{
+				if (digestTS != 0L) {
 					long digestAge = System.currentTimeMillis() - digestTS;
-					if(digestAge < m_maxDigestAge)
+					if (digestAge < maxDigestAge)
 						return false;
 					localDigest = readLocalDigest(localDigestFile);
-				}
-				else
-				{
-					// No local digest file exists. Calculate digest from the local file
+				} else {
+					// No local digest file exists. Calculate digest from the
+					// local file
 					//
 					localDigest = calculateDigest(localFile);
 					localDigestCalculated = true;
 				}
 
-				// The local digest is either calculated or too old to be "trusted". Let's read it
+				// The local digest is either calculated or too old to be
+				// "trusted". Let's read it
 				// from the remote source and verify that it hasn't changed
 				//
-				remoteDigest = readRemoteDigest();
-				if(Arrays.equals(remoteDigest, localDigest))
-				{
-					if(localDigestCalculated)
+				remoteDgst = readRemoteDigest();
+				if (Arrays.equals(remoteDgst, localDigest)) {
+					if (localDigestCalculated)
 						writeLocalDigest(localDigestFile, localDigest);
 					else
 						localDigestFile.setLastModified(System.currentTimeMillis());
 					return false;
 				}
 
-				if(checkOnly)
+				if (checkOnly)
 					return true;
-			}
-			else
-			{
-				if(checkOnly)
+			} else {
+				if (checkOnly)
 					return true;
 
-				remoteDigest = readRemoteDigest();
+				remoteDgst = readRemoteDigest();
 			}
 
 			MonitorUtils.worked(monitor, 100);
 			File tempFile = new File(localFile.getPath() + ".tmp"); //$NON-NLS-1$
 
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 800);
-			for(int idx = 0;; ++idx)
-			{
-				try
-				{
+			for (int idx = 0;; ++idx) {
+				try {
 					localDigest = readRemoteFile(remoteFile, tempFile, fiHandle, subMon);
-				}
-				catch(CoreException e)
-				{
+				} catch (CoreException e) {
 					tempFile.delete();
-					if(idx < MAX_RETRIES)
-					{
+					if (idx < MAX_RETRIES) {
 						Throwable cause = e.getStatus().getException();
-						if(cause instanceof ConnectException)
-						{
-							try
-							{
+						if (cause instanceof ConnectException) {
+							try {
 								Thread.sleep(3000);
-							}
-							catch(InterruptedException e1)
-							{
+							} catch (InterruptedException e1) {
 							}
 							subMon = MonitorUtils.subMonitor(monitor, 100 / (MAX_RETRIES - 1));
 							continue;
@@ -178,8 +151,7 @@ public class DigestPolicy extends AbstractFetchPolicy
 					throw e;
 				}
 
-				if(Arrays.equals(remoteDigest, localDigest))
-				{
+				if (Arrays.equals(remoteDgst, localDigest)) {
 					// File transfer was successful
 					//
 					safeRename(tempFile, localFile);
@@ -188,128 +160,98 @@ public class DigestPolicy extends AbstractFetchPolicy
 				}
 
 				tempFile.delete();
-				if(idx < MAX_RETRIES)
+				if (idx < MAX_RETRIES)
 					continue;
 
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.digest_mismatch_reading_0, remoteFile));
 			}
-		}
-		finally
-		{
+		} finally {
 			MonitorUtils.done(monitor);
 		}
 	}
 
-	protected byte[] calculateDigest(File content) throws CoreException
-	{
+	protected byte[] calculateDigest(File content) throws CoreException {
 		InputStream input = null;
 		MessageDigest md = getDigest();
-		try
-		{
+		try {
 			byte[] buf = new byte[8192];
 			int count;
 			input = new FileInputStream(content);
-			while((count = input.read(buf)) >= 0)
+			while ((count = input.read(buf)) >= 0)
 				md.update(buf, 0, count);
 			return md.digest();
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 	}
 
-	protected MessageDigest getDigest() throws CoreException
-	{
-		try
-		{
-			return MessageDigest.getInstance(m_algorithm);
-		}
-		catch(NoSuchAlgorithmException e)
-		{
+	protected MessageDigest getDigest() throws CoreException {
+		try {
+			return MessageDigest.getInstance(algorithm);
+		} catch (NoSuchAlgorithmException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	protected File getLocalDigest(File localFile)
-	{
-		return new File(localFile.getPath() + '.' + m_algorithm.toLowerCase());
+	protected File getLocalDigest(File localFile) {
+		return new File(localFile.getPath() + '.' + algorithm.toLowerCase());
 	}
 
-	protected byte[] readLocalDigest(File localDigestFile) throws CoreException
-	{
+	protected byte[] readLocalDigest(File localDigestFile) throws CoreException {
 		InputStream input = null;
-		try
-		{
+		try {
 			input = new FileInputStream(localDigestFile);
-			return Hex.readHex(localDigestFile.getPath(), input, m_digestLength);
-		}
-		catch(IOException e)
-		{
+			return Hex.readHex(localDigestFile.getPath(), input, digestLength);
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 		}
 	}
 
-	protected byte[] readRemoteDigest() throws CoreException, FileNotFoundException
-	{
-		FileReader reader = new FileReader(m_connectContext);
-		BytesFromHexBuilder digestByteBuilder = new BytesFromHexBuilder(m_digestLength);
-		reader.readInto(m_remoteDigest, digestByteBuilder, null);
+	protected byte[] readRemoteDigest() throws CoreException, FileNotFoundException {
+		FileReader reader = new FileReader(connectContext);
+		BytesFromHexBuilder digestByteBuilder = new BytesFromHexBuilder(digestLength);
+		reader.readInto(remoteDigest, digestByteBuilder, null);
 		return digestByteBuilder.getBytes();
 	}
 
-	protected byte[] readRemoteFile(URL url, File localFile, IFileInfo[] fiHandle, IProgressMonitor monitor)
-			throws CoreException, FileNotFoundException
-	{
+	protected byte[] readRemoteFile(URL url, File localFile, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException {
 		// Set up the file transfer
 		//
 		MessageDigest md = getDigest();
 		DigestOutputStream output = null;
-		try
-		{
+		try {
 			File parentFolder = localFile.getParentFile();
-			if(parentFolder != null)
+			if (parentFolder != null)
 				parentFolder.mkdirs();
 			output = new DigestOutputStream(new FileOutputStream(localFile), md);
-			FileReader retriever = new FileReader(m_connectContext);
+			FileReader retriever = new FileReader(connectContext);
 			retriever.readInto(url, output, monitor);
 			IFileInfo fi = retriever.getLastFileInfo();
 			saveLocalFileInfo(url, fi);
-			if(fiHandle != null)
+			if (fiHandle != null)
 				fiHandle[0] = fi;
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(output);
 		}
 		return md.digest();
 	}
 
-	protected void writeLocalDigest(File localDigestFile, byte[] localDigest) throws CoreException
-	{
+	protected void writeLocalDigest(File localDigestFile, byte[] localDigest) throws CoreException {
 		OutputStream output = null;
-		try
-		{
+		try {
 			File parentFolder = localDigestFile.getParentFile();
-			if(parentFolder != null)
+			if (parentFolder != null)
 				parentFolder.mkdirs();
 			output = new FileOutputStream(localDigestFile);
 			Hex.writeHex(localDigest, output);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(output);
 		}
 	}

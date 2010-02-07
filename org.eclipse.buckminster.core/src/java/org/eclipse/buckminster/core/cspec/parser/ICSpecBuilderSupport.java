@@ -9,7 +9,6 @@ package org.eclipse.buckminster.core.cspec.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 
-public interface ICSpecBuilderSupport
-{
+public interface ICSpecBuilderSupport {
 	public CSpecBuilder getCSpecBuilder();
 }

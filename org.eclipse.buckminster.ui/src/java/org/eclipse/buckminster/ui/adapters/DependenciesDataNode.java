@@ -14,16 +14,12 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.generic.model.tree.BasicTreeParentDataNode;
 import org.eclipse.buckminster.ui.Messages;
 
-public class DependenciesDataNode extends BasicTreeParentDataNode
-{
+public class DependenciesDataNode extends BasicTreeParentDataNode {
 
-	public DependenciesDataNode(Collection<ComponentRequest> dependencies)
-	{
+	public DependenciesDataNode(Collection<ComponentRequest> dependencies) {
 		super(Messages.dependencies);
-		for(ComponentRequest d : dependencies)
-		{
-			addChild(new ComponentReferenceDataNode(new ComponentReference(d.getViewName(), d,
-					ComponentReference.Mode.OUT)));
+		for (ComponentRequest d : dependencies) {
+			addChild(new ComponentReferenceDataNode(new ComponentReference(d.getViewName(), d, ComponentReference.Mode.OUT)));
 		}
 	}
 }

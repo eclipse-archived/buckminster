@@ -17,12 +17,12 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!--
+ * end-user-doc -->
  * 
  * @generated
  */
-public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
-{
+public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -30,40 +30,35 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * @generated
 	 */
 	@Deprecated
-	public static RmapPackage getPackage()
-	{
+	public static RmapPackage getPackage() {
 		return RmapPackage.eINSTANCE;
 	}
 
 	/**
-	 * Creates the default factory implementation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates the default factory implementation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static RmapFactory init()
-	{
-		try
-		{
-			RmapFactory theRmapFactory = (RmapFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/RMap-1.0");
-			if(theRmapFactory != null)
-			{
+	public static RmapFactory init() {
+		try {
+			RmapFactory theRmapFactory = (RmapFactory) EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/RMap-1.0");
+			if (theRmapFactory != null) {
 				return theRmapFactory;
 			}
-		}
-		catch(Exception exception)
-		{
+		} catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new RmapFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Creates an instance of the factory. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public RmapFactoryImpl()
-	{
+	public RmapFactoryImpl() {
 		super();
 	}
 
@@ -73,32 +68,30 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * @generated
 	 */
 	@Override
-	public EObject create(EClass eClass)
-	{
-		switch(eClass.getClassifierID())
-		{
-		case RmapPackage.REDIRECT:
-			return createRedirect();
-		case RmapPackage.LOCATOR:
-			return createLocator();
-		case RmapPackage.SEARCH_PATH:
-			return createSearchPath();
-		case RmapPackage.RESOURCE_MAP:
-			return createResourceMap();
-		case RmapPackage.PROVIDER:
-			return createProvider();
-		case RmapPackage.TRANSFORM:
-			return createTransform();
-		case RmapPackage.VERSION_CONVERTER:
-			return createVersionConverter();
-		case RmapPackage.DOCUMENT_ROOT:
-			return createDocumentRoot();
-		case RmapPackage.URI_MATCHER:
-			return createURIMatcher();
-		case RmapPackage.PROPERTIES:
-			return createProperties();
-		default:
-			throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+	public EObject create(EClass eClass) {
+		switch (eClass.getClassifierID()) {
+			case RmapPackage.REDIRECT:
+				return createRedirect();
+			case RmapPackage.LOCATOR:
+				return createLocator();
+			case RmapPackage.SEARCH_PATH:
+				return createSearchPath();
+			case RmapPackage.RESOURCE_MAP:
+				return createResourceMap();
+			case RmapPackage.PROVIDER:
+				return createProvider();
+			case RmapPackage.TRANSFORM:
+				return createTransform();
+			case RmapPackage.VERSION_CONVERTER:
+				return createVersionConverter();
+			case RmapPackage.DOCUMENT_ROOT:
+				return createDocumentRoot();
+			case RmapPackage.URI_MATCHER:
+				return createURIMatcher();
+			case RmapPackage.PROPERTIES:
+				return createProperties();
+			default:
+				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
 	}
 
@@ -107,8 +100,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public EObject createDocumentRoot()
-	{
+	public EObject createDocumentRoot() {
 		EObject documentRoot = super.create(RmapPackage.Literals.DOCUMENT_ROOT);
 		return documentRoot;
 	}
@@ -118,8 +110,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public Locator createLocator()
-	{
+	public Locator createLocator() {
 		LocatorImpl locator = new LocatorImpl();
 		return locator;
 	}
@@ -129,8 +120,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public Properties createProperties()
-	{
+	public Properties createProperties() {
 		PropertiesImpl properties = new PropertiesImpl();
 		return properties;
 	}
@@ -140,8 +130,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public Provider createProvider()
-	{
+	public Provider createProvider() {
 		ProviderImpl provider = new ProviderImpl();
 		return provider;
 	}
@@ -151,8 +140,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public Redirect createRedirect()
-	{
+	public Redirect createRedirect() {
 		RedirectImpl redirect = new RedirectImpl();
 		return redirect;
 	}
@@ -162,8 +150,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public ResourceMap createResourceMap()
-	{
+	public ResourceMap createResourceMap() {
 		ResourceMapImpl resourceMap = new ResourceMapImpl();
 		return resourceMap;
 	}
@@ -173,8 +160,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public SearchPath createSearchPath()
-	{
+	public SearchPath createSearchPath() {
 		SearchPathImpl searchPath = new SearchPathImpl();
 		return searchPath;
 	}
@@ -184,8 +170,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public Transform createTransform()
-	{
+	public Transform createTransform() {
 		TransformImpl transform = new TransformImpl();
 		return transform;
 	}
@@ -195,8 +180,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public URIMatcher createURIMatcher()
-	{
+	public URIMatcher createURIMatcher() {
 		URIMatcherImpl uriMatcher = new URIMatcherImpl();
 		return uriMatcher;
 	}
@@ -206,8 +190,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public VersionConverter createVersionConverter()
-	{
+	public VersionConverter createVersionConverter() {
 		VersionConverterImpl versionConverter = new VersionConverterImpl();
 		return versionConverter;
 	}
@@ -217,9 +200,8 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory
 	 * 
 	 * @generated
 	 */
-	public RmapPackage getRmapPackage()
-	{
-		return (RmapPackage)getEPackage();
+	public RmapPackage getRmapPackage() {
+		return (RmapPackage) getEPackage();
 	}
 
 } // RmapFactoryImpl

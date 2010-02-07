@@ -49,51 +49,46 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractComponentType extends AbstractExtension implements IComponentType
-{
-	static class MetaFile implements IMetaFile
-	{
-		private final IPath[] m_aliases;
+public abstract class AbstractComponentType extends AbstractExtension implements IComponentType {
+	static class MetaFile implements IMetaFile {
+		private final IPath[] aliases;
 
-		private final boolean m_optional;
+		private final boolean optional;
 
-		private final IPath m_path;
+		private final IPath path;
 
-		public MetaFile(IPath path, boolean optional, IPath[] aliases)
-		{
-			m_path = path;
-			m_optional = optional;
-			m_aliases = aliases;
+		public MetaFile(IPath path, boolean optional, IPath[] aliases) {
+			this.path = path;
+			this.optional = optional;
+			this.aliases = aliases;
 		}
 
-		public IPath[] getAliases()
-		{
-			return m_aliases;
+		public IPath[] getAliases() {
+			return aliases;
 		}
 
-		public IPath getPath()
-		{
-			return m_path;
+		public IPath getPath() {
+			return path;
 		}
 
-		public boolean isOptional()
-		{
-			return m_optional;
+		public boolean isOptional() {
+			return optional;
 		}
 
 	}
 
-	private static final IMetaFile[] s_noMetaFiles = new IMetaFile[0];
+	private static final IMetaFile[] noMetaFiles = new IMetaFile[0];
 
 	/**
-	 * Helper methods used by component types that manifest themselfs as one single jar file.
+	 * Helper methods used by component types that manifest themselfs as one
+	 * single jar file.
 	 * 
 	 * @param cspec
-	 * @return An export where other jars that this component depends on can be added
+	 * @return An export where other jars that this component depends on can be
+	 *         added
 	 */
-	public static GroupBuilder addSelfAsJarArtifactGroups(CSpecBuilder cspec)
-			throws PrerequisiteAlreadyDefinedException, AttributeAlreadyDefinedException
-	{
+	public static GroupBuilder addSelfAsJarArtifactGroups(CSpecBuilder cspec) throws PrerequisiteAlreadyDefinedException,
+			AttributeAlreadyDefinedException {
 		GroupBuilder archives = cspec.createGroupBuilder();
 		archives.setName(WellKnownExports.JAVA_BINARY_ARCHIVES);
 		archives.setPublic(true);
@@ -108,74 +103,66 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		return generic;
 	}
 
-	public static String[] getComponentTypeIDs(boolean includeEmptyEntry)
-	{
+	public static String[] getComponentTypeIDs(boolean includeEmptyEntry) {
 		IConfigurationElement[] elems = getElements();
 		int idx = elems.length;
 		ArrayList<String> names = new ArrayList<String>(idx + 1);
-		if(includeEmptyEntry)
+		if (includeEmptyEntry)
 			names.add(""); //$NON-NLS-1$
-		while(--idx >= 0)
+		while (--idx >= 0)
 			names.add(elems[idx].getAttribute("id")); //$NON-NLS-1$
 		Collections.sort(names);
 		return names.toArray(new String[names.size()]);
 	}
 
-	public static IComponentType[] getComponentTypes() throws CoreException
-	{
+	public static IComponentType[] getComponentTypes() throws CoreException {
 		CorePlugin plugin = CorePlugin.getDefault();
 		String[] cids = getComponentTypeIDs(false);
 		int idx = cids.length;
 		IComponentType[] ctypes = new IComponentType[idx];
-		while(--idx >= 0)
+		while (--idx >= 0)
 			ctypes[idx] = plugin.getComponentType(cids[idx]);
 		return ctypes;
 	}
 
-	private static IConfigurationElement[] getElements()
-	{
+	private static IConfigurationElement[] getElements() {
 		IExtensionRegistry exReg = Platform.getExtensionRegistry();
 		return exReg.getConfigurationElementsFor(CorePlugin.COMPONENT_TYPE_POINT);
 	}
 
-	private Pattern m_desiredNamePattern;
+	private Pattern desiredNamePattern;
 
-	private IMetaFile[] m_metaFiles = s_noMetaFiles;
+	private IMetaFile[] metaFiles = noMetaFiles;
 
-	private String m_nameSubstitution;
+	private String nameSubstitution;
 
-	private IPath m_relativeLocation;
+	private IPath relativeLocation;
 
-	private Pattern m_substituteNamePattern;
+	private Pattern substituteNamePattern;
 
-	public Version getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
-	{
+	public Version getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException {
 		BOMNode node = getResolution(rInfo, true, monitor);
 		return node.getResolution().getComponentIdentifier().getVersion();
 	}
 
-	public Pattern getDesiredNamePattern()
-	{
-		return m_desiredNamePattern;
+	public Pattern getDesiredNamePattern() {
+		return desiredNamePattern;
 	}
 
-	public IMetaFile[] getMetaFiles()
-	{
-		return m_metaFiles;
+	public IMetaFile[] getMetaFiles() {
+		return metaFiles;
 	}
 
-	public String getNameSubstitution()
-	{
-		return m_nameSubstitution;
+	public String getNameSubstitution() {
+		return nameSubstitution;
 	}
 
-	public String getProjectName(String componentName) throws CoreException
-	{
-		if(componentName == null)
+	public String getProjectName(String componentName) throws CoreException {
+		if (componentName == null)
 			return null;
 
 		Pattern desiredMatch = getDesiredNamePattern();
-		if(desiredMatch == null || desiredMatch.matcher(componentName).find())
+		if (desiredMatch == null || desiredMatch.matcher(componentName).find())
 			//
 			// We have a component type but no desire to change the name
 			//
@@ -184,174 +171,136 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		Pattern repFrom = getSubstituteNamePattern();
 		String repTo = getNameSubstitution();
 
-		if(repFrom == null || repTo == null)
-			throw BuckminsterException.fromMessage(NLS.bind(
-					Messages.Component_type_0_defines_desiredNamePattern_but_no_substitution, getId()));
+		if (repFrom == null || repTo == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Component_type_0_defines_desiredNamePattern_but_no_substitution, getId()));
 
 		Matcher matcher = repFrom.matcher(componentName);
-		if(matcher.matches())
-		{
+		if (matcher.matches()) {
 			String repl = matcher.replaceAll(repTo).trim();
-			if(repl.length() > 0)
+			if (repl.length() > 0)
 				componentName = repl;
 		}
 		return componentName;
 	}
 
-	public IPath getRelativeLocation()
-	{
-		return m_relativeLocation;
+	public IPath getRelativeLocation() {
+		return relativeLocation;
 	}
 
-	public final BOMNode getResolution(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException
-	{
+	public final BOMNode getResolution(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException {
 		return getResolution(rInfo, false, monitor);
 	}
 
-	public Pattern getSubstituteNamePattern()
-	{
-		return m_substituteNamePattern;
+	public Pattern getSubstituteNamePattern() {
+		return substituteNamePattern;
 	}
 
-	public VersionRange getTypeSpecificDesignator(VersionRange designator)
-	{
+	public VersionRange getTypeSpecificDesignator(VersionRange designator) {
 		return designator;
 	}
 
-	public boolean hasAllRequiredMetaFiles(IPath path)
-	{
-		for(IMetaFile metaFile : getMetaFiles())
-		{
-			if(metaFile.isOptional() || path.append(metaFile.getPath()).toFile().exists())
+	public boolean hasAllRequiredMetaFiles(IPath path) {
+		for (IMetaFile metaFile : getMetaFiles()) {
+			if (metaFile.isOptional() || path.append(metaFile.getPath()).toFile().exists())
 				continue;
 
 			boolean found = false;
-			for(IPath alias : metaFile.getAliases())
-			{
-				if(path.append(alias).toFile().exists())
-				{
+			for (IPath alias : metaFile.getAliases()) {
+				if (path.append(alias).toFile().exists()) {
 					found = true;
 					break;
 				}
 			}
-			if(!found)
+			if (!found)
 				return false;
 		}
 		return true;
 	}
 
-	public boolean isMetaFileBased()
-	{
-		for(IMetaFile metaFile : getMetaFiles())
-			if(!metaFile.isOptional())
+	public boolean isMetaFileBased() {
+		for (IMetaFile metaFile : getMetaFiles())
+			if (!metaFile.isOptional())
 				return true;
 		return false;
 	}
 
 	@Override
-	public void setExtensionParameter(String key, String value) throws CoreException
-	{
-		if("relativeLocation".equals(key)) //$NON-NLS-1$
-			m_relativeLocation = value == null
-					? null
-					: Path.fromPortableString(value);
-		else if("desiredNamePattern".equals(key)) //$NON-NLS-1$
-			m_desiredNamePattern = value == null
-					? null
-					: Pattern.compile(value);
-		else if("substituteNamePattern".equals(key)) //$NON-NLS-1$
-			m_substituteNamePattern = value == null
-					? null
-					: Pattern.compile(value);
-		else if("nameSubstitution".equals(key)) //$NON-NLS-1$
-			m_nameSubstitution = value;
+	public void setExtensionParameter(String key, String value) throws CoreException {
+		if ("relativeLocation".equals(key)) //$NON-NLS-1$
+			relativeLocation = value == null ? null : Path.fromPortableString(value);
+		else if ("desiredNamePattern".equals(key)) //$NON-NLS-1$
+			desiredNamePattern = value == null ? null : Pattern.compile(value);
+		else if ("substituteNamePattern".equals(key)) //$NON-NLS-1$
+			substituteNamePattern = value == null ? null : Pattern.compile(value);
+		else if ("nameSubstitution".equals(key)) //$NON-NLS-1$
+			nameSubstitution = value;
 		else
 			super.setExtensionParameter(key, value);
 	}
 
 	@Override
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-			throws CoreException
-	{
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		super.setInitializationData(config, propertyName, data);
 
 		String tmp = config.getAttribute("relativeLocation"); //$NON-NLS-1$
-		m_relativeLocation = tmp == null
-				? null
-				: Path.fromPortableString(tmp);
+		this.relativeLocation = tmp == null ? null : Path.fromPortableString(tmp);
 		tmp = config.getAttribute("desiredNamePattern"); //$NON-NLS-1$
-		m_desiredNamePattern = tmp == null
-				? null
-				: Pattern.compile(tmp);
+		this.desiredNamePattern = tmp == null ? null : Pattern.compile(tmp);
 		tmp = config.getAttribute("substituteNamePattern"); //$NON-NLS-1$
-		m_substituteNamePattern = tmp == null
-				? null
-				: Pattern.compile(tmp);
-		m_nameSubstitution = config.getAttribute("nameSubstitution"); //$NON-NLS-1$
+		this.substituteNamePattern = tmp == null ? null : Pattern.compile(tmp);
+		this.nameSubstitution = config.getAttribute("nameSubstitution"); //$NON-NLS-1$
 
-		ArrayList<IMetaFile> metaFiles = null;
-		for(IConfigurationElement metaFile : config.getChildren("metaFile")) //$NON-NLS-1$
+		ArrayList<IMetaFile> metaFileList = null;
+		for (IConfigurationElement metaFile : config.getChildren("metaFile")) //$NON-NLS-1$
 		{
 			tmp = metaFile.getAttribute("path"); //$NON-NLS-1$
-			if(tmp != null)
-			{
+			if (tmp != null) {
 				tmp = tmp.trim();
-				if(tmp.length() == 0)
+				if (tmp.length() == 0)
 					tmp = null;
 			}
-			if(tmp == null)
+			if (tmp == null)
 				continue;
 
 			IPath path = Path.fromPortableString(tmp);
 			boolean optional = "true".equalsIgnoreCase(metaFile.getAttribute("optional")); //$NON-NLS-1$ //$NON-NLS-2$
 			List<IPath> aliasesBld = null;
-			for(String alias : TextUtils.split(metaFile.getAttribute("aliases"), ",")) //$NON-NLS-1$ //$NON-NLS-2$
+			for (String alias : TextUtils.split(metaFile.getAttribute("aliases"), ",")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
 				alias = alias.trim();
-				if(alias.length() > 0)
-				{
-					if(aliasesBld == null)
+				if (alias.length() > 0) {
+					if (aliasesBld == null)
 						aliasesBld = new ArrayList<IPath>();
 					aliasesBld.add(new Path(alias));
 				}
 			}
-			IPath[] aliases = (aliasesBld == null)
-					? Trivial.EMPTY_PATH_ARRAY
-					: aliasesBld.toArray(new IPath[aliasesBld.size()]);
-			if(metaFiles == null)
-				metaFiles = new ArrayList<IMetaFile>();
-			metaFiles.add(new MetaFile(path, optional, aliases));
+			IPath[] aliases = (aliasesBld == null) ? Trivial.EMPTY_PATH_ARRAY : aliasesBld.toArray(new IPath[aliasesBld.size()]);
+			if (metaFileList == null)
+				metaFileList = new ArrayList<IMetaFile>();
+			metaFileList.add(new MetaFile(path, optional, aliases));
 		}
-		m_metaFiles = (metaFiles == null)
-				? s_noMetaFiles
-				: metaFiles.toArray(new IMetaFile[metaFiles.size()]);
+		this.metaFiles = (metaFileList == null) ? noMetaFiles : metaFileList.toArray(new IMetaFile[metaFileList.size()]);
 	}
 
-	protected BOMNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor)
-			throws CoreException
-	{
+	protected BOMNode getResolution(ProviderMatch rInfo, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IReaderType readerType = rInfo.getReaderType();
-		if(readerType instanceof P2ReaderType)
-		{
+		if (readerType instanceof P2ReaderType) {
 			// Component type etc. is given by the IU
-			return ((P2ReaderType)readerType).getResolution(rInfo, monitor);
+			return ((P2ReaderType) readerType).getResolution(rInfo, monitor);
 		}
 
 		monitor.beginTask(null, 2000);
 		IComponentReader[] reader = new IComponentReader[1];
-		try
-		{
+		try {
 			reader[0] = rInfo.getReader(MonitorUtils.subMonitor(monitor, 200));
 			ComponentRequest request = rInfo.getNodeQuery().getComponentRequest();
 			String componentType = request.getComponentTypeID();
-			if(componentType != null && !getId().equals(componentType))
+			if (componentType != null && !getId().equals(componentType))
 				throw new ComponentTypeMismatchException(request.getName(), componentType, getId());
 
 			IResolutionBuilder builder = getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 800));
 			return builder.build(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 1000));
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(reader[0]);
 		}
 	}

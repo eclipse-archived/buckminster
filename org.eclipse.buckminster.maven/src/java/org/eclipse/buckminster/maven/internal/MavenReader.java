@@ -32,113 +32,92 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
 /**
- * The URL used by the MavenReader denotes the group directory within one specific repository. The format must be <br/>
- * <code>[&lt;schema&gt;][//&lt;authority&gt;]&lt;path to group&gt;#&lt;artifact&gt;</code><br/>
- * The ability to search trhough multiple repositories is obtained by using the <code>SearchPath</code> or the
- * <code>ResourceMap</code>. The
+ * The URL used by the MavenReader denotes the group directory within one
+ * specific repository. The format must be <br/>
+ * <code>[&lt;schema&gt;][//&lt;authority&gt;]&lt;path to group&gt;#&lt;artifact&gt;</code>
+ * <br/>
+ * The ability to search trhough multiple repositories is obtained by using the
+ * <code>SearchPath</code> or the <code>ResourceMap</code>. The
  * 
  * @author Thomas Hallgren
  */
-public class MavenReader extends URLFileReader implements ILocationResolver
-{
-	private final MapEntry m_mapEntry;
+public class MavenReader extends URLFileReader implements ILocationResolver {
+	private final MapEntry mapEntry;
 
-	public MavenReader(MavenReaderType readerType, ProviderMatch rInfo) throws CoreException
-	{
+	public MavenReader(MavenReaderType readerType, ProviderMatch rInfo) throws CoreException {
 		super(readerType, rInfo, readerType.getURI(rInfo));
-		m_mapEntry = MavenReaderType.getGroupAndArtifact(rInfo.getProvider(),
-				rInfo.getNodeQuery().getComponentRequest());
+		mapEntry = MavenReaderType.getGroupAndArtifact(rInfo.getProvider(), rInfo.getNodeQuery().getComponentRequest());
 	}
 
 	@Override
-	public URL getURL() throws CoreException
-	{
-		return ((MavenReaderType)getReaderType()).getArtifactURL(getURI(), m_mapEntry, getVersionMatch());
+	public URL getURL() throws CoreException {
+		return ((MavenReaderType) getReaderType()).getArtifactURL(getURI(), mapEntry, getVersionMatch());
 	}
 
 	@Override
-	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException
-	{
-		IPath artifactPath = ((MavenReaderType)getReaderType()).getArtifactPath(m_mapEntry, getVersionMatch());
-		return ((MavenReaderType)getReaderType()).getLocalCache().openFile(getURI().toURL(), getConnectContext(),
-				artifactPath, monitor);
+	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException {
+		IPath artifactPath = ((MavenReaderType) getReaderType()).getArtifactPath(mapEntry, getVersionMatch());
+		return ((MavenReaderType) getReaderType()).getLocalCache().openFile(getURI().toURL(), getConnectContext(), artifactPath, monitor);
 	}
 
-	Document getPOMDocument(IProgressMonitor monitor) throws CoreException
-	{
-		MavenReaderType rt = (MavenReaderType)getReaderType();
+	Document getPOMDocument(IProgressMonitor monitor) throws CoreException {
+		MavenReaderType rt = (MavenReaderType) getReaderType();
 		VersionMatch vs = getVersionMatch();
-		IPath pomPath = rt.getPomPath(m_mapEntry, vs);
-		return getPOMDocument(m_mapEntry, vs, pomPath, monitor);
+		IPath pomPath = rt.getPomPath(mapEntry, vs);
+		return getPOMDocument(mapEntry, vs, pomPath, monitor);
 	}
 
-	Document getPOMDocument(MapEntry entry, VersionMatch vs, IPath pomPath, IProgressMonitor monitor)
-			throws CoreException
-	{
-		MavenReaderType rt = (MavenReaderType)getReaderType();
+	Document getPOMDocument(MapEntry entry, VersionMatch vs, IPath pomPath, IProgressMonitor monitor) throws CoreException {
+		MavenReaderType rt = (MavenReaderType) getReaderType();
 		URI repoURI = getURI();
 		InputStream input = null;
 		monitor.beginTask(null, 2000);
-		try
-		{
+		try {
 			URL repoURL = repoURI.toURL();
-			input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath,
-					MonitorUtils.subMonitor(monitor, 1000));
+			input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			String repoPath = repoURL.getPath();
-			if(!repoPath.endsWith("/")) //$NON-NLS-1$
+			if (!repoPath.endsWith("/")) //$NON-NLS-1$
 				repoPath += "/"; //$NON-NLS-1$
 			repoPath += pomPath;
-			try
-			{
+			try {
 				InputSource source = new InputSource(new BufferedInputStream(input));
-				source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(),
-						repoURI.getFragment()).toString());
+				source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(), repoURI.getFragment())
+						.toString());
 				return builder.parse(source);
-			}
-			catch(SAXParseException e)
-			{
+			} catch (SAXParseException e) {
 				String msg = e.getMessage();
-				if(msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
+				if (msg == null || !msg.contains("UTF-8")) //$NON-NLS-1$
 					throw e;
 
 				IOUtils.close(input);
-				input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath,
-						MonitorUtils.subMonitor(monitor, 1000));
+				input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
 				InputSource source = new InputSource(new BufferedInputStream(input));
-				source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(),
-						repoURI.getFragment()).toString());
+				source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(), repoURI.getFragment())
+						.toString());
 				source.setEncoding("ISO-8859-1"); //$NON-NLS-1$
 				builder.reset();
 				return builder.parse(source);
 			}
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			// This is OK, we don't have a pom file.
 			//
 			return null;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 			MonitorUtils.worked(monitor, 1000);
 			monitor.done();
 		}
 	}
 
-	VersionMatch getVersionMatch() throws CoreException
-	{
+	VersionMatch getVersionMatch() throws CoreException {
 		return getProviderMatch().getVersionMatch();
 	}
 
-	void setPackaging(String packaging)
-	{
-		((MavenReaderType)getReaderType()).setPackaging(getProviderMatch(), packaging);
+	void setPackaging(String packaging) {
+		((MavenReaderType) getReaderType()).setPackaging(getProviderMatch(), packaging);
 	}
 }

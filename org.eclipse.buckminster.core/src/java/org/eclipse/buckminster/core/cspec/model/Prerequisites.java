@@ -10,42 +10,37 @@ package org.eclipse.buckminster.core.cspec.model;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisitesBuilder;
 
 /**
- * The special group that maintains the action prerequisites. It doesn't have a name, it does have an alias and its tag
- * is different.
+ * The special group that maintains the action prerequisites. It doesn't have a
+ * name, it does have an alias and its tag is different.
  * 
  * @author Thomas Hallgren
  * 
  */
-public class Prerequisites extends Group
-{
+public class Prerequisites extends Group {
 	@SuppressWarnings("hiding")
 	public static final String TAG = "prerequisites"; //$NON-NLS-1$
 
 	public static final String ATTR_ALIAS = "alias"; //$NON-NLS-1$
 
-	private final Action m_owner;
+	private final Action owner;
 
-	public Prerequisites(Action owner, PrerequisitesBuilder builder)
-	{
+	public Prerequisites(Action owner, PrerequisitesBuilder builder) {
 		super(builder);
-		m_owner = owner;
+		this.owner = owner;
 	}
 
 	@Override
-	public String getDefaultTag()
-	{
+	public String getDefaultTag() {
 		return TAG;
 	}
 
 	@Override
-	public String getNameAttributeName()
-	{
+	public String getNameAttributeName() {
 		return ATTR_ALIAS;
 	}
 
 	@Override
-	public String getQualifiedName()
-	{
-		return getCSpec().getName() + '#' + m_owner.getName() + "_pqs"; //$NON-NLS-1$
+	public String getQualifiedName() {
+		return getCSpec().getName() + '#' + owner.getName() + "_pqs"; //$NON-NLS-1$
 	}
 }

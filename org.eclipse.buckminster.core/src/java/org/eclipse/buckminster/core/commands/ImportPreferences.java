@@ -28,16 +28,13 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class ImportPreferences extends AbstractPreferencesCommand
-{
+public class ImportPreferences extends AbstractPreferencesCommand {
 	@Override
-	protected int internalRun(IProgressMonitor monitor) throws Exception
-	{
+	protected int internalRun(IProgressMonitor monitor) throws Exception {
 		InputStream input = null;
 		File prefsFile = this.getFile();
-		try
-		{
-			if(prefsFile == null)
+		try {
+			if (prefsFile == null)
 				input = System.in;
 			else
 				input = new BufferedInputStream(new FileInputStream(prefsFile));
@@ -46,14 +43,10 @@ public class ImportPreferences extends AbstractPreferencesCommand
 			IExportedPreferences prefs = prefService.readPreferences(input);
 			prefService.applyPreferences(prefs, this.getFilter());
 			return 0;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw new SimpleErrorExitException(NLS.bind(Messages.ImportPreferences_Unable_to_open_file_0, prefsFile));
-		}
-		finally
-		{
-			if(prefsFile != null)
+		} finally {
+			if (prefsFile != null)
 				IOUtils.close(input);
 		}
 	}

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.buckminster.ui.dependency.visualizer.controls.listener;
 
-public enum ViewerSettingType
-{
+public enum ViewerSettingType {
 	PATH_HIGHLIGHTING, FILTER_ADDED, FILTER_REMOVED, LAYOUT_CHANGED;
 }

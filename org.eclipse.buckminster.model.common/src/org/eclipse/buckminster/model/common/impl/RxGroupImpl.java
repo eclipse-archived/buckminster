@@ -22,23 +22,27 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
- * <!-- begin-user-doc --> An implementation of the model object ' <em><b>Rx Group</b></em>'. <!-- end-user-doc -->
+ * <!-- begin-user-doc --> An implementation of the model object '
+ * <em><b>Rx Group</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxPartsGroup <em>Rx Parts Group</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxPart <em>Rx Part</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxPartsGroup
+ * <em>Rx Parts Group</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxPart
+ * <em>Rx Part</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
-public class RxGroupImpl extends RxPartImpl implements RxGroup
-{
+public class RxGroupImpl extends RxPartImpl implements RxGroup {
 	/**
-	 * The cached value of the '{@link #getRxPartsGroup() <em>Rx Parts Group</em>}' attribute list.
-	 * <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRxPartsGroup()
+	 * <em>Rx Parts Group</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
 	 * @see #getRxPartsGroup()
 	 * @generated
 	 * @ordered
@@ -47,24 +51,25 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	protected RxGroupImpl()
-	{
+	protected RxGroupImpl() {
 		super();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType)
-	{
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
-				if (coreType) return getRxPartsGroup();
-				return ((FeatureMap.Internal)getRxPartsGroup()).getWrapper();
+				if (coreType)
+					return getRxPartsGroup();
+				return ((FeatureMap.Internal) getRxPartsGroup()).getWrapper();
 			case CommonPackage.RX_GROUP__RX_PART:
 				return getRxPart();
 		}
@@ -73,27 +78,27 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
-	{
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
-				return ((InternalEList<?>)getRxPartsGroup()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getRxPartsGroup()).basicRemove(otherEnd, msgs);
 			case CommonPackage.RX_GROUP__RX_PART:
-				return ((InternalEList<?>)getRxPart()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getRxPart()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public boolean eIsSet(int featureID)
-	{
+	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
 				return rxPartsGroup != null && !rxPartsGroup.isEmpty();
@@ -105,15 +110,14 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public void eSet(int featureID, Object newValue)
-	{
+	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
-				((FeatureMap.Internal)getRxPartsGroup()).set(newValue);
+				((FeatureMap.Internal) getRxPartsGroup()).set(newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -121,11 +125,11 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	public void eUnset(int featureID)
-	{
+	public void eUnset(int featureID) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
 				getRxPartsGroup().clear();
@@ -136,38 +140,31 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public EList<RxPart> getRxPart()
-	{
+	public EList<RxPart> getRxPart() {
 		return getRxPartsGroup().list(CommonPackage.Literals.RX_GROUP__RX_PART);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public FeatureMap getRxPartsGroup()
-	{
+	public FeatureMap getRxPartsGroup() {
 		if (rxPartsGroup == null) {
 			rxPartsGroup = new BasicFeatureMap(this, CommonPackage.RX_GROUP__RX_PARTS_GROUP);
 		}
 		return rxPartsGroup;
 	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated NOT
-	 */
-	public String toStringGen()
-	{
-		return null;
-	}
-
 	@Override
-	public void toString(StringBuilder result)
-	{
-		if (eIsProxy()) { result.append(super.toString()); return; }
+	public void toString(StringBuilder result) {
+		if (eIsProxy()) {
+			result.append(super.toString());
+			return;
+		}
 
 		result.append(" (rxPartsGroup: ");
 		result.append(rxPartsGroup);
@@ -176,11 +173,21 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	@Override
+	public String toStringGen() {
+		return null;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
-	protected EClass eStaticClass()
-	{
+	protected EClass eStaticClass() {
 		return CommonPackage.Literals.RX_GROUP;
 	}
 

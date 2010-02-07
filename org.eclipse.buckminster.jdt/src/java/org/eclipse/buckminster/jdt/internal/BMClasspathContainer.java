@@ -29,77 +29,69 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 
-public class BMClasspathContainer implements IClasspathContainer
-{
+public class BMClasspathContainer implements IClasspathContainer {
 	public static final IPath PATH = new Path(JdtPlugin.CLASSPATH_CONTAINER_ID);
 
-	private final IProject m_project;
+	private final IProject project;
 
-	private final IClasspathEntry[] m_entries;
+	private final IClasspathEntry[] entries;
 
-	public BMClasspathContainer(IProject project, String topTarget) throws CoreException
-	{
-		m_project = project;
+	public BMClasspathContainer(IProject project, String topTarget) throws CoreException {
+		this.project = project;
 		ArrayList<IClasspathEntry> cpes = new ArrayList<IClasspathEntry>();
 		CSpec cspec = WorkspaceInfo.getCSpec(project);
-		if(cspec != null)
+		if (cspec != null)
 			this.addNodeToClassPath(cspec, cpes, new ModelCache(), new HashSet<ComponentIdentifier>(), 0);
-		m_entries = cpes.toArray(new IClasspathEntry[cpes.size()]);
+		this.entries = cpes.toArray(new IClasspathEntry[cpes.size()]);
 	}
 
 	/**
-	 * Checks wether this container has the exact same entries as cp. The entries are compared for equality but not
-	 * resolved. The order of the entries is significant.
+	 * Checks wether this container has the exact same entries as cp. The
+	 * entries are compared for equality but not resolved. The order of the
+	 * entries is significant.
 	 * 
 	 * @param cp
 	 *            The container to compare with.
 	 * @return true if the two containers have the exact same classpath.
 	 */
 	@Override
-	public boolean equals(Object o)
-	{
-		if(o == this)
+	public boolean equals(Object o) {
+		if (o == this)
 			return true;
 
-		if(!(o instanceof BMClasspathContainer))
+		if (!(o instanceof BMClasspathContainer))
 			return false;
-		BMClasspathContainer that = (BMClasspathContainer)o;
+		BMClasspathContainer that = (BMClasspathContainer) o;
 
-		if(!Arrays.equals(this.m_entries, that.m_entries))
+		if (!Arrays.equals(this.entries, that.entries))
 			return false;
 
 		return true;
 	}
 
-	public final IClasspathEntry[] getClasspathEntries()
-	{
-		return m_entries;
+	public final IClasspathEntry[] getClasspathEntries() {
+		return entries;
 	}
 
-	public String getDescription()
-	{
+	public String getDescription() {
 		return Messages.BMClasspathContainer_description;
 	}
 
-	public int getKind()
-	{
+	public int getKind() {
 		return K_APPLICATION;
 	}
 
-	public IPath getPath()
-	{
+	public IPath getPath() {
 		return PATH;
 	}
 
 	@Override
-	public int hashCode()
-	{
-		return Arrays.hashCode(m_entries);
+	public int hashCode() {
+		return Arrays.hashCode(entries);
 	}
 
-	private void addNodeToClassPath(CSpec cspec, ArrayList<IClasspathEntry> cpes, IModelCache cache,
-			HashSet<ComponentIdentifier> seenIDs, int depth) throws CoreException
-	{
+	private void addNodeToClassPath(CSpec cspec, ArrayList<IClasspathEntry> cpes, IModelCache cache, HashSet<ComponentIdentifier> seenIDs, int depth)
+			throws CoreException {
 		// Depth == 0 is the component itself, depth == 1 is the component
 		// scanning its
 		// own dependencies.
@@ -112,44 +104,41 @@ public class BMClasspathContainer implements IClasspathContainer
 		// return;
 
 		ComponentIdentifier cid = cspec.getComponentIdentifier();
-		if(seenIDs.contains(cid))
+		if (seenIDs.contains(cid))
 			return;
 		seenIDs.add(cid);
 
-		for(ComponentRequest refToChild : cspec.getDependencies())
-		{
+		for (ComponentRequest refToChild : cspec.getDependencies()) {
 			CSpec childSpec = cache.findCSpec(cspec, refToChild);
 			this.addNodeToClassPath(childSpec, cpes, cache, seenIDs, depth + 1);
 		}
 
 		IPath componentHome = cspec.getComponentLocation();
-		IProject project = WorkspaceInfo.getProject(cid);
-		if(project != null)
-		{
-			if(project.getName().equals(m_project.getName()))
+		IProject proj = WorkspaceInfo.getProject(cid);
+		if (proj != null) {
+			if (proj.getName().equals(project.getName()))
 				//
 				// Skip the project itself.
 				//
 				return;
 
-			if(project.isOpen() && project.hasNature(JavaCore.NATURE_ID))
-			{
+			if (proj.isOpen() && proj.hasNature(JavaCore.NATURE_ID)) {
 				// If we have a project entry, add that and nothing else.
 				//
-				IClasspathEntry cpe = JavaCore.newProjectEntry(project.getFullPath());
-				if(!cpes.contains(cpe))
+				IClasspathEntry cpe = JavaCore.newProjectEntry(proj.getFullPath());
+				if (!cpes.contains(cpe))
 					cpes.add(cpe);
 			}
 			return;
 		}
 
-		if(!componentHome.toFile().isFile())
+		if (!componentHome.toFile().isFile())
 			return;
 
-		if(componentHome.lastSegment().endsWith(".jar")) //$NON-NLS-1$
+		if (componentHome.lastSegment().endsWith(".jar")) //$NON-NLS-1$
 		{
 			IClasspathEntry cpe = JavaCore.newLibraryEntry(componentHome, null, null);
-			if(!cpes.contains(cpe))
+			if (!cpes.contains(cpe))
 				cpes.add(cpe);
 		}
 	}

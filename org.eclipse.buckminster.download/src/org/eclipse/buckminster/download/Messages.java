@@ -2,8 +2,7 @@ package org.eclipse.buckminster.download;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.download.messages"; //$NON-NLS-1$
 
 	public static String connection_retry_count;
@@ -44,13 +43,11 @@ public class Messages extends NLS
 
 	public static String value_0_illegal_for_1;
 
-	static
-	{
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
-	{
+	private Messages() {
 	}
 }

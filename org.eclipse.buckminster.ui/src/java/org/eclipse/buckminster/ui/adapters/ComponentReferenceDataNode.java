@@ -10,11 +10,9 @@ package org.eclipse.buckminster.ui.adapters;
 
 import org.eclipse.buckminster.generic.model.tree.BasicTreeDataNode;
 
-public class ComponentReferenceDataNode extends BasicTreeDataNode
-{
+public class ComponentReferenceDataNode extends BasicTreeDataNode {
 
-	public ComponentReferenceDataNode(ComponentReference data)
-	{
+	public ComponentReferenceDataNode(ComponentReference data) {
 		super(data);
 	}
 }

@@ -17,8 +17,7 @@ import org.eclipse.core.runtime.IStatus;
  * @author kolwing
  * 
  */
-public interface IActor
-{
+public interface IActor {
 	String getId();
 
 	String getName();

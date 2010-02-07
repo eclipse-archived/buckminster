@@ -23,141 +23,122 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public class JNLPModel extends SAXModel
-{
+public class JNLPModel extends SAXModel {
 	@SuppressWarnings("serial")
-	static class Resource extends HashMap<String, String> implements ISaxableElement
-	{
-		private final String m_arch;
+	static class Resource extends HashMap<String, String> implements ISaxableElement {
+		private final String arch;
 
-		private final String m_key;
+		private final String key;
 
-		private final String m_os;
+		private final String os;
 
-		private final String m_tag;
+		private final String tag;
 
-		Resource(String os, String arch, String tag)
-		{
-			m_os = os;
-			m_arch = arch;
-			m_tag = tag;
+		Resource(String os, String arch, String tag) {
+			this.os = os;
+			this.arch = arch;
+			this.tag = tag;
 			StringBuilder bld = new StringBuilder();
-			if(m_os != null)
-				bld.append(m_os);
+			if (os != null)
+				bld.append(os);
 			bld.append('/');
-			if(m_arch != null)
-				bld.append(m_arch);
-			m_key = bld.toString();
+			if (arch != null)
+				bld.append(arch);
+			this.key = bld.toString();
 		}
 
-		public String getArch()
-		{
-			return m_arch;
+		public String getArch() {
+			return arch;
 		}
 
-		public String getDefaultTag()
-		{
-			return m_tag;
+		public String getDefaultTag() {
+			return tag;
 		}
 
-		public String getKey()
-		{
-			return m_key;
+		public String getKey() {
+			return key;
 		}
 
-		public String getOs()
-		{
-			return m_os;
+		public String getOs() {
+			return os;
 		}
 
-		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName)
-				throws SAXException
-		{
+		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException {
 			AttributesImpl attrs = new AttributesImpl();
-			for(Map.Entry<String, String> attribute : entrySet())
+			for (Map.Entry<String, String> attribute : entrySet())
 				Utils.addAttribute(attrs, attribute.getKey(), attribute.getValue());
 			startElement(receiver, localName, attrs);
 			endElement(receiver, localName);
 		}
 	}
 
-	private String m_codeBase = "$$codebase"; //$NON-NLS-1$
+	private String codeBase = "$$codebase"; //$NON-NLS-1$
 
-	private String m_description;
+	private String description;
 
-	private String m_href = "$$name"; //$NON-NLS-1$
+	private String href = "$$name"; //$NON-NLS-1$
 
-	private boolean m_offLineAllowed = true;
+	private boolean offLineAllowed = true;
 
-	private Map<String, Resource> m_resourceById = new HashMap<String, Resource>();
+	private Map<String, Resource> resourceById = new HashMap<String, Resource>();
 
-	private Map<String, List<Resource>> m_resourcesByPlatform = new LinkedHashMap<String, List<Resource>>();
+	private Map<String, List<Resource>> resourcesByPlatform = new LinkedHashMap<String, List<Resource>>();
 
-	private String m_specVersion = "1.5+"; //$NON-NLS-1$
+	private String specVersion = "1.5+"; //$NON-NLS-1$
 
-	private String m_title;
+	private String title;
 
-	private String m_vendor;
+	private String vendor;
 
-	private String m_version;
+	private String version;
 
-	public Map<String, Resource> getResources()
-	{
-		return m_resourceById;
+	public Map<String, Resource> getResources() {
+		return resourceById;
 	}
 
-	public void setCodeBase(String codeBase)
-	{
-		m_codeBase = codeBase;
+	public void setCodeBase(String codeBase) {
+		this.codeBase = codeBase;
 	}
 
-	public void setDescription(String description)
-	{
-		m_description = description;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public void setHref(String href)
-	{
-		m_href = href;
+	public void setHref(String href) {
+		this.href = href;
 	}
 
-	public void setOffLineAllowed(boolean offLineAllowed)
-	{
-		m_offLineAllowed = offLineAllowed;
+	public void setOffLineAllowed(boolean offLineAllowed) {
+		this.offLineAllowed = offLineAllowed;
 	}
 
-	public void setSpecVersion(String specVersion)
-	{
-		m_specVersion = specVersion;
+	public void setSpecVersion(String specVersion) {
+		this.specVersion = specVersion;
 	}
 
-	public void setTitle(String title)
-	{
-		m_title = title;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public void setVendor(String vendor)
-	{
-		m_vendor = vendor;
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
 	}
 
-	public void setVersion(String version)
-	{
-		m_version = version;
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
-	public void toSax(ContentHandler receiver) throws SAXException
-	{
+	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		AttributesImpl attrs = new AttributesImpl();
-		if(m_specVersion != null)
-			Utils.addAttribute(attrs, "spec", m_specVersion); //$NON-NLS-1$
-		if(m_codeBase != null)
-			Utils.addAttribute(attrs, "codebase", m_codeBase); //$NON-NLS-1$
-		if(m_version != null)
-			Utils.addAttribute(attrs, "version", m_version); //$NON-NLS-1$
-		if(m_href != null)
-			Utils.addAttribute(attrs, "href", m_href); //$NON-NLS-1$
+		if (specVersion != null)
+			Utils.addAttribute(attrs, "spec", specVersion); //$NON-NLS-1$
+		if (codeBase != null)
+			Utils.addAttribute(attrs, "codebase", codeBase); //$NON-NLS-1$
+		if (version != null)
+			Utils.addAttribute(attrs, "version", version); //$NON-NLS-1$
+		if (href != null)
+			Utils.addAttribute(attrs, "href", href); //$NON-NLS-1$
 		startElement(receiver, "jnlp", attrs); //$NON-NLS-1$
 		emitInformation(receiver);
 		emitSecurity(receiver);
@@ -167,54 +148,48 @@ public class JNLPModel extends SAXModel
 		receiver.endDocument();
 	}
 
-	Map<String, String> createResource(String id, String os, String arch, String tag)
-	{
+	Map<String, String> createResource(String id, String os, String arch, String tag) {
 		Resource resource = new Resource(os, arch, tag);
-		List<Resource> resources = m_resourcesByPlatform.get(resource.getKey());
-		if(resources == null)
-		{
+		List<Resource> resources = resourcesByPlatform.get(resource.getKey());
+		if (resources == null) {
 			resources = new ArrayList<Resource>();
-			m_resourcesByPlatform.put(resource.getKey(), resources);
+			resourcesByPlatform.put(resource.getKey(), resources);
 		}
 		resources.add(resource);
-		if(id != null)
-			m_resourceById.put(id, resource);
+		if (id != null)
+			resourceById.put(id, resource);
 		return resource;
 	}
 
-	void emitInformation(ContentHandler receiver) throws SAXException
-	{
+	void emitInformation(ContentHandler receiver) throws SAXException {
 		startElement(receiver, "information"); //$NON-NLS-1$
 
-		if(m_title != null)
-			emitTextElement(receiver, "title", m_title); //$NON-NLS-1$
-		if(m_vendor != null)
-			emitTextElement(receiver, "vendor", m_vendor); //$NON-NLS-1$
-		if(m_description != null)
-			emitTextElement(receiver, "description", m_description); //$NON-NLS-1$
-		if(m_offLineAllowed)
+		if (title != null)
+			emitTextElement(receiver, "title", title); //$NON-NLS-1$
+		if (vendor != null)
+			emitTextElement(receiver, "vendor", vendor); //$NON-NLS-1$
+		if (description != null)
+			emitTextElement(receiver, "description", description); //$NON-NLS-1$
+		if (offLineAllowed)
 			emitBooleanElement(receiver, "offline-allowed"); //$NON-NLS-1$
 		endElement(receiver, "information"); //$NON-NLS-1$
 	}
 
-	void emitResources(ContentHandler receiver) throws SAXException
-	{
+	void emitResources(ContentHandler receiver) throws SAXException {
 		AttributesImpl attrs = new AttributesImpl();
-		for(List<Resource> resourceList : m_resourcesByPlatform.values())
-		{
+		for (List<Resource> resourceList : resourcesByPlatform.values()) {
 			int top = resourceList.size();
-			if(top == 0)
+			if (top == 0)
 				continue;
 
 			Resource first = resourceList.get(0);
-			if(first.getOs() != null)
+			if (first.getOs() != null)
 				Utils.addAttribute(attrs, "os", first.getOs()); //$NON-NLS-1$
-			if(first.getArch() != null)
+			if (first.getArch() != null)
 				Utils.addAttribute(attrs, "arch", first.getArch()); //$NON-NLS-1$
 
 			startElement(receiver, "resources", attrs); //$NON-NLS-1$
-			for(int idx = 0; idx < top; ++idx)
-			{
+			for (int idx = 0; idx < top; ++idx) {
 				Resource resource = resourceList.get(idx);
 				resource.toSax(receiver, null, null, resource.getDefaultTag());
 			}
@@ -223,8 +198,7 @@ public class JNLPModel extends SAXModel
 		}
 	}
 
-	void emitSecurity(ContentHandler receiver) throws SAXException
-	{
+	void emitSecurity(ContentHandler receiver) throws SAXException {
 		startElement(receiver, "security"); //$NON-NLS-1$
 		emitBooleanElement(receiver, "all-permissions"); //$NON-NLS-1$
 		endElement(receiver, "security"); //$NON-NLS-1$

@@ -14,13 +14,11 @@ import org.eclipse.swt.events.TypedEvent;
  * @author Karel Brezina
  * 
  */
-public class PropertiesModifyEvent extends TypedEvent
-{
+public class PropertiesModifyEvent extends TypedEvent {
 
 	private static final long serialVersionUID = 7472952304329698726L;
 
-	public PropertiesModifyEvent(Properties prop)
-	{
+	public PropertiesModifyEvent(Properties prop) {
 		super(prop);
 		this.display = prop.getDisplay();
 		this.widget = prop;

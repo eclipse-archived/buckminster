@@ -35,77 +35,68 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
- * General table editor. Needs data wrapped ITable (Table) instance. Prepare ITable instance and start using this
- * editor.
+ * General table editor. Needs data wrapped ITable (Table) instance. Prepare
+ * ITable instance and start using this editor.
  * 
  * @author Karel Brezina
  */
-public class SimpleTableEditor<T> extends Composite
-{
+public class SimpleTableEditor<T> extends Composite {
 
-	class TableContentProvider implements IStructuredContentProvider
-	{
-		public void dispose()
-		{
+	class TableContentProvider implements IStructuredContentProvider {
+		public void dispose() {
 			// Nothing to dispose
 		}
 
-		public Object[] getElements(Object inputElement)
-		{
-			return m_table.getRows().toArray();
+		public Object[] getElements(Object inputElement) {
+			return table.getRows().toArray();
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-		{
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// Nothing to do
 		}
 	}
 
-	class TableLabelProvider extends LabelProvider implements ITableLabelProvider
-	{
-		public Image getColumnImage(Object element, int columnIndex)
-		{
+	class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
 		@SuppressWarnings("unchecked")
-		public String getColumnText(Object element, int columnIndex)
-		{
-			Object field = m_table.getEditorField((T)element, columnIndex);
-			return field == null
-					? "" : field.toString(); //$NON-NLS-1$
+		public String getColumnText(Object element, int columnIndex) {
+			Object field = table.getEditorField((T) element, columnIndex);
+			return field == null ? "" : field.toString(); //$NON-NLS-1$
 		}
 	}
 
-	private final ISimpleTable<T> m_table;
+	private final ISimpleTable<T> table;
 
-	private final Image m_windowImage;
+	private final Image windowImage;
 
-	private final String m_windowTitle;
+	private final String windowTitle;
 
-	private final Image m_wizardImage;
+	private final Image wizardImage;
 
-	private final String m_helpURL;
+	private final String helpURL;
 
-	private TableViewer m_tableViewer;
+	private TableViewer tableViewer;
 
-	private Composite m_stackButtonComposite;
+	private Composite stackButtonComposite;
 
-	private StackLayout m_stackButtonLayout;
+	private StackLayout stackButtonLayout;
 
-	private Composite m_editButtonBox;
+	private Composite editButtonBox;
 
-	private Composite m_viewButtonBox;
+	private Composite viewButtonBox;
 
-	private Button m_newButton;
+	private Button newButton;
 
-	private Button m_editButton;
+	private Button editButton;
 
-	private Button m_viewButton;
+	private Button viewButton;
 
-	private Button m_removeButton;
+	private Button removeButton;
 
-	private boolean m_enabled = true;
+	private boolean enabled = true;
 
 	/**
 	 * Creates general table editor.
@@ -125,202 +116,175 @@ public class SimpleTableEditor<T> extends Composite
 	 * @param style
 	 *            current composite style
 	 */
-	public SimpleTableEditor(Composite parent, ISimpleTable<T> table, Image windowImage, String windowTitle,
-			Image wizardImage, String helpURL, int style)
-	{
+	public SimpleTableEditor(Composite parent, ISimpleTable<T> table, Image windowImage, String windowTitle, Image wizardImage, String helpURL,
+			int style) {
 		super(parent, style);
-		m_table = table;
-		m_windowImage = windowImage;
-		m_windowTitle = windowTitle;
-		m_wizardImage = wizardImage;
-		m_helpURL = helpURL;
+		this.table = table;
+		this.windowImage = windowImage;
+		this.windowTitle = windowTitle;
+		this.wizardImage = wizardImage;
+		this.helpURL = helpURL;
 		initComposite();
 	}
 
-	public void refresh()
-	{
-		m_tableViewer.setInput(m_table);
+	public void refresh() {
+		tableViewer.setInput(table);
 	}
 
 	@Override
-	public void setEnabled(boolean enabled)
-	{
-		m_enabled = enabled;
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 
-		// m_tableViewer.getTable().setEnabled(enabled);
+		// tableViewer.getTable().setEnabled(enabled);
 
 		enableDisableButtonGroup();
 
-		// m_tableViewer.getTable().setForeground(enabled
+		// tableViewer.getTable().setForeground(enabled
 		// ? null
-		// : m_tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
+		// :
+		// tableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY));
 	}
 
-	private void createButtonBox(Composite parent)
-	{
-		m_stackButtonComposite = new Composite(parent, SWT.NONE);
-		m_stackButtonComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
-		m_stackButtonLayout = new StackLayout();
-		m_stackButtonLayout.marginHeight = m_stackButtonLayout.marginWidth = 0;
-		m_stackButtonComposite.setLayout(m_stackButtonLayout);
+	private void createButtonBox(Composite parent) {
+		stackButtonComposite = new Composite(parent, SWT.NONE);
+		stackButtonComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		stackButtonLayout = new StackLayout();
+		stackButtonLayout.marginHeight = stackButtonLayout.marginWidth = 0;
+		stackButtonComposite.setLayout(stackButtonLayout);
 
-		m_editButtonBox = new Composite(m_stackButtonComposite, SWT.None);
+		editButtonBox = new Composite(stackButtonComposite, SWT.None);
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.marginHeight = gridLayout.marginWidth = gridLayout.verticalSpacing = 0;
-		m_editButtonBox.setLayout(gridLayout);
-		m_editButtonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		editButtonBox.setLayout(gridLayout);
+		editButtonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
-		m_newButton = UiUtils.createPushButton(m_editButtonBox, Messages.new_label, new SelectionAdapter()
-		{
+		newButton = UiUtils.createPushButton(editButtonBox, Messages.new_label, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				newRow();
 			}
 		});
-		m_newButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		newButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		m_editButton = UiUtils.createPushButton(m_editButtonBox, Messages.edit, new SelectionAdapter()
-		{
+		editButton = UiUtils.createPushButton(editButtonBox, Messages.edit, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				editRow(false);
 			}
 		});
-		m_editButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		editButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		m_removeButton = UiUtils.createPushButton(m_editButtonBox, Messages.remove, new SelectionAdapter()
-		{
+		removeButton = UiUtils.createPushButton(editButtonBox, Messages.remove, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				removeRow();
 			}
 		});
-		m_removeButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		removeButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		m_viewButtonBox = new Composite(m_stackButtonComposite, SWT.NONE);
+		viewButtonBox = new Composite(stackButtonComposite, SWT.NONE);
 		gridLayout = new GridLayout(1, false);
 		gridLayout.marginHeight = gridLayout.marginWidth = 0;
-		m_viewButtonBox.setLayout(gridLayout);
-		m_viewButtonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		viewButtonBox.setLayout(gridLayout);
+		viewButtonBox.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
-		m_viewButton = UiUtils.createPushButton(m_viewButtonBox, Messages.view, new SelectionAdapter()
-		{
+		viewButton = UiUtils.createPushButton(viewButtonBox, Messages.view, new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				editRow(true);
 			}
 		});
-		m_viewButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		viewButton.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
 		enableDisableButtonGroup();
 	}
 
-	private void editRow(boolean readOnly)
-	{
-		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle,
-				m_wizardImage, m_helpURL, m_table, m_tableViewer.getTable().getSelectionIndex(), readOnly);
+	private void editRow(boolean readOnly) {
+		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), windowImage, windowTitle, wizardImage, helpURL, table,
+				tableViewer.getTable().getSelectionIndex(), readOnly);
 
-		if(dialog.open() == IDialogConstants.OK_ID)
-		{
+		if (dialog.open() == IDialogConstants.OK_ID) {
 			refresh();
 		}
 	}
 
-	private void enableDisableButtonGroup()
-	{
-		boolean rowSelected = m_tableViewer.getTable().getSelectionIndex() >= 0;
+	private void enableDisableButtonGroup() {
+		boolean rowSelected = tableViewer.getTable().getSelectionIndex() >= 0;
 
-		if(m_enabled && !m_table.isReadOnly())
-		{
-			m_newButton.setEnabled(true);
-			m_editButton.setEnabled(rowSelected);
-			m_removeButton.setEnabled(rowSelected);
+		if (enabled && !table.isReadOnly()) {
+			newButton.setEnabled(true);
+			editButton.setEnabled(rowSelected);
+			removeButton.setEnabled(rowSelected);
 
-			m_stackButtonLayout.topControl = m_editButtonBox;
-		}
-		else
-		{
-			m_newButton.setEnabled(false);
-			m_editButton.setEnabled(false);
-			m_removeButton.setEnabled(false);
+			stackButtonLayout.topControl = editButtonBox;
+		} else {
+			newButton.setEnabled(false);
+			editButton.setEnabled(false);
+			removeButton.setEnabled(false);
 
-			m_stackButtonLayout.topControl = m_viewButtonBox;
+			stackButtonLayout.topControl = viewButtonBox;
 		}
 
-		m_viewButton.setEnabled(rowSelected);
-		m_stackButtonComposite.layout();
+		viewButton.setEnabled(rowSelected);
+		stackButtonComposite.layout();
 	}
 
-	private void initComposite()
-	{
+	private void initComposite() {
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.marginHeight = gridLayout.marginWidth = 0;
 		setLayout(gridLayout);
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		Table table = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		Table tbl = new Table(this, SWT.BORDER | SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 
 		// table.setHeaderVisible(false);
-		table.setHeaderVisible(true);
+		tbl.setHeaderVisible(true);
 		DynamicTableLayout layout = new DynamicTableLayout(50);
 
 		int tableIdx = 0;
-		for(int idx = 0; idx < m_table.getColumns(); idx++)
-		{
-			if(m_table.getColumnWeights()[idx] > 0)
-			{
-				TableColumn tableColumn = new TableColumn(table, SWT.LEFT, tableIdx);
-				tableColumn.setText(m_table.getColumnHeaders()[idx]);
-				layout.addColumnData(new ColumnWeightData(m_table.getColumnWeights()[idx], true));
+		for (int idx = 0; idx < table.getColumns(); idx++) {
+			if (table.getColumnWeights()[idx] > 0) {
+				TableColumn tableColumn = new TableColumn(tbl, SWT.LEFT, tableIdx);
+				tableColumn.setText(table.getColumnHeaders()[idx]);
+				layout.addColumnData(new ColumnWeightData(table.getColumnWeights()[idx], true));
 				tableIdx++;
 			}
 		}
-		table.setLayout(layout);
+		tbl.setLayout(layout);
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		// gridData.widthHint = 600;
-		table.setLayoutData(gridData);
+		tbl.setLayoutData(gridData);
 
-		m_tableViewer = new TableViewer(table);
-		m_tableViewer.setLabelProvider(new TableLabelProvider());
-		m_tableViewer.setContentProvider(new TableContentProvider());
-		m_tableViewer.setInput(m_table);
-		m_tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
-		{
-			public void selectionChanged(SelectionChangedEvent event)
-			{
+		tableViewer = new TableViewer(tbl);
+		tableViewer.setLabelProvider(new TableLabelProvider());
+		tableViewer.setContentProvider(new TableContentProvider());
+		tableViewer.setInput(table);
+		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
 				enableDisableButtonGroup();
 			}
 		});
-		m_tableViewer.addDoubleClickListener(new IDoubleClickListener()
-		{
-			public void doubleClick(DoubleClickEvent event)
-			{
-				if(m_tableViewer.getTable().getSelectionIndex() >= 0)
-					editRow(!m_enabled || m_table.isReadOnly());
+		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				if (tableViewer.getTable().getSelectionIndex() >= 0)
+					editRow(!enabled || table.isReadOnly());
 			}
 		});
 
 		createButtonBox(this);
 	}
 
-	private void newRow()
-	{
-		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), m_windowImage, m_windowTitle,
-				m_wizardImage, m_helpURL, m_table, -1, false);
+	private void newRow() {
+		SimpleTableRowDialog<T> dialog = new SimpleTableRowDialog<T>(this.getShell(), windowImage, windowTitle, wizardImage, helpURL, table, -1,
+				false);
 
-		if(dialog.open() == IDialogConstants.OK_ID)
-		{
+		if (dialog.open() == IDialogConstants.OK_ID) {
 			refresh();
 		}
 	}
 
-	private void removeRow()
-	{
-		m_table.removeRow(m_tableViewer.getTable().getSelectionIndex());
+	private void removeRow() {
+		table.removeRow(tableViewer.getTable().getSelectionIndex());
 		refresh();
 	}
 }

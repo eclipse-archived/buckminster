@@ -40,131 +40,99 @@ import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 
-public class P2ReaderType extends CatalogReaderType
-{
+public class P2ReaderType extends CatalogReaderType {
 	private static final IExpression iuQuery = ExpressionUtil.parse("id == $0 && version == $1"); //$NON-NLS-1$
 
-	public static IArtifactRepository getArtifactRepository(Provider provider,
-			Map<String, ? extends Object> properties, IProgressMonitor monitor) throws CoreException
-	{
+	public static IArtifactRepository getArtifactRepository(Provider provider, Map<String, ? extends Object> properties, IProgressMonitor monitor)
+			throws CoreException {
 		return getArtifactRepository(getURI(provider, properties), monitor);
 	}
 
-	public static IArtifactRepository getArtifactRepository(ProviderMatch providerMatch, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public static IArtifactRepository getArtifactRepository(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		return getArtifactRepository(providerMatch.getProvider(), providerMatch.getNodeQuery().getProperties(), monitor);
 	}
 
-	public static IArtifactRepository getArtifactRepository(URI repoLocation, IProgressMonitor monitor)
-			throws CoreException
-	{
-		IArtifactRepositoryManager manager = (IArtifactRepositoryManager)CorePlugin.getDefault().getResolverAgent().getService(
+	public static IArtifactRepository getArtifactRepository(URI repoLocation, IProgressMonitor monitor) throws CoreException {
+		IArtifactRepositoryManager manager = (IArtifactRepositoryManager) CorePlugin.getDefault().getResolverAgent().getService(
 				IArtifactRepositoryManager.SERVICE_NAME);
-		if(manager == null)
+		if (manager == null)
 			throw new IllegalStateException("No artifact repository manager found"); //$NON-NLS-1$
 
 		SubMonitor subMon = SubMonitor.convert(monitor, 200);
-		try
-		{
+		try {
 			return manager.loadRepository(repoLocation, subMon.newChild(100));
-		}
-		catch(ProvisionException e)
-		{
+		} catch (ProvisionException e) {
 			return manager.refreshRepository(repoLocation, subMon.newChild(100));
-		}
-		finally
-		{
-			if(monitor != null)
+		} finally {
+			if (monitor != null)
 				monitor.done();
 		}
 	}
 
-	public static IInstallableUnit getIU(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public static IInstallableUnit getIU(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		IMetadataRepository mdr = getMetadataRepository(providerMatch, monitor);
 		VersionMatch vm = providerMatch.getVersionMatch();
-		IQueryResult<IInstallableUnit> result = mdr.query(new ExpressionQuery<IInstallableUnit>(IInstallableUnit.class,
-				iuQuery, vm.getArtifactInfo(), vm.getVersion()), monitor);
-		return result.isEmpty()
-				? null
-				: result.iterator().next();
+		IQueryResult<IInstallableUnit> result = mdr.query(new ExpressionQuery<IInstallableUnit>(IInstallableUnit.class, iuQuery,
+				vm.getArtifactInfo(), vm.getVersion()), monitor);
+		return result.isEmpty() ? null : result.iterator().next();
 	}
 
-	public static IMetadataRepository getMetadataRepository(Provider provider,
-			Map<String, ? extends Object> properties, IProgressMonitor monitor) throws CoreException
-	{
+	public static IMetadataRepository getMetadataRepository(Provider provider, Map<String, ? extends Object> properties, IProgressMonitor monitor)
+			throws CoreException {
 		return getMetadataRepository(getURI(provider, properties), monitor);
 	}
 
-	public static IMetadataRepository getMetadataRepository(ProviderMatch providerMatch, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public static IMetadataRepository getMetadataRepository(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		return getMetadataRepository(providerMatch.getProvider(), providerMatch.getNodeQuery().getProperties(), monitor);
 	}
 
-	public static IMetadataRepository getMetadataRepository(URI repoLocation, IProgressMonitor monitor)
-			throws CoreException
-	{
-		IMetadataRepositoryManager manager = (IMetadataRepositoryManager)CorePlugin.getDefault().getResolverAgent().getService(
+	public static IMetadataRepository getMetadataRepository(URI repoLocation, IProgressMonitor monitor) throws CoreException {
+		IMetadataRepositoryManager manager = (IMetadataRepositoryManager) CorePlugin.getDefault().getResolverAgent().getService(
 				IMetadataRepositoryManager.SERVICE_NAME);
-		if(manager == null)
+		if (manager == null)
 			throw new IllegalStateException("No artifact repository manager found"); //$NON-NLS-1$
 
 		SubMonitor subMon = SubMonitor.convert(monitor, 200);
-		try
-		{
+		try {
 			return manager.loadRepository(repoLocation, subMon.newChild(100));
-		}
-		catch(ProvisionException e)
-		{
+		} catch (ProvisionException e) {
 			return manager.refreshRepository(repoLocation, subMon.newChild(100));
-		}
-		finally
-		{
-			if(monitor != null)
+		} finally {
+			if (monitor != null)
 				monitor.done();
 		}
 	}
 
-	public static URI getURI(Provider provider, Map<String, ? extends Object> properties) throws CoreException
-	{
+	public static URI getURI(Provider provider, Map<String, ? extends Object> properties) throws CoreException {
 		return P2Materializer.cleanURIFromImportType(URLUtils.normalizeToURI(provider.getURI(properties), true));
 	}
 
-	public P2ReaderType()
-	{
+	public P2ReaderType() {
 	}
 
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public String getRecommendedMaterializer()
-	{
+	public String getRecommendedMaterializer() {
 		return IMaterializer.P2;
 	}
 
-	public BOMNode getResolution(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public BOMNode getResolution(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		SubMonitor subMon = SubMonitor.convert(monitor, 20);
 		IInstallableUnit iu = getIU(providerMatch, subMon.newChild(10));
 		IMetadataRepository mdr = getMetadataRepository(providerMatch, subMon.newChild(10));
-		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(
-				new CSpecBuilder(mdr, iu), false)));
+		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(new CSpecBuilder(mdr, iu), false)));
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
+			throws CoreException {
 		IMetadataRepository mdr = getMetadataRepository(provider, nodeQuery.getProperties(), monitor);
 		return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
 	}

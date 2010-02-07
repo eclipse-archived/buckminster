@@ -2,8 +2,7 @@ package org.eclipse.buckminster.ui;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.ui.messages"; //$NON-NLS-1$
 
 	public static String a_0_property_will_not_be_added;
@@ -670,13 +669,11 @@ public class Messages extends NLS
 
 	public static String generatesVersion;
 
-	static
-	{
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
-	{
+	private Messages() {
 	}
 }

@@ -20,39 +20,33 @@ import java.util.EventObject;
  * @author Henrik Lindberg
  * 
  */
-public class TreeDataEvent extends EventObject
-{
+public class TreeDataEvent extends EventObject {
 
-	public enum Type
-	{
+	public enum Type {
 		CHANGE, ;
 	}
 
 	private static final long serialVersionUID = -7493609364097227394L;
 
-	public static TreeDataEvent changed(ITreeRootNode source, ITreeDataNode node)
-	{
+	public static TreeDataEvent changed(ITreeRootNode source, ITreeDataNode node) {
 		return new TreeDataEvent(source, node, Type.CHANGE);
 	};
 
-	private ITreeDataNode m_node;
+	private final ITreeDataNode node;
 
-	private Type m_type;
+	private final Type type;
 
-	public TreeDataEvent(ITreeRootNode treeSource, ITreeDataNode node, Type type)
-	{
+	public TreeDataEvent(ITreeRootNode treeSource, ITreeDataNode node, Type type) {
 		super(treeSource);
-		m_node = node;
-		m_type = type;
+		this.node = node;
+		this.type = type;
 	}
 
-	public ITreeDataNode getNode()
-	{
-		return m_node;
+	public ITreeDataNode getNode() {
+		return node;
 	}
 
-	public Type getType()
-	{
-		return m_type;
+	public Type getType() {
+		return type;
 	}
 }

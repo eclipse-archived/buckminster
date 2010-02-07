@@ -15,7 +15,6 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public interface IWrapperParent
-{
+public interface IWrapperParent {
 	UUIDKeyed getWrapped(UUID id) throws SAXException;
 }

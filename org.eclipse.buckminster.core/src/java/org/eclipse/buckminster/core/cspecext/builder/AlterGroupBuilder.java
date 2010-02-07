@@ -20,42 +20,35 @@ import org.eclipse.buckminster.core.cspecext.model.AlterGroup;
 /**
  * @author Thomas Hallgren
  */
-public class AlterGroupBuilder extends AlterAttributeBuilder
-{
-	private final HashMap<String, Prerequisite> m_alteredPrerequisites = new HashMap<String, Prerequisite>();
+public class AlterGroupBuilder extends AlterAttributeBuilder {
+	private final HashMap<String, Prerequisite> alteredPrerequisites = new HashMap<String, Prerequisite>();
 
-	private final HashSet<String> m_removedPrerequisites = new HashSet<String>();
+	private final HashSet<String> removedPrerequisites = new HashSet<String>();
 
-	public AlterGroupBuilder(GroupBuilder baseBuilder)
-	{
+	public AlterGroupBuilder(GroupBuilder baseBuilder) {
 		super(baseBuilder);
 	}
 
-	public void addAlterPrerequisite(Prerequisite value) throws PrerequisiteAlreadyDefinedException
-	{
+	public void addAlterPrerequisite(Prerequisite value) throws PrerequisiteAlreadyDefinedException {
 		String key = value.toString();
-		if(m_alteredPrerequisites.containsKey(key))
+		if (alteredPrerequisites.containsKey(key))
 			throw new PrerequisiteAlreadyDefinedException(getCSpecName(), getName(), key);
-		m_alteredPrerequisites.put(key, value);
+		alteredPrerequisites.put(key, value);
 	}
 
-	public void addRemovePrerequisite(String key)
-	{
-		m_removedPrerequisites.add(key);
+	public void addRemovePrerequisite(String key) {
+		removedPrerequisites.add(key);
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		super.clear();
-		m_alteredPrerequisites.clear();
-		m_removedPrerequisites.clear();
+		alteredPrerequisites.clear();
+		removedPrerequisites.clear();
 	}
 
 	@Override
-	public AlterAttribute<?> createAlterAttribute()
-	{
-		return new AlterGroup((Group)createBase(), getRemovedHints(), getAlteredHints(), m_removedPrerequisites,
-				m_alteredPrerequisites);
+	public AlterAttribute<?> createAlterAttribute() {
+		return new AlterGroup((Group) createBase(), getRemovedHints(), getAlteredHints(), removedPrerequisites, alteredPrerequisites);
 	}
 }

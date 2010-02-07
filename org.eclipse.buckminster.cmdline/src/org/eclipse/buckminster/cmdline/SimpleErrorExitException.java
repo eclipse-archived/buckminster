@@ -15,43 +15,37 @@ package org.eclipse.buckminster.cmdline;
 /**
  * @author ken1
  * 
- *         Throw with a message and/or a exit code to quickly break out in a simple error condition. Specially treated
- *         in the Launcher, so only the message is printed.
+ *         Throw with a message and/or a exit code to quickly break out in a
+ *         simple error condition. Specially treated in the Launcher, so only
+ *         the message is printed.
  */
-public class SimpleErrorExitException extends Exception
-{
+public class SimpleErrorExitException extends Exception {
 	private static final long serialVersionUID = -2764770876554381163L;
 
-	private final int m_exitValue;
+	private final int exitValue;
 
-	public SimpleErrorExitException()
-	{
+	public SimpleErrorExitException() {
 		this(Headless.EXIT_FAIL);
 	}
 
-	public SimpleErrorExitException(int exitValue)
-	{
-		m_exitValue = exitValue;
+	public SimpleErrorExitException(int exitValue) {
+		this.exitValue = exitValue;
 	}
 
-	public SimpleErrorExitException(String errorMessage)
-	{
+	public SimpleErrorExitException(String errorMessage) {
 		this(errorMessage, Headless.EXIT_FAIL, null);
 	}
 
-	public SimpleErrorExitException(String errorMessage, int exitValue, Throwable cause)
-	{
+	public SimpleErrorExitException(String errorMessage, int exitValue, Throwable cause) {
 		super(errorMessage, cause);
-		m_exitValue = exitValue;
+		this.exitValue = exitValue;
 	}
 
-	public SimpleErrorExitException(String errorMessage, Throwable cause)
-	{
+	public SimpleErrorExitException(String errorMessage, Throwable cause) {
 		this(errorMessage, Headless.EXIT_FAIL, cause);
 	}
 
-	public int getExitValue()
-	{
-		return m_exitValue;
+	public int getExitValue() {
+		return exitValue;
 	}
 }

@@ -13,8 +13,7 @@ package org.eclipse.buckminster.core;
 /**
  * @author Thomas Hallgren
  */
-public interface KeyConstants
-{
+public interface KeyConstants {
 	String COMPONENT_NAME = "buckminster.component"; //$NON-NLS-1$
 
 	String VERSION_DESIGNATOR = "buckminster.version.designator"; //$NON-NLS-1$

@@ -14,20 +14,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 
  * @author Guillaume CHATELET
  */
-public class SimpleResourceFetcher extends AbstractResourceFetcher
-{
-	private final String m_filename;
+public class SimpleResourceFetcher extends AbstractResourceFetcher {
+	private final String filename;
 
-	public SimpleResourceFetcher(URL url, String dir, String filename)
-	{
+	public SimpleResourceFetcher(URL url, String dir, String filename) {
 		super(url, dir);
-		m_filename = filename;
+		this.filename = filename;
 	}
 
 	@Override
-	public void consume(InputStream stream, IProgressMonitor monitor) throws IOException, CoreException
-	{
-		final Installer installer = Installer.getInstaller(m_filename, false);
-		installer.install(stream, new File(getDestinationDir() + m_filename), monitor);
+	public void consume(InputStream stream, IProgressMonitor monitor) throws IOException, CoreException {
+		final Installer installer = Installer.getInstaller(filename, false);
+		installer.install(stream, new File(getDestinationDir() + filename), monitor);
 	}
 }

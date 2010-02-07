@@ -22,35 +22,26 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class BidirectionalTransformerHandler extends ExtensionAwareHandler
-{
+public class BidirectionalTransformerHandler extends ExtensionAwareHandler {
 	static final String TAG = BidirectionalTransformer.TAG;
 
-	private BidirectionalTransformer m_transformer;
+	private BidirectionalTransformer transformer;
 
-	public BidirectionalTransformerHandler(AbstractHandler parent)
-	{
+	public BidirectionalTransformerHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public BidirectionalTransformer getTransformer()
-	{
-		return m_transformer;
+	public BidirectionalTransformer getTransformer() {
+		return transformer;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		try
-		{
-			m_transformer = new BidirectionalTransformer(getPatternValue(attrs,
-					BidirectionalTransformer.ATTR_TO_PATTERN), getStringValue(attrs,
-					BidirectionalTransformer.ATTR_TO_REPLACEMENT), getPatternValue(attrs,
-					BidirectionalTransformer.ATTR_FROM_PATTERN), getStringValue(attrs,
-					BidirectionalTransformer.ATTR_FROM_REPLACEMENT));
-		}
-		catch(PatternSyntaxException e)
-		{
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		try {
+			transformer = new BidirectionalTransformer(getPatternValue(attrs, BidirectionalTransformer.ATTR_TO_PATTERN), getStringValue(attrs,
+					BidirectionalTransformer.ATTR_TO_REPLACEMENT), getPatternValue(attrs, BidirectionalTransformer.ATTR_FROM_PATTERN),
+					getStringValue(attrs, BidirectionalTransformer.ATTR_FROM_REPLACEMENT));
+		} catch (PatternSyntaxException e) {
 			throw new SAXParseException(e.getMessage(), getDocumentLocator());
 		}
 	}

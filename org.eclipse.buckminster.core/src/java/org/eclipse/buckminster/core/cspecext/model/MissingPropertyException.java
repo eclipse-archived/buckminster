@@ -14,13 +14,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingPropertyException extends LocalizedException
-{
+public class MissingPropertyException extends LocalizedException {
 	private static final long serialVersionUID = -2064690747503780031L;
 
-	public MissingPropertyException(String name, String attribute, String propertyCategory, String propertyName)
-	{
-		super(NLS.bind(Messages.CSpec_0_attribute_1_has_no_2_named_3, new Object[] { name, attribute, propertyCategory,
-				propertyName }));
+	public MissingPropertyException(String name, String attribute, String propertyCategory, String propertyName) {
+		super(NLS.bind(Messages.CSpec_0_attribute_1_has_no_2_named_3, new Object[] { name, attribute, propertyCategory, propertyName }));
 	}
 }

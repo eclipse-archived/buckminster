@@ -15,13 +15,10 @@ import org.eclipse.osgi.util.NLS;
 /**
  * @author Thomas Hallgren
  */
-public class MissingReaderTypeException extends LocalizedException
-{
+public class MissingReaderTypeException extends LocalizedException {
 	private static final long serialVersionUID = -132466746071544427L;
 
-	public MissingReaderTypeException(String remoteReaderId)
-	{
-		super(NLS.bind(Messages.No_reader_type_with_id_0_has_been_registered_with_extension_point_1, remoteReaderId,
-				CorePlugin.READER_TYPE_POINT));
+	public MissingReaderTypeException(String remoteReaderId) {
+		super(NLS.bind(Messages.No_reader_type_with_id_0_has_been_registered_with_extension_point_1, remoteReaderId, CorePlugin.READER_TYPE_POINT));
 	}
 }

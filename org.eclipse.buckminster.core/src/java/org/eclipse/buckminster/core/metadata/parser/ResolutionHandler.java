@@ -35,173 +35,152 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class ResolutionHandler extends ExtensionAwareHandler implements ChildPoppedListener
-{
+public class ResolutionHandler extends ExtensionAwareHandler implements ChildPoppedListener {
 	public static final String TAG = Resolution.TAG;
 
-	private final ComponentRequestHandler m_componentRequestHandler = new ComponentRequestHandler(this,
-			new ComponentRequestBuilder());
+	private final ComponentRequestHandler componentRequestHandler = new ComponentRequestHandler(this, new ComponentRequestBuilder());
 
-	private final VersionMatchHandler m_versionMatchHandler = new VersionMatchHandler(this);
+	private final VersionMatchHandler versionMatchHandler = new VersionMatchHandler(this);
 
-	private final ArrayList<String> m_attributes = new ArrayList<String>();
+	private final ArrayList<String> attributes = new ArrayList<String>();
 
-	private UUID m_cspecId;
+	private UUID cspecId;
 
-	private UUID m_providerId;
+	private UUID providerId;
 
-	private ComponentRequest m_request;
+	private ComponentRequest request;
 
-	private String m_componentType;
+	private String componentType;
 
-	private VersionMatch m_versionMatch;
+	private VersionMatch versionMatch;
 
-	private boolean m_materializable;
+	private boolean materializable;
 
-	private String m_persistentId;
+	private String persistentId;
 
-	private String m_repository;
+	private String repository;
 
-	private String m_remoteName;
+	private String remoteName;
 
-	private String m_contentType;
+	private String contentType;
 
-	private long m_lastModified;
+	private long lastModified;
 
-	private long m_size;
+	private long size;
 
-	private boolean m_unpack;
+	private boolean unpack;
 
-	public ResolutionHandler(AbstractHandler parent)
-	{
+	public ResolutionHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(child == m_componentRequestHandler)
-			m_request = m_componentRequestHandler.getBuilder().createComponentRequest();
-		else if(child == m_versionMatchHandler)
-			m_versionMatch = m_versionMatchHandler.getVersionMatch();
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (child == componentRequestHandler)
+			request = componentRequestHandler.getBuilder().createComponentRequest();
+		else if (child == versionMatchHandler)
+			versionMatch = versionMatchHandler.getVersionMatch();
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(Resolution.ELEM_REQUEST.equals(localName))
-			ch = m_componentRequestHandler;
-		else if(VersionMatch.TAG.equals(localName))
-			ch = m_versionMatchHandler;
+		if (Resolution.ELEM_REQUEST.equals(localName))
+			ch = componentRequestHandler;
+		else if (VersionMatch.TAG.equals(localName))
+			ch = versionMatchHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
-	public Resolution getResolution() throws SAXException
-	{
-		if(m_request == null)
-			throw new SAXParseException(NLS.bind(Messages.Missing_required_element_0, XMLConstants.BM_METADATA_PREFIX
-					+ '.' + Resolution.ELEM_REQUEST), this.getDocumentLocator());
+	public Resolution getResolution() throws SAXException {
+		if (request == null)
+			throw new SAXParseException(NLS
+					.bind(Messages.Missing_required_element_0, XMLConstants.BM_METADATA_PREFIX + '.' + Resolution.ELEM_REQUEST), this
+					.getDocumentLocator());
 
-		if(m_versionMatch == null)
-			throw new SAXParseException(NLS.bind(Messages.Missing_required_element_0, XMLConstants.BM_METADATA_PREFIX
-					+ '.' + VersionMatch.TAG), this.getDocumentLocator());
+		if (versionMatch == null)
+			throw new SAXParseException(NLS.bind(Messages.Missing_required_element_0, XMLConstants.BM_METADATA_PREFIX + '.' + VersionMatch.TAG), this
+					.getDocumentLocator());
 
-		if(m_componentType == null)
-			m_componentType = legacyComponentType();
+		if (componentType == null)
+			componentType = legacyComponentType();
 
 		AbstractHandler parent = getParentHandler();
 		CSpec cspec;
 		Provider provider;
-		if(parent instanceof IDWrapperHandler)
-		{
-			IDWrapperHandler wh = (IDWrapperHandler)parent;
-			cspec = (CSpec)wh.getWrapped(m_cspecId);
-			provider = (Provider)wh.getWrapped(m_providerId);
-		}
-		else
-		{
-			try
-			{
+		if (parent instanceof IDWrapperHandler) {
+			IDWrapperHandler wh = (IDWrapperHandler) parent;
+			cspec = (CSpec) wh.getWrapped(cspecId);
+			provider = (Provider) wh.getWrapped(providerId);
+		} else {
+			try {
 				StorageManager sm = StorageManager.getDefault();
-				cspec = sm.getCSpecs().getElement(m_cspecId);
-				provider = sm.getProviders().getElement(m_providerId);
-			}
-			catch(CoreException e)
-			{
+				cspec = sm.getCSpecs().getElement(cspecId);
+				provider = sm.getProviders().getElement(providerId);
+			} catch (CoreException e) {
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}
 		}
 
-		return new Resolution(cspec, m_componentType, m_versionMatch, provider, m_materializable, m_request,
-				m_attributes, m_persistentId, m_repository, m_remoteName, m_contentType, m_lastModified, m_size,
-				m_unpack);
+		return new Resolution(cspec, componentType, versionMatch, provider, materializable, request, attributes, persistentId, repository,
+				remoteName, contentType, lastModified, size, unpack);
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_versionMatch = null;
-		m_cspecId = UUID.fromString(this.getStringValue(attrs, Resolution.ATTR_CSPEC_ID));
-		m_materializable = getBooleanValue(attrs, Resolution.ATTR_MATERIALIZABLE);
-		m_providerId = UUID.fromString(getStringValue(attrs, Resolution.ATTR_PROVIDER_ID));
-		m_componentType = getOptionalStringValue(attrs, Resolution.ATTR_COMPONENT_TYPE);
-		m_persistentId = getOptionalStringValue(attrs, Resolution.ATTR_PERSISTENT_ID);
-		m_repository = getStringValue(attrs, Resolution.ATTR_REPOSITORY);
-		m_remoteName = getOptionalStringValue(attrs, Resolution.ATTR_REMOTE_NAME);
-		m_contentType = getOptionalStringValue(attrs, Resolution.ATTR_CONTENT_TYPE);
-		m_size = getOptionalLongValue(attrs, Resolution.ATTR_SIZE, -1);
-		m_lastModified = getOptionalLongValue(attrs, Resolution.ATTR_LAST_MODIFIED, -1);
-		m_unpack = getOptionalBooleanValue(attrs, Resolution.ATTR_UNPACK, false);
-		m_request = null;
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		versionMatch = null;
+		cspecId = UUID.fromString(this.getStringValue(attrs, Resolution.ATTR_CSPEC_ID));
+		materializable = getBooleanValue(attrs, Resolution.ATTR_MATERIALIZABLE);
+		providerId = UUID.fromString(getStringValue(attrs, Resolution.ATTR_PROVIDER_ID));
+		componentType = getOptionalStringValue(attrs, Resolution.ATTR_COMPONENT_TYPE);
+		persistentId = getOptionalStringValue(attrs, Resolution.ATTR_PERSISTENT_ID);
+		repository = getStringValue(attrs, Resolution.ATTR_REPOSITORY);
+		remoteName = getOptionalStringValue(attrs, Resolution.ATTR_REMOTE_NAME);
+		contentType = getOptionalStringValue(attrs, Resolution.ATTR_CONTENT_TYPE);
+		size = getOptionalLongValue(attrs, Resolution.ATTR_SIZE, -1);
+		lastModified = getOptionalLongValue(attrs, Resolution.ATTR_LAST_MODIFIED, -1);
+		unpack = getOptionalBooleanValue(attrs, Resolution.ATTR_UNPACK, false);
+		request = null;
 
-		m_attributes.clear();
-		String attributes = getOptionalStringValue(attrs, Resolution.ATTR_ATTRIBUTES);
-		if(attributes != null)
-		{
-			for(String attr : attributes.split(",")) //$NON-NLS-1$
+		attributes.clear();
+		String attrStr = getOptionalStringValue(attrs, Resolution.ATTR_ATTRIBUTES);
+		if (attrStr != null) {
+			for (String attr : attrStr.split(",")) //$NON-NLS-1$
 			{
-				if(!m_attributes.contains(attr))
-					m_attributes.add(attr);
+				if (!attributes.contains(attr))
+					attributes.add(attr);
 			}
 		}
 	}
 
-	private String legacyComponentType() throws SAXException
-	{
+	private String legacyComponentType() throws SAXException {
 		AbstractHandler parent = getParentHandler();
 		ICSpecData cspec;
 		Provider provider;
-		if(parent instanceof IDWrapperHandler)
-		{
-			IDWrapperHandler wh = (IDWrapperHandler)parent;
-			cspec = (ICSpecData)wh.getWrapped(m_cspecId);
-			provider = (Provider)wh.getWrapped(m_providerId);
-		}
-		else
-		{
-			try
-			{
+		if (parent instanceof IDWrapperHandler) {
+			IDWrapperHandler wh = (IDWrapperHandler) parent;
+			cspec = (ICSpecData) wh.getWrapped(cspecId);
+			provider = (Provider) wh.getWrapped(providerId);
+		} else {
+			try {
 				StorageManager sm = StorageManager.getDefault();
-				cspec = sm.getCSpecs().getElement(m_cspecId);
-				provider = sm.getProviders().getElement(m_providerId);
-			}
-			catch(CoreException e)
-			{
+				cspec = sm.getCSpecs().getElement(cspecId);
+				provider = sm.getProviders().getElement(providerId);
+			} catch (CoreException e) {
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}
 		}
 		String[] ctypeIDs = provider.getComponentTypeIDs();
-		if(ctypeIDs.length == 1)
+		if (ctypeIDs.length == 1)
 			return ctypeIDs[0];
 
 		String ctype = cspec.getComponentIdentifier().getComponentTypeID();
-		if(ctype != null)
+		if (ctype != null)
 			return ctype;
 
-		if(ctypeIDs.length == 3 && ctypeIDs[0].equals(IComponentType.OSGI_BUNDLE)
-				&& ctypeIDs[1].equals(IComponentType.ECLIPSE_FEATURE) && ctypeIDs[2].equals(IComponentType.BUCKMINSTER))
+		if (ctypeIDs.length == 3 && ctypeIDs[0].equals(IComponentType.OSGI_BUNDLE) && ctypeIDs[1].equals(IComponentType.ECLIPSE_FEATURE)
+				&& ctypeIDs[2].equals(IComponentType.BUCKMINSTER))
 			return IComponentType.BUCKMINSTER;
 
 		return IComponentType.UNKNOWN;

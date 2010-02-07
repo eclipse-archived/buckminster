@@ -12,14 +12,12 @@ import org.eclipse.core.runtime.Plugin;
 /**
  * @author Thomas Hallgren
  */
-public class LogAwarePlugin extends Plugin
-{
-	private Logger m_logger;
+public class LogAwarePlugin extends Plugin {
+	private Logger logger;
 
-	public synchronized Logger getBundleLogger()
-	{
-		if(m_logger == null)
-			m_logger = new Logger(this.getBundle());
-		return m_logger;
+	public synchronized Logger getBundleLogger() {
+		if (logger == null)
+			logger = new Logger(this.getBundle());
+		return logger;
 	}
 }

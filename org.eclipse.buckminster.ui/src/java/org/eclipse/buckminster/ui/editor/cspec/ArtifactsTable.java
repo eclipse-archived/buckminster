@@ -35,96 +35,80 @@ import org.eclipse.swt.widgets.Text;
  * @author Karel Brezina
  * 
  */
-public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
-{
-	private Text m_basePathText;
+public class ArtifactsTable extends AttributesTable<ArtifactBuilder> {
+	private Text basePathText;
 
-	private List<PathWrapper> m_paths = new ArrayList<PathWrapper>();
+	private List<PathWrapper> paths = new ArrayList<PathWrapper>();
 
-	private SimpleTableEditor<PathWrapper> m_pathsEditor;
+	private SimpleTableEditor<PathWrapper> pathsEditor;
 
-	public ArtifactsTable(CSpecEditor editor, List<ArtifactBuilder> data, CSpecBuilder cspec, boolean readOnly)
-	{
+	public ArtifactsTable(CSpecEditor editor, List<ArtifactBuilder> data, CSpecBuilder cspec, boolean readOnly) {
 		super(editor, data, cspec, readOnly);
 	}
 
 	@Override
-	public void enableFields(boolean enabled)
-	{
+	public void enableFields(boolean enabled) {
 		super.enableFields(enabled);
 
-		m_basePathText.setEnabled(enabled);
-		m_pathsEditor.setEnabled(enabled);
+		basePathText.setEnabled(enabled);
+		pathsEditor.setEnabled(enabled);
 	}
 
 	@Override
-	public void fillStack(Composite stackComposite)
-	{
+	public void fillStack(Composite stackComposite) {
 		addStackMapping(Messages.general, createGeneralStackLayer(stackComposite));
 		addStackMapping(Messages.documentation, createDocumentationStackLayer(stackComposite));
 	}
 
 	@Override
-	protected ArtifactBuilder createNewRow()
-	{
+	protected ArtifactBuilder createNewRow() {
 		return getCSpecBuilder().createArtifactBuilder();
 	}
 
 	@Override
-	protected void refreshRow(ArtifactBuilder builder)
-	{
+	protected void refreshRow(ArtifactBuilder builder) {
 		super.refreshRow(builder);
 
 		IPath basePath = builder.getBase();
-		m_basePathText.setText(TextUtils.notNullString(basePath == null
-				? null
-				: basePath.toOSString()));
+		basePathText.setText(TextUtils.notNullString(basePath == null ? null : basePath.toOSString()));
 
-		CSpecEditorUtils.copyAndSortItems(builder.getPaths(), m_paths);
-		m_pathsEditor.refresh();
+		CSpecEditorUtils.copyAndSortItems(builder.getPaths(), paths);
+		pathsEditor.refresh();
 	}
 
 	@Override
-	protected void setRowValues(ArtifactBuilder builder) throws ValidatorException
-	{
+	protected void setRowValues(ArtifactBuilder builder) throws ValidatorException {
 		super.setRowValues(builder);
 
-		String basePathString = UiUtils.trimmedValue(m_basePathText);
+		String basePathString = UiUtils.trimmedValue(basePathText);
 		IPath basePath = null;
 
-		if(basePathString != null)
-		{
+		if (basePathString != null) {
 			basePath = Path.fromOSString(basePathString);
 		}
 		builder.setBase(basePath);
 
-		Set<IPath> paths = builder.getPaths();
+		Set<IPath> pathSet = builder.getPaths();
 
-		if(paths != null)
-		{
+		if (pathSet != null) {
 			builder.getPaths().clear();
 		}
-		for(PathWrapper path : m_paths)
-		{
+		for (PathWrapper path : paths) {
 			IPath p = path.getPath();
 
-			if(p == null)
+			if (p == null)
 				continue;
 
-			try
-			{
+			try {
 				builder.addPath(p);
-			}
-			catch(PathAlreadyDefinedException e)
-			{
+			} catch (PathAlreadyDefinedException e) {
 				throw new ValidatorException(e.getMessage());
 			}
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private Control createGeneralStackLayer(Composite stackComposite)
-	{
+	private Control createGeneralStackLayer(Composite stackComposite) {
 		Composite geComposite = new Composite(stackComposite, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginHeight = layout.marginWidth = 0;
@@ -142,8 +126,8 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 
 		UiUtils.createGridLabel(geComposite, Messages.base_path_with_colon, 1, 0, SWT.NONE);
 
-		m_basePathText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
-		m_basePathText.addModifyListener(FIELD_LISTENER);
+		basePathText = UiUtils.createGridText(geComposite, 1, 0, isReadOnly(), SWT.NONE);
+		basePathText.addModifyListener(FIELD_LISTENER);
 
 		UiUtils.createEmptyLabel(geComposite);
 		UiUtils.createEmptyLabel(geComposite);
@@ -153,15 +137,14 @@ public class ArtifactsTable extends AttributesTable<ArtifactBuilder>
 		gridData.horizontalSpan = 2;
 		label.setLayoutData(gridData);
 
-		PathsTable phTable = new PathsTable(m_paths, isReadOnly());
+		PathsTable phTable = new PathsTable(paths, isReadOnly());
 		phTable.addTableModifyListener(FIELD_LISTENER);
 
-		m_pathsEditor = new SimpleTableEditor<PathWrapper>(geComposite, phTable, null,
-				Messages.artifact_path_with_dash, null, null, SWT.NONE);
+		pathsEditor = new SimpleTableEditor<PathWrapper>(geComposite, phTable, null, Messages.artifact_path_with_dash, null, null, SWT.NONE);
 
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalSpan = 2;
-		m_pathsEditor.setLayoutData(gridData);
+		pathsEditor.setLayoutData(gridData);
 
 		geComposite.setData("focusControl", getNameText()); //$NON-NLS-1$
 

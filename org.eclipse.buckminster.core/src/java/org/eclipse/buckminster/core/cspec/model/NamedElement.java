@@ -14,44 +14,36 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * @author Thomas Hallgren
  */
-public abstract class NamedElement extends AbstractSaxableElement
-{
+public abstract class NamedElement extends AbstractSaxableElement {
 	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
 
-	private final String m_name;
+	private final String name;
 
-	protected NamedElement(NamedElement source)
-	{
-		m_name = source.getName();
+	protected NamedElement(NamedElement source) {
+		name = source.getName();
 	}
 
-	protected NamedElement(String name)
-	{
-		m_name = name;
+	protected NamedElement(String name) {
+		this.name = name;
 	}
 
-	public String getName()
-	{
-		return m_name;
+	public String getName() {
+		return name;
 	}
 
-	public String getNameAttributeName()
-	{
+	public String getNameAttributeName() {
 		return ATTR_NAME;
 	}
 
 	@Override
-	public String toString()
-	{
-		return m_name == null
-				? "null" //$NON-NLS-1$
-				: m_name;
+	public String toString() {
+		return name == null ? "null" //$NON-NLS-1$
+				: name;
 	}
 
 	@Override
-	protected void addAttributes(AttributesImpl attrs)
-	{
-		if(m_name != null)
-			Utils.addAttribute(attrs, this.getNameAttributeName(), m_name);
+	protected void addAttributes(AttributesImpl attrs) {
+		if (name != null)
+			Utils.addAttribute(attrs, this.getNameAttributeName(), name);
 	}
 }

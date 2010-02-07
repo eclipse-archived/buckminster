@@ -22,53 +22,43 @@ import org.eclipse.osgi.util.NLS;
  * 
  * @author Henrik Lindberg
  */
-public class PluginClassHandle<T>
-{
+public class PluginClassHandle<T> {
 	private final static String ATT_CLASS = "class"; //$NON-NLS-1$
 
-	protected final IConfigurationElement m_configElement;
+	protected final IConfigurationElement configElement;
 
-	private final Class<T> m_clazz;
+	private final Class<T> clazz;
 
-	private T m_handle;
+	private T handle;
 
-	private Plugin m_plugin;
+	private final Plugin plugin;
 
-	protected PluginClassHandle(Plugin plugin, IConfigurationElement configElement, Class<T> clazz,
-			String requiredElement)
-	{
-		m_plugin = plugin;
-		m_configElement = configElement;
-		m_clazz = clazz;
+	protected PluginClassHandle(Plugin plugin, IConfigurationElement configElement, Class<T> clazz, String requiredElement) {
+		this.plugin = plugin;
+		this.configElement = configElement;
+		this.clazz = clazz;
 
-		if(!configElement.getName().equals(requiredElement))
-			throw new IllegalArgumentException(NLS.bind(Messages.requiredElement_0_not_correct_expected_1,
-					configElement.getName(), requiredElement));
+		if (!configElement.getName().equals(requiredElement))
+			throw new IllegalArgumentException(NLS.bind(Messages.requiredElement_0_not_correct_expected_1, configElement.getName(), requiredElement));
 	}
 
-	public synchronized T getHandle()
-	{
-		if(m_handle != null)
-			return m_handle;
-		try
-		{
-			m_handle = m_clazz.cast(m_configElement.createExecutableExtension(ATT_CLASS));
+	public synchronized T getHandle() {
+		if (handle != null)
+			return handle;
+		try {
+			handle = clazz.cast(configElement.createExecutableExtension(ATT_CLASS));
+		} catch (CoreException e) {
+			logLoadError(configElement, e);
 		}
-		catch(CoreException e)
-		{
-			logLoadError(m_configElement, e);
-		}
-		return m_handle;
+		return handle;
 	}
 
-	protected void logLoadError(IConfigurationElement configElement, Exception e)
-	{
-		String name = m_configElement.getName();
-		String msg = NLS.bind(Messages.failed_to_load_extension_point_element_0_in_1, (name == null
-				? "[" + Messages.missing_name_attribute + "]" //$NON-NLS-1$ //$NON-NLS-2$
-				: name), configElement.getDeclaringExtension().getNamespaceIdentifier());
-		ILog log = m_plugin.getLog();
+	protected void logLoadError(IConfigurationElement configElem, Exception e) {
+		String name = configElem.getName();
+		String msg = NLS.bind(Messages.failed_to_load_extension_point_element_0_in_1, (name == null ? "[" + Messages.missing_name_attribute + "]" //$NON-NLS-1$ //$NON-NLS-2$
+		: name), configElem.getDeclaringExtension().getNamespaceIdentifier());
+		ILog log = plugin.getLog();
 
-		log.log(new Status(IStatus.ERROR, m_plugin.getBundle().getSymbolicName(), msg));
+		log.log(new Status(IStatus.ERROR, plugin.getBundle().getSymbolicName(), msg));
 	}
 }

@@ -17,34 +17,29 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-public class ElementRefHandler extends ExtensionAwareHandler
-{
+public class ElementRefHandler extends ExtensionAwareHandler {
 	public static final String ATTR_REFID = "refId"; //$NON-NLS-1$
 
-	private final String m_tag;
+	private final String tag;
 
-	private UUID m_refId;
+	private UUID refId;
 
-	public ElementRefHandler(AbstractHandler parent, String name)
-	{
+	public ElementRefHandler(AbstractHandler parent, String name) {
 		super(parent);
-		m_tag = name;
+		tag = name;
 	}
 
 	@Override
-	public String getTAG()
-	{
-		return m_tag;
+	public String getTAG() {
+		return tag;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
-		m_refId = UUID.fromString(this.getStringValue(attrs, ATTR_REFID));
+	public void handleAttributes(Attributes attrs) throws SAXException {
+		refId = UUID.fromString(this.getStringValue(attrs, ATTR_REFID));
 	}
 
-	final UUID getRefId()
-	{
-		return m_refId;
+	final UUID getRefId() {
+		return refId;
 	}
 }

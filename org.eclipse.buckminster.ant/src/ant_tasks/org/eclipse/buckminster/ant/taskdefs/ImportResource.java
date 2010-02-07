@@ -42,13 +42,118 @@ import org.apache.tools.ant.types.Path;
  * Import targets from a resource in the current classpath.
  * <p>
  */
-public class ImportResource extends Task
-{
-	private Path m_classpath;
+public class ImportResource extends Task {
+	private static void closeStream(InputStream stream) {
+		if (stream == null)
+			return;
+		try {
+			stream.close();
+		} catch (IOException e) {
+		}
+	}
 
-	private String m_resource;
+	private static void closeStream(OutputStream stream) {
+		if (stream == null)
+			return;
+		try {
+			stream.close();
+		} catch (IOException e) {
+		}
+	}
 
-	private boolean m_optional;
+	private Path classpath;
+
+	private String resource;
+
+	private boolean optional;
+
+	/**
+	 * Adds a path to the classpath.
+	 * 
+	 * @return a classpath to be configured.
+	 */
+	public Path createClasspath() {
+		if (classpath == null)
+			classpath = new Path(getProject());
+		return classpath.createPath();
+	}
+
+	/**
+	 * This relies on the task order model.
+	 */
+	@Override
+	public void execute() {
+		try {
+			if (resource == null) {
+				throw new BuildException("import requires resource attribute");
+			}
+			if (this.getOwningTarget() == null || !"".equals(getOwningTarget().getName())) {
+				throw new BuildException("import only allowed as a top-level task");
+			}
+
+			Project p = this.getProject();
+			ProjectHelper helper = (ProjectHelper) p.getReference("ant.projectHelper");
+			Vector<?> importStack = helper.getImportStack();
+
+			if (importStack.size() == 0) {
+				// this happens if ant is used with a project
+				// helper that doesn't set the import.
+				throw new BuildException("import requires support in ProjectHelper");
+			}
+
+			p.log("Importing resource " + resource, Project.MSG_VERBOSE);
+
+			if (classpath != null) {
+				p.log("using user supplied classpath: " + classpath, Project.MSG_DEBUG);
+				classpath = classpath.concatSystemClasspath("ignore");
+			} else {
+				classpath = new Path(p);
+				classpath = classpath.concatSystemClasspath("only");
+				p.log("using system classpath: " + classpath, Project.MSG_DEBUG);
+			}
+
+			AntClassLoader loader = new AntClassLoader(p.getCoreLoader(), p, classpath, false);
+			URL resourceURL = loader.getResource(resource);
+
+			if (resourceURL == null) {
+				String message = "Cannot find resource " + resource;
+				if (optional) {
+					p.log(message, Project.MSG_VERBOSE);
+					return;
+				}
+				throw new BuildException(message);
+			}
+
+			File resourceFile;
+			boolean isLocal = "file".equalsIgnoreCase(resourceURL.getProtocol());
+			if (isLocal)
+				resourceFile = new File(resourceURL.getPath());
+			else {
+				InputStream input = null;
+				OutputStream output = null;
+				try {
+					byte[] buffer = new byte[4096];
+					int count;
+					input = resourceURL.openStream();
+					resourceFile = File.createTempFile("import-", ".ant");
+					resourceFile.deleteOnExit();
+					output = new FileOutputStream(resourceFile);
+					while ((count = input.read(buffer)) > 0)
+						output.write(buffer, 0, count);
+				} catch (IOException e) {
+					throw new BuildException(e.getMessage());
+				} finally {
+					closeStream(input);
+					closeStream(output);
+				}
+			}
+			helper.parse(p, resourceFile);
+			if (!isLocal)
+				resourceFile.delete();
+		} catch (BuildException ex) {
+			throw ProjectHelper.addLocationToBuildException(ex, getLocation());
+		}
+	}
 
 	/**
 	 * Set the classpath to be used for this compilation.
@@ -56,24 +161,11 @@ public class ImportResource extends Task
 	 * @param cp
 	 *            the classpath to be used.
 	 */
-	public void setClasspath(Path cp)
-	{
-		if(m_classpath == null)
-			m_classpath = cp;
+	public void setClasspath(Path cp) {
+		if (classpath == null)
+			classpath = cp;
 		else
-			m_classpath.append(cp);
-	}
-
-	/**
-	 * Adds a path to the classpath.
-	 * 
-	 * @return a classpath to be configured.
-	 */
-	public Path createClasspath()
-	{
-		if(m_classpath == null)
-			m_classpath = new Path(getProject());
-		return m_classpath.createPath();
+			classpath.append(cp);
 	}
 
 	/**
@@ -82,9 +174,8 @@ public class ImportResource extends Task
 	 * @param optional
 	 *            if true ignore files that are not present, default is false
 	 */
-	public void setOptional(boolean optional)
-	{
-		m_optional = optional;
+	public void setOptional(boolean optional) {
+		this.optional = optional;
 	}
 
 	/**
@@ -93,119 +184,9 @@ public class ImportResource extends Task
 	 * @param resource
 	 *            the name of the resource
 	 */
-	public void setResource(String resource)
-	{
-		if(resource != null && resource.startsWith("/"))
+	public void setResource(String resource) {
+		if (resource != null && resource.startsWith("/"))
 			resource = resource.substring(1);
-		m_resource = resource;
-	}
-
-	/**
-	 * This relies on the task order model.
-	 */
-	@Override
-	public void execute()
-	{
-		try
-		{
-			if(m_resource == null)
-			{
-				throw new BuildException("import requires resource attribute");
-			}
-			if(this.getOwningTarget() == null || !"".equals(getOwningTarget().getName()))
-			{
-				throw new BuildException("import only allowed as a top-level task");
-			}
-
-			Project p = this.getProject();
-			ProjectHelper helper = (ProjectHelper)p.getReference("ant.projectHelper");
-			Vector<?> importStack = helper.getImportStack();
-
-			if(importStack.size() == 0)
-			{
-				// this happens if ant is used with a project
-				// helper that doesn't set the import.
-				throw new BuildException("import requires support in ProjectHelper");
-			}
-
-			p.log("Importing resource " + m_resource, Project.MSG_VERBOSE);
-
-			if(m_classpath != null)
-			{
-				p.log("using user supplied classpath: " + m_classpath, Project.MSG_DEBUG);
-				m_classpath = m_classpath.concatSystemClasspath("ignore");
-			}
-			else
-			{
-				m_classpath = new Path(p);
-				m_classpath = m_classpath.concatSystemClasspath("only");
-				p.log("using system classpath: " + m_classpath, Project.MSG_DEBUG);
-			}
-
-			AntClassLoader loader = new AntClassLoader(p.getCoreLoader(), p, m_classpath, false);
-			URL resourceURL = loader.getResource(m_resource);
-
-			if(resourceURL == null)
-			{
-				String message = "Cannot find resource " + m_resource;
-				if(m_optional)
-				{
-					p.log(message, Project.MSG_VERBOSE);
-					return;
-				}
-				throw new BuildException(message);
-			}
-			
-			File resourceFile;
-			boolean isLocal = "file".equalsIgnoreCase(resourceURL.getProtocol());
-			if(isLocal)
-				resourceFile = new File(resourceURL.getPath());
-			else
-			{
-				InputStream input = null;
-				OutputStream output = null;
-				try
-				{
-					byte[] buffer = new byte[4096];
-					int count;
-					input = resourceURL.openStream();
-					resourceFile = File.createTempFile("import-", ".ant");
-					resourceFile.deleteOnExit();
-					output = new FileOutputStream(resourceFile);
-					while((count = input.read(buffer)) > 0)
-						output.write(buffer, 0, count);
-				}
-				catch(IOException e)
-				{
-					throw new BuildException(e.getMessage());
-				}
-				finally
-				{
-					closeStream(input);
-					closeStream(output);
-				}
-			}
-			helper.parse(p, resourceFile);
-			if(!isLocal)
-				resourceFile.delete();
-		}
-		catch(BuildException ex)
-		{
-			throw ProjectHelper.addLocationToBuildException(ex, getLocation());
-		}
-	}
-
-	private static void closeStream(OutputStream stream)
-	{
-		if(stream == null)
-			return;
-		try { stream.close(); } catch(IOException e) {}
-	}
-	
-	private static void closeStream(InputStream stream)
-	{
-		if(stream == null)
-			return;
-		try { stream.close(); } catch(IOException e) {}
+		this.resource = resource;
 	}
 }

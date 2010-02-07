@@ -21,83 +21,63 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 
-public class RecursiveConditioner extends RecursivePack200
-{
-	private static void emitEclipseInf(JarOutputStream jarOut, JarInfo jarInfo, ZipEntry entry) throws IOException
-	{
+public class RecursiveConditioner extends RecursivePack200 {
+	private static void emitEclipseInf(JarOutputStream jarOut, JarInfo jarInfo, ZipEntry entry) throws IOException {
 		jarOut.putNextEntry(entry);
 		Map<String, String> eclipseInf = jarInfo.getEclipseInf();
 		eclipseInf.put(JarInfo.PROP_PACK200_CONDITIONED, "true"); //$NON-NLS-1$
 		BMProperties.store(eclipseInf, jarOut, "Processed using Jarprocessor"); //$NON-NLS-1$		
 	}
 
-	public RecursiveConditioner(List<String> defaultArgs)
-	{
+	public RecursiveConditioner(List<String> defaultArgs) {
 		super(defaultArgs);
 	}
 
-	public boolean condition(File jarFile, File conditionedJarFile) throws CoreException
-	{
+	public boolean condition(File jarFile, File conditionedJarFile) throws CoreException {
 		Logger log = Buckminster.getLogger();
 		InputStream input = null;
 		OutputStream output = null;
 		String fileName = jarFile.getAbsolutePath();
-		try
-		{
+		try {
 			input = new ZipInputStream(new FileInputStream(jarFile));
-			JarInfo jarInfo = JarInfo.getJarInfo(null, fileName, (ZipInputStream)input);
+			JarInfo jarInfo = JarInfo.getJarInfo(null, fileName, (ZipInputStream) input);
 			IOUtils.close(input);
 
 			boolean condition = true;
-			if(jarInfo.isConditioned())
-			{
+			if (jarInfo.isConditioned()) {
 				log.debug("Conditioner: skipping %s, it is already conditioned", fileName); //$NON-NLS-1$
 				condition = false;
-			}
-			else if(jarInfo.isSigned())
-			{
+			} else if (jarInfo.isSigned()) {
 				log.debug("Conditioner: skipping %s, it is already signed", fileName); //$NON-NLS-1$
 				condition = false;
-			}
-			else if(jarInfo.isExcludeSign())
-			{
+			} else if (jarInfo.isExcludeSign()) {
 				log.debug("Conditioner: skipping %s, it is excluded from signing", fileName); //$NON-NLS-1$
 				condition = false;
-			}
-			else if(!(jarInfo.hasClasses() || (jarInfo.isNested() && !jarInfo.isExcludeChildrenSign())))
-			{
-				log.debug(
-						"Conditioner: skipping %s, it has no classes and has no nested jars eligable for signing", fileName); //$NON-NLS-1$
+			} else if (!(jarInfo.hasClasses() || (jarInfo.isNested() && !jarInfo.isExcludeChildrenSign()))) {
+				log.debug("Conditioner: skipping %s, it has no classes and has no nested jars eligable for signing", fileName); //$NON-NLS-1$
 				condition = false;
 			}
 
 			input = new FileInputStream(jarFile);
 			output = new FileOutputStream(conditionedJarFile);
-			if(condition)
+			if (condition)
 				nestedConditioning(input, jarInfo, output);
 			else
 				IOUtils.copy(input, output, null);
 			return condition;
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.fromMessage(e, "Unable to condition %s", fileName); //$NON-NLS-1$
-		}
-		finally
-		{
+		} finally {
 			IOUtils.close(input);
 			IOUtils.close(output);
 		}
 	}
 
-	private void nestedConditioning(final InputStream input, final JarInfo jarInfo, OutputStream conditioned)
-			throws CoreException
-	{
+	private void nestedConditioning(final InputStream input, final JarInfo jarInfo, OutputStream conditioned) throws CoreException {
 		final ProducerThread jarPumper = new ProducerThread("Pack200 jarPumper") //$NON-NLS-1$
 		{
 			@Override
-			protected void internalRun(OutputStream writer) throws Exception
-			{
+			protected void internalRun(OutputStream writer) throws Exception {
 				JarOutputStream jarOut = new JarOutputStream(writer);
 				ZipInputStream jarIn = new ZipInputStream(input);
 
@@ -105,30 +85,25 @@ public class RecursiveConditioner extends RecursivePack200
 				boolean hasEclipseInf = false;
 
 				ZipEntry entry;
-				while((entry = jarIn.getNextEntry()) != null)
-				{
+				while ((entry = jarIn.getNextEntry()) != null) {
 					String name = entry.getName();
 					entry = createEntry(entry);
-					if(name.equals(META_INF + ECLIPSE_INF))
-					{
-						if(hasEclipseInf)
+					if (name.equals(META_INF + ECLIPSE_INF)) {
+						if (hasEclipseInf)
 							continue;
 						emitEclipseInf(jarOut, jarInfo, entry);
 						hasEclipseInf = true;
 						continue;
 					}
 
-					if(entry.isDirectory())
-					{
+					if (entry.isDirectory()) {
 						jarOut.putNextEntry(entry);
 						continue;
 					}
 
-					if(name.endsWith(JAR_SUFFIX) && !jarInfo.isExcludeChildrenSign())
-					{
+					if (name.endsWith(JAR_SUFFIX) && !jarInfo.isExcludeChildrenSign()) {
 						JarInfo nested = jarInfo.getNestedInfo(name);
-						if(nested != null && !(nested.isConditioned() || nested.isSigned() || nested.isExcludeSign()))
-						{
+						if (nested != null && !(nested.isConditioned() || nested.isSigned() || nested.isExcludeSign())) {
 							jarOut.putNextEntry(entry);
 							nestedConditioning(jarIn, nested, jarOut);
 							continue;
@@ -137,11 +112,9 @@ public class RecursiveConditioner extends RecursivePack200
 
 					jarOut.putNextEntry(entry);
 					IOUtils.copy(jarIn, jarOut, null);
-					if(!metaAddingDone && name.equals(JarFile.MANIFEST_NAME))
-					{
+					if (!metaAddingDone && name.equals(JarFile.MANIFEST_NAME)) {
 						metaAddingDone = true;
-						if(!jarInfo.hasEclipseInf())
-						{
+						if (!jarInfo.hasEclipseInf()) {
 							// Create the eclipse.inf here so that it ends up
 							emitEclipseInf(jarOut, jarInfo, new ZipEntry(META_INF + ECLIPSE_INF));
 							hasEclipseInf = true;
@@ -156,14 +129,10 @@ public class RecursiveConditioner extends RecursivePack200
 		ProducerThread packPumper = new ProducerThread("Pack200 packPumper") //$NON-NLS-1$
 		{
 			@Override
-			protected void internalRun(OutputStream writer) throws Exception
-			{
-				try
-				{
+			protected void internalRun(OutputStream writer) throws Exception {
+				try {
 					pack(jarInfo, jarPumper.getReaderStream(), writer);
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 					jarPumper.drain(jarInfo, e);
 				}
 				jarPumper.drain(jarInfo, null);
@@ -171,15 +140,12 @@ public class RecursiveConditioner extends RecursivePack200
 		};
 
 		packPumper.start();
-		try
-		{
+		try {
 			JarOutputStream jarOut = new JarOutputStream(conditioned);
 			Unpacker unpacker = getUnpacker();
 			unpacker.unpack(new NonClosingInputStream(packPumper.getReaderStream()), jarOut);
 			jarOut.finish();
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			packPumper.drain(jarInfo, e);
 		}
 		packPumper.drain(jarInfo, null);

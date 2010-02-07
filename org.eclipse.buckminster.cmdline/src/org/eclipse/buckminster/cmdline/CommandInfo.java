@@ -20,8 +20,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.util.NLS;
 
-public class CommandInfo
-{
+public class CommandInfo {
 	public static final int NORMAL = 0;
 
 	public static final int DEPRECATED = 1;
@@ -46,68 +45,59 @@ public class CommandInfo
 
 	static private final String ADD_HELP_FLAGS_ATTRIBUTE = "addhelpflags"; //$NON-NLS-1$
 
-	static private CommandInfo[] s_commandInfos;
+	static private CommandInfo[] commandInfos;
 
-	public static CommandInfo getCommand(String commandName) throws UsageException
-	{
+	public static CommandInfo getCommand(String commandName) throws UsageException {
 		ArrayList<CommandInfo> matches = new ArrayList<CommandInfo>();
 		CommandInfo[] implementors = CommandInfo.getImplementors();
 		int top = implementors.length;
 		StringBuffer sb = new StringBuffer();
-		for(int idx = 0; idx < top; ++idx)
-		{
+		for (int idx = 0; idx < top; ++idx) {
 			CommandInfo ci = implementors[idx];
-			if(ci.getStatus() == CommandInfo.DISABLED)
+			if (ci.getStatus() == CommandInfo.DISABLED)
 				continue;
 
 			String[] allNames = ci.getAllNames();
-			for(int nidx = 0; nidx < allNames.length; ++nidx)
-			{
+			for (int nidx = 0; nidx < allNames.length; ++nidx) {
 				String[] parts = allNames[nidx].split("\\."); //$NON-NLS-1$
 				int len = parts.length;
-				for(int i = 0; i < len; i++)
-				{
+				for (int i = 0; i < len; i++) {
 					sb.setLength(0);
-					for(int j = len - i - 1; j < len; j++)
-					{
-						if(sb.length() != 0)
+					for (int j = len - i - 1; j < len; j++) {
+						if (sb.length() != 0)
 							sb.append('.');
 						sb.append(parts[j]);
 					}
-					if(sb.toString().equals(commandName))
+					if (sb.toString().equals(commandName))
 						matches.add(ci);
 				}
 			}
 		}
 
 		int foundMatches = matches.size();
-		if(foundMatches == 0)
+		if (foundMatches == 0)
 			throw new UsageException(NLS.bind(Messages.CommandInfo_Command_0_not_found, commandName));
 
-		if(foundMatches > 1)
-		{
+		if (foundMatches > 1) {
 			sb.setLength(0);
 			sb.append(NLS.bind(Messages.CommandInfo_Multiple_matches_for_0_for, commandName));
-			for(int idx = 0; idx < foundMatches; ++idx)
-			{
+			for (int idx = 0; idx < foundMatches; ++idx) {
 				CommandInfo ci = matches.get(idx);
 				sb.append(ci.getFullName());
 				sb.append(NLS.bind(Messages.CommandInfo_implemented_by_class_0, ci.getImplementingClass()));
-				if(idx < foundMatches - 1)
+				if (idx < foundMatches - 1)
 					sb.append(", "); //$NON-NLS-1$
 			}
 			throw new UsageException(sb.toString());
 		}
 
 		CommandInfo ci = matches.get(0);
-		if(ci.getStatus() == DEPRECATED)
-		{
+		if (ci.getStatus() == DEPRECATED) {
 			sb.setLength(0);
 			sb.append(NLS.bind(Messages.CommandInfo_Command_0_is_deprecated, ci.getName()));
 
 			String by = ci.getDeprecatedBy();
-			if(by != null)
-			{
+			if (by != null) {
 				sb.append(NLS.bind(Messages.CommandInfo_Use_command_0_instead, by));
 			}
 			Buckminster.getLogger().warning(sb.toString());
@@ -115,137 +105,120 @@ public class CommandInfo
 		return ci;
 	}
 
-	static public synchronized CommandInfo[] getImplementors()
-	{
-		if(s_commandInfos == null)
-		{
+	static public synchronized CommandInfo[] getImplementors() {
+		if (commandInfos == null) {
 			IExtensionRegistry er = Platform.getExtensionRegistry();
 			IConfigurationElement[] elems = er.getConfigurationElementsFor(COMMAND_EXTPOINT);
 
-			s_commandInfos = new CommandInfo[elems.length];
-			for(int i = 0; i < elems.length; i++)
-				s_commandInfos[i] = new CommandInfo(elems[i]);
+			commandInfos = new CommandInfo[elems.length];
+			for (int i = 0; i < elems.length; i++)
+				commandInfos[i] = new CommandInfo(elems[i]);
 		}
 
-		return s_commandInfos;
+		return commandInfos;
 	}
 
-	private static int parseCommandStatus(String statusString)
-	{
+	private static int parseCommandStatus(String statusString) {
 		int status;
-		if("normal".equalsIgnoreCase(statusString)) //$NON-NLS-1$
+		if ("normal".equalsIgnoreCase(statusString)) //$NON-NLS-1$
 			status = NORMAL;
-		else if("deprecated".equalsIgnoreCase(statusString)) //$NON-NLS-1$
+		else if ("deprecated".equalsIgnoreCase(statusString)) //$NON-NLS-1$
 			status = DEPRECATED;
-		else if("hidden".equalsIgnoreCase(statusString)) //$NON-NLS-1$
+		else if ("hidden".equalsIgnoreCase(statusString)) //$NON-NLS-1$
 			status = HIDDEN;
-		else if("disabled".equalsIgnoreCase(statusString)) //$NON-NLS-1$
+		else if ("disabled".equalsIgnoreCase(statusString)) //$NON-NLS-1$
 			status = DISABLED;
 		else
-			throw new IllegalArgumentException(NLS.bind(Messages.CommandInfo__0_is_not_a_valid_command_status,
-					statusString));
+			throw new IllegalArgumentException(NLS.bind(Messages.CommandInfo__0_is_not_a_valid_command_status, statusString));
 		return status;
 	}
 
-	private final String[] m_aliases;
+	private final String[] aliases;
 
-	private final IConfigurationElement m_cfgElement;
+	private final IConfigurationElement cfgElement;
 
-	private final String m_deprecatedBy;
+	private final String deprecatedBy;
 
-	private final String m_name;
+	private final String name;
 
-	private final String[] m_allNames;
+	private final String[] allNames;
 
-	private final String m_namespace;
+	private final String namespace;
 
-	private final int m_status;
+	private final int status;
 
-	private CommandInfo(IConfigurationElement cfgElement)
-	{
-		m_cfgElement = cfgElement;
-		m_status = parseCommandStatus(cfgElement.getAttribute(STATUS_ATTRIBUTE));
+	private CommandInfo(IConfigurationElement cfgElement) {
+		this.cfgElement = cfgElement;
+		status = parseCommandStatus(cfgElement.getAttribute(STATUS_ATTRIBUTE));
 
-		IExtension ext = m_cfgElement.getDeclaringExtension();
+		IExtension ext = cfgElement.getDeclaringExtension();
 		StringBuffer ns = new StringBuffer(ext.getNamespaceIdentifier());
 
-		String name = cfgElement.getAttribute(NAME_ATTRIBUTE);
-		int period = name.lastIndexOf(PERIOD_CHARACTER);
-		if(period != -1)
-		{
-			ns.append(PERIOD_CHARACTER).append(name.substring(0, period));
-			name = name.substring(period + 1);
+		String n = cfgElement.getAttribute(NAME_ATTRIBUTE);
+		int period = n.lastIndexOf(PERIOD_CHARACTER);
+		if (period != -1) {
+			ns.append(PERIOD_CHARACTER).append(n.substring(0, period));
+			n = n.substring(period + 1);
 		}
-		m_namespace = ns.toString();
-		m_name = name;
+		namespace = ns.toString();
+		name = n;
 
 		IConfigurationElement[] aliasElements = cfgElement.getChildren(ALIAS_ELEMENTS);
-		m_aliases = new String[aliasElements.length];
-		for(int i = 0; i < m_aliases.length; i++)
-		{
+		aliases = new String[aliasElements.length];
+		for (int i = 0; i < aliases.length; i++) {
 			String alias = aliasElements[i].getAttribute(NAME_ATTRIBUTE);
-			if(alias.indexOf(PERIOD_CHARACTER) != -1)
+			if (alias.indexOf(PERIOD_CHARACTER) != -1)
 				throw new IllegalCommandAliasException(alias);
-			m_aliases[i] = alias;
+			aliases[i] = alias;
 		}
 
-		m_allNames = new String[1 + m_aliases.length];
-		m_allNames[0] = m_namespace + PERIOD_CHARACTER + m_name;
-		for(int i = 0; i < m_aliases.length; i++)
-			m_allNames[i + 1] = m_namespace + PERIOD_CHARACTER + m_aliases[i];
+		allNames = new String[1 + aliases.length];
+		allNames[0] = namespace + PERIOD_CHARACTER + n;
+		for (int i = 0; i < aliases.length; i++)
+			allNames[i + 1] = namespace + PERIOD_CHARACTER + aliases[i];
 
-		m_deprecatedBy = cfgElement.getAttribute(DEPRECATED_BY_ATTRIBUTE);
+		deprecatedBy = cfgElement.getAttribute(DEPRECATED_BY_ATTRIBUTE);
 	}
 
-	public AbstractCommand createInstance() throws CoreException
-	{
-		AbstractCommand cmd = (AbstractCommand)m_cfgElement.createExecutableExtension(CLASS_ATTRIBUTE);
-		cmd.init(Boolean.valueOf(m_cfgElement.getAttribute(ADD_HELP_FLAGS_ATTRIBUTE)).booleanValue());
+	public AbstractCommand createInstance() throws CoreException {
+		AbstractCommand cmd = (AbstractCommand) cfgElement.createExecutableExtension(CLASS_ATTRIBUTE);
+		cmd.init(Boolean.valueOf(cfgElement.getAttribute(ADD_HELP_FLAGS_ATTRIBUTE)).booleanValue());
 		return cmd;
 	}
 
-	public String[] getAliases()
-	{
-		return m_aliases;
+	public String[] getAliases() {
+		return aliases;
 	}
 
-	public String[] getAllNames()
-	{
-		return m_allNames;
+	public String[] getAllNames() {
+		return allNames;
 	}
 
-	public IConfigurationElement getCfgElement()
-	{
-		return m_cfgElement;
+	public IConfigurationElement getCfgElement() {
+		return cfgElement;
 	}
 
-	public String getDeprecatedBy()
-	{
-		return m_deprecatedBy;
+	public String getDeprecatedBy() {
+		return deprecatedBy;
 	}
 
-	public String getFullName()
-	{
-		return m_allNames[0];
+	public String getFullName() {
+		return allNames[0];
 	}
 
-	public String getImplementingClass()
-	{
-		return m_cfgElement.getAttribute(CLASS_ATTRIBUTE);
+	public String getImplementingClass() {
+		return cfgElement.getAttribute(CLASS_ATTRIBUTE);
 	}
 
-	public String getName()
-	{
-		return m_name;
+	public String getName() {
+		return name;
 	}
 
-	public String getNamespace()
-	{
-		return m_namespace;
+	public String getNamespace() {
+		return namespace;
 	}
 
-	public int getStatus()
-	{
-		return m_status;
+	public int getStatus() {
+		return status;
 	}
 }

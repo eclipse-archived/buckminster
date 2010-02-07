@@ -24,45 +24,35 @@ import org.xml.sax.SAXParseException;
 /**
  * @author Thomas Hallgren
  */
-public class CSpecParser extends AbstractParser<CSpec> implements ChildPoppedListener
-{
-	private CSpec m_cSpec;
+public class CSpecParser extends AbstractParser<CSpec> implements ChildPoppedListener {
+	private CSpec cSpec;
 
-	public CSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating) throws CoreException
-	{
-		super(parserExtensions, new String[] { XMLConstants.BM_COMMON_NS, XMLConstants.BM_CSPEC_NS,
-				XMLConstants.XHTML_NS, XMLConstants.XML_NS }, new String[] { XMLConstants.BM_COMMON_RESOURCE,
-				XMLConstants.BM_CSPEC_RESOURCE, XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE }, validating);
+	public CSpecParser(List<ParserFactory.ParserExtension> parserExtensions, boolean validating) throws CoreException {
+		super(parserExtensions, new String[] { XMLConstants.BM_COMMON_NS, XMLConstants.BM_CSPEC_NS, XMLConstants.XHTML_NS, XMLConstants.XML_NS },
+				new String[] { XMLConstants.BM_COMMON_RESOURCE, XMLConstants.BM_CSPEC_RESOURCE, XMLConstants.XHTML_RESOURCE,
+						XMLConstants.XML_RESOURCE }, validating);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		try
-		{
-			m_cSpec = ((CSpecHandler)child).getCSpec();
-			m_cSpec.verifyConsistency();
-		}
-		catch(CoreException e)
-		{
+	public void childPopped(ChildHandler child) throws SAXException {
+		try {
+			cSpec = ((CSpecHandler) child).getCSpec();
+			cSpec.verifyConsistency();
+		} catch (CoreException e) {
 			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
 		}
 	}
 
-	public CSpec parse(String systemId, InputStream input) throws CoreException
-	{
+	public CSpec parse(String systemId, InputStream input) throws CoreException {
 		this.parseInput(systemId, input);
-		return m_cSpec;
+		return cSpec;
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-	{
-		if(CSpecHandler.TAG.equals(localName))
-		{
+	public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+		if (CSpecHandler.TAG.equals(localName)) {
 			CSpecHandler rmh = new CSpecHandler(this);
 			this.pushHandler(rmh, attrs);
-		}
-		else
+		} else
 			super.startElement(uri, localName, qName, attrs);
 	}
 }

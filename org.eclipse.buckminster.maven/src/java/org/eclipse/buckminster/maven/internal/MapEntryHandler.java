@@ -22,58 +22,49 @@ import org.xml.sax.SAXException;
 /**
  * @author Thomas Hallgren
  */
-class MapEntryHandler extends GroupAndArtifactHandler implements ChildPoppedListener
-{
-	private GroupAndArtifactHandler m_aliasHandler;
+class MapEntryHandler extends GroupAndArtifactHandler implements ChildPoppedListener {
+	private GroupAndArtifactHandler aliasHandler;
 
-	private List<GroupAndArtifact> m_aliases;
+	private List<GroupAndArtifact> aliases;
 
-	private String m_name;
+	private String name;
 
-	public MapEntryHandler(AbstractHandler parent)
-	{
+	public MapEntryHandler(AbstractHandler parent) {
 		super(parent);
 	}
 
-	public void childPopped(ChildHandler child) throws SAXException
-	{
-		if(m_aliases == null)
-			m_aliases = new ArrayList<GroupAndArtifact>();
-		m_aliases.add(((GroupAndArtifactHandler)child).createEntry());
+	public void childPopped(ChildHandler child) throws SAXException {
+		if (aliases == null)
+			aliases = new ArrayList<GroupAndArtifact>();
+		aliases.add(((GroupAndArtifactHandler) child).createEntry());
 	}
 
 	@Override
-	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException
-	{
+	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
-		if(localName.equals(GroupAndArtifact.ALIAS_TAG))
-		{
-			if(m_aliasHandler == null)
-				m_aliasHandler = new GroupAndArtifactHandler(this);
-			ch = m_aliasHandler;
-		}
-		else
+		if (localName.equals(GroupAndArtifact.ALIAS_TAG)) {
+			if (aliasHandler == null)
+				aliasHandler = new GroupAndArtifactHandler(this);
+			ch = aliasHandler;
+		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
 	}
 
 	@Override
-	public void handleAttributes(Attributes attrs) throws SAXException
-	{
+	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		m_name = getStringValue(attrs, MapEntry.ATTR_NAME);
-		if(m_aliases != null)
-			m_aliases.clear();
+		name = getStringValue(attrs, MapEntry.ATTR_NAME);
+		if (aliases != null)
+			aliases.clear();
 	}
 
 	@Override
-	GroupAndArtifact createEntry()
-	{
-		return new MapEntry(m_name, getGroup(), getArtifact(), m_aliases);
+	GroupAndArtifact createEntry() {
+		return new MapEntry(name, getGroup(), getArtifact(), aliases);
 	}
 
-	String getName()
-	{
-		return m_name;
+	String getName() {
+		return name;
 	}
 }

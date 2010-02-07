@@ -2,8 +2,7 @@ package org.eclipse.buckminster.installer;
 
 import org.eclipse.osgi.util.NLS;
 
-public class Messages extends NLS
-{
+public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.installer.messages"; //$NON-NLS-1$
 
 	public static String feature_listing_heading;
@@ -42,13 +41,11 @@ public class Messages extends NLS
 
 	public static String URL_0_malformed;
 
-	static
-	{
+	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private Messages()
-	{
+	private Messages() {
 	}
 }
