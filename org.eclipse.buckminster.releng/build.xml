@@ -76,7 +76,7 @@
 					<arg value="-data" />
 					<arg value="@{workspace}" />
 					<arg value="--loglevel" />
-					<arg value="INFO" />
+					<arg value="${buckminster.loglevel}" />
 					<globargs />
 					<arg value="@{command}" />
 					<arg value="-P" />

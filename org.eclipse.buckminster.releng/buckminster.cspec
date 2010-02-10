@@ -31,8 +31,8 @@
                 <cs:property key="targets" value="copy.group"/>
             </cs:actorProperties>
             <cs:prerequisites alias="action.requirements">
-                <cs:attribute name="clear.site.eclipse" contributor="false"/>
                 <cs:attribute name="site.p2" component="org.eclipse.buckminster.site.eclipse"/>
+                <cs:attribute name="clear.site.eclipse" contributor="false"/>
             </cs:prerequisites>
             <cs:products alias="action.output" base="${buckminster.download.area}/updates-${site.suffix}/"/>
         </cs:public>
@@ -42,8 +42,8 @@
                 <cs:property key="targets" value="copy.group"/>
             </cs:actorProperties>
             <cs:prerequisites alias="action.requirements">
-                <cs:attribute name="clear.site.eclipse.headless" contributor="false"/>
                 <cs:attribute name="site.p2" component="org.eclipse.buckminster.site.eclipse.headless"/>
+                <cs:attribute name="clear.site.eclipse.headless" contributor="false"/>
             </cs:prerequisites>
             <cs:products alias="action.output" base="${buckminster.download.area}/headless-${site.suffix}/"/>
         </cs:public>
