@@ -59,10 +59,12 @@ public class CacheImpl implements ICache {
 		return UUID.nameUUIDFromBytes(urlStr.getBytes());
 	}
 
+	@Override
 	public File getLocation() {
 		return location;
 	}
 
+	@Override
 	public IFileInfo getRemoteInfo(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException {
 		File localFile = asLocal(remoteFile);
 		if (localFile != null) {
@@ -87,6 +89,7 @@ public class CacheImpl implements ICache {
 		return getSubFolder(url.getProtocol(), url.getHost());
 	}
 
+	@Override
 	public boolean isUpToDate(IFetchPolicy policy, URL remoteFile, IProgressMonitor monitor) throws CoreException, FileNotFoundException {
 		String urlStr = remoteFile.toString().intern();
 		synchronized (urlStr) {
@@ -99,16 +102,19 @@ public class CacheImpl implements ICache {
 		}
 	}
 
+	@Override
 	public boolean isUpToDate(URL remoteFile, IConnectContext cctx, String remoteName, IProgressMonitor monitor) throws CoreException,
 			FileNotFoundException {
 		return isUpToDate(new ArchivePolicy(this, cctx, remoteName), remoteFile, monitor);
 	}
 
+	@Override
 	public boolean isUpToDate(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException {
 		return isUpToDate(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile, monitor);
 	}
 
+	@Override
 	public InputStream open(IFetchPolicy policy, URL remoteFile, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException,
 			FileNotFoundException {
 		File file = asLocal(remoteFile);
@@ -123,16 +129,19 @@ public class CacheImpl implements ICache {
 		}
 	}
 
+	@Override
 	public InputStream open(URL remoteFile, IConnectContext cctx, String remoteName, IFileInfo[] fiHandle, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException {
 		return open(new ArchivePolicy(this, cctx, remoteName), remoteFile, fiHandle, monitor);
 	}
 
+	@Override
 	public InputStream open(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IFileInfo[] fiHandle, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException {
 		return open(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile, fiHandle, monitor);
 	}
 
+	@Override
 	public InputStream openRemote(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException {
 		File file = asLocal(remoteFile);
 		if (file != null)

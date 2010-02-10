@@ -67,6 +67,7 @@ public class ArchivePolicy extends AbstractFetchPolicy {
 		this.connectContext = cctx;
 	}
 
+	@Override
 	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.begin(monitor, 1000);
 		try {

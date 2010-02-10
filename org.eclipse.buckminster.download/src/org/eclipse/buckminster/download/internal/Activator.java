@@ -35,11 +35,13 @@ public class Activator implements BundleActivator {
 		return (IRetrieveFileTransferContainerAdapter) container.getAdapter(IRetrieveFileTransferContainerAdapter.class);
 	}
 
+	@Override
 	public void start(BundleContext context) throws Exception {
 		plugin = this;
 		container = ContainerFactory.getDefault().createContainer();
 	}
 
+	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		container = null;

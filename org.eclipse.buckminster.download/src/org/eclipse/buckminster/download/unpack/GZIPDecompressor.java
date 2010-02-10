@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Thomas Hallgren
  */
 public class GZIPDecompressor implements IDecompressor {
+	@Override
 	public InputStream decompress(InputStream input, IProgressMonitor monitor) throws IOException {
 		return new GZIPInputStream(input);
 	}

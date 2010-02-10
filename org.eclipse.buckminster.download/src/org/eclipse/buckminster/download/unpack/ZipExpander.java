@@ -35,6 +35,7 @@ public class ZipExpander implements IExpander {
 
 	private boolean flatten = false;
 
+	@Override
 	public void expand(InputStream inputs, File destinationFolder, IProgressMonitor monitor) throws CoreException {
 		ZipEntry entry;
 		ZipInputStream input = null;
@@ -101,10 +102,12 @@ public class ZipExpander implements IExpander {
 		}
 	}
 
+	@Override
 	public void setFilter(FileFilter filter) {
 		this.filter = filter;
 	}
 
+	@Override
 	public void setFlattenHierarchy(boolean shouldFlatten) {
 		flatten = shouldFlatten;
 	}

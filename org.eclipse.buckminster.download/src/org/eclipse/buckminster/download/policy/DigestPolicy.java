@@ -82,6 +82,7 @@ public class DigestPolicy extends AbstractFetchPolicy {
 		}
 	}
 
+	@Override
 	public boolean update(URL remoteFile, File localFile, boolean checkOnly, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException,
 			FileNotFoundException {
 		byte[] localDigest;

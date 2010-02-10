@@ -96,6 +96,7 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 		return fileInfo;
 	}
 
+	@Override
 	public synchronized void handleTransferEvent(IFileTransferEvent event) {
 		if (event instanceof IIncomingFileTransferReceiveStartEvent) {
 			IIncomingFileTransfer source = ((IIncomingFileTransferEvent) event).getSource();
