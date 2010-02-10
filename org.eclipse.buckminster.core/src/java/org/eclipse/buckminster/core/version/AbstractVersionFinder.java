@@ -36,6 +36,7 @@ public abstract class AbstractVersionFinder implements IVersionFinder {
 		this.componentType = componentType;
 	}
 
+	@Override
 	public void close() {
 	}
 
@@ -43,6 +44,7 @@ public abstract class AbstractVersionFinder implements IVersionFinder {
 		return componentType;
 	}
 
+	@Override
 	public IConnectContext getConnectContext() {
 		IConnectContext cctx = provider.getConnectContext();
 		if (cctx == null)
@@ -50,22 +52,27 @@ public abstract class AbstractVersionFinder implements IVersionFinder {
 		return cctx;
 	}
 
+	@Override
 	public Provider getProvider() {
 		return provider;
 	}
 
+	@Override
 	public ProviderMatch getProviderMatch(VersionMatch versionMatch, IComponentType ctypeUsed, ProviderScore score) throws CoreException {
 		return new ProviderMatch(provider, ctypeUsed, versionMatch, score, query);
 	}
 
+	@Override
 	public NodeQuery getQuery() {
 		return query;
 	}
 
+	@Override
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
 		return query.logDecision(decisionType, args);
 	}
 
+	@Override
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
 		return query.logDecision(decisionType, args);
 	}

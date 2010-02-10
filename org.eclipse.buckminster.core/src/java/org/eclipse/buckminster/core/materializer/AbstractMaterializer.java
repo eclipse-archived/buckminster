@@ -93,12 +93,14 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		return exReg.getConfigurationElementsFor(MATERIALIZERS_POINT);
 	}
 
+	@Override
 	public boolean canWorkInParallel() {
 		// Most materializers should be able to do this.
 		//
 		return true;
 	}
 
+	@Override
 	public IPath getDefaultInstallRoot(MaterializationContext context, Resolution resolution) throws CoreException {
 		IPath rootDir = Path.fromOSString(getMaterializerRootDir());
 		if (rootDir.isAbsolute())
@@ -127,12 +129,14 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		throw BuckminsterException.fromMessage(Messages.Unable_to_determine_users_home_directory);
 	}
 
+	@Override
 	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException {
 		return resolution.getProvider().getReaderType();
 	}
 
 	public abstract String getMaterializerRootDir() throws CoreException;
 
+	@Override
 	public void installRecursive(BOMNode node, MaterializationContext context, Set<String> generated, Set<Resolution> perused,
 			IProgressMonitor monitor) throws CoreException {
 		if (node instanceof GeneratorNode) {
@@ -162,6 +166,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 		}
 	}
 
+	@Override
 	public void performInstallAction(Resolution resolution, MaterializationContext context, IProgressMonitor monitor) throws CoreException {
 		// The AbstractMaterializer will not perform any install actions
 		//

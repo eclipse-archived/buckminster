@@ -41,6 +41,7 @@ public class P2Reader extends AbstractCatalogReader {
 		super(readerType, providerMatch);
 	}
 
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		IArtifactRepository ar = getArtifactRepository(getURI(), monitor);
 		OutputStream out = null;

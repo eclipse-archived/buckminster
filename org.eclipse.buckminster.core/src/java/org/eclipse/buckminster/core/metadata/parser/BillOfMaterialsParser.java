@@ -27,10 +27,12 @@ public class BillOfMaterialsParser extends MetaDataParser<BillOfMaterials> {
 		super(parserExtensions, validating);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		resolution = (BillOfMaterials) ((BillOfMaterialsHandler) child).getDepNode();
 	}
 
+	@Override
 	public BillOfMaterials parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
 		return resolution;

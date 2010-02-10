@@ -61,23 +61,28 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 
 	private int weight = 0;
 
+	@Override
 	public int compareTo(IResolutionBuilder o) {
 		int ow = o.getWeight();
 		return weight > ow ? 1 : (weight == ow ? 0 : -1);
 	}
 
+	@Override
 	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException {
 		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder));
 	}
 
+	@Override
 	public String getComponentTypeID() {
 		return null;
 	}
 
+	@Override
 	public String getNature() {
 		return nature;
 	}
 
+	@Override
 	public int getWeight() {
 		return weight;
 	}
@@ -101,6 +106,7 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 		ICatalogReader catReader = (ICatalogReader) reader;
 		try {
 			CSpecExtension cspecExt = catReader.readFile(CorePlugin.CSPECEXT_FILE, new IStreamConsumer<CSpecExtension>() {
+				@Override
 				public CSpecExtension consumeStream(IComponentReader rdr, String streamName, InputStream stream, IProgressMonitor mon)
 						throws CoreException {
 					mon.beginTask(null, 1);

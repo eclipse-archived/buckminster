@@ -59,12 +59,15 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		this.singleThreaded = singleThreaded;
 	}
 
+	@Override
 	public void aboutToRun(IJobChangeEvent event) {
 	}
 
+	@Override
 	public void awake(IJobChangeEvent event) {
 	}
 
+	@Override
 	public void done(IJobChangeEvent event) {
 		ResolverNodeWithJob.NodeResolutionJob job = (ResolverNodeWithJob.NodeResolutionJob) event.getJob();
 		job.removeJobChangeListener(this);
@@ -138,14 +141,17 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		}
 	}
 
+	@Override
 	public synchronized void running(IJobChangeEvent event) {
 		if (topMonitor != null)
 			MonitorUtils.worked(topMonitor, 1);
 	}
 
+	@Override
 	public void scheduled(IJobChangeEvent event) {
 	}
 
+	@Override
 	public void sleeping(IJobChangeEvent event) {
 	}
 

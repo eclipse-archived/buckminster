@@ -31,6 +31,7 @@ public abstract class PropertyManagerHandler extends ExtensionAwareHandler imple
 		this.tag = tag;
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child instanceof PropertyHandler)
 			((PropertyHandler) child).addYourself(getProperties());

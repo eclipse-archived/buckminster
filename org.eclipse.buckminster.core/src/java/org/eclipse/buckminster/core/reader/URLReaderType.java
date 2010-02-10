@@ -74,6 +74,7 @@ public class URLReaderType extends AbstractReaderType {
 		}
 	}
 
+	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		try {
 			return new URI(resolution.getRepository());
@@ -82,6 +83,7 @@ public class URLReaderType extends AbstractReaderType {
 		}
 	}
 
+	@Override
 	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException {
 		String name = resolution.getRemoteName();
 		if (name != null)
@@ -104,6 +106,7 @@ public class URLReaderType extends AbstractReaderType {
 		return this;
 	}
 
+	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new URLFileReader(this, providerMatch, getURI(providerMatch));
@@ -133,6 +136,7 @@ public class URLReaderType extends AbstractReaderType {
 		return new DefaultVersionFinder(provider, ctype, query);
 	}
 
+	@Override
 	public boolean isFileReader() {
 		return true;
 	}

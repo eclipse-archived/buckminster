@@ -40,14 +40,17 @@ public class AttributeBuilder extends CSpecElementBuilder implements IAttribute 
 		return new Attribute(this);
 	}
 
+	@Override
 	public AttributeBuilder getAttributeBuilder(CSpecBuilder specBuilder) {
 		return specBuilder == getCSpecBuilder() ? this : new AttributeBuilder(specBuilder);
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -56,10 +59,12 @@ public class AttributeBuilder extends CSpecElementBuilder implements IAttribute 
 		return null;
 	}
 
+	@Override
 	public List<? extends IPrerequisite> getPrerequisites() {
 		return Collections.emptyList();
 	}
 
+	@Override
 	public String getQualifiedName() {
 		return getCSpecBuilder().getComponentIdentifier().toString() + '#' + getName();
 	}
@@ -70,6 +75,7 @@ public class AttributeBuilder extends CSpecElementBuilder implements IAttribute 
 		filter = attribute.getFilter();
 	}
 
+	@Override
 	public boolean isPublic() {
 		return true;
 	}

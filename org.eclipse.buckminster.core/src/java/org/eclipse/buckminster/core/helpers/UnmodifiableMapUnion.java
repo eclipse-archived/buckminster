@@ -29,11 +29,13 @@ public class UnmodifiableMapUnion<K, V> extends AbstractMap<K, V> {
 
 		private boolean phase1 = true;
 
+		@Override
 		public boolean hasNext() {
 			currentKey = getValidKey();
 			return currentKey != null;
 		}
 
+		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
@@ -75,12 +77,14 @@ public class UnmodifiableMapUnion<K, V> extends AbstractMap<K, V> {
 	}
 
 	class EntryIterator extends AbstractIterator<Map.Entry<K, V>> {
+		@Override
 		public Map.Entry<K, V> next() {
 			return new UnionEntry(nextKey());
 		}
 	}
 
 	class KeyIterator extends AbstractIterator<K> {
+		@Override
 		public K next() {
 			return nextKey();
 		}
@@ -93,20 +97,24 @@ public class UnmodifiableMapUnion<K, V> extends AbstractMap<K, V> {
 			this.key = key;
 		}
 
+		@Override
 		public K getKey() {
 			return key;
 		}
 
+		@Override
 		public V getValue() {
 			return get(key);
 		}
 
+		@Override
 		public V setValue(V value) {
 			throw new UnsupportedOperationException();
 		}
 	}
 
 	class ValueIterator extends AbstractIterator<V> {
+		@Override
 		public V next() {
 			return get(this.nextKey());
 		}

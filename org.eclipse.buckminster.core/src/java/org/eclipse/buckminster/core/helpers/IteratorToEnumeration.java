@@ -20,10 +20,12 @@ public class IteratorToEnumeration<V> implements Enumeration<V> {
 		this.wrappedIterator = wrappedIterator;
 	}
 
+	@Override
 	public boolean hasMoreElements() {
 		return wrappedIterator.hasNext();
 	}
 
+	@Override
 	public V nextElement() {
 		return wrappedIterator.next();
 	}

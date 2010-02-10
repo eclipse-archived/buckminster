@@ -92,6 +92,7 @@ public class VersionMatch extends AbstractSaxableElement {
 		return branchOrTag;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

@@ -32,6 +32,7 @@ class AlterDependencyHandler extends AlterHandler {
 		baseHandler = new ComponentRequestHandler(parent, new ComponentRequestBuilder());
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 
 		if (baseHandler instanceof ChildPoppedListener)

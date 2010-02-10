@@ -110,6 +110,7 @@ public class Action extends TopLevelAttribute implements IAction {
 		return copy;
 	}
 
+	@Override
 	public String getActorName() {
 		try {
 			return isInternal() ? ActorFactory.getInstance().findInternalActionActorName(getName()) : actorName;
@@ -118,6 +119,7 @@ public class Action extends TopLevelAttribute implements IAction {
 		}
 	}
 
+	@Override
 	public Map<String, String> getActorProperties() {
 		return actorProperties;
 	}
@@ -146,6 +148,7 @@ public class Action extends TopLevelAttribute implements IAction {
 		return PerformManager.expandPath(local, Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF));
 	}
 
+	@Override
 	public Group getPrerequisiteGroup() {
 		return prerequisites;
 	}
@@ -163,6 +166,7 @@ public class Action extends TopLevelAttribute implements IAction {
 		return prerequisites.getName();
 	}
 
+	@Override
 	public String getProductAlias() {
 		return productAlias;
 	}
@@ -171,34 +175,42 @@ public class Action extends TopLevelAttribute implements IAction {
 		return getCSpec().getActionArtifacts(this);
 	}
 
+	@Override
 	public IPath getProductBase() {
 		return productBase;
 	}
 
+	@Override
 	public int getProductFileCount() {
 		return productFileCount;
 	}
 
+	@Override
 	public Set<IPath> getProductPaths() {
 		return products;
 	}
 
+	@Override
 	public Map<String, String> getProperties() {
 		return properties;
 	}
 
+	@Override
 	public UpToDatePolicy getUpToDatePolicy() {
 		return upToDatePolicy;
 	}
 
+	@Override
 	public final boolean isAlways() {
 		return always;
 	}
 
+	@Override
 	public boolean isAssignConsoleSupport() {
 		return assignConsoleSupport;
 	}
 
+	@Override
 	public final boolean isInternal() {
 		return actorName == null;
 	}

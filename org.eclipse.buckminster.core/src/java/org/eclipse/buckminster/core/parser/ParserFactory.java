@@ -97,47 +97,58 @@ public class ParserFactory implements IParserFactory {
 
 	private Map<String, List<ParserExtension>> parserExtensions;
 
+	@Override
 	public IParser<CSpecExtension> getAlterCSpecParser(boolean validating) throws CoreException {
 		return new AlterCSpecParser(getParserExtensions(CSpec.TAG, CSpecExtension.TAG), validating);
 	}
 
+	@Override
 	public IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating) throws CoreException {
 		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, Provider.TAG, CSpec.TAG, Resolution.TAG,
 				BOMNode.TAG), validating);
 	}
 
+	@Override
 	public IParser<ComponentQuery> getComponentQueryParser(boolean validating) throws CoreException {
 		return new ComponentQueryParser(getParserExtensions(ComponentQuery.TAG), validating);
 	}
 
+	@Override
 	public IParser<CSpec> getCSpecParser(boolean validating) throws CoreException {
 		return new CSpecParser(getParserExtensions(CSpec.TAG), validating);
 	}
 
+	@Override
 	public IParser<BOMNode> getDepNodeParser() throws CoreException {
 		return new DepNodeParser(getParserExtensions(Resolution.TAG, BOMNode.TAG));
 	}
 
+	@Override
 	public IParser<Materialization> getMaterializationParser() throws CoreException {
 		return new MaterializationParser(getParserExtensions(Materialization.TAG));
 	}
 
+	@Override
 	public IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating) throws CoreException {
 		return new MaterializationSpecParser(getParserExtensions(MaterializationSpec.TAG), validating);
 	}
 
+	@Override
 	public IParser<Provider> getProviderParser(boolean validating) throws CoreException {
 		return new ProviderParser(getParserExtensions(Provider.TAG), validating);
 	}
 
+	@Override
 	public IParser<Resolution> getResolutionParser() throws CoreException {
 		return new ResolutionParser(getParserExtensions(Resolution.TAG));
 	}
 
+	@Override
 	public IParser<ResourceMap> getResourceMapParser(boolean validating) throws CoreException {
 		return new ResourceMapParser(getParserExtensions(ResourceMap.TAG, Provider.TAG), validating);
 	}
 
+	@Override
 	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating) throws CoreException {
 		return new WorkspaceBindingParser(getParserExtensions(Provider.TAG, CSpec.TAG, Resolution.TAG), validating);
 	}

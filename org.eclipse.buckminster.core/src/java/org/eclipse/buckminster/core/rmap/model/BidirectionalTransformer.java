@@ -59,6 +59,7 @@ public class BidirectionalTransformer extends AbstractSaxableElement {
 		this.fromReplacement = fromReplacement;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

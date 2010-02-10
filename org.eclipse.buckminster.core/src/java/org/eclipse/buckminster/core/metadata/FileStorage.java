@@ -160,6 +160,7 @@ public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> 
 		lastChecked = System.currentTimeMillis();
 	}
 
+	@Override
 	public synchronized void clear() {
 		try {
 			Lock lock = Lock.lock(sqFile, true);
@@ -177,11 +178,13 @@ public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> 
 		timestamps.clear();
 	}
 
+	@Override
 	public synchronized boolean contains(T element) throws CoreException {
 		checkCache();
 		return timestamps.containsKey(element.getId());
 	}
 
+	@Override
 	public synchronized long getCreationTime(UUID elementId) throws ElementNotFoundException {
 		checkCache();
 		TimestampedKey tsKey = timestamps.get(elementId);
@@ -190,6 +193,7 @@ public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> 
 		return tsKey.getCreationTime();
 	}
 
+	@Override
 	public synchronized T getElement(UUID elementId) throws CoreException {
 		checkCache();
 		if (!timestamps.containsKey(elementId))
@@ -216,6 +220,7 @@ public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> 
 		}
 	}
 
+	@Override
 	public synchronized T[] getElements() throws CoreException {
 		checkCache();
 		if (allElements == null) {
@@ -253,16 +258,19 @@ public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> 
 		return allElements;
 	}
 
+	@Override
 	public synchronized UUID[] getKeys() {
 		checkCache();
 		Set<UUID> keys = timestamps.keySet();
 		return keys.toArray(new UUID[keys.size()]);
 	}
 
+	@Override
 	public String getName() {
 		return folder.getName();
 	}
 
+	@Override
 	public synchronized List<UUID> getReferencingKeys(UUID foreignKey, String keyName) throws CoreException {
 		List<UUID> result = null;
 		Method getter = getGetter(keyName);
@@ -284,12 +292,14 @@ public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> 
 		}
 	}
 
+	@Override
 	public synchronized TimestampedKey[] getTimestampedKeys() {
 		checkCache();
 		Collection<TimestampedKey> values = timestamps.values();
 		return values.toArray(new TimestampedKey[values.size()]);
 	}
 
+	@Override
 	public synchronized void putElement(T element) throws CoreException {
 		UUID id = element.getId();
 		long timestamp;
@@ -304,6 +314,7 @@ public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> 
 		timestamps.put(id, new TimestampedKey(id, timestamp));
 	}
 
+	@Override
 	public synchronized void putElement(UUID id, T element) throws CoreException {
 		UUID realId = element.getId();
 		putElement(element);
@@ -323,11 +334,13 @@ public class FileStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T> 
 		timestamps.put(id, new TimestampedKey(id, System.currentTimeMillis()));
 	}
 
+	@Override
 	public synchronized void removeElement(UUID elementId) throws CoreException {
 		parsed.remove(elementId);
 		persistImage(elementId, null);
 	}
 
+	@Override
 	public boolean sequenceChanged() {
 		return sequenceChanged;
 	}

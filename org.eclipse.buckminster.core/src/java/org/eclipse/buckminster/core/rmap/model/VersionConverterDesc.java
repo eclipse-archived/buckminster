@@ -41,6 +41,7 @@ public class VersionConverterDesc extends AbstractSaxableElement {
 		this.versionFormat = versionFormat;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

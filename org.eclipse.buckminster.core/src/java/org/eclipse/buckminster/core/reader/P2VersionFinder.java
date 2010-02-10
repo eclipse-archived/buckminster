@@ -24,6 +24,7 @@ public class P2VersionFinder extends AbstractVersionFinder {
 		this.mdr = mdr;
 	}
 
+	@Override
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException {
 		ComponentRequest request = getQuery().getComponentRequest();
 		IComponentType ctype = request.getComponentType();

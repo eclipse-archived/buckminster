@@ -98,22 +98,27 @@ public class ResolutionBuilder implements IResolution {
 		unpack = false;
 	}
 
+	@Override
 	public String getArtifactInfo() {
 		return artifactInfo;
 	}
 
+	@Override
 	public List<String> getAttributes() {
 		return attributes;
 	}
 
+	@Override
 	public String getComponentTypeId() {
 		return componentTypeId;
 	}
 
+	@Override
 	public String getContentType() {
 		return contentType;
 	}
 
+	@Override
 	public CSpec getCSpec() {
 		return cspec.createCSpec();
 	}
@@ -122,18 +127,22 @@ public class ResolutionBuilder implements IResolution {
 		return cspec;
 	}
 
+	@Override
 	public long getLastModified() {
 		return lastModified;
 	}
 
+	@Override
 	public VersionSelector getMatchedBranchOrTag() {
 		return branchOrTag;
 	}
 
+	@Override
 	public String getPersistentId() {
 		return persistentId;
 	}
 
+	@Override
 	public Provider getProvider() {
 		if (provider == null) {
 			String componentType = cspec.getComponentTypeID();
@@ -144,38 +153,47 @@ public class ResolutionBuilder implements IResolution {
 		return provider;
 	}
 
+	@Override
 	public String getReaderTypeId() {
 		return readerTypeId;
 	}
 
+	@Override
 	public String getRemoteName() {
 		return remoteName;
 	}
 
+	@Override
 	public String getRepository() {
 		return repository;
 	}
 
+	@Override
 	public ComponentRequestBuilder getRequest() {
 		return request;
 	}
 
+	@Override
 	public Filter getResolutionFilter() {
 		return resolutionFilter;
 	}
 
+	@Override
 	public String getSelectedRevision() {
 		return revision;
 	}
 
+	@Override
 	public Date getSelectedTimestamp() {
 		return timestamp;
 	}
 
+	@Override
 	public long getSize() {
 		return size;
 	}
 
+	@Override
 	public VersionMatch getVersionMatch() {
 		return new VersionMatch(cspec.getVersion(), branchOrTag, revision, timestamp, artifactInfo);
 	}
@@ -202,10 +220,12 @@ public class ResolutionBuilder implements IResolution {
 		unpack = resolution.isUnpack();
 	}
 
+	@Override
 	public boolean isMaterializable() {
 		return materializable;
 	}
 
+	@Override
 	public boolean isUnpack() {
 		return unpack;
 	}

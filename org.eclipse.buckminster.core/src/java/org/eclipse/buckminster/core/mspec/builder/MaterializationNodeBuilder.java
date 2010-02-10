@@ -65,6 +65,7 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 		return new MaterializationNode(this);
 	}
 
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object getAdapter(Class adapter) {
 		if (adapter.isInstance(this))
@@ -74,34 +75,42 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
+	@Override
 	public Pattern getBindingNamePattern() {
 		return bindingNamePattern;
 	}
 
+	@Override
 	public String getBindingNameReplacement() {
 		return bindingNameReplacement;
 	}
 
+	@Override
 	public String getComponentTypeID() {
 		return componentTypeID;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
 
+	@Override
 	public IPath getLeafArtifact() {
 		return leafArtifact;
 	}
 
+	@Override
 	public Pattern getNamePattern() {
 		return namePattern;
 	}
 
+	@Override
 	public IPath getResourcePath() {
 		return resourcePath;
 	}
 
+	@Override
 	public String getSuffix() {
 		return suffix;
 	}
@@ -121,14 +130,17 @@ public class MaterializationNodeBuilder extends MaterializationDirectiveBuilder 
 		expand = mn.isExpand();
 	}
 
+	@Override
 	public boolean isExclude() {
 		return exclude;
 	}
 
+	@Override
 	public boolean isExpand() {
 		return expand;
 	}
 
+	@Override
 	public boolean isUnpack() {
 		return unpack;
 	}

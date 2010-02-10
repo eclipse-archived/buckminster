@@ -26,6 +26,7 @@ public class URIMatcherBuilder extends AbstractResolutionBuilder {
 		this.pm = pm;
 	}
 
+	@Override
 	public BOMNode build(IComponentReader[] rdr, boolean forResolutionAidOnly, IProgressMonitor mon) throws CoreException {
 		MonitorUtils.complete(mon);
 		return new ResolvedNode(pm.getProvider().getURIMatcher().createResolution(pm), Collections.<BOMNode> emptyList());

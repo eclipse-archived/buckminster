@@ -38,6 +38,7 @@ public class ResourceMapParser extends AbstractParser<ResourceMap> {
 						XMLConstants.BM_RMAP_RESOURCE, }, validating);
 	}
 
+	@Override
 	public ResourceMap parse(String systemID, InputStream input) throws CoreException {
 		try {
 			contextURL = URLUtils.normalizeToURL(systemID);

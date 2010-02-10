@@ -27,6 +27,7 @@ public abstract class CSpecElementHandler extends ExtensionAwareHandler implemen
 		super(parent);
 	}
 
+	@Override
 	public TopLevelAttributeBuilder getAttributeBuilder() {
 		return ((IAttributeBuilderSupport) getParentHandler()).getAttributeBuilder();
 	}
@@ -35,6 +36,7 @@ public abstract class CSpecElementHandler extends ExtensionAwareHandler implemen
 		return builder;
 	}
 
+	@Override
 	public CSpecBuilder getCSpecBuilder() {
 		return ((ICSpecBuilderSupport) getParentHandler()).getCSpecBuilder();
 	}

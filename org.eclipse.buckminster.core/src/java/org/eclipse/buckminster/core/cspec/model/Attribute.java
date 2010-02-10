@@ -71,6 +71,7 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute {
 		return copy;
 	}
 
+	@Override
 	public AttributeBuilder getAttributeBuilder(CSpecBuilder cspecBuilder) {
 		AttributeBuilder bld = createAttributeBuilder(cspecBuilder);
 		bld.initFrom(this);
@@ -82,14 +83,17 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute {
 		return cspec;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -98,6 +102,7 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute {
 		return PathGroup.EMPTY_ARRAY;
 	}
 
+	@Override
 	public List<Prerequisite> getPrerequisites() {
 		return getPrerequisites(null);
 	}
@@ -108,6 +113,7 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute {
 		return Collections.emptyList();
 	}
 
+	@Override
 	public String getQualifiedName() {
 		return getCSpec().getComponentIdentifier().toString() + '#' + getName();
 	}
@@ -120,6 +126,7 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute {
 		return false;
 	}
 
+	@Override
 	public boolean isPublic() {
 		return true;
 	}

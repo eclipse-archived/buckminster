@@ -44,6 +44,7 @@ public class PropertyElementHandler extends PropertyHandler implements ChildPopp
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) {
 		source = ((ValueHandler) child).getValueHolder();
 	}

@@ -105,14 +105,17 @@ public class URLCatalogReaderType extends CatalogReaderType {
 				// Use a very silent error handler
 				//
 				builder.setErrorHandler(new ErrorHandler() {
+					@Override
 					public void error(SAXParseException ex) throws SAXException {
 						throw ex;
 					}
 
+					@Override
 					public void fatalError(SAXParseException ex) throws SAXException {
 						throw ex;
 					}
 
+					@Override
 					public void warning(SAXParseException ex) throws SAXException {
 					}
 				});
@@ -260,6 +263,7 @@ public class URLCatalogReaderType extends CatalogReaderType {
 		}
 	}
 
+	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		try {
 			return new URI(resolution.getRepository());
@@ -272,6 +276,7 @@ public class URLCatalogReaderType extends CatalogReaderType {
 		return this;
 	}
 
+	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new URLCatalogReader(this, providerMatch);

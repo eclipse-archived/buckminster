@@ -54,6 +54,7 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements I
 		}
 	}
 
+	@Override
 	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 2000);
 		try {
@@ -94,6 +95,7 @@ public class BOMFromCQueryBuilder extends AbstractResolutionBuilder implements I
 		}
 	}
 
+	@Override
 	public ComponentQuery consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
 			throws CoreException {
 		URL url;

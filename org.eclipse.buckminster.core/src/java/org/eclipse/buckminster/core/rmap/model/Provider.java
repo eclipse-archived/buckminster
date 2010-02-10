@@ -261,6 +261,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 		return null;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
@@ -380,10 +381,12 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 		return mutable == null ? true : Boolean.parseBoolean(mutable);
 	}
 
+	@Override
 	public boolean isPersisted(StorageManager sm) throws CoreException {
 		return sm.getProviders().contains(this);
 	}
 
+	@Override
 	public void remove(StorageManager sm) throws CoreException {
 		UUID thisId = getId();
 		if (!sm.getResolutions().getReferencingKeys(thisId, "providerId").isEmpty()) //$NON-NLS-1$
@@ -392,10 +395,12 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 		sm.getProviders().removeElement(thisId);
 	}
 
+	@Override
 	public void store(StorageManager sm) throws CoreException {
 		sm.getProviders().putElement(this);
 	}
 
+	@Override
 	public void toSax(ContentHandler handler) throws SAXException {
 		handler.startDocument();
 

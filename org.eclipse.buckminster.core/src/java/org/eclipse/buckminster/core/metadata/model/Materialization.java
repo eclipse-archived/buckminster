@@ -53,6 +53,7 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted {
 		return componentLocation;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
@@ -62,6 +63,7 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted {
 		return WorkspaceInfo.getResolution(componentIdentifier);
 	}
 
+	@Override
 	public boolean isPersisted(StorageManager sm) throws CoreException {
 		return sm.getMaterializations().contains(this);
 	}
@@ -84,16 +86,19 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted {
 		return (list == null) ? destFile.length() > 0 : list.length > 0;
 	}
 
+	@Override
 	public synchronized void remove(StorageManager sm) throws CoreException {
 		WorkspaceInfo.clearCachedLocation(componentIdentifier);
 		sm.getMaterializations().removeElement(getId());
 	}
 
+	@Override
 	public void store(StorageManager sm) throws CoreException {
 		WorkspaceInfo.clearCachedLocation(componentIdentifier);
 		sm.getMaterializations().putElement(this);
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());

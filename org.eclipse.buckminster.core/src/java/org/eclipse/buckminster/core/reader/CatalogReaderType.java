@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Path;
  * @author Thomas Hallgren
  */
 public abstract class CatalogReaderType extends AbstractReaderType {
+	@Override
 	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException {
 		IPath path = Path.fromPortableString(resolution.getComponentIdentifier().getName());
 		int segCount = path.segmentCount();
@@ -26,6 +27,7 @@ public abstract class CatalogReaderType extends AbstractReaderType {
 		return path.addTrailingSeparator();
 	}
 
+	@Override
 	public boolean isFileReader() {
 		return false;
 	}

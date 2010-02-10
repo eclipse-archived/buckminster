@@ -55,6 +55,7 @@ public class URLCatalogReader extends AbstractCatalogReader {
 		}
 	}
 
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		URL url = getURL();
 		File source = FileUtils.getFile(url);

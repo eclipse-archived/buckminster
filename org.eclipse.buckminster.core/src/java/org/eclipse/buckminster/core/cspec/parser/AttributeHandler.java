@@ -30,6 +30,7 @@ public abstract class AttributeHandler extends CSpecElementHandler implements Ch
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child == documentationHandler)
 			((AttributeBuilder) getBuilder()).setDocumentation(documentationHandler.createDocumentation());

@@ -125,13 +125,16 @@ public class CorePlugin extends LogAwarePlugin {
 			return corePlugin.getBundleLogger();
 
 		return new Logger(new ILog() {
+			@Override
 			public void addLogListener(ILogListener listener) {
 			}
 
+			@Override
 			public Bundle getBundle() {
 				return null;
 			}
 
+			@Override
 			public void log(IStatus status) {
 				if (status == null)
 					return;
@@ -145,6 +148,7 @@ public class CorePlugin extends LogAwarePlugin {
 				}
 			}
 
+			@Override
 			public void removeLogListener(ILogListener listener) {
 			}
 		});

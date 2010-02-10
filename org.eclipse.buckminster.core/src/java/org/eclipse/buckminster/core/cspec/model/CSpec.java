@@ -97,6 +97,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 	public static final int SEQUENCE_NUMBER = 4;
 
 	private static final Comparator<Attribute> attributeSorter = new Comparator<Attribute>() {
+		@Override
 		public int compare(Attribute o1, Attribute o2) {
 			if (o1.isPublic() == o2.isPublic())
 				return o1.getName().compareTo(o2.getName());
@@ -263,6 +264,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		}
 	}
 
+	@Override
 	public Attribute getAttribute(String name) {
 		Attribute attr = attributes.get(name);
 		if (attr == null && name.equals(SELF_ARTIFACT))
@@ -270,6 +272,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		return attr;
 	}
 
+	@Override
 	public Map<String, Attribute> getAttributes() {
 		return attributes;
 	}
@@ -300,6 +303,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		return getAttribute(WellknownActions.BUCKMINSTER.BIND_ENTRYPOINT.toString());
 	}
 
+	@Override
 	public ComponentIdentifier getComponentIdentifier() {
 		return componentIdentifier;
 	}
@@ -308,18 +312,22 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		return WorkspaceInfo.getComponentLocation(this);
 	}
 
+	@Override
 	public String getComponentTypeID() {
 		return componentIdentifier.getComponentTypeID();
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	@Override
 	public Collection<ComponentRequest> getDependencies() {
 		return dependencies.values();
 	}
 
+	@Override
 	public ComponentRequest getDependency(String dependencyName, String componentType) throws MissingDependencyException {
 		ComponentRequest dependency = dependencies.get(dependencyName);
 		if (dependency != null)
@@ -334,18 +342,22 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		throw new MissingDependencyException(componentIdentifier.toString(), dependencyName);
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
 
+	@Override
 	public Collection<Generator> getGeneratorList() {
 		return generators.values();
 	}
 
+	@Override
 	public String getName() {
 		return componentIdentifier.getName();
 	}
@@ -354,6 +366,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		return getAttribute(WellknownActions.BUCKMINSTER.PREBIND.toString());
 	}
 
+	@Override
 	public URL getProjectInfo() {
 		return projectInfo;
 	}
@@ -460,6 +473,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		return attr;
 	}
 
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -468,10 +482,12 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		return getTagInfo(componentIdentifier, projectInfo, parentInfo);
 	}
 
+	@Override
 	public Version getVersion() {
 		return componentIdentifier.getVersion();
 	}
 
+	@Override
 	public boolean isPersisted(StorageManager sm) throws CoreException {
 		return sm.getCSpecs().contains(this);
 	}
@@ -609,6 +625,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		return bld.createCSpec();
 	}
 
+	@Override
 	public void remove(StorageManager sm) throws CoreException {
 		UUID thisId = getId();
 		if (!sm.getResolutions().getReferencingKeys(thisId, "cspecId").isEmpty()) //$NON-NLS-1$
@@ -617,10 +634,12 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		sm.getCSpecs().removeElement(thisId);
 	}
 
+	@Override
 	public void store(StorageManager sm) throws CoreException {
 		sm.getCSpecs().putElement(this);
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		toSax(receiver, BM_CSPEC_NS, BM_CSPEC_PREFIX, getDefaultTag());

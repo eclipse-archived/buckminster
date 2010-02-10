@@ -120,14 +120,17 @@ public abstract class AbstractActor implements IActor, IExecutableExtension {
 		logger = CorePlugin.getLogger();
 	}
 
+	@Override
 	public final String getId() {
 		return id;
 	}
 
+	@Override
 	public final String getName() {
 		return name;
 	}
 
+	@Override
 	public final void init(Action act) throws CoreException {
 		action = act;
 		if (logger.isDebugEnabled()) {
@@ -143,12 +146,14 @@ public abstract class AbstractActor implements IActor, IExecutableExtension {
 		this.internalInit();
 	}
 
+	@Override
 	public boolean isUpToDate(Action act, IModelCache ctx, long prerequisiteAge, long oldestTarget) throws CoreException {
 		// Return true if the oldest target is younger or the same age as the
 		// youngest prerequisite.
 		return oldestTarget >= prerequisiteAge;
 	}
 
+	@Override
 	public final synchronized IStatus perform(IActionContext ctx, IProgressMonitor monitor) throws CoreException {
 		// the stored context is per perform only; if referenced otherwise we
 		// ensure that
@@ -196,6 +201,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension {
 		}
 	}
 
+	@Override
 	public final void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		name = config.getAttribute(ActorFactory.ACTOR_NAME_ATTR);
 		id = config.getAttribute(ActorFactory.ACTOR_ID_ATTR);

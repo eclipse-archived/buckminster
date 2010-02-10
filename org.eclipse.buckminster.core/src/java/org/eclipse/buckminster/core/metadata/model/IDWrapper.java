@@ -40,10 +40,12 @@ public class IDWrapper extends AbstractSaxableElement implements Comparable<IDWr
 		this(wrapped.getId(), wrapped);
 	}
 
+	@Override
 	public int compareTo(IDWrapper o) {
 		return id.compareTo(o.id);
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

@@ -33,6 +33,7 @@ abstract class AlterAttributesHandler extends AlterHandler {
 		privateHandler = this.createAttributeHandler(false);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		AlterCSpecBuilder alterCSpec = ((AlterCSpecHandler) getParentHandler()).getAlterCSpecBuilder();
 		if (child == removeHandler)

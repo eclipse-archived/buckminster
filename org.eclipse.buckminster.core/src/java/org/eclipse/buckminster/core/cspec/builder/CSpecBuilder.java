@@ -374,6 +374,7 @@ public class CSpecBuilder implements ICSpecData {
 		return null;
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapterType) {
 		if (CSpecBuilder.class.isAssignableFrom(adapterType))
@@ -390,26 +391,32 @@ public class CSpecBuilder implements ICSpecData {
 		return attr instanceof ArtifactBuilder ? (ArtifactBuilder) attr : null;
 	}
 
+	@Override
 	public AttributeBuilder getAttribute(String attrName) {
 		return attributes == null ? null : attributes.get(attrName);
 	}
 
+	@Override
 	public Map<String, AttributeBuilder> getAttributes() {
 		return attributes;
 	}
 
+	@Override
 	public ComponentIdentifier getComponentIdentifier() {
 		return new ComponentIdentifier(name, componentType, version);
 	}
 
+	@Override
 	public String getComponentTypeID() {
 		return componentType;
 	}
 
+	@Override
 	public Collection<ComponentRequestBuilder> getDependencies() {
 		return dependencies == null ? Collections.<ComponentRequestBuilder> emptyList() : dependencies.values();
 	}
 
+	@Override
 	public ComponentRequestBuilder getDependency(String dependencyName, String depType) throws MissingDependencyException {
 		ComponentRequestBuilder dependency = null;
 		if (dependencies != null) {
@@ -424,14 +431,17 @@ public class CSpecBuilder implements ICSpecData {
 		return dependencies;
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
 
+	@Override
 	public Collection<GeneratorBuilder> getGeneratorList() {
 		return generators == null ? Collections.<GeneratorBuilder> emptySet() : generators.values();
 	}
@@ -441,10 +451,12 @@ public class CSpecBuilder implements ICSpecData {
 		return attr instanceof GroupBuilder ? (GroupBuilder) attr : null;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public URL getProjectInfo() {
 		return projectInfo;
 	}
@@ -488,6 +500,7 @@ public class CSpecBuilder implements ICSpecData {
 		throw new MissingAttributeException(name, groupName);
 	}
 
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -496,6 +509,7 @@ public class CSpecBuilder implements ICSpecData {
 		return CSpec.getTagInfo(getComponentIdentifier(), projectInfo, parentInfo);
 	}
 
+	@Override
 	public Version getVersion() {
 		return version;
 	}

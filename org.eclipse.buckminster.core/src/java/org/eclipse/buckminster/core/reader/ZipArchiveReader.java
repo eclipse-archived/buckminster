@@ -38,6 +38,7 @@ public class ZipArchiveReader extends AbstractCatalogReader {
 		return zipFileReader;
 	}
 
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		throw new UnsupportedOperationException(Messages.Cannot_materialize);
 	}

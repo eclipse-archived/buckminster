@@ -34,6 +34,7 @@ public class ModelCache implements IModelCache {
 		this.properties = properties;
 	}
 
+	@Override
 	public synchronized CSpec findCSpec(ICSpecData ownerCSpec, ComponentRequest request) throws CoreException {
 		CSpec cspec = null;
 		if (cspecCache == null)
@@ -48,12 +49,14 @@ public class ModelCache implements IModelCache {
 		return cspec;
 	}
 
+	@Override
 	public synchronized Map<String, PathGroup[]> getPathGroupsCache() {
 		if (pathGroupsCache == null)
 			pathGroupsCache = new HashMap<String, PathGroup[]>();
 		return pathGroupsCache;
 	}
 
+	@Override
 	public synchronized Map<String, ? extends Object> getProperties() {
 		if (properties == null)
 			properties = new HashMap<String, String>();

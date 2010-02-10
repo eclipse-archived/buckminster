@@ -65,6 +65,7 @@ public class Launch extends WorkspaceCommand {
 				stream.close();
 		}
 
+		@Override
 		public void streamAppended(String text, IStreamMonitor monitor) {
 			stream.print(text);
 		}

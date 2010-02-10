@@ -39,6 +39,7 @@ public class BuildTimestampQualifierGenerator extends AbstractExtension implemen
 
 	public static final String TIMESTAMP_PROPERTY = "buckminster.build.timestamp"; //$NON-NLS-1$
 
+	@Override
 	public Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException {
 		Version currentVersion = cid.getVersion();
 		if (currentVersion == null)

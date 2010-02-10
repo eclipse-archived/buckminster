@@ -45,6 +45,7 @@ public class RxGroup extends RxPart {
 			bld.append(")?"); //$NON-NLS-1$
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

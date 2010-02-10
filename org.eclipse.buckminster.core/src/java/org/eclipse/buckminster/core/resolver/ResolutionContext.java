@@ -140,6 +140,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 		return (parentContext != null) ? parentContext.isContinueOnError() : super.isContinueOnError();
 	}
 
+	@Override
 	public synchronized ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
 		if (parentContext != null)
 			return parentContext.logDecision(request, decisionType, args);
@@ -157,6 +158,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 		return decision;
 	}
 
+	@Override
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
 		return logDecision(getComponentQuery().getExpandedRootRequest(this), decisionType, args);
 	}

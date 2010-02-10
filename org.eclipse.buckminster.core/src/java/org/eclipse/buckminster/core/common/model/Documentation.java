@@ -115,6 +115,7 @@ public class Documentation extends FlowWithAttributes implements ISaxable {
 	 * @throws SAXException
 	 *             if something goes wrong during the event generation
 	 */
+	@Override
 	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		this.toSax(receiver, XMLConstants.XHTML_NS, null, XHTML_TAG);

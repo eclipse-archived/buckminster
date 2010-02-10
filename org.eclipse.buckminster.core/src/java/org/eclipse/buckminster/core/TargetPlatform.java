@@ -90,34 +90,42 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 		return FileUtils.getFile(eclipseHome);
 	}
 
+	@Override
 	public String getArch() {
 		return Platform.getOSArch();
 	}
 
+	@Override
 	public final List<ComponentIdentifier> getComponents() throws CoreException {
 		return Collections.emptyList();
 	}
 
+	@Override
 	public File getDefaultPlatformLocation(boolean asActive) throws CoreException {
 		return null;
 	}
 
+	@Override
 	public File getLocation() {
 		return getPlatformInstallLocation();
 	}
 
+	@Override
 	public String getNL() {
 		return Platform.getNL();
 	}
 
+	@Override
 	public String getOS() {
 		return Platform.getOS();
 	}
 
+	@Override
 	public String getWS() {
 		return Platform.getWS();
 	}
 
+	@Override
 	public void locationsChanged(Set<File> locations) {
 		// Nothing to do here.
 	}

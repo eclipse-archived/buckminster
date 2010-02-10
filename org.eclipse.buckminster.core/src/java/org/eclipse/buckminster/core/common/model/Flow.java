@@ -37,10 +37,12 @@ public class Flow implements ISaxableElement {
 		return children;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return tag;
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException {
 		String qName = (prefix == null) ? localName : Utils.makeQualifiedName(prefix, localName);
 		receiver.startElement(namespace, localName, qName, getAttributes());

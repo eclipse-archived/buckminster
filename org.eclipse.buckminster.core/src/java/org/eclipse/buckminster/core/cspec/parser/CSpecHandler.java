@@ -47,6 +47,7 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child instanceof DocumentationHandler)
 			builder.setDocumentation(((DocumentationHandler) child).createDocumentation());
@@ -88,6 +89,7 @@ public class CSpecHandler extends ExtensionAwareHandler implements ICSpecBuilder
 		return builder.createCSpec();
 	}
 
+	@Override
 	public final CSpecBuilder getCSpecBuilder() {
 		return builder;
 	}

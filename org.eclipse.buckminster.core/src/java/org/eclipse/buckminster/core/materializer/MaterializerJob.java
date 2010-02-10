@@ -52,6 +52,7 @@ public class MaterializerJob extends Job implements IJobInfo {
 		return context == family;
 	}
 
+	@Override
 	public String getOperationName() {
 		Resolution lastResolution = resolutions.get(resolutions.size() - 1);
 		return NLS.bind(Messages.Materialization_of_0, lastResolution.getComponentIdentifier().toString());

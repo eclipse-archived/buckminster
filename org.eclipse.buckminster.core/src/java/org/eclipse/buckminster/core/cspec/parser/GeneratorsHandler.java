@@ -31,6 +31,7 @@ class GeneratorsHandler extends ExtensionAwareHandler implements ChildPoppedList
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child == generatorHandler)
 			try {
@@ -50,6 +51,7 @@ class GeneratorsHandler extends ExtensionAwareHandler implements ChildPoppedList
 		return ch;
 	}
 
+	@Override
 	public CSpecBuilder getCSpecBuilder() {
 		return ((ICSpecBuilderSupport) this.getParentHandler()).getCSpecBuilder();
 	}

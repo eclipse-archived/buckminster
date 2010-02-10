@@ -36,6 +36,7 @@ public class RevisionQualifierGenerator extends AbstractExtension implements IQu
 
 	public static String DEFAULT_FORMAT = "r{0,number,##################}"; //$NON-NLS-1$
 
+	@Override
 	public Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException {
 		Version currentVersion = cid.getVersion();
 		if (currentVersion == null)

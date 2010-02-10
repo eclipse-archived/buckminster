@@ -53,6 +53,7 @@ public class FileSystemMaterializer extends AbstractMaterializer {
 		return "downloads"; //$NON-NLS-1$
 	}
 
+	@Override
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor)
 			throws CoreException {
 		ArrayList<Materialization> adjustedMinfos = new ArrayList<Materialization>(resolutions.size());

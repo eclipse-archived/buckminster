@@ -21,6 +21,7 @@ public class ProgressStatistics {
 
 	static class FileSizeConverter implements AmountConverter {
 
+		@Override
 		public String convert(long amount) {
 			if (amount < 1024)
 				return String.format(Locale.US, "%dB", Long.valueOf(amount)); //$NON-NLS-1$
@@ -34,6 +35,7 @@ public class ProgressStatistics {
 
 	static class TrivialConverter implements AmountConverter {
 
+		@Override
 		public String convert(long amount) {
 			return "" + amount; //$NON-NLS-1$
 		}

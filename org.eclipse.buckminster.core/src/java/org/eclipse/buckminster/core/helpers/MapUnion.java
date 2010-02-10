@@ -30,11 +30,13 @@ public class MapUnion<K, V> extends AbstractMap<K, V> {
 
 		private boolean phase1 = true;
 
+		@Override
 		public boolean hasNext() {
 			currentKey = this.getValidKey(currentKey);
 			return currentKey != null;
 		}
 
+		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 		}
@@ -81,12 +83,14 @@ public class MapUnion<K, V> extends AbstractMap<K, V> {
 	}
 
 	class EntryIterator extends AbstractIterator<Map.Entry<K, V>> {
+		@Override
 		public Map.Entry<K, V> next() {
 			return new UnionEntry(this.nextKey());
 		}
 	}
 
 	class KeyIterator extends AbstractIterator<K> {
+		@Override
 		public K next() {
 			return this.nextKey();
 		}
@@ -99,20 +103,24 @@ public class MapUnion<K, V> extends AbstractMap<K, V> {
 			this.key = key;
 		}
 
+		@Override
 		public K getKey() {
 			return key;
 		}
 
+		@Override
 		public V getValue() {
 			return MapUnion.this.get(key);
 		}
 
+		@Override
 		public V setValue(V value) {
 			return MapUnion.this.put(key, value);
 		}
 	}
 
 	class ValueIterator extends AbstractIterator<V> {
+		@Override
 		public V next() {
 			return MapUnion.this.get(this.nextKey());
 		}

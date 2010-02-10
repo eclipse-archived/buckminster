@@ -52,10 +52,12 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 			this.entry = entry;
 		}
 
+		@Override
 		public String getKey() {
 			return entry.getKey();
 		}
 
+		@Override
 		public T getValue() {
 			T value = convertValue(entry.getValue(), 0);
 			if (value != null)
@@ -63,6 +65,7 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 			return value;
 		}
 
+		@Override
 		public synchronized T setValue(T value) {
 			String key = entry.getKey();
 			ValueHolder<T> vh = entry.getValue();
@@ -229,6 +232,7 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		map = new MapUnion<String, ValueHolder<T>>(overlay, dfltMap);
 	}
 
+	@Override
 	public void clear() {
 		if (map.isEmpty())
 			return;
@@ -240,14 +244,17 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		map.clear();
 	}
 
+	@Override
 	public boolean containsKey(Object key) {
 		return map.containsKey(key);
 	}
 
+	@Override
 	public boolean containsValue(Object value) {
 		return map.containsValue(value);
 	}
 
+	@Override
 	public Set<Entry<String, T>> entrySet() {
 		return new AbstractSet<Entry<String, T>>() {
 			@Override
@@ -255,14 +262,17 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 				return new Iterator<Entry<String, T>>() {
 					private final Iterator<Entry<String, ValueHolder<T>>> itor = map.entrySet().iterator();
 
+					@Override
 					public boolean hasNext() {
 						return itor.hasNext();
 					}
 
+					@Override
 					public Entry<String, T> next() {
 						return new EntryWrapper(itor.next());
 					}
 
+					@Override
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}
@@ -284,6 +294,7 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		return (o instanceof ExpandingProperties<?>) && map.equals(((ExpandingProperties<?>) o).map);
 	}
 
+	@Override
 	public T get(Object key) {
 		return key instanceof String ? getExpandedProperty((String) key, 0) : null;
 	}
@@ -293,6 +304,7 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		return map.hashCode();
 	}
 
+	@Override
 	public Set<String> immutableKeySet() {
 		HashSet<String> immutableSet = new HashSet<String>();
 		for (Map.Entry<String, ValueHolder<T>> me : map.entrySet()) {
@@ -302,19 +314,23 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		return immutableSet;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return map.isEmpty();
 	}
 
+	@Override
 	public boolean isMutable(String key) {
 		ValueHolder<T> v = map.get(key);
 		return v == null || v.isMutable();
 	}
 
+	@Override
 	public Set<String> keySet() {
 		return map.keySet();
 	}
 
+	@Override
 	public Set<String> mutableKeySet() {
 		HashSet<String> mutableSet = new HashSet<String>();
 		for (Map.Entry<String, ValueHolder<T>> me : map.entrySet()) {
@@ -324,20 +340,24 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		return mutableSet;
 	}
 
+	@Override
 	public Set<String> overlayKeySet() {
 		return (map instanceof MapUnion<?, ?>) ? ((MapUnion<String, ValueHolder<T>>) map).overlayKeySet() : map.keySet();
 	}
 
+	@Override
 	public T put(String key, T propVal) {
 		return convertValue(setProperty(key, new Constant<T>(propVal)), 0);
 	}
 
+	@Override
 	public T put(String key, T propVal, boolean mutable) {
 		Constant<T> vh = new Constant<T>(propVal);
 		vh.setMutable(mutable);
 		return convertValue(setProperty(key, vh), 0);
 	}
 
+	@Override
 	public void putAll(Map<? extends String, ? extends T> t) {
 		putAll(t, false);
 	}
@@ -360,6 +380,7 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		}
 	}
 
+	@Override
 	public T remove(Object key) {
 		if (key instanceof String) {
 			String strKey = (String) key;
@@ -375,6 +396,7 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		return null;
 	}
 
+	@Override
 	public void setMutable(String key, boolean flag) {
 		ValueHolder<T> v = map.get(key);
 		if (v != null)
@@ -390,18 +412,22 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		return v;
 	}
 
+	@Override
 	public int size() {
 		return map.size();
 	}
 
+	@Override
 	public void store(OutputStream out, String comments) throws IOException {
 		BMProperties.store(this, out, comments);
 	}
 
+	@Override
 	public boolean supportsMutability() {
 		return true;
 	}
 
+	@Override
 	public Collection<T> values() {
 		return new AbstractCollection<T>() {
 			@Override
@@ -409,10 +435,12 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 				return new Iterator<T>() {
 					private final Iterator<ValueHolder<T>> itor = map.values().iterator();
 
+					@Override
 					public boolean hasNext() {
 						return itor.hasNext();
 					}
 
+					@Override
 					public T next() {
 						T value = convertValue(itor.next(), 0);
 						if (value != null)
@@ -420,6 +448,7 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 						return value;
 					}
 
+					@Override
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}

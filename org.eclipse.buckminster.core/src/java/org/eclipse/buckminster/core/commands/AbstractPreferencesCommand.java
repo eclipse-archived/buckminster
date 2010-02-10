@@ -46,10 +46,12 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand {
 			this.mapping = mapping;
 		}
 
+		@Override
 		public Map<String, PreferenceFilterEntry[]> getMapping(String s) {
 			return mapping;
 		}
 
+		@Override
 		public String[] getScopes() {
 			return scopes;
 		}

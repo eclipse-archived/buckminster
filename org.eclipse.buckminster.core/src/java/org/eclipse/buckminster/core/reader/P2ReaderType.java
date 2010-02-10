@@ -110,10 +110,12 @@ public class P2ReaderType extends CatalogReaderType {
 	public P2ReaderType() {
 	}
 
+	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		throw new UnsupportedOperationException();
 	}

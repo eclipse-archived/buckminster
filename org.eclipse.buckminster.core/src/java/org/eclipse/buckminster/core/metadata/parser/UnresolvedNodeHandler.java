@@ -40,6 +40,7 @@ class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListene
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXParseException {
 		if (child == requestHandler)
 			componentRequest = requestHandler.getBuilder().createComponentRequest();

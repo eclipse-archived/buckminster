@@ -72,10 +72,12 @@ public class Generator extends NamedElement implements IGenerator {
 		this.generatesVersion = generates.getVersion();
 	}
 
+	@Override
 	public String getAttribute() {
 		return attribute;
 	}
 
+	@Override
 	public String getComponent() {
 		return component;
 	}
@@ -84,10 +86,12 @@ public class Generator extends NamedElement implements IGenerator {
 		return cspec;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	@Override
 	public IComponentIdentifier getGeneratedIdentifier() {
 		return new ComponentIdentifier(getName(), generatesType, generatesVersion);
 	}

@@ -27,6 +27,7 @@ public class ToUpper extends ValueHolderFilter {
 		return (resolved == null || NO_VALUE.equals(resolved)) ? NO_VALUE : resolved.toUpperCase();
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

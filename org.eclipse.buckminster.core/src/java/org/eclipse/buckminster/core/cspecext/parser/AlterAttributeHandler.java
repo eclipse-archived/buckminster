@@ -46,6 +46,7 @@ abstract class AlterAttributeHandler extends AlterHandler implements IAttributeB
 		this.baseHandler = baseHandler;
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		((ChildPoppedListener) baseHandler).childPopped(child);
 	}
@@ -60,6 +61,7 @@ abstract class AlterAttributeHandler extends AlterHandler implements IAttributeB
 		return ch;
 	}
 
+	@Override
 	public TopLevelAttributeBuilder getAttributeBuilder() {
 		return baseHandler.getAttributeBuilder();
 	}

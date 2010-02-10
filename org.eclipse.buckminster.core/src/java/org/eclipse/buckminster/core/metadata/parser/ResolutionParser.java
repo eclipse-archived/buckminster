@@ -27,10 +27,12 @@ public class ResolutionParser extends MetaDataParser<Resolution> {
 		super(parserExtensions);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		resolution = ((ResolutionHandler) child).getResolution();
 	}
 
+	@Override
 	public Resolution parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
 		return resolution;

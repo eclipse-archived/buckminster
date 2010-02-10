@@ -32,10 +32,12 @@ public class AlterCSpecParser extends AbstractParser<CSpecExtension> implements 
 						XMLConstants.BM_CSPEC_RESOURCE }, validating);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		cSpecExtension = ((AlterCSpecHandler) child).getCSpecExtension();
 	}
 
+	@Override
 	public CSpecExtension parse(String systemId, InputStream input) throws CoreException {
 		this.parseInput(systemId, input);
 		return cSpecExtension;

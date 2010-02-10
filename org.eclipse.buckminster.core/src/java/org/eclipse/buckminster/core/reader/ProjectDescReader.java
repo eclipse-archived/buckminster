@@ -43,6 +43,7 @@ public class ProjectDescReader implements IStreamConsumer<IProjectDescription> {
 		}
 	}
 
+	@Override
 	public IProjectDescription consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
 			throws CoreException {
 		monitor = MonitorUtils.ensureNotNull(monitor);

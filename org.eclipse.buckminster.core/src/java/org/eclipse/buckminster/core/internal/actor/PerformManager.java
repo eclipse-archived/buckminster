@@ -271,12 +271,14 @@ public class PerformManager implements IPerformManager {
 		}
 	}
 
+	@Override
 	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, ? extends Object> props, boolean forced, boolean quiet,
 			IProgressMonitor monitor) throws CoreException {
 		return perform(Collections.singletonList(((CSpec) cspec.getAdapter(CSpec.class)).getRequiredAttribute(attributeName)), props, forced, quiet,
 				monitor);
 	}
 
+	@Override
 	public IStatus perform(List<? extends IAttribute> attributes, IGlobalContext global, IProgressMonitor monitor) throws CoreException {
 		WorkspaceInfo.pushPerformContext(global);
 		try {
@@ -286,6 +288,7 @@ public class PerformManager implements IPerformManager {
 		}
 	}
 
+	@Override
 	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, ? extends Object> userProps, boolean forced, boolean quiet,
 			IProgressMonitor monitor) throws CoreException {
 		GlobalContext globalCtx = new GlobalContext(userProps, forced, quiet);

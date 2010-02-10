@@ -129,6 +129,7 @@ public class PerformContext implements IActionContext {
 		this.cancellationMonitor = cancellationMonitor;
 	}
 
+	@Override
 	public void addPrerequisitePathGroups(Map<String, PathGroup[]> pgas) throws CoreException {
 		Collection<Prerequisite> prereqs = action.getPrerequisites();
 		if (prereqs.size() == 0)
@@ -213,6 +214,7 @@ public class PerformContext implements IActionContext {
 		}
 	}
 
+	@Override
 	public CSpec findCSpec(ICSpecData ownerCSpec, ComponentRequest request) throws CoreException {
 		return globalCtx.findCSpec(ownerCSpec, request);
 	}
@@ -222,10 +224,12 @@ public class PerformContext implements IActionContext {
 	 * 
 	 * @see org.eclipse.buckminster.core.actor.IActionContext#getAction()
 	 */
+	@Override
 	public final Action getAction() {
 		return action;
 	}
 
+	@Override
 	public IProgressMonitor getCancellationMonitor() {
 		return new SubProgressMonitor(cancellationMonitor, 1);
 	}
@@ -236,6 +240,7 @@ public class PerformContext implements IActionContext {
 	 * @see
 	 * org.eclipse.buckminster.core.actor.IActionContext#getComponentLocation()
 	 */
+	@Override
 	public IPath getComponentLocation() throws CoreException {
 		return getCSpec().getComponentLocation();
 	}
@@ -245,6 +250,7 @@ public class PerformContext implements IActionContext {
 	 * 
 	 * @see org.eclipse.buckminster.core.actor.IActionContext#getCSpec()
 	 */
+	@Override
 	public CSpec getCSpec() throws CoreException {
 		return action.getCSpec();
 	}
@@ -254,14 +260,17 @@ public class PerformContext implements IActionContext {
 	 * 
 	 * @see org.eclipse.buckminster.core.actor.IActionContext#getErrorStream()
 	 */
+	@Override
 	public final PrintStream getErrorStream() {
 		return errorStream;
 	}
 
+	@Override
 	public final GlobalContext getGlobalContext() {
 		return globalCtx;
 	}
 
+	@Override
 	public Map<String, PathGroup[]> getNamedPathGroupArrays() throws CoreException {
 		HashMap<String, PathGroup[]> pgas = new HashMap<String, PathGroup[]>();
 		addPrerequisitePathGroups(pgas);
@@ -269,32 +278,39 @@ public class PerformContext implements IActionContext {
 		return pgas;
 	}
 
+	@Override
 	public final PrintStream getOutputStream() {
 		return outputStream;
 	}
 
+	@Override
 	public Map<String, PathGroup[]> getPathGroupsCache() {
 		return globalCtx.getPathGroupsCache();
 	}
 
+	@Override
 	public final Map<String, ? extends Object> getProperties() {
 		return properties;
 	}
 
+	@Override
 	public boolean isForced() {
 		return globalCtx.isForcedExecution() || action.isAlways();
 	}
 
+	@Override
 	public boolean isQuiet() {
 		return globalCtx.isQuietExecution();
 	}
 
+	@Override
 	public File makeAbsolute(File file) throws CoreException {
 		if (!file.isAbsolute())
 			file = getComponentLocation().append(file.toString()).toFile();
 		return file;
 	}
 
+	@Override
 	public IPath makeAbsolute(IPath path) throws CoreException {
 		if (!path.isAbsolute())
 			path = getComponentLocation().append(path);

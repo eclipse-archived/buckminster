@@ -39,10 +39,12 @@ public class SaxablePath extends Path implements ISaxableElement {
 		super(fullPath);
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	@Override
 	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException {
 		AttributesImpl attrs = new AttributesImpl();
 		Utils.addAttribute(attrs, ATTR_PATH, this.toPortableString());

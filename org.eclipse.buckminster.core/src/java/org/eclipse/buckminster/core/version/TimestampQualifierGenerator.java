@@ -78,6 +78,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 		return dt;
 	}
 
+	@Override
 	public Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException {
 		Version currentVersion = cid.getVersion();
 		if (currentVersion == null)

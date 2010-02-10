@@ -120,6 +120,7 @@ public class P2Materializer extends AbstractMaterializer {
 		return location.getAbsolutePath();
 	}
 
+	@Override
 	public List<Materialization> materialize(List<Resolution> resolutions, MaterializationContext context, IProgressMonitor monitor)
 			throws CoreException {
 		Map<File, List<Resolution>> resPerLocation = new HashMap<File, List<Resolution>>();

@@ -71,24 +71,29 @@ public class ComponentQueryBuilder implements IComponentQuery {
 		return new ComponentQuery(this);
 	}
 
+	@Override
 	public List<AdvisorNodeBuilder> getAdvisoryNodes() {
 		return advisorNodes;
 	}
 
+	@Override
 	public URL getContextURL() {
 		return contextURL;
 	}
 
+	@Override
 	public Map<String, String> getDeclaredProperties() {
 		if (properties == null)
 			properties = new HashMap<String, String>();
 		return properties;
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
 
+	@Override
 	public AdvisorNodeBuilder getNodeByCriteria(Pattern pattern, String componentType, Filter filter) {
 		for (AdvisorNodeBuilder node : advisorNodes)
 			if (Trivial.equalsAllowNull(node.getNamePattern(), pattern) && Trivial.equalsAllowNull(node.getComponentTypeID(), componentType)
@@ -97,14 +102,17 @@ public class ComponentQueryBuilder implements IComponentQuery {
 		return null;
 	}
 
+	@Override
 	public String getPropertiesURL() {
 		return propertiesURL;
 	}
 
+	@Override
 	public String getResourceMapURL() {
 		return resourceMapURL;
 	}
 
+	@Override
 	public ComponentRequest getRootRequest() {
 		return rootRequest.createComponentRequest();
 	}
@@ -113,6 +121,7 @@ public class ComponentQueryBuilder implements IComponentQuery {
 		return rootRequest;
 	}
 
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}

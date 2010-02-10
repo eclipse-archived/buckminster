@@ -43,14 +43,17 @@ public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator 
 		return new Generator(cspec, component, attribute, getGeneratedIdentifier());
 	}
 
+	@Override
 	public String getAttribute() {
 		return attribute;
 	}
 
+	@Override
 	public String getComponent() {
 		return component;
 	}
 
+	@Override
 	public ComponentIdentifier getGeneratedIdentifier() {
 		return new ComponentIdentifier(getName(), generatesType, generatesVersion);
 	}

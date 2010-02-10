@@ -203,22 +203,27 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		this.context = context;
 	}
 
+	@Override
 	public ResolutionContext getContext() {
 		return context;
 	}
 
+	@Override
 	public boolean isRecursiveResolve() {
 		return recursiveResolve;
 	}
 
+	@Override
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
 		return context.logDecision(request, decisionType, args);
 	}
 
+	@Override
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
 		return context.logDecision(decisionType, args);
 	}
 
+	@Override
 	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, IProgressMonitor.UNKNOWN);
 		try {
@@ -231,10 +236,12 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		}
 	}
 
+	@Override
 	public BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException {
 		return resolve(context.getComponentQuery().getExpandedRootRequest(context), monitor);
 	}
 
+	@Override
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException {
 		if (bom.isFullyResolved(context)) {
 			MonitorUtils.complete(monitor);
@@ -255,6 +262,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		}
 	}
 
+	@Override
 	public void setRecursiveResolve(boolean flag) {
 		recursiveResolve = flag;
 	}

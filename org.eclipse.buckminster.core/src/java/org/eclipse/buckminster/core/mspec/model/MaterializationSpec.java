@@ -120,10 +120,12 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return getConflictResolution(getMatchingNode(res));
 	}
 
+	@Override
 	public URL getContextURL() {
 		return contextURL;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
@@ -133,6 +135,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return node == null ? null : node.getLeafArtifact();
 	}
 
+	@Override
 	public IMaterializationNode getMatchingNode(IComponentName cName) {
 		if (currentBom != null && cName instanceof IComponentIdentifier) {
 			try {
@@ -143,6 +146,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return getMatchingNode(cName, ((ComponentName) cName).getProperties());
 	}
 
+	@Override
 	public IMaterializationNode getMatchingNode(Resolution res) {
 		return getMatchingNode(res.getComponentIdentifier(), res.getProperties());
 	}
@@ -162,10 +166,12 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return materializer;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public List<? extends IMaterializationNode> getNodes() {
 		return nodes;
 	}
@@ -174,6 +180,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return getProjectName(res.getComponentIdentifier(), getMatchingNode(res));
 	}
 
+	@Override
 	public URL getResolvedURL() {
 		return URLUtils.resolveURL(contextURL, ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(), url, 0));
 	}
@@ -183,6 +190,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return node == null ? null : node.getResourcePath();
 	}
 
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -192,6 +200,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return node == null ? null : node.getSuffix();
 	}
 
+	@Override
 	public String getURL() {
 		return url;
 	}
@@ -216,6 +225,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return node != null && node.isUnpack();
 	}
 
+	@Override
 	public void toSax(ContentHandler handler) throws SAXException {
 		handler.startDocument();
 		toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());

@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class BuckminsterComponentType extends AbstractComponentType {
 	private static final IResolutionBuilder builder = new BuckminsterCSpecBuilder();
 
+	@Override
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		// Not that we cannot look for a cquery at the very top. If we did, then
 		// we

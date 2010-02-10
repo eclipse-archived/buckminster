@@ -30,10 +30,12 @@ public class RemoteFileCache extends ShortDurationFileCache {
 
 	public InputStream openRemoteFile(final RemoteFile remoteFile, IProgressMonitor monitor) throws IOException, CoreException {
 		return open(new Materializer() {
+			@Override
 			public String getKey() {
 				return remoteFile.toString();
 			}
 
+			@Override
 			public FileHandle materialize(IProgressMonitor mon, FileInfoBuilder info) throws IOException, CoreException {
 				return remoteFile.getContents(mon);
 			}

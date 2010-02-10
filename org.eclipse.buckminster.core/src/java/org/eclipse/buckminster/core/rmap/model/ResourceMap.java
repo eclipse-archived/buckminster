@@ -134,6 +134,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 		return contextURL;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
@@ -238,6 +239,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 	 * @throws SAXException
 	 *             if the handler throws an exception when receiving the events
 	 */
+	@Override
 	public void toSax(ContentHandler handler) throws SAXException {
 		handler.startDocument();
 		toSax(handler, XMLConstants.BM_RMAP_NS, XMLConstants.BM_RMAP_PREFIX, getDefaultTag());

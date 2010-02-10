@@ -56,6 +56,7 @@ public class RxAssembly extends AbstractSaxableElement {
 		CorePlugin.getLogger().debug("URI pattern %s created", patternStr); //$NON-NLS-1$
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

@@ -101,10 +101,12 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 		return new Action(this);
 	}
 
+	@Override
 	public String getActorName() {
 		return actorName;
 	}
 
+	@Override
 	public ExpandingProperties<String> getActorProperties() {
 		return actorProperties;
 	}
@@ -118,6 +120,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 		return prerequisitesBuilder.getPrerequisite(prerequisteName);
 	}
 
+	@Override
 	public Group getPrerequisiteGroup() {
 		// TODO Auto-generated method stub
 		return null;
@@ -136,6 +139,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 		return prerequisitesBuilder;
 	}
 
+	@Override
 	public String getProductAlias() {
 		return productAlias;
 	}
@@ -145,22 +149,27 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 		return (bld instanceof ActionArtifactBuilder) ? bld : null;
 	}
 
+	@Override
 	public IPath getProductBase() {
 		return productBase;
 	}
 
+	@Override
 	public int getProductFileCount() {
 		return productFileCount;
 	}
 
+	@Override
 	public HashSet<IPath> getProductPaths() {
 		return productPaths;
 	}
 
+	@Override
 	public ExpandingProperties<String> getProperties() {
 		return properties;
 	}
 
+	@Override
 	public UpToDatePolicy getUpToDatePolicy() {
 		return upToDatePolicy;
 	}
@@ -182,14 +191,17 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 		properties.putAll(action.getProperties(), true);
 	}
 
+	@Override
 	public boolean isAlways() {
 		return always;
 	}
 
+	@Override
 	public boolean isAssignConsoleSupport() {
 		return assignConsoleSupport;
 	}
 
+	@Override
 	public boolean isInternal() {
 		// An internal action is never "built".
 		//

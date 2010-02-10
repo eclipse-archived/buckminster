@@ -42,6 +42,7 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 		componentType = other.getComponentTypeID();
 	}
 
+	@Override
 	public int compareTo(IComponentName o) {
 		int cmp = Trivial.compareAllowNull(getName(), o.getName());
 		if (cmp == 0)
@@ -64,10 +65,12 @@ public class ComponentName extends NamedElement implements Comparable<IComponent
 		return componentType == null ? null : CorePlugin.getDefault().getComponentType(componentType);
 	}
 
+	@Override
 	public String getComponentTypeID() {
 		return componentType;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

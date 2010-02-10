@@ -169,6 +169,7 @@ public class WorkspaceInfo {
 
 		ArrayList<Resolution> sorted = new ArrayList<Resolution>(bld);
 		Collections.sort(sorted, new Comparator<Resolution>() {
+			@Override
 			public int compare(Resolution o1, Resolution o2) {
 				int cmp = o1.getName().compareTo(o2.getName());
 				if (cmp == 0) {

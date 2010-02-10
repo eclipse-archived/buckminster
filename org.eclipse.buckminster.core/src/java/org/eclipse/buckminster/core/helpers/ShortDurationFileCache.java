@@ -33,6 +33,7 @@ public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry> {
 
 	public ShortDurationFileCache(long keepAlive, String prefix, String suffix, File tempDir) {
 		super(keepAlive, new TimedHashMap.EvictionPolicy<String, CacheEntry>() {
+			@Override
 			public void evict(Entry<String, CacheEntry> entry) {
 				CacheEntry ce = entry.getValue();
 				if (ce != null)

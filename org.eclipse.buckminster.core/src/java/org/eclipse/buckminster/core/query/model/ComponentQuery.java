@@ -148,6 +148,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return node == null ? false : node.allowCircularDependency();
 	}
 
+	@Override
 	public List<? extends IAdvisorNode> getAdvisoryNodes() {
 		return advisorNodes;
 	}
@@ -166,18 +167,22 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return connectContext;
 	}
 
+	@Override
 	public URL getContextURL() {
 		return contextURL;
 	}
 
+	@Override
 	public Map<String, String> getDeclaredProperties() {
 		return properties;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -234,6 +239,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return null;
 	}
 
+	@Override
 	public AdvisorNode getNodeByCriteria(Pattern pattern, String componentType, Filter filter) {
 		for (AdvisorNode node : advisorNodes)
 			if (Trivial.equalsAllowNull(node.getNamePattern(), pattern) && Trivial.equalsAllowNull(node.getComponentTypeID(), componentType)
@@ -247,6 +253,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return node == null ? null : node.getOverlayFolder();
 	}
 
+	@Override
 	public String getPropertiesURL() {
 		return propertiesURL;
 	}
@@ -315,6 +322,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 				resourceMapURL, 0));
 	}
 
+	@Override
 	public String getResourceMapURL() {
 		return resourceMapURL;
 	}
@@ -324,10 +332,12 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return node == null ? null : node.getRevision();
 	}
 
+	@Override
 	public ComponentRequest getRootRequest() {
 		return rootRequest;
 	}
 
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -346,6 +356,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return node == null ? null : node.getVersionOverride();
 	}
 
+	@Override
 	public boolean isPersisted(StorageManager sm) throws CoreException {
 		return false;
 	}
@@ -355,6 +366,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return node == null ? false : node.isPrune();
 	}
 
+	@Override
 	public void remove(StorageManager sm) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
@@ -381,10 +393,12 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return node == null ? false : node.skipComponent();
 	}
 
+	@Override
 	public void store(StorageManager sm) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void toSax(ContentHandler handler) throws SAXException {
 		handler.startDocument();
 		toSax(handler, BM_CQUERY_NS, BM_CQUERY_PREFIX, getDefaultTag());

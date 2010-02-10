@@ -188,6 +188,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, versionMatch.getDefaultTag());
 	}
 
+	@Override
 	public String getArtifactInfo() {
 		return versionMatch.getArtifactInfo();
 	}
@@ -196,6 +197,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return getProvider().getReaderType().getArtifactURL(this, context);
 	}
 
+	@Override
 	public List<String> getAttributes() {
 		return attributes;
 	}
@@ -214,10 +216,12 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return CorePlugin.getDefault().getComponentType(componentTypeId);
 	}
 
+	@Override
 	public String getComponentTypeId() {
 		return componentTypeId;
 	}
 
+	@Override
 	public String getContentType() {
 		return contentType;
 	}
@@ -228,6 +232,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return The resolved cspec.
 	 */
+	@Override
 	public CSpec getCSpec() {
 		return cspec;
 	}
@@ -241,14 +246,17 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return cspec.getId();
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	@Override
 	public long getLastModified() {
 		return lastModified;
 	}
 
+	@Override
 	public VersionSelector getMatchedBranchOrTag() {
 		return versionMatch.getBranchOrTag();
 	}
@@ -262,6 +270,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return request.getName();
 	}
 
+	@Override
 	public String getPersistentId() {
 		return persistentId;
 	}
@@ -283,6 +292,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return the repository provider.
 	 */
+	@Override
 	public Provider getProvider() {
 		return provider;
 	}
@@ -306,14 +316,17 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return new QualifiedDependency(request, attributes);
 	}
 
+	@Override
 	public String getReaderTypeId() {
 		return getProvider().getReaderTypeId();
 	}
 
+	@Override
 	public String getRemoteName() {
 		return remoteName;
 	}
 
+	@Override
 	public String getRepository() {
 		return repository;
 	}
@@ -321,22 +334,27 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	/**
 	 * @return Returns the properties.
 	 */
+	@Override
 	public final ComponentRequest getRequest() {
 		return request;
 	}
 
+	@Override
 	public Filter getResolutionFilter() {
 		return getProvider().getResolutionFilter();
 	}
 
+	@Override
 	public String getSelectedRevision() {
 		return versionMatch.getRevision();
 	}
 
+	@Override
 	public Date getSelectedTimestamp() {
 		return getVersionMatch().getTimestamp();
 	}
 
+	@Override
 	public long getSize() {
 		return size;
 	}
@@ -360,6 +378,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return request.getVersionRange();
 	}
 
+	@Override
 	public VersionMatch getVersionMatch() {
 		return versionMatch;
 	}
@@ -439,6 +458,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * 
 	 * @return <code>true</code> if the component can be materialized on disk.
 	 */
+	@Override
 	public boolean isMaterializable() {
 		return materializable;
 	}
@@ -458,14 +478,17 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		}
 	}
 
+	@Override
 	public boolean isPersisted(StorageManager sm) throws CoreException {
 		return sm.getResolutions().contains(this);
 	}
 
+	@Override
 	public boolean isUnpack() {
 		return unpack;
 	}
 
+	@Override
 	public void remove(StorageManager sm) throws CoreException {
 		WorkspaceInfo.updateResolutionCache(getComponentIdentifier(), null);
 		synchronized (sm.getResolutions()) {
@@ -473,6 +496,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		}
 	}
 
+	@Override
 	public void store(StorageManager sm) throws CoreException {
 		WorkspaceInfo.updateResolutionCache(getComponentIdentifier(), this);
 		cspec.store(sm);
@@ -482,6 +506,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		}
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, getDefaultTag());

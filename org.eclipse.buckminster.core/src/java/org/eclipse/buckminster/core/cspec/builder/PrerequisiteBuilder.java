@@ -55,10 +55,12 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		return new Prerequisite(this);
 	}
 
+	@Override
 	public String getAlias() {
 		return alias;
 	}
 
+	@Override
 	public String getAttribute() {
 		return getAttributeBuilder().getName();
 	}
@@ -67,22 +69,27 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		return attributeBuilder;
 	}
 
+	@Override
 	public String getComponentName() {
 		return component;
 	}
 
+	@Override
 	public String getComponentType() {
 		return componentType;
 	}
 
+	@Override
 	public Pattern getExcludePattern() {
 		return excludePattern;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
 
+	@Override
 	public Pattern getIncludePattern() {
 		return includePattern;
 	}
@@ -98,14 +105,17 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		filter = prerequisite.getFilter();
 	}
 
+	@Override
 	public boolean isContributor() {
 		return contributor;
 	}
 
+	@Override
 	public boolean isExternal() {
 		return component != null;
 	}
 
+	@Override
 	public boolean isMatch(String componentName, String attribute) {
 		return Prerequisite.isMatch(componentName, attribute, excludePattern, includePattern);
 	}

@@ -27,10 +27,12 @@ public class MaterializationParser extends MetaDataParser<Materialization> {
 		super(parserExtensions);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		materialization = ((MaterializationHandler) child).getMaterialization();
 	}
 
+	@Override
 	public Materialization parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
 		return materialization;

@@ -93,6 +93,7 @@ public class ComponentIdentifier extends ComponentName implements IComponentIden
 		return p;
 	}
 
+	@Override
 	public final Version getVersion() {
 		return version;
 	}

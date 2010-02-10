@@ -35,6 +35,7 @@ public class RxGroupHandler extends RxPartHandler implements ChildPoppedListener
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child instanceof RxPartHandler) {
 			if (parts == null)

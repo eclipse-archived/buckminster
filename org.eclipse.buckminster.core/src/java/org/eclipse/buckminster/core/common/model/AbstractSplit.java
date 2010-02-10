@@ -41,6 +41,7 @@ public abstract class AbstractSplit extends ValueHolderFilter {
 		return super.equals(o) && pattern.equals(((AbstractSplit) o).pattern);
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

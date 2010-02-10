@@ -36,6 +36,7 @@ public class Format extends ValueHolderFilter {
 		return super.equals(o) && format.equals(((Format) o).format);
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

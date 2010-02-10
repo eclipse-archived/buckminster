@@ -29,6 +29,7 @@ public class UnknownComponentType extends AbstractComponentType {
 		return null;
 	}
 
+	@Override
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		ProviderMatch pm = reader.getProviderMatch();
 		return (pm.getMatcherMap() == null) ? defaultBuilder : new URIMatcherBuilder(pm);

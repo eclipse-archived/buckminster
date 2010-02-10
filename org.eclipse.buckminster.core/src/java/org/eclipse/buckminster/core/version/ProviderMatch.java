@@ -72,6 +72,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 	 *         <code>o</code>, -1 if it's the opposite and 0 if the matches are
 	 *         considered equal.
 	 */
+	@Override
 	public int compareTo(ProviderMatch o) {
 		int versionCompare = query.compare(versionMatch, o.getVersionMatch());
 		return versionCompare == 0 ? providerScore.compareTo(o.getProviderScore()) : versionCompare;

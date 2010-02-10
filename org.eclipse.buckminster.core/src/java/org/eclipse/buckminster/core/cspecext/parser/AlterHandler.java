@@ -23,6 +23,7 @@ abstract class AlterHandler extends ExtensionAwareHandler implements ChildPopped
 		super(parent);
 	}
 
+	@Override
 	public CSpecBuilder getCSpecBuilder() {
 		return ((ICSpecBuilderSupport) this.getParentHandler()).getCSpecBuilder();
 	}

@@ -20,6 +20,7 @@ import org.eclipse.equinox.p2.metadata.Version;
  * @author Thomas Hallgren
  */
 public class TagConverter extends AbstractConverter {
+	@Override
 	public VersionSelector createSelector(Version version) throws CoreException {
 		if (version == null)
 			return null;
@@ -28,10 +29,12 @@ public class TagConverter extends AbstractConverter {
 		return selectorComponent == null ? null : VersionSelector.tag(selectorComponent);
 	}
 
+	@Override
 	public Version createVersion(VersionSelector versionSelector) throws CoreException {
 		return versionSelector == null ? null : createVersionFromSelectorComponent(versionSelector.getName());
 	}
 
+	@Override
 	public int getSelectorType() {
 		return VersionSelector.TAG;
 	}

@@ -40,10 +40,12 @@ public class ComponentQueryParser extends AbstractParser<ComponentQuery> impleme
 				XMLConstants.BM_CSPEC_RESOURCE, XMLConstants.BM_CQUERY_RESOURCE }, validating);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		componentQuery = ((ComponentQueryHandler) child).getComponentQuery();
 	}
 
+	@Override
 	public ComponentQuery parse(String systemId, InputStream input) throws CoreException {
 		try {
 			contextURL = URLUtils.normalizeToURL(systemId);

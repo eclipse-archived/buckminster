@@ -82,6 +82,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode {
 		attributes.addAll(attrs);
 	}
 
+	@Override
 	public boolean allowCircularDependency() {
 		return allowCircularDependency;
 	}
@@ -115,22 +116,27 @@ public class AdvisorNodeBuilder implements IAdvisorNode {
 		return new AdvisorNode(this);
 	}
 
+	@Override
 	public List<String> getAttributes() {
 		return attributes;
 	}
 
+	@Override
 	public VersionSelector[] getBranchTagPath() {
 		return branchTagPath;
 	}
 
+	@Override
 	public String getComponentTypeID() {
 		return componentType;
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -140,40 +146,49 @@ public class AdvisorNodeBuilder implements IAdvisorNode {
 		return null;
 	}
 
+	@Override
 	public MutableLevel getMutableLevel() {
 		return mutableLevel;
 	}
 
+	@Override
 	public Pattern getNamePattern() {
 		return namePattern;
 	}
 
+	@Override
 	public URL getOverlayFolder() {
 		return overlayFolder;
 	}
 
+	@Override
 	public Map<String, String> getProperties() {
 		if (properties == null)
 			properties = new HashMap<String, String>();
 		return properties;
 	}
 
+	@Override
 	public int[] getResolutionPrio() {
 		return resolutionPrio;
 	}
 
+	@Override
 	public String getRevision() {
 		return revision;
 	}
 
+	@Override
 	public SourceLevel getSourceLevel() {
 		return sourceLevel;
 	}
 
+	@Override
 	public Date getTimestamp() {
 		return timestamp;
 	}
 
+	@Override
 	public VersionRange getVersionOverride() {
 		return versionOverride;
 	}
@@ -206,26 +221,32 @@ public class AdvisorNodeBuilder implements IAdvisorNode {
 		resolutionPrio = node.getResolutionPrio();
 	}
 
+	@Override
 	public boolean isPrune() {
 		return prune;
 	}
 
+	@Override
 	public boolean isSystemDiscovery() {
 		return systemDiscovery;
 	}
 
+	@Override
 	public boolean isUseMaterialization() {
 		return useMaterialization;
 	}
 
+	@Override
 	public boolean isUseRemoteResolution() {
 		return useRemoteResolution;
 	}
 
+	@Override
 	public boolean isUseTargetPlatform() {
 		return useTargetPlatform;
 	}
 
+	@Override
 	public boolean isUseWorkspace() {
 		return useWorkspace;
 	}
@@ -310,6 +331,7 @@ public class AdvisorNodeBuilder implements IAdvisorNode {
 		this.versionOverride = versionOverride;
 	}
 
+	@Override
 	public boolean skipComponent() {
 		return skipComponent;
 	}

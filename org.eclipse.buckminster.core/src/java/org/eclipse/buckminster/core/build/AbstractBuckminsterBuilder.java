@@ -205,6 +205,7 @@ public abstract class AbstractBuckminsterBuilder extends IncrementalProjectBuild
 	// to set resource notifications, for example
 	private boolean initialBuildDone = false;
 
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		if (notifyOnChangedResources != null && event.getType() == IResourceChangeEvent.POST_CHANGE) {
 			// don't instantiate a list until we know it's needed

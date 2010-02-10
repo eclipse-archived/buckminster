@@ -117,6 +117,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		return getComponentQuery().allowCircularDependency(getComponentRequest(), context);
 	}
 
+	@Override
 	public int compare(VersionMatch vm1, VersionMatch vm2) {
 		if (vm1 == vm2)
 			return 0;
@@ -454,10 +455,12 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		return getComponentQuery().isPrune(getComponentRequest(), context);
 	}
 
+	@Override
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
 		return getResolutionContext().logDecision(request, decisionType, args);
 	}
 
+	@Override
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
 		return getResolutionContext().logDecision(getComponentRequest(), decisionType, args);
 	}

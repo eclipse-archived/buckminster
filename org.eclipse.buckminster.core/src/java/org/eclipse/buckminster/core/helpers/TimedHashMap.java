@@ -38,10 +38,12 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 			this.value = value;
 		}
 
+		@Override
 		public K getKey() {
 			return key;
 		}
 
+		@Override
 		public V getValue() {
 			return value;
 		}
@@ -56,6 +58,7 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 				evictionPolicy.evict(val);
 		}
 
+		@Override
 		public V setValue(V value) {
 			V old = value;
 			this.remove();
@@ -90,6 +93,7 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 			entry.cancel();
 	}
 
+	@Override
 	public void clear() {
 		synchronized (map) {
 			for (TimedEntry entry : map.values())
@@ -98,12 +102,14 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 		}
 	}
 
+	@Override
 	public boolean containsKey(Object key) {
 		synchronized (map) {
 			return map.containsKey(key);
 		}
 	}
 
+	@Override
 	public boolean containsValue(Object value) {
 		synchronized (map) {
 			for (Entry<K, V> te : map.values()) {
@@ -118,6 +124,7 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 		return false;
 	}
 
+	@Override
 	public Set<Entry<K, V>> entrySet() {
 		final Iterator<TimedEntry> entries = map.values().iterator();
 		return new AbstractSet<Entry<K, V>>() {
@@ -125,14 +132,17 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 			public Iterator<Entry<K, V>> iterator() {
 				return new Iterator<Entry<K, V>>() {
 
+					@Override
 					public boolean hasNext() {
 						return entries.hasNext();
 					}
 
+					@Override
 					public Entry<K, V> next() {
 						return entries.next();
 					}
 
+					@Override
 					public void remove() {
 						entries.remove();
 					}
@@ -146,6 +156,7 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 		};
 	}
 
+	@Override
 	public V get(Object key) {
 		synchronized (map) {
 			Entry<K, V> te = map.get(key);
@@ -153,14 +164,17 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 		}
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return map.isEmpty();
 	}
 
+	@Override
 	public Set<K> keySet() {
 		return map.keySet();
 	}
 
+	@Override
 	public V put(K key, V value) {
 		V oldVal;
 		TimedEntry entry = new TimedEntry(key, value);
@@ -180,11 +194,13 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 		return oldVal;
 	}
 
+	@Override
 	public void putAll(Map<? extends K, ? extends V> t) {
 		for (Entry<? extends K, ? extends V> entry : t.entrySet())
 			this.put(entry.getKey(), entry.getValue());
 	}
 
+	@Override
 	public V remove(Object key) {
 		synchronized (map) {
 			TimedEntry te = map.remove(key);
@@ -206,10 +222,12 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 		return true;
 	}
 
+	@Override
 	public int size() {
 		return map.size();
 	}
 
+	@Override
 	public Collection<V> values() {
 		final Iterator<TimedEntry> entries = map.values().iterator();
 		return new AbstractCollection<V>() {
@@ -217,14 +235,17 @@ public class TimedHashMap<K, V> implements Map<K, V> {
 			public Iterator<V> iterator() {
 				return new Iterator<V>() {
 
+					@Override
 					public boolean hasNext() {
 						return entries.hasNext();
 					}
 
+					@Override
 					public V next() {
 						return entries.next().getValue();
 					}
 
+					@Override
 					public void remove() {
 						entries.remove();
 					}

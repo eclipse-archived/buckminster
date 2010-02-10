@@ -34,32 +34,39 @@ public class MainResolver implements IResolver {
 		this.context = context;
 	}
 
+	@Override
 	public ResolutionContext getContext() {
 		return context;
 	}
 
+	@Override
 	public boolean isRecursiveResolve() {
 		return recursiveResolve;
 	}
 
+	@Override
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
 		return context.logDecision(request, decisionType, args);
 	}
 
+	@Override
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
 		return context.logDecision(decisionType, args);
 	}
 
+	@Override
 	public BillOfMaterials resolve(ComponentRequest request, IProgressMonitor monitor) throws CoreException {
 		NodeQuery query = context.getNodeQuery(request);
 		BillOfMaterials bom = BillOfMaterials.create(new UnresolvedNode(query.getQualifiedDependency()), context.getComponentQuery());
 		return resolveRemaining(bom, monitor);
 	}
 
+	@Override
 	public BillOfMaterials resolve(IProgressMonitor monitor) throws CoreException {
 		return resolve(context.getComponentQuery().getExpandedRootRequest(context), monitor);
 	}
 
+	@Override
 	public BillOfMaterials resolveRemaining(BillOfMaterials bom, IProgressMonitor monitor) throws CoreException {
 		if (bom.isFullyResolved(context))
 			return bom;
@@ -160,6 +167,7 @@ public class MainResolver implements IResolver {
 		return bom;
 	}
 
+	@Override
 	public void setRecursiveResolve(boolean flag) {
 		recursiveResolve = flag;
 	}

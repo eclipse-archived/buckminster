@@ -29,6 +29,7 @@ class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedLi
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child instanceof ComponentRequestHandler) {
 			try {
@@ -49,6 +50,7 @@ class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedLi
 		return ch;
 	}
 
+	@Override
 	public CSpecBuilder getCSpecBuilder() {
 		return ((ICSpecBuilderSupport) this.getParentHandler()).getCSpecBuilder();
 	}

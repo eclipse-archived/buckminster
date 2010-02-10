@@ -33,6 +33,7 @@ public class CSpecParser extends AbstractParser<CSpec> implements ChildPoppedLis
 						XMLConstants.XML_RESOURCE }, validating);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		try {
 			cSpec = ((CSpecHandler) child).getCSpec();
@@ -42,6 +43,7 @@ public class CSpecParser extends AbstractParser<CSpec> implements ChildPoppedLis
 		}
 	}
 
+	@Override
 	public CSpec parse(String systemId, InputStream input) throws CoreException {
 		this.parseInput(systemId, input);
 		return cSpec;

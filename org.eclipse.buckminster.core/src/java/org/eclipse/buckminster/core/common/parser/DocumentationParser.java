@@ -31,10 +31,12 @@ public class DocumentationParser extends AbstractParser<Documentation> implement
 				XMLConstants.XHTML_RESOURCE, XMLConstants.XML_RESOURCE }, true);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		documentation = ((DocumentationHandler) child).createDocumentation();
 	}
 
+	@Override
 	public Documentation parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
 		return documentation;

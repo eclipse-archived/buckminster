@@ -61,6 +61,7 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return new MaterializationSpec(this);
 	}
 
+	@Override
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object getAdapter(Class adapter) {
 		if (adapter.isInstance(this))
@@ -70,14 +71,17 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
+	@Override
 	public URL getContextURL() {
 		return contextURL;
 	}
 
+	@Override
 	public IMaterializationNode getMatchingNode(IComponentName cName) {
 		return getMatchingNodeBuilder(cName);
 	}
 
+	@Override
 	public IMaterializationNode getMatchingNode(Resolution res) {
 		return getMatchingNodeBuilder(res);
 	}
@@ -119,6 +123,7 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return null;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -127,18 +132,22 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return nodes;
 	}
 
+	@Override
 	public List<? extends IMaterializationNode> getNodes() {
 		return getNodeBuilders();
 	}
 
+	@Override
 	public URL getResolvedURL() {
 		return URLUtils.resolveURL(contextURL, url);
 	}
 
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}
 
+	@Override
 	public String getURL() {
 		return url;
 	}
@@ -172,6 +181,7 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		this.url = url;
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver) throws SAXException {
 		MaterializationSpec mspec = new MaterializationSpec(this);
 		mspec.toSax(receiver);

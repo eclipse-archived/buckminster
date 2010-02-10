@@ -75,6 +75,7 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted {
 		return isFullyResolved(query, new HashSet<BOMNode>(), properties);
 	}
 
+	@Override
 	public boolean isPersisted(StorageManager sm) throws CoreException {
 		return false;
 	}
@@ -97,14 +98,17 @@ public abstract class BOMNode extends UUIDKeyed implements IUUIDPersisted {
 		return equals(node);
 	}
 
+	@Override
 	public void remove(StorageManager sm) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public void store(StorageManager sm) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
 	public final void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		this.toSax(receiver, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, this.getDefaultTag());

@@ -23,6 +23,7 @@ public abstract class ValueFilterHandler extends ValueHandler implements ChildPo
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) {
 		((ValueHolderFilter) this.getValueHolder()).addValueHolder(((ValueHandler) child).getValueHolder());
 	}

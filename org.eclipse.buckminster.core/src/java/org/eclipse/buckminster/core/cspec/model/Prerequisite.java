@@ -96,34 +96,42 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 		filter = bld.getFilter();
 	}
 
+	@Override
 	public final String getAlias() {
 		return alias;
 	}
 
+	@Override
 	public final String getAttribute() {
 		return getName();
 	}
 
+	@Override
 	public final String getComponentName() {
 		return componentName;
 	}
 
+	@Override
 	public final String getComponentType() {
 		return componentType;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	@Override
 	public Pattern getExcludePattern() {
 		return excludePattern;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
 
+	@Override
 	public Pattern getIncludePattern() {
 		return includePattern;
 	}
@@ -138,6 +146,7 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 				: null;
 	}
 
+	@Override
 	public boolean isContributor() {
 		return contributor;
 	}
@@ -149,10 +158,12 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 		return isExternal() ? (getReferencedAttribute(cspec, cache) != null) : cspec.getAttribute(getAttribute()).isEnabled(cache);
 	}
 
+	@Override
 	public boolean isExternal() {
 		return componentName != null;
 	}
 
+	@Override
 	public boolean isMatch(String component, String attribute) {
 		return isMatch(component, attribute, excludePattern, includePattern);
 	}

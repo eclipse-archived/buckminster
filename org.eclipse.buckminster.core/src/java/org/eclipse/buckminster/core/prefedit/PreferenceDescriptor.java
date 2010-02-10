@@ -40,30 +40,37 @@ public class PreferenceDescriptor implements IPreferenceDescriptor {
 		this.label = label;
 	}
 
+	@Override
 	public Enum<?>[] getEnums() {
 		return enums;
 	}
 
+	@Override
 	public int[] getIntegerRange() {
 		return integerRange;
 	}
 
+	@Override
 	public String getLabel() {
 		return label;
 	}
 
+	@Override
 	public String getName() {
 		return preferenceName;
 	}
 
+	@Override
 	public int getTextWidth() {
 		return textWidth;
 	}
 
+	@Override
 	public PreferenceType getType() {
 		return type;
 	}
 
+	@Override
 	public IPreferenceValidator getValidator() {
 		return validator;
 	}

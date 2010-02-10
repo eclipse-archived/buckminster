@@ -34,14 +34,17 @@ public class MemoryStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T
 		super(elementClass);
 	}
 
+	@Override
 	public synchronized void clear() {
 		elements.clear();
 	}
 
+	@Override
 	public synchronized boolean contains(T element) throws CoreException {
 		return elements.containsKey(element.getId());
 	}
 
+	@Override
 	public synchronized long getCreationTime(UUID elementId) throws CoreException {
 		TimestampedElement<T> t = elements.get(elementId);
 		if (t == null)
@@ -49,6 +52,7 @@ public class MemoryStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T
 		return t.getCreationTime();
 	}
 
+	@Override
 	public synchronized T getElement(UUID elementId) throws CoreException, ElementNotFoundException {
 		TimestampedElement<T> t = elements.get(elementId);
 		if (t == null)
@@ -56,6 +60,7 @@ public class MemoryStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T
 		return t.getElement();
 	}
 
+	@Override
 	public synchronized T[] getElements() throws CoreException {
 		T[] elems = createArray(elements.size());
 		int idx = 0;
@@ -64,14 +69,17 @@ public class MemoryStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T
 		return elems;
 	}
 
+	@Override
 	public synchronized UUID[] getKeys() {
 		return elements.keySet().toArray(new UUID[elements.size()]);
 	}
 
+	@Override
 	public String getName() {
 		return getClass().getName();
 	}
 
+	@Override
 	public synchronized List<UUID> getReferencingKeys(UUID foreignKey, String keyName) throws CoreException {
 		List<UUID> result = null;
 		Method getter = getGetter(keyName);
@@ -93,22 +101,27 @@ public class MemoryStorage<T extends UUIDKeyed> extends AbstractSaxableStorage<T
 		}
 	}
 
+	@Override
 	public synchronized TimestampedKey[] getTimestampedKeys() {
 		return elements.values().toArray(new TimestampedKey[elements.size()]);
 	}
 
+	@Override
 	public void putElement(T element) throws CoreException {
 		putElement(element.getId(), element);
 	}
 
+	@Override
 	public synchronized void putElement(UUID id, T element) throws CoreException {
 		elements.put(id, new TimestampedElement<T>(element));
 	}
 
+	@Override
 	public synchronized void removeElement(UUID elementId) throws CoreException {
 		elements.remove(elementId);
 	}
 
+	@Override
 	public boolean sequenceChanged() {
 		return false;
 	}

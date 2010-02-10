@@ -31,6 +31,7 @@ public class SearchPathHandler extends ExtensionAwareHandler implements ChildPop
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child instanceof ProviderHandler)
 			searchPath.addProvider(((ProviderHandler) child).getProvider());

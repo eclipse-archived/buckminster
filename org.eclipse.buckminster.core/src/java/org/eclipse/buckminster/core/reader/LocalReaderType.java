@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.Path;
  */
 public class LocalReaderType extends URLCatalogReaderType {
 	private static final IVersionFinder blindFinder = new AbstractVersionFinder(null, null, null) {
+		@Override
 		public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException {
 			MonitorUtils.complete(monitor);
 			return null;

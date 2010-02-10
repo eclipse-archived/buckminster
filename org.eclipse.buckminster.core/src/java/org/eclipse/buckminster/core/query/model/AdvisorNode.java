@@ -148,94 +148,117 @@ public class AdvisorNode extends AbstractSaxableElement implements Cloneable, IA
 		properties = ExpandingProperties.createUnmodifiableProperties(bld.getProperties());
 	}
 
+	@Override
 	public boolean allowCircularDependency() {
 		return allowCircularDependency;
 	}
 
+	@Override
 	public final List<String> getAttributes() {
 		return attributes;
 	}
 
+	@Override
 	public final VersionSelector[] getBranchTagPath() {
 		return branchTagPath;
 	}
 
+	@Override
 	public final String getComponentTypeID() {
 		return componentTypeID;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
 
+	@Override
 	public final MutableLevel getMutableLevel() {
 		return mutableLevel;
 	}
 
+	@Override
 	public final Pattern getNamePattern() {
 		return namePattern;
 	}
 
+	@Override
 	public URL getOverlayFolder() {
 		return overlayFolder;
 	}
 
+	@Override
 	public Map<String, String> getProperties() {
 		return properties;
 	}
 
+	@Override
 	public int[] getResolutionPrio() {
 		return resolutionPrio;
 	}
 
+	@Override
 	public String getRevision() {
 		return revision;
 	}
 
+	@Override
 	public final SourceLevel getSourceLevel() {
 		return sourceLevel;
 	}
 
+	@Override
 	public Date getTimestamp() {
 		return timestamp;
 	}
 
+	@Override
 	public final VersionRange getVersionOverride() {
 		return versionOverride;
 	}
 
+	@Override
 	public final boolean isPrune() {
 		return prune;
 	}
 
+	@Override
 	public final boolean isSystemDiscovery() {
 		return systemDiscovery;
 	}
 
+	@Override
 	public final boolean isUseMaterialization() {
 		return useMaterialization;
 	}
 
+	@Override
 	public final boolean isUseRemoteResolution() {
 		return useRemoteResolution;
 	}
 
+	@Override
 	public final boolean isUseTargetPlatform() {
 		return useTargetPlatform;
 	}
 
+	@Override
 	public final boolean isUseWorkspace() {
 		return useWorkspace;
 	}
 
+	@Override
 	public final boolean skipComponent() {
 		return skipComponent;
 	}

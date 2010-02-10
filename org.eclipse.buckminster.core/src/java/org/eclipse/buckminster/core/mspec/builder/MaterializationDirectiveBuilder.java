@@ -45,30 +45,37 @@ public abstract class MaterializationDirectiveBuilder implements IMaterializatio
 		properties.clear();
 	}
 
+	@Override
 	public ConflictResolution getConflictResolution() {
 		return conflictResolution;
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
 
+	@Override
 	public IPath getInstallLocation() {
 		return installLocation;
 	}
 
+	@Override
 	public String getMaterializerID() {
 		return materializerID;
 	}
 
+	@Override
 	public int getMaxParallelJobs() {
 		return maxParallelJobs;
 	}
 
+	@Override
 	public Map<String, String> getProperties() {
 		return properties;
 	}
 
+	@Override
 	public IPath getWorkspaceLocation() {
 		return workspaceLocation;
 	}

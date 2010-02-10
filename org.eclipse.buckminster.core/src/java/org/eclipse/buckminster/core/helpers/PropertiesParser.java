@@ -27,6 +27,7 @@ public class PropertiesParser implements IStreamConsumer<Map<String, String>> {
 		return new BMProperties(stream);
 	}
 
+	@Override
 	public Map<String, String> consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
 			throws IOException {
 		monitor.beginTask(streamName, 1);

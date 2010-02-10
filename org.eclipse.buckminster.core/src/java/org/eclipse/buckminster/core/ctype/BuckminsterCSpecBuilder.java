@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Thomas Hallgren
  */
 public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<CSpec> {
+	@Override
 	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 2000);
 		IComponentReader reader = readerHandle[0];
@@ -57,6 +58,7 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 		}
 	}
 
+	@Override
 	public CSpec consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor) throws CoreException {
 		IParser<CSpec> cspecParser = CorePlugin.getDefault().getParserFactory().getCSpecParser(true);
 		return cspecParser.parse(streamName, stream);

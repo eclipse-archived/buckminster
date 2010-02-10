@@ -27,6 +27,7 @@ public class ToLower extends ValueHolderFilter {
 		return (resolved == null || NO_VALUE.equals(resolved)) ? NO_VALUE : resolved.toLowerCase();
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

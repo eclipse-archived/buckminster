@@ -37,10 +37,12 @@ public class ActionArtifact extends Artifact implements IActionArtifact {
 		return (Action) this.getCSpec().getRequiredAttribute(actionName);
 	}
 
+	@Override
 	public String getActionName() {
 		return actionName;
 	}
 
+	@Override
 	public String getAlias() {
 		return alias;
 	}

@@ -56,6 +56,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		super(readerType, providerMatch);
 	}
 
+	@Override
 	public final boolean exists(String fileName, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 100);
 		try {
@@ -70,6 +71,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
+	@Override
 	public final FileHandle getContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException {
 		ProviderMatch ri = getProviderMatch();
 		Logger logger = CorePlugin.getLogger();
@@ -92,6 +94,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
+	@Override
 	public final List<FileHandle> getRootFiles(Pattern matchPattern, IProgressMonitor monitor) throws CoreException, IOException {
 		ArrayList<FileHandle> files = new ArrayList<FileHandle>();
 		monitor.beginTask(null, 100);
@@ -109,12 +112,14 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		return files;
 	}
 
+	@Override
 	public final List<String> list(IProgressMonitor monitor) throws CoreException {
 		ArrayList<String> files = new ArrayList<String>();
 		innerList(files, monitor);
 		return files;
 	}
 
+	@Override
 	public final void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor) throws CoreException {
 		ProviderMatch pm = this.getProviderMatch();
 		CorePlugin.getLogger().debug("Provider %s(%s): materializing to %s", getReaderType().getId(), pm.getRepositoryURI(), location); //$NON-NLS-1$
@@ -128,6 +133,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
+	@Override
 	public synchronized IEclipsePreferences readBuckminsterPreferences(IProgressMonitor monitor) throws CoreException {
 		if (prefStateKnown) {
 			MonitorUtils.complete(monitor);
@@ -146,6 +152,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
+	@Override
 	public final <T> T readFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		MonitorUtils.begin(monitor, 100);
 		try {
@@ -243,6 +250,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			tmp = new FileOutputStream(tempFile);
 			final OutputStream out = tmp;
 			readFile(fileName, new IStreamConsumer<Object>() {
+				@Override
 				public Object consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor mon) throws IOException {
 					FileUtils.copyFile(stream, out, mon);
 					return null;

@@ -67,6 +67,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 		this.quietExecution = quietExecution;
 	}
 
+	@Override
 	public synchronized void addGeneratedResolution(Resolution resolution, IPath location) {
 		if (generatedResolutions == null) {
 			generatedResolutions = new ArrayList<Resolution>();
@@ -76,6 +77,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 		generatedMaterializations.add(new Materialization(location, resolution.getComponentIdentifier()));
 	}
 
+	@Override
 	public Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException {
 		Map<String, String> actionProps = (attribute instanceof IAction) ? ((IAction) attribute).getProperties() : Collections
 				.<String, String> emptyMap();
@@ -88,6 +90,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 		return allProps;
 	}
 
+	@Override
 	public synchronized Materialization getGeneratedMaterialization(IComponentIdentifier ci) {
 		if (generatedMaterializations != null) {
 			for (Materialization mat : generatedMaterializations)
@@ -97,6 +100,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 		return null;
 	}
 
+	@Override
 	public synchronized Resolution getGeneratedResolution(IComponentRequest request) {
 		if (generatedResolutions != null) {
 			for (Resolution res : generatedResolutions)
@@ -106,6 +110,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 		return null;
 	}
 
+	@Override
 	public Map<UUID, Object> getInvocationCache() {
 		return invocationCache;
 	}
@@ -126,10 +131,12 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 		return allProps;
 	}
 
+	@Override
 	public IStatus getStatus() {
 		return status;
 	}
 
+	@Override
 	public void scheduleRemoval(IPath path) {
 		if (!path.isAbsolute())
 			throw new IllegalArgumentException(NLS.bind(Messages.Only_absolute_paths_can_be_scheduled_for_removal_0, path.toOSString()));

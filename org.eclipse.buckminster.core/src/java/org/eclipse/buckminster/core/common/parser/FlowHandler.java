@@ -39,6 +39,7 @@ public class FlowHandler extends ChildHandler implements ChildPoppedListener {
 		text.append(chars, start, length);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		addElement(((FlowHandler) child).createElement());
 	}

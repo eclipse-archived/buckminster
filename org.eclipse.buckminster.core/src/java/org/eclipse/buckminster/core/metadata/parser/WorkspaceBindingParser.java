@@ -27,10 +27,12 @@ public class WorkspaceBindingParser extends MetaDataParser<WorkspaceBinding> {
 		super(parserExtensions, validating);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		wsBinding = ((WorkspaceBindingHandler) child).getWorkspaceBinding();
 	}
 
+	@Override
 	public WorkspaceBinding parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
 		return wsBinding;

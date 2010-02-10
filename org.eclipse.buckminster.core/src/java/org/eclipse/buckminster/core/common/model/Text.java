@@ -22,10 +22,12 @@ public class Text implements ISaxableElement {
 		this.content = content;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return "p"; //$NON-NLS-1$
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException {
 		receiver.characters(content, 0, content.length);
 	}

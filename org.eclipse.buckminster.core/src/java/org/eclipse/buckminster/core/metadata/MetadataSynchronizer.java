@@ -140,6 +140,7 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 	}
 
 	static class ResetVisitor implements IResourceVisitor {
+		@Override
 		public boolean visit(IResource resource) throws CoreException {
 			if ((resource instanceof IProject) && !((IProject) resource).isOpen())
 				return false;
@@ -211,6 +212,7 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 	}
 
 	private class Visitor implements IResourceDeltaVisitor {
+		@Override
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			int kind = delta.getKind();
 			IResource resource = delta.getResource();
@@ -512,6 +514,7 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 		cspecSources.put(path, Pattern.compile(bld.toString(), flags));
 	}
 
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		if (defaultSynchronizer == null)
 			//

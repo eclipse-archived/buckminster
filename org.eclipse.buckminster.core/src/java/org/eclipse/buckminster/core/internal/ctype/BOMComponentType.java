@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 public class BOMComponentType extends AbstractComponentType {
 	private static final IResolutionBuilder builder = new BOMBuilder();
 
+	@Override
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return builder;

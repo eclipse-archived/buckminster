@@ -101,6 +101,7 @@ public class Group extends TopLevelAttribute implements IGroup {
 		prerequisites = Utils.createUnmodifiableList(builder.getPrerequisiteList());
 	}
 
+	@Override
 	public IPath getPrerequisiteRebase() {
 		return prerequisiteRebase;
 	}

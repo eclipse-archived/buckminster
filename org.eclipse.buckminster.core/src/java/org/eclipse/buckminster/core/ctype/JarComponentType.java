@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class JarComponentType extends AbstractComponentType {
 	private static final IResolutionBuilder builder = new AbstractResolutionBuilder() {
+		@Override
 		public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 			IComponentReader reader = readerHandle[0];
 			ProviderMatch ri = reader.getProviderMatch();
@@ -34,6 +35,7 @@ public class JarComponentType extends AbstractComponentType {
 		}
 	};
 
+	@Override
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return builder;

@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Thomas Hallgren
  */
 public class BOMBuilder extends AbstractResolutionBuilder implements IStreamConsumer<BillOfMaterials> {
+	@Override
 	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IComponentReader reader = readerHandle[0];
 		try {
@@ -50,6 +51,7 @@ public class BOMBuilder extends AbstractResolutionBuilder implements IStreamCons
 		}
 	}
 
+	@Override
 	public BillOfMaterials consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
 			throws CoreException {
 		IParser<BillOfMaterials> bomParser = CorePlugin.getDefault().getParserFactory().getBillOfMaterialsParser(true);

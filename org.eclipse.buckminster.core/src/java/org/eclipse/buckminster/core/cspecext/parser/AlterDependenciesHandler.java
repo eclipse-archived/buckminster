@@ -30,6 +30,7 @@ class AlterDependenciesHandler extends AlterHandler {
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		AlterCSpecBuilder alterCSpec = ((AlterCSpecHandler) this.getParentHandler()).getAlterCSpecBuilder();
 		if (child == alterDependencyHandler)

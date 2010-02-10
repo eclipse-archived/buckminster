@@ -97,6 +97,7 @@ public class Build extends WorkspaceCommand {
 				ws.build(buildType, MonitorUtils.subMonitor(monitor, projs.length));
 			}
 			Arrays.sort(markers, new Comparator<IMarker>() {
+				@Override
 				public int compare(IMarker a, IMarker b) {
 					try {
 						long diff = a.getCreationTime() - b.getCreationTime();

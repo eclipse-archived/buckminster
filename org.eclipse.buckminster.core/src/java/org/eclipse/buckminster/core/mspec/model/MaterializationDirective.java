@@ -66,30 +66,37 @@ public abstract class MaterializationDirective extends AbstractSaxableElement im
 		maxParallelJobs = builder.getMaxParallelJobs();
 	}
 
+	@Override
 	public ConflictResolution getConflictResolution() {
 		return conflictResolution;
 	}
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
 
+	@Override
 	public IPath getInstallLocation() {
 		return installLocation;
 	}
 
+	@Override
 	public String getMaterializerID() {
 		return materializer;
 	}
 
+	@Override
 	public int getMaxParallelJobs() {
 		return maxParallelJobs;
 	}
 
+	@Override
 	public Map<String, String> getProperties() {
 		return properties;
 	}
 
+	@Override
 	public IPath getWorkspaceLocation() {
 		return workspaceLocation;
 	}

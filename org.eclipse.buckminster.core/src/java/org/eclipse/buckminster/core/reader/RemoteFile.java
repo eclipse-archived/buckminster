@@ -30,6 +30,7 @@ public class RemoteFile implements Closeable {
 		this.fileName = fileName;
 	}
 
+	@Override
 	public void close() throws IOException {
 		reader.close();
 	}

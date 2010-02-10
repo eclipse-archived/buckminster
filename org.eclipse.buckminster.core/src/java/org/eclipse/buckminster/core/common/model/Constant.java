@@ -43,6 +43,7 @@ public class Constant<T> extends ValueHolder<T> {
 		return value;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

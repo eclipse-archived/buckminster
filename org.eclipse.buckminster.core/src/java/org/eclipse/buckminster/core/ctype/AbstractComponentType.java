@@ -63,14 +63,17 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 			this.aliases = aliases;
 		}
 
+		@Override
 		public IPath[] getAliases() {
 			return aliases;
 		}
 
+		@Override
 		public IPath getPath() {
 			return path;
 		}
 
+		@Override
 		public boolean isOptional() {
 			return optional;
 		}
@@ -140,23 +143,28 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 
 	private Pattern substituteNamePattern;
 
+	@Override
 	public Version getComponentVersion(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException {
 		BOMNode node = getResolution(rInfo, true, monitor);
 		return node.getResolution().getComponentIdentifier().getVersion();
 	}
 
+	@Override
 	public Pattern getDesiredNamePattern() {
 		return desiredNamePattern;
 	}
 
+	@Override
 	public IMetaFile[] getMetaFiles() {
 		return metaFiles;
 	}
 
+	@Override
 	public String getNameSubstitution() {
 		return nameSubstitution;
 	}
 
+	@Override
 	public String getProjectName(String componentName) throws CoreException {
 		if (componentName == null)
 			return null;
@@ -183,22 +191,27 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		return componentName;
 	}
 
+	@Override
 	public IPath getRelativeLocation() {
 		return relativeLocation;
 	}
 
+	@Override
 	public final BOMNode getResolution(ProviderMatch rInfo, IProgressMonitor monitor) throws CoreException {
 		return getResolution(rInfo, false, monitor);
 	}
 
+	@Override
 	public Pattern getSubstituteNamePattern() {
 		return substituteNamePattern;
 	}
 
+	@Override
 	public VersionRange getTypeSpecificDesignator(VersionRange designator) {
 		return designator;
 	}
 
+	@Override
 	public boolean hasAllRequiredMetaFiles(IPath path) {
 		for (IMetaFile metaFile : getMetaFiles()) {
 			if (metaFile.isOptional() || path.append(metaFile.getPath()).toFile().exists())
@@ -217,6 +230,7 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		return true;
 	}
 
+	@Override
 	public boolean isMetaFileBased() {
 		for (IMetaFile metaFile : getMetaFiles())
 			if (!metaFile.isOptional())

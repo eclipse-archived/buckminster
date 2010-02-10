@@ -43,10 +43,12 @@ public class ShortDurationURLCache extends ShortDurationFileCache {
 			return url.openStream();
 
 		return this.open(new Materializer() {
+			@Override
 			public String getKey() {
 				return url.toString();
 			}
 
+			@Override
 			public FileHandle materialize(IProgressMonitor mon, FileInfoBuilder info) throws IOException, CoreException {
 				if (info == null)
 					info = new FileInfoBuilder();

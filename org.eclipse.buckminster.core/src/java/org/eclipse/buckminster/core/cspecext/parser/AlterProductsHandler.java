@@ -49,6 +49,7 @@ class AlterProductsHandler extends AlterHandler {
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child == removeProductPathHandler)
 			this.getAlterActionBuilder().addRemoveProductPath(Path.fromPortableString(removeProductPathHandler.getValue()));

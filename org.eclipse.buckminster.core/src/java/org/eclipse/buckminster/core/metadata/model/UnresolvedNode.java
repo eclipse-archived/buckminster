@@ -43,6 +43,7 @@ public class UnresolvedNode extends BOMNode {
 		unresolved.add(dependency.getRequest());
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

@@ -88,6 +88,7 @@ public class GeneratorNode extends BOMNode {
 		return declaringCSpec;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

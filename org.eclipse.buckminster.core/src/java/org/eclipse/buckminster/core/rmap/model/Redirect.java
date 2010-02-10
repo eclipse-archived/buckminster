@@ -37,6 +37,7 @@ public class Redirect extends Matcher {
 		this.url = url;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

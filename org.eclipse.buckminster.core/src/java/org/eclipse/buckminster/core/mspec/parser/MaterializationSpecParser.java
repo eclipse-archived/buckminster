@@ -35,10 +35,12 @@ public class MaterializationSpecParser extends MetaDataParser<MaterializationSpe
 		super(parserExtensions, validating);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		materializationSpec = ((MaterializationSpecHandler) child).getMaterializationSpec();
 	}
 
+	@Override
 	public MaterializationSpec parse(String systemId, InputStream input) throws CoreException {
 		try {
 			contextURL = URLUtils.normalizeToURL(systemId);

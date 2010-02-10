@@ -95,50 +95,62 @@ public class MaterializationNode extends MaterializationDirective implements IMa
 		return super.getAdapter(adapter);
 	}
 
+	@Override
 	public Pattern getBindingNamePattern() {
 		return bindingNamePattern;
 	}
 
+	@Override
 	public String getBindingNameReplacement() {
 		return bindingNameReplacement;
 	}
 
+	@Override
 	public String getComponentTypeID() {
 		return componentTypeID;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
 
+	@Override
 	public IPath getLeafArtifact() {
 		return leafArtifact;
 	}
 
+	@Override
 	public Pattern getNamePattern() {
 		return namePattern;
 	}
 
+	@Override
 	public IPath getResourcePath() {
 		return resourcePath;
 	}
 
+	@Override
 	public String getSuffix() {
 		return suffix;
 	}
 
+	@Override
 	public boolean isExclude() {
 		return exclude;
 	}
 
+	@Override
 	public boolean isExpand() {
 		return expand;
 	}
 
+	@Override
 	public boolean isUnpack() {
 		return unpack;
 	}

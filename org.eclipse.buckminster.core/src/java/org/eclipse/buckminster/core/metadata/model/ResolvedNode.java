@@ -130,6 +130,7 @@ public class ResolvedNode extends BOMNode {
 		return children;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

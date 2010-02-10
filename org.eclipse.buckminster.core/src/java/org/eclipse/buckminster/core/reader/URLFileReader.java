@@ -52,6 +52,7 @@ public class URLFileReader extends AbstractReader implements IFileReader {
 		this.fileInfo = null;
 	}
 
+	@Override
 	public boolean exists(IProgressMonitor monitor) throws CoreException, IOException {
 		InputStream input = null;
 		try {
@@ -64,6 +65,7 @@ public class URLFileReader extends AbstractReader implements IFileReader {
 		}
 	}
 
+	@Override
 	public IFileInfo getFileInfo() {
 		return fileInfo;
 	}
@@ -72,6 +74,7 @@ public class URLFileReader extends AbstractReader implements IFileReader {
 		return uri;
 	}
 
+	@Override
 	public void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor) throws CoreException {
 		URL url = getURL();
 		IConnectContext cctx = getConnectContext();
@@ -112,6 +115,7 @@ public class URLFileReader extends AbstractReader implements IFileReader {
 		}
 	}
 
+	@Override
 	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException {
 		ICache cache = DownloadManager.getCache();
 		IFileInfo[] fiHandle = new IFileInfo[1];
@@ -120,6 +124,7 @@ public class URLFileReader extends AbstractReader implements IFileReader {
 		return input;
 	}
 
+	@Override
 	public final <T> T readFile(IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		monitor.beginTask(null, 100);
 		InputStream input = null;

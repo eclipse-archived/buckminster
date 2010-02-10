@@ -98,6 +98,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 			bld.append(filter);
 	}
 
+	@Override
 	public boolean designates(IComponentIdentifier id) {
 		return Trivial.equalsAllowNull(getName(), id.getName())
 				&& (getComponentTypeID() == null || getComponentTypeID().equals(id.getComponentTypeID()))
@@ -122,6 +123,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		return TAG;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -134,6 +136,7 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 		return p;
 	}
 
+	@Override
 	public VersionRange getVersionRange() {
 		return versionRange;
 	}

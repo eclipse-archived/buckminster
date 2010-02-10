@@ -51,10 +51,12 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 		return specBuilder == getCSpecBuilder() ? this : new ArtifactBuilder(specBuilder);
 	}
 
+	@Override
 	public IPath getBase() {
 		return base;
 	}
 
+	@Override
 	public Set<IPath> getPaths() {
 		return paths;
 	}

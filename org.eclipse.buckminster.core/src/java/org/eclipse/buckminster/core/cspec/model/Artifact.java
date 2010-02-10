@@ -53,10 +53,12 @@ public class Artifact extends TopLevelAttribute implements IArtifact {
 		paths = CSpec.createUnmodifiablePaths(builder.getPaths());
 	}
 
+	@Override
 	public IPath getBase() {
 		return base;
 	}
 
+	@Override
 	public Set<IPath> getPaths() {
 		return paths;
 	}

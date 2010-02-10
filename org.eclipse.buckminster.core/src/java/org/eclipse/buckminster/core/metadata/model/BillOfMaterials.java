@@ -198,6 +198,7 @@ public class BillOfMaterials extends BOMNode {
 		return getTopNode().getChildren();
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

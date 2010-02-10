@@ -37,10 +37,12 @@ public class ProviderParser extends AbstractParser<Provider> implements ChildPop
 				validating);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		provider = ((ProviderHandler) child).getProvider();
 	}
 
+	@Override
 	public Provider parse(String systemID, InputStream input) throws CoreException {
 		parseInput(systemID, input);
 		return provider;

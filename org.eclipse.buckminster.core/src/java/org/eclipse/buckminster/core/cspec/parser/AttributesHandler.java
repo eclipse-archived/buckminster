@@ -31,6 +31,7 @@ abstract class AttributesHandler extends ExtensionAwareHandler implements ChildP
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		this.addAttribute(((AttributeHandler) child).getAttributeBuilder());
 	}
@@ -51,6 +52,7 @@ abstract class AttributesHandler extends ExtensionAwareHandler implements ChildP
 		return ch;
 	}
 
+	@Override
 	public CSpecBuilder getCSpecBuilder() {
 		return ((ICSpecBuilderSupport) this.getParentHandler()).getCSpecBuilder();
 	}

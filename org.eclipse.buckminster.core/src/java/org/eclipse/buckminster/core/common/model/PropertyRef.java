@@ -56,6 +56,7 @@ public class PropertyRef<T> extends ValueHolder<T> {
 		return super.equals(o) && Trivial.equalsAllowNull(key, ((PropertyRef<?>) o).key);
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

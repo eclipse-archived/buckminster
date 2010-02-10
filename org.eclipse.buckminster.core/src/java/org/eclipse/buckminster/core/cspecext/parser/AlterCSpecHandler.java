@@ -72,6 +72,7 @@ class AlterCSpecHandler extends AlterHandler {
 		baseHandler = new CSpecHandler(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		((ChildPoppedListener) baseHandler).childPopped(child);
 	}

@@ -41,6 +41,7 @@ public class EclipsePreferencesReader implements IStreamConsumer<IEclipsePrefere
 
 	public static final String BUCKMINSTER_PROJECT_PREFS_PATH = EclipsePreferences.DEFAULT_PREFERENCES_DIRNAME + '/' + CorePlugin.getID() + ".prefs"; //$NON-NLS-1$
 
+	@Override
 	public IEclipsePreferences consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
 			throws CoreException, IOException {
 		monitor = MonitorUtils.ensureNotNull(monitor);

@@ -99,6 +99,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		}
 	}
 
+	@Override
 	public IResolver createResolver(ResolutionContext context) throws CoreException {
 		ComponentQuery query = context.getComponentQuery();
 		URL url;
@@ -112,6 +113,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		return (url == null) ? new LocalResolver(context) : new ResourceMapResolver(this, context, false);
 	}
 
+	@Override
 	public IPreferenceDescriptor[] getPreferenceDescriptors() {
 		PreferenceDescriptor[] pds = new PreferenceDescriptor[4];
 		pds[0] = new PreferenceDescriptor(RESOURCE_MAP_URL_PARAM, PreferenceType.String, Messages.Resource_map_URL);
@@ -131,14 +133,17 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		return prefsNode;
 	}
 
+	@Override
 	public int getResolutionPriority() {
 		return 0;
 	}
 
+	@Override
 	public int getResolverThreadsMax() {
 		return getPreferences().getInt(RESOLVER_THREADS_MAX_PARAM, resolverThreadsMax);
 	}
 
+	@Override
 	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException {
 		if (url == null || isOverrideQueryURL())
 			url = getResourceMapURL();
@@ -152,6 +157,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	 * 
 	 * @return The URL or <code>null</code> if it has not been set.
 	 */
+	@Override
 	public URL getResourceMapURL() throws CoreException {
 		try {
 			return URLUtils.normalizeToURL(getPreferences().get(RESOURCE_MAP_URL_PARAM, resourceMapURL));
@@ -160,6 +166,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 		}
 	}
 
+	@Override
 	public void initDefaultPreferences() {
 		IEclipsePreferences dfltNode = (IEclipsePreferences) defaultNode.node(getId());
 		if (dfltNode.getInt(RESOLVER_THREADS_MAX_PARAM, 0) == 0) {
@@ -178,6 +185,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	 * 
 	 * @return <code>true</code>ue if local resolutions should be performed.
 	 */
+	@Override
 	public boolean isLocalResolve() {
 		return getPreferences().getBoolean(LOCAL_RESOLVE_PARAM, localResolve);
 	}
@@ -189,6 +197,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	 * 
 	 * @return the overrideQueryURL
 	 */
+	@Override
 	public boolean isOverrideQueryURL() {
 		return getPreferences().getBoolean(OVERRIDE_QUERY_URL_PARAM, overrideQueryURL);
 	}

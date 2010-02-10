@@ -31,6 +31,7 @@ public abstract class AbstractExtension implements IBuckminsterExtension, IExecu
 	/**
 	 * Returns the id as it was defined in the extension
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -47,6 +48,7 @@ public abstract class AbstractExtension implements IBuckminsterExtension, IExecu
 	public void setExtensionParameter(String key, String value) throws CoreException {
 	}
 
+	@Override
 	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		id = config.getAttribute("id"); //$NON-NLS-1$
 		Map<String, String> initParams = getInitializationParameters(data);

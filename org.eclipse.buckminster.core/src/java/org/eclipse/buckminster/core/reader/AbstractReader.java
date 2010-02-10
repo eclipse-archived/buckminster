@@ -38,41 +38,51 @@ public abstract class AbstractReader implements IComponentReader {
 		this.readerType = readerType;
 	}
 
+	@Override
 	public boolean canMaterialize() {
 		return true;
 	}
 
+	@Override
 	public void close() {
 	}
 
+	@Override
 	public IComponentType getComponentType() {
 		return providerMatch.getComponentType();
 	}
 
+	@Override
 	public IConnectContext getConnectContext() {
 		return providerMatch.getConnectContext();
 	}
 
+	@Override
 	public NodeQuery getNodeQuery() {
 		return providerMatch.getNodeQuery();
 	}
 
+	@Override
 	public ProviderMatch getProviderMatch() {
 		return providerMatch;
 	}
 
+	@Override
 	public IReaderType getReaderType() {
 		return readerType;
 	}
 
+	@Override
 	public IVersionConverter getVersionConverter() throws CoreException {
 		return this.getProviderMatch().getVersionConverter();
 	}
 
+	@Override
 	public ResolverDecision logDecision(ComponentRequest request, ResolverDecisionType decisionType, Object... args) {
 		return getNodeQuery().logDecision(request, decisionType, args);
 	}
 
+	@Override
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
 		return getNodeQuery().logDecision(decisionType, args);
 	}

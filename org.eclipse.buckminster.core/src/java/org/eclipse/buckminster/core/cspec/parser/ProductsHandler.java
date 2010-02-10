@@ -64,6 +64,7 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child == pathHandler)
 			((ActionBuilder) this.getAttributeBuilder()).addProductPath(pathHandler.getPath());
@@ -87,10 +88,12 @@ public class ProductsHandler extends ExtensionAwareHandler implements ChildPoppe
 		return ch;
 	}
 
+	@Override
 	public TopLevelAttributeBuilder getAttributeBuilder() {
 		return ((IAttributeBuilderSupport) this.getParentHandler()).getAttributeBuilder();
 	}
 
+	@Override
 	public CSpecBuilder getCSpecBuilder() {
 		return ((ICSpecBuilderSupport) this.getParentHandler()).getCSpecBuilder();
 	}

@@ -83,6 +83,7 @@ public class WorkspaceBinding extends Materialization implements Comparable<Work
 		this(componentLocation, res.getComponentIdentifier(), res.getId(), workspaceRoot, workspaceRelativePath, properties, getNextTimestamp());
 	}
 
+	@Override
 	public int compareTo(WorkspaceBinding o) {
 		return timestamp < o.timestamp ? -1 : (timestamp == o.timestamp ? 0 : 1);
 	}

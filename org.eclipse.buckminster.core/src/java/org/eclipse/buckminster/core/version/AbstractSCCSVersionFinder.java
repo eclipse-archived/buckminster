@@ -67,6 +67,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder {
 		super(provider, componentType, query);
 	}
 
+	@Override
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException {
 		try {
 			NodeQuery query = getQuery();

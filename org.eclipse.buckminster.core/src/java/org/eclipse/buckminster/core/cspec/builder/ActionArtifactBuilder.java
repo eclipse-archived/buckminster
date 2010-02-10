@@ -36,10 +36,12 @@ public class ActionArtifactBuilder extends ArtifactBuilder implements IActionArt
 		return new ActionArtifact(this);
 	}
 
+	@Override
 	public String getActionName() {
 		return actionName;
 	}
 
+	@Override
 	public String getAlias() {
 		return alias;
 	}

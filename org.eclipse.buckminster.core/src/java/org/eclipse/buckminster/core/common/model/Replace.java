@@ -73,6 +73,7 @@ public class Replace extends ValueHolderFilter {
 					&& replacement.equals(((Match) o).replacement);
 		}
 
+		@Override
 		public String getDefaultTag() {
 			return MATCH_TAG;
 		}
@@ -142,6 +143,7 @@ public class Replace extends ValueHolderFilter {
 		return super.equals(o) && matchers.equals(((Replace) o).matchers);
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

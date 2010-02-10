@@ -20,6 +20,7 @@ import org.eclipse.equinox.p2.metadata.VersionFormatException;
  * @author Thomas Hallgren
  */
 public class BranchConverter extends AbstractConverter {
+	@Override
 	public VersionSelector createSelector(Version version) throws CoreException {
 		if (version == null)
 			return null;
@@ -28,6 +29,7 @@ public class BranchConverter extends AbstractConverter {
 		return selectorComponent == null ? null : VersionSelector.branch(selectorComponent);
 	}
 
+	@Override
 	public Version createVersion(VersionSelector versionSelector) throws CoreException {
 		if (versionSelector == null)
 			return null;
@@ -39,6 +41,7 @@ public class BranchConverter extends AbstractConverter {
 		return createVersionFromSelectorComponent(name);
 	}
 
+	@Override
 	public int getSelectorType() {
 		return VersionSelector.BRANCH;
 	}

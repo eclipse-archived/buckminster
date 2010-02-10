@@ -60,6 +60,7 @@ public class SearchPath extends AbstractSaxableElement {
 		providers.add(provider);
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}

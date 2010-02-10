@@ -103,6 +103,7 @@ public class ResolverFactoryMaintainer implements IPreferenceChangeListener {
 		return resolverFactories;
 	}
 
+	@Override
 	public synchronized void preferenceChange(PreferenceChangeEvent event) {
 		if (IBuckminsterPreferenceConstants.QUERY_RESOLVER_SORT_ORDER.equals(event.getKey())) {
 			resolverFactories = null;

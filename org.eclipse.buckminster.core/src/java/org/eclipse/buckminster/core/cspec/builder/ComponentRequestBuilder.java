@@ -37,23 +37,28 @@ public class ComponentRequestBuilder implements IComponentRequest {
 		return new ComponentRequest(this);
 	}
 
+	@Override
 	public boolean designates(IComponentIdentifier id) {
 		return Trivial.equalsAllowNull(getName(), id.getName()) && (componentType == null || componentType.equals(id.getComponentTypeID()))
 				&& (versionRange == null || versionRange.isIncluded(id.getVersion()));
 	}
 
+	@Override
 	public String getComponentTypeID() {
 		return componentType;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public VersionRange getVersionRange() {
 		return versionRange;
 	}

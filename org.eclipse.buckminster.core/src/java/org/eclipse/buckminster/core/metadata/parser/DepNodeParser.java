@@ -27,10 +27,12 @@ public class DepNodeParser extends MetaDataParser<BOMNode> {
 		super(parserExtensions);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		resolvedNode = ((BomNodeHandler) child).getDepNode();
 	}
 
+	@Override
 	public BOMNode parse(String systemID, InputStream input) throws CoreException {
 		this.parseInput(systemID, input);
 		return resolvedNode;

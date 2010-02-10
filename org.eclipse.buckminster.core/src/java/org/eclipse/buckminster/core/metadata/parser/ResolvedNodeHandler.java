@@ -38,6 +38,7 @@ class ResolvedNodeHandler extends BomNodeHandler implements ChildPoppedListener 
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXParseException {
 		if (child == childHandler)
 			children.add(childHandler.getRefId());

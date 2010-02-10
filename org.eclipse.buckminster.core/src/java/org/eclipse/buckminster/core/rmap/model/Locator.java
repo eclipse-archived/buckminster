@@ -38,6 +38,7 @@ public class Locator extends Matcher {
 		this.failOnError = failOnError;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
