@@ -125,8 +125,8 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="emma">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="http://update.eclemma.org/"/>
+    <rm:provider componentTypes="osgi.bundle" readerType="url" source="false" mutable="false">
+      <rm:uri format="http://download.eclipselab.org/eclemma/release/1.4.2/com.mountainminds.eclemma.core_1.4.2.jar"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="modeling">
