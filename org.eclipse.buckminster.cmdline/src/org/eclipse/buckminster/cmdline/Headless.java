@@ -127,10 +127,12 @@ public class Headless implements IApplication, OptionValueType {
 		return new Integer(exitValue);
 	}
 
+	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		return run(context.getArguments().get(IApplicationContext.APPLICATION_ARGS));
 	}
 
+	@Override
 	public void stop() {
 	}
 

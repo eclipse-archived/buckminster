@@ -115,6 +115,7 @@ public class ListCommands extends AbstractCommand {
 			Map.Entry<String, List<CommandInfo>> entry = allInfosItor.next();
 			List<CommandInfo> implementorsForNamespace = entry.getValue();
 			Collections.sort(implementorsForNamespace, new Comparator<CommandInfo>() {
+				@Override
 				public int compare(CommandInfo o1, CommandInfo o2) {
 					return o1.getName().compareTo(o2.getName());
 				}

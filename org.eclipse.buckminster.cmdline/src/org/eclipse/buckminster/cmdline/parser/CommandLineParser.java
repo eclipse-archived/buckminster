@@ -66,12 +66,14 @@ public class CommandLineParser implements Iterator<String> {
 		}
 	}
 
+	@Override
 	public boolean hasNext() {
 		if (nextToken == null)
 			nextToken = this.nextToken();
 		return nextToken != null;
 	}
 
+	@Override
 	public String next() {
 		if (!this.hasNext())
 			throw new NoSuchElementException();
@@ -80,6 +82,7 @@ public class CommandLineParser implements Iterator<String> {
 		return nxt;
 	}
 
+	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}

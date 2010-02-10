@@ -67,6 +67,7 @@ public class BasicPreferenceHandler implements IExecutableExtension {
 		node.flush();
 	}
 
+	@Override
 	public final void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		name = new StringBuffer(config.getDeclaringExtension().getNamespaceIdentifier()).append('.').append(config.getAttribute(NAME_ATTRIB))
 				.toString();
