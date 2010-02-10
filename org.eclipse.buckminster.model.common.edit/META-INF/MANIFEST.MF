@@ -7,7 +7,8 @@ Bundle-ClassPath: .
 Bundle-Activator: org.eclipse.buckminster.model.common.provider.CommonEditPlugin$Implementation
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ J2SE-1.5
 Export-Package: org.eclipse.buckminster.model.common.provider,
  org.eclipse.buckminster.model.common.provider.util
 Require-Bundle: org.eclipse.core.runtime,
