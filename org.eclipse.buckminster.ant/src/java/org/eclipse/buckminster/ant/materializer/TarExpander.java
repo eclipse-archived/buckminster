@@ -29,6 +29,7 @@ public class TarExpander extends AbstractExtension implements IExpander {
 
 	private boolean flatten = false;
 
+	@Override
 	public void expand(InputStream inputs, File destinationFolder, IProgressMonitor monitor) throws CoreException {
 		TarEntry entry;
 		TarInputStream input = null;
@@ -103,10 +104,12 @@ public class TarExpander extends AbstractExtension implements IExpander {
 		}
 	}
 
+	@Override
 	public void setFilter(FileFilter filter) {
 		this.filter = filter;
 	}
 
+	@Override
 	public void setFlattenHierarchy(boolean shouldFlatten) {
 		flatten = shouldFlatten;
 	}

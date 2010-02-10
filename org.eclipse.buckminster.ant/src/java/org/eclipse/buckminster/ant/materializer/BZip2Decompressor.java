@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class BZip2Decompressor implements IDecompressor {
 
+	@Override
 	public InputStream decompress(InputStream input, IProgressMonitor monitor) throws IOException {
 		/**
 		 * according to the documentation
