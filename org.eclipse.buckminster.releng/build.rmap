@@ -25,100 +25,100 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="platform">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.5))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.5))">
       <rm:uri format="{0}/eclipse/updates/3.5.x/M20100120-0800">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
       <rm:uri format="{0}/eclipse/updates/3.5.x/M20100120-0800">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(build.type=I)(eclipse.release=3.6))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=I)(eclipse.release=3.6))">
       <rm:uri format="{0}/eclipse/updates/3.6-I-builds">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
       <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100209-2300">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.6))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.6))">
       <rm:uri format="{0}/eclipse/updates/3.6">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="simultanious.release">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.5))">
       <rm:uri format="{0}/releases/maintenance">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.5))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.5))">
       <rm:uri format="{0}/releases/galileo">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.6))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(|(build.type=M)(build.type=I))(eclipse.release=3.6))">
       <rm:uri format="{0}/releases/staging">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.6))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=R)(eclipse.release=3.6))">
       <rm:uri format="{0}/releases/helios">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="orbit">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=R)">
       <rm:uri format="{0}/tools/orbit/downloads/drops/R20100114021427/updateSite">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=M)">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=M)">
       <rm:uri format="{0}/tools/orbit/downloads/drops/S20100120144102/updateSite">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=I)">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=I)">
       <rm:uri format="{0}/tools/orbit/downloads/drops/I20100120144102/updateSite">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="subclipse">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false">
       <rm:uri format="http://subclipse.tigris.org/update_1.6.x"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="svnkit">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false">
       <rm:uri format="http://eclipse.svnkit.com/1.3.x"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="polarion">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false">
       <rm:uri format="http://www.polarion.org/projects/subversive/download/eclipse/2.0/update-site"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="amalgam">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false">
       <rm:uri format="{0}/modeling/amalgam/dsltk/downloads/drops/S20090703-0844">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="gef">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=R)">
       <rm:uri format="{0}/tools/gef/updates/releases">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
       <rm:uri format="{0}/tools/gef/updates/milestones">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
@@ -130,14 +130,14 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="modeling">
-    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
       <rm:uri format="{0}/modeling/emf/updates/milestones">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="m2eclipse">
-    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
       <rm:uri format="http://m2eclipse.sonatype.org/update"/>
     </rm:provider>
   </rm:searchPath>
