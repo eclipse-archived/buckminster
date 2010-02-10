@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Generic Ui Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.generic.ui;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ J2SE-1.5
 Require-Bundle: org.eclipse.swt,
  org.eclipse.buckminster.generic,
  org.eclipse.platform,

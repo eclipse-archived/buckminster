@@ -256,6 +256,7 @@ public class PSFProvider extends Provider {
 
 		IComponentReader reader = match.getReader(MonitorUtils.subMonitor(monitor, 10));
 		IStreamConsumer<PSF> psfReader = new IStreamConsumer<PSF>() {
+			@Override
 			public PSF consumeStream(IComponentReader rdr, String streamName, InputStream stream, IProgressMonitor consumerMon) throws CoreException,
 					IOException {
 				File tempFile = File.createTempFile("bm-", ".psf"); //$NON-NLS-1$ //$NON-NLS-2$

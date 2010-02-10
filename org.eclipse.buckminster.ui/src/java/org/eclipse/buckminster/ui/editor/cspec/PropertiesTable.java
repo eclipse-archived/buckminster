@@ -24,14 +24,17 @@ public class PropertiesTable extends SimpleTable<Property> {
 		super(data, readOnly);
 	}
 
+	@Override
 	public Property createRowClass() {
 		return new Property(null, null);
 	}
 
+	@Override
 	public String[] getColumnHeaders() {
 		return new String[] { Messages.key, Messages.value };
 	}
 
+	@Override
 	public int[] getColumnWeights() {
 		return new int[] { 20, 30 };
 	}
@@ -46,10 +49,12 @@ public class PropertiesTable extends SimpleTable<Property> {
 		}
 	}
 
+	@Override
 	public Object[] toRowArray(Property t) {
 		return new Object[] { t.getKey(), t.getValue() };
 	}
 
+	@Override
 	public void updateRowClass(Property property, Object[] args) throws ValidatorException {
 		property.setKey((String) args[0]);
 		property.setValue((String) args[1]);

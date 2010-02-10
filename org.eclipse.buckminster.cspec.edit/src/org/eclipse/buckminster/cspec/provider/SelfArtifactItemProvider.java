@@ -104,4 +104,14 @@ public class SelfArtifactItemProvider extends ArtifactItemProvider implements IE
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	protected boolean shouldComposeCreationImage() {
+		return true;
+	}
+
 }

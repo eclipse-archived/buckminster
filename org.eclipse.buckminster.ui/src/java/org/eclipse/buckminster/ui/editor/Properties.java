@@ -52,24 +52,29 @@ import org.eclipse.swt.widgets.TableColumn;
 public class Properties extends Composite {
 
 	class PropertiesContentProvider implements IStructuredContentProvider {
+		@Override
 		public void dispose() {
 			// Nothing to dispose
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			return properties.toArray();
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// Nothing to do
 		}
 	}
 
 	class PropertiesLabelProvider extends LabelProvider implements ITableLabelProvider {
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			Property prop = (Property) element;
 			String lbl;
@@ -272,11 +277,13 @@ public class Properties extends Composite {
 		tableViewer.setContentProvider(new PropertiesContentProvider());
 		tableViewer.setInput(properties);
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				enableDisableButtonGroup();
 			}
 		});
 		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				if (tableViewer.getTable().getSelectionIndex() >= 0) {
 					editProperty();

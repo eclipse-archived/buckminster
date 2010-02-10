@@ -127,10 +127,12 @@ import org.osgi.framework.InvalidSyntaxException;
  */
 public class QueryEditor extends EditorPart implements IEditorMatchingStrategy {
 	class AdvisorNodeLabelProvider extends LabelProvider implements ITableLabelProvider {
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			AdvisorNodeBuilder node = (AdvisorNodeBuilder) element;
 			String lbl;
@@ -171,24 +173,29 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy {
 
 	class CompoundModifyListener implements VersionDesignatorListener, ModifyListener, PropertiesModifyListener, SelectionListener {
 
+		@Override
 		public void modifyProperties(PropertiesModifyEvent e) {
 			if (!suppressModifyListener)
 				setDirty(true);
 		}
 
+		@Override
 		public void modifyText(ModifyEvent e) {
 			if (!suppressModifyListener)
 				setDirty(true);
 		}
 
+		@Override
 		public void modifyVersionDesignator(VersionDesignatorEvent e) {
 			if (!suppressModifyListener)
 				setDirty(true);
 		}
 
+		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 		}
 
+		@Override
 		public void widgetSelected(SelectionEvent e) {
 			if (!suppressModifyListener)
 				setDirty(true);
@@ -197,6 +204,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy {
 
 	private static final IActivator EMPTY_ACTIVATOR = new IActivator() {
 
+		@Override
 		public void activate() {
 			// nothing to activate
 		}
@@ -365,6 +373,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy {
 		xmlTab.setControl(getXMLTabControl(tabFolder));
 
 		tabFolder.addPaintListener(new PaintListener() {
+			@Override
 			public void paintControl(PaintEvent e) {
 				if (tabFolder.getSelection() == null)
 					tabFolder.setSelection(0);
@@ -373,6 +382,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy {
 
 		tabFolder.addSelectionListener(new SelectionAdapter() {
 			private final IActivator NODE_TAB_ACTIVATOR = new IActivator() {
+				@Override
 				public void activate() {
 					tabFolder.setSelection(advisorTab);
 				}
@@ -523,6 +533,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy {
 		return true;
 	}
 
+	@Override
 	public boolean matches(IEditorReference editorRef, IEditorInput input) {
 		IEditorPart part = (IEditorPart) editorRef.getPart(false);
 		if (part != null) {
@@ -942,6 +953,7 @@ public class QueryEditor extends EditorPart implements IEditorMatchingStrategy {
 		nodeTable.setLabelProvider(new AdvisorNodeLabelProvider());
 		nodeTable.setContentProvider(new ArrayContentProvider());
 		nodeTable.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				changeNodeSelection();
 			}

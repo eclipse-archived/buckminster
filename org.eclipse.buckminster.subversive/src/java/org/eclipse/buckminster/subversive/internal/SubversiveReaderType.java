@@ -82,6 +82,7 @@ public class SubversiveReaderType extends GenericReaderType<SVNEntry, SVNRevisio
 		return localInfo == null ? -1 : localInfo.lastChangedRevision;
 	}
 
+	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		return new SubversiveRemoteFileReader(this, providerMatch, monitor);
 	}

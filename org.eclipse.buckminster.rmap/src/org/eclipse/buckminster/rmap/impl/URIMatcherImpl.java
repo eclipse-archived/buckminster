@@ -179,6 +179,7 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getBase() {
 		return base;
 	}
@@ -188,6 +189,7 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<RxPart> getRxParts() {
 		return getRxPartsGroup().list(RmapPackage.Literals.URI_MATCHER__RX_PARTS);
 	}
@@ -197,6 +199,7 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getRxPartsGroup() {
 		if (rxPartsGroup == null) {
 			rxPartsGroup = new BasicFeatureMap(this, RmapPackage.URI_MATCHER__RX_PARTS_GROUP);
@@ -209,6 +212,7 @@ public class URIMatcherImpl extends EObjectImpl implements URIMatcher {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setBase(String newBase) {
 		String oldBase = base;
 		base = newBase;

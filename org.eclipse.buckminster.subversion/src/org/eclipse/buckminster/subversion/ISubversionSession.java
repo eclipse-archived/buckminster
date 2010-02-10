@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> extends Closeable {
+	@Override
 	public void close();
 
 	public void createCommonRoots(RMContext context) throws CoreException;

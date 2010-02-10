@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.rmap.pde.util;
 
+import org.eclipse.buckminster.rmap.Properties;
 import org.eclipse.buckminster.rmap.Provider;
 
 import org.eclipse.buckminster.rmap.pde.*;
@@ -43,6 +44,11 @@ public class PdeAdapterFactory extends AdapterFactoryImpl {
 		@Override
 		public Adapter casePDEMapProvider(PDEMapProvider object) {
 			return createPDEMapProviderAdapter();
+		}
+
+		@Override
+		public Adapter caseProperties(Properties object) {
+			return createPropertiesAdapter();
 		}
 
 		@Override
@@ -106,6 +112,21 @@ public class PdeAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createPDEMapProviderAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.rmap.Properties <em>Properties</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.rmap.Properties
+	 * @generated
+	 */
+	public Adapter createPropertiesAdapter() {
 		return null;
 	}
 

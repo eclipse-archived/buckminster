@@ -31,19 +31,23 @@ import org.eclipse.swt.widgets.Control;
  */
 public abstract class StructuredTable<T> extends Table<T> implements IStructuredTable<T> {
 	class CompoundFieldModifyListener<E> implements ModifyListener, SelectionListener, ITableModifyListener<E> {
+		@Override
 		public void modifyTable(TableModifyEvent<E> e) {
 			notifyFieldListeners(e);
 		}
 
+		@Override
 		public void modifyText(ModifyEvent e) {
 			if (!suppressFieldListener)
 				notifyFieldListeners(e);
 		}
 
+		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// nothing
 		}
 
+		@Override
 		public void widgetSelected(SelectionEvent e) {
 			if (!suppressFieldListener)
 				notifyFieldListeners(e);
@@ -72,6 +76,7 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 
 		// notify field listeners about row removal
 		addTableModifyListener(new ITableModifyListener<T>() {
+			@Override
 			public void modifyTable(TableModifyEvent<T> e) {
 				if (e.getEventType() == TableModifyEventType.REMOVE_ROW)
 					notifyFieldListeners(e);
@@ -79,6 +84,7 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		});
 	}
 
+	@Override
 	public T addEmptyRow() {
 		T tableRow = createNewRow();
 		getRows().add(tableRow);
@@ -92,23 +98,28 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		}
 	}
 
+	@Override
 	public void fillStackComposite(Composite stackComposite) {
 		clearStackMapping();
 		fillStack(stackComposite);
 	}
 
+	@Override
 	public Control getStackControl(String stackKey) {
 		return stackMap.get(stackKey);
 	}
 
+	@Override
 	public List<String> getStackKeys() {
 		return stackKeys;
 	}
 
+	@Override
 	public int getTableViewerColumns() {
 		return getTableViewerColumnHeaders().length;
 	}
 
+	@Override
 	public void refreshRow(int rowIdx) {
 		T builder;
 
@@ -127,6 +138,7 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		fieldListeners.remove(listener);
 	}
 
+	@Override
 	public void save(int rowIdx) throws ValidatorException {
 		if (rowIdx == -1) {
 			T tableRow = createNewRow();
@@ -148,6 +160,7 @@ public abstract class StructuredTable<T> extends Table<T> implements IStructured
 		}
 	}
 
+	@Override
 	public boolean swapRows(int rowIdx, int idxOffset) {
 		int idx = rowIdx + idxOffset;
 		if (idx <= 0)

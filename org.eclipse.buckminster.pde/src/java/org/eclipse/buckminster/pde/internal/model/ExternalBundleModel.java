@@ -32,6 +32,7 @@ public class ExternalBundleModel extends BundleModel {
 		this.installLocation = installLocation;
 	}
 
+	@Override
 	public IBundleModelFactory getFactory() {
 		return new BundleModelFactory(this);
 	}
@@ -41,10 +42,12 @@ public class ExternalBundleModel extends BundleModel {
 		return installLocation == null ? null : installLocation.getAbsolutePath();
 	}
 
+	@Override
 	public boolean isEditable() {
 		return false;
 	}
 
+	@Override
 	public boolean isInSync() {
 		return true;
 	}

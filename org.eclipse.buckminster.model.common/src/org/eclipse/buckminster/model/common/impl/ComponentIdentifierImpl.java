@@ -110,6 +110,7 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public int compareTo(ComponentIdentifier o) {
 		if (this == o)
 			return 0;
@@ -206,6 +207,7 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -215,6 +217,7 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -224,6 +227,7 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Version getVersion() {
 		return version;
 	}
@@ -245,6 +249,7 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setType(String newType) {
 		String oldType = type;
 		type = newType;

@@ -41,6 +41,7 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		featureModel.addModelChangedListener(this);
 	}
 
+	@Override
 	public void modelChanged(IModelChangedEvent event) {
 		featureModel.setDirty(true);
 	}

@@ -82,6 +82,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PSFProvider createPSFProvider() {
 		PSFProviderImpl psfProvider = new PSFProviderImpl();
 		return psfProvider;
@@ -92,6 +93,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PsfPackage getPsfPackage() {
 		return (PsfPackage) getEPackage();
 	}

@@ -60,6 +60,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder> {
 			return filter;
 		}
 
+		@Override
 		public void validate(Object... arg) throws ValidatorException {
 			if (lastFilterException != null)
 				throw lastFilterException;
@@ -73,6 +74,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder> {
 			this.designator = designator;
 		}
 
+		@Override
 		public void validate(Object... arg) throws ValidatorException {
 			try {
 				designator.getDirectVersionDesignator();
@@ -94,6 +96,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder> {
 		this.filterValidator = new FilterValidator();
 	}
 
+	@Override
 	public ComponentRequestBuilder createRowClass() {
 		return cspecBuilder.createDependencyBuilder();
 	}
@@ -119,10 +122,12 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder> {
 		return widgetins;
 	}
 
+	@Override
 	public String[] getColumnHeaders() {
 		return new String[] { Messages.name, Messages.component_type, Messages.version_designator, Messages.filter };
 	}
 
+	@Override
 	public int[] getColumnWeights() {
 		return new int[] { 40, 20, 20, 20 };
 	}
@@ -159,6 +164,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder> {
 		}
 	}
 
+	@Override
 	public Object[] toRowArray(ComponentRequestBuilder t) {
 		Object[] array = new Object[getColumns()];
 
@@ -170,6 +176,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder> {
 		return array;
 	}
 
+	@Override
 	public void updateRowClass(ComponentRequestBuilder builder, Object[] args) throws ValidatorException {
 		builder.setName(TextUtils.notEmptyString((String) args[0]));
 		builder.setComponentTypeID(TextUtils.notEmptyString((String) args[1]));
@@ -187,6 +194,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder> {
 		text.setData(value);
 
 		text.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent e) {
 				String filterStr = TextUtils.notEmptyTrimmedString(text.getText());
 				widgetin.setData(filterValidator.createFilter(filterStr));
@@ -208,6 +216,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder> {
 
 		text.addModifyListener(new ModifyListener() {
 
+			@Override
 			public void modifyText(ModifyEvent e) {
 				widgetin.setData(text.getText());
 				validateFieldInFieldListener(widgetin, getFieldValidator(idx), text.getText());
@@ -225,6 +234,7 @@ public class DependenciesTable extends SimpleTable<ComponentRequestBuilder> {
 
 		designator.addVersionDesignatorListener(new VersionDesignatorListener() {
 
+			@Override
 			public void modifyVersionDesignator(VersionDesignatorEvent e) {
 				try {
 					VersionRange designatorValue = designator.getDirectVersionDesignator();

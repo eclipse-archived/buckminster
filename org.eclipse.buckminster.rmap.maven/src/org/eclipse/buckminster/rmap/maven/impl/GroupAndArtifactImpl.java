@@ -156,6 +156,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getArtifactId() {
 		return artifactId;
 	}
@@ -165,6 +166,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getGroupId() {
 		return groupId;
 	}
@@ -174,6 +176,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setArtifactId(String newArtifactId) {
 		String oldArtifactId = artifactId;
 		artifactId = newArtifactId;
@@ -186,6 +189,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setGroupId(String newGroupId) {
 		String oldGroupId = groupId;
 		groupId = newGroupId;

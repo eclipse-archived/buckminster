@@ -29,6 +29,7 @@ public class BlankQueryAction implements IObjectActionDelegate {
 
 	private IWorkbenchPart targetPart;
 
+	@Override
 	public void run(IAction action) {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		IWorkbenchPartSite site = targetPart.getSite();
@@ -42,9 +43,11 @@ public class BlankQueryAction implements IObjectActionDelegate {
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.targetPart = targetPart;
 	}

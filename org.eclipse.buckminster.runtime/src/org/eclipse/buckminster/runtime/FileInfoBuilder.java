@@ -54,18 +54,22 @@ public class FileInfoBuilder implements IFileInfo {
 			properties.setProperty(PROPERTY_SIZE, Long.toString(size));
 	}
 
+	@Override
 	public final String getContentType() {
 		return contentType;
 	}
 
+	@Override
 	public long getLastModified() {
 		return lastModified;
 	}
 
+	@Override
 	public final String getRemoteName() {
 		return name;
 	}
 
+	@Override
 	public final long getSize() {
 		return size;
 	}

@@ -43,24 +43,29 @@ import org.eclipse.swt.widgets.TableColumn;
 public class SimpleTableEditor<T> extends Composite {
 
 	class TableContentProvider implements IStructuredContentProvider {
+		@Override
 		public void dispose() {
 			// Nothing to dispose
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			return table.getRows().toArray();
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// Nothing to do
 		}
 	}
 
 	class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
+		@Override
 		@SuppressWarnings("unchecked")
 		public String getColumnText(Object element, int columnIndex) {
 			Object field = table.getEditorField((T) element, columnIndex);
@@ -260,11 +265,13 @@ public class SimpleTableEditor<T> extends Composite {
 		tableViewer.setContentProvider(new TableContentProvider());
 		tableViewer.setInput(table);
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				enableDisableButtonGroup();
 			}
 		});
 		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				if (tableViewer.getTable().getSelectionIndex() >= 0)
 					editRow(!enabled || table.isReadOnly());

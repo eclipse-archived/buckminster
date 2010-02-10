@@ -99,6 +99,7 @@ public abstract class TableRowDialog extends TitleAreaDialog {
 		Control helpControl = super.createHelpControl(parent);
 		helpControl.addHelpListener(new HelpListener() {
 
+			@Override
 			public void helpRequested(HelpEvent e) {
 				if (helpURL != null) {
 					Program.launch(helpURL);

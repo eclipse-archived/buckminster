@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  * <li>
  * {@link org.eclipse.buckminster.cspec.impl.CSpecExtensionImpl#getAttributeAlterations
- * <em>Attribute Alterations </em>}</li>
+ * <em>Attribute Alterations</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspec.impl.CSpecExtensionImpl#getRenameAttributes
  * <em>Rename Attributes</em>}</li>
@@ -51,7 +51,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <em>Replace Generators</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspec.impl.CSpecExtensionImpl#getReplaceDependencies
- * <em>Replace Dependencies </em>}</li>
+ * <em>Replace Dependencies</em>}</li>
  * </ul>
  * </p>
  * 
@@ -292,6 +292,7 @@ public class CSpecExtensionImpl extends CSpecImpl implements CSpecExtension {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<AlterAttribute> getAttributeAlterations() {
 		if (attributeAlterations == null) {
 			attributeAlterations = new EObjectContainmentWithInverseEList<AlterAttribute>(AlterAttribute.class, this,
@@ -305,6 +306,7 @@ public class CSpecExtensionImpl extends CSpecImpl implements CSpecExtension {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Remove> getRemoveDependencies() {
 		if (removeDependencies == null) {
 			removeDependencies = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.CSPEC_EXTENSION__REMOVE_DEPENDENCIES);
@@ -317,6 +319,7 @@ public class CSpecExtensionImpl extends CSpecImpl implements CSpecExtension {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Remove> getRemoveGenerators() {
 		if (removeGenerators == null) {
 			removeGenerators = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.CSPEC_EXTENSION__REMOVE_GENERATORS);
@@ -329,6 +332,7 @@ public class CSpecExtensionImpl extends CSpecImpl implements CSpecExtension {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Rename> getRenameAttributes() {
 		if (renameAttributes == null) {
 			renameAttributes = new EObjectContainmentEList<Rename>(Rename.class, this, CspecPackage.CSPEC_EXTENSION__RENAME_ATTRIBUTES);
@@ -341,6 +345,7 @@ public class CSpecExtensionImpl extends CSpecImpl implements CSpecExtension {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<ComponentRequest> getReplaceDependencies() {
 		if (replaceDependencies == null) {
 			replaceDependencies = new EObjectContainmentEList<ComponentRequest>(ComponentRequest.class, this,
@@ -354,6 +359,7 @@ public class CSpecExtensionImpl extends CSpecImpl implements CSpecExtension {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Generator> getReplaceGenerators() {
 		if (replaceGenerators == null) {
 			replaceGenerators = new EObjectContainmentEList<Generator>(Generator.class, this, CspecPackage.CSPEC_EXTENSION__REPLACE_GENERATORS);

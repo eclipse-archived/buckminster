@@ -25,6 +25,7 @@ public class Widgetin implements IWidgetin {
 
 	private final Map<Integer, List<Listener>> listenersMap = new HashMap<Integer, List<Listener>>();
 
+	@Override
 	public void addListener(int eventType, Listener listener) {
 		List<Listener> eventListeners = listenersMap.get(Integer.valueOf(eventType));
 
@@ -38,10 +39,12 @@ public class Widgetin implements IWidgetin {
 		}
 	}
 
+	@Override
 	public Object getData() {
 		return data;
 	}
 
+	@Override
 	public void notifyListeners(int eventType, Event event) {
 		List<Listener> eventListeners = listenersMap.get(Integer.valueOf(eventType));
 
@@ -52,10 +55,12 @@ public class Widgetin implements IWidgetin {
 		}
 	}
 
+	@Override
 	public void removeListener(int eventType, Listener listener) {
 		listenersMap.remove(Integer.valueOf(eventType));
 	}
 
+	@Override
 	public void setData(Object data) {
 		this.data = data;
 	}

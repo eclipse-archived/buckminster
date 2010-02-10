@@ -34,6 +34,7 @@ class GroupAndArtifact extends AbstractSaxableElement {
 		return artifactId;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return ALIAS_TAG;
 	}

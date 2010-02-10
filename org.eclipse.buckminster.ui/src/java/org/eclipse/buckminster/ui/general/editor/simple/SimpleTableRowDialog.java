@@ -98,6 +98,7 @@ public class SimpleTableRowDialog<T> extends TableRowDialog {
 		Composite composite = (Composite) super.createDialogArea(parent);
 
 		Listener rowModifyListener = new Listener() {
+			@Override
 			public void handleEvent(Event event) {
 				setErrorMessage(event.text);
 				enableDisableOkButton();

@@ -97,6 +97,24 @@ public interface PdePackage extends EPackage {
 	int PDE_MAP_PROVIDER = 0;
 
 	/**
+	 * The feature id for the '<em><b>Properties</b></em>' containment reference
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PDE_MAP_PROVIDER__PROPERTIES = RmapPackage.PROVIDER__PROPERTIES;
+
+	/**
+	 * The feature id for the '<em><b>Property Elements</b></em>' containment
+	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PDE_MAP_PROVIDER__PROPERTY_ELEMENTS = RmapPackage.PROVIDER__PROPERTY_ELEMENTS;
+
+	/**
 	 * The feature id for the '<em><b>Component Types</b></em>' attribute list.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 

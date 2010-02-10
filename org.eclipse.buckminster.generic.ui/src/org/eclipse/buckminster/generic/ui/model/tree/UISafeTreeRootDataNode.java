@@ -32,6 +32,7 @@ public class UISafeTreeRootDataNode extends AbstractTreeRootDataNode {
 	protected void triggerListeners(final TreeDataEvent e) {
 		// Make sure listeners are notified in the UI thread
 		Display.getDefault().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				UISafeTreeRootDataNode.this.inProcTriggerListeners(e);
 			}

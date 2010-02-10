@@ -85,11 +85,13 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		this.graphViewer = viewer;
 	}
 
+	@Override
 	public void addListener(ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void clear() {
 		unreveal(selection);
 		interestingConnections.clear();
@@ -98,6 +100,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		selection = null;
 	}
 
+	@Override
 	public void dispose() {
 		BLACK.dispose();
 		WHITE.dispose();
@@ -114,6 +117,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 
 	}
 
+	@Override
 	public boolean fisheyeNode(Object entity) {
 		if (root == entity)
 			return true;
@@ -122,6 +126,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		return false;
 	}
 
+	@Override
 	public Color getBackgroundColour(Object entity) {
 		if (entity instanceof BOMNode) {
 			BOMNode node = (BOMNode) entity;
@@ -140,18 +145,22 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		return DEFAULT_NODE_COLOR;
 	}
 
+	@Override
 	public Color getBorderColor(Object entity) {
 		return DEFAULT_BORDER_COLOR;
 	}
 
+	@Override
 	public Color getBorderHighlightColor(Object entity) {
 		return DEFAULT_BORDER_HIGHLIGHT_COLOR;
 	}
 
+	@Override
 	public int getBorderWidth(Object entity) {
 		return 0;
 	}
 
+	@Override
 	public Color getColor(Object rel) {
 		ConnectionCategory type = interestingConnections.get(rel);
 		if (type == null)
@@ -167,6 +176,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		return DEFAULT_CONNECTION_COLOR;
 	}
 
+	@Override
 	public int getConnectionStyle(Object rel) {
 		if (interestingConnections.containsKey(rel)) {
 			return ZestStyles.CONNECTIONS_DASH | ZestStyles.CONNECTIONS_DIRECTED;
@@ -174,6 +184,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		return ZestStyles.CONNECTIONS_DIRECTED;
 	}
 
+	@Override
 	public Color getForegroundColour(Object entity) {
 		ConnectionCategory category = interestingNodes.get(entity);
 		if (category == null || entity == selection || entity == root)
@@ -187,14 +198,17 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 
 	}
 
+	@Override
 	public Color getHighlightColor(Object rel) {
 		return HIGHLIGHT_CONNECTION_COLOR;
 	}
 
+	@Override
 	public Image getImage(Object element) {
 		return baseLabelProvider.getImage(element);
 	}
 
+	@Override
 	public int getLineWidth(Object rel) {
 		if (interestingConnections.containsKey(rel)) {
 			return 2;
@@ -202,6 +216,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		return -1;
 	}
 
+	@Override
 	public Color getNodeHighlightColor(Object entity) {
 		if (entity == root)
 			return ROOT_REQUEST_COLOR;
@@ -223,10 +238,12 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 
 	}
 
+	@Override
 	public String getText(Object element) {
 		return baseLabelProvider.getText(element);
 	}
 
+	@Override
 	public IFigure getTooltip(Object entity) {
 		if (entity instanceof BOMNode) {
 			BOMNode node = (BOMNode) entity;
@@ -235,6 +252,7 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 		return null;
 	}
 
+	@Override
 	public void highlightSelection(BOMNode nodeSelection) {
 		if (nodeSelection == selection)
 			return;
@@ -242,21 +260,25 @@ public class SimpleDependencyVisualizationLabelProvider implements IDependencyVi
 
 	}
 
+	@Override
 	public boolean isLabelProperty(Object element, String property) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	@Override
 	public void removeListener(ILabelProviderListener listener) {
 		// TODO Auto-generated method stub
 
 	}
 
+	@Override
 	public void setRelationshipProvider(IRelationshipProvider provider) {
 		this.relationshipProvider = provider;
 		highlightSelectionInternal(selection);
 	}
 
+	@Override
 	public void setRoot(BOMNode node) {
 		BOMNode previousRoot = root;
 		this.root = node;

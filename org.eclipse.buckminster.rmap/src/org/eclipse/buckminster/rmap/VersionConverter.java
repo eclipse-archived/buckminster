@@ -99,7 +99,7 @@ public interface VersionConverter extends EObject {
 	/**
 	 * Sets the value of the '
 	 * {@link org.eclipse.buckminster.rmap.VersionConverter#getVersionType
-	 * <em>Version Type</em>} ' attribute. <!-- begin-user-doc --> <!--
+	 * <em>Version Type</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @param value

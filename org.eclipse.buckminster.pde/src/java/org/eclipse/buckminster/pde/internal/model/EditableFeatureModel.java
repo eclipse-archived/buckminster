@@ -126,6 +126,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		return contextQualifierLength;
 	}
 
+	@Override
 	public boolean isDirty() {
 		return dirty;
 	}
@@ -169,6 +170,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		}
 	}
 
+	@Override
 	public void save() {
 		try {
 			save(externalFile);
@@ -198,6 +200,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		}
 	}
 
+	@Override
 	public void save(PrintWriter writer) {
 		writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //$NON-NLS-1$
 		if (getFeature().getVersion().indexOf('-') > 0 && contextQualifierLength != -1)
@@ -210,6 +213,7 @@ public class EditableFeatureModel extends ExternalFeatureModel implements IEdita
 		this.contextQualifierLength = contextQualifierLength;
 	}
 
+	@Override
 	public void setDirty(boolean dirty) {
 		this.dirty = dirty;
 	}

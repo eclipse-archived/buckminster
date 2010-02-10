@@ -33,10 +33,12 @@ public class SimpleMonitorWrapper implements ISVNProgressMonitor {
 		this.monitor = new SubProgressMonitorWithInfo(monitor, ticks);
 	}
 
+	@Override
 	public boolean isActivityCancelled() {
 		return monitor.isCanceled();
 	}
 
+	@Override
 	public void progress(int current, int total, ItemState state) {
 		if (total != IProgressMonitor.UNKNOWN) {
 			int real = ProgressMonitorUtility.TOTAL_WORK * current / total;
@@ -46,6 +48,7 @@ public class SimpleMonitorWrapper implements ISVNProgressMonitor {
 			monitor.unknownProgress(current);
 	}
 
+	@Override
 	public void reportError(String msg) {
 		Buckminster.getLogger().info("SVN error: " + msg);
 	}

@@ -37,6 +37,7 @@ public abstract class AbstractTreeDataNode implements ITreeDataNode, IAdaptable 
 	 * Notifies the parent of this node that the node 'child' has changed in
 	 * some way.
 	 */
+	@Override
 	public void childNodeChanged(ITreeDataNode child) {
 		ITreeParentDataNode p = getParent();
 		if (p != null)
@@ -46,6 +47,7 @@ public abstract class AbstractTreeDataNode implements ITreeDataNode, IAdaptable 
 	/**
 	 * Does nothing.
 	 */
+	@Override
 	public void dispose() {
 	}
 
@@ -53,6 +55,7 @@ public abstract class AbstractTreeDataNode implements ITreeDataNode, IAdaptable 
 	 * Default implementation of IAdaptable.getAdapter() - if the data object is
 	 * instance of the wanted class, it is returned immediately.
 	 */
+	@Override
 	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		Object data = getData();
@@ -61,8 +64,10 @@ public abstract class AbstractTreeDataNode implements ITreeDataNode, IAdaptable 
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
+	@Override
 	public abstract Object getData();
 
+	@Override
 	public ITreeParentDataNode getParent() {
 		return parent;
 	}
@@ -75,12 +80,14 @@ public abstract class AbstractTreeDataNode implements ITreeDataNode, IAdaptable 
 	 * call childNodeChanged on itself if the event caused some change in the
 	 * node (or among its children; if the node is a parent node).
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		ITreeParentDataNode p = getParent();
 		if (p != null)
 			p.childNodeChanged(this);
 	}
 
+	@Override
 	public void setParent(ITreeParentDataNode parent) {
 		this.parent = parent;
 	}

@@ -175,6 +175,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getAny() {
 		return (FeatureMap) getMixed().<FeatureMap.Entry> list(CommonPackage.Literals.DOCUMENTATION__ANY);
 	}
@@ -184,6 +185,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getAnyAttribute() {
 		if (anyAttribute == null) {
 			anyAttribute = new BasicFeatureMap(this, CommonPackage.DOCUMENTATION__ANY_ATTRIBUTE);
@@ -196,6 +198,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getMixed() {
 		if (mixed == null) {
 			mixed = new BasicFeatureMap(this, CommonPackage.DOCUMENTATION__MIXED);

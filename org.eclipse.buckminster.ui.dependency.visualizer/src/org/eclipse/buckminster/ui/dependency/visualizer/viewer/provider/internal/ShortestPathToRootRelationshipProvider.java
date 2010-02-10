@@ -28,6 +28,7 @@ import org.eclipse.zest.core.viewers.EntityConnectionData;
  */
 public class ShortestPathToRootRelationshipProvider implements IRelationshipProvider {
 
+	@Override
 	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection, Object[] connections) {
 		List<BOMNode> paths = ShortesPathCalculation.calculatePath(root, currentSelection);
 		HashMap<EntityConnectionData, ConnectionCategory> relations = new HashMap<EntityConnectionData, ConnectionCategory>();

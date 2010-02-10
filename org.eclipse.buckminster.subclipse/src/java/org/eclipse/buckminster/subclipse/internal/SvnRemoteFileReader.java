@@ -78,6 +78,7 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry, SVNRe
 		super(readerType, rInfo, monitor);
 	}
 
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		boolean success = false;
 		final File destDir = destination.toFile();

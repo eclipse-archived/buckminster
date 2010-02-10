@@ -72,6 +72,7 @@ public class ResolutionResolverListEditor extends FieldEditor {
 			queryResolvers.setContentProvider(new ArrayContentProvider());
 			queryResolvers.setLabelProvider(new LabelProvider());
 			queryResolvers.addSelectionChangedListener(new ISelectionChangedListener() {
+				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					enableDisableUpDownButtons(true);
 				}
@@ -118,6 +119,7 @@ public class ResolutionResolverListEditor extends FieldEditor {
 			queryResolversToAdd.setContentProvider(new ArrayContentProvider());
 			queryResolversToAdd.setLabelProvider(new LabelProvider());
 			queryResolversToAdd.addSelectionChangedListener(new ISelectionChangedListener() {
+				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					enableDisableUpDownButtons(false);
 				}

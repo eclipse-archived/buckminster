@@ -463,6 +463,7 @@ public abstract class JarImportOperation implements IWorkspaceRunnable {
 	protected void importContent(Object source, IPath destPath, IImportStructureProvider provider, List filesToImport, IProgressMonitor monitor)
 			throws CoreException {
 		IOverwriteQuery query = new IOverwriteQuery() {
+			@Override
 			public String queryOverwrite(String file) {
 				return ALL;
 			}

@@ -24,11 +24,13 @@ public class ImportAction implements IObjectActionDelegate {
 	public void dispose() {
 	}
 
+	@Override
 	public void run(IAction action) {
 		if (fileToImport != null)
 			QueryWizard.openWizard(workbenchPart, new StructuredSelection(fileToImport));
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection sel) {
 		fileToImport = null;
 		if (!(sel instanceof IStructuredSelection))
@@ -42,6 +44,7 @@ public class ImportAction implements IObjectActionDelegate {
 		}
 	}
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		workbenchPart = targetPart;
 	}

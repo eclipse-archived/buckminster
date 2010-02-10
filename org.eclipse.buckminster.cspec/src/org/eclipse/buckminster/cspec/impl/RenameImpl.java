@@ -154,6 +154,7 @@ public class RenameImpl extends EObjectImpl implements Rename {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getNewName() {
 		return newName;
 	}
@@ -163,6 +164,7 @@ public class RenameImpl extends EObjectImpl implements Rename {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getOldName() {
 		return oldName;
 	}
@@ -172,6 +174,7 @@ public class RenameImpl extends EObjectImpl implements Rename {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setNewName(String newNewName) {
 		String oldNewName = newName;
 		newName = newNewName;
@@ -184,6 +187,7 @@ public class RenameImpl extends EObjectImpl implements Rename {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setOldName(String newOldName) {
 		String oldOldName = oldName;
 		oldName = newOldName;

@@ -17,6 +17,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -272,6 +273,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAttribute() {
 		return attribute;
 	}
@@ -281,8 +283,9 @@ public class GeneratorImpl extends EObjectImpl implements Generator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ComponentRequest getComponent() {
-		if (component != null && component.eIsProxy()) {
+		if (component != null && ((EObject) component).eIsProxy()) {
 			InternalEObject oldComponent = (InternalEObject) component;
 			component = (ComponentRequest) eResolveProxy(oldComponent);
 			if (component != oldComponent) {
@@ -298,6 +301,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CSpec getCspec() {
 		if (eContainerFeatureID() != CspecPackage.GENERATOR__CSPEC)
 			return null;
@@ -309,6 +313,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ComponentIdentifier getGenerates() {
 		return generates;
 	}
@@ -318,6 +323,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAttribute(String newAttribute) {
 		String oldAttribute = attribute;
 		attribute = newAttribute;
@@ -330,6 +336,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setComponent(ComponentRequest newComponent) {
 		ComponentRequest oldComponent = component;
 		component = newComponent;
@@ -342,6 +349,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setCspec(CSpec newCspec) {
 		if (newCspec != eInternalContainer() || (eContainerFeatureID() != CspecPackage.GENERATOR__CSPEC && newCspec != null)) {
 			if (EcoreUtil.isAncestor(this, newCspec))
@@ -363,6 +371,7 @@ public class GeneratorImpl extends EObjectImpl implements Generator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setGenerates(ComponentIdentifier newGenerates) {
 		if (newGenerates != generates) {
 			NotificationChain msgs = null;

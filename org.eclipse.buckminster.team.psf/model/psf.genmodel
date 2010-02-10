@@ -4,7 +4,7 @@
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.team.psf/src"
     editDirectory="/org.eclipse.buckminster.team.psf.edit/src" editorDirectory="/org.eclipse.buckminster.team.psf.editor/src"
     modelPluginID="org.eclipse.buckminster.team.psf" modelName="Psf" modelPluginClass=""
-    importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false">
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="6.0" copyrightFields="false">
   <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
     <genAnnotations source="selectedPackages">
       <details key="http://www.eclipse.org/team/psf" value="psf.xsd"/>

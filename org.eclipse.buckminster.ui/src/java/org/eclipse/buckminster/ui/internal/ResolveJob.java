@@ -86,6 +86,7 @@ public class ResolveJob extends Job {
 			if (!materialize) {
 				final BillOfMaterials finalBom = bom;
 				display.asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						QueryWizard.openWizard(site, resolver.getContext(), finalBom);
 					}

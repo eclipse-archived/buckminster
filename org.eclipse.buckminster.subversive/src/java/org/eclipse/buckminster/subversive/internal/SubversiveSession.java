@@ -79,90 +79,112 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 	private class UnattendedPromptUserPassword implements ISVNCredentialsPrompt {
 		private int promptLimit = 3;
 
+		@Override
 		public int askTrustSSLServer(Object location, String info, boolean allowPermanently) {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.askTrustSSLServer(location, info, allowPermanently);
 		}
 
+		@Override
 		public String getPassword() {
 			return password;
 		}
 
+		@Override
 		public String getProxyHost() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyHost();
 		}
 
+		@Override
 		public String getProxyPassword() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyPassword();
 		}
 
+		@Override
 		public int getProxyPort() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyPort();
 		}
 
+		@Override
 		public String getProxyUserName() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getProxyUserName();
 		}
 
+		@Override
 		public String getRealmToSave() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getRealmToSave();
 		}
 
+		@Override
 		public int getSSHPort() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSHPort();
 		}
 
+		@Override
 		public String getSSHPrivateKeyPassphrase() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSHPrivateKeyPassphrase();
 		}
 
+		@Override
 		public String getSSHPrivateKeyPath() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSHPrivateKeyPath();
 		}
 
+		@Override
 		public String getSSLClientCertPassword() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSLClientCertPassword();
 		}
 
+		@Override
 		public String getSSLClientCertPath() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.getSSLClientCertPath();
 		}
 
+		@Override
 		public String getUsername() {
 			return username;
 		}
 
+		@Override
 		public boolean isProxyAuthenticationEnabled() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isProxyAuthenticationEnabled();
 		}
 
+		@Override
 		public boolean isProxyEnabled() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isProxyEnabled();
 		}
 
+		@Override
 		public boolean isSaveCredentialsEnabled() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSaveCredentialsEnabled();
 		}
 
+		@Override
 		public boolean isSaveProxyPassword() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSaveProxyPassword();
 		}
 
+		@Override
 		public boolean isSSHPrivateKeyPassphraseSaved() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSSHPrivateKeyPassphraseSaved();
 		}
 
+		@Override
 		public boolean isSSHPublicKeySelected() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSSHPublicKeySelected();
 		}
 
+		@Override
 		public boolean isSSLAuthenticationEnabled() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSSLAuthenticationEnabled();
 		}
 
+		@Override
 		public boolean isSSLSavePassphrase() {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.isSSLSavePassphrase();
 		}
 
+		@Override
 		public boolean prompt(Object arg0, String arg1) {
 			// We support the password prompt only if we actually know the
 			// password
@@ -171,14 +193,17 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 			return password != null && --promptLimit >= 0;
 		}
 
+		@Override
 		public boolean promptProxy(Object location) {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.promptProxy(location);
 		}
 
+		@Override
 		public boolean promptSSH(Object location, String realm) {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.promptSSH(location, realm);
 		}
 
+		@Override
 		public boolean promptSSL(Object location, String realm) {
 			return ISVNCredentialsPrompt.DEFAULT_PROMPT.promptSSL(location, realm);
 		}
@@ -238,6 +263,7 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 		super(repositoryURI, branchOrTag, revision, timestamp, context);
 	}
 
+	@Override
 	public void close() {
 		proxy.dispose();
 	}
@@ -256,6 +282,7 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 		return null;
 	}
 
+	@Override
 	public long getLastChangeNumber() throws CoreException {
 		try {
 			URI svnURL = getSVNUrl(null);
@@ -268,6 +295,7 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 		}
 	}
 
+	@Override
 	public Date getLastTimestamp() throws CoreException {
 		try {
 			URI svnURL = getSVNUrl(null);
@@ -280,10 +308,12 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 		}
 	}
 
+	@Override
 	public SVNEntry getRootEntry(IProgressMonitor monitor) throws CoreException {
 		return getDirEntry(getSVNUrl(null), getRevision(), monitor);
 	}
 
+	@Override
 	public ISvnEntryHelper<SVNEntry> getSvnEntryHelper() {
 		return HELPER;
 	}

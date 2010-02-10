@@ -37,6 +37,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class OpenQueryAction implements IWorkbenchWindowActionDelegate {
 	private static class URLValidator implements IInputValidator {
+		@Override
 		public String isValid(String newText) {
 			if (newText != null) {
 				newText = newText.trim();
@@ -61,13 +62,16 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate {
 
 	private IWorkbenchWindow workbenchWindow;
 
+	@Override
 	public void dispose() {
 	}
 
+	@Override
 	public void init(IWorkbenchWindow window) {
 		workbenchWindow = window;
 	}
 
+	@Override
 	public void run(IAction action) {
 		IPreferenceStore preferences = UiPlugin.getDefault().getPreferenceStore();
 		Shell shell = workbenchWindow.getShell();
@@ -140,6 +144,7 @@ public class OpenQueryAction implements IWorkbenchWindowActionDelegate {
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 }

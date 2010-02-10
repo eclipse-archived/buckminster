@@ -356,6 +356,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public Attribute getAttribute(String name) {
 		for (Attribute attr : getAttributes())
 			if (name.equals(attr.getName()))
@@ -368,6 +369,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Attribute> getAttributes() {
 		if (attributes == null) {
 			attributes = new EObjectContainmentWithInverseEList<Attribute>(Attribute.class, this, CspecPackage.CSPEC__ATTRIBUTES,
@@ -381,6 +383,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<ComponentRequest> getDependencies() {
 		if (dependencies == null) {
 			dependencies = new EObjectContainmentEList<ComponentRequest>(ComponentRequest.class, this, CspecPackage.CSPEC__DEPENDENCIES);
@@ -393,6 +396,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public EList<Attribute> getDerivedAttributes(IContext context, boolean includePrivate) {
 		EList<Attribute> attributes = new BasicEList<Attribute>();
 		for (Attribute ag : getAttributes())
@@ -406,6 +410,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -415,6 +420,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -424,6 +430,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Generator> getGenerators() {
 		if (generators == null) {
 			generators = new EObjectContainmentWithInverseEList<Generator>(Generator.class, this, CspecPackage.CSPEC__GENERATORS,
@@ -437,6 +444,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public URL getProjectInfo() {
 		return projectInfo;
 	}
@@ -446,6 +454,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public SelfArtifact getSelf() {
 		return (SelfArtifact) getAttribute(SELF_ARTIFACT);
 	}
@@ -455,6 +464,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -464,6 +474,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean isSetSelf() {
 		return getAttribute(SELF_ARTIFACT) != null;
 	}
@@ -473,6 +484,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -492,6 +504,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -504,6 +517,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setProjectInfo(URL newProjectInfo) {
 		URL oldProjectInfo = projectInfo;
 		projectInfo = newProjectInfo;
@@ -516,6 +530,7 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setShortDesc(String newShortDesc) {
 		String oldShortDesc = shortDesc;
 		shortDesc = newShortDesc;

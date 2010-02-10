@@ -38,6 +38,7 @@ public class BOMEditorInput implements IEditorInput {
 	 * 
 	 * @see org.eclipse.ui.IEditorInput#exists()
 	 */
+	@Override
 	public boolean exists() {
 		return false;
 	}
@@ -47,6 +48,7 @@ public class BOMEditorInput implements IEditorInput {
 	 * 
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
@@ -61,6 +63,7 @@ public class BOMEditorInput implements IEditorInput {
 	 * 
 	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return null;
 	}
@@ -70,6 +73,7 @@ public class BOMEditorInput implements IEditorInput {
 	 * 
 	 * @see org.eclipse.ui.IEditorInput#getName()
 	 */
+	@Override
 	public String getName() {
 
 		return getBillOfMaterials().getResolution().getName();
@@ -80,6 +84,7 @@ public class BOMEditorInput implements IEditorInput {
 	 * 
 	 * @see org.eclipse.ui.IEditorInput#getPersistable()
 	 */
+	@Override
 	public IPersistableElement getPersistable() {
 		return null;
 	}
@@ -89,6 +94,7 @@ public class BOMEditorInput implements IEditorInput {
 	 * 
 	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
 	 */
+	@Override
 	public String getToolTipText() {
 		return getBillOfMaterials().getResolution().getComponentIdentifier().toString();
 	}

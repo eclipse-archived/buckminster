@@ -27,6 +27,7 @@ import org.eclipse.zest.core.viewers.EntityConnectionData;
  */
 public class UsageRelationshipProvider implements IRelationshipProvider {
 
+	@Override
 	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection, Object[] connections) {
 		HashMap<EntityConnectionData, ConnectionCategory> relationships = new HashMap<EntityConnectionData, ConnectionCategory>();
 		for (int i = 0; i < connections.length; i++) {

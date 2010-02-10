@@ -12,14 +12,17 @@ public class SubversiveCache implements ISubversionCache<SVNEntry> {
 
 	private static final UUID CACHE_KEY_LIST_CACHE = UUID.randomUUID();
 
+	@Override
 	public SVNEntry[] get(String key) {
 		return listCache.get(key);
 	}
 
+	@Override
 	public void initialize(Map<UUID, Object> userCache) {
 		listCache = GenericCache.getCache(userCache, CACHE_KEY_LIST_CACHE);
 	}
 
+	@Override
 	public void put(String key, SVNEntry[] value) {
 		listCache.put(key, value);
 	}

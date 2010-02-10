@@ -94,10 +94,12 @@ public class JNLPVersionModel extends SAXModel {
 			oss.add(os);
 		}
 
+		@Override
 		public String getDefaultTag() {
 			return "resource"; //$NON-NLS-1$
 		}
 
+		@Override
 		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException {
 			startElement(receiver, localName);
 			emitContent(receiver);
@@ -136,6 +138,7 @@ public class JNLPVersionModel extends SAXModel {
 		return resource;
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		startElement(receiver, "jnlp-versions"); //$NON-NLS-1$

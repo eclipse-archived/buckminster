@@ -192,6 +192,7 @@ public class ArtifactImpl extends AttributeImpl implements Artifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IPath getBase() {
 		return base;
 	}
@@ -201,6 +202,7 @@ public class ArtifactImpl extends AttributeImpl implements Artifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IPath> getPaths() {
 		if (paths == null) {
 			paths = new EDataTypeUniqueEList<IPath>(IPath.class, this, CspecPackage.ARTIFACT__PATHS);
@@ -213,6 +215,7 @@ public class ArtifactImpl extends AttributeImpl implements Artifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PathGroup resolve(IPath path) {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
@@ -224,6 +227,7 @@ public class ArtifactImpl extends AttributeImpl implements Artifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setBase(IPath newBase) {
 		IPath oldBase = base;
 		base = newBase;

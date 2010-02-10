@@ -207,6 +207,7 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Action getAction() {
 		if (action != null && action.eIsProxy()) {
 			InternalEObject oldAction = (InternalEObject) action;
@@ -224,6 +225,7 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAlias() {
 		return alias;
 	}
@@ -238,6 +240,7 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAction(Action newAction) {
 		if (newAction != action) {
 			NotificationChain msgs = null;
@@ -257,6 +260,7 @@ public class ActionAttributeImpl extends ArtifactImpl implements ActionAttribute
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;

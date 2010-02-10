@@ -28,6 +28,7 @@ public class ArchivedResourceFetcher extends AbstractResourceFetcher {
 			}
 		}
 
+		@Override
 		public boolean accept(File pathname) {
 			if (patterns.isEmpty())
 				return true;

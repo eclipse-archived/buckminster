@@ -240,6 +240,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ComponentIdentifier createComponentIdentifier() {
 		ComponentIdentifierImpl componentIdentifier = new ComponentIdentifierImpl();
 		return componentIdentifier;
@@ -250,6 +251,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ComponentRequest createComponentRequest() {
 		ComponentRequestImpl componentRequest = new ComponentRequestImpl();
 		return componentRequest;
@@ -260,6 +262,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Constant createConstant() {
 		ConstantImpl constant = new ConstantImpl();
 		return constant;
@@ -270,6 +273,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation createDocumentation() {
 		DocumentationImpl documentation = new DocumentationImpl();
 		return documentation;
@@ -280,6 +284,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EObject createDocumentRoot() {
 		EObject documentRoot = super.create(CommonPackage.Literals.DOCUMENT_ROOT);
 		return documentRoot;
@@ -303,6 +308,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Format createFormat() {
 		FormatImpl format = new FormatImpl();
 		return format;
@@ -342,6 +348,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Match createMatch() {
 		MatchImpl match = new MatchImpl();
 		return match;
@@ -361,6 +368,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PropertyConstant createPropertyConstant() {
 		PropertyConstantImpl propertyConstant = new PropertyConstantImpl();
 		return propertyConstant;
@@ -371,6 +379,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PropertyElement createPropertyElement() {
 		PropertyElementImpl propertyElement = new PropertyElementImpl();
 		return propertyElement;
@@ -390,6 +399,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PropertyRef createPropertyRef() {
 		PropertyRefImpl propertyRef = new PropertyRefImpl();
 		return propertyRef;
@@ -400,6 +410,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Replace createReplace() {
 		ReplaceImpl replace = new ReplaceImpl();
 		return replace;
@@ -410,6 +421,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public RxGroup createRxGroup() {
 		RxGroupImpl rxGroup = new RxGroupImpl();
 		return rxGroup;
@@ -420,6 +432,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public RxPattern createRxPattern() {
 		RxPatternImpl rxPattern = new RxPatternImpl();
 		return rxPattern;
@@ -430,6 +443,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Split createSplit() {
 		SplitImpl split = new SplitImpl();
 		return split;
@@ -452,6 +466,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ToLower createToLower() {
 		ToLowerImpl toLower = new ToLowerImpl();
 		return toLower;
@@ -462,6 +477,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ToUpper createToUpper() {
 		ToUpperImpl toUpper = new ToUpperImpl();
 		return toUpper;
@@ -512,6 +528,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CommonPackage getCommonPackage() {
 		return (CommonPackage) getEPackage();
 	}

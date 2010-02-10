@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
 public class ResolutionAdapterFactory implements IAdapterFactory {
 	private static Class<?>[] adapterList = { Resolution.class, ResolutionDataNode.class };
 
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (adaptableObject instanceof Resolution && adapterType.isAssignableFrom(ResolutionDataNode.class))
@@ -32,6 +33,7 @@ public class ResolutionAdapterFactory implements IAdapterFactory {
 		return null;
 	}
 
+	@Override
 	public Class<?>[] getAdapterList() {
 		return adapterList;
 	}

@@ -121,6 +121,7 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getKey() {
 		return key;
 	}
@@ -130,6 +131,7 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setKey(String newKey) {
 		String oldKey = key;
 		key = newKey;

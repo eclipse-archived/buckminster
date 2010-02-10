@@ -3,7 +3,7 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.cspec/src"
     creationIcons="false" modelPluginID="org.eclipse.buckminster.cspec" modelName="Cspec"
-    importerID="org.eclipse.emf.importer.ecore" complianceLevel="5.0" copyrightFields="false"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="6.0" copyrightFields="false"
     usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common">
   <foreignModel>cspec.ecore</foreignModel>
   <genPackages prefix="Cspec" basePackage="org.eclipse.buckminster" resource="Basic"
@@ -16,6 +16,7 @@
       <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/MAPPER"/>
       <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/NOT_EMPTY"/>
       <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/NEVER"/>
+      <genEnumLiterals ecoreEnumLiteral="cspec.ecore#//UpToDatePolicy/EEnumLiteral0"/>
     </genEnums>
     <genDataTypes ecoreDataType="cspec.ecore#//IPath"/>
     <genClasses ecoreClass="cspec.ecore#//CSpec">
@@ -29,6 +30,14 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//CSpec/shortDesc"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//CSpec/filter"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//CSpec/projectInfo"/>
+      <genFeatures property="Readonly" notify="false" createChild="false" ecoreFeature="ecore:EReference cspec.ecore#//CSpec/self"/>
+      <genOperations ecoreOperation="cspec.ecore#//CSpec/getDerivedAttributes">
+        <genParameters ecoreParameter="cspec.ecore#//CSpec/getDerivedAttributes/context"/>
+        <genParameters ecoreParameter="cspec.ecore#//CSpec/getDerivedAttributes/includePrivate"/>
+      </genOperations>
+      <genOperations ecoreOperation="cspec.ecore#//CSpec/getAttribute">
+        <genParameters ecoreParameter="cspec.ecore#//CSpec/getAttribute/name"/>
+      </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="cspec.ecore#//Attribute">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Attribute/name"/>
@@ -36,6 +45,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Attribute/filter"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspec.ecore#//Attribute/cspec"/>
       <genFeatures createChild="false" propertyCategory="" ecoreFeature="ecore:EReference cspec.ecore#//Attribute/documentation"/>
+      <genOperations ecoreOperation="cspec.ecore#//Attribute/isDerived">
+        <genParameters ecoreParameter="cspec.ecore#//Attribute/isDerived/context"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="cspec.ecore#//Group">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//Group/prerequisites"/>
@@ -73,6 +85,9 @@
     <genClasses ecoreClass="cspec.ecore#//PathGroup">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//PathGroup/base"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//PathGroup/paths"/>
+      <genOperations ecoreOperation="cspec.ecore#//PathGroup/resolve">
+        <genParameters ecoreParameter="cspec.ecore#//PathGroup/resolve/path"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="cspec.ecore#//Generator">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Generator/attribute"/>
@@ -98,9 +113,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterAction/removeProducts"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//AlterAction/removePaths"/>
     </genClasses>
-    <genClasses ecoreClass="cspec.ecore#//RemovePath">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//RemovePath/path"/>
-    </genClasses>
     <genClasses ecoreClass="cspec.ecore#//Rename">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Rename/oldName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspec.ecore#//Rename/newName"/>
@@ -116,5 +128,11 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//CSpecExtension/replaceGenerators"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspec.ecore#//CSpecExtension/replaceDependencies"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="cspec.ecore#//IContext">
+      <genOperations ecoreOperation="cspec.ecore#//IContext/findBestMatch">
+        <genParameters ecoreParameter="cspec.ecore#//IContext/findBestMatch/request"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="cspec.ecore#//SelfArtifact"/>
   </genPackages>
 </genmodel:GenModel>

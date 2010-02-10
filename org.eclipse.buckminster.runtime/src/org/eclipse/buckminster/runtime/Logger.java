@@ -31,6 +31,7 @@ import org.osgi.framework.Bundle;
  */
 public class Logger {
 	private static class EclipseLogListener implements ILogListener {
+		@Override
 		public void logging(IStatus status, String plugin) {
 			int severity = status.getSeverity();
 			if (severity >= consoleThreshold) {

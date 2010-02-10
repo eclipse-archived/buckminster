@@ -47,6 +47,7 @@ public class CSpecAdapterFactory implements IAdapterFactory {
 		return null;
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (adaptableObject instanceof CSpec)
@@ -59,6 +60,7 @@ public class CSpecAdapterFactory implements IAdapterFactory {
 		return null;
 	}
 
+	@Override
 	public Class<?>[] getAdapterList() {
 		return adapterList;
 	}

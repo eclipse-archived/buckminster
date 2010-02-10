@@ -83,6 +83,11 @@ public class CspecAdapterFactory extends AdapterFactoryImpl {
 		}
 
 		@Override
+		public <T> Adapter caseComparable(Comparable<T> object) {
+			return createComparableAdapter();
+		}
+
+		@Override
 		public Adapter caseComponentIdentifier(ComponentIdentifier object) {
 			return createComponentIdentifierAdapter();
 		}
@@ -284,9 +289,9 @@ public class CspecAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.cspec.Attribute <em>Attribute</em>} '.
-	 * <!-- begin-user-doc --> This default implementation returns null so that
-	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * {@link org.eclipse.buckminster.cspec.Attribute <em>Attribute</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance
 	 * will catch all the cases anyway. <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
@@ -294,6 +299,21 @@ public class CspecAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createAttributeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link java.lang.Comparable <em>Comparable</em>}'. <!-- begin-user-doc
+	 * --> This default implementation returns null so that we can easily ignore
+	 * cases; it's useful to ignore a case when inheritance will catch all the
+	 * cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see java.lang.Comparable
+	 * @generated
+	 */
+	public Adapter createComparableAdapter() {
 		return null;
 	}
 
@@ -357,9 +377,9 @@ public class CspecAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.cspec.Generator <em>Generator</em>} '.
-	 * <!-- begin-user-doc --> This default implementation returns null so that
-	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * {@link org.eclipse.buckminster.cspec.Generator <em>Generator</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance
 	 * will catch all the cases anyway. <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
@@ -418,7 +438,7 @@ public class CspecAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.cspec.PathGroup <em>Path Group</em>} '.
+	 * {@link org.eclipse.buckminster.cspec.PathGroup <em>Path Group</em>}'.
 	 * <!-- begin-user-doc --> This default implementation returns null so that
 	 * we can easily ignore cases; it's useful to ignore a case when inheritance
 	 * will catch all the cases anyway. <!-- end-user-doc -->

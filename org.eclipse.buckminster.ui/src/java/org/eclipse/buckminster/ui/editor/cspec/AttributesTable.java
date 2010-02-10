@@ -52,6 +52,7 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 		this.cspec = cspec;
 	}
 
+	@Override
 	public void enableFields(boolean enabled) {
 		nameText.setEnabled(enabled);
 		publicCheck.setEnabled(enabled);
@@ -66,14 +67,17 @@ public abstract class AttributesTable<T extends TopLevelAttributeBuilder> extend
 		return currentBuilder;
 	}
 
+	@Override
 	public String[] getTableViewerColumnHeaders() {
 		return new String[] { Messages.name, Messages.public_label };
 	}
 
+	@Override
 	public int[] getTableViewerColumnWeights() {
 		return new int[] { 80, 20 };
 	}
 
+	@Override
 	public Object getTableViewerField(T builder, int columnIndex) {
 		switch (columnIndex) {
 			case 0:

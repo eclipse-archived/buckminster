@@ -107,14 +107,17 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy {
 	// don't need generics here - need just to setDirty
 	class CompoundModifyListener<T> implements ModifyListener, ITableModifyListener<T>, IFieldModifyListener {
 
+		@Override
 		public void modifyField(FieldModifyEvent e) {
 			setDirty(true);
 		}
 
+		@Override
 		public void modifyTable(TableModifyEvent<T> e) {
 			setDirty(true);
 		}
 
+		@Override
 		public void modifyText(ModifyEvent e) {
 			setDirty(true);
 		}
@@ -268,18 +271,21 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy {
 
 		tabFolder.addSelectionListener(new SelectionAdapter() {
 			private final IActivator ACTIONS_ACTIVATOR = new IActivator() {
+				@Override
 				public void activate() {
 					switchTab(CSpecEditorTab.ACTIONS);
 				}
 			};
 
 			private final IActivator ARTIFACTS_ACTIVATOR = new IActivator() {
+				@Override
 				public void activate() {
 					switchTab(CSpecEditorTab.ARTIFACTS);
 				}
 			};
 
 			private final IActivator GROUPS_ACTIVATOR = new IActivator() {
+				@Override
 				public void activate() {
 					switchTab(CSpecEditorTab.GROUPS);
 				}
@@ -444,6 +450,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy {
 		return !readOnly;
 	}
 
+	@Override
 	public boolean matches(IEditorReference editorRef, IEditorInput input) {
 		IEditorPart part = (IEditorPart) editorRef.getPart(false);
 		if (part != null) {
@@ -540,6 +547,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy {
 		String[] array = nameList.toArray(new String[0]);
 		Arrays.sort(array, new Comparator<String>() {
 
+			@Override
 			public int compare(String o1, String o2) {
 				return o1.compareTo(o2);
 			}
@@ -560,6 +568,7 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy {
 		String[] array = list.toArray(new String[0]);
 		Arrays.sort(array, new Comparator<String>() {
 
+			@Override
 			public int compare(String o1, String o2) {
 				return o1.compareTo(o2);
 			}

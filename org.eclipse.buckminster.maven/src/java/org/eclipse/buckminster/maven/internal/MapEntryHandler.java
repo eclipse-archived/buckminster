@@ -33,6 +33,7 @@ class MapEntryHandler extends GroupAndArtifactHandler implements ChildPoppedList
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (aliases == null)
 			aliases = new ArrayList<GroupAndArtifact>();

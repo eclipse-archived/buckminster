@@ -93,58 +93,69 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 
 		private int promptUserLimit = 3;
 
+		@Override
 		public String askQuestion(String realm, String question, boolean showAnswer, boolean maySave) {
 			// We do not support questions
 			//
 			return null;
 		}
 
+		@Override
 		public int askTrustSSLServer(String info, boolean allowPermanently) {
 			return ISVNPromptUserPassword.AcceptTemporary;
 		}
 
+		@Override
 		public boolean askYesNo(String realm, String question, boolean yesIsDefault) {
 			return yesIsDefault;
 		}
 
+		@Override
 		public String getPassword() {
 			return password;
 		}
 
+		@Override
 		public int getSSHPort() {
 			// We do not support SSH
 			//
 			return -1;
 		}
 
+		@Override
 		public String getSSHPrivateKeyPassphrase() {
 			// We do not support SSH
 			//
 			return null;
 		}
 
+		@Override
 		public String getSSHPrivateKeyPath() {
 			// We do not support SSH
 			//
 			return null;
 		}
 
+		@Override
 		public String getSSLClientCertPassword() {
 			// We do not support SSL
 			//
 			return null;
 		}
 
+		@Override
 		public String getSSLClientCertPath() {
 			// We do not support SSL
 			//
 			return null;
 		}
 
+		@Override
 		public String getUsername() {
 			return username;
 		}
 
+		@Override
 		public boolean prompt(String realm, String user, boolean maySave) {
 			// We support the password prompt only if we actually know the
 			// password
@@ -153,24 +164,28 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 			return password != null && --promptPasswordLimit >= 0;
 		}
 
+		@Override
 		public boolean promptSSH(String realm, String user, int sshPort, boolean maySave) {
 			// We do not support SSH prompt
 			//
 			return false;
 		}
 
+		@Override
 		public boolean promptSSL(String realm, boolean maySave) {
 			// We do not support SSL prompt
 			//
 			return false;
 		}
 
+		@Override
 		public boolean promptUser(String realm, String user, boolean maySave) {
 			// We do support the user prompt but only a limited number of times
 			//
 			return --promptUserLimit >= 0;
 		}
 
+		@Override
 		public boolean userAllowedSave() {
 			// No need to save anything
 			//
@@ -225,6 +240,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		super(repositoryURI, branchOrTag, revision, timestamp, context);
 	}
 
+	@Override
 	public void close() {
 		clientAdapter.dispose();
 	}
@@ -261,6 +277,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		}
 	}
 
+	@Override
 	public long getLastChangeNumber() throws CoreException {
 		try {
 			SVNUrl svnURL = TypeTranslator.from(getSVNUrl(null));
@@ -281,6 +298,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		}
 	}
 
+	@Override
 	public Date getLastTimestamp() throws CoreException {
 		try {
 			SVNUrl svnURL = TypeTranslator.from(getSVNUrl(null));
@@ -328,6 +346,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		return repoRev;
 	}
 
+	@Override
 	public ISVNDirEntry getRootEntry(IProgressMonitor monitor) throws CoreException {
 		// Synchronizing on an interned string should make it impossible for two
 		// sessions to request the same entry from the remote server
@@ -381,6 +400,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		}
 	}
 
+	@Override
 	public ISvnEntryHelper<ISVNDirEntry> getSvnEntryHelper() {
 		return HELPER;
 	}

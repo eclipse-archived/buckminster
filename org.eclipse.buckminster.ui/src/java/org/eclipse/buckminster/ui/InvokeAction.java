@@ -83,6 +83,7 @@ public class InvokeAction extends AbstractCSpecAction {
 				final IStatus status = BuckminsterException.wrap(e).getStatus();
 				CorePlugin.logWarningsAndErrors(status);
 				Display.getDefault().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						ErrorDialog.openError(null, Messages.action_error, null, status);
 					}

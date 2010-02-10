@@ -55,6 +55,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 
 	static {
 		PDECore.getDefault().getModelManager().addPluginModelListener(new IPluginModelListener() {
+			@Override
 			public void modelsChanged(PluginModelDelta delta) {
 				if (delta.getKind() != 0)
 					clearCache();
@@ -147,6 +148,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 		}
 	}
 
+	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
 	}
@@ -178,6 +180,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 		return path;
 	}
 
+	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new EclipsePlatformReader(this, providerMatch);

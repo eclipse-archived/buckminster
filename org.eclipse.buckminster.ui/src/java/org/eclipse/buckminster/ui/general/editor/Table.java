@@ -38,33 +38,40 @@ public abstract class Table<T> implements ITable<T> {
 		this.readOnly = readOnly;
 	}
 
+	@Override
 	public void addTableModifyListener(ITableModifyListener<T> listener) {
 		if (!listeners.contains(listener)) {
 			listeners.add(listener);
 		}
 	}
 
+	@Override
 	public T getRow(int row) {
 		return data.get(row);
 	}
 
+	@Override
 	public List<T> getRows() {
 		return data;
 	}
 
+	@Override
 	public boolean isReadOnly() {
 		return readOnly;
 	}
 
 	// no need for refreshing
+	@Override
 	public void refresh() {
 	}
 
+	@Override
 	public void removeRow(int row) {
 		T oldTableRow = data.remove(row);
 		notifyListeners(TableModifyEventType.REMOVE_ROW, row, oldTableRow);
 	}
 
+	@Override
 	public void removeTableModifyListener(ITableModifyListener<T> listener) {
 		listeners.remove(listener);
 	}

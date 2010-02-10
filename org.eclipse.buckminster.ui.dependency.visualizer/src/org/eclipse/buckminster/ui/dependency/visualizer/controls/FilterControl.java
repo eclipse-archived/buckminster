@@ -63,6 +63,7 @@ public class FilterControl extends AbstractViewerSettingControl {
 			regex.addModifyListener(this);
 		}
 
+		@Override
 		public void modifyText(ModifyEvent e) {
 			if (!isProcessing) {
 				e.display.timerExec(1000, this);
@@ -71,6 +72,7 @@ public class FilterControl extends AbstractViewerSettingControl {
 
 		}
 
+		@Override
 		public void run() {
 			if (regexFilter != null)
 				fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(FilterControl.this, ViewerSettingType.FILTER_REMOVED, regexFilter, null));

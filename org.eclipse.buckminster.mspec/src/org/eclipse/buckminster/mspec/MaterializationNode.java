@@ -32,7 +32,7 @@ import org.eclipse.buckminster.osgi.filter.Filter;
  * <em>Binding Name Pattern</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.mspec.MaterializationNode#getBindingNameReplacement
- * <em>Binding Name Replacement </em>}</li>
+ * <em>Binding Name Replacement</em>}</li>
  * <li>{@link org.eclipse.buckminster.mspec.MaterializationNode#getUnpack <em>
  * Unpack</em>}</li>
  * <li>{@link org.eclipse.buckminster.mspec.MaterializationNode#getFilter <em>

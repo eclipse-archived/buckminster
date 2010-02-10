@@ -60,6 +60,7 @@ public class ComponentOutlineView extends ComponentBrowserView {
 
 	private void hookPageSelection() {
 		selectionListener = new ISelectionListener() {
+			@Override
 			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 				pageSelectionChanged(part, selection);
 			}

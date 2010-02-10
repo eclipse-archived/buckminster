@@ -185,6 +185,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			FileNotFoundException {
 		try {
 			reader.readFile(file, new IStreamConsumer<Object>() {
+				@Override
 				public Object consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor mon)
 						throws CoreException {
 					int len;

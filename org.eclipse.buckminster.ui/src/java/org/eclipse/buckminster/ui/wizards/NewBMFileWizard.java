@@ -70,6 +70,7 @@ public abstract class NewBMFileWizard extends Wizard {
 		final String containerName = getContainerName();
 		final String fileName = page.getFileName();
 		IRunnableWithProgress op = new IRunnableWithProgress() {
+			@Override
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
 					doFinish(containerName, fileName, monitor);
@@ -152,6 +153,7 @@ public abstract class NewBMFileWizard extends Wizard {
 		monitor.worked(1);
 		monitor.setTaskName(Messages.opening_file_for_editing_with_dots);
 		getShell().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				try {

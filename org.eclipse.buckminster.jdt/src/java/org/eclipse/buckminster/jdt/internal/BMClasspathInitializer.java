@@ -59,6 +59,7 @@ public class BMClasspathInitializer extends ClasspathContainerInitializer implem
 		JdtPlugin.getLogger().debug("%s container initialized for project %s", containerPath, project.getName()); //$NON-NLS-1$
 	}
 
+	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
 		IPath path = BMClasspathContainer.PATH;
 		try {

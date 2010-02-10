@@ -80,10 +80,12 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
  */
 public class ResolverNodePage extends AbstractQueryPage {
 	class RequestLabelProvider extends LabelProvider implements ITableLabelProvider {
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			ComponentRequest rq = (ComponentRequest) element;
 			String lbl;
@@ -236,6 +238,7 @@ public class ResolverNodePage extends AbstractQueryPage {
 			final BillOfMaterials[] bin = new BillOfMaterials[] { bom };
 			final IResolver resolver = new MainResolver(context);
 			wizard.getContainer().run(true, true, new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					try {
 						BillOfMaterials oldBOM = bin[0];

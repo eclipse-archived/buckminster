@@ -231,6 +231,7 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CSpecExtension getCspecext() {
 		if (eContainerFeatureID() != CspecPackage.ALTER_ARTIFACT__CSPECEXT)
 			return null;
@@ -242,6 +243,7 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Remove> getRemovePaths() {
 		if (removePaths == null) {
 			removePaths = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ARTIFACT__REMOVE_PATHS);
@@ -254,6 +256,7 @@ public class AlterArtifactImpl extends ArtifactImpl implements AlterArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setCspecext(CSpecExtension newCspecext) {
 		if (newCspecext != eInternalContainer() || (eContainerFeatureID() != CspecPackage.ALTER_ARTIFACT__CSPECEXT && newCspecext != null)) {
 			if (EcoreUtil.isAncestor(this, newCspecext))

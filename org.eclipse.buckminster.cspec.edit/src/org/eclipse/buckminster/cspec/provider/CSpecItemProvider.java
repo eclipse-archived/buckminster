@@ -251,7 +251,7 @@ public class CSpecItemProvider extends ComponentIdentifierItemProvider implement
 	protected void addSelfPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
 				getResourceLocator(), getString("_UI_CSpec_self_feature"), getString("_UI_PropertyDescriptor_description", "_UI_CSpec_self_feature",
-						"_UI_CSpec_type"), CspecPackage.Literals.CSPEC__SELF, true, false, true, null, null, null));
+						"_UI_CSpec_type"), CspecPackage.Literals.CSPEC__SELF, false, false, false, null, null, null));
 	}
 
 	/**
@@ -310,6 +310,16 @@ public class CSpecItemProvider extends ComponentIdentifierItemProvider implement
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	protected boolean shouldComposeCreationImage() {
+		return true;
 	}
 
 	/**

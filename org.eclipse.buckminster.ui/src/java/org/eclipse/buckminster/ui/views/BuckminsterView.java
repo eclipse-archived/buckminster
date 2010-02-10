@@ -225,9 +225,11 @@ public class BuckminsterView extends ViewPart {
 
 	class NavigatorContentProvider implements ITreeContentProvider {
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public Object[] getChildren(Object parentElement) {
 			if (parentElement instanceof IContainer) {
 				try {
@@ -250,19 +252,23 @@ public class BuckminsterView extends ViewPart {
 			return null;
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			return ((IWorkspaceRoot) inputElement).getProjects();
 		}
 
+		@Override
 		public Object getParent(Object element) {
 			return ((IResource) element).getParent();
 		}
 
+		@Override
 		public boolean hasChildren(Object element) {
 			Object[] children = getChildren(element);
 			return children == null ? false : children.length > 0;
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// Nothing to change
 		}
@@ -285,13 +291,16 @@ public class BuckminsterView extends ViewPart {
 			fileImage = UiPlugin.getImageDescriptor("icons/file_obj.gif").createImage(); //$NON-NLS-1$
 		}
 
+		@Override
 		public void addListener(ILabelProviderListener listener) {
 			listeners.add(listener);
 		}
 
+		@Override
 		public void dispose() {
 		}
 
+		@Override
 		public Image getImage(Object element) {
 			if (element instanceof IProject) {
 				return projectImage;
@@ -314,14 +323,17 @@ public class BuckminsterView extends ViewPart {
 			return null;
 		}
 
+		@Override
 		public String getText(Object element) {
 			return ((IResource) element).getName();
 		}
 
+		@Override
 		public boolean isLabelProperty(Object element, String property) {
 			return false;
 		}
 
+		@Override
 		public void removeListener(ILabelProviderListener listener) {
 			listeners.remove(listener);
 		}
@@ -461,6 +473,7 @@ public class BuckminsterView extends ViewPart {
 		workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		workspaceRoot.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
 
+			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
 				refreshTree();
 			}
@@ -655,6 +668,7 @@ public class BuckminsterView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 				fillContextMenu(manager);
 			}
@@ -696,6 +710,7 @@ public class BuckminsterView extends ViewPart {
 
 		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				openEditorAction.run();
 			}
@@ -703,6 +718,7 @@ public class BuckminsterView extends ViewPart {
 
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				changeInfo();
 			}
@@ -876,6 +892,7 @@ public class BuckminsterView extends ViewPart {
 	private void refreshTree() {
 		this.getViewSite().getShell().getDisplay().asyncExec(new Runnable() {
 
+			@Override
 			public void run() {
 				treeViewer.refresh();
 			}

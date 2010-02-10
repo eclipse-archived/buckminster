@@ -44,5 +44,6 @@ public interface ITreeDataNode extends PropertyChangeListener, IAdaptable {
 
 	void setParent(ITreeParentDataNode parent);
 
+	@Override
 	String toString();
 }

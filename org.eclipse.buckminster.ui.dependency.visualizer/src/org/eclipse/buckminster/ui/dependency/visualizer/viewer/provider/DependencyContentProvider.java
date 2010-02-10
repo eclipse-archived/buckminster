@@ -27,11 +27,13 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  */
 public class DependencyContentProvider implements IGraphEntityContentProvider {
 
+	@Override
 	public void dispose() {
 		// nothing to dispose
 
 	}
 
+	@Override
 	public Object[] getConnectedTo(Object entity) {
 		if (entity instanceof BOMNode) {
 			BOMNode node = (BOMNode) entity;
@@ -41,6 +43,7 @@ public class DependencyContentProvider implements IGraphEntityContentProvider {
 		return null;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Object[] getElements(Object inputElement) {
 
@@ -58,6 +61,7 @@ public class DependencyContentProvider implements IGraphEntityContentProvider {
 
 	}
 
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		// nothing to do
 

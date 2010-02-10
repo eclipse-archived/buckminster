@@ -121,6 +121,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getHref() {
 		return href;
 	}
@@ -130,6 +131,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setHref(String newHref) {
 		String oldHref = href;
 		href = newHref;

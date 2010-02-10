@@ -17,6 +17,7 @@ class SubstringFilterImpl extends FilterImpl {
 		this.strings = value;
 	}
 
+	@Override
 	public int compareTo(FilterImpl filter) {
 		int cmp = internalCompareTo(filter);
 		if (cmp != 0)

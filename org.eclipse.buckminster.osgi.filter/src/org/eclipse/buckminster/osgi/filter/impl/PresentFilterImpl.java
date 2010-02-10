@@ -14,6 +14,7 @@ class PresentFilterImpl extends FilterImpl {
 		super(FilterImpl.PRESENT, attr);
 	}
 
+	@Override
 	public int compareTo(FilterImpl o) {
 		return internalCompareTo(o);
 	}

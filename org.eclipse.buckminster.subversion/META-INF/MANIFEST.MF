@@ -4,7 +4,8 @@ Bundle-Name: Buckminster Subversion commons Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.subversion
 Bundle-Version: 1.1.0.qualifier
 Bundle-Vendor: Eclipse Buckminster Project
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ J2SE-1.5
 Require-Bundle: org.eclipse.buckminster.core;bundle-version="1.2.360",
  org.eclipse.buckminster.sax;bundle-version="1.0.0",
  org.eclipse.buckminster.runtime;bundle-version="1.2.0",

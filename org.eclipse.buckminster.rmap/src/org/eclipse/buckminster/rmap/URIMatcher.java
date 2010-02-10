@@ -84,7 +84,7 @@ public interface URIMatcher extends EObject {
 	 * @return the value of the '<em>Rx Parts Group</em>' attribute list.
 	 * @see org.eclipse.buckminster.rmap.RmapPackage#getURIMatcher_RxPartsGroup()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry"
-	 *        required="true" many="true" extendedMetaData ="kind='group' name='rxPart:group' namespace='http://www.eclipse.org/buckminster/Common-1.0'"
+	 *        required="true" many="true" extendedMetaData="kind='group' name='rxPart:group' namespace='http://www.eclipse.org/buckminster/Common-1.0'"
 	 * @generated
 	 */
 	FeatureMap getRxPartsGroup();

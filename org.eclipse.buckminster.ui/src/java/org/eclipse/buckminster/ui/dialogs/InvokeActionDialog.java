@@ -259,6 +259,7 @@ public class InvokeActionDialog extends FilteredItemsSelectionDialog {
 	private String propertiesFile;
 
 	private static Comparator<Attribute> attributeComparator = new Comparator<Attribute>() {
+		@Override
 		public int compare(Attribute o1, Attribute o2) {
 			return o1.getName().compareTo(o2.getName());
 		}
@@ -374,6 +375,7 @@ public class InvokeActionDialog extends FilteredItemsSelectionDialog {
 
 		combo.addModifyListener(new ModifyListener() {
 
+			@Override
 			public void modifyText(ModifyEvent e) {
 				propertiesFile = combo.getText();
 				updateStatus(validateItem(propertiesFile));
@@ -474,6 +476,7 @@ public class InvokeActionDialog extends FilteredItemsSelectionDialog {
 				attributes = cspec.getAttributes().values();
 				getShell().getDisplay().asyncExec(new Runnable() {
 
+					@Override
 					public void run() {
 						getShell().setText(Messages.actions_of + cspec.getName());
 

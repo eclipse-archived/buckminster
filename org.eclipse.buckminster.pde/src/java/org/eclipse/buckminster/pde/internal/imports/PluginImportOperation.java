@@ -250,6 +250,7 @@ public class PluginImportOperation extends JarImportOperation {
 		}
 	}
 
+	@Override
 	public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		importPlugin(monitor);
 		MonitorUtils.testCancelStatus(monitor);

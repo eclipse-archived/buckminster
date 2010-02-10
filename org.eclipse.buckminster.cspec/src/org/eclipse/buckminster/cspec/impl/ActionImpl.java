@@ -522,6 +522,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getActor() {
 		return actor;
 	}
@@ -531,6 +532,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<PropertyConstant> getActorProperties() {
 		if (actorProperties == null) {
 			actorProperties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this, CspecPackage.ACTION__ACTOR_PROPERTIES);
@@ -543,6 +545,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Pattern getPattern() {
 		return pattern;
 	}
@@ -552,6 +555,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getPrerequisitesAlias() {
 		return prerequisitesAlias;
 	}
@@ -561,6 +565,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IPath getPrerequisitesRebase() {
 		return prerequisitesRebase;
 	}
@@ -570,6 +575,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PathGroup getProduct() {
 		return product;
 	}
@@ -579,6 +585,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getProductAlias() {
 		return productAlias;
 	}
@@ -588,6 +595,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public int getProductFileCount() {
 		return productFileCount;
 	}
@@ -597,6 +605,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<ActionAttribute> getProducts() {
 		if (products == null) {
 			products = new EObjectWithInverseResolvingEList<ActionAttribute>(ActionAttribute.class, this, CspecPackage.ACTION__PRODUCTS,
@@ -610,6 +619,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<PropertyConstant> getProperties() {
 		if (properties == null) {
 			properties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this, CspecPackage.ACTION__PROPERTIES);
@@ -622,6 +632,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getReplacement() {
 		return replacement;
 	}
@@ -631,6 +642,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public UpToDatePolicy getUpToDatePolicy() {
 		return upToDatePolicy;
 	}
@@ -645,6 +657,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setActor(String newActor) {
 		String oldActor = actor;
 		actor = newActor;
@@ -657,6 +670,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPattern(Pattern newPattern) {
 		Pattern oldPattern = pattern;
 		pattern = newPattern;
@@ -669,6 +683,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPrerequisitesAlias(String newPrerequisitesAlias) {
 		String oldPrerequisitesAlias = prerequisitesAlias;
 		prerequisitesAlias = newPrerequisitesAlias;
@@ -681,6 +696,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPrerequisitesRebase(IPath newPrerequisitesRebase) {
 		IPath oldPrerequisitesRebase = prerequisitesRebase;
 		prerequisitesRebase = newPrerequisitesRebase;
@@ -694,6 +710,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setProduct(PathGroup newProduct) {
 		if (newProduct != product) {
 			NotificationChain msgs = null;
@@ -713,6 +730,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setProductAlias(String newProductAlias) {
 		String oldProductAlias = productAlias;
 		productAlias = newProductAlias;
@@ -725,6 +743,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setProductFileCount(int newProductFileCount) {
 		int oldProductFileCount = productFileCount;
 		productFileCount = newProductFileCount;
@@ -737,6 +756,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setReplacement(String newReplacement) {
 		String oldReplacement = replacement;
 		replacement = newReplacement;
@@ -749,6 +769,7 @@ public class ActionImpl extends GroupImpl implements Action {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setUpToDatePolicy(UpToDatePolicy newUpToDatePolicy) {
 		UpToDatePolicy oldUpToDatePolicy = upToDatePolicy;
 		upToDatePolicy = newUpToDatePolicy == null ? UP_TO_DATE_POLICY_EDEFAULT : newUpToDatePolicy;

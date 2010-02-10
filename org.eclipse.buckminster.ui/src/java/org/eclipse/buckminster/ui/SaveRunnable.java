@@ -69,6 +69,7 @@ public class SaveRunnable implements IRunnableWithProgress {
 		return newInput;
 	}
 
+	@Override
 	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
 			if (location.segmentCount() > 1) {

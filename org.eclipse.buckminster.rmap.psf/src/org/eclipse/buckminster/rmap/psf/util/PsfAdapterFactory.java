@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.rmap.psf.util;
 
+import org.eclipse.buckminster.rmap.Properties;
 import org.eclipse.buckminster.rmap.Provider;
 
 import org.eclipse.buckminster.rmap.psf.*;
@@ -40,6 +41,11 @@ public class PsfAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	protected PsfSwitch<Adapter> modelSwitch = new PsfSwitch<Adapter>() {
+		@Override
+		public Adapter caseProperties(Properties object) {
+			return createPropertiesAdapter();
+		}
+
 		@Override
 		public Adapter caseProvider(Provider object) {
 			return createProviderAdapter();
@@ -90,6 +96,21 @@ public class PsfAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createEObjectAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.rmap.Properties <em>Properties</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.rmap.Properties
+	 * @generated
+	 */
+	public Adapter createPropertiesAdapter() {
 		return null;
 	}
 

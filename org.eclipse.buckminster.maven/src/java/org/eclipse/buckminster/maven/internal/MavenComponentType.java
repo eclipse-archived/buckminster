@@ -379,6 +379,7 @@ public class MavenComponentType extends AbstractComponentType {
 		}
 	}
 
+	@Override
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return builder;

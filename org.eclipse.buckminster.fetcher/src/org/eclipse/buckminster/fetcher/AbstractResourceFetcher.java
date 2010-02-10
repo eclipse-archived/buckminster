@@ -33,6 +33,7 @@ public abstract class AbstractResourceFetcher implements IResourceFetcher {
 		this.destinationDir = dir;
 	}
 
+	@Override
 	public void fetch(IProgressMonitor monitor) throws IOException, CoreException {
 		URLConnection conn = null;
 		InputStream in = null;
@@ -58,6 +59,7 @@ public abstract class AbstractResourceFetcher implements IResourceFetcher {
 		}
 	}
 
+	@Override
 	public void setBasicAuthCredential(String login, String password) {
 		if (login == null || password == null)
 			throw new NullPointerException(Messages.login_and_password_must_be_not_null);

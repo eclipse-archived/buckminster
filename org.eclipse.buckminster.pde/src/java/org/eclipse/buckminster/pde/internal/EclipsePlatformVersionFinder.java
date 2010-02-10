@@ -57,6 +57,7 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder {
 		throw new MalformedProviderURIException(readerType, uri);
 	}
 
+	@Override
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException {
 		Version v = null;
 		NodeQuery query = getQuery();

@@ -56,6 +56,7 @@ public class ClasspathReader extends JavaProject implements IStreamConsumer<ICla
 		super(ResourcesPlugin.getWorkspace().getRoot().getProject(" "), JavaModelManager.getJavaModelManager().getJavaModel()); //$NON-NLS-1$
 	}
 
+	@Override
 	public IClasspathEntry[] consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor)
 			throws CoreException, IOException {
 		monitor.beginTask(null, 150);

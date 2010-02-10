@@ -38,6 +38,7 @@ class MappingsHandler extends ExtensionAwareHandler implements ChildPoppedListen
 		super(parent);
 	}
 
+	@Override
 	public void childPopped(ChildHandler child) {
 		if (child instanceof MapEntryHandler) {
 			if (entries == null)

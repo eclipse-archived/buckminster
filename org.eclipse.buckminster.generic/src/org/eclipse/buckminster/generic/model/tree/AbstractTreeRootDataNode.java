@@ -39,6 +39,7 @@ public abstract class AbstractTreeRootDataNode extends BasicTreeParentDataNode i
 	 * Adds a tree data listener to the set of listeners. A listener is only
 	 * added once.
 	 */
+	@Override
 	public void addTreeDataListener(ITreeDataListener listener) {
 		if (!listeners.contains(listener))
 			listeners.add(listener);
@@ -61,6 +62,7 @@ public abstract class AbstractTreeRootDataNode extends BasicTreeParentDataNode i
 	 * Removes a tree data listener from the set of listeners. Does nothing if
 	 * the listener is not a registered listener.
 	 */
+	@Override
 	public void removeTreeDataListener(ITreeDataListener listener) {
 		listeners.remove(listener);
 	}

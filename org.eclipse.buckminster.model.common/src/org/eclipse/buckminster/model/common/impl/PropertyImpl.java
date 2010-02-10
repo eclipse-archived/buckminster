@@ -162,6 +162,7 @@ public abstract class PropertyImpl extends BObjectImpl implements Property {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getKey() {
 		return key;
 	}
@@ -171,6 +172,7 @@ public abstract class PropertyImpl extends BObjectImpl implements Property {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isMutable() {
 		return mutable;
 	}
@@ -180,6 +182,7 @@ public abstract class PropertyImpl extends BObjectImpl implements Property {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetMutable() {
 		return mutableESet;
 	}
@@ -189,6 +192,7 @@ public abstract class PropertyImpl extends BObjectImpl implements Property {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setKey(String newKey) {
 		String oldKey = key;
 		key = newKey;
@@ -201,6 +205,7 @@ public abstract class PropertyImpl extends BObjectImpl implements Property {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setMutable(boolean newMutable) {
 		boolean oldMutable = mutable;
 		mutable = newMutable;
@@ -241,6 +246,7 @@ public abstract class PropertyImpl extends BObjectImpl implements Property {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetMutable() {
 		boolean oldMutable = mutable;
 		boolean oldMutableESet = mutableESet;

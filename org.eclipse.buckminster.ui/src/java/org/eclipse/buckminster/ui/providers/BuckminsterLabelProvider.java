@@ -110,6 +110,7 @@ public class BuckminsterLabelProvider extends ColumnLabelProvider implements ISt
 		return null;
 	}
 
+	@Override
 	public StyledString getStyledText(Object element) {
 		if (element instanceof ITreeDataNode)
 			element = ((ITreeDataNode) element).getData();

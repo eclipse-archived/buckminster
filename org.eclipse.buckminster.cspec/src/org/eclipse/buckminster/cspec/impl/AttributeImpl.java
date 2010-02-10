@@ -306,6 +306,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CSpec getCspec() {
 		if (eContainerFeatureID() != CspecPackage.ATTRIBUTE__CSPEC)
 			return null;
@@ -317,6 +318,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -326,6 +328,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -335,6 +338,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -344,6 +348,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean isDerived(IContext context) {
 		return false;
 	}
@@ -353,6 +358,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isPublic() {
 		return public_;
 	}
@@ -362,6 +368,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setCspec(CSpec newCspec) {
 		if (newCspec != eInternalContainer() || (eContainerFeatureID() != CspecPackage.ATTRIBUTE__CSPEC && newCspec != null)) {
 			if (EcoreUtil.isAncestor(this, newCspec))
@@ -383,6 +390,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -404,6 +412,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -416,6 +425,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -428,6 +438,7 @@ public abstract class AttributeImpl extends EObjectImpl implements Attribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPublic(boolean newPublic) {
 		boolean oldPublic = public_;
 		public_ = newPublic;

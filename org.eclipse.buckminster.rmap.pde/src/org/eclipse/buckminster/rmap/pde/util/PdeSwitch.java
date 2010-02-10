@@ -8,6 +8,7 @@ package org.eclipse.buckminster.rmap.pde.util;
 
 import java.util.List;
 
+import org.eclipse.buckminster.rmap.Properties;
 import org.eclipse.buckminster.rmap.Provider;
 
 import org.eclipse.buckminster.rmap.pde.*;
@@ -60,6 +61,23 @@ public class PdeSwitch<T> {
 	 * @generated
 	 */
 	public T casePDEMapProvider(PDEMapProvider object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Properties</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Properties</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseProperties(Properties object) {
 		return null;
 	}
 
@@ -144,6 +162,8 @@ public class PdeSwitch<T> {
 				T result = casePDEMapProvider(pdeMapProvider);
 				if (result == null)
 					result = caseProvider(pdeMapProvider);
+				if (result == null)
+					result = caseProperties(pdeMapProvider);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;

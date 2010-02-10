@@ -74,6 +74,7 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 		super(readerType, rInfo, monitor);
 	}
 
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		boolean success = false;
 		File destDir = destination.toFile();

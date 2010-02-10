@@ -91,11 +91,13 @@ public class HighlightPathControl extends AbstractViewerSettingControl implement
 		return parent;
 	}
 
+	@Override
 	public void widgetDefaultSelected(SelectionEvent e) {
 		// nothing to do
 
 	}
 
+	@Override
 	public void widgetSelected(SelectionEvent e) {
 		IRelationshipProvider provider = createRelationshipProvider();
 		fireViewerSettingsChangedEvent(new ViewerSettingChangeEvent(this, ViewerSettingType.PATH_HIGHLIGHTING, provider, relationshipProvider));

@@ -219,6 +219,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 		this.attr = attr;
 	}
 
+	@Override
 	public void addConsultedAttributes(Map<String, String[]> propertyChoices) {
 		String stringValue = getValueAsString();
 
@@ -245,10 +246,12 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 		}
 	}
 
+	@Override
 	public Filter addFilterWithAnd(Filter subFilter) {
 		return subFilter == null ? this : addFilter((FilterImpl) subFilter, AND);
 	}
 
+	@Override
 	public Filter addFilterWithOr(Filter subFilter) {
 		return subFilter == null ? this : addFilter((FilterImpl) subFilter, OR);
 	}
@@ -268,28 +271,34 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 		return 11 * toString().hashCode();
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	public boolean match(Dictionary properties) {
 		return match(properties, false);
 	}
 
+	@Override
 	public boolean match(Map<String, ? extends Object> properties) {
 		return match0(properties == null ? Collections.<String, Object> emptyMap() : new CaseInsensitiveMap<Object>(properties));
 	}
 
+	@Override
 	public boolean match(ServiceReference reference) {
 		return match0(reference == null ? Collections.<String, Object> emptyMap() : new ServiceReferenceMap(reference));
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	public boolean matchCase(Dictionary dictionary) {
 		return match(dictionary, true);
 	}
 
+	@Override
 	public boolean matchCase(Map<String, ? extends Object> properties) {
 		return match0(properties == null ? Collections.<String, Object> emptyMap() : properties);
 	}
 
+	@Override
 	public Filter stripFilter(Filter subFilter) {
 		return equals(subFilter) ? null : this;
 	}

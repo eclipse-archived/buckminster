@@ -33,6 +33,7 @@ public class AttachableProgressMonitor {
 			this.mainProgressMonitor = mainprogressMonitor;
 		}
 
+		@Override
 		public void beginTask(String name, int work) {
 			this.totalWork = work;
 			this.task = name;
@@ -43,6 +44,7 @@ public class AttachableProgressMonitor {
 
 		}
 
+		@Override
 		public void done() {
 			mainProgressMonitor.done();
 			for (IProgressMonitor attachedMonitor : attachedMonitors) {
@@ -51,6 +53,7 @@ public class AttachableProgressMonitor {
 
 		}
 
+		@Override
 		public void internalWorked(double work) {
 			mainProgressMonitor.internalWorked(work);
 			for (IProgressMonitor attachedMonitor : attachedMonitors) {
@@ -58,10 +61,12 @@ public class AttachableProgressMonitor {
 			}
 		}
 
+		@Override
 		public boolean isCanceled() {
 			return mainProgressMonitor.isCanceled();
 		}
 
+		@Override
 		public void setCanceled(boolean value) {
 			mainProgressMonitor.setCanceled(value);
 			for (IProgressMonitor attachedMonitor : attachedMonitors) {
@@ -70,6 +75,7 @@ public class AttachableProgressMonitor {
 
 		}
 
+		@Override
 		public void setTaskName(String name) {
 			mainProgressMonitor.setTaskName(name);
 			for (IProgressMonitor attachedMonitor : attachedMonitors) {
@@ -78,6 +84,7 @@ public class AttachableProgressMonitor {
 
 		}
 
+		@Override
 		public void subTask(String name) {
 			this.subTask = name;
 			mainProgressMonitor.subTask(name);
@@ -87,6 +94,7 @@ public class AttachableProgressMonitor {
 
 		}
 
+		@Override
 		public void worked(int work) {
 			ticks += work;
 			mainProgressMonitor.worked(work);

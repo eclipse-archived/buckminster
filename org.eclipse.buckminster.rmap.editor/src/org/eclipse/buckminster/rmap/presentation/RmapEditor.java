@@ -307,6 +307,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * @generated
 	 */
 	protected IPartListener partListener = new IPartListener() {
+		@Override
 		public void partActivated(IWorkbenchPart p) {
 			if (p instanceof ContentOutline) {
 				if (((ContentOutline) p).getCurrentPage() == contentOutlinePage) {
@@ -324,18 +325,22 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 			}
 		}
 
+		@Override
 		public void partBroughtToTop(IWorkbenchPart p) {
 			// Ignore.
 		}
 
+		@Override
 		public void partClosed(IWorkbenchPart p) {
 			// Ignore.
 		}
 
+		@Override
 		public void partDeactivated(IWorkbenchPart p) {
 			// Ignore.
 		}
 
+		@Override
 		public void partOpened(IWorkbenchPart p) {
 			// Ignore.
 		}
@@ -405,6 +410,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 
 						if (updateProblemIndication) {
 							getSite().getShell().getDisplay().asyncExec(new Runnable() {
+								@Override
 								public void run() {
 									updateProblemIndication();
 								}
@@ -436,14 +442,13 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * @generated
 	 */
 	protected IResourceChangeListener resourceChangeListener = new IResourceChangeListener() {
+		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
 			IResourceDelta delta = event.getDelta();
 			try {
 				class ResourceDeltaVisitor implements IResourceDeltaVisitor {
 					protected ResourceSet resourceSet = editingDomain.getResourceSet();
-
 					protected Collection<Resource> changedResources = new ArrayList<Resource>();
-
 					protected Collection<Resource> removedResources = new ArrayList<Resource>();
 
 					public Collection<Resource> getChangedResources() {
@@ -454,6 +459,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 						return removedResources;
 					}
 
+					@Override
 					public boolean visit(IResourceDelta delta) {
 						if (delta.getResource().getType() == IResource.FILE) {
 							if (delta.getKind() == IResourceDelta.REMOVED || delta.getKind() == IResourceDelta.CHANGED
@@ -479,6 +485,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 
 				if (!visitor.getRemovedResources().isEmpty()) {
 					getSite().getShell().getDisplay().asyncExec(new Runnable() {
+						@Override
 						public void run() {
 							removedResources.addAll(visitor.getRemovedResources());
 							if (!isDirty()) {
@@ -490,6 +497,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 
 				if (!visitor.getChangedResources().isEmpty()) {
 					getSite().getShell().getDisplay().asyncExec(new Runnable() {
+						@Override
 						public void run() {
 							changedResources.addAll(visitor.getChangedResources());
 							if (getSite().getPage().getActiveEditor() == RmapEditor.this) {
@@ -521,6 +529,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		selectionChangedListeners.add(listener);
 	}
@@ -606,6 +615,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 			setPageText(pageIndex, getString("_UI_SelectionPage_label"));
 
 			getSite().getShell().getDisplay().asyncExec(new Runnable() {
+				@Override
 				public void run() {
 					setActivePage(0);
 				}
@@ -629,6 +639,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		});
 
 		getSite().getShell().getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				updateProblemIndication();
 			}
@@ -845,6 +856,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 			contentOutlinePage.addSelectionChangedListener(new ISelectionChangedListener() {
 				// This ensures that we handle selections correctly.
 				//
+				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					handleContentOutlineSelection(event.getSelection());
 				}
@@ -863,6 +875,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EditingDomain getEditingDomain() {
 		return editingDomain;
 	}
@@ -901,6 +914,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ISelection getSelection() {
 		return editorSelection;
 	}
@@ -911,6 +925,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Viewer getViewer() {
 		return currentViewer;
 	}
@@ -920,6 +935,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void gotoMarker(IMarker marker) {
 		try {
 			if (marker.getType().equals(EValidator.MARKER)) {
@@ -1009,6 +1025,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void menuAboutToShow(IMenuManager menuManager) {
 		((IMenuListener) getEditorSite().getActionBarContributor()).menuAboutToShow(menuManager);
 	}
@@ -1019,6 +1036,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		selectionChangedListeners.remove(listener);
 	}
@@ -1041,6 +1059,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 					// This just notifies those things that are affected by the
 					// section.
 					//
+					@Override
 					public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
 						setSelection(selectionChangedEvent.getSelection());
 					}
@@ -1087,6 +1106,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setSelection(ISelection selection) {
 		editorSelection = selection;
 
@@ -1108,6 +1128,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		//
 		if (theSelection != null && !theSelection.isEmpty()) {
 			Runnable runnable = new Runnable() {
+				@Override
 				public void run() {
 					// Try to select the items in the current content viewer of
 					// the editor.
@@ -1319,12 +1340,13 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		BasicCommandStack commandStack = new BasicCommandStack();
 
 		// Add a listener to set the most recent command's affected objects to
-		// be the selection of the viewer with
-		// focus.
+		// be the selection of the viewer with focus.
 		//
 		commandStack.addCommandStackListener(new CommandStackListener() {
+			@Override
 			public void commandStackChanged(final EventObject event) {
 				getContainer().getDisplay().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						firePropertyChange(IEditorPart.PROP_DIRTY);
 

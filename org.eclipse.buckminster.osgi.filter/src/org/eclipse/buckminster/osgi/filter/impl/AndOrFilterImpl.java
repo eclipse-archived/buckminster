@@ -26,6 +26,7 @@ class AndOrFilterImpl extends FilterImpl {
 			filters[i].addConsultedAttributes(propertyChoices);
 	}
 
+	@Override
 	public int compareTo(FilterImpl o) {
 		int cmp = internalCompareTo(o);
 		if (cmp != 0)

@@ -51,6 +51,7 @@ public class CompositeRelationshipProvider implements IRelationshipProvider {
 		this.providers = providers;
 	}
 
+	@Override
 	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection, Object[] connections) {
 		Map<EntityConnectionData, ConnectionCategory> aggregatedData = new HashMap<EntityConnectionData, ConnectionCategory>();
 		for (int i = 0; i < providers.length; i++) {

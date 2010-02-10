@@ -169,6 +169,7 @@ public class GroupImpl extends AttributeImpl implements Group {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Prerequisite> getPrerequisites() {
 		if (prerequisites == null) {
 			prerequisites = new EObjectContainmentEList<Prerequisite>(Prerequisite.class, this, CspecPackage.GROUP__PREREQUISITES);
@@ -181,6 +182,7 @@ public class GroupImpl extends AttributeImpl implements Group {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IPath getRebase() {
 		return rebase;
 	}
@@ -207,6 +209,7 @@ public class GroupImpl extends AttributeImpl implements Group {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setRebase(IPath newRebase) {
 		IPath oldRebase = rebase;
 		rebase = newRebase;

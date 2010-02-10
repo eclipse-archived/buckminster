@@ -22,6 +22,7 @@ public abstract class AbstractQueryPage extends WizardPage {
 		super(pageName);
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		this.setControl(this.createControls(parent));
 		this.setErrorMessage(null);

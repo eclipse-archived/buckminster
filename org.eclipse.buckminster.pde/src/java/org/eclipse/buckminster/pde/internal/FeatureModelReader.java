@@ -41,6 +41,7 @@ public class FeatureModelReader implements IStreamConsumer<IFeatureModel> {
 		return featureModel;
 	}
 
+	@Override
 	public IFeatureModel consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
 			throws CoreException {
 		monitor.beginTask(null, 1);

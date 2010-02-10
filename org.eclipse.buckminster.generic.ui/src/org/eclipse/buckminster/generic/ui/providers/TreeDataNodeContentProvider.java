@@ -39,10 +39,12 @@ public abstract class TreeDataNodeContentProvider implements IStructuredContentP
 
 	private TreeViewer treeViewer;
 
+	@Override
 	public void dispose() {
 		invisibleRoot.removeTreeDataListener(this);
 	}
 
+	@Override
 	public Object[] getChildren(Object parent) {
 		if (parent instanceof ITreeParentDataNode) {
 			return ((ITreeParentDataNode) parent).getChildren();
@@ -50,6 +52,7 @@ public abstract class TreeDataNodeContentProvider implements IStructuredContentP
 		return new Object[0];
 	}
 
+	@Override
 	public Object[] getElements(Object parent) {
 		// if asking for the data that was used to build a tree, then return the
 		// root holding the tree.
@@ -67,6 +70,7 @@ public abstract class TreeDataNodeContentProvider implements IStructuredContentP
 		return getChildren(parent);
 	}
 
+	@Override
 	public Object getParent(Object child) {
 		if (child instanceof ITreeDataNode) {
 			return ((ITreeDataNode) child).getParent();
@@ -74,18 +78,21 @@ public abstract class TreeDataNodeContentProvider implements IStructuredContentP
 		return null;
 	}
 
+	@Override
 	public boolean hasChildren(Object parent) {
 		if (parent instanceof ITreeParentDataNode)
 			return ((ITreeParentDataNode) parent).hasChildren();
 		return false;
 	}
 
+	@Override
 	public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		if (!(v instanceof TreeViewer))
 			throw new IllegalArgumentException(Messages.only_TreeView_accepted);
 		treeViewer = (TreeViewer) v;
 	}
 
+	@Override
 	public void treeNodeChanged(TreeDataEvent event) {
 		switch (event.getType()) {
 			case CHANGE:

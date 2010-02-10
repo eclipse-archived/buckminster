@@ -528,7 +528,7 @@ public interface RmapPackage extends EPackage {
 		/**
 		 * The meta object literal for the '
 		 * {@link org.eclipse.buckminster.rmap.impl.PropertiesImpl
-		 * <em>Properties</em>} ' class. <!-- begin-user-doc --> <!--
+		 * <em>Properties</em>}' class. <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.rmap.impl.PropertiesImpl
@@ -1662,7 +1662,7 @@ public interface RmapPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.rmap.Provider#isSource <em>Source</em>} '.
+	 * {@link org.eclipse.buckminster.rmap.Provider#isSource <em>Source</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Source</em>'.
@@ -1806,7 +1806,7 @@ public interface RmapPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.rmap.SearchPath#getName <em>Name</em>} '.
+	 * {@link org.eclipse.buckminster.rmap.SearchPath#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Name</em>'.
@@ -1902,7 +1902,7 @@ public interface RmapPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.rmap.URIMatcher#getBase <em>Base</em>} '.
+	 * {@link org.eclipse.buckminster.rmap.URIMatcher#getBase <em>Base</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Base</em>'.

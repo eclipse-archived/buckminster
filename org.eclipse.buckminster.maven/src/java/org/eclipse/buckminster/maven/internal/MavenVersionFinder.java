@@ -65,6 +65,7 @@ public class MavenVersionFinder extends AbstractVersionFinder implements ILocati
 		fileList = null;
 	}
 
+	@Override
 	public VersionMatch getBestVersion(IProgressMonitor monitor) throws CoreException {
 		VersionMatch best = null;
 		for (VersionMatch candidate : getComponentVersions(monitor))
@@ -72,6 +73,7 @@ public class MavenVersionFinder extends AbstractVersionFinder implements ILocati
 		return best;
 	}
 
+	@Override
 	public URI getURI() {
 		return uri;
 	}

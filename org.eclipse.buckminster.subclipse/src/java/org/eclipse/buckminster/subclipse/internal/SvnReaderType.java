@@ -96,6 +96,7 @@ public class SvnReaderType extends GenericReaderType<ISVNDirEntry, SVNRevision> 
 		}.execute(workingCopy, monitor);
 	}
 
+	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		return new SvnRemoteFileReader(this, providerMatch, monitor);
 	}

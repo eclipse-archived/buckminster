@@ -230,6 +230,7 @@ public class DependencyVisualizer extends EditorPart {
 		control.addViewerSettingChangeListener(graphViewer);
 		control.addViewerSettingChangeListener(new IViewerSettingChangeListener() {
 
+			@Override
 			public void viewerSettingChanged(ViewerSettingChangeEvent event) {
 				switch (event.getType()) {
 					case FILTER_ADDED:
@@ -279,6 +280,7 @@ public class DependencyVisualizer extends EditorPart {
 		treeViewer.setInput(input);
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				Object o = ((IStructuredSelection) event.getSelection()).getFirstElement();
 				// zest seems to have issues with only one element in the graph

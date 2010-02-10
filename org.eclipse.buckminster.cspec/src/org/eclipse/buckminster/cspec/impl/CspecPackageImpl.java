@@ -394,6 +394,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAction() {
 		return actionEClass;
 	}
@@ -403,6 +404,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_Actor() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(2);
 	}
@@ -412,6 +414,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAction_ActorProperties() {
 		return (EReference) actionEClass.getEStructuralFeatures().get(1);
 	}
@@ -421,6 +424,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_Pattern() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(10);
 	}
@@ -430,6 +434,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_PrerequisitesAlias() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(5);
 	}
@@ -439,6 +444,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_PrerequisitesRebase() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(6);
 	}
@@ -448,6 +454,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAction_Product() {
 		return (EReference) actionEClass.getEStructuralFeatures().get(3);
 	}
@@ -457,6 +464,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_ProductAlias() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(7);
 	}
@@ -466,6 +474,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_ProductFileCount() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(9);
 	}
@@ -475,6 +484,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAction_Products() {
 		return (EReference) actionEClass.getEStructuralFeatures().get(4);
 	}
@@ -484,6 +494,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAction_Properties() {
 		return (EReference) actionEClass.getEStructuralFeatures().get(0);
 	}
@@ -493,6 +504,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_Replacement() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(11);
 	}
@@ -502,6 +514,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_UpToDatePolicy() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(8);
 	}
@@ -511,6 +524,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getActionAttribute() {
 		return actionAttributeEClass;
 	}
@@ -520,6 +534,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getActionAttribute_Action() {
 		return (EReference) actionAttributeEClass.getEStructuralFeatures().get(1);
 	}
@@ -529,6 +544,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getActionAttribute_Alias() {
 		return (EAttribute) actionAttributeEClass.getEStructuralFeatures().get(0);
 	}
@@ -538,6 +554,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterAction() {
 		return alterActionEClass;
 	}
@@ -547,6 +564,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_RemoveActorProperties() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(3);
 	}
@@ -556,6 +574,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_RemovePaths() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(5);
 	}
@@ -565,6 +584,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_RemoveProducts() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(4);
 	}
@@ -574,6 +594,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_RemoveProperties() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(2);
 	}
@@ -583,6 +604,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_ReplaceActorProperties() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(1);
 	}
@@ -592,6 +614,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_ReplaceProperties() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(0);
 	}
@@ -601,6 +624,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterArtifact() {
 		return alterArtifactEClass;
 	}
@@ -610,6 +634,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterArtifact_RemovePaths() {
 		return (EReference) alterArtifactEClass.getEStructuralFeatures().get(0);
 	}
@@ -619,6 +644,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterAttribute() {
 		return alterAttributeEClass;
 	}
@@ -628,6 +654,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAttribute_Cspecext() {
 		return (EReference) alterAttributeEClass.getEStructuralFeatures().get(0);
 	}
@@ -637,6 +664,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterGroup() {
 		return alterGroupEClass;
 	}
@@ -646,6 +674,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterGroup_RemovePrerequisites() {
 		return (EReference) alterGroupEClass.getEStructuralFeatures().get(1);
 	}
@@ -655,6 +684,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterGroup_ReplacePrerequisites() {
 		return (EReference) alterGroupEClass.getEStructuralFeatures().get(0);
 	}
@@ -664,6 +694,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getArtifact() {
 		return artifactEClass;
 	}
@@ -673,6 +704,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAttribute() {
 		return attributeEClass;
 	}
@@ -682,6 +714,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAttribute_Cspec() {
 		return (EReference) attributeEClass.getEStructuralFeatures().get(3);
 	}
@@ -691,6 +724,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAttribute_Documentation() {
 		return (EReference) attributeEClass.getEStructuralFeatures().get(4);
 	}
@@ -700,6 +734,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAttribute_Filter() {
 		return (EAttribute) attributeEClass.getEStructuralFeatures().get(2);
 	}
@@ -709,6 +744,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAttribute_Name() {
 		return (EAttribute) attributeEClass.getEStructuralFeatures().get(0);
 	}
@@ -718,6 +754,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAttribute_Public() {
 		return (EAttribute) attributeEClass.getEStructuralFeatures().get(1);
 	}
@@ -727,6 +764,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getCSpec() {
 		return cSpecEClass;
 	}
@@ -736,6 +774,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpec_Attributes() {
 		return (EReference) cSpecEClass.getEStructuralFeatures().get(2);
 	}
@@ -745,6 +784,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpec_Dependencies() {
 		return (EReference) cSpecEClass.getEStructuralFeatures().get(0);
 	}
@@ -754,6 +794,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpec_Documentation() {
 		return (EReference) cSpecEClass.getEStructuralFeatures().get(3);
 	}
@@ -763,6 +804,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCSpec_Filter() {
 		return (EAttribute) cSpecEClass.getEStructuralFeatures().get(5);
 	}
@@ -772,6 +814,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpec_Generators() {
 		return (EReference) cSpecEClass.getEStructuralFeatures().get(1);
 	}
@@ -781,6 +824,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCSpec_ProjectInfo() {
 		return (EAttribute) cSpecEClass.getEStructuralFeatures().get(6);
 	}
@@ -790,6 +834,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpec_Self() {
 		return (EReference) cSpecEClass.getEStructuralFeatures().get(7);
 	}
@@ -799,6 +844,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCSpec_ShortDesc() {
 		return (EAttribute) cSpecEClass.getEStructuralFeatures().get(4);
 	}
@@ -808,6 +854,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getCSpecExtension() {
 		return cSpecExtensionEClass;
 	}
@@ -817,6 +864,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_AttributeAlterations() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(0);
 	}
@@ -826,6 +874,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_RemoveDependencies() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(2);
 	}
@@ -835,6 +884,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_RemoveGenerators() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(3);
 	}
@@ -844,6 +894,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_RenameAttributes() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(1);
 	}
@@ -853,6 +904,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_ReplaceDependencies() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(5);
 	}
@@ -862,6 +914,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_ReplaceGenerators() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(4);
 	}
@@ -871,6 +924,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CspecFactory getCspecFactory() {
 		return (CspecFactory) getEFactoryInstance();
 	}
@@ -880,6 +934,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getGenerator() {
 		return generatorEClass;
 	}
@@ -889,6 +944,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGenerator_Attribute() {
 		return (EAttribute) generatorEClass.getEStructuralFeatures().get(0);
 	}
@@ -898,6 +954,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getGenerator_Component() {
 		return (EReference) generatorEClass.getEStructuralFeatures().get(1);
 	}
@@ -907,6 +964,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getGenerator_Cspec() {
 		return (EReference) generatorEClass.getEStructuralFeatures().get(3);
 	}
@@ -916,6 +974,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getGenerator_Generates() {
 		return (EReference) generatorEClass.getEStructuralFeatures().get(2);
 	}
@@ -925,6 +984,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getGroup() {
 		return groupEClass;
 	}
@@ -934,6 +994,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getGroup_Prerequisites() {
 		return (EReference) groupEClass.getEStructuralFeatures().get(0);
 	}
@@ -943,6 +1004,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGroup_Rebase() {
 		return (EAttribute) groupEClass.getEStructuralFeatures().get(1);
 	}
@@ -952,6 +1014,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getIContext() {
 		return iContextEClass;
 	}
@@ -961,6 +1024,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getIPath() {
 		return iPathEDataType;
 	}
@@ -970,6 +1034,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPathGroup() {
 		return pathGroupEClass;
 	}
@@ -979,6 +1044,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPathGroup_Base() {
 		return (EAttribute) pathGroupEClass.getEStructuralFeatures().get(0);
 	}
@@ -988,6 +1054,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPathGroup_Paths() {
 		return (EAttribute) pathGroupEClass.getEStructuralFeatures().get(1);
 	}
@@ -997,6 +1064,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPrerequisite() {
 		return prerequisiteEClass;
 	}
@@ -1006,6 +1074,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Alias() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(2);
 	}
@@ -1015,6 +1084,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Attribute() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(1);
 	}
@@ -1024,6 +1094,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPrerequisite_Component() {
 		return (EReference) prerequisiteEClass.getEStructuralFeatures().get(0);
 	}
@@ -1033,6 +1104,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Contributor() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(3);
 	}
@@ -1042,6 +1114,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_ExcludePattern() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(7);
 	}
@@ -1051,6 +1124,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Filter() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(5);
 	}
@@ -1060,6 +1134,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_IncludePattern() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(6);
 	}
@@ -1069,6 +1144,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Optional() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(4);
 	}
@@ -1078,6 +1154,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRemove() {
 		return removeEClass;
 	}
@@ -1087,6 +1164,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRemove_Name() {
 		return (EAttribute) removeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1096,6 +1174,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRename() {
 		return renameEClass;
 	}
@@ -1105,6 +1184,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRename_NewName() {
 		return (EAttribute) renameEClass.getEStructuralFeatures().get(1);
 	}
@@ -1114,6 +1194,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRename_OldName() {
 		return (EAttribute) renameEClass.getEStructuralFeatures().get(0);
 	}
@@ -1123,6 +1204,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getSelfArtifact() {
 		return selfArtifactEClass;
 	}
@@ -1132,6 +1214,7 @@ public class CspecPackageImpl extends EPackageImpl implements CspecPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EEnum getUpToDatePolicy() {
 		return upToDatePolicyEEnum;
 	}

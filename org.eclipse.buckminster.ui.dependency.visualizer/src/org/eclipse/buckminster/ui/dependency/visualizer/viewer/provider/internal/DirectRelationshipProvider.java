@@ -28,6 +28,7 @@ import org.eclipse.zest.core.viewers.EntityConnectionData;
  */
 public class DirectRelationshipProvider implements IRelationshipProvider {
 
+	@Override
 	public Map<EntityConnectionData, ConnectionCategory> getInterestingRelationships(BOMNode root, BOMNode currentSelection, Object[] allConnections) {
 		List<BOMNode> nodes = currentSelection.getChildren();
 		Map<EntityConnectionData, ConnectionCategory> connections = new HashMap<EntityConnectionData, ConnectionCategory>();

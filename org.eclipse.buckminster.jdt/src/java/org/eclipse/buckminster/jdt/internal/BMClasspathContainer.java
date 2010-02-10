@@ -69,18 +69,22 @@ public class BMClasspathContainer implements IClasspathContainer {
 		return true;
 	}
 
+	@Override
 	public final IClasspathEntry[] getClasspathEntries() {
 		return entries;
 	}
 
+	@Override
 	public String getDescription() {
 		return Messages.BMClasspathContainer_description;
 	}
 
+	@Override
 	public int getKind() {
 		return K_APPLICATION;
 	}
 
+	@Override
 	public IPath getPath() {
 		return PATH;
 	}

@@ -23,10 +23,12 @@ import org.eclipse.swt.events.TypedEvent;
  * @author Thomas Hallgren
  */
 public abstract class ChangeAdapter extends SelectionAdapter implements ModifyListener, VersionDesignatorListener {
+	@Override
 	public void modifyText(ModifyEvent e) {
 		this.onChange(e);
 	}
 
+	@Override
 	public void modifyVersionDesignator(VersionDesignatorEvent e) {
 		this.onChange(e);
 	}

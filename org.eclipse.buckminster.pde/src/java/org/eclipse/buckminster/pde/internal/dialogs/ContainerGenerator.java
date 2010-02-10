@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osgi.util.NLS;
@@ -90,6 +91,7 @@ public class ContainerGenerator {
 	 */
 	public IContainer generateContainer(IProgressMonitor topMonitor) throws CoreException {
 		ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+			@Override
 			public void run(IProgressMonitor monitor) throws CoreException {
 				monitor.beginTask("IDEWorkbenchMessages.ContainerGenerator_progressMessage", 1000 * containerFullPath //$NON-NLS-1$
 						.segmentCount());

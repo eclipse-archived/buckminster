@@ -27,14 +27,17 @@ public class PathsTable extends SimpleTable<PathWrapper> {
 		super(data, readOnly);
 	}
 
+	@Override
 	public PathWrapper createRowClass() {
 		return new PathWrapper();
 	}
 
+	@Override
 	public String[] getColumnHeaders() {
 		return new String[] { Messages.path };
 	}
 
+	@Override
 	public int[] getColumnWeights() {
 		return new int[] { 1 };
 	}
@@ -49,10 +52,12 @@ public class PathsTable extends SimpleTable<PathWrapper> {
 		}
 	}
 
+	@Override
 	public Object[] toRowArray(PathWrapper t) {
 		return new Object[] { t.getPath().toOSString() };
 	}
 
+	@Override
 	public void updateRowClass(PathWrapper path, Object[] args) throws ValidatorException {
 		String pathString = (String) args[0];
 		path.setPath(pathString == null ? null : (IPath) Path.fromOSString(pathString));

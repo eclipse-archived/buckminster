@@ -23,6 +23,7 @@ class StringFilterImpl extends FilterImpl {
 			this.accessible = accessible;
 		}
 
+		@Override
 		public Object run() {
 			accessible.setAccessible(true);
 			return null;
@@ -38,6 +39,7 @@ class StringFilterImpl extends FilterImpl {
 		this.stringValue = value;
 	}
 
+	@Override
 	public int compareTo(FilterImpl filter) {
 		int cmp = internalCompareTo(filter);
 		if (cmp == 0)

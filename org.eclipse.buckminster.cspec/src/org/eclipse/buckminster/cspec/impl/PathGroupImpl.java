@@ -152,6 +152,7 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IPath getBase() {
 		return base;
 	}
@@ -161,6 +162,7 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IPath> getPaths() {
 		if (paths == null) {
 			paths = new EDataTypeUniqueEList<IPath>(IPath.class, this, CspecPackage.PATH_GROUP__PATHS);
@@ -173,6 +175,7 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public PathGroup resolve(IPath path) {
 		if (base.isAbsolute())
 			return this;
@@ -188,6 +191,7 @@ public class PathGroupImpl extends EObjectImpl implements PathGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setBase(IPath newBase) {
 		IPath oldBase = base;
 		base = newBase;

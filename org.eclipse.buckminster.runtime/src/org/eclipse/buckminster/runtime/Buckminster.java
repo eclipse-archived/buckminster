@@ -96,6 +96,7 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 		return service;
 	}
 
+	@Override
 	public void preferenceChange(PreferenceChangeEvent event) {
 		if (LOG_LEVEL_CONSOLE.equals(event.getKey())) {
 			Object newVal = event.getNewValue();

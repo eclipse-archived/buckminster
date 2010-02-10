@@ -147,7 +147,7 @@ public interface MaterializationSpec extends MaterializationDirective {
 	/**
 	 * Sets the value of the '
 	 * {@link org.eclipse.buckminster.mspec.MaterializationSpec#getShortDesc
-	 * <em>Short Desc</em>} ' attribute. <!-- begin-user-doc --> <!--
+	 * <em>Short Desc</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @param value

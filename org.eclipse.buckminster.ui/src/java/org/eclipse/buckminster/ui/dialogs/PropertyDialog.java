@@ -137,6 +137,7 @@ public class PropertyDialog extends Dialog {
 
 		keyText.addModifyListener(new ModifyListener() {
 
+			@Override
 			public void modifyText(ModifyEvent e) {
 				String key = keyText.getText();
 

@@ -89,6 +89,7 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> exten
 		return new ReferenceInfo(repositoryLocation, selector, parts[2]);
 	}
 
+	@Override
 	final public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		// Left null intentionally
 		return null;

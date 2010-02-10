@@ -82,6 +82,7 @@ public class PdeFactoryImpl extends EFactoryImpl implements PdeFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PDEMapProvider createPDEMapProvider() {
 		PDEMapProviderImpl pdeMapProvider = new PDEMapProviderImpl();
 		return pdeMapProvider;
@@ -92,6 +93,7 @@ public class PdeFactoryImpl extends EFactoryImpl implements PdeFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PdePackage getPdePackage() {
 		return (PdePackage) getEPackage();
 	}

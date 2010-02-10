@@ -8,6 +8,7 @@ package org.eclipse.buckminster.rmap.maven.util;
 
 import java.util.List;
 
+import org.eclipse.buckminster.rmap.Properties;
 import org.eclipse.buckminster.rmap.Provider;
 
 import org.eclipse.buckminster.rmap.maven.*;
@@ -99,18 +100,35 @@ public class MavenSwitch<T> {
 
 	/**
 	 * Returns the result of interpreting the object as an instance of '
-	 * <em>Maven Provider</em>'. <!-- begin-user-doc --> This implementation
-	 * returns null; returning a non-null result will terminate the switch. <!--
+	 * <em>Provider</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
 	 * end-user-doc -->
 	 * 
 	 * @param object
 	 *            the target of the switch.
 	 * @return the result of interpreting the object as an instance of '
-	 *         <em>Maven Provider</em>'.
+	 *         <em>Provider</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
 	public T caseMavenProvider(MavenProvider object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Properties</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Properties</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseProperties(Properties object) {
 		return null;
 	}
 
@@ -218,6 +236,8 @@ public class MavenSwitch<T> {
 				T result = caseMavenProvider(mavenProvider);
 				if (result == null)
 					result = caseProvider(mavenProvider);
+				if (result == null)
+					result = caseProperties(mavenProvider);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;

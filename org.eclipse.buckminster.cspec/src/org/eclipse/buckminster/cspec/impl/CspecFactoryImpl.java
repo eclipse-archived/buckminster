@@ -147,6 +147,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Action createAction() {
 		ActionImpl action = new ActionImpl();
 		return action;
@@ -157,6 +158,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ActionAttribute createActionAttribute() {
 		ActionAttributeImpl actionAttribute = new ActionAttributeImpl();
 		return actionAttribute;
@@ -167,6 +169,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public AlterAction createAlterAction() {
 		AlterActionImpl alterAction = new AlterActionImpl();
 		return alterAction;
@@ -177,6 +180,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public AlterArtifact createAlterArtifact() {
 		AlterArtifactImpl alterArtifact = new AlterArtifactImpl();
 		return alterArtifact;
@@ -187,6 +191,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public AlterGroup createAlterGroup() {
 		AlterGroupImpl alterGroup = new AlterGroupImpl();
 		return alterGroup;
@@ -197,6 +202,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Artifact createArtifact() {
 		ArtifactImpl artifact = new ArtifactImpl();
 		return artifact;
@@ -207,6 +213,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CSpec createCSpec() {
 		CSpecImpl cSpec = new CSpecImpl();
 		return cSpec;
@@ -217,6 +224,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CSpecExtension createCSpecExtension() {
 		CSpecExtensionImpl cSpecExtension = new CSpecExtensionImpl();
 		return cSpecExtension;
@@ -244,6 +252,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Generator createGenerator() {
 		GeneratorImpl generator = new GeneratorImpl();
 		return generator;
@@ -254,6 +263,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Group createGroup() {
 		GroupImpl group = new GroupImpl();
 		return group;
@@ -273,6 +283,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PathGroup createPathGroup() {
 		PathGroupImpl pathGroup = new PathGroupImpl();
 		return pathGroup;
@@ -283,6 +294,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Prerequisite createPrerequisite() {
 		PrerequisiteImpl prerequisite = new PrerequisiteImpl();
 		return prerequisite;
@@ -293,6 +305,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Remove createRemove() {
 		RemoveImpl remove = new RemoveImpl();
 		return remove;
@@ -303,6 +316,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Rename createRename() {
 		RenameImpl rename = new RenameImpl();
 		return rename;
@@ -313,6 +327,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public SelfArtifact createSelfArtifact() {
 		SelfArtifactImpl selfArtifact = new SelfArtifactImpl();
 		return selfArtifact;
@@ -335,6 +350,7 @@ public class CspecFactoryImpl extends EFactoryImpl implements CspecFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CspecPackage getCspecPackage() {
 		return (CspecPackage) getEPackage();
 	}

@@ -157,7 +157,7 @@ public interface MaterializationDirective extends EObject {
 	 * @return the value of the '<em>Property Group</em>' attribute list.
 	 * @see org.eclipse.buckminster.mspec.MspecPackage#getMaterializationDirective_PropertyGroup()
 	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry"
-	 *        required="true" many="true" extendedMetaData ="kind='group' name='basicProperty:group' namespace='http://www.eclipse.org/buckminster/Common-1.0'"
+	 *        required="true" many="true" extendedMetaData="kind='group' name='basicProperty:group' namespace='http://www.eclipse.org/buckminster/Common-1.0'"
 	 * @generated
 	 */
 	FeatureMap getPropertyGroup();

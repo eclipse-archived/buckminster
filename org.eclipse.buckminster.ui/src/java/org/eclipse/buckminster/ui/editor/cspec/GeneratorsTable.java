@@ -38,14 +38,17 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder> {
 		this.cspecBuilder = cspecBuilder;
 	}
 
+	@Override
 	public GeneratorBuilder createRowClass() {
 		return cspecBuilder.createGeneratorBuilder();
 	}
 
+	@Override
 	public String[] getColumnHeaders() {
 		return new String[] { Messages.generatesName, Messages.generatesType, Messages.generatesVersion, Messages.component, Messages.attribute };
 	}
 
+	@Override
 	public int[] getColumnWeights() {
 		return new int[] { 25, 15, 15, 25, 15 };
 	}
@@ -76,6 +79,7 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder> {
 		}
 	}
 
+	@Override
 	public Object[] toRowArray(GeneratorBuilder t) {
 		Object[] array = new Object[getColumns()];
 
@@ -89,6 +93,7 @@ public class GeneratorsTable extends SimpleTable<GeneratorBuilder> {
 		return array;
 	}
 
+	@Override
 	public void updateRowClass(GeneratorBuilder builder, Object[] args) throws ValidatorException {
 		builder.setName(TextUtils.notEmptyString((String) args[0]));
 		builder.setGeneratesType(TextUtils.notEmptyString((String) args[1]));

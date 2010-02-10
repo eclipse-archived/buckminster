@@ -93,6 +93,7 @@ public class SaxableClasspath implements ISaxable {
 		this.entries = entries;
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		receiver.startElement("", "", ClasspathEntry.TAG_CLASSPATH, ISaxableElement.EMPTY_ATTRIBUTES); //$NON-NLS-1$ //$NON-NLS-2$

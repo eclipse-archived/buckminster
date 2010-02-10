@@ -124,6 +124,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Pattern getPattern() {
 		return pattern;
 	}
@@ -133,6 +134,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPattern(Pattern newPattern) {
 		Pattern oldPattern = pattern;
 		pattern = newPattern;

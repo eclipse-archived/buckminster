@@ -78,6 +78,7 @@ public class SiteReader implements IStreamConsumer<SiteModel> {
 		}
 	}
 
+	@Override
 	public SiteModel consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor monitor)
 			throws CoreException, IOException {
 		monitor = MonitorUtils.ensureNotNull(monitor);

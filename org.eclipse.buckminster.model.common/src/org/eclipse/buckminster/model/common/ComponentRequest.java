@@ -21,15 +21,16 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
  * </em>}</li>
  * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getRange
  * <em>Range</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getType <em>
- * Type</em>}</li>
  * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getFilter
  * <em>Filter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getType <em>
+ * Type</em>}</li>
  * </ul>
  * </p>
  * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getComponentRequest()
  * @model
+ * @extends BObject
  * @generated
  */
 public interface ComponentRequest extends BObject {

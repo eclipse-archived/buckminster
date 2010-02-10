@@ -387,6 +387,7 @@ public class ActionsTable extends AttributesTable<ActionBuilder> {
 		upToDatePolicy = UiUtils.createGridEnumCombo(geComposite, 1, 0, UpToDatePolicy.values(), isReadOnly(), null, FIELD_LISTENER, SWT.DROP_DOWN
 				| SWT.READ_ONLY);
 		addFieldModifyListener(new IFieldModifyListener() {
+			@Override
 			public void modifyField(FieldModifyEvent e) {
 				if (e.getOriginalEvent() instanceof ModifyEvent && ((ModifyEvent) e.getOriginalEvent()).getSource() == upToDatePolicy)
 					refreshFileCountFields();

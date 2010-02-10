@@ -28,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
 import org.xml.sax.SAXException;
 
 public abstract class SaxableEditorInput implements IStorageEditorInput {
+	@Override
 	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		return null;
@@ -47,22 +48,27 @@ public abstract class SaxableEditorInput implements IStorageEditorInput {
 		}
 	}
 
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		IContentDescription cd = this.getContentDescription();
 		return PlatformUI.getWorkbench().getEditorRegistry().getImageDescriptor(this.getName(), cd.getContentType());
 	}
 
+	@Override
 	public IPersistableElement getPersistable() {
 		return null;
 	}
 
+	@Override
 	public IStorage getStorage() throws CoreException {
 		return new IStorage() {
+			@Override
 			@SuppressWarnings("rawtypes")
 			public Object getAdapter(Class adapter) {
 				return null;
 			}
 
+			@Override
 			public InputStream getContents() throws CoreException {
 				try {
 					return Utils.getInputStream(SaxableEditorInput.this.getContent());
@@ -71,14 +77,17 @@ public abstract class SaxableEditorInput implements IStorageEditorInput {
 				}
 			}
 
+			@Override
 			public IPath getFullPath() {
 				return null;
 			}
 
+			@Override
 			public String getName() {
 				return SaxableEditorInput.this.getName();
 			}
 
+			@Override
 			public boolean isReadOnly() {
 				return true;
 			}

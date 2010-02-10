@@ -26,6 +26,7 @@ public class DerivedExternalFileEditorInput extends ExternalFileEditorInput impl
 		this.originalInput = originalInput;
 	}
 
+	@Override
 	public IEditorInput getOriginalInput() {
 		return originalInput;
 	}

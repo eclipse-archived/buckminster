@@ -165,6 +165,7 @@ public class PropertiesImpl extends EObjectImpl implements Properties {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<PropertyConstant> getProperties() {
 		if (properties == null) {
 			properties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this, RmapPackage.PROPERTIES__PROPERTIES);
@@ -177,6 +178,7 @@ public class PropertiesImpl extends EObjectImpl implements Properties {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<PropertyElement> getPropertyElements() {
 		if (propertyElements == null) {
 			propertyElements = new EObjectContainmentEList<PropertyElement>(PropertyElement.class, this, RmapPackage.PROPERTIES__PROPERTY_ELEMENTS);

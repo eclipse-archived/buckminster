@@ -28,6 +28,7 @@ public class CSpecEditorInput extends SaxableEditorInput {
 		return other == this || (other instanceof CSpecEditorInput && ((CSpecEditorInput) other).cspec.equals(cspec));
 	}
 
+	@Override
 	public boolean exists() {
 		return true;
 	}
@@ -36,6 +37,7 @@ public class CSpecEditorInput extends SaxableEditorInput {
 		return cspec;
 	}
 
+	@Override
 	public String getName() {
 		StringBuilder bld = new StringBuilder();
 		bld.append(cspec.getName());
@@ -48,6 +50,7 @@ public class CSpecEditorInput extends SaxableEditorInput {
 		return bld.toString();
 	}
 
+	@Override
 	public String getToolTipText() {
 		return this.getName();
 	}

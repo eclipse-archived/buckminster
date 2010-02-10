@@ -879,7 +879,7 @@ public interface MspecPackage extends EPackage {
 	/**
 	 * The meta object id for the '
 	 * {@link org.eclipse.buckminster.mspec.ConflictResolution
-	 * <em>Conflict Resolution</em>} ' enum. <!-- begin-user-doc --> <!--
+	 * <em>Conflict Resolution</em>}' enum. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @see org.eclipse.buckminster.mspec.ConflictResolution
@@ -1003,8 +1003,8 @@ public interface MspecPackage extends EPackage {
 	/**
 	 * Returns the meta object for the attribute '
 	 * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getConflictResolution
-	 * <em>Conflict Resolution</em>} '. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * <em>Conflict Resolution</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @return the meta object for the attribute '<em>Conflict Resolution</em>'.
 	 * @see org.eclipse.buckminster.mspec.MaterializationDirective#getConflictResolution()
@@ -1309,7 +1309,7 @@ public interface MspecPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.Unpack#isExpand <em>Expand</em>} '.
+	 * {@link org.eclipse.buckminster.mspec.Unpack#isExpand <em>Expand</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Expand</em>'.
@@ -1321,7 +1321,7 @@ public interface MspecPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.mspec.Unpack#getSuffix <em>Suffix</em>} '.
+	 * {@link org.eclipse.buckminster.mspec.Unpack#getSuffix <em>Suffix</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Suffix</em>'.

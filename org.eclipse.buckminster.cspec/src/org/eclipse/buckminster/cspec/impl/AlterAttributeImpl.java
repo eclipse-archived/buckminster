@@ -161,6 +161,7 @@ public abstract class AlterAttributeImpl extends EObjectImpl implements AlterAtt
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CSpecExtension getCspecext() {
 		if (eContainerFeatureID() != CspecPackage.ALTER_ATTRIBUTE__CSPECEXT)
 			return null;
@@ -172,6 +173,7 @@ public abstract class AlterAttributeImpl extends EObjectImpl implements AlterAtt
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setCspecext(CSpecExtension newCspecext) {
 		if (newCspecext != eInternalContainer() || (eContainerFeatureID() != CspecPackage.ALTER_ATTRIBUTE__CSPECEXT && newCspecext != null)) {
 			if (EcoreUtil.isAncestor(this, newCspecext))

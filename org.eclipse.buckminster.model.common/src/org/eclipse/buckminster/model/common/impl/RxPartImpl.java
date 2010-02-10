@@ -162,6 +162,7 @@ public abstract class RxPartImpl extends BObjectImpl implements RxPart {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -171,6 +172,7 @@ public abstract class RxPartImpl extends BObjectImpl implements RxPart {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isOptional() {
 		return optional;
 	}
@@ -180,6 +182,7 @@ public abstract class RxPartImpl extends BObjectImpl implements RxPart {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetOptional() {
 		return optionalESet;
 	}
@@ -189,6 +192,7 @@ public abstract class RxPartImpl extends BObjectImpl implements RxPart {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -201,6 +205,7 @@ public abstract class RxPartImpl extends BObjectImpl implements RxPart {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setOptional(boolean newOptional) {
 		boolean oldOptional = optional;
 		optional = newOptional;
@@ -241,6 +246,7 @@ public abstract class RxPartImpl extends BObjectImpl implements RxPart {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetOptional() {
 		boolean oldOptional = optional;
 		boolean oldOptionalESet = optionalESet;

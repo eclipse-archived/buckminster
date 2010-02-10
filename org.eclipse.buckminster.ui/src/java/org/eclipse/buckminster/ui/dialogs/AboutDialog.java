@@ -52,9 +52,11 @@ public class AboutDialog extends Dialog {
 	class ExtensionsDialog extends Dialog {
 		class NavigatorContentProvider implements ITreeContentProvider {
 
+			@Override
 			public void dispose() {
 			}
 
+			@Override
 			public Object[] getChildren(Object parentElement) {
 				if (parentElement instanceof IExtensionPoint) {
 					IExtensionPoint extensionPoint = (IExtensionPoint) parentElement;
@@ -64,19 +66,23 @@ public class AboutDialog extends Dialog {
 				return null;
 			}
 
+			@Override
 			public Object[] getElements(Object inputElement) {
 				return (IExtensionPoint[]) inputElement;
 			}
 
+			@Override
 			public Object getParent(Object element) {
 				return ((IResource) element).getParent();
 			}
 
+			@Override
 			public boolean hasChildren(Object element) {
 				Object[] children = getChildren(element);
 				return children == null ? false : children.length > 0;
 			}
 
+			@Override
 			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				// Nothing to change
 			}
@@ -96,13 +102,16 @@ public class AboutDialog extends Dialog {
 				element = UiPlugin.getImageDescriptor("icons/generic_xml_obj.gif").createImage(); //$NON-NLS-1$
 			}
 
+			@Override
 			public void addListener(ILabelProviderListener listener) {
 				listeners.add(listener);
 			}
 
+			@Override
 			public void dispose() {
 			}
 
+			@Override
 			public Image getImage(Object elem) {
 				if (elem instanceof IExtensionPoint) {
 					return point;
@@ -115,6 +124,7 @@ public class AboutDialog extends Dialog {
 				return null;
 			}
 
+			@Override
 			public String getText(Object elem) {
 				if (elem instanceof IExtensionPoint) {
 					return ((IExtensionPoint) elem).getUniqueIdentifier();
@@ -128,10 +138,12 @@ public class AboutDialog extends Dialog {
 				return ""; //$NON-NLS-1$
 			}
 
+			@Override
 			public boolean isLabelProperty(Object elem, String property) {
 				return false;
 			}
 
+			@Override
 			public void removeListener(ILabelProviderListener listener) {
 				listeners.remove(listener);
 			}
@@ -159,6 +171,7 @@ public class AboutDialog extends Dialog {
 
 			Collections.sort(bmPoints, new Comparator<IExtensionPoint>() {
 
+				@Override
 				public int compare(IExtensionPoint arg0, IExtensionPoint arg1) {
 					return arg0.getUniqueIdentifier().compareToIgnoreCase(arg1.getUniqueIdentifier());
 				}

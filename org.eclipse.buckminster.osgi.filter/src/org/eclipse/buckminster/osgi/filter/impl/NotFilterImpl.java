@@ -24,6 +24,7 @@ class NotFilterImpl extends FilterImpl {
 		filter.addConsultedAttributes(propertyChoices);
 	}
 
+	@Override
 	public int compareTo(FilterImpl that) {
 		int cmp = internalCompareTo(that);
 		if (cmp == 0)

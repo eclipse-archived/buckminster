@@ -373,6 +373,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Constant getConstant() {
 		return constant;
 	}
@@ -382,6 +383,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Format getFormat() {
 		return format;
 	}
@@ -391,6 +393,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PropertyRef getPropertyRef() {
 		return propertyRef;
 	}
@@ -400,6 +403,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Replace getReplace() {
 		return replace;
 	}
@@ -409,6 +413,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ToLower getToLower() {
 		return toLower;
 	}
@@ -418,6 +423,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ToUpper getToUpper() {
 		return toUpper;
 	}
@@ -427,6 +433,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setConstant(Constant newConstant) {
 		if (newConstant != constant) {
 			NotificationChain msgs = null;
@@ -448,6 +455,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFormat(Format newFormat) {
 		if (newFormat != format) {
 			NotificationChain msgs = null;
@@ -467,6 +475,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPropertyRef(PropertyRef newPropertyRef) {
 		if (newPropertyRef != propertyRef) {
 			NotificationChain msgs = null;
@@ -488,6 +497,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setReplace(Replace newReplace) {
 		if (newReplace != replace) {
 			NotificationChain msgs = null;
@@ -507,6 +517,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setToLower(ToLower newToLower) {
 		if (newToLower != toLower) {
 			NotificationChain msgs = null;
@@ -528,6 +539,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setToUpper(ToUpper newToUpper) {
 		if (newToUpper != toUpper) {
 			NotificationChain msgs = null;

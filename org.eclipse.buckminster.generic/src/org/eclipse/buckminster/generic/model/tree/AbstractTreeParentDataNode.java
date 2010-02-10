@@ -31,6 +31,7 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 	/**
 	 * Adds a child node and notifies the parent that this node has changed.
 	 */
+	@Override
 	public void addChild(ITreeDataNode child) {
 		children.add(child);
 		child.setParent(this);
@@ -50,6 +51,7 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 	 * Returns a child node that has a data object that equals the searched
 	 * data. Only the immediate children are searched for matching data.
 	 */
+	@Override
 	public ITreeDataNode findChild(Object data) {
 		for (ITreeDataNode node : children)
 			if (node.getData().equals(data))
@@ -57,6 +59,7 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 		return null;
 	}
 
+	@Override
 	public int getChildCount() {
 		return children.size();
 	}
@@ -64,10 +67,12 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 	/**
 	 * Returns the children of this node.
 	 */
+	@Override
 	public ITreeDataNode[] getChildren() {
 		return children.toArray(new ITreeDataNode[children.size()]);
 	}
 
+	@Override
 	public boolean hasChildren() {
 		return children.size() > 0;
 	}
@@ -75,10 +80,12 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 	/**
 	 * Does nothing
 	 */
+	@Override
 	public void onOpen() {
 		// Does nothing
 	}
 
+	@Override
 	public void removeAllChildren() {
 		for (ITreeDataNode child : children)
 			child.setParent(null);
@@ -89,6 +96,7 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 	/**
 	 * Removes a child node and notifies the parent that this node has changed.
 	 */
+	@Override
 	public void removeChild(ITreeDataNode child) {
 		children.remove(child);
 		child.setParent(null);
@@ -98,6 +106,7 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 	/**
 	 * Replaces a child node and notifies the parent that this node has changed.
 	 */
+	@Override
 	public void replaceChild(ITreeDataNode child, ITreeDataNode newChild) {
 		int idx = children.indexOf(child);
 		children.set(idx, newChild);
@@ -110,6 +119,7 @@ public abstract class AbstractTreeParentDataNode extends AbstractTreeDataNode im
 	 * Replaces a child node with several children and notifies the parent that
 	 * this node has changed.
 	 */
+	@Override
 	public void replaceChild(ITreeDataNode child, ITreeDataNode[] newChildren) {
 		int idx = children.indexOf(child);
 		children.remove(idx);

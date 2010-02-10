@@ -68,30 +68,37 @@ public class ResultSerializer implements XMLReader {
 		this.stdErr = stderr;
 	}
 
+	@Override
 	public ContentHandler getContentHandler() {
 		return contentHandler;
 	}
 
+	@Override
 	public DTDHandler getDTDHandler() {
 		return null;
 	}
 
+	@Override
 	public EntityResolver getEntityResolver() {
 		return null;
 	}
 
+	@Override
 	public ErrorHandler getErrorHandler() {
 		return errorHandler;
 	}
 
+	@Override
 	public boolean getFeature(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
 		return false;
 	}
 
+	@Override
 	public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException {
 		return null;
 	}
 
+	@Override
 	public void parse(InputSource input) throws IOException, SAXException {
 		if (contentHandler == null)
 			throw new SAXException("ContentHandler missing"); //$NON-NLS-1$
@@ -101,30 +108,37 @@ public class ResultSerializer implements XMLReader {
 		contentHandler.endDocument();
 	}
 
+	@Override
 	public void parse(String systemId) throws IOException, SAXException {
 		// ignore
 	}
 
+	@Override
 	public void setContentHandler(ContentHandler handler) {
 		this.contentHandler = handler;
 	}
 
+	@Override
 	public void setDTDHandler(DTDHandler handler) {
 		// ignore
 	}
 
+	@Override
 	public void setEntityResolver(EntityResolver resolver) {
 		// ignore
 	}
 
+	@Override
 	public void setErrorHandler(ErrorHandler handler) {
 		this.errorHandler = handler;
 	}
 
+	@Override
 	public void setFeature(String name, boolean value) throws SAXNotRecognizedException, SAXNotSupportedException {
 		// ignore
 	}
 
+	@Override
 	public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException {
 		// ignore
 	}

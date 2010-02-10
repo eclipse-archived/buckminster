@@ -150,6 +150,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Mappings getMappings() {
 		return mappings;
 	}
@@ -159,6 +160,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setMappings(Mappings newMappings) {
 		if (newMappings != mappings) {
 			NotificationChain msgs = null;

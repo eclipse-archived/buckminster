@@ -43,6 +43,7 @@ import org.xml.sax.SAXParseException;
  * @author Thomas Hallgren
  */
 class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamConsumer<Document> {
+	@Override
 	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IComponentReader reader = readerHandle[0];
 		ProviderMatch ri = reader.getProviderMatch();
@@ -96,6 +97,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 		}
 	}
 
+	@Override
 	public Document consumeStream(IComponentReader reader, String streamName, InputStream stream, IProgressMonitor monitor) throws CoreException,
 			IOException {
 		monitor.beginTask(streamName, 1);

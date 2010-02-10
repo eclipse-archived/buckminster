@@ -80,6 +80,7 @@ public class SplashScreen {
 
 		Thread timer = new Thread(new Runnable() {
 
+			@Override
 			public void run() {
 				for (int i = closeTimeout; i > 0; i--) {
 					if (splashShell.isDisposed()) {
@@ -117,6 +118,7 @@ public class SplashScreen {
 		}
 
 		Display.getDefault().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				textLabel.setText(String.format(CLOSE_TEXT, Integer.valueOf(secToClose)));
 			}
@@ -125,6 +127,7 @@ public class SplashScreen {
 
 	private void splashClose() {
 		Display.getDefault().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				if (!splashShell.isDisposed()) {
 					splashShell.close();

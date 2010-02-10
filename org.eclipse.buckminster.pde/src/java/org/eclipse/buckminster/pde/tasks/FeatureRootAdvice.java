@@ -42,6 +42,7 @@ public class FeatureRootAdvice extends AbstractAdvice {
 			files.put(sourceFile, destDir);
 		}
 
+		@Override
 		public IPath computePath(File source) {
 			if (files != null) {
 				String destDir = files.get(source);
@@ -63,6 +64,7 @@ public class FeatureRootAdvice extends AbstractAdvice {
 			return noFiles;
 		}
 
+		@Override
 		public void reset() {
 		}
 	}

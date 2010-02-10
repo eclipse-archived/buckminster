@@ -291,6 +291,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		classpaths.put(project, classPath);
 	}
 
+	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		try {
 			URL siteURL = new URL(resolution.getRepository());
@@ -309,6 +310,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
+	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new EclipseImportReader(this, providerMatch);

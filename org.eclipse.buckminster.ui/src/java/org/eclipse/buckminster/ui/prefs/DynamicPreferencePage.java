@@ -57,6 +57,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class DynamicPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage, IBuckminsterPreferenceConstants {
 	private static IPreferenceValidator nullValidator = new IPreferenceValidator() {
+		@Override
 		public boolean validate(String value) {
 			return true;
 		}
@@ -72,6 +73,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage implements 
 		setPreferenceStore(UiPlugin.getDefault().getBuckminsterPreferenceStore());
 	}
 
+	@Override
 	public void init(IWorkbench workbench) {
 	}
 
@@ -279,6 +281,7 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage implements 
 				}
 				try {
 					wbWin.run(true, true, new IRunnableWithProgress() {
+						@Override
 						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 							try {
 								WorkspaceInfo.forceRefreshOnAll(monitor);

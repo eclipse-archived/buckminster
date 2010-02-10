@@ -87,6 +87,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable {
 	/*
 	 * @see IWorkspaceRunnable#run(IProgressMonitor)
 	 */
+	@Override
 	public void run(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		createProject(monitor);
 		MonitorUtils.testCancelStatus(monitor);
@@ -183,6 +184,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable {
 	private void importContent(Object source, IPath destPath, IImportStructureProvider provider, List<?> filesToImport, IProgressMonitor monitor)
 			throws CoreException {
 		IOverwriteQuery overwrite = new IOverwriteQuery() {
+			@Override
 			public String queryOverwrite(String file) {
 				return ALL;
 			}

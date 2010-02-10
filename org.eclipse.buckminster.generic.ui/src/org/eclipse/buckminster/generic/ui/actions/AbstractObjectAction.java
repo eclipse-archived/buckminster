@@ -37,6 +37,7 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate {
 		return activePart.getSite().getShell();
 	}
 
+	@Override
 	public void run(IAction action) {
 		if (activePart == null)
 			return;
@@ -50,6 +51,7 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate {
 		run(selected, activePart.getSite().getShell());
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		selected = null;
 		if (!(selection instanceof IStructuredSelection))
@@ -72,6 +74,7 @@ public abstract class AbstractObjectAction<T> implements IObjectActionDelegate {
 
 	}
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		activePart = targetPart;
 	}

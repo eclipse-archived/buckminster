@@ -67,8 +67,10 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return null;
 	}
 
+	@Override
 	public String getArch() {
 		String arch = doWithActivePlatform(new ITargetDefinitionOperation<String>() {
+			@Override
 			public String run(ITargetDefinition target) {
 				return target.getArch();
 			}
@@ -76,6 +78,7 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return arch == null ? TargetPlatform.getOSArch() : arch;
 	}
 
+	@Override
 	public List<ComponentIdentifier> getComponents() throws CoreException {
 		PDECore pdeCore = PDECore.getDefault();
 		IFeatureModel[] featureModels = pdeCore.getFeatureModelManager().getModels();
@@ -141,12 +144,15 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return dflt;
 	}
 
+	@Override
 	public File getDefaultPlatformLocation(boolean asActive) throws CoreException {
 		return getLocation(getDefaultPlatform(asActive));
 	}
 
+	@Override
 	public File getLocation() {
 		File location = doWithActivePlatform(new ITargetDefinitionOperation<File>() {
+			@Override
 			public File run(ITargetDefinition target) throws CoreException {
 				return getLocation(target);
 			}
@@ -156,8 +162,10 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return location;
 	}
 
+	@Override
 	public String getNL() {
 		String nl = doWithActivePlatform(new ITargetDefinitionOperation<String>() {
+			@Override
 			public String run(ITargetDefinition target) {
 				return target.getNL();
 			}
@@ -165,8 +173,10 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return nl == null ? TargetPlatform.getNL() : nl;
 	}
 
+	@Override
 	public String getOS() {
 		String os = doWithActivePlatform(new ITargetDefinitionOperation<String>() {
+			@Override
 			public String run(ITargetDefinition target) {
 				return target.getOS();
 			}
@@ -174,8 +184,10 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return os == null ? TargetPlatform.getOS() : os;
 	}
 
+	@Override
 	public String getWS() {
 		String ws = doWithActivePlatform(new ITargetDefinitionOperation<String>() {
+			@Override
 			public String run(ITargetDefinition target) {
 				return target.getWS();
 			}
@@ -183,6 +195,7 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		return ws == null ? TargetPlatform.getWS() : ws;
 	}
 
+	@Override
 	public void locationsChanged(Set<File> locations) {
 		// Check if the given location is contained in the active TP. If that's
 		// the case, refresh.

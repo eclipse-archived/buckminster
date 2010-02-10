@@ -20,6 +20,7 @@ public class SvnCache implements ISubversionCache<ISVNDirEntry> {
 		return dirCache.containsKey(key);
 	}
 
+	@Override
 	public ISVNDirEntry[] get(String key) {
 		return listCache.get(key);
 	}
@@ -28,11 +29,13 @@ public class SvnCache implements ISubversionCache<ISVNDirEntry> {
 		return dirCache.get(key);
 	}
 
+	@Override
 	public void initialize(Map<UUID, Object> userCache) {
 		dirCache = GenericCache.getCache(userCache, CACHE_KEY_DIR_CACHE);
 		listCache = GenericCache.getCache(userCache, CACHE_KEY_LIST_CACHE);
 	}
 
+	@Override
 	public void put(String key, ISVNDirEntry[] value) {
 		listCache.put(key, value);
 	}

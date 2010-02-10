@@ -328,8 +328,7 @@ public interface CspecPackage extends EPackage {
 
 		/**
 		 * The meta object literal for the '<em><b>Prerequisites Rebase</b></em>
-		 * ' containment reference feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
+		 * ' attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
@@ -434,7 +433,7 @@ public interface CspecPackage extends EPackage {
 		/**
 		 * The meta object literal for the '
 		 * {@link org.eclipse.buckminster.cspec.impl.PathGroupImpl
-		 * <em>Path Group</em>} ' class. <!-- begin-user-doc --> <!--
+		 * <em>Path Group</em>}' class. <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
 		 * 
 		 * @see org.eclipse.buckminster.cspec.impl.PathGroupImpl
@@ -444,8 +443,8 @@ public interface CspecPackage extends EPackage {
 		EClass PATH_GROUP = eINSTANCE.getPathGroup();
 
 		/**
-		 * The meta object literal for the '<em><b>Paths</b></em>' containment
-		 * reference list feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Paths</b></em>' attribute
+		 * list feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
@@ -1080,8 +1079,8 @@ public interface CspecPackage extends EPackage {
 	int GROUP__PREREQUISITES = ATTRIBUTE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Rebase</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Rebase</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -1256,8 +1255,8 @@ public interface CspecPackage extends EPackage {
 	int ACTION__PREREQUISITES = GROUP__PREREQUISITES;
 
 	/**
-	 * The feature id for the '<em><b>Rebase</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Rebase</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -1283,8 +1282,8 @@ public interface CspecPackage extends EPackage {
 	int ACTION__ACTOR_PROPERTIES = GROUP_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Actor</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Actor</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -1870,8 +1869,8 @@ public interface CspecPackage extends EPackage {
 	int ALTER_GROUP__PREREQUISITES = GROUP__PREREQUISITES;
 
 	/**
-	 * The feature id for the '<em><b>Rebase</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Rebase</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -1981,8 +1980,8 @@ public interface CspecPackage extends EPackage {
 	int ALTER_ACTION__PREREQUISITES = ACTION__PREREQUISITES;
 
 	/**
-	 * The feature id for the '<em><b>Rebase</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Rebase</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -2008,8 +2007,8 @@ public interface CspecPackage extends EPackage {
 	int ALTER_ACTION__ACTOR_PROPERTIES = ACTION__ACTOR_PROPERTIES;
 
 	/**
-	 * The feature id for the '<em><b>Actor</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Actor</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -2607,13 +2606,13 @@ public interface CspecPackage extends EPackage {
 	EAttribute getAction_PrerequisitesAlias();
 
 	/**
-	 * Returns the meta object for the containment reference '
+	 * Returns the meta object for the attribute '
 	 * {@link org.eclipse.buckminster.cspec.Action#getPrerequisitesRebase
 	 * <em>Prerequisites Rebase</em>}'. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
-	 * @return the meta object for the containment reference '
-	 *         <em>Prerequisites Rebase</em>'.
+	 * @return the meta object for the attribute '<em>Prerequisites Rebase</em>
+	 *         '.
 	 * @see org.eclipse.buckminster.cspec.Action#getPrerequisitesRebase()
 	 * @see #getAction()
 	 * @generated
@@ -2984,7 +2983,7 @@ public interface CspecPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.cspec.Attribute#getName <em>Name</em>} '.
+	 * {@link org.eclipse.buckminster.cspec.Attribute#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Name</em>'.
@@ -3058,7 +3057,7 @@ public interface CspecPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.cspec.CSpec#getFilter <em>Filter</em>} '.
+	 * {@link org.eclipse.buckminster.cspec.CSpec#getFilter <em>Filter</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Filter</em>'.
@@ -3308,7 +3307,7 @@ public interface CspecPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.cspec.Group#getRebase <em>Rebase</em>} '.
+	 * {@link org.eclipse.buckminster.cspec.Group#getRebase <em>Rebase</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Rebase</em>'.
@@ -3354,7 +3353,7 @@ public interface CspecPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.cspec.PathGroup#getBase <em>Base</em>} '.
+	 * {@link org.eclipse.buckminster.cspec.PathGroup#getBase <em>Base</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Base</em>'.

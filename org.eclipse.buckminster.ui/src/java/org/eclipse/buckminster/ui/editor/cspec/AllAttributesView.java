@@ -49,24 +49,29 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class AllAttributesView extends Composite {
 	class TableContentProvider implements IStructuredContentProvider {
+		@Override
 		public void dispose() {
 			// Nothing to dispose
 		}
 
+		@Override
 		public Object[] getElements(Object inputElement) {
 			return table.toArray();
 		}
 
+		@Override
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			// Nothing to do
 		}
 	}
 
 	class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			switch (columnIndex) {
 				case 0:
@@ -171,10 +176,12 @@ public class AllAttributesView extends Composite {
 
 		tbl.addFocusListener(new FocusListener() {
 
+			@Override
 			public void focusGained(FocusEvent e) {
 				refresh();
 			}
 
+			@Override
 			public void focusLost(FocusEvent e) {
 				updateLastSelectedRow();
 			}
@@ -200,6 +207,7 @@ public class AllAttributesView extends Composite {
 		tableViewer.setContentProvider(new TableContentProvider());
 		tableViewer.setInput(tbl);
 		tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				if (tableViewer.getTable().getSelectionIndex() >= 0) {
 					show(table.get(tableViewer.getTable().getSelectionIndex()));

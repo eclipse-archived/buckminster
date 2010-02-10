@@ -234,6 +234,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -243,6 +244,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Locator> getLocators() {
 		if (locators == null) {
 			locators = new EObjectContainmentEList<Locator>(Locator.class, this, RmapPackage.RESOURCE_MAP__LOCATORS);
@@ -255,6 +257,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Redirect> getRedirects() {
 		if (redirects == null) {
 			redirects = new EObjectContainmentEList<Redirect>(Redirect.class, this, RmapPackage.RESOURCE_MAP__REDIRECTS);
@@ -267,6 +270,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<SearchPath> getSearchPaths() {
 		if (searchPaths == null) {
 			searchPaths = new EObjectContainmentEList<SearchPath>(SearchPath.class, this, RmapPackage.RESOURCE_MAP__SEARCH_PATHS);
@@ -279,6 +283,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;

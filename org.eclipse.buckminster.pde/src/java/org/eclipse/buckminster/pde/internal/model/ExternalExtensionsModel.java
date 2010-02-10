@@ -25,6 +25,7 @@ import org.eclipse.pde.internal.core.plugin.AbstractExtensionsModel;
 public class ExternalExtensionsModel extends AbstractExtensionsModel {
 	private static final long serialVersionUID = 7673596323381247681L;
 
+	@Override
 	public String getInstallLocation() {
 		return null;
 	}
@@ -34,14 +35,17 @@ public class ExternalExtensionsModel extends AbstractExtensionsModel {
 		return null;
 	}
 
+	@Override
 	public boolean isEditable() {
 		return false;
 	}
 
+	@Override
 	public boolean isInSync() {
 		return true;
 	}
 
+	@Override
 	public void load() {
 	}
 

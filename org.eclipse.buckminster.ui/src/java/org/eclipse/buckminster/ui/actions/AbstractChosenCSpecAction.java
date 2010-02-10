@@ -42,10 +42,12 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActionDelegate {
 	static class ComponentLabelProvider extends LabelProvider implements ITableLabelProvider {
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			Resolution cr = (Resolution) element;
 			String lbl;
@@ -107,6 +109,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 			viewer.setLabelProvider(new ComponentLabelProvider());
 			viewer.setContentProvider(new ArrayContentProvider());
 			viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 					getButton(IDialogConstants.OK_ID).setEnabled(selection.size() == 1);
@@ -140,13 +143,16 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 
 	private IWorkbenchWindow window;
 
+	@Override
 	public void dispose() {
 	}
 
+	@Override
 	public void init(IWorkbenchWindow w) {
 		window = w;
 	}
 
+	@Override
 	public void run(IAction action) {
 		Shell shell = window.getShell();
 		try {
@@ -162,6 +168,7 @@ public abstract class AbstractChosenCSpecAction implements IWorkbenchWindowActio
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 

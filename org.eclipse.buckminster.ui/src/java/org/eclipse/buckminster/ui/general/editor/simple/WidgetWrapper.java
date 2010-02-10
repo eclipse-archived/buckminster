@@ -23,10 +23,12 @@ public class WidgetWrapper implements IWidgetin {
 		this.widget = widget;
 	}
 
+	@Override
 	public void addListener(int eventType, Listener listener) {
 		widget.addListener(eventType, listener);
 	}
 
+	@Override
 	public Object getData() {
 		return widget.getData();
 	}
@@ -35,14 +37,17 @@ public class WidgetWrapper implements IWidgetin {
 		return widget;
 	}
 
+	@Override
 	public void notifyListeners(int eventType, Event event) {
 		widget.notifyListeners(eventType, event);
 	}
 
+	@Override
 	public void removeListener(int eventType, Listener listener) {
 		widget.removeListener(eventType, listener);
 	}
 
+	@Override
 	public void setData(Object data) {
 		widget.setData(data);
 	}

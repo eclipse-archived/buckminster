@@ -88,10 +88,12 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
  */
 public class RetrieveAndBindPage extends AbstractQueryPage {
 	class ComponentLabelProvider extends LabelProvider implements ITableLabelProvider {
+		@Override
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(Object element, int columnIndex) {
 			MaterializationContext context = getQueryWizard().getMaterializationContext();
 			Resolution resolution = (Resolution) element;
@@ -139,6 +141,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage {
 	}
 
 	static class ResolutionComparator implements Comparator<Resolution> {
+		@Override
 		public int compare(Resolution o1, Resolution o2) {
 			int result = o1.getRequest().getViewName().compareTo(o2.getRequest().getViewName());
 			if (result == 0) {
@@ -495,6 +498,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage {
 		});
 
 		globalInstallLocation = UiUtils.createLabeledText(globalSettings, Messages.location_with_colon, false, 0, new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent me) {
 				Text fld = (Text) me.getSource();
 				String txt = UiUtils.trimmedValue(fld);
@@ -513,6 +517,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage {
 
 		globalWorkspaceLocationLabel = UiUtils.createGridLabel(globalSettings, Messages.workspace_with_dots, 1, 0, SWT.NONE);
 		globalWorkspaceLocation = UiUtils.createGridText(globalSettings, 1, 0, SWT.NONE, new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent me) {
 				Text fld = (Text) me.getSource();
 				String txt = UiUtils.trimmedValue(fld);
@@ -566,6 +571,7 @@ public class RetrieveAndBindPage extends AbstractQueryPage {
 		componentTable.setContentProvider(new ArrayContentProvider());
 		componentTable.setSorter(new ResolutionViewerSorter());
 		componentTable.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
 				if (selection.size() == 1)

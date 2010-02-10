@@ -22,6 +22,7 @@ import org.eclipse.ui.console.IOConsoleOutputStream;
  * @author ken1
  */
 public class EclipseConsoleLogReceiver implements ILogReceiver {
+	@Override
 	public OutputStream start(String title, String type, boolean activateOnWrite, boolean errorStream) {
 		IConsoleManager mgr = ConsolePlugin.getDefault().getConsoleManager();
 		BuckminsterIOConsole ourConsole = null;

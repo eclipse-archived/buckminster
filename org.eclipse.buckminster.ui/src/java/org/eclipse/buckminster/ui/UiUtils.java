@@ -54,15 +54,18 @@ public class UiUtils {
 
 		// triggered programmatically and by users - user events need to be
 		// filtered out
+		@Override
 		public void modifyText(ModifyEvent e) {
 			lastSelectionIndexes.put(Integer.valueOf(e.time), Integer.valueOf(((Combo) e.widget).getSelectionIndex()));
 		}
 
+		@Override
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// do nothing
 		}
 
 		// triggered by users
+		@Override
 		public void widgetSelected(SelectionEvent e) {
 			Integer timeInteger = Integer.valueOf(e.time);
 			if (lastSelectionIndexes.get(timeInteger) != null) {

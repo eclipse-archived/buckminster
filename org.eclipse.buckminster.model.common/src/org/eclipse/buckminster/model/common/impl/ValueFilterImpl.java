@@ -299,6 +299,7 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Constant> getConstants() {
 		if (constants == null) {
 			constants = new EObjectContainmentEList<Constant>(Constant.class, this, CommonPackage.VALUE_FILTER__CONSTANTS);
@@ -311,6 +312,7 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Format> getFormats() {
 		if (formats == null) {
 			formats = new EObjectContainmentEList<Format>(Format.class, this, CommonPackage.VALUE_FILTER__FORMATS);
@@ -323,6 +325,7 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<PropertyRef> getPropertyRefs() {
 		if (propertyRefs == null) {
 			propertyRefs = new EObjectContainmentEList<PropertyRef>(PropertyRef.class, this, CommonPackage.VALUE_FILTER__PROPERTY_REFS);
@@ -335,6 +338,7 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Replace> getReplacements() {
 		if (replacements == null) {
 			replacements = new EObjectContainmentEList<Replace>(Replace.class, this, CommonPackage.VALUE_FILTER__REPLACEMENTS);
@@ -347,6 +351,7 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Split> getSplits() {
 		if (splits == null) {
 			splits = new EObjectContainmentEList<Split>(Split.class, this, CommonPackage.VALUE_FILTER__SPLITS);
@@ -359,6 +364,7 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<ToLower> getToLowers() {
 		if (toLowers == null) {
 			toLowers = new EObjectContainmentEList<ToLower>(ToLower.class, this, CommonPackage.VALUE_FILTER__TO_LOWERS);
@@ -371,6 +377,7 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<ToUpper> getToUppers() {
 		if (toUppers == null) {
 			toUppers = new EObjectContainmentEList<ToUpper>(ToUpper.class, this, CommonPackage.VALUE_FILTER__TO_UPPERS);

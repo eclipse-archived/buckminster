@@ -73,10 +73,12 @@ public class ExternalFileEditorInput implements IPathEditorInput, ILocationProvi
 		return true;
 	}
 
+	@Override
 	public boolean exists() {
 		return file.exists();
 	}
 
+	@Override
 	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		if (ILocationProvider.class.equals(adapter) || IWorkbenchAdapter.class.equals(adapter))
@@ -84,42 +86,52 @@ public class ExternalFileEditorInput implements IPathEditorInput, ILocationProvi
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
+	@Override
 	public Object[] getChildren(Object o) {
 		return (o instanceof ExternalFileEditorInput) ? ((ExternalFileEditorInput) o).getChildren() : null;
 	}
 
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return null;
 	}
 
+	@Override
 	public ImageDescriptor getImageDescriptor(Object o) {
 		return (o instanceof IEditorInput) ? ((IEditorInput) o).getImageDescriptor() : null;
 	}
 
+	@Override
 	public String getLabel(Object o) {
 		return (o instanceof ExternalFileEditorInput) ? ((ExternalFileEditorInput) o).getName() : null;
 	}
 
+	@Override
 	public String getName() {
 		return label;
 	}
 
+	@Override
 	public Object getParent(Object o) {
 		return (o instanceof ExternalFileEditorInput) ? ((ExternalFileEditorInput) o).getParent() : null;
 	}
 
+	@Override
 	public IPath getPath() {
 		return Path.fromOSString(file.getAbsolutePath());
 	}
 
+	@Override
 	public IPath getPath(Object o) {
 		return (o instanceof IPathEditorInput) ? ((IPathEditorInput) o).getPath() : null;
 	}
 
+	@Override
 	public IPersistableElement getPersistable() {
 		return null;
 	}
 
+	@Override
 	public String getToolTipText() {
 		return tooltipText;
 	}

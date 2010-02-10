@@ -66,6 +66,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		}
 	}
 
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 1000);
 		try {
@@ -175,8 +176,8 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 	}
 
 	private File getInstallLocation() {
-		String location = (importModel instanceof IPluginModelBase) ? ((IPluginModelBase) importModel).getInstallLocation() : ((IFeatureModel) importModel)
-				.getInstallLocation();
+		String location = (importModel instanceof IPluginModelBase) ? ((IPluginModelBase) importModel).getInstallLocation()
+				: ((IFeatureModel) importModel).getInstallLocation();
 
 		return new File(location);
 	}

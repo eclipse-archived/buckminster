@@ -39,6 +39,7 @@ import org.eclipse.ui.IURIEditorInput;
  */
 public class EditorUtils {
 	static class PathComparator implements Comparator<IPath> {
+		@Override
 		public int compare(IPath o1, IPath o2) {
 			return o1.toOSString().compareTo(o2.toOSString());
 		}

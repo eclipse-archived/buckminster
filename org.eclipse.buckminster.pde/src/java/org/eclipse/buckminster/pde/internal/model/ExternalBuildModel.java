@@ -22,14 +22,17 @@ import org.eclipse.pde.internal.core.build.BuildModel;
 public class ExternalBuildModel extends BuildModel {
 	private static final long serialVersionUID = 3697820164252115L;
 
+	@Override
 	public String getInstallLocation() {
 		return null;
 	}
 
+	@Override
 	public boolean isEditable() {
 		return false;
 	}
 
+	@Override
 	public boolean isInSync() {
 		return true;
 	}

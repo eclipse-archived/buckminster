@@ -452,6 +452,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<String> getComponentTypes() {
 		if (componentTypes == null) {
 			componentTypes = new EDataTypeUniqueEList<String>(String.class, this, RmapPackage.PROVIDER__COMPONENT_TYPES);
@@ -464,6 +465,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String getComponentTypesAttr() {
 		EList<String> ctypes = getComponentTypes();
 		int top = ctypes.size();
@@ -487,6 +489,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -496,6 +499,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<URIMatcher> getMatchers() {
 		if (matchers == null) {
 			matchers = new EObjectContainmentEList<URIMatcher>(URIMatcher.class, this, RmapPackage.PROVIDER__MATCHERS);
@@ -508,6 +512,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getReaderType() {
 		return readerType;
 	}
@@ -517,6 +522,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getResolutionFilter() {
 		return resolutionFilter;
 	}
@@ -526,6 +532,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Format getUri() {
 		return uri;
 	}
@@ -535,6 +542,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public VersionConverter getVersionConverter() {
 		return versionConverter;
 	}
@@ -544,6 +552,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isMutable() {
 		return mutable;
 	}
@@ -553,6 +562,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSource() {
 		return source;
 	}
@@ -562,6 +572,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public void setComponentTypesAttr(String newComponentTypesAttr) {
 		if (newComponentTypesAttr == null || newComponentTypesAttr.length() == 0) {
 			if (componentTypes != null)
@@ -587,6 +598,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -608,6 +620,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setMutable(boolean newMutable) {
 		boolean oldMutable = mutable;
 		mutable = newMutable;
@@ -620,6 +633,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setReaderType(String newReaderType) {
 		String oldReaderType = readerType;
 		readerType = newReaderType;
@@ -632,6 +646,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setResolutionFilter(String newResolutionFilter) {
 		String oldResolutionFilter = resolutionFilter;
 		resolutionFilter = newResolutionFilter;
@@ -644,6 +659,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setSource(boolean newSource) {
 		boolean oldSource = source;
 		source = newSource;
@@ -656,6 +672,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setUri(Format newUri) {
 		if (newUri != uri) {
 			NotificationChain msgs = null;
@@ -675,6 +692,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersionConverter(VersionConverter newVersionConverter) {
 		if (newVersionConverter != versionConverter) {
 			NotificationChain msgs = null;

@@ -29,10 +29,12 @@ public class ProductVersionPatcher implements IProductDescriptor {
 		this.product = product;
 	}
 
+	@Override
 	public String getApplication() {
 		return product.getApplication();
 	}
 
+	@Override
 	public List<BundleInfo> getBundleInfos() {
 		List<BundleInfo> bis = product.getBundleInfos();
 		if (bis.size() == 0)
@@ -57,66 +59,82 @@ public class ProductVersionPatcher implements IProductDescriptor {
 		return pbis;
 	}
 
+	@Override
 	public List<IVersionedId> getBundles(boolean includeFragments) {
 		return adjustVersionedIdList(product.getBundles(includeFragments), false);
 	}
 
+	@Override
 	public String getConfigIniPath(String os) {
 		return product.getConfigIniPath(os);
 	}
 
+	@Override
 	public Map<String, String> getConfigurationProperties() {
 		return product.getConfigurationProperties();
 	}
 
+	@Override
 	public List<IVersionedId> getFeatures() {
 		return adjustVersionedIdList(product.getFeatures(), true);
 	}
 
+	@Override
 	public List<IVersionedId> getFragments() {
 		return adjustVersionedIdList(product.getFragments(), false);
 	}
 
+	@Override
 	public String[] getIcons(String os) {
 		return product.getIcons(os);
 	}
 
+	@Override
 	public String getId() {
 		return product.getId();
 	}
 
+	@Override
 	public String getLauncherName() {
 		return product.getLauncherName();
 	}
 
+	@Override
 	public String getLicenseText() {
 		return product.getLicenseText();
 	}
 
+	@Override
 	public String getLicenseURL() {
 		return product.getLicenseURL();
 	}
 
+	@Override
 	public File getLocation() {
 		return product.getLocation();
 	}
 
+	@Override
 	public String getProductId() {
 		return product.getProductId();
 	}
 
+	@Override
 	public String getProductName() {
 		return product.getProductName();
 	}
 
+	@Override
 	public String getProgramArguments(String os) {
 		return product.getProgramArguments(os);
 	}
 
+	@Override
 	public String getSplashLocation() {
 		return product.getSplashLocation();
 	}
 
+	@Override
 	public String getVersion() {
 		String vstr = product.getVersion();
 		Version version = vstr == null ? null : Version.parseVersion(vstr);
@@ -141,10 +159,12 @@ public class ProductVersionPatcher implements IProductDescriptor {
 		return vstr;
 	}
 
+	@Override
 	public String getVMArguments(String os) {
 		return product.getVMArguments(os);
 	}
 
+	@Override
 	public boolean useFeatures() {
 		return product.useFeatures();
 	}

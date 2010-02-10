@@ -4,7 +4,7 @@
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.model.common/src"
     modelPluginID="org.eclipse.buckminster.model.common" modelName="Common" rootExtendsInterface="org.eclipse.buckminster.model.common.BObject"
     rootExtendsClass="org.eclipse.buckminster.model.common.impl.BObjectImpl" importerID="org.eclipse.emf.importer.ecore"
-    complianceLevel="5.0" copyrightFields="false">
+    complianceLevel="6.0" copyrightFields="false">
   <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
     <genAnnotations source="selectedPackages">
       <details key="http://www.eclipse.org/buckminster/Common-1.0" value="common.xsd"/>

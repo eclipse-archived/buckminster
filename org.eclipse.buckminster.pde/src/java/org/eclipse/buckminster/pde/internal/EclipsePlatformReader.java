@@ -73,6 +73,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 			this.collector = collector;
 		}
 
+		@Override
 		public boolean accept(File directory, String pathname) {
 			Matcher m = pattern.matcher(pathname);
 			if (!m.matches())
@@ -140,6 +141,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 	 * This method should never be called. If a user wants to materialize an
 	 * installed plugin, that should be done using the import plugin wizard.
 	 */
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) {
 		throw new UnsupportedOperationException("checkout"); //$NON-NLS-1$
 	}

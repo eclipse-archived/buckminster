@@ -31,11 +31,13 @@ public class DependencyTreeContentProvider implements ITreeContentProvider {
 		this.treeViewer = treeViewer;
 	}
 
+	@Override
 	public void dispose() {
 		// nothing to dispose
 
 	}
 
+	@Override
 	public Object[] getChildren(Object parentElement) {
 
 		if (parentElement instanceof BillOfMaterials) {
@@ -50,6 +52,7 @@ public class DependencyTreeContentProvider implements ITreeContentProvider {
 		return null;
 	}
 
+	@Override
 	public Object[] getElements(Object inputElement) {
 
 		if (inputElement instanceof Collection<?>) {
@@ -62,11 +65,13 @@ public class DependencyTreeContentProvider implements ITreeContentProvider {
 
 	}
 
+	@Override
 	public Object getParent(Object element) {
 		// TODO not implemented yet
 		return null;
 	}
 
+	@Override
 	public boolean hasChildren(Object element) {
 		Object[] children = getChildren(element);
 		if (children == null || children.length == 0)
@@ -78,6 +83,7 @@ public class DependencyTreeContentProvider implements ITreeContentProvider {
 		return children.length > 0;
 	}
 
+	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		// nothing to do
 

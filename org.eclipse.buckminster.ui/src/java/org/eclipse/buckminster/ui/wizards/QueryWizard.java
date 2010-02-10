@@ -87,6 +87,7 @@ public class QueryWizard extends Wizard implements INewWizard {
 		return materializationContext;
 	}
 
+	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		String title = Messages.buckminster_component_query;
 

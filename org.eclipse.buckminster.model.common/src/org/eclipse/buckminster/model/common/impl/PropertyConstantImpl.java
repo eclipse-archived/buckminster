@@ -122,6 +122,7 @@ public class PropertyConstantImpl extends PropertyImpl implements PropertyConsta
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getValue() {
 		return value;
 	}
@@ -131,6 +132,7 @@ public class PropertyConstantImpl extends PropertyImpl implements PropertyConsta
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setValue(String newValue) {
 		String oldValue = value;
 		value = newValue;

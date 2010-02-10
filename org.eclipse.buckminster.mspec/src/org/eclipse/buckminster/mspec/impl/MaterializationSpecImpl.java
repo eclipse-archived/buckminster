@@ -271,6 +271,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+	@Override
 	public int getMaxParallelJobs() {
 		return maxParallelJobs;
 	}
@@ -280,6 +281,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<MaterializationNode> getMspecNodes() {
 		if (mspecNodes == null) {
 			mspecNodes = new EObjectContainmentEList<MaterializationNode>(MaterializationNode.class, this,
@@ -293,6 +295,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -302,6 +305,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -311,6 +315,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getUrl() {
 		return url;
 	}
@@ -320,6 +325,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setMaxParallelJobs(int newMaxParallelJobs) {
 		int oldMaxParallelJobs = maxParallelJobs;
 		maxParallelJobs = newMaxParallelJobs;
@@ -333,6 +339,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -345,6 +352,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setShortDesc(String newShortDesc) {
 		String oldShortDesc = shortDesc;
 		shortDesc = newShortDesc;
@@ -357,6 +365,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setUrl(String newUrl) {
 		String oldUrl = url;
 		url = newUrl;

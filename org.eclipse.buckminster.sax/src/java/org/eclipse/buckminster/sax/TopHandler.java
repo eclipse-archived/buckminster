@@ -40,46 +40,57 @@ public abstract class TopHandler extends AbstractHandler {
 	 * @author thhal
 	 */
 	protected class SAXParserWrapper implements ContentHandler {
+		@Override
 		public void characters(char[] ch, int start, int length) throws SAXException {
 			reader.getContentHandler().characters(ch, start, length);
 		}
 
+		@Override
 		public void endDocument() throws SAXException {
 			reader.getContentHandler().endDocument();
 		}
 
+		@Override
 		public void endElement(String uri, String localName, String qName) throws SAXException {
 			reader.getContentHandler().endElement(uri, localName, qName);
 		}
 
+		@Override
 		public void endPrefixMapping(String prefix) throws SAXException {
 			reader.getContentHandler().endPrefixMapping(prefix);
 		}
 
+		@Override
 		public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
 			reader.getContentHandler().ignorableWhitespace(ch, start, length);
 		}
 
+		@Override
 		public void processingInstruction(String target, String data) throws SAXException {
 			reader.getContentHandler().processingInstruction(target, data);
 		}
 
+		@Override
 		public void setDocumentLocator(Locator locator) {
 			reader.getContentHandler().setDocumentLocator(locator);
 		}
 
+		@Override
 		public void skippedEntity(String name) throws SAXException {
 			reader.getContentHandler().skippedEntity(name);
 		}
 
+		@Override
 		public void startDocument() throws SAXException {
 			reader.getContentHandler().startDocument();
 		}
 
+		@Override
 		public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
 			reader.getContentHandler().startElement(uri, localName, qName, atts);
 		}
 
+		@Override
 		public void startPrefixMapping(String prefix, String uri) throws SAXException {
 			reader.getContentHandler().startPrefixMapping(prefix, uri);
 		}

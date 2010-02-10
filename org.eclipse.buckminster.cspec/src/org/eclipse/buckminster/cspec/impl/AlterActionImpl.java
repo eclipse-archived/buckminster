@@ -51,13 +51,13 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <em>Replace Properties</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getReplaceActorProperties
- * <em>Replace Actor Properties </em>}</li>
+ * <em>Replace Actor Properties</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemoveProperties
  * <em>Remove Properties</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemoveActorProperties
- * <em>Remove Actor Properties </em>}</li>
+ * <em>Remove Actor Properties</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspec.impl.AlterActionImpl#getRemoveProducts
  * <em>Remove Products</em>}</li>
@@ -443,6 +443,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CSpecExtension getCspecext() {
 		if (eContainerFeatureID() != CspecPackage.ALTER_ACTION__CSPECEXT)
 			return null;
@@ -454,6 +455,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Remove> getRemoveActorProperties() {
 		if (removeActorProperties == null) {
 			removeActorProperties = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_ACTOR_PROPERTIES);
@@ -466,6 +468,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Remove> getRemovePaths() {
 		if (removePaths == null) {
 			removePaths = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_PATHS);
@@ -478,6 +481,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Remove> getRemovePrerequisites() {
 		if (removePrerequisites == null) {
 			removePrerequisites = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_PREREQUISITES);
@@ -490,6 +494,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Remove> getRemoveProducts() {
 		if (removeProducts == null) {
 			removeProducts = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_PRODUCTS);
@@ -502,6 +507,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Remove> getRemoveProperties() {
 		if (removeProperties == null) {
 			removeProperties = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_ACTION__REMOVE_PROPERTIES);
@@ -514,6 +520,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<PropertyConstant> getReplaceActorProperties() {
 		if (replaceActorProperties == null) {
 			replaceActorProperties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this,
@@ -527,6 +534,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Prerequisite> getReplacePrerequisites() {
 		if (replacePrerequisites == null) {
 			replacePrerequisites = new EObjectContainmentEList<Prerequisite>(Prerequisite.class, this,
@@ -540,6 +548,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<PropertyConstant> getReplaceProperties() {
 		if (replaceProperties == null) {
 			replaceProperties = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this,
@@ -553,6 +562,7 @@ public class AlterActionImpl extends ActionImpl implements AlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setCspecext(CSpecExtension newCspecext) {
 		if (newCspecext != eInternalContainer() || (eContainerFeatureID() != CspecPackage.ALTER_ACTION__CSPECEXT && newCspecext != null)) {
 			if (EcoreUtil.isAncestor(this, newCspecext))

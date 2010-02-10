@@ -17,6 +17,7 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -359,6 +360,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAlias() {
 		return alias;
 	}
@@ -368,6 +370,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAttribute() {
 		return attribute;
 	}
@@ -377,8 +380,9 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ComponentRequest getComponent() {
-		if (component != null && component.eIsProxy()) {
+		if (component != null && ((EObject) component).eIsProxy()) {
 			InternalEObject oldComponent = (InternalEObject) component;
 			component = (ComponentRequest) eResolveProxy(oldComponent);
 			if (component != oldComponent) {
@@ -394,6 +398,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Pattern getExcludePattern() {
 		return excludePattern;
 	}
@@ -403,6 +408,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -412,6 +418,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Pattern getIncludePattern() {
 		return includePattern;
 	}
@@ -421,6 +428,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isContributor() {
 		return contributor;
 	}
@@ -430,6 +438,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isOptional() {
 		return optional;
 	}
@@ -439,6 +448,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;
@@ -451,6 +461,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAttribute(String newAttribute) {
 		String oldAttribute = attribute;
 		attribute = newAttribute;
@@ -463,6 +474,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setComponent(ComponentRequest newComponent) {
 		ComponentRequest oldComponent = component;
 		component = newComponent;
@@ -475,6 +487,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setContributor(boolean newContributor) {
 		boolean oldContributor = contributor;
 		contributor = newContributor;
@@ -487,6 +500,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setExcludePattern(Pattern newExcludePattern) {
 		Pattern oldExcludePattern = excludePattern;
 		excludePattern = newExcludePattern;
@@ -499,6 +513,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -511,6 +526,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setIncludePattern(Pattern newIncludePattern) {
 		Pattern oldIncludePattern = includePattern;
 		includePattern = newIncludePattern;
@@ -523,6 +539,7 @@ public class PrerequisiteImpl extends EObjectImpl implements Prerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setOptional(boolean newOptional) {
 		boolean oldOptional = optional;
 		optional = newOptional;

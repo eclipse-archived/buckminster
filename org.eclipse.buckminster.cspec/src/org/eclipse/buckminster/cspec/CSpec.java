@@ -15,6 +15,7 @@ import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.osgi.filter.Filter;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
@@ -44,7 +45,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface CSpec extends ComponentIdentifier {
+public interface CSpec extends EObject, ComponentIdentifier {
 	public static final String SELF_ARTIFACT = "buckminster.component.self"; //$NON-NLS-1$
 
 	/**
@@ -59,9 +60,8 @@ public interface CSpec extends ComponentIdentifier {
 	 * Returns the value of the '<em><b>Attributes</b></em>' containment
 	 * reference list. The list contents are of type
 	 * {@link org.eclipse.buckminster.cspec.Attribute}. It is bidirectional and
-	 * its opposite is '
-	 * {@link org.eclipse.buckminster.cspec.Attribute#getCspec <em>Cspec</em>}'.
-	 * <!-- begin-user-doc -->
+	 * its opposite is '{@link org.eclipse.buckminster.cspec.Attribute#getCspec
+	 * <em>Cspec</em>}'. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Attributes</em>' containment reference list
 	 * isn't clear, there really should be more of a description here...
@@ -142,9 +142,8 @@ public interface CSpec extends ComponentIdentifier {
 	 * Returns the value of the '<em><b>Generators</b></em>' containment
 	 * reference list. The list contents are of type
 	 * {@link org.eclipse.buckminster.cspec.Generator}. It is bidirectional and
-	 * its opposite is '
-	 * {@link org.eclipse.buckminster.cspec.Generator#getCspec <em>Cspec</em>}'.
-	 * <!-- begin-user-doc -->
+	 * its opposite is '{@link org.eclipse.buckminster.cspec.Generator#getCspec
+	 * <em>Cspec</em>}'. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Generators</em>' containment reference list
 	 * isn't clear, there really should be more of a description here...

@@ -24,6 +24,7 @@ public abstract class AbstractSaxableElement implements ISaxableElement, IAdapta
 	 * is delegated to the Platform Adapter Manager which handles registered
 	 * adapter factories.
 	 */
+	@Override
 	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		if (adapter.isInstance(this))
@@ -31,6 +32,7 @@ public abstract class AbstractSaxableElement implements ISaxableElement, IAdapta
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
+	@Override
 	public void toSax(ContentHandler handler, String namespace, String prefix, String localName) throws SAXException {
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		AttributesImpl attrs = new AttributesImpl();

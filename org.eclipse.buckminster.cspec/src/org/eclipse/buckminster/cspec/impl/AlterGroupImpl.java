@@ -260,6 +260,7 @@ public class AlterGroupImpl extends GroupImpl implements AlterGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CSpecExtension getCspecext() {
 		if (eContainerFeatureID() != CspecPackage.ALTER_GROUP__CSPECEXT)
 			return null;
@@ -271,6 +272,7 @@ public class AlterGroupImpl extends GroupImpl implements AlterGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Remove> getRemovePrerequisites() {
 		if (removePrerequisites == null) {
 			removePrerequisites = new EObjectContainmentEList<Remove>(Remove.class, this, CspecPackage.ALTER_GROUP__REMOVE_PREREQUISITES);
@@ -283,6 +285,7 @@ public class AlterGroupImpl extends GroupImpl implements AlterGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Prerequisite> getReplacePrerequisites() {
 		if (replacePrerequisites == null) {
 			replacePrerequisites = new EObjectContainmentEList<Prerequisite>(Prerequisite.class, this,
@@ -296,6 +299,7 @@ public class AlterGroupImpl extends GroupImpl implements AlterGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setCspecext(CSpecExtension newCspecext) {
 		if (newCspecext != eInternalContainer() || (eContainerFeatureID() != CspecPackage.ALTER_GROUP__CSPECEXT && newCspecext != null)) {
 			if (EcoreUtil.isAncestor(this, newCspecext))

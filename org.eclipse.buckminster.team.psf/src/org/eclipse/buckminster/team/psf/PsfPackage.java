@@ -521,8 +521,8 @@ public interface PsfPackage extends EPackage {
 	/**
 	 * The meta object id for the '
 	 * {@link org.eclipse.buckminster.team.psf.impl.DocumentRootImpl
-	 * <em>Document Root</em>} ' class. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * <em>Document Root</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @see org.eclipse.buckminster.team.psf.impl.DocumentRootImpl
 	 * @see org.eclipse.buckminster.team.psf.impl.PsfPackageImpl#getDocumentRoot()
@@ -794,7 +794,7 @@ public interface PsfPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.team.psf.WorkingSet#getId <em>Id</em>} '.
+	 * {@link org.eclipse.buckminster.team.psf.WorkingSet#getId <em>Id</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Id</em>'.

@@ -154,6 +154,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getSuffix() {
 		return suffix;
 	}
@@ -163,6 +164,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isExpand() {
 		return expand;
 	}
@@ -172,6 +174,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setExpand(boolean newExpand) {
 		boolean oldExpand = expand;
 		expand = newExpand;
@@ -184,6 +187,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setSuffix(String newSuffix) {
 		String oldSuffix = suffix;
 		suffix = newSuffix;

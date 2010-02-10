@@ -71,6 +71,7 @@ public class BuckminsterIOConsole extends IOConsole implements IPropertyChangeLi
 		return newStream;
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		removeClosedStreams();
 

@@ -57,6 +57,7 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 		setContentProvider(new DependencyContentProvider());
 		getGraphControl().addDisposeListener(new DisposeListener() {
 
+			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				labelProvider.dispose();
 
@@ -64,6 +65,7 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 		});
 		addSelectionChangedListener(new ISelectionChangedListener() {
 
+			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
 				if (selection.isEmpty())
@@ -85,6 +87,7 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 
 		addDoubleClickListener(new IDoubleClickListener() {
 
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				Object o = ((IStructuredSelection) event.getSelection()).getFirstElement();
 				if (o instanceof BOMNode) {
@@ -141,6 +144,7 @@ public class DependencyViewer extends GraphViewer implements IViewerSettingChang
 		}
 	}
 
+	@Override
 	public void viewerSettingChanged(ViewerSettingChangeEvent event) {
 		switch (event.getType()) {
 			case PATH_HIGHLIGHTING:

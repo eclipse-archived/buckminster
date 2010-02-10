@@ -63,15 +63,18 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder> {
 		this.attributeBuilder = attributeBuilder;
 	}
 
+	@Override
 	public PrerequisiteBuilder createRowClass() {
 		return attributeBuilder.createPrerequisiteBuilder();
 	}
 
+	@Override
 	public String[] getColumnHeaders() {
 		return new String[] { Messages.component, Messages.attribute, Messages.alias, Messages.contributor, Messages.filter,
 				Messages.include_pattern, Messages.exclude_pattern };
 	}
 
+	@Override
 	public int[] getColumnWeights() {
 		return new int[] { 20, 10, 10, 0, 0, 0, 0 };
 	}
@@ -80,6 +83,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder> {
 	public IValidator getRowValidator() {
 		return new IValidator() {
 
+			@Override
 			public void validate(Object... arg) throws ValidatorException {
 				// Integer rowNum = (Integer) arg[0];
 
@@ -113,12 +117,14 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder> {
 		}
 	}
 
+	@Override
 	public Object[] toRowArray(PrerequisiteBuilder t) {
 		return new Object[] { t.getComponentName(), t.getName(), t.getAlias(), Boolean.valueOf(t.isContributor()),
 				TextUtils.notNullString(t.getFilter()), TextUtils.notNullString(t.getIncludePattern()),
 				TextUtils.notNullString(t.getExcludePattern()) };
 	}
 
+	@Override
 	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException {
 		builder.setComponentName(TextUtils.notEmptyString((String) args[0]));
 		builder.setName(TextUtils.notEmptyString((String) args[1]));
@@ -172,6 +178,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder> {
 
 		combo.addModifyListener(new ModifyListener() {
 
+			@Override
 			public void modifyText(ModifyEvent e) {
 				combo.setData(combo.getText());
 				validateFieldInFieldListener(widgetin, getFieldValidator(idx), combo.getText());
@@ -195,6 +202,7 @@ public class PrerequisitesTable extends SimpleTable<PrerequisiteBuilder> {
 
 		combo.addModifyListener(new ModifyListener() {
 
+			@Override
 			public void modifyText(ModifyEvent e) {
 				combo.setData(combo.getText());
 				validateFieldInFieldListener(widgetin, getFieldValidator(idx), combo.getText());

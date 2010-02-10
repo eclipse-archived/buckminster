@@ -53,6 +53,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 
 	private IModel model;
 
+	@Override
 	public synchronized BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IComponentReader reader = readerHandle[0];
 

@@ -137,6 +137,7 @@ public class SelectBOMPage extends AbstractQueryPage {
 		fileNameText = new Text(composite, SWT.BORDER);
 		fileNameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		fileNameText.addModifyListener(new ModifyListener() {
+			@Override
 			public void modifyText(ModifyEvent me) {
 				setBomOrMSpecFile(UiUtils.trimmedValue((Text) me.widget));
 			}
@@ -181,6 +182,7 @@ public class SelectBOMPage extends AbstractQueryPage {
 	void loadBomOrMSpec() {
 		try {
 			getContainer().run(true, true, new IRunnableWithProgress() {
+				@Override
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					URL urlToParse = bomOrMSpecURL;
 					InputStream input = null;

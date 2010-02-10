@@ -76,6 +76,7 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
 		return selectedComponent;
 	}
 
+	@Override
 	public void run(IAction action) {
 		if (activePart == null)
 			return;
@@ -90,6 +91,7 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
 
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection _selection) {
 		selectedComponent = null;
 		if (!(_selection instanceof IStructuredSelection))
@@ -116,6 +118,7 @@ public abstract class AbstractCSpecAction implements IObjectActionDelegate {
 
 	}
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		activePart = targetPart;
 	}

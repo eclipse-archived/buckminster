@@ -48,7 +48,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <em>Conflict Resolution</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getInstallLocation
- * <em>Install Location </em>}</li>
+ * <em>Install Location</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.mspec.impl.MaterializationDirectiveImpl#getMaterializer
  * <em>Materializer</em>}</li>
@@ -335,6 +335,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ConflictResolution getConflictResolution() {
 		return conflictResolution;
 	}
@@ -344,6 +345,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -353,6 +355,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getInstallLocation() {
 		return installLocation;
 	}
@@ -362,6 +365,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getMaterializer() {
 		return materializer;
 	}
@@ -371,6 +375,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Property> getProperties() {
 		return getPropertyGroup().list(MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__PROPERTIES);
 	}
@@ -380,6 +385,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getPropertyGroup() {
 		if (propertyGroup == null) {
 			propertyGroup = new BasicFeatureMap(this, MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP);
@@ -392,6 +398,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getWorkspaceLocation() {
 		return workspaceLocation;
 	}
@@ -401,6 +408,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setConflictResolution(ConflictResolution newConflictResolution) {
 		ConflictResolution oldConflictResolution = conflictResolution;
 		conflictResolution = newConflictResolution == null ? CONFLICT_RESOLUTION_EDEFAULT : newConflictResolution;
@@ -414,6 +422,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -436,6 +445,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setInstallLocation(String newInstallLocation) {
 		String oldInstallLocation = installLocation;
 		installLocation = newInstallLocation;
@@ -449,6 +459,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setMaterializer(String newMaterializer) {
 		String oldMaterializer = materializer;
 		materializer = newMaterializer;
@@ -461,6 +472,7 @@ public class MaterializationDirectiveImpl extends EObjectImpl implements Materia
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setWorkspaceLocation(String newWorkspaceLocation) {
 		String oldWorkspaceLocation = workspaceLocation;
 		workspaceLocation = newWorkspaceLocation;

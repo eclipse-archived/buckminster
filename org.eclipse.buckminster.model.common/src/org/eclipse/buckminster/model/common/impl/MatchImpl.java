@@ -197,6 +197,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getPattern() {
 		return pattern;
 	}
@@ -206,6 +207,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getReplacement() {
 		return replacement;
 	}
@@ -215,6 +217,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isQuotePattern() {
 		return quotePattern;
 	}
@@ -224,6 +227,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetQuotePattern() {
 		return quotePatternESet;
 	}
@@ -233,6 +237,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPattern(String newPattern) {
 		String oldPattern = pattern;
 		pattern = newPattern;
@@ -245,6 +250,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setQuotePattern(boolean newQuotePattern) {
 		boolean oldQuotePattern = quotePattern;
 		quotePattern = newQuotePattern;
@@ -260,6 +266,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setReplacement(String newReplacement) {
 		String oldReplacement = replacement;
 		replacement = newReplacement;
@@ -300,6 +307,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetQuotePattern() {
 		boolean oldQuotePattern = quotePattern;
 		boolean oldQuotePatternESet = quotePatternESet;

@@ -173,6 +173,7 @@ public class PasswordFieldEditor extends StringFieldEditor {
 					Assert.isTrue(false, "Unknown validate strategy");//$NON-NLS-1$
 			}
 			textField.addDisposeListener(new DisposeListener() {
+				@Override
 				public void widgetDisposed(DisposeEvent event) {
 					textField = null;
 				}

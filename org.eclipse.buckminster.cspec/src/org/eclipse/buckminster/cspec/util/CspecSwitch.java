@@ -28,7 +28,7 @@ import org.eclipse.equinox.p2.metadata.IVersionedId;
  * @see org.eclipse.buckminster.cspec.CspecPackage
  * @generated
  */
-public class CspecSwitch<T> {
+public class CspecSwitch<T1> {
 	/**
 	 * The cached model package <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -61,7 +61,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseAction(Action object) {
+	public T1 caseAction(Action object) {
 		return null;
 	}
 
@@ -78,7 +78,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseActionAttribute(ActionAttribute object) {
+	public T1 caseActionAttribute(ActionAttribute object) {
 		return null;
 	}
 
@@ -95,7 +95,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseAlterAction(AlterAction object) {
+	public T1 caseAlterAction(AlterAction object) {
 		return null;
 	}
 
@@ -112,7 +112,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseAlterArtifact(AlterArtifact object) {
+	public T1 caseAlterArtifact(AlterArtifact object) {
 		return null;
 	}
 
@@ -129,7 +129,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseAlterAttribute(AlterAttribute object) {
+	public T1 caseAlterAttribute(AlterAttribute object) {
 		return null;
 	}
 
@@ -146,7 +146,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseAlterGroup(AlterGroup object) {
+	public T1 caseAlterGroup(AlterGroup object) {
 		return null;
 	}
 
@@ -163,7 +163,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseArtifact(Artifact object) {
+	public T1 caseArtifact(Artifact object) {
 		return null;
 	}
 
@@ -180,7 +180,24 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseAttribute(Attribute object) {
+	public T1 caseAttribute(Attribute object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Comparable</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Comparable</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public <T> T1 caseComparable(Comparable<T> object) {
 		return null;
 	}
 
@@ -197,7 +214,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseComponentIdentifier(ComponentIdentifier object) {
+	public T1 caseComponentIdentifier(ComponentIdentifier object) {
 		return null;
 	}
 
@@ -214,7 +231,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseCSpec(CSpec object) {
+	public T1 caseCSpec(CSpec object) {
 		return null;
 	}
 
@@ -231,7 +248,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseCSpecExtension(CSpecExtension object) {
+	public T1 caseCSpecExtension(CSpecExtension object) {
 		return null;
 	}
 
@@ -248,7 +265,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseGenerator(Generator object) {
+	public T1 caseGenerator(Generator object) {
 		return null;
 	}
 
@@ -265,7 +282,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseGroup(Group object) {
+	public T1 caseGroup(Group object) {
 		return null;
 	}
 
@@ -282,7 +299,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseIContext(IContext object) {
+	public T1 caseIContext(IContext object) {
 		return null;
 	}
 
@@ -299,7 +316,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseIVersionedId(IVersionedId object) {
+	public T1 caseIVersionedId(IVersionedId object) {
 		return null;
 	}
 
@@ -316,7 +333,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T casePathGroup(PathGroup object) {
+	public T1 casePathGroup(PathGroup object) {
 		return null;
 	}
 
@@ -333,7 +350,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T casePrerequisite(Prerequisite object) {
+	public T1 casePrerequisite(Prerequisite object) {
 		return null;
 	}
 
@@ -350,7 +367,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseRemove(Remove object) {
+	public T1 caseRemove(Remove object) {
 		return null;
 	}
 
@@ -367,7 +384,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseRename(Rename object) {
+	public T1 caseRename(Rename object) {
 		return null;
 	}
 
@@ -384,7 +401,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseSelfArtifact(SelfArtifact object) {
+	public T1 caseSelfArtifact(SelfArtifact object) {
 		return null;
 	}
 
@@ -401,7 +418,7 @@ public class CspecSwitch<T> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject)
 	 * @generated
 	 */
-	public T defaultCase(EObject object) {
+	public T1 defaultCase(EObject object) {
 		return null;
 	}
 
@@ -414,7 +431,7 @@ public class CspecSwitch<T> {
 	 *         call.
 	 * @generated
 	 */
-	public T doSwitch(EObject theEObject) {
+	public T1 doSwitch(EObject theEObject) {
 		return doSwitch(theEObject.eClass(), theEObject);
 	}
 
@@ -427,7 +444,7 @@ public class CspecSwitch<T> {
 	 *         call.
 	 * @generated
 	 */
-	protected T doSwitch(EClass theEClass, EObject theEObject) {
+	protected T1 doSwitch(EClass theEClass, EObject theEObject) {
 		if (theEClass.eContainer() == modelPackage) {
 			return doSwitch(theEClass.getClassifierID(), theEObject);
 		} else {
@@ -445,29 +462,31 @@ public class CspecSwitch<T> {
 	 *         call.
 	 * @generated
 	 */
-	protected T doSwitch(int classifierID, EObject theEObject) {
+	protected T1 doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
 			case CspecPackage.CSPEC: {
 				CSpec cSpec = (CSpec) theEObject;
-				T result = caseCSpec(cSpec);
+				T1 result = caseCSpec(cSpec);
 				if (result == null)
 					result = caseComponentIdentifier(cSpec);
 				if (result == null)
 					result = caseIVersionedId(cSpec);
+				if (result == null)
+					result = caseComparable(cSpec);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.ATTRIBUTE: {
 				Attribute attribute = (Attribute) theEObject;
-				T result = caseAttribute(attribute);
+				T1 result = caseAttribute(attribute);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.GROUP: {
 				Group group = (Group) theEObject;
-				T result = caseGroup(group);
+				T1 result = caseGroup(group);
 				if (result == null)
 					result = caseAttribute(group);
 				if (result == null)
@@ -476,14 +495,14 @@ public class CspecSwitch<T> {
 			}
 			case CspecPackage.PREREQUISITE: {
 				Prerequisite prerequisite = (Prerequisite) theEObject;
-				T result = casePrerequisite(prerequisite);
+				T1 result = casePrerequisite(prerequisite);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.ACTION: {
 				Action action = (Action) theEObject;
-				T result = caseAction(action);
+				T1 result = caseAction(action);
 				if (result == null)
 					result = caseGroup(action);
 				if (result == null)
@@ -494,7 +513,7 @@ public class CspecSwitch<T> {
 			}
 			case CspecPackage.ARTIFACT: {
 				Artifact artifact = (Artifact) theEObject;
-				T result = caseArtifact(artifact);
+				T1 result = caseArtifact(artifact);
 				if (result == null)
 					result = caseAttribute(artifact);
 				if (result == null)
@@ -505,7 +524,7 @@ public class CspecSwitch<T> {
 			}
 			case CspecPackage.ACTION_ATTRIBUTE: {
 				ActionAttribute actionAttribute = (ActionAttribute) theEObject;
-				T result = caseActionAttribute(actionAttribute);
+				T1 result = caseActionAttribute(actionAttribute);
 				if (result == null)
 					result = caseArtifact(actionAttribute);
 				if (result == null)
@@ -518,28 +537,28 @@ public class CspecSwitch<T> {
 			}
 			case CspecPackage.PATH_GROUP: {
 				PathGroup pathGroup = (PathGroup) theEObject;
-				T result = casePathGroup(pathGroup);
+				T1 result = casePathGroup(pathGroup);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.GENERATOR: {
 				Generator generator = (Generator) theEObject;
-				T result = caseGenerator(generator);
+				T1 result = caseGenerator(generator);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.ALTER_ATTRIBUTE: {
 				AlterAttribute alterAttribute = (AlterAttribute) theEObject;
-				T result = caseAlterAttribute(alterAttribute);
+				T1 result = caseAlterAttribute(alterAttribute);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.ALTER_ARTIFACT: {
 				AlterArtifact alterArtifact = (AlterArtifact) theEObject;
-				T result = caseAlterArtifact(alterArtifact);
+				T1 result = caseAlterArtifact(alterArtifact);
 				if (result == null)
 					result = caseArtifact(alterArtifact);
 				if (result == null)
@@ -554,7 +573,7 @@ public class CspecSwitch<T> {
 			}
 			case CspecPackage.ALTER_GROUP: {
 				AlterGroup alterGroup = (AlterGroup) theEObject;
-				T result = caseAlterGroup(alterGroup);
+				T1 result = caseAlterGroup(alterGroup);
 				if (result == null)
 					result = caseGroup(alterGroup);
 				if (result == null)
@@ -567,7 +586,7 @@ public class CspecSwitch<T> {
 			}
 			case CspecPackage.ALTER_ACTION: {
 				AlterAction alterAction = (AlterAction) theEObject;
-				T result = caseAlterAction(alterAction);
+				T1 result = caseAlterAction(alterAction);
 				if (result == null)
 					result = caseAction(alterAction);
 				if (result == null)
@@ -584,21 +603,21 @@ public class CspecSwitch<T> {
 			}
 			case CspecPackage.RENAME: {
 				Rename rename = (Rename) theEObject;
-				T result = caseRename(rename);
+				T1 result = caseRename(rename);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.REMOVE: {
 				Remove remove = (Remove) theEObject;
-				T result = caseRemove(remove);
+				T1 result = caseRemove(remove);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.CSPEC_EXTENSION: {
 				CSpecExtension cSpecExtension = (CSpecExtension) theEObject;
-				T result = caseCSpecExtension(cSpecExtension);
+				T1 result = caseCSpecExtension(cSpecExtension);
 				if (result == null)
 					result = caseCSpec(cSpecExtension);
 				if (result == null)
@@ -606,19 +625,21 @@ public class CspecSwitch<T> {
 				if (result == null)
 					result = caseIVersionedId(cSpecExtension);
 				if (result == null)
+					result = caseComparable(cSpecExtension);
+				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.ICONTEXT: {
 				IContext iContext = (IContext) theEObject;
-				T result = caseIContext(iContext);
+				T1 result = caseIContext(iContext);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CspecPackage.SELF_ARTIFACT: {
 				SelfArtifact selfArtifact = (SelfArtifact) theEObject;
-				T result = caseSelfArtifact(selfArtifact);
+				T1 result = caseSelfArtifact(selfArtifact);
 				if (result == null)
 					result = caseArtifact(selfArtifact);
 				if (result == null)

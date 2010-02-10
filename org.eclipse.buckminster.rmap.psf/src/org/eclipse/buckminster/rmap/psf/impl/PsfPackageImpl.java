@@ -136,6 +136,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PsfFactory getPsfFactory() {
 		return (PsfFactory) getEFactoryInstance();
 	}
@@ -145,6 +146,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPSFProvider() {
 		return psfProviderEClass;
 	}
@@ -154,6 +156,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPSFProvider_PsfFile() {
 		return (EAttribute) psfProviderEClass.getEStructuralFeatures().get(0);
 	}

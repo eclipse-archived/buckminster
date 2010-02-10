@@ -51,6 +51,7 @@ public class JNLPModel extends SAXModel {
 			return arch;
 		}
 
+		@Override
 		public String getDefaultTag() {
 			return tag;
 		}
@@ -63,6 +64,7 @@ public class JNLPModel extends SAXModel {
 			return os;
 		}
 
+		@Override
 		public void toSax(ContentHandler receiver, String namespace, String prefix, String localName) throws SAXException {
 			AttributesImpl attrs = new AttributesImpl();
 			for (Map.Entry<String, String> attribute : entrySet())
@@ -128,6 +130,7 @@ public class JNLPModel extends SAXModel {
 		this.version = version;
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		AttributesImpl attrs = new AttributesImpl();

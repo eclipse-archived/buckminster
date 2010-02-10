@@ -35,6 +35,7 @@ public abstract class AbstractProjectAction implements IObjectActionDelegate {
 
 	private IWorkbenchPart workbenchPart;
 
+	@Override
 	public void run(IAction action) {
 		final IProject[] projs = this.getSelectedProjects();
 		try {
@@ -81,6 +82,7 @@ public abstract class AbstractProjectAction implements IObjectActionDelegate {
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		selectedProjects = null;
 		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection))
@@ -97,6 +99,7 @@ public abstract class AbstractProjectAction implements IObjectActionDelegate {
 		selectedProjects = projects.toArray(new IProject[0]);
 	}
 
+	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		workbenchPart = targetPart;
 	}

@@ -132,6 +132,7 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable {
 		this.associateSitesURL = associateSitesURL;
 	}
 
+	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
@@ -140,6 +141,7 @@ public class SaxableSite extends AbstractSaxableElement implements ISaxable {
 		return site;
 	}
 
+	@Override
 	public void toSax(ContentHandler receiver) throws SAXException {
 		receiver.startDocument();
 		toSax(receiver, "", "", TAG); //$NON-NLS-1$ //$NON-NLS-2$

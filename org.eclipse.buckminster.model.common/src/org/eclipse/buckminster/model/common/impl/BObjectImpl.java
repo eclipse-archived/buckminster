@@ -14,5 +14,6 @@ public abstract class BObjectImpl extends EObjectImpl implements BObject {
 		return bld.toString();
 	}
 
+	@Override
 	public abstract void toString(StringBuilder bld);
 }

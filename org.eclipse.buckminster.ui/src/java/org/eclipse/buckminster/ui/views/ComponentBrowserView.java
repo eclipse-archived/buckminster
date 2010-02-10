@@ -77,10 +77,12 @@ public class ComponentBrowserView extends ViewPart {
 		viewer.setLabelProvider(new DelegatingStyledCellLabelProvider(new BuckminsterLabelProvider()));
 		viewer.setSorter(new NameSorter());
 		viewer.addTreeListener(new ITreeViewerListener() {
+			@Override
 			public void treeCollapsed(TreeExpansionEvent event) {
 				// ignored
 			}
 
+			@Override
 			public void treeExpanded(TreeExpansionEvent event) {
 				// if there are pending nodes let them go fetch their stuff...
 				Object o = event.getElement();
@@ -154,6 +156,7 @@ public class ComponentBrowserView extends ViewPart {
 		MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
+			@Override
 			public void menuAboutToShow(IMenuManager manager) {
 				ComponentBrowserView.this.fillContextMenu(manager);
 			}
@@ -165,6 +168,7 @@ public class ComponentBrowserView extends ViewPart {
 
 	private void hookDoubleClickAction() {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				doubleClickAction.run();
 			}

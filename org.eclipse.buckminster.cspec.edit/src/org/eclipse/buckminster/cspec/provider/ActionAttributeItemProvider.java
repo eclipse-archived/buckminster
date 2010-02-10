@@ -142,4 +142,14 @@ public class ActionAttributeItemProvider extends ArtifactItemProvider implements
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	protected boolean shouldComposeCreationImage() {
+		return true;
+	}
+
 }

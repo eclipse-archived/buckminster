@@ -300,6 +300,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		// Register package validator
 		EValidator.Registry.INSTANCE.put(theCommonPackage, new EValidator.Descriptor() {
+			@Override
 			public EValidator getEValidator() {
 				return CommonValidator.INSTANCE;
 			}
@@ -467,6 +468,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public CommonFactory getCommonFactory() {
 		return (CommonFactory) getEFactoryInstance();
 	}
@@ -476,6 +478,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getComparable() {
 		return comparableEClass;
 	}
@@ -485,6 +488,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getComponentIdentifier() {
 		return componentIdentifierEClass;
 	}
@@ -494,6 +498,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentIdentifier_Type() {
 		return (EAttribute) componentIdentifierEClass.getEStructuralFeatures().get(0);
 	}
@@ -503,6 +508,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getComponentRequest() {
 		return componentRequestEClass;
 	}
@@ -512,6 +518,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentRequest_Filter() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(2);
 	}
@@ -521,6 +528,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentRequest_Id() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(0);
 	}
@@ -530,6 +538,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentRequest_Range() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(1);
 	}
@@ -539,6 +548,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentRequest_Type() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(3);
 	}
@@ -548,6 +558,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getConstant() {
 		return constantEClass;
 	}
@@ -557,6 +568,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getConstant_Value() {
 		return (EAttribute) constantEClass.getEStructuralFeatures().get(0);
 	}
@@ -566,6 +578,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getDocumentation() {
 		return documentationEClass;
 	}
@@ -575,6 +588,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getDocumentation_Any() {
 		return (EAttribute) documentationEClass.getEStructuralFeatures().get(1);
 	}
@@ -584,6 +598,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getDocumentation_AnyAttribute() {
 		return (EAttribute) documentationEClass.getEStructuralFeatures().get(2);
 	}
@@ -593,6 +608,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getDocumentation_Mixed() {
 		return (EAttribute) documentationEClass.getEStructuralFeatures().get(0);
 	}
@@ -602,6 +618,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getDocumentRoot() {
 		return documentRootEClass;
 	}
@@ -611,6 +628,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDocumentRoot_BasicProperty() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(1);
 	}
@@ -620,6 +638,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDocumentRoot_RxPart() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(0);
 	}
@@ -629,6 +648,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getFilter() {
 		return filterEDataType;
 	}
@@ -638,6 +658,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getFormat() {
 		return formatEClass;
 	}
@@ -647,6 +668,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getFormat_Format() {
 		return (EAttribute) formatEClass.getEStructuralFeatures().get(0);
 	}
@@ -656,6 +678,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getIVersionedId() {
 		return iVersionedIdEClass;
 	}
@@ -665,6 +688,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getIVersionedId_Id() {
 		return (EAttribute) iVersionedIdEClass.getEStructuralFeatures().get(0);
 	}
@@ -674,6 +698,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getIVersionedId_Version() {
 		return (EAttribute) iVersionedIdEClass.getEStructuralFeatures().get(1);
 	}
@@ -683,6 +708,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getMatch() {
 		return matchEClass;
 	}
@@ -692,6 +718,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getMatch_Pattern() {
 		return (EAttribute) matchEClass.getEStructuralFeatures().get(0);
 	}
@@ -701,6 +728,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getMatch_QuotePattern() {
 		return (EAttribute) matchEClass.getEStructuralFeatures().get(1);
 	}
@@ -710,6 +738,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getMatch_Replacement() {
 		return (EAttribute) matchEClass.getEStructuralFeatures().get(2);
 	}
@@ -719,6 +748,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getPattern() {
 		return patternEDataType;
 	}
@@ -728,6 +758,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getProperty() {
 		return propertyEClass;
 	}
@@ -737,6 +768,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProperty_Key() {
 		return (EAttribute) propertyEClass.getEStructuralFeatures().get(0);
 	}
@@ -746,6 +778,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProperty_Mutable() {
 		return (EAttribute) propertyEClass.getEStructuralFeatures().get(1);
 	}
@@ -755,6 +788,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPropertyConstant() {
 		return propertyConstantEClass;
 	}
@@ -764,6 +798,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPropertyConstant_Value() {
 		return (EAttribute) propertyConstantEClass.getEStructuralFeatures().get(0);
 	}
@@ -773,6 +808,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPropertyElement() {
 		return propertyElementEClass;
 	}
@@ -782,6 +818,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPropertyElement_Constant() {
 		return (EReference) propertyElementEClass.getEStructuralFeatures().get(0);
 	}
@@ -791,6 +828,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPropertyElement_Format() {
 		return (EReference) propertyElementEClass.getEStructuralFeatures().get(1);
 	}
@@ -800,6 +838,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPropertyElement_PropertyRef() {
 		return (EReference) propertyElementEClass.getEStructuralFeatures().get(2);
 	}
@@ -809,6 +848,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPropertyElement_Replace() {
 		return (EReference) propertyElementEClass.getEStructuralFeatures().get(3);
 	}
@@ -818,6 +858,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPropertyElement_ToLower() {
 		return (EReference) propertyElementEClass.getEStructuralFeatures().get(4);
 	}
@@ -827,6 +868,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPropertyElement_ToUpper() {
 		return (EReference) propertyElementEClass.getEStructuralFeatures().get(5);
 	}
@@ -836,6 +878,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getPropertyKey() {
 		return propertyKeyEDataType;
 	}
@@ -845,6 +888,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPropertyRef() {
 		return propertyRefEClass;
 	}
@@ -854,6 +898,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPropertyRef_Key() {
 		return (EAttribute) propertyRefEClass.getEStructuralFeatures().get(0);
 	}
@@ -863,6 +908,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getReplace() {
 		return replaceEClass;
 	}
@@ -872,6 +918,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getReplace_Matches() {
 		return (EReference) replaceEClass.getEStructuralFeatures().get(0);
 	}
@@ -881,6 +928,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getReplace_Pattern() {
 		return (EAttribute) replaceEClass.getEStructuralFeatures().get(1);
 	}
@@ -890,6 +938,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getReplace_QuotePattern() {
 		return (EAttribute) replaceEClass.getEStructuralFeatures().get(2);
 	}
@@ -899,6 +948,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getReplace_Replacement() {
 		return (EAttribute) replaceEClass.getEStructuralFeatures().get(3);
 	}
@@ -908,6 +958,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRxGroup() {
 		return rxGroupEClass;
 	}
@@ -917,6 +968,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getRxGroup_RxPart() {
 		return (EReference) rxGroupEClass.getEStructuralFeatures().get(1);
 	}
@@ -926,6 +978,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRxGroup_RxPartsGroup() {
 		return (EAttribute) rxGroupEClass.getEStructuralFeatures().get(0);
 	}
@@ -935,6 +988,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRxPart() {
 		return rxPartEClass;
 	}
@@ -944,6 +998,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRxPart_Name() {
 		return (EAttribute) rxPartEClass.getEStructuralFeatures().get(0);
 	}
@@ -953,6 +1008,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRxPart_Optional() {
 		return (EAttribute) rxPartEClass.getEStructuralFeatures().get(1);
 	}
@@ -962,6 +1018,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRxPattern() {
 		return rxPatternEClass;
 	}
@@ -971,6 +1028,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRxPattern_Pattern() {
 		return (EAttribute) rxPatternEClass.getEStructuralFeatures().get(0);
 	}
@@ -980,6 +1038,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRxPattern_Prefix() {
 		return (EAttribute) rxPatternEClass.getEStructuralFeatures().get(1);
 	}
@@ -989,6 +1048,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRxPattern_Suffix() {
 		return (EAttribute) rxPatternEClass.getEStructuralFeatures().get(2);
 	}
@@ -998,6 +1058,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getSplit() {
 		return splitEClass;
 	}
@@ -1007,6 +1068,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getSplit_Limit() {
 		return (EAttribute) splitEClass.getEStructuralFeatures().get(0);
 	}
@@ -1016,6 +1078,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getSplit_Pattern() {
 		return (EAttribute) splitEClass.getEStructuralFeatures().get(1);
 	}
@@ -1025,6 +1088,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getSplit_Style() {
 		return (EAttribute) splitEClass.getEStructuralFeatures().get(2);
 	}
@@ -1034,6 +1098,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EEnum getSplitType() {
 		return splitTypeEEnum;
 	}
@@ -1043,6 +1108,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getToLower() {
 		return toLowerEClass;
 	}
@@ -1052,6 +1118,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getToUpper() {
 		return toUpperEClass;
 	}
@@ -1061,6 +1128,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getURL() {
 		return urlEDataType;
 	}
@@ -1070,6 +1138,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getUuid() {
 		return uuidEDataType;
 	}
@@ -1079,6 +1148,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getValueFilter() {
 		return valueFilterEClass;
 	}
@@ -1088,6 +1158,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getValueFilter_Constants() {
 		return (EReference) valueFilterEClass.getEStructuralFeatures().get(0);
 	}
@@ -1097,6 +1168,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getValueFilter_Formats() {
 		return (EReference) valueFilterEClass.getEStructuralFeatures().get(1);
 	}
@@ -1106,6 +1178,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getValueFilter_PropertyRefs() {
 		return (EReference) valueFilterEClass.getEStructuralFeatures().get(2);
 	}
@@ -1115,6 +1188,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getValueFilter_Replacements() {
 		return (EReference) valueFilterEClass.getEStructuralFeatures().get(3);
 	}
@@ -1124,6 +1198,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getValueFilter_Splits() {
 		return (EReference) valueFilterEClass.getEStructuralFeatures().get(4);
 	}
@@ -1133,6 +1208,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getValueFilter_ToLowers() {
 		return (EReference) valueFilterEClass.getEStructuralFeatures().get(5);
 	}
@@ -1142,6 +1218,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getValueFilter_ToUppers() {
 		return (EReference) valueFilterEClass.getEStructuralFeatures().get(6);
 	}
@@ -1151,6 +1228,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getVersion() {
 		return versionEDataType;
 	}
@@ -1160,6 +1238,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getVersionRange() {
 		return versionRangeEDataType;
 	}

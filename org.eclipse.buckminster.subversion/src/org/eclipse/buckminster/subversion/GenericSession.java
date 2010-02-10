@@ -386,6 +386,7 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 		}
 	}
 
+	@Override
 	final public void createCommonRoots(RMContext context) throws CoreException {
 		final List<RepositoryAccess> unknownRoots = getUnknownRoots(context.getBindingProperties());
 		if (unknownRoots.size() == 0)
@@ -420,6 +421,7 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 		return repositoryLocation;
 	}
 
+	@Override
 	final public SVN_REVISION_TYPE getRevision() {
 		return revision;
 	}
@@ -435,6 +437,7 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 	 * @return The SVNUrl appointing the branches or tags directory.
 	 * @throws MalformedURLException
 	 */
+	@Override
 	final public URI getSVNRootUrl(boolean branches) throws CoreException {
 		StringBuilder bld = new StringBuilder();
 		bld.append(urlLeadIn);
@@ -459,10 +462,12 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 		}
 	}
 
+	@Override
 	final public URI getSVNUrl() throws CoreException {
 		return getSVNUrl(null);
 	}
 
+	@Override
 	final public URI getSVNUrl(String fileName) throws CoreException {
 		StringBuilder bld = new StringBuilder();
 		bld.append(urlLeadIn);
@@ -516,10 +521,12 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 		}
 	}
 
+	@Override
 	final public boolean hasTrunkStructure() {
 		return trunkStructure;
 	}
 
+	@Override
 	final public SVN_ENTRY_TYPE[] listFolder(URI url, IProgressMonitor monitor) throws CoreException {
 		// Synchronizing on an interned string should make it impossible for two
 		// sessions to request the same entry from the remote server

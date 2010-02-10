@@ -100,6 +100,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EObject createDocumentRoot() {
 		EObject documentRoot = super.create(RmapPackage.Literals.DOCUMENT_ROOT);
 		return documentRoot;
@@ -110,6 +111,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Locator createLocator() {
 		LocatorImpl locator = new LocatorImpl();
 		return locator;
@@ -120,6 +122,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Properties createProperties() {
 		PropertiesImpl properties = new PropertiesImpl();
 		return properties;
@@ -130,6 +133,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Provider createProvider() {
 		ProviderImpl provider = new ProviderImpl();
 		return provider;
@@ -140,6 +144,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Redirect createRedirect() {
 		RedirectImpl redirect = new RedirectImpl();
 		return redirect;
@@ -150,6 +155,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ResourceMap createResourceMap() {
 		ResourceMapImpl resourceMap = new ResourceMapImpl();
 		return resourceMap;
@@ -160,6 +166,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public SearchPath createSearchPath() {
 		SearchPathImpl searchPath = new SearchPathImpl();
 		return searchPath;
@@ -170,6 +177,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Transform createTransform() {
 		TransformImpl transform = new TransformImpl();
 		return transform;
@@ -180,6 +188,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public URIMatcher createURIMatcher() {
 		URIMatcherImpl uriMatcher = new URIMatcherImpl();
 		return uriMatcher;
@@ -190,6 +199,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public VersionConverter createVersionConverter() {
 		VersionConverterImpl versionConverter = new VersionConverterImpl();
 		return versionConverter;
@@ -200,6 +210,7 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public RmapPackage getRmapPackage() {
 		return (RmapPackage) getEPackage();
 	}

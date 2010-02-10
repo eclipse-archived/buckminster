@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IPath;
  */
 public class CSpecEditorUtils {
 	static class AttributeComparator implements Comparator<AttributeBuilder> {
+		@Override
 		public int compare(AttributeBuilder o1, AttributeBuilder o2) {
 			if (o1.isPublic() && !o2.isPublic())
 				return -1;
@@ -41,18 +42,21 @@ public class CSpecEditorUtils {
 	}
 
 	static class ComponentComparator implements Comparator<IComponentName> {
+		@Override
 		public int compare(IComponentName o1, IComponentName o2) {
 			return Trivial.compareAllowNull(o1.getName(), o2.getName());
 		}
 	}
 
 	static class CSpecElementComparator implements Comparator<CSpecElementBuilder> {
+		@Override
 		public int compare(CSpecElementBuilder o1, CSpecElementBuilder o2) {
 			return Trivial.compareAllowNull(o1.getName(), o2.getName());
 		}
 	}
 
 	static class PrerequisiteComparator implements Comparator<PrerequisiteBuilder> {
+		@Override
 		public int compare(PrerequisiteBuilder o1, PrerequisiteBuilder o2) {
 			int result = Trivial.compareAllowNull(o1.getComponentName(), o2.getComponentName());
 
@@ -71,6 +75,7 @@ public class CSpecEditorUtils {
 	}
 
 	static class PropertyComparator implements Comparator<Property> {
+		@Override
 		public int compare(Property o1, Property o2) {
 			return o1.getKey().compareTo(o2.getKey());
 		}

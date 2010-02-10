@@ -32,11 +32,11 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
  * {@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getRange
  * <em>Range</em>}</li>
  * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getType
- * <em>Type</em>}</li>
- * <li>
  * {@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getFilter
  * <em>Filter</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getType
+ * <em>Type</em>}</li>
  * </ul>
  * </p>
  * 
@@ -137,6 +137,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean designates(ComponentIdentifier cid) {
 		return Trivial.equalsAllowNull(getId(), cid.getId()) && (getType() == null || getType().equals(cid.getType()))
 				&& (getRange() == null || getRange().isIncluded(cid.getVersion()));
@@ -235,6 +236,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -244,6 +246,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -253,6 +256,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated
 	 */
+	@Override
 	public VersionRange getRange() {
 		return range;
 	}
@@ -262,6 +266,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -271,6 +276,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean isEnabled(Map<String, ? extends Object> properties) {
 		return filter == null || filter.matchCase(properties);
 	}
@@ -280,6 +286,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean isOptional() {
 		return filter != null && filter.toString().contains(FILTER_ECLIPSE_P2_OPTIONAL);
 	}
@@ -289,6 +296,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -301,6 +309,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setId(String newId) {
 		String oldId = id;
 		id = newId;
@@ -313,6 +322,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setRange(VersionRange newRange) {
 		VersionRange oldRange = range;
 		range = newRange;
@@ -325,6 +335,7 @@ public class ComponentRequestImpl extends BObjectImpl implements ComponentReques
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setType(String newType) {
 		String oldType = type;
 		type = newType;

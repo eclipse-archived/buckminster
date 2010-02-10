@@ -213,4 +213,14 @@ public class AlterActionItemProvider extends ActionItemProvider implements IEdit
 		return super.getChildFeature(object, child);
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	protected boolean shouldComposeCreationImage() {
+		return true;
+	}
+
 }

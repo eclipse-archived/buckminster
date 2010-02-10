@@ -122,6 +122,7 @@ public class RemoveImpl extends EObjectImpl implements Remove {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -131,6 +132,7 @@ public class RemoveImpl extends EObjectImpl implements Remove {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;

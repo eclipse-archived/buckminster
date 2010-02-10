@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IAdapterFactory;
 public class ResourceAdapterFactory implements IAdapterFactory {
 	private static Class<?>[] adapterList = { CSpec.class, CSpecDataNode.class, Resolution.class, ResolutionDataNode.class };
 
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if (adaptableObject instanceof IResource) {
@@ -57,6 +58,7 @@ public class ResourceAdapterFactory implements IAdapterFactory {
 		return null;
 	}
 
+	@Override
 	public Class<?>[] getAdapterList() {
 		return adapterList;
 	}

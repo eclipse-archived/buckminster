@@ -123,6 +123,7 @@ public class PSFProviderImpl extends ProviderImpl implements PSFProvider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getPsfFile() {
 		return psfFile;
 	}
@@ -132,6 +133,7 @@ public class PSFProviderImpl extends ProviderImpl implements PSFProvider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPsfFile(String newPsfFile) {
 		String oldPsfFile = psfFile;
 		psfFile = newPsfFile;

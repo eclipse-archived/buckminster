@@ -205,6 +205,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Transform> getTransformers() {
 		if (transformers == null) {
 			transformers = new EObjectContainmentEList<Transform>(Transform.class, this, RmapPackage.VERSION_CONVERTER__TRANSFORMERS);
@@ -217,6 +218,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -226,6 +228,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getVersionType() {
 		return versionType;
 	}
@@ -235,6 +238,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setType(String newType) {
 		String oldType = type;
 		type = newType;
@@ -247,6 +251,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersionType(String newVersionType) {
 		String oldVersionType = versionType;
 		versionType = newVersionType;
