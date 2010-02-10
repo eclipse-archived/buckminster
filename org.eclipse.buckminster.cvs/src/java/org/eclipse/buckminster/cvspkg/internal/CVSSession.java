@@ -54,6 +54,7 @@ public class CVSSession implements Closeable {
 		}
 	}
 
+	@Override
 	public synchronized void close() {
 		if (readerSession != null) {
 			readerSession.close();

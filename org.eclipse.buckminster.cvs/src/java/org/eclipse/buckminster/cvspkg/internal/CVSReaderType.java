@@ -184,6 +184,7 @@ public class CVSReaderType extends CatalogReaderType {
 		return new ReferenceInfo(repositoryLocation + ',' + module, selector, projectName);
 	}
 
+	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
 	}
@@ -252,6 +253,7 @@ public class CVSReaderType extends CatalogReaderType {
 		}
 	}
 
+	@Override
 	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new CVSReader(this, providerMatch);

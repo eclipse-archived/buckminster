@@ -75,6 +75,7 @@ public class CVSReader extends AbstractCatalogReader {
 		session.close();
 	}
 
+	@Override
 	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 100);
 

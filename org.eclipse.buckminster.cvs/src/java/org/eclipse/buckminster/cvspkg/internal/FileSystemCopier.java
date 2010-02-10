@@ -191,6 +191,7 @@ public class FileSystemCopier implements ICVSResourceVisitor {
 		monitor.done();
 	}
 
+	@Override
 	public void visitFile(ICVSFile file) throws CVSException {
 		this.checkFolderEnd(file.getParent());
 		FolderInfo fi = currentPath.peek();
@@ -222,6 +223,7 @@ public class FileSystemCopier implements ICVSResourceVisitor {
 		fi.addEntry(syncInfo.getBytes());
 	}
 
+	@Override
 	public void visitFolder(ICVSFolder folder) throws CVSException {
 		this.checkFolderEnd(folder);
 		currentPath.push(new FolderInfo(folder, fsRoot.append(folder.getRelativePath(cvsRoot))));

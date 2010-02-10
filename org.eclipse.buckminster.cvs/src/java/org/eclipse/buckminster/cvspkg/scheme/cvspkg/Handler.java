@@ -162,6 +162,7 @@ public class Handler extends AbstractURLStreamHandlerService {
 			this.connect();
 			try {
 				return reader.readFile(fileName, new IStreamConsumer<InputStream>() {
+					@Override
 					public InputStream consumeStream(IComponentReader componentReader, String streamName, InputStream stream, IProgressMonitor monitor)
 							throws IOException {
 						final AccessibleByteArrayOutputStream builder = new AccessibleByteArrayOutputStream();
