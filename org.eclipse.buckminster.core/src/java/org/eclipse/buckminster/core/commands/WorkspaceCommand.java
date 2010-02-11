@@ -34,6 +34,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.internal.resources.DelayedSnapshotJob;
 import org.eclipse.core.internal.resources.ResourceException;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.internal.utils.StringPoolJob;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -66,7 +67,7 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 	private static void saveWorkspace(IProgressMonitor monitor) {
 		monitor.beginTask(null, 300);
 		try {
-			IStatus saveStatus = ResourcesPlugin.getWorkspace().save(true, MonitorUtils.subMonitor(monitor, 100));
+			IStatus saveStatus = ((Workspace) ResourcesPlugin.getWorkspace()).save(true, true, MonitorUtils.subMonitor(monitor, 100));
 			if (!(saveStatus == null || saveStatus.isOK()))
 				throw new ResourceException(saveStatus);
 		} catch (Throwable e) {
@@ -184,7 +185,6 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 					// to drain
 					//
 					final IJobManager jobManager = Job.getJobManager();
-					jobManager.suspend();
 
 					// Cancel jobs that are known to run indefinitely
 					//
@@ -204,35 +204,34 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 							try {
 								jobManager.join(null, new NullProgressMonitor());
 							} catch (InterruptedException e) {
-								for (Job job : jobManager.find(null)) {
-									int state = job.getState();
-									if (state == Job.RUNNING)
-										logger.debug("  JOB: %s is still running", job.toString()); //$NON-NLS-1$
-								}
 							}
 						}
 					};
 					logger.debug("Waiting for jobs to end"); //$NON-NLS-1$
 
-					// Wait at max 30 seconds for all jobs to complete. The
+					// Wait at max 60 seconds for all jobs to complete. The
 					// normal case is that
 					// the join returns very quickly.
 					//
 					joinWait.start();
-					joinWait.join(30000);
+					joinWait.join(60000);
 					joinWait.interrupt();
 
 					// Cancel remaining jobs
 					//
-					for (Job job : jobManager.find(null))
-						job.cancel();
+					for (Job job : jobManager.find(null)) {
+						int state = job.getState();
+						if (state != Job.NONE) {
+							logger.debug("  JOB: %s is still active", job.toString()); //$NON-NLS-1$
+							job.cancel();
+						}
+					}
 
 					// and resume the job manager. The workspace save will start
 					// new
 					// jobs.
 					//
 					jobBlocker.removeClassBlock(DelayedSnapshotJob.class);
-					jobManager.resume();
 					saveWorkspace(MonitorUtils.subMonitor(monitor, 50));
 					monitor.done();
 				}
