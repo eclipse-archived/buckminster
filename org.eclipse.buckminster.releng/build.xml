@@ -187,14 +187,14 @@
 		</buckminster>
 	</target>
 
-	<target name="promote.sites" depends="provision">
+	<target name="perform" depends="provision">
 		<echo message="Building all projects in workspace ${workspace}" />
 		<buckminster command="build" />
 
 		<echo message="Performing org.eclipse.buckminster.releng#promote" />
 		<buckminster command="perform">
 			<cmdargs>
-				<arg value="org.eclipse.buckminster.releng#promote" />
+				<arg value="${buckminster.action}" />
 			</cmdargs>
 		</buckminster>
 	</target>
