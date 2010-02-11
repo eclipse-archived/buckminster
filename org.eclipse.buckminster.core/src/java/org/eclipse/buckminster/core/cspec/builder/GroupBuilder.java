@@ -116,7 +116,7 @@ public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup {
 	}
 
 	public void setPrerequisiteRebase(IPath rebase) {
-		rebase = rebase == null ? null : rebase.addTrailingSeparator();
+		this.rebase = rebase == null ? null : rebase.addTrailingSeparator();
 	}
 
 	void finalWrapUp(Map<String, ComponentRequestBuilder> dependencies) {

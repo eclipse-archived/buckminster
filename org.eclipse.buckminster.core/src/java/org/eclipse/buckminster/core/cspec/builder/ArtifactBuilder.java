@@ -76,6 +76,6 @@ public class ArtifactBuilder extends TopLevelAttributeBuilder implements IArtifa
 	}
 
 	public void setBase(IPath base) {
-		base = (base == null) ? null : base.addTrailingSeparator();
+		this.base = (base == null) ? null : base.addTrailingSeparator();
 	}
 }
