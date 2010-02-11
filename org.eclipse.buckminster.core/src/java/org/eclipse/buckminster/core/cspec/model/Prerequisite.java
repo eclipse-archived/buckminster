@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
+import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.sax.Utils;
@@ -137,13 +138,12 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 	}
 
 	public Attribute getReferencedAttribute(CSpec ownerCSpec, IModelCache ctx) throws CoreException {
-		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedAttribute(componentName, componentType,
-				getName(), ctx) : null;
+		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec
+				.getReferencedAttribute(componentName, componentType, getName(), ctx) : null;
 	}
 
 	public CSpec getReferencedCSpec(CSpec ownerCSpec, IModelCache ctx) throws CoreException {
-		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedCSpec(componentName, componentType, ctx)
-				: null;
+		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedCSpec(componentName, componentType, ctx) : null;
 	}
 
 	@Override
@@ -155,7 +155,15 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 		if (!(filter == null || filter.match(cache.getProperties())))
 			return false;
 
-		return isExternal() ? (getReferencedAttribute(cspec, cache) != null) : cspec.getAttribute(getAttribute()).isEnabled(cache);
+		if (isExternal()) {
+			try {
+				return getReferencedAttribute(cspec, cache) != null;
+			} catch (MissingComponentException e) {
+				// Assume generated
+				return true;
+			}
+		}
+		return cspec.getAttribute(getAttribute()).isEnabled(cache);
 	}
 
 	@Override
