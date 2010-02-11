@@ -267,6 +267,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getEditPageId() {
 		return editPageId;
 	}
@@ -276,6 +277,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -285,6 +287,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Item> getItems() {
 		if (items == null) {
 			items = new EObjectContainmentEList<Item>(Item.class, this, PsfPackage.WORKING_SET__ITEMS);
@@ -297,6 +300,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getLabel() {
 		return label;
 	}
@@ -306,6 +310,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -315,6 +320,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setEditPageId(String newEditPageId) {
 		String oldEditPageId = editPageId;
 		editPageId = newEditPageId;
@@ -327,6 +333,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setId(String newId) {
 		String oldId = id;
 		id = newId;
@@ -339,6 +346,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setLabel(String newLabel) {
 		String oldLabel = label;
 		label = newLabel;
@@ -351,6 +359,7 @@ public class WorkingSetImpl extends EObjectImpl implements WorkingSet {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;

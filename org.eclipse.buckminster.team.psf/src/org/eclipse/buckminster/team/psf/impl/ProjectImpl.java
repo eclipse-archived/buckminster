@@ -122,6 +122,7 @@ public class ProjectImpl extends EObjectImpl implements Project {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getReference() {
 		return reference;
 	}
@@ -131,6 +132,7 @@ public class ProjectImpl extends EObjectImpl implements Project {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setReference(String newReference) {
 		String oldReference = reference;
 		reference = newReference;

@@ -196,6 +196,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getDocumentRoot() {
 		return documentRootEClass;
 	}
@@ -205,6 +206,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getDocumentRoot_Mixed() {
 		return (EAttribute) documentRootEClass.getEStructuralFeatures().get(1);
 	}
@@ -214,6 +216,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDocumentRoot_Psf() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(0);
 	}
@@ -223,6 +226,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getItem() {
 		return itemEClass;
 	}
@@ -232,6 +236,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getItem_ElementID() {
 		return (EAttribute) itemEClass.getEStructuralFeatures().get(1);
 	}
@@ -241,6 +246,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getItem_FactoryID() {
 		return (EAttribute) itemEClass.getEStructuralFeatures().get(0);
 	}
@@ -250,6 +256,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getItem_Path() {
 		return (EAttribute) itemEClass.getEStructuralFeatures().get(2);
 	}
@@ -259,6 +266,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getItem_Type() {
 		return (EAttribute) itemEClass.getEStructuralFeatures().get(3);
 	}
@@ -268,6 +276,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getProject() {
 		return projectEClass;
 	}
@@ -277,6 +286,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProject_Reference() {
 		return (EAttribute) projectEClass.getEStructuralFeatures().get(0);
 	}
@@ -286,6 +296,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPSF() {
 		return psfEClass;
 	}
@@ -295,6 +306,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPSF_Providers() {
 		return (EReference) psfEClass.getEStructuralFeatures().get(1);
 	}
@@ -304,6 +316,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPSF_Version() {
 		return (EAttribute) psfEClass.getEStructuralFeatures().get(0);
 	}
@@ -313,6 +326,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPSF_WorkingSets() {
 		return (EReference) psfEClass.getEStructuralFeatures().get(2);
 	}
@@ -322,6 +336,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PsfFactory getPsfFactory() {
 		return (PsfFactory) getEFactoryInstance();
 	}
@@ -331,6 +346,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRepositoryProvider() {
 		return repositoryProviderEClass;
 	}
@@ -340,6 +356,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRepositoryProvider_Id() {
 		return (EAttribute) repositoryProviderEClass.getEStructuralFeatures().get(0);
 	}
@@ -349,6 +366,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getRepositoryProvider_Projects() {
 		return (EReference) repositoryProviderEClass.getEStructuralFeatures().get(1);
 	}
@@ -358,6 +376,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getWorkingSet() {
 		return workingSetEClass;
 	}
@@ -367,6 +386,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getWorkingSet_EditPageId() {
 		return (EAttribute) workingSetEClass.getEStructuralFeatures().get(3);
 	}
@@ -376,6 +396,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getWorkingSet_Id() {
 		return (EAttribute) workingSetEClass.getEStructuralFeatures().get(0);
 	}
@@ -385,6 +406,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getWorkingSet_Items() {
 		return (EReference) workingSetEClass.getEStructuralFeatures().get(4);
 	}
@@ -394,6 +416,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getWorkingSet_Label() {
 		return (EAttribute) workingSetEClass.getEStructuralFeatures().get(1);
 	}
@@ -403,6 +426,7 @@ public class PsfPackageImpl extends EPackageImpl implements PsfPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getWorkingSet_Name() {
 		return (EAttribute) workingSetEClass.getEStructuralFeatures().get(2);
 	}

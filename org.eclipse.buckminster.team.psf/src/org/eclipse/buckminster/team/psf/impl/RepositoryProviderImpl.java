@@ -172,6 +172,7 @@ public class RepositoryProviderImpl extends EObjectImpl implements RepositoryPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -181,6 +182,7 @@ public class RepositoryProviderImpl extends EObjectImpl implements RepositoryPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Project> getProjects() {
 		if (projects == null) {
 			projects = new EObjectContainmentEList<Project>(Project.class, this, PsfPackage.REPOSITORY_PROVIDER__PROJECTS);
@@ -193,6 +195,7 @@ public class RepositoryProviderImpl extends EObjectImpl implements RepositoryPro
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setId(String newId) {
 		String oldId = id;
 		id = newId;

@@ -218,6 +218,7 @@ public class ItemImpl extends EObjectImpl implements Item {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getElementID() {
 		return elementID;
 	}
@@ -227,6 +228,7 @@ public class ItemImpl extends EObjectImpl implements Item {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getFactoryID() {
 		return factoryID;
 	}
@@ -236,6 +238,7 @@ public class ItemImpl extends EObjectImpl implements Item {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getPath() {
 		return path;
 	}
@@ -245,6 +248,7 @@ public class ItemImpl extends EObjectImpl implements Item {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public int getType() {
 		return type;
 	}
@@ -254,6 +258,7 @@ public class ItemImpl extends EObjectImpl implements Item {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setElementID(String newElementID) {
 		String oldElementID = elementID;
 		elementID = newElementID;
@@ -266,6 +271,7 @@ public class ItemImpl extends EObjectImpl implements Item {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFactoryID(String newFactoryID) {
 		String oldFactoryID = factoryID;
 		factoryID = newFactoryID;
@@ -278,6 +284,7 @@ public class ItemImpl extends EObjectImpl implements Item {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPath(String newPath) {
 		String oldPath = path;
 		path = newPath;
@@ -290,6 +297,7 @@ public class ItemImpl extends EObjectImpl implements Item {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setType(int newType) {
 		int oldType = type;
 		type = newType;

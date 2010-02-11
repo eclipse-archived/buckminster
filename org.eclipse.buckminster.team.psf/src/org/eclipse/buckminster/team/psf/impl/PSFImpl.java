@@ -196,6 +196,7 @@ public class PSFImpl extends EObjectImpl implements PSF {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<RepositoryProvider> getProviders() {
 		if (providers == null) {
 			providers = new EObjectContainmentEList<RepositoryProvider>(RepositoryProvider.class, this, PsfPackage.PSF__PROVIDERS);
@@ -208,6 +209,7 @@ public class PSFImpl extends EObjectImpl implements PSF {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getVersion() {
 		return version;
 	}
@@ -217,6 +219,7 @@ public class PSFImpl extends EObjectImpl implements PSF {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<WorkingSet> getWorkingSets() {
 		if (workingSets == null) {
 			workingSets = new EObjectContainmentEList<WorkingSet>(WorkingSet.class, this, PsfPackage.PSF__WORKING_SETS);
@@ -229,6 +232,7 @@ public class PSFImpl extends EObjectImpl implements PSF {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersion(String newVersion) {
 		String oldVersion = version;
 		version = newVersion;

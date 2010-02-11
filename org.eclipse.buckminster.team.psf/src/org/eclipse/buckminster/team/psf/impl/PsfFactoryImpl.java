@@ -92,6 +92,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EObject createDocumentRoot() {
 		EObject documentRoot = super.create(PsfPackage.Literals.DOCUMENT_ROOT);
 		return documentRoot;
@@ -102,6 +103,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Item createItem() {
 		ItemImpl item = new ItemImpl();
 		return item;
@@ -112,6 +114,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Project createProject() {
 		ProjectImpl project = new ProjectImpl();
 		return project;
@@ -122,6 +125,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PSF createPSF() {
 		PSFImpl psf = new PSFImpl();
 		return psf;
@@ -132,6 +136,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public RepositoryProvider createRepositoryProvider() {
 		RepositoryProviderImpl repositoryProvider = new RepositoryProviderImpl();
 		return repositoryProvider;
@@ -142,6 +147,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public WorkingSet createWorkingSet() {
 		WorkingSetImpl workingSet = new WorkingSetImpl();
 		return workingSet;
@@ -152,6 +158,7 @@ public class PsfFactoryImpl extends EFactoryImpl implements PsfFactory {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public PsfPackage getPsfPackage() {
 		return (PsfPackage) getEPackage();
 	}
