@@ -236,7 +236,9 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 			log.info(NLS.bind(Messages.resetting_target_platform_0, target.getName()));
 			target.resolve(new NullProgressMonitor());
 			LoadTargetDefinitionJob loadTP = new LoadTargetDefinitionJob(target);
-			loadTP.run(new NullProgressMonitor());
+			IStatus loadStatus = loadTP.run(new NullProgressMonitor());
+			if (loadStatus.getSeverity() == IStatus.ERROR)
+				throw new CoreException(loadStatus);
 		} catch (CoreException e) {
 			log.warning(e, e.getLocalizedMessage());
 		} finally {
