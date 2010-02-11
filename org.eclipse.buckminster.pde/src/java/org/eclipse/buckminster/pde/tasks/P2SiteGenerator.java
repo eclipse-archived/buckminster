@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.actor.AbstractActor;
@@ -55,6 +56,7 @@ import org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataReposit
 import org.eclipse.equinox.internal.p2.publisher.eclipse.FeatureManifestParser;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
+import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
@@ -296,8 +298,10 @@ public class P2SiteGenerator extends AbstractActor {
 			siteDescriptor = productDesc;
 		}
 
+		IProvisioningAgent agent = CorePlugin.getDefault().getResolverAgent();
 		URI siteURI = siteFolder.toURI();
 		SimpleArtifactRepositoryFactory arFactory = new SimpleArtifactRepositoryFactory();
+		arFactory.setAgent(agent);
 		IArtifactRepository ar = arFactory.create(siteURI, siteDescriptorName + " - Artifact Repository", null, null); //$NON-NLS-1$
 		String trueStr = Boolean.toString(true);
 		ar.setProperty(IRepository.PROP_COMPRESSED, trueStr);
@@ -307,6 +311,7 @@ public class P2SiteGenerator extends AbstractActor {
 		info.setArtifactOptions(IPublisherInfo.A_PUBLISH | IPublisherInfo.A_INDEX);
 
 		SimpleMetadataRepositoryFactory mdrFactory = new SimpleMetadataRepositoryFactory();
+		mdrFactory.setAgent(agent);
 		IMetadataRepository mdr = mdrFactory.create(siteURI, siteDescriptorName, null, null);
 		mdr.setProperty(IRepository.PROP_COMPRESSED, trueStr);
 		info.setMetadataRepository(mdr);
