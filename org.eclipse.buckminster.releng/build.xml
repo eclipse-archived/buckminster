@@ -191,7 +191,7 @@
 		<echo message="Building all projects in workspace ${workspace}" />
 		<buckminster command="build" />
 
-		<echo message="Performing org.eclipse.buckminster.releng#promote" />
+		<echo message="Performing ${buckminster.action}" />
 		<buckminster command="perform">
 			<cmdargs>
 				<arg value="${buckminster.action}" />
