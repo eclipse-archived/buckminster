@@ -190,7 +190,7 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 					//
 					WorkspaceBindingInstallJob.stop();
 					for (Job job : jobManager.find(null)) {
-						if (job instanceof StringPoolJob)
+						if (job instanceof StringPoolJob || job instanceof DelayedSnapshotJob)
 							job.cancel();
 					}
 
