@@ -93,14 +93,6 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 		props.put(key, value);
 	}
 
-	public boolean isInWorkspace() {
-		return inWorkspace;
-	}
-
-	public void setInWorkspace(boolean inWorkspace) {
-		this.inWorkspace = inWorkspace;
-	}
-
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(DEFINE_DESCRIPTOR);
@@ -144,6 +136,10 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 	}
 
 	protected abstract int internalRun(IProgressMonitor monitor) throws Exception;
+
+	public boolean isInWorkspace() {
+		return inWorkspace;
+	}
 
 	@Override
 	protected final int run(IProgressMonitor monitor) throws Exception {
@@ -204,6 +200,15 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 							try {
 								jobManager.join(null, new NullProgressMonitor());
 							} catch (InterruptedException e) {
+								// Cancel remaining jobs
+								//
+								for (Job job : jobManager.find(null)) {
+									int state = job.getState();
+									if (state != Job.NONE) {
+										logger.debug("  JOB: %s is still active", job.toString()); //$NON-NLS-1$
+										job.cancel();
+									}
+								}
 							}
 						}
 					};
@@ -216,16 +221,6 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 					joinWait.start();
 					joinWait.join(60000);
 					joinWait.interrupt();
-
-					// Cancel remaining jobs
-					//
-					for (Job job : jobManager.find(null)) {
-						int state = job.getState();
-						if (state != Job.NONE) {
-							logger.debug("  JOB: %s is still active", job.toString()); //$NON-NLS-1$
-							job.cancel();
-						}
-					}
 
 					// and resume the job manager. The workspace save will start
 					// new
@@ -240,5 +235,9 @@ public abstract class WorkspaceCommand extends AbstractCommand {
 					System.setProperties(sysProps);
 			}
 		}
+	}
+
+	public void setInWorkspace(boolean inWorkspace) {
+		this.inWorkspace = inWorkspace;
 	}
 }
