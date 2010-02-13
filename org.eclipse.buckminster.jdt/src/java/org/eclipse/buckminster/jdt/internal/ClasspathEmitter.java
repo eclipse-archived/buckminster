@@ -105,7 +105,7 @@ public class ClasspathEmitter extends PropertiesEmitter {
 		if (seenProjects.contains(projectName))
 			return;
 		seenProjects.add(projectName);
-		log.debug("Emitting classpath for project %s...", projectName);
+		log.debug("Emitting classpath for project %s...", projectName); //$NON-NLS-1$
 
 		IJavaProject javaProject = model.getJavaProject(projectName);
 		IClasspathEntry[] entries;
@@ -114,19 +114,19 @@ public class ClasspathEmitter extends PropertiesEmitter {
 			//
 			BMClasspathContainer container = new BMClasspathContainer(project, target);
 			entries = container.getClasspathEntries();
-			log.debug(" not a java project, contains %d entries", Integer.valueOf(entries.length));
+			log.debug(" not a java project, contains %d entries", Integer.valueOf(entries.length)); //$NON-NLS-1$
 		} else {
 			entries = (atTop && target != null) ? changeClasspathForTarget(javaProject, target) : javaProject.getResolvedClasspath(false);
-			log.debug(" java project, contains %d entries", Integer.valueOf(entries.length));
+			log.debug(" java project, contains %d entries", Integer.valueOf(entries.length)); //$NON-NLS-1$
 		}
 
 		for (IClasspathEntry entry : entries) {
 			IPath entryPath;
 			switch (entry.getEntryKind()) {
 				case IClasspathEntry.CPE_LIBRARY:
-					log.debug(" found library with path: %s", entry.getPath());
+					log.debug(" found library with path: %s", entry.getPath()); //$NON-NLS-1$
 					if (!(atTop || entry.isExported())) {
-						log.debug(" skipping path %s. It's neither at top nor exported", entry.getPath());
+						log.debug(" skipping path %s. It's neither at top nor exported", entry.getPath()); //$NON-NLS-1$
 						continue;
 					}
 
@@ -142,13 +142,13 @@ public class ClasspathEmitter extends PropertiesEmitter {
 							continue;
 						entryPath = proj.getOutputLocation();
 					}
-					log.debug(" found source with path: %s", entryPath);
+					log.debug(" found source with path: %s", entryPath); //$NON-NLS-1$
 					break;
 				case IClasspathEntry.CPE_PROJECT:
 					projectName = entry.getPath().segment(0);
-					log.debug(" found project: %s", projectName);
+					log.debug(" found project: %s", projectName); //$NON-NLS-1$
 					if (!(atTop || entry.isExported())) {
-						log.debug(" skipping project %s. It's neither at top nor exported", projectName);
+						log.debug(" skipping project %s. It's neither at top nor exported", projectName); //$NON-NLS-1$
 						continue;
 					}
 
@@ -161,14 +161,14 @@ public class ClasspathEmitter extends PropertiesEmitter {
 
 			IResource folder = ResourcesPlugin.getWorkspace().getRoot().findMember(entryPath);
 			if (folder != null) {
-				log.debug(" path %s is inside workspace, switching to %s", entryPath, folder.getLocation());
+				log.debug(" path %s is inside workspace, switching to %s", entryPath, folder.getLocation()); //$NON-NLS-1$
 				entryPath = folder.getLocation();
 			}
 
 			if (!seenPaths.contains(entryPath)) {
 				seenPaths.add(entryPath);
 				path.add(entryPath);
-				log.debug(" path %s added", entryPath);
+				log.debug(" path %s added", entryPath); //$NON-NLS-1$
 			}
 		}
 	}
@@ -192,7 +192,7 @@ public class ClasspathEmitter extends PropertiesEmitter {
 		boolean targetContainerInstalled = false;
 
 		Logger log = Buckminster.getLogger();
-		log.debug("Changing classpath for project %s into %s", javaProject.getProject().getName(), target);
+		log.debug("Changing classpath for project %s into %s", javaProject.getProject().getName(), target); //$NON-NLS-1$
 		IPath desiredContainer = BMClasspathContainer.PATH.append(target);
 		IClasspathEntry[] rawEntries = javaProject.readRawClasspath();
 		int top = rawEntries.length;
@@ -233,7 +233,7 @@ public class ClasspathEmitter extends PropertiesEmitter {
 			entriesChanged = true;
 		}
 
-		log.debug(entriesChanged ? " changes detected" : " no changes detected");
+		log.debug(entriesChanged ? " changes detected" : " no changes detected"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		return entriesChanged ? getResolvedClasspath(javaProject, rawEntries) : javaProject.getResolvedClasspath(false);
 	}

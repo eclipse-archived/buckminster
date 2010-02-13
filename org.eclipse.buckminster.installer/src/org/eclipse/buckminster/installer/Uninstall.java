@@ -41,7 +41,7 @@ public class Uninstall extends AbstractCommand {
 			try {
 				version = Version.parseVersion(unparsed[1]);
 			} catch (IllegalArgumentException e) {
-				throw new SimpleErrorExitException(NLS.bind("Unable to parse version: {0}", unparsed[1], e.getMessage()));
+				throw new SimpleErrorExitException(NLS.bind("Unable to parse version: {0}", unparsed[1], e.getMessage())); //$NON-NLS-1$
 			}
 	}
 

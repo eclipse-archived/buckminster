@@ -398,11 +398,11 @@ public class CSpecImpl extends ComponentIdentifierImpl implements CSpec {
 	 */
 	@Override
 	public EList<Attribute> getDerivedAttributes(IContext context, boolean includePrivate) {
-		EList<Attribute> attributes = new BasicEList<Attribute>();
+		EList<Attribute> attributeList = new BasicEList<Attribute>();
 		for (Attribute ag : getAttributes())
 			if ((includePrivate || ag.isPublic()) && ag.isDerived(context))
-				attributes.add(ag);
-		return attributes;
+				attributeList.add(ag);
+		return attributeList;
 	}
 
 	/**

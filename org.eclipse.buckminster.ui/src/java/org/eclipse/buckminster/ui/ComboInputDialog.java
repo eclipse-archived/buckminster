@@ -35,7 +35,6 @@ import org.eclipse.swt.widgets.Text;
  * as required.
  * </p>
  */
-@SuppressWarnings("hiding")
 public class ComboInputDialog extends Dialog {
 	/**
 	 * The title of the dialog.
@@ -280,12 +279,12 @@ public class ComboInputDialog extends Dialog {
 	 * </p>
 	 */
 	protected void validateInput() {
-		String errorMessage = null;
+		String errorMsg = null;
 		if (validator != null) {
-			errorMessage = validator.isValid(combo.getText());
+			errorMsg = validator.isValid(combo.getText());
 		}
 		// Bug 16256: important not to treat "" (blank error) the same as null
 		// (no error)
-		setErrorMessage(errorMessage);
+		setErrorMessage(errorMsg);
 	}
 }

@@ -63,10 +63,10 @@ public class InstallJRE extends WorkspaceCommand {
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception {
 		if (location == null)
-			throw new UsageException("Missing required option --location <JRE location>");
+			throw new UsageException("Missing required option --location <JRE location>"); //$NON-NLS-1$
 
 		if (!location.isDirectory())
-			throw new UsageException(NLS.bind("JRE location {0} does not appoint a directory", location.getAbsolutePath()));
+			throw new UsageException(NLS.bind("JRE location {0} does not appoint a directory", location.getAbsolutePath())); //$NON-NLS-1$
 
 		if (name == null)
 			name = location.getName();

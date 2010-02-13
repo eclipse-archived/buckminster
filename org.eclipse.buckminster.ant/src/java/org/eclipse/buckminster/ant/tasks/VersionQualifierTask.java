@@ -170,7 +170,7 @@ public class VersionQualifierTask {
 								matchBld.append('.');
 								continue;
 							case '*':
-								matchBld.append(".*");
+								matchBld.append(".*"); //$NON-NLS-1$
 								continue;
 							case '(':
 							case ')':

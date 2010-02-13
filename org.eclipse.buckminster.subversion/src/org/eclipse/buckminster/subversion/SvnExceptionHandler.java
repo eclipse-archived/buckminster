@@ -77,7 +77,7 @@ public class SvnExceptionHandler {
 		final Set<String> keys = MAPS.keySet();
 		for (String key : keys)
 			if (message.indexOf(key) != -1) {
-				Buckminster.getLogger().debug("Found " + getExceptionTypeFromKey(key) + " exception from " + getDescription(key));
+				Buckminster.getLogger().debug("Found " + getExceptionTypeFromKey(key) + " exception from " + getDescription(key)); //$NON-NLS-1$//$NON-NLS-2$
 				return true;
 			}
 		return false;
@@ -85,18 +85,18 @@ public class SvnExceptionHandler {
 
 	private static String getDescription(String key) {
 		final String exceptionKey = MAPS.get(key);
-		final String[] parts = exceptionKey.split("\\|");
-		final String langage = parts.length == 2 ? "default" : parts[2];
-		return "subversion version " + parts[1] + " langage " + langage;
+		final String[] parts = exceptionKey.split("\\|"); //$NON-NLS-1$
+		final String language = parts.length == 2 ? "default" : parts[2]; //$NON-NLS-1$
+		return "subversion version " + parts[1] + " language " + language; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	private static EExceptionType getExceptionTypeFromKey(String key) {
 		final String originalExceptionName = MAPS.get(key);
-		if (originalExceptionName.startsWith("file_not_found"))
+		if (originalExceptionName.startsWith("file_not_found")) //$NON-NLS-1$
 			return EExceptionType.FILE_NOT_FOUND;
-		if (originalExceptionName.startsWith("path_not_found"))
+		if (originalExceptionName.startsWith("path_not_found")) //$NON-NLS-1$
 			return EExceptionType.PATH_NOT_FOUND;
-		if (originalExceptionName.startsWith("URL_non_existent"))
+		if (originalExceptionName.startsWith("URL_non_existent")) //$NON-NLS-1$
 			return EExceptionType.URL_NON_EXISTENT;
 		return EExceptionType.OTHER;
 	}
@@ -104,7 +104,7 @@ public class SvnExceptionHandler {
 	private static void initializeExceptionMessages() {
 		try {
 			Properties props = new Properties();
-			props.load(SvnExceptionHandler.class.getResourceAsStream("svn_exception_messages.properties"));
+			props.load(SvnExceptionHandler.class.getResourceAsStream("svn_exception_messages.properties")); //$NON-NLS-1$
 			for (Entry<Object, Object> entry : props.entrySet()) {
 				final String exception = (String) entry.getKey();
 				final String message = (String) entry.getValue();

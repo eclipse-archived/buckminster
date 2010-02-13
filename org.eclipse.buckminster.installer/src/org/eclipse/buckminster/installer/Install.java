@@ -56,8 +56,8 @@ public class Install extends AbstractCommand {
 
 	static IQueryResult<IInstallableUnit> getRootIUs(IProvisioningAgent agent, URI site, IProfile profile, String iuName, Version version,
 			IProgressMonitor monitor) throws CoreException {
-		if (!iuName.endsWith(".feature.group"))
-			iuName = iuName + ".feature.group";
+		if (!iuName.endsWith(".feature.group")) //$NON-NLS-1$
+			iuName = iuName + ".feature.group"; //$NON-NLS-1$
 
 		IQuery<IInstallableUnit> query = new InstallableUnitQuery(iuName, version == null ? VersionRange.emptyRange : new VersionRange(version, true,
 				version, true));
@@ -129,9 +129,9 @@ public class Install extends AbstractCommand {
 			throw new UsageException(Messages.too_many_arguments);
 		if (len > 0) {
 			String p2Repos = unparsed[0];
-			if (p2Repos.endsWith("/headless-site.xml"))
+			if (p2Repos.endsWith("/headless-site.xml")) //$NON-NLS-1$
 				p2Repos = p2Repos.substring(0, p2Repos.length() - 18);
-			else if (p2Repos.endsWith("/site.xml"))
+			else if (p2Repos.endsWith("/site.xml")) //$NON-NLS-1$
 				p2Repos = p2Repos.substring(0, p2Repos.length() - 9);
 			site = normalizeToURI(p2Repos);
 		}
@@ -151,10 +151,10 @@ public class Install extends AbstractCommand {
 		Buckminster bucky = Buckminster.getDefault();
 		IProvisioningAgentProvider agentProvider = bucky.getService(IProvisioningAgentProvider.class);
 		IProvisioningAgent agent = agentProvider.createAgent(null);
-		String profileId = bucky.getBundle().getBundleContext().getProperty("eclipse.p2.profile");
+		String profileId = bucky.getBundle().getBundleContext().getProperty("eclipse.p2.profile"); //$NON-NLS-1$
 		if (profileId == null) {
-			profileId = "Buckminster";
-			System.setProperty("eclipse.p2.profile", profileId);
+			profileId = "Buckminster"; //$NON-NLS-1$
+			System.setProperty("eclipse.p2.profile", profileId); //$NON-NLS-1$
 		}
 
 		IProfileRegistry profileRegistry = (IProfileRegistry) agent.getService(IProfileRegistry.SERVICE_NAME);

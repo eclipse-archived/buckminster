@@ -39,7 +39,7 @@ public class CacheImpl implements ICache {
 	private static File asLocal(URL url) {
 		try {
 			url = FileLocator.resolve(url);
-			return "file".equalsIgnoreCase(url.getProtocol()) ? new File(url.toURI()) : null;
+			return "file".equalsIgnoreCase(url.getProtocol()) ? new File(url.toURI()) : null; //$NON-NLS-1$
 		} catch (IOException e) {
 			return null;
 		} catch (URISyntaxException e) {

@@ -170,7 +170,7 @@ public class CVSReaderType extends CatalogReaderType {
 		String version = tokenizer.nextToken();
 		// If this is a newer version, then ignore it
 		if (!version.equals("1.0")) //$NON-NLS-1$
-			throw BuckminsterException.fromMessage("The cvs reader only understands version PSF project references of version 1.0");
+			throw BuckminsterException.fromMessage("The cvs reader only understands version PSF project references of version 1.0"); //$NON-NLS-1$
 
 		String repositoryLocation = tokenizer.nextToken();
 		String module = tokenizer.nextToken();

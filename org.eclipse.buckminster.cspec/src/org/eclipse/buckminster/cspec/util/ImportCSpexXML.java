@@ -47,16 +47,16 @@ public class ImportCSpexXML {
 
 	private IComponentSpec xmlSpec;
 
-	public CSpec importCSpec(IComponentSpec xmlSpec) {
-		this.xmlSpec = xmlSpec;
+	public CSpec importCSpec(IComponentSpec xmlSpc) {
+		xmlSpec = xmlSpc;
 		cspec = (CSpecImpl) CspecFactory.eINSTANCE.createCSpec();
-		cspec.setId(xmlSpec.getName());
-		cspec.setType(xmlSpec.getComponentType());
-		cspec.setVersion(xmlSpec.getVersion());
-		cspec.setDocumentation(xmlSpec.getDocumentation());
-		cspec.setFilter(xmlSpec.getFilter());
-		cspec.setShortDesc(xmlSpec.getShortDesc());
-		cspec.setProjectInfo(xmlSpec.getProjectInfo());
+		cspec.setId(xmlSpc.getName());
+		cspec.setType(xmlSpc.getComponentType());
+		cspec.setVersion(xmlSpc.getVersion());
+		cspec.setDocumentation(xmlSpc.getDocumentation());
+		cspec.setFilter(xmlSpc.getFilter());
+		cspec.setShortDesc(xmlSpc.getShortDesc());
+		cspec.setProjectInfo(xmlSpc.getProjectInfo());
 		cspec.getAttributes().add(CspecFactory.eINSTANCE.createSelfArtifact());
 		copyDependencies();
 		copyGenerators();

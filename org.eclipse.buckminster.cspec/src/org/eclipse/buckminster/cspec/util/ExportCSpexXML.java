@@ -44,16 +44,16 @@ public class ExportCSpexXML {
 
 	private CSpec cspec;
 
-	public IComponentSpec exportCSpec(CSpec cspec) {
-		this.cspec = cspec;
+	public IComponentSpec exportCSpec(CSpec cspc) {
+		cspec = cspc;
 		xmlSpec = (ComponentSpecImpl) ICSpecXMLFactory.eINSTANCE.createComponentSpec();
-		xmlSpec.setName(cspec.getId());
-		xmlSpec.setComponentType(cspec.getType());
-		xmlSpec.setVersion(cspec.getVersion());
-		xmlSpec.setDocumentation(cspec.getDocumentation());
-		xmlSpec.setFilter(cspec.getFilter());
-		xmlSpec.setShortDesc(cspec.getShortDesc());
-		xmlSpec.setProjectInfo(cspec.getProjectInfo());
+		xmlSpec.setName(cspc.getId());
+		xmlSpec.setComponentType(cspc.getType());
+		xmlSpec.setVersion(cspc.getVersion());
+		xmlSpec.setDocumentation(cspc.getDocumentation());
+		xmlSpec.setFilter(cspc.getFilter());
+		xmlSpec.setShortDesc(cspc.getShortDesc());
+		xmlSpec.setProjectInfo(cspc.getProjectInfo());
 		copyDependencies();
 		copyGenerators();
 		copyAttributes();

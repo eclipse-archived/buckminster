@@ -21,15 +21,15 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> exten
 
 	@Override
 	public ReferenceInfo extractReferenceInfo(String reference) throws CoreException {
-		String[] parts = TextUtils.split(reference, ",");
+		String[] parts = TextUtils.split(reference, ","); //$NON-NLS-1$
 		if (parts.length < 3)
-			throw BuckminsterException.fromMessage(NLS.bind("The svn readerType cannot parse PSF project reference {0}", reference));
+			throw BuckminsterException.fromMessage(NLS.bind("The svn readerType cannot parse PSF project reference {0}", reference)); //$NON-NLS-1$
 
 		String repositoryLocation = parts[1];
 		String module = null;
 		VersionSelector selector = null;
 		boolean useScheme = false;
-		int trunkPos = repositoryLocation.indexOf("/trunk");
+		int trunkPos = repositoryLocation.indexOf("/trunk"); //$NON-NLS-1$
 		if (trunkPos > 0) {
 			// Do we have something after /trunk ?
 			//
@@ -42,7 +42,7 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> exten
 				useScheme = true;
 			}
 		} else {
-			int branchPos = repositoryLocation.indexOf("/branches/");
+			int branchPos = repositoryLocation.indexOf("/branches/"); //$NON-NLS-1$
 			if (branchPos > 0) {
 				// Treat what ever follows directly after /branches/ as a branch
 				// name
@@ -57,7 +57,7 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> exten
 				repositoryLocation = repositoryLocation.substring(0, branchPos);
 				useScheme = true;
 			} else {
-				int tagPos = repositoryLocation.indexOf("/tags/");
+				int tagPos = repositoryLocation.indexOf("/tags/"); //$NON-NLS-1$
 				if (tagPos > 0) {
 					// Treat what ever follows directly after /tags/ as a tag
 					// name
@@ -78,12 +78,12 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> exten
 		if (useScheme) {
 			StringBuilder thaUri = new StringBuilder();
 			thaUri.append(repositoryLocation);
-			thaUri.append("/trunk");
+			thaUri.append("/trunk"); //$NON-NLS-1$
 			if (module != null) {
 				thaUri.append(module);
-				thaUri.append("?moduleAfterBranch&moduleAfterTag");
+				thaUri.append("?moduleAfterBranch&moduleAfterTag"); //$NON-NLS-1$
 			} else
-				thaUri.append("?moduleBeforeBranch&moduleBeforeTag");
+				thaUri.append("?moduleBeforeBranch&moduleBeforeTag"); //$NON-NLS-1$
 			repositoryLocation = thaUri.toString();
 		}
 		return new ReferenceInfo(repositoryLocation, selector, parts[2]);
