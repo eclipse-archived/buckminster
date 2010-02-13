@@ -74,4 +74,9 @@ public interface ITargetPlatform {
 	 *            system
 	 */
 	void locationsChanged(Set<File> locations);
+
+	/**
+	 * Refresh the active target platform.
+	 */
+	void refresh();
 }

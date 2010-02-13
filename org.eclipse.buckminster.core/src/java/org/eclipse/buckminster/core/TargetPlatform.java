@@ -129,4 +129,9 @@ public class TargetPlatform extends AbstractExtension implements ITargetPlatform
 	public void locationsChanged(Set<File> locations) {
 		// Nothing to do here.
 	}
+
+	@Override
+	public void refresh() {
+		// Nothing to do here.
+	}
 }

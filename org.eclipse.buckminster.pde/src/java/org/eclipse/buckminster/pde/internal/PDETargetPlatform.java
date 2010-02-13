@@ -233,18 +233,24 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 				return;
 			}
 
-			log.info(NLS.bind(Messages.resetting_target_platform_0, target.getName()));
-			target.resolve(new NullProgressMonitor());
-			LoadTargetDefinitionJob loadTP = new LoadTargetDefinitionJob(target);
-			IStatus loadStatus = loadTP.run(new NullProgressMonitor());
-			if (loadStatus.getSeverity() == IStatus.ERROR)
-				throw new CoreException(loadStatus);
+			refresh(target);
 		} catch (CoreException e) {
 			log.warning(e, e.getLocalizedMessage());
 		} finally {
 			bucky.ungetService(service);
 			log.debug("Done processing changes in target platform locations"); //$NON-NLS-1$
 		}
+	}
+
+	@Override
+	public void refresh() {
+		doWithActivePlatform(new ITargetDefinitionOperation<Object>() {
+			@Override
+			public Object run(ITargetDefinition target) throws CoreException {
+				refresh(target);
+				return null;
+			}
+		});
 	}
 
 	private <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation) {
@@ -263,5 +269,15 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		} finally {
 			bucky.ungetService(service);
 		}
+	}
+
+	private void refresh(ITargetDefinition target) throws CoreException {
+		Logger log = Buckminster.getLogger();
+		log.info(NLS.bind(Messages.resetting_target_platform_0, target.getName()));
+		target.resolve(new NullProgressMonitor());
+		LoadTargetDefinitionJob loadTP = new LoadTargetDefinitionJob(target);
+		IStatus loadStatus = loadTP.run(new NullProgressMonitor());
+		if (loadStatus.getSeverity() == IStatus.ERROR)
+			throw new CoreException(loadStatus);
 	}
 }

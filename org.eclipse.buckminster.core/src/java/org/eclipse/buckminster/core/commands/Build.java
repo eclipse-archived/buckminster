@@ -18,6 +18,7 @@ import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -52,11 +53,14 @@ public class Build extends WorkspaceCommand {
 			//
 			wsRoot.refreshLocal(IResource.DEPTH_INFINITE, MonitorUtils.subMonitor(monitor, projs.length));
 
-			if (clean)
+			if (clean || thorough)
 				//
 				// Clean first if requested
 				//
 				ws.build(IncrementalProjectBuilder.CLEAN_BUILD, MonitorUtils.subMonitor(monitor, projs.length * 2));
+
+			if (thorough)
+				TargetPlatform.getInstance().refresh();
 
 			ws.build(IncrementalProjectBuilder.FULL_BUILD, MonitorUtils.subMonitor(monitor, projs.length * 5));
 
