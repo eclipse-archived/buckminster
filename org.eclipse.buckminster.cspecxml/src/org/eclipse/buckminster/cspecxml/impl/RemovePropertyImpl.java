@@ -122,6 +122,7 @@ public class RemovePropertyImpl extends EObjectImpl implements IRemoveProperty {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getKey() {
 		return key;
 	}
@@ -131,6 +132,7 @@ public class RemovePropertyImpl extends EObjectImpl implements IRemoveProperty {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setKey(String newKey) {
 		String oldKey = key;
 		key = newKey;

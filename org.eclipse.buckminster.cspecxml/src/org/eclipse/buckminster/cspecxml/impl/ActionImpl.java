@@ -409,6 +409,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getActor() {
 		return actor;
 	}
@@ -418,6 +419,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IProperties> getActorProperties() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__ACTOR_PROPERTIES);
 	}
@@ -427,6 +429,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IDefinitions> getDefinitions() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__DEFINITIONS);
 	}
@@ -436,6 +439,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -445,6 +449,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ACTION__GROUP);
@@ -457,6 +462,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IPrerequisites> getPrerequisites() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__PREREQUISITES);
 	}
@@ -466,6 +472,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IProductsType> getProducts() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__PRODUCTS);
 	}
@@ -475,6 +482,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IProperties> getProperties() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTION__PROPERTIES);
 	}
@@ -484,6 +492,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isAlways() {
 		return always;
 	}
@@ -493,6 +502,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isAssignConsoleSupport() {
 		return assignConsoleSupport;
 	}
@@ -502,6 +512,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -511,6 +522,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetAlways() {
 		return alwaysESet;
 	}
@@ -520,6 +532,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetAssignConsoleSupport() {
 		return assignConsoleSupportESet;
 	}
@@ -529,6 +542,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetEnabled() {
 		return enabledESet;
 	}
@@ -538,6 +552,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setActor(String newActor) {
 		String oldActor = actor;
 		actor = newActor;
@@ -550,6 +565,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAlways(boolean newAlways) {
 		boolean oldAlways = always;
 		always = newAlways;
@@ -564,6 +580,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAssignConsoleSupport(boolean newAssignConsoleSupport) {
 		boolean oldAssignConsoleSupport = assignConsoleSupport;
 		assignConsoleSupport = newAssignConsoleSupport;
@@ -579,6 +596,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setEnabled(boolean newEnabled) {
 		boolean oldEnabled = enabled;
 		enabled = newEnabled;
@@ -593,6 +611,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -641,6 +660,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetAlways() {
 		boolean oldAlways = always;
 		boolean oldAlwaysESet = alwaysESet;
@@ -655,6 +675,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetAssignConsoleSupport() {
 		boolean oldAssignConsoleSupport = assignConsoleSupport;
 		boolean oldAssignConsoleSupportESet = assignConsoleSupportESet;
@@ -670,6 +691,7 @@ public class ActionImpl extends AttributeImpl implements IAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetEnabled() {
 		boolean oldEnabled = enabled;
 		boolean oldEnabledESet = enabledESet;

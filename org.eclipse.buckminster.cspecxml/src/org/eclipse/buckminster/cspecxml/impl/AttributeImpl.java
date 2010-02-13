@@ -249,6 +249,7 @@ public class AttributeImpl extends EObjectImpl implements IAttribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -258,6 +259,7 @@ public class AttributeImpl extends EObjectImpl implements IAttribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -267,6 +269,7 @@ public class AttributeImpl extends EObjectImpl implements IAttribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IParameterType> getParameter() {
 		if (parameter == null) {
 			parameter = new EObjectContainmentEList<IParameterType>(IParameterType.class, this, ICSpecXMLPackage.ATTRIBUTE__PARAMETER);
@@ -279,6 +282,7 @@ public class AttributeImpl extends EObjectImpl implements IAttribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getVersion() {
 		return version;
 	}
@@ -288,6 +292,7 @@ public class AttributeImpl extends EObjectImpl implements IAttribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -309,6 +314,7 @@ public class AttributeImpl extends EObjectImpl implements IAttribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -321,6 +327,7 @@ public class AttributeImpl extends EObjectImpl implements IAttribute {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersion(String newVersion) {
 		String oldVersion = version;
 		version = newVersion;

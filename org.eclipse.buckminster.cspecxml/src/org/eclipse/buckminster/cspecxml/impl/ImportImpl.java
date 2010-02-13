@@ -189,6 +189,7 @@ public class ImportImpl extends EObjectImpl implements IImport {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAttribute() {
 		return attribute;
 	}
@@ -198,6 +199,7 @@ public class ImportImpl extends EObjectImpl implements IImport {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getFilter() {
 		return filter;
 	}
@@ -207,6 +209,7 @@ public class ImportImpl extends EObjectImpl implements IImport {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getVersionDesignator() {
 		return versionDesignator;
 	}
@@ -216,6 +219,7 @@ public class ImportImpl extends EObjectImpl implements IImport {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAttribute(String newAttribute) {
 		String oldAttribute = attribute;
 		attribute = newAttribute;
@@ -228,6 +232,7 @@ public class ImportImpl extends EObjectImpl implements IImport {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(String newFilter) {
 		String oldFilter = filter;
 		filter = newFilter;
@@ -240,6 +245,7 @@ public class ImportImpl extends EObjectImpl implements IImport {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersionDesignator(String newVersionDesignator) {
 		String oldVersionDesignator = versionDesignator;
 		versionDesignator = newVersionDesignator;

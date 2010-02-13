@@ -38,7 +38,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <em>Alter Prerequisites</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspecxml.impl.AlterActionImpl#getAlterActorProperties
- * <em>Alter Actor Properties </em>}</li>
+ * <em>Alter Actor Properties</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspecxml.impl.AlterActionImpl#getAlterProperties
  * <em>Alter Properties</em>}</li>
@@ -202,6 +202,7 @@ public class AlterActionImpl extends ActionImpl implements IAlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterProperties> getAlterActorProperties() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.ALTER_ACTION__ALTER_ACTOR_PROPERTIES);
 	}
@@ -211,6 +212,7 @@ public class AlterActionImpl extends ActionImpl implements IAlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterPrerequisites> getAlterPrerequisites() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.ALTER_ACTION__ALTER_PREREQUISITES);
 	}
@@ -220,6 +222,7 @@ public class AlterActionImpl extends ActionImpl implements IAlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterProductsType> getAlterProducts() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.ALTER_ACTION__ALTER_PRODUCTS);
 	}
@@ -229,6 +232,7 @@ public class AlterActionImpl extends ActionImpl implements IAlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterProperties> getAlterProperties() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.ALTER_ACTION__ALTER_PROPERTIES);
 	}
@@ -238,6 +242,7 @@ public class AlterActionImpl extends ActionImpl implements IAlterAction {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup1() {
 		if (group1 == null) {
 			group1 = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_ACTION__GROUP1);

@@ -234,6 +234,7 @@ public class GroupImpl extends AttributeImpl implements IGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IPrerequisite> getAttribute() {
 		return getGroup().list(ICSpecXMLPackage.Literals.GROUP__ATTRIBUTE);
 	}
@@ -243,6 +244,7 @@ public class GroupImpl extends AttributeImpl implements IGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IDefinitions> getDefinitions() {
 		return getGroup().list(ICSpecXMLPackage.Literals.GROUP__DEFINITIONS);
 	}
@@ -252,6 +254,7 @@ public class GroupImpl extends AttributeImpl implements IGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -261,6 +264,7 @@ public class GroupImpl extends AttributeImpl implements IGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.GROUP__GROUP);
@@ -273,6 +277,7 @@ public class GroupImpl extends AttributeImpl implements IGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getRebase() {
 		return rebase;
 	}
@@ -282,6 +287,7 @@ public class GroupImpl extends AttributeImpl implements IGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -294,6 +300,7 @@ public class GroupImpl extends AttributeImpl implements IGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setRebase(String newRebase) {
 		String oldRebase = rebase;
 		rebase = newRebase;

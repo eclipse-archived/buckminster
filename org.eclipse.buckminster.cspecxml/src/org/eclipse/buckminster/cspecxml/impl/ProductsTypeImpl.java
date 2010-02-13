@@ -394,6 +394,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAlias() {
 		return alias;
 	}
@@ -403,6 +404,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getBase() {
 		return base;
 	}
@@ -412,6 +414,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public int getFileCount() {
 		return fileCount;
 	}
@@ -421,6 +424,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.PRODUCTS_TYPE__GROUP);
@@ -433,6 +437,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IPath> getPath() {
 		return getGroup().list(ICSpecXMLPackage.Literals.PRODUCTS_TYPE__PATH);
 	}
@@ -442,6 +447,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Pattern getPattern() {
 		return pattern;
 	}
@@ -451,6 +457,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IActionArtifact> getPrivate() {
 		return getGroup().list(ICSpecXMLPackage.Literals.PRODUCTS_TYPE__PRIVATE);
 	}
@@ -460,6 +467,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IActionArtifact> getPublic() {
 		return getGroup().list(ICSpecXMLPackage.Literals.PRODUCTS_TYPE__PUBLIC);
 	}
@@ -469,6 +477,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getReplacement() {
 		return replacement;
 	}
@@ -478,6 +487,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public UpToDatePolicy getUpToDatePolicy() {
 		return upToDatePolicy;
 	}
@@ -487,6 +497,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetUpToDatePolicy() {
 		return upToDatePolicyESet;
 	}
@@ -496,6 +507,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;
@@ -508,6 +520,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setBase(String newBase) {
 		String oldBase = base;
 		base = newBase;
@@ -520,6 +533,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFileCount(int newFileCount) {
 		int oldFileCount = fileCount;
 		fileCount = newFileCount;
@@ -532,6 +546,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPattern(Pattern newPattern) {
 		Pattern oldPattern = pattern;
 		pattern = newPattern;
@@ -544,6 +559,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setReplacement(String newReplacement) {
 		String oldReplacement = replacement;
 		replacement = newReplacement;
@@ -556,6 +572,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setUpToDatePolicy(UpToDatePolicy newUpToDatePolicy) {
 		UpToDatePolicy oldUpToDatePolicy = upToDatePolicy;
 		upToDatePolicy = newUpToDatePolicy == null ? UP_TO_DATE_POLICY_EDEFAULT : newUpToDatePolicy;
@@ -603,6 +620,7 @@ public class ProductsTypeImpl extends EObjectImpl implements IProductsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetUpToDatePolicy() {
 		UpToDatePolicy oldUpToDatePolicy = upToDatePolicy;
 		boolean oldUpToDatePolicyESet = upToDatePolicyESet;

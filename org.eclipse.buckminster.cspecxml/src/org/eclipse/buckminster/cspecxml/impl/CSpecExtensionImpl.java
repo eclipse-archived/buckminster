@@ -204,6 +204,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterActionsType> getAlterActions() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.CSPEC_EXTENSION__ALTER_ACTIONS);
 	}
@@ -213,6 +214,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterArtifactsType> getAlterArtifacts() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.CSPEC_EXTENSION__ALTER_ARTIFACTS);
 	}
@@ -222,6 +224,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterDependenciesType> getAlterDependencies() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.CSPEC_EXTENSION__ALTER_DEPENDENCIES);
 	}
@@ -231,6 +234,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterGroupsType> getAlterGroups() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.CSPEC_EXTENSION__ALTER_GROUPS);
 	}
@@ -240,6 +244,7 @@ public class CSpecExtensionImpl extends ComponentSpecBaseImpl implements ICSpecE
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup1() {
 		if (group1 == null) {
 			group1 = new BasicFeatureMap(this, ICSpecXMLPackage.CSPEC_EXTENSION__GROUP1);

@@ -409,6 +409,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAlias() {
 		return alias;
 	}
@@ -418,6 +419,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getComponent() {
 		return component;
 	}
@@ -427,6 +429,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getComponentType() {
 		return componentType;
 	}
@@ -436,6 +439,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Pattern getExcludePattern() {
 		return excludePattern;
 	}
@@ -445,6 +449,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -454,6 +459,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Pattern getIncludePattern() {
 		return includePattern;
 	}
@@ -463,6 +469,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -472,6 +479,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isContributor() {
 		return contributor;
 	}
@@ -481,6 +489,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isOptional() {
 		return optional;
 	}
@@ -490,6 +499,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetContributor() {
 		return contributorESet;
 	}
@@ -499,6 +509,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetOptional() {
 		return optionalESet;
 	}
@@ -508,6 +519,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;
@@ -520,6 +532,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setComponent(String newComponent) {
 		String oldComponent = component;
 		component = newComponent;
@@ -532,6 +545,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setComponentType(String newComponentType) {
 		String oldComponentType = componentType;
 		componentType = newComponentType;
@@ -544,6 +558,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setContributor(boolean newContributor) {
 		boolean oldContributor = contributor;
 		contributor = newContributor;
@@ -559,6 +574,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setExcludePattern(Pattern newExcludePattern) {
 		Pattern oldExcludePattern = excludePattern;
 		excludePattern = newExcludePattern;
@@ -571,6 +587,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -583,6 +600,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setIncludePattern(Pattern newIncludePattern) {
 		Pattern oldIncludePattern = includePattern;
 		includePattern = newIncludePattern;
@@ -595,6 +613,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -607,6 +626,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setOptional(boolean newOptional) {
 		boolean oldOptional = optional;
 		optional = newOptional;
@@ -660,6 +680,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetContributor() {
 		boolean oldContributor = contributor;
 		boolean oldContributorESet = contributorESet;
@@ -675,6 +696,7 @@ public class PrerequisiteImpl extends EObjectImpl implements IPrerequisite {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetOptional() {
 		boolean oldOptional = optional;
 		boolean oldOptionalESet = optionalESet;

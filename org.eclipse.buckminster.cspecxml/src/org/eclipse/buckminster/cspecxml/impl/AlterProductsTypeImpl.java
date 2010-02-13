@@ -205,6 +205,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_PRODUCTS_TYPE__GROUP);
@@ -217,6 +218,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterGroup> getPrivate() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PRODUCTS_TYPE__PRIVATE);
 	}
@@ -226,6 +228,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterGroup> getPublic() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PRODUCTS_TYPE__PUBLIC);
 	}
@@ -235,6 +238,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IRemovePath> getRemovePath() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PRODUCTS_TYPE__REMOVE_PATH);
 	}
@@ -244,6 +248,7 @@ public class AlterProductsTypeImpl extends EObjectImpl implements IAlterProducts
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IRemove> getRemoveProduct() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PRODUCTS_TYPE__REMOVE_PRODUCT);
 	}

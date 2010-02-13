@@ -173,6 +173,7 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_PROPERTIES__GROUP);
@@ -185,6 +186,7 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<PropertyConstant> getProperty() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PROPERTIES__PROPERTY);
 	}
@@ -194,6 +196,7 @@ public class AlterPropertiesImpl extends EObjectImpl implements IAlterProperties
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IRemoveProperty> getRemove() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_PROPERTIES__REMOVE);
 	}

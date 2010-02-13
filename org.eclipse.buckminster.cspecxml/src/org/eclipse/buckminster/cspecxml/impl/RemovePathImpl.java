@@ -122,6 +122,7 @@ public class RemovePathImpl extends EObjectImpl implements IRemovePath {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getPath() {
 		return path;
 	}
@@ -131,6 +132,7 @@ public class RemovePathImpl extends EObjectImpl implements IRemovePath {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPath(String newPath) {
 		String oldPath = path;
 		path = newPath;

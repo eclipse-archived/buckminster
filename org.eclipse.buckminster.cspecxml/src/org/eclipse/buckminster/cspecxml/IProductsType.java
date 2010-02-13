@@ -304,7 +304,7 @@ public interface IProductsType extends EObject {
 	/**
 	 * Sets the value of the '
 	 * {@link org.eclipse.buckminster.cspecxml.IProductsType#getReplacement
-	 * <em>Replacement</em>} ' attribute. <!-- begin-user-doc --> <!--
+	 * <em>Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * 
 	 * @param value

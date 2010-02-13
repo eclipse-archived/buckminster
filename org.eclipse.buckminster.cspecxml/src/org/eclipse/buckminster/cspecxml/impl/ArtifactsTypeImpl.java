@@ -169,6 +169,7 @@ public class ArtifactsTypeImpl extends EObjectImpl implements IArtifactsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ARTIFACTS_TYPE__GROUP);
@@ -181,6 +182,7 @@ public class ArtifactsTypeImpl extends EObjectImpl implements IArtifactsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IArtifact> getPrivate() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ARTIFACTS_TYPE__PRIVATE);
 	}
@@ -190,6 +192,7 @@ public class ArtifactsTypeImpl extends EObjectImpl implements IArtifactsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IArtifact> getPublic() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ARTIFACTS_TYPE__PUBLIC);
 	}

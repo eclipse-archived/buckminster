@@ -505,6 +505,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IActionsType> getActions() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__ACTIONS);
 	}
@@ -514,6 +515,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IArtifactsType> getArtifacts() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__ARTIFACTS);
 	}
@@ -523,6 +525,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getCategory() {
 		return category;
 	}
@@ -532,6 +535,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getComponentType() {
 		return componentType;
 	}
@@ -541,6 +545,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IDependenciesType> getDependencies() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__DEPENDENCIES);
 	}
@@ -550,6 +555,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -559,6 +565,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -568,6 +575,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IGeneratorsType> getGenerators() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__GENERATORS);
 	}
@@ -577,6 +585,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.COMPONENT_SPEC_BASE__GROUP);
@@ -589,6 +598,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IGroupsType> getGroups() {
 		return getGroup().list(ICSpecXMLPackage.Literals.COMPONENT_SPEC_BASE__GROUPS);
 	}
@@ -598,6 +608,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public URL getProjectInfo() {
 		return projectInfo;
 	}
@@ -607,6 +618,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -616,6 +628,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public Version getVersion() {
 		return VersionHelper.createVersion(getVersionType(), getVersionString());
 	}
@@ -625,6 +638,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getVersionString() {
 		return versionString;
 	}
@@ -634,6 +648,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getVersionType() {
 		return versionType;
 	}
@@ -643,6 +658,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setCategory(String newCategory) {
 		String oldCategory = category;
 		category = newCategory;
@@ -655,6 +671,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setComponentType(String newComponentType) {
 		String oldComponentType = componentType;
 		componentType = newComponentType;
@@ -668,6 +685,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -690,6 +708,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -702,6 +721,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setProjectInfo(URL newProjectInfo) {
 		URL oldProjectInfo = projectInfo;
 		projectInfo = newProjectInfo;
@@ -714,6 +734,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setShortDesc(String newShortDesc) {
 		String oldShortDesc = shortDesc;
 		shortDesc = newShortDesc;
@@ -726,9 +747,11 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersion(Version version) {
-		setVersionType(null);
-		setVersionString(version == null ? null : version.toString());
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -736,6 +759,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersionString(String newVersionString) {
 		String oldVersionString = versionString;
 		versionString = newVersionString;
@@ -749,6 +773,7 @@ public class ComponentSpecBaseImpl extends EObjectImpl implements IComponentSpec
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersionType(String newVersionType) {
 		String oldVersionType = versionType;
 		versionType = newVersionType;

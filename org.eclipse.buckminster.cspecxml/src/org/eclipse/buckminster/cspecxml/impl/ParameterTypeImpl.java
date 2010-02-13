@@ -196,6 +196,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -205,6 +206,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getValue() {
 		return value;
 	}
@@ -214,6 +216,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isMandatory() {
 		return mandatory;
 	}
@@ -223,6 +226,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isSetMandatory() {
 		return mandatoryESet;
 	}
@@ -232,6 +236,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setMandatory(boolean newMandatory) {
 		boolean oldMandatory = mandatory;
 		mandatory = newMandatory;
@@ -247,6 +252,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -259,6 +265,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setValue(String newValue) {
 		String oldValue = value;
 		value = newValue;
@@ -295,6 +302,7 @@ public class ParameterTypeImpl extends EObjectImpl implements IParameterType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void unsetMandatory() {
 		boolean oldMandatory = mandatory;
 		boolean oldMandatoryESet = mandatoryESet;

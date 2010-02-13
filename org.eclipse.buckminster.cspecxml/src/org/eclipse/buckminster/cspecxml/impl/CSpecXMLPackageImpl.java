@@ -690,6 +690,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAction() {
 		return actionEClass;
 	}
@@ -699,6 +700,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_Actor() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(6);
 	}
@@ -708,6 +710,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAction_ActorProperties() {
 		return (EReference) actionEClass.getEStructuralFeatures().get(2);
 	}
@@ -717,6 +720,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_Always() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(7);
 	}
@@ -726,6 +730,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_AssignConsoleSupport() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(8);
 	}
@@ -735,6 +740,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAction_Definitions() {
 		return (EReference) actionEClass.getEStructuralFeatures().get(1);
 	}
@@ -744,6 +750,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_Enabled() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(9);
 	}
@@ -753,6 +760,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_Filter() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(10);
 	}
@@ -762,6 +770,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAction_Group() {
 		return (EAttribute) actionEClass.getEStructuralFeatures().get(0);
 	}
@@ -771,6 +780,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAction_Prerequisites() {
 		return (EReference) actionEClass.getEStructuralFeatures().get(4);
 	}
@@ -780,6 +790,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAction_Products() {
 		return (EReference) actionEClass.getEStructuralFeatures().get(5);
 	}
@@ -789,6 +800,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAction_Properties() {
 		return (EReference) actionEClass.getEStructuralFeatures().get(3);
 	}
@@ -798,6 +810,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getActionArtifact() {
 		return actionArtifactEClass;
 	}
@@ -807,6 +820,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getActionArtifact_Alias() {
 		return (EAttribute) actionArtifactEClass.getEStructuralFeatures().get(0);
 	}
@@ -816,6 +830,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getActionsType() {
 		return actionsTypeEClass;
 	}
@@ -825,6 +840,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getActionsType_Group() {
 		return (EAttribute) actionsTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -834,6 +850,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getActionsType_Private() {
 		return (EReference) actionsTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -843,6 +860,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getActionsType_Public() {
 		return (EReference) actionsTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -852,6 +870,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterAction() {
 		return alterActionEClass;
 	}
@@ -861,6 +880,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_AlterActorProperties() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(2);
 	}
@@ -870,6 +890,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_AlterPrerequisites() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(1);
 	}
@@ -879,6 +900,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_AlterProducts() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(4);
 	}
@@ -888,6 +910,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterAction_AlterProperties() {
 		return (EReference) alterActionEClass.getEStructuralFeatures().get(3);
 	}
@@ -897,6 +920,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterAction_Group1() {
 		return (EAttribute) alterActionEClass.getEStructuralFeatures().get(0);
 	}
@@ -906,6 +930,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterActionsType() {
 		return alterActionsTypeEClass;
 	}
@@ -915,6 +940,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterActionsType_Group() {
 		return (EAttribute) alterActionsTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -924,6 +950,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterActionsType_Private() {
 		return (EReference) alterActionsTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -933,6 +960,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterActionsType_Public() {
 		return (EReference) alterActionsTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -942,6 +970,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterActionsType_Remove() {
 		return (EReference) alterActionsTypeEClass.getEStructuralFeatures().get(3);
 	}
@@ -951,6 +980,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterActionsType_Rename() {
 		return (EReference) alterActionsTypeEClass.getEStructuralFeatures().get(4);
 	}
@@ -960,6 +990,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterArtifact() {
 		return alterArtifactEClass;
 	}
@@ -969,6 +1000,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterArtifact_Group1() {
 		return (EAttribute) alterArtifactEClass.getEStructuralFeatures().get(0);
 	}
@@ -978,6 +1010,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterArtifact_RemovePath() {
 		return (EReference) alterArtifactEClass.getEStructuralFeatures().get(1);
 	}
@@ -987,6 +1020,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterArtifactsType() {
 		return alterArtifactsTypeEClass;
 	}
@@ -996,6 +1030,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterArtifactsType_Group() {
 		return (EAttribute) alterArtifactsTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1005,6 +1040,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterArtifactsType_Private() {
 		return (EReference) alterArtifactsTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -1014,6 +1050,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterArtifactsType_Public() {
 		return (EReference) alterArtifactsTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -1023,6 +1060,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterArtifactsType_Remove() {
 		return (EReference) alterArtifactsTypeEClass.getEStructuralFeatures().get(3);
 	}
@@ -1032,6 +1070,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterArtifactsType_Rename() {
 		return (EReference) alterArtifactsTypeEClass.getEStructuralFeatures().get(4);
 	}
@@ -1041,6 +1080,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterDependenciesType() {
 		return alterDependenciesTypeEClass;
 	}
@@ -1050,6 +1090,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterDependenciesType_Dependency() {
 		return (EReference) alterDependenciesTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -1059,6 +1100,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterDependenciesType_Group() {
 		return (EAttribute) alterDependenciesTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1068,6 +1110,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterDependenciesType_Remove() {
 		return (EReference) alterDependenciesTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -1077,6 +1120,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterGroup() {
 		return alterGroupEClass;
 	}
@@ -1086,6 +1130,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterGroup_AlterAttribute() {
 		return (EReference) alterGroupEClass.getEStructuralFeatures().get(1);
 	}
@@ -1095,6 +1140,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterGroup_Group1() {
 		return (EAttribute) alterGroupEClass.getEStructuralFeatures().get(0);
 	}
@@ -1104,6 +1150,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterGroup_Remove() {
 		return (EReference) alterGroupEClass.getEStructuralFeatures().get(2);
 	}
@@ -1113,6 +1160,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterGroupsType() {
 		return alterGroupsTypeEClass;
 	}
@@ -1122,6 +1170,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterGroupsType_Group() {
 		return (EAttribute) alterGroupsTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1131,6 +1180,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterGroupsType_Private() {
 		return (EReference) alterGroupsTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -1140,6 +1190,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterGroupsType_Public() {
 		return (EReference) alterGroupsTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -1149,6 +1200,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterGroupsType_Remove() {
 		return (EReference) alterGroupsTypeEClass.getEStructuralFeatures().get(3);
 	}
@@ -1158,6 +1210,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterGroupsType_Rename() {
 		return (EReference) alterGroupsTypeEClass.getEStructuralFeatures().get(4);
 	}
@@ -1167,6 +1220,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterPrerequisites() {
 		return alterPrerequisitesEClass;
 	}
@@ -1176,6 +1230,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterPrerequisites_AlterAttribute() {
 		return (EReference) alterPrerequisitesEClass.getEStructuralFeatures().get(1);
 	}
@@ -1185,6 +1240,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterPrerequisites_Group1() {
 		return (EAttribute) alterPrerequisitesEClass.getEStructuralFeatures().get(0);
 	}
@@ -1194,6 +1250,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterPrerequisites_Remove() {
 		return (EReference) alterPrerequisitesEClass.getEStructuralFeatures().get(2);
 	}
@@ -1203,6 +1260,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterProductsType() {
 		return alterProductsTypeEClass;
 	}
@@ -1212,6 +1270,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterProductsType_Group() {
 		return (EAttribute) alterProductsTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1221,6 +1280,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterProductsType_Private() {
 		return (EReference) alterProductsTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -1230,6 +1290,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterProductsType_Public() {
 		return (EReference) alterProductsTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -1239,6 +1300,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterProductsType_RemovePath() {
 		return (EReference) alterProductsTypeEClass.getEStructuralFeatures().get(4);
 	}
@@ -1248,6 +1310,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterProductsType_RemoveProduct() {
 		return (EReference) alterProductsTypeEClass.getEStructuralFeatures().get(3);
 	}
@@ -1257,6 +1320,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAlterProperties() {
 		return alterPropertiesEClass;
 	}
@@ -1266,6 +1330,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAlterProperties_Group() {
 		return (EAttribute) alterPropertiesEClass.getEStructuralFeatures().get(0);
 	}
@@ -1275,6 +1340,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterProperties_Property() {
 		return (EReference) alterPropertiesEClass.getEStructuralFeatures().get(1);
 	}
@@ -1284,6 +1350,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAlterProperties_Remove() {
 		return (EReference) alterPropertiesEClass.getEStructuralFeatures().get(2);
 	}
@@ -1293,6 +1360,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getArtifact() {
 		return artifactEClass;
 	}
@@ -1302,6 +1370,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getArtifact_Base() {
 		return (EAttribute) artifactEClass.getEStructuralFeatures().get(3);
 	}
@@ -1311,6 +1380,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getArtifact_Definitions() {
 		return (EReference) artifactEClass.getEStructuralFeatures().get(1);
 	}
@@ -1320,6 +1390,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getArtifact_Filter() {
 		return (EAttribute) artifactEClass.getEStructuralFeatures().get(4);
 	}
@@ -1329,6 +1400,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getArtifact_Group() {
 		return (EAttribute) artifactEClass.getEStructuralFeatures().get(0);
 	}
@@ -1338,6 +1410,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getArtifact_Path() {
 		return (EReference) artifactEClass.getEStructuralFeatures().get(2);
 	}
@@ -1347,6 +1420,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getArtifact_Path1() {
 		return (EAttribute) artifactEClass.getEStructuralFeatures().get(5);
 	}
@@ -1356,6 +1430,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getArtifact_Type() {
 		return (EAttribute) artifactEClass.getEStructuralFeatures().get(6);
 	}
@@ -1365,6 +1440,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getArtifactsType() {
 		return artifactsTypeEClass;
 	}
@@ -1374,6 +1450,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getArtifactsType_Group() {
 		return (EAttribute) artifactsTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1383,6 +1460,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getArtifactsType_Private() {
 		return (EReference) artifactsTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -1392,6 +1470,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getArtifactsType_Public() {
 		return (EReference) artifactsTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -1401,6 +1480,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getAttribute() {
 		return attributeEClass;
 	}
@@ -1410,6 +1490,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAttribute_Documentation() {
 		return (EReference) attributeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1419,6 +1500,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAttribute_Name() {
 		return (EAttribute) attributeEClass.getEStructuralFeatures().get(2);
 	}
@@ -1428,6 +1510,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getAttribute_Parameter() {
 		return (EReference) attributeEClass.getEStructuralFeatures().get(1);
 	}
@@ -1437,6 +1520,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getAttribute_Version() {
 		return (EAttribute) attributeEClass.getEStructuralFeatures().get(3);
 	}
@@ -1446,6 +1530,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getComponentRequest() {
 		return componentRequestEClass;
 	}
@@ -1455,6 +1540,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentRequest_ComponentType() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(1);
 	}
@@ -1464,6 +1550,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentRequest_Filter() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(2);
 	}
@@ -1473,6 +1560,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getComponentRequest_Import() {
 		return (EReference) componentRequestEClass.getEStructuralFeatures().get(0);
 	}
@@ -1482,6 +1570,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentRequest_Name() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(3);
 	}
@@ -1491,6 +1580,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentRequest_VersionDesignator() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(4);
 	}
@@ -1500,6 +1590,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentRequest_VersionType() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(5);
 	}
@@ -1509,6 +1600,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getComponentSpec() {
 		return componentSpecEClass;
 	}
@@ -1518,6 +1610,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentSpec_Name() {
 		return (EAttribute) componentSpecEClass.getEStructuralFeatures().get(0);
 	}
@@ -1527,6 +1620,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getComponentSpecBase() {
 		return componentSpecBaseEClass;
 	}
@@ -1536,6 +1630,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getComponentSpecBase_Actions() {
 		return (EReference) componentSpecBaseEClass.getEStructuralFeatures().get(6);
 	}
@@ -1545,6 +1640,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getComponentSpecBase_Artifacts() {
 		return (EReference) componentSpecBaseEClass.getEStructuralFeatures().get(4);
 	}
@@ -1554,6 +1650,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentSpecBase_Category() {
 		return (EAttribute) componentSpecBaseEClass.getEStructuralFeatures().get(7);
 	}
@@ -1563,6 +1660,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentSpecBase_ComponentType() {
 		return (EAttribute) componentSpecBaseEClass.getEStructuralFeatures().get(8);
 	}
@@ -1572,6 +1670,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getComponentSpecBase_Dependencies() {
 		return (EReference) componentSpecBaseEClass.getEStructuralFeatures().get(2);
 	}
@@ -1581,6 +1680,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getComponentSpecBase_Documentation() {
 		return (EReference) componentSpecBaseEClass.getEStructuralFeatures().get(0);
 	}
@@ -1590,6 +1690,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentSpecBase_Filter() {
 		return (EAttribute) componentSpecBaseEClass.getEStructuralFeatures().get(9);
 	}
@@ -1599,6 +1700,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getComponentSpecBase_Generators() {
 		return (EReference) componentSpecBaseEClass.getEStructuralFeatures().get(3);
 	}
@@ -1608,6 +1710,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentSpecBase_Group() {
 		return (EAttribute) componentSpecBaseEClass.getEStructuralFeatures().get(1);
 	}
@@ -1617,6 +1720,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getComponentSpecBase_Groups() {
 		return (EReference) componentSpecBaseEClass.getEStructuralFeatures().get(5);
 	}
@@ -1626,6 +1730,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentSpecBase_ProjectInfo() {
 		return (EAttribute) componentSpecBaseEClass.getEStructuralFeatures().get(10);
 	}
@@ -1635,6 +1740,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentSpecBase_ShortDesc() {
 		return (EAttribute) componentSpecBaseEClass.getEStructuralFeatures().get(11);
 	}
@@ -1644,6 +1750,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentSpecBase_VersionString() {
 		return (EAttribute) componentSpecBaseEClass.getEStructuralFeatures().get(12);
 	}
@@ -1653,6 +1760,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getComponentSpecBase_VersionType() {
 		return (EAttribute) componentSpecBaseEClass.getEStructuralFeatures().get(13);
 	}
@@ -1662,6 +1770,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getCSpecExtension() {
 		return cSpecExtensionEClass;
 	}
@@ -1671,6 +1780,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_AlterActions() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(1);
 	}
@@ -1680,6 +1790,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_AlterArtifacts() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(2);
 	}
@@ -1689,6 +1800,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_AlterDependencies() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(3);
 	}
@@ -1698,6 +1810,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getCSpecExtension_AlterGroups() {
 		return (EReference) cSpecExtensionEClass.getEStructuralFeatures().get(4);
 	}
@@ -1707,6 +1820,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getCSpecExtension_Group1() {
 		return (EAttribute) cSpecExtensionEClass.getEStructuralFeatures().get(0);
 	}
@@ -1716,6 +1830,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ICSpecXMLFactory getCSpecXMLFactory() {
 		return (ICSpecXMLFactory) getEFactoryInstance();
 	}
@@ -1725,6 +1840,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getDefinitions() {
 		return definitionsEClass;
 	}
@@ -1734,6 +1850,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDefinitions_Define() {
 		return (EReference) definitionsEClass.getEStructuralFeatures().get(0);
 	}
@@ -1743,6 +1860,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getDependenciesType() {
 		return dependenciesTypeEClass;
 	}
@@ -1752,6 +1870,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDependenciesType_Dependency() {
 		return (EReference) dependenciesTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1761,6 +1880,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getDocumentRoot() {
 		return documentRootEClass;
 	}
@@ -1770,6 +1890,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDocumentRoot_Cspec() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(3);
 	}
@@ -1779,6 +1900,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDocumentRoot_CspecExtension() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(4);
 	}
@@ -1788,6 +1910,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getDocumentRoot_Mixed() {
 		return (EAttribute) documentRootEClass.getEStructuralFeatures().get(0);
 	}
@@ -1797,6 +1920,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDocumentRoot_XMLNSPrefixMap() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(1);
 	}
@@ -1806,6 +1930,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDocumentRoot_XSISchemaLocation() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(2);
 	}
@@ -1815,6 +1940,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getGenerator() {
 		return generatorEClass;
 	}
@@ -1824,6 +1950,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGenerator_Attribute() {
 		return (EAttribute) generatorEClass.getEStructuralFeatures().get(0);
 	}
@@ -1833,6 +1960,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGenerator_Component() {
 		return (EAttribute) generatorEClass.getEStructuralFeatures().get(1);
 	}
@@ -1842,6 +1970,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGenerator_ComponentType() {
 		return (EAttribute) generatorEClass.getEStructuralFeatures().get(2);
 	}
@@ -1851,6 +1980,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGenerator_Generates() {
 		return (EAttribute) generatorEClass.getEStructuralFeatures().get(3);
 	}
@@ -1860,6 +1990,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGenerator_GeneratesType() {
 		return (EAttribute) generatorEClass.getEStructuralFeatures().get(4);
 	}
@@ -1869,6 +2000,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGenerator_GeneratesVersionString() {
 		return (EAttribute) generatorEClass.getEStructuralFeatures().get(5);
 	}
@@ -1878,6 +2010,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGenerator_GeneratesVersionType() {
 		return (EAttribute) generatorEClass.getEStructuralFeatures().get(6);
 	}
@@ -1887,6 +2020,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getGeneratorsType() {
 		return generatorsTypeEClass;
 	}
@@ -1896,6 +2030,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getGeneratorsType_Generator() {
 		return (EReference) generatorsTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1905,6 +2040,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getGroup() {
 		return groupEClass;
 	}
@@ -1914,6 +2050,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getGroup_Attribute() {
 		return (EReference) groupEClass.getEStructuralFeatures().get(2);
 	}
@@ -1923,6 +2060,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getGroup_Definitions() {
 		return (EReference) groupEClass.getEStructuralFeatures().get(1);
 	}
@@ -1932,6 +2070,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGroup_Filter() {
 		return (EAttribute) groupEClass.getEStructuralFeatures().get(3);
 	}
@@ -1941,6 +2080,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGroup_Group() {
 		return (EAttribute) groupEClass.getEStructuralFeatures().get(0);
 	}
@@ -1950,6 +2090,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGroup_Rebase() {
 		return (EAttribute) groupEClass.getEStructuralFeatures().get(4);
 	}
@@ -1959,6 +2100,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getGroupsType() {
 		return groupsTypeEClass;
 	}
@@ -1968,6 +2110,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getGroupsType_Group() {
 		return (EAttribute) groupsTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -1977,6 +2120,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getGroupsType_Private() {
 		return (EReference) groupsTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -1986,6 +2130,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getGroupsType_Public() {
 		return (EReference) groupsTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -1995,6 +2140,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getImport() {
 		return importEClass;
 	}
@@ -2004,6 +2150,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getImport_Attribute() {
 		return (EAttribute) importEClass.getEStructuralFeatures().get(0);
 	}
@@ -2013,6 +2160,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getImport_Filter() {
 		return (EAttribute) importEClass.getEStructuralFeatures().get(1);
 	}
@@ -2022,6 +2170,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getImport_VersionDesignator() {
 		return (EAttribute) importEClass.getEStructuralFeatures().get(2);
 	}
@@ -2031,6 +2180,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getParameterType() {
 		return parameterTypeEClass;
 	}
@@ -2040,6 +2190,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getParameterType_Mandatory() {
 		return (EAttribute) parameterTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -2049,6 +2200,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getParameterType_Name() {
 		return (EAttribute) parameterTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -2058,6 +2210,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getParameterType_Value() {
 		return (EAttribute) parameterTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -2067,6 +2220,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPath() {
 		return pathEClass;
 	}
@@ -2076,6 +2230,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPath_Path() {
 		return (EAttribute) pathEClass.getEStructuralFeatures().get(0);
 	}
@@ -2085,6 +2240,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPrerequisite() {
 		return prerequisiteEClass;
 	}
@@ -2094,6 +2250,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Alias() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(0);
 	}
@@ -2103,6 +2260,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Component() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(1);
 	}
@@ -2112,6 +2270,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_ComponentType() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(2);
 	}
@@ -2121,6 +2280,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Contributor() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(3);
 	}
@@ -2130,6 +2290,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_ExcludePattern() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(4);
 	}
@@ -2139,6 +2300,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Filter() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(5);
 	}
@@ -2148,6 +2310,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_IncludePattern() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(6);
 	}
@@ -2157,6 +2320,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Name() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(7);
 	}
@@ -2166,6 +2330,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisite_Optional() {
 		return (EAttribute) prerequisiteEClass.getEStructuralFeatures().get(8);
 	}
@@ -2175,6 +2340,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getPrerequisites() {
 		return prerequisitesEClass;
 	}
@@ -2184,6 +2350,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisites_Alias() {
 		return (EAttribute) prerequisitesEClass.getEStructuralFeatures().get(3);
 	}
@@ -2193,6 +2360,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPrerequisites_Attribute() {
 		return (EReference) prerequisitesEClass.getEStructuralFeatures().get(2);
 	}
@@ -2202,6 +2370,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getPrerequisites_Documentation() {
 		return (EReference) prerequisitesEClass.getEStructuralFeatures().get(0);
 	}
@@ -2211,6 +2380,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisites_Group() {
 		return (EAttribute) prerequisitesEClass.getEStructuralFeatures().get(1);
 	}
@@ -2220,6 +2390,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getPrerequisites_Rebase() {
 		return (EAttribute) prerequisitesEClass.getEStructuralFeatures().get(4);
 	}
@@ -2229,6 +2400,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getProductsType() {
 		return productsTypeEClass;
 	}
@@ -2238,6 +2410,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProductsType_Alias() {
 		return (EAttribute) productsTypeEClass.getEStructuralFeatures().get(4);
 	}
@@ -2247,6 +2420,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProductsType_Base() {
 		return (EAttribute) productsTypeEClass.getEStructuralFeatures().get(5);
 	}
@@ -2256,6 +2430,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProductsType_FileCount() {
 		return (EAttribute) productsTypeEClass.getEStructuralFeatures().get(6);
 	}
@@ -2265,6 +2440,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProductsType_Group() {
 		return (EAttribute) productsTypeEClass.getEStructuralFeatures().get(0);
 	}
@@ -2274,6 +2450,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getProductsType_Path() {
 		return (EReference) productsTypeEClass.getEStructuralFeatures().get(1);
 	}
@@ -2283,6 +2460,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProductsType_Pattern() {
 		return (EAttribute) productsTypeEClass.getEStructuralFeatures().get(7);
 	}
@@ -2292,6 +2470,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getProductsType_Private() {
 		return (EReference) productsTypeEClass.getEStructuralFeatures().get(3);
 	}
@@ -2301,6 +2480,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getProductsType_Public() {
 		return (EReference) productsTypeEClass.getEStructuralFeatures().get(2);
 	}
@@ -2310,6 +2490,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProductsType_Replacement() {
 		return (EAttribute) productsTypeEClass.getEStructuralFeatures().get(8);
 	}
@@ -2319,6 +2500,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getProductsType_UpToDatePolicy() {
 		return (EAttribute) productsTypeEClass.getEStructuralFeatures().get(9);
 	}
@@ -2328,6 +2510,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getProperties() {
 		return propertiesEClass;
 	}
@@ -2337,6 +2520,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getProperties_Property() {
 		return (EReference) propertiesEClass.getEStructuralFeatures().get(0);
 	}
@@ -2346,6 +2530,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRemove() {
 		return removeEClass;
 	}
@@ -2355,6 +2540,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRemove_Name() {
 		return (EAttribute) removeEClass.getEStructuralFeatures().get(0);
 	}
@@ -2364,6 +2550,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRemovePath() {
 		return removePathEClass;
 	}
@@ -2373,6 +2560,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRemovePath_Path() {
 		return (EAttribute) removePathEClass.getEStructuralFeatures().get(0);
 	}
@@ -2382,6 +2570,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRemoveProperty() {
 		return removePropertyEClass;
 	}
@@ -2391,6 +2580,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRemoveProperty_Key() {
 		return (EAttribute) removePropertyEClass.getEStructuralFeatures().get(0);
 	}
@@ -2400,6 +2590,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EClass getRename() {
 		return renameEClass;
 	}
@@ -2409,6 +2600,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRename_NewName() {
 		return (EAttribute) renameEClass.getEStructuralFeatures().get(0);
 	}
@@ -2418,6 +2610,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRename_OldName() {
 		return (EAttribute) renameEClass.getEStructuralFeatures().get(1);
 	}
@@ -2427,6 +2620,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EEnum getUpToDatePolicy() {
 		return upToDatePolicyEEnum;
 	}
@@ -2436,6 +2630,7 @@ public class CSpecXMLPackageImpl extends EPackageImpl implements ICSpecXMLPackag
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getUpToDatePolicyObject() {
 		return upToDatePolicyObjectEDataType;
 	}

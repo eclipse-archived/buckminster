@@ -193,6 +193,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAction createAction() {
 		ActionImpl action = new ActionImpl();
 		return action;
@@ -203,6 +204,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IActionArtifact createActionArtifact() {
 		ActionArtifactImpl actionArtifact = new ActionArtifactImpl();
 		return actionArtifact;
@@ -213,6 +215,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IActionsType createActionsType() {
 		ActionsTypeImpl actionsType = new ActionsTypeImpl();
 		return actionsType;
@@ -223,6 +226,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterAction createAlterAction() {
 		AlterActionImpl alterAction = new AlterActionImpl();
 		return alterAction;
@@ -233,6 +237,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterActionsType createAlterActionsType() {
 		AlterActionsTypeImpl alterActionsType = new AlterActionsTypeImpl();
 		return alterActionsType;
@@ -243,6 +248,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterArtifact createAlterArtifact() {
 		AlterArtifactImpl alterArtifact = new AlterArtifactImpl();
 		return alterArtifact;
@@ -253,6 +259,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterArtifactsType createAlterArtifactsType() {
 		AlterArtifactsTypeImpl alterArtifactsType = new AlterArtifactsTypeImpl();
 		return alterArtifactsType;
@@ -263,6 +270,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterDependenciesType createAlterDependenciesType() {
 		AlterDependenciesTypeImpl alterDependenciesType = new AlterDependenciesTypeImpl();
 		return alterDependenciesType;
@@ -273,6 +281,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterGroup createAlterGroup() {
 		AlterGroupImpl alterGroup = new AlterGroupImpl();
 		return alterGroup;
@@ -283,6 +292,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterGroupsType createAlterGroupsType() {
 		AlterGroupsTypeImpl alterGroupsType = new AlterGroupsTypeImpl();
 		return alterGroupsType;
@@ -293,6 +303,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterPrerequisites createAlterPrerequisites() {
 		AlterPrerequisitesImpl alterPrerequisites = new AlterPrerequisitesImpl();
 		return alterPrerequisites;
@@ -303,6 +314,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterProductsType createAlterProductsType() {
 		AlterProductsTypeImpl alterProductsType = new AlterProductsTypeImpl();
 		return alterProductsType;
@@ -313,6 +325,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAlterProperties createAlterProperties() {
 		AlterPropertiesImpl alterProperties = new AlterPropertiesImpl();
 		return alterProperties;
@@ -323,6 +336,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IArtifact createArtifact() {
 		ArtifactImpl artifact = new ArtifactImpl();
 		return artifact;
@@ -333,6 +347,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IArtifactsType createArtifactsType() {
 		ArtifactsTypeImpl artifactsType = new ArtifactsTypeImpl();
 		return artifactsType;
@@ -343,6 +358,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IAttribute createAttribute() {
 		AttributeImpl attribute = new AttributeImpl();
 		return attribute;
@@ -353,6 +369,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IComponentRequest createComponentRequest() {
 		ComponentRequestImpl componentRequest = new ComponentRequestImpl();
 		return componentRequest;
@@ -363,6 +380,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IComponentSpec createComponentSpec() {
 		ComponentSpecImpl componentSpec = new ComponentSpecImpl();
 		return componentSpec;
@@ -373,6 +391,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IComponentSpecBase createComponentSpecBase() {
 		ComponentSpecBaseImpl componentSpecBase = new ComponentSpecBaseImpl();
 		return componentSpecBase;
@@ -383,6 +402,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ICSpecExtension createCSpecExtension() {
 		CSpecExtensionImpl cSpecExtension = new CSpecExtensionImpl();
 		return cSpecExtension;
@@ -393,6 +413,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IDefinitions createDefinitions() {
 		DefinitionsImpl definitions = new DefinitionsImpl();
 		return definitions;
@@ -403,6 +424,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IDependenciesType createDependenciesType() {
 		DependenciesTypeImpl dependenciesType = new DependenciesTypeImpl();
 		return dependenciesType;
@@ -413,6 +435,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IDocumentRoot createDocumentRoot() {
 		DocumentRootImpl documentRoot = new DocumentRootImpl();
 		return documentRoot;
@@ -440,6 +463,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IGenerator createGenerator() {
 		GeneratorImpl generator = new GeneratorImpl();
 		return generator;
@@ -450,6 +474,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IGeneratorsType createGeneratorsType() {
 		GeneratorsTypeImpl generatorsType = new GeneratorsTypeImpl();
 		return generatorsType;
@@ -460,6 +485,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IGroup createGroup() {
 		GroupImpl group = new GroupImpl();
 		return group;
@@ -470,6 +496,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IGroupsType createGroupsType() {
 		GroupsTypeImpl groupsType = new GroupsTypeImpl();
 		return groupsType;
@@ -480,6 +507,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IImport createImport() {
 		ImportImpl import_ = new ImportImpl();
 		return import_;
@@ -490,6 +518,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IParameterType createParameterType() {
 		ParameterTypeImpl parameterType = new ParameterTypeImpl();
 		return parameterType;
@@ -500,6 +529,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IPath createPath() {
 		PathImpl path = new PathImpl();
 		return path;
@@ -510,6 +540,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IPrerequisite createPrerequisite() {
 		PrerequisiteImpl prerequisite = new PrerequisiteImpl();
 		return prerequisite;
@@ -520,6 +551,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IPrerequisites createPrerequisites() {
 		PrerequisitesImpl prerequisites = new PrerequisitesImpl();
 		return prerequisites;
@@ -530,6 +562,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IProductsType createProductsType() {
 		ProductsTypeImpl productsType = new ProductsTypeImpl();
 		return productsType;
@@ -540,6 +573,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IProperties createProperties() {
 		PropertiesImpl properties = new PropertiesImpl();
 		return properties;
@@ -550,6 +584,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IRemove createRemove() {
 		RemoveImpl remove = new RemoveImpl();
 		return remove;
@@ -560,6 +595,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IRemovePath createRemovePath() {
 		RemovePathImpl removePath = new RemovePathImpl();
 		return removePath;
@@ -570,6 +606,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IRemoveProperty createRemoveProperty() {
 		RemovePropertyImpl removeProperty = new RemovePropertyImpl();
 		return removeProperty;
@@ -580,6 +617,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IRename createRename() {
 		RenameImpl rename = new RenameImpl();
 		return rename;
@@ -611,6 +649,7 @@ public class CSpecXMLFactoryImpl extends EFactoryImpl implements ICSpecXMLFactor
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ICSpecXMLPackage getCSpecXMLPackage() {
 		return (ICSpecXMLPackage) getEPackage();
 	}

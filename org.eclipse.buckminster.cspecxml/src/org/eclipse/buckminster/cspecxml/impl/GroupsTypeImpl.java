@@ -168,6 +168,7 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.GROUPS_TYPE__GROUP);
@@ -180,6 +181,7 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IGroup> getPrivate() {
 		return getGroup().list(ICSpecXMLPackage.Literals.GROUPS_TYPE__PRIVATE);
 	}
@@ -189,6 +191,7 @@ public class GroupsTypeImpl extends EObjectImpl implements IGroupsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IGroup> getPublic() {
 		return getGroup().list(ICSpecXMLPackage.Literals.GROUPS_TYPE__PUBLIC);
 	}

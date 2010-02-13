@@ -121,6 +121,7 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -130,6 +131,7 @@ public class ComponentSpecImpl extends ComponentSpecBaseImpl implements ICompone
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;

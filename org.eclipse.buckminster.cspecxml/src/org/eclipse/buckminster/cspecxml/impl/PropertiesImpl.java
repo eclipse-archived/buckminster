@@ -137,6 +137,7 @@ public class PropertiesImpl extends EObjectImpl implements IProperties {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<PropertyConstant> getProperty() {
 		if (property == null) {
 			property = new EObjectContainmentEList<PropertyConstant>(PropertyConstant.class, this, ICSpecXMLPackage.PROPERTIES__PROPERTY);

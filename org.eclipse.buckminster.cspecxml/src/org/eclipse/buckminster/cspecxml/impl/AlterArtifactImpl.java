@@ -152,6 +152,7 @@ public class AlterArtifactImpl extends ArtifactImpl implements IAlterArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup1() {
 		if (group1 == null) {
 			group1 = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_ARTIFACT__GROUP1);
@@ -164,6 +165,7 @@ public class AlterArtifactImpl extends ArtifactImpl implements IAlterArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IRemovePath> getRemovePath() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.ALTER_ARTIFACT__REMOVE_PATH);
 	}

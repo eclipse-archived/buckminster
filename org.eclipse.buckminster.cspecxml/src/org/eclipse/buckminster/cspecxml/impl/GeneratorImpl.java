@@ -38,10 +38,10 @@ import org.eclipse.equinox.p2.metadata.Version;
  * <em>Generates Type</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspecxml.impl.GeneratorImpl#getGeneratesVersionString
- * <em>Generates Version String </em>}</li>
+ * <em>Generates Version String</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspecxml.impl.GeneratorImpl#getGeneratesVersionType
- * <em>Generates Version Type </em>}</li>
+ * <em>Generates Version Type</em>}</li>
  * </ul>
  * </p>
  * 
@@ -330,6 +330,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAttribute() {
 		return attribute;
 	}
@@ -339,6 +340,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getComponent() {
 		return component;
 	}
@@ -348,6 +350,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getComponentType() {
 		return componentType;
 	}
@@ -357,6 +360,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getGenerates() {
 		return generates;
 	}
@@ -366,6 +370,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getGeneratesType() {
 		return generatesType;
 	}
@@ -375,6 +380,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public Version getGeneratesVersion() {
 		return VersionHelper.createVersion(getGeneratesVersionType(), getGeneratesVersionString());
 	}
@@ -384,6 +390,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getGeneratesVersionString() {
 		return generatesVersionString;
 	}
@@ -393,6 +400,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getGeneratesVersionType() {
 		return generatesVersionType;
 	}
@@ -402,6 +410,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAttribute(String newAttribute) {
 		String oldAttribute = attribute;
 		attribute = newAttribute;
@@ -414,6 +423,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setComponent(String newComponent) {
 		String oldComponent = component;
 		component = newComponent;
@@ -426,6 +436,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setComponentType(String newComponentType) {
 		String oldComponentType = componentType;
 		componentType = newComponentType;
@@ -438,6 +449,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setGenerates(String newGenerates) {
 		String oldGenerates = generates;
 		generates = newGenerates;
@@ -450,6 +462,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setGeneratesType(String newGeneratesType) {
 		String oldGeneratesType = generatesType;
 		generatesType = newGeneratesType;
@@ -462,6 +475,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setGeneratesVersionString(String newGeneratesVersionString) {
 		String oldGeneratesVersionString = generatesVersionString;
 		generatesVersionString = newGeneratesVersionString;
@@ -475,6 +489,7 @@ public class GeneratorImpl extends EObjectImpl implements IGenerator {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setGeneratesVersionType(String newGeneratesVersionType) {
 		String oldGeneratesVersionType = generatesVersionType;
 		generatesVersionType = newGeneratesVersionType;

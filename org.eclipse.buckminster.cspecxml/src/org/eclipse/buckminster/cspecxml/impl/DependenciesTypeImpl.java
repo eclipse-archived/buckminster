@@ -137,6 +137,7 @@ public class DependenciesTypeImpl extends EObjectImpl implements IDependenciesTy
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IComponentRequest> getDependency() {
 		if (dependency == null) {
 			dependency = new EObjectContainmentEList<IComponentRequest>(IComponentRequest.class, this, ICSpecXMLPackage.DEPENDENCIES_TYPE__DEPENDENCY);

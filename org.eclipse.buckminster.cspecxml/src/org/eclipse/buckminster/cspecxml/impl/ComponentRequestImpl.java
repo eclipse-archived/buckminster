@@ -12,7 +12,6 @@ import org.eclipse.buckminster.cspecxml.ICSpecXMLPackage;
 import org.eclipse.buckminster.cspecxml.IComponentRequest;
 import org.eclipse.buckminster.cspecxml.IImport;
 
-import org.eclipse.buckminster.model.common.util.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -49,7 +48,7 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
  * <em>Name</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspecxml.impl.ComponentRequestImpl#getVersionDesignator
- * <em>Version Designator </em>}</li>
+ * <em>Version Designator</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.cspecxml.impl.ComponentRequestImpl#getVersionType
  * <em>Version Type</em>}</li>
@@ -311,6 +310,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getComponentType() {
 		return componentType;
 	}
@@ -320,6 +320,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -329,6 +330,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IImport> getImport() {
 		if (import_ == null) {
 			import_ = new EObjectContainmentEList<IImport>(IImport.class, this, ICSpecXMLPackage.COMPONENT_REQUEST__IMPORT);
@@ -341,6 +343,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -350,8 +353,11 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public VersionRange getRange() {
-		return VersionHelper.createRange(getVersionType(), getVersionDesignator());
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -359,6 +365,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getVersionDesignator() {
 		return versionDesignator;
 	}
@@ -368,6 +375,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getVersionType() {
 		return versionType;
 	}
@@ -377,6 +385,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setComponentType(String newComponentType) {
 		String oldComponentType = componentType;
 		componentType = newComponentType;
@@ -389,6 +398,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -401,6 +411,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -413,9 +424,11 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setRange(VersionRange range) {
-		setVersionType(null);
-		setVersionDesignator(range == null ? null : range.toString());
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -423,6 +436,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersionDesignator(String newVersionDesignator) {
 		String oldVersionDesignator = versionDesignator;
 		versionDesignator = newVersionDesignator;
@@ -436,6 +450,7 @@ public class ComponentRequestImpl extends EObjectImpl implements IComponentReque
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersionType(String newVersionType) {
 		String oldVersionType = versionType;
 		versionType = newVersionType;

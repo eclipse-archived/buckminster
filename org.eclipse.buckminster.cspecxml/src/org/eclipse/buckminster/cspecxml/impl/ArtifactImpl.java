@@ -298,6 +298,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getBase() {
 		return base;
 	}
@@ -307,6 +308,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IDefinitions> getDefinitions() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ARTIFACT__DEFINITIONS);
 	}
@@ -316,6 +318,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getFilter() {
 		return filter;
 	}
@@ -325,6 +328,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ARTIFACT__GROUP);
@@ -337,6 +341,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IPath> getPath() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ARTIFACT__PATH);
 	}
@@ -346,6 +351,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getPath1() {
 		return path1;
 	}
@@ -355,6 +361,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -364,6 +371,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setBase(String newBase) {
 		String oldBase = base;
 		base = newBase;
@@ -376,6 +384,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -388,6 +397,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPath1(String newPath1) {
 		String oldPath1 = path1;
 		path1 = newPath1;
@@ -400,6 +410,7 @@ public class ArtifactImpl extends AttributeImpl implements IArtifact {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setType(String newType) {
 		String oldType = type;
 		type = newType;

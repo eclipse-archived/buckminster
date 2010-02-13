@@ -245,6 +245,7 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public IComponentSpec getCspec() {
 		return (IComponentSpec) getMixed().get(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC, true);
 	}
@@ -254,6 +255,7 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public ICSpecExtension getCspecExtension() {
 		return (ICSpecExtension) getMixed().get(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC_EXTENSION, true);
 	}
@@ -263,6 +265,7 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getMixed() {
 		if (mixed == null) {
 			mixed = new BasicFeatureMap(this, ICSpecXMLPackage.DOCUMENT_ROOT__MIXED);
@@ -275,6 +278,7 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EMap<String, String> getXMLNSPrefixMap() {
 		if (xMLNSPrefixMap == null) {
 			xMLNSPrefixMap = new EcoreEMap<String, String>(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY, EStringToStringMapEntryImpl.class,
@@ -288,6 +292,7 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EMap<String, String> getXSISchemaLocation() {
 		if (xSISchemaLocation == null) {
 			xSISchemaLocation = new EcoreEMap<String, String>(EcorePackage.Literals.ESTRING_TO_STRING_MAP_ENTRY, EStringToStringMapEntryImpl.class,
@@ -301,6 +306,7 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setCspec(IComponentSpec newCspec) {
 		((FeatureMap.Internal) getMixed()).set(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC, newCspec);
 	}
@@ -310,6 +316,7 @@ public class DocumentRootImpl extends EObjectImpl implements IDocumentRoot {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setCspecExtension(ICSpecExtension newCspecExtension) {
 		((FeatureMap.Internal) getMixed()).set(ICSpecXMLPackage.Literals.DOCUMENT_ROOT__CSPEC_EXTENSION, newCspecExtension);
 	}

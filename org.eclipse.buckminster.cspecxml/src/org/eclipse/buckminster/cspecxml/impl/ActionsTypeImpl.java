@@ -168,6 +168,7 @@ public class ActionsTypeImpl extends EObjectImpl implements IActionsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ACTIONS_TYPE__GROUP);
@@ -180,6 +181,7 @@ public class ActionsTypeImpl extends EObjectImpl implements IActionsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAction> getPrivate() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTIONS_TYPE__PRIVATE);
 	}
@@ -189,6 +191,7 @@ public class ActionsTypeImpl extends EObjectImpl implements IActionsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAction> getPublic() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ACTIONS_TYPE__PUBLIC);
 	}

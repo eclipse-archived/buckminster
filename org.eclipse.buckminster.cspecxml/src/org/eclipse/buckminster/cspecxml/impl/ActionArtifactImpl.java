@@ -121,6 +121,7 @@ public class ActionArtifactImpl extends ArtifactImpl implements IActionArtifact 
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAlias() {
 		return alias;
 	}
@@ -130,6 +131,7 @@ public class ActionArtifactImpl extends ArtifactImpl implements IActionArtifact 
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;

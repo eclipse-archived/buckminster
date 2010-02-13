@@ -266,6 +266,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getAlias() {
 		return alias;
 	}
@@ -275,6 +276,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IPrerequisite> getAttribute() {
 		return getGroup().list(ICSpecXMLPackage.Literals.PREREQUISITES__ATTRIBUTE);
 	}
@@ -284,6 +286,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -293,6 +296,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.PREREQUISITES__GROUP);
@@ -305,6 +309,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getRebase() {
 		return rebase;
 	}
@@ -314,6 +319,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setAlias(String newAlias) {
 		String oldAlias = alias;
 		alias = newAlias;
@@ -326,6 +332,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -347,6 +354,7 @@ public class PrerequisitesImpl extends EObjectImpl implements IPrerequisites {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setRebase(String newRebase) {
 		String oldRebase = rebase;
 		rebase = newRebase;

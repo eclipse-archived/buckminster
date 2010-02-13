@@ -205,6 +205,7 @@ public class AlterArtifactsTypeImpl extends EObjectImpl implements IAlterArtifac
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_ARTIFACTS_TYPE__GROUP);
@@ -217,6 +218,7 @@ public class AlterArtifactsTypeImpl extends EObjectImpl implements IAlterArtifac
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterArtifact> getPrivate() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_ARTIFACTS_TYPE__PRIVATE);
 	}
@@ -226,6 +228,7 @@ public class AlterArtifactsTypeImpl extends EObjectImpl implements IAlterArtifac
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAlterArtifact> getPublic() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_ARTIFACTS_TYPE__PUBLIC);
 	}
@@ -235,6 +238,7 @@ public class AlterArtifactsTypeImpl extends EObjectImpl implements IAlterArtifac
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IRemove> getRemove() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_ARTIFACTS_TYPE__REMOVE);
 	}
@@ -244,6 +248,7 @@ public class AlterArtifactsTypeImpl extends EObjectImpl implements IAlterArtifac
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IRename> getRename() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_ARTIFACTS_TYPE__RENAME);
 	}

@@ -168,6 +168,7 @@ public class AlterGroupImpl extends GroupImpl implements IAlterGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IPrerequisite> getAlterAttribute() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.ALTER_GROUP__ALTER_ATTRIBUTE);
 	}
@@ -177,6 +178,7 @@ public class AlterGroupImpl extends GroupImpl implements IAlterGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup1() {
 		if (group1 == null) {
 			group1 = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_GROUP__GROUP1);
@@ -189,6 +191,7 @@ public class AlterGroupImpl extends GroupImpl implements IAlterGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IRemove> getRemove() {
 		return getGroup1().list(ICSpecXMLPackage.Literals.ALTER_GROUP__REMOVE);
 	}

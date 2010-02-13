@@ -136,6 +136,7 @@ public class DefinitionsImpl extends EObjectImpl implements IDefinitions {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IAttribute> getDefine() {
 		if (define == null) {
 			define = new EObjectContainmentEList<IAttribute>(IAttribute.class, this, ICSpecXMLPackage.DEFINITIONS__DEFINE);

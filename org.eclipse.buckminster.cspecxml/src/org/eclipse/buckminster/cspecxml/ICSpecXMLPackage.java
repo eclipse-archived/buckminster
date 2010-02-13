@@ -4097,8 +4097,8 @@ public interface ICSpecXMLPackage extends EPackage {
 	/**
 	 * The meta object id for the '
 	 * {@link org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl
-	 * <em>Document Root</em>} ' class. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * <em>Document Root</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @see org.eclipse.buckminster.cspecxml.impl.DocumentRootImpl
 	 * @see org.eclipse.buckminster.cspecxml.impl.CSpecXMLPackageImpl#getDocumentRoot()
@@ -4550,8 +4550,8 @@ public interface ICSpecXMLPackage extends EPackage {
 	/**
 	 * The meta object id for the '
 	 * {@link org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl
-	 * <em>Products Type</em>} ' class. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * <em>Products Type</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
 	 * @see org.eclipse.buckminster.cspecxml.impl.ProductsTypeImpl
 	 * @see org.eclipse.buckminster.cspecxml.impl.CSpecXMLPackageImpl#getProductsType()
@@ -6316,7 +6316,7 @@ public interface ICSpecXMLPackage extends EPackage {
 	/**
 	 * Returns the meta object for class '
 	 * {@link org.eclipse.buckminster.cspecxml.IDocumentRoot
-	 * <em>Document Root</em>} '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * <em>Document Root</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Document Root</em>'.
 	 * @see org.eclipse.buckminster.cspecxml.IDocumentRoot
@@ -6872,7 +6872,7 @@ public interface ICSpecXMLPackage extends EPackage {
 	/**
 	 * Returns the meta object for class '
 	 * {@link org.eclipse.buckminster.cspecxml.IPrerequisites
-	 * <em>Prerequisites</em>} '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * <em>Prerequisites</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Prerequisites</em>'.
 	 * @see org.eclipse.buckminster.cspecxml.IPrerequisites
@@ -6945,7 +6945,7 @@ public interface ICSpecXMLPackage extends EPackage {
 	/**
 	 * Returns the meta object for class '
 	 * {@link org.eclipse.buckminster.cspecxml.IProductsType
-	 * <em>Products Type</em>} '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * <em>Products Type</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for class '<em>Products Type</em>'.
 	 * @see org.eclipse.buckminster.cspecxml.IProductsType
@@ -7114,7 +7114,7 @@ public interface ICSpecXMLPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.cspecxml.IRemove#getName <em>Name</em>} '.
+	 * {@link org.eclipse.buckminster.cspecxml.IRemove#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @return the meta object for the attribute '<em>Name</em>'.

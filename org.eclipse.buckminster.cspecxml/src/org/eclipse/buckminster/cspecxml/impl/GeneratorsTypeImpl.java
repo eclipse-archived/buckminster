@@ -137,6 +137,7 @@ public class GeneratorsTypeImpl extends EObjectImpl implements IGeneratorsType {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IGenerator> getGenerator() {
 		if (generator == null) {
 			generator = new EObjectContainmentEList<IGenerator>(IGenerator.class, this, ICSpecXMLPackage.GENERATORS_TYPE__GENERATOR);

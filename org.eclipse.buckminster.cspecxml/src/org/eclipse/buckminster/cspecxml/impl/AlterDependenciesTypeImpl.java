@@ -172,6 +172,7 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IComponentRequest> getDependency() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_DEPENDENCIES_TYPE__DEPENDENCY);
 	}
@@ -181,6 +182,7 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getGroup() {
 		if (group == null) {
 			group = new BasicFeatureMap(this, ICSpecXMLPackage.ALTER_DEPENDENCIES_TYPE__GROUP);
@@ -193,6 +195,7 @@ public class AlterDependenciesTypeImpl extends EObjectImpl implements IAlterDepe
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<IRemove> getRemove() {
 		return getGroup().list(ICSpecXMLPackage.Literals.ALTER_DEPENDENCIES_TYPE__REMOVE);
 	}
