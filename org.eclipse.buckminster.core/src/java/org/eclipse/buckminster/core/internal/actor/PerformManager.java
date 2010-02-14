@@ -358,14 +358,14 @@ public class PerformManager implements IPerformManager {
 						break;
 					}
 
-					if (generatorCSpec != null)
+					if (!(generatorCSpec == null || generatorCSpec.equals(candidate)))
 						//
 						// We find a generator for the desired component in more
 						// then
 						// one other component. This is an ambiguity that we
 						// cannot resolve.
 						//
-						throw new AmbigousComponentException(generator.getComponent());
+						throw new AmbigousComponentException(generator.getGenerates());
 
 					actionGenerator = generator;
 					generatorCSpec = candidate;
