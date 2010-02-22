@@ -95,8 +95,6 @@ public class P2SiteGenerator extends AbstractActor {
 
 	private static final String WS_WIN32 = "win32"; //$NON-NLS-1$
 
-	private static final String WS_WPF = "wpf"; //$NON-NLS-1$
-
 	private static final String OS_AIX = "aix"; //$NON-NLS-1$
 
 	private static final String OS_HPUX = "hpux"; //$NON-NLS-1$
@@ -113,6 +111,8 @@ public class P2SiteGenerator extends AbstractActor {
 
 	private static final String ARCH_PPC = "ppc"; //$NON-NLS-1$
 
+	private static final String ARCH_PPC64 = "ppc64"; //$NON-NLS-1$
+
 	private static final String ARCH_SPARC = "sparc"; //$NON-NLS-1$
 
 	private static final String ARCH_X86 = "x86"; //$NON-NLS-1$
@@ -122,19 +122,20 @@ public class P2SiteGenerator extends AbstractActor {
 	private final static String[][] defaultKnownConfigs = { //
 	{ WS_CARBON, OS_MACOSX, ARCH_PPC }, //
 			{ WS_CARBON, OS_MACOSX, ARCH_X86 }, //
-			{ WS_COCOA, OS_MACOSX, ARCH_PPC }, //
 			{ WS_COCOA, OS_MACOSX, ARCH_X86 }, //
 			{ WS_COCOA, OS_MACOSX, ARCH_X86_64 }, //
 			{ WS_GTK, OS_LINUX, ARCH_PPC }, //
+			{ WS_GTK, OS_LINUX, ARCH_PPC64 }, //
 			{ WS_GTK, OS_LINUX, ARCH_X86 }, //
 			{ WS_GTK, OS_LINUX, ARCH_X86_64 }, //
 			{ WS_GTK, OS_SOLARIS, ARCH_SPARC }, //
+			{ WS_GTK, OS_SOLARIS, ARCH_X86 }, //
 			{ WS_MOTIF, OS_AIX, ARCH_PPC }, //
 			{ WS_MOTIF, OS_HPUX, ARCH_IA64_32 }, //
 			{ WS_MOTIF, OS_LINUX, ARCH_X86 }, //
+			{ WS_MOTIF, OS_SOLARIS, ARCH_SPARC }, //
 			{ WS_WIN32, OS_WIN32, ARCH_X86 }, //
 			{ WS_WIN32, OS_WIN32, ARCH_X86_64 }, //
-			{ WS_WPF, OS_WIN32, ARCH_X86 }, //
 	};
 
 	public static String[] getConfigurations(Map<String, ? extends Object> props) {
