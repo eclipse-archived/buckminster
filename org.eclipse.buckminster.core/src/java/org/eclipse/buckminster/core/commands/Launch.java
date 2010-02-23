@@ -99,8 +99,27 @@ public class Launch extends WorkspaceCommand {
 	}
 
 	/**
+	 * Returns a copy of the stderr streams of the launched processes.
+	 * 
+	 * @return A copy of the stderr streams of the launched processes.
+	 */
+	public IStreamMonitor[] getRawStdErr() {
+		return stdErr.clone();
+	}
+
+	/**
+	 * Returns a copy of the stdout streams of the launched processes.
+	 * 
+	 * @return A copy of the stdout streams of the launched processes.
+	 */
+	public IStreamMonitor[] getRawStdOut() {
+		return stdOut.clone();
+	}
+
+	/**
 	 * Returns the content of the standard error streams of all processes launch
-	 * by the configuration.
+	 * by the configuration. Note that this method may lead to
+	 * memory shortage if the launch produces a large amount of output.
 	 * 
 	 * @return The contents of all standard error streams. An empty string if no
 	 *         processes were launched or no content was produced.
@@ -114,7 +133,8 @@ public class Launch extends WorkspaceCommand {
 
 	/**
 	 * Returns the content of the standard output streams of all processes
-	 * launch by the configuration.
+	 * launch by the configuration. Note that this method may lead to
+	 * memory shortage if the launch produces a large amount of output.
 	 * 
 	 * @return The contents of all standard output streams. An empty string if
 	 *         no processes were launched or no content was produced.

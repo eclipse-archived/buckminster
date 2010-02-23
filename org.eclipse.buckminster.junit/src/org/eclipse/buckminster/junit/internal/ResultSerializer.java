@@ -16,6 +16,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.jdt.junit.model.ITestCaseElement;
 import org.eclipse.jdt.junit.model.ITestElement;
 import org.eclipse.jdt.junit.model.ITestRunSession;
@@ -57,11 +58,11 @@ public class ResultSerializer implements XMLReader {
 
 	private TestListener testListener;
 
-	private String stdOut;
+	private IStreamMonitor[] stdOut;
 
-	private String stdErr;
+	private IStreamMonitor[] stdErr;
 
-	public ResultSerializer(TestListener listener, String stdout, String stderr) {
+	public ResultSerializer(TestListener listener, IStreamMonitor[] stdout, IStreamMonitor[] stderr) {
 		this.testListener = listener;
 		this.testRunSession = listener.getTestRunSession();
 		this.stdOut = stdout;
@@ -237,18 +238,24 @@ public class ResultSerializer implements XMLReader {
 	}
 
 	private void writeStdErr() throws SAXException {
-		if (stdErr != null && stdErr.length() > 0) {
-			startElement(IXMLTags.NODE_SYSTEM_ERR, NO_ATTS);
-			contentHandler.characters(stdErr.toCharArray(), 0, stdErr.length());
-			endElement(IXMLTags.NODE_SYSTEM_ERR);
+		for (IStreamMonitor sm : stdErr) {
+			String contents = sm.getContents();
+			if (contents.length() > 0) {
+				startElement(IXMLTags.NODE_SYSTEM_ERR, NO_ATTS);
+				contentHandler.characters(contents.toCharArray(), 0, contents.length());
+				endElement(IXMLTags.NODE_SYSTEM_ERR);
+			}
 		}
 	}
 
 	private void writeStdOut() throws SAXException {
-		if (stdOut != null && stdOut.length() > 0) {
-			startElement(IXMLTags.NODE_SYSTEM_OUT, NO_ATTS);
-			contentHandler.characters(stdOut.toCharArray(), 0, stdOut.length());
-			endElement(IXMLTags.NODE_SYSTEM_OUT);
+		for (IStreamMonitor sm : stdOut) {
+			String contents = sm.getContents();
+			if (contents.length() > 0) {
+				startElement(IXMLTags.NODE_SYSTEM_OUT, NO_ATTS);
+				contentHandler.characters(contents.toCharArray(), 0, contents.length());
+				endElement(IXMLTags.NODE_SYSTEM_OUT);
+			}
 		}
 	}
 }

@@ -91,7 +91,7 @@ public class JUnitCommand extends Launch {
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(outputPath));
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		InputSource inputSource = new InputSource();
-		SAXSource source = new SAXSource(new ResultSerializer(listener, getStdOut(), getStdErr()), inputSource);
+		SAXSource source = new SAXSource(new ResultSerializer(listener, getRawStdOut(), getRawStdErr()), inputSource);
 		StreamResult result = new StreamResult(out);
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8"); //$NON-NLS-1$
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
