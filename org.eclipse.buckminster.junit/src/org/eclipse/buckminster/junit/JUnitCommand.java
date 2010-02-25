@@ -40,15 +40,21 @@ public class JUnitCommand extends Launch {
 	private static final OptionDescriptor OUTPUT_DESCRIPTOR = new OptionDescriptor('o', "output", //$NON-NLS-1$
 			OptionValueType.REQUIRED);
 
+	private static final OptionDescriptor TERSE_XML_DESCRIPTOR = new OptionDescriptor(null, "terseXML", //$NON-NLS-1$
+			OptionValueType.NONE);
+
 	private boolean quiet;
 
 	private String outputPath;
+
+	private boolean terseXML;
 
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		super.getOptionDescriptors(appendHere);
 		appendHere.add(QUIET_DESCRIPTOR);
 		appendHere.add(OUTPUT_DESCRIPTOR);
+		appendHere.add(TERSE_XML_DESCRIPTOR);
 	}
 
 	@Override
@@ -59,6 +65,8 @@ public class JUnitCommand extends Launch {
 			quiet = true;
 		else if (option.is(OUTPUT_DESCRIPTOR))
 			outputPath = option.getValue();
+		else if (option.is(TERSE_XML_DESCRIPTOR))
+			terseXML = true;
 	}
 
 	@Override
@@ -91,7 +99,7 @@ public class JUnitCommand extends Launch {
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(outputPath));
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		InputSource inputSource = new InputSource();
-		SAXSource source = new SAXSource(new ResultSerializer(listener, getRawStdOut(), getRawStdErr()), inputSource);
+		SAXSource source = new SAXSource(new ResultSerializer(listener, getRawStdOut(), getRawStdErr(), terseXML), inputSource);
 		StreamResult result = new StreamResult(out);
 		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8"); //$NON-NLS-1$
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$

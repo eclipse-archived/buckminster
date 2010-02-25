@@ -8,8 +8,9 @@ usage: junit
        {-l | --launch} <workspace location of the launch config file>
        [{-q | --quiet}]
        [{-o | --output} <path-to-XML-output-file>]
-       [{--stdout}] [<path where stdout will be written to or "-" for passthrough>]]
-       [{--stderr}] [<path where stderr will be written to or "-" for passthrough>]]
+       [--terseXML]
+       [--stdout] [<path where stdout will be written to or "-" for passthrough>]]
+       [--stderr] [<path where stderr will be written to or "-" for passthrough>]]
 
  -?
 --help

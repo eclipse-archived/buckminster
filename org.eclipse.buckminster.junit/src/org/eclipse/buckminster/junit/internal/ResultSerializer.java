@@ -62,11 +62,14 @@ public class ResultSerializer implements XMLReader {
 
 	private IStreamMonitor[] stdErr;
 
-	public ResultSerializer(TestListener listener, IStreamMonitor[] stdout, IStreamMonitor[] stderr) {
+	private boolean terseXML;
+	
+	public ResultSerializer(TestListener listener, IStreamMonitor[] stdout, IStreamMonitor[] stderr, boolean terseXML) {
 		this.testListener = listener;
 		this.testRunSession = listener.getTestRunSession();
 		this.stdOut = stdout;
 		this.stdErr = stderr;
+		this.terseXML = terseXML;
 	}
 
 	@Override
@@ -227,9 +230,11 @@ public class ResultSerializer implements XMLReader {
 		for (ITestElement element : testRunSession.getChildren())
 			handleTestElement(element);
 
-		writeStdOut();
-		writeStdErr();
-
+		if (!terseXML) {
+			writeStdOut();
+			writeStdErr();
+		}
+		
 		endElement(IXMLTags.NODE_TESTSUITES);
 	}
 
