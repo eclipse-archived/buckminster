@@ -63,13 +63,18 @@ public class ResultSerializer implements XMLReader {
 	private IStreamMonitor[] stdErr;
 
 	private boolean terseXML;
-	
-	public ResultSerializer(TestListener listener, IStreamMonitor[] stdout, IStreamMonitor[] stderr, boolean terseXML) {
+
+	private boolean flatXML;
+
+	private String suiteStack = ""; //$NON-NLS-1$
+
+	public ResultSerializer(TestListener listener, IStreamMonitor[] stdout, IStreamMonitor[] stderr, boolean terseXML, boolean flatXML) {
 		this.testListener = listener;
 		this.testRunSession = listener.getTestRunSession();
 		this.stdOut = stdout;
 		this.stdErr = stderr;
 		this.terseXML = terseXML;
+		this.flatXML = flatXML;
 	}
 
 	@Override
@@ -183,26 +188,35 @@ public class ResultSerializer implements XMLReader {
 		if (testElement instanceof ITestSuiteElement) {
 			ITestSuiteElement testSuiteElement = (ITestSuiteElement) testElement;
 
-			AttributesImpl atts = new AttributesImpl();
-			addCDATA(atts, IXMLTags.ATTR_NAME, testSuiteElement.getSuiteTypeName());
-			if (!Double.isNaN(testSuiteElement.getElapsedTimeInSeconds()))
-				addCDATA(atts, IXMLTags.ATTR_TIME, timeFormat.format(testSuiteElement.getElapsedTimeInSeconds()));
+			if (flatXML) {
+				suiteStack = suiteStack + testSuiteElement.getSuiteTypeName() + "$"; //$NON-NLS-1$
+			} else {
+				AttributesImpl atts = new AttributesImpl();
+				addCDATA(atts, IXMLTags.ATTR_NAME, testSuiteElement.getSuiteTypeName());
+				if (!Double.isNaN(testSuiteElement.getElapsedTimeInSeconds()))
+					addCDATA(atts, IXMLTags.ATTR_TIME, timeFormat.format(testSuiteElement.getElapsedTimeInSeconds()));
 
-			startElement(IXMLTags.NODE_TESTSUITE, atts);
-			addFailure(testElement);
+				startElement(IXMLTags.NODE_TESTSUITE, atts);
+				addFailure(testElement);
+			}
 
 			ITestElement[] children = testSuiteElement.getChildren();
 			for (int i = 0; i < children.length; i++) {
 				handleTestElement(children[i]);
 			}
-			endElement(IXMLTags.NODE_TESTSUITE);
 
+			if (flatXML) {
+				suiteStack = suiteStack.substring(0, suiteStack.lastIndexOf(testSuiteElement.getSuiteTypeName()));
+			} else {
+				endElement(IXMLTags.NODE_TESTSUITE);
+			}
 		} else if (testElement instanceof ITestCaseElement) {
 			ITestCaseElement testCaseElement = (ITestCaseElement) testElement;
 
 			AttributesImpl atts = new AttributesImpl();
+			String testClassName = (flatXML ? suiteStack : "") + testCaseElement.getTestClassName(); //$NON-NLS-1$
 			addCDATA(atts, IXMLTags.ATTR_NAME, testCaseElement.getTestMethodName());
-			addCDATA(atts, IXMLTags.ATTR_CLASSNAME, testCaseElement.getTestClassName());
+			addCDATA(atts, IXMLTags.ATTR_CLASSNAME, testClassName);
 			if (!Double.isNaN(testCaseElement.getElapsedTimeInSeconds()))
 				addCDATA(atts, IXMLTags.ATTR_TIME, timeFormat.format(testCaseElement.getElapsedTimeInSeconds()));
 			if (testCaseElement.getTestResult(false) == ITestElement.Result.IGNORED)
@@ -225,7 +239,8 @@ public class ResultSerializer implements XMLReader {
 		addCDATA(atts, IXMLTags.ATTR_IGNORED, String.valueOf(testListener.getIgnoreCount()));
 		if (!Double.isNaN(testRunSession.getElapsedTimeInSeconds()))
 			addCDATA(atts, IXMLTags.ATTR_TIME, timeFormat.format(testRunSession.getElapsedTimeInSeconds()));
-		startElement(IXMLTags.NODE_TESTSUITES, atts);
+
+		startElement(flatXML ? IXMLTags.NODE_TESTSUITE : IXMLTags.NODE_TESTSUITES, atts);
 
 		for (ITestElement element : testRunSession.getChildren())
 			handleTestElement(element);
@@ -234,8 +249,8 @@ public class ResultSerializer implements XMLReader {
 			writeStdOut();
 			writeStdErr();
 		}
-		
-		endElement(IXMLTags.NODE_TESTSUITES);
+
+		endElement(flatXML ? IXMLTags.NODE_TESTSUITE : IXMLTags.NODE_TESTSUITES);
 	}
 
 	private void startElement(String name, Attributes atts) throws SAXException {

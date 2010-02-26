@@ -9,6 +9,7 @@ usage: junit
        [{-q | --quiet}]
        [{-o | --output} <path-to-XML-output-file>]
        [--terseXML]
+       [--flatXML]
        [--stdout] [<path where stdout will be written to or "-" for passthrough>]]
        [--stderr] [<path where stderr will be written to or "-" for passthrough>]]
 
@@ -41,7 +42,20 @@ usage: junit
 -o
 --output
   The (file) path where JUnit XML test output will be written to. 
-  
+
+--terseXML
+  Suppresses the <stdout> and <stderr> elements in the JUnit XML output. This is useful
+  when your tests produce large amounts of stdout/stderr output, which may lead to
+  memory problems when processing the resulting XML file.
+
+--flatXML
+  By default, the XML output file will contain nested <testsuite> elements if your tests are
+  organized in hierarchical suites. Some output processors (e.g. Hudson) do not understand
+  this format. The --flatXML flag will produce only one <testsuite> element. Test cases of
+  nested suites will be flattened into this root element. The names of the test cases will
+  be prefixed by the names of their containing test suites, so that unique identification of
+  test cases is possible.
+   
 --stdout
   The path where the contents of the standard output stream of the launched process(es) will be
   written to. Must point to a local file path. If empty, the content will be piped through
