@@ -41,7 +41,7 @@
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(&amp;(build.type=M)(eclipse.release=3.6))">
-      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100209-2300">
+      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100225-1936">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
