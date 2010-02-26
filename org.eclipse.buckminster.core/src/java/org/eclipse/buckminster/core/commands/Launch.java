@@ -118,8 +118,8 @@ public class Launch extends WorkspaceCommand {
 
 	/**
 	 * Returns the content of the standard error streams of all processes launch
-	 * by the configuration. Note that this method may lead to
-	 * memory shortage if the launch produces a large amount of output.
+	 * by the configuration. Note that this method may lead to memory shortage
+	 * if the launch produces a large amount of output.
 	 * 
 	 * @return The contents of all standard error streams. An empty string if no
 	 *         processes were launched or no content was produced.
@@ -133,8 +133,8 @@ public class Launch extends WorkspaceCommand {
 
 	/**
 	 * Returns the content of the standard output streams of all processes
-	 * launch by the configuration. Note that this method may lead to
-	 * memory shortage if the launch produces a large amount of output.
+	 * launch by the configuration. Note that this method may lead to memory
+	 * shortage if the launch produces a large amount of output.
 	 * 
 	 * @return The contents of all standard output streams. An empty string if
 	 *         no processes were launched or no content was produced.
@@ -214,7 +214,8 @@ public class Launch extends WorkspaceCommand {
 			int result = 0;
 			for (IProcess p : processes)
 				if (p.getExitValue() != 0) {
-					CorePlugin.getLogger().warning(Messages.Launch_Terminated_with_exit_status, p.getLabel(), Integer.valueOf(p.getExitValue()));
+					CorePlugin.getLogger().warning(
+							NLS.bind(Messages.Launch_Terminated_with_exit_status, p.getLabel(), Integer.valueOf(p.getExitValue())));
 					result = p.getExitValue();
 				}
 
