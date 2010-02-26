@@ -249,16 +249,6 @@ Java and all Java-based trademarks are trademarks of Sun Microsystems, Inc. in t
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.core.filesystem.hpux.ia64_32"
-         os="hpux"
-         arch="ia64_32"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.buckminster.executor"
          download-size="0"
          install-size="0"
