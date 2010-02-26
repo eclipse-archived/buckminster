@@ -43,14 +43,14 @@ public class ListSite extends AbstractCommand {
 				IProfile runningInstanceProfile = registry.getProfile(IProfileRegistry.SELF);
 
 				if (runningInstanceProfile != null)
-					roots = runningInstanceProfile.query(new PipedQuery<IInstallableUnit>(new FeatureQuery(),
-							new LatestIUVersionQuery<IInstallableUnit>()), subMon.newChild(10));
+					roots = runningInstanceProfile.query(PipedQuery.createPipe(new FeatureQuery(), new LatestIUVersionQuery<IInstallableUnit>()),
+							subMon.newChild(10));
 				else
 					roots = Collector.emptyCollector();
 			} else {
 				IMetadataRepositoryManager repoManager = (IMetadataRepositoryManager) agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
 				roots = repoManager.loadRepository(site, subMon.newChild(8)).query(
-						new PipedQuery<IInstallableUnit>(new FeatureQuery(), new LatestIUVersionQuery<IInstallableUnit>()), subMon.newChild(2));
+						PipedQuery.createPipe(new FeatureQuery(), new LatestIUVersionQuery<IInstallableUnit>()), subMon.newChild(2));
 			}
 			return roots.toArray(IInstallableUnit.class);
 		} finally {

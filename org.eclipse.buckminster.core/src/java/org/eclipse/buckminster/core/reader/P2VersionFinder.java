@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.VersionRange;
-import org.eclipse.equinox.p2.ql.QLContextQuery;
+import org.eclipse.equinox.p2.metadata.query.ExpressionContextQuery;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
@@ -37,9 +37,10 @@ public class P2VersionFinder extends AbstractVersionFinder {
 		}
 
 		VersionRange range = request.getVersionRange();
-		IQuery<IInstallableUnit> query = (range == null || range.equals(VersionRange.emptyRange)) ? new QLContextQuery<IInstallableUnit>(
+		IQuery<IInstallableUnit> query = (range == null || range.equals(VersionRange.emptyRange)) ? new ExpressionContextQuery<IInstallableUnit>(
 				IInstallableUnit.class, "select(x | x.id == $0).latest()", name) //$NON-NLS-1$
-				: new QLContextQuery<IInstallableUnit>(IInstallableUnit.class, "select(x | x.id == $0 && x.version ~= $1).latest()", name, range); //$NON-NLS-1$
+				: new ExpressionContextQuery<IInstallableUnit>(IInstallableUnit.class,
+						"select(x | x.id == $0 && x.version ~= $1).latest()", name, range); //$NON-NLS-1$
 		IQueryResult<IInstallableUnit> result = mdr.query(query, monitor);
 		if (result.isEmpty())
 			return null;

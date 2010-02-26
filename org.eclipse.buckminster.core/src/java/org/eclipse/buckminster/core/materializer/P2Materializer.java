@@ -34,8 +34,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactDescriptor;
+import org.eclipse.equinox.internal.p2.engine.InstallableUnitOperand;
 import org.eclipse.equinox.internal.p2.engine.Phase;
 import org.eclipse.equinox.internal.p2.engine.PhaseSet;
+import org.eclipse.equinox.internal.p2.engine.ProvisioningPlan;
 import org.eclipse.equinox.internal.p2.engine.phases.Collect;
 import org.eclipse.equinox.internal.p2.metadata.ArtifactKey;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
@@ -44,7 +46,6 @@ import org.eclipse.equinox.p2.engine.IEngine;
 import org.eclipse.equinox.p2.engine.IProfile;
 import org.eclipse.equinox.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.p2.engine.IProvisioningPlan;
-import org.eclipse.equinox.p2.engine.InstallableUnitOperand;
 import org.eclipse.equinox.p2.engine.ProvisioningContext;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.Version;
@@ -309,7 +310,7 @@ public class P2Materializer extends AbstractMaterializer {
 				Set<URI> arURIs = knownARs.keySet();
 				ProvisioningContext pctx = new ProvisioningContext(mdrURIs.toArray(new URI[mdrURIs.size()]));
 				pctx.setArtifactRepositories(arURIs.toArray(new URI[arURIs.size()]));
-				IProvisioningPlan plan = engine.createCustomPlan(profile, operands, pctx);
+				IProvisioningPlan plan = new ProvisioningPlan(profile, operands, pctx);
 				IStatus status = engine.perform(plan, phaseSet, subMon.newChild(200));
 				if (status.getSeverity() == IStatus.ERROR)
 					throw BuckminsterException.wrap(status);

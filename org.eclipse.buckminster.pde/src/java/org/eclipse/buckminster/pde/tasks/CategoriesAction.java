@@ -288,7 +288,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 		String id = name + ".feature.group"; //$NON-NLS-1$
 		IQuery<IInstallableUnit> query = null;
 		if (version == null || version.equals(Version.emptyVersion))
-			query = new PipedQuery<IInstallableUnit>(new InstallableUnitQuery(id), new LatestIUVersionQuery<IInstallableUnit>());
+			query = PipedQuery.createPipe(new InstallableUnitQuery(id), new LatestIUVersionQuery<IInstallableUnit>());
 		else {
 			String qual = VersionHelper.getQualifier(version);
 			if (qual != null && qual.contains("qualifier")) //$NON-NLS-1$

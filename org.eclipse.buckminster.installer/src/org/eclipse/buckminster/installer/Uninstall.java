@@ -63,7 +63,7 @@ public class Uninstall extends AbstractCommand {
 			ProfileChangeRequest request = new ProfileChangeRequest(profile);
 			for (Iterator<IInstallableUnit> iter = rootArr.iterator(); iter.hasNext();)
 				request.setInstallableUnitProfileProperty(iter.next(), IProfile.PROP_PROFILE_ROOT_IU, Boolean.TRUE.toString());
-			request.removeInstallableUnits(rootArr);
+			request.removeAll(rootArr.unmodifiableSet());
 			return Install.planAndExecute(agent, profile, request, null, monitor);
 		} finally {
 			agent.stop();
