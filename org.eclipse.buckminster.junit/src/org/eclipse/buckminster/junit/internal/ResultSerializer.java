@@ -214,7 +214,13 @@ public class ResultSerializer implements XMLReader {
 			ITestCaseElement testCaseElement = (ITestCaseElement) testElement;
 
 			AttributesImpl atts = new AttributesImpl();
-			String testClassName = (flatXML ? suiteStack : "") + testCaseElement.getTestClassName(); //$NON-NLS-1$
+			String testClassName = testCaseElement.getTestClassName();
+			if (flatXML) {
+				if (suiteStack.endsWith(testClassName + "$")) //$NON-NLS-1$)
+					testClassName = suiteStack.substring(0, suiteStack.length() - 1);
+				else
+					testClassName = suiteStack + testClassName;
+			}
 			addCDATA(atts, IXMLTags.ATTR_NAME, testCaseElement.getTestMethodName());
 			addCDATA(atts, IXMLTags.ATTR_CLASSNAME, testClassName);
 			if (!Double.isNaN(testCaseElement.getElapsedTimeInSeconds()))
