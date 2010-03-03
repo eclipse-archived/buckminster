@@ -13,8 +13,6 @@ package org.eclipse.buckminster.jdt;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
@@ -38,10 +36,6 @@ import org.eclipse.jdt.internal.core.JavaProject;
  */
 @SuppressWarnings("restriction")
 public class ClasspathReader extends JavaProject implements IStreamConsumer<IClasspathEntry[]> {
-	private static Method decodeClasspathMethod;
-
-	private static boolean isEclipse3_3 = false;
-
 	public static IClasspathEntry[] getClasspath(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
 		ClasspathReader rdr = new ClasspathReader();
 		try {
@@ -64,44 +58,9 @@ public class ClasspathReader extends JavaProject implements IStreamConsumer<ICla
 		try {
 			ByteArrayOutputStream builder = new ByteArrayOutputStream();
 			FileUtils.copyFile(stream, builder, MonitorUtils.subMonitor(monitor, 100));
-			return myDecodeClasspath(new String(builder.toByteArray()));
+			return decodeClasspath(new String(builder.toByteArray()), null)[0];
 		} finally {
 			monitor.done();
-		}
-	}
-
-	private IClasspathEntry[] myDecodeClasspath(String xmlClasspath) throws CoreException {
-		if (decodeClasspathMethod == null) {
-			Class<? extends JavaProject> c = JavaProject.class;
-			synchronized (c) {
-				try {
-					// The 3.3.x signature is like this:
-					// IClasspathEntry[] decodeClasspath(String xmlClasspath,
-					// Map unknownElements) throws IOException,
-					// AssertionFailedException {
-					//
-					decodeClasspathMethod = c.getDeclaredMethod("decodeClasspath", String.class, Map.class); //$NON-NLS-1$
-					isEclipse3_3 = true;
-				} catch (NoSuchMethodException e) {
-					try {
-						// The 3.2.1 signature is like this:
-						// IClasspathEntry[] decodeClasspath(String
-						// xmlClasspath, boolean createMarker, boolean
-						// logProblems)
-						//
-						decodeClasspathMethod = c.getDeclaredMethod("decodeClasspath", String.class, boolean.class, boolean.class); //$NON-NLS-1$
-						isEclipse3_3 = false;
-					} catch (NoSuchMethodException e2) {
-						throw BuckminsterException.wrap(e2);
-					}
-				}
-			}
-		}
-		try {
-			Object[] args = isEclipse3_3 ? new Object[] { xmlClasspath, null } : new Object[] { xmlClasspath, Boolean.FALSE, Boolean.FALSE };
-			return (IClasspathEntry[]) decodeClasspathMethod.invoke(this, args);
-		} catch (Throwable t) {
-			throw BuckminsterException.wrap(t);
 		}
 	}
 }
