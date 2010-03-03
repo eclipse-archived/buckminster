@@ -9,20 +9,17 @@
 package org.eclipse.buckminster.installer;
 
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.p2.query.MatchQuery;
+import org.eclipse.equinox.p2.query.ExpressionQuery;
 
 /**
  * Queries for IUs which IDs end with ".feature.group"
  * 
  * @author Karel Brezina
  */
-public class FeatureQuery extends MatchQuery<IInstallableUnit> {
+public class FeatureQuery extends ExpressionQuery<IInstallableUnit> {
 	public static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
 
-	@Override
-	public boolean isMatch(IInstallableUnit candidate) {
-		if (candidate.getId() == null || !candidate.getId().endsWith(FEATURE_GROUP))
-			return false;
-		return true;
+	public FeatureQuery() {
+		super(IInstallableUnit.class, "id ~= /*.feature.group/"); //$NON-NLS-1$
 	}
 }

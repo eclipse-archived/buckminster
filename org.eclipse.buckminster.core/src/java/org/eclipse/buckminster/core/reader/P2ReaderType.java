@@ -33,8 +33,8 @@ import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.expression.ExpressionUtil;
 import org.eclipse.equinox.p2.metadata.expression.IExpression;
-import org.eclipse.equinox.p2.metadata.query.ExpressionQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
@@ -72,8 +72,7 @@ public class P2ReaderType extends CatalogReaderType {
 	public static IInstallableUnit getIU(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		IMetadataRepository mdr = getMetadataRepository(providerMatch, monitor);
 		VersionMatch vm = providerMatch.getVersionMatch();
-		IQueryResult<IInstallableUnit> result = mdr.query(new ExpressionQuery<IInstallableUnit>(IInstallableUnit.class, iuQuery,
-				vm.getArtifactInfo(), vm.getVersion()), monitor);
+		IQueryResult<IInstallableUnit> result = mdr.query(QueryUtil.createMatchQuery(iuQuery, vm.getArtifactInfo(), vm.getVersion()), monitor);
 		return result.isEmpty() ? null : result.iterator().next();
 	}
 

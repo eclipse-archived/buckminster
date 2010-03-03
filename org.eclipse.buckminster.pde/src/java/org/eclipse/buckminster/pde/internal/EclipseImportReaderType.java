@@ -77,8 +77,8 @@ import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
-import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactDescriptor;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRequest;
@@ -103,15 +103,15 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	public static class CopyRequest extends ArtifactRequest {
 		private final File destination;
 
-		public CopyRequest(IArtifactRepository src, IArtifactKey key, File destination) {
+		public CopyRequest(IArtifactKey key, File destination) {
 			super(key);
-			setSourceRepository(src);
 			this.destination = destination;
 		}
 
 		@Override
-		public void perform(IProgressMonitor monitor) {
+		public void perform(IArtifactRepository sourceRepository, IProgressMonitor monitor) {
 			monitor.subTask(NLS.bind(Messages.downloading_0, getArtifactKey().getId()));
+			setSourceRepository(sourceRepository);
 
 			// if the request does not have a descriptor then try to fill one in
 			// by getting
@@ -351,7 +351,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		String name = cr.getName();
 		if (IComponentType.ECLIPSE_FEATURE.equals(cr.getComponentTypeID()) && !name.endsWith(IPDEConstants.FEATURE_GROUP))
 			name += IPDEConstants.FEATURE_GROUP;
-		IQueryResult<IInstallableUnit> c = mdr.query(new InstallableUnitQuery(name, vr), null);
+		IQueryResult<IInstallableUnit> c = mdr.query(QueryUtil.createIUQuery(name, vr), null);
 		if (c.isEmpty())
 			return null;
 		return c.iterator().next();
@@ -431,7 +431,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				for (IArtifactKey ak : iu.getArtifacts()) {
 					jarName = ak.getId() + '_' + ak.getVersion() + ".jar"; //$NON-NLS-1$
 					jarFile = new File(subDir, jarName);
-					IStatus status = ar.getArtifacts(new IArtifactRequest[] { new CopyRequest(ar, ak, jarFile) }, monitor);
+					IStatus status = ar.getArtifacts(new IArtifactRequest[] { new CopyRequest(ak, jarFile) }, monitor);
 					if (!status.isOK())
 						throw new CoreException(status);
 				}

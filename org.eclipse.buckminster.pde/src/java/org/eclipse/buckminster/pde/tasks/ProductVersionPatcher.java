@@ -15,9 +15,10 @@ import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
-import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
+import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.IQueryable;
+import org.eclipse.equinox.p2.query.QueryUtil;
 
 @SuppressWarnings("restriction")
 public class ProductVersionPatcher implements IProductDescriptor {
@@ -205,7 +206,7 @@ public class ProductVersionPatcher implements IProductDescriptor {
 		if (isFeature && !iuID.endsWith(IPDEConstants.FEATURE_GROUP))
 			iuID += IPDEConstants.FEATURE_GROUP;
 
-		InstallableUnitQuery query = new InstallableUnitQuery(iuID, range);
+		IQuery<IInstallableUnit> query = QueryUtil.createIUQuery(iuID, range);
 		IQueryResult<IInstallableUnit> result = mdr.query(query, null);
 		if (result.isEmpty())
 			return version;

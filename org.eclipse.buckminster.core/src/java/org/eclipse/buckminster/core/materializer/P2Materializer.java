@@ -50,8 +50,8 @@ import org.eclipse.equinox.p2.engine.ProvisioningContext;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
-import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
@@ -257,7 +257,7 @@ public class P2Materializer extends AbstractMaterializer {
 					// Since this is what we want in the target platform
 					name = name + ".feature.jar"; //$NON-NLS-1$
 
-				IQueryResult<IInstallableUnit> result = mdr.query(new InstallableUnitQuery(name, range), subSubMon.newChild(250));
+				IQueryResult<IInstallableUnit> result = mdr.query(QueryUtil.createIUQuery(name, range), subSubMon.newChild(250));
 				Iterator<IInstallableUnit> itor = result.iterator();
 				if (!itor.hasNext())
 					throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2, new Object[] { cid.getName(), version,

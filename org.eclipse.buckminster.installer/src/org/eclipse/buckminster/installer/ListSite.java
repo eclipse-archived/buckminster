@@ -18,7 +18,6 @@ import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.equinox.internal.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
 import org.eclipse.equinox.p2.engine.IProfile;
@@ -26,10 +25,9 @@ import org.eclipse.equinox.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.query.Collector;
 import org.eclipse.equinox.p2.query.IQueryResult;
-import org.eclipse.equinox.p2.query.PipedQuery;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 
-@SuppressWarnings("restriction")
 public class ListSite extends AbstractCommand {
 	static IInstallableUnit[] getRootIUs(URI site, IProgressMonitor monitor) throws CoreException {
 		Buckminster bucky = Buckminster.getDefault();
@@ -43,14 +41,13 @@ public class ListSite extends AbstractCommand {
 				IProfile runningInstanceProfile = registry.getProfile(IProfileRegistry.SELF);
 
 				if (runningInstanceProfile != null)
-					roots = runningInstanceProfile.query(PipedQuery.createPipe(new FeatureQuery(), new LatestIUVersionQuery<IInstallableUnit>()),
-							subMon.newChild(10));
+					roots = runningInstanceProfile.query(QueryUtil.createLatestQuery(new FeatureQuery()), subMon.newChild(10));
 				else
 					roots = Collector.emptyCollector();
 			} else {
 				IMetadataRepositoryManager repoManager = (IMetadataRepositoryManager) agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
-				roots = repoManager.loadRepository(site, subMon.newChild(8)).query(
-						PipedQuery.createPipe(new FeatureQuery(), new LatestIUVersionQuery<IInstallableUnit>()), subMon.newChild(2));
+				roots = repoManager.loadRepository(site, subMon.newChild(8)).query(QueryUtil.createLatestQuery(new FeatureQuery()),
+						subMon.newChild(2));
 			}
 			return roots.toArray(IInstallableUnit.class);
 		} finally {

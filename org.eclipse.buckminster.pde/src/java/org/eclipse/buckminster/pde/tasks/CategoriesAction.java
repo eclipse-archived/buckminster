@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.metadata.IRequiredCapability;
 import org.eclipse.equinox.internal.p2.metadata.VersionedId;
-import org.eclipse.equinox.internal.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
 import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
 import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
@@ -42,14 +41,12 @@ import org.eclipse.equinox.p2.metadata.IProvidedCapability;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
-import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
-import org.eclipse.equinox.p2.query.LimitQuery;
-import org.eclipse.equinox.p2.query.PipedQuery;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.spi.p2.publisher.LocalizationHelper;
 import org.eclipse.equinox.spi.p2.publisher.PublisherHelper;
 
@@ -288,7 +285,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 		String id = name + ".feature.group"; //$NON-NLS-1$
 		IQuery<IInstallableUnit> query = null;
 		if (version == null || version.equals(Version.emptyVersion))
-			query = PipedQuery.createPipe(new InstallableUnitQuery(id), new LatestIUVersionQuery<IInstallableUnit>());
+			query = QueryUtil.createLatestQuery(QueryUtil.createIUQuery(id));
 		else {
 			String qual = VersionHelper.getQualifier(version);
 			if (qual != null && qual.contains("qualifier")) //$NON-NLS-1$
@@ -298,12 +295,12 @@ public class CategoriesAction extends AbstractPublisherAction {
 				//
 				Version low = VersionHelper.replaceQualifier(version, null);
 				org.osgi.framework.Version ov = Version.toOSGiVersion(version);
-				query = new InstallableUnitQuery(id, new VersionRange(low, true, Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro() + 1),
+				query = QueryUtil.createIUQuery(id, new VersionRange(low, true, Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro() + 1),
 						false));
 			} else
-				query = new InstallableUnitQuery(id, version);
+				query = QueryUtil.createIUQuery(id, version);
 
-			query = new LimitQuery<IInstallableUnit>(query, 1);
+			query = QueryUtil.createLimitQuery(query, 1);
 		}
 
 		IQueryResult<IInstallableUnit> result = results.query(query, monitor);

@@ -44,9 +44,9 @@ import org.eclipse.equinox.p2.metadata.IRequirement;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.equinox.p2.metadata.expression.IMatchExpression;
-import org.eclipse.equinox.p2.metadata.query.ExpressionQuery;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.InvalidSyntaxException;
@@ -106,7 +106,7 @@ public class CSpecBuilder implements ICSpecData {
 				|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
 		|| "org.eclipse.rcp".equals(id)); //$NON-NLS-1$
 
-		for (IRequirement cap : iu.getRequiredCapabilities()) {
+		for (IRequirement cap : iu.getRequirements()) {
 			// We only bother with direct dependencies to other IU's here
 			// since package imports etc. are not yet supported
 			//
@@ -148,7 +148,7 @@ public class CSpecBuilder implements ICSpecData {
 			} else if (hasBogusFragments && ctype == IComponentType.OSGI_BUNDLE && filterStr != null) {
 				// Don't add unless this requirement can be satisfied within the
 				// same mdr
-				IQuery<IInstallableUnit> query = new ExpressionQuery<IInstallableUnit>(IInstallableUnit.class, matches);
+				IQuery<IInstallableUnit> query = QueryUtil.createMatchQuery(matches);
 				IQueryResult<IInstallableUnit> result = mdr.query(query, null);
 				if (result.isEmpty())
 					continue;

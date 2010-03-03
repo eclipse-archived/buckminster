@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.equinox.internal.p2.metadata.query.LatestIUVersionQuery;
 import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
@@ -35,13 +34,11 @@ import org.eclipse.equinox.p2.engine.IProvisioningPlan;
 import org.eclipse.equinox.p2.engine.ProvisioningContext;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.Version;
-import org.eclipse.equinox.p2.metadata.VersionRange;
-import org.eclipse.equinox.p2.metadata.query.InstallableUnitQuery;
 import org.eclipse.equinox.p2.planner.IPlanner;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.IQueryable;
-import org.eclipse.equinox.p2.query.PipedQuery;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.osgi.util.NLS;
 
@@ -59,8 +56,7 @@ public class Install extends AbstractCommand {
 		if (!iuName.endsWith(".feature.group")) //$NON-NLS-1$
 			iuName = iuName + ".feature.group"; //$NON-NLS-1$
 
-		IQuery<IInstallableUnit> query = new InstallableUnitQuery(iuName, version == null ? VersionRange.emptyRange : new VersionRange(version, true,
-				version, true));
+		IQuery<IInstallableUnit> query = QueryUtil.createIUQuery(iuName, version);
 
 		SubMonitor subMon = SubMonitor.convert(monitor, 100);
 		IQueryable<IInstallableUnit> queryable;
@@ -71,8 +67,7 @@ public class Install extends AbstractCommand {
 		} else
 			queryable = repoManager.loadRepository(site, subMon.newChild(80));
 
-		IQueryResult<IInstallableUnit> roots = queryable.query(PipedQuery.createPipe(query, new LatestIUVersionQuery<IInstallableUnit>()), subMon
-				.newChild(10));
+		IQueryResult<IInstallableUnit> roots = queryable.query(QueryUtil.createLatestQuery(query), subMon.newChild(10));
 
 		if (roots.isEmpty())
 			roots = profile.query(query, subMon.newChild(10));
@@ -166,7 +161,7 @@ public class Install extends AbstractCommand {
 			ProfileChangeRequest request = new ProfileChangeRequest(profile);
 			for (Iterator<IInstallableUnit> iter = rootArr.iterator(); iter.hasNext();)
 				request.setInstallableUnitProfileProperty(iter.next(), IProfile.PROP_PROFILE_ROOT_IU, Boolean.TRUE.toString());
-			request.addAll(rootArr.unmodifiableSet());
+			request.addAll(rootArr.toUnmodifiableSet());
 			return planAndExecute(agent, profile, request, createContext(site), monitor);
 		} finally {
 			agent.stop();
