@@ -101,7 +101,8 @@ public class AllContributedContentAction extends AbstractPublisherAction {
 				VersionRange range = null;
 				if (!Version.emptyVersion.equals(v))
 					range = new VersionRange(v, true, v, true);
-				required.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, requiredId, range, null, false, false));
+				String filter = featureIU.getFilter();
+				required.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, requiredId, range, filter, false, false));
 			}
 			for (Bundle bundle : contrib.getBundles()) {
 				IInstallableUnit bundleIU = Builder.getIU(globalMdr, bundle.getId(), bundle.getVersion());
