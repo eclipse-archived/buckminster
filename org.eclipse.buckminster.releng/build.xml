@@ -58,7 +58,6 @@
 
 			<!-- Launch the eclipse application -->
 			<java fork="true" jar="${@{app}.launcher}" dir="${@{app}.deploy.dir}" failonerror="true">
-				<!-- Uncomment to debug <jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/> -->
 				<args />
 			</java>
 		</sequential>
@@ -178,10 +177,23 @@
 			</cmdargs>
 		</buckminster>
 		<buckminster command="import">
+			<!-- Uncomment to debug <globargs><jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/></globargs> -->
 			<cmdargs>
 				<arg value="-P" />
 				<arg value="${basedir}/build.properties" />
 				<arg value="${basedir}/build.mspec" />
+			</cmdargs>
+		</buckminster>
+	</target>
+
+	<target name="site.p2" depends="clean.workspace,clean.output,clean.tp,provision">
+		<echo message="Building all projects in workspace ${workspace}" />
+		<buckminster command="build" />
+
+		<echo message="Performing org.eclipse.buckminster.site.eclipse#site.p2" />
+		<buckminster command="perform">
+			<cmdargs>
+				<arg value="org.eclipse.buckminster.site.eclipse#site.p2" />
 			</cmdargs>
 		</buckminster>
 	</target>
