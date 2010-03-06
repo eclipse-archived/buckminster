@@ -127,6 +127,22 @@ public class JarProcessorActor extends AbstractActor {
 		}
 	}
 
-	private void unpackJars(File inputDir, File outputDir) {
+	private void unpackJars(File inputDir, File outputDir) throws CoreException {
+		File[] files = inputDir.listFiles();
+		for (File file : files) {
+			String name = file.getName();
+			if (file.isDirectory()) {
+				File childOutputDir = new File(outputDir, name);
+				childOutputDir.mkdir();
+				unpackJars(file, childOutputDir);
+				continue;
+			}
+
+			if (name.endsWith(IConstants.PACK_GZ_SUFFIX)) {
+				RecursiveUnpacker unpacker = new RecursiveUnpacker(null);
+				unpacker.unpack(file, new File(outputDir, name.substring(0, name.length() - IConstants.PACK_GZ_SUFFIX.length())));
+			} else
+				FileUtils.copyFile(file, outputDir, name, null);
+		}
 	}
 }

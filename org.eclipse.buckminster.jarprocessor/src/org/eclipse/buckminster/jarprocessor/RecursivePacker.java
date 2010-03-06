@@ -84,6 +84,7 @@ public class RecursivePacker extends RecursivePack200 {
 	}
 
 	private void processNestedJars(ZipInputStream jarIn, JarInfo jarInfo, OutputStream output) throws Exception {
+		Logger log = Buckminster.getLogger();
 		ZipOutputStream jarOut = new ZipOutputStream(output);
 		ZipEntry entry;
 		boolean packChildren = !jarInfo.isExcludeChildrenPack();
@@ -96,19 +97,23 @@ public class RecursivePacker extends RecursivePack200 {
 						if (useRedunantGZipping) {
 							jarOut.putNextEntry(createEntry(entry, name + PACK_GZ_SUFFIX));
 							GZIPOutputStream gzipOut = new GZIPOutputStream(jarOut);
+							log.debug("Packer: Recursive gzipped pack of %s", name); //$NON-NLS-1$
 							nestedPack(jarIn, nested, gzipOut);
 							gzipOut.finish();
 						} else {
+							log.debug("Packer: Recursive pack of %s", name); //$NON-NLS-1$
 							jarOut.putNextEntry(createEntry(entry, name + PACK_SUFFIX));
 							nestedPack(jarIn, nested, jarOut);
 						}
 					} else {
+						log.debug("Packer: Recursive processing (no pack) of %s", name); //$NON-NLS-1$
 						jarOut.putNextEntry(createEntry(entry));
-						processNestedJars(jarIn, nested, jarOut);
+						processNestedJars(new ZipInputStream(jarIn), nested, jarOut);
 					}
 					continue;
 				}
 			}
+			log.debug("Packer: Storing %s", name); //$NON-NLS-1$
 			jarOut.putNextEntry(createEntry(entry));
 			if (!entry.isDirectory())
 				IOUtils.copy(jarIn, jarOut, null);
