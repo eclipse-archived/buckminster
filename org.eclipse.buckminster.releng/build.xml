@@ -11,13 +11,12 @@
 	<!--Property file containing overrides for the default properties
 	  -->
 	<property environment="env" />
+	<property file="build.properties" />
 
-	<!-- if we are not runing in Huson, we some up with a reasonable default -->
+	<!-- if we are not running in Huson, we some up with a reasonable default -->
 	<condition property="build.root" value="${env.WORKSPACE}" else="${basedir}/../build">
 		<isset property="env.WORKSPACE" />
 	</condition>
-
-	<property file="build.properties" />
 
 	<!--Default properties intended to be overridden by entries in the
 		above property file.
@@ -105,6 +104,8 @@
 
 	<target name="install.buckminster" unless="buckminster.exists" depends="get.director">
 		<echo message="Configuring headless buckminster with needed features" />
+		<echo message="Headless site: ${bm.headless.site}" />
+		<echo message="External site: ${bm.external.site}" />
 		<eclipse.launch app="director">
 			<args>
 				<jvmarg value="-Declipse.p2.mirrors=false" />
@@ -125,7 +126,7 @@
 				<arg value="-i" />
 				<arg value="org.eclipse.buckminster.cvs.headless.feature.feature.group" />
 				<arg value="-i" />
-				<arg value="org.eclipse.buckminster.subclipse.headless.feature.feature.group" />
+				<arg value="org.eclipse.buckminster.subversive.headless.feature.feature.group" />
 			</args>
 		</eclipse.launch>
 	</target>
