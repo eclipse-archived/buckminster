@@ -58,6 +58,9 @@ class JarInfo implements IConstants {
 				if (nested.isSigned() && !nested.isConditioned())
 					continue;
 
+				if (!(nested.hasClasses() || nested.isNested()))
+					continue;
+
 				if (jarInfo.nestedInfos == null)
 					jarInfo.nestedInfos = new HashMap<String, JarInfo>();
 

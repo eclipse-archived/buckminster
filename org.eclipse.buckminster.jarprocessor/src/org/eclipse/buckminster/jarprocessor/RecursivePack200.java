@@ -69,6 +69,10 @@ abstract class RecursivePack200 implements IConstants {
 		return copy;
 	}
 
+	static Unpacker getUnpacker() {
+		return Pack200.newUnpacker();
+	}
+
 	RecursivePack200(List<String> defaultArgs) {
 		if (defaultArgs == null || defaultArgs.isEmpty())
 			this.defaultArgs = Collections.emptyList();
@@ -159,10 +163,6 @@ abstract class RecursivePack200 implements IConstants {
 			}
 		}
 		return packer;
-	}
-
-	Unpacker getUnpacker() {
-		return Pack200.newUnpacker();
 	}
 
 	void pack(JarInfo jarInfo, InputStream in, OutputStream out) throws IOException {

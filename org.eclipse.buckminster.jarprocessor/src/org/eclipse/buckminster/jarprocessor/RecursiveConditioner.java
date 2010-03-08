@@ -104,6 +104,7 @@ public class RecursiveConditioner extends RecursivePack200 {
 					if (name.endsWith(JAR_SUFFIX) && !jarInfo.isExcludeChildrenSign()) {
 						JarInfo nested = jarInfo.getNestedInfo(name);
 						if (nested != null && !(nested.isConditioned() || nested.isSigned() || nested.isExcludeSign())) {
+							Buckminster.getLogger().debug("Conditioner: Recursive conditioning of %s", name); //$NON-NLS-1$
 							jarOut.putNextEntry(entry);
 							nestedConditioning(jarIn, nested, jarOut);
 							continue;
@@ -116,6 +117,7 @@ public class RecursiveConditioner extends RecursivePack200 {
 						metaAddingDone = true;
 						if (!jarInfo.hasEclipseInf()) {
 							// Create the eclipse.inf here so that it ends up
+							Buckminster.getLogger().debug("Conditioner: Adding " + META_INF + ECLIPSE_INF); //$NON-NLS-1$
 							emitEclipseInf(jarOut, jarInfo, new ZipEntry(META_INF + ECLIPSE_INF));
 							hasEclipseInf = true;
 						}

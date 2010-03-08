@@ -30,6 +30,10 @@ public class JarProcessorActor extends AbstractActor {
 
 	public static final String PROP_COMMAND = "command"; //$NON-NLS-1$
 
+	public static final String PROP_RETAIN_UNPACKED = "site.retain.unpacked"; //$NON-NLS-1$
+
+	public static final String PROP_RETAIN_PACKED = "site.retain.packed"; //$NON-NLS-1$
+
 	public static final String COMMAND_REPACK = "repack"; //$NON-NLS-1$
 
 	public static final String COMMAND_PACK = "pack"; //$NON-NLS-1$
@@ -76,9 +80,9 @@ public class JarProcessorActor extends AbstractActor {
 			if (COMMAND_REPACK.equals(command))
 				repackJars(jarFolder.toFile(), outputDir);
 			else if (COMMAND_PACK.equals(command))
-				packJars(jarFolder.toFile(), outputDir);
+				packJars(jarFolder.toFile(), outputDir, props);
 			else if (COMMAND_UNPACK.equals(command))
-				unpackJars(jarFolder.toFile(), outputDir);
+				unpackJars(jarFolder.toFile(), outputDir, props);
 			else
 				throw BuckminsterException.fromMessage(NLS.bind(org.eclipse.buckminster.jarprocessor.Messages.action_0_does_not_recognize_command_1,
 						action.getQualifiedName(), command));
@@ -88,23 +92,26 @@ public class JarProcessorActor extends AbstractActor {
 		return Status.OK_STATUS;
 	}
 
-	private void packJars(File inputDir, File outputDir) throws CoreException, IOException {
+	private void packJars(File inputDir, File outputDir, Map<String, ? extends Object> props) throws CoreException, IOException {
 		File[] files = inputDir.listFiles();
+		Object retainUnpackedProp = props.get(PROP_RETAIN_UNPACKED);
+		boolean retainUnpacked = (retainUnpackedProp == null ? false : Boolean.parseBoolean(retainUnpackedProp.toString()));
 		for (File file : files) {
 			String name = file.getName();
 			if (file.isDirectory()) {
 				File childOutputDir = new File(outputDir, name);
 				childOutputDir.mkdir();
-				packJars(file, childOutputDir);
+				packJars(file, childOutputDir, props);
 				continue;
 			}
 
-			FileUtils.copyFile(file, outputDir, name, null);
-			if (!name.endsWith(IConstants.JAR_SUFFIX))
+			if (!name.endsWith(IConstants.JAR_SUFFIX)) {
+				FileUtils.copyFile(file, outputDir, name, null);
 				continue;
+			}
 
 			RecursivePacker rpacker = new RecursivePacker(null, true);
-			rpacker.pack(new File(outputDir, name));
+			rpacker.pack(file, outputDir, retainUnpacked);
 		}
 	}
 
@@ -127,20 +134,22 @@ public class JarProcessorActor extends AbstractActor {
 		}
 	}
 
-	private void unpackJars(File inputDir, File outputDir) throws CoreException {
+	private void unpackJars(File inputDir, File outputDir, Map<String, ? extends Object> props) throws CoreException {
+		Object retainPackedProp = props.get(PROP_RETAIN_PACKED);
+		boolean retainPacked = (retainPackedProp == null ? false : Boolean.parseBoolean(retainPackedProp.toString()));
 		File[] files = inputDir.listFiles();
 		for (File file : files) {
 			String name = file.getName();
 			if (file.isDirectory()) {
 				File childOutputDir = new File(outputDir, name);
 				childOutputDir.mkdir();
-				unpackJars(file, childOutputDir);
+				unpackJars(file, childOutputDir, props);
 				continue;
 			}
 
 			if (name.endsWith(IConstants.PACK_GZ_SUFFIX)) {
 				RecursiveUnpacker unpacker = new RecursiveUnpacker(null);
-				unpacker.unpack(file, new File(outputDir, name.substring(0, name.length() - IConstants.PACK_GZ_SUFFIX.length())));
+				unpacker.unpack(file, outputDir, retainPacked);
 			} else
 				FileUtils.copyFile(file, outputDir, name, null);
 		}

@@ -14,6 +14,7 @@ import java.util.jar.Pack200.Unpacker;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 
+import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -21,7 +22,7 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 
 public class RecursiveUnpacker extends RecursivePack200 {
-	private class NestedUnpackingJarOutputStream extends JarOutputStream {
+	static class NestedUnpackingJarOutputStream extends JarOutputStream {
 		private OutputStream currentStream;
 		private IOException pipeException;
 		private Thread unpackPumper;
@@ -32,29 +33,29 @@ public class RecursiveUnpacker extends RecursivePack200 {
 		}
 
 		@Override
-		public void close() throws IOException {
+		public synchronized void close() throws IOException {
 			currentStream.close();
 		}
 
 		@Override
-		public void closeEntry() throws IOException {
+		public synchronized void closeEntry() throws IOException {
 			popStreams();
 			getInnerStream().closeEntry();
 		}
 
 		@Override
-		public void finish() throws IOException {
+		public synchronized void finish() throws IOException {
 			popStreams();
 			getInnerStream().finish();
 		}
 
 		@Override
-		public void flush() throws IOException {
+		public synchronized void flush() throws IOException {
 			currentStream.flush();
 		}
 
 		@Override
-		public void putNextEntry(ZipEntry ze) throws IOException {
+		public synchronized void putNextEntry(ZipEntry ze) throws IOException {
 			Logger log = Buckminster.getLogger();
 			String name = ze.getName();
 			popStreams();
@@ -66,28 +67,27 @@ public class RecursiveUnpacker extends RecursivePack200 {
 				pushPack200Unpacker(false);
 				log.debug("Unpacker: Recursive unpack of %s", name); //$NON-NLS-1$
 				ze = createEntry(ze, name.substring(0, name.length() - PACK_SUFFIX.length()));
-			} else
-				log.debug("Unpacker: Storing %s", name); //$NON-NLS-1$
+			}
 			getInnerStream().putNextEntry(ze);
 		}
 
 		@Override
-		public void setComment(String comment) {
+		public synchronized void setComment(String comment) {
 			getInnerStream().setComment(comment);
 		}
 
 		@Override
-		public void setLevel(int level) {
+		public synchronized void setLevel(int level) {
 			getInnerStream().setLevel(level);
 		}
 
 		@Override
-		public void setMethod(int method) {
+		public synchronized void setMethod(int method) {
 			getInnerStream().setMethod(method);
 		}
 
 		@Override
-		public void write(byte b[]) throws IOException {
+		public synchronized void write(byte b[]) throws IOException {
 			currentStream.write(b);
 		}
 
@@ -97,7 +97,7 @@ public class RecursiveUnpacker extends RecursivePack200 {
 		}
 
 		@Override
-		public void write(int b) throws IOException {
+		public synchronized void write(int b) throws IOException {
 			currentStream.write(b);
 		}
 
@@ -109,13 +109,11 @@ public class RecursiveUnpacker extends RecursivePack200 {
 			if (currentStream != out) {
 				currentStream.close();
 				currentStream = out;
-				synchronized (this) {
-					if (unpackPumper != null)
-						try {
-							wait();
-						} catch (InterruptedException e) {
-						}
-				}
+				if (unpackPumper != null)
+					try {
+						wait();
+					} catch (InterruptedException e) {
+					}
 				if (pipeException != null)
 					throw pipeException;
 			}
@@ -154,18 +152,34 @@ public class RecursiveUnpacker extends RecursivePack200 {
 		super(defaultArgs);
 	}
 
-	public void unpack(File packedFile, File jarFile) throws CoreException {
+	public void unpack(File packedFile, File destFolder, boolean retainPacked) throws CoreException {
+		boolean sharedFolder;
+		if (destFolder == null) {
+			sharedFolder = true;
+			destFolder = packedFile.getParentFile();
+		} else
+			sharedFolder = destFolder.equals(packedFile.getParentFile());
+
 		InputStream input = null;
 		OutputStream output = null;
 		String fileName = packedFile.getAbsolutePath();
+		String name = packedFile.getName();
 		try {
 			input = new GZIPInputStream(new FileInputStream(packedFile));
-			output = new FileOutputStream(jarFile);
+			output = new FileOutputStream(new File(destFolder, name.substring(0, name.length() - PACK_GZ_SUFFIX.length())));
 			NestedUnpackingJarOutputStream nuJarOutput = new NestedUnpackingJarOutputStream(output);
 			Unpacker unpacker = getUnpacker();
 			unpacker.unpack(input, nuJarOutput);
 			input = null; // Closed by unpack
-			nuJarOutput.finish();
+			nuJarOutput.close();
+			output = null;
+			if (sharedFolder) {
+				if (!retainPacked)
+					packedFile.delete();
+			} else {
+				if (retainPacked)
+					FileUtils.copyFile(packedFile, destFolder, name, null);
+			}
 		} catch (IOException e) {
 			throw BuckminsterException.fromMessage(e, "Unable to condition %s", fileName); //$NON-NLS-1$
 		} finally {
