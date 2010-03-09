@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test
+Bundle-SymbolicName: org.eclipse.buckminster.jarprocessor.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Eclipse Buckminster Project
+Fragment-Host: org.eclipse.buckminster.jarprocessor
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit;bundle-version="4.8.1"
