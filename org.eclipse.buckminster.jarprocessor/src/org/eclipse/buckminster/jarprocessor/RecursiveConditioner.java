@@ -13,6 +13,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200.Unpacker;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -22,7 +23,7 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 
 public class RecursiveConditioner extends RecursivePack200 {
-	private static void emitEclipseInf(JarOutputStream jarOut, JarInfo jarInfo, ZipEntry entry) throws IOException {
+	private static void emitEclipseInf(ZipOutputStream jarOut, JarInfo jarInfo, ZipEntry entry) throws IOException {
 		jarOut.putNextEntry(entry);
 		Map<String, String> eclipseInf = jarInfo.getEclipseInf();
 		eclipseInf.put(JarInfo.PROP_PACK200_CONDITIONED, "true"); //$NON-NLS-1$
@@ -78,7 +79,7 @@ public class RecursiveConditioner extends RecursivePack200 {
 		{
 			@Override
 			protected void internalRun(OutputStream writer) throws Exception {
-				JarOutputStream jarOut = new JarOutputStream(writer);
+				ZipOutputStream jarOut = new ZipOutputStream(writer);
 				ZipInputStream jarIn = new ZipInputStream(input);
 
 				boolean metaAddingDone = false;

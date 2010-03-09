@@ -1,151 +1,28 @@
 package org.eclipse.buckminster.jarprocessor;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.util.List;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Pack200.Unpacker;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
-import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 
 public class RecursiveUnpacker extends RecursivePack200 {
-	static class NestedUnpackingJarOutputStream extends JarOutputStream {
-		private OutputStream currentStream;
-		private IOException pipeException;
-		private Thread unpackPumper;
-
-		NestedUnpackingJarOutputStream(OutputStream innerStream) throws IOException {
-			super(new JarOutputStream(innerStream));
-			currentStream = out;
-		}
-
-		@Override
-		public synchronized void close() throws IOException {
-			currentStream.close();
-		}
-
-		@Override
-		public synchronized void closeEntry() throws IOException {
-			popStreams();
-			getInnerStream().closeEntry();
-		}
-
-		@Override
-		public synchronized void finish() throws IOException {
-			popStreams();
-			getInnerStream().finish();
-		}
-
-		@Override
-		public synchronized void flush() throws IOException {
-			currentStream.flush();
-		}
-
-		@Override
-		public synchronized void putNextEntry(ZipEntry ze) throws IOException {
-			Logger log = Buckminster.getLogger();
-			String name = ze.getName();
-			popStreams();
-			if (name.endsWith(PACK_GZ_SUFFIX)) {
-				pushPack200Unpacker(true);
-				log.debug("Unpacker: Recursive unpack of %s", name); //$NON-NLS-1$
-				ze = createEntry(ze, name.substring(0, name.length() - PACK_GZ_SUFFIX.length()));
-			} else if (name.endsWith(PACK_SUFFIX)) {
-				pushPack200Unpacker(false);
-				log.debug("Unpacker: Recursive unpack of %s", name); //$NON-NLS-1$
-				ze = createEntry(ze, name.substring(0, name.length() - PACK_SUFFIX.length()));
-			}
-			getInnerStream().putNextEntry(ze);
-		}
-
-		@Override
-		public synchronized void setComment(String comment) {
-			getInnerStream().setComment(comment);
-		}
-
-		@Override
-		public synchronized void setLevel(int level) {
-			getInnerStream().setLevel(level);
-		}
-
-		@Override
-		public synchronized void setMethod(int method) {
-			getInnerStream().setMethod(method);
-		}
-
-		@Override
-		public synchronized void write(byte b[]) throws IOException {
-			currentStream.write(b);
-		}
-
-		@Override
-		public synchronized void write(byte[] b, int off, int len) throws IOException {
-			currentStream.write(b, off, len);
-		}
-
-		@Override
-		public synchronized void write(int b) throws IOException {
-			currentStream.write(b);
-		}
-
-		private JarOutputStream getInnerStream() {
-			return (JarOutputStream) out;
-		}
-
-		private void popStreams() throws IOException {
-			if (currentStream != out) {
-				currentStream.close();
-				currentStream = out;
-				if (unpackPumper != null)
-					try {
-						wait();
-					} catch (InterruptedException e) {
-					}
-				if (pipeException != null)
-					throw pipeException;
-			}
-		}
-
-		private void pushPack200Unpacker(final boolean gzipped) throws IOException {
-			final PipedInputStream pipeInput = new PipedInputStream();
-			currentStream = new PipedOutputStream(pipeInput);
-			unpackPumper = new Thread("Pack200 unpackPumper") //$NON-NLS-1$
-			{
-				@Override
-				public void run() {
-					Unpacker unpacker = getUnpacker();
-					try {
-						JarOutputStream jarOut = new NestedUnpackingJarOutputStream(getInnerStream());
-						InputStream input = pipeInput;
-						if (gzipped)
-							input = new GZIPInputStream(pipeInput);
-						unpacker.unpack(input, jarOut);
-						jarOut.finish();
-					} catch (IOException e) {
-						pipeException = e;
-					}
-					synchronized (NestedUnpackingJarOutputStream.this) {
-						unpackPumper = null;
-						NestedUnpackingJarOutputStream.this.notify();
-					}
-				}
-			};
-			pipeException = null;
-			unpackPumper.start();
-		}
+	static boolean isJarMagic(byte[] magic) {
+		return (magic[0] == (byte) 'P' && magic[1] == (byte) 'K' && magic[2] >= 1 && magic[2] < 8 && magic[3] == magic[2] + 1);
 	}
 
 	public RecursiveUnpacker(List<String> defaultArgs) {
@@ -167,12 +44,7 @@ public class RecursiveUnpacker extends RecursivePack200 {
 		try {
 			input = new GZIPInputStream(new FileInputStream(packedFile));
 			output = new FileOutputStream(new File(destFolder, name.substring(0, name.length() - PACK_GZ_SUFFIX.length())));
-			NestedUnpackingJarOutputStream nuJarOutput = new NestedUnpackingJarOutputStream(output);
-			Unpacker unpacker = getUnpacker();
-			unpacker.unpack(input, nuJarOutput);
-			input = null; // Closed by unpack
-			nuJarOutput.close();
-			output = null;
+			nestedUnpack(input, output);
 			if (sharedFolder) {
 				if (!retainPacked)
 					packedFile.delete();
@@ -186,5 +58,68 @@ public class RecursiveUnpacker extends RecursivePack200 {
 			IOUtils.close(input);
 			IOUtils.close(output);
 		}
+	}
+
+	private void nestedUnpack(InputStream input, OutputStream unpacked) throws IOException {
+		// The Unpack200 will corrupt the manifest for packed files if -E0 is
+		// used. This is because it copies the jar entries one by one and
+		// rewrites the manifest.
+		//
+		// Here we check if the packed file starts with a jar magic. If it does,
+		// then this is a plain copy and we treat is as such.
+		//
+		final BufferedInputStream bufferedInput = new BufferedInputStream(input);
+		bufferedInput.mark(4);
+		byte[] magic = new byte[4];
+		if (bufferedInput.read(magic, 0, 4) != 4)
+			throw new IOException("Unable to read packed file magic"); //$NON-NLS-1$
+		bufferedInput.reset();
+
+		ZipInputStream jarIn;
+		if (isJarMagic(magic))
+			jarIn = new ZipInputStream(bufferedInput);
+		else {
+			final ProducerThread jarPumper = new ProducerThread("Unpack200 jarPumper") //$NON-NLS-1$
+			{
+				@Override
+				protected void internalRun(OutputStream writer) throws Exception {
+					JarOutputStream jarOut = new JarOutputStream(writer);
+					getUnpacker().unpack(new NonClosingInputStream(bufferedInput), jarOut);
+					jarOut.finish();
+				}
+			};
+			jarPumper.start();
+			jarIn = new ZipInputStream(jarPumper.getReaderStream());
+		}
+
+		ZipOutputStream jarOut = new ZipOutputStream(unpacked);
+		ZipEntry entry;
+		while ((entry = jarIn.getNextEntry()) != null) {
+			String name = entry.getName();
+			if (entry.isDirectory()) {
+				jarOut.putNextEntry(createEntry(entry));
+				continue;
+			}
+
+			String jarName = null;
+			InputStream packedInput = null;
+			if (name.endsWith(PACK_GZ_SUFFIX)) {
+				jarName = name.substring(0, name.length() - PACK_GZ_SUFFIX.length());
+				packedInput = new GZIPInputStream(jarIn);
+			} else if (name.endsWith(PACK_SUFFIX)) {
+				jarName = name.substring(0, name.length() - PACK_SUFFIX.length());
+				packedInput = jarIn;
+			}
+			if (packedInput != null) {
+				Buckminster.getLogger().debug("Unpacker: Recursive unpack of %s", name); //$NON-NLS-1$
+				jarOut.putNextEntry(createEntry(entry, jarName));
+				nestedUnpack(packedInput, jarOut);
+				continue;
+			}
+
+			jarOut.putNextEntry(createEntry(entry));
+			IOUtils.copy(jarIn, jarOut, null);
+		}
+		jarOut.finish();
 	}
 }

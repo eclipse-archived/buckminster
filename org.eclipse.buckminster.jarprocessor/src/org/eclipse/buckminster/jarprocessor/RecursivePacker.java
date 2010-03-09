@@ -119,23 +119,17 @@ public class RecursivePacker extends RecursivePack200 {
 			String name = entry.getName();
 			if (packChildren && name.endsWith(JAR_SUFFIX)) {
 				JarInfo nested = jarInfo.getNestedInfo(name);
-				if (nested != null) {
-					if (nested.hasClasses() && !(nested.isSigned() && !nested.isConditioned())) {
-						if (useRedunantGZipping) {
-							jarOut.putNextEntry(createEntry(entry, name + PACK_GZ_SUFFIX));
-							GZIPOutputStream gzipOut = new GZIPOutputStream(jarOut);
-							log.debug("Packer: Recursive gzipped pack of %s", name); //$NON-NLS-1$
-							nestedPack(jarIn, nested, gzipOut);
-							gzipOut.finish();
-						} else {
-							log.debug("Packer: Recursive pack of %s", name); //$NON-NLS-1$
-							jarOut.putNextEntry(createEntry(entry, name + PACK_SUFFIX));
-							nestedPack(jarIn, nested, jarOut);
-						}
+				if (nested != null && !(nested.isSigned() && !nested.isConditioned())) {
+					if (useRedunantGZipping) {
+						jarOut.putNextEntry(createEntry(entry, name + PACK_GZ_SUFFIX));
+						GZIPOutputStream gzipOut = new GZIPOutputStream(jarOut);
+						log.debug("Packer: Recursive gzipped pack of %s", name); //$NON-NLS-1$
+						nestedPack(jarIn, nested, gzipOut);
+						gzipOut.finish();
 					} else {
-						log.debug("Packer: Recursive processing (no pack) of %s", name); //$NON-NLS-1$
-						jarOut.putNextEntry(createEntry(entry));
-						processNestedJars(new ZipInputStream(jarIn), nested, jarOut);
+						log.debug("Packer: Recursive pack of %s", name); //$NON-NLS-1$
+						jarOut.putNextEntry(createEntry(entry, name + PACK_SUFFIX));
+						nestedPack(jarIn, nested, jarOut);
 					}
 					continue;
 				}
