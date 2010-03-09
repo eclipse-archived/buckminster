@@ -160,7 +160,8 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		//
 		int idx = 0;
 		for (IVersionedId refFeature : features) {
-			org.osgi.framework.Version version = Version.toOSGiVersion(refFeature.getVersion());
+			Version v = refFeature.getVersion();
+			org.osgi.framework.Version version = v == null ? null : new org.osgi.framework.Version(v.toString());
 			majorSum += version.getMajor();
 			minorSum += version.getMinor();
 			serviceSum += version.getMicro();
@@ -189,7 +190,8 @@ public class FeatureVersionSuffixGenerator implements IPDEConstants, IBuildPrope
 		// number parts to the running totals and storing the qualifiers.
 		//
 		for (IVersionedId refBundle : bundles) {
-			org.osgi.framework.Version version = Version.toOSGiVersion(refBundle.getVersion());
+			Version v = refBundle.getVersion();
+			org.osgi.framework.Version version = v == null ? null : new org.osgi.framework.Version(v.toString());
 			majorSum += version.getMajor();
 			minorSum += version.getMinor();
 			serviceSum += version.getMicro();

@@ -8,13 +8,13 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
-import org.eclipse.equinox.internal.p2.metadata.VersionedId;
+import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
-import org.eclipse.equinox.internal.provisional.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.IQueryable;
@@ -188,7 +188,7 @@ public class ProductVersionPatcher implements IProductDescriptor {
 			if (qualifier == null || !qualifier.endsWith("qualifier")) //$NON-NLS-1$
 				return version;
 
-			org.osgi.framework.Version ov = Version.toOSGiVersion(version);
+			org.osgi.framework.Version ov = new org.osgi.framework.Version(version.toString());
 			if (qualifier.length() > 9) {
 				String lowQual = qualifier.substring(0, qualifier.length() - 1);
 				String highQual = lowQual + "zzzzzzzzzzzzzzzz"; //$NON-NLS-1$

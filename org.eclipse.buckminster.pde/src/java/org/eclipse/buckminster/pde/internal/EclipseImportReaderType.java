@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -84,8 +83,6 @@ import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRequest;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.osgi.service.pluginconversion.PluginConversionException;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.PDECore;
@@ -282,8 +279,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	private final HashMap<File, IFeatureModel[]> featureCache = new HashMap<File, IFeatureModel[]>();
 
-	private final HashMap<File, PDEState> pluginCache = new HashMap<File, PDEState>();
-
 	public EclipseImportReaderType() {
 	}
 
@@ -335,7 +330,6 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 		// Clear cached entries
 		//
-		pluginCache.clear();
 		featureCache.clear();
 		classpaths.clear();
 	}
@@ -607,41 +601,14 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 			File[] files = pluginsRoot.listFiles();
 			int idx = files.length;
+			URL[] pluginURLs = new URL[idx];
+			while (--idx >= 0)
+				pluginURLs[idx] = files[idx].toURI().toURL();
 
-			PDEState state = pluginCache.get(location);
-			if (state != null) {
-				IPluginModelBase[] targetModels = state.getTargetModels();
-				if (targetModels.length == idx)
-					return targetModels;
-
-				HashSet<String> newFiles = new HashSet<String>();
-				for (File file : files)
-					newFiles.add(file.getAbsolutePath());
-				for (IPluginModelBase p : state.getTargetModels())
-					newFiles.remove(p.getInstallLocation());
-
-				if (newFiles.size() > 0) {
-					List<BundleDescription> bds = new ArrayList<BundleDescription>(newFiles.size());
-					for (String newFile : newFiles) {
-						BundleDescription bundle = state.addBundle(new File(newFile), -1);
-						if (bundle != null)
-							bds.add(bundle);
-					}
-					state.createTargetModels(bds.toArray(new BundleDescription[bds.size()]));
-				}
-			} else {
-				URL[] pluginURLs = new URL[idx];
-				while (--idx >= 0)
-					pluginURLs[idx] = files[idx].toURI().toURL();
-
-				MonitorUtils.worked(monitor, 1);
-				state = new PDEState(pluginURLs, false, MonitorUtils.subMonitor(monitor, 1));
-				pluginCache.put(location, state);
-			}
+			MonitorUtils.worked(monitor, 1);
+			PDEState state = new PDEState(pluginURLs, false, MonitorUtils.subMonitor(monitor, 1));
 			return state.getTargetModels();
 		} catch (IOException e) {
-			throw BuckminsterException.wrap(e);
-		} catch (PluginConversionException e) {
 			throw BuckminsterException.wrap(e);
 		} finally {
 			monitor.done();

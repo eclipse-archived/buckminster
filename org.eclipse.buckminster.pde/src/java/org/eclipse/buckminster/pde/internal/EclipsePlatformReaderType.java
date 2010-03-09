@@ -132,7 +132,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 					continue;
 				}
 
-				Version v = Version.fromOSGiVersion(ov);
+				Version v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro(), ov.getQualifier());
 				if (!(versionDesignator == null || versionDesignator.isIncluded(v))) {
 					if (query != null)
 						query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0, versionDesignator));

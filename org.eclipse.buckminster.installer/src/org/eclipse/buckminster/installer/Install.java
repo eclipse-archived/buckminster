@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.provisional.p2.director.ProfileChangeRequest;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
-import org.eclipse.equinox.p2.engine.DefaultPhaseSet;
 import org.eclipse.equinox.p2.engine.IEngine;
 import org.eclipse.equinox.p2.engine.IProfile;
 import org.eclipse.equinox.p2.engine.IProfileRegistry;
@@ -44,9 +43,9 @@ import org.eclipse.osgi.util.NLS;
 
 @SuppressWarnings("restriction")
 public class Install extends AbstractCommand {
-	static ProvisioningContext createContext(URI site) {
+	static ProvisioningContext createContext(IProvisioningAgent agent, URI site) {
 		URI[] repoLocations = new URI[] { site };
-		ProvisioningContext context = new ProvisioningContext(repoLocations);
+		ProvisioningContext context = new ProvisioningContext(agent);
 		context.setArtifactRepositories(repoLocations);
 		return context;
 	}
@@ -103,7 +102,7 @@ public class Install extends AbstractCommand {
 			throw new CoreException(status);
 
 		IEngine engine = (IEngine) agent.getService(IEngine.SERVICE_NAME);
-		status = engine.perform(plan, new DefaultPhaseSet(), monitor);
+		status = engine.perform(plan, null, monitor);
 		if (status.getSeverity() == IStatus.CANCEL)
 			return Headless.EXIT_FORCED;
 		if (status.getSeverity() == IStatus.ERROR)
@@ -162,7 +161,7 @@ public class Install extends AbstractCommand {
 			for (Iterator<IInstallableUnit> iter = rootArr.iterator(); iter.hasNext();)
 				request.setInstallableUnitProfileProperty(iter.next(), IProfile.PROP_PROFILE_ROOT_IU, Boolean.TRUE.toString());
 			request.addAll(rootArr.toUnmodifiableSet());
-			return planAndExecute(agent, profile, request, createContext(site), monitor);
+			return planAndExecute(agent, profile, request, createContext(agent, site), monitor);
 		} finally {
 			agent.stop();
 			bucky.ungetService(agentProvider);

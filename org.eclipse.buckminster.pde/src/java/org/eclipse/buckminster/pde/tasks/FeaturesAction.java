@@ -11,8 +11,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
@@ -32,12 +32,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
-import org.eclipse.equinox.internal.p2.metadata.VersionedId;
 import org.eclipse.equinox.internal.p2.publisher.FileSetDescriptor;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
@@ -70,7 +70,7 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		if (v == null || matchRule == IMatchRules.NONE || matchRule == IMatchRules.PERFECT)
 			return v;
 
-		org.osgi.framework.Version ov = Version.toOSGiVersion(v);
+		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
 		switch (matchRule) {
 			case IMatchRules.EQUIVALENT:
 				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), 0);

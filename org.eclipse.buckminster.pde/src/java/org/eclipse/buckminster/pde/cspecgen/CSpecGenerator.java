@@ -96,7 +96,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 		ImportSpecification(BundleSpecification bundleSpec) {
 			name = bundleSpec.getName();
-			range = VersionRange.fromOSGiVersionRange(bundleSpec.getVersionRange());
+			org.eclipse.osgi.service.resolver.VersionRange osgiRange = bundleSpec.getVersionRange();
+			range = osgiRange == null ? null : new VersionRange(osgiRange.toString());
 			exported = bundleSpec.isExported();
 			optional = bundleSpec.isOptional();
 		}
@@ -272,7 +273,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if (qualifierTag)
 			v = VersionHelper.replaceQualifier(v, null);
 
-		org.osgi.framework.Version ov = Version.toOSGiVersion(v);
+		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
 		boolean retainLowerBound = false;
 		if (pdeMatchRule == IMatchRules.NONE) {
 			Map<String, String> props = getProperties();

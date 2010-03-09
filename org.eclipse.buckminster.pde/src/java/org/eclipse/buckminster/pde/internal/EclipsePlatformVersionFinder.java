@@ -64,8 +64,10 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder {
 		VersionRange dsg = query.getVersionRange();
 		if (type == InstalledType.PLUGIN) {
 			IPluginModelBase plugin = EclipsePlatformReaderType.getBestPlugin(componentName, dsg, query);
-			if (plugin != null)
-				v = Version.fromOSGiVersion(plugin.getBundleDescription().getVersion());
+			if (plugin != null) {
+				org.osgi.framework.Version ov = plugin.getBundleDescription().getVersion();
+				v = ov == null ? null : Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro(), ov.getQualifier());
+			}
 		} else {
 			IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(componentName, dsg, query);
 			if (feature != null)

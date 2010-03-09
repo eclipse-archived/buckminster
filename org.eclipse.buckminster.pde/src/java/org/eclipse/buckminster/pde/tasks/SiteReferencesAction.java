@@ -9,6 +9,7 @@ package org.eclipse.buckminster.pde.tasks;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -18,7 +19,9 @@ import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
 import org.eclipse.equinox.p2.repository.IRepository;
+import org.eclipse.equinox.p2.repository.IRepositoryReference;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
+import org.eclipse.equinox.p2.repository.spi.RepositoryReference;
 
 /**
  * Action which processes a feature.xml, build.properties, and feature
@@ -48,8 +51,10 @@ public class SiteReferencesAction extends AbstractPublisherAction {
 			return;
 		try {
 			URI associateLocation = new URI(location);
-			metadataRepo.addReference(associateLocation, label, IRepository.TYPE_METADATA, IRepository.ENABLED);
-			metadataRepo.addReference(associateLocation, label, IRepository.TYPE_ARTIFACT, IRepository.ENABLED);
+			ArrayList<IRepositoryReference> references = new ArrayList<IRepositoryReference>(2);
+			references.add(new RepositoryReference(associateLocation, label, IRepository.TYPE_METADATA, IRepository.ENABLED));
+			references.add(new RepositoryReference(associateLocation, label, IRepository.TYPE_ARTIFACT, IRepository.ENABLED));
+			metadataRepo.addReferences(references);
 		} catch (URISyntaxException e) {
 		}
 	}

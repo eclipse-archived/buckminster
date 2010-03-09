@@ -57,8 +57,9 @@ public abstract class SelectionHelper {
 	}
 
 	private static Resolution getResolution(BundleSpecification spec) throws CoreException {
-		ComponentRequest cr = new ComponentRequest(spec.getName(), IComponentType.OSGI_BUNDLE, VersionRange.fromOSGiVersionRange(spec
-				.getVersionRange()));
+		org.eclipse.osgi.service.resolver.VersionRange osgiRange = spec.getVersionRange();
+		VersionRange range = osgiRange == null ? null : new VersionRange(osgiRange.toString());
+		ComponentRequest cr = new ComponentRequest(spec.getName(), IComponentType.OSGI_BUNDLE, range);
 		return WorkspaceInfo.getResolution(cr, false);
 	}
 
@@ -72,7 +73,8 @@ public abstract class SelectionHelper {
 		if (bundleDesc == null)
 			return null;
 
-		return WorkspaceInfo.getResolution(new ComponentIdentifier(bundleDesc.getSymbolicName(), IComponentType.OSGI_BUNDLE, Version
-				.fromOSGiVersion(bundleDesc.getVersion())));
+		org.osgi.framework.Version ov = bundleDesc.getVersion();
+		Version v = ov == null ? null : Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro(), ov.getQualifier());
+		return WorkspaceInfo.getResolution(new ComponentIdentifier(bundleDesc.getSymbolicName(), IComponentType.OSGI_BUNDLE, v));
 	}
 }

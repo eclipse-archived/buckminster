@@ -29,18 +29,19 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.internal.p2.metadata.IRequiredCapability;
-import org.eclipse.equinox.internal.p2.metadata.VersionedId;
 import org.eclipse.equinox.internal.p2.updatesite.SiteCategory;
 import org.eclipse.equinox.internal.p2.updatesite.SiteFeature;
 import org.eclipse.equinox.internal.p2.updatesite.SiteModel;
-import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory;
-import org.eclipse.equinox.internal.provisional.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IProvidedCapability;
+import org.eclipse.equinox.p2.metadata.IRequirement;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.MetadataFactory;
+import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.equinox.p2.publisher.AbstractPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
@@ -193,7 +194,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 
 		ArrayList<IVersionedId> fts = new ArrayList<IVersionedId>(featureIUs.size());
 		ArrayList<IVersionedId> bds = new ArrayList<IVersionedId>(featureIUs.size());
-		ArrayList<IRequiredCapability> reqsConfigurationUnits = new ArrayList<IRequiredCapability>(featureIUs.size());
+		ArrayList<IRequirement> reqsConfigurationUnits = new ArrayList<IRequirement>(featureIUs.size());
 		for (IInstallableUnit iu : featureIUs) {
 			VersionedId vn = new VersionedId(iu.getId(), iu.getVersion());
 			if (iu.getId().endsWith(IPDEConstants.FEATURE_GROUP))
@@ -201,8 +202,8 @@ public class CategoriesAction extends AbstractPublisherAction {
 			else
 				bds.add(vn);
 			VersionRange range = new VersionRange(iu.getVersion(), true, iu.getVersion(), true);
-			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, iu.getId(), range, iu.getFilter(),
-					false, false));
+			reqsConfigurationUnits.add(MetadataFactory.createRequirement(IInstallableUnit.NAMESPACE_IU_ID, iu.getId(), range, iu.getFilter(), false,
+					false));
 		}
 		FeatureVersionSuffixGenerator suffixGen = new FeatureVersionSuffixGenerator(-1, -1);
 		Version categoryVersion = Version.createOSGi(0, 0, 1, suffixGen.generateSuffix(fts, bds));
@@ -211,7 +212,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 		// note that update sites don't currently support nested categories, but
 		// it may be useful to add in the future
 		if (parentCategory != null) {
-			reqsConfigurationUnits.add(MetadataFactory.createRequiredCapability(IInstallableUnit.NAMESPACE_IU_ID, parentCategory.getId(),
+			reqsConfigurationUnits.add(MetadataFactory.createRequirement(IInstallableUnit.NAMESPACE_IU_ID, parentCategory.getId(),
 					VersionRange.emptyRange, parentCategory.getFilter(), false, false));
 		}
 		cat.setRequiredCapabilities(reqsConfigurationUnits.toArray(new IRequiredCapability[reqsConfigurationUnits.size()]));
@@ -294,7 +295,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 				// a version range.
 				//
 				Version low = VersionHelper.replaceQualifier(version, null);
-				org.osgi.framework.Version ov = Version.toOSGiVersion(version);
+				org.osgi.framework.Version ov = new org.osgi.framework.Version(version.toString());
 				query = QueryUtil.createIUQuery(id, new VersionRange(low, true, Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro() + 1),
 						false));
 			} else

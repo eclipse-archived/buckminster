@@ -93,7 +93,8 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		for (IPluginModelBase pluginModel : pluginModels) {
 			BundleDescription desc = pluginModel.getBundleDescription();
 			if (desc != null) {
-				Version version = Version.fromOSGiVersion(desc.getVersion());
+				org.osgi.framework.Version ov = desc.getVersion();
+				Version version = ov == null ? null : Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro(), ov.getQualifier());
 				bld.add(new ComponentIdentifier(desc.getSymbolicName(), IComponentType.OSGI_BUNDLE, version));
 			}
 		}
