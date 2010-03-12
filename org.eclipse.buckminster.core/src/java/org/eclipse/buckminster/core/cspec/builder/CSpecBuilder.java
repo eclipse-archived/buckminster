@@ -43,8 +43,6 @@ import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IRequirement;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
-import org.eclipse.equinox.p2.metadata.expression.ExpressionUtil;
-import org.eclipse.equinox.p2.metadata.expression.IExpression;
 import org.eclipse.equinox.p2.metadata.expression.IMatchExpression;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
@@ -95,15 +93,24 @@ public class CSpecBuilder implements ICSpecData {
 
 		IMatchExpression<IInstallableUnit> filterExpr = iu.getFilter();
 		if (filterExpr != null) {
-			IExpression expr = ExpressionUtil.getOperand(filterExpr);
 			// TODO: Rewrite to accept non-osgi type filters
-			try {
-				Filter flt = FilterFactory.newInstance(expr.toString());
-				flt = FilterUtils.replaceAttributeNames(flt, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
-				setFilter(flt);
-			} catch (InvalidSyntaxException e) {
-				throw BuckminsterException.wrap(e);
+			boolean filterOK = false;
+			Object[] parameters = filterExpr.getParameters();
+			if (parameters.length == 1) {
+				Object param = parameters[0];
+				if (param instanceof Filter) {
+					try {
+						Filter flt = FilterFactory.newInstance(param.toString());
+						flt = FilterUtils.replaceAttributeNames(flt, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
+						setFilter(flt);
+						filterOK = true;
+					} catch (InvalidSyntaxException e) {
+						throw BuckminsterException.wrap(e);
+					}
+				}
 			}
+			if (!filterOK)
+				throw BuckminsterException.fromMessage("Unable to convert requirement filter %s into an LDAP filter", filterExpr); //$NON-NLS-1$
 		}
 
 		boolean hasBogusFragments = isFeature && ("org.eclipse.platform".equals(id) //$NON-NLS-1$
