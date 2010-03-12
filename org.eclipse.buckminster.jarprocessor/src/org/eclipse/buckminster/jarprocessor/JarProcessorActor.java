@@ -95,7 +95,7 @@ public class JarProcessorActor extends AbstractActor {
 	private void packJars(File inputDir, File outputDir, Map<String, ? extends Object> props) throws CoreException, IOException {
 		File[] files = inputDir.listFiles();
 		Object retainUnpackedProp = props.get(PROP_RETAIN_UNPACKED);
-		boolean retainUnpacked = (retainUnpackedProp == null ? false : Boolean.parseBoolean(retainUnpackedProp.toString()));
+		boolean retainUnpacked = (retainUnpackedProp == null ? true : Boolean.parseBoolean(retainUnpackedProp.toString()));
 		for (File file : files) {
 			String name = file.getName();
 			if (file.isDirectory()) {
@@ -136,7 +136,7 @@ public class JarProcessorActor extends AbstractActor {
 
 	private void unpackJars(File inputDir, File outputDir, Map<String, ? extends Object> props) throws CoreException {
 		Object retainPackedProp = props.get(PROP_RETAIN_PACKED);
-		boolean retainPacked = (retainPackedProp == null ? false : Boolean.parseBoolean(retainPackedProp.toString()));
+		boolean retainPacked = (retainPackedProp == null ? true : Boolean.parseBoolean(retainPackedProp.toString()));
 		File[] files = inputDir.listFiles();
 		for (File file : files) {
 			String name = file.getName();
