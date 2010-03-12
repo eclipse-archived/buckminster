@@ -149,7 +149,22 @@ public class CSpecBuilder implements ICSpecData {
 				continue;
 
 			filterExpr = cap.getFilter();
-			String filterStr = filterExpr == null ? null : filterExpr.toString();
+			String filterStr = null;
+			if (filterExpr != null) {
+				// TODO: Rewrite to accept non-osgi type filters
+				boolean filterOK = false;
+				Object[] parameters = filterExpr.getParameters();
+				if (parameters.length == 1) {
+					Object param = parameters[0];
+					if (param instanceof org.osgi.framework.Filter) {
+						filterStr = param.toString();
+						filterOK = true;
+					}
+				}
+				if (!filterOK)
+					throw BuckminsterException.fromMessage("Unable to convert requirement filter %s into an LDAP filter", filterExpr); //$NON-NLS-1$
+			}
+
 			if (cap.getMin() == 0) {
 				if (filterStr == null)
 					filterStr = ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL;
