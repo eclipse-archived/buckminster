@@ -187,7 +187,7 @@
 		</buckminster>
 	</target>
 
-	<target name="site.p2" depends="clean.workspace,clean.output,clean.tp,provision">
+	<target name="site.p2" depends="init.build.properties"> <!-- depends="clean.workspace,clean.output,clean.tp,provision"> -->
 		<echo message="Building all projects in workspace ${workspace}" />
 		<buckminster command="build" />
 
@@ -199,7 +199,7 @@
 		</buckminster>
 	</target>
 
-	<target name="promote.sites" depends="clean.workspace,clean.output,clean.tp,provision">
+	<target name="promote.sites" depends="init.build.properties"> <!-- depends="clean.workspace,clean.output,clean.tp,provision"> -->
 		<echo message="Building all projects in workspace ${workspace}" />
 		<buckminster command="build" />
 
