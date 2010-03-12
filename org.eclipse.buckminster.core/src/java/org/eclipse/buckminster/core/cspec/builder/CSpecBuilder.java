@@ -43,6 +43,8 @@ import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IRequirement;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.expression.ExpressionUtil;
+import org.eclipse.equinox.p2.metadata.expression.IExpression;
 import org.eclipse.equinox.p2.metadata.expression.IMatchExpression;
 import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
@@ -91,10 +93,12 @@ public class CSpecBuilder implements ICSpecData {
 		setName(id);
 		setVersion(iu.getVersion());
 
-		org.osgi.framework.Filter filterExpr = iu.getFilter();
+		IMatchExpression<IInstallableUnit> filterExpr = iu.getFilter();
 		if (filterExpr != null) {
+			IExpression expr = ExpressionUtil.getOperand(filterExpr);
+			// TODO: Rewrite to accept non-osgi type filters
 			try {
-				Filter flt = FilterFactory.newInstance(filterExpr.toString());
+				Filter flt = FilterFactory.newInstance(expr.toString());
 				flt = FilterUtils.replaceAttributeNames(flt, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
 				setFilter(flt);
 			} catch (InvalidSyntaxException e) {

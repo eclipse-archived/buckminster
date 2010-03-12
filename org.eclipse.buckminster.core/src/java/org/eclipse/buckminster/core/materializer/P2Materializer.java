@@ -308,7 +308,8 @@ public class P2Materializer extends AbstractMaterializer {
 				};
 				Set<URI> mdrURIs = knownMDRs.keySet();
 				Set<URI> arURIs = knownARs.keySet();
-				ProvisioningContext pctx = new ProvisioningContext(mdrURIs.toArray(new URI[mdrURIs.size()]));
+				ProvisioningContext pctx = new ProvisioningContext(p2Agent);
+				pctx.setMetadataRepositories(mdrURIs.toArray(new URI[mdrURIs.size()]));
 				pctx.setArtifactRepositories(arURIs.toArray(new URI[arURIs.size()]));
 				IProvisioningPlan plan = new ProvisioningPlan(profile, operands, pctx);
 				IStatus status = engine.perform(plan, phaseSet, subMon.newChild(200));
