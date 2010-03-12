@@ -98,7 +98,7 @@ public class CSpecBuilder implements ICSpecData {
 			Object[] parameters = filterExpr.getParameters();
 			if (parameters.length == 1) {
 				Object param = parameters[0];
-				if (param instanceof Filter) {
+				if (param instanceof org.osgi.framework.Filter) {
 					try {
 						Filter flt = FilterFactory.newInstance(param.toString());
 						flt = FilterUtils.replaceAttributeNames(flt, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
