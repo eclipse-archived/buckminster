@@ -102,7 +102,7 @@ public class Install extends AbstractCommand {
 			throw new CoreException(status);
 
 		IEngine engine = (IEngine) agent.getService(IEngine.SERVICE_NAME);
-		status = engine.perform(plan, null, monitor);
+		status = engine.perform(plan, monitor);
 		if (status.getSeverity() == IStatus.CANCEL)
 			return Headless.EXIT_FORCED;
 		if (status.getSeverity() == IStatus.ERROR)
