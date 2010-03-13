@@ -30,10 +30,6 @@ public class JarProcessorActor extends AbstractActor {
 
 	public static final String PROP_COMMAND = "command"; //$NON-NLS-1$
 
-	public static final String PROP_RETAIN_UNPACKED = "site.retain.unpacked"; //$NON-NLS-1$
-
-	public static final String PROP_RETAIN_PACKED = "site.retain.packed"; //$NON-NLS-1$
-
 	public static final String COMMAND_REPACK = "repack"; //$NON-NLS-1$
 
 	public static final String COMMAND_PACK = "pack"; //$NON-NLS-1$
@@ -94,8 +90,6 @@ public class JarProcessorActor extends AbstractActor {
 
 	private void packJars(File inputDir, File outputDir, Map<String, ? extends Object> props) throws CoreException, IOException {
 		File[] files = inputDir.listFiles();
-		Object retainUnpackedProp = props.get(PROP_RETAIN_UNPACKED);
-		boolean retainUnpacked = (retainUnpackedProp == null ? true : Boolean.parseBoolean(retainUnpackedProp.toString()));
 		for (File file : files) {
 			String name = file.getName();
 			if (file.isDirectory()) {
@@ -111,7 +105,7 @@ public class JarProcessorActor extends AbstractActor {
 			}
 
 			RecursivePacker rpacker = new RecursivePacker(null, true);
-			rpacker.pack(file, outputDir, retainUnpacked);
+			rpacker.pack(file, outputDir, true);
 		}
 	}
 
@@ -135,8 +129,6 @@ public class JarProcessorActor extends AbstractActor {
 	}
 
 	private void unpackJars(File inputDir, File outputDir, Map<String, ? extends Object> props) throws CoreException {
-		Object retainPackedProp = props.get(PROP_RETAIN_PACKED);
-		boolean retainPacked = (retainPackedProp == null ? true : Boolean.parseBoolean(retainPackedProp.toString()));
 		File[] files = inputDir.listFiles();
 		for (File file : files) {
 			String name = file.getName();
@@ -149,7 +141,7 @@ public class JarProcessorActor extends AbstractActor {
 
 			if (name.endsWith(IConstants.PACK_GZ_SUFFIX)) {
 				RecursiveUnpacker unpacker = new RecursiveUnpacker(null);
-				unpacker.unpack(file, outputDir, retainPacked);
+				unpacker.unpack(file, outputDir, true);
 			} else
 				FileUtils.copyFile(file, outputDir, name, null);
 		}
