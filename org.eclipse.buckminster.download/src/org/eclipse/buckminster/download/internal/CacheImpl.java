@@ -67,13 +67,8 @@ public class CacheImpl implements ICache {
 	@Override
 	public IFileInfo getRemoteInfo(URL remoteFile, IConnectContext cctx) throws CoreException, FileNotFoundException {
 		File localFile = asLocal(remoteFile);
-		if (localFile != null) {
-			FileInfoBuilder fib = new FileInfoBuilder();
-			fib.setLastModified(localFile.lastModified());
-			fib.setName(localFile.getAbsolutePath());
-			fib.setSize(localFile.length());
-			return fib;
-		}
+		if (localFile != null)
+			return new FileInfoBuilder(localFile);
 		FileReader reader = new FileReader(cctx);
 		return reader.readInfo(remoteFile);
 	}
@@ -118,8 +113,11 @@ public class CacheImpl implements ICache {
 	public InputStream open(IFetchPolicy policy, URL remoteFile, IFileInfo[] fiHandle, IProgressMonitor monitor) throws CoreException,
 			FileNotFoundException {
 		File file = asLocal(remoteFile);
-		if (file != null)
+		if (file != null) {
+			if (fiHandle != null)
+				fiHandle[0] = new FileInfoBuilder(file);
 			return new FileInputStream(file);
+		}
 
 		String urlStr = remoteFile.toString().intern();
 		synchronized (urlStr) {
