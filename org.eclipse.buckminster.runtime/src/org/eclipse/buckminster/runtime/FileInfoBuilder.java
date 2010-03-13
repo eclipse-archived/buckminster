@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.runtime;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -24,6 +25,12 @@ public class FileInfoBuilder implements IFileInfo {
 	private long size = -1L;
 
 	public FileInfoBuilder() {
+	}
+
+	public FileInfoBuilder(File localFile) {
+		lastModified = localFile.lastModified();
+		name = localFile.getAbsolutePath();
+		size = localFile.length();
 	}
 
 	public FileInfoBuilder(IFileInfo fileInfo) {
