@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -25,8 +24,8 @@ public class RecursiveUnpacker extends RecursivePack200 {
 		return (magic[0] == (byte) 'P' && magic[1] == (byte) 'K' && magic[2] >= 1 && magic[2] < 8 && magic[3] == magic[2] + 1);
 	}
 
-	public RecursiveUnpacker(List<String> defaultArgs) {
-		super(defaultArgs);
+	public RecursiveUnpacker(File tempDir, List<String> defaultArgs) {
+		super(tempDir, defaultArgs);
 	}
 
 	public void unpack(File packedFile, File destFolder, boolean retainPacked) throws CoreException {
@@ -83,9 +82,7 @@ public class RecursiveUnpacker extends RecursivePack200 {
 			{
 				@Override
 				protected void internalRun(OutputStream writer) throws Exception {
-					JarOutputStream jarOut = new JarOutputStream(writer);
-					getUnpacker().unpack(new NonClosingInputStream(bufferedInput), jarOut);
-					jarOut.finish();
+					unpack(new NonClosingInputStream(bufferedInput), writer);
 				}
 			};
 			jarPumper.start();

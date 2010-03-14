@@ -1,5 +1,6 @@
 package org.eclipse.buckminster.jarprocessor;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.jar.JarFile;
+import java.util.jar.Pack200.Packer;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -22,8 +25,8 @@ import org.eclipse.core.runtime.CoreException;
 public class RecursivePacker extends RecursivePack200 {
 	private final boolean useRedunantGZipping;
 
-	public RecursivePacker(List<String> defaultArgs, boolean useRedundantGZipping) {
-		super(defaultArgs);
+	public RecursivePacker(File tempDir, List<String> defaultArgs, boolean useRedundantGZipping) {
+		super(tempDir, defaultArgs);
 		this.useRedunantGZipping = useRedundantGZipping;
 	}
 
@@ -67,10 +70,17 @@ public class RecursivePacker extends RecursivePack200 {
 
 			File packedFile = new File(destFolder, jarFile.getName() + PACK_GZ_SUFFIX);
 			input = new FileInputStream(jarFile);
-			output = new FileOutputStream(packedFile);
-			output = new GZIPOutputStream(output);
+			output = new BufferedOutputStream(new FileOutputStream(packedFile));
+			output = new BufferedOutputStream(new GZIPOutputStream(output));
 
-			if (jarInfo.isNested() && !jarInfo.isExcludeChildrenPack())
+			// We must refrain from nested packing if
+			// a) Nested packing is excluded using excludeChildrenPack
+			// b) This jar has classes and is signed. That's because if we
+			// change the nested file, the
+			// CP tables used when normalizing will change, and thus, the packed
+			// classes will change.
+			//
+			if (jarInfo.isNested())
 				nestedPack(input, jarInfo, output);
 			else
 				pack(jarInfo, input, output);
@@ -92,46 +102,57 @@ public class RecursivePacker extends RecursivePack200 {
 		}
 	}
 
-	protected void nestedPack(final InputStream input, final JarInfo jarInfo, OutputStream packedOut) throws CoreException {
-		ProducerThread pumper = new ProducerThread("Pack200 pumper") //$NON-NLS-1$
-		{
-			@Override
-			protected void internalRun(OutputStream writer) throws Exception {
-				ZipInputStream jarIn = new ZipInputStream(input);
-				processNestedJars(jarIn, jarInfo, writer);
-			}
-		};
-		pumper.start();
+	protected void nestedPack(final InputStream input, final JarInfo jarInfo, OutputStream packedOut) throws IOException, CoreException {
+		File packInputFile = null;
 		try {
-			pack(jarInfo, pumper.getReaderStream(), packedOut);
-		} catch (IOException e) {
-			pumper.drain(jarInfo, e);
+			tempDir.mkdirs();
+			packInputFile = File.createTempFile("conditioned_", ".jar", tempDir); //$NON-NLS-1$//$NON-NLS-2$
+			OutputStream tempOut = null;
+			try {
+				tempOut = new BufferedOutputStream(new FileOutputStream(packInputFile));
+				processNestedJars(new ZipInputStream(input), jarInfo, tempOut);
+			} finally {
+				IOUtils.close(tempOut);
+			}
+
+			Packer packer = getPacker(jarInfo);
+			packer.pack(new JarFile(packInputFile), packedOut);
+		} finally {
+			if (packInputFile != null)
+				packInputFile.delete();
 		}
-		pumper.drain(jarInfo, null);
 	}
 
-	private void processNestedJars(ZipInputStream jarIn, JarInfo jarInfo, OutputStream output) throws Exception {
+	private void processNestedJars(ZipInputStream jarIn, JarInfo jarInfo, OutputStream output) throws IOException, CoreException {
 		Logger log = Buckminster.getLogger();
 		ZipOutputStream jarOut = new ZipOutputStream(output);
 		ZipEntry entry;
 		boolean packChildren = !jarInfo.isExcludeChildrenPack();
 		while ((entry = jarIn.getNextEntry()) != null) {
 			String name = entry.getName();
-			if (packChildren && name.endsWith(JAR_SUFFIX)) {
+			if (name.endsWith(JAR_SUFFIX)) {
 				JarInfo nested = jarInfo.getNestedInfo(name);
-				if (nested != null && !(nested.isSigned() && !nested.isConditioned())) {
-					if (useRedunantGZipping) {
-						jarOut.putNextEntry(createEntry(entry, name + PACK_GZ_SUFFIX));
-						GZIPOutputStream gzipOut = new GZIPOutputStream(jarOut);
-						log.debug("Packer: Recursive gzipped pack of %s", name); //$NON-NLS-1$
-						nestedPack(jarIn, nested, gzipOut);
-						gzipOut.finish();
+				if (nested != null) {
+					if (!packChildren)
+						log.debug("Packer: Skipping recursive pack of %s since parent has children pack disabled", name); //$NON-NLS-1$
+					else if (nested.isSigned() && !nested.isConditioned())
+						log.debug("Packer: Skipping recursive pack of %s since it is signed but not conditioned", name); //$NON-NLS-1$
+					else if (jarInfo.hasClasses() && jarInfo.isSigned()) {
+						log.debug("Packer: Skipping recursive pack of %s since parent is signed and has classes", name); //$NON-NLS-1$
 					} else {
-						log.debug("Packer: Recursive pack of %s", name); //$NON-NLS-1$
-						jarOut.putNextEntry(createEntry(entry, name + PACK_SUFFIX));
-						nestedPack(jarIn, nested, jarOut);
+						if (useRedunantGZipping) {
+							jarOut.putNextEntry(createEntry(entry, name + PACK_GZ_SUFFIX));
+							GZIPOutputStream gzipOut = new GZIPOutputStream(jarOut);
+							log.debug("Packer: Recursive gzipped pack of %s", name); //$NON-NLS-1$
+							nestedPack(jarIn, nested, gzipOut);
+							gzipOut.finish();
+						} else {
+							log.debug("Packer: Recursive pack of %s", name); //$NON-NLS-1$
+							jarOut.putNextEntry(createEntry(entry, name + PACK_SUFFIX));
+							nestedPack(jarIn, nested, jarOut);
+						}
+						continue;
 					}
-					continue;
 				}
 			}
 			jarOut.putNextEntry(createEntry(entry));

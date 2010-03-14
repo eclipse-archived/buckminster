@@ -9,8 +9,6 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
-import java.util.jar.JarOutputStream;
-import java.util.jar.Pack200.Unpacker;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -30,8 +28,8 @@ public class RecursiveConditioner extends RecursivePack200 {
 		BMProperties.store(eclipseInf, jarOut, "Processed using Jarprocessor"); //$NON-NLS-1$		
 	}
 
-	public RecursiveConditioner(List<String> defaultArgs) {
-		super(defaultArgs);
+	public RecursiveConditioner(File tempDir, List<String> defaultArgs) {
+		super(tempDir, defaultArgs);
 	}
 
 	public boolean condition(File jarFile, File conditionedJarFile) throws CoreException {
@@ -75,6 +73,7 @@ public class RecursiveConditioner extends RecursivePack200 {
 	}
 
 	private void nestedConditioning(final InputStream input, final JarInfo jarInfo, OutputStream conditioned) throws CoreException {
+
 		final ProducerThread jarPumper = new ProducerThread("Pack200 jarPumper") //$NON-NLS-1$
 		{
 			@Override
@@ -144,10 +143,7 @@ public class RecursiveConditioner extends RecursivePack200 {
 
 		packPumper.start();
 		try {
-			JarOutputStream jarOut = new JarOutputStream(conditioned);
-			Unpacker unpacker = getUnpacker();
-			unpacker.unpack(new NonClosingInputStream(packPumper.getReaderStream()), jarOut);
-			jarOut.finish();
+			unpack(new NonClosingInputStream(packPumper.getReaderStream()), conditioned);
 		} catch (IOException e) {
 			packPumper.drain(jarInfo, e);
 		}

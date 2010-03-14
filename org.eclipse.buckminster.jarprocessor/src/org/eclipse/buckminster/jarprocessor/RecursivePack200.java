@@ -1,5 +1,6 @@
 package org.eclipse.buckminster.jarprocessor;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
@@ -12,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
 import java.util.jar.Pack200;
 import java.util.jar.Pack200.Packer;
 import java.util.jar.Pack200.Unpacker;
@@ -73,11 +75,14 @@ abstract class RecursivePack200 implements IConstants {
 		return Pack200.newUnpacker();
 	}
 
-	RecursivePack200(List<String> defaultArgs) {
+	final File tempDir;
+
+	RecursivePack200(File tempDir, List<String> defaultArgs) {
 		if (defaultArgs == null || defaultArgs.isEmpty())
 			this.defaultArgs = Collections.emptyList();
 		else
 			this.defaultArgs = new ArrayList<String>(defaultArgs);
+		this.tempDir = tempDir;
 	}
 
 	Packer getPacker(JarInfo jarInfo) {
@@ -94,6 +99,9 @@ abstract class RecursivePack200 implements IConstants {
 
 		Packer packer = Pack200.newPacker();
 		Map<String, String> properties = packer.properties();
+
+		// Use this to set debug verbosity
+		// properties.put("com.sun.java.util.jar.pack.verbose", "1"); //$NON-NLS-2$
 
 		if (!jarInfo.hasClasses()) {
 			// This is a parent of a nested pack. No need to pack again.
@@ -166,25 +174,43 @@ abstract class RecursivePack200 implements IConstants {
 	}
 
 	void pack(JarInfo jarInfo, InputStream in, OutputStream out) throws IOException {
-		File temp = null;
+		File packInputFile = null;
 		try {
-			// We need a temp file here since the Packer will alter the
-			// META-INF/MANIFEST.MF if we pass it an JarInputStream. Not
-			// good if the jar is signed...
-			temp = File.createTempFile("conditionFile", ".jar"); //$NON-NLS-1$ //$NON-NLS-2$
+			tempDir.mkdirs();
 			OutputStream tempOut = null;
 			try {
-				tempOut = new FileOutputStream(temp);
+				packInputFile = File.createTempFile("conditioned_", ".jar", tempDir); //$NON-NLS-1$//$NON-NLS-2$
+				tempOut = new BufferedOutputStream(new FileOutputStream(packInputFile));
 				IOUtils.copy(in, tempOut, new NullProgressMonitor());
 			} finally {
 				IOUtils.close(tempOut);
 			}
 			Packer packer = getPacker(jarInfo);
-			packer.pack(new JarFile(temp), out);
-			out.flush();
+			packer.pack(new JarFile(packInputFile), out);
 		} finally {
-			if (temp != null)
-				temp.delete();
+			if (packInputFile != null)
+				packInputFile.delete();
+		}
+	}
+
+	void unpack(InputStream in, OutputStream out) throws IOException {
+		File unpackInputFile = null;
+		try {
+			OutputStream tempOut = null;
+			try {
+				unpackInputFile = File.createTempFile("packed_", ".jar.pack.gz", tempDir); //$NON-NLS-1$//$NON-NLS-2$
+				tempOut = new BufferedOutputStream(new FileOutputStream(unpackInputFile));
+				IOUtils.copy(in, tempOut, new NullProgressMonitor());
+			} finally {
+				IOUtils.close(tempOut);
+			}
+			Unpacker unpacker = Pack200.newUnpacker();
+			JarOutputStream jarOut = new JarOutputStream(out);
+			unpacker.unpack(unpackInputFile, jarOut);
+			jarOut.finish();
+		} finally {
+			if (unpackInputFile != null)
+				unpackInputFile.delete();
 		}
 	}
 }
