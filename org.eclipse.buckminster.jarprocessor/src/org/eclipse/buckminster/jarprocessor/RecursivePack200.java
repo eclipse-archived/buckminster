@@ -196,6 +196,7 @@ abstract class RecursivePack200 implements IConstants {
 	void unpack(InputStream in, OutputStream out) throws IOException {
 		File unpackInputFile = null;
 		try {
+			tempDir.mkdirs();
 			OutputStream tempOut = null;
 			try {
 				unpackInputFile = File.createTempFile("packed_", ".jar.pack.gz", tempDir); //$NON-NLS-1$//$NON-NLS-2$
