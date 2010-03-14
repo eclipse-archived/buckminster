@@ -49,6 +49,10 @@
          id="org.eclipse.buckminster.subversive.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.buckminster.git.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.buckminster.ui.capabilities"
          download-size="0"
