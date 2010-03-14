@@ -170,7 +170,7 @@ class RepositoryAccess
 				obj = repo.mapObject(ref.getObjectId(), ref.getName());
 			}
 
-			inspectObj(obj);
+			// inspectObj(obj);
 			if(!(obj instanceof Commit))
 				throw BuckminsterException.fromMessage("Unable to obtain Commit for ref %s", ref.getName());
 			return (Commit)obj;
@@ -304,7 +304,9 @@ class RepositoryAccess
 			// Set the current branch
 			//
 			String gitBranch = getGitBranch(versionMatch);
-			repository.writeSymref(Constants.HEAD, gitBranch);
+			RefUpdate head = repository.updateRef(Constants.HEAD);
+			head.disableRefLog();
+			head.link(gitBranch);
 
 			RepositoryConfig localConfig = repository.getConfig();
 			RemoteConfig remoteConfig = new RemoteConfig(localConfig, remoteName);
@@ -331,13 +333,13 @@ class RepositoryAccess
 
 			tn = Transport.open(repository, remoteConfig);
 			FetchResult result = tn.fetch(new EclipseGitProgressTransformer(monitor), null);
-			Ref head = result.getAdvertisedRef(gitBranch);
-			if(head == null || head.getObjectId() == null)
+			Ref advHead = result.getAdvertisedRef(gitBranch);
+			if(advHead == null || advHead.getObjectId() == null)
 				// This is bad. The desired branch was not found
 				throw BuckminsterException.fromMessage("Unable to find branch %s in remote repository %s", gitBranch,
 						repoURI);
 
-			Commit c = repository.mapCommit(head.getObjectId());
+			Commit c = repository.mapCommit(advHead.getObjectId());
 			RefUpdate u = repository.updateRef(Constants.HEAD);
 			u.setNewObjectId(c.getCommitId());
 			u.forceUpdate();

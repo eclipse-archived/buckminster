@@ -4,16 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.ISafeRunnable;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-
 import junit.framework.TestCase;
 
-public class GitTestCase extends TestCase
+import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+
+abstract class GitTestCase extends TestCase
 {
 	/*
 	 * Look up and return a file handle to the given entry in the bundle.

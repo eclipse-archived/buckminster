@@ -75,7 +75,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 					if(!(component == null || c.getTree().existsTree(component)))
 						continue;
 
-					repoAccess.inspectRef(ref);
+					// repoAccess.inspectRef(ref);
 
 					// TODO: RevisionEntry should hold abbreviated object id instead of long revision
 					branchesOrTags.add(new RevisionEntry(branch, c.getAuthor().getWhen(), 0L));
@@ -137,7 +137,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder
 				if(!(component == null || c.getTree().existsTree(component)))
 					continue;
 
-				repoAccess.inspectRef(ref);
+				// repoAccess.inspectRef(ref);
 
 				// TODO: RevisionEntry should hold abbreviated object id instead of long revision
 				return new RevisionEntry(component, c.getAuthor().getWhen(), 0L);
