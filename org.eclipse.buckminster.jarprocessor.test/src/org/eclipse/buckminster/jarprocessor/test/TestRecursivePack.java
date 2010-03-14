@@ -2,9 +2,9 @@ package org.eclipse.buckminster.jarprocessor.test;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.security.Permission;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -19,21 +19,24 @@ import org.eclipse.buckminster.jarprocessor.RecursiveUnpacker;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.junit.Test;
 
+import sun.security.tools.JarSigner;
+
 public class TestRecursivePack extends AbstractTest {
 
-	private static Map<String, Long> verify(File file) throws IOException {
+	private static Map<String, Long> verify(File file) throws Exception {
 		HashMap<String, Long> crcMap = new HashMap<String, Long>();
 		verify(crcMap, file);
 		return crcMap;
 	}
 
 	private static void verify(Map<String, Long> crcMap, File file)
-			throws IOException {
+			throws Exception {
 
 		JarFile verifier = new JarFile(file, true);
 		for (Enumeration<JarEntry> entries = verifier.entries(); entries
 				.hasMoreElements();) {
 			JarEntry entry = entries.nextElement();
+			entry.getCertificates();
 			crcMap.put(entry.getName(), entry.getSize());
 			if (entry.getName().endsWith(".jar")) {
 				InputStream input = verifier.getInputStream(entry);
@@ -50,6 +53,37 @@ public class TestRecursivePack extends AbstractTest {
 			}
 		}
 		verifier.close();
+
+		final SecurityManager current = System.getSecurityManager();
+		System.setSecurityManager(new SecurityManager() {
+			@Override
+			public void checkExit(int status) {
+				throw new SecurityException("_exit_ " + status);
+			}
+			@Override
+			public void checkPermission(Permission perm) {
+				if(current != null)
+					current.checkPermission(perm);
+			}
+			@Override
+			public void checkPermission(Permission perm, Object object) {
+				if(current != null)
+					current.checkPermission(perm, object);
+			}
+		});
+		
+		try {
+			JarSigner.main(new String[] { "-verify", file.getAbsolutePath() } );
+		} catch(SecurityException e) {
+			String msg = e.getMessage();
+			if(msg == null || !msg.startsWith("_exit_"))
+				throw e;
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			throw e;
+		} finally {
+			System.setSecurityManager(current);
+		}
 	}
 
 	private static void assertEqualNames(Collection<String> ns1,
@@ -66,17 +100,19 @@ public class TestRecursivePack extends AbstractTest {
 		File originalJar = getTestJar("jdtstuff.jar");
 		Map<String, Long> originalCrcMap = verify(originalJar);
 		File outputFolder = getTestFolder("testPackFile");
+		File tmpFolder = new File(outputFolder, "temp");
+		tmpFolder.mkdirs();
 		File conditionedJarFile = new File(outputFolder, originalJar.getName());
-		RecursiveConditioner conditioner = new RecursiveConditioner(null);
+		RecursiveConditioner conditioner = new RecursiveConditioner(tmpFolder, null);
 		conditioner.condition(originalJar, conditionedJarFile);
 
 		Map<String, Long> conditionedCrcMap = verify(conditionedJarFile);
 		assertEqualNames(originalCrcMap.keySet(), conditionedCrcMap.keySet());
 
-		RecursivePacker packer = new RecursivePacker(null, true);
+		RecursivePacker packer = new RecursivePacker(tmpFolder, null, true);
 		packer.pack(conditionedJarFile, outputFolder, false);
 
-		RecursiveUnpacker unpacker = new RecursiveUnpacker(null);
+		RecursiveUnpacker unpacker = new RecursiveUnpacker(tmpFolder, null);
 		unpacker.unpack(new File(outputFolder, "jdtstuff.jar.pack.gz"),
 				outputFolder, true);
 		File unpacked = new File(outputFolder, "jdtstuff.jar");
@@ -88,4 +124,36 @@ public class TestRecursivePack extends AbstractTest {
 					.getValue(), ucrc);
 		}
 	}
+
+	@Test
+	public void testPdeCoreFile() throws Exception {
+
+		File originalJar = getTestJar("pdestuff.jar");
+		Map<String, Long> originalCrcMap = verify(originalJar);
+		File outputFolder = getTestFolder("testPackFile");
+		File tmpFolder = new File(outputFolder, "temp");
+		tmpFolder.mkdirs();
+		File conditionedJarFile = new File(outputFolder, originalJar.getName());
+		RecursiveConditioner conditioner = new RecursiveConditioner(tmpFolder, null);
+		conditioner.condition(originalJar, conditionedJarFile);
+
+		Map<String, Long> conditionedCrcMap = verify(conditionedJarFile);
+		assertEqualNames(originalCrcMap.keySet(), conditionedCrcMap.keySet());
+
+		RecursivePacker packer = new RecursivePacker(tmpFolder, null, true);
+		packer.pack(conditionedJarFile, outputFolder, false);
+
+		RecursiveUnpacker unpacker = new RecursiveUnpacker(tmpFolder, null);
+		unpacker.unpack(new File(outputFolder, "pdestuff.jar.pack.gz"),
+				outputFolder, true);
+		File unpacked = new File(outputFolder, "pdestuff.jar");
+		Map<String, Long> unpackedCrcMap = verify(unpacked);
+		assertEqualNames(conditionedCrcMap.keySet(), unpackedCrcMap.keySet());
+		for (Entry<String, Long> entry : conditionedCrcMap.entrySet()) {
+			Long ucrc = unpackedCrcMap.get(entry.getKey());
+			assertEquals("2: CRC for " + entry.getKey() + " differ", entry
+					.getValue(), ucrc);
+		}
+	}
+
 }
