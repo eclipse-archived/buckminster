@@ -182,8 +182,8 @@ public class VersionDesignator extends Widgetin {
 			}
 		};
 
-		versionDsType = UiUtils.createGridEnumCombo(parentComposite, 1, 0, DesignatorType.values(), readOnly,
-				readOnly ? null : versionDSListener, null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
+		versionDsType = UiUtils.createGridEnumCombo(parentComposite, 1, 0, DesignatorType.values(), readOnly, readOnly ? null : versionDSListener,
+				null, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.SIMPLE);
 
 		versionDsType.addSelectionListener(notifier);
 		UiUtils.createEmptyLabel(parentComposite);
@@ -281,9 +281,12 @@ public class VersionDesignator extends Widgetin {
 				fromVersion.setText(versionDesignator.getMinimum().toString());
 				toVersion.setText(TextUtils.notNullString(versionDesignator.getMaximum()));
 			} else {
-				fromVersion.setText(versionDesignator.getMinimum().getOriginal());
+				if (versionDesignator.getMinimum().equals(Version.emptyVersion))
+					fromVersion.setText(""); //$NON-NLS-1$
+				else
+					fromVersion.setText(versionDesignator.getMinimum().getOriginal());
 				Version maxVer = versionDesignator.getMaximum();
-				if (maxVer == null)
+				if (maxVer == null || maxVer.equals(Version.MAX_VERSION))
 					toVersion.setText(""); //$NON-NLS-1$
 				else
 					toVersion.setText(TextUtils.notNullString(maxVer.getOriginal()));
