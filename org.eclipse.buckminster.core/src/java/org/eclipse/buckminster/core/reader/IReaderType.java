@@ -151,8 +151,8 @@ public interface IReaderType extends IBuckminsterExtension {
 	IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException;
 
 	/**
-	 * Returns the last modification date for the working copy or -1 if that
-	 * cannot be determined.
+	 * Returns the last modification date for the working copy or
+	 * <code>null</code> if that cannot be determined.
 	 * 
 	 * @param workingCopy
 	 * @param monitor
@@ -163,8 +163,8 @@ public interface IReaderType extends IBuckminsterExtension {
 	Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Returns the last modification date for the repository or null if that
-	 * cannot be determined.
+	 * Returns the last modification date for the repository or
+	 * <code>null</code> if that cannot be determined.
 	 * 
 	 * @param repositoryLocation
 	 * @param versionSelector

@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -48,8 +49,14 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,6 +70,24 @@ import org.xml.sax.SAXParseException;
  * @author Thomas Hallgren
  */
 public class URLCatalogReaderType extends CatalogReaderType {
+	private class LastModficationTimeFinder implements IResourceVisitor {
+		long timestamp = -1;
+
+		@Override
+		public boolean visit(IResource resource) throws CoreException {
+			if (resource.isDerived() || resource.isHidden())
+				return false;
+			long modstamp = resource.getLocalTimeStamp();
+			if (modstamp > timestamp)
+				timestamp = modstamp;
+			return true;
+		}
+
+		Date getTimestamp() {
+			return timestamp == -1 ? null : new Date(timestamp);
+		}
+	}
+
 	private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
 	/**
@@ -270,6 +295,21 @@ public class URLCatalogReaderType extends CatalogReaderType {
 		} catch (URISyntaxException e) {
 			return null;
 		}
+	}
+
+	@Override
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException {
+		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IPath workingCopyPath = Path.fromOSString(workingCopy.getAbsolutePath());
+		IResource resource = wsRoot.getContainerForLocation(workingCopyPath);
+		if (resource == null) {
+			resource = wsRoot.getFileForLocation(workingCopyPath);
+			if (resource == null)
+				return null;
+		}
+		LastModficationTimeFinder timeFinder = new LastModficationTimeFinder();
+		resource.accept(timeFinder);
+		return timeFinder.getTimestamp();
 	}
 
 	public IReaderType getLocalReaderType() {
