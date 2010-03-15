@@ -17,7 +17,6 @@ import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -25,26 +24,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
+import org.eclipse.team.core.RepositoryProvider;
+import org.eclipse.team.core.history.IFileHistory;
+import org.eclipse.team.core.history.IFileHistoryProvider;
+import org.eclipse.team.core.history.IFileRevision;
 
 public class GitReaderType extends CatalogReaderType {
-	private class LastModficationTimeFinder implements IResourceVisitor {
-		long timestamp = -1;
-
-		@Override
-		public boolean visit(IResource resource) throws CoreException {
-			if (resource.isDerived() || resource.isHidden())
-				return false;
-			long modstamp = resource.getLocalTimeStamp();
-			if (modstamp > timestamp)
-				timestamp = modstamp;
-			return true;
-		}
-
-		Date getTimestamp() {
-			return timestamp == -1 ? null : new Date(timestamp);
-		}
-	}
-
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
 	}
@@ -99,9 +84,13 @@ public class GitReaderType extends CatalogReaderType {
 			if (resource == null)
 				return null;
 		}
-		LastModficationTimeFinder timeFinder = new LastModficationTimeFinder();
-		resource.accept(timeFinder);
-		return timeFinder.getTimestamp();
+		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject());
+		if(provider == null)
+			return null;
+
+		IFileHistory history = provider.getFileHistoryProvider().getFileHistoryFor(resource, IFileHistoryProvider.SINGLE_REVISION, monitor);
+		IFileRevision[] revisions = history.getFileRevisions();
+		return revisions.length == 0 ? null : new Date(revisions[0].getTimestamp());
 	}
 
 	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException {
