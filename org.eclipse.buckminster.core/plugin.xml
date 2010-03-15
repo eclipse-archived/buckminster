@@ -76,7 +76,7 @@
 </extension>
 	<extension point="org.eclipse.buckminster.core.versionTypes">
 		<versionType
-          format="n[.n=0;[.n=0;[.S=[A-Za-z0-9_-];=&apos;&apos;;]]]"
+          format="n[.n=0;[.n=0;[.S=&apos;&apos;;=[A-Za-z0-9_-];]]]"
           id="OSGi"/>
 		<versionType
           format="S"
