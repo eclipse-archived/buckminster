@@ -17,38 +17,30 @@ import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.TreeEntry;
 
-public class GitReader extends AbstractCatalogReader
-{
+public class GitReader extends AbstractCatalogReader {
 	private final RepositoryAccess repoAccess;
 
-	protected GitReader(IReaderType readerType, ProviderMatch providerMatch) throws CoreException
-	{
+	protected GitReader(IReaderType readerType, ProviderMatch providerMatch) throws CoreException {
 		super(readerType, providerMatch);
 		Provider provider = providerMatch.getProvider();
 		repoAccess = new RepositoryAccess(//
-			provider.getURI(providerMatch.getNodeQuery().getProperties()),//
-			provider.getProviderProperties());
+				provider.getURI(providerMatch.getNodeQuery().getProperties()),//
+				provider.getProviderProperties());
 	}
 
 	@Override
-	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException
-	{
-		try
-		{
+	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
+		try {
 			return repoAccess.getComponentTree(getProviderMatch().getVersionMatch(), monitor).existsBlob(fileName);
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
 	@Override
-	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor)
-			throws CoreException, IOException
-	{
+	protected <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException {
 		TreeEntry blobEntry = repoAccess.getComponentTree(getProviderMatch().getVersionMatch(), monitor).findBlobMember(fileName);
-		if(blobEntry == null)
+		if (blobEntry == null)
 			throw new FileNotFoundException(fileName);
 
 		Repository repo = blobEntry.getRepository();
@@ -57,8 +49,7 @@ public class GitReader extends AbstractCatalogReader
 		return consumer.consumeStream(this, fileName, new ByteArrayInputStream(bytes), monitor);
 	}
 
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException
-	{
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		repoAccess.checkout(getProviderMatch().getVersionMatch(), destination.toFile(), monitor);
 	}
 }

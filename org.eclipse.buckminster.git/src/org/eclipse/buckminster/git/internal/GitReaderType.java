@@ -2,6 +2,7 @@ package org.eclipse.buckminster.git.internal;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Date;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -15,55 +16,69 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.egit.core.op.ConnectProviderOperation;
 
-public class GitReaderType extends CatalogReaderType
-{
-	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException
-	{
+public class GitReaderType extends CatalogReaderType {
+	private class LastModficationTimeFinder implements IResourceVisitor {
+		long timestamp = -1;
+
+		@Override
+		public boolean visit(IResource resource) throws CoreException {
+			if (resource.isDerived() || resource.isHidden())
+				return false;
+			long modstamp = resource.getLocalTimeStamp();
+			if (modstamp > timestamp)
+				timestamp = modstamp;
+			return true;
+		}
+
+		Date getTimestamp() {
+			return timestamp == -1 ? null : new Date(timestamp);
+		}
+	}
+
+	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException
-	{
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new GitReader(this, providerMatch);
 	}
 
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery,
-			IProgressMonitor monitor) throws CoreException
-	{
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
+			throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new VersionFinder(provider, ctype, nodeQuery);
 	}
 
 	@Override
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor)
-			throws CoreException
-	{
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException {
 		// Register the project with the GitTeamProvider.
 		//
 		String fmt = cr.getRepository();
 		ConnectProviderOperation connectOp;
-		if(fmt.lastIndexOf(',') < 0)
+		if (fmt.lastIndexOf(',') < 0)
 			connectOp = new ConnectProviderOperation(project);
 		else
 			connectOp = new ConnectProviderOperation(project, new File("../.git"));
 		connectOp.run(monitor);
 	}
 
-	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException
-	{
+	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException {
 		String fmt = resolution.getRepository();
 		int comma = fmt.lastIndexOf(',');
 		File repo;
-		if(comma >= 0)
-		{
+		if (comma >= 0) {
 			fmt = fmt.substring(0, comma);
 			repo = new File(fmt);
 		} else {
@@ -74,11 +89,25 @@ public class GitReaderType extends CatalogReaderType
 		return Path.fromOSString(repo.getAbsolutePath()).addTrailingSeparator();
 	}
 
-	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException
-	{
+	@Override
+	public Date getLastModification(File workingCopy, IProgressMonitor monitor) throws CoreException {
+		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IPath workingCopyPath = Path.fromOSString(workingCopy.getAbsolutePath());
+		IResource resource = wsRoot.getContainerForLocation(workingCopyPath);
+		if (resource == null) {
+			resource = wsRoot.getFileForLocation(workingCopyPath);
+			if (resource == null)
+				return null;
+		}
+		LastModficationTimeFinder timeFinder = new LastModficationTimeFinder();
+		resource.accept(timeFinder);
+		return timeFinder.getTimestamp();
+	}
+
+	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException {
 		String fmt = resolution.getRepository();
 		int comma = fmt.lastIndexOf(',');
-		if(comma >= 0)
+		if (comma >= 0)
 			fmt = fmt.substring(comma + 1);
 		else {
 			// The repository _is_ the component, so the leaf artifact is
@@ -91,8 +120,7 @@ public class GitReaderType extends CatalogReaderType
 	/**
 	 * Closes any cached RepositoryAccess instances.
 	 */
-	public void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException
-	{
-		
+	public void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException {
+
 	}
 }
