@@ -53,7 +53,7 @@ public class VersionHelper {
 				IConfigurationElement elem = elems[idx];
 				String format = elem.getAttribute("format"); //$NON-NLS-1$
 				String id = elem.getAttribute("id"); //$NON-NLS-1$
-				VersionType vt = knownTypes.get(format);
+				VersionType vt = VersionType.OSGI.equals(id) ? osgiType : knownTypes.get(format);
 				if (vt != null) {
 					String[] labels = vt.getLabels();
 					int top = labels.length;
