@@ -19,12 +19,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.equinox.internal.p2.metadata.VersionFormat;
 import org.eclipse.equinox.p2.metadata.IVersionFormat;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionFormatException;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.xml.sax.Attributes;
 
+@SuppressWarnings("restriction")
 public class VersionHelper {
 	private static final Version sampleOSGiVersion;
 
@@ -39,6 +41,11 @@ public class VersionHelper {
 	static {
 		try {
 			sampleOSGiVersion = Version.parseVersion("1.0.0"); //$NON-NLS-1$
+			VersionType osgiType = new VersionType(sampleOSGiVersion.getFormat());
+			knownTypes.put(VersionFormat.OSGI_FORMAT_STRING, osgiType);
+			if (!osgiType.toString().equals(VersionFormat.OSGI_FORMAT_STRING))
+				knownTypes.put(osgiType.toString(), osgiType);
+
 			IExtensionRegistry exReg = Platform.getExtensionRegistry();
 			IConfigurationElement[] elems = exReg.getConfigurationElementsFor(VERSION_TYPES_POINT);
 			int idx = elems.length;
@@ -57,7 +64,7 @@ public class VersionHelper {
 					String[] newLabels = new String[top + 1];
 					System.arraycopy(labels, 0, newLabels, 0, top);
 					newLabels[top] = id;
-					vt = new VersionType(Version.compile(format), newLabels);
+					vt = new VersionType(vt.getFormat(), newLabels);
 				} else {
 					vt = new VersionType(Version.compile(format), id);
 				}
