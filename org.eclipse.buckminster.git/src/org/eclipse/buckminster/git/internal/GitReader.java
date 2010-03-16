@@ -29,6 +29,11 @@ public class GitReader extends AbstractCatalogReader {
 	}
 
 	@Override
+	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
+		repoAccess.checkout(getProviderMatch().getVersionMatch(), destination.toFile(), monitor);
+	}
+
+	@Override
 	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
 		try {
 			return repoAccess.getComponentTree(getProviderMatch().getVersionMatch(), monitor).existsBlob(fileName);
@@ -47,9 +52,5 @@ public class GitReader extends AbstractCatalogReader {
 		ObjectLoader ol = repo.openBlob(blobEntry.getId());
 		byte[] bytes = ol.getBytes();
 		return consumer.consumeStream(this, fileName, new ByteArrayInputStream(bytes), monitor);
-	}
-
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
-		repoAccess.checkout(getProviderMatch().getVersionMatch(), destination.toFile(), monitor);
 	}
 }

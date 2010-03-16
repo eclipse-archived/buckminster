@@ -37,11 +37,11 @@ import org.eclipse.jgit.transport.URIish;
 @SuppressWarnings("deprecation")
 class RepositoryAccess {
 	private static void appendObjectSummary(final StringBuilder sb, final String type, final PersonIdent author, final String message) {
-		sb.append(type + " by ");
+		sb.append(type + " by "); //$NON-NLS-1$
 		sb.append(author.getName());
-		sb.append("\n");
+		sb.append("\n"); //$NON-NLS-1$
 		sb.append(author.getWhen());
-		sb.append("\n\n");
+		sb.append("\n\n"); //$NON-NLS-1$
 		final int newLine = message.indexOf('\n');
 		final int last = (newLine != -1 ? newLine : message.length());
 		sb.append(message.substring(0, last));
@@ -67,9 +67,9 @@ class RepositoryAccess {
 		} else
 			component = null; // The repo _is_ the component
 
-		localRepo = new File(fmt, ".git");
+		localRepo = new File(fmt, ".git"); //$NON-NLS-1$
 		if (!localRepo.isAbsolute())
-			throw BuckminsterException.fromMessage("Git repository path \"%s\" is not absolute", fmt);
+			throw BuckminsterException.fromMessage("Git repository path \"%s\" is not absolute", fmt); //$NON-NLS-1$
 
 		String remoteURIStr = properties.get(IPropertyKeys.PROP_REMOTE_URI);
 		if (remoteURIStr != null)
@@ -84,7 +84,7 @@ class RepositoryAccess {
 		fmt = localRepo.getAbsolutePath();
 		if (!localRepo.exists()) {
 			if (repoURI == null)
-				throw BuckminsterException.fromMessage("Git repository path \"%s\" does not exist and value is provided for the \"%s\" property",
+				throw BuckminsterException.fromMessage("Git repository path \"%s\" does not exist and value is provided for the \"%s\" property", //$NON-NLS-1$
 						fmt, IPropertyKeys.PROP_REMOTE_URI);
 		}
 		autoFetch = Boolean.parseBoolean(properties.get(IPropertyKeys.PROP_AUTO_FETCH));
@@ -123,7 +123,7 @@ class RepositoryAccess {
 			if (gitTag != null) {
 				ref = repo.getRef(gitTag);
 				if (ref == null)
-					throw BuckminsterException.fromMessage("Unable to obtain Ref for tag %s", gitTag);
+					throw BuckminsterException.fromMessage("Unable to obtain Ref for tag %s", gitTag); //$NON-NLS-1$
 				obj = repo.mapObject(ref.getObjectId(), ref.getName());
 				while (obj instanceof Tag)
 					obj = repo.mapObject(((Tag) obj).getObjId(), null);
@@ -134,21 +134,21 @@ class RepositoryAccess {
 					String remoteBranch = getGitRemoteBranch(versionMatch);
 					ref = repo.getRef(remoteBranch);
 					if (ref == null)
-						throw BuckminsterException.fromMessage("Unable to obtain Ref for branch %s", gitBranch);
+						throw BuckminsterException.fromMessage("Unable to obtain Ref for branch %s", gitBranch); //$NON-NLS-1$
 
 					// We need to clone the remote branch in order to get the
 					// Commit.
 					fetch(versionMatch, monitor);
 					ref = repository.getRef(gitBranch);
 					if (ref == null)
-						throw BuckminsterException.fromMessage("Unable to obtain cloned local Ref for branch %s", remoteBranch);
+						throw BuckminsterException.fromMessage("Unable to obtain cloned local Ref for branch %s", remoteBranch); //$NON-NLS-1$
 				}
 				obj = repo.mapObject(ref.getObjectId(), ref.getName());
 			}
 
 			// inspectObj(obj);
 			if (!(obj instanceof Commit))
-				throw BuckminsterException.fromMessage("Unable to obtain Commit for ref %s", ref.getName());
+				throw BuckminsterException.fromMessage("Unable to obtain Commit for ref %s", ref.getName()); //$NON-NLS-1$
 			return (Commit) obj;
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
@@ -188,6 +188,38 @@ class RepositoryAccess {
 		return repository;
 	}
 
+	void inspectObj(Object obj) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		inspectObj(sb, obj);
+		System.out.println(sb);
+		System.out.println();
+	}
+
+	void inspectObj(StringBuilder sb, Object obj) throws IOException {
+		if (obj instanceof Commit) {
+			final Commit c = ((Commit) obj);
+			appendObjectSummary(sb, "commit", c.getAuthor(), c.getMessage()); //$NON-NLS-1$
+			for (TreeEntry te : c.getTree().members()) {
+				sb.append("  "); //$NON-NLS-1$
+				sb.append(te.getFullName());
+				sb.append("\n"); //$NON-NLS-1$
+			}
+		} else if (obj instanceof Tag) {
+			final Tag t = ((Tag) obj);
+			appendObjectSummary(sb, "tag", t.getAuthor(), t.getMessage()); //$NON-NLS-1$
+		} else if (obj instanceof Tree) {
+			sb.append("tree"); //$NON-NLS-1$
+			for (TreeEntry te : ((Tree) obj).members()) {
+				sb.append("  "); //$NON-NLS-1$
+				sb.append(te.getFullName());
+				sb.append("\n"); //$NON-NLS-1$
+			}
+		} else if (obj instanceof Blob) {
+			sb.append("blob"); //$NON-NLS-1$
+		} else
+			sb.append("locally unknown object"); //$NON-NLS-1$
+	}
+
 	void inspectRef(Ref ref) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		inspectRef(sb, ref);
@@ -200,40 +232,8 @@ class RepositoryAccess {
 		sb.append(ref.getName());
 		sb.append('\n');
 		sb.append(ref.getObjectId().abbreviate(repository).name());
-		sb.append(" - ");
+		sb.append(" - "); //$NON-NLS-1$
 		inspectObj(sb, obj);
-	}
-
-	void inspectObj(Object obj) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		inspectObj(sb, obj);
-		System.out.println(sb);
-		System.out.println();
-	}
-
-	void inspectObj(StringBuilder sb, Object obj) throws IOException {
-		if (obj instanceof Commit) {
-			final Commit c = ((Commit) obj);
-			appendObjectSummary(sb, "commit", c.getAuthor(), c.getMessage());
-			for (TreeEntry te : c.getTree().members()) {
-				sb.append("  ");
-				sb.append(te.getFullName());
-				sb.append("\n");
-			}
-		} else if (obj instanceof Tag) {
-			final Tag t = ((Tag) obj);
-			appendObjectSummary(sb, "tag", t.getAuthor(), t.getMessage());
-		} else if (obj instanceof Tree) {
-			sb.append("tree");
-			for (TreeEntry te : ((Tree) obj).members()) {
-				sb.append("  ");
-				sb.append(te.getFullName());
-				sb.append("\n");
-			}
-		} else if (obj instanceof Blob) {
-			sb.append("blob");
-		} else
-			sb.append("locally unknown object");
 	}
 
 	boolean isAutoFetch() {
@@ -245,7 +245,7 @@ class RepositoryAccess {
 			// Nothing to fetch. This is a no-op
 			return;
 
-		monitor.setTaskName("Initializing local repository");
+		monitor.setTaskName("Initializing local repository"); //$NON-NLS-1$
 		Transport tn = null;
 		try {
 			// Set the current branch
@@ -262,11 +262,11 @@ class RepositoryAccess {
 			String dst = Constants.R_REMOTES + remoteConfig.getName();
 			RefSpec wcrs = new RefSpec();
 			wcrs = wcrs.setForceUpdate(true);
-			wcrs = wcrs.setSourceDestination(Constants.R_HEADS + "*", dst + "/*");
+			wcrs = wcrs.setSourceDestination(Constants.R_HEADS + "*", dst + "/*");  //$NON-NLS-1$//$NON-NLS-2$
 			remoteConfig.addFetchRefSpec(wcrs);
 
 			// we're setting up for a clone with a checkout
-			localConfig.setBoolean("core", null, "bare", false);
+			localConfig.setBoolean("core", null, "bare", false);  //$NON-NLS-1$//$NON-NLS-2$
 			remoteConfig.update(localConfig);
 
 			// branch is like 'Constants.R_HEADS + branchName', we need only
@@ -274,8 +274,8 @@ class RepositoryAccess {
 			String branchName = gitBranch.substring(Constants.R_HEADS.length());
 
 			// setup the default remote branch for branchName
-			localConfig.setString(RepositoryConfig.BRANCH_SECTION, branchName, "remote", remoteName);
-			localConfig.setString(RepositoryConfig.BRANCH_SECTION, branchName, "merge", gitBranch);
+			localConfig.setString(RepositoryConfig.BRANCH_SECTION, branchName, "remote", remoteName); //$NON-NLS-1$
+			localConfig.setString(RepositoryConfig.BRANCH_SECTION, branchName, "merge", gitBranch); //$NON-NLS-1$
 			localConfig.save();
 
 			tn = Transport.open(repository, remoteConfig);
@@ -283,7 +283,7 @@ class RepositoryAccess {
 			Ref advHead = result.getAdvertisedRef(gitBranch);
 			if (advHead == null || advHead.getObjectId() == null)
 				// This is bad. The desired branch was not found
-				throw BuckminsterException.fromMessage("Unable to find branch %s in remote repository %s", gitBranch, repoURI);
+				throw BuckminsterException.fromMessage("Unable to find branch %s in remote repository %s", gitBranch, repoURI); //$NON-NLS-1$
 
 			Commit c = repository.mapCommit(advHead.getObjectId());
 			RefUpdate u = repository.updateRef(Constants.HEAD);

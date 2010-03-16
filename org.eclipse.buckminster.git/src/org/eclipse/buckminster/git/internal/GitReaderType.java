@@ -30,37 +30,12 @@ import org.eclipse.team.core.history.IFileHistoryProvider;
 import org.eclipse.team.core.history.IFileRevision;
 
 public class GitReaderType extends CatalogReaderType {
+	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
 	}
 
-	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
-		MonitorUtils.complete(monitor);
-		return new GitReader(this, providerMatch);
-	}
-
 	@Override
-	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
-			throws CoreException {
-		MonitorUtils.complete(monitor);
-		return new VersionFinder(provider, ctype, nodeQuery);
-	}
-
-	@Override
-	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException {
-		// Register the project with the GitTeamProvider.
-		//
-		String fmt = cr.getRepository();
-		int comma = fmt.lastIndexOf(',');
-		ConnectProviderOperation connectOp;
-		if (comma >= 0) {
-			fmt = fmt.substring(0, comma);
-			connectOp = new ConnectProviderOperation(project, Path.fromPortableString(fmt).append(".git").toFile());
-		} else
-			connectOp = new ConnectProviderOperation(project);
-		connectOp.run(monitor);
-	}
-
 	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException {
 		String fmt = resolution.getRepository();
 		int comma = fmt.lastIndexOf(',');
@@ -87,7 +62,7 @@ public class GitReaderType extends CatalogReaderType {
 				return null;
 		}
 		RepositoryProvider provider = RepositoryProvider.getProvider(resource.getProject());
-		if(provider == null)
+		if (provider == null)
 			return null;
 
 		IFileHistory history = provider.getFileHistoryProvider().getFileHistoryFor(resource, IFileHistoryProvider.SINGLE_REVISION, monitor);
@@ -95,6 +70,7 @@ public class GitReaderType extends CatalogReaderType {
 		return revisions.length == 0 ? null : new Date(revisions[0].getTimestamp());
 	}
 
+	@Override
 	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException {
 		String fmt = resolution.getRepository();
 		int comma = fmt.lastIndexOf(',');
@@ -108,10 +84,39 @@ public class GitReaderType extends CatalogReaderType {
 		return Path.fromOSString(fmt).addTrailingSeparator();
 	}
 
+	@Override
+	public IComponentReader getReader(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
+		MonitorUtils.complete(monitor);
+		return new GitReader(this, providerMatch);
+	}
+
+	@Override
+	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
+			throws CoreException {
+		MonitorUtils.complete(monitor);
+		return new VersionFinder(provider, ctype, nodeQuery);
+	}
+
 	/**
 	 * Closes any cached RepositoryAccess instances.
 	 */
+	@Override
 	public void postMaterialization(MaterializationContext context, IProgressMonitor monitor) throws CoreException {
 
+	}
+
+	@Override
+	public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException {
+		// Register the project with the GitTeamProvider.
+		//
+		String fmt = cr.getRepository();
+		int comma = fmt.lastIndexOf(',');
+		ConnectProviderOperation connectOp;
+		if (comma >= 0) {
+			fmt = fmt.substring(0, comma);
+			connectOp = new ConnectProviderOperation(project, Path.fromPortableString(fmt).append(".git").toFile()); //$NON-NLS-1$
+		} else
+			connectOp = new ConnectProviderOperation(project);
+		connectOp.run(monitor);
 	}
 }
