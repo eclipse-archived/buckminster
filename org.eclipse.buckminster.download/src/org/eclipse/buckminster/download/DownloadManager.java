@@ -9,7 +9,9 @@
 package org.eclipse.buckminster.download;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
@@ -17,8 +19,11 @@ import java.net.URL;
 import org.eclipse.buckminster.download.internal.CacheImpl;
 import org.eclipse.buckminster.download.internal.FileReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.FileInfoBuilder;
 import org.eclipse.buckminster.runtime.IFileInfo;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.osgi.util.NLS;
@@ -65,6 +70,16 @@ public class DownloadManager {
 	}
 
 	public static InputStream read(URL url, IConnectContext cctx) throws CoreException, FileNotFoundException {
+		try {
+			url = FileLocator.toFileURL(url);
+			if ("file".equalsIgnoreCase(url.getProtocol())) //$NON-NLS-1$
+				return new FileInputStream(url.getPath());
+		} catch (FileNotFoundException e) {
+			throw e;
+		} catch (IOException e) {
+			throw BuckminsterException.wrap(e);
+		}
+
 		FileReader reader = new FileReader(cctx);
 		return reader.read(url);
 	}
@@ -76,6 +91,25 @@ public class DownloadManager {
 
 	public static IFileInfo readInto(URL url, IConnectContext cctx, OutputStream output, IProgressMonitor monitor) throws CoreException,
 			FileNotFoundException {
+		try {
+			url = FileLocator.toFileURL(url);
+			if ("file".equalsIgnoreCase(url.getProtocol())) { //$NON-NLS-1$
+				File file = new File(url.getPath());
+				InputStream input = null;
+				try {
+					input = new FileInputStream(file);
+					IOUtils.copy(input, output, monitor);
+					return new FileInfoBuilder(file);
+				} finally {
+					IOUtils.close(input);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			throw e;
+		} catch (IOException e) {
+			throw BuckminsterException.wrap(e);
+		}
+
 		FileReader reader = new FileReader(cctx);
 		reader.readInto(url, output, monitor);
 		return reader.getLastFileInfo();
