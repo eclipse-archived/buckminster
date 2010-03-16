@@ -34,7 +34,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.buckminster.git.feature"
+         id="org.eclipse.buckminster.git.headless.feature"
          version="0.0.0"/>
 
    <includes
