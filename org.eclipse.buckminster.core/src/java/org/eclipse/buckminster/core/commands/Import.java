@@ -161,10 +161,11 @@ public class Import extends WorkspaceInitCommand {
 				ResolutionContext ctx = (mspec == null) ? new ResolutionContext(cquery) : new ResolutionContext(mspec, cquery);
 				IResolver resolver = new MainResolver(ctx);
 				resolver.getContext().setContinueOnError(true);
+				resolver.getContext().setSilentStatus(true);
 				try {
 					bom = resolver.resolve(MonitorUtils.subMonitor(monitor, 50));
 				} finally {
-					if (resolver.getContext().emitWarningAndErrorTags() && !continueOnError)
+					if (ctx.emitWarningAndErrorTags() && !continueOnError)
 						return 1;
 				}
 			} else {
