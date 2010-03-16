@@ -41,7 +41,7 @@ public class VersionHelper {
 	static {
 		try {
 			sampleOSGiVersion = Version.parseVersion("1.0.0"); //$NON-NLS-1$
-			VersionType osgiType = new VersionType(sampleOSGiVersion.getFormat());
+			VersionType osgiType = new VersionType(sampleOSGiVersion.getFormat(), VersionType.OSGI);
 			knownTypes.put(VersionFormat.OSGI_FORMAT_STRING, osgiType);
 			if (!osgiType.toString().equals(VersionFormat.OSGI_FORMAT_STRING))
 				knownTypes.put(osgiType.toString(), osgiType);
