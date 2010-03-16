@@ -51,11 +51,13 @@ public class GitReaderType extends CatalogReaderType {
 		// Register the project with the GitTeamProvider.
 		//
 		String fmt = cr.getRepository();
+		int comma = fmt.lastIndexOf(',');
 		ConnectProviderOperation connectOp;
-		if (fmt.lastIndexOf(',') < 0)
+		if (comma >= 0) {
+			fmt = fmt.substring(0, comma);
+			connectOp = new ConnectProviderOperation(project, Path.fromPortableString(fmt).append(".git").toFile());
+		} else
 			connectOp = new ConnectProviderOperation(project);
-		else
-			connectOp = new ConnectProviderOperation(project, new File("../.git"));
 		connectOp.run(monitor);
 	}
 
