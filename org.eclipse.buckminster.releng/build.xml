@@ -211,6 +211,17 @@
 		</buckminster>
 	</target>
 
+	<target name="download.area.chmod">
+		<fileset dir="${buckminster.download.area}" includes="*/**" id="buckyfiles"/>
+		<chmod perm="g+rw" type="both" maxparallel="200">
+			<fileset refid="buckyfiles"/>
+		</chmod>
+		<dirset dir="${buckminster.download.area}" includes="*/**" id="buckydirs"/>
+		<chmod perm="g+x" type="both" maxparallel="200">
+			<dirset refid="buckydirs"/>
+		</chmod>
+	</target>
+
 	<target name="clean.all" depends="clean.tools,clean.workspace,clean.tp,clean.output" />
 	<target name="clean.tools">
 		<delete dir="${tools}/director" failonerror="true" quiet="true" />
