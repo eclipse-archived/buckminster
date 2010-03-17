@@ -151,6 +151,16 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 		return properties;
 	}
 
+	/**
+	 * Returns the <code>props</code> argument in a union with the properties
+	 * defined in this RMAP. The properties from the <code>props</code> argument
+	 * has precedence.
+	 * 
+	 * @param props
+	 *            The properties to back with defaults from this RMAP
+	 * @return A union of the <code>props</code> argument and properties defined
+	 *         in this RMAP.
+	 */
 	public Map<String, ? extends Object> getProperties(Map<String, ? extends Object> props) {
 		if (!properties.isEmpty())
 			props = new UnmodifiableMapUnion<String, Object>(props, properties);

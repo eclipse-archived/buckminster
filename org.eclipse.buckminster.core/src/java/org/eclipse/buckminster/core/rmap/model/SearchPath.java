@@ -96,7 +96,7 @@ public class SearchPath extends AbstractSaxableElement {
 					continue;
 				}
 
-				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, provider.getReaderTypeId(), provider.getURI());
+				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, provider.getReaderTypeId(), getProviderURI(query, provider));
 				ProviderMatch match = provider.findMatch(query, problemCollector, MonitorUtils.subMonitor(monitor, 1000));
 				if (match == null) {
 					noGoodList.add(provider);
@@ -120,15 +120,15 @@ public class SearchPath extends AbstractSaxableElement {
 				if (bestMatch == null || match.compareTo(bestMatch) > 0) {
 					if (bestMatch != null) {
 						Provider rejected = bestMatch.getOriginalProvider();
-						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(), rejected.getURI(), NLS.bind(
-								Messages._0_1_is_producing_a_better_match, provider.getReaderTypeId(), provider.getURI()));
+						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(), getProviderURI(query, rejected), NLS
+								.bind(Messages._0_1_is_producing_a_better_match, provider.getReaderTypeId(), provider.getURI()));
 					}
 					bestMatch = match;
 					continue;
 				}
 
 				Provider best = bestMatch.getOriginalProvider();
-				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), provider.getURI(), NLS.bind(
+				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), getProviderURI(query, provider), NLS.bind(
 						Messages._0_1_is_producing_a_better_match, best.getReaderTypeId(), best.getURI()));
 			}
 
@@ -138,7 +138,7 @@ public class SearchPath extends AbstractSaxableElement {
 			}
 
 			Provider best = bestMatch.getOriginalProvider();
-			query.logDecision(ResolverDecisionType.USING_PROVIDER, best.getReaderTypeId(), best.getURI());
+			query.logDecision(ResolverDecisionType.USING_PROVIDER, best.getReaderTypeId(), getProviderURI(query, best));
 			return bestMatch;
 		} finally {
 			monitor.done();
@@ -167,5 +167,9 @@ public class SearchPath extends AbstractSaxableElement {
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
 		for (Provider provider : providers)
 			provider.toSax(handler, namespace, prefix, provider.getDefaultTag());
+	}
+
+	private String getProviderURI(NodeQuery query, Provider provider) {
+		return provider.getURI().toString() + '[' + provider.getURI(resourceMap.getProperties(query.getProperties())) + ']';
 	}
 }
