@@ -173,7 +173,7 @@ class RepositoryAccess {
 		}
 	}
 
-	Repository getRepository(IProgressMonitor monitor) throws CoreException {
+	synchronized Repository getRepository(IProgressMonitor monitor) throws CoreException {
 		if (repository != null)
 			return repository;
 
