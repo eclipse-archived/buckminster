@@ -121,7 +121,7 @@ public class SearchPath extends AbstractSaxableElement {
 					if (bestMatch != null) {
 						Provider rejected = bestMatch.getOriginalProvider();
 						query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, rejected.getReaderTypeId(), getProviderURI(query, rejected), NLS
-								.bind(Messages._0_1_is_producing_a_better_match, provider.getReaderTypeId(), provider.getURI()));
+								.bind(Messages._0_1_is_producing_a_better_match, provider.getReaderTypeId(), getProviderURI(query, provider)));
 					}
 					bestMatch = match;
 					continue;
@@ -129,7 +129,7 @@ public class SearchPath extends AbstractSaxableElement {
 
 				Provider best = bestMatch.getOriginalProvider();
 				query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, provider.getReaderTypeId(), getProviderURI(query, provider), NLS.bind(
-						Messages._0_1_is_producing_a_better_match, best.getReaderTypeId(), best.getURI()));
+						Messages._0_1_is_producing_a_better_match, best.getReaderTypeId(), getProviderURI(query, best)));
 			}
 
 			if (bestMatch == null) {
@@ -169,7 +169,7 @@ public class SearchPath extends AbstractSaxableElement {
 			provider.toSax(handler, namespace, prefix, provider.getDefaultTag());
 	}
 
-	private String getProviderURI(NodeQuery query, Provider provider) {
+	String getProviderURI(NodeQuery query, Provider provider) {
 		return provider.getURI().toString() + '[' + provider.getURI(resourceMap.getProperties(query.getProperties())) + ']';
 	}
 }
