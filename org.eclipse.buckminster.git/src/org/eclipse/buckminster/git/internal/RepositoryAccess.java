@@ -98,10 +98,12 @@ class RepositoryAccess {
 	void checkout(VersionMatch versionMatch, File destination, IProgressMonitor monitor) throws CoreException {
 		try {
 			Repository local = getRepository(monitor);
-			GitIndex index = new GitIndex(local);
-			WorkDirCheckout co = new WorkDirCheckout(local, local.getWorkDir(), index, getComponentTree(versionMatch, monitor));
-			co.checkout();
-			index.write();
+			synchronized (local) {
+				GitIndex index = new GitIndex(local);
+				WorkDirCheckout co = new WorkDirCheckout(local, local.getWorkDir(), index, getComponentTree(versionMatch, monitor));
+				co.checkout();
+				index.write();
+			}
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
@@ -262,11 +264,11 @@ class RepositoryAccess {
 			String dst = Constants.R_REMOTES + remoteConfig.getName();
 			RefSpec wcrs = new RefSpec();
 			wcrs = wcrs.setForceUpdate(true);
-			wcrs = wcrs.setSourceDestination(Constants.R_HEADS + "*", dst + "/*");  //$NON-NLS-1$//$NON-NLS-2$
+			wcrs = wcrs.setSourceDestination(Constants.R_HEADS + "*", dst + "/*"); //$NON-NLS-1$//$NON-NLS-2$
 			remoteConfig.addFetchRefSpec(wcrs);
 
 			// we're setting up for a clone with a checkout
-			localConfig.setBoolean("core", null, "bare", false);  //$NON-NLS-1$//$NON-NLS-2$
+			localConfig.setBoolean("core", null, "bare", false); //$NON-NLS-1$//$NON-NLS-2$
 			remoteConfig.update(localConfig);
 
 			// branch is like 'Constants.R_HEADS + branchName', we need only
