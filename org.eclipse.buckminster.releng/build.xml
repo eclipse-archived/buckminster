@@ -220,14 +220,7 @@
 		<chmod perm="g+x" type="both" maxparallel="200">
 			<dirset refid="buckydirs"/>
 		</chmod>
-		<fileset dir="/tmp/buckminster" includes="*/**" id="buckytempfiles"/>
-		<chmod perm="g+rw" type="both" maxparallel="200">
-			<fileset refid="buckytempfiles"/>
-		</chmod>
-		<dirset dir="/tmp/buckminster" includes="*/**" id="buckytempdirs"/>
-		<chmod perm="g+x" type="both" maxparallel="200">
-			<dirset refid="buckytempdirs"/>
-		</chmod>
+		<delete dir="/tmp/buckminster"/>
 		<fileset dir="${build.root}" includes="*/**" id="buildfiles"/>
 		<chmod perm="g+rw" type="both" maxparallel="200">
 			<fileset refid="buildfiles"/>
