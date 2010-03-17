@@ -160,7 +160,7 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 
 	public ProviderMatch findMatch(NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException {
 		String readerType = getReaderTypeId();
-		String providerURI = searchPath.getProviderURI(query, this);
+		String providerURI = searchPath == null ? getURI(query.getProperties()) : searchPath.getProviderURI(query, this);
 		ProviderScore score = query.getProviderScore(isMutable(), hasSource());
 		if (score == ProviderScore.REJECTED) {
 			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI,
