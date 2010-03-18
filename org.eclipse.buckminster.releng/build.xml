@@ -28,6 +28,7 @@
 
 	<property name="buckminster.output.root" location="${result}/output" />
 	<property name="buckminster.temp.root" location="${result}/temp" />
+	<property name="eclipse.staging.area" location="${result}/signing" />
 
 	<property name="workspace.gzip" value="workspace-template.tar.gz" />
 	<property name="template.dir" location="${tools}/templates" />
@@ -237,8 +238,6 @@
 	</target>
 
 	<target name="clean.output">
-		<delete dir="${buckminster.output.temp}" failonerror="true" quiet="true" />
-		<delete dir="${buckminster.output.root}" failonerror="true" quiet="true" />
-		<delete dir="${eclipse.staging.area}" failonerror="true" quiet="true" />
+		<delete dir="${result}" failonerror="true" quiet="true" />
 	</target>
 </project>
