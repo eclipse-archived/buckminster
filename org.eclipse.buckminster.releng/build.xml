@@ -220,14 +220,6 @@
 		<chmod perm="g+x" type="both" maxparallel="200">
 			<dirset refid="buckydirs"/>
 		</chmod>
-		<fileset dir="${build.root}" includes="*,*/**" id="buildfiles"/>
-		<chmod perm="g+rw" type="both" maxparallel="200">
-			<fileset refid="buildfiles"/>
-		</chmod>
-		<dirset dir="${build.root}" includes="*,*/**" id="builddirs"/>
-		<chmod perm="g+x" type="both" maxparallel="200">
-			<dirset refid="builddirs"/>
-		</chmod>
 	</target>
 
 	<target name="clean.all" depends="clean.tools,clean.workspace,clean.tp,clean.output" />
@@ -247,5 +239,6 @@
 	<target name="clean.output">
 		<delete dir="${buckminster.output.temp}" failonerror="true" quiet="true" />
 		<delete dir="${buckminster.output.root}" failonerror="true" quiet="true" />
+		<delete dir="${eclipse.staging.area}" failonerror="true" quiet="true" />
 	</target>
 </project>
