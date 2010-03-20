@@ -98,7 +98,7 @@ class RepositoryAccess {
 	void checkout(VersionMatch versionMatch, File destination, IProgressMonitor monitor) throws CoreException {
 		try {
 			Repository local = getRepository(monitor);
-			synchronized (local) {
+			synchronized (localRepo.getAbsolutePath().intern()) {
 				GitIndex index = new GitIndex(local);
 				WorkDirCheckout co = new WorkDirCheckout(local, local.getWorkDir(), index, getComponentTree(versionMatch, monitor));
 				co.checkout();
