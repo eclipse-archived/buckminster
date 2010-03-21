@@ -9,14 +9,14 @@
 package org.eclipse.buckminster.installer;
 
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.p2.query.ExpressionQuery;
+import org.eclipse.equinox.p2.query.ExpressionMatchQuery;
 
 /**
  * Queries for IUs which IDs end with ".feature.group"
  * 
  * @author Karel Brezina
  */
-public class FeatureQuery extends ExpressionQuery<IInstallableUnit> {
+public class FeatureQuery extends ExpressionMatchQuery<IInstallableUnit> {
 	public static final String FEATURE_GROUP = ".feature.group"; //$NON-NLS-1$
 
 	public FeatureQuery() {
