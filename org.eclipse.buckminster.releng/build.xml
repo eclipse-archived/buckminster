@@ -200,7 +200,7 @@
 		<buckminster command="emma">
 			<cmdargs>
 				<arg value="-l" />
-				<arg value="org.eclipse.buckminster.releng.tests/AllTests.launch" />
+				<arg value="org.eclipse.buckminster.tests/AllTests.launch" />
 				<arg value="-o" />
 				<arg value="${result}/testReport.xml" />
 				<arg value="--terseXML" />
