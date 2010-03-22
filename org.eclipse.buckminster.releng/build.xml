@@ -195,7 +195,7 @@
 		<buckminster command="build" />
 	</target>
 
-	<target name="test" depends="eclipse.build">
+	<target name="test">
 		<echo message="Running JUnit tests" />
 		<buckminster command="emma">
 			<cmdargs>
