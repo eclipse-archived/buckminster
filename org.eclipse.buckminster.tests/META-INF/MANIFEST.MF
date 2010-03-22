@@ -16,3 +16,4 @@ Require-Bundle: org.eclipse.buckminster.core.test;bundle-version="1.0.350",
  org.eclipse.buckminster.osgi.filter.test;bundle-version="1.0.0",
  org.eclipse.buckminster.pde.test;bundle-version="1.0.0",
  org.junit;bundle-version="4.8.1"
+Export-Package: org.eclipse.buckminster.tests
