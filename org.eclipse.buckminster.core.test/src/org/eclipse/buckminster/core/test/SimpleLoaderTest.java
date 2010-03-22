@@ -23,49 +23,35 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.test.rmap.RMapTestCase;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
- * Abstract test case that will materialize a workspace with the test components build_a, build_b, build_c, and build_d.
+ * Abstract test case that will materialize a workspace with the test components
+ * build_a, build_b, build_c, and build_d.
  * 
  * @author Thomas Hallgren
  */
-public class SimpleLoaderTestCase extends TestCase
-{
-	protected ComponentQuery m_query;
+public class SimpleLoaderTest extends TestCase {
+	protected ComponentQuery query;
 
-	protected IProgressMonitor m_nullMonitor = new NullProgressMonitor();
-
-	public SimpleLoaderTestCase()
-	{
-		super();
-	}
-
-	public SimpleLoaderTestCase(String name)
-	{
-		super(name);
-	}
+	protected IProgressMonitor nullMonitor = new NullProgressMonitor();
 
 	@Override
-	public void setUp() throws Exception
-	{
+	public void setUp() throws Exception {
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(new ComponentRequest("buckminster.test.build_a", null, null)); //$NON-NLS-1$
-		queryBld.setResourceMapURL(RMapTestCase.class.getResource("test.rmap").toString()); //$NON-NLS-1$
-		m_query = queryBld.createComponentQuery();
+		queryBld.setResourceMapURL(getClass().getResource("/testData/rmaps/local_main.rmap").toString()); //$NON-NLS-1$
+		query = queryBld.createComponentQuery();
 	}
 
-	public void testMaterialize() throws Exception
-	{
-		IResolver resolver = new MainResolver(new ResolutionContext(m_query));
-		BillOfMaterials bom = resolver.resolve(m_nullMonitor);
+	public void testMaterialize() throws Exception {
+		IResolver resolver = new MainResolver(new ResolutionContext(query));
+		BillOfMaterials bom = resolver.resolve(nullMonitor);
 		MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 		mspecBuilder.setName(bom.getViewName());
 		mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
-		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(),
-				resolver.getContext());
+		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), resolver.getContext());
 		MaterializationJob.run(matCtx);
 	}
 }

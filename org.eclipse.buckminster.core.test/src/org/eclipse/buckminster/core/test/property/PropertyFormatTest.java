@@ -39,87 +39,66 @@ import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class PropertyFormatTestCase extends TestCase
-{
-	class DummyParser extends TopHandler
-	{
-		private final IProperties<String> m_properties;
+public class PropertyFormatTest extends TestCase {
+	class DummyParser extends TopHandler {
+		final IProperties<String> properties;
 
-		protected DummyParser(IProperties<String> properties) throws SAXException
-		{
+		protected DummyParser(IProperties<String> properties) throws SAXException {
 			super(Utils.createXMLReader(false, true));
-			m_properties = properties;
+			this.properties = properties;
 		}
 
-		public void parse(URL url) throws IOException, SAXException, CoreException
-		{
+		public void parse(URL url) throws IOException, SAXException, CoreException {
 			InputStream input = DownloadManager.read(url, null);
-			try
-			{
+			try {
 				InputSource source = new InputSource(new BufferedInputStream(input));
 				source.setSystemId(url.toString());
 				this.getXMLReader().parse(source);
-			}
-			finally
-			{
-				try
-				{
+			} finally {
+				try {
 					input.close();
-				}
-				catch(IOException e)
-				{
+				} catch (IOException e) {
 				}
 			}
 		}
 
 		@Override
-		public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException
-		{
-			if("testElement".equals(localName)) //$NON-NLS-1$
-			{
-				PropertyManagerHandler pmh = new PropertyManagerHandler(this, "root") //$NON-NLS-1$
-				{
+		public void startElement(String uri, String localName, String qName, Attributes attrs) throws SAXException {
+			if ("testElement".equals(localName)) { //$NON-NLS-1$
+				PropertyManagerHandler pmh = new PropertyManagerHandler(this, "root") { //$NON-NLS-1$
 					@Override
-					public IProperties<String> getProperties()
-					{
-						return m_properties;
+					public IProperties<String> getProperties() {
+						return properties;
 					}
 				};
 				this.pushHandler(pmh, attrs);
-			}
-			else
+			} else
 				super.startElement(uri, localName, qName, attrs);
 		}
 	}
 
-	static void log(String message, Object... args)
-	{
+	static void log(String message, Object... args) {
 		System.out.format(message + "%n", args); //$NON-NLS-1$
 	}
 
-	public void testCircularExpansionTrap()
-	{
+	public void testCircularExpansionTrap() {
 		IProperties<String> props = new ExpandingProperties<String>();
 		props.put("some.text", "text is ${some.text.again}!"); //$NON-NLS-1$ //$NON-NLS-2$
 		props.put("some.other.text", "Hello ${some.text}!"); //$NON-NLS-1$ //$NON-NLS-2$
 		props.put("some.text.again", "Ouch! ${some.other.text}"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		try
-		{
+		try {
 			log(props.get("some.text.again")); //$NON-NLS-1$
 			assertFalse(true);
-		}
-		catch(CircularExpansionException e)
-		{
+		} catch (CircularExpansionException e) {
 			log("OK: \"%s\" resulted in a CircularExpansionException", e.getMessage()); //$NON-NLS-1$
 		}
 	}
 
-	public void testExpandingProperties()
-	{
+	public void testExpandingProperties() {
 		IProperties<String> props = new ExpandingProperties<String>(BMProperties.getSystemProperties());
 		props.put("salut", "Hello ${user.name}!"); //$NON-NLS-1$ //$NON-NLS-2$
-		props.put("salut.home", "${salut} Your \\${user.home} is ${user.home}"); //$NON-NLS-1$ //$NON-NLS-2$
+		props.put("salut.home", "${salut} Your $${user.home} is ${user.home}"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		String result = props.get("salut.home"); //$NON-NLS-1$
 		String expected = "Hello " + System.getProperty("user.name") + "! Your ${user.home} is " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -129,8 +108,7 @@ public class PropertyFormatTestCase extends TestCase
 		assertEquals(expected, result);
 	}
 
-	public void testExpressions()
-	{
+	public void testExpressions() {
 		ValueHolder<String> cvsRoot = new Constant<String>(":pserver:${user.name}@buckminster.tigris.org:/cvs"); //$NON-NLS-1$
 		String fmtString = "First \"{0}\", second \"{1}\", third \"{2}\", and fourth \"{3}\""; //$NON-NLS-1$
 
@@ -151,15 +129,14 @@ public class PropertyFormatTestCase extends TestCase
 		assertEquals(expected, result);
 	}
 
-	public void testPropertyParser() throws Exception
-	{
+	public void testPropertyParser() throws Exception {
 		IProperties<String> props = new ExpandingProperties<String>(BMProperties.getSystemProperties());
 		props.put("buckminster.component.target", "ant-optional"); //$NON-NLS-1$ //$NON-NLS-2$
 		props.put("buckminster.component.name", "org.apache.tools.ant"); //$NON-NLS-1$ //$NON-NLS-2$
 		props.put("buckminster.component.version", "1.7.0beta1"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		DummyParser parser = new DummyParser(props);
-		parser.parse(this.getClass().getResource("valuetest.xml")); //$NON-NLS-1$
+		parser.parse(this.getClass().getResource("/testData/misc/valuetest.xml")); //$NON-NLS-1$
 
 		String result = props.get("maven.url"); //$NON-NLS-1$
 		String verboseResult = props.get("verbose.maven.url"); //$NON-NLS-1$
@@ -171,8 +148,7 @@ public class PropertyFormatTestCase extends TestCase
 		assertEquals("The created URL is \"" + result + '"', verboseResult); //$NON-NLS-1$
 	}
 
-	public void testSystemProperties()
-	{
+	public void testSystemProperties() {
 		Format fmt = new Format("You are {0}, the parent of your home is {1} and you run Java version {2}"); //$NON-NLS-1$
 		fmt.addValueHolder(new PropertyRef<String>(String.class, "user.name")); //$NON-NLS-1$
 		Replace rpl1 = new Replace();

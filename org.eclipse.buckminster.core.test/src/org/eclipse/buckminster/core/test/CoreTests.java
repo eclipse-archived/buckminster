@@ -13,25 +13,24 @@ package org.eclipse.buckminster.core.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.test.cspec.CSpecBuilderTestCase;
-import org.eclipse.buckminster.core.test.property.PropertyFormatTestCase;
-import org.eclipse.buckminster.core.test.rmap.RMapTestCase;
-import org.eclipse.buckminster.core.test.version.VersionTestCase;
+import org.eclipse.buckminster.core.test.command.CommandsTest;
+import org.eclipse.buckminster.core.test.cspec.CSpecBuilderTest;
+import org.eclipse.buckminster.core.test.cspec.CSpecParserTest;
+import org.eclipse.buckminster.core.test.property.PropertyFormatTest;
+import org.eclipse.buckminster.core.test.rmap.RMapTest;
 
 /**
  * @author thhal
  */
-public class CoreTests
-{
-	public static Test suite()
-	{
+public class CoreTests {
+	public static Test suite() {
 		TestSuite suite = new TestSuite("Test for org.eclipse.buckminster.core"); //$NON-NLS-1$
-		System.out.println(CorePlugin.getDefault().getStateLocation().toOSString());
-		suite.addTestSuite(PropertyFormatTestCase.class);
-		suite.addTestSuite(CSpecBuilderTestCase.class);
-		suite.addTestSuite(RMapTestCase.class);
-		suite.addTestSuite(VersionTestCase.class);
+		suite.addTestSuite(SimpleLoaderTest.class);
+		suite.addTestSuite(CommandsTest.class);
+		suite.addTestSuite(CSpecBuilderTest.class);
+		suite.addTestSuite(CSpecParserTest.class);
+		suite.addTestSuite(PropertyFormatTest.class);
+		suite.addTestSuite(RMapTest.class);
 		return suite;
 	}
 }

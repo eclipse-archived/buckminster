@@ -6,19 +6,16 @@
 	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
 	xmlns:pp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
 
-	<property key="componentRoot" value="file:/c:/workspaces/Bucky"/>
+	<property key="myRoot" value="platform:/plugin/org.eclipse.buckminster.core.test/testData/projects"/>
 
 	<searchPath name="default">
 		<provider readerType="local" componentTypes="buckminster">
 			<uri format="{0}/{1}">
-				<bc:propertyRef key="componentRoot"/>
+				<bc:propertyRef key="myRoot"/>
 				<bc:propertyRef key="buckminster.component"/>
 			</uri>
 		</provider>
 	</searchPath>
-
-	<redirect href="${rmaps}/local_a.rmap" pattern="^buckminster\.test\.build_a" />
-	<redirect href="${rmaps}/local_b.rmap" pattern="^buckminster\.test\.build_b" />
 	<locator searchPathRef="default" pattern=".*" />
 </rmap>
 

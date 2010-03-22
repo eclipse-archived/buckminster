@@ -18,10 +18,13 @@ import java.util.Date;
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
@@ -29,15 +32,12 @@ import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionType;
 import org.eclipse.buckminster.sax.Utils;
-import org.eclipse.equinox.internal.provisional.p2.core.Version;
+import org.eclipse.equinox.p2.metadata.Version;
 
-@SuppressWarnings("restriction")
-public class CSpecBuilderTestCase extends TestCase
-{
-	public void testSaxGenerator() throws Exception
-	{
+public class CSpecBuilderTest extends TestCase {
+	public void testSaxGenerator() throws Exception {
 		CorePlugin plugin = CorePlugin.getDefault();
-		if(plugin == null)
+		if (plugin == null)
 			throw new Exception("This test must be run as a \"JUnit Plug-in Test\""); //$NON-NLS-1$
 
 		CSpecBuilder cspecBld = new CSpecBuilder();
@@ -53,14 +53,16 @@ public class CSpecBuilderTestCase extends TestCase
 
 		CSpec c = cspecBld.createCSpec();
 
+		StorageManager sm = StorageManager.getDefault();
 		ComponentRequest request = new ComponentRequest("test", null, null); //$NON-NLS-1$
 		Version vs = Version.parseVersion("1.0.0"); //$NON-NLS-1$
 		VersionMatch fixed = new VersionMatch(vs, null, -1, new Date(), null);
-		Provider provider = new Provider("svn", new String[] { IComponentType.BUCKMINSTER }, //$NON-NLS-1$
-				"svn://foo.bar.com/foobar", null); //$NON-NLS-1$
-		Resolution resolution = new Resolution(c, null, IComponentType.BUCKMINSTER, fixed, provider, true, request,
-				Collections.<String> emptyList(), null, provider.getURI(Collections.<String, String> emptyMap()), null,
-				null, 0L, -1L, false);
+		Provider provider = new Provider(null, "svn", new String[] { IComponentType.BUCKMINSTER }, //$NON-NLS-1$
+				null, new Format("svn://foo.bar.com/foobar"), null, null, null, BMProperties.getSystemProperties(), null, null); //$NON-NLS-1$
+		sm.getProviders().putElement(provider);
+		sm.getCSpecs().putElement(c);
+		Resolution resolution = new Resolution(c, IComponentType.BUCKMINSTER, fixed, provider, true, request, Collections.<String> emptyList(), null,
+				provider.getURI(Collections.<String, String> emptyMap()), null, null, 0L, -1L, false);
 
 		ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 		Utils.serialize(resolution, ostream);
@@ -76,6 +78,7 @@ public class CSpecBuilderTestCase extends TestCase
 		ostream = new ByteArrayOutputStream();
 		Utils.serialize(res2, ostream);
 		String content2 = new String(ostream.toByteArray(), "UTF-8"); //$NON-NLS-1$
+		System.out.println(content2);
 		assertEquals(content, content2);
 	}
 }

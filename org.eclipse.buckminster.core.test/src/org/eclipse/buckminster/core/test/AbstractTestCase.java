@@ -10,20 +10,9 @@
 
 package org.eclipse.buckminster.core.test;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.regex.Pattern;
-
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
-import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
-import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.resolver.IResolver;
-import org.eclipse.buckminster.core.resolver.MainResolver;
-import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
@@ -32,68 +21,34 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractTestCase extends TestCase
-{
-	public AbstractTestCase()
-	{
+public abstract class AbstractTestCase extends TestCase {
+	public AbstractTestCase() {
 	}
 
-	public AbstractTestCase(String name)
-	{
+	public AbstractTestCase(String name) {
 		super(name);
 	}
 
-	protected IResolver createResolver(String componentName, String componentType) throws Exception
-	{
-		ComponentRequest request = new ComponentRequest(componentName, componentType, null);
-		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(request);
-		queryBld.setResourceMapURL(getRMAP().toString());
-		AdvisorNodeBuilder node = queryBld.addAdvisorNode();
-		node.setNamePattern(Pattern.compile("(subclipse)|(subversive)|(slf4j)|(buckminster)")); //$NON-NLS-1$
-		node.setUseTargetPlatform(false);
-		ComponentQuery query = queryBld.createComponentQuery();
-		return new MainResolver(new ResolutionContext(query));
+	@Override
+	public void setUp() throws Exception {
+		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
+		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
 	}
 
-	protected CorePlugin getPlugin() throws Exception
-	{
+	protected CorePlugin getPlugin() throws Exception {
 		CorePlugin plugin = CorePlugin.getDefault();
-		if(plugin == null)
+		if (plugin == null)
 			throw new Exception("This test must be run as a \"JUnit Plug-in Test\""); //$NON-NLS-1$
 		return plugin;
 	}
 
-	protected URL getRMAP()
-	{
-		try
-		{
-			return new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood2.rmap"); //$NON-NLS-1$
-		}
-		catch(MalformedURLException e)
-		{
-			return null;
-		}
-	}
-
 	@Override
-	protected void runTest() throws Throwable
-	{
-		try
-		{
+	protected void runTest() throws Throwable {
+		try {
 			super.runTest();
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			BuckminsterException.deeplyPrint(e, System.err, true);
 			throw e;
 		}
-	}
-
-	@Override
-	public void setUp() throws Exception
-	{
-		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
-		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
 	}
 }

@@ -19,12 +19,10 @@ import org.eclipse.buckminster.sax.Utils;
  * @author Thomas Hallgren
  * 
  */
-public class CSpecParserTest extends AbstractTestCase
-{
-	public void testParser() throws Exception
-	{
+public class CSpecParserTest extends AbstractTestCase {
+	public void testParser() throws Exception {
 		IParser<CSpec> parser = this.getPlugin().getParserFactory().getCSpecParser(true);
-		InputStream input = getClass().getResourceAsStream("test.cspec"); //$NON-NLS-1$
+		InputStream input = getClass().getResourceAsStream("/testData/cspecs/test.cspec"); //$NON-NLS-1$
 		CSpec cspec = parser.parse("test.cspec", input); //$NON-NLS-1$
 		input.close();
 		Documentation doc = cspec.getDocumentation();
