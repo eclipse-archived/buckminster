@@ -549,7 +549,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 			Utils.addAttribute(attrs, ATTR_REMOTE_NAME, remoteName);
 		if (contentType != null)
 			Utils.addAttribute(attrs, ATTR_CONTENT_TYPE, contentType);
-		if (lastModified != 0L)
+		if (lastModified != -1L)
 			Utils.addAttribute(attrs, ATTR_LAST_MODIFIED, Long.toString(lastModified));
 		if (size != -1L)
 			Utils.addAttribute(attrs, ATTR_SIZE, Long.toString(size));

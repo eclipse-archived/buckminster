@@ -87,6 +87,8 @@ public class Messages extends NLS {
 
 	public static String SetMutable;
 
+	public static String Too_few_arguments;
+
 	public static String Too_many_arguments;
 
 	public static String Circular_component_dependency_detected_Chain_is_0;

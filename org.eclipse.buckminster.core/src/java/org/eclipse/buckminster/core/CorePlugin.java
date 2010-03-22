@@ -530,10 +530,13 @@ public class CorePlugin extends LogAwarePlugin {
 		{
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
+				IExtensionRegistry exReg = Platform.getExtensionRegistry();
+				if (exReg == null)
+					return Status.OK_STATUS; // We died before we got the chance
+
 				MetadataSynchronizer.setUp();
 				MaterializationJob.setUp();
-
-				IConfigurationElement[] forcedActivations = Platform.getExtensionRegistry().getConfigurationElementsFor(FORCED_ACTIVATIONS_POINT);
+				IConfigurationElement[] forcedActivations = exReg.getConfigurationElementsFor(FORCED_ACTIVATIONS_POINT);
 				monitor.beginTask(null, forcedActivations.length);
 				for (IConfigurationElement elem : forcedActivations) {
 					String pluginId = elem.getAttribute("pluginId"); //$NON-NLS-1$

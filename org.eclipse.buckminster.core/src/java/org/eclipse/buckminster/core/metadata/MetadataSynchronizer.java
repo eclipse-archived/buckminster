@@ -338,6 +338,9 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 
 	public static void setUp() {
 		IExtensionRegistry exReg = Platform.getExtensionRegistry();
+		if (exReg == null)
+			return; // We died before we got the chance
+
 		IConfigurationElement[] elems = exReg.getConfigurationElementsFor(CorePlugin.COMPONENT_TYPE_POINT);
 
 		// The extension file can exist in every project but we use Buckminster

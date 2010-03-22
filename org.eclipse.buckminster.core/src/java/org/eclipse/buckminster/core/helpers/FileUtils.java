@@ -525,7 +525,16 @@ public abstract class FileUtils {
 			return null;
 
 		String proto = url.getProtocol();
-		if (proto == null || "file".equalsIgnoreCase(proto)) //$NON-NLS-1$
+		if (proto == null)
+			proto = "file"; //$NON-NLS-1$
+		else {
+			try {
+				url = FileLocator.resolve(url);
+			} catch (IOException e1) {
+			}
+		}
+
+		if ("file".equalsIgnoreCase(proto)) //$NON-NLS-1$
 		{
 			try {
 				return new File(url.toURI());
