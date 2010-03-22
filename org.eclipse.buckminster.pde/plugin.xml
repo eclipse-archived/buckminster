@@ -145,6 +145,11 @@
           description="Sets the active Target Platform Definition"
           name="targetDefinition">
     </prefmapping>
+    <prefmapping
+          class="org.eclipse.buckminster.pde.prefs.BaselineHandler"
+          description="Sets the active API Baseline"
+          name="baseline">
+    </prefmapping>
  </extension>
  <extension
        point="org.eclipse.buckminster.core.targetPlatformProviders">
@@ -165,6 +170,24 @@
  </extension>
  <extension
        point="org.eclipse.buckminster.cmdline.commands">
+    <command
+          addhelpflags="true"
+          class="org.eclipse.buckminster.pde.commands.AddBaseline"
+          name="org.eclipse.buckminster.pde.addbaseline"
+          status="NORMAL">
+       <alias
+             name="addbaseline">
+       </alias>
+    </command>
+    <command
+          addhelpflags="true"
+          class="org.eclipse.buckminster.pde.commands.ListBaselines"
+          name="org.eclipse.buckminster.pde.listbaselines"
+          status="NORMAL">
+       <alias
+             name="lsbaselines">
+       </alias>
+    </command>
     <command
           addhelpflags="true"
           class="org.eclipse.buckminster.pde.commands.ListTargetDefinitions"

@@ -146,6 +146,12 @@ public class Messages extends NLS {
 
 	public static String rootAdviceForConfig_0_in_1_at_2_does_not_appoint_existing_artifacts;
 
+	public static String Baseline_already_exists_0;
+
+	public static String Found_no_baseline_named_0;
+
+	public static String No_baselines_found_in_workspace;
+
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}

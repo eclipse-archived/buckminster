@@ -19,3 +19,4 @@ Require-Bundle: org.eclipse.buckminster.core;bundle-version="1.2.360",
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5
+Export-Package: org.eclipse.buckminster.cvspkg.internal;x-friends:="org.eclipse.buckminster.cvs.test"

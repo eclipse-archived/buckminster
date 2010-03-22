@@ -32,7 +32,8 @@ Require-Bundle: org.eclipse.buckminster.jdt;bundle-version="1.0.0",
  org.eclipse.equinox.p2.metadata;bundle-version="2.0.0",
  org.eclipse.equinox.p2.updatesite;bundle-version="1.0.200",
  org.eclipse.equinox.frameworkadmin;bundle-version="1.0.200",
- org.eclipse.equinox.p2.core;bundle-version="2.0.0"
+ org.eclipse.equinox.p2.core;bundle-version="2.0.0",
+ org.eclipse.pde.api.tools;bundle-version="1.0.201"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5
@@ -41,5 +42,7 @@ Export-Package: org.eclipse.buckminster.pde,
  org.eclipse.buckminster.pde.cspecgen,
  org.eclipse.buckminster.pde.cspecgen.bundle,
  org.eclipse.buckminster.pde.cspecgen.feature,
+ org.eclipse.buckminster.pde.internal;x-friends:="org.eclipse.buckminster.pde.test",
  org.eclipse.buckminster.pde.mapfile,
- org.eclipse.buckminster.pde.mapprovider
+ org.eclipse.buckminster.pde.mapprovider,
+ org.eclipse.buckminster.pde.tasks;x-friends:="org.eclipse.buckminster.pde.test"

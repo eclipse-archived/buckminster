@@ -1,13 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2006
- * Thomas Hallgren, Kenneth Olwing, Mitch Sonies
- * Pontus Rydin, Nils Unden, Peer Torngren
+/*****************************************************************************
+ * Copyright (c) 2008-2010, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
- * licensed under the Eclipse Public License - v 1.0 by the individual
- * copyright holders listed above, as Initial Contributors under such license.
- * The text of such license is available at www.eclipse.org.
- *******************************************************************************/
-
+ * licensed under the Eclipse Public License - v 1.0 by the copyright holder
+ * listed above, as the Initial Contributor under such license. The text of
+ * such license is available at www.eclipse.org.
+ *****************************************************************************/
 package org.eclipse.buckminster.pde.commands;
 
 import java.net.URI;
@@ -75,6 +72,8 @@ public class ImportTargetDefinition extends WorkspaceCommand {
 	protected void handleUnparsed(String[] unparsed) throws Exception {
 		if (unparsed.length > 1)
 			throw new SimpleErrorExitException(Messages.Too_many_arguments);
+		if (unparsed.length < 1)
+			throw new SimpleErrorExitException(Messages.Too_few_arguments);
 		setTargetPath(unparsed[0]);
 	}
 
@@ -88,8 +87,7 @@ public class ImportTargetDefinition extends WorkspaceCommand {
 		URI uri = URLUtils.normalizeToURI(targetPath, false);
 
 		ITargetHandle handle = null;
-		if ("file".equalsIgnoreCase(uri.getScheme())) //$NON-NLS-1$
-		{
+		if ("file".equalsIgnoreCase(uri.getScheme())) { //$NON-NLS-1$
 			IPath path = Path.fromPortableString(uri.getPath());
 			if (path.segmentCount() > 1) {
 				IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(path.removeLastSegments(1));

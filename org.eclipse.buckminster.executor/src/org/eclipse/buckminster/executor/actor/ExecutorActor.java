@@ -57,8 +57,7 @@ public class ExecutorActor extends AbstractActor {
 	 * @param env
 	 * @return
 	 */
-	@SuppressWarnings("boxing")
-	static String[] splitEnvironnementVariables(final String env) {
+	public static String[] splitEnvironnementVariables(final String env) {
 		final List<Integer> semicolonIndexes = indexesOf(env, ';');
 		final List<Integer> quoteIndexes = indexesOf(env, '\"');
 		if (quoteIndexes.size() % 2 != 0)
@@ -66,11 +65,11 @@ public class ExecutorActor extends AbstractActor {
 		// removing semicolon indexes between quote indexes
 		final Iterator<Integer> quoteItr = quoteIndexes.iterator();
 		while (quoteItr.hasNext()) {
-			int min = quoteItr.next();
-			int max = quoteItr.next();
+			int min = quoteItr.next().intValue();
+			int max = quoteItr.next().intValue();
 			Iterator<Integer> semicolonItr = semicolonIndexes.iterator();
 			while (semicolonItr.hasNext()) {
-				int i = semicolonItr.next();
+				int i = semicolonItr.next().intValue();
 				if (i > min && i < max)
 					semicolonItr.remove();
 			}
@@ -93,13 +92,12 @@ public class ExecutorActor extends AbstractActor {
 	 * @param c
 	 * @return
 	 */
-	@SuppressWarnings("boxing")
 	private static List<Integer> indexesOf(String string, char c) {
 		final List<Integer> list = new ArrayList<Integer>();
 		int fromIndex = 0;
 		int index;
 		while ((index = string.indexOf(c, fromIndex)) != -1) {
-			list.add(index);
+			list.add(new Integer(index));
 			fromIndex = index + 1;
 		}
 		return list;
