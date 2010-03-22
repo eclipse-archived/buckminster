@@ -190,7 +190,7 @@
 		</buckminster>
 	</target>
 
-	<target name="eclipse.build" depends="init.build.properties"><!-- depends="clean.workspace,clean.output,clean.tp,provision"> -->
+	<target name="eclipse.build" depends="clean.workspace,clean.output,clean.tp,provision">
 		<echo message="Invoking all eclipse builders on workspace ${workspace}" />
 		<buckminster command="build" />
 	</target>
