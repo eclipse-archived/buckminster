@@ -45,7 +45,7 @@ public class RMapTest extends PDETestCase
 
 		IResolver resolver = new MainResolver(new ResolutionContext(query));
 		BillOfMaterials bom = resolver.resolve(new NullProgressMonitor());
-		assertTrue("Resolve failed", bom.isFullyResolved()); //$NON-NLS-1$
+		assertTrue("Resolve failed", bom.isFullyResolved(resolver.getContext())); //$NON-NLS-1$
 		Utils.serialize(bom.getResolution(), System.out);
 	}
 }

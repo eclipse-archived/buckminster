@@ -1,10 +1,10 @@
 package org.eclipse.buckminster.jarprocessor.test;
 
-import org.eclipse.buckminster.runtime.Buckminster;
-import org.eclipse.buckminster.runtime.Logger;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.Logger;
 
 public class AllTests {
 

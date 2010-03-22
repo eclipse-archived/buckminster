@@ -188,10 +188,28 @@
 		</buckminster>
 	</target>
 
-	<target name="site.p2" depends="init.build.properties"> <!-- depends="clean.workspace,clean.output,clean.tp,provision"> -->
-		<echo message="Building all projects in workspace ${workspace}" />
+	<target name="eclipse.build" depends="clean.workspace,clean.output,clean.tp,provision">
+		<echo message="Invoking all eclipse builders on workspace ${workspace}" />
 		<buckminster command="build" />
+	</target>
 
+	<target name="test" depends="eclipse.build">
+		<echo message="Running JUnit tests" />
+		<buckminster command="emma">
+			<cmdargs>
+				<arg value="-l" />
+				<arg value="org.eclipse.buckminster.releng.tests/AllTests.launch" />
+				<arg value="-o" />
+				<arg value="${result}/testReport.xml" />
+				<arg value="--terseXML" />
+				<arg value="--flatXML" />
+				<arg value="--xml" />
+				<arg value="${result}/coverageReport.xml" />
+			</cmdargs>
+		</buckminster>
+	</target>
+
+	<target name="site.p2" depends="eclipse.build">
 		<echo message="Performing org.eclipse.buckminster.site.eclipse#site.p2" />
 		<buckminster command="perform">
 			<cmdargs>
@@ -200,10 +218,7 @@
 		</buckminster>
 	</target>
 
-	<target name="promote.sites" depends="clean.workspace,clean.output,clean.tp,provision">
-		<echo message="Building all projects in workspace ${workspace}" />
-		<buckminster command="build" />
-
+	<target name="promote.sites" depends="test">
 		<echo message="Performing org.eclipse.buckminster.releng#promote" />
 		<buckminster command="perform">
 			<cmdargs>

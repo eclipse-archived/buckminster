@@ -9,6 +9,7 @@
 package org.eclipse.buckminster.download.test;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -29,8 +30,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class TestCache extends TestCase
 {
-	private static final String zipFile = "http://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops/R-3.3.2-200802211800/eclipse-examples-3.3.2-win32.zip&r=1";
-	private static final String zipDigest = "http://download.eclipse.org/eclipse/downloads/drops/R-3.3.2-200802211800/checksum/eclipse-examples-3.3.2-win32.zip.md5";
+	private static final String zipFile = "http://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops/R-3.5.2-201002111343/eclipse-examples-3.5.2-win32.zip&r=1";
+	private static final String zipDigest = "http://download.eclipse.org/eclipse/downloads/drops/R-3.5.2-201002111343/checksum/eclipse-examples-3.5.2-win32.zip.md5";
 
 	private final File m_cacheFolder;
 	private final IProgressMonitor m_monitor = new PrintingMonitor();
@@ -41,11 +42,17 @@ public class TestCache extends TestCase
 		m_cacheFolder = cacheFolder;
 	}
 
-	public static Test suite() throws Exception
+	public static Test suite()
 	{
 		// Create a temporary space to be used for all tests
 		//
-		final File cacheFolder = File.createTempFile("cache-", ".test");
+		final File cacheFolder;
+		try {
+			cacheFolder = File.createTempFile("cache-", ".test");
+		} catch (IOException e) {
+			fail(e.getMessage());
+			return null;
+		}
 		cacheFolder.delete();
 
 		TestSuite suite = new TestSuite()
@@ -66,11 +73,11 @@ public class TestCache extends TestCase
 	{
 		ICache c = new CacheImpl(m_cacheFolder);
 		URL url = new URL("http://www.eclipse.org/buckminster/downloads.html");
-		InputStream input = c.open(url, null, null, m_monitor);
+		InputStream input = c.open(url, null, null, null, m_monitor);
 		IOUtils.copy(input, NullOutputStream.INSTANCE, null);
 		input.close();
 
-		assertTrue("Not up to date when expected", c.isUpToDate(url, null, m_monitor));
+		assertTrue("Not up to date when expected", c.isUpToDate(url, null, null, m_monitor));
 	}
 
 	public void testDigestCache() throws Exception
@@ -79,11 +86,11 @@ public class TestCache extends TestCase
 
 		URL url = new URL(zipFile);
 		URL digestURL = new URL(zipDigest);
-		InputStream input = c.open(url, digestURL, "MD5", null, m_monitor);
+		InputStream input = c.open(url, digestURL, null, "MD5", null, m_monitor);
 		IOUtils.copy(input, NullOutputStream.INSTANCE, null);
 		input.close();
 
-		assertTrue("Not up to date when expected", c.isUpToDate(url, digestURL, "MD5", m_monitor));
+		assertTrue("Not up to date when expected", c.isUpToDate(url, digestURL, null, "MD5", m_monitor));
 	}
 
 	static void delete(File file)

@@ -6,6 +6,7 @@
         <cs:dependency name="org.eclipse.buckminster.site.external" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.equinox.executable" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.rcp" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.tests" componentType="osgi.bundle"/>
     </cs:dependencies>
     <cs:actions>
         <cs:public name="clear.site.eclipse" actor="ant" always="true">

@@ -12,12 +12,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 
+import junit.framework.TestCase;
+
 import org.eclipse.buckminster.pde.mapfile.MapFile;
 import org.eclipse.buckminster.pde.mapfile.MapFileEntry;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
-
-import junit.framework.TestCase;
 
 /**
  * @author Thomas Hallgren
@@ -35,13 +35,13 @@ public class MapFileTest extends TestCase
 	public void testMap() throws Exception
 	{
 		ArrayList<MapFileEntry> bld = new ArrayList<MapFileEntry>();
-		URL url = new URL("http://download.eclipse.org/tools/orbit/downloads/drops/S20080209163815/directory.txt"); //$NON-NLS-1$
+		URL url = new URL("http://download.eclipse.org/tools/orbit/downloads/drops/R20100114021427/directory.txt"); //$NON-NLS-1$
 		InputStream input = url.openStream();
 		MapFile.parse(input, url.toString(), bld);
 		input.close();
 
 		url = new URL(
-				"http://download.eclipse.org/tools/orbit/downloads/drops/S20080209163815/orbitBundles-S20080209163815.map"); //$NON-NLS-1$
+				"http://download.eclipse.org/tools/orbit/downloads/drops/R20100114021427/orbitBundles-R20100114021427.map"); //$NON-NLS-1$
 		input = url.openStream();
 		MapFile.parse(input, url.toString(), bld);
 		input.close();

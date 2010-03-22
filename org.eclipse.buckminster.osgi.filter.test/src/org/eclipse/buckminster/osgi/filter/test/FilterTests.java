@@ -19,16 +19,15 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Vector;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.osgi.framework.Bundle;
-import org.eclipse.buckminster.osgi.filter.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
@@ -37,11 +36,11 @@ public class FilterTests extends TestCase
 {
 	private static class DictionaryServiceReference implements ServiceReference
 	{
-		private final Map dictionary;
+		private final Map<String, Object> dictionary;
 
 		private final String[] keys;
 
-		DictionaryServiceReference(Map dictionary)
+		DictionaryServiceReference(Map<String, Object> dictionary)
 		{
 			if(dictionary == null)
 			{
@@ -50,24 +49,20 @@ public class FilterTests extends TestCase
 				return;
 			}
 			this.dictionary = dictionary;
-			List keyList = new ArrayList(dictionary.size());
-			for(Iterator e = dictionary.keySet().iterator(); e.hasNext();)
+			List<String> keyList = new ArrayList<String>(dictionary.size());
+			for(Iterator<String> e = dictionary.keySet().iterator(); e.hasNext();)
 			{
-				Object k = e.next();
-				if(k instanceof String)
-				{
-					String key = (String)k;
-					for(Iterator i = keyList.iterator(); i.hasNext();)
+					String key = e.next();
+					for(Iterator<String> i = keyList.iterator(); i.hasNext();)
 					{
-						if(key.equalsIgnoreCase((String)i.next()))
+						if(key.equalsIgnoreCase(i.next()))
 						{
 							throw new IllegalArgumentException();
 						}
 					}
 					keyList.add(key);
-				}
 			}
-			this.keys = (String[])keyList.toArray(new String[keyList.size()]);
+			this.keys = keyList.toArray(new String[keyList.size()]);
 		}
 
 		public int compareTo(Object reference)
@@ -109,7 +104,7 @@ public class FilterTests extends TestCase
 		}
 	}
 
-	private static class SampleComparable implements Comparable
+	private static class SampleComparable implements Comparable<SampleComparable>
 	{
 		private int value = -1;
 
@@ -118,9 +113,9 @@ public class FilterTests extends TestCase
 			this.value = Integer.parseInt(value);
 		}
 
-		public int compareTo(Object o)
+		public int compareTo(SampleComparable o)
 		{
-			return value - ((SampleComparable)o).value;
+			return value - o.value;
 		}
 
 		@Override
@@ -166,7 +161,7 @@ public class FilterTests extends TestCase
 		{
 			fail("invalid syntax" + e); //$NON-NLS-1$
 		}
-		hash = new Hashtable();
+		hash = new Hashtable<String, Object>();
 
 		comp = new SampleComparable("42"); //$NON-NLS-1$
 		hash.put("comparable", comp); //$NON-NLS-1$
@@ -183,11 +178,11 @@ public class FilterTests extends TestCase
 
 	public void testFilter()
 	{
-		Properties props = new Properties();
+		Dictionary<String,Object> props = new Hashtable<String, Object>();
 		props.put("room", "bedroom"); //$NON-NLS-1$ //$NON-NLS-2$
 		props.put("channel", new Object[] { new Integer(34), "101" }); //$NON-NLS-1$//$NON-NLS-2$
 		props.put("status", "(on\\)*"); //$NON-NLS-1$//$NON-NLS-2$
-		Vector vec = new Vector(10, 10);
+		Vector<Comparable<?>> vec = new Vector<Comparable<?>>(10, 10);
 		vec.addElement(new Long(150));
 		vec.addElement("100"); //$NON-NLS-1$
 		props.put("max record time", vec); //$NON-NLS-1$
@@ -198,7 +193,7 @@ public class FilterTests extends TestCase
 		props.put("doublevalue", new Double(2.01)); //$NON-NLS-1$
 		props.put("charvalue", new Character('A')); //$NON-NLS-1$
 		props.put("booleanvalue", new Boolean(false)); //$NON-NLS-1$
-		props.put("weirdvalue", new Hashtable()); //$NON-NLS-1$
+		props.put("weirdvalue", new Hashtable<String,String>()); //$NON-NLS-1$
 		props.put("PrimIntArrayValue", new int[] { 1, 2, 3 }); //$NON-NLS-1$
 		props.put("PrimLongArrayValue", new long[] { 1, 2, 3 }); //$NON-NLS-1$
 		props.put("PrimByteArrayValue", new byte[] { (byte)1, (byte)2, (byte)3 }); //$NON-NLS-1$
@@ -320,9 +315,9 @@ public class FilterTests extends TestCase
 
 	}
 
-	private void testFilter(String query, Dictionary props, int expect)
+	private void testFilter(String query, Dictionary<String,Object> props, int expect)
 	{
-		final ServiceReference ref = new DictionaryServiceReference((Map)props);
+		final ServiceReference ref = new DictionaryServiceReference((Map<String, Object>)props);
 		Filter f1;
 		try
 		{

@@ -3,12 +3,16 @@ package org.eclipse.buckminster.git.test;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Enumeration;
 
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 abstract class GitTestCase extends TestCase
 {
@@ -18,9 +22,18 @@ abstract class GitTestCase extends TestCase
 	protected File getTestData(String message, String entry) {
 		if (entry == null)
 			fail(message + " entry is null.");
-		URL base = Activator.getContext().getBundle().getEntry(entry);
-		if (base == null)
-			fail(message + " entry not found in bundle: " + entry);
+		Bundle gitBundle = Platform.getBundle("org.eclipse.buckminster.git.test");
+		if(gitBundle == null)
+			fail(message + "Unable to obtain bundle org.eclipse.buckminster.git.test");
+		IPath entryPath = Path.fromPortableString(entry);
+		if(entryPath.segmentCount() < 2)
+			fail(message + "Path '" + entry + "' has less then 2 segments");
+		String parent = entryPath.removeLastSegments(1).toPortableString();
+		String entryName = entryPath.lastSegment();
+		Enumeration<?> entries = gitBundle.findEntries(parent, entryName, false);
+		if(!entries.hasMoreElements())
+			fail(message + " entry '" + entry + "'not found in bundle org.eclipse.buckminster.git.test");
+		URL base = (URL)entries.nextElement();
 		try {
 			String osPath = new Path(FileLocator.toFileURL(base).getPath()).toOSString();
 			File result = new File(osPath);
@@ -36,6 +49,6 @@ abstract class GitTestCase extends TestCase
 
 	public ComponentQuery getComponentQuery() throws Exception {
 		File cquery = getTestData("Component Query", "testData/test.cquery");
-		return ComponentQuery.fromURL(cquery.toURL(), null, true);
+		return ComponentQuery.fromURL(cquery.toURI().toURL(), null, true);
 	}
 }

@@ -8,7 +8,7 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.cvspkg;
+package org.eclipse.buckminster.cvspkg.test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,6 +27,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -47,7 +48,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.equinox.internal.provisional.p2.core.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
@@ -73,13 +74,22 @@ public class CVSTest extends TestCase
 
 	private static String REPO_LOCATION = ":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.dash/org.eclipse.dash.siteassembler";
 
-	public static Test suite() throws Exception
+	public static Test suite()
 	{
 		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
 		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
-		CVSSession session = new CVSSession(REPO_LOCATION);
-
 		TestSuite suite = new TestSuite();
+		CVSSession session;
+		try
+		{
+			session = new CVSSession(REPO_LOCATION);
+		}
+		catch(CoreException e)
+		{
+			fail(e.getMessage());
+			return suite;
+		}
+
 		suite.addTest(new CVSTest("testRepositories", session));
 		suite.addTest(new CVSTest("testGetFile", session));
 		suite.addTest(new CVSTest("testCheckOut", session));
@@ -173,15 +183,15 @@ public class CVSTest extends TestCase
 		VersionConverterDesc vd = new VersionConverterDesc("tag", null, new BidirectionalTransformer[] {
 				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"), "$1.$2.$3.$4",
 						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3$4"),
-				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"), "$1.$2.0.$3", Pattern
-						.compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3"),
-				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3", Pattern
-						.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
+				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"), "$1.$2.0.$3",
+						Pattern.compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3"),
+				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3",
+						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
 
 		IComponentType unknown = plugin.getComponentType(IComponentType.UNKNOWN);
 		Provider provider = new Provider(null, rd.getId(), new String[] { unknown.getId() }, vd, new Format(
 				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null,
-				false, false, null, null);
+				BMProperties.getSystemProperties(), null, null);
 		ComponentQueryBuilder cq = new ComponentQueryBuilder();
 		ComponentRequestBuilder rqBld = cq.getRootRequestBuilder();
 		rqBld.setName("pgsql");
@@ -212,12 +222,10 @@ public class CVSTest extends TestCase
 		try
 		{
 			CVSTag tag = CVSTag.DEFAULT;
-			IPath parentPath = Path.fromPortableString(m_session.getModuleName())
-					.append(filePath.removeLastSegments(1));
+			IPath parentPath = Path.fromPortableString(m_session.getModuleName()).append(filePath.removeLastSegments(1));
 			CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation)m_session.getLocation();
 			RemoteFolder folder = new RemoteFolder(null, cvsLocation, parentPath.toPortableString(), tag);
-			folder = UpdateContentCachingService
-					.buildRemoteTree(cvsLocation, folder, tag, IResource.DEPTH_ONE, nullMon);
+			folder = UpdateContentCachingService.buildRemoteTree(cvsLocation, folder, tag, IResource.DEPTH_ONE, nullMon);
 
 			ICVSResource cvsFile;
 			try

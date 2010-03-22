@@ -35,7 +35,7 @@ public class TestFileTransfer extends TestCase
 		super(methodName);
 	}
 
-	public static Test suite() throws Exception
+	public static Test suite()
 	{
 		TestSuite suite = new TestSuite();
 		suite.addTest(new TestFileTransfer("testFileInfo"));
@@ -46,7 +46,7 @@ public class TestFileTransfer extends TestCase
 
 	public void testFileInfo() throws Exception
 	{
-		FileReader x = new FileReader();
+		FileReader x = new FileReader(null);
 		checkFileInfo(x.readInfo(new URL(testURL)));
 	}
 
@@ -58,7 +58,7 @@ public class TestFileTransfer extends TestCase
 			OutputStream out = new FileOutputStream(temp);
 			temp.deleteOnExit();
 
-			FileReader x = new FileReader();
+			FileReader x = new FileReader(null);
 			x.readInto(new URL(testURL), out, new PrintingMonitor());
 			out.close();
 			assertTrue("File is empty", temp.length() > 0);
@@ -78,7 +78,7 @@ public class TestFileTransfer extends TestCase
 			OutputStream out = new FileOutputStream(temp);
 			temp.deleteOnExit();
 
-			FileReader x = new FileReader();
+			FileReader x = new FileReader(null);
 			InputStream in = x.read(new URL(testURL));
 			IOUtils.copy(in, out, null);
 			out.close();
@@ -93,7 +93,7 @@ public class TestFileTransfer extends TestCase
 
 	private static void checkFileInfo(IFileInfo fileInfo)
 	{
-		assertTrue("Missing file name", fileInfo.getName() != null);
+		assertTrue("Missing file name", fileInfo.getRemoteName() != null);
 		assertTrue("Missing last modified", fileInfo.getLastModified() != 0L);
 		assertTrue("Missing size", fileInfo.getSize() > 0L);
 	}
