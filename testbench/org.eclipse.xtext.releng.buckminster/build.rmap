@@ -8,6 +8,7 @@
 	<rm:property key="build.type" mutable="true" value="N"/>
 
 	<rm:locator pattern="^org\.eclipse\.xtext\.releng\.buckminster$" searchPathRef="xtext.releng"/>
+	<rm:locator pattern="^org\.eclipse\.xtext\.site$" searchPathRef="xtext.releng"/>
 	<rm:locator pattern="^org\.eclipse\.xtext\.xtext\.ui\.examples$" searchPathRef="xtext.xtext.ui.examples"/>
 	<rm:locator pattern="^org\.eclipse\.xtext(\..+)?\.example.*$" searchPathRef="xtext.examples"/>
 	<rm:locator pattern="^org\.eclipse\.xtext(\..+)?\.tests$" searchPathRef="xtext.tests"/>
