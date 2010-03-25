@@ -50,7 +50,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable {
 
 	TopLevelAttribute(String name) {
 		super(name);
-		publ = false;
+		publ = true;
 	}
 
 	TopLevelAttribute(TopLevelAttributeBuilder builder) {
