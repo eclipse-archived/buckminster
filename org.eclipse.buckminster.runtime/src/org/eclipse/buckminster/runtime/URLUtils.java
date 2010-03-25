@@ -288,7 +288,8 @@ public abstract class URLUtils {
 			// (one '=' is required to be there, even if the value is blank)
 			//
 			String[] kv = pairs[top].split("=", 2); //$NON-NLS-1$
-			p.put(kv[0], kv[1]);
+			if (kv.length == 2)
+				p.put(kv[0], kv[1]);
 		}
 		return p;
 	}
