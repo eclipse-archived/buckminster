@@ -97,11 +97,21 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 				}
 			}
 		}
-		if (candidate == null)
-			//
-			// Nothing found that can replace the version
-			//
-			candidate = version;
+		if (candidate == null) {
+			String idWithoutSource = null;
+			if (refId.endsWith(".source")) //$NON-NLS-1$
+				idWithoutSource = refId.substring(0, refId.length() - 7);
+			else if (refId.endsWith(".source.feature")) //$NON-NLS-1$
+				idWithoutSource = refId.substring(0, refId.length() - 15) + ".feature"; //$NON-NLS-1$
+			if (idWithoutSource != null)
+				candidate = findBestVersion(versionMap, id, componentType, idWithoutSource, vstr);
+
+			if (candidate == null)
+				//
+				// Nothing found that can replace the version
+				//
+				candidate = version;
+		}
 
 		return candidate;
 	}

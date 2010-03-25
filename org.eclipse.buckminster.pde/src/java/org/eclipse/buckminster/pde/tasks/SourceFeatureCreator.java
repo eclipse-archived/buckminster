@@ -94,6 +94,7 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 				fc.setWS(feature.getWS());
 				fc.setNL(feature.getNL());
 				fc.setLabel(feature.getLabel());
+				fc.setVersion(feature.getVersion());
 
 				sourceFeature.addIncludedFeatures(new IFeatureChild[] { fc });
 				continue;
@@ -119,6 +120,7 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 				fp.loadFrom(plugin);
 				fp.setModel(featureModel);
 				fp.setUnpack(false);
+				fp.setVersion(plugin.getVersion());
 
 				// Load arch etc. from corresponding original plug-in (if we
 				// find it)
