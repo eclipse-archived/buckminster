@@ -38,6 +38,9 @@ import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
 @SuppressWarnings("restriction")
 public abstract class CSpecFromFeature extends CSpecGenerator {
+	private static final String SOURCE_SUFFIX_1 = ".source"; //$NON-NLS-1$
+	private static final String SOURCE_SUFFIX_2 = ".source.feature"; //$NON-NLS-1$
+
 	private static boolean isListOK(String list, Object item) {
 		if (list == null || list.length() == 0)
 			return true;
@@ -170,7 +173,6 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		GroupBuilder featureRefs = cspec.getRequiredGroup(ATTRIBUTE_FEATURE_REFS);
 		GroupBuilder featureSourceRefs = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_FEATURE_REFS);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
-		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		for (IFeatureChild includedFeature : features) {
 			ComponentRequestBuilder dep = createDependency(includedFeature);
@@ -178,12 +180,24 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 				continue;
 
 			cspec.addDependency(dep);
-			featureRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_JARS);
+			boolean isSource = dep.getName().endsWith(SOURCE_SUFFIX_1) || dep.getName().endsWith(SOURCE_SUFFIX_2);
+			if (!isSource) {
+				featureRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_JARS);
+				bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_JARS);
+				fullClean.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FULL_CLEAN);
+				productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+			}
+
+			if (isSource) {
+				// Watch out for source for self
+				//
+				if (dep.getName().startsWith(cspec.getName())) {
+					if (dep.getName().equals(cspec.getName() + SOURCE_SUFFIX_1) || dep.getName().equals(cspec.getName() + SOURCE_SUFFIX_2)) {
+						continue;
+					}
+				}
+			}
 			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_FEATURE_JARS);
-			bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_JARS);
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
-			fullClean.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FULL_CLEAN);
-			productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		}
 	}
 

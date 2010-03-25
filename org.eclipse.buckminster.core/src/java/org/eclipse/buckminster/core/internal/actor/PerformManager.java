@@ -62,6 +62,8 @@ public class PerformManager implements IPerformManager {
 	abstract class ActionInvocation {
 		abstract IStatus execute(GlobalContext globalCtx, IProgressMonitor monitor) throws CoreException;
 
+		abstract Action getAction();
+
 		abstract void toString(StringBuilder bld);
 	}
 
@@ -89,6 +91,11 @@ public class PerformManager implements IPerformManager {
 				return Status.OK_STATUS;
 
 			return internalPerform(Collections.singletonList(attr), globalCtx, monitor);
+		}
+
+		@Override
+		Action getAction() {
+			return null;
 		}
 
 		@Override
@@ -144,6 +151,7 @@ public class PerformManager implements IPerformManager {
 			return status;
 		}
 
+		@Override
 		final Action getAction() {
 			return action;
 		}
@@ -374,8 +382,22 @@ public class PerformManager implements IPerformManager {
 				// Add the attribute that represents the generated component
 				//
 				Attribute ag = generatorCSpec.getAttribute(actionGenerator.getAttribute());
-				addAttributeChildren(ctx, ag, seen, ordered, actionGenerator);
-				ordered.add(new DeferredActionInvocation(cspec, preq));
+				if (seen.contains(ag.toString())) {
+					// Make sure it was added as a generator
+					//
+					int top = ordered.size();
+					for (int idx = 0; idx < top; ++idx) {
+						ActionInvocation ai = ordered.get(idx);
+						if (ai.getAction() == ag && !(ai instanceof GeneratorInvocation)) {
+							ordered.set(idx, new GeneratorInvocation(actionGenerator, ai.getAction()));
+							ordered.add(new DeferredActionInvocation(cspec, preq));
+							break;
+						}
+					}
+				} else {
+					addAttributeChildren(ctx, ag, seen, ordered, actionGenerator);
+					ordered.add(new DeferredActionInvocation(cspec, preq));
+				}
 			}
 		}
 

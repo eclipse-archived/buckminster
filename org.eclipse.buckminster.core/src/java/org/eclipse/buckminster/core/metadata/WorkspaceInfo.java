@@ -459,7 +459,7 @@ public class WorkspaceInfo {
 
 		if (candidate == null) {
 			if (fromResolver)
-				throw new MissingComponentException(request.toString());
+				return null;
 
 			try {
 				candidate = resolveLocal(request, true);

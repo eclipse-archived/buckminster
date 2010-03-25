@@ -271,6 +271,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		boolean isSilent = query.getResolutionContext().isSilentStatus();
 		Logger log = Buckminster.getLogger();
 		ComponentRequest request = query.getComponentRequest();
+
 		IProject existingProject = null;
 		if (query.useMaterialization() || query.useWorkspace()) {
 			if (!isSilent)
@@ -359,6 +360,10 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 					Messages.workspace_disable_in_query);
 
 		if (query.useTargetPlatform()) {
+			Resolution res = WorkspaceInfo.getResolution(request, true);
+			if (res != null)
+				return new ResolvedNode(query, res);
+
 			if (!isSilent)
 				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "target"); //$NON-NLS-1$
 			// Generate the resolution from the target platform
@@ -387,7 +392,7 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 						MonitorUtils.subMonitor(monitor, 10));
 				IOUtils.close(reader[0]);
 
-				Resolution res = node.getResolution();
+				res = node.getResolution();
 				Filter[] failingFilter = new Filter[1];
 				if (res.isFilterMatchFor(query, failingFilter)) {
 					if (!isSilent)
