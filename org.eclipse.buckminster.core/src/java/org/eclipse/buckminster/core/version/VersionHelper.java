@@ -359,6 +359,11 @@ public class VersionHelper {
 			return v;
 
 		int lenWOQ = vs.length() - (q.length() + 1);
+		if (lenWOQ <= 0)
+			// Will happen if the version has one segment only. In that case
+			// we don't consider it to have a qualifier
+			return v;
+
 		char sep = vs.charAt(lenWOQ);
 		vs = vs.substring(0, lenWOQ);
 		if (qualifier != null && qualifier.length() > 0)
