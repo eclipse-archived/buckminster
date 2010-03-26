@@ -173,6 +173,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		GroupBuilder featureRefs = cspec.getRequiredGroup(ATTRIBUTE_FEATURE_REFS);
 		GroupBuilder featureSourceRefs = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_FEATURE_REFS);
 		GroupBuilder bundleJars = cspec.getRequiredGroup(ATTRIBUTE_BUNDLE_JARS);
+		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		for (IFeatureChild includedFeature : features) {
 			ComponentRequestBuilder dep = createDependency(includedFeature);
@@ -197,6 +198,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 					}
 				}
 			}
+			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
 			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_FEATURE_JARS);
 		}
 	}
