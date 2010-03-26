@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.buckminster.download.internal.CacheImpl;
@@ -72,10 +73,14 @@ public class DownloadManager {
 	public static InputStream read(URL url, IConnectContext cctx) throws CoreException, FileNotFoundException {
 		try {
 			url = FileLocator.toFileURL(url);
-			if ("file".equalsIgnoreCase(url.getProtocol())) //$NON-NLS-1$
-				return new FileInputStream(url.getPath());
+			if ("file".equalsIgnoreCase(url.getProtocol())) { //$NON-NLS-1$
+				File file = new File(url.toURI());
+				return new FileInputStream(file);
+			}
 		} catch (FileNotFoundException e) {
 			throw e;
+		} catch (URISyntaxException e) {
+			throw BuckminsterException.wrap(e);
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
@@ -94,7 +99,7 @@ public class DownloadManager {
 		try {
 			url = FileLocator.toFileURL(url);
 			if ("file".equalsIgnoreCase(url.getProtocol())) { //$NON-NLS-1$
-				File file = new File(url.getPath());
+				File file = new File(url.toURI());
 				InputStream input = null;
 				try {
 					input = new FileInputStream(file);
@@ -106,6 +111,8 @@ public class DownloadManager {
 			}
 		} catch (FileNotFoundException e) {
 			throw e;
+		} catch (URISyntaxException e) {
+			throw BuckminsterException.wrap(e);
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
