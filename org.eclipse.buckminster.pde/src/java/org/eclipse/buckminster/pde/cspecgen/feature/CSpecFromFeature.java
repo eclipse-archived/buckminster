@@ -38,8 +38,13 @@ import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
 @SuppressWarnings("restriction")
 public abstract class CSpecFromFeature extends CSpecGenerator {
-	private static final String SOURCE_SUFFIX_1 = ".source"; //$NON-NLS-1$
-	private static final String SOURCE_SUFFIX_2 = ".source.feature"; //$NON-NLS-1$
+	private static String getIdWithoutSource(String sourceId) {
+		if (sourceId.endsWith(".source")) //$NON-NLS-1$
+			return sourceId.substring(0, sourceId.length() - 7);
+		if (sourceId.endsWith(".source.feature")) //$NON-NLS-1$
+			return sourceId.substring(0, sourceId.length() - 15) + ".feature"; //$NON-NLS-1$
+		return null;
+	}
 
 	private static boolean isListOK(String list, Object item) {
 		if (list == null || list.length() == 0)
@@ -181,21 +186,17 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 				continue;
 
 			cspec.addDependency(dep);
-			boolean isSource = dep.getName().endsWith(SOURCE_SUFFIX_1) || dep.getName().endsWith(SOURCE_SUFFIX_2);
-			if (!isSource) {
+			String idWithoutSource = getIdWithoutSource(dep.getName());
+			if (idWithoutSource == null) {
 				featureRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_JARS);
 				bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_JARS);
 				fullClean.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FULL_CLEAN);
 				productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
-			}
-
-			if (isSource) {
+			} else {
 				// Watch out for source for self
 				//
-				if (dep.getName().startsWith(cspec.getName())) {
-					if (dep.getName().equals(cspec.getName() + SOURCE_SUFFIX_1) || dep.getName().equals(cspec.getName() + SOURCE_SUFFIX_2)) {
-						continue;
-					}
+				if (idWithoutSource.equals(cspec.getName())) {
+					continue;
 				}
 			}
 			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
