@@ -14,6 +14,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -26,6 +28,7 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.osgi.util.NLS;
 
@@ -35,6 +38,35 @@ import org.eclipse.osgi.util.NLS;
  */
 public class DownloadManager {
 	private static ICache instance;
+
+	public static IConnectContext createConnectContext(URL[] urlHandle) throws CoreException {
+		URL url = urlHandle[0];
+		String userInfo = url.getUserInfo();
+		if (userInfo == null || userInfo.length() == 0)
+			return null;
+
+		IConnectContext cctx;
+		int colonIdx = userInfo.indexOf(':');
+		if (colonIdx >= 0) {
+			String password = userInfo.substring(colonIdx + 1);
+			if (colonIdx == 0)
+				cctx = ConnectContextFactory.createPasswordConnectContext(password);
+			else
+				cctx = ConnectContextFactory.createUsernamePasswordConnectContext(userInfo.substring(0, colonIdx), password);
+		} else
+			cctx = ConnectContextFactory.createUsernamePasswordConnectContext(userInfo, null);
+
+		try {
+			URI uri = url.toURI();
+			uri = new URI(uri.getScheme(), null, uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
+			urlHandle[0] = uri.toURL();
+		} catch (URISyntaxException e) {
+			throw BuckminsterException.wrap(e);
+		} catch (MalformedURLException e) {
+			throw BuckminsterException.wrap(e);
+		}
+		return cctx;
+	}
 
 	public static synchronized ICache getCache() throws CoreException {
 		if (instance != null)
@@ -85,11 +117,21 @@ public class DownloadManager {
 			throw BuckminsterException.wrap(e);
 		}
 
+		if (cctx == null) {
+			URL[] uh = new URL[] { url };
+			cctx = createConnectContext(uh);
+			url = uh[0];
+		}
 		FileReader reader = new FileReader(cctx);
 		return reader.read(url);
 	}
 
 	public static IFileInfo readInfo(URL url, IConnectContext cctx) throws CoreException, FileNotFoundException {
+		if (cctx == null) {
+			URL[] uh = new URL[] { url };
+			cctx = createConnectContext(uh);
+			url = uh[0];
+		}
 		FileReader reader = new FileReader(cctx);
 		return reader.readInfo(url);
 	}
@@ -117,6 +159,11 @@ public class DownloadManager {
 			throw BuckminsterException.wrap(e);
 		}
 
+		if (cctx == null) {
+			URL[] uh = new URL[] { url };
+			cctx = createConnectContext(uh);
+			url = uh[0];
+		}
 		FileReader reader = new FileReader(cctx);
 		reader.readInto(url, output, monitor);
 		return reader.getLastFileInfo();

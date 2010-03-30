@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.UUID;
 
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.download.ICache;
 import org.eclipse.buckminster.download.IFetchPolicy;
 import org.eclipse.buckminster.download.Messages;
@@ -69,6 +70,11 @@ public class CacheImpl implements ICache {
 		File localFile = asLocal(remoteFile);
 		if (localFile != null)
 			return new FileInfoBuilder(localFile);
+		if (cctx == null) {
+			URL[] uh = new URL[] { remoteFile };
+			cctx = DownloadManager.createConnectContext(uh);
+			remoteFile = uh[0];
+		}
 		FileReader reader = new FileReader(cctx);
 		return reader.readInfo(remoteFile);
 	}
@@ -100,12 +106,27 @@ public class CacheImpl implements ICache {
 	@Override
 	public boolean isUpToDate(URL remoteFile, IConnectContext cctx, String remoteName, IProgressMonitor monitor) throws CoreException,
 			FileNotFoundException {
+		if (cctx == null) {
+			URL[] uh = new URL[] { remoteFile };
+			cctx = DownloadManager.createConnectContext(uh);
+			remoteFile = uh[0];
+		}
 		return isUpToDate(new ArchivePolicy(this, cctx, remoteName), remoteFile, monitor);
 	}
 
 	@Override
 	public boolean isUpToDate(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException {
+		if (cctx == null) {
+			URL[] uh = new URL[] { remoteFile };
+			cctx = DownloadManager.createConnectContext(uh);
+			remoteFile = uh[0];
+
+			// Assume that the digest has the same credentials
+			uh[0] = remoteDigest;
+			DownloadManager.createConnectContext(uh);
+			remoteDigest = uh[0];
+		}
 		return isUpToDate(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile, monitor);
 	}
 
@@ -119,6 +140,10 @@ public class CacheImpl implements ICache {
 			return new FileInputStream(file);
 		}
 
+		URL[] uh = new URL[] { remoteFile };
+		DownloadManager.createConnectContext(uh);
+		remoteFile = uh[0];
+
 		String urlStr = remoteFile.toString().intern();
 		synchronized (urlStr) {
 			File localFile = new File(getSubFolder(remoteFile), getHash(urlStr).toString());
@@ -130,12 +155,22 @@ public class CacheImpl implements ICache {
 	@Override
 	public InputStream open(URL remoteFile, IConnectContext cctx, String remoteName, IFileInfo[] fiHandle, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException {
+		if (cctx == null) {
+			URL[] uh = new URL[] { remoteFile };
+			cctx = DownloadManager.createConnectContext(uh);
+			remoteFile = uh[0];
+		}
 		return open(new ArchivePolicy(this, cctx, remoteName), remoteFile, fiHandle, monitor);
 	}
 
 	@Override
 	public InputStream open(URL remoteFile, URL remoteDigest, IConnectContext cctx, String algorithm, IFileInfo[] fiHandle, IProgressMonitor monitor)
 			throws CoreException, FileNotFoundException {
+		if (cctx == null) {
+			URL[] uh = new URL[] { remoteFile };
+			cctx = DownloadManager.createConnectContext(uh);
+			remoteFile = uh[0];
+		}
 		return open(new DigestPolicy(this, remoteDigest, cctx, algorithm, DigestPolicy.DEFAULT_MAX_DIGEST_AGE), remoteFile, fiHandle, monitor);
 	}
 
@@ -145,6 +180,11 @@ public class CacheImpl implements ICache {
 		if (file != null)
 			return new FileInputStream(file);
 
+		if (cctx == null) {
+			URL[] uh = new URL[] { remoteFile };
+			cctx = DownloadManager.createConnectContext(uh);
+			remoteFile = uh[0];
+		}
 		FileReader reader = new FileReader(cctx);
 		return reader.read(remoteFile);
 	}
