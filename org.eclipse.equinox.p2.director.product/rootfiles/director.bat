@@ -59,6 +59,6 @@ set VMARGS=
 rem ----------------------------------------------------------------
 rem Get path to equinox launcher jar and invoke
 rem ----------------------------------------------------------------
-for /f "delims= tokens=1" %%c in ('dir /B /S /OD %EXE_DIR%\plugins\org.eclipse.equinox.launcher_*.jar') do set EQUINOXJAR=%%c
+for /f "delims= tokens=1" %%c in ('dir /B /S /OD "%EXE_DIR%"\plugins\org.eclipse.equinox.launcher_*.jar') do set EQUINOXJAR=%%c
 
 %VM% %VMARGS% -jar "%EQUINOXJAR%" %ARGS%
