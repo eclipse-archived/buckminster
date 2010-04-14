@@ -11,6 +11,10 @@ import org.eclipse.pde.internal.build.IPDEBuildConstants;
 
 @SuppressWarnings("restriction")
 public interface IPDEConstants {
+	static final String ABOUT_MAPPINGS_FILE = "about.mappings"; //$NON-NLS-1$
+
+	static final String ACTION_ABOUT_MAPPINGS = ABOUT_MAPPINGS_FILE;
+
 	static final String ACTION_COPY_BINARIES = "copy.binaries"; //$NON-NLS-1$
 
 	static final String ACTION_COPY_FEATURES = "copy.features"; //$NON-NLS-1$
@@ -132,6 +136,8 @@ public interface IPDEConstants {
 	 */
 	static final String ATTRIBUTE_PRODUCT_CONFIGS = "product.configurations"; //$NON-NLS-1$
 
+	static final String ATTRIBUTE_RAW_ABOUT_MAPPINGS = "raw.about.mappings"; //$NON-NLS-1$
+
 	static final String ATTRIBUTE_RAW_MANIFEST = "raw.manifest"; //$NON-NLS-1$
 
 	/**
@@ -246,6 +252,8 @@ public interface IPDEConstants {
 
 	static final String PROP_PDE_BUNDLE_RANGE_GENERATION = "pde.bundle.range.generation"; //$NON-NLS-1$
 
+	static final String PROP_PDE_CONSIDER_ABOUT_MAPPINGS = "pde.consider.about.mappings"; //$NON-NLS-1$
+
 	static final String PROP_PDE_FEATURE_REQUIREMENTS_GREEDY = "pde.feature.requirements.greedy"; //$NON-NLS-1$
 
 	static boolean PDE_BUNDLE_RANGE_GENERATION_DEFAULT = true;
@@ -289,6 +297,8 @@ public interface IPDEConstants {
 	static final String TASK_EXPAND_FEATURE_VERSION = "expand.feature.version"; //$NON-NLS-1$
 
 	static final String TASK_RECREATE_JAR = "recreate.jar"; //$NON-NLS-1$
+
+	static final String TASK_REPLACE_TOKEN = "replaceToken"; //$NON-NLS-1$
 
 	static final String TASK_UNJAR_NAMED = "unjar.named"; //$NON-NLS-1$
 

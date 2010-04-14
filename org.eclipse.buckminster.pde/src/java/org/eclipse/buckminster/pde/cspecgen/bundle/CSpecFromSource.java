@@ -38,6 +38,7 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.jdt.ClasspathReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.actor.FragmentsActor;
+import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.internal.resources.LinkDescription;
@@ -376,6 +377,8 @@ public class CSpecFromSource extends CSpecGenerator {
 		// Add additional artifacts to be included in the bundle
 		//
 		boolean includeBuildProps = false;
+		boolean considerAboutMappings = VersionConsolidator.getBooleanProperty(getReader().getNodeQuery().getProperties(),
+				PROP_PDE_CONSIDER_ABOUT_MAPPINGS, true);
 		IBuildEntry binIncludesEntry = build.getEntry(IBuildEntry.BIN_INCLUDES);
 		if (binIncludesEntry != null) {
 			GroupBuilder binIncludesSource = null;
@@ -405,10 +408,15 @@ public class CSpecFromSource extends CSpecGenerator {
 				if (binIncludesSource == null)
 					binIncludesSource = cspec.addGroup(IBuildEntry.BIN_INCLUDES, false);
 
-				IPath biPath = resolveLink(binInclude, projectRootReplacement);
-				ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.BIN_INCLUDES + '_' + cnt++, false, projectRootReplacement[0]);
-				ab.addPath(biPath);
-				binIncludesSource.addLocalPrerequisite(ab);
+				if (considerAboutMappings && ABOUT_MAPPINGS_FILE.equalsIgnoreCase(token)) {
+					AttributeBuilder aboutMappings = addAboutMappingsAction(binInclude, projectRootReplacement[0]);
+					binIncludesSource.addLocalPrerequisite(aboutMappings);
+				} else {
+					IPath biPath = resolveLink(binInclude, projectRootReplacement);
+					ArtifactBuilder ab = cspec.addArtifact(IBuildEntry.BIN_INCLUDES + '_' + cnt++, false, projectRootReplacement[0]);
+					ab.addPath(biPath);
+					binIncludesSource.addLocalPrerequisite(ab);
+				}
 			}
 
 			if (binIncludesSource != null) {
@@ -532,6 +540,19 @@ public class CSpecFromSource extends CSpecGenerator {
 
 		addProducts(MonitorUtils.subMonitor(monitor, 20));
 		monitor.done();
+	}
+
+	protected AttributeBuilder addAboutMappingsAction(IPath rawAboutMappingPath, IPath projectRoot) throws CoreException {
+		ArtifactBuilder rawAboutMappings = getCSpec().addArtifact(ATTRIBUTE_RAW_ABOUT_MAPPINGS, false, projectRoot);
+		rawAboutMappings.addPath(rawAboutMappingPath);
+		ActionBuilder mappingAction = addAntAction(ACTION_ABOUT_MAPPINGS, TASK_REPLACE_TOKEN, false);
+		mappingAction.addProperty("token", "@build@", false); //$NON-NLS-1$ //$NON-NLS-2$
+		mappingAction.addProperty("value", "${build.id}", false); //$NON-NLS-1$ //$NON-NLS-2$
+		mappingAction.addLocalPrerequisite(ATTRIBUTE_RAW_ABOUT_MAPPINGS, "action.input"); //$NON-NLS-1$
+		mappingAction.setProductAlias(ALIAS_OUTPUT);
+		mappingAction.setProductBase(OUTPUT_DIR_TEMP);
+		mappingAction.addProductPath(Path.fromPortableString(ABOUT_MAPPINGS_FILE));
+		return mappingAction;
 	}
 
 	protected void addImports() throws CoreException {
