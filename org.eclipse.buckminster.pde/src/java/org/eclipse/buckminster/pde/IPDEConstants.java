@@ -248,7 +248,7 @@ public interface IPDEConstants {
 
 	static final String PROP_PDE_FEATURE_REQUIREMENTS_GREEDY = "pde.feature.requirements.greedy"; //$NON-NLS-1$
 
-	static boolean PDE_BUNDLE_RANGE_GENERATION_DEFAULT = false;
+	static boolean PDE_BUNDLE_RANGE_GENERATION_DEFAULT = true;
 
 	static final String PROP_PDE_FEATURE_RANGE_GENERATION = "pde.feature.range.generation"; //$NON-NLS-1$
 
