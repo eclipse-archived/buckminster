@@ -43,8 +43,8 @@ import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
-import org.eclipse.buckminster.pde.tasks.FeaturesAction;
 import org.eclipse.buckminster.pde.tasks.P2SiteGenerator;
+import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -184,6 +184,87 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	private static final ImportSpecification[] noRequiredBundles = new ImportSpecification[0];
 
+	/**
+	 * Create a version range based on a PDE <code>matchRule</code> and a
+	 * <code>version</code>.
+	 * 
+	 * @param matchRule
+	 *            The rule. Must be one declared in {@link IMatchRules}
+	 * @param retainLowerBound
+	 *            Retain the exact lower bound. Implied for rule
+	 *            {@link IMatchRules#PERFECT}.
+	 * @param version
+	 *            The version
+	 * @return A version range.
+	 */
+	public static VersionRange createRuleBasedRange(int matchRule, boolean retainLowerBound, Version version) {
+		if (version == null || Version.emptyVersion.equals(version))
+			return VersionRange.emptyRange;
+
+		boolean qualifierTag = "qualifier".equals(VersionHelper.getQualifier(version)); //$NON-NLS-1$
+		Version lower = version;
+		if (qualifierTag)
+			lower = VersionHelper.replaceQualifier(version, null);
+
+		Version upper = limitUpperWithMatchRule(version, matchRule, qualifierTag);
+		if (matchRule == IMatchRules.PERFECT)
+			return new VersionRange(lower, true, upper, !qualifierTag);
+
+		if (!retainLowerBound)
+			lower = limitLowerWithMatchRule(version, matchRule);
+		return new VersionRange(lower, true, upper, matchRule == IMatchRules.GREATER_OR_EQUAL);
+	}
+
+	public static int getMatchRule(String matchRuleString) {
+		if (matchRuleString == null)
+			return IMatchRules.NONE;
+
+		String[] table = IMatchRules.RULE_NAME_TABLE;
+		int idx = table.length;
+		while (--idx >= 0)
+			if (matchRuleString.equalsIgnoreCase(table[idx]))
+				return idx;
+		return IMatchRules.NONE;
+	}
+
+	public static Version limitLowerWithMatchRule(Version v, int matchRule) {
+		if (v == null || matchRule == IMatchRules.NONE || matchRule == IMatchRules.PERFECT)
+			return v;
+
+		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
+		switch (matchRule) {
+			case IMatchRules.EQUIVALENT:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), 0);
+				break;
+			case IMatchRules.COMPATIBLE:
+				v = Version.createOSGi(ov.getMajor(), 0, 0);
+				break;
+			default:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro());
+		}
+		return v;
+	}
+
+	public static Version limitUpperWithMatchRule(Version v, int matchRule, boolean qualifierTag) {
+		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
+		switch (matchRule) {
+			case IMatchRules.EQUIVALENT:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor() + 1, 0);
+				break;
+			case IMatchRules.COMPATIBLE:
+				v = Version.createOSGi(ov.getMajor() + 1, 0, 0);
+				break;
+			case IMatchRules.PERFECT:
+				if (qualifierTag)
+					// A non yet expanded qualifier was encountered.
+					v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro() + 1);
+				break;
+			default:
+				v = Version.MAX_VERSION;
+		}
+		return v;
+	}
+
 	protected static String buildArtifactName(String id, String ver, boolean asJar) {
 		StringBuilder bld = new StringBuilder();
 		bld.append(id);
@@ -256,7 +337,16 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		this.reader = reader;
 	}
 
-	public String convertMatchRule(int pdeMatchRule, String version) throws CoreException {
+	public VersionRange convertMatchRule(int pdeMatchRule, String version) throws CoreException {
+		boolean retainLowerBound = false;
+		if (pdeMatchRule == IMatchRules.NONE) {
+			Map<String, String> props = getProperties();
+			String prop = props.get(PROP_PDE_MATCH_RULE_DEFAULT);
+			if (prop == null)
+				prop = IMatchRules.RULE_EQUIVALENT;
+			pdeMatchRule = CSpecGenerator.getMatchRule(prop);
+			retainLowerBound = VersionConsolidator.getBooleanProperty(props, PROP_PDE_MATCH_RULE_RETAIN_LOWER, false);
+		}
 		version = Trivial.trim(version);
 		if (version == null || version.equals("0.0.0")) //$NON-NLS-1$
 			return null;
@@ -266,100 +356,9 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			//
 			// Already an OSGi range, just ignore the rule then.
 			//
-			return version;
+			return new VersionRange(version);
 
-		Version v = Version.parseVersion(version);
-		boolean qualifierTag = "qualifier".equals(VersionHelper.getQualifier(v)); //$NON-NLS-1$
-		if (qualifierTag)
-			v = VersionHelper.replaceQualifier(v, null);
-
-		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
-		boolean retainLowerBound = false;
-		if (pdeMatchRule == IMatchRules.NONE) {
-			Map<String, String> props = getProperties();
-			String prop = props.get(PROP_PDE_MATCH_RULE_DEFAULT);
-			if (prop == null)
-				prop = IMatchRules.RULE_EQUIVALENT;
-			pdeMatchRule = FeaturesAction.getMatchRule(prop);
-			String rtl = props.get(PROP_PDE_MATCH_RULE_RETAIN_LOWER);
-			if (rtl != null)
-				retainLowerBound = Boolean.parseBoolean(rtl);
-		}
-
-		StringBuilder vbld = new StringBuilder();
-		switch (pdeMatchRule) {
-			case IMatchRules.NONE:
-			case IMatchRules.PERFECT:
-				vbld.append('[');
-				vbld.append(v);
-				if (qualifierTag) {
-					// Generate a version range that matches the given version
-					// with
-					// any qualifier.
-					//
-					vbld.append(".0,"); //$NON-NLS-1$
-					vbld.append(ov.getMajor());
-					vbld.append('.');
-					vbld.append(ov.getMinor());
-					vbld.append('.');
-					vbld.append(ov.getMicro() + 1);
-					vbld.append(')');
-				} else {
-					// Use a true explicit version range
-					//
-					vbld.append(',');
-					vbld.append(v);
-					vbld.append(']');
-				}
-				break;
-
-			case IMatchRules.EQUIVALENT:
-				//
-				// Create a range that requires major and minor numbers
-				// to be equal.
-				//
-				vbld.append('[');
-				if (retainLowerBound)
-					vbld.append(v);
-				else {
-					vbld.append(ov.getMajor());
-					vbld.append('.');
-					vbld.append(ov.getMinor());
-					vbld.append(".0"); //$NON-NLS-1$
-				}
-				if (qualifierTag)
-					vbld.append(".0"); //$NON-NLS-1$
-				vbld.append(',');
-				vbld.append(ov.getMajor());
-				vbld.append('.');
-				vbld.append(ov.getMinor() + 1);
-				vbld.append(".0)"); //$NON-NLS-1$
-				break;
-
-			case IMatchRules.COMPATIBLE:
-				//
-				// Create a range that requires major and minor numbers
-				// to be equal.
-				//
-				vbld.append('[');
-				if (retainLowerBound)
-					vbld.append(v);
-				else {
-					vbld.append(ov.getMajor());
-					vbld.append(".0.0"); //$NON-NLS-1$
-				}
-				if (qualifierTag)
-					vbld.append(".0"); //$NON-NLS-1$
-				vbld.append(',');
-				vbld.append(ov.getMajor() + 1);
-				vbld.append(".0.0)"); //$NON-NLS-1$
-				break;
-			default:
-				vbld.append(v);
-				if (qualifierTag)
-					vbld.append(".0"); //$NON-NLS-1$
-		}
-		return vbld.toString();
+		return createRuleBasedRange(pdeMatchRule, retainLowerBound, Version.parseVersion(version));
 	}
 
 	public abstract void generate(IProgressMonitor monitor) throws CoreException;

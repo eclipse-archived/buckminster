@@ -8,6 +8,8 @@
 package org.eclipse.buckminster.pde.tasks;
 
 import java.io.File;
+import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
 import org.eclipse.core.runtime.CoreException;
@@ -15,7 +17,31 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author Thomas Hallgren
  */
-abstract class VersionConsolidator extends VersionQualifierTask {
+public abstract class VersionConsolidator extends VersionQualifierTask {
+	public static boolean getBooleanProperty(Map<String, ? extends Object> properties, String key, boolean defaultSetting) {
+		if (properties == null)
+			return defaultSetting;
+		return getBooleanProperty(properties.get(key), defaultSetting);
+	}
+
+	public static boolean getBooleanProperty(Properties properties, String key, boolean defaultSetting) {
+		if (properties == null)
+			return defaultSetting;
+		return getBooleanProperty(properties.getProperty(key), defaultSetting);
+	}
+
+	private static boolean getBooleanProperty(Object v, boolean defaultSetting) {
+		if (!(v instanceof String))
+			return defaultSetting;
+
+		String s = (String) v;
+		if ("true".equalsIgnoreCase(s)) //$NON-NLS-1$
+			return true;
+		if ("false".equalsIgnoreCase(s)) //$NON-NLS-1$
+			return false;
+		return defaultSetting;
+	}
+
 	private final File outputFile;
 
 	VersionConsolidator(File outputFile, File propertiesFile, String qualifier) throws CoreException {

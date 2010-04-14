@@ -70,8 +70,8 @@ public interface IPDEConstants {
 
 	/**
 	 * Denotes group consisting of this feature and all included features and
-	 * bundles in a format suitable for publishing on an update site. The base
-	 * of the attribute
+	 * bundles in a format suitable for publishing on an update The base of the
+	 * attribute
 	 * 
 	 * @{link org.eclipse.buckminster.core.cspec.PathGroup PathGroup} will be
 	 *        folder that contains the <code>features</code> and
@@ -243,6 +243,16 @@ public interface IPDEConstants {
 	static final String PROP_PDE_MATCH_RULE_DEFAULT = "pde.match.rule.default"; //$NON-NLS-1$
 
 	static final String PROP_PDE_MATCH_RULE_RETAIN_LOWER = "pde.match.rule.retain.lower"; //$NON-NLS-1$
+
+	static final String PROP_PDE_BUNDLE_RANGE_GENERATION = "pde.bundle.range.generation"; //$NON-NLS-1$
+
+	static final String PROP_PDE_FEATURE_REQUIREMENTS_GREEDY = "pde.feature.requirements.greedy"; //$NON-NLS-1$
+
+	static boolean PDE_BUNDLE_RANGE_GENERATION_DEFAULT = false;
+
+	static final String PROP_PDE_FEATURE_RANGE_GENERATION = "pde.feature.range.generation"; //$NON-NLS-1$
+
+	static boolean PDE_FEATURE_RANGE_GENERATION_DEFAULT = true;
 
 	static final String SITE_FILE = "site.xml"; //$NON-NLS-1$
 

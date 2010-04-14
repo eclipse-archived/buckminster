@@ -485,7 +485,7 @@ public class P2SiteGenerator extends AbstractActor {
 			File productSourceFolder = productConfigFile.getParentFile();
 			addProductAction(productSourceFolder, actions, getProductDescriptor(productConfigFile), readBuildProperties(productSourceFolder));
 		}
-		if (!Boolean.parseBoolean((String) ctx.getProperties().get("site.retain.unpacked"))) //$NON-NLS-1$
+		if (!VersionConsolidator.getBooleanProperty(ctx.getProperties(), "site.retain.unpacked", false)) //$NON-NLS-1$
 			actions.add(new RemoveUnpackedSiblingsAction());
 		return actions.toArray(new IPublisherAction[actions.size()]);
 	}

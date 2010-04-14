@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
+import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.tasks.FeatureRootAdvice.ConfigAdvice;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -32,18 +33,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
+import org.eclipse.equinox.internal.p2.metadata.InstallableUnit;
 import org.eclipse.equinox.internal.p2.publisher.FileSetDescriptor;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.MetadataFactory;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.equinox.p2.metadata.VersionedId;
+import org.eclipse.equinox.p2.metadata.expression.IMatchExpression;
 import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
-import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
 import org.eclipse.equinox.p2.repository.artifact.spi.ArtifactDescriptor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.core.plugin.IMatchRules;
@@ -53,36 +57,6 @@ import org.eclipse.pde.internal.build.Utils;
 @SuppressWarnings("restriction")
 public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.FeaturesAction {
 	private static final Project PROPERTY_REPLACER = new Project();
-
-	public static int getMatchRule(String matchRuleString) {
-		if (matchRuleString == null)
-			return IMatchRules.NONE;
-
-		String[] table = IMatchRules.RULE_NAME_TABLE;
-		int idx = table.length;
-		while (--idx >= 0)
-			if (matchRuleString.equalsIgnoreCase(table[idx]))
-				return idx;
-		return IMatchRules.NONE;
-	}
-
-	public static Version limitWithMatchRule(Version v, int matchRule) {
-		if (v == null || matchRule == IMatchRules.NONE || matchRule == IMatchRules.PERFECT)
-			return v;
-
-		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
-		switch (matchRule) {
-			case IMatchRules.EQUIVALENT:
-				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), 0);
-				break;
-			case IMatchRules.COMPATIBLE:
-				v = Version.createOSGi(ov.getMajor(), 0, 0);
-				break;
-			default:
-				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro());
-		}
-		return v;
-	}
 
 	private static FeatureRootAdvice createRootAdvice(String featureId, Properties buildProperties, IPath baseDirectory, String[] configs) {
 		@SuppressWarnings("unchecked")
@@ -276,74 +250,11 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	}
 
 	@Override
-	protected IInstallableUnit createGroupIU(Feature feature, List<IInstallableUnit> childIUs, IPublisherInfo publisherInfo) {
-		IVersionedId vn = new VersionedId(feature.getId(), feature.getVersion());
-		Properties props = properties.get(vn);
-		boolean retainLowerBound = false;
-		int pdeMatchRule = IMatchRules.EQUIVALENT;
+	protected void generateFeatureIUs(Feature[] featureList, IPublisherResult result) {
+		for (Feature feature : featureList)
+			addCapabilityAdvice(feature);
+		super.generateFeatureIUs(featureList, result);
 
-		if (props != null) {
-			String dfltMatchRule = props.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
-			String rtl = props.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
-			pdeMatchRule = getMatchRule(dfltMatchRule);
-			if (rtl != null)
-				retainLowerBound = Boolean.parseBoolean(rtl);
-		}
-		if (pdeMatchRule == IMatchRules.NONE || pdeMatchRule == IMatchRules.PERFECT)
-			return super.createGroupIU(feature, childIUs, publisherInfo);
-
-		Feature newFeature = new Feature(feature.getId(), feature.getVersion());
-		final String canonicalMatchRule = IMatchRules.RULE_NAME_TABLE[pdeMatchRule];
-		FeatureEntry[] entries = feature.getEntries();
-		int idx = entries.length;
-		while (--idx >= 0) {
-			FeatureEntry entry = entries[idx];
-			if (entry.isPatch() || entry.isRequires() || getMatchRule(entry.getMatch()) != IMatchRules.NONE) {
-				newFeature.addEntry(entry);
-				continue;
-			}
-
-			Version version = Version.create(entry.getVersion());
-			if (!retainLowerBound)
-				version = limitWithMatchRule(Version.create(entry.getVersion()), pdeMatchRule);
-
-			String vstr = version == null ? null : version.toString();
-			FeatureEntry newEntry = FeatureEntry.createRequires(entry.getId(), vstr, canonicalMatchRule, entry.getFilter(), entry.isPlugin());
-			newEntry.setEnvironment(entry.getOS(), entry.getWS(), entry.getArch(), entry.getNL());
-			newEntry.setFragment(entry.isFragment());
-			newEntry.setOptional(entry.isOptional());
-			newEntry.setUnpack(entry.isUnpack());
-			newEntry.setURL(entry.getURL());
-			newFeature.addEntry(newEntry);
-		}
-		for (URLEntry site : feature.getDiscoverySites())
-			newFeature.addDiscoverySite(site.getAnnotation(), site.getURL());
-		newFeature.setApplication(feature.getApplication());
-		newFeature.setColocationAffinity(feature.getColocationAffinity());
-		newFeature.setCopyright(feature.getCopyright());
-		newFeature.setCopyrightURL(feature.getCopyrightURL());
-		newFeature.setDescription(feature.getDescription());
-		newFeature.setDescriptionURL(feature.getDescriptionURL());
-		newFeature.setEnvironment(feature.getOS(), feature.getWS(), feature.getArch(), feature.getNL());
-		newFeature.setExclusive(feature.isExclusive());
-		newFeature.setImage(feature.getImage());
-		newFeature.setInstallHandler(feature.getInstallHandler());
-		newFeature.setInstallHandlerLibrary(feature.getInstallHandlerLibrary());
-		newFeature.setInstallHandlerURL(feature.getInstallHandlerURL());
-		newFeature.setLabel(feature.getLabel());
-		newFeature.setLicense(feature.getLicense());
-		newFeature.setLicenseURL(feature.getLicenseURL());
-		newFeature.setLocalizations(feature.getLocalizations());
-		newFeature.setLocation(feature.getLocation());
-		newFeature.setPlugin(feature.getPlugin());
-		newFeature.setPrimary(feature.isPrimary());
-		newFeature.setProviderName(feature.getProviderName());
-		URLEntry site = feature.getUpdateSite();
-		if (site != null) {
-			newFeature.setUpdateSiteLabel(site.getAnnotation());
-			newFeature.setUpdateSiteURL(site.getURL());
-		}
-		return super.createGroupIU(newFeature, childIUs, publisherInfo);
 	}
 
 	@Override
@@ -380,5 +291,90 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 			}
 		}
 		return ius;
+	}
+
+	private void addCapabilityAdvice(Feature feature) {
+		IVersionedId vn = new VersionedId(feature.getId(), feature.getVersion());
+		Properties props = properties.get(vn);
+		if (!VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_FEATURE_RANGE_GENERATION, true))
+			// Generation is turned off
+			return;
+
+		boolean retainLowerBound = false;
+		int pdeMatchRule = IMatchRules.EQUIVALENT;
+
+		if (props != null) {
+			String dfltMatchRule = props.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
+			retainLowerBound = VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER, retainLowerBound);
+			pdeMatchRule = CSpecGenerator.getMatchRule(dfltMatchRule);
+		}
+		if (pdeMatchRule == IMatchRules.NONE || pdeMatchRule == IMatchRules.PERFECT)
+			return;
+
+		boolean requirementGreedy = VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_FEATURE_REQUIREMENTS_GREEDY, true);
+		CapabilityAdvice advice = new CapabilityAdvice(vn.getId() + IPDEConstants.FEATURE_GROUP, vn.getVersion());
+		FeatureEntry[] entries = feature.getEntries();
+		int idx = entries.length;
+		while (--idx >= 0) {
+			FeatureEntry entry = entries[idx];
+			if (entry.isPatch())
+				continue;
+
+			String id = entry.getId();
+			if (!entry.isPlugin())
+				id = id + IPDEConstants.FEATURE_GROUP;
+			Version version = Version.create(entry.getVersion());
+			if (version == null || version.equals(Version.emptyVersion))
+				version = null;
+
+			int min = entry.isOptional() ? 0 : 1;
+			if (entry.isRequires()) {
+				// Stick to the rule specified in the requirement
+				if (requirementGreedy)
+					continue;
+
+				// Advice to replace with a non greedy requirement
+				VersionRange range = CSpecGenerator.createRuleBasedRange(CSpecGenerator.getMatchRule(entry.getMatch()), true, version);
+				advice.addRequirement(MetadataFactory.createRequirement(IInstallableUnit.NAMESPACE_IU_ID, id, range, getFilter(entry), min, 1, false));
+			}
+
+			if (version == null || CSpecGenerator.getMatchRule(entry.getMatch()) != IMatchRules.NONE)
+				continue;
+
+			VersionRange range = CSpecGenerator.createRuleBasedRange(pdeMatchRule, retainLowerBound, version);
+			advice.addRequirement(MetadataFactory.createRequirement(IInstallableUnit.NAMESPACE_IU_ID, id, range, getFilter(entry), min, 1, true));
+		}
+		if (!advice.isEmpty())
+			info.addAdvice(advice);
+	}
+
+	private void expandFilter(String filter, String osgiFilterValue, StringBuilder result) {
+		String[] filters = StringHelper.getArrayFromString(filter, ',');
+		if (filters.length > 1)
+			result.append("(|"); //$NON-NLS-1$
+		for (int idx = 0; idx < filters.length; ++idx) {
+			result.append('(');
+			result.append(osgiFilterValue);
+			result.append('=');
+			result.append(filters[0]);
+			result.append(')');
+		}
+		if (filters.length > 1)
+			result.append(')');
+	}
+
+	private IMatchExpression<IInstallableUnit> getFilter(FeatureEntry entry) {
+		StringBuilder result = new StringBuilder();
+		result.append("(&"); //$NON-NLS-1$
+		if (entry.getFilter() != null)
+			result.append(entry.getFilter());
+		expandFilter(entry.getOS(), "osgi.os", result); //$NON-NLS-1$
+		expandFilter(entry.getWS(), "osgi.ws", result); //$NON-NLS-1$
+		expandFilter(entry.getArch(), "osgi.arch", result);//$NON-NLS-1$
+		expandFilter(entry.getNL(), "osgi.nl", result); //$NON-NLS-1$
+		if (result.length() == 2)
+			return null;
+		result.append(')');
+		return InstallableUnit.parseFilter(result.toString());
 	}
 }

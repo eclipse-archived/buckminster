@@ -215,7 +215,7 @@ public class CategoriesAction extends AbstractPublisherAction {
 			reqsConfigurationUnits.add(MetadataFactory.createRequirement(IInstallableUnit.NAMESPACE_IU_ID, parentCategory.getId(),
 					VersionRange.emptyRange, parentCategory.getFilter(), false, false));
 		}
-		cat.setRequiredCapabilities(reqsConfigurationUnits.toArray(new IRequiredCapability[reqsConfigurationUnits.size()]));
+		cat.setRequirements(reqsConfigurationUnits.toArray(new IRequiredCapability[reqsConfigurationUnits.size()]));
 
 		// Create set of provided capabilities
 		ArrayList<IProvidedCapability> providedCapabilities = new ArrayList<IProvidedCapability>();

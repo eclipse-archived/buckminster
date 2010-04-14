@@ -17,18 +17,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.eclipse.buckminster.core.actor.AbstractActor;
+import org.eclipse.buckminster.core.actor.IActionContext;
+import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
+import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.core.plugin.IMatchRules;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 
@@ -37,6 +48,26 @@ import org.osgi.framework.Constants;
  * 
  */
 public class BundleConsolidator extends VersionConsolidator {
+	public static IVersionedId getVersionedId(Manifest manifest) throws BundleException {
+		Attributes a = manifest.getMainAttributes();
+		String symbolicName = a.getValue(Constants.BUNDLE_SYMBOLICNAME);
+		if (symbolicName == null)
+			return null;
+
+		ManifestElement[] elements = ManifestElement.parseHeader(Constants.BUNDLE_SYMBOLICNAME, symbolicName);
+		String id = elements[0].getValue();
+		Version version = null;
+		String versionStr = a.getValue(Constants.BUNDLE_VERSION);
+		if (versionStr != null) {
+			try {
+				version = Version.parseVersion(versionStr);
+			} catch (IllegalArgumentException e) {
+			}
+		}
+		return new VersionedId(id, version);
+
+	}
+
 	private final byte[] bytes;
 
 	public BundleConsolidator(File inputFile, File outputFile, File propertiesFile, String qualifier) throws CoreException {
@@ -84,6 +115,7 @@ public class BundleConsolidator extends VersionConsolidator {
 				}
 			}
 		}
+		changed = fixRequiredBundleVersions(a) || changed;
 
 		// mind the order of the operands
 		changed = treatManifest(manifest, id, newVersion) || changed;
@@ -99,6 +131,72 @@ public class BundleConsolidator extends VersionConsolidator {
 		} finally {
 			IOUtils.close(out);
 		}
+	}
+
+	protected boolean fixRequiredBundleVersions(Attributes a) throws IOException {
+		String requiredBundles = a.getValue(Constants.REQUIRE_BUNDLE);
+		if (requiredBundles == null)
+			return false;
+
+		IActionContext ctx = AbstractActor.getActiveContext();
+		Map<String, ? extends Object> props = ctx.getProperties();
+		if (props == null)
+			return false;
+
+		if (!VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_BUNDLE_RANGE_GENERATION,
+				IPDEConstants.PDE_BUNDLE_RANGE_GENERATION_DEFAULT))
+			return false;
+
+		boolean retainLowerBound = VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER, false);
+		int pdeMatchRule = IMatchRules.EQUIVALENT;
+
+		String dfltMatchRule = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
+		if (dfltMatchRule != null)
+			pdeMatchRule = CSpecGenerator.getMatchRule(dfltMatchRule);
+
+		if (pdeMatchRule == IMatchRules.NONE)
+			return false;
+
+		boolean changed = false;
+		StringBuilder bld = new StringBuilder();
+
+		try {
+			boolean firstElement = true;
+			for (ManifestElement element : ManifestElement.parseHeader(Constants.REQUIRE_BUNDLE, requiredBundles)) {
+				if (firstElement)
+					firstElement = false;
+				else
+					bld.append(',');
+				bld.append(element);
+				if (element.getAttribute(Constants.BUNDLE_VERSION_ATTRIBUTE) != null)
+					continue;
+
+				Version v = null;
+				try {
+					CSpec cspec = ctx.getGlobalContext().findCSpec(ctx.getCSpec(),
+							new ComponentRequest(element.getValue(), IComponentType.OSGI_BUNDLE, null));
+					v = cspec.getVersion();
+				} catch (CoreException e) {
+					continue;
+				}
+				if (v == null || v.equals(Version.emptyVersion))
+					continue;
+
+				VersionRange range = CSpecGenerator.createRuleBasedRange(pdeMatchRule, retainLowerBound, v);
+				changed = true;
+				bld.append(';');
+				bld.append(Constants.BUNDLE_VERSION_ATTRIBUTE);
+				bld.append('=');
+				bld.append('"');
+				bld.append(range);
+				bld.append('"');
+			}
+		} catch (BundleException be) {
+			throw new IOException(be.getMessage(), be);
+		}
+		if (changed)
+			a.putValue(Constants.REQUIRE_BUNDLE, bld.toString());
+		return changed;
 	}
 
 	/**
