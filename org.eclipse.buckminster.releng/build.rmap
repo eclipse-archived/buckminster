@@ -26,12 +26,12 @@
   </rm:searchPath>
   <rm:searchPath name="platform">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=I)">
-      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100323-0800">
+      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100414-1200">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=M)">
-      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100312-1448">
+      <rm:uri format="{0}/eclipse/updates/3.6milestones/S-3.6M6-201003121448">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -60,7 +60,7 @@
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/tools/orbit/downloads/drops/S20100308015149/updateSite">
+      <rm:uri format="{0}/tools/orbit/downloads/drops/I20100403202929/updateSite">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
