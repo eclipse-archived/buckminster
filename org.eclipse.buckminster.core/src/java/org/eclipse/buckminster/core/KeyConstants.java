@@ -55,4 +55,6 @@ public interface KeyConstants {
 	String ACTION_OUTPUT_REF = "${" + ACTION_OUTPUT + "}"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	String ACTION_TEMPDIR_REF = "${" + ACTION_TEMP + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+
+	String ACTION_TEMPROOT_REF = "${" + ACTION_TEMP_ROOT + "}"; //$NON-NLS-1$ //$NON-NLS-2$
 }

@@ -84,9 +84,10 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable {
 
 		String tempRootStr = (String) properties.get(KeyConstants.ACTION_TEMP_ROOT);
 		IPath tempRoot;
-		if (tempRootStr == null)
+		if (tempRootStr == null) {
 			tempRoot = Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster"); //$NON-NLS-1$ //$NON-NLS-2$
-		else
+			properties.put(KeyConstants.ACTION_TEMP_ROOT, tempRoot.toOSString());
+		} else
 			tempRoot = Path.fromOSString(tempRootStr);
 
 		String actionTemp = tempRoot.append(uniqueFolder).append("temp").toPortableString(); //$NON-NLS-1$
