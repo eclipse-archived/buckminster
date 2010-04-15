@@ -165,7 +165,7 @@
 			name="Copy target platform fragments" />
 		<actor
 			ID="p2SiteGenerator"
-			class="org.eclipse.buckminster.pde.tasks.P2SiteGenerator"
+			class="org.eclipse.buckminster.pde.internal.actor.P2SiteGenerator"
 			name="P2 Site Generator" />
  </extension>
  <extension

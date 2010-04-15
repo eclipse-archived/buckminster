@@ -10,6 +10,7 @@ package org.eclipse.buckminster.pde.cspecgen.feature;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
@@ -26,9 +27,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
+import org.eclipse.pde.internal.core.ifeature.IFeatureInfo;
 
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecFromFeature {
+	private static boolean isLocalized(String str) {
+		return str != null && str.startsWith("%");
+	}
+
 	private final Map<String, String> buildProperties;
 
 	protected CSpecFromSource(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature, Map<String, String> buildProperties) {
@@ -65,7 +71,18 @@ public class CSpecFromSource extends CSpecFromFeature {
 
 	@Override
 	void createFeatureSourceJarAction() throws CoreException {
-		createFeatureSourceManifestAction();
+		boolean translations = isLocalized(feature.getLabel()) || isLocalized(feature.getProviderName());
+		if (!translations) {
+			IFeatureInfo license = feature.getFeatureInfo(IFeature.INFO_LICENSE);
+			if (license != null)
+				translations = isLocalized(license.getLabel());
+			if (!translations) {
+				IFeatureInfo copyright = feature.getFeatureInfo(IFeature.INFO_COPYRIGHT);
+				if (copyright != null)
+					translations = isLocalized(copyright.getLabel());
+			}
+		}
+		createFeatureSourceManifestAction(translations);
 
 		CSpecBuilder cspec = getCSpec();
 
@@ -74,6 +91,8 @@ public class CSpecFromSource extends CSpecFromFeature {
 		//
 		ActionBuilder featureJarBuilder = addAntAction(ATTRIBUTE_SOURCE_FEATURE_JAR, TASK_CREATE_FEATURE_JAR, false);
 		featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_SOURCE_MANIFEST, ALIAS_MANIFEST);
+		if (translations)
+			featureJarBuilder.addLocalPrerequisite(ATTRIBUTE_SOURCE_LOCALIZATION, ATTRIBUTE_SOURCE_LOCALIZATION);
 
 		// We use the same content as the original feature (i.e. license, etc.).
 		//
@@ -191,18 +210,29 @@ public class CSpecFromSource extends CSpecFromFeature {
 		manifest.addProductPath(featureFile);
 	}
 
-	private void createFeatureSourceManifestAction() throws CoreException {
+	private void createFeatureSourceManifestAction(boolean translations) throws CoreException {
 		// Create the action that creates the version expanded feature.xml for
 		// features
 		// and bundles that contains source code.
 		//
-		ActionBuilder manifest = addAntAction(ATTRIBUTE_SOURCE_MANIFEST, TASK_CREATE_SOURCE_FEATURE, true);
+		ActionBuilder manifest;
+		IPath productCommonPath = OUTPUT_DIR_TEMP.append("source"); //$NON-NLS-1$
+		if (translations) {
+			manifest = addAntAction(ATTRIBUTE_SOURCE_MANIFEST + ".with.localization", TASK_CREATE_SOURCE_FEATURE, true); //$NON-NLS-1$
+			ActionArtifactBuilder manifestResult = manifest.addProductArtifact(ATTRIBUTE_SOURCE_MANIFEST, true, productCommonPath);
+			manifestResult.addPath(new Path(FEATURE_FILE));
+			manifestResult.setAlias(ALIAS_OUTPUT);
+			ArtifactBuilder translatedResult = manifest.addProductArtifact(ATTRIBUTE_SOURCE_LOCALIZATION, true, productCommonPath);
+			translatedResult.addPath(new Path("feature.properties")); //$NON-NLS-1$
+		} else {
+			manifest = addAntAction(ATTRIBUTE_SOURCE_MANIFEST, TASK_CREATE_SOURCE_FEATURE, true);
+			manifest.setProductAlias(ALIAS_OUTPUT);
+			manifest.setProductBase(productCommonPath);
+			manifest.addProductPath(new Path(FEATURE_FILE));
+		}
 		manifest.addLocalPrerequisite(ATTRIBUTE_MANIFEST, ALIAS_MANIFEST);
 		manifest.addLocalPrerequisite(ATTRIBUTE_SOURCE_BUNDLE_JARS, ALIAS_BUNDLES);
 		manifest.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS, ALIAS_FEATURES);
-		manifest.setProductAlias(ALIAS_OUTPUT);
-		manifest.setProductBase(OUTPUT_DIR_TEMP.append("source")); //$NON-NLS-1$
-		manifest.addProductPath(new Path(FEATURE_FILE));
 	}
 
 	private void createSiteFeatureExportsAction() throws CoreException {

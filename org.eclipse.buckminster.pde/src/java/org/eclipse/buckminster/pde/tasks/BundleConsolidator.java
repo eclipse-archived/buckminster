@@ -97,7 +97,7 @@ public class BundleConsolidator extends VersionConsolidator {
 				ManifestElement[] elements = ManifestElement.parseHeader(Constants.BUNDLE_SYMBOLICNAME, symbolicName);
 				id = elements[0].getValue();
 			} catch (BundleException be) {
-				throw new IOException(be.getMessage());
+				throw new IOException(be.getMessage(), be);
 			}
 
 			String versionStr = a.getValue(Constants.BUNDLE_VERSION);
@@ -211,7 +211,7 @@ public class BundleConsolidator extends VersionConsolidator {
 	 *            The (new) version of the bundle. May be null.
 	 * @return Whether the method has changed the manifest or not.
 	 */
-	protected boolean treatManifest(Manifest manifest, String symbolicName, Version version) {
+	protected boolean treatManifest(Manifest manifest, String symbolicName, Version version) throws IOException {
 		// empty default implementation
 		return false;
 	}

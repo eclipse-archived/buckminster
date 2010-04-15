@@ -222,7 +222,7 @@ public class CSpecBuilder implements ICSpecData {
 		if (attributes == null)
 			attributes = new HashMap<String, AttributeBuilder>();
 		else if (attributes.containsKey(attrName))
-			throw new AttributeAlreadyDefinedException(attrName, attrName);
+			throw new AttributeAlreadyDefinedException(name, attrName);
 		attributes.put(attrName, attribute.getAttributeBuilder(this));
 	}
 

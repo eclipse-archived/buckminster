@@ -7,12 +7,26 @@
  ******************************************************************************/
 package org.eclipse.buckminster.pde.tasks;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.buckminster.core.actor.AbstractActor;
+import org.eclipse.buckminster.core.actor.IActionContext;
+import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
@@ -28,6 +42,7 @@ import org.eclipse.pde.internal.core.feature.FeaturePlugin;
 import org.eclipse.pde.internal.core.ibundle.IBundlePluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
+import org.eclipse.pde.internal.core.ifeature.IFeatureInfo;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
@@ -36,6 +51,10 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 	private static final String FEATURE_SUFFIX = ".feature"; //$NON-NLS-1$
 
 	private static final String SOURCE_SUFFIX = ".source"; //$NON-NLS-1$
+
+	private static final String DESCRIPTION_FORMAT = "Generated source feature. The original description is:\n\n{0}"; //$NON-NLS-1$
+
+	private static final String LABEL_FORMAT = "Source for {0}"; //$NON-NLS-1$
 
 	public static String createSourceFeatureId(String originalId) {
 		StringBuilder sourceIdBld = new StringBuilder();
@@ -56,6 +75,10 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 
 	private List<File> featuresAndBundles;
 
+	private Map<String, String> translations;
+
+	private Map<String, String> usedTranslations;
+
 	public SourceFeatureCreator(File inputFile, File outputFile, List<File> featuresAndBundles) {
 		this.inputFile = inputFile;
 		this.outputFile = outputFile;
@@ -68,17 +91,48 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 		featureModel.setDirty(true);
 		IFeature sourceFeature = featureModel.getFeature();
 
+		IActionContext ctx = AbstractActor.getActiveContext();
+
 		String originalId = originalFeature.getId();
-		sourceFeature.setId(createSourceFeatureId(originalId));
+		String sourceId = createSourceFeatureId(originalId);
+		sourceFeature.setId(sourceId);
 		sourceFeature.setVersion(originalFeature.getVersion());
-		sourceFeature.setLabel("Source bundles for " + originalFeature.getLabel()); //$NON-NLS-1$
+		String label = originalFeature.getLabel();
+		Map<String, ? extends Object> props = ctx.getProperties();
+		String format = (String) props.get(IPDEConstants.PROP_PDE_SOURCE_FEATURE_LABEL_FORMAT);
+		if (format == null)
+			format = LABEL_FORMAT;
+
+		if (!addLocalizedProperty(ctx, label, format))
+			label = MessageFormat.format(format, label);
+		sourceFeature.setLabel(label);
 
 		sourceFeature.setOS(originalFeature.getOS());
 		sourceFeature.setArch(originalFeature.getArch());
 		sourceFeature.setWS(originalFeature.getWS());
 		sourceFeature.setNL(originalFeature.getNL());
-		sourceFeature.setProviderName(originalFeature.getProviderName());
+
+		String providerName = originalFeature.getProviderName();
+		addLocalizedProperty(ctx, providerName, null);
+		sourceFeature.setProviderName(providerName);
 		sourceFeature.setURL(originalFeature.getURL());
+
+		IFeatureInfo copyright = originalFeature.getFeatureInfo(IFeature.INFO_COPYRIGHT);
+		if (copyright != null)
+			cloneInfo(ctx, sourceFeature, copyright, null);
+
+		IFeatureInfo license = originalFeature.getFeatureInfo(IFeature.INFO_LICENSE);
+		if (license != null)
+			cloneInfo(ctx, sourceFeature, license, null);
+
+		IFeatureInfo description = originalFeature.getFeatureInfo(IFeature.INFO_DESCRIPTION);
+		if (description != null) {
+			format = (String) props.get(IPDEConstants.PROP_PDE_SOURCE_FEATURE_DESCRIPTION_FORMAT);
+			if (format == null)
+				format = DESCRIPTION_FORMAT;
+			cloneInfo(ctx, sourceFeature, description, format);
+		}
+
 		for (File featureOrBundle : featuresAndBundles) {
 			InputStream input = null;
 			try {
@@ -147,5 +201,64 @@ public class SourceFeatureCreator implements IPDEConstants, IBuildPropertiesCons
 			}
 		}
 		featureModel.save();
+		saveTranslations();
+	}
+
+	private boolean addLocalizedProperty(IActionContext ctx, String key, String format) throws CoreException {
+		if (key == null || !key.startsWith("%")) //$NON-NLS-1$
+			return false;
+
+		if (translations == null) {
+			InputStream inStream = null;
+			try {
+				// We need to get hold of the feature.properties from the
+				// original source
+				inStream = new BufferedInputStream(new FileInputStream(new File(ctx.getComponentLocation().toFile(), "feature.properties"))); //$NON-NLS-1$
+				translations = new BMProperties(inStream);
+			} catch (IOException e) {
+				translations = Collections.emptyMap();
+			} finally {
+				IOUtils.close(inStream);
+			}
+		}
+		String mapKey = key.substring(1);
+		String translated = translations.get(mapKey);
+		if (translated == null) {
+			PDEPlugin.getLogger().warning("Unable to find translation for property %s", key); //$NON-NLS-1$
+			return false;
+		}
+		if (format != null)
+			translated = MessageFormat.format(format, translated);
+		if (usedTranslations == null)
+			usedTranslations = new HashMap<String, String>();
+		usedTranslations.put(mapKey, translated);
+		return true;
+	}
+
+	private void cloneInfo(IActionContext ctx, IFeature newOwner, IFeatureInfo original, String descriptionFormat) throws CoreException {
+		IFeatureInfo copy = newOwner.getModel().getFactory().createInfo(original.getIndex());
+		String description = original.getDescription();
+		if (!addLocalizedProperty(ctx, description, descriptionFormat) && descriptionFormat != null)
+			description = MessageFormat.format(descriptionFormat, description);
+		copy.setDescription(description);
+		addLocalizedProperty(ctx, original.getLabel(), null);
+		copy.setLabel(original.getLabel());
+		addLocalizedProperty(ctx, original.getURL(), null);
+		copy.setURL(original.getURL());
+		newOwner.setFeatureInfo(copy, original.getIndex());
+	}
+
+	private void saveTranslations() throws CoreException {
+		if (usedTranslations != null) {
+			OutputStream out = null;
+			try {
+				out = new BufferedOutputStream(new FileOutputStream(new File(outputFile.getParentFile(), "feature.properties"))); //$NON-NLS-1$
+				BMProperties.store(usedTranslations, out, null);
+			} catch (IOException e) {
+				throw BuckminsterException.wrap(e);
+			} finally {
+				IOUtils.close(out);
+			}
+		}
 	}
 }

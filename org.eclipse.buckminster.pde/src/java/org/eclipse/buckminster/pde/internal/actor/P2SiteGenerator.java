@@ -5,7 +5,7 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  ******************************************************************************/
-package org.eclipse.buckminster.pde.tasks;
+package org.eclipse.buckminster.pde.internal.actor;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -40,6 +40,13 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
+import org.eclipse.buckminster.pde.tasks.CategoriesAction;
+import org.eclipse.buckminster.pde.tasks.FeaturesAction;
+import org.eclipse.buckminster.pde.tasks.MirrorsSiteAction;
+import org.eclipse.buckminster.pde.tasks.ProductAction;
+import org.eclipse.buckminster.pde.tasks.RemoveUnpackedSiblingsAction;
+import org.eclipse.buckminster.pde.tasks.SiteReferencesAction;
+import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;

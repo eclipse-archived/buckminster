@@ -205,7 +205,7 @@
 	</target>
 
 	<target name="create.source.feature" depends="create.output.dir">
-		<buckminster.createSourceFeature inputFile="${sp:manifest}" outputFile="${sp:action.output}">
+		<buckminster.createSourceFeature inputFile="${sp:manifest}" outputDir="${sp:action.output}">
 			<buckminster.filesetgroup value="${fs:bundles}"/>
 			<buckminster.filesetgroup value="${fs:features}"/>
 		</buckminster.createSourceFeature>

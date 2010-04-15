@@ -56,7 +56,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		return false;
 	}
 
-	private final IFeature feature;
+	protected final IFeature feature;
 
 	protected CSpecFromFeature(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature) {
 		super(cspecBuilder, reader);

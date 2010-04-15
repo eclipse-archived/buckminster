@@ -61,7 +61,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 		prerequisitesBuilder.addPrerequisite(prerequisite);
 	}
 
-	public ArtifactBuilder addProductArtifact(String name, boolean publ, IPath output) throws AttributeAlreadyDefinedException {
+	public ActionArtifactBuilder addProductArtifact(String name, boolean publ, IPath output) throws AttributeAlreadyDefinedException {
 		CSpecBuilder cspecBuilder = getCSpecBuilder();
 		ActionArtifactBuilder bld = cspecBuilder.createActionArtifactBuilder();
 		bld.setActionName(getName());

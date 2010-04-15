@@ -102,7 +102,7 @@ public class SourceFeatureCreatorTask extends Task {
 		this.input = input;
 	}
 
-	public void setOutputFile(File output) {
+	public void setOutputDir(File output) {
 		this.output = output;
 	}
 }

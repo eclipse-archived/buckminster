@@ -198,6 +198,8 @@ public interface IPDEConstants {
 
 	static final String ATTRIBUTE_SOURCE_MANIFEST = "source.manifest"; //$NON-NLS-1$
 
+	static final String ATTRIBUTE_SOURCE_LOCALIZATION = "source.localization"; //$NON-NLS-1$
+
 	/**
 	 * Appoints an action that will copy the fragments for the current component
 	 * from the workspace or target platform
@@ -255,6 +257,12 @@ public interface IPDEConstants {
 	static final String PROP_PDE_CONSIDER_ABOUT_MAPPINGS = "pde.consider.about.mappings"; //$NON-NLS-1$
 
 	static final String PROP_PDE_FEATURE_REQUIREMENTS_GREEDY = "pde.feature.requirements.greedy"; //$NON-NLS-1$
+
+	static final Object PROP_PDE_SOURCE_BUNDLE_LABEL_FORMAT = "pde.source.bundle.label.format";
+
+	static final Object PROP_PDE_SOURCE_FEATURE_LABEL_FORMAT = "pde.source.feature.label.format";
+
+	static final Object PROP_PDE_SOURCE_FEATURE_DESCRIPTION_FORMAT = "pde.source.feature.description.format";
 
 	static boolean PDE_BUNDLE_RANGE_GENERATION_DEFAULT = true;
 
