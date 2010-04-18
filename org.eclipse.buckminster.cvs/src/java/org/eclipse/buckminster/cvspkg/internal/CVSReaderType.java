@@ -376,7 +376,7 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 		// representation which we are going to use to lookup the mapping
 		locationConfiguration.put("connection", originalLocation.getMethod().getName()); //$NON-NLS-1$
 		locationConfiguration.put("host", originalLocation.getHost()); //$NON-NLS-1$
-		locationConfiguration.put("port", String.valueOf(originalLocation.getPort())); //$NON-NLS-1$
+		locationConfiguration.put("port", Integer.toString(originalLocation.getPort())); //$NON-NLS-1$
 		locationConfiguration.put("root", originalLocation.getRootDirectory()); //$NON-NLS-1$
 		locationConfiguration.put("ecoding", originalLocation.getEncoding()); //$NON-NLS-1$
 
