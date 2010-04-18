@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.RMContext;
@@ -26,6 +27,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.ITeamReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.reader.ReferenceInfo;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -44,6 +46,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.internal.ccvs.core.CVSException;
@@ -53,6 +56,7 @@ import org.eclipse.team.internal.ccvs.core.CVSTeamProvider;
 import org.eclipse.team.internal.ccvs.core.ICVSRemoteResource;
 import org.eclipse.team.internal.ccvs.core.ICVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.client.Command;
+import org.eclipse.team.internal.ccvs.core.client.Session;
 import org.eclipse.team.internal.ccvs.core.connection.CVSRepositoryLocation;
 import org.eclipse.team.internal.ccvs.core.resources.CVSWorkspaceRoot;
 import org.eclipse.team.internal.ccvs.core.syncinfo.ResourceSyncInfo;
@@ -62,7 +66,7 @@ import org.eclipse.team.internal.ccvs.core.util.KnownRepositories;
  * @author Thomas Hallgren
  */
 @SuppressWarnings("restriction")
-public class CVSReaderType extends CatalogReaderType {
+public class CVSReaderType extends CatalogReaderType implements ITeamReaderType {
 	// The constructors of Command.LocalOption are not public
 	//
 	static class MyLocalOption extends Command.LocalOption {
@@ -295,5 +299,97 @@ public class CVSReaderType extends CatalogReaderType {
 		RepositoryProvider.map(project, cvsTypeID);
 		((CVSTeamProvider) RepositoryProvider.getProvider(project, cvsTypeID))
 				.setWatchEditEnabled(CVSProviderPlugin.getPlugin().isWatchEditEnabled());
+	}
+
+	@Override
+	public IStatus tag(RepositoryProvider provider, IResource[] resources, Map<String, String> mappings, String tag, boolean recurse,
+			IProgressMonitor progress) throws CVSException {
+		CVSWorkspaceRoot root = ((CVSTeamProvider) provider).getCVSWorkspaceRoot();
+		String mappedLocationString = mapLocation(mappings, root.getRemoteLocation());
+		KnownRepositories knownRepositories = KnownRepositories.getInstance();
+		boolean isUnknown = !knownRepositories.isKnownRepository(mappedLocationString);
+		ICVSRepositoryLocation mappedLocation = knownRepositories.getRepository(mappedLocationString);
+
+		Command.LocalOption[] commandOptions = Command.NO_LOCAL_OPTIONS;
+
+		if (!recurse)
+			commandOptions = Command.DO_NOT_RECURSE.addTo(commandOptions);
+
+		// Build the argument list
+		String[] arguments = buildResourceArguments(resources);
+
+		// Execute the command
+		progress.beginTask(null, 100);
+		try {
+			// if the repository is unknown, add it to the list of known
+			// repositories list temporarily
+			if (isUnknown)
+				knownRepositories.addRepository(mappedLocation, false);
+
+			Session session = new Session(mappedLocation, root.getLocalRoot());
+			// Opening the session takes 20% of the time
+			session.open(MonitorUtils.subMonitor(progress, 20), true);
+			try {
+				return Command.TAG.execute(session, Command.NO_GLOBAL_OPTIONS, commandOptions, new CVSTag(tag, CVSTag.VERSION), arguments, null,
+						MonitorUtils.subMonitor(progress, 80));
+			} finally {
+				session.close();
+			}
+		} finally {
+			try {
+				// remove the repository from the list of known repositories if
+				// it was not there before
+				if (isUnknown)
+					knownRepositories.disposeRepository(mappedLocation);
+			} finally {
+				progress.done();
+			}
+		}
+	}
+
+	/**
+	 * Return the arguments to be passed to the tag command
+	 */
+	protected String[] buildResourceArguments(IResource[] resources) throws CVSException {
+		String[] arguments = new String[resources.length];
+
+		for (int i = 0; i < resources.length; ++i) {
+			IPath cvsPath = resources[i].getFullPath().removeFirstSegments(1);
+			arguments[i] = (cvsPath.segmentCount() == 0) ? Session.CURRENT_LOCAL_FOLDER : cvsPath.toString();
+		}
+
+		return arguments;
+	}
+
+	/**
+	 * Return the repository location string resulting from the re-mapping of
+	 * the given <code>originalLocation</code> according to the given
+	 * <code>mappings</code>.
+	 */
+	protected String mapLocation(Map<String, String> mappings, ICVSRepositoryLocation originalLocation) throws CVSException {
+		Properties locationConfiguration = new Properties();
+
+		// the location mapping key string (which is expected to be a textual
+		// representation of a repository location) should not contain any user
+		// name or password part so we need to create a copy of the original
+		// location to ensure that these fields are not present in its string
+		// representation which we are going to use to lookup the mapping
+		locationConfiguration.put("connection", originalLocation.getMethod().getName()); //$NON-NLS-1$
+		locationConfiguration.put("host", originalLocation.getHost()); //$NON-NLS-1$
+		locationConfiguration.put("port", String.valueOf(originalLocation.getPort())); //$NON-NLS-1$
+		locationConfiguration.put("root", originalLocation.getRootDirectory()); //$NON-NLS-1$
+		locationConfiguration.put("ecoding", originalLocation.getEncoding()); //$NON-NLS-1$
+
+		// we need to set the user to an empty string to prevent an NPE in
+		// CVSRepositoryLocation.fromProperties()
+		locationConfiguration.put("user", ""); //$NON-NLS-1$ //$NON-NLS-2$
+
+		String locationString = CVSRepositoryLocation.fromProperties(locationConfiguration).getLocation(false);
+
+		locationString = mappings.get(locationString);
+		if (locationString == null)
+			return originalLocation.getLocation(false);
+
+		return locationString;
 	}
 }

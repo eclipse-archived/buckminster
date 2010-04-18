@@ -32,6 +32,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.metadata.MetadataSynchronizer.WorkspaceCatchUpJob;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
@@ -77,6 +78,8 @@ public class WorkspaceInfo {
 	 */
 	public static final QualifiedName PPKEY_GENERATED_CSPEC = new QualifiedName(CorePlugin.CORE_NAMESPACE, "generatedCSpec"); //$NON-NLS-1$
 
+	private static final Pattern MATCH_ALL = Pattern.compile("^"); //$NON-NLS-1$
+
 	private static boolean hasBeenActivated;
 
 	private static boolean hasBeenFullyInitialized;
@@ -95,6 +98,42 @@ public class WorkspaceInfo {
 		synchronized (locationCache) {
 			locationCache.remove(cid);
 		}
+	}
+
+	public static BillOfMaterials deepResolveLocal(IComponentRequest request, boolean useWorkspace, boolean continueOnError) throws CoreException {
+		checkFirstUse();
+
+		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
+		qbld.setRootRequest(request);
+		qbld.setPlatformAgnostic(true);
+
+		// Add an advisor node that matches the request and prohibits that we
+		// do something using an existing materialization or something external.
+		//
+		AdvisorNodeBuilder nodeBld = qbld.addAdvisorNode();
+		nodeBld.setNamePattern(Pattern.compile('^' + Pattern.quote(request.getName()) + '$'));
+		nodeBld.setComponentTypeID(request.getComponentTypeID());
+		nodeBld.setUseTargetPlatform(true);
+		nodeBld.setUseWorkspace(useWorkspace);
+		nodeBld.setUseMaterialization(false);
+		nodeBld.setUseRemoteResolution(false);
+
+		// Add an advisor node that matches all remaining components and
+		// prohibits that we do something external.
+		//
+		nodeBld = qbld.addAdvisorNode();
+		nodeBld.setNamePattern(MATCH_ALL);
+		nodeBld.setUseTargetPlatform(true);
+		nodeBld.setUseWorkspace(useWorkspace);
+		nodeBld.setUseMaterialization(useWorkspace);
+		nodeBld.setUseRemoteResolution(false);
+		nodeBld.setUseRemoteResolution(false);
+
+		ResolutionContext ctx = new ResolutionContext(qbld.createComponentQuery());
+		ctx.setSilentStatus(true);
+		ctx.setContinueOnError(continueOnError);
+		IResolver main = new MainResolver(ctx);
+		return main.resolve(new NullProgressMonitor());
 	}
 
 	public static void forceRefreshOnAll(IProgressMonitor monitor) {
@@ -370,6 +409,21 @@ public class WorkspaceInfo {
 		return extractProject(getResources(materialization));
 	}
 
+	public static IProject[] getProjectsInResolution(IComponentIdentifier componentIdentifier) throws CoreException {
+		VersionRange versionRange = VersionHelper.exactRange(componentIdentifier.getVersion());
+		ComponentRequest componetRequest = new ComponentRequest(componentIdentifier.getName(), componentIdentifier.getComponentTypeID(), versionRange);
+		BillOfMaterials resolution = deepResolveLocal(componetRequest, true, true);
+		ArrayList<IProject> projects = new ArrayList<IProject>();
+
+		for (Resolution member : resolution.findAll(Collections.<Resolution> emptySet())) {
+			IProject project = getProject(member.getCSpec().getComponentIdentifier());
+			if (project != null)
+				projects.add(project);
+		}
+
+		return projects.toArray(new IProject[projects.size()]);
+	}
+
 	public static Resolution getResolution(ComponentIdentifier wanted) throws CoreException {
 		return getResolution(wanted, false);
 	}
@@ -557,46 +611,18 @@ public class WorkspaceInfo {
 	}
 
 	public static Resolution resolveLocal(IComponentRequest request, boolean useWorkspace) throws CoreException {
-		checkFirstUse();
+		Resolution res;
 
 		if (performContextStack != null) {
-			Resolution res = performContextStack.peek().getGeneratedResolution(request);
+			res = performContextStack.peek().getGeneratedResolution(request);
 			if (res != null)
 				return res;
 		}
 
-		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
-		qbld.setRootRequest(request);
-		qbld.setPlatformAgnostic(true);
-
-		// Add an advisor node that matches the request and prohibits that we
-		// do something using an existing materialization or something external.
-		//
-		AdvisorNodeBuilder nodeBld = qbld.addAdvisorNode();
-		nodeBld.setNamePattern(Pattern.compile("^\\Q" + request.getName() + "\\E$")); //$NON-NLS-1$ //$NON-NLS-2$
-		nodeBld.setComponentTypeID(request.getComponentTypeID());
-		nodeBld.setUseTargetPlatform(true);
-		nodeBld.setUseWorkspace(useWorkspace);
-		nodeBld.setUseMaterialization(false);
-		nodeBld.setUseRemoteResolution(false);
-
-		// Add an advisor node that matches all remaining components and
-		// prohibits that we
-		// do something external.
-		//
-		nodeBld = qbld.addAdvisorNode();
-		nodeBld.setNamePattern(Pattern.compile(".*")); //$NON-NLS-1$
-		nodeBld.setUseTargetPlatform(true);
-		nodeBld.setUseWorkspace(useWorkspace);
-		nodeBld.setUseMaterialization(useWorkspace);
-		nodeBld.setUseRemoteResolution(false);
-
-		ResolutionContext ctx = new ResolutionContext(qbld.createComponentQuery());
-		ctx.setSilentStatus(true);
-		IResolver main = new MainResolver(ctx);
-		Resolution res = main.resolve(new NullProgressMonitor()).getResolution();
+		res = deepResolveLocal(request, useWorkspace, false).getResolution();
 		if (res == null)
 			throw new MissingComponentException(request.toString());
+
 		return res;
 	}
 
