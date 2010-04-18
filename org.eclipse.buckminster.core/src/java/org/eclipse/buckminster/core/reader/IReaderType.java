@@ -363,7 +363,7 @@ public interface IReaderType extends IBuckminsterExtension {
 	 *            The materialization context.
 	 * @param monitor
 	 *            The monitor used for progress reporting
-	 * @param monitor
+	 * @throws CoreException
 	 */
 	void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException;
 }
