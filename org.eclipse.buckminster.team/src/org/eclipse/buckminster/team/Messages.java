@@ -19,10 +19,11 @@ public class Messages extends NLS {
 	public static String problems_during_0;
 	public static String processing_of_0;
 	public static String processing_project_0;
-	public static String tag_not_supplied;
+	public static String required_properties_not_supplied_0;
 	public static String tagging_project_0;
 	public static String workspace_resolution_tagging_of_0;
 	public static String unrecognized_properties_supplied_0;
+	public static String recognized_properties_0;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

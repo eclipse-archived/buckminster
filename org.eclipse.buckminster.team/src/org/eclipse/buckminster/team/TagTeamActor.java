@@ -17,6 +17,7 @@ import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.reader.ITeamReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.IResource;
@@ -64,7 +65,7 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 						// fall through
 					}
 				} else if (name.equals(TAG_PROPERTY_NAME)) {
-					tag = (String) property.getValue();
+					tag = ExpandingProperties.expand(actionContext.getProperties(), (String) property.getValue(), 0);
 					continue;
 				}
 				if (message == null)
@@ -74,14 +75,16 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 				message.append(name);
 			}
 
-			if (message != null)
-				throw new CoreException(createStatus(NLS.bind(Messages.unrecognized_properties_supplied_0, message.toString())));
-
 			if (tag == null || tag.length() == 0)
-				throw new CoreException(createStatus(Messages.tag_not_supplied));
+				throw new CoreException(createStatus(NLS.bind(Messages.required_properties_not_supplied_0, TAG_PROPERTY_NAME)));
+
+			if (message != null)
+				throw new CoreException(createStatus(NLS.bind(Messages.unrecognized_properties_supplied_0, message.toString()) + '\n'
+						+ NLS.bind(Messages.recognized_properties_0, TAG_PROPERTY_NAME + Messages.list_separator + MAPPING_PROPERTY_PREFIX + "<n>"))); //$NON-NLS-1$
 
 			for (Map.Entry<String, ?> mapping : sortedMappings.values()) {
-				String[] mappingFields = WHITESPACE_PATTERN.split(((String) mapping.getValue()).trim(), 0);
+				String mappingString = ExpandingProperties.expand(actionContext.getProperties(), (String) mapping.getValue(), 0);
+				String[] mappingFields = WHITESPACE_PATTERN.split(mappingString.trim(), 0);
 				if (mappingFields.length != 3) {
 					if (message == null)
 						message = new StringBuilder();
