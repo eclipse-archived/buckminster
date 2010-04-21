@@ -6,6 +6,9 @@
    <feature id="org.eclipse.buckminster.cvs.feature" version="0.0.0">
       <category name="buckminster"/>
    </feature>
+   <feature id="org.eclipse.buckminster.git.feature" version="0.0.0">
+      <category name="buckminster"/>
+   </feature>
    <feature id="org.eclipse.buckminster.maven.feature" version="0.0.0">
       <category name="buckminster"/>
    </feature>
@@ -25,6 +28,9 @@
       <category name="buckminster.source"/>
    </feature>
    <feature id="org.eclipse.buckminster.cvs.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.git.source.feature" version="0.0.0">
       <category name="buckminster.source"/>
    </feature>
    <feature id="org.eclipse.buckminster.maven.source.feature" version="0.0.0">
