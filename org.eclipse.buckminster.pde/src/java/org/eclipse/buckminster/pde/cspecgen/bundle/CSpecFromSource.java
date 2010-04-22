@@ -383,7 +383,7 @@ public class CSpecFromSource extends CSpecGenerator {
 		if (binIncludesEntry != null) {
 			GroupBuilder binIncludesSource = null;
 			cnt = 0;
-			for (String token : binIncludesEntry.getTokens()) {
+			for (String token : expandIncludes(binIncludesEntry.getTokens())) {
 				if (token.length() == 0)
 					continue;
 
@@ -431,7 +431,7 @@ public class CSpecFromSource extends CSpecGenerator {
 		IBuildEntry srcIncludesEntry = build.getEntry(IBuildEntry.SRC_INCLUDES);
 		if (srcIncludesEntry != null) {
 			cnt = 0;
-			for (String token : srcIncludesEntry.getTokens()) {
+			for (String token : expandIncludes(srcIncludesEntry.getTokens())) {
 				if (token.length() == 0)
 					continue;
 

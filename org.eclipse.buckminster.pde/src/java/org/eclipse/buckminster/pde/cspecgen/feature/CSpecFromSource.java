@@ -8,7 +8,6 @@
 package org.eclipse.buckminster.pde.cspecgen.feature;
 
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.cspec.builder.ActionArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
@@ -25,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.p2.core.helpers.StringHelper;
 import org.eclipse.pde.core.build.IBuildEntry;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureInfo;
@@ -32,7 +32,7 @@ import org.eclipse.pde.internal.core.ifeature.IFeatureInfo;
 @SuppressWarnings("restriction")
 public class CSpecFromSource extends CSpecFromFeature {
 	private static boolean isLocalized(String str) {
-		return str != null && str.startsWith("%");
+		return str != null && str.startsWith("%"); //$NON-NLS-1$
 	}
 
 	private final Map<String, String> buildProperties;
@@ -158,9 +158,7 @@ public class CSpecFromSource extends CSpecFromFeature {
 
 	private void createBinIncludesArtifact(String binIncludesStr) throws CoreException {
 		ArtifactBuilder binIncludes = null;
-		StringTokenizer tokens = new StringTokenizer(binIncludesStr, ","); //$NON-NLS-1$
-		while (tokens.hasMoreTokens()) {
-			String path = tokens.nextToken().trim();
+		for (String path : expandIncludes(StringHelper.getArrayFromString(binIncludesStr, ','))) {
 			if (FEATURE_FILE.equals(path))
 				//
 				// Handled separately

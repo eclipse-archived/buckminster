@@ -11,9 +11,11 @@ package org.eclipse.buckminster.pde.cspecgen;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.RMContext;
@@ -184,6 +186,43 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	private static final ImportSpecification[] noRequiredBundles = new ImportSpecification[0];
 
+	protected static String buildArtifactName(String id, String ver, boolean asJar) {
+		StringBuilder bld = new StringBuilder();
+		bld.append(id);
+		if (ver != null) {
+			bld.append('_');
+			bld.append(ver);
+		}
+		if (asJar)
+			bld.append(".jar"); //$NON-NLS-1$
+		else
+			bld.append('/');
+		return bld.toString();
+	}
+
+	private static Pattern convertIncludeToPattern(String include) {
+		int len = include.length();
+		StringBuilder bld = new StringBuilder(len + 4);
+		for (int idx = 0; idx < len; ++idx) {
+			char c = include.charAt(idx);
+			switch (c) {
+				case '?':
+					bld.append('.');
+					break;
+				case '*':
+					bld.append('.');
+					bld.append('*');
+					break;
+				case '.':
+					bld.append('\\');
+					bld.append('.');
+				default:
+					bld.append(c);
+			}
+		}
+		return Pattern.compile(bld.toString());
+	}
+
 	/**
 	 * Create a version range based on a PDE <code>matchRule</code> and a
 	 * <code>version</code>.
@@ -213,6 +252,53 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		if (!retainLowerBound)
 			lower = limitLowerWithMatchRule(version, matchRule);
 		return new VersionRange(lower, true, upper, matchRule == IMatchRules.GREATER_OR_EQUAL);
+	}
+
+	protected static ImportSpecification[] getImports(IPluginBase plugin) throws CoreException {
+		IPluginModelBase model = plugin.getPluginModel();
+		BundleDescription bundleDesc = model.getBundleDescription();
+		BundleSpecification[] imports;
+		if (bundleDesc != null) {
+			imports = bundleDesc.getRequiredBundles();
+			if (imports == null)
+				return noRequiredBundles;
+
+			int sz = imports.length;
+			if (sz == 0)
+				return noRequiredBundles;
+
+			ImportSpecification[] importSpecs = new ImportSpecification[sz];
+			while (--sz >= 0)
+				importSpecs[sz] = new ImportSpecification(imports[sz]);
+			return importSpecs;
+		}
+
+		if (!(model instanceof IBundlePluginModelBase))
+			return noRequiredBundles;
+
+		IBundleModel bundleModel = ((IBundlePluginModelBase) model).getBundleModel();
+		ManifestHeader header = (ManifestHeader) bundleModel.getBundle().getManifestHeader(Constants.REQUIRE_BUNDLE);
+		if (header == null)
+			return noRequiredBundles;
+
+		ManifestElement[] elems = null;
+		try {
+			elems = ManifestElement.parseHeader(header.getKey(), header.getValue());
+		} catch (BundleException e) {
+		}
+		if (elems == null)
+			return noRequiredBundles;
+
+		int sz = elems.length;
+		if (sz == 0)
+			return noRequiredBundles;
+
+		ImportSpecification[] importSpecs = new ImportSpecification[sz];
+		while (--sz >= 0) {
+			RequireBundleObject r = new RequireBundleObject(header, elems[sz]);
+			importSpecs[sz] = new ImportSpecification(r.getId(), new VersionRange(r.getVersion()), r.isReexported(), r.isOptional());
+		}
+		return importSpecs;
 	}
 
 	public static int getMatchRule(String matchRuleString) {
@@ -265,67 +351,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return v;
 	}
 
-	protected static String buildArtifactName(String id, String ver, boolean asJar) {
-		StringBuilder bld = new StringBuilder();
-		bld.append(id);
-		if (ver != null) {
-			bld.append('_');
-			bld.append(ver);
-		}
-		if (asJar)
-			bld.append(".jar"); //$NON-NLS-1$
-		else
-			bld.append('/');
-		return bld.toString();
-	}
-
-	protected static ImportSpecification[] getImports(IPluginBase plugin) throws CoreException {
-		IPluginModelBase model = plugin.getPluginModel();
-		BundleDescription bundleDesc = model.getBundleDescription();
-		BundleSpecification[] imports;
-		if (bundleDesc != null) {
-			imports = bundleDesc.getRequiredBundles();
-			if (imports == null)
-				return noRequiredBundles;
-
-			int sz = imports.length;
-			if (sz == 0)
-				return noRequiredBundles;
-
-			ImportSpecification[] importSpecs = new ImportSpecification[sz];
-			while (--sz >= 0)
-				importSpecs[sz] = new ImportSpecification(imports[sz]);
-			return importSpecs;
-		}
-
-		if (!(model instanceof IBundlePluginModelBase))
-			return noRequiredBundles;
-
-		IBundleModel bundleModel = ((IBundlePluginModelBase) model).getBundleModel();
-		ManifestHeader header = (ManifestHeader) bundleModel.getBundle().getManifestHeader(Constants.REQUIRE_BUNDLE);
-		if (header == null)
-			return noRequiredBundles;
-
-		ManifestElement[] elems = null;
-		try {
-			elems = ManifestElement.parseHeader(header.getKey(), header.getValue());
-		} catch (BundleException e) {
-		}
-		if (elems == null)
-			return noRequiredBundles;
-
-		int sz = elems.length;
-		if (sz == 0)
-			return noRequiredBundles;
-
-		ImportSpecification[] importSpecs = new ImportSpecification[sz];
-		while (--sz >= 0) {
-			RequireBundleObject r = new RequireBundleObject(header, elems[sz]);
-			importSpecs[sz] = new ImportSpecification(r.getId(), new VersionRange(r.getVersion()), r.isReexported(), r.isOptional());
-		}
-		return importSpecs;
-	}
-
 	private final CSpecBuilder cspecBuilder;
 
 	private final ICatalogReader reader;
@@ -335,40 +360,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected CSpecGenerator(CSpecBuilder cspecBuilder, ICatalogReader reader) {
 		this.cspecBuilder = cspecBuilder;
 		this.reader = reader;
-	}
-
-	public VersionRange convertMatchRule(int pdeMatchRule, String version) throws CoreException {
-		boolean retainLowerBound = false;
-		if (pdeMatchRule == IMatchRules.NONE) {
-			Map<String, String> props = getProperties();
-			String prop = props.get(PROP_PDE_MATCH_RULE_DEFAULT);
-			if (prop == null)
-				prop = IMatchRules.RULE_EQUIVALENT;
-			pdeMatchRule = CSpecGenerator.getMatchRule(prop);
-			retainLowerBound = VersionConsolidator.getBooleanProperty(props, PROP_PDE_MATCH_RULE_RETAIN_LOWER, false);
-		}
-		version = Trivial.trim(version);
-		if (version == null || version.equals("0.0.0")) //$NON-NLS-1$
-			return null;
-
-		char c = version.charAt(0);
-		if (c == '[' || c == '(')
-			//
-			// Already an OSGi range, just ignore the rule then.
-			//
-			return new VersionRange(version);
-
-		return createRuleBasedRange(pdeMatchRule, retainLowerBound, Version.parseVersion(version));
-	}
-
-	public abstract void generate(IProgressMonitor monitor) throws CoreException;
-
-	public CSpecBuilder getCSpec() {
-		return cspecBuilder;
-	}
-
-	public ICatalogReader getReader() {
-		return reader;
 	}
 
 	protected ActionBuilder addAntAction(String actionName, String targetName, boolean asPublic) throws CoreException {
@@ -402,6 +393,56 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		pqBld.setComponentType(type);
 		pqBld.setName(name);
 		group.addPrerequisite(pqBld);
+	}
+
+	private void addProduct(FileHandle productConfig, boolean theOneAndOnly, IProgressMonitor monitor) throws CoreException, IOException {
+		try {
+			File productConfigFile = productConfig.getFile();
+			IProductDescriptor productDescriptor;
+			try {
+				productDescriptor = new ProductFile(productConfigFile.getAbsolutePath());
+			} catch (RuntimeException e) {
+				throw e;
+			} catch (IOException e) {
+				throw e;
+			} catch (Exception e) {
+				throw BuckminsterException.wrap(e);
+			}
+
+			CSpecBuilder cspec = getCSpec();
+			ArtifactBuilder productConfigArtifact = cspec.addArtifact(productDescriptor.getId(), false, null);
+			productConfigArtifact.addPath(Path.fromOSString(productConfigFile.getName()));
+			GroupBuilder productConfigs = cspec.getGroup(ATTRIBUTE_PRODUCT_CONFIGS);
+			if (productConfigs == null) {
+				productConfigs = cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIGS, false);
+				cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS).addLocalPrerequisite(productConfigs);
+			}
+			productConfigs.addLocalPrerequisite(productConfigArtifact);
+			if (productDescriptor.useFeatures())
+				addProductFeatures(productDescriptor);
+			else
+				addProductBundles(productDescriptor);
+
+			if (!theOneAndOnly)
+				// We're done here.
+				return;
+
+			if (!isFeature()) {
+				// This bundle must be able to create a site for its product
+				//
+				GroupBuilder featureExports = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
+				featureExports.addLocalPrerequisite(createCopyPluginsAction());
+				featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
+			}
+			createSiteRepackAction(ATTRIBUTE_FEATURE_EXPORTS);
+			createSiteSignAction(ATTRIBUTE_FEATURE_EXPORTS);
+			createSitePackAction(ATTRIBUTE_FEATURE_EXPORTS);
+			createSiteAction(ATTRIBUTE_FEATURE_EXPORTS, productConfigArtifact.getName());
+			createSiteZipAction();
+		} finally {
+			if (productConfig.isTemporary())
+				productConfig.getFile().delete();
+		}
 	}
 
 	protected void addProductBundles(IProductDescriptor productDescriptor) throws CoreException {
@@ -467,6 +508,30 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		} finally {
 			monitor.done();
 		}
+	}
+
+	public VersionRange convertMatchRule(int pdeMatchRule, String version) throws CoreException {
+		boolean retainLowerBound = false;
+		if (pdeMatchRule == IMatchRules.NONE) {
+			Map<String, String> props = getProperties();
+			String prop = props.get(PROP_PDE_MATCH_RULE_DEFAULT);
+			if (prop == null)
+				prop = IMatchRules.RULE_EQUIVALENT;
+			pdeMatchRule = CSpecGenerator.getMatchRule(prop);
+			retainLowerBound = VersionConsolidator.getBooleanProperty(props, PROP_PDE_MATCH_RULE_RETAIN_LOWER, false);
+		}
+		version = Trivial.trim(version);
+		if (version == null || version.equals("0.0.0")) //$NON-NLS-1$
+			return null;
+
+		char c = version.charAt(0);
+		if (c == '[' || c == '(')
+			//
+			// Already an OSGi range, just ignore the rule then.
+			//
+			return new VersionRange(version);
+
+		return createRuleBasedRange(pdeMatchRule, retainLowerBound, Version.parseVersion(version));
 	}
 
 	protected ActionBuilder createCopyPluginsAction() throws CoreException {
@@ -590,6 +655,28 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return value;
 	}
 
+	protected List<String> expandIncludes(String[] tokens) throws CoreException {
+		if (tokens == null || tokens.length == 0)
+			return Collections.emptyList();
+
+		ArrayList<String> result = new ArrayList<String>(tokens.length);
+		for (String token : tokens) {
+			if (token.indexOf('*') >= 0) {
+				Pattern pattern = convertIncludeToPattern(token);
+				try {
+					for (FileHandle matchingFile : reader.getRootFiles(pattern, new NullProgressMonitor()))
+						result.add(matchingFile.getName());
+				} catch (IOException e) {
+					throw BuckminsterException.wrap(e);
+				}
+			} else
+				result.add(token);
+		}
+		return result;
+	}
+
+	public abstract void generate(IProgressMonitor monitor) throws CoreException;
+
 	protected AttributeBuilder generateRemoveDirAction(String dirTag, IPath dirPath, boolean publ) throws CoreException {
 		return generateRemoveDirAction(dirTag, dirPath, publ, "buckminster.rm." + dirTag + ".dir"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
@@ -598,6 +685,10 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		ActionBuilder rmDir = addAntAction(actionName, TASK_DELETE_DIR, publ);
 		rmDir.addProperty(PROP_DELETE_DIR, dirPath.toPortableString(), false);
 		return rmDir;
+	}
+
+	public CSpecBuilder getCSpec() {
+		return cspecBuilder;
 	}
 
 	protected abstract String getProductOutputFolder(String productId);
@@ -616,6 +707,10 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	}
 
 	protected abstract String getPropertyFileName();
+
+	public ICatalogReader getReader() {
+		return reader;
+	}
 
 	protected boolean isFeature() {
 		return false;
@@ -642,55 +737,5 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	protected boolean skipComponent(ComponentQuery query, ComponentRequestBuilder bld) {
 		return query.skipComponent(new ComponentName(bld.getName(), bld.getComponentTypeID()), getReader().getNodeQuery().getContext());
-	}
-
-	private void addProduct(FileHandle productConfig, boolean theOneAndOnly, IProgressMonitor monitor) throws CoreException, IOException {
-		try {
-			File productConfigFile = productConfig.getFile();
-			IProductDescriptor productDescriptor;
-			try {
-				productDescriptor = new ProductFile(productConfigFile.getAbsolutePath());
-			} catch (RuntimeException e) {
-				throw e;
-			} catch (IOException e) {
-				throw e;
-			} catch (Exception e) {
-				throw BuckminsterException.wrap(e);
-			}
-
-			CSpecBuilder cspec = getCSpec();
-			ArtifactBuilder productConfigArtifact = cspec.addArtifact(productDescriptor.getId(), false, null);
-			productConfigArtifact.addPath(Path.fromOSString(productConfigFile.getName()));
-			GroupBuilder productConfigs = cspec.getGroup(ATTRIBUTE_PRODUCT_CONFIGS);
-			if (productConfigs == null) {
-				productConfigs = cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIGS, false);
-				cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS).addLocalPrerequisite(productConfigs);
-			}
-			productConfigs.addLocalPrerequisite(productConfigArtifact);
-			if (productDescriptor.useFeatures())
-				addProductFeatures(productDescriptor);
-			else
-				addProductBundles(productDescriptor);
-
-			if (!theOneAndOnly)
-				// We're done here.
-				return;
-
-			if (!isFeature()) {
-				// This bundle must be able to create a site for its product
-				//
-				GroupBuilder featureExports = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
-				featureExports.addLocalPrerequisite(createCopyPluginsAction());
-				featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
-			}
-			createSiteRepackAction(ATTRIBUTE_FEATURE_EXPORTS);
-			createSiteSignAction(ATTRIBUTE_FEATURE_EXPORTS);
-			createSitePackAction(ATTRIBUTE_FEATURE_EXPORTS);
-			createSiteAction(ATTRIBUTE_FEATURE_EXPORTS, productConfigArtifact.getName());
-			createSiteZipAction();
-		} finally {
-			if (productConfig.isTemporary())
-				productConfig.getFile().delete();
-		}
 	}
 }
