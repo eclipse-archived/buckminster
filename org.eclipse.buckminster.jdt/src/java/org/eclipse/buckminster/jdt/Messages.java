@@ -9,7 +9,16 @@ public class Messages extends NLS {
 
 	public static String parsing_classpath;
 
+	public static String publishing_jre;
+
 	public static String unexpected_classpath_entry_kind;
+
+	public static String list_separator;
+
+	public static String unrecognized_properties_supplied_0;
+
+	public static String recognized_properties_0;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -28,6 +28,10 @@
           ID="jdt.ant"
           class="org.eclipse.buckminster.jdt.internal.actor.JdtAntActor"
           name="JDT Ant Actor"/>
+    <actor
+          ID="buckminster.JREPublisher"
+          class="org.eclipse.buckminster.jdt.internal.actor.JREpublisherActor"
+          name="JRE IU Publisher Actor"/>
  </extension>
  <extension
        point="org.eclipse.ant.core.antTasks">
@@ -35,6 +39,10 @@
           class="org.eclipse.buckminster.jdt.ant.ProjectClasspath"
           library="ant_tasks/ant_tasks.jar"
           name="buckminster.projectClasspath"/>
+    <antTask
+          class="org.eclipse.buckminster.jdt.ant.PublishJRETask"
+          library="ant_tasks/ant_tasks.jar"
+          name="buckminster.publishJRE"/>
  </extension>
  <extension
        point="org.eclipse.buckminster.cmdline.commands">
