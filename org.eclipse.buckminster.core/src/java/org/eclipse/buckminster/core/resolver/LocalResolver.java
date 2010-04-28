@@ -83,7 +83,7 @@ import org.eclipse.osgi.util.NLS;
  * @author Thomas Hallgren
  */
 @SuppressWarnings({ "serial" })
-public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implements IResolver {
+public class LocalResolver extends HashMap<String, ResolverNode[]> implements IResolver {
 	public static final Provider INSTALLED_BUNDLE_PROVIDER;
 
 	public static final Provider INSTALLED_FEATURE_PROVIDER;
@@ -430,7 +430,8 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		// designator to play a role here.
 		//
 		ComponentRequest request = qDep.getRequest();
-		ComponentName key = request.toPureComponentName();
+		String key = request.getName();
+		String type = request.getComponentTypeID();
 		ResolverNode[] nrs;
 		boolean infant;
 		synchronized (this) {
@@ -458,6 +459,9 @@ public class LocalResolver extends HashMap<ComponentName, ResolverNode[]> implem
 		for (int idx = 0; idx < top; ++idx) {
 			nr = nrs[idx];
 			ComponentRequest oldRq = nr.getQuery().getComponentRequest();
+			if (!(type == null || oldRq.getComponentTypeID() == null || type.equals(oldRq.getComponentTypeID())))
+				continue;
+
 			if (newRqOptional != oldRq.isOptional()) {
 				// We don't want a version conflict if one of the ranges are
 				// optional.
