@@ -12,7 +12,11 @@ package org.eclipse.buckminster.cmdline;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.eclipse.buckminster.cmdline.parser.ParseResult;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -29,6 +33,21 @@ abstract public class AbstractCommand {
 	private CommandInfo cmdInfo;
 
 	private boolean addHelpFlags;
+
+	private Map<String, String> properties;
+
+	public void addProperties(Map<String, String> props) {
+		if (properties == null)
+			properties = new HashMap<String, String>(props);
+		else
+			properties.putAll(props);
+	}
+
+	public void addProperty(String key, String value) {
+		if (properties == null)
+			properties = new HashMap<String, String>();
+		properties.put(key, value);
+	}
 
 	public ProgressProvider getProgressProvider() {
 		return new ProgressProvider() {
@@ -122,11 +141,19 @@ abstract public class AbstractCommand {
 		if (addHelpFlags)
 			optionDescriptors.add(helpDescriptor);
 
+		Properties sysProps = null;
 		try {
 			boolean helpRequested = this.parseOptions(commandArgs, optionDescriptors);
 			if (helpRequested) {
 				this.help();
 				return Headless.EXIT_OK;
+			}
+			if (properties != null && !properties.isEmpty()) {
+				sysProps = System.getProperties();
+				Properties cmdProps = new Properties(sysProps);
+				for (Entry<String, String> entry : properties.entrySet())
+					cmdProps.setProperty(entry.getKey(), entry.getValue());
+				System.setProperties(cmdProps);
 			}
 			return this.run(this.getProgressProvider().getDefaultMonitor());
 		} catch (UsageException e) {
@@ -134,6 +161,9 @@ abstract public class AbstractCommand {
 			if (e.isEmitHelp())
 				this.help();
 			return Headless.EXIT_FAIL;
+		} finally {
+			if (sysProps != null)
+				System.setProperties(sysProps);
 		}
 	}
 

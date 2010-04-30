@@ -7,12 +7,18 @@
  *****************************************************************************/
 package org.eclipse.buckminster.cmdline;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.cmdline.parser.CommandLineParser;
 import org.eclipse.buckminster.cmdline.parser.InvalidOptionValueException;
@@ -22,11 +28,13 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.Trivial;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * This class controls all aspects of the application's execution
@@ -95,7 +103,17 @@ public class Headless implements IApplication, OptionValueType {
 	//
 	private static final OptionDescriptor FILE = new OptionDescriptor('S', "scriptfile", REQUIRED); //$NON-NLS-1$
 
+	static private final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define", //$NON-NLS-1$
+			OptionValueType.REQUIRED);
+
+	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties", //$NON-NLS-1$
+			OptionValueType.REQUIRED);
+
+	private static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$"); //$NON-NLS-1$
+
 	private final ArrayList<Invocation> invocations = new ArrayList<Invocation>();
+
+	private Properties props;
 
 	private boolean displayStackTrace = false;
 
@@ -104,6 +122,12 @@ public class Headless implements IApplication, OptionValueType {
 	private boolean usingScript = false;
 
 	private int logLevel = Logger.INFO;
+
+	public void addProperty(String key, String value) {
+		if (props == null)
+			props = new Properties(System.getProperties());
+		props.put(key, value);
+	}
 
 	public Object run(Object objArgs) throws Exception {
 		Buckminster.setHeadless();
@@ -158,6 +182,8 @@ public class Headless implements IApplication, OptionValueType {
 		optionArr.add(FILE);
 		optionArr.add(HELP);
 		optionArr.add(LOG_LEVEL);
+		optionArr.add(DEFINE_DESCRIPTOR);
+		optionArr.add(PROPERTIES_DESCRIPTOR);
 		ParseResult pr = ParseResult.parse(args, optionArr);
 		String scriptFile = null;
 
@@ -185,6 +211,29 @@ public class Headless implements IApplication, OptionValueType {
 				else
 					throw new InvalidOptionValueException(option.getName(), option.getValue());
 				logLevel = level;
+			} else if (option.is(DEFINE_DESCRIPTOR)) {
+				String v = option.getValue();
+				Matcher m = DEFINE_PATTERN.matcher(v);
+				if (!m.matches())
+					throw new IllegalArgumentException(NLS.bind(Messages.Not_a_key_value_string_0, v));
+				String key = m.group(1);
+				String value = m.group(2) == null ? "" //$NON-NLS-1$
+						: m.group(2);
+				addProperty(key, value);
+			} else if (option.is(PROPERTIES_DESCRIPTOR)) {
+				String v = option.getValue();
+				InputStream input = null;
+				try {
+					URL propsURL = URLUtils.normalizeToURL(v);
+					input = new BufferedInputStream(propsURL.openStream());
+					if (props == null)
+						props = new Properties(System.getProperties());
+					props.load(input);
+				} catch (MalformedURLException e) {
+					throw new IllegalArgumentException(NLS.bind(Messages.Invalid_URL_or_Path_0, v));
+				} finally {
+					IOUtils.close(input);
+				}
 			} else
 				throw new InternalError(Messages.Headless_Unexpected_option);
 		}
@@ -248,21 +297,33 @@ public class Headless implements IApplication, OptionValueType {
 		}
 
 		Logger logger = Buckminster.getLogger();
-		for (int idx = 0; idx < top; ++idx) {
-			Invocation invocation = invocations.get(idx);
-			String commandName = invocation.getName();
-			CommandInfo ci = CommandInfo.getCommand(commandName);
-			AbstractCommand cmd = ci.createInstance();
-			jobMgr.setProgressProvider(cmd.getProgressProvider());
 
-			if (logger.isDebugEnabled())
-				logger.debug(invocation.toString());
-			else if (usingScript)
-				logger.info(invocation.toString());
-			int exitValue = cmd.basicRun(commandName, ci, invocation.getArgs());
-			if (exitValue != EXIT_OK)
-				return exitValue;
+		Properties sysProps = null;
+		if (props != null) {
+			sysProps = System.getProperties();
+			System.setProperties(props);
+		}
+		try {
+			for (int idx = 0; idx < top; ++idx) {
+				Invocation invocation = invocations.get(idx);
+				String commandName = invocation.getName();
+				CommandInfo ci = CommandInfo.getCommand(commandName);
+				AbstractCommand cmd = ci.createInstance();
+				jobMgr.setProgressProvider(cmd.getProgressProvider());
+
+				if (logger.isDebugEnabled())
+					logger.debug(invocation.toString());
+				else if (usingScript)
+					logger.info(invocation.toString());
+				int exitValue = cmd.basicRun(commandName, ci, invocation.getArgs());
+				if (exitValue != EXIT_OK)
+					return exitValue;
+			}
+		} finally {
+			if (sysProps != null)
+				System.setProperties(sysProps);
 		}
 		return EXIT_OK;
 	}
+
 }

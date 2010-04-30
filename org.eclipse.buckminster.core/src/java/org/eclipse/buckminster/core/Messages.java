@@ -315,11 +315,7 @@ public class Messages extends NLS {
 
 	public static String Errors;
 
-	public static String Invalid_URL_or_Path_0;
-
 	public static String No_attributes_specified;
-
-	public static String Not_a_key_value_string_0;
 
 	public static String Too_many_warnings_Exiting_with_error_status;
 

@@ -53,6 +53,8 @@ public class Messages extends NLS {
 
 	public static String InvalidOptionValueException_The_value_for_option_0_is_invalid;
 
+	public static String Invalid_URL_or_Path_0;
+
 	public static String ListCommands_Available_commands_by_namespace;
 
 	public static String ListCommands_Available_commands_including_aliases;
@@ -60,6 +62,8 @@ public class Messages extends NLS {
 	public static String Missing_bundle_0;
 
 	public static String No_handler_registered_for_preference_0;
+
+	public static String Not_a_key_value_string_0;
 
 	public static String NoOptionNameException_Missing_option_name;
 
