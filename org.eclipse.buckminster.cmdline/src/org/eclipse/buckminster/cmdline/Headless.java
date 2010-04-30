@@ -238,6 +238,9 @@ public class Headless implements IApplication, OptionValueType {
 				throw new InternalError(Messages.Headless_Unexpected_option);
 		}
 
+		if (props != null)
+			System.setProperties(props);
+
 		String[] unparsed = pr.getUnparsed();
 		if (unparsed.length > 0) {
 			if (scriptFile != null)
@@ -275,35 +278,31 @@ public class Headless implements IApplication, OptionValueType {
 	}
 
 	protected int run(String[] args) throws Exception {
-		parse(args);
-
-		Logger.setConsoleLevelThreshold(logLevel);
-		Logger.setEclipseLoggerLevelThreshold(logLevel);
-		Logger.setEclipseLoggerToConsole(true);
-
-		if (help) {
-			help(System.out);
-			return EXIT_OK;
-		}
-
-		final IJobManager jobMgr = Job.getJobManager();
-		int top = invocations.size();
-		if (top == 0) {
-			System.out.println(Messages.Headless_No_command_provided_Try_one_of);
-			System.out.println(Messages.Headless_buckminster__help);
-			System.out.println(Messages.Headless_buckminster_listcommands);
-			System.out.println(Messages.Headless_buckminster_command__help);
-			return EXIT_FAIL;
-		}
-
-		Logger logger = Buckminster.getLogger();
-
-		Properties sysProps = null;
-		if (props != null) {
-			sysProps = System.getProperties();
-			System.setProperties(props);
-		}
+		Properties sysProps = System.getProperties();
 		try {
+			parse(args);
+
+			Logger.setConsoleLevelThreshold(logLevel);
+			Logger.setEclipseLoggerLevelThreshold(logLevel);
+			Logger.setEclipseLoggerToConsole(true);
+
+			if (help) {
+				help(System.out);
+				return EXIT_OK;
+			}
+
+			final IJobManager jobMgr = Job.getJobManager();
+			int top = invocations.size();
+			if (top == 0) {
+				System.out.println(Messages.Headless_No_command_provided_Try_one_of);
+				System.out.println(Messages.Headless_buckminster__help);
+				System.out.println(Messages.Headless_buckminster_listcommands);
+				System.out.println(Messages.Headless_buckminster_command__help);
+				return EXIT_FAIL;
+			}
+
+			Logger logger = Buckminster.getLogger();
+
 			for (int idx = 0; idx < top; ++idx) {
 				Invocation invocation = invocations.get(idx);
 				String commandName = invocation.getName();
@@ -320,7 +319,7 @@ public class Headless implements IApplication, OptionValueType {
 					return exitValue;
 			}
 		} finally {
-			if (sysProps != null)
+			if (props != null)
 				System.setProperties(sysProps);
 		}
 		return EXIT_OK;
