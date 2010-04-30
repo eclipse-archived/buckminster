@@ -68,6 +68,7 @@ public class ListCommands extends AbstractCommand {
 		appendHere.add(HIDDEN_OPT);
 		appendHere.add(DISABLED_OPT);
 		appendHere.add(STYLE_OPT);
+		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
@@ -78,6 +79,8 @@ public class ListCommands extends AbstractCommand {
 			showDisabled = true;
 		else if (option.is(STYLE_OPT))
 			style = parseStyle(option.getValue().toUpperCase());
+		else
+			super.handleOption(option);
 	}
 
 	@Override

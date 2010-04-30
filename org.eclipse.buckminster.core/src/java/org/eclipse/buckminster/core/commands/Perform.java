@@ -59,10 +59,10 @@ public class Perform extends WorkspaceCommand {
 
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
-		super.getOptionDescriptors(appendHere);
 		appendHere.add(MAXWARNINGS_DESCRIPTOR);
 		appendHere.add(FORCED_DESCRIPTOR);
 		appendHere.add(QUIET_DESCRIPTOR);
+		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override

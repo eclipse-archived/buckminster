@@ -10,16 +10,22 @@
 
 package org.eclipse.buckminster.cmdline;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.regex.Matcher;
 
 import org.eclipse.buckminster.cmdline.parser.ParseResult;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.ProgressProvider;
@@ -102,10 +108,40 @@ abstract public class AbstractCommand {
 	}
 
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
+		appendHere.add(Headless.DEFINE_DESCRIPTOR);
+		appendHere.add(Headless.PROPERTIES_DESCRIPTOR);
 	}
 
 	protected void handleOption(Option option) throws Exception {
-		// noop
+		if (option.is(Headless.DEFINE_DESCRIPTOR)) {
+			String v = option.getValue();
+			Matcher m = Headless.DEFINE_PATTERN.matcher(v);
+			if (!m.matches())
+				throw new IllegalArgumentException(NLS.bind(Messages.Not_a_key_value_string_0, v));
+			String key = m.group(1);
+			String value = m.group(2) == null ? "" //$NON-NLS-1$
+					: m.group(2);
+			addProperty(key, value);
+		}
+		if (option.is(Headless.PROPERTIES_DESCRIPTOR)) {
+			String v = option.getValue();
+			InputStream input = null;
+			try {
+				URL propsURL = URLUtils.normalizeToURL(v);
+				input = new BufferedInputStream(propsURL.openStream());
+				Properties props = new Properties();
+				props.load(input);
+				Enumeration<?> names = props.propertyNames();
+				while (names.hasMoreElements()) {
+					String name = (String) names.nextElement();
+					addProperty(name, props.getProperty(name));
+				}
+			} catch (MalformedURLException e) {
+				throw new IllegalArgumentException(NLS.bind(Messages.Invalid_URL_or_Path_0, v));
+			} finally {
+				IOUtils.close(input);
+			}
+		}
 	}
 
 	protected void handleUnparsed(String[] unparsed) throws Exception {

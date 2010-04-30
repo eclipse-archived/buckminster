@@ -103,13 +103,13 @@ public class Headless implements IApplication, OptionValueType {
 	//
 	private static final OptionDescriptor FILE = new OptionDescriptor('S', "scriptfile", REQUIRED); //$NON-NLS-1$
 
-	static private final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define", //$NON-NLS-1$
+	static final OptionDescriptor DEFINE_DESCRIPTOR = new OptionDescriptor('D', "define", //$NON-NLS-1$
 			OptionValueType.REQUIRED);
 
-	static private final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties", //$NON-NLS-1$
+	static final OptionDescriptor PROPERTIES_DESCRIPTOR = new OptionDescriptor('P', "properties", //$NON-NLS-1$
 			OptionValueType.REQUIRED);
 
-	private static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$"); //$NON-NLS-1$
+	static final Pattern DEFINE_PATTERN = Pattern.compile("^([^=]+)(?:=(.+))?$"); //$NON-NLS-1$
 
 	private final ArrayList<Invocation> invocations = new ArrayList<Invocation>();
 

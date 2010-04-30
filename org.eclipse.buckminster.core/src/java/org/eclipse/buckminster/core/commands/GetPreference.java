@@ -47,6 +47,7 @@ public class GetPreference extends AbstractCommand {
 		appendHere.add(TEST_DESCRIPTOR);
 		appendHere.add(DEFAULT_DESCRIPTOR);
 		appendHere.add(ONLYVALUE_DESCRIPTOR);
+		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
@@ -57,6 +58,8 @@ public class GetPreference extends AbstractCommand {
 			defaultValue = option.getValue();
 		else if (option.is(ONLYVALUE_DESCRIPTOR))
 			onlyValue = true;
+		else
+			super.handleOption(option);
 	}
 
 	@Override

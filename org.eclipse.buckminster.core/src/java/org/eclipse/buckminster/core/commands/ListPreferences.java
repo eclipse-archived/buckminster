@@ -38,12 +38,15 @@ public class ListPreferences extends AbstractCommand {
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		appendHere.add(TEST_DESCRIPTOR);
+		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
 	protected void handleOption(Option option) throws Exception {
 		if (option.is(TEST_DESCRIPTOR))
 			test = true;
+		else
+			super.handleOption(option);
 	}
 
 	@Override

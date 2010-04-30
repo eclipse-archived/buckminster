@@ -159,16 +159,14 @@ public class Launch extends WorkspaceCommand {
 
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
-		super.getOptionDescriptors(appendHere);
 		appendHere.add(LAUNCH_DESCRIPTOR);
 		appendHere.add(STDOUT_DESCRIPTOR);
 		appendHere.add(STDERR_DESCRIPTOR);
+		super.getOptionDescriptors(appendHere);
 	}
 
 	@Override
 	protected void handleOption(Option option) throws Exception {
-		super.handleOption(option);
-
 		if (option.is(LAUNCH_DESCRIPTOR))
 			launchName = option.getValue();
 		else if (option.is(STDOUT_DESCRIPTOR))
@@ -177,6 +175,8 @@ public class Launch extends WorkspaceCommand {
 		else if (option.is(STDERR_DESCRIPTOR))
 			stdErrFile = option.getValue() == null ? "-" //$NON-NLS-1$
 					: option.getValue();
+		else
+			super.handleOption(option);
 	}
 
 	@Override
