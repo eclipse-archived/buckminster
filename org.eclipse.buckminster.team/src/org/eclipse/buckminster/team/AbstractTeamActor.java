@@ -189,6 +189,8 @@ public abstract class AbstractTeamActor<C extends TeamPerformContext> extends Ab
 
 		monitor.beginTask(NLS.bind(Messages.processing_project_0, project.getName()), 1100);
 		try {
+			if (shouldExclude(teamPerformContext, project))
+				return;
 			if (resourceMapping != null) {
 				SynchronizationScopeManager scopeManager = createScopeManager("Scope manager for " + project.getName(), //$NON-NLS-1$
 						new ResourceMapping[] { resourceMapping });
@@ -273,9 +275,9 @@ public abstract class AbstractTeamActor<C extends TeamPerformContext> extends Ab
 		monitor.beginTask(null, entrySet.size() * 1000);
 
 		for (Entry<RepositoryProvider, ProviderResources> entry : entrySet) {
-			ProviderResources traversalEntry = entry.getValue();
-			monitor.setTaskName(getTaskName(traversalEntry.getProvider()));
-			processProviderResources(teamPerformContext, traversalEntry, MonitorUtils.subMonitor(monitor, 1000));
+			ProviderResources providerResources = entry.getValue();
+			monitor.setTaskName(getTaskName(providerResources.getProvider()));
+			processProviderResources(teamPerformContext, providerResources, MonitorUtils.subMonitor(monitor, 1000));
 		}
 
 		monitor.done();
@@ -300,4 +302,21 @@ public abstract class AbstractTeamActor<C extends TeamPerformContext> extends Ab
 	 */
 	protected abstract void processResources(C teamPerformContext, RepositoryProvider provider, IResource[] resources, boolean recurse,
 			IProgressMonitor monitor) throws CoreException, InterruptedException;
+
+	/**
+	 * Determine whether the given <code>resource</code> should be excluded from
+	 * processing.
+	 * 
+	 * @param teamPerformContext
+	 *            the context in which to determine whether the
+	 *            <code>resource</code> should be processed or not
+	 * @param resource
+	 *            the resource to be examined
+	 * @return <code>true</code> if the resource should be excluded from
+	 *         processing, <code>false</code> otherwise
+	 */
+	protected boolean shouldExclude(C teamPerformContext, IResource resource) {
+		return false;
+	}
+
 }
