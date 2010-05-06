@@ -11,6 +11,7 @@
 package org.eclipse.buckminster.cmdline;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.core.runtime.CoreException;
@@ -164,19 +165,20 @@ public class CommandInfo {
 		name = n;
 
 		IConfigurationElement[] aliasElements = cfgElement.getChildren(ALIAS_ELEMENTS);
-		aliases = new String[aliasElements.length];
-		for (int i = 0; i < aliases.length; i++) {
+		HashSet<String> uniqueNames = new HashSet<String>();
+		for (int i = 0; i < aliasElements.length; i++) {
 			String alias = aliasElements[i].getAttribute(NAME_ATTRIBUTE);
 			if (alias.indexOf(PERIOD_CHARACTER) != -1)
 				throw new IllegalCommandAliasException(alias);
-			aliases[i] = alias;
+			if (!n.equals(alias))
+				uniqueNames.add(alias);
 		}
-
-		allNames = new String[1 + aliases.length];
-		allNames[0] = namespace + PERIOD_CHARACTER + n;
+		aliases = uniqueNames.toArray(new String[uniqueNames.size()]);
+		uniqueNames.clear();
+		uniqueNames.add(namespace + PERIOD_CHARACTER + n);
 		for (int i = 0; i < aliases.length; i++)
-			allNames[i + 1] = namespace + PERIOD_CHARACTER + aliases[i];
-
+			uniqueNames.add(namespace + PERIOD_CHARACTER + aliases[i]);
+		allNames = uniqueNames.toArray(new String[uniqueNames.size()]);
 		deprecatedBy = cfgElement.getAttribute(DEPRECATED_BY_ATTRIBUTE);
 	}
 
