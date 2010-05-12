@@ -1,9 +1,13 @@
 /*****************************************************************************
- * Copyright (c) 2006-2007, Cloudsmith Inc.
+ * Copyright (c) 2006-2010, Cloudsmith Inc.
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
+ *
+ * Contributors:
+ * - Cloudsmith Inc - initial API and implementation.
+ * - Carsten Reckord, Yatta Solutions GmbH - Synthetic source bundle
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
@@ -32,6 +36,7 @@ import org.eclipse.buckminster.core.cspec.model.MissingAttributeException;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -75,6 +80,9 @@ public class CSpecBuilder implements ICSpecData {
 	private Version version;
 
 	private Filter filter;
+
+	public static final String FILTER_OPTIONAL_SOURCE_BUNDLE = "(&" + ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL //$NON-NLS-1$
+			+ "(buckminster.download.source=true))";; //$NON-NLS-1$
 
 	public CSpecBuilder() {
 	}
@@ -195,6 +203,18 @@ public class CSpecBuilder implements ICSpecData {
 				}
 			}
 			addDependency(crb);
+		}
+		if (!isFeature && !name.endsWith(".source")) { //$NON-NLS-1$
+			ComponentRequestBuilder srcDep = createDependencyBuilder();
+			srcDep.setName(name + ".source"); //$NON-NLS-1$
+			srcDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
+			srcDep.setVersionRange(VersionHelper.exactRange(iu.getVersion()));
+			try {
+				srcDep.setFilter(FilterFactory.newInstance(FILTER_OPTIONAL_SOURCE_BUNDLE));
+			} catch (InvalidSyntaxException e) {
+				// This won't happen on that particular filter
+			}
+			addDependency(srcDep);
 		}
 	}
 
