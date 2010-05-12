@@ -90,8 +90,8 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 			return new MultiStatus(status.getPlugin(), status.getCode(), children, status.getMessage(), status.getException());
 		}
 
-		return (status.getSeverity() < IStatus.ERROR) ? status : new Status(IStatus.WARNING, status.getPlugin(), status.getCode(), status
-				.getMessage(), status.getException());
+		return (status.getSeverity() < IStatus.ERROR) ? status : new Status(IStatus.WARNING, status.getPlugin(), status.getCode(),
+				status.getMessage(), status.getException());
 	}
 
 	private final ArrayList<Matcher> matchers = new ArrayList<Matcher>();
@@ -223,7 +223,7 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 					request), null));
 		}
 
-		if (request.isOptional()) {
+		if (request.isOptional() && !request.isSynthetic()) {
 			// The component is optional so this should not be considered an
 			// error
 			// A warning is appropriate though, since this probably indicates
@@ -289,8 +289,8 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
 		try {
 			for (boolean first = true;; first = false) {
-				ProviderMatch providerMatch = searchPath.getProvider(query, noGoodList, problemCollector, MonitorUtils.subMonitor(monitor, first
-						? 1000 : 0));
+				ProviderMatch providerMatch = searchPath.getProvider(query, noGoodList, problemCollector,
+						MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
 				MonitorUtils.testCancelStatus(monitor);
 
 				Provider provider = providerMatch.getProvider();
@@ -321,8 +321,8 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 						// now ...
 						//
 						if (!range.isIncluded(version)) {
-							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, version, NLS.bind(
-									Messages.Not_designated_by_0, range));
+							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, version,
+									NLS.bind(Messages.Not_designated_by_0, range));
 							noGoodList.add(providerMatch.getOriginalProvider());
 							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 							continue;
