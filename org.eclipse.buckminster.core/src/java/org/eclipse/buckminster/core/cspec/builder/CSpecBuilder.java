@@ -81,9 +81,6 @@ public class CSpecBuilder implements ICSpecData {
 
 	private Filter filter;
 
-	public static final String FILTER_OPTIONAL_SOURCE_BUNDLE = "(&" + ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL //$NON-NLS-1$
-			+ "(buckminster.download.source=true))";; //$NON-NLS-1$
-
 	public CSpecBuilder() {
 	}
 
@@ -210,7 +207,7 @@ public class CSpecBuilder implements ICSpecData {
 			srcDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
 			srcDep.setVersionRange(VersionHelper.exactRange(iu.getVersion()));
 			try {
-				srcDep.setFilter(FilterFactory.newInstance(FILTER_OPTIONAL_SOURCE_BUNDLE));
+				srcDep.setFilter(FilterFactory.newInstance(ComponentRequest.FILTER_OPTIONAL_SOURCE_BUNDLE));
 			} catch (InvalidSyntaxException e) {
 				// This won't happen on that particular filter
 			}

@@ -50,6 +50,10 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 
 	public static final String FILTER_ECLIPSE_P2_OPTIONAL = "(!(eclipse.p2.optional=false))"; //$NON-NLS-1$
 
+	public static final String FILTER_SOURCE_BUNDLE = "(buckminster.download.source=true)"; //$NON-NLS-1$
+
+	public static final String FILTER_OPTIONAL_SOURCE_BUNDLE = "(&" + ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL + FILTER_SOURCE_BUNDLE + ')'; //$NON-NLS-1$
+
 	static {
 		try {
 			P2_OPTIONAL_FILTER = FilterFactory.newInstance(ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL);
@@ -162,6 +166,10 @@ public class ComponentRequest extends ComponentName implements IComponentRequest
 	}
 
 	public boolean isOptional() {
+		return filter != null && filter.toString().contains(FILTER_ECLIPSE_P2_OPTIONAL);
+	}
+
+	public boolean isSynthetic() {
 		return filter != null && filter.toString().contains(FILTER_ECLIPSE_P2_OPTIONAL);
 	}
 
