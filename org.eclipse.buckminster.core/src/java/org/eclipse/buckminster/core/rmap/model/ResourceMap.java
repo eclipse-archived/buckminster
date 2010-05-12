@@ -223,14 +223,15 @@ public class ResourceMap extends AbstractSaxableElement implements ISaxable {
 					request), null));
 		}
 
-		if (request.isOptional() && !request.isSynthetic()) {
+		if (request.isOptional()) {
 			// The component is optional so this should not be considered an
 			// error
 			// A warning is appropriate though, since this probably indicates
 			// some
 			// kind of problem.
 			//
-			query.getContext().addRequestStatus(request, transformToWarning(problemCollector));
+			if (!request.isSynthetic())
+				query.getContext().addRequestStatus(request, transformToWarning(problemCollector));
 			return new UnresolvedNode(new QualifiedDependency(request, query.getRequiredAttributes()));
 		}
 
