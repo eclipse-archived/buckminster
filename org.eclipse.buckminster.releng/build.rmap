@@ -26,12 +26,12 @@
   </rm:searchPath>
   <rm:searchPath name="platform">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=I)">
-      <rm:uri format="{0}/eclipse/updates/3.6-I-builds//I20100429-1549">
+      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100513-1500">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=M)">
-      <rm:uri format="{0}/eclipse/updates/3.6milestones/S-3.6M6-201003121448">
+      <rm:uri format="{0}/eclipse/updates/3.6milestones/S-3.6RC1-201005131500">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -54,18 +54,13 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="orbit">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=I)">
-      <rm:uri format="{0}/tools/orbit/downloads/drops/I20100427010814/updateSite">
-        <bc:propertyRef key="eclipse.download.prefix"/>
-      </rm:uri>
-    </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
       <rm:uri format="{0}/tools/orbit/downloads/drops/R20100114021427/updateSite">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=M)">
-      <rm:uri format="{0}/tools/orbit/downloads/drops/S20100423142122/updateSite">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
+      <rm:uri format="{0}/tools/orbit/downloads/drops/S20100514103823/repository">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
