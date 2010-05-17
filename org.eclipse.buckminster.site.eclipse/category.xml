@@ -45,7 +45,7 @@
    <feature id="org.eclipse.buckminster.subclipse.source.feature" version="0.0.0">
       <category name="buckminster.source"/>
    </feature>
-   <feature id="org.eclipse.buckminster.suversive.source.feature" version="0.0.0">
+   <feature id="org.eclipse.buckminster.subversive.source.feature" version="0.0.0">
       <category name="buckminster.source"/>
    </feature>
    <category-def name="buckminster" label="Buckminster">
