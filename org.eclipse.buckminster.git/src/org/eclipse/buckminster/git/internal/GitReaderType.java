@@ -117,6 +117,6 @@ public class GitReaderType extends CatalogReaderType {
 			connectOp = new ConnectProviderOperation(project, Path.fromPortableString(fmt).append(".git").toFile()); //$NON-NLS-1$
 		} else
 			connectOp = new ConnectProviderOperation(project);
-		connectOp.run(monitor);
+		connectOp.execute(monitor);
 	}
 }
