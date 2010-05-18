@@ -357,21 +357,19 @@ public class ResolverNodePage extends AbstractQueryPage {
 		if (ci == null)
 			return;
 
-		if (!mspec.isExcluded(ci)) {
-			Integer nc = masterDups.get(ci);
-			int nci;
-			if (nc == null) {
-				nci = 0;
-				if (parent != null)
-					parentWhenFirstSeen.put(ci, parent);
-			} else
-				nci = nc.intValue();
+		Integer nc = masterDups.get(ci);
+		int nci;
+		if (nc == null) {
+			nci = 0;
+			if (parent != null)
+				parentWhenFirstSeen.put(ci, parent);
+		} else
+			nci = nc.intValue();
 
-			masterDups.put(ci, new Integer(1 + nci));
-			if (nci == 0) {
-				for (BOMNode child : getSortedChildren(node))
-					countDuplicates(node, child, mspec);
-			}
+		masterDups.put(ci, new Integer(1 + nci));
+		if (nci == 0) {
+			for (BOMNode child : getSortedChildren(node))
+				countDuplicates(node, child, mspec);
 		}
 	}
 
