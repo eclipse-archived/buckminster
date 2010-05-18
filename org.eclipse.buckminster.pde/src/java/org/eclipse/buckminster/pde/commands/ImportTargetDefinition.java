@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde.commands;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
@@ -16,7 +17,9 @@ import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.commands.WorkspaceCommand;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -25,6 +28,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.pde.internal.core.target.TargetDefinitionPersistenceHelper;
 import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
 import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
@@ -100,10 +104,14 @@ public class ImportTargetDefinition extends WorkspaceCommand {
 		if (handle == null) {
 			// The target is external to the workspace so import it into
 			// a local target
-			handle = service.getTarget(uri);
-			ITargetDefinition externalTarget = handle.getTargetDefinition();
 			target = service.newTarget();
-			service.copyTargetDefinition(externalTarget, target);
+			InputStream input = null;
+			try {
+				input = DownloadManager.read(uri.toURL(), null);
+				TargetDefinitionPersistenceHelper.initFromXML(target, input);
+			} finally {
+				IOUtils.close(input);
+			}
 			service.saveTargetDefinition(target);
 		} else
 			target = handle.getTargetDefinition();
