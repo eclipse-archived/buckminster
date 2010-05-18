@@ -79,6 +79,23 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 
 	public static final Command.LocalOption STDOUT = new MyLocalOption("-p"); //$NON-NLS-1$
 
+	public static ICVSRepositoryLocation getDemotedLocation(ICVSRepositoryLocation known) throws CVSException {
+		String knownMethod = known.getMethod().getName();
+		for (ICVSRepositoryLocation wanted : CVSProviderPlugin.getPlugin().getKnownRepositories()) {
+			if (known.getHost().equals(wanted.getHost()) && known.getPort() == wanted.getPort()
+					&& known.getRootDirectory().equals(wanted.getRootDirectory())) {
+				String wantedMethod = wanted.getMethod().getName();
+				String wantedUser = wanted.getUsername();
+				if (knownMethod.equals(wantedMethod) || ("extssh".equals(knownMethod) && "pserver".equals(wantedMethod))) //$NON-NLS-1$ //$NON-NLS-2$
+				{
+					if (wantedUser == null || "anonymous".equals(wantedUser) || wantedUser.equals(known.getUsername())) //$NON-NLS-1$
+						return wanted;
+				}
+			}
+		}
+		return known;
+	}
+
 	public static CVSRepositoryLocation getLocationFromString(String repo) throws CVSException {
 		CVSRepositoryLocation wanted = CVSRepositoryLocation.fromString(repo);
 		String wantedUser = wanted.getUsername();
@@ -285,6 +302,25 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 	}
 
 	@Override
+	public String getSourceReference(IResource resource, IProgressMonitor monitor) throws CoreException {
+		ICVSRemoteResource cvsResource = CVSWorkspaceRoot.getRemoteResourceFor(resource);
+		if (cvsResource == null)
+			return null;
+
+		String tag = null;
+		ResourceSyncInfo syncInfo = cvsResource.getSyncInfo();
+		if (syncInfo != null) {
+			CVSTag cvsTag = syncInfo.getTag();
+			if (cvsTag != null)
+				tag = cvsTag.getName();
+		}
+
+		ICVSRepositoryLocation repo = cvsResource.getRepository();
+		repo = getDemotedLocation(repo);
+		return asReference(repo.getLocation(false), cvsResource.getRepositoryRelativePath(), resource.getProject().getName(), tag);
+	}
+
+	@Override
 	public IVersionFinder getVersionFinder(Provider provider, IComponentType ctype, NodeQuery nodeQuery, IProgressMonitor monitor)
 			throws CoreException {
 		MonitorUtils.complete(monitor);
@@ -391,5 +427,84 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 			return originalLocation.getLocation(false);
 
 		return locationString;
+	}
+
+	/**
+	 * Creates an SCMURL reference to the associated source.
+	 * 
+	 * @param repoLocation
+	 * @param module
+	 * @param projectName
+	 * @return project reference string or <code>null</code> if none
+	 */
+	private String asReference(String repoLocation, String module, String projectName, String tagName) {
+		// parse protocol, host, repository root from repoLocation
+		String protocol = null;
+		String host = null;
+		String root = null;
+
+		int at = repoLocation.indexOf('@');
+		if (at < 0) {
+			// should be a local protocol
+			if (repoLocation.startsWith(":local:")) { //$NON-NLS-1$
+				protocol = "local"; //$NON-NLS-1$
+				root = repoLocation.substring(7);
+			}
+		} else if (at < (repoLocation.length() - 2)) {
+			String serverRoot = repoLocation.substring(at + 1);
+			String protocolUserPass = repoLocation.substring(0, at);
+			int colon = serverRoot.indexOf(':');
+			if (colon > 0) {
+				host = serverRoot.substring(0, colon);
+				if (colon < (serverRoot.length() - 2)) {
+					root = serverRoot.substring(colon + 1);
+				}
+				if (protocolUserPass.startsWith(":")) { //$NON-NLS-1$
+					colon = protocolUserPass.indexOf(':', 1);
+					if (colon > 0) {
+						protocol = protocolUserPass.substring(1, colon);
+					}
+				} else {
+					// missing protocol, assume p-server
+					protocol = "pserver"; //$NON-NLS-1$
+				}
+			}
+		}
+
+		if (protocol == null || root == null) {
+			return null; // invalid syntax
+		}
+
+		// use '|' as separator if the root location uses a colon for a Windows
+		// path
+		String sep = ":"; //$NON-NLS-1$
+		if (root.indexOf(':') >= 0) {
+			sep = "|"; //$NON-NLS-1$
+		}
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("scm:cvs"); //$NON-NLS-1$
+		buffer.append(sep);
+		buffer.append(protocol);
+		buffer.append(sep);
+		if (host != null) {
+			buffer.append(host);
+			buffer.append(sep);
+		}
+		buffer.append(root);
+		buffer.append(sep);
+		buffer.append(module);
+
+		Path modulePath = new Path(module);
+		if (!modulePath.lastSegment().equals(projectName)) {
+			buffer.append(";project=\""); //$NON-NLS-1$
+			buffer.append(projectName);
+			buffer.append('"');
+		}
+
+		if (tagName != null && !tagName.equals("HEAD")) { //$NON-NLS-1$
+			buffer.append(";tag="); //$NON-NLS-1$
+			buffer.append(tagName);
+		}
+		return buffer.toString();
 	}
 }

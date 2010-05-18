@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.team.core.RepositoryProvider;
 import org.eclipse.team.core.TeamException;
+import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.SVNException;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
 import org.tigris.subversion.svnclientadapter.ISVNDirEntry;
@@ -40,7 +41,7 @@ import org.tigris.subversion.svnclientadapter.SVNRevision;
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SvnReaderType extends GenericReaderType<ISVNDirEntry, SVNRevision> {
+public class SvnReaderType extends GenericReaderType<ISVNRepositoryLocation, ISVNDirEntry, SVNRevision> {
 
 	private abstract class SafeExecute<RETURN_TYPE extends Object> {
 		final protected RETURN_TYPE failValue;
@@ -116,6 +117,11 @@ public class SvnReaderType extends GenericReaderType<ISVNDirEntry, SVNRevision> 
 			throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new VersionFinder(provider, ctype, nodeQuery);
+	}
+
+	@Override
+	protected ISVNRepositoryLocation[] getKnownRepositories(IProgressMonitor monitor) throws CoreException {
+		return SVNProviderPlugin.getPlugin().getRepositories().getKnownRepositories(monitor);
 	}
 
 	@Override

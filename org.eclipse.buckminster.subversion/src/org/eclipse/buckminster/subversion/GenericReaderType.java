@@ -2,22 +2,27 @@ package org.eclipse.buckminster.subversion;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
+import org.eclipse.buckminster.core.reader.ITeamReaderType;
 import org.eclipse.buckminster.core.reader.ReferenceInfo;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.team.core.RepositoryProvider;
 
-public abstract class GenericReaderType<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> extends CatalogReaderType {
+public abstract class GenericReaderType<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REVISION_TYPE> extends CatalogReaderType implements ITeamReaderType {
 
 	@Override
 	public ReferenceInfo extractReferenceInfo(String reference) throws CoreException {
@@ -122,6 +127,14 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> exten
 	}
 
 	@Override
+	public String getSourceReference(IResource resource, IProgressMonitor monitor) throws CoreException {
+		String remoteLocation = getRemoteLocation(resource.getLocation().toFile(), monitor);
+		if (remoteLocation == null)
+			return null;
+		return "scm:svn:" + remoteLocation; //$NON-NLS-1$
+	}
+
+	@Override
 	final public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException {
 		VersionMatch vm = cr.getVersionMatch();
 		ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm.getNumericRevision(),
@@ -137,6 +150,14 @@ public abstract class GenericReaderType<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> exten
 		}
 		MonitorUtils.complete(monitor);
 	}
+
+	@Override
+	public IStatus tag(RepositoryProvider provider, IResource[] resources, Map<String, String> mappings, String tag, boolean recurse,
+			IProgressMonitor monitor) {
+		throw new UnsupportedOperationException();
+	}
+
+	abstract protected REPO_LOCATION_TYPE[] getKnownRepositories(IProgressMonitor monitor) throws CoreException;
 
 	abstract protected ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> getSession(String repositoryURI, VersionSelector branchOrTag,
 			long revision, Date timestamp, RMContext context) throws CoreException;

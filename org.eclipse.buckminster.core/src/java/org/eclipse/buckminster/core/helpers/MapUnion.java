@@ -134,8 +134,8 @@ public class MapUnion<K, V> extends AbstractMap<K, V> {
 
 	@SuppressWarnings("unchecked")
 	// safe anyway, since the map is immutable
-	public MapUnion(Map<K, V> mutable, Map<? extends K, ? extends V> immutable) {
-		this.overlay = mutable;
+	public MapUnion(Map<? extends K, ? extends V> mutable, Map<? extends K, ? extends V> immutable) {
+		this.overlay = (Map<K, V>) mutable;
 		this.immutable = (Map<K, V>) immutable;
 		this.antiMap = new HashMap<K, K>();
 	}

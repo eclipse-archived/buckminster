@@ -31,22 +31,23 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.team.svn.core.SVNTeamProjectMapper;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
+import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
 import org.eclipse.team.svn.core.connector.SVNChangeStatus;
 import org.eclipse.team.svn.core.connector.SVNEntry;
 import org.eclipse.team.svn.core.connector.SVNEntryInfo;
 import org.eclipse.team.svn.core.connector.SVNRevision;
-import org.eclipse.team.svn.core.connector.ISVNConnector.Depth;
 import org.eclipse.team.svn.core.extension.CoreExtensionsManager;
 import org.eclipse.team.svn.core.operation.SVNNullProgressMonitor;
 import org.eclipse.team.svn.core.resource.IRepositoryContainer;
 import org.eclipse.team.svn.core.resource.IRepositoryLocation;
+import org.eclipse.team.svn.core.svnstorage.SVNRemoteStorage;
 import org.eclipse.team.svn.core.utility.SVNUtility;
 
 /**
  * @author Thomas Hallgren
  * @author Guillaume Chatelet
  */
-public class SubversiveReaderType extends GenericReaderType<SVNEntry, SVNRevision> {
+public class SubversiveReaderType extends GenericReaderType<IRepositoryLocation, SVNEntry, SVNRevision> {
 	private static SVNChangeStatus getLocalInfo(File workingCopy, IProgressMonitor monitor) {
 		IPath location = Path.fromOSString(workingCopy.toString());
 		IPath checkedPath = workingCopy.isFile() ? location.removeLastSegments(1) : location;
@@ -99,6 +100,13 @@ public class SubversiveReaderType extends GenericReaderType<SVNEntry, SVNRevisio
 			throws CoreException {
 		MonitorUtils.complete(monitor);
 		return new SubversiveVersionFinder(provider, ctype, nodeQuery);
+	}
+
+	@Override
+	protected IRepositoryLocation[] getKnownRepositories(IProgressMonitor monitor) {
+		IRepositoryLocation[] repos = SVNRemoteStorage.instance().getRepositoryLocations();
+		MonitorUtils.complete(monitor);
+		return repos;
 	}
 
 	@Override

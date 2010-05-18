@@ -12,7 +12,6 @@ package org.eclipse.buckminster.subclipse.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
@@ -26,7 +25,6 @@ import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
-import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.subclipse.Messages;
 import org.eclipse.buckminster.subversion.GenericCache;
 import org.eclipse.buckminster.subversion.GenericSession;
@@ -197,16 +195,6 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 
 	private static final ISVNDirEntry[] emptyFolder = new ISVNDirEntry[0];
 
-	/**
-	 * Different versions of subclipse have different signatures for this
-	 * method. We want to cover them all.
-	 * 
-	 * @return
-	 */
-	private static Method getKnownRepositories;
-
-	private static Object[] getKnownRepositoriesArgs;
-
 	private static SVNProviderPlugin getPlugin() {
 		return SVNProviderPlugin.getPlugin();
 	}
@@ -247,34 +235,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 
 	@Override
 	public ISVNRepositoryLocation[] getKnownRepositories() throws CoreException {
-		SVNRepositories repos = getRepositories();
-		Class<? extends SVNRepositories> reposClass = repos.getClass();
-
-		try {
-			Method getter;
-			Object[] args;
-			synchronized (reposClass) {
-				if (getKnownRepositories == null) {
-					try {
-						// Newer versions use the IProgressMonitor parameter
-						//
-						getKnownRepositories = reposClass.getMethod("getKnownRepositories", //$NON-NLS-1$
-								new Class[] { IProgressMonitor.class });
-						getKnownRepositoriesArgs = new Object[] { new NullProgressMonitor() };
-					} catch (NoSuchMethodException e) {
-						// Older versions have no parameter.
-						getKnownRepositories = reposClass.getMethod("getKnownRepositories", //$NON-NLS-1$
-								Trivial.EMPTY_CLASS_ARRAY);
-						getKnownRepositoriesArgs = Trivial.EMPTY_OBJECT_ARRAY;
-					}
-				}
-				getter = getKnownRepositories;
-				args = getKnownRepositoriesArgs;
-			}
-			return (ISVNRepositoryLocation[]) getter.invoke(repos, args);
-		} catch (Exception e) {
-			throw BuckminsterException.wrap(e);
-		}
+		return getRepositories().getKnownRepositories(new NullProgressMonitor());
 	}
 
 	@Override

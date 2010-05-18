@@ -23,6 +23,20 @@ import org.eclipse.team.core.RepositoryProvider;
  */
 public interface ITeamReaderType extends IReaderType {
 	/**
+	 * Return a source reference suitable for the Eclipse-SourceReference
+	 * Manifest header for the given resource
+	 * 
+	 * @param resource
+	 *            Resource for which a source reference should be obtained
+	 * @param monitor
+	 *            a progress monitor
+	 * @return A source reference or <code>null</code> if no such reference
+	 *         could be obtained.
+	 * @throws CoreException
+	 */
+	String getSourceReference(IResource resource, IProgressMonitor monitor) throws CoreException;
+
+	/**
 	 * Tag the given <code>resources</code> with the given <code>tag</code>
 	 * possibly using a different way of accessing (as specified in
 	 * <code>mappings</code>) the repository the <code>resources</code> are
