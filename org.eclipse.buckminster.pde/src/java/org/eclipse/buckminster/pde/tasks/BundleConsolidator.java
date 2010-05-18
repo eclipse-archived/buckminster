@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
-import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -27,12 +26,18 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.reader.AbstractReaderType;
+import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.ITeamReaderType;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
@@ -85,7 +90,9 @@ public class BundleConsolidator extends VersionConsolidator {
 		bytes = output.toByteArray();
 	}
 
-	public void run() throws IOException {
+	public void run() throws CoreException, IOException {
+		IActionContext ctx = AbstractActor.getActiveContext();
+
 		Manifest manifest = new Manifest(new ByteArrayInputStream(bytes));
 		Attributes a = manifest.getMainAttributes();
 		String symbolicName = a.getValue(Constants.BUNDLE_SYMBOLICNAME);
@@ -115,7 +122,9 @@ public class BundleConsolidator extends VersionConsolidator {
 				}
 			}
 		}
-		changed = fixRequiredBundleVersions(a) || changed;
+		changed = fixRequiredBundleVersions(ctx, a) || changed;
+
+		changed = addSourceReference(ctx, a) || changed;
 
 		// mind the order of the operands
 		changed = treatManifest(manifest, id, newVersion) || changed;
@@ -133,24 +142,38 @@ public class BundleConsolidator extends VersionConsolidator {
 		}
 	}
 
-	protected boolean fixRequiredBundleVersions(Attributes a) throws IOException {
+	protected boolean addSourceReference(IActionContext ctx, Attributes a) throws CoreException, IOException {
+		if (!getBooleanProperty("generateSourceReferences", false)) //$NON-NLS-1$
+			return false;
+
+		IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(ctx.getComponentLocation());
+		if (container == null)
+			return false;
+
+		IReaderType rd = AbstractReaderType.getTypeForResource(container);
+		if (!(rd instanceof ITeamReaderType))
+			return false;
+
+		String sourceRef = ((ITeamReaderType) rd).getSourceReference(container, new NullProgressMonitor());
+		if (sourceRef == null)
+			return false;
+
+		a.putValue("Eclipse-SourceReferences", sourceRef); //$NON-NLS-1$
+		return true;
+	}
+
+	protected boolean fixRequiredBundleVersions(IActionContext ctx, Attributes a) throws IOException {
 		String requiredBundles = a.getValue(Constants.REQUIRE_BUNDLE);
 		if (requiredBundles == null)
 			return false;
 
-		IActionContext ctx = AbstractActor.getActiveContext();
-		Map<String, ? extends Object> props = ctx.getProperties();
-		if (props == null)
+		if (!getBooleanProperty(IPDEConstants.PROP_PDE_BUNDLE_RANGE_GENERATION, IPDEConstants.PDE_BUNDLE_RANGE_GENERATION_DEFAULT))
 			return false;
 
-		if (!VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_BUNDLE_RANGE_GENERATION,
-				IPDEConstants.PDE_BUNDLE_RANGE_GENERATION_DEFAULT))
-			return false;
-
-		boolean retainLowerBound = VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER, false);
+		boolean retainLowerBound = getBooleanProperty(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER, false);
 		int pdeMatchRule = IMatchRules.EQUIVALENT;
 
-		String dfltMatchRule = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
+		String dfltMatchRule = (String) getProperties().get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
 		if (dfltMatchRule != null)
 			pdeMatchRule = CSpecGenerator.getMatchRule(dfltMatchRule);
 

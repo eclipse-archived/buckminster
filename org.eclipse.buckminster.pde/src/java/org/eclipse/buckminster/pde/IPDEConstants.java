@@ -258,11 +258,11 @@ public interface IPDEConstants {
 
 	static final String PROP_PDE_FEATURE_REQUIREMENTS_GREEDY = "pde.feature.requirements.greedy"; //$NON-NLS-1$
 
-	static final Object PROP_PDE_SOURCE_BUNDLE_LABEL_FORMAT = "pde.source.bundle.label.format";
+	static final Object PROP_PDE_SOURCE_BUNDLE_LABEL_FORMAT = "pde.source.bundle.label.format"; //$NON-NLS-1$
 
-	static final Object PROP_PDE_SOURCE_FEATURE_LABEL_FORMAT = "pde.source.feature.label.format";
+	static final Object PROP_PDE_SOURCE_FEATURE_LABEL_FORMAT = "pde.source.feature.label.format"; //$NON-NLS-1$
 
-	static final Object PROP_PDE_SOURCE_FEATURE_DESCRIPTION_FORMAT = "pde.source.feature.description.format";
+	static final Object PROP_PDE_SOURCE_FEATURE_DESCRIPTION_FORMAT = "pde.source.feature.description.format"; //$NON-NLS-1$
 
 	static boolean PDE_BUNDLE_RANGE_GENERATION_DEFAULT = true;
 

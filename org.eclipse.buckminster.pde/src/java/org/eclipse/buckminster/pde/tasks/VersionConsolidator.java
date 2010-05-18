@@ -21,16 +21,16 @@ public abstract class VersionConsolidator extends VersionQualifierTask {
 	public static boolean getBooleanProperty(Map<String, ? extends Object> properties, String key, boolean defaultSetting) {
 		if (properties == null)
 			return defaultSetting;
-		return getBooleanProperty(properties.get(key), defaultSetting);
+		return toBoolean(properties.get(key), defaultSetting);
 	}
 
 	public static boolean getBooleanProperty(Properties properties, String key, boolean defaultSetting) {
 		if (properties == null)
 			return defaultSetting;
-		return getBooleanProperty(properties.getProperty(key), defaultSetting);
+		return toBoolean(properties.getProperty(key), defaultSetting);
 	}
 
-	private static boolean getBooleanProperty(Object v, boolean defaultSetting) {
+	private static boolean toBoolean(Object v, boolean defaultSetting) {
 		if (!(v instanceof String))
 			return defaultSetting;
 
@@ -47,6 +47,10 @@ public abstract class VersionConsolidator extends VersionQualifierTask {
 	VersionConsolidator(File outputFile, File propertiesFile, String qualifier) throws CoreException {
 		super(propertiesFile, qualifier);
 		this.outputFile = outputFile;
+	}
+
+	protected boolean getBooleanProperty(String key, boolean defaultSetting) {
+		return toBoolean(getProperties().get(key), defaultSetting);
 	}
 
 	File getOutputFile() {

@@ -19,7 +19,10 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.PatternSet.NameEntry;
 import org.apache.tools.ant.types.selectors.FilenameSelector;
 import org.apache.tools.ant.types.selectors.OrSelector;
+import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
@@ -209,7 +212,7 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 	private final Map<IVersionedId, CSpec> cspecs;
 
-	private final Map<IVersionedId, Properties> properties = new HashMap<IVersionedId, Properties>();
+	private final Map<IVersionedId, Map<String, String>> properties = new HashMap<IVersionedId, Map<String, String>>();
 
 	public FeaturesAction(File[] featureBinaries, Map<IVersionedId, CSpec> cspecs) {
 		super(featureBinaries);
@@ -227,10 +230,10 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 					InputStream input = null;
 					IVersionedId vn = entry.getKey();
 					Properties props = new Properties();
-					properties.put(vn, props);
 					try {
 						input = new BufferedInputStream(new FileInputStream(buildProps));
 						props.load(input);
+						properties.put(vn, new BMProperties(props));
 						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), props, location, publisherInfo.getConfigurations());
 						if (rootAdvice != null)
 							publisherInfo.addAdvice(rootAdvice);
@@ -295,7 +298,11 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 	private void addCapabilityAdvice(Feature feature) {
 		IVersionedId vn = new VersionedId(feature.getId(), feature.getVersion());
-		Properties props = properties.get(vn);
+		Map<String, String> localProps = properties.get(vn);
+		Map<String, ? extends Object> props = AbstractActor.getActiveContext().getProperties();
+		if (localProps != null)
+			props = new MapUnion<String, Object>(localProps, props);
+
 		if (!VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_FEATURE_RANGE_GENERATION, true))
 			// Generation is turned off
 			return;
@@ -304,7 +311,7 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 		int pdeMatchRule = IMatchRules.EQUIVALENT;
 
 		if (props != null) {
-			String dfltMatchRule = props.getProperty(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
+			String dfltMatchRule = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
 			retainLowerBound = VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER, retainLowerBound);
 			pdeMatchRule = CSpecGenerator.getMatchRule(dfltMatchRule);
 		}
