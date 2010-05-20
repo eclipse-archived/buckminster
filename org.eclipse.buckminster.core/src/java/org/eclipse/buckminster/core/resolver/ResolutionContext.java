@@ -48,8 +48,8 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	public ResolutionContext(ComponentQuery componentQuery, ResolutionContext parentContext) {
-		super(parentContext == null ? componentQuery.getGlobalProperties() : new UnmodifiableMapUnion<String, Object>(componentQuery
-				.getGlobalProperties(), parentContext));
+		super(parentContext == null ? componentQuery.getGlobalProperties() : new UnmodifiableMapUnion<String, Object>(
+				componentQuery.getGlobalProperties(), parentContext));
 		this.componentQuery = componentQuery;
 		this.parentContext = parentContext;
 		if (parentContext != null)
@@ -68,6 +68,14 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 			parentContext.addRequestStatus(request, resolveStatus);
 		else
 			super.addRequestStatus(request, resolveStatus);
+	}
+
+	@Override
+	public void addTagInfo(ComponentRequest request, String info) {
+		if (parentContext != null)
+			parentContext.addTagInfo(request, info);
+		else
+			super.addTagInfo(request, info);
 	}
 
 	@Override
@@ -126,17 +134,22 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	@Override
-	public synchronized IStatus getStatus() {
+	public IStatus getStatus() {
 		return (parentContext != null) ? parentContext.getStatus() : super.getStatus();
 	}
 
 	@Override
-	public synchronized Map<UUID, Object> getUserCache() {
+	public Map<ComponentRequest, TagInfo> getTagInfos() {
+		return (parentContext != null) ? parentContext.getTagInfos() : super.getTagInfos();
+	}
+
+	@Override
+	public Map<UUID, Object> getUserCache() {
 		return (parentContext != null) ? parentContext.getUserCache() : super.getUserCache();
 	}
 
 	@Override
-	public synchronized boolean isContinueOnError() {
+	public boolean isContinueOnError() {
 		return (parentContext != null) ? parentContext.isContinueOnError() : super.isContinueOnError();
 	}
 
