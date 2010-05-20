@@ -26,6 +26,7 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 
@@ -116,12 +117,17 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 			throw e;
 		} catch (IOException e) {
 			throw e;
+		} catch (OperationCanceledException e) {
+			throw e;
 		} catch (Exception e) {
 			final Throwable rootCause = SvnExceptionHandler.getRootCause(e);
 			if (SvnExceptionHandler.hasSvnException(rootCause)) {
 				logger.debug("Remote file not found: %s", key); //$NON-NLS-1$
 				throw new FileNotFoundException(key);
 			}
+			if (e instanceof RuntimeException)
+				throw (RuntimeException) e;
+
 			IOException ioe = new IOException(rootCause.getMessage());
 			ioe.initCause(rootCause);
 			throw ioe;
@@ -165,7 +171,7 @@ public abstract class GenericRemoteReader<SVNENTRY, REVISION> extends AbstractRe
 		for (SVNENTRY dirEntry : topEntries) {
 			String fileName = helper.getEntryPath(dirEntry);
 			if (helper.getEntryKind(dirEntry) == ISvnEntryHelper.DIR && !fileName.endsWith("/")) //$NON-NLS-1$
-				fileName = fileName + '/'; 
+				fileName = fileName + '/';
 			files.add(fileName);
 		}
 	}

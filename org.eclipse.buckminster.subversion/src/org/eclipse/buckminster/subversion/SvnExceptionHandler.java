@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.eclipse.buckminster.runtime.Buckminster;
 
@@ -73,6 +73,8 @@ public class SvnExceptionHandler {
 	 */
 	public static boolean hasSvnException(Throwable e) {
 		final String message = e.getMessage();
+		if (message == null)
+			return false;
 
 		final Set<String> keys = MAPS.keySet();
 		for (String key : keys)
