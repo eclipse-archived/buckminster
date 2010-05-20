@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -30,6 +31,7 @@ import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.ITeamReaderType;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -44,7 +46,6 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.osgi.util.ManifestElement;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.pde.core.plugin.IMatchRules;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 
@@ -170,15 +171,23 @@ public class BundleConsolidator extends VersionConsolidator {
 		if (!getBooleanProperty(IPDEConstants.PROP_PDE_BUNDLE_RANGE_GENERATION, IPDEConstants.PDE_BUNDLE_RANGE_GENERATION_DEFAULT))
 			return false;
 
-		boolean retainLowerBound = getBooleanProperty(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER, false);
-		int pdeMatchRule = IMatchRules.EQUIVALENT;
+		Map<String, ? extends Object> props = getProperties();
+		MatchRule matchRule = MatchRule.EQUIVALENT;
+		String tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
+		if (tmp != null)
+			matchRule = MatchRule.getMatchRule(tmp);
 
-		String dfltMatchRule = (String) getProperties().get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
-		if (dfltMatchRule != null)
-			pdeMatchRule = CSpecGenerator.getMatchRule(dfltMatchRule);
-
-		if (pdeMatchRule == IMatchRules.NONE)
+		if (matchRule == MatchRule.NONE)
 			return false;
+
+		MatchRule retainLowerBound = MatchRule.NONE;
+		tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
+		if (tmp != null) {
+			if ("true".equalsIgnoreCase(tmp)) //$NON-NLS-1$
+				retainLowerBound = MatchRule.PERFECT;
+			else
+				retainLowerBound = MatchRule.getMatchRule(tmp);
+		}
 
 		boolean changed = false;
 		StringBuilder bld = new StringBuilder();
@@ -205,7 +214,7 @@ public class BundleConsolidator extends VersionConsolidator {
 				if (v == null || v.equals(Version.emptyVersion))
 					continue;
 
-				VersionRange range = CSpecGenerator.createRuleBasedRange(pdeMatchRule, retainLowerBound, v);
+				VersionRange range = CSpecGenerator.createRuleBasedRange(matchRule, retainLowerBound, v);
 				changed = true;
 				bld.append(';');
 				bld.append(Constants.BUNDLE_VERSION_ATTRIBUTE);

@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
@@ -53,7 +54,6 @@ import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.equinox.p2.repository.artifact.spi.ArtifactDescriptor;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.internal.build.Utils;
 
@@ -307,15 +307,20 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 			// Generation is turned off
 			return;
 
-		boolean retainLowerBound = false;
-		int pdeMatchRule = IMatchRules.EQUIVALENT;
+		MatchRule retainLowerBound = MatchRule.NONE;
+		MatchRule matchRule = MatchRule.EQUIVALENT;
 
 		if (props != null) {
-			String dfltMatchRule = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
-			retainLowerBound = VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER, retainLowerBound);
-			pdeMatchRule = CSpecGenerator.getMatchRule(dfltMatchRule);
+			String tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
+			if (tmp != null) {
+				if ("true".equalsIgnoreCase(tmp)) //$NON-NLS-1$
+					retainLowerBound = MatchRule.PERFECT;
+				else
+					retainLowerBound = MatchRule.getMatchRule(tmp);
+			}
+			matchRule = MatchRule.getMatchRule((String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT));
 		}
-		if (pdeMatchRule == IMatchRules.NONE || pdeMatchRule == IMatchRules.PERFECT)
+		if (matchRule == MatchRule.NONE || matchRule == MatchRule.PERFECT)
 			return;
 
 		boolean requirementGreedy = VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_FEATURE_REQUIREMENTS_GREEDY, true);
@@ -334,21 +339,30 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 			if (version == null || version.equals(Version.emptyVersion))
 				version = null;
 
+			MatchRule pdeRule = MatchRule.getMatchRule(entry.getMatch());
 			int min = entry.isOptional() ? 0 : 1;
-			if (entry.isRequires()) {
-				// Stick to the rule specified in the requirement
-				if (requirementGreedy)
-					continue;
+			if (!requirementGreedy && entry.isRequires()) {
 
-				// Advice to replace with a non greedy requirement
-				VersionRange range = CSpecGenerator.createRuleBasedRange(CSpecGenerator.getMatchRule(entry.getMatch()), true, version);
+				if (pdeRule != MatchRule.NONE) {
+					// Stick to the rule specified in the requirement
+					matchRule = pdeRule;
+					retainLowerBound = MatchRule.PERFECT;
+					continue;
+				}
+
+				// Advice to replace with a non greedy requirement. We use
+				// PERFECT for the lower bound here since we assume that a
+				// version entered in combination with a PDE match rule will
+				// reflect the desired lower bound.
+				VersionRange range = CSpecGenerator.createRuleBasedRange(matchRule, retainLowerBound, version);
 				advice.addRequirement(MetadataFactory.createRequirement(IInstallableUnit.NAMESPACE_IU_ID, id, range, getFilter(entry), min, 1, false));
+				continue;
 			}
 
-			if (version == null || CSpecGenerator.getMatchRule(entry.getMatch()) != IMatchRules.NONE)
+			if (version == null || pdeRule != MatchRule.NONE)
 				continue;
 
-			VersionRange range = CSpecGenerator.createRuleBasedRange(pdeMatchRule, retainLowerBound, version);
+			VersionRange range = CSpecGenerator.createRuleBasedRange(matchRule, retainLowerBound, version);
 			advice.addRequirement(MetadataFactory.createRequirement(IInstallableUnit.NAMESPACE_IU_ID, id, range, getFilter(entry), min, 1, true));
 		}
 		if (!advice.isEmpty())

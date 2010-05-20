@@ -43,10 +43,10 @@ import org.eclipse.buckminster.jarprocessor.JarProcessorActor;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
+import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.actor.P2SiteGenerator;
-import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -186,43 +186,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	private static final ImportSpecification[] noRequiredBundles = new ImportSpecification[0];
 
-	protected static String buildArtifactName(String id, String ver, boolean asJar) {
-		StringBuilder bld = new StringBuilder();
-		bld.append(id);
-		if (ver != null) {
-			bld.append('_');
-			bld.append(ver);
-		}
-		if (asJar)
-			bld.append(".jar"); //$NON-NLS-1$
-		else
-			bld.append('/');
-		return bld.toString();
-	}
-
-	private static Pattern convertIncludeToPattern(String include) {
-		int len = include.length();
-		StringBuilder bld = new StringBuilder(len + 4);
-		for (int idx = 0; idx < len; ++idx) {
-			char c = include.charAt(idx);
-			switch (c) {
-				case '?':
-					bld.append('.');
-					break;
-				case '*':
-					bld.append('.');
-					bld.append('*');
-					break;
-				case '.':
-					bld.append('\\');
-					bld.append('.');
-				default:
-					bld.append(c);
-			}
-		}
-		return Pattern.compile(bld.toString());
-	}
-
 	/**
 	 * Create a version range based on a PDE <code>matchRule</code> and a
 	 * <code>version</code>.
@@ -236,7 +199,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	 *            The version
 	 * @return A version range.
 	 */
-	public static VersionRange createRuleBasedRange(int matchRule, boolean retainLowerBound, Version version) {
+	public static VersionRange createRuleBasedRange(MatchRule matchRule, MatchRule retainLowerBound, Version version) {
 		if (version == null || Version.emptyVersion.equals(version))
 			return VersionRange.emptyRange;
 
@@ -246,12 +209,78 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			lower = VersionHelper.replaceQualifier(version, null);
 
 		Version upper = limitUpperWithMatchRule(version, matchRule, qualifierTag);
-		if (matchRule == IMatchRules.PERFECT)
+		if (matchRule == MatchRule.PERFECT)
 			return new VersionRange(lower, true, upper, !qualifierTag);
 
-		if (!retainLowerBound)
-			lower = limitLowerWithMatchRule(version, matchRule);
-		return new VersionRange(lower, true, upper, matchRule == IMatchRules.GREATER_OR_EQUAL);
+		switch (retainLowerBound) {
+			case PERFECT:
+				break;
+			case UNQUALIFIED:
+			case EQUIVALENT:
+				lower = limitLowerWithMatchRule(version, retainLowerBound);
+				break;
+			default:
+				lower = limitLowerWithMatchRule(version, matchRule);
+		}
+		return new VersionRange(lower, true, upper, matchRule == MatchRule.GREATER_OR_EQUAL);
+	}
+
+	public static Version limitLowerWithMatchRule(Version v, MatchRule matchRule) {
+		if (v == null || matchRule == MatchRule.NONE || matchRule == MatchRule.PERFECT)
+			return v;
+
+		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
+		switch (matchRule) {
+			case UNQUALIFIED:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro());
+				break;
+			case EQUIVALENT:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), 0);
+				break;
+			case COMPATIBLE:
+				v = Version.createOSGi(ov.getMajor(), 0, 0);
+				break;
+			default:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro());
+		}
+		return v;
+	}
+
+	public static Version limitUpperWithMatchRule(Version v, MatchRule matchRule, boolean qualifierTag) {
+		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
+		switch (matchRule) {
+			case UNQUALIFIED:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro() + 1);
+				break;
+			case EQUIVALENT:
+				v = Version.createOSGi(ov.getMajor(), ov.getMinor() + 1, 0);
+				break;
+			case COMPATIBLE:
+				v = Version.createOSGi(ov.getMajor() + 1, 0, 0);
+				break;
+			case PERFECT:
+				if (qualifierTag)
+					// A non yet expanded qualifier was encountered.
+					v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro() + 1);
+				break;
+			default:
+				v = Version.MAX_VERSION;
+		}
+		return v;
+	}
+
+	protected static String buildArtifactName(String id, String ver, boolean asJar) {
+		StringBuilder bld = new StringBuilder();
+		bld.append(id);
+		if (ver != null) {
+			bld.append('_');
+			bld.append(ver);
+		}
+		if (asJar)
+			bld.append(".jar"); //$NON-NLS-1$
+		else
+			bld.append('/');
+		return bld.toString();
 	}
 
 	protected static ImportSpecification[] getImports(IPluginBase plugin) throws CoreException {
@@ -301,54 +330,27 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return importSpecs;
 	}
 
-	public static int getMatchRule(String matchRuleString) {
-		if (matchRuleString == null)
-			return IMatchRules.NONE;
-
-		String[] table = IMatchRules.RULE_NAME_TABLE;
-		int idx = table.length;
-		while (--idx >= 0)
-			if (matchRuleString.equalsIgnoreCase(table[idx]))
-				return idx;
-		return IMatchRules.NONE;
-	}
-
-	public static Version limitLowerWithMatchRule(Version v, int matchRule) {
-		if (v == null || matchRule == IMatchRules.NONE || matchRule == IMatchRules.PERFECT)
-			return v;
-
-		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
-		switch (matchRule) {
-			case IMatchRules.EQUIVALENT:
-				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), 0);
-				break;
-			case IMatchRules.COMPATIBLE:
-				v = Version.createOSGi(ov.getMajor(), 0, 0);
-				break;
-			default:
-				v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro());
+	private static Pattern convertIncludeToPattern(String include) {
+		int len = include.length();
+		StringBuilder bld = new StringBuilder(len + 4);
+		for (int idx = 0; idx < len; ++idx) {
+			char c = include.charAt(idx);
+			switch (c) {
+				case '?':
+					bld.append('.');
+					break;
+				case '*':
+					bld.append('.');
+					bld.append('*');
+					break;
+				case '.':
+					bld.append('\\');
+					bld.append('.');
+				default:
+					bld.append(c);
+			}
 		}
-		return v;
-	}
-
-	public static Version limitUpperWithMatchRule(Version v, int matchRule, boolean qualifierTag) {
-		org.osgi.framework.Version ov = new org.osgi.framework.Version(v.toString());
-		switch (matchRule) {
-			case IMatchRules.EQUIVALENT:
-				v = Version.createOSGi(ov.getMajor(), ov.getMinor() + 1, 0);
-				break;
-			case IMatchRules.COMPATIBLE:
-				v = Version.createOSGi(ov.getMajor() + 1, 0, 0);
-				break;
-			case IMatchRules.PERFECT:
-				if (qualifierTag)
-					// A non yet expanded qualifier was encountered.
-					v = Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro() + 1);
-				break;
-			default:
-				v = Version.MAX_VERSION;
-		}
-		return v;
+		return Pattern.compile(bld.toString());
 	}
 
 	private final CSpecBuilder cspecBuilder;
@@ -360,6 +362,47 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected CSpecGenerator(CSpecBuilder cspecBuilder, ICatalogReader reader) {
 		this.cspecBuilder = cspecBuilder;
 		this.reader = reader;
+	}
+
+	public VersionRange convertMatchRule(MatchRule pdeMatchRule, String version) throws CoreException {
+		MatchRule retainLowerBound = MatchRule.NONE;
+		if (pdeMatchRule == MatchRule.NONE) {
+			Map<String, String> props = getProperties();
+			String prop = props.get(PROP_PDE_MATCH_RULE_DEFAULT);
+			if (prop == null)
+				pdeMatchRule = MatchRule.EQUIVALENT;
+			else
+				pdeMatchRule = MatchRule.getMatchRule(prop);
+			prop = props.get(PROP_PDE_MATCH_RULE_RETAIN_LOWER);
+			if (prop != null) {
+				if ("true".equalsIgnoreCase(prop)) //$NON-NLS-1$
+					retainLowerBound = MatchRule.PERFECT;
+				else
+					retainLowerBound = MatchRule.getMatchRule(prop);
+			}
+		}
+		version = Trivial.trim(version);
+		if (version == null || version.equals("0.0.0")) //$NON-NLS-1$
+			return null;
+
+		char c = version.charAt(0);
+		if (c == '[' || c == '(')
+			//
+			// Already an OSGi range, just ignore the rule then.
+			//
+			return new VersionRange(version);
+
+		return createRuleBasedRange(pdeMatchRule, retainLowerBound, Version.parseVersion(version));
+	}
+
+	public abstract void generate(IProgressMonitor monitor) throws CoreException;
+
+	public CSpecBuilder getCSpec() {
+		return cspecBuilder;
+	}
+
+	public ICatalogReader getReader() {
+		return reader;
 	}
 
 	protected ActionBuilder addAntAction(String actionName, String targetName, boolean asPublic) throws CoreException {
@@ -393,56 +436,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		pqBld.setComponentType(type);
 		pqBld.setName(name);
 		group.addPrerequisite(pqBld);
-	}
-
-	private void addProduct(FileHandle productConfig, boolean theOneAndOnly, IProgressMonitor monitor) throws CoreException, IOException {
-		try {
-			File productConfigFile = productConfig.getFile();
-			IProductDescriptor productDescriptor;
-			try {
-				productDescriptor = new ProductFile(productConfigFile.getAbsolutePath());
-			} catch (RuntimeException e) {
-				throw e;
-			} catch (IOException e) {
-				throw e;
-			} catch (Exception e) {
-				throw BuckminsterException.wrap(e);
-			}
-
-			CSpecBuilder cspec = getCSpec();
-			ArtifactBuilder productConfigArtifact = cspec.addArtifact(productDescriptor.getId(), false, null);
-			productConfigArtifact.addPath(Path.fromOSString(productConfigFile.getName()));
-			GroupBuilder productConfigs = cspec.getGroup(ATTRIBUTE_PRODUCT_CONFIGS);
-			if (productConfigs == null) {
-				productConfigs = cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIGS, false);
-				cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS).addLocalPrerequisite(productConfigs);
-			}
-			productConfigs.addLocalPrerequisite(productConfigArtifact);
-			if (productDescriptor.useFeatures())
-				addProductFeatures(productDescriptor);
-			else
-				addProductBundles(productDescriptor);
-
-			if (!theOneAndOnly)
-				// We're done here.
-				return;
-
-			if (!isFeature()) {
-				// This bundle must be able to create a site for its product
-				//
-				GroupBuilder featureExports = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
-				featureExports.addLocalPrerequisite(createCopyPluginsAction());
-				featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
-			}
-			createSiteRepackAction(ATTRIBUTE_FEATURE_EXPORTS);
-			createSiteSignAction(ATTRIBUTE_FEATURE_EXPORTS);
-			createSitePackAction(ATTRIBUTE_FEATURE_EXPORTS);
-			createSiteAction(ATTRIBUTE_FEATURE_EXPORTS, productConfigArtifact.getName());
-			createSiteZipAction();
-		} finally {
-			if (productConfig.isTemporary())
-				productConfig.getFile().delete();
-		}
 	}
 
 	protected void addProductBundles(IProductDescriptor productDescriptor) throws CoreException {
@@ -510,30 +503,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		}
 	}
 
-	public VersionRange convertMatchRule(int pdeMatchRule, String version) throws CoreException {
-		boolean retainLowerBound = false;
-		if (pdeMatchRule == IMatchRules.NONE) {
-			Map<String, String> props = getProperties();
-			String prop = props.get(PROP_PDE_MATCH_RULE_DEFAULT);
-			if (prop == null)
-				prop = IMatchRules.RULE_EQUIVALENT;
-			pdeMatchRule = CSpecGenerator.getMatchRule(prop);
-			retainLowerBound = VersionConsolidator.getBooleanProperty(props, PROP_PDE_MATCH_RULE_RETAIN_LOWER, false);
-		}
-		version = Trivial.trim(version);
-		if (version == null || version.equals("0.0.0")) //$NON-NLS-1$
-			return null;
-
-		char c = version.charAt(0);
-		if (c == '[' || c == '(')
-			//
-			// Already an OSGi range, just ignore the rule then.
-			//
-			return new VersionRange(version);
-
-		return createRuleBasedRange(pdeMatchRule, retainLowerBound, Version.parseVersion(version));
-	}
-
 	protected ActionBuilder createCopyPluginsAction() throws CoreException {
 		// Copy all plug-ins that all features (including this one) is
 		// including.
@@ -572,7 +541,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return createDependency(name, componentType, VersionHelper.createRange(VersionFormat.OSGI_FORMAT, versionDesignator), filter);
 	}
 
-	protected ComponentRequestBuilder createDependency(String name, String componentType, String version, int pdeMatchRule, Filter filter)
+	protected ComponentRequestBuilder createDependency(String name, String componentType, String version, MatchRule pdeMatchRule, Filter filter)
 			throws CoreException {
 		return createDependency(name, componentType, convertMatchRule(pdeMatchRule, version), filter);
 	}
@@ -675,8 +644,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return result;
 	}
 
-	public abstract void generate(IProgressMonitor monitor) throws CoreException;
-
 	protected AttributeBuilder generateRemoveDirAction(String dirTag, IPath dirPath, boolean publ) throws CoreException {
 		return generateRemoveDirAction(dirTag, dirPath, publ, "buckminster.rm." + dirTag + ".dir"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
@@ -685,10 +652,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		ActionBuilder rmDir = addAntAction(actionName, TASK_DELETE_DIR, publ);
 		rmDir.addProperty(PROP_DELETE_DIR, dirPath.toPortableString(), false);
 		return rmDir;
-	}
-
-	public CSpecBuilder getCSpec() {
-		return cspecBuilder;
 	}
 
 	protected abstract String getProductOutputFolder(String productId);
@@ -707,10 +670,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	}
 
 	protected abstract String getPropertyFileName();
-
-	public ICatalogReader getReader() {
-		return reader;
-	}
 
 	protected boolean isFeature() {
 		return false;
@@ -737,5 +696,55 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	protected boolean skipComponent(ComponentQuery query, ComponentRequestBuilder bld) {
 		return query.skipComponent(new ComponentName(bld.getName(), bld.getComponentTypeID()), getReader().getNodeQuery().getContext());
+	}
+
+	private void addProduct(FileHandle productConfig, boolean theOneAndOnly, IProgressMonitor monitor) throws CoreException, IOException {
+		try {
+			File productConfigFile = productConfig.getFile();
+			IProductDescriptor productDescriptor;
+			try {
+				productDescriptor = new ProductFile(productConfigFile.getAbsolutePath());
+			} catch (RuntimeException e) {
+				throw e;
+			} catch (IOException e) {
+				throw e;
+			} catch (Exception e) {
+				throw BuckminsterException.wrap(e);
+			}
+
+			CSpecBuilder cspec = getCSpec();
+			ArtifactBuilder productConfigArtifact = cspec.addArtifact(productDescriptor.getId(), false, null);
+			productConfigArtifact.addPath(Path.fromOSString(productConfigFile.getName()));
+			GroupBuilder productConfigs = cspec.getGroup(ATTRIBUTE_PRODUCT_CONFIGS);
+			if (productConfigs == null) {
+				productConfigs = cspec.addGroup(ATTRIBUTE_PRODUCT_CONFIGS, false);
+				cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS).addLocalPrerequisite(productConfigs);
+			}
+			productConfigs.addLocalPrerequisite(productConfigArtifact);
+			if (productDescriptor.useFeatures())
+				addProductFeatures(productDescriptor);
+			else
+				addProductBundles(productDescriptor);
+
+			if (!theOneAndOnly)
+				// We're done here.
+				return;
+
+			if (!isFeature()) {
+				// This bundle must be able to create a site for its product
+				//
+				GroupBuilder featureExports = cspec.addGroup(ATTRIBUTE_FEATURE_EXPORTS, true);
+				featureExports.addLocalPrerequisite(createCopyPluginsAction());
+				featureExports.setPrerequisiteRebase(OUTPUT_DIR_SITE);
+			}
+			createSiteRepackAction(ATTRIBUTE_FEATURE_EXPORTS);
+			createSiteSignAction(ATTRIBUTE_FEATURE_EXPORTS);
+			createSitePackAction(ATTRIBUTE_FEATURE_EXPORTS);
+			createSiteAction(ATTRIBUTE_FEATURE_EXPORTS, productConfigArtifact.getName());
+			createSiteZipAction();
+		} finally {
+			if (productConfig.isTemporary())
+				productConfig.getFile().delete();
+		}
 	}
 }

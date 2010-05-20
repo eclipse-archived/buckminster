@@ -23,13 +23,13 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
-import org.eclipse.pde.core.plugin.IMatchRules;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
@@ -261,12 +261,13 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		Filter filter = FilterUtils.createFilter(featureChild.getOS(), featureChild.getWS(), featureChild.getArch(), featureChild.getNL());
 		if (featureChild.isOptional())
 			filter = ComponentRequest.P2_OPTIONAL_FILTER.addFilterWithAnd(filter);
-		return createDependency(featureChild.getId(), IComponentType.ECLIPSE_FEATURE, featureChild.getVersion(), featureChild.getMatch(), filter);
+		return createDependency(featureChild.getId(), IComponentType.ECLIPSE_FEATURE, featureChild.getVersion(),
+				MatchRule.fromPDE(featureChild.getMatch()), filter);
 	}
 
 	ComponentRequestBuilder createDependency(IFeaturePlugin plugin) throws CoreException {
 		Filter filter = FilterUtils.createFilter(plugin.getOS(), plugin.getWS(), plugin.getArch(), plugin.getNL());
-		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), IMatchRules.NONE, filter);
+		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), MatchRule.NONE, filter);
 	}
 
 	abstract void createFeatureJarAction(IProgressMonitor monitor) throws CoreException;
