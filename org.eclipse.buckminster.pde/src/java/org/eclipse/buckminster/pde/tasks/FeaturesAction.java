@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.MapUnion;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.Messages;
@@ -228,11 +229,12 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 				if (location.hasTrailingSeparator()) {
 					File buildProps = location.append(IPDEBuildConstants.PROPERTIES_FILE).toFile();
 					InputStream input = null;
-					IVersionedId vn = entry.getKey();
 					Properties props = new Properties();
 					try {
 						input = new BufferedInputStream(new FileInputStream(buildProps));
 						props.load(input);
+						IVersionedId vn = entry.getKey();
+						vn = new VersionedId(vn.getId(), VersionHelper.replaceQualifier(vn.getVersion(), null));
 						properties.put(vn, new BMProperties(props));
 						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), props, location, publisherInfo.getConfigurations());
 						if (rootAdvice != null)
@@ -297,8 +299,8 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 	}
 
 	private void addCapabilityAdvice(Feature feature) {
-		IVersionedId vn = new VersionedId(feature.getId(), feature.getVersion());
-		Map<String, String> localProps = properties.get(vn);
+		Version v = Version.parseVersion(feature.getVersion());
+		Map<String, String> localProps = properties.get(new VersionedId(feature.getId(), VersionHelper.replaceQualifier(v, null)));
 		Map<String, ? extends Object> props = AbstractActor.getActiveContext().getProperties();
 		if (localProps != null)
 			props = new MapUnion<String, Object>(localProps, props);
@@ -324,7 +326,7 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 			return;
 
 		boolean requirementGreedy = VersionConsolidator.getBooleanProperty(props, IPDEConstants.PROP_PDE_FEATURE_REQUIREMENTS_GREEDY, true);
-		CapabilityAdvice advice = new CapabilityAdvice(vn.getId() + IPDEConstants.FEATURE_GROUP, vn.getVersion());
+		CapabilityAdvice advice = new CapabilityAdvice(feature.getId() + IPDEConstants.FEATURE_GROUP, v);
 		FeatureEntry[] entries = feature.getEntries();
 		int idx = entries.length;
 		while (--idx >= 0) {
