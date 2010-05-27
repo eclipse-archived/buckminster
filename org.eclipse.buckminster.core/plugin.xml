@@ -209,6 +209,18 @@
           key="instance/org.eclipse.buckminster.runtime/bmProjectContents"
           name="buckminsterProjectPath">
     </prefmapping>
+    <prefmapping
+          class="org.eclipse.buckminster.core.prefs.SshPreferencesHandler"
+          description="A comma separated list of private key files to try when attempting SSH public key authentication"
+          key="instance/org.eclipse.jsch.core/PRIVATEKEY"
+          name="sshPrivateKeys">
+    </prefmapping>
+    <prefmapping
+          class="org.eclipse.buckminster.core.prefs.SshPreferencesHandler"
+          description="SSH2 home directory (this directory is searched for the known_hosts file)"
+          key="instance/org.eclipse.jsch.core/SSH2HOME"
+          name="ssh2Home">
+    </prefmapping>
  </extension>
 	<extension point="org.eclipse.buckminster.cmdline.commands">
 		<command
