@@ -23,9 +23,20 @@ import org.osgi.service.prefs.BackingStoreException;
 public class SshPreferencesHandler extends BasicPreferenceHandler {
 
 	@Override
-	public void set(String privateKeys) throws BackingStoreException {
-		super.set(privateKeys);
+	public void set(String value) throws BackingStoreException {
+		super.set(value);
 
+		notifyJSchCorePlugin();
+	}
+
+	@Override
+	public void unset() throws BackingStoreException {
+		super.unset();
+
+		notifyJSchCorePlugin();
+	}
+
+	protected void notifyJSchCorePlugin() {
 		String key = pathAsNodeAndKey(getKey())[1];
 
 		// make sure the ssh code picks up the updated preference value
