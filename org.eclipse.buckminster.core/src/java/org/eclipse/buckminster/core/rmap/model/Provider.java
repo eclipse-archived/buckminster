@@ -201,8 +201,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 					// always consulted
 					//
 					if (!getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
-						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI, String
-								.format(NLS.bind(Messages.Components_of_type_0_are_not_supported, componentTypeID)));
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI,
+								String.format(NLS.bind(Messages.Components_of_type_0_are_not_supported, componentTypeID)));
 						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 					}
 					return null;

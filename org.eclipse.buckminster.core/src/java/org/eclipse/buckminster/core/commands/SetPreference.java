@@ -26,6 +26,12 @@ import org.eclipse.osgi.util.NLS;
 public class SetPreference extends WorkspaceCommand {
 	static private final OptionDescriptor TEST_DESCRIPTOR = new OptionDescriptor(null, "__test", OptionValueType.NONE); //$NON-NLS-1$
 
+	public static void set(String preference, String value) throws Exception {
+		SetPreference setpref = new SetPreference();
+		setpref.handleUnparsed(new String[] { preference + '=' + value });
+		setpref.run("setpref"); //$NON-NLS-1$
+	}
+
 	private boolean test = false;
 
 	private String[] assignments;

@@ -34,6 +34,8 @@ public interface KeyConstants {
 
 	String LOGIN_PASSWORD = "buckminster.password"; //$NON-NLS-1$
 
+	String REFERENCE_REPOSITORY = "buckminster.reference.repository"; //$NON-NLS-1$
+
 	String SNAPSHOT = "buckminster.snapshot"; //$NON-NLS-1$
 
 	String OVERRIDE_ECLIPSE_INSTALLED = "buckminster.override.eclipse.installed"; //$NON-NLS-1$
@@ -57,4 +59,6 @@ public interface KeyConstants {
 	String ACTION_TEMPDIR_REF = "${" + ACTION_TEMP + "}"; //$NON-NLS-1$ //$NON-NLS-2$
 
 	String ACTION_TEMPROOT_REF = "${" + ACTION_TEMP_ROOT + "}"; //$NON-NLS-1$ //$NON-NLS-2$
+
+	String BUILD_ID = "buckminster.build.id"; //$NON-NLS-1$
 }

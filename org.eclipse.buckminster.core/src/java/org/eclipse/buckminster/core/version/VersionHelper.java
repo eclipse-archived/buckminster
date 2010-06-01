@@ -374,4 +374,32 @@ public class VersionHelper {
 	public static Object toTimestampString(Date timestamp) {
 		return timestampFormat.format(timestamp);
 	}
+
+	public static VersionRange unqualifiedRange(Version v) {
+		if (v == null)
+			return null;
+
+		if (v.getSegmentCount() < 2)
+			return null;
+
+		IVersionFormat vf = v.getFormat();
+		v = replaceQualifier(v, null);
+		String str = v.getOriginal();
+		if (str == null)
+			return null;
+
+		int len = str.length();
+		if (len == 0)
+			return null;
+
+		while (--len >= 0 && Character.isDigit(str.charAt(len)))
+			;
+
+		if (++len >= str.length())
+			return null;
+
+		Integer lastInt = Integer.valueOf(str.substring(len));
+		str = str.substring(0, len) + (lastInt.intValue() + 1);
+		return new VersionRange(v, true, vf.parse(str), false);
+	}
 }

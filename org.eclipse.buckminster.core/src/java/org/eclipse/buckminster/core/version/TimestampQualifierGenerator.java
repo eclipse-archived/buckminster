@@ -15,9 +15,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.Version;
 
 /**
@@ -34,7 +35,7 @@ import org.eclipse.equinox.p2.metadata.Version;
  * 
  * @author Thomas Hallgren
  */
-public class TimestampQualifierGenerator extends AbstractExtension implements IQualifierGenerator {
+public class TimestampQualifierGenerator extends AbstractQualifierGenerator {
 	public static final String FORMAT_PROPERTY = "generator.lastModified.format"; //$NON-NLS-1$
 
 	public static final String DEFAULT_FORMAT = "'v'yyyyMMddHHmm"; //$NON-NLS-1$
@@ -59,6 +60,17 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 		}
 	}
 
+	public static DateFormat getDateFormat(Map<String, ? extends Object> props) {
+		String format = (String) props.get(FORMAT_PROPERTY);
+		if (format == null)
+			format = DEFAULT_FORMAT;
+
+		DateFormat mf = new SimpleDateFormat(format);
+		mf.setTimeZone(DateAndTimeUtils.UTC);
+		mf.setLenient(false);
+		return mf;
+	}
+
 	private static Date getLastModification(ComponentIdentifier cid, IActionContext context) throws CoreException {
 		IPath location = WorkspaceInfo.getComponentLocation(cid);
 		IReaderType readerType = AbstractReaderType.getTypeForResource(WorkspaceInfo.getProject(cid));
@@ -80,7 +92,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 
 	@Override
 	public Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException {
-		Version currentVersion = cid.getVersion();
+		final Version currentVersion = cid.getVersion();
 		if (currentVersion == null)
 			return null;
 
@@ -90,13 +102,7 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 				return currentVersion;
 
 			Map<String, ? extends Object> props = context.getProperties();
-			String format = (String) props.get(FORMAT_PROPERTY);
-			if (format == null)
-				format = DEFAULT_FORMAT;
-
-			DateFormat mf = new SimpleDateFormat(format);
-			mf.setTimeZone(DateAndTimeUtils.UTC);
-			mf.setLenient(false);
+			DateFormat mf = getDateFormat(props);
 
 			for (ComponentIdentifier dependency : dependencies) {
 				Version depVer = dependency.getVersion();
@@ -139,7 +145,22 @@ public class TimestampQualifierGenerator extends AbstractExtension implements IQ
 				if (depLastMod != null && depLastMod.compareTo(lastMod) > 0)
 					lastMod = depLastMod;
 			}
+
 			String newQual = mf.format(lastMod);
+			newQual = VersionHelper.getQualifier(currentVersion).replace("qualifier", newQual); //$NON-NLS-1$
+			Version newVersion = VersionHelper.replaceQualifier(currentVersion, newQual);
+			IInstallableUnit prevIU = obtainFromReferenceRepo(cid, null);
+			if (prevIU == null)
+				return newVersion;
+
+			// Exactly the same version has been generated before
+			String buildId = prevIU.getProperty(KeyConstants.BUILD_ID);
+			if (buildId == null || buildId.equals(props.get("build.id"))) //$NON-NLS-1$
+				return newVersion;
+
+			// Component contains a generated build id that differs from the
+			// current one. We need todays date.
+			newQual = mf.format(new Date());
 			newQual = VersionHelper.getQualifier(currentVersion).replace("qualifier", newQual); //$NON-NLS-1$
 			return VersionHelper.replaceQualifier(currentVersion, newQual);
 		} catch (MissingComponentException e) {

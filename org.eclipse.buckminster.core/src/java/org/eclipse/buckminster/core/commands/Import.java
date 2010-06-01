@@ -21,6 +21,8 @@ import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
@@ -41,6 +43,7 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ecf.core.security.IConnectContext;
@@ -134,12 +137,14 @@ public class Import extends WorkspaceInitCommand {
 			}
 			MonitorUtils.worked(monitor, 5);
 
+			IPath newTpLocation = null;
 			if (mspec != null) {
 				// We have an MSPEC. Now let's parse whatever it points to.
 				//
 				resolvedURL = mspec.getResolvedURL();
 				byteBld.reset();
 				DownloadManager.readInto(resolvedURL, connectContext, byteBld, MonitorUtils.subMonitor(monitor, 20));
+				newTpLocation = mspec.getInstallLocation();
 			} else {
 				MonitorUtils.worked(monitor, 20);
 			}
@@ -156,6 +161,8 @@ public class Import extends WorkspaceInitCommand {
 			}
 			MonitorUtils.worked(monitor, 5);
 
+			SetPreference.set(
+					"targetPlatformPath", ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(), newTpLocation.toPortableString(), 0));//$NON-NLS-1$
 			BillOfMaterials bom;
 			if (cquery != null) {
 				ResolutionContext ctx = (mspec == null) ? new ResolutionContext(cquery) : new ResolutionContext(mspec, cquery);
