@@ -161,8 +161,10 @@ public class Import extends WorkspaceInitCommand {
 			}
 			MonitorUtils.worked(monitor, 5);
 
-			SetPreference.set(
-					"targetPlatformPath", ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(), newTpLocation.toPortableString(), 0));//$NON-NLS-1$
+			if (newTpLocation != null) {
+				SetPreference
+						.set("targetPlatformPath", ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(), newTpLocation.toPortableString(), 0));//$NON-NLS-1$
+			}
 			BillOfMaterials bom;
 			if (cquery != null) {
 				ResolutionContext ctx = (mspec == null) ? new ResolutionContext(cquery) : new ResolutionContext(mspec, cquery);
