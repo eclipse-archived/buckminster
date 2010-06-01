@@ -77,7 +77,7 @@
   </rm:searchPath>
   <rm:searchPath name="polarion">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/weekly-site"/>
+      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site"/>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
       <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site"/>
@@ -97,7 +97,7 @@
   </rm:searchPath>
   <rm:searchPath name="subversive">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/technology/subversive/0.7/weekly-site">
+      <rm:uri format="{0}/technology/subversive/0.7/update-site">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
