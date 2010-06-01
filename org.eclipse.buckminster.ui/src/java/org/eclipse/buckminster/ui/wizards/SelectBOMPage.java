@@ -15,6 +15,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.RMContext;
+import org.eclipse.buckminster.core.commands.SetPreference;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -210,11 +213,13 @@ public class SelectBOMPage extends AbstractQueryPage {
 						}
 						MonitorUtils.worked(monitor, 5);
 
+						IPath newTpLocation = null;
 						if (mspec != null) {
 							mspecBld.initFrom(mspec);
 							urlToParse = mspec.getResolvedURL();
 							byteBld.reset();
 							DownloadManager.readInto(urlToParse, null, byteBld, MonitorUtils.subMonitor(monitor, 20));
+							newTpLocation = mspec.getInstallLocation();
 						} else {
 							mspecBld.setURL(urlToParse.toString());
 							MonitorUtils.worked(monitor, 20);
@@ -236,6 +241,9 @@ public class SelectBOMPage extends AbstractQueryPage {
 						}
 						MonitorUtils.worked(monitor, 5);
 
+						if (newTpLocation != null)
+							SetPreference
+									.set("targetPlatformPath", ExpandingProperties.expand(RMContext.getGlobalPropertyAdditions(), newTpLocation.toPortableString(), 0));//$NON-NLS-1$
 						if (cquery != null) {
 							ResolutionContext ctx = (mspec == null) ? new ResolutionContext(cquery) : new ResolutionContext(mspec, cquery);
 							IResolver resolver = new MainResolver(ctx);
