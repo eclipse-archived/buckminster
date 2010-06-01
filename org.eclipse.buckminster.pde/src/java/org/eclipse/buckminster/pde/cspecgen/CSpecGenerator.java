@@ -220,7 +220,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 				lower = limitLowerWithMatchRule(version, retainLowerBound);
 				break;
 			default:
-				lower = limitLowerWithMatchRule(version, matchRule);
+				lower = limitLowerWithMatchRule(version, MatchRule.COMPATIBLE);
 		}
 		return new VersionRange(lower, true, upper, matchRule == MatchRule.GREATER_OR_EQUAL);
 	}
@@ -365,22 +365,6 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	}
 
 	public VersionRange convertMatchRule(MatchRule pdeMatchRule, String version) throws CoreException {
-		MatchRule retainLowerBound = MatchRule.NONE;
-		if (pdeMatchRule == MatchRule.NONE) {
-			Map<String, String> props = getProperties();
-			String prop = props.get(PROP_PDE_MATCH_RULE_DEFAULT);
-			if (prop == null)
-				pdeMatchRule = MatchRule.EQUIVALENT;
-			else
-				pdeMatchRule = MatchRule.getMatchRule(prop);
-			prop = props.get(PROP_PDE_MATCH_RULE_RETAIN_LOWER);
-			if (prop != null) {
-				if ("true".equalsIgnoreCase(prop)) //$NON-NLS-1$
-					retainLowerBound = MatchRule.PERFECT;
-				else
-					retainLowerBound = MatchRule.getMatchRule(prop);
-			}
-		}
 		version = Trivial.trim(version);
 		if (version == null || version.equals("0.0.0")) //$NON-NLS-1$
 			return null;
@@ -392,7 +376,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			//
 			return new VersionRange(version);
 
-		return createRuleBasedRange(pdeMatchRule, retainLowerBound, Version.parseVersion(version));
+		return createRuleBasedRange(pdeMatchRule, MatchRule.NONE, Version.parseVersion(version));
 	}
 
 	public abstract void generate(IProgressMonitor monitor) throws CoreException;

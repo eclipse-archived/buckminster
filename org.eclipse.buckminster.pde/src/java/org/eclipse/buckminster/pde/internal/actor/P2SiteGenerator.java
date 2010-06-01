@@ -33,6 +33,7 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
@@ -40,6 +41,7 @@ import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
+import org.eclipse.buckminster.pde.tasks.BundlesAction;
 import org.eclipse.buckminster.pde.tasks.CategoriesAction;
 import org.eclipse.buckminster.pde.tasks.FeaturesAction;
 import org.eclipse.buckminster.pde.tasks.MirrorsSiteAction;
@@ -69,7 +71,6 @@ import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.Publisher;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
-import org.eclipse.equinox.p2.publisher.eclipse.BundlesAction;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
@@ -380,8 +381,8 @@ public class P2SiteGenerator extends AbstractActor {
 			throw new MissingPrerequisiteException(action, ALIAS_SITE_DEFINER);
 
 		if (!outputPath.hasTrailingSeparator())
-			throw new IllegalArgumentException(NLS.bind(org.eclipse.buckminster.core.Messages.output_of_action_0_must_be_folder, action
-					.getQualifiedName()));
+			throw new IllegalArgumentException(NLS.bind(org.eclipse.buckminster.core.Messages.output_of_action_0_must_be_folder,
+					action.getQualifiedName()));
 
 		File outputDir = outputPath.toFile().getAbsoluteFile();
 		outputDir.mkdirs();
@@ -438,12 +439,39 @@ public class P2SiteGenerator extends AbstractActor {
 		return Status.OK_STATUS;
 	}
 
+	private void collectBundles(CSpec cspec, Map<IVersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException {
+		ComponentIdentifier ci = cspec.getComponentIdentifier();
+		if (IComponentType.OSGI_BUNDLE.equals(ci.getComponentTypeID()))
+			if (cspecs.put(new VersionedId(ci.getName(), ci.getVersion()), cspec) != null)
+				return;
+
+		Attribute refs = cspec.getAttribute(IPDEConstants.ATTRIBUTE_BUNDLE_JARS);
+		if (refs == null)
+			return;
+
+		for (Prerequisite preq : refs.getPrerequisites()) {
+			Attribute ref = preq.getReferencedAttribute(cspec, ctx);
+			if (ref != null)
+				collectBundles(ref.getCSpec(), cspecs, ctx);
+		}
+	}
+
+	private Map<IVersionedId, CSpec> collectBundles(IActionContext ctx) throws CoreException {
+		CSpec cspec = ctx.getAction().getCSpec();
+		Map<IVersionedId, CSpec> cspecs = new HashMap<IVersionedId, CSpec>();
+		collectBundles(cspec, cspecs, ctx);
+		return cspecs;
+	}
+
 	private void collectFeatures(CSpec cspec, Map<IVersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException {
 		ComponentIdentifier ci = cspec.getComponentIdentifier();
 		if (cspecs.put(new VersionedId(ci.getName(), ci.getVersion()), cspec) != null)
 			return;
 
 		Attribute refs = cspec.getAttribute(IPDEConstants.ATTRIBUTE_FEATURE_REFS);
+		if (refs == null)
+			return;
+
 		for (Prerequisite preq : refs.getPrerequisites()) {
 			Attribute ref = preq.getReferencedAttribute(cspec, ctx);
 			if (ref != null)
@@ -462,7 +490,7 @@ public class P2SiteGenerator extends AbstractActor {
 			throws CoreException {
 		ArrayList<IPublisherAction> actions = new ArrayList<IPublisherAction>();
 		actions.add(new FeaturesAction(new File[] { new File(siteFolder, "features") }, collectFeatures(ctx))); //$NON-NLS-1$
-		actions.add(new BundlesAction(new File[] { new File(siteFolder, "plugins") })); //$NON-NLS-1$
+		actions.add(new BundlesAction(new File[] { new File(siteFolder, "plugins") }, collectBundles(ctx))); //$NON-NLS-1$
 
 		Map<String, String> buildProperties = readBuildProperties(sourceFolder);
 		if (siteDescriptor instanceof Feature) {

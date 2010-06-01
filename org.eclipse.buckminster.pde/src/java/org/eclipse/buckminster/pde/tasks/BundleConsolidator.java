@@ -163,6 +163,7 @@ public class BundleConsolidator extends VersionConsolidator {
 		return true;
 	}
 
+	@SuppressWarnings("deprecation")
 	protected boolean fixRequiredBundleVersions(IActionContext ctx, Attributes a) throws IOException {
 		String requiredBundles = a.getValue(Constants.REQUIRE_BUNDLE);
 		if (requiredBundles == null)
@@ -172,22 +173,28 @@ public class BundleConsolidator extends VersionConsolidator {
 			return false;
 
 		Map<String, ? extends Object> props = getProperties();
-		MatchRule matchRule = MatchRule.EQUIVALENT;
-		String tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
+		MatchRule matchRule = MatchRule.COMPATIBLE;
+		String tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_BUNDLE);
+		if (tmp == null)
+			tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT);
 		if (tmp != null)
 			matchRule = MatchRule.getMatchRule(tmp);
-
 		if (matchRule == MatchRule.NONE)
 			return false;
 
-		MatchRule retainLowerBound = MatchRule.NONE;
-		tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
-		if (tmp != null) {
-			if ("true".equalsIgnoreCase(tmp)) //$NON-NLS-1$
-				retainLowerBound = MatchRule.PERFECT;
-			else
-				retainLowerBound = MatchRule.getMatchRule(tmp);
+		MatchRule matchRuleLower = MatchRule.EQUIVALENT;
+		tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_BUNDLE_LOWER);
+		if (tmp == null) {
+			tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_DEFAULT_LOWER);
+			if (tmp == null) {
+				// Backward compatibility
+				tmp = (String) props.get(IPDEConstants.PROP_PDE_MATCH_RULE_RETAIN_LOWER);
+				if ("true".equalsIgnoreCase(tmp)) //$NON-NLS-1$
+					tmp = "perfect"; //$NON-NLS-1$
+			}
 		}
+		if (tmp != null)
+			matchRuleLower = MatchRule.getMatchRule(tmp);
 
 		boolean changed = false;
 		StringBuilder bld = new StringBuilder();
@@ -214,7 +221,7 @@ public class BundleConsolidator extends VersionConsolidator {
 				if (v == null || v.equals(Version.emptyVersion))
 					continue;
 
-				VersionRange range = CSpecGenerator.createRuleBasedRange(matchRule, retainLowerBound, v);
+				VersionRange range = CSpecGenerator.createRuleBasedRange(matchRule, matchRuleLower, v);
 				changed = true;
 				bld.append(';');
 				bld.append(Constants.BUNDLE_VERSION_ATTRIBUTE);

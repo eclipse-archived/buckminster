@@ -250,6 +250,20 @@ public interface IPDEConstants {
 
 	static final String PROP_PDE_MATCH_RULE_DEFAULT = "pde.match.rule.default"; //$NON-NLS-1$
 
+	static final String PROP_PDE_MATCH_RULE_DEFAULT_LOWER = "pde.match.rule.default.lower"; //$NON-NLS-1$
+
+	static final String PROP_PDE_MATCH_RULE_BUNDLE = "pde.match.rule.bundle"; //$NON-NLS-1$
+
+	static final String PROP_PDE_MATCH_RULE_BUNDLE_LOWER = "pde.match.rule.bundle.lower"; //$NON-NLS-1$
+
+	static final String PROP_PDE_MATCH_RULE_FEATURE = "pde.match.rule.feature"; //$NON-NLS-1$
+
+	static final String PROP_PDE_MATCH_RULE_FEATURE_LOWER = "pde.match.rule.feature.lower"; //$NON-NLS-1$
+
+	/**
+	 * @deprecated Use {@link #PDE_MATCH_RULE_DEFAULT_LOWER}
+	 */
+	@Deprecated
 	static final String PROP_PDE_MATCH_RULE_RETAIN_LOWER = "pde.match.rule.retain.lower"; //$NON-NLS-1$
 
 	static final String PROP_PDE_BUNDLE_RANGE_GENERATION = "pde.bundle.range.generation"; //$NON-NLS-1$
