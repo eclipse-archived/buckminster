@@ -74,6 +74,9 @@ public class BundlesAction extends org.eclipse.equinox.p2.publisher.eclipse.Bund
 	}
 
 	private void createBuildIdAdvice(BundleDescription bundleDescription, String buildId) {
+		if (bundleDescription == null)
+			return;
+
 		CSpec cspec = findCSpec(bundleDescription);
 		if (cspec == null)
 			return;
