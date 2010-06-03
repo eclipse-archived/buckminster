@@ -38,7 +38,7 @@ import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
 @SuppressWarnings("restriction")
 public abstract class CSpecFromFeature extends CSpecGenerator {
-	private static String getIdWithoutSource(String sourceId) {
+	public static String getIdWithoutSource(String sourceId) {
 		if (sourceId.endsWith(".source")) //$NON-NLS-1$
 			return sourceId.substring(0, sourceId.length() - 7);
 		if (sourceId.endsWith(".source.feature")) //$NON-NLS-1$

@@ -17,6 +17,7 @@ import java.util.Map;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.pde.cspecgen.feature.CSpecFromFeature;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
 import org.eclipse.core.runtime.CoreException;
@@ -50,11 +51,19 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		IFeature feature = featureModel.getFeature();
 		String id = feature.getId();
 
+		IFeatureChild sourceRef = null;
 		Map<String, Version[]> featureVers = getFeatureVersions();
 		ArrayList<ComponentIdentifier> deps = new ArrayList<ComponentIdentifier>();
 		for (IFeatureChild ref : feature.getIncludedFeatures()) {
 			String vstr = ref.getVersion();
-			Version version = findBestVersion(featureVers, id, "feature", ref.getId(), vstr); //$NON-NLS-1$
+			String refId = ref.getId();
+			String refIdWOS = CSpecFromFeature.getIdWithoutSource(refId);
+			if (refIdWOS != null && refIdWOS.equals(id)) {
+				// This feature includes the source feature of itself
+				sourceRef = ref;
+				continue;
+			}
+			Version version = findBestVersion(featureVers, id, "feature", refId, vstr); //$NON-NLS-1$
 			if (version != null) {
 				ComponentIdentifier cid = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
 				deps.add(cid);
@@ -77,6 +86,8 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 			}
 		}
 		consolidateFeatureVersion(deps);
+		if (sourceRef != null)
+			sourceRef.setVersion(feature.getVersion());
 		featureModel.save(getOutputFile());
 	}
 
