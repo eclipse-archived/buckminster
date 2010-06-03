@@ -29,7 +29,7 @@ public abstract class DateAndTimeUtils {
 
 	public static final TimeZone UTC;
 
-	public static final String[] commonFormats = new String[] { "yyyyMMddHHmm", "yyyyMMdd-HHmm", "yyyyMMdd" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	public static final String[] commonFormats = new String[] { "yyyy-MM-dd_HH-mm-ss", "yyyyMMddHHmm", "yyyyMMdd-HHmm", "yyyyMMdd" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 	public static final DateFormat[] commonFormatters;
 

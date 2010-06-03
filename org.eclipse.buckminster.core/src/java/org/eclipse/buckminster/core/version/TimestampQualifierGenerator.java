@@ -160,7 +160,7 @@ public class TimestampQualifierGenerator extends AbstractQualifierGenerator {
 
 			// Component contains a generated build id that differs from the
 			// current one. We need todays date.
-			newQual = mf.format(new Date());
+			newQual = mf.format(BuildTimestampQualifierGenerator.getBuildTimestamp(context));
 			newQual = VersionHelper.getQualifier(currentVersion).replace("qualifier", newQual); //$NON-NLS-1$
 			return VersionHelper.replaceQualifier(currentVersion, newQual);
 		} catch (MissingComponentException e) {

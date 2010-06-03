@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IActionContext;
@@ -26,9 +27,8 @@ import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * This class will generate qualifiers based on the last modification timestamp.
- * The timestamp is obtained using the same @ IReaderType} that was used when
- * the component was first materialized
+ * This class will generate qualifiers based on the timestamp of the current
+ * build.
  * 
  * @author Thomas Hallgren
  */
@@ -39,22 +39,34 @@ public class BuildTimestampQualifierGenerator extends AbstractExtension implemen
 
 	public static final String TIMESTAMP_PROPERTY = "buckminster.build.timestamp"; //$NON-NLS-1$
 
+	private static final UUID timestampKey = UUID.randomUUID();
+
+	public static Date getBuildTimestamp(IActionContext context) throws CoreException {
+		Map<UUID, Object> invocationCache = context.getGlobalContext().getInvocationCache();
+		synchronized (timestampKey) {
+			Date timestamp = (Date) invocationCache.get(timestampKey);
+			if (timestamp == null) {
+				Object isoTS = context.getProperties().get(TIMESTAMP_PROPERTY);
+				if (isoTS instanceof String) {
+					try {
+						timestamp = DateAndTimeUtils.fromString((String) isoTS);
+					} catch (ParseException e) {
+						throw BuckminsterException.fromMessage(e,
+								NLS.bind(Messages.property_0_not_ISO_8601_conformant_timestamp_string, TIMESTAMP_PROPERTY));
+					}
+				} else
+					timestamp = new Date();
+				invocationCache.put(timestampKey, timestamp);
+			}
+			return timestamp;
+		}
+	}
+
 	@Override
 	public Version generateQualifier(IActionContext context, ComponentIdentifier cid, List<ComponentIdentifier> dependencies) throws CoreException {
 		Version currentVersion = cid.getVersion();
 		if (currentVersion == null)
 			return null;
-
-		Date timestamp = null;
-		Object isoTS = context.getProperties().get(TIMESTAMP_PROPERTY);
-		if (isoTS instanceof String) {
-			try {
-				timestamp = DateAndTimeUtils.fromISOFormat((String) isoTS);
-			} catch (ParseException e) {
-				throw BuckminsterException.fromMessage(e, NLS.bind(Messages.property_0_not_ISO_8601_conformant_timestamp_string, TIMESTAMP_PROPERTY));
-			}
-		} else
-			timestamp = new Date();
 
 		Map<String, ? extends Object> props = context.getProperties();
 		String format = (String) props.get(FORMAT_PROPERTY);
@@ -65,6 +77,7 @@ public class BuildTimestampQualifierGenerator extends AbstractExtension implemen
 		mf.setTimeZone(DateAndTimeUtils.UTC);
 		mf.setLenient(false);
 
+		Date timestamp = getBuildTimestamp(context);
 		String newQual = mf.format(timestamp);
 		newQual = VersionHelper.getQualifier(currentVersion).replace("qualifier", newQual); //$NON-NLS-1$
 		return VersionHelper.replaceQualifier(currentVersion, newQual);
