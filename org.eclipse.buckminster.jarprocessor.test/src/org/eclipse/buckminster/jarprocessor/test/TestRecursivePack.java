@@ -1,10 +1,13 @@
 package org.eclipse.buckminster.jarprocessor.test;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.security.Permission;
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -19,9 +22,29 @@ import org.eclipse.buckminster.jarprocessor.RecursiveUnpacker;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.junit.Test;
 
-import sun.security.tools.JarSigner;
-
 public class TestRecursivePack extends AbstractTest {
+	static final class StreamGobblerRedirector extends Thread {
+		private final InputStream is;
+		private final PrintStream os;
+
+		StreamGobblerRedirector(InputStream is, PrintStream os) {
+			this.is = is;
+			this.os = os;
+		}
+
+		@Override
+		public void run() {
+			try {
+				final InputStreamReader isr = new InputStreamReader(is);
+				final BufferedReader bufferedReader = new BufferedReader(isr);
+				String readLine;
+				while ((readLine = bufferedReader.readLine()) != null)
+					os.println(readLine);
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+	}
 
 	private static Map<String, Long> verify(File file) throws Exception {
 		HashMap<String, Long> crcMap = new HashMap<String, Long>();
@@ -53,37 +76,27 @@ public class TestRecursivePack extends AbstractTest {
 			}
 		}
 		verifier.close();
-
-		final SecurityManager current = System.getSecurityManager();
-		System.setSecurityManager(new SecurityManager() {
-			@Override
-			public void checkExit(int status) {
-				throw new SecurityException("_exit_ " + status);
-			}
-			@Override
-			public void checkPermission(Permission perm) {
-				if(current != null)
-					current.checkPermission(perm);
-			}
-			@Override
-			public void checkPermission(Permission perm, Object object) {
-				if(current != null)
-					current.checkPermission(perm, object);
-			}
-		});
-		
-		try {
-			JarSigner.main(new String[] { "-verify", file.getAbsolutePath() } );
-		} catch(SecurityException e) {
-			String msg = e.getMessage();
-			if(msg == null || !msg.startsWith("_exit_"))
-				throw e;
-		} catch(Exception e) {
-			System.out.println(e.getMessage());
-			throw e;
-		} finally {
-			System.setSecurityManager(current);
+		File javaHome = new File(System.getProperty("java.home"));
+		if("jre".equals(javaHome.getName()))
+			javaHome = javaHome.getParentFile();
+		File javaBin = new File(javaHome, "bin");
+		File jarsignerExe = new File(javaBin, "jarsigner");
+		boolean jarsignerOK = jarsignerExe.canExecute();
+		if(!jarsignerOK) {
+			jarsignerExe = new File(javaBin, "jarsigner.exe");
+			jarsignerOK = jarsignerExe.canExecute();
 		}
+		assertTrue("Unable to find jarsigner executable", jarsignerOK);
+
+		Process jarsigner = Runtime.getRuntime().exec(new String[] { jarsignerExe.getAbsolutePath(), "-verify", file.getAbsolutePath() });
+		final StreamGobblerRedirector errorGobbler = new StreamGobblerRedirector(jarsigner.getErrorStream(), System.err);
+		final StreamGobblerRedirector outputGobbler = new StreamGobblerRedirector(jarsigner.getInputStream(), System.out);
+		errorGobbler.start();
+		outputGobbler.start();
+		final int returnCode = jarsigner.waitFor();
+		System.err.flush();
+		System.out.flush();
+		assertEquals("jarsigner failed exit code != 0 when verifying " + file.getAbsolutePath(), 0, returnCode);
 	}
 
 	private static void assertEqualNames(Collection<String> ns1,
