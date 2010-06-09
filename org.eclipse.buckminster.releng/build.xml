@@ -218,6 +218,15 @@
 		</buckminster>
 	</target>
 
+	<target name="site.zips" depends="eclipse.build">
+		<echo message="Performing org.eclipse.buckminster.releng#site.zips" />
+		<buckminster command="perform">
+			<cmdargs>
+				<arg value="org.eclipse.buckminster.releng#site.zips" />
+			</cmdargs>
+		</buckminster>
+	</target>
+
 	<target name="promote.sites" depends="test">
 		<echo message="Performing org.eclipse.buckminster.releng#promote" />
 		<buckminster command="perform">
