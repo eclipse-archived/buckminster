@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster Remote
+Bundle-SymbolicName: org.eclipse.buckminster.remote;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.buckminster.core,
+ org.eclipse.buckminster.runtime,
+ org.eclipse.buckminster.sax,
+ org.eclipse.core.runtime,
+ org.apache.commons.codec,
+ org.apache.commons.httpclient,
+ org.apache.commons.logging,
+ org.slf4j.extendable
+Bundle-Vendor: Eclipse.org
+Bundle-ClassPath: .,
+ lib/jabsorb-1.2.2.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

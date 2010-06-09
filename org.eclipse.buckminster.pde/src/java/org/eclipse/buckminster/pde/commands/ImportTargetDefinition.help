@@ -1,0 +1,16 @@
+Imports a target definition into the workspace
+
+usage: importtargetdefinition
+       [{-a | --active}]
+       [{ -? | --help }]
+       <path or URI>
+ -?
+--help
+  Show this help text
+
+-A
+--active
+Load the target definition (let it become the active one) after it has been imported
+
+<path or URI>
+The path or URI that appoints the target definition.

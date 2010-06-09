@@ -1,0 +1,17 @@
+Adds a baseline based on a target definition to a workspace. The name of the
+target definition becomes the name of the baseline
+
+usage: addbaseline
+       [{-a | --active}]
+       [{ -? | --help }]
+       <name of target definition>
+ -?
+--help
+  Show this help text
+
+-A
+--active
+Make the new baseline active
+
+<name of target definition>
+The name of an existing target definition

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.eclipse.buckminster.rssowl.ui.viewContribution1"
+            targetID="org.eclipse.buckminster.ui.views.ComponentBrowserView">
+         <action
+               class="org.eclipse.buckminster.rssowl.ui.actions.SynchronizeRssOwlAction"
+               id="org.eclipse.buckminster.rssowl.ui.sync"
+               label="Synchronize RSS OWL"
+               style="push"
+               toolbarPath="additions">
+         </action>
+      </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.eclipse.buckminster.rssowl.ui.openrssfeedContribution"
+            objectClass="org.eclipse.buckminster.generic.ui.actions.IBrowseableFeed">
+         <action
+               class="org.eclipse.buckminster.rssowl.ui.actions.OpenRssFeedAction"
+               enablesFor="1"
+               icon="icons/rssfeed.png"
+               
+               id="org.eclipse.buckminster.rssowl.ui.action1"
+               label="Open Feed in RSS Owl"
+               menubarPath="default">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.ui.OpenFeedAction">
+      <org.eclipse.buckminster.ui.OpenFeedAction
+            class="org.eclipse.buckminster.rssowl.ui.actions.OpenRssFeedAction">
+      </org.eclipse.buckminster.ui.OpenFeedAction>
+   </extension>
+   <extension
+         point="org.rssowl.ui.RequestRewriters">
+      <RequestRewriter
+            class="org.eclipse.buckminster.rssowl.ui.BuckminsterURIRewriter">
+      </RequestRewriter>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.core.forcedActivations">
+      <forcedActivation
+            class="org.eclipse.buckminster.rssowl.ui.BuckminsterRssOwlUiPlugin"
+            pluginId="org.eclipse.buckminster.rssowl.ui">
+      </forcedActivation>
+   </extension>
+
+</plugin>

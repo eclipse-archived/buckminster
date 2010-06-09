@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
+  
+  <title>entrypoints</title>
+</head>
+
+
+<body>
+Below are various possibilities of running a Buckminster command. Note
+that in all cases, this has the same benefits and drawbacks as running
+any command line app; detecting errors is up to checking exit codes,
+you may have to parse text etc. On the other hand it's really simple.
+If you need more control than this you must write an Eclipse plugin and
+interface to the 'real' Buckminster API's available.
+<h3>
+The buckminster 'binary'</h3>
+A key desire is that Buckminster headless commands are reachable and
+work just as any other command line application on your system. This
+not only includes being able to type 'buckminster' from the command
+line - it should also be able to easily reach such an entry point from
+a scripting environment. Yes, Buckminster is a Java application, but
+having to type 'java -cp ...' also suffers from the problems with a
+plain batch script.<br>
+<br>
+For these reasons we provide a buckminster 'binary'. However, due to
+various systems idosyncrasies this is not necessarily simple.<br>
+<ul>
+  <li>On Unix/Linux systems it is reasonably straightforward. We can
+pretty much count on having /bin/sh available, and with a very simple
+shell script with a suitable shebang line, it works pretty much like we
+want.</li>
+  <li>On Windows however, it is slightly different. A regular cmd.exe
+'batch' file is not sufficient as trying to invoke 'buckminster.bat'
+from a scripting environment won't necessarily work without explicitly
+using something like 'cmd /c buckminster'. So, on Windows we provide a
+very simple buckminster.exe file - this is essentially just a
+'packaged' command line.</li>
+</ul>
+<h3>From Java - command line</h3>
+The 'binary' described above is thus really nothing more than a wrapper
+around a Java command line. If you wish to call it yourself that way
+this is what you need:<br>
+<pre>java -classpath /some/path/buckminster_startup.jar org.eclipse.buckminster.headless.startup.Main [the rest of the command line]</pre>
+<h3>From Java -&nbsp;code</h3>
+As is evident from above, all you really need is to call the entry
+point in the buckminster_startup.jar and pass in the 'command line'
+directly. Sample dynamic code:<br>
+<pre>...<br>URLClassLoader cl = new URLClassLoader(new URL[] { new File("/some/path/buckminster_startup.jar").toURI().toURL() });<br>Class&lt;?&gt; c = cl.loadClass("org.eclipse.buckminster.headless.startup.Main");<br>Method m = c.getMethod("run", new Class[] { String[].class });<br>Integer exitCode = (Integer)m.invoke(c.newInstance(), new Object[] {new String[] { "lscmd", "--style", "short" }});<br>...<br></pre>
+<h3>From Ant</h3>
+There are no specific Ant tasks (unless you write them yourself), but
+calling the commands from Ant is fairly simple as it follows from the
+able code sample:<br>
+<pre>&lt;target name="sample"&gt;<br>&nbsp;&nbsp; ...<br>&nbsp;&nbsp; &lt;java<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; classname="org.eclipse.buckminster.headless.startup.Main"<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; classpath="buckminster_startup.jar"<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; fork="true"<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &gt;<br>       &lt;arg value="lscmd"/&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&lt;arg value="--style"/&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&lt;arg value="short"/&gt;<br>&nbsp;&nbsp;&nbsp;&lt;/java&gt;<br>&nbsp;&nbsp;&nbsp;...<br>&lt;/target&gt;</pre>
+Note the use of 'fork'. At this time using a fork value of false is not supported.
+</body>
+</html>

@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2004, 2005
+	Thomas Hallgren, Kenneth Olwing, Mitch Sonies
+	Pontus Rydin, Nils Unden, Peer Torngren
+	The code, documentation and other materials contained herein have been
+	licensed under the Eclipse Public License - v 1.0 by the individual
+	copyright holders listed above, as Initial Contributors under such license.
+	The text of such license is available at www.eclipse.org.
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
+	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	attributeFormDefault="unqualified" elementFormDefault="qualified"
+	targetNamespace="http://www.eclipse.org/buckminster/CSpec-1.0">
+	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/common-1.0.xsd"/>
+	<!-- References between elements in the document -->
+	<annotation>
+		<documentation>
+			A component defines a set of named attributes. Each
+			attribute is either an _artifact_ that appoints pre-existing
+			files and directories, an _action_ that describes something
+			that can be done in order to produce new artifacts, or a
+			_group_ which is an arbitrary grouping of _artifact_,
+			_action_, and _group_ instances. A component also defines a
+			list of _dependencies_ to other components. Such
+			dependencies are referred from _action_ prerequisites and
+			_groups_
+		</documentation>
+	</annotation>
+	<element name="cspec" type="cs:ComponentSpec">
+		<key name="dependencyKey">
+			<annotation>
+				<documentation>
+					The key of the dependencies
+				</documentation>
+			</annotation>
+			<selector xpath="./cs:dependencies/cs:dependency" />
+			<field xpath="@name" />
+		</key>
+		<keyref name="dependencyRef" refer="cs:dependencyKey">
+			<annotation>
+				<documentation>
+					The foreign key between an external action or group
+					prerequisite and a dependency.
+				</documentation>
+			</annotation>
+			<selector xpath=".//cs:attribute" />
+			<field xpath="@component" />
+		</keyref>
+		<keyref name="generatorRef" refer="cs:dependencyKey">
+			<annotation>
+				<documentation>
+					The foreign key between the dependency obtainedFrom
+					and another dependency.
+				</documentation>
+			</annotation>
+			<selector xpath=".//cs:generator" />
+			<field xpath="@component" />
+		</keyref>
+	</element>
+	<element name="cspecExtension" type="cs:CSpecExtension" />
+	<complexType name="ComponentSpecBase">
+		<sequence>
+			<element name="documentation" type="com:Documentation"
+				minOccurs="0" maxOccurs="1" />
+			<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="dependencies">
+					<complexType>
+						<sequence>
+							<element maxOccurs="unbounded" minOccurs="0"
+								name="dependency" type="cs:ComponentRequest" />
+						</sequence>
+					</complexType>
+				</element>
+				<element name="generators">
+					<complexType>
+						<sequence>
+							<element maxOccurs="unbounded" minOccurs="0"
+								name="generator" type="cs:Generator" />
+						</sequence>
+					</complexType>
+				</element>
+				<element name="artifacts">
+					<complexType>
+						<choice maxOccurs="unbounded" minOccurs="0">
+							<element name="public" type="cs:Artifact" />
+							<element name="private" type="cs:Artifact" />
+						</choice>
+					</complexType>
+				</element>
+				<element name="groups">
+					<complexType>
+						<choice minOccurs="0" maxOccurs="unbounded">
+							<element name="public" type="cs:Group" />
+							<element name="private" type="cs:Group" />
+						</choice>
+					</complexType>
+				</element>
+				<element name="actions">
+					<complexType>
+						<choice maxOccurs="unbounded" minOccurs="0">
+							<element name="public" type="cs:Action" />
+							<element name="private" type="cs:Action" />
+						</choice>
+					</complexType>
+				</element>
+			</choice>
+		</sequence>
+		<attribute name="componentType" type="string" use="optional" />
+		<attribute name="version" type="string" use="optional" />
+		<attribute name="versionType" type="string" use="optional" />
+		<attribute name="filter" type="string" use="optional" />
+		<attribute name="shortDesc" type="string" use="optional" />
+		<attribute name="projectInfo" type="com:URL" use="optional" />
+		<!-- Deprecated -->
+		<attribute name="category" type="string" use="optional" />
+	</complexType>
+	<complexType name="ComponentSpec">
+		<complexContent>
+			<extension base="cs:ComponentSpecBase">
+				<attribute name="name" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="Generator">
+		<attribute name="attribute" type="string" use="required" />
+		<attribute name="component" type="string" use="optional" />
+		<attribute name="generates" type="string" use="required" />
+		<attribute name="generatesType" type="string" use="optional" />
+		<attribute name="generatesVersion" type="string" use="optional" />
+	</complexType>
+	<complexType name="ComponentRequest">
+		<annotation>
+			<documentation>
+				A resolution request for another component
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="import" type="cs:Import" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="name" type="string" use="optional">
+			<annotation>
+				<documentation>
+					The name of the component. This name is required if
+					the request has no import elements
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="componentType" type="string" use="optional">
+			<annotation>
+				<documentation>
+					The component type, if any, of the required
+					component.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="versionDesignator" type="string"
+			use="optional">
+			<annotation>
+				<documentation>
+					The version designator, if any, of the required
+					component
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="versionType" type="string" use="optional">
+			<annotation>
+				<documentation>
+					The type of versions used in the version designator
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="filter" type="string" use="optional" />
+	</complexType>
+	<complexType name="Import">
+		<attribute name="attribute" type="string" use="required">
+			<annotation>
+				<documentation>
+					The name of the required attribute
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="versionDesignator" type="string"
+			use="optional">
+			<annotation>
+				<documentation>
+					The version designator, if any, of the required
+					attribute
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="filter" type="string" use="optional" />
+	</complexType>
+	<complexType name="Action">
+		<complexContent>
+			<extension base="cs:Attribute">
+				<sequence>
+					<choice minOccurs="0" maxOccurs="unbounded">
+						<element name="definitions" type="cs:Definitions" />
+						<element name="installerHints" type="cs:Properties" />
+						<element name="actorProperties" type="cs:Properties" />
+						<element name="properties" type="cs:Properties" />
+						<element name="prerequisites" type="cs:Prerequisites" />
+						<element name="products">
+							<complexType>
+								<sequence>
+									<choice minOccurs="0"
+										maxOccurs="unbounded">
+										<element name="path" type="cs:Path" />
+										<element name="public"
+											type="cs:ActionArtifact" />
+										<element name="private"
+											type="cs:ActionArtifact" />
+									</choice>
+								</sequence>
+								<attribute name="alias" type="string"
+									use="optional">
+									<annotation>
+										<documentation>
+											The name to use for properties and
+											filesets that reflect the product
+										</documentation>
+									</annotation>
+								</attribute>
+								<attribute name="base" type="string"
+									use="optional">
+									<annotation>
+										<documentation>
+											Base of all paths, relative to
+											component root
+										</documentation>
+									</annotation>
+								</attribute>
+								<attribute name="upToDatePolicy"
+									type="cs:UpToDatePolicy" />
+								<attribute name="fileCount" type="integer"
+									use="optional" />
+								<attribute name="pattern" type="string"
+									use="optional" />
+								<attribute name="replacement" type="string"
+									use="optional" />
+							</complexType>
+						</element>
+					</choice>
+				</sequence>
+				<attribute name="actor" type="string" use="optional">
+					<annotation>
+						<documentation>
+							The id of the actor. Lack of this attribute
+							indicates a predefine internal action
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="always" type="boolean" use="optional"
+					default="false">
+					<annotation>
+						<documentation>
+							Used to turn on/off the timestamp dependent
+							execution
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="assignConsoleSupport" type="boolean"
+					use="optional" default="true">
+					<annotation>
+						<documentation>
+							Used to tell the framework if it should assign the
+							actor a stream it can print to
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="filter" type="string" use="optional">
+					<annotation>
+						<documentation>
+							LDAP filter controlling if this action is enabled or
+							disabled
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="enabled" type="boolean" use="optional"
+					default="true">
+					<annotation>
+						<documentation>Deprecated and ignored</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Attribute">
+		<sequence>
+			<element name="documentation" type="com:Documentation" minOccurs="0" maxOccurs="1" />
+			<element name="parameter" minOccurs="0" maxOccurs="unbounded">
+				<complexType>
+					<attribute name="name" type="string" use="required"/>
+					<attribute name="value" type="string" use="required"/>
+					<attribute name="mandatory" type="boolean" use="optional" default="false"/>
+				</complexType>
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required"/>
+		<attribute name="version" type="string" use="optional"/>
+	</complexType>
+
+	<complexType name="Definitions">
+		<annotation>
+			<documentation>
+				A definition defines an attribute as something that is
+				part of another attribute. A good example is a Java
+				package that is part of a jar file.<br/>
+				The Define is very similar to an OSGi manifest Export-Package
+			</documentation>
+		</annotation>
+		<sequence>
+			<element name="define" type="cs:Attribute" minOccurs="1" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="Artifact">
+		<complexContent>
+			<extension base="cs:Attribute">
+				<sequence>
+					<choice minOccurs="0" maxOccurs="unbounded">
+						<element name="definitions" type="cs:Definitions" />
+						<element name="installerHints" type="cs:Properties" />
+						<element name="path" type="cs:Path" />
+					</choice>
+				</sequence>
+				<attribute name="base" type="string" use="optional">
+					<annotation>
+						<documentation>
+							Base of all paths, relative to component root
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="filter" type="string" use="optional">
+					<annotation>
+						<documentation>
+							LDAP filter controlling if this artifact is enabled
+							or disabled
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="path" type="string" use="optional" />
+				<attribute name="type" type="string" use="optional">
+					<annotation>
+						<documentation>
+							Deprecated and ignored.
+						</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Group">
+		<complexContent>
+			<extension base="cs:Attribute">
+				<sequence>
+					<choice maxOccurs="unbounded" minOccurs="0">
+						<element name="definitions" type="cs:Definitions" />
+						<element name="installerHints" type="cs:Properties" />
+						<element name="attribute" type="cs:Prerequisite" />
+					</choice>
+				</sequence>
+				<attribute name="filter" type="string" use="optional">
+					<annotation>
+						<documentation>
+							LDAP filter controlling if this group is
+							enabled or disabled
+						</documentation>
+					</annotation>
+				</attribute>
+				<attribute name="rebase" type="string" use="optional">
+					<annotation>
+						<documentation>
+							New base to use on all local paths where possible.
+							Paths not parented by this base are left &quot;as
+							is&quot;, i.e. the path group they belong to will
+							not change.
+						</documentation>
+					</annotation>
+				</attribute>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ActionArtifact">
+		<complexContent>
+			<extension base="cs:Artifact">
+				<attribute name="alias" type="string" use="optional"/>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="Prerequisites">
+		<sequence>
+			<element name="documentation" type="com:Documentation"
+				minOccurs="0" maxOccurs="1" />
+			<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="installerHints" type="cs:Properties" />
+				<element name="attribute" type="cs:Prerequisite" />
+			</choice>
+		</sequence>
+		<attribute name="rebase" type="string" use="optional">
+			<annotation>
+				<documentation>
+					New base to use on all local paths where possible.
+					Paths not parented by this base are left &quot;as
+					is&quot;, i.e. the path group they belong to will
+					not change.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="alias" type="string" use="optional">
+			<annotation>
+				<documentation>
+					The alias to pass along to the actor
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+	<complexType name="Path">
+		<attribute name="path" type="string" use="required" />
+	</complexType>
+
+	<complexType name="Prerequisite">
+		<attribute name="name" type="string" use="optional">
+			<annotation>
+				<documentation>
+					The attribute name in the appointed component
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="component" type="string" use="optional">
+			<annotation>
+				<documentation>
+					The name of a dependency when this prerequisite
+					extends beyond the cspec where it is declared.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="componentType" type="string" use="optional">
+			<annotation>
+				<documentation>
+					The type of a dependency when this prerequisite
+					extends beyond the cspec where it is declared.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="alias" type="string" use="optional">
+			<annotation>
+				<documentation>
+					The name to use for properties and filesets that
+					reflect this requirement
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="optional" type="boolean" use="optional">
+			<annotation>
+				<documentation>
+					Deprecated and ignored.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="excludePattern" type="string" use="optional">
+			<annotation>
+				<documentation>
+					A regular expression controlling exclusion of
+					component attributes
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="includePattern" type="string" use="optional">
+			<annotation>
+				<documentation>
+					A regular expression controlling inclusion of
+					component attributes
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="filter" type="string" use="optional">
+			<annotation>
+				<documentation>
+					An OSGi filter controlling inclusion of the prerequisite
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="contributor" type="boolean" use="optional">
+			<annotation>
+				<documentation>
+					Set to false if we only want to trigger the
+					referenced attribute but have no interest in what it
+					produces.
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+	<complexType name="Properties">
+		<sequence>
+			<element maxOccurs="unbounded" minOccurs="0" name="property"
+				type="com:PropertyConstant" />
+		</sequence>
+	</complexType>
+	<complexType name="CSpecExtension">
+		<complexContent>
+			<extension base="cs:ComponentSpecBase">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="alterActions">
+						<complexType>
+							<choice minOccurs="0"
+								maxOccurs="unbounded">
+								<element name="public"
+									type="cs:AlterAction" />
+								<element name="private"
+									type="cs:AlterAction" />
+								<element name="remove" type="cs:Remove" />
+								<element name="rename" type="cs:Rename" />
+							</choice>
+						</complexType>
+					</element>
+					<element name="alterArtifacts">
+						<complexType>
+							<choice minOccurs="0"
+								maxOccurs="unbounded">
+								<element name="public"
+									type="cs:AlterArtifact" />
+								<element name="private"
+									type="cs:AlterArtifact" />
+								<element name="remove" type="cs:Remove" />
+								<element name="rename" type="cs:Rename" />
+							</choice>
+						</complexType>
+					</element>
+					<element name="alterDependencies">
+						<complexType>
+							<choice minOccurs="0"
+								maxOccurs="unbounded">
+								<element name="dependency"
+									type="cs:ComponentRequest" />
+								<element name="remove" type="cs:Remove" />
+							</choice>
+						</complexType>
+					</element>
+					<element name="alterGroups">
+						<complexType>
+							<choice minOccurs="0"
+								maxOccurs="unbounded">
+								<element name="public"
+									type="cs:AlterGroup" />
+								<element name="private"
+									type="cs:AlterGroup" />
+								<element name="remove" type="cs:Remove" />
+								<element name="rename" type="cs:Rename" />
+							</choice>
+						</complexType>
+					</element>
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="AlterAction">
+		<complexContent>
+			<extension base="cs:Action">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="alterInstallerHints"
+						type="cs:AlterProperties" />
+					<element name="alterPrerequisites"
+						type="cs:AlterPrerequisites" />
+					<element name="alterActorProperties"
+						type="cs:AlterProperties" />
+					<element name="alterProperties"
+						type="cs:AlterProperties" />
+					<element name="alterProducts">
+						<complexType>
+							<choice minOccurs="0"
+								maxOccurs="unbounded">
+								<element name="public"
+									type="cs:AlterGroup" />
+								<element name="private"
+									type="cs:AlterGroup" />
+								<element name="removeProduct"
+									type="cs:Remove" />
+								<element name="removePath"
+									type="cs:RemovePath" />
+							</choice>
+						</complexType>
+					</element>
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AlterArtifact">
+		<complexContent>
+			<extension base="cs:Artifact">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="alterInstallerHints"
+						type="cs:AlterProperties" />
+					<element name="removePath" type="cs:RemovePath" />
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AlterGroup">
+		<complexContent>
+			<extension base="cs:Group">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="alterInstallerHints"
+						type="cs:AlterProperties" />
+					<element name="alterAttribute"
+						type="cs:Prerequisite" />
+					<element name="remove" type="cs:Remove" />
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AlterPrerequisites">
+		<complexContent>
+			<extension base="cs:Prerequisites">
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element name="alterAttribute"
+						type="cs:Prerequisite" />
+					<element name="remove" type="cs:Remove" />
+				</choice>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="AlterProperties">
+		<choice maxOccurs="unbounded" minOccurs="0">
+			<element name="property" type="com:PropertyConstant" />
+			<element name="remove" type="cs:RemoveProperty" />
+		</choice>
+	</complexType>
+	<complexType name="Remove">
+		<attribute name="name" type="string" use="required" />
+	</complexType>
+	<complexType name="Rename">
+		<attribute name="oldName" type="string" use="required" />
+		<attribute name="newName" type="string" use="required" />
+	</complexType>
+	<complexType name="RemovePath">
+		<attribute name="path" type="string" use="required" />
+	</complexType>
+	<complexType name="RemoveProperty">
+		<attribute name="key" type="string" use="required" />
+	</complexType>
+	<simpleType name="UpToDatePolicy">
+		<restriction base="string">
+			<annotation>
+				<documentation>
+					The up to date policy tells Buckminster how to go
+					about determining the timestamp of a product when
+					deciding if it is up to date in respect to its
+					prerequisites.
+				</documentation>
+			</annotation>
+			<enumeration value="DEFAULT">
+				<annotation>
+					<documentation>
+						Never trust a product defined as a folder since
+						the expected number of files is unknown
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="ACTOR">
+				<annotation>
+					<documentation>
+						Let the actor decide. Some system internal actors
+						like the FragmentsActor uses this.
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="COUNT">
+				<annotation>
+					<documentation>
+						Trust timestamp only when the product contains
+						the number of files denoted in attribute 'count'
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="MAPPER">
+				<annotation>
+					<documentation>
+						Trust timestamp of a product that matches the
+						action prerequisites in number and optional
+						pattern. The 'count' attribute may be used to
+						denote file additions
+					</documentation>
+				</annotation>
+			</enumeration>
+			<enumeration value="NOT_EMPTY">
+				<annotation>
+					<documentation>
+						Trust timestamp of any product that contains at
+						least one file
+					</documentation>
+				</annotation>
+			</enumeration>
+		</restriction>
+	</simpleType>
+</schema>

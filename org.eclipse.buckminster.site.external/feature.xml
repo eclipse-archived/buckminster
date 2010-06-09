@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.buckminster.site.external"
+      label="Buckminster External (non EPL)"
+      version="1.2.0.qualifier"
+      provider-name="Cloudsmith Inc.">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.eclipse.buckminster.subclipse.headless.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.buckminster.subversive.headless.feature"
+         version="0.0.0"/>
+
+</feature>

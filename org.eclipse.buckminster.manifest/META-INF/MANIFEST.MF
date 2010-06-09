@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster Manifest Generation
+Bundle-SymbolicName: org.eclipse.buckminster.manifest;singleton:=true
+Bundle-Version: 0.3.0
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.buckminster.core,
+ org.eclipse.buckminster.cmdline,
+ org.eclipse.buckminster.runtime,
+ org.eclipse.core.runtime
+Export-Package: org.eclipse.buckminster.manifest

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+     <extension
+         point="org.eclipse.jdt.launching.vmInstallTypes">
+      <vmInstallType
+            class="org.eclipse.buckminster.jdt.launching.macosx.MacOSXVMInstallType"
+            id="org.eclipse.buckminster.jdt.launching.macosx.MacOSXType">
+      </vmInstallType>
+   </extension>
+</plugin>

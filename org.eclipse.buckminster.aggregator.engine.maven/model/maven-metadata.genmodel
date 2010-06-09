@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.aggregator.engine.maven/src"
+    modelPluginID="org.eclipse.buckminster.aggregator.engine.maven" modelName="Maven-metadata"
+    importerID="org.eclipse.xsd.ecore.importer" complianceLevel="5.0" copyrightFields="false">
+  <foreignModel>file:/C:/Documents%20and%20Settings/Filip%20Hrbek/Dokumenty/Cloudsmith/Maven/maven-metadata-v1_0_0.xsd</foreignModel>
+  <genPackages prefix="Metadata" basePackage="org.eclipse.buckminster.aggregator.engine.maven"
+      resource="XML" disposableProviderFactory="true" fileExtensions="xml" ecorePackage="maven-metadata.ecore#/">
+    <genClasses ecoreClass="maven-metadata.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute maven-metadata.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference maven-metadata.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference maven-metadata.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven-metadata.ecore#//DocumentRoot/metadata"/>
+    </genClasses>
+    <genClasses ecoreClass="maven-metadata.ecore#//MetaData">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven-metadata.ecore#//MetaData/groupId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven-metadata.ecore#//MetaData/artifactId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven-metadata.ecore#//MetaData/version"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven-metadata.ecore#//MetaData/versioning"/>
+    </genClasses>
+    <genClasses ecoreClass="maven-metadata.ecore#//Versioning">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven-metadata.ecore#//Versioning/versions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven-metadata.ecore#//Versioning/lastUpdated"/>
+    </genClasses>
+    <genClasses ecoreClass="maven-metadata.ecore#//Versions">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven-metadata.ecore#//Versions/version"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

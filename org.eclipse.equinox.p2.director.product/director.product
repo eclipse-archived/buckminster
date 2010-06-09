@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="P2 Director" id="org.eclipse.equinox.p2.director.product" application="org.eclipse.equinox.p2.director" version="1.0.0.qualifier" useFeatures="true">
+
+   <configIni use="custom" path="/org.eclipse.equinox.p2.director.product/config.ini"/>
+
+   <launcherArgs>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="director">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.equinox.p2.director.product" version="1.0.0.qualifier"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="4" />
+   </configurations>
+
+</product>

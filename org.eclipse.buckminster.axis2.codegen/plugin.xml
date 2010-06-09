@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension point="org.eclipse.ant.core.antTasks">
+		<antTask
+        class="org.apache.ws.java2wsdl.Java2WSDLTask"
+        library="codegen-all.jar"
+        name="axis2.java2wsdl"/>
+		<antTask
+        class="org.apache.axis2.tool.ant.AntCodegenTask"
+        library="codegen-all.jar"
+        name="axis2.codegen"/>
+   </extension>
+</plugin>

@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+
+
+
+  
+  
+  
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
+
+
+
+  
+  
+  
+  
+  <title>product</title>
+</head>
+
+
+<body>
+
+
+<span style="font-size: 12pt; font-family: &quot;Times New Roman&quot;;">There may be occasions where a full
+Eclipse IDE installation is deemed overkill or just plain is too big (the
+various features incorporated in the IDE download sometimes contain a lot more
+than is actually needed). In such cases it would be attractive with something
+minimal, which can be configured exactly as needed by a workgroup and contain
+no more and no less than what is required. In the best case this can bring down
+the size required to less than 10% of the IDE installation side (or even more
+by hand pruning the result).<br>
+
+
+<br>
+
+
+</span><span style="font-size: 12pt; font-family: &quot;Times New Roman&quot;;">To accomplish this, Buckminster has an alternate
+packaging mechanism using the technique of creating an &lsquo;Eclipse product&rsquo;, i.e.
+using parts of the regular Eclipse framework to create a freestanding
+application that in no way resembles the IDE. So, only a few Eclipse plugins is
+in there, and just the core of Buckminster. Currently it weighs in at approx. 4
+MB (compared to a full IDE download at approx. 110 MB). The cost, of course, is
+that the Buckminster product is mostly unusable by itself. However, it does
+contain enough to allow it to use the Update Manager mechanisms to install in
+itself the requisite features. So by just pointing it at relevant update site
+locations, it can become more powerful. Actually, in principle it should be
+possible to upgrade it sufficiently to become the IDE&hellip;</span><br>
+
+
+<span style="font-size: 12pt; font-family: &quot;Times New Roman&quot;;"><br>
+
+
+The product only contains the Headless aspect of Buckminster and is the
+same as what is possible to install in the IDE, so any documentation
+are the same. The main difference for the product is that it needs to
+be customized to adapt to your situation.<br>
+
+
+</span>
+<h3>Customizing the product.</h3>
+
+
+
+
+<p class="MsoNormal">Roughly, there are four things you need to do to customize a product for your team, say.</p>
+<ol>
+  <li><a href="#Downloading_the_raw_product">Download the raw product</a></li>
+  <li><a href="#Initialize_it">Initialize it</a></li>
+  <li><a href="#Configure_it">Configure it</a></li>
+  <li><a href="#Pack_it_updeploy_it">Pack it up/deploy it</a></li>
+</ol>
+The object in step 4 is to produce a zip package that can be downloaded
+by team mates and just unpacked and be 'ready to go'. An alternative
+would be to deploy it to a network location, again 'ready to go'.<br>
+<h4><a name="Downloading_the_raw_product"></a>Downloading the raw product</h4>
+<p class="MsoNormal">Similar to downloading a full Eclipse IDE
+packaging, getting
+the Buckminster product is similar &ndash; download a zip archive and unpack
+it
+somewhere convenient. See <a href="packaging.html">here</a> for a location.</p>
+<p class="MsoNormal">Normally, it will be stored in a top level
+directory
+called &lsquo;buckminster&rsquo;. So for the rest of the text, let&rsquo;s assume that
+you
+have unpacked it to &lsquo;c:\buckminster&rsquo; on a Windows platform (again, it
+should
+work similarly on a Unix/Linux platform). You can add the directory to
+the PATH, but here I will assume that you work in the root of the
+'buckminster' directory.</p>
+<h4><a name="Initialize_it"></a>Initialize it</h4>
+<p class="MsoNormal">A difference from an Eclipse IDE installation is that there
+are technical reasons making it difficult to correctly include a &lsquo;buckminster&rsquo;
+binary in the top level directory. Thus, there is a separate step that has to
+be run the very first time (obviously, this is later intended to be hidden
+behind a more traditional &lsquo;install&rsquo; procedure if necessary).</p>
+Thus, you must first run the following command:
+
+
+
+<pre>c:\buckminster\_productinitializer initialize</pre>
+
+
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p>Assuming there are no other problems, this will typically
+open a new shell window and report how and where to set your path etc, and a
+note on &lsquo;INITIALIZE OK&rsquo;. Just press Enter to dismiss the window. You should now
+have the necessary buckminster binaries placed as they should.</p>
+
+
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p>NOTE: As this procedure itself uses regular Eclipse
+infrastructure, it requires a workspace as a side effect. To avoid having the
+infrastructure automatically creating one willy-nilly, the initialization
+procedure creates the workspace as &lsquo;_productinitializer.workspace&rsquo; in your home
+directory. After the initialization is done, this can be deleted, it will never be used again.</p>
+<h4><a name="Configure_it"></a>Configure it</h4>
+Configuring your product essentially consists of installing the proper
+features/plugins into it. This can be accomplished by using the
+commands associated with the update manager mechanism:
+install/uninstall/listsite. <a href="sample%20configuration.html">Here</a> is a sample showing how I configure a Buckminster product with higher order Buckminster features and required Eclipse features.<br>
+
+
+
+
+<p class="MsoNormal">Note: working with this is helped by some
+knowledge of how Eclipse works - particularly if you get into problems,
+for example having unfulfilled dependencies. An important tool in these
+cases can be the command 'dumpinfo' which will give an insight into
+what features/plugins are installed/recognized/running etc.<br>
+In case of problems: either look for a log file in the
+&lt;workspace&gt;/.metadata directory or in the products &lsquo;configuration&rsquo;
+directory. Especially disconcerting can be the fact that some problems can
+result in an invocation of buckminster&hellip;and nothing seems to happen (the command
+prompt just returns). Typically, the Eclipse core framework has then logged an
+error in a configuration log. A common occurrence is an unfulfilled dependency.<o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Unfortunately, many features makes the
+product bloat quite a lot due to their not being enough finegrained.
+And, there is no API way of deploying just plugins at this point. An
+advanced technique is to further prune this
+size by manually removing plugins not needed. Obviously, this can be a
+trial
+and error progress if you are removing plugins somewhat blindly and as
+noted
+above you may need to be aware of where to look for clues. Only
+recommended if you really know what you are doing.</p>
+
+<h4><a name="Pack_it_updeploy_it"></a>Pack it up/deploy it</h4>
+Once you are done and feel your product customization is complete, a
+typical action is to zip it up. Anyone can then just unzip it in a
+convenient location and start using it - it is completely
+self-relocating thanks to the Eclipse/OSGi infrastructure (just like
+the IDE).<br>
+<br>
+</body>
+</html>

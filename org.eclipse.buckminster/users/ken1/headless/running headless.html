@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+
+  
+  <title>running headless</title>
+</head>
+
+
+<body>
+
+
+
+
+<p class="MsoNormal">An Eclipse based application is generally installed in a
+(root) directory &ndash; typically a directory called &lsquo;eclipse&rsquo; when getting the IDE
+and &lsquo;buckminster&rsquo; for the Buckminster product &ndash; for simplicity here, let&rsquo;s
+refer to it as &lsquo;c:\eclipse&rsquo; as on a typical Windows machine (NB: Buckminster is
+intended to work the same on a Unix/Linux platform).<o:p>&nbsp;</o:p></p>
+
+
+<span style="font-size: 12pt; font-family: &quot;Times New Roman&quot;;">When installing Buckminster in the IDE, Buckminster will place a
+few extra files in this directory to accommodate the Buckminster command line
+entry point (the launcher). In particular, there will be an executable called
+&lsquo;buckminster&rsquo; there (i.e. buckminster.exe on Windows).<br>
+<br>
+When installing a Buckminster product derivative, the buckminster
+binary and others are likely already in place and you need to do
+nothing. The party who is doing the customization however, can read
+more <a href="product.html">here</a>.<br>
+<br>
+</span><span style="font-size: 12pt; font-family: &quot;Times New Roman&quot;;">A
+simple way is then to
+set your PATH to point to the directory &ndash; we&rsquo;ll assume this
+to here and elsewhere to avoid cluttering the examples. Other
+possibilities is to use a command shell alias mechanism, or plain
+simply always invoke things with the full path.<br>
+</span>
+
+<h3>The 'buckminster' command</h3>
+<p class="MsoNormal">So the way to reach Buckminster commands from the
+command line is through one primary entry point - the 'buckminster'
+binary (for other possibilities, see <a href="entrypoints.html">here</a>).</p>
+<p class="MsoNormal">Interacting with Buckminster headless should be simple and look and work&nbsp;like just any other command line application:</p>
+
+
+
+
+
+
+<pre>c:\tmp&gt;buckminster<br>No command provided. Try 'buckminster -?'.</pre>
+
+Not very exciting - let's move on.<br>
+<br>
+The buckminster command is built up to work similarly to
+many others: as an argument it takes a command name which is what is actually
+invoked. Compare for example to CVS commands. In this vein, the launcher
+&lsquo;buckminster&rsquo; acts as a context &amp; framework for each installed command.
+And, the launcher can itself be tailored to customize behavior and context for
+the actual command (using flags), while each command can itself have its own
+set of flags. In short, it looks like this:
+
+
+
+<pre>buckminster &lt;commonflags&gt; &lt;commandname&gt; &lt;commandflags&gt;<br></pre>
+<p>The flags (both the common flags and the command flags) loosely follow the basic GNU convention of
+allowing either short flags using one dash and one letter, or long flags using
+two dashes and a (possibly abbreviated) long name. A common theme is that both buckminster
+and all individual commands (encouraged but not enforceable though) understands
+and acts on &lsquo;-?&rsquo;/&rsquo;&mdash;help&rsquo; to provide basic help text. The common flags are described <a href="Common%20flags.html">here</a>.</p>
+There are also a set of core commands to make possible the minimum -
+e.g. installing a feature from an update site. More on this <a href="Core%20commands.html">here</a>.
+<h3>Command naming structure</h3>
+
+
+
+
+<span style="font-size: 12pt; font-family: &quot;Times New Roman&quot;;">Since it&rsquo;s possible to extend the commands available,
+Buckminster uses the plugin naming hierarchy together with the actual command
+name to avoid collisions. But, to avoid a user having to type the full
+structure every time, Buckminster will always try to match a command name to
+the shortest possible. It is also possible to assign any number of alias names
+to any command. An example is the &lsquo;listprogressmonitor&rsquo; command that in reality
+is &lsquo;org.eclipse.buckminster.headless.listprogressmonitor&rsquo; - it can also be
+reached through the alias &lsquo;lspm&rsquo; (with or without the naming hierarchy).</span>
+
+<br>
+<br>
+A tip to script writers is to always use the full name in scripts -
+this will avoid surprises if suddenly another dynamically installed
+plugin also uses the same base name for a command, hence generating an
+error when the short name becomes ambiguous.<br>
+<h3>See also:</h3>
+<a href="Core%20commands.html">Common flags<br>
+
+Core commands<br>
+
+</a><a href="entrypoints.html">Entrypoint variations</a><br>
+<br>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Buckminster Resolver Map</title>
+</head>
+<body>
+
+<h2>Buckminster Resolver Map</h2>
+<p>Each Buckminster installation will utilize a <i>resolver map</i> (an XML 
+document) that will map the name of a requested component to one of several <a href="#Search_Path">
+search paths</a>. The resolver map contains a list of pairs with a regular 
+expression and a corresponding entry that is either the name of a search path or 
+a pointer to another resolver map. The name of the requested component is 
+matched against the regular expressions and the first match found denotes the 
+search path to use or a redirection to another resolver map. When the latter 
+happens, the mapping process is delegated to the other resolver map.</p>
+<p>A resolver map also contains at least one <a href="#Site">site</a>
+declaration.</p>
+<h3><a name="Site">Site</a></h3>
+<p>Since a resolver map is meant to be shared among many Buckminster users, a 
+site acts a grouping of properties that is specific to some arbitrary group. A 
+developer specifies his or her site by setting a Buckminster preference. A good 
+example of a site-specific property is a URL that denotes the closest mirror of 
+an archive. A geographically spread development organization can maintain one 
+resolver map and still have all offices use optimal archive mirrors when 
+fetching artifacts.</p>
+<h3><a name="Search_Path">Search Path</a></h3>
+<p>A search path is a named list of <a href="#Provider">provider</a>
+declarations that will be traversed in order. A component name will be mapped to 
+exactly one search path. A failure to find a matching search path is considered 
+an error since without it, there's no way to find the component.</p>
+<h3><a name="Provider">Provider</a></h3>
+<p>A provider is a declaration that groups information needed to obtain a 
+component of a specific type from a specific location using a specific 
+versioning scheme. The information in the provider is used to create and 
+configure a <a href="#Component_reader">component reader</a> that is associated 
+with a <a href="#Component_type">component type</a> and a
+<a href="#Version_Converter">version converter</a>.</p>
+<h3><a name="Component_type">Component type</a></h3>
+<p>A&nbsp; component type knows how to extract dependency information from a 
+component. Buckminster introduces a native type that contains a 
+<a href="cspec.html">Buckminster Component Specification</a><i> </i>(cspec for 
+short). It also have built-in types for update-sites, features, plug-ins, and 
+fragments that will produce a cspec from the Eclipse provided manifest files.</p>
+<p>New component types can be added using the extension-point <i>
+org.eclipse.buckminster.core.componentTypes</i>.</p>
+<h3><a name="Component_reader">Component reader</a>.</h3>
+<p>Buckminster connects to a component using a <i>component reader</i>. A reader 
+performs three significant tasks:</p>
+<ol>
+	<li>It can list component branches and/or tags that corresponds to a 
+    <a href="walkthrough.html#Query">query</a>.</li>
+	<li>It can read individual files from a component and thus support a <a
+		href="#Component_type">component type</a> in gathering the information 
+    needed to recursively create a dependency graph.</li>
+	<li>It can materialize the component on the local disk.</li>
+</ol>
+<p>A reader will typically adapt to some specific type of source code control 
+system such as CVS, Subversion, Perforce, or ClearCase but it can also be an 
+adaptor for Maven repositories, FTP archives, or software that is installed on 
+disk. One example of the latter is the &quot;eclipse-installed&quot; reader that will 
+connect to components (in this case - features, plug-ins, and fragments) that 
+are present in your Eclipse installation.</p>
+<p>Regardless of type, the reader must have the following information in order 
+to connect.</p>
+<ul>
+	<li>Repository URI (specified by the <a href="#Provider">provider</a>).</li>
+	<li>Component name.</li>
+	<li>A <a href="cspec.html#Version_selector">version selector</a> with an 
+    associated <a href="cspec.html#Version_comparator">comparator</a>.</li>
+</ul>
+<p>The component name and version selector both stem from the original component 
+request. They will typically be specified in a component dependency of a
+<a href="cspec.html">cspec</a>.</p>
+<p>Once a reader has been instantiated, Buckminster will create a
+version query based on the comparator, the rule, and a branch selector.
+The reader uses this query when it obtains candidate component versions.
+The query might result in several candidate versions so the next step is
+to compare those matches with each other to figure out the best match.</p>
+<p>The task of comparing the matches is performed by the 
+<a href="Version_Converter">version converter</a>. Since it knows what
+part of the branch selector that reflects the plain component version
+(branch name or qualifier) it can apply the 
+<a href="cspec.html#Version_comparator">comparator</a> correctly . It can also
+determine the semantics that controls the interpretation of 
+<a href="cspec.html#Match_rule">rules</a> and when comparisons are at all possible.
+Some examples:</p>
+<ul>
+	<li>The rules <i>Equivalent</i> and <i>Compatible</i> cannot be used
+	when comparing timestamps or sequential change numbers but the rules <i>Perfect</i>
+	or <i>Greater or Equal </i>makes perfect sense.</li>
+	<li>Comparing tag based version selectors that reflect different
+	branches is probably not a good idea.</li>
+	<li>Comparing different branches when the branch qualifier differs is
+	equally bad.</li>
+</ul>
+<p>New types of component readers can be added using the extension-point <i>
+org.eclipse.buckminster.core.readerTypes</i>.</p>
+
+<h3><a name="Version_Converter">Version Converter</a></h3>
+<p>Buckminster delivers two converters by default. One that will create
+a branch selector that reflects the latest version on a branch named
+from the plain version, i.e. &quot;3.1.0&quot; will be translated into
+&quot;3.1.0/LATEST&quot; and one that will use the plain version as a
+tag on the default branch. i.e. &quot;3.1.0&quot; will be translated
+into &quot;main/3.1.0&quot;. Regular expressions can be used when less
+straight forward mappings are desired such as &quot;3.1.0&quot; into
+&quot;main/v3_1_0-xyz&quot;. It is required that the mapping can be
+reversed without loss of information.</p>
+<p>Aside from the component name and version selector, a component
+request also contains a <a href="cspec.html#Version_comparator">version comparator</a>
+and a <a href="cspec.html#Match_rule">match rule</a>.</p>
+<p>New version converters can be added using the extension-point <i>org.eclipse.buckminster.core.versionConverters</i>.</p>
+
+</body>
+
+</html>

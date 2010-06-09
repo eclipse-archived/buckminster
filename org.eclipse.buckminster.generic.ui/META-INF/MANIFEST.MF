@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster Generic Ui Plug-in
+Bundle-SymbolicName: org.eclipse.buckminster.generic.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ J2SE-1.5
+Require-Bundle: org.eclipse.swt,
+ org.eclipse.buckminster.generic,
+ org.eclipse.platform,
+ org.eclipse.core.runtime,
+ org.eclipse.jface,
+ org.eclipse.ui,
+ org.eclipse.core.resources
+Export-Package: org.eclipse.buckminster.generic.ui,
+ org.eclipse.buckminster.generic.ui.actions,
+ org.eclipse.buckminster.generic.ui.model.tree,
+ org.eclipse.buckminster.generic.ui.providers,
+ org.eclipse.buckminster.generic.ui.utils
+Bundle-Activator: org.eclipse.buckminster.generic.ui.GenericUiPlugin
+Bundle-Vendor: Eclipse Buckminster Project

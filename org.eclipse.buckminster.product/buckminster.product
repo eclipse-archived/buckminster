@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Buckminster" id="org.eclipse.buckminster.cmdline.product" application="org.eclipse.buckminster.cmdline.headless" useFeatures="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-nosplash</programArgs>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.buckminster.product" version="1.2.0.qualifier"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="4" />
+   </configurations>
+
+</product>

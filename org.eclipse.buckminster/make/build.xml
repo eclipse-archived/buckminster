@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!--***************************************************************
+* Copyright (c) 2006-2008, Cloudsmith Inc.
+* The code, documentation and other materials contained herein have been
+* licensed under the Eclipse Public License - v 1.0 by the copyright holder
+* listed above, as the Initial Contributor under such license. The text of
+* such license is available at www.eclipse.org.
+****************************************************************-->
+
+<project name="org.eclipse.buckminster" basedir="..">
+	<tstamp>
+		<format property="build.timestamp" pattern="yyyyMMddHHmmss" timezone="UTC" />
+	</tstamp>
+	
+	<property name="sp:site.output" location="${buckminster.output}/site"/>
+	<property name="sp:product.output" location="${buckminster.output}/product"/>
+
+	<target name="clean">
+		<delete dir="${sp:product.output}" failonerror="false" quiet="false"/>
+		<delete dir="${sp:site.output}" failonerror="false" quiet="false"/>
+	</target>
+
+    <!-- Writes properties to the build.properties file
+    -->
+    <target name="write.jnlp.build.properties" >
+		<concat destfile="${buckminster.temp}/exploded/director.build.properties" append="false"># generated file, do NOT edit
+build.timestamp=${build.timestamp}
+		</concat>
+    </target>
+
+	<target name="create.exploded.folder">
+		<delete dir="${buckminster.temp}/exploded"/>
+		<mkdir dir="${buckminster.temp}/exploded"/>
+	</target>
+		
+	<target name="zip.jnlp" depends="create.exploded.folder, write.jnlp.build.properties">
+		<buckminster.valuefileset id="bootstrap.jar" value="${fs:bootstrap.jar}"/>
+		<buckminster.valuefileset id="director.zip" value="${fs:director.zip}"/>
+		<copy todir="${buckminster.temp}/exploded">
+			<fileset refid="bootstrap.jar"/>
+			<fileset refid="director.zip"/>
+		</copy>
+		
+		<checksum file="${buckminster.temp}/exploded/director.zip"/>
+
+		<dirname file="${sp:product.output}" property="output.dir"/>
+		<mkdir dir="${output.dir}"/>
+		<zip destfile="${sp:product.output}" basedir="${buckminster.temp}/exploded"/>
+	</target>
+
+	<target name="create.temp.folder">
+		<delete dir="${buckminster.temp}/temp"/>
+		<mkdir dir="${buckminster.temp}/temp"/>
+	</target>
+		
+	<target name="collect.jnlp" depends="create.temp.folder">
+		<buckminster.valuefileset id="jnlp-package-p2.zip" value="${fs:jnlp-package-p2.zip}"/>
+		<buckminster.valuefileset id="materializer.p2site.zip" value="${fs:materializer.p2site.zip}"/>
+
+		<property name="output.dir" location="${sp:product.output}" />
+		<mkdir dir="${output.dir}"/>
+
+		<copy todir="${output.dir}">
+			<fileset refid="jnlp-package-p2.zip"/>
+		</copy>
+
+		<copy todir="${buckminster.temp}/temp">
+			<fileset refid="materializer.p2site.zip" />
+		</copy>
+		<copy tofile="${output.dir}/materializer.p2site.zip">
+			<fileset dir="${buckminster.temp}/temp" includes="**/org.eclipse.buckminster.jnlp.p2.product*.zip" />
+		</copy>
+	</target>
+
+</project>

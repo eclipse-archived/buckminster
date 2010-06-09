@@ -1,0 +1,18 @@
+<?xml version='1.0'?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:sc="http://www.eclipse.org/buckminster/SiteContribution-1.0"
+	xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
+	attributeFormDefault="unqualified" elementFormDefault="qualified"
+	targetNamespace="http://www.eclipse.org/buckminster/SiteContribution-1.0">
+
+	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0"/>
+
+	<element name="siteContribution">
+		<complexType>
+			<sequence>
+				<element name="cspec" type="cs:ComponentSpec"/>
+			</sequence>
+			<attribute name="rmapProviderURL" use="required" />
+		</complexType>
+	</element>
+</schema>

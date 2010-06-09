@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Buckminster Fetcher Plug-in
+Bundle-SymbolicName: org.eclipse.buckminster.fetcher;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Eclipse Buckminster Project
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.buckminster.core;bundle-version="1.0.0",
+ org.eclipse.buckminster.download;bundle-version="1.1.0",
+ org.eclipse.buckminster.runtime;bundle-version="1.0.0",
+ org.eclipse.buckminster.ant;bundle-version="1.0.0",
+ org.eclipse.core.runtime;bundle-version="3.3.0",
+ org.eclipse.ecf;bundle-version="2.0.0",
+ org.apache.ant;bundle-version="1.7.1"

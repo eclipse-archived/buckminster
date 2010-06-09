@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.buckminster.headless" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.buckminster.headless" id="prefmappings" name="%prefmappings"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;This allows a plugin to define a name that maps to either a plain Preference path
+(e.g. /instance/some/path/key) so that the generic setpref/getpref/lsprefs commands
+can work on them.&lt;/p&gt;
+&lt;p&gt;There are three things to declare: the name used externally, the key information,
+and the class that should handle the action. In most cases, it&apos;s a one-to-one mapping
+to a preference path and the default/standard handler class is sufficient. For more
+advanced uses, subclass the handler as needed.&lt;/p&gt;
+&lt;p&gt;Note: The map name is always prefixed by the plugin id to avoid name collisions
+between independent plugins.&lt;/p&gt;
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="prefmapping" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="prefmapping">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="key" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.buckminster.cmdline.BasicPreferenceHandler:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="description" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiInfo"/>
+      </appinfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="copyright"/>
+      </appinfo>
+      <documentation>
+         &lt;p&gt;Copyright (c) 2004-2005, Cloudsmith Inc.&lt;/p&gt;
+&lt;p&gt;The code, documentation and other materials contained herein have been
+licensed under the Eclipse Public License - v 1.0 by the copyright holder
+listed above, as Initial Contributors under such license. The text of
+such license is available at &lt;a href=&quot;http://www.eclipse.org&quot;&gt;www.eclipse.org&lt;/a&gt;&lt;/p&gt;.
+      </documentation>
+   </annotation>
+
+</schema>

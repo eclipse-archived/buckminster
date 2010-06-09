@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Mailapp test build" id="org.eclipse.buckminster.tutorial.mailapp.product" application="org.eclipse.buckminster.tutorial.mailapp.xmailapp" useFeatures="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <splash
+      location="org.eclipse.buckminster.tutorial.mailapp" />
+   <launcher name="mailapp">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.buckminster.tutorial.mailapp.product.feature" version="1.0.0"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="4" />
+   </configurations>
+
+</product>

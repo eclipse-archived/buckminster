@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+ <extension-point id="expanders" name="Expanders" schema="schema/expanders.exsd"/>
+ <extension-point id="decompressors" name="Decompressors" schema="schema/decompressors.exsd"/>
+ <extension
+       point="org.eclipse.buckminster.download.decompressors">
+    <decompressor
+          class="org.eclipse.buckminster.download.unpack.GZIPDecompressor"
+          suffixes=".gz,.gzip">
+    </decompressor>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.download.expanders">
+    <expander
+          class="org.eclipse.buckminster.download.unpack.ZipExpander"
+          suffixes=".zip,.jar,.war,.ear">
+    </expander>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.cmdline.prefmappings">
+    <prefmapping
+          class="org.eclipse.buckminster.download.prefs.ConnectionRetryCount"
+          description="The number of times an IO request is retried in case of an exception (other than FileNotFound)."
+          name="connectionRetryCount">
+    </prefmapping>
+    <prefmapping
+          class="org.eclipse.buckminster.download.prefs.ConnectionRetryDelay"
+          description="The number of seconds to wait between retries in case of IO exceptions."
+          name="connectionRetryDelay">
+    </prefmapping>
+ </extension>
+</plugin>

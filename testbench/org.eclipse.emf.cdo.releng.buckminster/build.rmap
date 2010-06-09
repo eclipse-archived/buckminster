@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:psf="http://www.eclipse.org/buckminster/PSFProvider-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:property key="build.type" mutable="true" value="N"/>
+  <rm:locator pattern="^org\.eclipse\.emf\.cdo\.all$" searchPathRef="cdo.features"/>
+  <rm:locator pattern="^org\.eclipse\.emf\.cdo\.(releng\.buckminster|site\.eclipse)" searchPathRef="buckminster.testbench"/>
+  <rm:locator searchPathRef="cdo.source" failOnError="false"/>
+  <rm:locator searchPathRef="modeling" failOnError="false"/>
+  <rm:locator searchPathRef="target.platform"/>
+  <rm:searchPath name="cdo.features">
+    <rm:provider componentTypes="eclipse.feature" readerType="cvs">
+      <rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/modeling,org.eclipse.emf/org.eclipse.emf.cdo/features/{0}-feature">
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="cdo.source">
+    <rm:provider xsi:type="psf:PSFProvider" componentTypes="osgi.bundle,eclipse.feature" readerType="cvs" psfFile="psf/pserver/All.psf">
+      <rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/modeling,org.eclipse.emf/org.eclipse.emf.cdo/develop/setup"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="target.platform">
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=R)">
+      <rm:uri format="http://download.eclipse.org/eclipse/updates/3.5/R-3.5.1-200909170800"/>
+    </rm:provider>
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=R)">
+      <rm:uri format="http://download.eclipse.org/releases/galileo"/>
+    </rm:provider>
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=N)">
+      <rm:uri format="http://download.eclipse.org/eclipse/updates/3.6milestones"/>
+    </rm:provider>
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=N)">
+      <rm:uri format="http://download.eclipse.org/releases/helios"/>
+    </rm:provider>
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="">
+      <rm:uri format="http://net4j.sourceforge.net/update"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="buckminster.testbench">
+    <rm:provider componentTypes="buckminster,eclipse.feature" readerType="svn" resolutionFilter="">
+      <rm:uri format="http://dev.eclipse.org/svnroot/tools/org.eclipse.buckminster/trunk/testbench/{0}">
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="modeling">
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(build.type=N)">
+      <rm:uri format="http://download.eclipse.org/modeling/emf/updates/milestones"/>
+    </rm:provider>
+  </rm:searchPath>
+</rm:rmap>

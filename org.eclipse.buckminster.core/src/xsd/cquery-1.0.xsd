@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Copyright (c) 2004, 2005
+	Thomas Hallgren, Kenneth Olwing, Mitch Sonies
+	Pontus Rydin, Nils Unden, Peer Torngren
+	The code, documentation and other materials contained herein have been
+	licensed under the Eclipse Public License - v 1.0 by the individual
+	copyright holders listed above, as Initial Contributors under such license.
+	The text of such license is available at www.eclipse.org.
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0"
+	targetNamespace="http://www.eclipse.org/buckminster/CQuery-1.0" attributeFormDefault="unqualified"
+	elementFormDefault="qualified">
+	<import namespace="http://www.eclipse.org/buckminster/Common-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/common-1.0.xsd"/>
+	<import namespace="http://www.eclipse.org/buckminster/CSpec-1.0" schemaLocation="platform:/plugin/org.eclipse.buckminster.core/cspec-1.0.xsd" />
+	<element name="componentQuery" type="cq:ComponentQuery" />
+	<complexType name="ComponentQuery">
+		<sequence>
+			<element name="documentation" type="com:Documentation" minOccurs="0" maxOccurs="1" />
+			<element name="rootRequest" type="cs:ComponentRequest" minOccurs="1" maxOccurs="1" />
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="property" type="com:PropertyConstant" />
+				<element name="propertyElement" type="com:PropertyElement" />
+				<element name="advisorNode" type="cq:AdvisorNode" />
+			</choice>
+		</sequence>
+		<attribute name="resourceMap" type="com:URL" use="optional" />
+		<attribute name="properties" type="com:URL" use="optional" />
+		<attribute name="shortDesc" type="string" use="optional" />
+
+		<!-- This one is no longer used. The flag must be set per invocation -->
+		<attribute name="failOnResolveException" type="boolean" use="optional" default="true" />
+	</complexType>
+	<complexType name="AdvisorNode">
+		<sequence>
+			<element name="documentation" type="com:Documentation" minOccurs="0" maxOccurs="1" />
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="property" type="com:PropertyConstant" />
+				<element name="propertyElement" type="com:PropertyElement" />
+			</choice>
+		</sequence>
+		<attribute name="namePattern" type="string" use="optional">
+			<annotation>
+				<documentation>
+					A regular expression pattern that will be matched against component names. The matching occurs in
+					the order that the nodes are declared. The first node that matches a given component is used. No
+					further matching takes place once a node is found.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="componentType" type="string" use="optional">
+			<annotation>
+				<documentation>
+					If set, this advisor node will only match requests that has this component type.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="filter" type="string" use="optional">
+			<annotation>
+				<documentation>
+					If set, this advisor node will only match requests where the filter evaluates to true.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="overlayFolder" type="string" use="optional">
+			<annotation>
+				<documentation>
+					Appoints a folder that will act as an overlay to components found by this node. Overlays are meant to
+					assist when prototyping so that Buckminster gets the notion of added files although they are not
+					really checked in. If the path is relative it will be treated as relative to the current workspace.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="attributes" type="string" use="optional">
+			<annotation>
+				<documentation>
+					Comma separated list of attribute names that will imply dependencies during resolution
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="prune" type="boolean" use="optional">
+			<annotation>
+				<documentation>
+					If true, prune the external dependency list to include only those dependencies that are traversed
+					using the given attributes
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="sourceLevel" type="cq:Feasibility" default="INDIFFERENT" use="optional">
+			<annotation>
+				<documentation>The source level used when the feasibility of a provider is determined.</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="allowCircularDependency" type="boolean" default="false" use="optional">
+			<annotation>
+				<documentation>Allow that matched components participate in circular dependency chains</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="skipComponent" type="boolean" default="false" use="optional">
+			<annotation>
+				<documentation>Skip components that are matched altogether if this attribute is true</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="useTargetPlatform" type="boolean" use="optional">
+			<annotation>
+				<documentation>
+					Regulates how to treat components that are present in the target platform. Setting this
+					attribute to false will cause the resolver to omit target platform components.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="useMaterialization" type="boolean" use="optional">
+			<annotation>
+				<documentation>
+					Regulates how the resolver will treat existing materializations. Setting this flag to false will
+					cause existing material to be overwritten.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="useWorkspace" type="boolean" use="optional">
+			<annotation>
+				<documentation>
+					Regulates how the resolver will treat workspace projects that fulfills the component request.
+					Setting this flag to false will cause the resolver to omit existing projects (and thus overwrite
+					them).
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="versionOverride" type="string" use="optional">
+			<annotation>
+				<documentation>
+					A version that should be used in place of the version stipulated by the component request. This is
+					typically used when there is a desire to load the LATEST from a branch rather than a tagged version.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="versionOverrideType" type="string" use="optional">
+			<annotation>
+				<documentation>The version type for the versionOverride.</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="useRemoteResolution" type="boolean" use="optional" />
+		<attribute name="systemDiscovery" type="boolean" use="optional" />
+		<attribute name="branchTagPath" type="string" use="optional" />
+		<attribute name="spacePath" type="string" use="optional" />
+		<attribute name="revision" type="long" use="optional" />
+		<attribute name="timestamp" type="string" use="optional" />
+		<attribute name="resolutionPrio" type="string" use="optional" />
+		<attribute name="useProject" type="boolean" default="true" use="optional">
+			<annotation>
+				<documentation>
+					Deprecated. Replaced by useWorkspace.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="useInstalled" type="boolean" default="true" use="optional">
+			<annotation>
+				<documentation>
+					Deprecated. Replaced by useTargetPlatform
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="category" type="string" use="optional">
+			<annotation>
+				<documentation>
+					Deprecated. Category concept is merged into the component type.
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="mutableLevel" type="cq:Feasibility" default="INDIFFERENT" use="optional">
+			<annotation>
+				<documentation>Deprecated. No longer used</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+	<simpleType name="Feasibility">
+		<restriction base="string">
+			<enumeration value="INDIFFERENT" />
+			<enumeration value="REJECT" />
+			<enumeration value="DESIRE" />
+			<enumeration value="AVOID" />
+			<enumeration value="REQUIRE" />
+		</restriction>
+	</simpleType>
+</schema>

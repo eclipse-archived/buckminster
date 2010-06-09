@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.buckminster.core">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="org.eclipse.buckminster.core" id="parserExtensions" name="%ParserExtensions"/>
+      </appInfo>
+      <documentation>
+         [Enter description of this extension point.]
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <documentation>
+            Extensions to the default resource map parser can be added here.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="parserExtension"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parserExtension">
+      <complexType>
+         <sequence>
+            <element ref="handler"/>
+         </sequence>
+         <attribute name="parserIds" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Comma separated list of ids of the parsers to extend.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="namespace" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The xmlns namespace of the schema declaring the XML extension.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="resource" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The schema that defines the namespace. Must be a resource that is accessible using the bundle classloader.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="handler">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The SAX content handler that will parse the resource map. Must be a subclass of the org.eclipse.buckminster.core.rmap.ResourceMapHandler.
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.buckminster.core.rmap.ResourceMapHandler"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="type" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The xsi:type of the handler.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
+
+</schema>

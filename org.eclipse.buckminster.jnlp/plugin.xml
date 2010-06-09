@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="authentication" name="JNLP Authentication" schema="schema/authentication.exsd"/>
+   <extension-point id="learnmore" name="Learn More" schema="schema/learnMore.exsd"/>
+   <extension-point id="publication" name="JNLP Publication" schema="schema/publication.exsd"/>
+   <extension-point id="componentInfo" name="Component INFO" schema="schema/componentInfo.exsd"/>
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.eclipse.buckminster.jnlp.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.buckminster.jnlp.application"
+            name="Buckminster Java Web Start">
+      </product>
+   </extension>
+   <extension
+         id="cssite.authentication"
+         name="CSSite Authentication"
+         point="org.eclipse.buckminster.jnlp.authentication">
+      <authenticator
+            class="org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.DistroProvider"
+            id="com.cloudsmith.cssite.accountservice.Publisher"/>
+   </extension>
+   <extension
+         id="cssite.publication"
+         name="CSSite Publication"
+         point="org.eclipse.buckminster.jnlp.publication">
+      <publisher
+            class="org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.DistroProvider"
+            id="com.cloudsmith.cssite.accountservice.Publisher"/>
+   </extension>
+   <extension
+         id="cssite.componentInfo"
+         name="CSSite Component Info"
+         point="org.eclipse.buckminster.jnlp.componentInfo">
+      <componentInfoProvider
+            class="org.eclipse.buckminster.jnlp.componentinfo.cloudsmith.ComponentInfoProvider"
+            is="com.cloudsmith.cssite.componentinfo.ComponentInfoProvider">
+      </componentInfoProvider>
+   </extension>   
+</plugin>

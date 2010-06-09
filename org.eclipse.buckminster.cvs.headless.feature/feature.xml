@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.buckminster.cvs.headless.feature"
+      version="1.1.0.qualifier"
+      label="%featureName"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <requires>
+      <import plugin="com.ibm.icu.base"/>
+      <import plugin="com.jcraft.jsch" version="0.1.41" match="compatible"/>
+      <import plugin="org.eclipse.ant.core" version="3.2.100" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.core" version="1.1.350" match="compatible"/>
+      <import plugin="org.eclipse.buckminster.runtime" version="1.1.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.2.100" match="compatible"/>
+      <import plugin="org.eclipse.core.net" version="1.2.100" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.100" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.100" match="compatible"/>
+      <import plugin="org.eclipse.jsch.core" version="1.1.100" match="compatible"/>
+      <import plugin="org.eclipse.team.core" version="3.3.0" match="compatible"/>
+   </requires>
+
+   <plugin
+         id="org.eclipse.team.cvs.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.cvs"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.team.cvs.ssh2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.team"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psf version="2.0">
+	<provider id="org.eclipse.team.cvs.core.cvsnature">
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster,org.eclipse.buckminster"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.ant,org.eclipse.buckminster.ant"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.ant.ui,org.eclipse.buckminster.ant.ui"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.cmdline,org.eclipse.buckminster.cmdline"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.cmdline.ui,org.eclipse.buckminster.cmdline.ui"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.commands,org.eclipse.buckminster.commands"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.core,org.eclipse.buckminster.core"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.cvs,org.eclipse.buckminster.cvs"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.doc,org.eclipse.buckminster.doc"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.feature,org.eclipse.buckminster.feature"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.headless.platform.feature,org.eclipse.buckminster.headless.platform.feature"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.headless.svn.feature,org.eclipse.buckminster.headless.svn.feature"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.jdt,org.eclipse.buckminster.jdt"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.maven,org.eclipse.buckminster.maven"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.p4,org.eclipse.buckminster.p4"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.p4.feature,org.eclipse.buckminster.p4.feature"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.p4.ui,org.eclipse.buckminster.p4.ui"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.p4.ui.feature,org.eclipse.buckminster.p4.ui.feature"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.pde,org.eclipse.buckminster.pde"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.product,org.eclipse.buckminster.product"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.svn,org.eclipse.buckminster.svn"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.svn.feature,org.eclipse.buckminster.svn.feature"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.team,org.eclipse.buckminster.team"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.ui,org.eclipse.buckminster.ui"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.ui.feature,org.eclipse.buckminster.ui.feature"/>
+		<project reference="1.0,:extssh:dev.eclipse.org:/home/technology,org.eclipse.buckminster/org.eclipse.buckminster.update,org.eclipse.buckminster.update"/>
+	</provider>
+</psf>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+     <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.equinox.p2"
+            name="P2"/>
+      <wizard
+            category="org.eclipse.equinox.p2"
+            class="org.eclipse.equinox.p2.authoring.wizards.NewP2IUWizard"
+            icon="icons/iu_obj.gif"
+            id="org.eclipse.buckminster.ui.wizards.NewDistroWizard"
+            name="Installable Unit File">
+      </wizard>
+   </extension>
+     <extension
+           point="org.eclipse.ui.editors">
+        <editor
+              class="org.eclipse.equinox.p2.authoring.InstallableUnitEditor"
+              contributorClass="org.eclipse.equinox.p2.authoring.internal.IUEditorContributor"
+              default="true"
+              extensions="iu"
+              filenames="installable.xml"
+              icon="icons/iu_obj.gif"
+              id="org.eclipse.equinox.p2.authoring.iueditor"
+              matchingStrategy="org.eclipse.equinox.p2.authoring.InstallableUnitEditor"
+              name="Installable Unit Editor">
+        </editor>
+     </extension>
+
+</plugin>

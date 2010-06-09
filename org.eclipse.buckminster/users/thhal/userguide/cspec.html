@@ -1,0 +1,196 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Buckminster Component Specification</title>
+</head>
+
+<body>
+
+<h2>Buckminster Component Specification</h2>
+<p><i>You need stuff to do things -&gt; To perform an action you must fulfill its 
+requirements.</i></p>
+<p><i>Others may regard the things you do as stuff they need -&gt; An action can 
+produce artifacts that fulfill requirements of other actions.</i></p>
+<p><i>You need stuff for a reason -&gt; There is always a purpose behind a 
+component dependency. </i></p>
+<p>Buckminster views all components in terms of a Component Specification, 
+henceforth referred to as &quot;cspec&quot;. A cspec is
+either obtained using a cspec builder or exists as a physical file in
+the component that it defines. Buckminster delivers cspec builders for Eclipse
+update-site&#39;s, features, plug-ins, and fragments. New builders can
+be added as needed (see <a href="rmap.html#Component_type">Component type</a>).</p>
+<h3>CSpec elements</h3>
+<p>A cspec defines the four top-level elements <i>artifacts</i>, <i>dependencies</i>,
+<i>actions</i>, and <i>usages</i>.</p>
+<p>An <i>artifact</i> is a named collection of files and/or folders.</p>
+<p>A<i> dependency</i> consists at least of a component name. The dependency may 
+optionally contain a <a
+	href="#Version_selector">version selector</a>, a <a
+	href="#Match_rule">match rule</a>, and a <a href="#Version_comparator">
+version comparator</a>.</p>
+<p>An <i>action</i> is something that can be executed. It can have zero or many
+<i>requirements</i>. A requirement can be either <i>local</i> or <i>external</i>. 
+A <i>local </i>requirement states that an <i>artifact</i> must be present in the component. 
+An <i>external </i>requirement names another component together with a <i>
+purpose</i>. The execution of an <i>action</i> will often produce a new <i>
+artifact</i>. </p>
+<p>A <i>usage</i> can have zero or many <i>requirements</i> of the same kind as 
+an <i>action</i>. A <i>usage</i> fulfills the <i>purpose</i> of a <i>requirement</i> 
+from an external <i>action</i> or <i>usage</i>. In other words, it defines the 
+components participation in an <i>action</i> defined elsewhere. A <i>usage</i> 
+may <i>imply</i> another <i>usage</i> of the same component.</p>
+<p>A dependency graph is always implicit since dependencies appoint other 
+components and all components can be viewed in terms of a cspec. This implicit 
+graph must be a Directed Acyclic Graph (DAG).</p>
+<h3>Purpose qualified dependency</h3>
+<p>When an <i>external</i> requirement of an <i>action</i> or <i>usage</i> is 
+present, a <i>dependency</i> to the component that it names must also be present 
+in the same cspec. An <i>external</i> requirement qualifies a <i>dependency</i> with a <i>
+purpose</i>. A <i>dependency</i> that has no <i>purpose</i> will be ignored. The
+<i>purpose</i> says &quot;I need this component in order to &lt;purpose&gt;&quot;. Here's an 
+example:</p>
+<p>Assume that we have three Java components, <b>A</b>, <b>B</b>, and <b>C</b>.
+<b>A</b> use classes present in <b>B</b>. <b>B</b> in turn use classes from <b>C</b> 
+but hides this completely from <b>A</b>. When compiling <b>A</b>, a compiled 
+version of <b>B</b> is needed but there's <u>no need for <b>C</b></u>. When 
+running <b>A</b>, clearly both <b>B</b> and <b>C</b> will be needed.</p>
+<p>Object Oriented methodology tells us that it would be bad if <b>A</b> needs 
+to know about the runtime dependency from <b>B</b> to <b>C</b>. It would be much 
+better if <b>A</b> can say &quot;I need <b>B</b> in order to <i>compile</i>&quot; or &quot;I 
+need <b>B</b> in order to <i>run</i>&quot; and <b>B</b> could answer, &quot;You need me in 
+order to <i>run</i>? Then I need to bring <b>C</b> along as well&quot;. The purpose 
+qualified dependencies resolves this elegantly.</p>
+<h3>Artifact and derived components</h3>
+<p>A component will always contain at least one <i>artifact</i>. A source 
+component from a CVS repository will always contain the artifact &quot;source&quot;. This 
+artifact is typically one single folder. Different actions such as &quot;compile&quot; or 
+&quot;archive&quot; can produce new artifacts. It is often beneficial to store such 
+artifacts in repositories and offer them as alternatives to the source when a 
+component needs to resolve its dependencies. An FTP or HTTP based repository 
+that stores pre-compiled binaries is a good example of this. In Buckminster 
+lingo, such a binary is a <i>derived component</i>. It will contain a cspec 
+similar to the one bundled with the original source pruned from the actions that 
+produced the binary. The pruning will limit the component usage as well of 
+course.</p>
+<p>Since pruning removes actions and usages, some dependencies might end up 
+purposeless. Such dependencies will be pruned too.</p>
+<h3>Variability</h3>
+<p>Buckminster allow artifacts to be <i>variable</i>. Variability is achieved 
+through <i>artifact attributes</i> and by actions that can produce artifacts 
+attributed in different ways. A trivial example of this is a compiler that can 
+compile the same source, either stripped and optimized (distribution), or with 
+symbols and not optimized (for debug purpose). Rather than having two artifacts 
+and two actions (and two of every required artifact, etc.) attributes can be set 
+in the outmost action that will be propagated all the way.</p>
+<p>A attribute can be set in the artifact declaration or stem from the action 
+that produces the artifact. The initial artifact of a cspec is never variable 
+since it does not stem from an action. The more derived an artifact is, the less 
+variable it becomes. A pre-built binary is typically not variable at all.</p>
+<p>If an artifact defines that an attribute stems from the producing action, 
+then that action must somehow provide the attribute. It can do this either by 
+declaring that it is the originator (such as a compiler using attributes to 
+control command line options) or by propagating it to at least one of its 
+required artifacts and/or dependencies. It may also add new attributes to its 
+requirements and/or dependencies.</p>
+<h3>Names of actions and artifacts</h3>
+<p>Buckminster does not stipulate the names of artifacts but here are some 
+examples:</p>
+<ul type="circle">
+  <li><i>source</i><br>
+  no associated action, this is often an initial artifact.</li>
+  <li><i>compiled</i><br>
+  produced by the action <i>compile</i>, requires the artifact <i>source</i>.</li>
+  <li><i>docs</i><br>
+  produced by the action <i>generate-docs</i>, requires the artifact <i>source</i>.</li>
+  <li><i>archived-binary</i><br>
+  produced by the action archive, requires the artifact <i>compiled</i>.</li>
+  <li><i>archived-docs</i><br>
+  produced by the action <i>archive-docs</i>, requires the artifact <i>docs</i>.</li>
+  <li><i>archived-source</i><br>
+  produced by the action <i>archive-source</i>, requires the artifact <i>source</i>.</li>
+  <li><i>distribution</i><br>
+  produced by the action <i>distribute</i>, requires the artifacts <i>
+  archived-binary</i>, <i>archived-docs</i>, and sometimes <i>archived-source</i>.</li>
+</ul>
+<p>Some sample purpose names:</p>
+<ul type="circle">
+  <li><i>compiling</i><br>
+  The original action is <i>compile</i>.</li>
+  <li><i>linking</i><br>
+  The original action is <i>link</i>.</li>
+  <li><i>running</i><br>
+  The original action is <i>run</i>. </li>
+  <li><i>testing</i><br>
+  The original action is <i>test</i>. This purpose would imply <i>running</i> 
+  and add artifacts specific for testing.</li>
+</ul>
+<h3><a name="Version_selector">Version selector</a></h3>
+<p>A version selector can be either a plain version such as
+&quot;3.1.0&quot; or it can be a branch selector consisting of a branch
+name and qualifier. A plain version is always converted to a branch
+selector before it is passed to a component reader. A component reader
+will only understand branch selectors. The conversion from plain version
+into a branch selector is performed by a <a href="rmap.html#Version_Converter">version
+converter</a>.</p>
+<p>A branch selector is qualified in one of four ways:</p>
+<ul>
+	<li><b>Latest</b><br>
+	Denotes the latest revision on the branch. Notation:
+	&lt;branch&gt;/LATEST</li>
+	<li><b>Tag</b><br>
+	Denotes a specific tag on the branch. Notation
+	&lt;branch&gt;/&lt;tag&gt;</li>
+	<li><b>Change number</b><br>
+	Denotes a specific change number on the branch. Notation
+	&lt;branch&gt;#&lt;number&gt;</li>
+	<li><b>Timestamp</b><br>
+	Denotes a specific point in time (UTC) on the branch. Notation
+	&lt;branch&gt;@yyyy-MM-dd[THH:mm:ss]. The delimiters are all optional
+	except for the &#39;T&#39;.</li>
+</ul>
+<p>A version selector that does not contain a &#39;/&#39;, &#39;#&#39;,
+or &#39;@&#39; is considered a plain version and hence, those characters
+cannot be used in a plain version selector.</p>
+<p>A reader defines a <i>default branch</i>. For CVS that will&nbsp; be
+&quot;head&quot;, for SVN it will probably be &quot;trunk&quot;,
+ClearCase will use &quot;main&quot;, etc.</p>
+<p>A <a href="rmap.html#Component_reader">component reader</a> that connects to
+an non versioned artifact will only understand the notation &lt;default
+branch&gt;/LATEST. A reader that cannot combine branch with tag (such as
+Subversion) will use &lt;default branch&gt;/&lt;tag&gt; to denote a tag
+and &lt;branch&gt;/LATEST to denote a branch (those notations are the
+most common even when branches and tags indeed can be combined).</p>
+<h3><a name="Version_comparator">Version Comparator</a></h3>
+<p>The comparator knows how to compare two plain version selectors based on a <a
+	href="#Match_rule">match rule</a> that specifies how stringent a match
+must be.</p>
+<p>New version comparators can be added using the extension-point <i>org.eclipse.buckminster.core.versionComparators</i>.</p>
+<h3><a name="Match_rule">Match rule</a></h3>
+<p>The rule may be one of the following:</p>
+<ul>
+	<li><b>None</b><br>
+	Version matching does not apply, i.e. anything goes.</li>
+	<li><b>Greater or Equal</b><br>
+	Interpretation is comparator specific. A typical interpretation might
+	be: The major tokens must be greater or equal. If they are equal, the
+	minor tokens must be greater or equal, if both major and minor tokens
+	are equal, the service token must be greater or equal, i.e. 1.2.3 would
+	match 3.2.1 but not 1.2.2</li>
+	<li><b>Compatible</b><br>
+	Interpretation is comparator specific. A typical interpretation might
+	be: Major tokens must be equal. The rest of the version must be greater
+	or equal, i.e. 1.2.3 would match 1.3.5 but not 1.2.2 and not 3.2.1</li>
+	<li><b>Equivalent</b><br>
+	Interpretation is comparator specific. A typical interpretation might
+	be: Both major and minor tokens must be equal. The rest of the version
+	must be greater or equal, i.e 1.2.3 would match 1.2.8 but not 1.2.2 or
+	1.3.0.</li>
+	<li><b>Perfect</b><br>
+	The match must be perfect.</li>
+</ul>
+
+</body>
+
+</html>

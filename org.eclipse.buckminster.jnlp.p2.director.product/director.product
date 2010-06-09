@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="JNLP P2 Director" id="org.eclipse.buckminster.jnlp.p2.director.app.product" application="org.eclipse.buckminster.jnlp.p2.director.app.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+      <linux>/org.eclipse.equinox.p2.director.product/config.ini</linux>
+      <macosx>/org.eclipse.equinox.p2.director.product/config.ini</macosx>
+      <solaris>/org.eclipse.equinox.p2.director.product/config.ini</solaris>
+      <win32>/org.eclipse.buckminster.p2.director.product/config.ini</win32>
+   </configIni>
+
+   <launcherArgs>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="director">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.buckminster.jnlp.p2.director.product" version="1.0.0.qualifier"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.equinox.app" autoStart="true" startLevel="4" />
+   </configurations>
+
+</product>

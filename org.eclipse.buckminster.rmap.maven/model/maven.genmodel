@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.rmap.maven/src"
+    modelPluginID="org.eclipse.buckminster.rmap.maven" modelName="Maven" importerID="org.eclipse.emf.importer.ecore"
+    complianceLevel="6.0" copyrightFields="false" usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common ../../org.eclipse.buckminster.rmap/model/rmap.genmodel#//rmap">
+  <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
+    <genAnnotations source="selectedPackages">
+      <details key="http://www.eclipse.org/buckminster/MavenProvider-1.0" value="maven.xsd"/>
+    </genAnnotations>
+    <genAnnotations source="selectedReferencedPackages">
+      <details key="http://www.eclipse.org/buckminster/Common-1.0" value="common.xsd"/>
+      <details key="http://www.eclipse.org/buckminster/RMap-1.0" value="rmap.xsd"/>
+    </genAnnotations>
+    <details key="directoryURI" value="."/>
+  </genAnnotations>
+  <foreignModel>maven.ecore</foreignModel>
+  <genPackages prefix="Maven" basePackage="org.eclipse.buckminster.rmap" resource="XML"
+      disposableProviderFactory="true" extensibleProviderFactory="true" childCreationExtenders="true"
+      ecorePackage="maven.ecore#/">
+    <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
+      <genAnnotations source="maven.xsd"/>
+    </genAnnotations>
+    <genClasses ecoreClass="maven.ecore#//GroupAndArtifact">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven.ecore#//GroupAndArtifact/artifactId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven.ecore#//GroupAndArtifact/groupId"/>
+    </genClasses>
+    <genClasses ecoreClass="maven.ecore#//MapEntry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven.ecore#//MapEntry/name"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference maven.ecore#//MapEntry/aliases"/>
+    </genClasses>
+    <genClasses ecoreClass="maven.ecore#//Mappings">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven.ecore#//Mappings/entries"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven.ecore#//Mappings/rules"/>
+    </genClasses>
+    <genClasses ecoreClass="maven.ecore#//MavenProvider">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven.ecore#//MavenProvider/mappings"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

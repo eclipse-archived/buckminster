@@ -1,0 +1,16 @@
+<project>
+	<target name="split">
+		<copy todir="${sp:output1}">
+			<buckminster.valuefileset value="${fs:action.requirements}">
+				<filename name="${pattern}"/>
+			</buckminster.valuefileset>
+		</copy>
+		<copy todir="${sp:output2}">
+			<buckminster.valuefileset value="${fs:action.requirements}">
+				<not>
+					<filename name="${pattern}"/>
+				</not>
+			</buckminster.valuefileset>
+		</copy>
+	</target>
+</project>

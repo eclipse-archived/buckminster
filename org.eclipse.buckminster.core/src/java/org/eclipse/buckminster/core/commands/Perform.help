@@ -1,0 +1,41 @@
+This command performs actions on components
+
+usage: perform
+       [{ -? | --help }]
+       [{-D | --define} <key>[=<value>]]
+       [{-P | --properties} <URL or Path>]
+       [{-W | --maxWarnings} <n>]
+       <component>#<action> [<component>#<action> ...]
+
+ -?
+--help
+  Show this help text
+ -D
+--define
+  Defines a property as a key=value pair. The value may include ant-style expansion constructs
+  that will be expanded using both System properties and other properties that has been set.
+
+ -P <URL or Path>
+--properties <URL or Path>
+  The URL or file system path of a properties file. The values in the file may include ant-style
+  expansion constructs that will be expanded using both System properties and other properties
+  that has been set.
+
+ -W
+--maxwarnings
+  Give the number of warnings acceptable. If the number of warnings are higher,
+  treat as error and exit with 1.
+  Default is infinite warnings.
+
+ -F
+--forced
+  Force all actions regardless of timestamps
+
+ -Q
+--quiet
+  Don't print errors and warnings. Just exit with a non zero exit code on failure
+
+<component>#<action>
+  The component name and the action name to perform.
+  Can be given multiple times in order to perform many actions in the most
+  optimized way.

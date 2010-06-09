@@ -1,0 +1,12 @@
+Unsets the value of a preference.
+
+usage: unsetpreference
+       [{ -? | --help }]
+       <name> [ <name> ... ]
+ -?
+--help
+  Show this help text
+<name>
+  The name of the preference
+
+TBD

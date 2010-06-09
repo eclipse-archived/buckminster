@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hello XML World Plug-in
+Bundle-SymbolicName: org.demo.hello.xml.world;singleton:=true
+Bundle-Version: 1.0.0
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.ibm.icu,
+ org.demo.xml.provider
+Eclipse-LazyStart: true

@@ -1,0 +1,17 @@
+Exports preferences to a file or standard output.
+
+usage: exportpreferences
+       [{ -? | --help }]
+       [{ -F | --file } <filename> ]
+       [{ -S | --scope } <scope> ]
+        [ <rootKey>[#<subKey>[,<subKey> ...]] [ <rootKey>[#<subKey>[,<subKey> ...]] ... ]]
+ -?
+--help
+  Show this help text
+<filename>
+  The name of the file that receives the exported preferences.
+<scope>
+  Export this scope. Valid values are 'configuration' and 'instance'.
+<rootKey>[#<subKey>[,<subKey> ...]]
+  Export only matching preferences. The match can be for a root only or a root
+  qualified with one or several subKeys.

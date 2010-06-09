@@ -1,0 +1,84 @@
+
+This command launches JUnit tests defined in a given launch configuration in the workspace
+with Emma code coverage.
+
+usage: emma
+       [{ -? | --help }]
+       [{-D | --define} <key>[=<value>]]
+       [{-P | --properties} <URL or Path>]
+       {-l | --launch} <workspace location of the launch config file>
+       [{-q | --quiet}]
+       [{-o | --output} <path-to-XML-output-file>]
+       [{--stdout}] [<path where stdout will be written to or "-" for passthrough>]]
+       [{--stderr}] [<path where stderr will be written to or "-" for passthrough>]]
+       [{-m | --merge}]
+       [{--emma}] <path where emma coverage output will be written to>]
+       [{--html}] <path where html coverage output will be written to>]
+       [{--txt}] <path where txt coverage output will be written to>]
+       [{--xml}] <path where xml coverage output will be written to>]
+
+ -?
+--help
+  Show this help text
+
+ -D
+--define
+  Defines a property as a key=value pair. The value may include ant-style expansion constructs
+  that will be expanded using both System properties and other properties that has been set.
+
+ -P <URL or Path>
+--properties <URL or Path>
+  The URL or file system path of a properties file. The values in the file may include ant-style
+  expansion constructs that will be expanded using both System properties and other properties
+  that has been set.
+
+ -l
+--launch
+  The workspace location of the *.launch file that specifies the tests to run. If, for example,
+  your workspace contains a project named "com.acme.foobar" and this contains a launch
+  configuration named "alltests.launch", you would pass "com.acme.foobar/alltests.launch" as an
+  argument to the "-l" parameter. 
+
+ -q
+--quiet
+  Don't log test progress on console.
+
+ -o
+--output
+  The (file) path where JUnit XML test output will be written to. 
+  
+--stdout
+  The path where the contents of the standard output stream of the launched process(es) will be
+  written to. Must point to a local file path. If empty, the content will be piped through
+  onto the regular standard output stream.  The special value "-" (without quotes) may also
+  be used for that purpose.
+  NOTE: If you don't specify the --stdout parameter, the content will only be written to
+  the output file specified with the -o parameter.
+
+--stderr
+  The path where the contents of the standard error stream of the launched process(es) will be
+  written to. Must point to a local file path. If empty, the content will be piped through
+  onto the regular standard error stream.  The special value "-" (without quotes) may also
+  be used for that purpose.
+  NOTE: If you don't specify the --stderr parameter, the content will only be written to
+  the output file specified with the -o parameter.
+
+ -m
+--merge
+  If set, all coverage sessions present in the current workspace will be merged together
+  before writing coverage output. This is useful if several tests are run consecutively
+  and you want to have one consolidated coverage report.
+  Note that you have to execute all test sessions within one Buckminster script. Otherwise
+  the code coverage information of previous test runs is deleted and merging is not possible.
+
+--emma <path where emma coverage output will be written to>
+  If set, writes coverage output in native Emma format to the specified path.
+  
+--txt <path where txt coverage output will be written to>
+  If set, writes coverage output in plain TXT format to the specified path.
+
+--html <path where html coverage output will be written to>
+  If set, writes coverage output in HTML format to the specified path.
+
+--xml <path where xml coverage output will be written to>
+  If set, writes coverage output in XML format to the specified path.

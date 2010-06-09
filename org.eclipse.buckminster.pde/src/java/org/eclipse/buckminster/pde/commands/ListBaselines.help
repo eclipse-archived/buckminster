@@ -1,0 +1,7 @@
+Lists the API Baselines known to the workspace
+
+usage: lsbaselines
+       [{ -? | --help }]
+ -?
+--help
+  Show this help text

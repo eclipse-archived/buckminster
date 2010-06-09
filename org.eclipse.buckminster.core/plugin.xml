@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension-point
+		id="cspecBuilders"
+		name="%CSpecBuilders"
+		schema="schema/cspecBuilders.exsd" />
+	<extension-point
+		id="versionTypes"
+		name="%VersionTypes"
+		schema="schema/versionTypes.exsd" />
+	<extension-point
+		id="componentTypes"
+		name="%ComponentTypes"
+		schema="schema/componentTypes.exsd" />
+	<extension-point
+		id="readerTypes"
+		name="%ReaderTypes"
+		schema="schema/readerTypes.exsd" />
+	<extension-point
+		id="forcedActivations"
+		name="%ForcedActivations"
+		schema="schema/forcedActivations.exsd" />
+	<extension-point
+		id="versionConverters"
+		name="%VersionConverters"
+		schema="schema/versionConverters.exsd" />
+	<extension-point
+		id="parserExtensions"
+		name="%ParserExtensions"
+		schema="schema/parserExtensions.exsd" />
+	<extension-point
+		id="actors"
+		name="%Actors"
+		schema="schema/actors.exsd" />
+	<extension-point
+		id="internalActors"
+		name="%InternalActors"
+		schema="schema/internalActors.exsd" />
+ <extension-point id="queryResolvers" name="%QueryResolvers" schema="schema/queryResolvers.exsd"/>
+ <extension-point id="materializers" name="%Materializers" schema="schema/materializers.exsd"/>
+ <extension-point id="qualifierGenerators" name="%QualifierGenerators" schema="schema/qualifierGenerators.exsd"/>
+ <extension-point id="targetPlatformProviders" name="%TargetPlatformProviders" schema="schema/targetPlatformProviders.exsd"/>
+	<!-- Declare known versionTypes -->
+ <extension
+       point="org.eclipse.buckminster.core.qualifierGenerators">
+    <qualifierGenerator
+          class="org.eclipse.buckminster.core.version.RevisionQualifierGenerator"
+          id="lastRevision">
+    </qualifierGenerator>
+    <qualifierGenerator
+          class="org.eclipse.buckminster.core.version.TimestampQualifierGenerator"
+          id="lastModified">
+    </qualifierGenerator>
+    <qualifierGenerator
+          class="org.eclipse.buckminster.core.version.BuildTimestampQualifierGenerator"
+          id="buildTimestamp">
+    </qualifierGenerator>
+ </extension>
+	<extension point="org.eclipse.buckminster.core.readerTypes">
+		<readerType
+			id="url"
+			class="org.eclipse.buckminster.core.reader.URLReaderType" />
+		<readerType
+			id="url.zipped"
+			class="org.eclipse.buckminster.core.reader.ZipReaderType" />
+		<readerType
+			id="url.catalog"
+			class="org.eclipse.buckminster.core.reader.URLCatalogReaderType" />
+		<readerType
+			class="org.eclipse.buckminster.core.reader.LocalReaderType"
+			id="local" />
+		<readerType
+			class="org.eclipse.buckminster.core.reader.P2ReaderType"
+			id="p2" />
+</extension>
+	<extension point="org.eclipse.buckminster.core.versionTypes">
+		<versionType
+          format="n[.n=0;[.n=0;[.S=&apos;&apos;;=[A-Za-z0-9_-];]]]"
+          id="OSGi"/>
+		<versionType
+          format="S"
+          id="String"/>
+		<versionType
+          format="S=[0-9];={8};[.S=[0-9];={6};=&apos;000000&apos;;]"
+          id="Timestamp"/>
+		<versionType
+          format="n[.n=0;[.n=0;]][d?S=M;]"
+          id="Triplet"/>
+		<versionType
+          format="r(.r)*p?"
+          id="Raw Omni Version"/>
+	</extension>
+	<!-- Declare known readerTypes -->
+ <extension
+       point="org.eclipse.buckminster.core.queryResolvers">
+    <queryResolver id="rmap">
+       <factory class="org.eclipse.buckminster.core.resolver.ResourceMapResolverFactory"/>
+    </queryResolver>
+ </extension>
+	<extension point="org.eclipse.buckminster.core.componentTypes">
+		<componentType
+			id="jar"
+			class="org.eclipse.buckminster.core.ctype.JarComponentType" />
+		<componentType
+			class="org.eclipse.buckminster.core.internal.ctype.BuckminsterComponentType"
+			id="buckminster">
+			<metaFile path="buckminster.cspec" />
+		</componentType>
+		<componentType
+			class="org.eclipse.buckminster.core.internal.ctype.UnknownComponentType"
+			id="unknown" />
+  <componentType
+        class="org.eclipse.buckminster.core.internal.ctype.BOMComponentType"
+        id="bom"/>
+	</extension>
+	<extension point="org.eclipse.buckminster.core.cspecBuilders">
+		<builder
+			class="org.eclipse.buckminster.core.ctype.BuckminsterCSpecBuilder"
+			id="cspec2cspec" />
+  <builder
+        class="org.eclipse.buckminster.core.ctype.BOMFromCQueryBuilder"
+        id="cquery2BOM"/>
+		<builder
+			class="org.eclipse.buckminster.core.internal.ctype.DefaultResolutionBuilder"
+			id="default" />
+	</extension>
+	<!-- Declare known remoteReaders -->
+	<!-- Declare known componentTypes -->
+	<extension point="org.eclipse.buckminster.core.actors">
+		<actor
+			ID="null"
+			class="org.eclipse.buckminster.core.internal.actor.NullActor"
+			name="Null Actor" />
+		<actor
+			ID="simulation"
+			class="org.eclipse.buckminster.core.internal.actor.SimulationActor"
+			name="Simulation Actor" />
+		<actor
+			ID="eclipse.clean"
+			class="org.eclipse.buckminster.core.internal.actor.EclipseCleanActor"
+			name="Eclipse Build Integration Actor (clean)" />
+		<actor
+			ID="eclipse.build"
+			class="org.eclipse.buckminster.core.internal.actor.EclipseBuildActor"
+			name="Eclipse Build Integration Actor (auto/incremental/full)" />
+	</extension>
+	<extension point="org.eclipse.buckminster.core.versionConverters">
+		<converter
+			class="org.eclipse.buckminster.core.internal.version.TagConverter"
+			id="tag" />
+		<converter
+			class="org.eclipse.buckminster.core.internal.version.BranchConverter"
+			id="branch" />
+	</extension>
+	<extension
+		point="org.eclipse.core.resources.builders"
+		id="locationEmitter"
+		name="%locationEmitter">
+		<builder isConfigurable="true">
+			<run class="org.eclipse.buckminster.core.build.LocationEmitter" />
+		</builder>
+	</extension>
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<content-type
+			base-type="org.eclipse.core.runtime.xml"
+			file-extensions="cspec"
+			file-names="buckminster.cspec"
+			id="componentSpec"
+			name="%componentSpecName"
+			priority="high" />
+		<content-type
+			base-type="org.eclipse.core.runtime.xml"
+			file-extensions="cspex"
+			file-names="buckminster.cspex"
+			id="componentSpecExtension"
+			name="%componentSpecExtensionName"
+			priority="high" />
+		<content-type
+			base-type="org.eclipse.core.runtime.xml"
+			file-extensions="rmap"
+			id="resourceMap"
+			name="%resourceMapName"
+			priority="high" />
+	</extension>
+	<extension
+		id="ExternalCommandBuilder"
+		name="%externalCommandBuilder"
+		point="org.eclipse.core.resources.builders">
+		<builder isConfigurable="true">
+			<run class="org.eclipse.buckminster.core.build.ExternalCommandBuilder" />
+		</builder>
+	</extension>
+ <extension
+       point="org.eclipse.buckminster.cmdline.prefmappings">
+    <prefmapping
+          class="org.eclipse.buckminster.core.prefs.MaxParallelMaterializations"
+          description="The maximum number of parallel jobs used for materialisation"
+          name="maxParallelMaterializations">
+    </prefmapping>
+    <prefmapping
+          class="org.eclipse.buckminster.core.prefs.MaxParallelResolutions"
+          description="The number of threads to run in parallel for RMAP resolution."
+          key="instance/org.eclipse.buckminster.runtime/rmap/resolverThreadsMax"
+          name="maxParallelResolutions">
+    </prefmapping>
+    <prefmapping
+          description="The location of the .buckminster project"
+          key="instance/org.eclipse.buckminster.runtime/bmProjectContents"
+          name="buckminsterProjectPath">
+    </prefmapping>
+    <prefmapping
+          class="org.eclipse.buckminster.core.prefs.SshPreferencesHandler"
+          description="A comma separated list of private key files to try when attempting SSH public key authentication"
+          key="instance/org.eclipse.jsch.core/PRIVATEKEY"
+          name="sshPrivateKeys">
+    </prefmapping>
+    <prefmapping
+          class="org.eclipse.buckminster.core.prefs.SshPreferencesHandler"
+          description="SSH2 home directory (this directory is searched for the known_hosts file)"
+          key="instance/org.eclipse.jsch.core/SSH2HOME"
+          name="ssh2Home">
+    </prefmapping>
+ </extension>
+	<extension point="org.eclipse.buckminster.cmdline.commands">
+		<command
+        addhelpflags="true"
+        class="org.eclipse.buckminster.core.commands.GetConfiguration"
+        deprecatedBy="resolve"
+        name="getconfiguration"
+        status="DEPRECATED">
+			<alias name="getcfg" />
+		</command>
+		<command
+			addhelpflags="true"
+			class="org.eclipse.buckminster.core.commands.Build"
+			name="build"
+			status="NORMAL">
+			<alias name="make" />
+		</command>
+		<command
+			addhelpflags="true"
+			class="org.eclipse.buckminster.core.commands.Perform"
+			name="perform"
+			status="NORMAL" />
+		<command
+			addhelpflags="true"
+			class="org.eclipse.buckminster.core.commands.Clean"
+			name="clean"
+			status="NORMAL" />
+  <command
+        addhelpflags="true"
+        class="org.eclipse.buckminster.core.commands.Import"
+        name="import"
+        status="NORMAL">
+     <alias
+           name="resolve">
+     </alias>
+  </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.SetPreference"
+            name="prefs.setpreference"
+            status="NORMAL">
+         <alias name="setpref"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.ExportPreferences"
+            name="prefs.exportpreferences"
+            status="NORMAL">
+         <alias name="exportprefs"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.ImportPreferences"
+            name="prefs.importpreferences"
+            status="NORMAL">
+         <alias name="importprefs"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.GetPreference"
+            name="prefs.getpreference"
+            status="NORMAL">
+         <alias name="getpref"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.UnsetPreference"
+            name="prefs.unsetpreference"
+            status="NORMAL">
+         <alias name="unsetpref"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.ListPreferences"
+            name="prefs.listpreferences"
+            status="NORMAL">
+         <alias name="lsprefs"/>
+      </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.Launch"
+            name="launch"
+            status="NORMAL">
+      </command>
+	</extension>
+ <extension
+       point="org.eclipse.buckminster.core.materializers">
+    <materializer
+          class="org.eclipse.buckminster.core.materializer.FileSystemMaterializer"
+          id="filesystem"/>
+    <materializer
+          class="org.eclipse.buckminster.core.materializer.WorkspaceMaterializer"
+          id="workspace"/>
+    <materializer
+          class="org.eclipse.buckminster.core.materializer.P2Materializer"
+          id="targetPlatform">
+    </materializer>
+    <materializer
+          class="org.eclipse.buckminster.core.materializer.P2Materializer"
+          id="p2">
+    </materializer>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.core.targetPlatformProviders">
+    <targetPlatform
+          class="org.eclipse.buckminster.core.TargetPlatform"
+          priority="0">
+    </targetPlatform>
+ </extension>
+</plugin>

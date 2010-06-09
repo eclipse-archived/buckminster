@@ -1,0 +1,39 @@
+Prints the value of a preference.
+
+usage: shortsuffix
+       [{ -? | --help }]
+       { -s | --storage} <storage folder>
+       { -i | --identifier} <component identifier>
+       { -v | --version} <component version>
+       { -q | --qualifier} <long qualifier>
+       [ { -f | --format} <version format> ]
+       [ { -w | --width} <width of generated short qualifier> ]
+       [ { -t | --type } { timestamp | sequence } ]
+
+ -?
+--help
+  Show this help text
+
+ -f or --format <the timestamp format>
+  The SimpleDateFormatter timestamp format to use for a generated timestamp.
+  The default format is yyMMdd-HHmm
+
+ -i or --identifier <component identifier>
+  The name of the component (typically the a feature id).
+
+ -q or --qualifier <the ugly long qualifier>
+  The long qualifier that should be translated into a timestamp
+
+ -s or --storage <path to storage folder>
+  The storage folder that will contain all suffix maps
+
+ -t or --type <type of generated short qualifier>
+  The type of short qualifier to return. Currently timestamp or sequence.
+  The default is timestamp.
+
+ -v or --version <component version>
+  The version of the component stripped from qualifier
+
+ -w or --width <a positive integer>
+  The minimum width of the generated short qualifier. Can only be
+  used in conjunction with the sequence type. The default with is 4.

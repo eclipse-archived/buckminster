@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="org.eclipse.buckminster.core.feature" version="0.0.0">
+      <category name="buckminster"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.cvs.feature" version="0.0.0">
+      <category name="buckminster"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.git.feature" version="0.0.0">
+      <category name="buckminster"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.maven.feature" version="0.0.0">
+      <category name="buckminster"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.pde.feature" version="0.0.0">
+      <category name="buckminster"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.psf.feature" version="0.0.0">
+      <category name="buckminster"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.subclipse.feature" version="0.0.0">
+      <category name="buckminster.subclipse"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.subversive.feature" version="0.0.0">
+      <category name="buckminster.subversive"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.core.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.cvs.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.git.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.maven.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.pde.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.psf.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.subclipse.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <feature id="org.eclipse.buckminster.subversive.source.feature" version="0.0.0">
+      <category name="buckminster.source"/>
+   </feature>
+   <category-def name="buckminster" label="Buckminster">
+      <description>
+         The Core Buckminster distribution with commonly used features
+      </description>
+   </category-def>
+   <category-def name="buckminster.subclipse" label="Buckminster SVN Support (Subclipse)">
+      <description>
+         Buckminster SVN Support for Subclipse. In order to use features in this category, you must first install Subclipse.
+      </description>
+   </category-def>
+   <category-def name="buckminster.subversive" label="Buckminster SVN Support (Subversive)">
+      <description>
+         Buckminster SVN Support for Subversive. In order to use features in this category, you must first install Subversive.
+      </description>
+   </category-def>
+   <category-def name="buckminster.source" label="Buckminster Source">
+      <description>
+         Source bundles for all Buckminster feautures.
+      </description>
+   </category-def>
+</site>

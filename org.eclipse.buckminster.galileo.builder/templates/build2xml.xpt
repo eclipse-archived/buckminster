@@ -1,0 +1,93 @@
+«IMPORT 'http://www.eclipse.org/amalgam/2008/build'»
+«IMPORT 'http://www.eclipse.org/emf/2002/Ecore'»
+
+«EXTENSION util»
+«EXTENSION xpt::StringOperations»
+
+«DEFINE Main FOR build::Build-»
+<?xml version="1.0" encoding="UTF-8"?>
+«EXPAND body FOR self»
+
+«ENDDEFINE»
+
+
+«DEFINE body FOR build::Build»
+<build2xml>
+«EXPAND midcolumn FOR self»
+</build2xml>
+«ENDDEFINE»
+
+
+
+«DEFINE midcolumn FOR build::Build»
+<repoURL url="«EXPAND repoURL FOR self»" />
+<build name="«label»">«label» build «date»-«time»</build>
+«EXPAND requirements FOR self»
+«EXPAND contacts FOR self»
+«ENDDEFINE»
+
+
+«DEFINE repoURL FOR build::Build-»
+http://download.eclipse.org«promotion.downloadDirectory»«ENDDEFINE»
+
+«DEFINE requirements FOR build::Build»
+<categories>
+«FOREACH categories AS category»
+  <category name="«category.name»">
+«FOREACH category.features->select(f | not f.repo.location.oclIsUndefined()) AS feature-»
+
+   <feature 
+      repoLoc="«feature.repo.location»features/«feature.id»_«feature.version».jar" 
+      nameid="«feature.id»_«feature.version»"  
+      repo="«feature.repo.location»" 
+      repoLabel="«feature.repo.label»"
+   </feature>
+«ENDFOREACH»
+  </category>
+«ENDFOREACH»
+
+  <categroy name="Uncategorized">
+
+«FOREACH contributions.features->select(f | not f.repo.location.oclIsUndefined())->asSet()->symmetricDifference(categories.features->select(f | not f.repo.location.oclIsUndefined())->asSet()) AS feature-»
+
+   <feature 
+      repoLoc="«feature.repo.location»features/«feature.id»_«feature.version».jar" 
+      nameid="«feature.id»_«feature.version»"  
+      repo="«feature.repo.location»" 
+      repoLabel="«feature.repo.label»">
+   «feature.id»
+   </feature>
+«ENDFOREACH»
+</categories>
+
+ <bundles>
+«FOREACH contributions.bundles->select(b | not b.repo.location.oclIsUndefined()) AS bundle-»
+
+   <bundle 
+       repoLoc="«bundle.repo.location»plugins/«bundle.id»_«bundle.version».jar"
+       nameid="«bundle.id»_«bundle.version»"
+       repo="«bundle.repo.location»"
+       repoLabel="«bundle.repo.label»">
+     «bundle.id»
+    </bundle>
+
+«ENDFOREACH»
+ </bundles>
+«ENDDEFINE»
+
+«DEFINE contacts FOR build::Build»
+
+  <contacts>
+
+«FOREACH contributions AS contribution»
+«IF contribution.contacts->size() > 0»
+  <team team=«contribution.label»">
+«FOREACH contribution.contacts AS contact»
+  <contact name="«contact.name»" email="«contact.email.replace('@','-AT-')»" />
+«ENDFOREACH»
+  </team>
+«ENDIF»
+«ENDFOREACH»
+ </contacts>
+«ENDDEFINE»
+

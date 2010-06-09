@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.buckminster.ui.incrementalBuilderEditors">
+      <editor
+            builder="org.eclipse.buckminster.ant.AntBuilder"
+            class="org.eclipse.buckminster.ant.ui.internal.build.AntBuilderEditor"/>
+      <editor
+            builder="org.eclipse.buckminster.ant.StrictAntBuilder"
+            class="org.eclipse.buckminster.ant.ui.internal.build.AntBuilderEditor"/>
+    </extension>
+     <extension
+      point = "org.eclipse.ui.preferencePages">
+       <page
+             category="org.eclipse.buckminster.ui.prefs.BuckminsterPreferencePage"
+             class="org.eclipse.buckminster.ant.ui.prefs.AntPreferencePage"
+             id="org.eclipse.buckminster.ant.ui.prefs.AntPreferencePage"
+             name="%PreferencePage.name">
+       </page>
+   </extension>
+</plugin>

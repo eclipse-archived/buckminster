@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspecExtension xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0">
+<cs:groups>
+	<cs:public name="codegen.classpath">
+		<cs:attribute component="org.eclipse.buckminster.axis2" name="java.binaries"/>
+	</cs:public>
+</cs:groups>
+</cs:cspecExtension>

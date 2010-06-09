@@ -1,0 +1,16 @@
+This command creates/updates a manifest.
+
+usage: createmanifest
+       [{ -? | --help }]
+       [{ -a | --algorithm} <name>]
+       [{ -l | --assumedlineseparator} <symbcode_or_hexcode>]
+       [{ -d | --description} <text>]
+       [{ -i | --input} <filename>]
+       [{ -o | --output} <filename>]
+       <directory>
+       
+ -?
+--help
+  Show this help text
+
+TO BE WRITTEN

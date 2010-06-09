@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+     <extension
+         point="org.eclipse.buckminster.core.readerTypes">
+      <readerType
+            class="org.eclipse.buckminster.cvspkg.internal.CVSReaderType"
+            id="cvs"
+            teamRepositoryId="org.eclipse.team.cvs.core.cvsnature"/>
+   </extension>
+    <extension
+          point="org.eclipse.buckminster.core.forcedActivations">
+       <forcedActivation
+             class="org.eclipse.buckminster.cvspkg.CVSPlugin"
+             pluginId="org.eclipse.buckminster.cvs"/>
+    </extension>
+</plugin>

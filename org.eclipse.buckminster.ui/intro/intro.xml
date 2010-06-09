@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="orgeclipsebuckminsterui-introExtension" style="css/intro.css"
+  		name="Buckminster Extension" path="overview/@">
+		<group style-id="content-group" id="orgeclipsebuckminsterui-introLink-group">
+       		<link
+       			label="Buckminster" url="http://wiki.eclipse.org/index.php/Buckminster_Project"
+       			id="orgeclipsebuckminsterui-introLink" style-id="content-link">
+          		<text>
+          		Buckminster is a set of features for automating build, assemble, and deploy
+          		development processes in component-based development</text>
+       		</link>
+       	</group>
+  	</extensionContent>
+</introContent>

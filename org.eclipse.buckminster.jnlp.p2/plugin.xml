@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="distroProvider" name="Distro Provider" schema="schema/distroProvider.exsd"/>
+   <extension-point id="learnmore" name="Learn More" schema="schema/learnMore.exsd"/>
+   <extension-point id="componentInfo" name="Component INFO" schema="schema/componentInfo.exsd"/>
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.eclipse.buckminster.jnlp.p2.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.buckminster.jnlp.p2.application"
+            name="Buckminster Java Web Start P2 Installer">
+         <property
+               name="appName"
+               value="Buckminster Java Web Start P2 Installer">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="cssite.distroProvider"
+         name="CSSite Distro Provider"
+         point="org.eclipse.buckminster.jnlp.p2.distroProvider">
+      <distroProvider
+            class="org.eclipse.buckminster.jnlp.distroprovider.cloudsmith.DistroProvider"
+            id="org.eclipse.buckminster.jnlp.p2.distroprovider.cloudsmith.DistroProvider"/>
+   </extension>
+   <extension
+         id="cssite.componentInfo"
+         name="CSSite Component Info"
+         point="org.eclipse.buckminster.jnlp.p2.componentInfo">
+      <componentInfoProvider
+            class="org.eclipse.buckminster.jnlp.componentinfo.cloudsmith.ComponentInfoProvider"
+            id="org.eclipse.buckminster.jnlp.p2.componentinfo.cloudsmith.ComponentInfoProvider">
+      </componentInfoProvider>
+   </extension>   
+</plugin>

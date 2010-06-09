@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension point="org.eclipse.buckminster.core.actors">
+		<actor ID="buckminster.tag" class="org.eclipse.buckminster.team.TagTeamActor"
+			name="Buckminster Workspace Resolution Tagging" />
+	</extension>
+</plugin>

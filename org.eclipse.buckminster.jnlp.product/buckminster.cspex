@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cspecExtension
+	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
+
+	<artifacts>
+		<public name="feature.xml" path="feature.xml"/>
+	</artifacts>
+
+	<actions>
+		<public name="jnlp.installer" actor="ant">
+            <actorProperties>
+                <property key="buildFileId" value="buckminster.pdetasks"/>
+                <property key="targets" value="create.eclipse.jnlp.product"/>
+            </actorProperties>
+            <properties>
+                <property key="buckminster.eclipse.productFile" value="buckminster.jnlp.product"/>
+                <property key="buckminster.eclipse.deleteuilauncher" value="false"/>
+            </properties>
+			<prerequisites alias="action.requirements">
+				<attribute name="feature.exports"/>
+			</prerequisites>
+            <products alias="action.output" base="${buckminster.output}" upToDatePolicy="NOT_EMPTY">
+            	<path path="installer/"/>
+            </products>
+		</public>
+	</actions>
+</cspecExtension>

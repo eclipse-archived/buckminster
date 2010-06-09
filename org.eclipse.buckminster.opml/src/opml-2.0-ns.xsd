@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:opml="http://opml.org/spec2"
+	targetNamespace="http://opml.org/spec2" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+
+	<annotation>
+		<documentation>
+			This is the XML-Schema for the OPML 2.0 specification
+			intended for the cases when opml elements are included in
+			other schemas and therefore must belong to a namespace. A
+			copy of this schema that declares opml without use of
+			namespace can be found in the file opml-2.0.xsd
+		</documentation>
+	</annotation>
+
+	<complexType name="OPML">
+		<sequence>
+			<element name="head" type="opml:Head" minOccurs="1"
+				maxOccurs="1" />
+			<element name="body" type="opml:Body" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+		<attribute name="version" type="opml:Version" use="required" />
+	</complexType>
+
+	<complexType name="Body">
+		<sequence>
+			<element name="outline" type="opml:Outline" minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="Head">
+		<sequence>
+			<element name="title" type="string" minOccurs="0"
+				maxOccurs="1" />
+			<element name="dateCreated" type="opml:RFC822Date"
+				minOccurs="0" maxOccurs="1" />
+			<element name="dateModified" type="opml:RFC822Date"
+				minOccurs="0" maxOccurs="1" />
+			<element name="ownerName" type="string" minOccurs="0"
+				maxOccurs="1" />
+			<element name="ownerEmail" type="opml:EmailAddress"
+				minOccurs="0" maxOccurs="1" />
+			<element name="ownerId" type="anyURI" minOccurs="0"
+				maxOccurs="1" />
+			<element name="docs" type="anyURI" minOccurs="0"
+				maxOccurs="1" />
+			<element name="expansionState" type="string" minOccurs="0"
+				maxOccurs="1" />
+			<element name="vertScrollState" type="positiveInteger"
+				minOccurs="0" maxOccurs="1" />
+			<element name="windowTop" type="integer" minOccurs="0"
+				maxOccurs="1" />
+			<element name="windowLeft" type="integer" minOccurs="0"
+				maxOccurs="1" />
+			<element name="windowBottom" type="integer" minOccurs="0"
+				maxOccurs="1" />
+			<element name="windowRight" type="integer" minOccurs="0"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="Outline">
+		<sequence>
+			<element name="outline" type="opml:Outline" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="text" type="string" use="required" />
+		<attribute name="isComment" type="boolean" use="optional"
+			default="false" />
+		<attribute name="isBreakpoint" type="boolean" use="optional"
+			default="false" />
+		<attribute name="created" type="opml:RFC822Date" use="optional" />
+		<attribute name="category" type="string" use="optional" />
+		<attribute name="description" type="string" use="optional" />
+		<attribute name="url" type="anyURI" use="optional" />
+		<attribute name="htmlUrl" type="anyURI" use="optional" />
+		<attribute name="xmlUrl" type="anyURI" use="optional" />
+		<attribute name="title" type="string" use="optional" />
+		<attribute name="version" type="string" use="optional" />
+		<attribute name="language" type="opml:Language" use="optional" />
+		<attribute name="type" type="string" use="optional" />
+	</complexType>
+
+	<simpleType name="RFC822Date">
+		<restriction base="string">
+			<pattern
+				value="((Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*)?\d\d?\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d\d(\d\d)?\s+\d\d:\d\d(:\d\d)?\s+([+\-]?\d\d\d\d|[A-Z]{2,3})" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="EmailAddress">
+		<restriction base="string">
+			<pattern
+				value="[a-zA-Z0-9_\-][a-zA-Z0-9_.\-]*@[a-zA-Z0-9_\-][a-zA-Z0-9_.\-]*" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="Language">
+		<union memberTypes="language opml:Unknown" />
+	</simpleType>
+
+	<simpleType name="Unknown">
+		<restriction base="string">
+			<enumeration value="unknown" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="Version">
+		<restriction base="string">
+			<enumeration value="1.0" />
+			<enumeration value="2.0" />
+		</restriction>
+	</simpleType>
+</schema>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.buckminster.core.readerTypes">
+		<readerType
+        class="org.eclipse.buckminster.subclipse.internal.SvnReaderType"
+        id="svn"
+        teamRepositoryId="org.tigris.subversion.subclipse.core.svnnature"/>
+	</extension>	
+</plugin>

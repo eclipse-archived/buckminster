@@ -1,0 +1,76 @@
+<project>
+	<import file="${buckminster.pdetasks}"/>
+
+	 <pathconvert property="equinox.launcher.jar">
+	   <first count="1">
+	     <sort>
+	       <fileset dir="${eclipse.home}/plugins" includes="**/org.eclipse.equinox.launcher_*.jar"/>
+	       <reverse xmlns="antlib:org.apache.tools.ant.types.resources.comparators">
+	         <date/>
+	       </reverse>
+	     </sort>
+	   </first>
+	 </pathconvert>
+
+	<target name="create.product">
+		<property name="targetPlatformPath" value=""/>
+		<buckminster.contextProperty name="targetPlatformPath"/>
+		<fail message="The property 'targetPlatformPath' must be set in order to do create the product">
+			<condition>
+				<length string="${targetPlatformPath}" when="equal" length="0"/>
+			</condition>
+		</fail>
+
+		<property name="destination" location="${sp:destination}"/>
+		<makeurl property="repository" file="${sp:repository}"/>
+		<mkdir dir="${destination}"/>
+
+		<echo message="${equinox.launcher.jar}"/>
+		<echo message="${repository}"/>
+		<echo message="${destination}"/>
+		<java jar="${equinox.launcher.jar}" fork="true" failonerror="true" >
+			<arg value="-application"/>
+			<arg value="org.eclipse.equinox.p2.director"/>
+			<arg value="-r"/>
+			<arg value="file:${repository}"/>
+			<arg value="-d"/>
+			<arg value="${destination}"/>
+			<arg value="-p"/>
+			<arg value="${profile}"/>
+			<arg value="-i"/>
+			<arg value="${iu}"/>
+			<!-- jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/ -->
+		</java>
+
+		<!-- Overwrite the generated configuration file -->
+		<copy file="${buckminster.home}/config.ini" todir="${destination}/configuration" overwrite="true"/>
+
+		<!-- Copy needed platform specific fragments -->
+		<copy todir="${destination}/plugins">
+			<fileset dir="${targetPlatformPath}/plugins" excludes="*.source_*.jar">
+				<include name="org.eclipse.equinox.launcher.*/**"/>
+				<include name="org.eclipse.core.net.*.jar"/>
+				<include name="org.eclipse.equinox.security.win32.*.jar"/>
+				<include name="org.eclipse.equinox.security.macosx.*.jar"/>
+			</fileset>
+		</copy>
+
+		<!-- This app can do without the P2 profile and cache -->
+		<delete dir="${destination}/p2"/>
+	</target>
+
+	<target name="create.product.zip">
+		<extractFeatureVersion file="${sp:manifest}" property="product.version"/>
+		<extractFeatureId file="${sp:manifest}" property="product.name"/>
+		<dirname file="${sp:product.dir}" property="product.parent.dir"/>
+		<basename file="${sp:product.dir}" property="relative.product.dir"/>
+		<mkdir dir="${sp:action.output}"/>
+		<exec dir="${product.parent.dir}" executable="zip" outputproperty="zip.output" failonerror="true">
+			<arg value="-r"/>
+			<arg value="-9"/>
+			<arg value="${sp:action.output}${product.name}_${product.version}.zip"/>
+			<arg value="${relative.product.dir}"/>
+		</exec>
+		<echo message="${zip.output}"/>
+	</target>
+</project>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cspecExtension
+	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
+
+	<actions>
+		<public name="create.product" actor="ant">
+            <actorProperties>
+                <property key="buildFile" value="product.ant"/>
+                <property key="targets" value="create.product"/>
+            </actorProperties>
+            <properties>
+                <property key="profile" value="Director"/>
+                <property key="iu" value="org.eclipse.equinox.p2.director.product"/>
+            </properties>
+			<prerequisites alias="repository">
+				<attribute name="site.p2"/>
+			</prerequisites>
+            <products alias="destination" base="${buckminster.output}" upToDatePolicy="NOT_EMPTY">
+            	<path path="director/"/>
+            </products>
+		</public>
+		<public name="create.product.zip" actor="ant">
+            <actorProperties>
+                <property key="buildFile" value="product.ant"/>
+                <property key="targets" value="create.product.zip"/>
+            </actorProperties>
+			<prerequisites>
+				<attribute name="create.product" alias="product.dir"/>
+				<attribute name="manifest" alias="manifest"/>
+			</prerequisites>
+            <products alias="action.output" base="${buckminster.output}" upToDatePolicy="COUNT" fileCount="1">
+            	<path path="director.zip/"/>
+            </products>
+		</public>
+	</actions>
+</cspecExtension>

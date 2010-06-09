@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension-point
+		id="buildScripts"
+		name="%BuildScripts"
+		schema="schema/buildScripts.exsd" />
+	<extension
+		id="AntBuilder"
+		name="%AntBuilder"
+		point="org.eclipse.core.resources.builders">
+		<builder isConfigurable="true">
+			<run class="org.eclipse.buckminster.ant.internal.build.AntBuilder" />
+		</builder>
+	</extension>
+	<extension point="org.eclipse.ant.core.extraClasspathEntries">
+		<extraClasspathEntry library="ant_tasks/ant_tasks.jar" />
+	</extension>
+	<extension point="org.eclipse.buckminster.core.actors">
+		<actor
+			ID="ant"
+			class="org.eclipse.buckminster.ant.actor.AntActor"
+			name="Ant Actor" />
+	</extension>
+	<extension point="org.eclipse.ant.core.antTasks">
+		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.contextProperty"
+			class="org.eclipse.buckminster.ant.taskdefs.ContextProperty" />
+		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.bind"
+			class="org.eclipse.buckminster.ant.taskdefs.WorkspaceBind" />
+		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.perform"
+			class="org.eclipse.buckminster.ant.taskdefs.Perform" />
+		<antTask
+			class="org.eclipse.buckminster.ant.taskdefs.Copy"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.copy" />
+		<antTask
+			class="org.eclipse.buckminster.ant.taskdefs.Delete"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.delete" />
+		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.importResource"
+			class="org.eclipse.buckminster.ant.taskdefs.ImportResource" />
+		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.lastTimestamp"
+			class="org.eclipse.buckminster.ant.taskdefs.LastTimestamp" />
+		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.lastRevision"
+			class="org.eclipse.buckminster.ant.taskdefs.LastRevision" />
+		<antTask
+			class="org.eclipse.buckminster.ant.taskdefs.Jar"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.jar" />
+		<antTask
+			class="org.eclipse.buckminster.ant.taskdefs.MultiChmod"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.multichmod" />
+		<antTask
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.substitute"
+			class="org.eclipse.buckminster.ant.taskdefs.Substitute" />
+		<antTask
+			class="org.eclipse.buckminster.ant.taskdefs.Zip"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.zip" />
+		<antTask
+			class="org.eclipse.buckminster.ant.taskdefs.ExecuteOn"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.apply" />
+		<antTask
+			class="org.eclipse.buckminster.ant.taskdefs.VersionQualifier"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.versionQualifier" />
+		<antTask
+			class="org.eclipse.buckminster.ant.taskdefs.SignatureCleaner"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.signatureCleaner" />
+  <antTask
+        class="org.eclipse.buckminster.ant.taskdefs.PackageNames"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.packages"/>
+  <antTask
+        class="org.eclipse.buckminster.ant.taskdefs.ResourceLocation"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.resourceLocation"/>
+  <antTask
+        class="org.eclipse.buckminster.ant.taskdefs.ComponentVersion"
+        library="ant_tasks/ant_tasks.jar"
+        name="buckminster.componentVersion"/>
+	</extension>
+	<extension point="org.eclipse.ant.core.antTypes">
+		<antType
+			class="org.eclipse.buckminster.ant.types.FileSetGroup"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.filesetgroup" />
+		<antType
+			class="org.eclipse.buckminster.ant.types.ValueFileSet"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.valuefileset" />
+		<antType
+			class="org.eclipse.buckminster.ant.types.ValuePath"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.valuepath" />
+		<antType
+			class="org.eclipse.buckminster.ant.types.Path"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.path" />
+		<antType
+			class="org.eclipse.buckminster.ant.taskdefs.condition.AntCallSuccess"
+			library="ant_tasks/ant_tasks.jar"
+			name="buckminster.antcallsuccess">
+		</antType>
+	</extension>
+ <extension
+       point="org.eclipse.buckminster.download.expanders">
+    <expander
+          class="org.eclipse.buckminster.ant.materializer.TarExpander"
+          suffixes=".tar">
+    </expander>
+    <expander
+          class="org.eclipse.buckminster.ant.materializer.TGZExpander"
+          suffixes=".tgz,.tar.gz">
+    </expander>
+    <expander
+          class="org.eclipse.buckminster.ant.materializer.TBZ2Expander"
+          suffixes=".tar.bz2,.tbz2,.tb2,.tbz">
+    </expander>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.download.decompressors">
+    <decompressor
+          class="org.eclipse.buckminster.ant.materializer.BZip2Decompressor"
+          suffixes=".bz2">
+    </decompressor>
+ </extension>
+</plugin>

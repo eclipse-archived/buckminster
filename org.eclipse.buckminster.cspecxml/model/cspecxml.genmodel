@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.cspecxml/src"
+    modelPluginID="org.eclipse.buckminster.cspecxml" modelName="CSpecXML" importerID="org.eclipse.xsd.ecore.importer"
+    complianceLevel="6.0" copyrightFields="false" usedGenPackages="platform:/plugin/org.eclipse.buckminster.model.common/model/common.genmodel#//common platform:/plugin/org.eclipse.emf.ecore/model/XMLNamespace.genmodel#//namespace"
+    interfaceNamePattern="I{0}">
+  <foreignModel>../../org.eclipse.buckminster.core/src/xsd/common-1.0.xsd</foreignModel>
+  <foreignModel>../../org.eclipse.buckminster.core/src/xsd/cspec-1.0.xsd</foreignModel>
+  <genPackages prefix="CSpecXML" basePackage="org.eclipse.buckminster" resource="XML"
+      disposableProviderFactory="true" ecorePackage="cspecxml.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="cspecxml.ecore#//UpToDatePolicy">
+      <genEnumLiterals ecoreEnumLiteral="cspecxml.ecore#//UpToDatePolicy/DEFAULT"/>
+      <genEnumLiterals ecoreEnumLiteral="cspecxml.ecore#//UpToDatePolicy/ACTOR"/>
+      <genEnumLiterals ecoreEnumLiteral="cspecxml.ecore#//UpToDatePolicy/COUNT"/>
+      <genEnumLiterals ecoreEnumLiteral="cspecxml.ecore#//UpToDatePolicy/MAPPER"/>
+      <genEnumLiterals ecoreEnumLiteral="cspecxml.ecore#//UpToDatePolicy/NOTEMPTY"/>
+    </genEnums>
+    <genDataTypes ecoreDataType="cspecxml.ecore#//UpToDatePolicyObject"/>
+    <genClasses ecoreClass="cspecxml.ecore#//Action">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Action/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Action/definitions"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Action/installerHints"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Action/actorProperties"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Action/properties"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Action/prerequisites"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Action/products"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Action/actor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Action/always"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Action/assignConsoleSupport"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Action/enabled"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Action/filter"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//ActionArtifact">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ActionArtifact/alias"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//ActionsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ActionsType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ActionsType/public"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ActionsType/private"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterAction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterAction/group1"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterAction/alterInstallerHints"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterAction/alterPrerequisites"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterAction/alterActorProperties"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterAction/alterProperties"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterAction/alterProducts"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterActionsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterActionsType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterActionsType/public"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterActionsType/private"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterActionsType/remove"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterActionsType/rename"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterArtifact">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterArtifact/group1"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterArtifact/alterInstallerHints"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterArtifact/removePath"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterArtifactsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterArtifactsType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterArtifactsType/public"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterArtifactsType/private"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterArtifactsType/remove"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterArtifactsType/rename"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterDependenciesType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterDependenciesType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterDependenciesType/dependency"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterDependenciesType/remove"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterGroup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterGroup/group1"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterGroup/alterInstallerHints"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterGroup/alterAttribute"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterGroup/remove"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterGroupsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterGroupsType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterGroupsType/public"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterGroupsType/private"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterGroupsType/remove"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterGroupsType/rename"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterPrerequisites">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterPrerequisites/group1"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterPrerequisites/alterAttribute"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterPrerequisites/remove"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterProductsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterProductsType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterProductsType/public"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterProductsType/private"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterProductsType/removeProduct"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterProductsType/removePath"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//AlterProperties">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//AlterProperties/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterProperties/property"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//AlterProperties/remove"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Artifact">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Artifact/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Artifact/definitions"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Artifact/installerHints"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Artifact/path"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Artifact/base"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Artifact/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Artifact/path1"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Artifact/type"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//ArtifactsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ArtifactsType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ArtifactsType/public"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ArtifactsType/private"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Attribute">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//Attribute/documentation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//Attribute/parameter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Attribute/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Attribute/version"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//ComponentRequest">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//ComponentRequest/import"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentRequest/componentType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentRequest/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentRequest/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentRequest/versionDesignator"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentRequest/versionType"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//ComponentSpec">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentSpec/name"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//ComponentSpecBase">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//ComponentSpecBase/documentation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentSpecBase/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ComponentSpecBase/dependencies"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ComponentSpecBase/generators"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ComponentSpecBase/artifacts"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ComponentSpecBase/groups"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ComponentSpecBase/actions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentSpecBase/category"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentSpecBase/componentType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentSpecBase/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentSpecBase/projectInfo"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentSpecBase/shortDesc"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentSpecBase/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ComponentSpecBase/versionType"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//CSpecExtension">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//CSpecExtension/group1"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//CSpecExtension/alterActions"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//CSpecExtension/alterArtifacts"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//CSpecExtension/alterDependencies"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//CSpecExtension/alterGroups"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Definitions">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//Definitions/define"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//DependenciesType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//DependenciesType/dependency"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//DocumentRoot/cspec"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//DocumentRoot/cspecExtension"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Generator">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Generator/attribute"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Generator/component"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Generator/generates"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Generator/generatesType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Generator/generatesVersion"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//GeneratorsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//GeneratorsType/generator"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Group">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Group/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Group/definitions"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Group/installerHints"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Group/attribute"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Group/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Group/rebase"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//GroupsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//GroupsType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//GroupsType/public"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//GroupsType/private"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Import">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Import/attribute"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Import/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Import/versionDesignator"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//ParameterType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ParameterType/mandatory"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ParameterType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ParameterType/value"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Path">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Path/path"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Prerequisite">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisite/alias"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisite/component"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisite/componentType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisite/contributor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisite/excludePattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisite/filter"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisite/includePattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisite/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisite/optional"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Prerequisites">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//Prerequisites/documentation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisites/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Prerequisites/installerHints"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//Prerequisites/attribute"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisites/alias"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Prerequisites/rebase"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//ProductsType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ProductsType/group"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ProductsType/path"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ProductsType/public"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference cspecxml.ecore#//ProductsType/private"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ProductsType/alias"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ProductsType/base"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ProductsType/fileCount"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ProductsType/pattern"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ProductsType/replacement"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//ProductsType/upToDatePolicy"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Properties">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference cspecxml.ecore#//Properties/property"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Remove">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Remove/name"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//RemovePath">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//RemovePath/path"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//RemoveProperty">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//RemoveProperty/key"/>
+    </genClasses>
+    <genClasses ecoreClass="cspecxml.ecore#//Rename">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Rename/newName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute cspecxml.ecore#//Rename/oldName"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

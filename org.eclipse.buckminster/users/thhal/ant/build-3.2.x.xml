@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project name="project" default="default">
+	<import file="macros.xml"/>
+
+	<property name="versionSelector" value="3.2.x/"/>
+	<property name="workspace" location="/workspaces/Buck-3.2.x"/>
+
+	<target name="list.timestamps">
+		<listPluginTimestamp component="org.eclipse.buckminster.ant"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.cmdline" versionSelector="3.2.x/"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.core"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.cvs"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.installer"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.jdt"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.jnlp" versionSelector="3.2.x/"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.maven"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.p4"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.pde" versionSelector="3.2.x/"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.runtime"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.sax"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.svn"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.ui" versionSelector="3.2.x/"/>
+
+		<listFeatureTimestamp component="org.eclipse.buckminster.core.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.core.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.cvs.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.cvs.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.jnlp.product" versionSelector="3.2.x/"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.maven.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.p4.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.p4.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.pde.feature" versionSelector="3.2.x/"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.pde.headless.feature" versionSelector="3.2.x/"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.product" versionSelector="3.2.x/"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.svn.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.svn.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.update" versionSelector="3.2.x/"/>
+	</target>
+
+	<target name="default" depends="list.timestamps"/>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: depends                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="depends">
+    </target>
+
+</project>

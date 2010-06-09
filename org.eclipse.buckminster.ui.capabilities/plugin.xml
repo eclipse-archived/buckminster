@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension
+       point="org.eclipse.ui.activities">
+    <!-- Buckminster elements, defined using general pattern -->
+    <activity
+    	  description="%activity.buckminster.desc"
+          id="org.eclipse.buckminster.activity"
+          name="%activity.buckminster">
+    </activity>
+    <activityPatternBinding
+          activityId="org.eclipse.buckminster.activity"
+          pattern="org\.eclipse\.buckminster\..*/.*">
+    </activityPatternBinding>
+	<categoryActivityBinding activityId="org.eclipse.buckminster.activity"
+		categoryId="org.eclipse.galileo.abd.Category">
+	</categoryActivityBinding>
+	</extension>
+</plugin>

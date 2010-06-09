@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.buckminster.remote.providers">
+      <provider
+            ID="cloudsmith"
+            hostname="rmap.cloudsmith.com"
+            initializationPath="/json-rpc-bridge/resolutionService"
+            loginSupport="true"
+            name="Cloudsmith"
+            protocol="http"
+            port="80"
+            servicePath="/json-rpc/resolutionService">
+      </provider>
+      <provider
+            ID="cloudsmith.test"
+            hostname="test.cloudsmith.com"
+            initializationPath="/json-rpc-bridge/resolutionService"
+            loginSupport="true"
+            name="Cloudsmith Test"
+            protocol="http"
+            port="80"
+            servicePath="/json-rpc/resolutionService">
+      </provider>
+      <provider
+            ID="cloudsmith.local"
+            hostname="localhost"
+            initializationPath="/json-rpc-bridge/resolutionService"
+            loginSupport="true"
+            name="Cloudsmith Local"
+            protocol="http"
+            port="8080"
+            servicePath="/json-rpc/resolutionService">
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.buckminster.core.queryResolvers">
+      <queryResolver id="cloudsmith">
+         <factory class="org.eclipse.buckminster.remote.resolver.jsonrpc.RemoteResolverFactory">
+            <parameter
+                  name="provider"
+                  value="cloudsmith"/>
+         </factory>
+      </queryResolver>
+      <queryResolver id="cloudsmith.test">
+         <factory class="org.eclipse.buckminster.remote.resolver.jsonrpc.RemoteResolverFactory">
+            <parameter
+                  name="provider"
+                  value="cloudsmith.test"/>
+         </factory>
+      </queryResolver>
+      <queryResolver
+            id="cloudsmith.local">
+         <factory class="org.eclipse.buckminster.remote.resolver.jsonrpc.RemoteResolverFactory">
+            <parameter
+                  name="provider"
+                  value="cloudsmith.local"/>
+         </factory>
+      </queryResolver>
+   </extension>
+</plugin>

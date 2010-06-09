@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MacOS X specific headless jdt.launching fragment
+Bundle-SymbolicName: org.eclipse.buckminster.jdt.launching.macosx;singleton:=true
+Bundle-Activator: org.eclipse.buckminster.jdt.launching.macosx.MacOSXLaunchingPlugin
+Eclipse-PlatformFilter: (osgi.os=macosx)
+Bundle-Vendor: Cloudsmith Inc.
+Require-Bundle: org.eclipse.core.resources,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.debug,
+ org.eclipse.core.runtime,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.launching
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.0.350.qualifier
+Eclipse-LazyStart: true

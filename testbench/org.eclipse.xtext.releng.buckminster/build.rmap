@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:psf="http://www.eclipse.org/buckminster/PSFProvider-1.0"
+	xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+
+	<rm:property key="cvs.repository" mutable="true" value=":pserver:anonymous@dev.eclipse.org:/cvsroot/modeling"/>
+	<rm:property key="eclipse.downloads" mutable="true" value="http://download.eclipse.org"/>
+	<rm:property key="build.type" mutable="true" value="N"/>
+
+	<rm:locator pattern="^org\.eclipse\.xtext\.releng\.buckminster$" searchPathRef="xtext.releng"/>
+	<rm:locator pattern="^org\.eclipse\.xtext\.site$" searchPathRef="xtext.releng"/>
+	<rm:locator pattern="^org\.eclipse\.xtext\.xtext\.ui\.examples$" searchPathRef="xtext.xtext.ui.examples"/>
+	<rm:locator pattern="^org\.eclipse\.xtext(\..+)?\.example.*$" searchPathRef="xtext.examples"/>
+	<rm:locator pattern="^org\.eclipse\.xtext(\..+)?\.tests$" searchPathRef="xtext.tests"/>
+	<rm:locator pattern="^org\.eclipse\.xtext(\..+)?$" searchPathRef="xtext.featuresAndPlugins"/>
+	<rm:locator pattern="^org\.eclipse\.test$" searchPathRef="eclipse.test"/>
+	<rm:locator pattern="^org\.eclipse\.ant\.optional\.junit" searchPathRef="eclipse.test"/>
+	<rm:locator searchPathRef="modeling.milestones" failOnError="false"/>
+	<rm:locator searchPathRef="helios.staging" failOnError="false"/>
+	<rm:locator searchPathRef="platform.milestones" failOnError="false"/>
+	<rm:locator searchPathRef="orbit"/>
+
+	<rm:searchPath name="xtext.examples">
+		<rm:provider componentTypes="osgi.bundle" readerType="cvs">
+			<rm:uri format="{0},org.eclipse.tmf/org.eclipse.xtext/examples/org.eclipse.xtext.xtext.ui.examples/contents/{1}">
+				<bc:propertyRef key="cvs.repository"/>
+				<bc:propertyRef key="buckminster.component"/>
+			</rm:uri>
+		</rm:provider>
+		<rm:provider componentTypes="eclipse.feature" readerType="cvs">
+			<rm:uri format="{0},org.eclipse.tmf/org.eclipse.xtext/features/{1}.feature">
+				<bc:propertyRef key="cvs.repository"/>
+				<bc:propertyRef key="buckminster.component"/>
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="xtext.xtext.ui.examples">
+		<rm:provider componentTypes="osgi.bundle" readerType="cvs">
+			<rm:uri format="{0},org.eclipse.tmf/org.eclipse.xtext/examples/org.eclipse.xtext.xtext.ui.examples">
+				<bc:propertyRef key="cvs.repository"/>
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="xtext.tests">
+		<rm:provider componentTypes="osgi.bundle" readerType="cvs">
+			<rm:uri format="{0},org.eclipse.tmf/org.eclipse.xtext/tests/{1}">
+				<bc:propertyRef key="cvs.repository"/>
+				<bc:propertyRef key="buckminster.component"/>
+			</rm:uri>
+		</rm:provider>
+		<rm:provider componentTypes="eclipse.feature" readerType="cvs">
+			<rm:uri format="{0},org.eclipse.tmf/org.eclipse.xtext/features/{1}.feature">
+				<bc:propertyRef key="cvs.repository"/>
+				<bc:propertyRef key="buckminster.component"/>
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="xtext.featuresAndPlugins">
+		<rm:provider componentTypes="osgi.bundle" readerType="cvs">
+			<rm:uri format="{0},org.eclipse.tmf/org.eclipse.xtext/plugins/{1}">
+				<bc:propertyRef key="cvs.repository"/>
+				<bc:propertyRef key="buckminster.component"/>
+			</rm:uri>
+		</rm:provider>
+		<rm:provider componentTypes="eclipse.feature" readerType="cvs">
+			<rm:uri format="{0},org.eclipse.tmf/org.eclipse.xtext/features/{1}.feature">
+				<bc:propertyRef key="cvs.repository"/>
+				<bc:propertyRef key="buckminster.component"/>
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="xtext.releng">
+      <rm:provider componentTypes="buckminster,eclipse.feature" readerType="svn" resolutionFilter="">
+        <rm:uri format="http://dev.eclipse.org/svnroot/tools/org.eclipse.buckminster/trunk/testbench/{0}">
+          <bc:propertyRef key="buckminster.component"/>
+        </rm:uri>
+      </rm:provider>
+	</rm:searchPath>
+	
+	<rm:searchPath name="eclipse.test">
+		<rm:provider componentTypes="osgi.bundle" readerType="cvs">
+			<rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,{0}">
+				<bc:propertyRef key="buckminster.component"/>
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="orbit">
+		<rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false"
+			resolutionFilter="(build.type=N)">
+			<rm:uri format="{0}/tools/orbit/downloads/drops/S20100308015149/updateSite">
+				<bc:propertyRef key="eclipse.downloads"/>
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="modeling.milestones">
+		<rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false"
+			resolutionFilter="(build.type=N)">
+			<rm:uri format="{0}/modeling/emf/teneo/updates/1.2.0/milestones">
+				<bc:propertyRef key="eclipse.downloads"/>
+			</rm:uri>
+		</rm:provider>
+		<rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false"
+			resolutionFilter="(build.type=N)">
+			<rm:uri format="{0}/modeling/emf/updates/milestones">
+				<bc:propertyRef key="eclipse.downloads"/>
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="helios.staging">
+		<rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false"
+			resolutionFilter="(build.type=N)">
+			<rm:uri format="{0}/releases/staging">
+				<bc:propertyRef key="eclipse.downloads"/>
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+
+	<rm:searchPath name="platform.milestones">
+		<rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false"
+			resolutionFilter="(build.type=N)">
+			<rm:uri format="{0}/eclipse/updates/3.6milestones">
+				<bc:propertyRef key="eclipse.downloads"/>
+			</rm:uri>
+		</rm:provider>
+	</rm:searchPath>
+</rm:rmap>

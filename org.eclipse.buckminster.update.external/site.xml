@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site
+      mirrorsURL="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates&amp;format=xml"
+      pack200="true">
+   <description url="http://download.eclipse.org/tools/buckminster/updates">
+      The update site for Buckminster
+   </description>
+   <category-def name="subclipse" label="Headless Subclipse SVN integration"/>
+   <category-def name="subversive" label="Headless Subversive SVN integration"/>
+</site>

@@ -1,0 +1,258 @@
+<project name="Buckminster" default="build" basedir=".">
+
+  <property file="build.properties"/>
+
+  <macrodef name="buckminster">
+    <attribute name="command" default="--help"/>
+    <element name="args" optional="true"/>
+    <sequential>
+      <java fork="true" jar="${buckminster.launcher.jar}" failonerror="true">
+        <arg value="-data"/>
+        <arg value="${buckminster.workspace}"/>
+        <arg value="--displaystacktrace"/>
+        <arg value="--loglevel"/>
+        <arg value="${buckminster.log.level}"/>
+        <arg value="@{command}"/>
+        <args/>
+      </java>
+    </sequential>
+  </macrodef>
+
+
+  <target name="init">
+    <mkdir dir="${working.directory}"/>
+    <mkdir dir="${build.directory}"/>
+    <mkdir dir="${downloads.directory}"/>
+    <available file="${buckminster.file.fullname}" property="buckminster.download.unnecessary" />
+    <uptodate targetfile="${build.directory}/buckminster" srcfile="${buckminster.file.fullname}" property="unzip.unnecessary"/>
+    <available file="${build.directory}/buckminster/features/org.eclipse.buckminster.core.headless.feature_${buckminster.version}"
+               property="core.headless.unnecessary" />
+    <available file="${build.directory}/buckminster/features/org.eclipse.buckminster.pde.headless.feature_${buckminster.version}"
+               property="pde.headless.unnecessary" />
+    <available file="${build.directory}/buckminster/features/org.eclipse.buckminster.subversive.headless.feature_${buckminster.version}"
+               property="subversive.headless.unnecessary" />
+
+
+
+
+    <!-- Set up the correct window environment -->
+    <condition property="pde.target.ws" value="gtk">
+      <or>
+	<os name="Linux"/>
+	<os name="SunOS"/>
+     </or>
+    </condition>
+    <condition property="pde.target.ws" value="win32">
+      <or>
+	<os name="Windows Vista"/>
+	<os name="Windows"/>
+      </or>
+    </condition>
+
+    <!-- Next figure out what the archicture that we are running on is -->
+    <condition property="pde.target.arch" value="x86">
+      <os arch="x86"/>
+    </condition>
+    <condition property="pde.target.arch" value="x86_64">
+     <or>
+      <os arch="x86_64"/>
+      <os arch="amd64"/>
+     </or>
+    </condition>
+    
+    <!-- finally, the OS -->
+    <condition property="pde.target.os" value="linux">
+      <os name="Linux"/>
+    </condition>
+    <condition property="pde.target.os" value="solaris">
+      <os name="SunOS"/>
+    </condition>
+    <condition property="pde.target.os" value="win32">
+      <or>
+	<os name="Windows Vista"/>
+	<os name="Windows"/>
+      </or>
+    </condition>
+
+    <condition property="use.unzip" value="true">
+      <or>
+        <os family="windows"/>
+	<os name="SunOS"/>
+      </or>
+    </condition>
+    <condition property="use.gzip" value="true">
+      <and>
+        <os family="unix" />
+        <not>
+          <isset property="use.unzip" />
+        </not>
+      </and>
+    </condition>
+
+    <condition property="plat.download" value="${eclipse.download.start.url}-${pde.target.os}-${pde.target.ws}.tar.gz${eclipse.download.end}">
+      <isset property="use.gzip" />
+    </condition>
+    <condition property="plat.download" value="${eclipse.download.start.url}-${pde.target.os}-${pde.target.ws}.zip${eclipse.download.end}">
+      <and>
+        <isset property="use.unzip" />
+        <os name="SunOS" />
+      </and>
+    </condition>
+    <condition property="plat.download" value="${eclipse.download.start.url}-${pde.target.os}.zip${eclipse.download.end}">
+      <and>
+        <isset property="use.unzip" />
+        <not>
+          <os name="SunOS" />
+        </not>
+      </and>
+    </condition>
+
+
+    <condition property="plat.download.file" value="${eclipse.download.file.start}-${pde.target.os}-${pde.target.ws}.tar.gz">
+      <isset property="use.gzip" />
+    </condition>
+    <condition property="plat.download.file" value="${eclipse.download.file.start}-${pde.target.os}-${pde.target.ws}.zip">
+      <isset property="use.unzip" />
+    </condition>
+
+    <available file="${downloads.directory}/${plat.download.file}" property="plat.download.unnecessary" />
+
+  </target>
+
+  <target name="extract.platform" depends="plat.unzip, plat.gzip">
+     <get src="${delta.pack.download.url}" dest="${downloads.directory}/eclipse-3.4-delta-pack.zip" verbose="true" usetimestamp="true"/>
+     <unzip src="${downloads.directory}/eclipse-3.4-delta-pack.zip" dest="${build.directory}/platform"/>
+     <move todir="${build.directory}/buckminster/plugins">
+       <fileset dir="${build.directory}/platform/eclipse/plugins">
+          <include name="**/*"/>
+       </fileset>
+     </move>
+
+
+  </target>
+
+  <target name="plat.unzip" if="use.unzip">
+    <unzip src="${downloads.directory}/${plat.download.file}" dest="${build.directory}/platform"/>
+  </target>
+
+  <target name="plat.gzip" if="use.gzip">
+    <gunzip src="${downloads.directory}/${plat.download.file}" dest="${downloads.directory}/eclipse.tar"/>
+    <untar src="${downloads.directory}/eclipse.tar" dest="${build.directory}/platform"/>
+    <delete file="${downloads.directory}/eclipse.tar" failonerror="false"/>
+  </target>
+
+   <target name="clean">
+     <echo message="Cleaning previous builds"/>
+     <delete failonerror="false" dir="${build.directory}"/>
+   </target>
+
+
+  <!-- Buckminster setup stuff from here down -->
+  <target name="buckminster.download" unless="buckminster.download.unnecessary" >
+    <echo message="Downloading Buckminster headless package to bootstrap build sequence"/>
+    <get src="${buckminster.download.url}" dest="${buckminster.file.fullname}" verbose="true" usetimestamp="true"/>
+
+  </target>
+
+  <target name="download.platform" unless="plat.download.unnecessary">
+    <echo message="Downloading required platform"/>
+    <get src="${plat.download}" dest="${downloads.directory}/${plat.download.file}" verbose="true" usetimestamp="true"/>
+  </target>
+
+  <target name="buckminster.unzip" depends="buckminster.download" unless="unzip.unnecessary" >
+    <echo message="Unzipping Buckminster headless package"/>
+    <unzip src="${buckminster.file.fullname}" dest="${build.directory}"/>
+
+  </target>
+
+  
+  <target name="buckminster.core.headless" unless="core.headless.unnecessary">
+    <echo message=".... setting up Core headless feature"/>
+    <buckminster command="org.eclipse.buckminster.installer.install">
+      <args>
+	<arg value="${buckminster.headless.site}"/>
+	<arg value="org.eclipse.buckminster.core.headless.feature"/>
+      </args>
+    </buckminster>
+  </target>
+
+  <target name="buckminster.pde.headless" unless="pde.headless.unnecessary">
+    <echo message=".... setting up PDE headless feature"/>
+    <buckminster command="org.eclipse.buckminster.installer.install">
+      <args>
+	<arg value="${buckminster.headless.site}"/>
+	<arg value="org.eclipse.buckminster.pde.headless.feature"/>
+      </args>
+    </buckminster>
+  </target>
+
+    <target name="buckminster.maven.headless" unless="pde.headless.unnecessary">
+    <echo message=".... setting up Maven headless feature"/>
+    <buckminster command="org.eclipse.buckminster.installer.install">
+      <args>
+	<arg value="${buckminster.headless.site}"/>
+	<arg value="org.eclipse.buckminster.maven.feature"/>
+      </args>
+    </buckminster>
+  </target>
+
+  <target name="buckminster.subversive.headless" unless="subversive.headless.unnecessary">
+    <echo message=".... setting up Subversive headless feature"/>
+    <buckminster command="org.eclipse.buckminster.installer.install">
+      <args>
+	<arg value="${cloudsmith.headless.site}"/>
+	<arg value="org.eclipse.buckminster.subversive.headless.feature"/>
+      </args>
+    </buckminster>
+  </target>
+
+  <target name="buckminster.headless.setup" depends="buckminster.unzip, buckminster.core.headless, buckminster.pde.headless, buckminster.maven.headless, buckminster.subversive.headless" />
+  
+  <target name="buckminster.setup.preference">
+    <echo message=".... setup preference for target platform"/>
+    <buckminster command="org.eclipse.buckminster.core.prefs.setpreference">
+      <args>
+	<arg value="org.eclipse.buckminster.jdt.complianceLevel=${jdt.compliance.level}"/>
+      </args>
+    </buckminster>
+
+  </target>
+
+
+  <target name="buckminster.resolve">
+    <echo message="Resolving buckminster components..."/>
+    <buckminster command="org.eclipse.buckminster.core.resolve">
+      <args>
+	<arg value="${buckminster_build.cquery.file}"/>
+      </args>
+    </buckminster>
+  </target>
+
+  <target name="buckminster.build">
+    <echo message="Building Buckminster"/>
+    <buckminster command="org.eclipse.buckminster.core.build"/>
+  </target>
+
+
+   <target name="build" depends="init, buckminster.headless.setup, buckminster.setup.preference, download.platform, extract.platform, buckminster.resolve, buckminster.build"/>
+   <target name="clean.build" depends="clean, build"/>
+
+
+
+  <target name="buckminster.build.site">
+    <echo message="Building Buckminster Update Site"/>
+
+        <!-- First let's fix up the cfg file to build platform agnostic stuff -->
+    <concat destfile="${build.directory}/buckminster/configuration/config.ini" append="true">
+      <fileset dir="${build.directory}/.." file="buckminster.properties"/>
+    </concat>
+
+    <buckminster command="perform">
+     <args>
+       <arg value="-Dbuckminster.output.root=${build.directory}"/>
+       <arg value="org.eclipse.buckminster#normalize.site"/>
+     </args>
+    </buckminster>
+  </target> 
+
+ </project>

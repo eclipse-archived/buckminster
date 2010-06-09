@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.buckminster"
+            name="Buckminster"/>
+      <wizard
+            category="org.eclipse.buckminster"
+            class="org.eclipse.buckminster.aggregator.presentation.AggregatorModelWizard"
+            icon="icons/full/obj16/AggregatorModelFile.gif"
+            id="org.eclipse.buckminster.aggregator.presentation.AggregatorModelWizardID"
+            name="%_UI_AggregatorModelWizard_label">
+         <description>%_UI_AggregatorModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="org.eclipse.buckminster.aggregator.presentation.AggregatorEditorID"
+            name="%_UI_AggregatorEditor_label"
+            icon="icons/full/obj16/AggregatorModelFile.gif"
+            extensions="build"
+            class="org.eclipse.buckminster.aggregator.presentation.AggregatorEditor"
+            contributorClass="org.eclipse.buckminster.aggregator.presentation.AggregatorActionBarContributor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.buckminster.aggregator.presentation.OpenFindIUDialogAction"
+            commandId="org.eclipse.ui.edit.findReplace">
+         <activeWhen>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.buckminster.aggregator.presentation.AggregatorEditorID">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="org.eclipse.buckminster.aggregator.presentation.FindPreviousIUAction"
+            commandId="org.eclipse.ui.edit.findPrevious">
+         <activeWhen>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.buckminster.aggregator.presentation.AggregatorEditorID">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="org.eclipse.buckminster.aggregator.presentation.FindNextIUAction"
+            commandId="org.eclipse.ui.edit.findNext">
+         <activeWhen>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.buckminster.aggregator.presentation.AggregatorEditorID">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+   </extension>
+
+	<extension
+	     point="org.eclipse.ui.bindings">
+      <!--  win32:  M1=CTRL,    M2=SHIFT, M3=ALT, M4=-
+            carbon: M1=COMMAND, M2=SHIFT, M3=ALT, M4=CTRL -->
+	  <key
+         commandId="org.eclipse.ui.edit.findNext"
+         contextId="org.eclipse.buckminster.aggregator.presentation.aggregatorEditorScope"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="M1+K"/>
+	  <key
+         commandId="org.eclipse.ui.edit.findPrevious"
+         contextId="org.eclipse.buckminster.aggregator.presentation.aggregatorEditorScope"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="M1+M2+K"/>
+   </extension>
+ <extension
+       point="org.eclipse.ui.contexts">
+    <context
+          description="Aggregator Editor is open"
+          id="org.eclipse.buckminster.aggregator.presentation.aggregatorEditorScope"
+          name="In Aggregator Editor"
+          parentId="org.eclipse.ui.contexts.window">
+    </context>
+ </extension>
+    <extension
+         id="diagnostic"
+         name="%_UI_AggregatorDiagnostic_marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="true"/>
+   </extension>
+   <extension
+         id="diagnostic.persistent"
+         name="%_UI_AggregatorDiagnostic_marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.emf.ecore.diagnostic"/>
+      <persistent value="true"/>
+   </extension>
+    <extension
+         id="diagnostic.nonpersistent"
+         name="%_UI_AggregatorDiagnostic_marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.emf.ecore.diagnostic"/>
+      <persistent value="false"/>
+   </extension>
+ 
+</plugin>

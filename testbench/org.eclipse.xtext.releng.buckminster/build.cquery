@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="build.rmap" properties="build.properties">
+    <cq:rootRequest name="org.eclipse.xtext.releng.buckminster" componentType="buckminster"/>
+    <cq:advisorNode namePattern=".*\.source" skipComponent="true"/>
+    <cq:advisorNode namePattern="^org\.eclipse\.test$" useMaterialization="false" useTargetPlatform="false" branchTagPath="/R3_5_1"/>
+    <cq:advisorNode namePattern="^org\.eclipse\.ant\.optional\.junit$" branchTagPath="/v20050226"/>
+</cq:componentQuery>

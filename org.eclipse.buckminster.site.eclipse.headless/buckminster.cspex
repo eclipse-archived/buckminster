@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cspecExtension
+	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
+
+    <actions>
+    	<private name="split.sign.input" actor="ant">
+            <actorProperties>
+                <property key="buildFile" value="build.xml"/>
+                <property key="targets" value="split"/>
+            </actorProperties>
+            <properties>
+            	<property key="pattern" value="**/*.buckminster.*"/>
+            </properties>
+            <prerequisites alias="action.requirements">
+                <attribute name="site.feature.exports"/>
+            </prerequisites>
+            <products>
+            	<private name="jars.to.process" alias="output1" base="${buckminster.output}/jars.to.process"/>
+            	<private name="unprocessed.jars" alias="output2" base="${buckminster.output}/unprocessed.jars"/>
+            </products>
+        </private>
+
+        <private name="repacked.jars" actor="jarProcessor" always="true">
+            <properties>
+                <property key="command" value="repack"/>
+            </properties>
+            <prerequisites>
+                <attribute name="jars.to.process" alias="jar.folder"/>
+            </prerequisites>
+            <products base="${buckminster.output}/repacked.jars/"/>
+        </private>
+
+        <private name="signed.jars" actor="ant" always="true">
+            <actorProperties>
+                <property key="buildFileId" value="buckminster.signing"/>
+                <property key="targets" value="sign.jars"/>
+            </actorProperties>
+            <prerequisites alias="action.requirements">
+                <attribute name="repacked.jars" filter="(site.pack200=true)"/>
+                <attribute name="jars.to.process" filter="(!(site.pack200=true))"/>
+            </prerequisites>
+            <products alias="action.output" base="${buckminster.output}/signed.jars/"/>
+        </private>
+
+        <private name="site.signed" actor="ant">
+            <actorProperties>
+                <property key="buildFileId" value="buckminster.pdetasks"/>
+                <property key="targets" value="copy.group"/>
+            </actorProperties>
+            <prerequisites alias="action.requirements">
+ 				<attribute name="unprocessed.jars"/>
+ 				<attribute name="signed.jars"/>
+            </prerequisites>
+            <products alias="action.output" base="${buckminster.output}/site.signed/" upToDatePolicy="MAPPER"/>
+        </private>
+
+ 	</actions>
+
+	<alterActions>
+        <remove name="site.signed"/>
+        <remove name="site.repacked"/>
+    </alterActions>
+
+</cspecExtension>

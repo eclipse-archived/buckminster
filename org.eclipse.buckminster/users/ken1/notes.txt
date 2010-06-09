@@ -1,0 +1,109 @@
+================
+NOTE:
+This is just a bunch of anything I come to think of, notes of todo's, musings
+on how to do things etc. Don't trust what's in here, it's just for my own use.
+================
+
+* Forking a VM in the launcher hangs at exit
+* Try to avoid forking if possible
+	- capture --vmarg -Dfoo=bar flags and just enter them in sysprops
+* PerformManager: allow passing a list of actions to run
+* reintro of headless defaults
+* bugzilla: 117668, 129134, 129135, 129822, 129933, 144589
+* the bucky prefs should be possible to set in config scope also
+* the repository handlers should indicate MT aware (in order to fix the issue with the separate CVS client impl that isn't) 
+* actions: TODO's
+* actions: automatic build triggering
+* actions: 'Real' performers (e.g. Make etc)
+* Diverse TODO's i PerformManager
+* Funderingar kring diverse synkroniseringsaspekter (framförallt intressant då/om/när vi stoppar in automatiska performs baserat på förändrade artifacts)
+* how to invoke the product wizard in script?
+	what else should be extpointed??? default cmdline? default cmd namespace?
+* what's the most used name: 'update' or 'updates'
+* does the docs work (let alone there's nothing in there)
+* do something with the web site
+* allow the doc extension point to be recursive
+	- Sample: 'Users guide' contains 'Getting started'
+* preferences
+	- Think about rmap update processes
+* cmdline
+	- add a 'help text formatter'
+		- can html be easily rendered to plain text and fixed width?
+	- -version (print all version info it knows)
+	- what's a minimum commandset? possibly a very simple 'build' command
+		- what's the interface?
+* general
+	- how can we express a dependency on the users platform?
+	- help users make sure their repository locations are accessible
+* p4
+	- preferences
+	- interaction materialization/wizard
+
+add the functionality to be able to 'team update' all projects, regardless if
+they are from different providers...
+
+Content & Layout 
+Who is the main 'webmaster'?
+Architect 'version strategies' 
+Architect 'extendable cspec-schemas' 
+Documentation 
+javadoc/code comments 
+developers guide 
+users guide 
+other
+Architect rmap more 
+Add 'extends' concept 
+Provide an implicit searchpath inherited by all (unless otherwise stated) searching 1) workspace, 2) 'plugins' in instance 
+ 
+* Setting up a new ws, quick reminders...
+General/Appearance/Colors&Fonts
+	Set basic text font (Lucida Sans Typewriter)
+	Set CVS outgoing change fg/bg to nice coloring (HSL: 0,240,220)
+Team/CVS
+	Connection
+		Set quietness level to somewhat quiet
+	Label Decoration/General
+		Enable font/color decorations
+General/Editors/Text editors
+	Show print margin at 80
+Help
+	Use external browser
+General/Keys
+	Category Window
+		Name Next Editor
+			Add key sequence Ctrl+Tab
+		Name Previous Editor
+			Add key sequence Ctrl+Shift+Tab
+	Category Edit
+		Name Undo
+			Add key sequence Alt+Backspace
+Install/Update
+	Turn on automatic updates every day + download
+Java/Editor/Typing
+	Insert semicolons at the correct place
+Java/Code Style/Formatter
+	Import 'coding_conventions.xml'
+Java/Appearance/Member sort order
+	Order:
+		Types
+		Static Fields
+		Static Initializers
+		Static Methods
+		Fields
+		Initializer
+		Constructors
+		Methods
+	Sort by visibility:
+		Public
+		Default
+		Protected
+		Private
+Java/Code Style/Templates
+	Make sure the file comment is the right one - see comment.txt
+Java/Compiler/Errors&Warnings
+	Deprecated/restricted API: Ignore deprecations, Ignore discouraged reference
+CVS repos opus the first
+	:extssh:kolwing@dev.eclipse.org:/cvsroot/technology
+	:extssh:kolwing@dev.eclipse.org:/cvsroot/org.eclipse
+Create a 'Generic project' named 'Buckminster WWW' and check out buckminster + images from :extssh:kolwing@dev.eclipse.org:/cvsroot/org.eclipse into it
+Check out the 'test' module under :extssh:kolwing@dev.eclipse.org:/cvsroot/technology into a component named 'Buckminster Test components'

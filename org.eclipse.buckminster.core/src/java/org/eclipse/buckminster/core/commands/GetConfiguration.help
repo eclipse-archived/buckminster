@@ -1,0 +1,13 @@
+This command will populate the workspace with components based on a component
+query.
+
+usage: getconfiguration
+       [{ -? | --help }]
+       <url_or_path>
+       
+ -?
+--help
+  Show this help text
+ -J
+<url_or_path>
+  An url/path to a component query file

@@ -1,0 +1,101 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Walkthrough of Buckminster component resolution</title>
+</head>
+
+<body>
+
+<h2>Walkthrough of Buckminster component resolution</h2>
+<p>This chapter explains how Buckminster will resolve a component request,
+either in the form of an URL or listed as a requirement in a 
+<a href="cspec.html">Buckminster Component
+Specification</a> (henceforth referred to as the cspec) by using a <a
+	href="#Resolver_Map">Resolver Map</a> into something that is <a
+	href="#Materialization">materialized</a> on disk and optionally <a
+	href="#Binding">bound</a> into an Eclipse workspace.</p>
+<h3>Components and usage based requirements</h3>
+<p>Buckminster views a component as a versioned artifact that can be
+used in several different ways. To build it, generate docs from source,
+to package, test, or deploy are all examples of different ways to use a
+component. Buckminster also recognizes that component may morph into
+many different shapes (artifacts) that reflect its evolution from pure source to
+pre-built artifacts and even to a deployed binary that is up-and-running.</p>
+<p>A component artifact may or may not fulfill a component request. It all
+depends on the intended usage. A prebuilt binary cannot satisfy a
+request to edit the source but it may be the perfect choice if the
+intent is to just use it as part of a build.</p>
+<p>Components have dependencies on other components. Such dependencies
+can be qualified with a purpose. The purpose can help decide what shapes
+of a component that can fulfill a dependency.</p>
+<p>Some examples:</p>
+<ul>
+	<li>A developer of component <b>A</b> must be capable of editing the
+	component source. If <b>A</b> is dependent on component <b>B</b>, the
+	developer must at least have a precompiled version of <b>B</b> but if a
+	<b>B</b> can be found that contains both a precompiled jar file and a
+	zipped source, that might be ideal since it would support all needs of
+	the component developer for component <b>A</b>.<br>
+	&nbsp;</li>
+	<li>A QA engineer that tests component <b>A</b> prefer a precompiled
+	and packaged version of <b>A</b> and all of its dependencies. In
+	addition, QA needs to deploy the component in a test harness. This
+	might add several new dependencies to <b> A</b> that the developer
+	normally would not care about.<br>
+	&nbsp;</li>
+	<li>Pre-built binaries and test results that reflect that some
+	predetermined quality threshold has been reached might fulfill the
+	requirements to create a public release of the CD. Hence, creating the
+	CD is an action that has specific requirements.<br>
+	&nbsp;</li>
+	<li>An installer will require a packaged component and an environment
+	where the component can be deployed.</li>
+</ul>
+<h3>Resolving a request</h3>
+<p>Buckminster uses the name of the component as input to a <a href="rmap.html">
+resolver map</a>. In return it gets a <a href="rmap.html#Search_Path">search 
+path</a> that contains a sequence of <a href="rmap.html#Provider">providers</a>. 
+Each provider is queried if it can instantiate a
+<a href="rmap.html#Component_reader">component reader</a> that will be able to 
+materialize a component that fulfills the request. Finally, all candidate 
+readers are compared and the best match (or first in case matches cannot be 
+distinguished) is selected. The task of comparing the matches is performed by the 
+<a href="rmap.html#Version_Converter">version converter</a>. The component is 
+then <a href="#Materialization">materialized</a> on the local disk if and 
+optionally <a href="#Binding">bound</a> to a project in the Eclipse workspace.</p>
+<p>To materialize and bind a component is not always enough to fulfill a 
+component request. Consider a request for a pre-built artifact that is fulfilled 
+by a component that is in the shape of source. The component cspec exposes an 
+action that compiles the source and that action has to be triggered before the 
+requestor can use the component as intended.</p>
+<p>During resolvement, The user may qualify component requests further
+by expressing an intent to make changes to the components. Such an intent
+will often rule out all sources but the versioned repository that
+contains the the component source.</p>
+<h3><a name="Materialization">Materialization</a></h3>
+<p>Regardless of why a component is materialized, i.e. regardless of the
+purpose of the component request, a component is always materialized in
+its entirety. Buckminster support inner components, i.e. components that
+are materialize inside of other components (this is typically useful for
+Eclipse plug-in components that make use of precompiled jar files that
+are not plug-in aware).</p>
+<h3><a name="Binding">Binding</a></h3>
+<p>It is often desirable to bind a materialized component to the Eclipse
+workspace. A component can be bound as a project or as a link in a <a
+	href="#Proxy_project"> proxy-project</a>. It is often unnecessary to
+bind external precompiled binaries. Components that are in the category
+of installed software especially (such as the plug-ins bundled with the
+Eclipse installation).</p>
+<h3><a name="Proxy_project">Proxy project</a></h3>
+<p>A <i>proxy project</i> is a project that is created on the fly.
+It&#39;s purpose is to make components that are not Eclipse projects
+available in the Eclipse workspace without having to change the content
+of the project as such. A proxy project contains a project descriptor
+with Eclipse-style links to the root artifacts of the contained
+component.</p>
+
+</body>
+
+</html>

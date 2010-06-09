@@ -1,0 +1,80 @@
+This command will run a JUnit test suites specified as arguments and record
+their results in an XML file.
+It supports both JUnit 3.x and 4.x test suites.
+
+usage: test
+       [{ -? | --help }]
+       [{ -p | --prefix } <result filename prefix>]
+       [{ -d | --directory } <result file directory>]
+       [{ -q | --quiet }]
+       <location specification> ...
+
+ -?
+--help
+  Show this help text
+
+ -p <result filename prefix>
+--prefix <result filename prefix>
+  Prefix of the result filename. The result filename will be constructed as:
+    <result filename prefix>-<current timestamp>.xml
+  The default is ``result''.
+
+ -d <result file directory>
+--directory <result file directory>
+  Directory where to create the result file.
+  The default is the current working directory.
+
+ -q
+--quiet
+  Don't print the names of individual test suites as they are executed.
+
+<location specification>
+  The location specification can take two different forms:
+    * an URL
+        the content of the document pointed to by the URL is treated as
+        a list of location specifications (a single location specification
+        per line).
+
+    * a "runtime reference" written in the following syntax:
+        [runtime:][[<bundle symbolic name>]:][<resource name>]
+
+      Where:
+        runtime: is an optional prefix that may be specified to disambiguate
+          the "runtime reference" from an URL
+
+        <bundle symbolic name> is a symbolic name of a bundle containing
+          the resource <resource name> (the resource doesn't necessarily
+          have to be present in the bundle itself but may be provided by
+          a fragment of the bundle)
+          If the bundle is not specified than the bundle containing the
+          runtime reference definition in question (if there is such a bundle)
+          is assumed. 
+
+        <resource name> is a name of a resource from the <bundle symbolic name>
+          the resource specify a class name which is treated to be a JUnit
+          test suite OR it can specify an arbitrary resource file whose content
+          is in turn treated as another list of location specifications
+          (a single location specification per line).
+          If the resource is not specified a default of "/plugin-tests.lst" is
+          used.
+          It is a good practice to start <resource name>s of plain resource
+          files with a slash ("/") to make them easily distinguishable from
+          class names.
+
+      Examples:
+        org.eclipse.buckminster.core:org.eclipse.buckminster.core.test.CoreTests
+
+        org.eclipse.buckminster.core:
+          which is equivalent to the next one:
+
+        org.eclipse.buckminster.core:/plugin-tests.lst
+
+        http://example.com/daily_test_plan.txt
+
+      Notes:
+        - a class described by a <resource name> doesn't necessarily have
+          to be exported from the respective bundle <bundle symbolic name>
+          or its fragment as the class is loaded through the respective
+          bundle's ClassLoader which is, of course, capable of loading all
+          the classes contained in the bundle and its fragments (not just
+          the exported ones)

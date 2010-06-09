@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cloudsmith Remote Resolution Service Connector
+Bundle-SymbolicName: org.eclipse.buckminster.remote.cloudsmith;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.buckminster.remote
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

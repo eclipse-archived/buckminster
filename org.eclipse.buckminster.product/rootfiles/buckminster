@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# Copyright (c) 2006-2009, Cloudsmith Inc.
+# The code, documentation and other materials contained herein have been
+# licensed under the Eclipse Public License - v 1.0 by the copyright holder
+# listed above, as the Initial Contributor under such license. The text of
+# such license is available at www.eclipse.org.
+#
+# This script will launch the Equinox framework
+#
+# usage:
+#   <script name> [ -vm <java binary> ] <command> <command opts> [ -vmargs <vmargs> ]
+#
+# Alternatively, you bypass this script and instead use:
+#   <java binary> <vmargs> -jar <equinox launcher jar> <command> <command opts>
+#
+VM=java
+ARGS=
+while [ $# -gt 0 ]
+do
+        case $1 in
+                -vm)
+                        shift
+                        VM=$1
+                        shift
+                        ;;
+                -vmargs)
+                        shift
+                        # Remaing args are vmargs
+                        break
+                        ;;
+                *)
+                        # normal argument string. The double
+                        # quotes will preserve arguments that 
+                        # contain spaces and will be removed  
+                        # by eval later on.
+                        ARGS=$ARGS\ \"$1\"
+                        shift
+                        ;;
+        esac
+done
+
+EXE_DIR=`dirname "$0"`
+launcher=`ls "$EXE_DIR"/plugins/org.eclipse.equinox.launcher_*.jar | sort | tail -1`
+eval $VM $* -jar \"$launcher\" $ARGS
+

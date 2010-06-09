@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rmap
+    xmlns="http://www.eclipse.org/buckminster/RMap-1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
+    xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0">
+
+    <searchPath name="maven">
+      <provider xsi:type="mp:MavenProvider" readerType="maven2" componentType="maven" mutable="false" source="false">
+        <uri format="http://repo1.maven.org/maven2"/>
+      </provider>
+    </searchPath>
+
+    <searchPath name="samples">
+        <provider readerType="svn" componentType="maven" mutable="true" source="true">
+        	<uri format="svn://dev.eclipse.org/svnroot/technology/org.eclipse.buckminster/trunk/testbench/{0}">
+        		<bc:propertyRef key="buckminster.component"/>
+        	</uri>
+        </provider>
+    </searchPath>
+
+	<locator searchPathRef="samples" pattern=".*\.sample\..*" />
+	<locator searchPathRef="maven" pattern=".*" />
+
+<!--
+	<rm:locator searchPathRef="dash" pattern="^org\.eclipse\.eclipsemonkey-feature" />
+	<rm:locator searchPathRef="dash" pattern="^org\.eclipse\.dash(\..+)?" />
+	<rm:locator searchPathRef="dash" pattern="^org\.mozilla\.rhino" />
+-->
+
+</rmap>

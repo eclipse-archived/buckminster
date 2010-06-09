@@ -1,0 +1,140 @@
+This is most definitively a work in progress.
+
+This procedure should be updated as we go along - currently there are
+deficiences in both Buckminster, Eclipse, somewhere in between, CVS maturity as
+a CM tool, processes etc etc, that all makes this less enjoyable than it could
+be. We're far away from the ideal press-a-single-button. So, currently, this is
+just a procedure that works (and is essentially repeatable which is what I'm
+really after at this point). And note that this is really about doing a 'spnnn'
+release - a new milestone or actual bona fide release has some differences that
+I can think of from the top of my head.
+
+1) You need a FRESH Eclipse instance!
+Ensure you have an uptodate workspace. There are two ways to go about this:
+	a) Either it is constructed with your normal Eclipse instance in which you
+	have installed a previous Buckminster and using that, you have used the
+	dogfooding instructions tp get a working workspace.
+	b) If you don't have access to an update site with an earlier Buckminster
+	version, or you have other reasons to start from complete scratch, please
+	see the document 'bootstrap_buckminster_build.txt'.
+Now close the 'full' instance and start another one - you need one that is
+basic 3.2M2 or above plus a Subclipse installation (from
+http://subclipse.tigris.org/update). It must *NOT* have Buckminster installed.
+NOTE: This is because Eclipse finds the installed Buckminster features/plugins
+rather than give preference to the workspace ones. Once we have proper version
+dependencies this should go away.
+
+====================================
+
+2) Update all feature projects
+Currently there are 6 'normal' features:
+	org.eclipse.buckminster.feature
+	org.eclipse.buckminster.headless.feature
+	org.eclipse.buckminster.p4.feature
+	org.eclipse.buckminster.p4.ui.feature
+	org.eclipse.buckminster.svn.feature
+	org.eclipse.buckminster.ui.feature
+Open feature.xml in each:
+* Overview tab: set 'Version:' to an appropriate value (e.g. '1.0.0.M1sp002')
+* Plug-ins tab: press 'Version...' and force the feature version into the
+referenced plugins
+
+There are also 2 'special' features (used for properly putting the product
+together):
+	org.eclipse.buckminster.headless.platform.feature
+	org.eclipse.buckminster.product
+Open feature.xml in each:
+* Overview tab: set 'Version:' to an appropriate value (e.g. '1.0.0.M1sp002')
+
+Finally, the org.eclipse.buckminster.product needs some extra attention:
+	1. It includes several features rather than depend on them. This means that
+	it references several features by name and version, and that version thus
+	needs to be updated. I've found the easiest way to do this is to open the
+	feature.xml in source mode and manually edit the version attribute in the
+	<includes> tags.
+	2. The '...product' file needs to be checked so that it references itself
+	with the new version (the configuration tab). If this is not set, the 
+	product build doesn't fail, it just produces a zip file that is very small.
+====================================
+
+3) Build the update site
+* Site Map tab: use 'Add feature...' to add the 5 normal features. Depending on
+focus they might be sorted into either one of the categories or outside both of
+them. Move them (drag'n'drop') to the correct category:
+	core:
+		org.eclipse.buckminster.feature
+		org.eclipse.buckminster.ui.feature
+	optional:
+		(the others)
+NOTE: leave the existing feature references in the categories (i.e. for
+1.0.0.M1, 1.0.0M1sp001 etc). They don't exist in your workspace, but by leaving
+them in the site.xml, the file can simply be uploaded and still correctly
+reference the ones that already are on the download site.
+* Site Map tab: press 'Build all'. With a bit of luck all goes splendid and you
+end up with two new directories inside the project: 'features' and 'plugins'
+(these should not be checked in so there's a .cvsignore there...).
+NOTE: well, this can go bust for build related reasons, especially since it's
+doing some fancy Ant stuff behind the scenes which we don't normally do.
+
+====================================
+
+4) Build 'org.eclipse.buckminster.product'
+Open 'buckminster.product' (the actual file):
+* Overview tab: under 'Exporting' use the link to 'Eclipse Product Export
+Wizard' to start the wizard dialog. Unless the normal dialog defaults are
+changed by Eclipse, they are mostly ok, but the 'Root directory:' should be
+'buckminster'. Also, select 'Archive file:' as destination and fill in the
+name. I've used the convention 'buckminster.product-1.0.0.M1sp002.zip' so
+specify it to be put in some convenient location. Click Finish. As for the
+update site, this can break for various build related issues that we don't
+normally see.
+
+====================================
+
+5) Prepare a 'mini-site' to test from
+The objective here is to create a little tree that later, if all's well, can be
+uploaded as is and nicely blend with what's already there. So, pick a spot and
+create a spanking new directory. Inside that directory there should be three
+directories named:
+	archivedsites
+	products
+	updates
+* Beginning from the back, into 'updates', copy from the
+org.eclipse.buckminster.updates project:
+	site.xml
+	site.properties
+	features
+	plugins
+* Into 'products' copy the created product zip.
+* Into 'archivedsites' should go a zipped copy of the stuff under 'updates'
+(exactly - thus the top level in the zip should contain the site.xml etc). The
+name of the finished zip should follow the convention
+'buckminster.archivedsite-1.0.0.M1sp002.zip'.
+
+====================================
+
+6) Test
+Do the usual smoke tests - fresh eclipse, install Subclipse and install
+Buckminster from the update site, try build_a and dogfooding etc.
+Here things can be horribly wrong because of some nasty build issue not seen
+before.
+
+====================================
+
+7) Check changes in and tag
+Commit, select *all* projects and run Team/Tag using the proper form for the
+tag, e.g. 'v1_0_0_M1sp002'.
+
+====================================
+
+8) Upload
+Connect to dev.eclipse.org with for example WinSCP. Everything goes
+under/home/data/httpd/download.eclipse.org/technology/buckminster.
+NOTE: this area is not directly visible, it'll take time to stage to the real
+download location at download.eclipse.org/technology/buckminster (minutes, I
+think). Then, it will stage to mirrors (no idea how long it takes).
+
+====================================
+
+9) Announce
+If it's suitable, update the web pages in some manner and announce it on news.

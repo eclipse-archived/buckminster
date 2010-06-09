@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project name="project" default="default">
+	<import file="macros.xml"/>
+
+	<property name="workspace" location="/workspaces/Buck-dev"/>
+
+	<target name="list.timestamps">
+		<listPluginTimestamp component="org.eclipse.buckminster.ant"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.cmdline"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.core"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.cvs"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.installer"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.jdt"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.maven"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.p4"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.pde"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.runtime"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.sax"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.svn"/>
+		<listPluginTimestamp component="org.eclipse.buckminster.ui"/>
+
+		<listFeatureTimestamp component="org.eclipse.buckminster.core.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.core.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.cvs.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.cvs.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.maven.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.p4.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.p4.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.pde.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.pde.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.product"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.svn.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.svn.headless.feature"/>
+		<listFeatureTimestamp component="org.eclipse.buckminster.update"/>
+	</target>
+
+	<target name="default" depends="list.timestamps"/>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: depends                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="depends">
+    </target>
+
+</project>

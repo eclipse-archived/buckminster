@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:locator pattern="mangos" searchPathRef="mangos"/>
+  <rm:locator pattern="\.egit(\..*)?$" searchPathRef="egit"/>
+  <rm:locator pattern="\.jgit(\..*)?$" searchPathRef="jgit"/>
+  <rm:searchPath name="mangos">
+    <rm:provider componentTypes="unknown" readerType="git">
+      <rm:uri format="{0}/mangos">
+        <bc:propertyRef key="workspace.root"/>
+      </rm:uri>
+      <rm:property key="git.remote.uri" value="file:///home/thhal/tmp/mangos/.git"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="egit">
+    <rm:provider componentTypes="osgi.bundle" readerType="git">
+      <rm:uri format="{0}/egit,{1}">
+        <bc:propertyRef key="workspace.root"/>
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+      <rm:property key="git.remote.uri" value="git://egit.eclipse.org/egit.git"/>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="jgit">
+    <rm:provider componentTypes="osgi.bundle" readerType="git">
+      <rm:uri format="{0}/jgit,{1}">
+        <bc:propertyRef key="workspace.root"/>
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+      <rm:property key="git.remote.uri" value="git://egit.eclipse.org/jgit.git"/>
+    </rm:provider>
+  </rm:searchPath>
+</rm:rmap>

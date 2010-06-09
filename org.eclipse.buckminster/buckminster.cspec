@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cs:cspec xmlns:cs="http://www.eclipse.org/buckminster/CSpec-1.0" name="org.eclipse.buckminster" componentType="buckminster" version="1.1.350">
+    <cs:dependencies>
+        <cs:dependency name="org.apache.commons.net" componentType="osgi.bundle"/>
+        <cs:dependency name="org.eclipse.buckminster.jnlp.p2.bootstrap" componentType="buckminster"/>
+        <cs:dependency name="org.eclipse.buckminster.jnlp.p2.director.product" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.jnlp.p2.product" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.site.eclipse" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.site.eclipse.headless" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.site.external" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.testfragments.feature" componentType="eclipse.feature"/>
+    </cs:dependencies>
+    <cs:actions>
+        <cs:public name="clean" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/build.xml"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.jnlp.p2.product"/>
+                <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.jnlp.p2.director.product"/>
+                <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.site.eclipse"/>
+                <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.site.eclipse.headless"/>
+                <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.site.external"/>
+                <cs:attribute name="buckminster.clean" component="org.eclipse.buckminster.testfragments.feature"/>
+            </cs:prerequisites>
+        </cs:public>
+        <cs:public name="collect.jnlp" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/build.xml"/>
+                <cs:property key="targets" value="collect.jnlp"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="sign.jnlp" alias="jnlp-package-p2.zip"/>
+                <cs:attribute name="site.p2.zip" alias="materializer.p2site.zip" component="org.eclipse.buckminster.jnlp.p2.product"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp.c/" upToDatePolicy="MAPPER"/>
+        </cs:public>
+        <cs:public name="collect.local.jnlp" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/build.xml"/>
+                <cs:property key="targets" value="collect.jnlp"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="local.sign.jnlp" alias="jnlp-package-p2.zip"/>
+                <cs:attribute name="site.p2.zip" alias="materializer.p2site.zip" component="org.eclipse.buckminster.jnlp.p2.product"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp.c/" upToDatePolicy="MAPPER"/>
+        </cs:public>
+        <cs:public name="publish.jnlp" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/publish.ant"/>
+                <cs:property key="targets" value="ftp.publish"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="collect.jnlp" alias="requirement"/>
+                <cs:attribute name="java.binaries" alias="commons-net.classpath" component="org.apache.commons.net"/>
+            </cs:prerequisites>
+        </cs:public>
+        <cs:public name="publish.local.jnlp" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/publish.ant"/>
+                <cs:property key="targets" value="ftp.publish"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="collect.local.jnlp" alias="requirement"/>
+                <cs:attribute name="java.binaries" alias="commons-net.classpath" component="org.apache.commons.net"/>
+            </cs:prerequisites>
+        </cs:public>
+        <cs:private name="local.sign.jnlp" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
+                <cs:property key="targets" value="local.sign.jars"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="zip.jnlp" alias="requirement"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp.ls/" upToDatePolicy="MAPPER"/>
+        </cs:private>
+        <cs:private name="sign.jnlp" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/eclipse-signing.ant"/>
+                <cs:property key="targets" value="sign.jars"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="zip.jnlp" alias="requirement"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp.s/" upToDatePolicy="MAPPER"/>
+        </cs:private>
+        <cs:private name="zip.jnlp" actor="ant">
+            <cs:actorProperties>
+                <cs:property key="buildFile" value="make/build.xml"/>
+                <cs:property key="targets" value="zip.jnlp"/>
+            </cs:actorProperties>
+            <cs:prerequisites>
+                <cs:attribute name="java.binary.archive" alias="bootstrap.jar" component="org.eclipse.buckminster.jnlp.p2.bootstrap"/>
+                <cs:attribute name="create.product.zip" alias="director.zip" component="org.eclipse.buckminster.jnlp.p2.director.product"/>
+            </cs:prerequisites>
+            <cs:products alias="product.output" base="${buckminster.output}/jnlp.z/" fileCount="1" upToDatePolicy="COUNT">
+                <cs:path path="jnlp-package-p2.zip"/>
+            </cs:products>
+        </cs:private>
+    </cs:actions>
+</cs:cspec>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.eclipse.buckminster.jdt.internal.BMClasspathInitializer"
+            id="org.eclipse.buckminster.jdt.requiredComponents"/>
+   </extension>
+ <extension
+       point="org.eclipse.core.resources.builders"
+ 	id="classpathEmitter"
+ 	name="%classpathEmitter">
+    <builder isConfigurable="true">
+       <run class="org.eclipse.buckminster.jdt.internal.ClasspathEmitter"/>
+    </builder>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.cmdline.prefmappings">
+     <prefmapping
+          class="org.eclipse.buckminster.jdt.prefs.ComplianceLevelHandler"
+          description="Sets the java compiler compliance level"
+          name="complianceLevel"/>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.core.actors">
+    <actor
+          ID="jdt.ant"
+          class="org.eclipse.buckminster.jdt.internal.actor.JdtAntActor"
+          name="JDT Ant Actor"/>
+    <actor
+          ID="buckminster.JREPublisher"
+          class="org.eclipse.buckminster.jdt.internal.actor.JREpublisherActor"
+          name="JRE IU Publisher Actor"/>
+ </extension>
+ <extension
+       point="org.eclipse.ant.core.antTasks">
+    <antTask
+          class="org.eclipse.buckminster.jdt.ant.ProjectClasspath"
+          library="ant_tasks/ant_tasks.jar"
+          name="buckminster.projectClasspath"/>
+    <antTask
+          class="org.eclipse.buckminster.jdt.ant.PublishJRETask"
+          library="ant_tasks/ant_tasks.jar"
+          name="buckminster.publishJRE"/>
+ </extension>
+ <extension
+       point="org.eclipse.buckminster.cmdline.commands">
+    <command
+          addhelpflags="true"
+          class="org.eclipse.buckminster.jdt.commands.InstallJRE"
+          name="org.eclipse.buckminster.jdt.installJRE"
+          status="NORMAL">
+    </command>
+ </extension>
+</plugin>

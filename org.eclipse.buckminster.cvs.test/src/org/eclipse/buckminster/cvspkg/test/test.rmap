@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:locator pattern=".*" searchPathRef="default"/>
+  <rm:searchPath name="default">
+    <rm:provider componentTypes="osgi.bundle" readerType="cvs">
+      <rm:uri format=":pserver:anonymous@dev.eclipse.org:/cvsroot/technology,org.eclipse.dash/{0}">
+        <bc:replace pattern="^buckminster\.test\.(.+)" quotePattern="false" replacement="$1">
+          <bc:propertyRef key="buckminster.component"/>
+        </bc:replace>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+</rm:rmap>
