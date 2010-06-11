@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:property key="eclipse.download.prefix" value="http://download.eclipse.org"/>
+  <rm:property key="eclipse.svn.prefix" value="http://dev.eclipse.org/svnroot"/>
+  <rm:property key="build.type" value="I"/>
   <rm:locator pattern="^org\.eclipse\.buckminster(\..+)?" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.slf4j\.extendable$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" searchPathRef="buckminster"/>
@@ -15,7 +18,6 @@
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="modeling" failOnError="false"/>
   <rm:locator searchPathRef="simultanious.release"/>
-
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="svn">
       <rm:uri format="{0}/tools/org.eclipse.buckminster/trunk/{1}?moduleAfterTag&amp;moduleAfterBranch">
@@ -26,17 +28,17 @@
   </rm:searchPath>
   <rm:searchPath name="platform">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=I)">
-      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100603-1500">
+      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=M)">
-      <rm:uri format="{0}/eclipse/updates/3.6milestones/S-3.6RC4-I201006031500">
+      <rm:uri format="{0}/eclipse/updates/3.6milestones/">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
-      <rm:uri format="{0}/eclipse/updates/3.6">
+      <rm:uri format="{0}/eclipse/updates/3.6/">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -126,11 +128,9 @@
   </rm:searchPath>
   <rm:searchPath name="modeling">
     <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/modeling/emf/emf/updates/2.6milestones/S201005311044">
+      <rm:uri format="{0}/modeling/emf/emf/updates/2.6milestones/">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-  <rm:property key="eclipse.download.prefix" value="http://download.eclipse.org"/>
-  <rm:property key="eclipse.svn.prefix" value="http://dev.eclipse.org/svnroot"/>
 </rm:rmap>
