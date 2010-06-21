@@ -627,11 +627,13 @@ public class WorkspaceInfo {
 	}
 
 	public static void runWorkspaceCatchUpJob() {
-		WorkspaceCatchUpJob catchUpJob = new WorkspaceCatchUpJob();
-		catchUpJob.schedule();
-		try {
-			catchUpJob.join();
-		} catch (InterruptedException e) {
+		if (!hasBeenFullyInitialized) {
+			WorkspaceCatchUpJob catchUpJob = new WorkspaceCatchUpJob();
+			catchUpJob.schedule();
+			try {
+				catchUpJob.join();
+			} catch (InterruptedException e) {
+			}
 		}
 		hasBeenFullyInitialized = true;
 	}
@@ -762,8 +764,7 @@ public class WorkspaceInfo {
 
 					CorePlugin
 							.getLogger()
-							.debug(
-									"Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation); //$NON-NLS-1$
+							.debug("Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation); //$NON-NLS-1$
 					continue;
 				}
 

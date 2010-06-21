@@ -182,26 +182,8 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 			monitor.beginTask(Messages.Refreshing_project_meta_data, 1000);
 
 			try {
-				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-				wsRoot.accept(new ResetVisitor());
-				MonitorUtils.worked(monitor, 50);
-
-				IProject[] projects = wsRoot.getProjects();
-				MonitorUtils.worked(monitor, 50);
-
-				// Re-resolve all projects
-				//
-				if (projects.length > 0) {
-					int ticksPerRefresh = 900 / projects.length;
-					for (IProject project : projects) {
-						try {
-							refreshProject(project, MonitorUtils.subMonitor(monitor, ticksPerRefresh));
-						} catch (Throwable e) {
-							CorePlugin.getLogger().warning(e, NLS.bind(Messages.Problem_during_meta_data_refresh_0, e.getMessage()));
-						}
-					}
-				}
-			} catch (Throwable e) {
+				workspaceCatchUp(monitor);
+			} catch (Exception e) {
 				CorePlugin.getLogger().warning(e, NLS.bind(Messages.Problem_during_meta_data_refresh_0, e.getMessage()));
 			} finally {
 				setProperty(QN_ATTACHABLE_PROGRESS_MONITOR, null);
@@ -391,6 +373,27 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 					//
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
+				}
+			}
+		}
+	}
+
+	public static void workspaceCatchUp(IProgressMonitor monitor) throws CoreException {
+		IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+		wsRoot.accept(new ResetVisitor());
+		MonitorUtils.worked(monitor, 50);
+		IProject[] projects = wsRoot.getProjects();
+		MonitorUtils.worked(monitor, 50);
+
+		// Re-resolve all projects
+		//
+		if (projects.length > 0) {
+			int ticksPerRefresh = 900 / projects.length;
+			for (IProject project : projects) {
+				try {
+					refreshProject(project, MonitorUtils.subMonitor(monitor, ticksPerRefresh));
+				} catch (Exception e) {
+					CorePlugin.getLogger().warning(e, NLS.bind(Messages.Problem_during_meta_data_refresh_0, e.getMessage()));
 				}
 			}
 		}
