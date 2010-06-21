@@ -8,19 +8,26 @@
 package org.eclipse.buckminster.pde.tasks;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.buckminster.core.TargetPlatform;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.ConfigData;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
@@ -28,6 +35,9 @@ import org.eclipse.equinox.p2.publisher.PublisherInfo;
 import org.eclipse.equinox.p2.publisher.PublisherResult;
 import org.eclipse.equinox.p2.publisher.eclipse.ConfigAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.EquinoxLauncherCUAction;
+import org.eclipse.equinox.p2.query.IQuery;
+import org.eclipse.equinox.p2.query.IQueryable;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 
@@ -92,6 +102,7 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		// ApplicationLauncherAction must find them in order to generate the
 		// correct CU's
 		//
+		IQueryable<IInstallableUnit> bundleScope = getTransitiveBundleScope(results);
 		ConfigData dfltStartInfos = new ConfigData(null, null, null, null);
 		for (Object iu : results.getIUs(null, IPublisherResult.ROOT)) {
 			IInstallableUnit tmp = (IInstallableUnit) iu;
@@ -109,8 +120,12 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 
 			for (BundleInfo bi : getDefaultStartInfo()) {
 				if (tmp.getId().equals(bi.getSymbolicName())) {
-					innerResult.addIU(tmp, IPublisherResult.ROOT);
-					dfltStartInfos.addBundle(bi);
+					// Verify that this bundle is in the transitive scope
+					// of the product
+					if (!bundleScope.query(QueryUtil.createIUQuery(tmp), monitor).isEmpty()) {
+						innerResult.addIU(tmp, IPublisherResult.ROOT);
+						dfltStartInfos.addBundle(bi);
+					}
 					break;
 				}
 			}
@@ -140,6 +155,34 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 	@Override
 	protected IPublisherAction createApplicationExecutableAction(String[] configSpecs) {
 		return new ApplicationLauncherAction(id, version, flavor, executableName, getExecutablesLocation(), configSpecs);
+	}
+
+	IQueryable<IInstallableUnit> getTransitiveBundleScope(IPublisherResult results) {
+		IProgressMonitor monitor = new NullProgressMonitor();
+		List<IInstallableUnit> roots = new ArrayList<IInstallableUnit>();
+		if (!product.useFeatures()) {
+			for (IVersionedId bundle : product.getBundles(false)) {
+				VersionRange vr = VersionHelper.unqualifiedRange(bundle.getVersion());
+				IQuery<IInstallableUnit> iuQuery = QueryUtil.createIUQuery(bundle.getId(), vr);
+				Iterator<IInstallableUnit> itor = results.query(iuQuery, monitor).iterator();
+				while (itor.hasNext())
+					roots.add(itor.next());
+			}
+		} else {
+			for (IVersionedId feature : product.getFeatures()) {
+				VersionRange vr = VersionHelper.unqualifiedRange(feature.getVersion());
+				IQuery<IInstallableUnit> iuQuery = QueryUtil.createIUQuery(feature.getId() + ".feature.group", vr); //$NON-NLS-1$
+				Iterator<IInstallableUnit> itor = results.query(iuQuery, monitor).iterator();
+				while (itor.hasNext())
+					roots.add(itor.next());
+			}
+		}
+
+		IQuery<IInstallableUnit> traversal = QueryUtil.createQuery( //
+				"$0.traverse(set(), _, { rqCache, parent | " + // //$NON-NLS-1$
+						"parent.requirements.unique(rqCache)" + // //$NON-NLS-1$
+						".collect(rc | everything.select(iu | iu ~= rc)).flatten()})", roots); //$NON-NLS-1$
+		return results.query(traversal, monitor);
 	}
 
 	private BundleInfo[] getDefaultStartInfo() {

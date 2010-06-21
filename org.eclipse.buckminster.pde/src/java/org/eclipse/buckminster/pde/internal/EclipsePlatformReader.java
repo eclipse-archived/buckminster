@@ -41,6 +41,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.pde.core.IModel;
@@ -91,6 +92,8 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 
 	private IModel model;
 
+	private BundleInfo bundle;
+
 	private final InstalledType type;
 
 	public EclipsePlatformReader(IReaderType readerType, ProviderMatch rInfo) throws CoreException {
@@ -110,6 +113,18 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 	@Override
 	public boolean canMaterialize() {
 		return false;
+	}
+
+	public synchronized BundleInfo getBundleInfo() throws CoreException {
+		if (type != InstalledType.PLUGIN)
+			throw new IllegalStateException(Messages.plugin_requested_from_feature_reader);
+
+		if (bundle == null) {
+			bundle = getBestBundle();
+			if (bundle == null)
+				throw new MissingComponentException(componentName);
+		}
+		return bundle;
 	}
 
 	public synchronized IFeatureModel getFeatureModel() {
@@ -257,6 +272,10 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 		}
 	}
 
+	private BundleInfo getBestBundle() {
+		return PDETargetPlatform.getBestPlugin(componentName, getDesiredVersion(), null);
+	}
+
 	private IFeatureModel getBestFeature() {
 		return EclipsePlatformReaderType.getBestFeature(componentName, getDesiredVersion(), null);
 	}
@@ -277,21 +296,21 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 	}
 
 	private File getModelRoot() throws CoreException {
-		String installLocation;
+		File installLocation;
 		if (type == InstalledType.PLUGIN) {
-			IPluginModelBase pluginModel;
+			BundleInfo pluginModel;
 			try {
-				pluginModel = getPluginModelBase();
+				pluginModel = getBundleInfo();
 			} catch (IllegalStateException e) {
 				return null;
 			}
-			installLocation = pluginModel.getInstallLocation();
+			installLocation = EclipsePlatformReaderType.getBundleLocation(pluginModel);
 		} else {
 			IFeatureModel featureModel = getFeatureModel();
 			if (featureModel == null)
 				return null;
-			installLocation = featureModel.getInstallLocation();
+			installLocation = new File(featureModel.getInstallLocation());
 		}
-		return new File(installLocation);
+		return installLocation;
 	}
 }

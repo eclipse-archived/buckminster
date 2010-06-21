@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.pde.internal;
 
+import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +29,11 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.service.resolver.BundleDescription;
@@ -101,7 +104,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 		Version candidateVersion = null;
 		synchronized (activeMap) {
 			if (activeMap.isEmpty()) {
-				for (IPluginModelBase model : PluginRegistry.getActiveModels()) {
+				for (IPluginModelBase model : PluginRegistry.getAllModels()) {
 					BundleDescription desc = model.getBundleDescription();
 					String id = desc.getSymbolicName();
 					IPluginModelBase[] mbArr = activeMap.get(id);
@@ -148,6 +151,25 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 		}
 	}
 
+	static File getBundleLocation(BundleInfo plugin) {
+		if (plugin == null)
+			return null;
+		URI il = plugin.getLocation();
+		if (il == null)
+			return null;
+		if (!"file".equalsIgnoreCase(il.getScheme())) { //$NON-NLS-1$
+			try {
+				java.net.URL fileIL = FileLocator.toFileURL(il.toURL());
+				if ("file".equalsIgnoreCase(fileIL.getProtocol())) //$NON-NLS-1$
+					return null;
+				il = fileIL.toURI();
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		return new File(il);
+	}
+
 	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
@@ -165,10 +187,13 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 				return null;
 			location = model.getInstallLocation();
 		} else {
-			IPluginModelBase model = getBestPlugin(rq.getName(), vd, null);
-			if (model == null)
+			BundleInfo plugin = PDETargetPlatform.getBestPlugin(rq.getName(), vd, null);
+			if (plugin == null)
 				return null;
-			location = model.getInstallLocation();
+			File fileLoc = getBundleLocation(plugin);
+			if (fileLoc == null)
+				return null;
+			location = fileLoc.getAbsolutePath();
 		}
 
 		IPath path = null;
