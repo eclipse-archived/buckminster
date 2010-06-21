@@ -58,11 +58,23 @@ public class MapFile {
 		FileUtils.substituteParameters(inputStream, buffer, '@', Collections.singletonMap("CVSTag", "HEAD")); //$NON-NLS-1$ //$NON-NLS-2$
 		BufferedReader input = new BufferedReader(new InputStreamReader(buffer.getInputStream()));
 		String line;
-		while ((line = input.readLine()) != null) {
-			if (line.startsWith("#")) //$NON-NLS-1$
-				//
-				// Comment
-				//
+		nextLine: while ((line = input.readLine()) != null) {
+			// find first non-whitespace character on the line
+			int len = line.length();
+			int idx;
+			for (idx = 0; idx < len; ++idx) {
+				char c = line.charAt(idx);
+				if (Character.isWhitespace(c))
+					continue;
+				if (c == '!' || c == '#')
+					//
+					// Comment
+					//
+					continue nextLine;
+				break;
+			}
+			if (idx == len)
+				// Just whitespace
 				continue;
 
 			Matcher m = pattern.matcher(line);
@@ -152,7 +164,8 @@ public class MapFile {
 						}
 					}
 				}
-			}
+			} else if (readerTypeID.equals("p2iu")) //$NON-NLS-1$
+				readerTypeID = "p2"; //$NON-NLS-1$
 
 			ComponentIdentifier cid = new ComponentIdentifier(identifier, ctypeId, version);
 			IReaderType readerType;
