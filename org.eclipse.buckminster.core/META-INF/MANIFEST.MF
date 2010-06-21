@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Buckminster Core
 Bundle-SymbolicName: org.eclipse.buckminster.core; singleton:=true
-Bundle-Version: 1.2.360.qualifier
+Bundle-Version: 1.2.361.qualifier
 Bundle-Activator: org.eclipse.buckminster.core.CorePlugin
 Bundle-Vendor: Eclipse Buckminster Project
 Bundle-Localization: plugin
