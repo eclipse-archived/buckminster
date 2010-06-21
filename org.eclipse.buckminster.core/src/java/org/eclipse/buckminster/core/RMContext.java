@@ -244,7 +244,8 @@ public class RMContext extends ExpandingProperties<Object> {
 
 	public RMContext(Map<String, ? extends Object> properties, RMContext source) {
 		super(getGlobalPropertyAdditions());
-		putAll(properties, true);
+		if (properties != null)
+			putAll(properties, true);
 		if (source != null) {
 			userCache.putAll(source.getUserCache());
 			tagInfos.putAll(source.getTagInfos());
