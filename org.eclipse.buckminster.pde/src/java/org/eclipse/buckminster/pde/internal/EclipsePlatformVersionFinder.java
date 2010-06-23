@@ -67,7 +67,7 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder {
 			if (plugin != null)
 				v = VersionHelper.parseVersion(plugin.getVersion());
 		} else {
-			IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(componentName, dsg, query);
+			IFeatureModel feature = PDETargetPlatform.getBestFeature(componentName, dsg, query);
 			if (feature != null)
 				v = VersionHelper.parseVersion(feature.getFeature().getVersion());
 		}

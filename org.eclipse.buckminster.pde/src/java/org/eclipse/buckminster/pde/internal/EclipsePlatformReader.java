@@ -277,7 +277,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 	}
 
 	private IFeatureModel getBestFeature() {
-		return EclipsePlatformReaderType.getBestFeature(componentName, getDesiredVersion(), null);
+		return PDETargetPlatform.getBestFeature(componentName, getDesiredVersion(), null);
 	}
 
 	private IPluginModelBase getBestPlugin() {

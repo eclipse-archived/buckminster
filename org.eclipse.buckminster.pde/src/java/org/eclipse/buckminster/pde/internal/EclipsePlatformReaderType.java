@@ -43,7 +43,6 @@ import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.internal.core.IPluginModelListener;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelDelta;
-import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
@@ -73,30 +72,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 	}
 
 	public static IFeatureModel getBestFeature(String componentName, VersionRange versionDesignator, NodeQuery query) {
-		IFeatureModel candidate = null;
-		Version candidateVersion = null;
-		for (IFeatureModel model : PDECore.getDefault().getFeatureModelManager().findFeatureModels(componentName)) {
-			IFeature feature = model.getFeature();
-			String ov = feature.getVersion();
-			if (ov == null) {
-				if (candidate == null && versionDesignator == null)
-					candidate = model;
-				continue;
-			}
-
-			Version v = VersionHelper.parseVersion(ov);
-			if (!(versionDesignator == null || versionDesignator.isIncluded(v))) {
-				if (query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0, versionDesignator));
-				continue;
-			}
-
-			if (candidateVersion == null || candidateVersion.compareTo(v) < 0) {
-				candidate = model;
-				candidateVersion = v;
-			}
-		}
-		return candidate;
+		return PDETargetPlatform.getBestFeature(componentName, versionDesignator, query);
 	}
 
 	public static IPluginModelBase getBestPlugin(String componentName, VersionRange versionDesignator, NodeQuery query) {
@@ -182,7 +158,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 		String location;
 		ComponentRequest rq = cr.getRequest();
 		if (IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID())) {
-			IFeatureModel model = getBestFeature(rq.getName(), vd, null);
+			IFeatureModel model = PDETargetPlatform.getBestFeature(rq.getName(), vd, null);
 			if (model == null)
 				return null;
 			location = model.getInstallLocation();

@@ -58,7 +58,45 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 
 	private static ITargetHandle currentHandle;
 
-	static BundleInfo getBestPlugin(final String componentName, final VersionRange versionDesignator, final NodeQuery query) {
+	public static IFeatureModel getBestFeature(final String componentName, final VersionRange versionDesignator, final NodeQuery query) {
+		return doWithActivePlatform(new ITargetDefinitionOperation<IFeatureModel>() {
+			@Override
+			public IFeatureModel run(ITargetDefinition target) throws CoreException {
+				IFeatureModel[] allFeatures = target.getAllFeatures();
+				if (allFeatures == null)
+					return null;
+
+				IFeatureModel candidate = null;
+				Version candidateVersion = null;
+				for (IFeatureModel featureModel : allFeatures) {
+					IFeature feature = featureModel.getFeature();
+					if (!componentName.equals(feature.getId()))
+						continue;
+
+					Version v = Version.create(feature.getVersion());
+					if (v == null) {
+						if (candidate == null && versionDesignator == null)
+							candidate = featureModel;
+						continue;
+					}
+
+					if (!(versionDesignator == null || versionDesignator.isIncluded(v))) {
+						if (query != null)
+							query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0, versionDesignator));
+						continue;
+					}
+
+					if (candidateVersion == null || candidateVersion.compareTo(v) < 0) {
+						candidate = featureModel;
+						candidateVersion = v;
+					}
+				}
+				return candidate;
+			}
+		});
+	}
+
+	public static BundleInfo getBestPlugin(final String componentName, final VersionRange versionDesignator, final NodeQuery query) {
 		return doWithActivePlatform(new ITargetDefinitionOperation<BundleInfo>() {
 			@Override
 			public BundleInfo run(ITargetDefinition target) throws CoreException {
@@ -68,7 +106,7 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 
 				BundleInfo candidate = null;
 				Version candidateVersion = null;
-				for (IResolvedBundle bundle : target.getAllBundles()) {
+				for (IResolvedBundle bundle : allBundles) {
 					BundleInfo bi = bundle.getBundleInfo();
 					if (!componentName.equals(bi.getSymbolicName()))
 						continue;
