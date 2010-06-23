@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.P2Constants;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.IAttribute;
@@ -84,7 +85,12 @@ public class CSpecBuilder implements ICSpecData {
 	public CSpecBuilder() {
 	}
 
+	@Deprecated
 	public CSpecBuilder(IMetadataRepository mdr, IInstallableUnit iu) throws CoreException {
+		this(RMContext.getGlobalPropertyAdditions(), mdr, iu);
+	}
+
+	public CSpecBuilder(Map<String, ? extends Object> properties, IMetadataRepository mdr, IInstallableUnit iu) throws CoreException {
 		String id = iu.getId();
 		boolean isFeature = id.endsWith(P2Constants.FEATURE_GROUP);
 		if (isFeature) {
@@ -118,9 +124,16 @@ public class CSpecBuilder implements ICSpecData {
 				throw BuckminsterException.fromMessage("Unable to convert requirement filter %s into an LDAP filter", filterExpr); //$NON-NLS-1$
 		}
 
-		boolean hasBogusFragments = isFeature && ("org.eclipse.platform".equals(id) //$NON-NLS-1$
-				|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
-		|| "org.eclipse.rcp".equals(id)); //$NON-NLS-1$
+		boolean hasBogusFragments = false;
+		if (isFeature) {
+			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
+			Object tmp = properties.get("buckminster.handle.incomplete.platform.features"); //$NON-NLS-1$
+			hasBogusFragments = tmp instanceof String //
+					&& "true".equalsIgnoreCase((String) tmp) //$NON-NLS-1$
+					&& ("org.eclipse.platform".equals(id) //$NON-NLS-1$
+							|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
+					|| "org.eclipse.rcp".equals(id)); //$NON-NLS-1$
+		}
 
 		for (IRequirement cap : iu.getRequirements()) {
 			// We only bother with direct dependencies to other IU's here

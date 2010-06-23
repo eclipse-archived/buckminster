@@ -32,8 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.p2.metadata.expression.ExpressionUtil;
-import org.eclipse.equinox.p2.metadata.expression.IExpression;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
@@ -42,8 +40,6 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 
 public class P2ReaderType extends CatalogReaderType {
-	private static final IExpression iuQuery = ExpressionUtil.parse("id == $0 && version == $1"); //$NON-NLS-1$
-
 	public static IArtifactRepository getArtifactRepository(Provider provider, Map<String, ? extends Object> properties, IProgressMonitor monitor)
 			throws CoreException {
 		return getArtifactRepository(getURI(provider, properties), monitor);
@@ -137,7 +133,8 @@ public class P2ReaderType extends CatalogReaderType {
 		if (iu == null)
 			throw new MissingComponentException(providerMatch.getNodeQuery().getComponentRequest().toString());
 		IMetadataRepository mdr = getMetadataRepository(providerMatch, subMon.newChild(10));
-		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(new CSpecBuilder(mdr, iu), false)));
+		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(new CSpecBuilder(providerMatch
+				.getNodeQuery().getProperties(), mdr, iu), false)));
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
+import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -222,10 +223,13 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		PluginModelManager manager = PDECore.getDefault().getModelManager();
 
-		String id = feature.getId();
-		boolean hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
-				|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
-				|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
+		boolean hasBogusFragments = false;
+		if (VersionConsolidator.getBooleanProperty(getProperties(), "buckminster.handle.incomplete.platform.features", false)) { //$NON-NLS-1$
+			String id = feature.getId();
+			hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
+					|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
+					|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
+		}
 		for (IFeaturePlugin plugin : plugins) {
 			if (!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch))) {
 				// Only include this if we can find it in the target platform
@@ -236,8 +240,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 
 			if (hasBogusFragments && (plugin.getOS() != null || plugin.getWS() != null || plugin.getArch() != null)) {
 				// Only include this if we can find it in the target platform.
-				// See
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
+				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
 				//
 				if (manager.findEntry(plugin.getId()) == null)
 					continue;
