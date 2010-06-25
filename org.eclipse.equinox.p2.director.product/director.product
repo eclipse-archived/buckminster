@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="P2 Director" id="org.eclipse.equinox.p2.director.product" application="org.eclipse.equinox.p2.director" version="1.0.0.qualifier" useFeatures="true">
+<product name="P2 Director" id="org.eclipse.equinox.p2.director.product" application="org.eclipse.equinox.p2.director" version="1.2.0.qualifier" useFeatures="true" includeLaunchers="true">
 
-   <configIni use="custom" path="/org.eclipse.equinox.p2.director.product/config.ini"/>
+   <configIni use="default">
+      <linux>/org.eclipse.equinox.p2.director.product/config.ini</linux>
+      <macosx>/org.eclipse.equinox.p2.director.product/config.ini</macosx>
+      <solaris>/org.eclipse.equinox.p2.director.product/config.ini</solaris>
+      <win32>/org.eclipse.equinox.p2.director.product/config.ini</win32>
+   </configIni>
 
    <launcherArgs>
    </launcherArgs>
