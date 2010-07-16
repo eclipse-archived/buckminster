@@ -224,12 +224,17 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		PluginModelManager manager = PDECore.getDefault().getModelManager();
 
 		boolean hasBogusFragments = false;
+		String id = feature.getId();
 		if (VersionConsolidator.getBooleanProperty(getProperties(), "buckminster.handle.incomplete.platform.features", false)) { //$NON-NLS-1$
-			String id = feature.getId();
 			hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
 					|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
 					|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
+		} else {
+			// We still need this here due to
+			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=319345
+			hasBogusFragments = "org.eclipse.equinox.executable".equals(id); //$NON-NLS-1$
 		}
+
 		for (IFeaturePlugin plugin : plugins) {
 			if (!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch))) {
 				// Only include this if we can find it in the target platform

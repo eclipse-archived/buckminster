@@ -128,11 +128,16 @@ public class CSpecBuilder implements ICSpecData {
 		if (isFeature) {
 			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
 			Object tmp = properties.get("buckminster.handle.incomplete.platform.features"); //$NON-NLS-1$
-			hasBogusFragments = tmp instanceof String //
-					&& "true".equalsIgnoreCase((String) tmp) //$NON-NLS-1$
-					&& ("org.eclipse.platform".equals(id) //$NON-NLS-1$
-							|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
-					|| "org.eclipse.rcp".equals(id)); //$NON-NLS-1$
+			if (tmp instanceof String && "true".equalsIgnoreCase((String) tmp)) { //$NON-NLS-1$
+				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
+				hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
+						|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
+						|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
+			} else {
+				// We still need this here due to
+				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=319345
+				hasBogusFragments = "org.eclipse.equinox.executable".equals(id); //$NON-NLS-1$
+			}
 		}
 
 		for (IRequirement cap : iu.getRequirements()) {
