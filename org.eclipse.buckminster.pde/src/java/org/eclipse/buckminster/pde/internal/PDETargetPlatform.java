@@ -145,6 +145,11 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 					return null;
 				if (currentHandle == null || !activeHandle.equals(currentHandle)) {
 					currentDefinition = activeHandle.getTargetDefinition();
+					if (!currentDefinition.isResolved()) {
+						IStatus status = currentDefinition.resolve(new NullProgressMonitor());
+						if (status.getSeverity() == IStatus.ERROR)
+							throw new CoreException(status);
+					}
 					currentHandle = activeHandle;
 				}
 			}
