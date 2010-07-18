@@ -7,6 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde.prefs;
 
+import java.io.File;
+
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -84,6 +86,10 @@ public class TargetPlatformPathHandler extends BasicPreferenceHandler {
 				IBundleContainer container = service.newDirectoryContainer(targetPlatform);
 				target.setBundleContainers(new IBundleContainer[] { container });
 				target.setName("Directory " + targetPlatform); //$NON-NLS-1$
+				File tpDir = new File(targetPlatform);
+				tpDir.mkdirs();
+				if (!tpDir.isDirectory())
+					throw new BackingStoreException("Unable to create directory: " + targetPlatform); //$NON-NLS-1$
 			}
 
 			service.saveTargetDefinition(target);
