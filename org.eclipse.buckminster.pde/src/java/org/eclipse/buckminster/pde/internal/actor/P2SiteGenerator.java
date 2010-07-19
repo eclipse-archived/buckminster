@@ -425,7 +425,7 @@ public class P2SiteGenerator extends AbstractActor {
 		}
 
 		run(ctx, siteDefinerFile, ctx.getComponentLocation().toFile(), productConfigFiles, siteDir, ctx.getProperties());
-		if (siteDir != outputDir) {
+		if (siteDir != null && siteDir != outputDir) {
 			// Zip the content of the siteDir. The name of the zip should
 			// be the same as the name of the input zip.
 			//
