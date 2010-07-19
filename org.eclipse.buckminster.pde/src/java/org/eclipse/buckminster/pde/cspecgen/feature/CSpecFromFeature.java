@@ -116,6 +116,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 
 		GroupBuilder sourceFeatureJars = cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_JARS, true); // including
 																								// self
+		sourceFeatureJars.setFilter(SOURCE_FILTER);
 		sourceFeatureJars.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JAR);
 		sourceFeatureJars.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS);
 

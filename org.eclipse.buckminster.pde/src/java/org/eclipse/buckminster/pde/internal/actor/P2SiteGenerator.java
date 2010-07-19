@@ -187,6 +187,9 @@ public class P2SiteGenerator extends AbstractActor {
 
 		IFeatureModel launcherFeature = PDETargetPlatform.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE, null, null);
 		if (launcherFeature == null)
+			// The rcp feature includes all launchers
+			launcherFeature = PDETargetPlatform.getBestFeature(CSpecGenerator.RCP_FEATURE, null, null);
+		if (launcherFeature == null)
 			launcherFeature = PDETargetPlatform.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE_3_2, null, null);
 
 		if (launcherFeature != null)

@@ -150,6 +150,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final String LAUNCHER_FEATURE = "org.eclipse.equinox.executable"; //$NON-NLS-1$
 
+	public static final String RCP_FEATURE = "org.eclipse.rcp"; //$NON-NLS-1$
+
 	public static final Filter SOURCE_FILTER;
 
 	public static final Filter SIGNING_ENABLED;
