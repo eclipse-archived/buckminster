@@ -13,35 +13,35 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="org.eclipse.platform">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(use.build=RBUILD)">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(use.build=RBUILD)">
       <rm:uri format="http://download.eclipse.org/eclipse/updates/3.5"/>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(use.build=MBUILD)">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(use.build=MBUILD)">
       <rm:uri format="http://download.eclipse.org/eclipse/updates/3.5milestones"/>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(use.build=IBUILD)">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(use.build=IBUILD)">
       <rm:uri format="http://download.eclipse.org/eclipse/updates/3.5-I-builds"/>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(use.build=NBUILD)">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(use.build=NBUILD)">
       <rm:uri format="http://download.eclipse.org/eclipse/updates/3.5-N-builds"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="org.eclipse.galileo">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="eclipse.import" source="false" mutable="false">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false">
       <rm:uri format="http://download.eclipse.org/releases/galileo"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="orbit">
-    <rm:provider componentTypes="osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(use.build=RBUILD)">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(use.build=RBUILD)">
       <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/updateSite"/>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(use.build=MBUILD)">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(use.build=MBUILD)">
       <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/S20100120144102/updateSite"/>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(use.build=IBUILD)">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(use.build=IBUILD)">
       <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/I20100120144102/updateSite"/>
     </rm:provider>
-    <rm:provider componentTypes="osgi.bundle" readerType="eclipse.import" source="false" mutable="false" resolutionFilter="(use.build=NBUILD)">
+    <rm:provider componentTypes="osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(use.build=NBUILD)">
       <rm:uri format="http://download.eclipse.org/tools/orbit/downloads/drops/M20100114021427/updateSite"/>
     </rm:provider>
   </rm:searchPath>
