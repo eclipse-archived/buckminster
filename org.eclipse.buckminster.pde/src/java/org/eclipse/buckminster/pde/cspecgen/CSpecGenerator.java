@@ -211,7 +211,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			lower = VersionHelper.replaceQualifier(version, null);
 
 		Version upper = limitUpperWithMatchRule(version, matchRule, qualifierTag);
-		if (matchRule == MatchRule.PERFECT)
+		if (matchRule == MatchRule.PERFECT || matchRule == MatchRule.NONE)
 			return new VersionRange(lower, true, upper, !qualifierTag);
 
 		switch (retainLowerBound) {
@@ -260,6 +260,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			case COMPATIBLE:
 				v = Version.createOSGi(ov.getMajor() + 1, 0, 0);
 				break;
+			case NONE:
 			case PERFECT:
 				if (qualifierTag)
 					// A non yet expanded qualifier was encountered.
