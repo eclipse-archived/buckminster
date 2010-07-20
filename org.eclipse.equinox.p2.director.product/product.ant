@@ -39,11 +39,14 @@
 			<arg value="${profile}"/>
 			<arg value="-i"/>
 			<arg value="${iu}"/>
+			<arg value="-p2.os"/>
+			<arg value="linux"/>
+			<arg value="-p2.ws"/>
+			<arg value="gtk"/>
+			<arg value="-p2.arch"/>
+			<arg value="x86"/>
 			<!-- jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/ -->
 		</java>
-
-		<!-- Overwrite the generated configuration file -->
-		<copy file="${buckminster.home}/config.ini" todir="${destination}/configuration" overwrite="true"/>
 
 		<!-- Copy needed platform specific fragments -->
 		<copy todir="${destination}/plugins">
@@ -57,6 +60,10 @@
 
 		<!-- This app can do without the P2 profile and cache -->
 		<delete dir="${destination}/p2"/>
+		
+		<!-- No need for GUI specifics -->
+		<delete file="${destination}/libcairo-swt.so"/>
+		<delete file="${destination}/eclipse"/>
 	</target>
 
 	<target name="create.product.zip">
