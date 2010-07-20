@@ -11,6 +11,7 @@ import java.io.File;
 
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
@@ -87,9 +88,12 @@ public class TargetPlatformPathHandler extends BasicPreferenceHandler {
 				target.setBundleContainers(new IBundleContainer[] { container });
 				target.setName("Directory " + targetPlatform); //$NON-NLS-1$
 				File tpDir = new File(targetPlatform);
-				tpDir.mkdirs();
-				if (!tpDir.isDirectory())
-					throw new BackingStoreException("Unable to create directory: " + targetPlatform); //$NON-NLS-1$
+				if (!tpDir.isDirectory()) {
+					PDEPlugin.getLogger().warning(NLS.bind(Messages.tpdir_0_does_not_exist, targetPlatform));
+					tpDir.mkdirs();
+					if (!tpDir.isDirectory())
+						throw new BackingStoreException(NLS.bind(Messages.unable_to_create_tpdir_0, targetPlatform));
+				}
 			}
 
 			service.saveTargetDefinition(target);

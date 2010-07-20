@@ -16,6 +16,8 @@ public class Messages extends NLS {
 
 	public static String not_an_OSGi_manifest;
 
+	public static String unable_to_create_tpdir_0;
+
 	public static String unable_to_manifest_from_0;
 
 	public static String manifest_has_malformed_LDAP_rule_for;
@@ -151,6 +153,8 @@ public class Messages extends NLS {
 	public static String Found_no_baseline_named_0;
 
 	public static String No_baselines_found_in_workspace;
+
+	public static String tpdir_0_does_not_exist;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
