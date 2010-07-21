@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.extol.test.repo.feature"
+      label="Feature"
+      version="1.0.0.qualifier"
+      provider-name="EXTOL">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="com.extol.test.three.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="com.extol.test.two.feature"
+         version="0.0.0"/>
+
+</feature>

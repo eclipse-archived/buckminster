@@ -46,4 +46,5 @@ Export-Package: org.eclipse.buckminster.pde,
  org.eclipse.buckminster.pde.internal;x-friends:="org.eclipse.buckminster.pde.test",
  org.eclipse.buckminster.pde.mapfile,
  org.eclipse.buckminster.pde.mapprovider,
+ org.eclipse.buckminster.pde.prefs,
  org.eclipse.buckminster.pde.tasks;x-friends:="org.eclipse.buckminster.pde.test"
