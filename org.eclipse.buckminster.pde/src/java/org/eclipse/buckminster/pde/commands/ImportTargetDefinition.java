@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde.commands;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
@@ -14,12 +15,14 @@ import java.util.List;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
-import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
-import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.commands.WorkspaceCommand;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -27,8 +30,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.equinox.p2.core.IProvisioningAgent;
+import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.pde.internal.core.target.DirectoryBundleContainer;
+import org.eclipse.pde.internal.core.target.IUBundleContainer;
 import org.eclipse.pde.internal.core.target.TargetDefinitionPersistenceHelper;
+import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
 import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
 import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
@@ -74,17 +85,21 @@ public class ImportTargetDefinition extends WorkspaceCommand {
 
 	@Override
 	protected void handleUnparsed(String[] unparsed) throws Exception {
-		if (unparsed.length > 1)
-			throw new SimpleErrorExitException(Messages.Too_many_arguments);
-		if (unparsed.length < 1)
-			throw new SimpleErrorExitException(Messages.Too_few_arguments);
+		// if (unparsed.length > 1)
+		// throw new
+		// SimpleErrorExitException(org.eclipse.buckminster.core.Messages.Too_many_arguments);
+		// if (unparsed.length < 1)
+		// throw new
+		// SimpleErrorExitException(org.eclipse.buckminster.core.Messages.Too_few_arguments);
 		setTargetPath(unparsed[0]);
 	}
 
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception {
-		if (targetPath == null)
+		if (targetPath == null) {
+			MonitorUtils.complete(monitor);
 			return 0;
+		}
 
 		Buckminster bucky = Buckminster.getDefault();
 		ITargetPlatformService service = bucky.getService(ITargetPlatformService.class);
@@ -116,12 +131,81 @@ public class ImportTargetDefinition extends WorkspaceCommand {
 		} else
 			target = handle.getTargetDefinition();
 
+		// Perform some sanity checks
+		IBundleContainer[] containers = target.getBundleContainers();
+		if (containers == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.target_0_has_no_containers, targetPath));
+
+		SubMonitor mon = SubMonitor.convert(monitor, containers.length * 100 + (importAsActive ? 0 : 50));
+		for (IBundleContainer container : containers) {
+			SubMonitor child = mon.newChild(50);
+			if (container instanceof IUBundleContainer)
+				verifyIUBundleContainer(target, (IUBundleContainer) container, child);
+			else if (container instanceof DirectoryBundleContainer)
+				verifyDirectoryBundleContainer(target, (DirectoryBundleContainer) container, child);
+			else
+				verifyBundleContainer(target, container, child);
+			MonitorUtils.testCancelStatus(mon);
+		}
+
 		if (importAsActive) {
 			LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(target);
-			IStatus status = job.run(monitor);
+			IStatus status = job.run(mon.newChild(50));
 			if (status.getSeverity() == IStatus.ERROR)
 				throw new CoreException(status);
 		}
+		MonitorUtils.done(monitor);
 		return 0;
+	}
+
+	private void verifyBundleContainer(ITargetDefinition target, IBundleContainer container, SubMonitor monitor) throws CoreException {
+		IStatus status = container.resolve(target, monitor);
+		if (status.getSeverity() == IStatus.ERROR)
+			throw new CoreException(status);
+	}
+
+	private void verifyDirectoryBundleContainer(ITargetDefinition target, DirectoryBundleContainer container, SubMonitor monitor)
+			throws CoreException {
+		String path = container.getLocation(true);
+		if (path == null)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.dc_of_target_0_lacks_location, targetPath));
+
+		File tpDir = new File(path);
+		if (!tpDir.exists()) {
+			PDEPlugin.getLogger().warning(NLS.bind(Messages.tpdir_0_does_not_exist, path));
+			tpDir.mkdirs();
+			if (!tpDir.isDirectory())
+				throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_create_tpdir_0, path));
+		}
+		verifyBundleContainer(target, container, monitor);
+	}
+
+	private void verifyIUBundleContainer(ITargetDefinition target, IUBundleContainer container, SubMonitor monitor) throws CoreException {
+		URI[] repositories = container.getRepositories();
+		if (repositories == null || repositories.length == 0)
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.ssc_of_target_0_lacks_repository, targetPath));
+
+		Buckminster bucky = Buckminster.getDefault();
+		IProvisioningAgent agent = bucky.getService(IProvisioningAgent.class);
+		IMetadataRepositoryManager repoManager = (IMetadataRepositoryManager) agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
+		int top = repositories.length;
+		monitor.beginTask(null, 100 + top * 100);
+		MultiStatus problems = new MultiStatus(PDEPlugin.getPluginId(), 0,
+				NLS.bind(Messages.unable_to_load_all_units_for_ssc_of_target_0, targetPath), null);
+		for (int idx = 0; idx < top; ++idx) {
+			try {
+				repoManager.loadRepository(repositories[idx], monitor.newChild(100));
+			} catch (CoreException e) {
+				problems.add(e.getStatus());
+			}
+		}
+		try {
+			verifyBundleContainer(target, container, monitor.newChild(100));
+		} catch (CoreException e) {
+			problems.add(e.getStatus());
+		}
+		if (problems.getSeverity() == IStatus.ERROR)
+			throw new CoreException(problems);
+		monitor.done();
 	}
 }
