@@ -1,6 +1,7 @@
 package org.eclipse.buckminster.pde.test;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
@@ -30,9 +31,16 @@ public class PublishMultiVersionsTest extends PDETestCase
 	public void testMultiVersions() throws Exception
 	{
 		File projectFolder = getTestData("multiver");
-		File[] dirList = projectFolder.listFiles();
-		assertFalse(dirList == null);
-		assertTrue(dirList.length == 6);
+		File[] dirList = projectFolder.listFiles(new FileFilter()
+		{
+			@Override
+			public boolean accept(File pathname)
+			{
+				return !pathname.getName().startsWith(".");
+			}
+		});
+		assertTrue(projectFolder.getAbsolutePath() + " is not a directory", dirList != null);
+		assertEquals("Incorrect number of folders in directory " + projectFolder.getAbsolutePath(), 6, dirList.length);
 
 		IProgressMonitor monitor = new NullProgressMonitor();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -71,7 +79,7 @@ public class PublishMultiVersionsTest extends PDETestCase
 		// Assert that we build OK
 		workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
 		IMarker[] markers = wsRoot.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-		assertTrue(markers.length == 0);
+		assertEquals("We've got problem markers", 0, markers.length);
 
 		// Load the properties
 		IProject repoFeature = wsRoot.getProject("com.extol.test.repo.feature");
@@ -85,8 +93,8 @@ public class PublishMultiVersionsTest extends PDETestCase
 		// Assert that both bundles were created and published
 		result.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		IFile one_1_0_0 = result.getFile("com.extol.test.repo.feature_1.0.0-eclipse.feature/site.p2/plugins/com.extol.test.one_1.0.0.jar");
-		assertTrue(one_1_0_0.exists());
+		assertTrue("com.extol.test.one_1.0.0 is not published", one_1_0_0.exists());
 		IFile one_2_0_0 = result.getFile("com.extol.test.repo.feature_1.0.0-eclipse.feature/site.p2/plugins/com.extol.test.one_2.0.0.jar");
-		assertTrue(one_2_0_0.exists());
+		assertTrue("com.extol.test.one_2.0.0 is not published", one_2_0_0.exists());
 	}
 }
