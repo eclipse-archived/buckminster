@@ -19,6 +19,7 @@
 
    <url>
       <update label="Buckminster Galileo Milestones" url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates-3.6/&amp;protocol=http&amp;format=xml"/>
+      <discovery label="Eclipse Updates" url="http://download.eclipse.org/eclipse/updates/3.6"/>
    </url>
 
    <includes
