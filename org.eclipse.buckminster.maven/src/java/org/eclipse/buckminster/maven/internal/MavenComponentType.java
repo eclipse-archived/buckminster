@@ -309,9 +309,9 @@ public class MavenComponentType extends AbstractComponentType {
 
 		try {
 			cspec.addDependency(depBld);
-			archives.addExternalPrerequisite(componentName, ID, WellKnownExports.JAVA_BINARIES);
+			archives.addExternalPrerequisite(depBld, WellKnownExports.JAVA_BINARIES);
 		} catch (PrerequisiteAlreadyDefinedException e) {
-			ComponentRequestBuilder oldDep = cspec.getRequiredDependency(depBld.getName(), depBld.getComponentTypeID());
+			ComponentRequestBuilder oldDep = cspec.getRequiredDependency(depBld);
 			if (!Trivial.equalsAllowNull(vd, oldDep.getVersionRange()))
 				MavenPlugin.getLogger().warning(e.getMessage());
 		}
@@ -478,7 +478,7 @@ public class MavenComponentType extends AbstractComponentType {
 			} else {
 				if (range.getIncludeMaximum()) {
 					// 1.2.3.SNAPSHOT] -> 1.2.3]
-					// 
+					//
 					// The upper bound is included and a SNAPSHOT
 					// can resolve to a release.
 					//

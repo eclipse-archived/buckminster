@@ -160,8 +160,8 @@ public abstract class URLUtils {
 
 		uriPath = uriPath.removeLastSegments(1).addTrailingSeparator();
 		try {
-			return new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uriPath.toPortableString(), uri.getQuery(), uri
-					.getFragment());
+			return new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uriPath.toPortableString(), uri.getQuery(),
+					uri.getFragment());
 		} catch (URISyntaxException e) {
 			// Shouldn't happen since we started with a valid URI
 			//
@@ -226,7 +226,7 @@ public abstract class URLUtils {
 
 		boolean change = false;
 		String path = uri.getPath();
-		if (asFolder && !path.endsWith("/")) //$NON-NLS-1$
+		if (asFolder && path != null && !path.endsWith("/")) //$NON-NLS-1$
 		{
 			path += "/"; //$NON-NLS-1$
 			change = true;

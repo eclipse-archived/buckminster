@@ -8,10 +8,12 @@
 package org.eclipse.buckminster.core.cspec.builder;
 
 import org.eclipse.buckminster.core.cspec.IAttribute;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
 /**
  * @author Thomas Hallgren
@@ -23,8 +25,8 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder {
 		super(cspecBuilder);
 	}
 
-	public final void addExternalPrerequisite(String name, String type, String attr) throws PrerequisiteAlreadyDefinedException {
-		addPrerequisite(createPrerequisite(name, type, attr, null, null));
+	public final void addExternalPrerequisite(IComponentRequest request, String attr) throws PrerequisiteAlreadyDefinedException {
+		addPrerequisite(createPrerequisite(request.getName(), request.getComponentTypeID(), request.getVersionRange(), attr, null, null));
 	}
 
 	public final void addLocalPrerequisite(AttributeBuilder attr) throws PrerequisiteAlreadyDefinedException {
@@ -32,15 +34,15 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder {
 	}
 
 	public final void addLocalPrerequisite(String attr) throws PrerequisiteAlreadyDefinedException {
-		addPrerequisite(createPrerequisite(null, null, attr, null, null));
+		addPrerequisite(createPrerequisite(null, null, null, attr, null, null));
 	}
 
 	public final void addLocalPrerequisite(String attr, String alias) throws PrerequisiteAlreadyDefinedException {
-		addPrerequisite(createPrerequisite(null, null, attr, alias, null));
+		addPrerequisite(createPrerequisite(null, null, null, attr, alias, null));
 	}
 
 	public final void addLocalPrerequisite(String attr, String alias, Filter filter) throws PrerequisiteAlreadyDefinedException {
-		addPrerequisite(createPrerequisite(null, null, attr, alias, filter));
+		addPrerequisite(createPrerequisite(null, null, null, attr, alias, filter));
 	}
 
 	public void addPrerequisite(PrerequisiteBuilder prerequisite) throws PrerequisiteAlreadyDefinedException {
@@ -83,10 +85,11 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder {
 		publ = flag;
 	}
 
-	private PrerequisiteBuilder createPrerequisite(String component, String type, String name, String alias, Filter filter) {
+	private PrerequisiteBuilder createPrerequisite(String component, String type, VersionRange versionRange, String name, String alias, Filter filter) {
 		PrerequisiteBuilder bld = createPrerequisiteBuilder();
 		bld.setComponentName(component);
 		bld.setComponentType(type);
+		bld.setVersionRange(versionRange);
 		bld.setName(name);
 		bld.setAlias(alias);
 		bld.setFilter(filter);

@@ -12,8 +12,10 @@ import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
+import org.eclipse.core.runtime.CoreException;
 import org.osgi.framework.InvalidSyntaxException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -35,6 +37,11 @@ public class PrerequisiteHandler extends CSpecElementHandler {
 		PrerequisiteBuilder builder = (PrerequisiteBuilder) this.getBuilder();
 		builder.setComponentName(getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT));
 		builder.setComponentType(getOptionalStringValue(attrs, Prerequisite.ATTR_COMPONENT_TYPE));
+		try {
+			builder.setVersionRange(VersionHelper.parseVersionRangeAttributes(attrs));
+		} catch (CoreException e) {
+			throw new SAXParseException(e.getMessage(), this.getDocumentLocator());
+		}
 		builder.setContributor(getOptionalBooleanValue(attrs, Prerequisite.ATTR_CONTRIBUTOR, true));
 		builder.setAlias(getOptionalStringValue(attrs, Prerequisite.ATTR_ALIAS));
 		builder.setExcludePattern(getOptionalPatternValue(attrs, Prerequisite.ATTR_EXCLUDE_PATTERN));

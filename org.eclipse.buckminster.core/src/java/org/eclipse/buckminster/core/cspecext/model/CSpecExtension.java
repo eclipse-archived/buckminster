@@ -23,6 +23,7 @@ import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
+import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -77,12 +78,12 @@ public class CSpecExtension {
 
 	public void alterCSpec(CSpecBuilder cspecBuilder) throws CoreException {
 		for (String removedDep : removedDependencies) {
-			cspecBuilder.getRequiredDependency(removedDep, null);
+			cspecBuilder.getRequiredDependency(new ComponentRequest(removedDep, null, null));
 			cspecBuilder.removeDependency(removedDep);
 		}
 
 		for (AlterDependency alterDep : alteredDependencies.values())
-			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep.getName(), alterDep.getComponentTypeID()));
+			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep));
 
 		Collection<? extends IComponentRequest> addedDeps = base.getDependencies();
 		for (IComponentRequest addedDep : addedDeps)

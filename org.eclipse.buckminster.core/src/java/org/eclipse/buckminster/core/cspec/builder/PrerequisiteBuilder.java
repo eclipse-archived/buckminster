@@ -7,12 +7,14 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
-import java.util.Map;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
 /**
  * @author Thomas Hallgren
@@ -25,6 +27,8 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 	private String component;
 
 	private String componentType;
+
+	private VersionRange versionRange;
 
 	private boolean contributor = true;
 
@@ -45,6 +49,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		alias = null;
 		component = null;
 		componentType = null;
+		versionRange = null;
 		contributor = true;
 		excludePattern = null;
 		includePattern = null;
@@ -94,11 +99,17 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		return includePattern;
 	}
 
+	@Override
+	public VersionRange getVersionRange() {
+		return versionRange;
+	}
+
 	public void initFrom(IPrerequisite prerequisite) {
 		super.initFrom(prerequisite.getName());
 		alias = prerequisite.getAlias();
 		component = prerequisite.getComponentName();
 		componentType = prerequisite.getComponentType();
+		versionRange = prerequisite.getVersionRange();
 		contributor = prerequisite.isContributor();
 		excludePattern = prerequisite.getExcludePattern();
 		includePattern = prerequisite.getIncludePattern();
@@ -148,6 +159,10 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		this.includePattern = includePattern;
 	}
 
+	public void setVersionRange(VersionRange versionRange) {
+		this.versionRange = versionRange;
+	}
+
 	@Override
 	public String toString() {
 		if (component == null)
@@ -161,11 +176,49 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		}
 		bld.append('#');
 		bld.append(getName());
+		if (versionRange != null) {
+			bld.append('/');
+			bld.append(VersionHelper.getHumanReadable(versionRange));
+		}
 		return bld.toString();
 	}
 
-	void finalWrapUp(Map<String, ComponentRequestBuilder> dependencies) {
-		if (componentType != null && dependencies.containsKey(component))
-			componentType = null;
+	void finalWrapUp(List<ComponentRequestBuilder> dependencies) {
+		if (componentType != null || versionRange != null) {
+			// Count number of hits on this type and number of hits total
+			int hitsTotal = 0;
+			int hitsOnType = 0;
+			int hitsOnRange = 0;
+			int idx = dependencies.size();
+			while (--idx >= 0) {
+				ComponentRequestBuilder dep = dependencies.get(idx);
+				if (component.equals(dep.getName())) {
+					++hitsTotal;
+					if (componentType != null) {
+						if (componentType.equals(dep.getComponentTypeID())) {
+							++hitsOnType;
+							if (versionRange != null) {
+								if (dep.getVersionRange() != null && dep.getVersionRange().intersect(versionRange) != null) {
+									++hitsOnRange;
+								}
+							}
+						}
+						continue;
+					}
+					if (versionRange != null) {
+						if (dep.getVersionRange() != null && dep.getVersionRange().intersect(versionRange) != null)
+							++hitsOnRange;
+						else
+							continue;
+					}
+
+				}
+			}
+			// Remove unnecessary qualification
+			if (hitsOnType == hitsTotal)
+				componentType = null;
+			if (hitsOnRange == hitsTotal)
+				versionRange = null;
+		}
 	}
 }

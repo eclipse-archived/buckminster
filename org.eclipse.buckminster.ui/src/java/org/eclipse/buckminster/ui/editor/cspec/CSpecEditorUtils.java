@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.ui.editor.EditorUtils;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
 /**
  * @author Karel Brezina
@@ -59,12 +60,28 @@ public class CSpecEditorUtils {
 		@Override
 		public int compare(PrerequisiteBuilder o1, PrerequisiteBuilder o2) {
 			int result = Trivial.compareAllowNull(o1.getComponentName(), o2.getComponentName());
+			if (result != 0)
+				return result;
 
+			result = Trivial.compareAllowNull(o1.getComponentType(), o2.getComponentType());
+			if (result != 0)
+				return result;
+
+			VersionRange v1 = o1.getVersionRange();
+			VersionRange v2 = o2.getVersionRange();
+			if (v1 == null) {
+				if (v2 != null)
+					result = 1;
+			} else {
+				if (v2 == null)
+					result = -1;
+				else
+					result = v1.toString().compareTo(v2.toString());
+			}
 			if (result != 0)
 				return result;
 
 			result = Trivial.compareAllowNull(o1.getName(), o2.getName());
-
 			if (result != 0)
 				return result;
 

@@ -9,6 +9,7 @@ import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
 public interface ICSpecData extends IAdaptable {
 	IAttribute getAttribute(String name);
@@ -21,7 +22,14 @@ public interface ICSpecData extends IAdaptable {
 
 	Collection<? extends IComponentRequest> getDependencies();
 
+	/**
+	 * @deprecated Use
+	 *             {@link #getDependency(String, String, VersionRange)}
+	 */
+	@Deprecated
 	IComponentRequest getDependency(String dependencyName, String componentType) throws MissingDependencyException;
+
+	IComponentRequest getDependency(String dependencyName, String componentType, VersionRange range) throws MissingDependencyException;
 
 	Documentation getDocumentation();
 

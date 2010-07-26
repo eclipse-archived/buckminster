@@ -25,6 +25,7 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.equinox.frameworkadmin.BundleInfo;
@@ -134,6 +135,16 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		});
 	}
 
+	public static void setTargetActive(ITargetDefinition target, IProgressMonitor monitor) throws CoreException {
+		LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(target);
+		IStatus status = job.run(monitor);
+		if (status.getSeverity() == IStatus.ERROR)
+			throw new CoreException(status);
+		currentDefinition = target;
+		currentHandle = target.getHandle();
+
+	}
+
 	private static <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation) {
 		Buckminster bucky = Buckminster.getDefault();
 		ITargetPlatformService service = null;
@@ -143,14 +154,17 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 				ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
 				if (activeHandle == null)
 					return null;
-				if (currentHandle == null || !activeHandle.equals(currentHandle)) {
+
+				// We need to cache the definition. If we don't, it will need to
+				// resolve each time since it's created from scratch.
+				if (currentDefinition == null || currentHandle == null || !activeHandle.equals(currentHandle)) {
 					currentDefinition = activeHandle.getTargetDefinition();
-					if (!currentDefinition.isResolved()) {
-						IStatus status = currentDefinition.resolve(new NullProgressMonitor());
-						if (status.getSeverity() == IStatus.ERROR)
-							throw new CoreException(status);
-					}
 					currentHandle = activeHandle;
+				}
+				if (!currentDefinition.isResolved()) {
+					IStatus status = currentDefinition.resolve(new NullProgressMonitor());
+					if (status.getSeverity() == IStatus.ERROR)
+						throw new CoreException(status);
 				}
 			}
 			return operation.run(currentDefinition);

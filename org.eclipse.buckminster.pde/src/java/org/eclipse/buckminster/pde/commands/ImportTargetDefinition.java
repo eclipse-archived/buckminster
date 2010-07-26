@@ -19,6 +19,7 @@ import org.eclipse.buckminster.core.commands.WorkspaceCommand;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
+import org.eclipse.buckminster.pde.internal.PDETargetPlatform;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -43,7 +44,6 @@ import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
 import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
 import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
-import org.eclipse.pde.internal.core.target.provisional.LoadTargetDefinitionJob;
 
 @SuppressWarnings("restriction")
 public class ImportTargetDefinition extends WorkspaceCommand {
@@ -148,12 +148,8 @@ public class ImportTargetDefinition extends WorkspaceCommand {
 			MonitorUtils.testCancelStatus(mon);
 		}
 
-		if (importAsActive) {
-			LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(target);
-			IStatus status = job.run(mon.newChild(50));
-			if (status.getSeverity() == IStatus.ERROR)
-				throw new CoreException(status);
-		}
+		if (importAsActive)
+			PDETargetPlatform.setTargetActive(target, mon.newChild(50));
 		MonitorUtils.done(monitor);
 		return 0;
 	}

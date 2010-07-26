@@ -1,4 +1,4 @@
-#Wed Nov 26 11:49:39 CET 2008
+#Mon Jul 26 10:59:03 CEST 2010
 cleanup.add_default_serial_version_id=true
 cleanup.add_generated_serial_version_id=false
 cleanup.add_missing_annotations=false
@@ -53,7 +53,7 @@ cleanup_profile=_Buckminster Cleanups
 cleanup_settings_version=2
 eclipse.preferences.version=1
 editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup=true
-formatter_profile=_Buckminster Coding Conventions
+formatter_profile=_'Buckminster Coding Conventions'
 formatter_settings_version=11
 org.eclipse.jdt.ui.exception.name=e
 org.eclipse.jdt.ui.gettersetter.use.is=true

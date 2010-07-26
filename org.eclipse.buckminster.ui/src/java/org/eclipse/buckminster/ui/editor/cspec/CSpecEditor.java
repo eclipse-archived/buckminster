@@ -64,6 +64,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -577,16 +578,27 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy {
 		return array;
 	}
 
-	ComponentRequestBuilder getDependencyBuilder(String cname) {
+	ComponentRequestBuilder getDependencyBuilder(String cname, String ctype, String rangeStr) {
+		ctype = TextUtils.notEmptyString(cname);
 		if (cname == null)
 			return null;
 
-		for (ComponentRequestBuilder builder : dependencyBuilders) {
-			if (cname.equals(builder.getName())) {
-				return builder;
-			}
-		}
+		ctype = TextUtils.notEmptyString(ctype);
+		rangeStr = TextUtils.notEmptyString(rangeStr);
+		VersionRange range = rangeStr == null ? null : new VersionRange(rangeStr);
 
+		for (ComponentRequestBuilder builder : dependencyBuilders) {
+			if (!cname.equals(builder.getName()))
+				continue;
+
+			if (ctype != null && !ctype.equals(builder.getComponentTypeID()))
+				continue;
+
+			if (range != null && !range.equals(builder.getVersionRange()))
+				continue;
+
+			return builder;
+		}
 		return null;
 	}
 
@@ -688,10 +700,10 @@ public class CSpecEditor extends EditorPart implements IEditorMatchingStrategy {
 		}
 
 		try {
-			Map<String, ComponentRequestBuilder> dependeciesMap = cspec.getDependencyMap();
+			List<ComponentRequestBuilder> dependencyList = cspec.getDependencyBuilders();
 
-			if (dependeciesMap != null) {
-				dependeciesMap.clear();
+			if (dependencyList != null) {
+				dependencyList.clear();
 			}
 
 			for (ComponentRequestBuilder dependency : dependencyBuilders) {

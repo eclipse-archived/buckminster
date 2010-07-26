@@ -12,10 +12,10 @@ import java.io.File;
 import org.eclipse.buckminster.cmdline.BasicPreferenceHandler;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
+import org.eclipse.buckminster.pde.internal.PDETargetPlatform;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.core.target.AbstractBundleContainer;
@@ -23,7 +23,6 @@ import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
 import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
 import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
-import org.eclipse.pde.internal.core.target.provisional.LoadTargetDefinitionJob;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -97,10 +96,7 @@ public class TargetPlatformPathHandler extends BasicPreferenceHandler {
 			}
 
 			service.saveTargetDefinition(target);
-			LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(target);
-			IStatus status = job.run(new NullProgressMonitor());
-			if (status.getSeverity() == IStatus.ERROR)
-				throw new CoreException(status);
+			PDETargetPlatform.setTargetActive(target, new NullProgressMonitor());
 		} catch (CoreException e) {
 			throw new BackingStoreException(e.getMessage(), e);
 		} finally {

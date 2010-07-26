@@ -3,6 +3,7 @@ package org.eclipse.buckminster.pde.test;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
@@ -26,16 +27,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 
-public class PublishMultiVersionsTest extends PDETestCase
-{
-	public void testMultiVersions() throws Exception
-	{
+public class PublishMultiVersionsTest extends PDETestCase {
+	public void testMultiVersions() throws Exception {
 		File projectFolder = getTestData("multiver");
-		File[] dirList = projectFolder.listFiles(new FileFilter()
-		{
+		File[] dirList = projectFolder.listFiles(new FileFilter() {
 			@Override
-			public boolean accept(File pathname)
-			{
+			public boolean accept(File pathname) {
 				return !pathname.getName().startsWith(".");
 			}
 		});
@@ -46,18 +43,16 @@ public class PublishMultiVersionsTest extends PDETestCase
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot wsRoot = workspace.getRoot();
 
+		ArrayList<IProject> boundProjects = new ArrayList<IProject>();
 		// Bind projects
-		for(File projDir : dirList)
-		{
+		for (File projDir : dirList) {
 			IPath locationPath = Path.fromOSString(projDir.getAbsolutePath());
 			IProjectDescription description;
-			try
-			{
+			try {
 				description = workspace.loadProjectDescription(locationPath.append(".project")); //$NON-NLS-1$
-			}
-			catch(CoreException e)
-			{
-				// The target platform is not actually a project so we need to create
+			} catch (CoreException e) {
+				// The target platform is not actually a project so we need to
+				// create
 				// a description for it.
 				description = workspace.newProjectDescription(locationPath.lastSegment());
 				description.setLocation(locationPath);
@@ -65,9 +60,11 @@ public class PublishMultiVersionsTest extends PDETestCase
 			IProject project = wsRoot.getProject(description.getName());
 			project.create(description, monitor);
 			project.open(monitor);
+			boundProjects.add(project);
 		}
 
-		// The buckminster.properties will redirect the build result to this location
+		// The buckminster.properties will redirect the build result to this
+		// location
 		IProject result = wsRoot.getProject("output");
 		result.create(monitor);
 		result.open(monitor);
@@ -78,8 +75,11 @@ public class PublishMultiVersionsTest extends PDETestCase
 
 		// Assert that we build OK
 		workspace.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-		IMarker[] markers = wsRoot.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-		assertEquals("We've got problem markers", 0, markers.length);
+
+		for (IProject project : boundProjects) {
+			IMarker[] markers = project.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+			assertEquals("We've got problem markers on project " + project.getName(), 0, markers.length);
+		}
 
 		// Load the properties
 		IProject repoFeature = wsRoot.getProject("com.extol.test.repo.feature");
@@ -87,8 +87,7 @@ public class PublishMultiVersionsTest extends PDETestCase
 		Map<String, String> props = new BMProperties(inStream);
 		inStream.close();
 		IPerformManager performManager = CorePlugin.getPerformManager();
-		performManager.perform(Collections.singletonList(WorkspaceInfo.getCSpec(repoFeature).getAttribute("site.p2")),
-				props, false, true, monitor);
+		performManager.perform(Collections.singletonList(WorkspaceInfo.getCSpec(repoFeature).getAttribute("site.p2")), props, false, true, monitor);
 
 		// Assert that both bundles were created and published
 		result.refreshLocal(IResource.DEPTH_INFINITE, monitor);

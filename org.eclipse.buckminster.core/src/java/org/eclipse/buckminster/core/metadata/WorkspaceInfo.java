@@ -480,6 +480,7 @@ public class WorkspaceInfo {
 			try {
 				return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getComponentTypeID(), vd), true);
 			} catch (CoreException e) {
+				CorePlugin.getLogger().debug(e, e.getMessage());
 			}
 		}
 		throw new MissingComponentException(wanted.toString());
