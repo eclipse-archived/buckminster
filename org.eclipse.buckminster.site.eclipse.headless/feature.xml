@@ -19,6 +19,8 @@
 
    <url>
       <update url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/headless-3.6/&amp;protocol=http&amp;format=xml"/>
+      <discovery label="Buckminster Helios Headless" url="http://download.eclipse.org/tools/buckminster/headless-3.6"/>
+      <discovery label="Buckminster External Helios Headless" url="http://download.cloudsmith.com/buckminster/external-3.6"/>
    </url>
 
    <includes

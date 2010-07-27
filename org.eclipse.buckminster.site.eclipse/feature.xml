@@ -18,7 +18,8 @@
    </license>
 
    <url>
-      <update label="Buckminster Galileo Milestones" url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates-3.6/&amp;protocol=http&amp;format=xml"/>
+      <update label="Buckminster Helios Milestones" url="http://www.eclipse.org/downloads/download.php?file=/tools/buckminster/updates-3.6/&amp;protocol=http&amp;format=xml"/>
+      <discovery label="Buckminster Helios Milestones" url="http://download.eclipse.org/tools/buckminster/updates-3.6"/>
    </url>
 
    <includes
