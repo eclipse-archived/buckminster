@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -136,13 +137,15 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 	}
 
 	public static void setTargetActive(ITargetDefinition target, IProgressMonitor monitor) throws CoreException {
+		MonitorUtils.begin(monitor, 100);
+		target.resolve(MonitorUtils.subMonitor(monitor, 50));
 		LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(target);
-		IStatus status = job.run(monitor);
+		IStatus status = job.run(MonitorUtils.subMonitor(monitor, 50));
 		if (status.getSeverity() == IStatus.ERROR)
 			throw new CoreException(status);
 		currentDefinition = target;
 		currentHandle = target.getHandle();
-
+		MonitorUtils.done(monitor);
 	}
 
 	private static <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation) {
@@ -378,10 +381,6 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 	private void refresh(ITargetDefinition target) throws CoreException {
 		Logger log = Buckminster.getLogger();
 		log.info(NLS.bind(Messages.resetting_target_platform_0, target.getName()));
-		target.resolve(new NullProgressMonitor());
-		LoadTargetDefinitionJob loadTP = new LoadTargetDefinitionJob(target);
-		IStatus loadStatus = loadTP.run(new NullProgressMonitor());
-		if (loadStatus.getSeverity() == IStatus.ERROR)
-			throw new CoreException(loadStatus);
+		setTargetActive(target, new NullProgressMonitor());
 	}
 }
