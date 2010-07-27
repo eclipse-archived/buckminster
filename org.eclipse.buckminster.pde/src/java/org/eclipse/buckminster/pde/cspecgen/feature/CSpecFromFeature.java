@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
+import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -115,6 +116,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 
 		GroupBuilder sourceFeatureJars = cspec.addGroup(ATTRIBUTE_SOURCE_FEATURE_JARS, true); // including
 																								// self
+		sourceFeatureJars.setFilter(SOURCE_FILTER);
 		sourceFeatureJars.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_JAR);
 		sourceFeatureJars.addLocalPrerequisite(ATTRIBUTE_SOURCE_FEATURE_REFS);
 
@@ -149,11 +151,11 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 				continue;
 
 			cspec.addDependency(dep);
-			featureRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_JARS);
-			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_FEATURE_JARS);
-			bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_JARS);
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
-			fullClean.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FULL_CLEAN);
+			featureRefs.addExternalPrerequisite(dep, ATTRIBUTE_FEATURE_JARS);
+			featureSourceRefs.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_FEATURE_JARS);
+			bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_JARS);
+			sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_BUNDLE_JARS);
+			fullClean.addExternalPrerequisite(dep, ATTRIBUTE_FULL_CLEAN);
 		}
 	}
 
@@ -188,10 +190,10 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 			cspec.addDependency(dep);
 			String idWithoutSource = getIdWithoutSource(dep.getName());
 			if (idWithoutSource == null) {
-				featureRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FEATURE_JARS);
-				bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_JARS);
-				fullClean.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_FULL_CLEAN);
-				productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+				featureRefs.addExternalPrerequisite(dep, ATTRIBUTE_FEATURE_JARS);
+				bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_JARS);
+				fullClean.addExternalPrerequisite(dep, ATTRIBUTE_FULL_CLEAN);
+				productConfigExports.addExternalPrerequisite(dep, ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 			} else {
 				// Watch out for source for self
 				//
@@ -199,8 +201,8 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 					continue;
 				}
 			}
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_BUNDLE_JARS);
-			featureSourceRefs.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_SOURCE_FEATURE_JARS);
+			sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_BUNDLE_JARS);
+			featureSourceRefs.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_FEATURE_JARS);
 		}
 	}
 
@@ -222,10 +224,18 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		PluginModelManager manager = PDECore.getDefault().getModelManager();
 
+		boolean hasBogusFragments = false;
 		String id = feature.getId();
-		boolean hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
-				|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
-				|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
+		if (VersionConsolidator.getBooleanProperty(getProperties(), "buckminster.handle.incomplete.platform.features", false)) { //$NON-NLS-1$
+			hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
+					|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
+					|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
+		} else {
+			// We still need this here due to
+			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=319345
+			hasBogusFragments = "org.eclipse.equinox.executable".equals(id); //$NON-NLS-1$
+		}
+
 		for (IFeaturePlugin plugin : plugins) {
 			if (!(isListOK(plugin.getOS(), os) && isListOK(plugin.getWS(), ws) && isListOK(plugin.getArch(), arch))) {
 				// Only include this if we can find it in the target platform
@@ -236,8 +246,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 
 			if (hasBogusFragments && (plugin.getOS() != null || plugin.getWS() != null || plugin.getArch() != null)) {
 				// Only include this if we can find it in the target platform.
-				// See
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
+				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
 				//
 				if (manager.findEntry(plugin.getId()) == null)
 					continue;
@@ -250,10 +259,10 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 			if (!addDependency(dep))
 				continue;
 
-			bundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
-			sourceBundleJars.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
-			fullClean.addExternalPrerequisite(dep.getName(), IComponentType.OSGI_BUNDLE, ATTRIBUTE_FULL_CLEAN);
-			productConfigExports.addExternalPrerequisite(dep.getName(), dep.getComponentTypeID(), ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
+			bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
+			sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
+			fullClean.addExternalPrerequisite(dep, ATTRIBUTE_FULL_CLEAN);
+			productConfigExports.addExternalPrerequisite(dep, ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		}
 	}
 

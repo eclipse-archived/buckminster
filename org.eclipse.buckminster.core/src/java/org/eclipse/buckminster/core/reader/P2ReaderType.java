@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.P2Materializer;
+import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
@@ -31,8 +32,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
-import org.eclipse.equinox.p2.metadata.expression.ExpressionUtil;
-import org.eclipse.equinox.p2.metadata.expression.IExpression;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
@@ -41,8 +40,6 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 
 public class P2ReaderType extends CatalogReaderType {
-	private static final IExpression iuQuery = ExpressionUtil.parse("id == $0 && version == $1"); //$NON-NLS-1$
-
 	public static IArtifactRepository getArtifactRepository(Provider provider, Map<String, ? extends Object> properties, IProgressMonitor monitor)
 			throws CoreException {
 		return getArtifactRepository(getURI(provider, properties), monitor);
@@ -53,8 +50,8 @@ public class P2ReaderType extends CatalogReaderType {
 	}
 
 	public static IArtifactRepository getArtifactRepository(URI repoLocation, IProgressMonitor monitor) throws CoreException {
-		IArtifactRepositoryManager manager = (IArtifactRepositoryManager) CorePlugin.getDefault().getResolverAgent().getService(
-				IArtifactRepositoryManager.SERVICE_NAME);
+		IArtifactRepositoryManager manager = (IArtifactRepositoryManager) CorePlugin.getDefault().getResolverAgent()
+				.getService(IArtifactRepositoryManager.SERVICE_NAME);
 		if (manager == null)
 			throw new IllegalStateException("No artifact repository manager found"); //$NON-NLS-1$
 
@@ -72,7 +69,7 @@ public class P2ReaderType extends CatalogReaderType {
 	public static IInstallableUnit getIU(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		IMetadataRepository mdr = getMetadataRepository(providerMatch, monitor);
 		VersionMatch vm = providerMatch.getVersionMatch();
-		IQueryResult<IInstallableUnit> result = mdr.query(QueryUtil.createMatchQuery(iuQuery, vm.getArtifactInfo(), vm.getVersion()), monitor);
+		IQueryResult<IInstallableUnit> result = mdr.query(QueryUtil.createIUQuery(vm.getArtifactInfo(), vm.getVersion()), monitor);
 		return result.isEmpty() ? null : result.iterator().next();
 	}
 
@@ -86,8 +83,8 @@ public class P2ReaderType extends CatalogReaderType {
 	}
 
 	public static IMetadataRepository getMetadataRepository(URI repoLocation, IProgressMonitor monitor) throws CoreException {
-		IMetadataRepositoryManager manager = (IMetadataRepositoryManager) CorePlugin.getDefault().getResolverAgent().getService(
-				IMetadataRepositoryManager.SERVICE_NAME);
+		IMetadataRepositoryManager manager = (IMetadataRepositoryManager) CorePlugin.getDefault().getResolverAgent()
+				.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		if (manager == null)
 			throw new IllegalStateException("No artifact repository manager found"); //$NON-NLS-1$
 
@@ -110,6 +107,12 @@ public class P2ReaderType extends CatalogReaderType {
 	}
 
 	@Override
+	public String convertFetchFactoryLocator(Map<String, String> fetchFactoryLocator, String componentName) throws CoreException {
+		// This property is guaranteed to be set
+		return fetchFactoryLocator.get("repository"); //$NON-NLS-1$
+	}
+
+	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
@@ -127,8 +130,11 @@ public class P2ReaderType extends CatalogReaderType {
 	public BOMNode getResolution(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		SubMonitor subMon = SubMonitor.convert(monitor, 20);
 		IInstallableUnit iu = getIU(providerMatch, subMon.newChild(10));
+		if (iu == null)
+			throw new MissingComponentException(providerMatch.getNodeQuery().getComponentRequest().toString());
 		IMetadataRepository mdr = getMetadataRepository(providerMatch, subMon.newChild(10));
-		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(new CSpecBuilder(mdr, iu), false)));
+		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(new CSpecBuilder(providerMatch
+				.getNodeQuery().getProperties(), mdr, iu), false)));
 	}
 
 	@Override

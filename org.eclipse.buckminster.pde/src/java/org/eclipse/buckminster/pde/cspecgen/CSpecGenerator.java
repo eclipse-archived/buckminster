@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.TargetPlatform;
+import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
@@ -150,6 +151,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	public static final String LAUNCHER_FEATURE = "org.eclipse.equinox.executable"; //$NON-NLS-1$
 
+	public static final String RCP_FEATURE = "org.eclipse.rcp"; //$NON-NLS-1$
+
 	public static final Filter SOURCE_FILTER;
 
 	public static final Filter SIGNING_ENABLED;
@@ -209,7 +212,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			lower = VersionHelper.replaceQualifier(version, null);
 
 		Version upper = limitUpperWithMatchRule(version, matchRule, qualifierTag);
-		if (matchRule == MatchRule.PERFECT)
+		if (matchRule == MatchRule.PERFECT || matchRule == MatchRule.NONE)
 			return new VersionRange(lower, true, upper, !qualifierTag);
 
 		switch (retainLowerBound) {
@@ -258,6 +261,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			case COMPATIBLE:
 				v = Version.createOSGi(ov.getMajor() + 1, 0, 0);
 				break;
+			case NONE:
 			case PERFECT:
 				if (qualifierTag)
 					// A non yet expanded qualifier was encountered.
@@ -414,12 +418,27 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return cspecBuilder.addDependency(dependency);
 	}
 
+	protected void addExternalPrerequisite(GroupBuilder group, IComponentRequest dependency, String name) throws CoreException {
+		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
+		pqBld.setComponentName(dependency.getName());
+		pqBld.setComponentType(dependency.getComponentTypeID());
+		pqBld.setVersionRange(dependency.getVersionRange());
+		pqBld.setName(name);
+		group.addPrerequisite(pqBld);
+	}
+
+	/**
+	 * @deprecated Use
+	 *             {@link #addExternalPrerequisite(GroupBuilder, IComponentRequest, String)}
+	 */
+	@Deprecated
 	protected void addExternalPrerequisite(GroupBuilder group, String component, String type, String name) throws CoreException {
 		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
 		pqBld.setComponentName(component);
 		pqBld.setComponentType(type);
 		pqBld.setName(name);
 		group.addPrerequisite(pqBld);
+
 	}
 
 	protected void addProductBundles(IProductDescriptor productDescriptor) throws CoreException {
@@ -452,9 +471,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			if (skipComponent(query, dependency) || !addDependency(dependency))
 				continue;
 
-			String component = dependency.getName();
-			fullClean.addExternalPrerequisite(component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_FULL_CLEAN);
-			bundleJars.addExternalPrerequisite(component, IComponentType.OSGI_BUNDLE, ATTRIBUTE_BUNDLE_JARS);
+			fullClean.addExternalPrerequisite(dependency, ATTRIBUTE_FULL_CLEAN);
+			bundleJars.addExternalPrerequisite(dependency, ATTRIBUTE_BUNDLE_JARS);
 		}
 	}
 

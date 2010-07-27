@@ -8,19 +8,27 @@
 package org.eclipse.buckminster.pde.tasks;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.buckminster.core.TargetPlatform;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.ConfigData;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
@@ -28,6 +36,9 @@ import org.eclipse.equinox.p2.publisher.PublisherInfo;
 import org.eclipse.equinox.p2.publisher.PublisherResult;
 import org.eclipse.equinox.p2.publisher.eclipse.ConfigAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.EquinoxLauncherCUAction;
+import org.eclipse.equinox.p2.query.IQuery;
+import org.eclipse.equinox.p2.query.IQueryable;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
 
@@ -92,29 +103,48 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		// ApplicationLauncherAction must find them in order to generate the
 		// correct CU's
 		//
+		IQueryable<IInstallableUnit> bundleScope = getTransitiveBundleScope(results);
 		ConfigData dfltStartInfos = new ConfigData(null, null, null, null);
-		for (Object iu : results.getIUs(null, IPublisherResult.ROOT)) {
-			IInstallableUnit tmp = (IInstallableUnit) iu;
-			if (tmp.getId().startsWith(EquinoxLauncherCUAction.ORG_ECLIPSE_EQUINOX_LAUNCHER)) {
-				innerResult.addIU(tmp, IPublisherResult.ROOT);
+		nextIU: for (IInstallableUnit iu : results.getIUs(null, IPublisherResult.ROOT)) {
+			String symbolicId = iu.getId();
+			if (symbolicId.startsWith(EquinoxLauncherCUAction.ORG_ECLIPSE_EQUINOX_LAUNCHER)) {
+				innerResult.addIU(iu, IPublisherResult.ROOT);
 				continue;
 			}
 
-			for (BundleInfo bi : product.getBundleInfos()) {
-				if (tmp.getId().equals(bi.getSymbolicName())) {
-					innerResult.addIU(tmp, IPublisherResult.ROOT);
-					break;
+			for (BundleInfo configBi : product.getBundleInfos()) {
+				if (!symbolicId.equals(configBi.getSymbolicName()))
+					continue;
+
+				Version configVer = null;
+				if (configBi.getVersion() != null) {
+					configVer = Version.parseVersion(configBi.getVersion());
+					if (configVer.equals(Version.emptyVersion))
+						configVer = null;
 				}
+				if (configVer != null && !configVer.equals(iu.getVersion()))
+					continue;
+
+				innerResult.addIU(iu, IPublisherResult.ROOT);
+				continue nextIU;
 			}
 
 			for (BundleInfo bi : getDefaultStartInfo()) {
-				if (tmp.getId().equals(bi.getSymbolicName())) {
-					innerResult.addIU(tmp, IPublisherResult.ROOT);
-					dfltStartInfos.addBundle(bi);
-					break;
-				}
+				if (!symbolicId.equals(bi.getSymbolicName()))
+					continue;
+
+				// Verify that this bundle is in the transitive scope
+				// of the product. We don't want to add it if it's not
+				// present
+				if (bundleScope.query(QueryUtil.createIUQuery(iu), monitor).isEmpty())
+					continue;
+
+				innerResult.addIU(iu, IPublisherResult.ROOT);
+				dfltStartInfos.addBundle(bi);
+				continue nextIU;
 			}
 		}
+
 		if (dfltStartInfos.getBundles().length > 0)
 			for (String configSpec : innerInfo.getConfigurations())
 				innerInfo.addAdvice(new ConfigAdvice(dfltStartInfos, configSpec));
@@ -142,6 +172,34 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		return new ApplicationLauncherAction(id, version, flavor, executableName, getExecutablesLocation(), configSpecs);
 	}
 
+	IQueryable<IInstallableUnit> getTransitiveBundleScope(IPublisherResult results) {
+		IProgressMonitor monitor = new NullProgressMonitor();
+		List<IInstallableUnit> roots = new ArrayList<IInstallableUnit>();
+		if (!product.useFeatures()) {
+			for (IVersionedId bundle : product.getBundles(false)) {
+				VersionRange vr = VersionHelper.unqualifiedRange(bundle.getVersion());
+				IQuery<IInstallableUnit> iuQuery = QueryUtil.createIUQuery(bundle.getId(), vr);
+				Iterator<IInstallableUnit> itor = results.query(iuQuery, monitor).iterator();
+				while (itor.hasNext())
+					roots.add(itor.next());
+			}
+		} else {
+			for (IVersionedId feature : product.getFeatures()) {
+				VersionRange vr = VersionHelper.unqualifiedRange(feature.getVersion());
+				IQuery<IInstallableUnit> iuQuery = QueryUtil.createIUQuery(feature.getId() + ".feature.group", vr); //$NON-NLS-1$
+				Iterator<IInstallableUnit> itor = results.query(iuQuery, monitor).iterator();
+				while (itor.hasNext())
+					roots.add(itor.next());
+			}
+		}
+
+		IQuery<IInstallableUnit> traversal = QueryUtil.createQuery( //
+				"$0.traverse(set(), _, { rqCache, parent | " + // //$NON-NLS-1$
+						"parent.requirements.unique(rqCache)" + // //$NON-NLS-1$
+						".collect(rc | everything.select(iu | iu ~= rc)).flatten()})", roots); //$NON-NLS-1$
+		return results.query(traversal, monitor);
+	}
+
 	private BundleInfo[] getDefaultStartInfo() {
 		BundleInfo[] defaults = new BundleInfo[6];
 		defaults[0] = new BundleInfo(BUNDLE_SIMPLE_CONFIGURATOR, null, null, 1, true);
@@ -149,7 +207,7 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		defaults[2] = new BundleInfo(BUNDLE_OSGI, null, null, -1, true);
 		defaults[3] = new BundleInfo(BUNDLE_UPDATE_CONFIGURATOR, null, null, 4, true);
 		defaults[4] = new BundleInfo(BUNDLE_CORE_RUNTIME, null, null, 4, true);
-		defaults[5] = new BundleInfo(BUNDLE_DS, null, null, 1, true);
+		defaults[5] = new BundleInfo(BUNDLE_DS, null, null, 2, true);
 		return defaults;
 	}
 }

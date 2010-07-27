@@ -19,6 +19,7 @@ import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.ui.Messages;
 import org.eclipse.buckminster.ui.general.editor.ValidatorException;
 import org.eclipse.buckminster.ui.general.editor.simple.IWidgetin;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.swt.widgets.Composite;
 import org.osgi.framework.InvalidSyntaxException;
 
@@ -37,18 +38,18 @@ public class GroupPrerequisitesTable extends PrerequisitesTable {
 
 	@Override
 	public String[] getColumnHeaders() {
-		return new String[] { Messages.component, Messages.name, Messages.contributor, Messages.filter, Messages.include_pattern,
-				Messages.exclude_pattern };
+		return new String[] { Messages.component, Messages.type, Messages.version_designator, Messages.name, Messages.contributor, Messages.filter,
+				Messages.include_pattern, Messages.exclude_pattern };
 	}
 
 	@Override
 	public int[] getColumnWeights() {
-		return new int[] { 20, 10, 0, 0, 0, 0 };
+		return new int[] { 20, 5, 5, 10, 0, 0, 0, 0 };
 	}
 
 	@Override
 	public IWidgetin getWidgetin(Composite parent, int idx, Object value) {
-		if (idx < 2)
+		if (idx < 4)
 			return super.getWidgetin(parent, idx, value);
 
 		// Alias is removed here
@@ -57,17 +58,28 @@ public class GroupPrerequisitesTable extends PrerequisitesTable {
 
 	@Override
 	public Object[] toRowArray(PrerequisiteBuilder t) {
-		return new Object[] { t.getComponentName(), t.getName(), Boolean.valueOf(t.isContributor()), TextUtils.notNullString(t.getFilter()),
+		return new Object[] { t.getComponentName(), TextUtils.notNullString(t.getComponentType()), TextUtils.notNullString(t.getVersionRange()),
+				t.getName(), Boolean.valueOf(t.isContributor()), TextUtils.notNullString(t.getFilter()),
 				TextUtils.notNullString(t.getIncludePattern()), TextUtils.notNullString(t.getExcludePattern()) };
 	}
 
 	@Override
 	public void updateRowClass(PrerequisiteBuilder builder, Object[] args) throws ValidatorException {
 		builder.setComponentName(TextUtils.notEmptyString((String) args[0]));
-		builder.setName(TextUtils.notEmptyString((String) args[1]));
-		builder.setContributor(((Boolean) args[2]).booleanValue());
+		builder.setComponentType(TextUtils.notEmptyString((String) args[1]));
+		String vrStr = TextUtils.notEmptyString((String) args[2]);
+		if (vrStr != null) {
+			try {
+				builder.setVersionRange(new VersionRange(vrStr));
+			} catch (IllegalArgumentException e) {
+				throw new ValidatorException(e.getMessage());
+			}
+		} else
+			builder.setVersionRange(null);
+		builder.setName(TextUtils.notEmptyString((String) args[3]));
+		builder.setContributor(((Boolean) args[4]).booleanValue());
 
-		String filterStr = TextUtils.notEmptyString((String) args[3]);
+		String filterStr = TextUtils.notEmptyString((String) args[5]);
 		if (filterStr != null) {
 			try {
 				builder.setFilter(FilterFactory.newInstance(filterStr));
@@ -77,7 +89,7 @@ public class GroupPrerequisitesTable extends PrerequisitesTable {
 		} else
 			builder.setFilter(null);
 
-		String includePatternStr = TextUtils.notEmptyString((String) args[4]);
+		String includePatternStr = TextUtils.notEmptyString((String) args[6]);
 		if (includePatternStr != null) {
 			try {
 				builder.setIncludePattern(Pattern.compile(includePatternStr));
@@ -87,7 +99,7 @@ public class GroupPrerequisitesTable extends PrerequisitesTable {
 		} else
 			builder.setIncludePattern(null);
 
-		String excludePatternStr = TextUtils.notEmptyString((String) args[5]);
+		String excludePatternStr = TextUtils.notEmptyString((String) args[7]);
 		if (excludePatternStr != null) {
 			try {
 				builder.setExcludePattern(Pattern.compile(excludePatternStr));

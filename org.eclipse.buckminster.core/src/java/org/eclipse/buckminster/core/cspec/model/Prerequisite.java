@@ -14,9 +14,11 @@ import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -78,6 +80,8 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 
 	private final String componentType;
 
+	private final VersionRange versionRange;
+
 	private final boolean contributor;
 
 	private final Pattern excludePattern;
@@ -92,6 +96,7 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 		contributor = bld.isContributor();
 		componentName = bld.getComponentName();
 		componentType = bld.getComponentType();
+		versionRange = bld.getVersionRange();
 		excludePattern = bld.getExcludePattern();
 		includePattern = bld.getIncludePattern();
 		filter = bld.getFilter();
@@ -138,12 +143,18 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 	}
 
 	public Attribute getReferencedAttribute(CSpec ownerCSpec, IModelCache ctx) throws CoreException {
-		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec
-				.getReferencedAttribute(componentName, componentType, getName(), ctx) : null;
+		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedAttribute(componentName, componentType, versionRange,
+				getName(), ctx) : null;
 	}
 
 	public CSpec getReferencedCSpec(CSpec ownerCSpec, IModelCache ctx) throws CoreException {
-		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedCSpec(componentName, componentType, ctx) : null;
+		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedCSpec(componentName, componentType, versionRange, ctx)
+				: null;
+	}
+
+	@Override
+	public final VersionRange getVersionRange() {
+		return versionRange;
 	}
 
 	@Override
@@ -181,11 +192,23 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 	}
 
 	@Override
-	public final String toString() {
+	public String toString() {
 		if (componentName == null)
 			return getName();
 
-		return componentName + '#' + getAttribute();
+		StringBuilder bld = new StringBuilder();
+		bld.append(componentName);
+		if (componentType != null) {
+			bld.append(':');
+			bld.append(componentType);
+		}
+		bld.append('#');
+		bld.append(getName());
+		if (versionRange != null) {
+			bld.append('/');
+			bld.append(VersionHelper.getHumanReadable(versionRange));
+		}
+		return bld.toString();
 	}
 
 	@Override
@@ -203,6 +226,8 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 			Utils.addAttribute(attrs, ATTR_COMPONENT, componentName);
 		if (componentType != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, componentType);
+		if (versionRange != null)
+			Utils.addAttribute(attrs, ComponentRequest.ATTR_VERSION_DESIGNATOR, versionRange.toString());
 		if (filter != null)
 			Utils.addAttribute(attrs, ATTR_FILTER, filter.toString());
 	}

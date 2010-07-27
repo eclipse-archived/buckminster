@@ -25,6 +25,7 @@ import org.eclipse.buckminster.subversion.ISvnEntryHelper;
 import org.eclipse.buckminster.subversion.RepositoryAccess;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.team.svn.core.SVNTeamPlugin;
 import org.eclipse.team.svn.core.connector.ISVNConnector;
 import org.eclipse.team.svn.core.connector.ISVNCredentialsPrompt;
@@ -299,7 +300,7 @@ public class SubversiveSession extends GenericSession<IRepositoryLocation, SVNEn
 	public Date getLastTimestamp() throws CoreException {
 		try {
 			URI svnURL = getSVNUrl(null);
-			SVNEntry root = getDirEntry(svnURL, getRevision(), null);
+			SVNEntry root = getDirEntry(svnURL, getRevision(), new NullProgressMonitor());
 			if (root == null)
 				throw new FileNotFoundException(svnURL.toString());
 			return new Date(root.date);

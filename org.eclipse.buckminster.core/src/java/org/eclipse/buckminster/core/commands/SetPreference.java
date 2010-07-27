@@ -16,6 +16,7 @@ import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.buckminster.cmdline.UsageException;
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -66,7 +67,7 @@ public class SetPreference extends WorkspaceCommand {
 			String key = assignment.substring(0, eqIdx);
 			String value = assignment.substring(eqIdx + 1);
 			prefManager.getHandler(key).set(value);
-			System.out.println(NLS.bind(Messages._0_set_to_the_value_1, key, value));
+			CorePlugin.getLogger().debug("Preference '%s' set to the value '%s'", key, value); //$NON-NLS-1$
 		}
 		return 0;
 	}

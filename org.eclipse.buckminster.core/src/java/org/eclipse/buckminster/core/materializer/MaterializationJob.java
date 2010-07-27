@@ -20,7 +20,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
@@ -157,7 +156,6 @@ public class MaterializationJob extends Job {
 			} catch (InterruptedException e) {
 				throw new OperationCanceledException();
 			}
-			WorkspaceInfo.runWorkspaceCatchUpJob();
 		}
 	}
 

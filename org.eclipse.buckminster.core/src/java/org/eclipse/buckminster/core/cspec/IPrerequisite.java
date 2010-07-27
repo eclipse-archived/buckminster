@@ -1,6 +1,7 @@
 package org.eclipse.buckminster.core.cspec;
 
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
 public interface IPrerequisite extends IAttributeFilter {
 	String getAlias();
@@ -10,6 +11,8 @@ public interface IPrerequisite extends IAttributeFilter {
 	String getComponentName();
 
 	String getComponentType();
+
+	VersionRange getVersionRange();
 
 	Filter getFilter();
 

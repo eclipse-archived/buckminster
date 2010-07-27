@@ -12,14 +12,15 @@
 package org.eclipse.buckminster.core.cspec.builder;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.P2Constants;
+import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.IAttribute;
@@ -53,7 +54,6 @@ import org.eclipse.equinox.p2.query.IQuery;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
-import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
@@ -65,7 +65,7 @@ public class CSpecBuilder implements ICSpecData {
 
 	private String componentType;
 
-	private HashMap<String, ComponentRequestBuilder> dependencies;
+	private List<ComponentRequestBuilder> dependencies;
 
 	private Documentation documentation;
 
@@ -84,7 +84,12 @@ public class CSpecBuilder implements ICSpecData {
 	public CSpecBuilder() {
 	}
 
+	@Deprecated
 	public CSpecBuilder(IMetadataRepository mdr, IInstallableUnit iu) throws CoreException {
+		this(RMContext.getGlobalPropertyAdditions(), mdr, iu);
+	}
+
+	public CSpecBuilder(Map<String, ? extends Object> properties, IMetadataRepository mdr, IInstallableUnit iu) throws CoreException {
 		String id = iu.getId();
 		boolean isFeature = id.endsWith(P2Constants.FEATURE_GROUP);
 		if (isFeature) {
@@ -118,9 +123,21 @@ public class CSpecBuilder implements ICSpecData {
 				throw BuckminsterException.fromMessage("Unable to convert requirement filter %s into an LDAP filter", filterExpr); //$NON-NLS-1$
 		}
 
-		boolean hasBogusFragments = isFeature && ("org.eclipse.platform".equals(id) //$NON-NLS-1$
-				|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
-		|| "org.eclipse.rcp".equals(id)); //$NON-NLS-1$
+		boolean hasBogusFragments = false;
+		if (isFeature) {
+			// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
+			Object tmp = properties.get("buckminster.handle.incomplete.platform.features"); //$NON-NLS-1$
+			if (tmp instanceof String && "true".equalsIgnoreCase((String) tmp)) { //$NON-NLS-1$
+				// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=213437
+				hasBogusFragments = "org.eclipse.platform".equals(id) //$NON-NLS-1$
+						|| "org.eclipse.equinox.executable".equals(id) //$NON-NLS-1$
+						|| "org.eclipse.rcp".equals(id); //$NON-NLS-1$
+			} else {
+				// We still need this here due to
+				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=319345
+				hasBogusFragments = "org.eclipse.equinox.executable".equals(id); //$NON-NLS-1$
+			}
+		}
 
 		for (IRequirement cap : iu.getRequirements()) {
 			// We only bother with direct dependencies to other IU's here
@@ -244,8 +261,6 @@ public class CSpecBuilder implements ICSpecData {
 	}
 
 	public boolean addDependency(IComponentRequest dependency) throws CoreException {
-		String depName = dependency.getName();
-		String depType = dependency.getComponentTypeID();
 		ComponentRequestBuilder bld;
 		if (dependency instanceof ComponentRequestBuilder)
 			bld = (ComponentRequestBuilder) dependency;
@@ -254,78 +269,87 @@ public class CSpecBuilder implements ICSpecData {
 			bld.initFrom(dependency);
 		}
 
-		ComponentRequestBuilder old = getDependency(depName, depType);
-		if (old == null) {
-			if (dependencies == null)
-				dependencies = new HashMap<String, ComponentRequestBuilder>();
-
-			dependencies.put(depName, bld);
+		if (dependencies == null) {
+			dependencies = new ArrayList<ComponentRequestBuilder>();
+			dependencies.add(bld);
 			return true;
 		}
 
-		String oldType = old.getComponentTypeID();
-		if (oldType != null && depType != null && !oldType.equals(depType)) {
-			// The types of the components differ. Remove the unqualified
-			// entry and add the new qualified ones
-			//
-			dependencies.remove(depName);
-			StringBuilder nameBld = new StringBuilder(depName);
-			nameBld.append(CSpec.COMPONENT_NAME_TYPE_SEPARATOR);
-			int len = nameBld.length();
-			nameBld.append(oldType);
-			dependencies.put(nameBld.toString(), old);
-			nameBld.setLength(len);
-			nameBld.append(depType);
-			dependencies.put(nameBld.toString(), bld);
-			return true;
-		}
+		String depName = dependency.getName();
+		String depType = dependency.getComponentTypeID();
+		VersionRange depRange = dependency.getVersionRange();
+		Filter depFilter = dependency.getFilter();
+		int idx = dependencies.size();
+		while (--idx >= 0) {
+			ComponentRequestBuilder old = dependencies.get(idx);
+			if (!old.getName().equals(depName))
+				// Name differ
+				continue;
 
-		// We cannot determine a difference in component type so the
-		// ranges must be mergeable
-		//
-		VersionRange vd = old.getVersionRange();
-		VersionRange nvd = dependency.getVersionRange();
-		if (vd == null)
-			vd = nvd;
-		else {
-			if (nvd != null) {
-				VersionRange isect = vd.intersect(nvd);
-				if (isect == null) {
-					// Version ranges were not possible to merge, i.e. no
-					// intersection. We
-					// log a warning about this and select the higher range.
-					//
-					CorePlugin.getLogger()
-							.warning(NLS.bind(Messages.Dependency_0_is_defined_more_then_once_in_component_1, getName(), old.getName()));
-					if (vd.getMinimum().compareTo(nvd.getMaximum()) < 0)
-						vd = nvd;
-				} else
-					vd = isect;
-			}
-		}
+			String oldType = old.getComponentTypeID();
+			if (oldType != null && depType != null && !oldType.equals(depType))
+				// Type differ
+				continue;
 
-		Filter fl = old.getFilter();
-		Filter nfl = dependency.getFilter();
-		if (fl == null || nfl == null)
-			fl = null;
-		else {
-			if (!fl.equals(nfl)) {
-				try {
-					fl = FilterFactory.newInstance("(|" + fl + nfl + ')'); //$NON-NLS-1$
-				} catch (InvalidSyntaxException e) {
-					throw BuckminsterException.wrap(e);
+			VersionRange oldRange = old.getVersionRange();
+			if (oldRange != null && depRange != null && oldRange.intersect(depRange) == null)
+				// No version range intersect
+				continue;
+
+			// Duplicate or merge
+			boolean change = false;
+
+			if (depType == null) {
+				if (oldType != null) {
+					depType = oldType;
+					change = true;
 				}
 			}
+
+			if (depRange == null) {
+				if (oldRange != null) {
+					depRange = oldRange;
+					change = true;
+				}
+			} else if (oldRange != null) {
+				if (!depRange.equals(oldRange)) {
+					change = true;
+					depRange = oldRange.intersect(depRange);
+				}
+			}
+
+			Filter oldFilter = old.getFilter();
+			if (depFilter == null) {
+				if (oldFilter != null) {
+					depFilter = oldFilter;
+					change = true;
+				}
+			} else if (oldFilter != null) {
+				if (!depFilter.equals(oldFilter)) {
+					try {
+						depFilter = FilterFactory.newInstance("(|" + depFilter + oldFilter + ')'); //$NON-NLS-1$
+						change = true;
+					} catch (InvalidSyntaxException e) {
+						throw BuckminsterException.wrap(e);
+					}
+				}
+			}
+			if (!change)
+				// This was a duplicate
+				return false;
+
+			bld.setComponentTypeID(depType);
+			bld.setFilter(depFilter);
+			bld.setName(depName);
+			bld.setVersionRange(depRange);
+			dependencies.remove(idx);
+			dependencies.add(bld);
+			return false;
 		}
 
-		if (vd == old.getVersionRange() && fl == old.getFilter())
-			return false;
-
-		if (oldType == null && depType != null)
-			old.setComponentTypeID(depType);
-		old.setVersionRange(vd);
-		old.setFilter(fl);
-		return false;
+		// No duplicate or mergeable entry found. Just add the new entry.
+		dependencies.add(bld);
+		return true;
 	}
 
 	public void addGenerator(IGenerator generator) throws GeneratorAlreadyDefinedException {
@@ -456,21 +480,35 @@ public class CSpecBuilder implements ICSpecData {
 
 	@Override
 	public Collection<ComponentRequestBuilder> getDependencies() {
-		return dependencies == null ? Collections.<ComponentRequestBuilder> emptyList() : dependencies.values();
+		return dependencies == null ? Collections.<ComponentRequestBuilder> emptyList() : dependencies;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Deprecated
+	@Override
+	public ComponentRequestBuilder getDependency(String depName, String depType) throws MissingDependencyException {
+		return getDependency(depName, depType, null);
 	}
 
 	@Override
-	public ComponentRequestBuilder getDependency(String dependencyName, String depType) throws MissingDependencyException {
-		ComponentRequestBuilder dependency = null;
+	public ComponentRequestBuilder getDependency(String depName, String depType, VersionRange depRange) throws MissingDependencyException {
 		if (dependencies != null) {
-			dependency = dependencies.get(dependencyName);
-			if (dependency == null && depType != null)
-				dependency = dependencies.get(dependencyName + CSpec.COMPONENT_NAME_TYPE_SEPARATOR + depType);
+			int idx = dependencies.size();
+			while (--idx >= 0) {
+				ComponentRequestBuilder dependency = dependencies.get(idx);
+				if (!depName.equals(dependency.getName()))
+					continue;
+				if (depType != null && dependency.getComponentTypeID() != null && !depType.equals(dependency.getComponentTypeID()))
+					continue;
+				if (depRange != null && dependency.getVersionRange() != null && dependency.getVersionRange().intersect(depRange) == null)
+					continue;
+				return dependency;
+			}
 		}
-		return dependency;
+		return null;
 	}
 
-	public Map<String, ComponentRequestBuilder> getDependencyMap() {
+	public List<ComponentRequestBuilder> getDependencyBuilders() {
 		return dependencies;
 	}
 
@@ -529,8 +567,20 @@ public class CSpecBuilder implements ICSpecData {
 		throw new MissingAttributeException(name, attrName);
 	}
 
+	public ComponentRequestBuilder getRequiredDependency(IComponentRequest dep) throws MissingDependencyException {
+		ComponentRequestBuilder dependency = getDependency(dep.getName(), dep.getComponentTypeID(), dep.getVersionRange());
+		if (dependency == null)
+			throw new MissingDependencyException(name, dep.toString());
+		return dependency;
+	}
+
+	/**
+	 * @deprecated Use
+	 *             {@link #getRequiredDependency(String, String, VersionRange)}
+	 */
+	@Deprecated
 	public ComponentRequestBuilder getRequiredDependency(String dependencyName, String componentTypeID) throws MissingDependencyException {
-		ComponentRequestBuilder dependency = getDependency(dependencyName, componentTypeID);
+		ComponentRequestBuilder dependency = getDependency(dependencyName, componentTypeID, null);
 		if (dependency == null)
 			throw new MissingDependencyException(name, dependencyName);
 		return dependency;
@@ -576,7 +626,7 @@ public class CSpecBuilder implements ICSpecData {
 
 		Collection<? extends IComponentRequest> deps = cspec.getDependencies();
 		if (deps.size() > 0) {
-			dependencies = new HashMap<String, ComponentRequestBuilder>(deps.size());
+			dependencies = new ArrayList<ComponentRequestBuilder>(deps.size());
 			for (IComponentRequest dep : deps)
 				addDependency(dep);
 		} else

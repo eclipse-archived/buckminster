@@ -17,26 +17,29 @@ import org.eclipse.buckminster.core.ITargetPlatform;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
-import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.p2.metadata.Version;
-import org.eclipse.osgi.service.resolver.BundleDescription;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.TargetPlatform;
-import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.target.DirectoryBundleContainer;
 import org.eclipse.pde.internal.core.target.TargetPlatformService;
 import org.eclipse.pde.internal.core.target.provisional.IBundleContainer;
+import org.eclipse.pde.internal.core.target.provisional.IResolvedBundle;
 import org.eclipse.pde.internal.core.target.provisional.ITargetDefinition;
 import org.eclipse.pde.internal.core.target.provisional.ITargetHandle;
 import org.eclipse.pde.internal.core.target.provisional.ITargetPlatformService;
@@ -52,6 +55,129 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 	}
 
 	private static final String defaultTP = "Buckminster Default TP"; //$NON-NLS-1$
+
+	private static ITargetDefinition currentDefinition;
+
+	private static ITargetHandle currentHandle;
+
+	public static IFeatureModel getBestFeature(final String componentName, final VersionRange versionDesignator, final NodeQuery query) {
+		return doWithActivePlatform(new ITargetDefinitionOperation<IFeatureModel>() {
+			@Override
+			public IFeatureModel run(ITargetDefinition target) throws CoreException {
+				IFeatureModel[] allFeatures = target.getAllFeatures();
+				if (allFeatures == null)
+					return null;
+
+				IFeatureModel candidate = null;
+				Version candidateVersion = null;
+				for (IFeatureModel featureModel : allFeatures) {
+					IFeature feature = featureModel.getFeature();
+					if (!componentName.equals(feature.getId()))
+						continue;
+
+					Version v = Version.create(feature.getVersion());
+					if (v == null) {
+						if (candidate == null && versionDesignator == null)
+							candidate = featureModel;
+						continue;
+					}
+
+					if (!(versionDesignator == null || versionDesignator.isIncluded(v))) {
+						if (query != null)
+							query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0, versionDesignator));
+						continue;
+					}
+
+					if (candidateVersion == null || candidateVersion.compareTo(v) < 0) {
+						candidate = featureModel;
+						candidateVersion = v;
+					}
+				}
+				return candidate;
+			}
+		});
+	}
+
+	public static BundleInfo getBestPlugin(final String componentName, final VersionRange versionDesignator, final NodeQuery query) {
+		return doWithActivePlatform(new ITargetDefinitionOperation<BundleInfo>() {
+			@Override
+			public BundleInfo run(ITargetDefinition target) throws CoreException {
+				IResolvedBundle[] allBundles = target.getAllBundles();
+				if (allBundles == null)
+					return null;
+
+				BundleInfo candidate = null;
+				Version candidateVersion = null;
+				for (IResolvedBundle bundle : allBundles) {
+					BundleInfo bi = bundle.getBundleInfo();
+					if (!componentName.equals(bi.getSymbolicName()))
+						continue;
+
+					Version v = Version.create(bi.getVersion());
+					if (v == null) {
+						if (candidate == null && versionDesignator == null)
+							candidate = bi;
+						continue;
+					}
+
+					if (!(versionDesignator == null || versionDesignator.isIncluded(v))) {
+						if (query != null)
+							query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0, versionDesignator));
+						continue;
+					}
+
+					if (candidateVersion == null || candidateVersion.compareTo(v) < 0) {
+						candidate = bi;
+						candidateVersion = v;
+					}
+				}
+				return candidate;
+			}
+		});
+	}
+
+	public static void setTargetActive(ITargetDefinition target, IProgressMonitor monitor) throws CoreException {
+		MonitorUtils.begin(monitor, 100);
+		target.resolve(MonitorUtils.subMonitor(monitor, 50));
+		LoadTargetDefinitionJob job = new LoadTargetDefinitionJob(target);
+		IStatus status = job.run(MonitorUtils.subMonitor(monitor, 50));
+		if (status.getSeverity() == IStatus.ERROR)
+			throw new CoreException(status);
+		currentDefinition = target;
+		currentHandle = target.getHandle();
+		MonitorUtils.done(monitor);
+	}
+
+	private static <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation) {
+		Buckminster bucky = Buckminster.getDefault();
+		ITargetPlatformService service = null;
+		try {
+			service = bucky.getService(ITargetPlatformService.class);
+			synchronized (service) {
+				ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
+				if (activeHandle == null)
+					return null;
+
+				// We need to cache the definition. If we don't, it will need to
+				// resolve each time since it's created from scratch.
+				if (currentDefinition == null || currentHandle == null || !activeHandle.equals(currentHandle)) {
+					currentDefinition = activeHandle.getTargetDefinition();
+					currentHandle = activeHandle;
+				}
+				if (!currentDefinition.isResolved()) {
+					IStatus status = currentDefinition.resolve(new NullProgressMonitor());
+					if (status.getSeverity() == IStatus.ERROR)
+						throw new CoreException(status);
+				}
+			}
+			return operation.run(currentDefinition);
+		} catch (CoreException e) {
+			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
+			return null;
+		} finally {
+			bucky.ungetService(service);
+		}
+	}
 
 	private static File getLocation(ITargetDefinition target) throws CoreException {
 		IBundleContainer[] containers = target.getBundleContainers();
@@ -80,25 +206,23 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 
 	@Override
 	public List<ComponentIdentifier> getComponents() throws CoreException {
-		PDECore pdeCore = PDECore.getDefault();
-		IFeatureModel[] featureModels = pdeCore.getFeatureModelManager().getModels();
-		IPluginModelBase[] pluginModels = pdeCore.getModelManager().getActiveModels();
-		ArrayList<ComponentIdentifier> bld = new ArrayList<ComponentIdentifier>(featureModels.length + pluginModels.length);
-
-		for (IFeatureModel featureModel : featureModels) {
-			IFeature feature = featureModel.getFeature();
-			Version version = VersionHelper.parseVersion(feature.getVersion());
-			bld.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, version));
-		}
-		for (IPluginModelBase pluginModel : pluginModels) {
-			BundleDescription desc = pluginModel.getBundleDescription();
-			if (desc != null) {
-				org.osgi.framework.Version ov = desc.getVersion();
-				Version version = ov == null ? null : Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro(), ov.getQualifier());
-				bld.add(new ComponentIdentifier(desc.getSymbolicName(), IComponentType.OSGI_BUNDLE, version));
+		return doWithActivePlatform(new ITargetDefinitionOperation<List<ComponentIdentifier>>() {
+			@Override
+			public List<ComponentIdentifier> run(ITargetDefinition target) {
+				if (!target.isResolved())
+					target.resolve(new NullProgressMonitor());
+				List<ComponentIdentifier> result = new ArrayList<ComponentIdentifier>();
+				for (IFeatureModel feature : target.getAllFeatures()) {
+					IFeature f = feature.getFeature();
+					result.add(new ComponentIdentifier(f.getId(), IComponentType.ECLIPSE_FEATURE, Version.parseVersion(f.getVersion())));
+				}
+				for (IResolvedBundle bundle : target.getBundles()) {
+					BundleInfo b = bundle.getBundleInfo();
+					result.add(new ComponentIdentifier(b.getSymbolicName(), IComponentType.OSGI_BUNDLE, Version.parseVersion(b.getVersion())));
+				}
+				return result;
 			}
-		}
-		return bld;
+		});
 	}
 
 	public ITargetDefinition getDefaultPlatform(boolean asActive) throws CoreException {
@@ -254,31 +378,9 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 		});
 	}
 
-	private <T> T doWithActivePlatform(ITargetDefinitionOperation<T> operation) {
-		Buckminster bucky = Buckminster.getDefault();
-		ITargetPlatformService service = null;
-		try {
-			service = bucky.getService(ITargetPlatformService.class);
-			ITargetHandle activeHandle = service.getWorkspaceTargetHandle();
-			if (activeHandle == null)
-				return null;
-			ITargetDefinition definition = activeHandle.getTargetDefinition();
-			return operation.run(definition);
-		} catch (CoreException e) {
-			Buckminster.getLogger().warning(e, e.getLocalizedMessage());
-			return null;
-		} finally {
-			bucky.ungetService(service);
-		}
-	}
-
 	private void refresh(ITargetDefinition target) throws CoreException {
 		Logger log = Buckminster.getLogger();
 		log.info(NLS.bind(Messages.resetting_target_platform_0, target.getName()));
-		target.resolve(new NullProgressMonitor());
-		LoadTargetDefinitionJob loadTP = new LoadTargetDefinitionJob(target);
-		IStatus loadStatus = loadTP.run(new NullProgressMonitor());
-		if (loadStatus.getSeverity() == IStatus.ERROR)
-			throw new CoreException(loadStatus);
+		setTargetActive(target, new NullProgressMonitor());
 	}
 }

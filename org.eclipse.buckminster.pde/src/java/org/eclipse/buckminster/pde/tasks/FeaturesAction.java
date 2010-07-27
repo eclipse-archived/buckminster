@@ -179,7 +179,7 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 				IPath destBaseDir = Path.fromPortableString(key);
 				for (String found : files) {
-					IPath foundFile = Path.fromPortableString(found);
+					IPath foundFile = Path.fromOSString(found);
 					String destDir = destBaseDir.append(foundFile.removeLastSegments(1)).toPortableString();
 					configAdvice.addRootfile(new File(base, found), destDir);
 				}

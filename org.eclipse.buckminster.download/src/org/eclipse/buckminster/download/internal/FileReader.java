@@ -294,12 +294,17 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 			}
 
 			if (exception != null) {
-				Throwable t = BuckminsterException.unwind(exception);
-				while (t instanceof CoreException) {
-					Throwable t2 = ((CoreException) t).getStatus().getException();
-					if (t2 == null)
-						throw (CoreException) t;
-					t = t2;
+				Throwable t;
+				if (exception instanceof IncomingFileTransferException && ((IncomingFileTransferException) exception).getErrorCode() == 404)
+					t = new FileNotFoundException(exception.getMessage());
+				else {
+					t = BuckminsterException.unwind(exception);
+					while (t instanceof CoreException) {
+						Throwable t2 = ((CoreException) t).getStatus().getException();
+						if (t2 == null)
+							throw (CoreException) t;
+						t = t2;
+					}
 				}
 
 				if (t instanceof FileNotFoundException)
@@ -316,8 +321,8 @@ public class FileReader extends FileTransferJob implements IFileTransferListener
 					exception = null;
 					try {
 						Buckminster.getLogger().warning(
-								NLS.bind(Messages.connection_to_0_failed_on_1_retry_attempt_2, new String[] { url.toString(), t.getMessage(),
-										String.valueOf(retryCount) }));
+								NLS.bind(Messages.connection_to_0_failed_on_1_retry_attempt_2,
+										new String[] { url.toString(), t.getMessage(), String.valueOf(retryCount) }));
 						Thread.sleep(connectionRetryDelay);
 						continue;
 					} catch (InterruptedException e) {

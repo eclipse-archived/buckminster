@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Three
+Bundle-SymbolicName: com.extol.test.three
+Bundle-Version: 1.0.0
+Bundle-Activator: com.extol.test.three.Activator
+Bundle-Vendor: EXTOL
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.extol.test.one;version="[2.0.0,3.0.0)",
+ org.osgi.framework;version="1.3.0"
