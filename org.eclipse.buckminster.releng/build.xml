@@ -227,6 +227,8 @@
 		</buckminster>
 	</target>
 
+	<target name="clean.all.promote.sites" depends="clean.all,promote.sites"/>
+
 	<target name="promote.sites" depends="test">
 		<echo message="Performing org.eclipse.buckminster.releng#promote" />
 		<buckminster command="perform">
