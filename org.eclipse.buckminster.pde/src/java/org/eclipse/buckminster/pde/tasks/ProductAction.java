@@ -27,6 +27,7 @@ import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.provisional.frameworkadmin.ConfigData;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
@@ -104,32 +105,46 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		//
 		IQueryable<IInstallableUnit> bundleScope = getTransitiveBundleScope(results);
 		ConfigData dfltStartInfos = new ConfigData(null, null, null, null);
-		for (Object iu : results.getIUs(null, IPublisherResult.ROOT)) {
-			IInstallableUnit tmp = (IInstallableUnit) iu;
-			if (tmp.getId().startsWith(EquinoxLauncherCUAction.ORG_ECLIPSE_EQUINOX_LAUNCHER)) {
-				innerResult.addIU(tmp, IPublisherResult.ROOT);
+		nextIU: for (IInstallableUnit iu : results.getIUs(null, IPublisherResult.ROOT)) {
+			String symbolicId = iu.getId();
+			if (symbolicId.startsWith(EquinoxLauncherCUAction.ORG_ECLIPSE_EQUINOX_LAUNCHER)) {
+				innerResult.addIU(iu, IPublisherResult.ROOT);
 				continue;
 			}
 
-			for (BundleInfo bi : product.getBundleInfos()) {
-				if (tmp.getId().equals(bi.getSymbolicName())) {
-					innerResult.addIU(tmp, IPublisherResult.ROOT);
-					break;
+			for (BundleInfo configBi : product.getBundleInfos()) {
+				if (!symbolicId.equals(configBi.getSymbolicName()))
+					continue;
+
+				Version configVer = null;
+				if (configBi.getVersion() != null) {
+					configVer = Version.parseVersion(configBi.getVersion());
+					if (configVer.equals(Version.emptyVersion))
+						configVer = null;
 				}
+				if (configVer != null && !configVer.equals(iu.getVersion()))
+					continue;
+
+				innerResult.addIU(iu, IPublisherResult.ROOT);
+				continue nextIU;
 			}
 
 			for (BundleInfo bi : getDefaultStartInfo()) {
-				if (tmp.getId().equals(bi.getSymbolicName())) {
-					// Verify that this bundle is in the transitive scope
-					// of the product
-					if (!bundleScope.query(QueryUtil.createIUQuery(tmp), monitor).isEmpty()) {
-						innerResult.addIU(tmp, IPublisherResult.ROOT);
-						dfltStartInfos.addBundle(bi);
-					}
-					break;
-				}
+				if (!symbolicId.equals(bi.getSymbolicName()))
+					continue;
+
+				// Verify that this bundle is in the transitive scope
+				// of the product. We don't want to add it if it's not
+				// present
+				if (bundleScope.query(QueryUtil.createIUQuery(iu), monitor).isEmpty())
+					continue;
+
+				innerResult.addIU(iu, IPublisherResult.ROOT);
+				dfltStartInfos.addBundle(bi);
+				continue nextIU;
 			}
 		}
+
 		if (dfltStartInfos.getBundles().length > 0)
 			for (String configSpec : innerInfo.getConfigurations())
 				innerInfo.addAdvice(new ConfigAdvice(dfltStartInfos, configSpec));
@@ -192,7 +207,7 @@ public class ProductAction extends org.eclipse.equinox.p2.publisher.eclipse.Prod
 		defaults[2] = new BundleInfo(BUNDLE_OSGI, null, null, -1, true);
 		defaults[3] = new BundleInfo(BUNDLE_UPDATE_CONFIGURATOR, null, null, 4, true);
 		defaults[4] = new BundleInfo(BUNDLE_CORE_RUNTIME, null, null, 4, true);
-		defaults[5] = new BundleInfo(BUNDLE_DS, null, null, 1, true);
+		defaults[5] = new BundleInfo(BUNDLE_DS, null, null, 2, true);
 		return defaults;
 	}
 }
