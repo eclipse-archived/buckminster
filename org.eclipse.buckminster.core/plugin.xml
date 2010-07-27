@@ -305,6 +305,12 @@
             name="launch"
             status="NORMAL">
       </command>
+      <command
+            addhelpflags="true"
+            class="org.eclipse.buckminster.core.commands.BackgroundLaunch"
+            name="bglaunch"
+            status="NORMAL">
+      </command>
 	</extension>
  <extension
        point="org.eclipse.buckminster.core.materializers">

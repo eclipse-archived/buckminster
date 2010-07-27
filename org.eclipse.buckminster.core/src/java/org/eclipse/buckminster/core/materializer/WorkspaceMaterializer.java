@@ -9,6 +9,7 @@ package org.eclipse.buckminster.core.materializer;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -33,6 +34,7 @@ import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IFile;
@@ -431,9 +433,32 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 				}
 			}
 
-			IProject project = wsRoot.getProject(description.getName());
-			if (!project.exists())
-				project.create(description, MonitorUtils.subMonitor(monitor, 50));
+			IProject project = wsRoot.getProject(suggestedProjectName);
+			if (!project.exists()) {
+				IProject describedProject = wsRoot.getProject(description.getName());
+				if (describedProject.exists()) {
+					URI describedLocation = describedProject.getLocationURI();
+					if (describedLocation.equals(description.getLocationURI())) {
+						Buckminster.getLogger().warning(
+								NLS.bind("Name of project {0} conflicts with previously bound name {1}", suggestedProjectName, //$NON-NLS-1$
+										description.getName()));
+						project = describedProject;
+						MonitorUtils.worked(monitor, 50);
+					} else {
+						// This is probably a feature that is named in a way
+						// that conflicts with a bundle (or something similar).
+						// In any case, we need to bind both so we must alter
+						// the description here.
+						//
+						Buckminster.getLogger().warning(
+								NLS.bind("Name of project {0} conflicts with name {1} found in .project file.", suggestedProjectName, //$NON-NLS-1$
+										description.getName()));
+						description.setName(suggestedProjectName);
+						project.create(description, MonitorUtils.subMonitor(monitor, 50));
+					}
+				} else
+					project.create(description, MonitorUtils.subMonitor(monitor, 50));
+			}
 
 			project.open(0, MonitorUtils.subMonitor(monitor, 20));
 			Resolution cr = wb.getResolution(StorageManager.getDefault());

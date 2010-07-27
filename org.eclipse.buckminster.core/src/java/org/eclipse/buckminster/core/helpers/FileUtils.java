@@ -529,7 +529,11 @@ public abstract class FileUtils {
 			proto = "file"; //$NON-NLS-1$
 		else {
 			try {
-				url = FileLocator.resolve(url);
+				URL newUrl = FileLocator.resolve(url);
+				if (newUrl != url) {
+					proto = newUrl.getProtocol();
+					url = newUrl;
+				}
 			} catch (IOException e1) {
 			}
 		}

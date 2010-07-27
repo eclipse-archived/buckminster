@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Two
+Bundle-SymbolicName: com.extol.test.two
+Bundle-Version: 1.0.0
+Bundle-Activator: com.extol.test.two.Activator
+Bundle-Vendor: EXTOL
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: com.extol.test.one;version="[1.0.0,2.0.0)",
+ org.osgi.framework;version="1.3.0"

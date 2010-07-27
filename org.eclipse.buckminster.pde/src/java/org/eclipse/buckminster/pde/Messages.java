@@ -16,6 +16,8 @@ public class Messages extends NLS {
 
 	public static String not_an_OSGi_manifest;
 
+	public static String unable_to_create_tpdir_0;
+
 	public static String unable_to_manifest_from_0;
 
 	public static String manifest_has_malformed_LDAP_rule_for;
@@ -24,11 +26,17 @@ public class Messages extends NLS {
 
 	public static String site_is_not_local;
 
+	public static String ssc_of_target_0_lacks_repository;
+
 	public static String _0_is_higher;
 
 	public static String fetching_remote_feature_references;
 
+	public static String dc_of_target_0_lacks_location;
+
 	public static String downloading_0;
+
+	public static String unable_to_load_all_units_for_ssc_of_target_0;
 
 	public static String unable_to_load_localized_model_for_0;
 
@@ -151,6 +159,10 @@ public class Messages extends NLS {
 	public static String Found_no_baseline_named_0;
 
 	public static String No_baselines_found_in_workspace;
+
+	public static String target_0_has_no_containers;
+
+	public static String tpdir_0_does_not_exist;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -14,6 +14,7 @@ public class AllTests
 		suite.addTestSuite(RMapTest.class);
 		suite.addTestSuite(MapFileTest.class);
 		suite.addTestSuite(PDEBuilderTest.class);
+		suite.addTestSuite(PublishMultiVersionsTest.class);
 		// $JUnit-END$
 		return suite;
 	}

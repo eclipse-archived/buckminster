@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.materializer;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.core.metadata.MetadataSynchronizer;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -50,6 +51,7 @@ public class InstallerJob extends WorkspaceJob {
 		BillOfMaterials bom = context.getBillOfMaterials();
 		try {
 			AbstractMaterializer.performInstallActions(bom, context, MonitorUtils.subMonitor(monitor, 100));
+			MetadataSynchronizer.workspaceCatchUp(monitor);
 		} catch (CoreException e) {
 			context.addRequestStatus(bom.getRequest(), e.getStatus());
 			if (propagateStatus)

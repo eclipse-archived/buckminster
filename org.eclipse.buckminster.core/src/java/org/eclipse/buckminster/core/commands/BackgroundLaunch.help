@@ -1,0 +1,35 @@
+
+This command launches a given launch configuration in the workspace in the background. The process
+is taken down when the parent terminates. 
+
+usage: launch
+       [{ -? | --help }]
+       [{-D | --define} <key>[=<value>]]
+       [{-P | --properties} <URL or Path>]
+       {-l | --launch} <workspace location of the launch config file>
+       
+ -?
+--help
+  Show this help text
+
+ -D
+--define
+  Defines a property as a key=value pair. The value may include ant-style expansion constructs
+  that will be expanded using both System properties and other properties that has been set.
+
+ -P <URL or Path>
+--properties <URL or Path>
+  The URL or file system path of a properties file. The values in the file may include ant-style
+  expansion constructs that will be expanded using both System properties and other properties
+  that has been set.
+
+ -l
+--launch
+  The workspace location of the *.launch file that specifies the launch to run. If, for example,
+  your workspace contains a project named "com.acme.foobar" and this contains a launch
+  configuration named "my.launch", you would pass "com.acme.foobar/my.launch" as an
+  argument to the "-l" parameter. 
+
+--ignoremissing
+  Iff the *.launch file specified by --launch cannot be resolved the background launch is silently
+  discarded. 

@@ -29,7 +29,7 @@ public abstract class DateAndTimeUtils {
 
 	public static final TimeZone UTC;
 
-	public static final String[] commonFormats = new String[] { "yyyy-MM-dd_HH-mm-ss", "yyyyMMddHHmm", "yyyyMMdd-HHmm", "yyyyMMdd" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	public static final String[] commonFormats = new String[] { ISO_8601Pattern, "yyyy-MM-dd_HH-mm-ss", "yyyyMMddHHmm", "yyyyMMdd-HHmm", "yyyyMMdd" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 	public static final DateFormat[] commonFormatters;
 
@@ -44,12 +44,13 @@ public abstract class DateAndTimeUtils {
 
 		int idx = commonFormats.length;
 		commonFormatters = new DateFormat[idx];
-		while (--idx >= 0) {
+		while (--idx > 0) {
 			DateFormat dm = new SimpleDateFormat(commonFormats[idx]);
 			dm.setTimeZone(UTC);
 			dm.setLenient(false);
 			commonFormatters[idx] = dm;
 		}
+		commonFormatters[0] = ISO_8601Format;
 	}
 
 	/**

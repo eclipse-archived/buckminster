@@ -22,6 +22,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
+import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
@@ -77,6 +78,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			MonitorUtils.complete(monitor);
 			try {
 				IPluginModelBase pluginModelBase = ((EclipsePlatformReader) reader).getPluginModelBase();
+
 				if (forResolutionAidOnly)
 					return pluginModelBase;
 
@@ -96,6 +98,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				// source
 				//
 				reader = (ICatalogReader) URLCatalogReaderType.getReader(locationFile.toURI().toURL(), null);
+			} catch (MissingComponentException e) {
 			} catch (IllegalStateException e) {
 				throw new MissingCSpecSourceException(reader.getProviderMatch());
 			} catch (MalformedURLException e) {

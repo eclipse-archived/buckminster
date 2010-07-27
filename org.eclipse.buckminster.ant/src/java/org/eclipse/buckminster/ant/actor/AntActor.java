@@ -232,8 +232,10 @@ public class AntActor extends AbstractActor {
 			// We add the installer hints onto the context properties.
 			//
 			ExpandingProperties<String> props = new ExpandingProperties<String>();
-			for (Map.Entry<String, ? extends Object> entry : ctx.getProperties().entrySet())
-				props.put(entry.getKey(), entry.getValue().toString());
+			for (Map.Entry<String, ? extends Object> entry : ctx.getProperties().entrySet()) {
+				Object val = entry.getValue();
+				props.put(entry.getKey(), val == null ? null : val.toString());
+			}
 			props.putAll(getDefaultProperties(ctx));
 			Map<String, PathGroup[]> namedPathGroupArrays = ctx.getNamedPathGroupArrays();
 			addActorPathGroups(ctx, namedPathGroupArrays);

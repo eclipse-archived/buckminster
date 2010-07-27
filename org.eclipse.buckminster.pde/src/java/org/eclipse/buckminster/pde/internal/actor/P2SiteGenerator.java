@@ -40,7 +40,7 @@ import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
-import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
+import org.eclipse.buckminster.pde.internal.PDETargetPlatform;
 import org.eclipse.buckminster.pde.tasks.BundlesAction;
 import org.eclipse.buckminster.pde.tasks.CategoriesAction;
 import org.eclipse.buckminster.pde.tasks.FeaturesAction;
@@ -185,9 +185,12 @@ public class P2SiteGenerator extends AbstractActor {
 
 		File exeFeature = null;
 
-		IFeatureModel launcherFeature = EclipsePlatformReaderType.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE, null, null);
+		IFeatureModel launcherFeature = PDETargetPlatform.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE, null, null);
 		if (launcherFeature == null)
-			launcherFeature = EclipsePlatformReaderType.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE_3_2, null, null);
+			// The rcp feature includes all launchers
+			launcherFeature = PDETargetPlatform.getBestFeature(CSpecGenerator.RCP_FEATURE, null, null);
+		if (launcherFeature == null)
+			launcherFeature = PDETargetPlatform.getBestFeature(CSpecGenerator.LAUNCHER_FEATURE_3_2, null, null);
 
 		if (launcherFeature != null)
 			exeFeature = new File(launcherFeature.getInstallLocation());
@@ -425,7 +428,7 @@ public class P2SiteGenerator extends AbstractActor {
 		}
 
 		run(ctx, siteDefinerFile, ctx.getComponentLocation().toFile(), productConfigFiles, siteDir, ctx.getProperties());
-		if (siteDir != outputDir) {
+		if (siteDir != null && siteDir != outputDir) {
 			// Zip the content of the siteDir. The name of the zip should
 			// be the same as the name of the input zip.
 			//

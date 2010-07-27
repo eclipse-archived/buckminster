@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
+import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.common.model.Format;
@@ -112,28 +113,51 @@ public class PDEMapProvider extends Provider {
 				//
 				return null;
 
+			boolean source = true;
+			boolean mutable = true;
 			Map<String, String> properties = tv.getProperties();
 			Version v = null;
-			String tag = properties.get("tag"); //$NON-NLS-1$
-			VersionSelector vs = (tag == null) ? null : VersionSelector.tag(tag);
-			ComponentRequest rq = query.getComponentRequest();
-			IVersionConverter vc = getVersionConverter();
-			if (vc != null) {
-				// Let's check that the given tag matches what we are asking
-				// for.
-				//
-				v = vc.createVersion(vs);
+			VersionSelector vs = null;
+			IReaderType rt = tv.getReaderType();
+			String id = null;
+			if ("p2".equals(rt.getId())) { //$NON-NLS-1$
+				String vstr = properties.get("version"); //$NON-NLS-1$
+				if (vstr != null)
+					v = Version.parseVersion(vstr);
+				id = properties.get("id"); //$NON-NLS-1$
+				source = false;
+				mutable = false;
+			} else {
+				String tag = properties.get("tag"); //$NON-NLS-1$
+				if (tag != null)
+					vs = VersionSelector.tag(tag);
+				IVersionConverter vc = getVersionConverter();
+				if (vc != null) {
+					// Let's check that the given tag matches what we are asking
+					// for.
+					//
+					v = vc.createVersion(vs);
+				}
+				if ("url".equals(rt.getId())) { //$NON-NLS-1$
+					source = false;
+					mutable = false;
+				}
+			}
+			if (v != null) {
 				VersionRange vd = query.getVersionRange();
 				if (!(vd == null || vd.isIncluded(v)))
 					return null;
 			}
 
-			VersionMatch vm = new VersionMatch(v, vs, -1, null, null);
-			IReaderType rt = tv.getReaderType();
+			VersionMatch vm = new VersionMatch(v, vs, -1, null, id);
+			ComponentRequest rq = query.getComponentRequest();
 			String repoLocator = rt.convertFetchFactoryLocator(properties, rq.getName());
 			Format uri = new Format(repoLocator);
+			Map<String, String> props = new HashMap<String, String>();
+			props.put(KeyConstants.IS_SOURCE, Boolean.toString(source));
+			props.put(KeyConstants.IS_MUTABLE, Boolean.toString(mutable));
 			Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null,
-					getResolutionFilter(), getProviderProperties(), null, null);
+					getResolutionFilter(), props, null, null);
 
 			String ctypeID = rq.getComponentTypeID();
 			if (ctypeID == null)
@@ -265,8 +289,8 @@ public class PDEMapProvider extends Provider {
 		}
 
 		if (candidateEntry == null) {
-			String msg = NLS.bind(Messages.PDEMapProvider_0_for_1_unable_to_find_2_in_map, new Object[] { getReaderTypeId(),
-					getURI(query.getProperties()), wanted });
+			String msg = NLS.bind(Messages.PDEMapProvider_0_for_1_unable_to_find_2_in_map,
+					new Object[] { getReaderTypeId(), getURI(query.getProperties()), wanted });
 
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, msg, null));
 			PDEPlugin.getLogger().debug(msg);

@@ -41,10 +41,15 @@ public class VersionHelper {
 	static {
 		try {
 			sampleOSGiVersion = Version.parseVersion("1.0.0"); //$NON-NLS-1$
-			VersionType osgiType = new VersionType(sampleOSGiVersion.getFormat(), VersionType.OSGI);
-			knownTypes.put(VersionFormat.OSGI_FORMAT_STRING, osgiType);
-			if (!osgiType.toString().equals(VersionFormat.OSGI_FORMAT_STRING))
-				knownTypes.put(osgiType.toString(), osgiType);
+			IVersionFormat osgiFormat = sampleOSGiVersion.getFormat();
+			VersionType osgiType = new VersionType(osgiFormat, VersionType.OSGI);
+
+			String osgiFmtString = osgiFormat.toString();
+			osgiFmtString = osgiFmtString.substring(7, osgiFmtString.length() - 1);
+			knownTypes.put(osgiFmtString, osgiType);
+
+			if (!osgiFmtString.equals(VersionFormat.OSGI_FORMAT_STRING))
+				knownTypes.put(VersionFormat.OSGI_FORMAT_STRING, osgiType);
 
 			IExtensionRegistry exReg = Platform.getExtensionRegistry();
 			IConfigurationElement[] elems = exReg.getConfigurationElementsFor(VERSION_TYPES_POINT);

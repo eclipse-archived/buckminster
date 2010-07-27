@@ -178,8 +178,8 @@ public class PerformManager implements IPerformManager {
 					groupMonitor.beginTask(null, 10 * paths.length);
 					IPath base = pathGroup.getBase();
 					for (IPath path : paths)
-						refreshAndSetDerivedPath(path.isAbsolute() ? path : base.append(path), alreadyRefreshed, MonitorUtils.subMonitor(
-								groupMonitor, 10));
+						refreshAndSetDerivedPath(path.isAbsolute() ? path : base.append(path), alreadyRefreshed,
+								MonitorUtils.subMonitor(groupMonitor, 10));
 					groupMonitor.done();
 				}
 			} finally {
@@ -337,7 +337,7 @@ public class PerformManager implements IPerformManager {
 					cName = cspec.getName();
 					cType = cspec.getComponentTypeID();
 				} else {
-					ComponentRequest rq = cspec.getDependency(preq.getComponentName(), preq.getComponentType());
+					ComponentRequest rq = cspec.getDependency(preq.getComponentName(), preq.getComponentType(), preq.getVersionRange());
 					cName = rq.getName();
 					cType = rq.getComponentTypeID();
 				}

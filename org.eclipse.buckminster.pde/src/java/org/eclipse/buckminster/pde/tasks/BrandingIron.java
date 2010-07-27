@@ -176,9 +176,11 @@ public class BrandingIron implements IXMLConstants {
 			else
 				icon = new File(icons[0]);
 
-			iconName = icon.getName();
-			Utils.copy(icon, new File(target + "/Resources/" + icon.getName())); //$NON-NLS-1$
-			new File(initialRoot + "/Resources/Eclipse.icns").delete(); //$NON-NLS-1$
+			if (icon.exists()) {
+				iconName = icon.getName();
+				Utils.copy(icon, new File(target + "/Resources/" + icon.getName())); //$NON-NLS-1$
+				new File(initialRoot + "/Resources/Eclipse.icns").delete(); //$NON-NLS-1$
+			}
 			if (!splashApp.exists())
 				new File(initialRoot + "/Resources/").delete(); //$NON-NLS-1$
 		}

@@ -453,8 +453,6 @@ public class Messages extends NLS {
 
 	public static String _0_is_not_an_assignment;
 
-	public static String _0_set_to_the_value_1;
-
 	public static String You_must_provide_at_least_one_preference_assignment;
 
 	public static String You_must_provide_at_least_one_preference_to_unset;

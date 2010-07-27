@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eclipse.buckminster.pde.internal;
 
+import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +29,11 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.service.resolver.BundleDescription;
@@ -40,7 +43,6 @@ import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.internal.core.IPluginModelListener;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelDelta;
-import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
@@ -70,30 +72,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 	}
 
 	public static IFeatureModel getBestFeature(String componentName, VersionRange versionDesignator, NodeQuery query) {
-		IFeatureModel candidate = null;
-		Version candidateVersion = null;
-		for (IFeatureModel model : PDECore.getDefault().getFeatureModelManager().findFeatureModels(componentName)) {
-			IFeature feature = model.getFeature();
-			String ov = feature.getVersion();
-			if (ov == null) {
-				if (candidate == null && versionDesignator == null)
-					candidate = model;
-				continue;
-			}
-
-			Version v = VersionHelper.parseVersion(ov);
-			if (!(versionDesignator == null || versionDesignator.isIncluded(v))) {
-				if (query != null)
-					query.logDecision(ResolverDecisionType.VERSION_REJECTED, v, NLS.bind(Messages.not_designated_by_0, versionDesignator));
-				continue;
-			}
-
-			if (candidateVersion == null || candidateVersion.compareTo(v) < 0) {
-				candidate = model;
-				candidateVersion = v;
-			}
-		}
-		return candidate;
+		return PDETargetPlatform.getBestFeature(componentName, versionDesignator, query);
 	}
 
 	public static IPluginModelBase getBestPlugin(String componentName, VersionRange versionDesignator, NodeQuery query) {
@@ -101,7 +80,7 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 		Version candidateVersion = null;
 		synchronized (activeMap) {
 			if (activeMap.isEmpty()) {
-				for (IPluginModelBase model : PluginRegistry.getActiveModels()) {
+				for (IPluginModelBase model : PluginRegistry.getAllModels()) {
 					BundleDescription desc = model.getBundleDescription();
 					String id = desc.getSymbolicName();
 					IPluginModelBase[] mbArr = activeMap.get(id);
@@ -148,6 +127,25 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 		}
 	}
 
+	static File getBundleLocation(BundleInfo plugin) {
+		if (plugin == null)
+			return null;
+		URI il = plugin.getLocation();
+		if (il == null)
+			return null;
+		if (!"file".equalsIgnoreCase(il.getScheme())) { //$NON-NLS-1$
+			try {
+				java.net.URL fileIL = FileLocator.toFileURL(il.toURL());
+				if ("file".equalsIgnoreCase(fileIL.getProtocol())) //$NON-NLS-1$
+					return null;
+				il = fileIL.toURI();
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		return new File(il);
+	}
+
 	@Override
 	public URI getArtifactURL(Resolution resolution, RMContext context) throws CoreException {
 		return null;
@@ -160,15 +158,18 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 		String location;
 		ComponentRequest rq = cr.getRequest();
 		if (IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID())) {
-			IFeatureModel model = getBestFeature(rq.getName(), vd, null);
+			IFeatureModel model = PDETargetPlatform.getBestFeature(rq.getName(), vd, null);
 			if (model == null)
 				return null;
 			location = model.getInstallLocation();
 		} else {
-			IPluginModelBase model = getBestPlugin(rq.getName(), vd, null);
-			if (model == null)
+			BundleInfo plugin = PDETargetPlatform.getBestPlugin(rq.getName(), vd, null);
+			if (plugin == null)
 				return null;
-			location = model.getInstallLocation();
+			File fileLoc = getBundleLocation(plugin);
+			if (fileLoc == null)
+				return null;
+			location = fileLoc.getAbsolutePath();
 		}
 
 		IPath path = null;

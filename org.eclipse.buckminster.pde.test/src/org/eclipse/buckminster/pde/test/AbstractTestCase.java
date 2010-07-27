@@ -10,6 +10,8 @@
 
 package org.eclipse.buckminster.pde.test;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Pattern;
@@ -28,12 +30,34 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Thomas Hallgren
  */
 public abstract class AbstractTestCase extends TestCase
 {
+	public static File getTestData(String fileName) throws Exception
+	{
+		Bundle self = Activator.context.getBundle();
+		URL base = self.getEntry("testData");
+		if(base == null)
+			throw new RuntimeException("Unable to find \"testData\" folder");
+		return new File(toFile(base), fileName);
+	}
+
+	public static File getTestOutputFolder(String name) throws CoreException, IOException
+	{
+		return Activator.context.getDataFile(name);
+	}
+
+	private static File toFile(URL url) throws IOException
+	{
+		return new File(new Path(FileLocator.toFileURL(url).getPath()).toOSString());
+	}
+
 	public AbstractTestCase()
 	{
 	}

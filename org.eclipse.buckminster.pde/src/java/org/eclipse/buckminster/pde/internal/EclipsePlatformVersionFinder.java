@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.frameworkadmin.BundleInfo;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
-import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
 /**
@@ -63,13 +63,11 @@ public class EclipsePlatformVersionFinder extends AbstractVersionFinder {
 		NodeQuery query = getQuery();
 		VersionRange dsg = query.getVersionRange();
 		if (type == InstalledType.PLUGIN) {
-			IPluginModelBase plugin = EclipsePlatformReaderType.getBestPlugin(componentName, dsg, query);
-			if (plugin != null) {
-				org.osgi.framework.Version ov = plugin.getBundleDescription().getVersion();
-				v = ov == null ? null : Version.createOSGi(ov.getMajor(), ov.getMinor(), ov.getMicro(), ov.getQualifier());
-			}
+			BundleInfo plugin = PDETargetPlatform.getBestPlugin(componentName, dsg, query);
+			if (plugin != null)
+				v = VersionHelper.parseVersion(plugin.getVersion());
 		} else {
-			IFeatureModel feature = EclipsePlatformReaderType.getBestFeature(componentName, dsg, query);
+			IFeatureModel feature = PDETargetPlatform.getBestFeature(componentName, dsg, query);
 			if (feature != null)
 				v = VersionHelper.parseVersion(feature.getFeature().getVersion());
 		}

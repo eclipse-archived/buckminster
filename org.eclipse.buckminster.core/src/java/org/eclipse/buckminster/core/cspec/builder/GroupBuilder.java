@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.cspec.builder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IGroup;
@@ -119,7 +118,7 @@ public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup {
 		this.rebase = rebase == null ? null : rebase.addTrailingSeparator();
 	}
 
-	void finalWrapUp(Map<String, ComponentRequestBuilder> dependencies) {
+	void finalWrapUp(List<ComponentRequestBuilder> dependencies) {
 		for (PrerequisiteBuilder pq : prerequisites)
 			pq.finalWrapUp(dependencies);
 	}
