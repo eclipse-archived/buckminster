@@ -17,7 +17,6 @@
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="modeling" failOnError="false"/>
-  <rm:locator searchPathRef="simultanious.release"/>
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="svn">
       <rm:uri format="{0}/tools/org.eclipse.buckminster/trunk/{1}?moduleAfterTag&amp;moduleAfterBranch">
@@ -28,29 +27,17 @@
   </rm:searchPath>
   <rm:searchPath name="platform">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=I)">
-      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/">
+      <rm:uri format="{0}/eclipse/updates/3.7-I-builds/">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=M)">
-      <rm:uri format="{0}/eclipse/updates/3.6milestones/">
+      <rm:uri format="{0}/eclipse/updates/3.7milestones/">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
-      <rm:uri format="{0}/eclipse/updates/3.6/">
-        <bc:propertyRef key="eclipse.download.prefix"/>
-      </rm:uri>
-    </rm:provider>
-  </rm:searchPath>
-  <rm:searchPath name="simultanious.release">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/releases/staging">
-        <bc:propertyRef key="eclipse.download.prefix"/>
-      </rm:uri>
-    </rm:provider>
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
-      <rm:uri format="{0}/releases/helios">
+      <rm:uri format="{0}/eclipse/updates/3.7/">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
