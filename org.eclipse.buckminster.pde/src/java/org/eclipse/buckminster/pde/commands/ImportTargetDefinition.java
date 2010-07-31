@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
+import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.core.commands.WorkspaceCommand;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.pde.Messages;
@@ -85,21 +86,16 @@ public class ImportTargetDefinition extends WorkspaceCommand {
 
 	@Override
 	protected void handleUnparsed(String[] unparsed) throws Exception {
-		// if (unparsed.length > 1)
-		// throw new
-		// SimpleErrorExitException(org.eclipse.buckminster.core.Messages.Too_many_arguments);
-		// if (unparsed.length < 1)
-		// throw new
-		// SimpleErrorExitException(org.eclipse.buckminster.core.Messages.Too_few_arguments);
-		setTargetPath(unparsed[0]);
+		if (unparsed.length > 1)
+			throw new SimpleErrorExitException(org.eclipse.buckminster.core.Messages.Too_many_arguments);
+		if (unparsed.length == 1)
+			setTargetPath(unparsed[0]);
 	}
 
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception {
-		if (targetPath == null) {
-			MonitorUtils.complete(monitor);
-			return 0;
-		}
+		if (targetPath == null)
+			throw new SimpleErrorExitException(org.eclipse.buckminster.core.Messages.Too_few_arguments);
 
 		Buckminster bucky = Buckminster.getDefault();
 		ITargetPlatformService service = bucky.getService(ITargetPlatformService.class);

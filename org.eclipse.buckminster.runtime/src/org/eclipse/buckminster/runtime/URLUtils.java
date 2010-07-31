@@ -235,6 +235,18 @@ public abstract class URLUtils {
 		String scheme = uri.getScheme();
 		if (scheme == null) {
 			scheme = "file"; //$NON-NLS-1$
+
+			// Attempt to create an absolute path
+			try {
+				IPath absPath = Path.fromPortableString(path);
+				if (!absPath.isAbsolute()) {
+					File file = new File(absPath.toOSString());
+					absPath = Path.fromOSString(file.getAbsolutePath());
+					path = absPath.toPortableString();
+				}
+			} catch (Exception e) {
+				Buckminster.getLogger().debug(e, "Unable to convert relative path %s to absolute", path); //$NON-NLS-1$
+			}
 			change = true;
 		}
 
