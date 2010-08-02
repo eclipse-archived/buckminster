@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, eXXcellent solutions gmbh
+ * Copyright (c) 2009, eXXcellent solutions gmbh and others
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Achim Demelt - initial API and implementation
+ *     Matthias Kappeller - Bug 321064 - No JUnit TestReport created for huge report files
  *******************************************************************************/
 package org.eclipse.buckminster.junit.internal;
 
@@ -69,6 +70,10 @@ public class ResultSerializer implements XMLReader {
 	private String suiteStack = ""; //$NON-NLS-1$
 
 	public ResultSerializer(TestListener listener, IStreamMonitor[] stdout, IStreamMonitor[] stderr, boolean terseXML, boolean flatXML) {
+		if (listener.getTestRunSession() == null) {
+			throw new IllegalArgumentException(Messages.ResultSerializer_No_Test_Session);
+		}
+		
 		this.testListener = listener;
 		this.testRunSession = listener.getTestRunSession();
 		this.stdOut = stdout;

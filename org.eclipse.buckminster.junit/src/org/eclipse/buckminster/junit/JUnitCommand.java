@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, eXXcellent solutions gmbh
+ * Copyright (c) 2009, eXXcellent solutions gmbh and others
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Achim Demelt - initial API and implementation
+ *     Matthias Kappeller - Bug 321064 - No JUnit TestReport created for huge report files
  *******************************************************************************/
 package org.eclipse.buckminster.junit;
 
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -25,8 +27,10 @@ import javax.xml.transform.stream.StreamResult;
 import org.eclipse.buckminster.cmdline.Option;
 import org.eclipse.buckminster.cmdline.OptionDescriptor;
 import org.eclipse.buckminster.cmdline.OptionValueType;
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.commands.Launch;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.junit.internal.Messages;
 import org.eclipse.buckminster.junit.internal.ResultSerializer;
 import org.eclipse.buckminster.junit.internal.TestListener;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -46,6 +50,9 @@ public class JUnitCommand extends Launch {
 	private static final OptionDescriptor FLAT_XML_DESCRIPTOR = new OptionDescriptor(null, "flatXML", //$NON-NLS-1$
 			OptionValueType.NONE);
 
+	private static final OptionDescriptor MAX_AWAIT_JUNIT_REPORT_DESCRIPTOR = new OptionDescriptor('t', "maxTimeAwaitJunitReport", //$NON-NLS-1$
+			OptionValueType.REQUIRED);
+
 	private boolean quiet;
 
 	private String outputPath;
@@ -54,6 +61,8 @@ public class JUnitCommand extends Launch {
 
 	private boolean flatXML;
 
+	private int maxAwaitJunitReport = 10;
+
 	@Override
 	protected void getOptionDescriptors(List<OptionDescriptor> appendHere) throws Exception {
 		super.getOptionDescriptors(appendHere);
@@ -61,6 +70,7 @@ public class JUnitCommand extends Launch {
 		appendHere.add(OUTPUT_DESCRIPTOR);
 		appendHere.add(TERSE_XML_DESCRIPTOR);
 		appendHere.add(FLAT_XML_DESCRIPTOR);
+		appendHere.add(MAX_AWAIT_JUNIT_REPORT_DESCRIPTOR);
 	}
 
 	@Override
@@ -75,6 +85,9 @@ public class JUnitCommand extends Launch {
 			terseXML = true;
 		else if (option.is(FLAT_XML_DESCRIPTOR))
 			flatXML = true;
+		else if (option.is(MAX_AWAIT_JUNIT_REPORT_DESCRIPTOR)) {
+			maxAwaitJunitReport = Integer.valueOf(option.getValue()).intValue();
+		}
 	}
 
 	@Override
@@ -85,7 +98,7 @@ public class JUnitCommand extends Launch {
 		try {
 			int result = super.internalRun(monitor);
 
-			if (outputPath != null && listener.getTestRunSession() != null)
+			if (outputPath != null)
 				exportTestRunSession(listener);
 
 			return result;
@@ -99,6 +112,15 @@ public class JUnitCommand extends Launch {
 	 * order to avoid using internal API.
 	 */
 	private void exportTestRunSession(TestListener listener) throws Exception {
+
+		// bug #321064 - No JUnit TestReport created for huge report files
+		try {
+			listener.waitForFinish(maxAwaitJunitReport, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			CorePlugin.getLogger().warning(e, Messages.JUnitCommand_Export_interrupted);
+			Thread.interrupted();
+		}
+
 		// bug #292376 - JUnit reporting fails if output path does not exist
 		File parentFile = new File(outputPath).getParentFile();
 		if (parentFile != null)
