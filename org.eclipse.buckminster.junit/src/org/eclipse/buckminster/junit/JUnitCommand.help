@@ -10,6 +10,7 @@ usage: junit
        [{-o | --output} <path-to-XML-output-file>]
        [--terseXML]
        [--flatXML]
+       [{-t | --maxTimeAwaitJunitReport} duration]
        [--stdout] [<path where stdout will be written to or "-" for passthrough>]]
        [--stderr] [<path where stderr will be written to or "-" for passthrough>]]
 
@@ -55,6 +56,12 @@ usage: junit
   nested suites will be flattened into this root element. The names of the test cases will
   be prefixed by the names of their containing test suites, so that unique identification of
   test cases is possible.
+  
+--maxTimeAwaitJunitReport
+  If your JUnit reports are huge (more than 200MB) then it may take some time to work them up
+  and Buckminster finishes before the VM has had time to process the data.
+  The duration given with --maxTimeAwaitJunitReport will define the maximum amount of time in seconds
+  to wait until the JUnit report should be created. The default is 10 seconds.
    
 --stdout
   The path where the contents of the standard output stream of the launched process(es) will be

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, eXXcellent solutions gmbh
+ * Copyright (c) 2009, eXXcellent solutions gmbh and others
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
@@ -7,16 +7,20 @@
  *
  * Contributors:
  *     Achim Demelt - initial API and implementation
+ *     Matthias Kappeller - Bug 321064 - No JUnit TestReport created for huge report files
  *******************************************************************************/
 package org.eclipse.buckminster.junit.internal;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.jdt.junit.TestRunListener;
 import org.eclipse.jdt.junit.model.ITestCaseElement;
-import org.eclipse.jdt.junit.model.ITestRunSession;
 import org.eclipse.jdt.junit.model.ITestElement.FailureTrace;
 import org.eclipse.jdt.junit.model.ITestElement.Result;
+import org.eclipse.jdt.junit.model.ITestRunSession;
 import org.eclipse.osgi.util.NLS;
 
 import com.ibm.icu.text.MessageFormat;
@@ -35,6 +39,8 @@ public class TestListener extends TestRunListener {
 	private int ignoreCount;
 
 	private int overallCount;
+
+	private final CountDownLatch latch = new CountDownLatch(1);
 
 	private ITestRunSession session;
 
@@ -58,6 +64,11 @@ public class TestListener extends TestRunListener {
 		return overallCount;
 	}
 
+	/**
+	 * @return the {@link ITestRunSession} after it has completed. Otherwise
+	 *         <code>null</code> will be returned.
+	 * @see #waitForFinish(int, TimeUnit)
+	 */
 	public ITestRunSession getTestRunSession() {
 		return session;
 	}
@@ -65,6 +76,7 @@ public class TestListener extends TestRunListener {
 	@Override
 	public void sessionFinished(ITestRunSession testSession) {
 		this.session = testSession;
+		latch.countDown();
 		if (!quiet) {
 			logger.info(Messages.TestListener_Tests_finished);
 			logger.info(MessageFormat.format(Messages.TestListener_Elapsed_time, new Object[] { Double.valueOf(session.getElapsedTimeInSeconds()) }));
@@ -108,6 +120,10 @@ public class TestListener extends TestRunListener {
 	public void testCaseStarted(ITestCaseElement testCaseElement) {
 		if (!quiet)
 			logger.info(Messages.TestListener_Running_test + testCaseElement.getTestClassName() + "." + testCaseElement.getTestMethodName() + "..."); //$NON-NLS-1$//$NON-NLS-2$
+	}
+
+	public void waitForFinish(int duration, TimeUnit timeUnit) throws InterruptedException {
+		latch.await(duration, timeUnit);
 	}
 
 	private void logFailureTrace(FailureTrace failure) {

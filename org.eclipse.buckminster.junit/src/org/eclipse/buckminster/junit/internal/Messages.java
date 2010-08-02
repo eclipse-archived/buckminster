@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2009, eXXcellent solutions gmbh
+
+ * Copyright (c) 2009, eXXcellent solutions gmbh and others
  * The code, documentation and other materials contained herein have been
  * licensed under the Eclipse Public License - v 1.0 by the copyright holder
  * listed above, as the Initial Contributor under such license. The text of
@@ -7,6 +8,7 @@
  *
  * Contributors:
  *     Achim Demelt - initial API and implementation
+ *     Matthias Kappeller - Bug 321064 - No JUnit TestReport created for huge report files
  *******************************************************************************/
 package org.eclipse.buckminster.junit.internal;
 
@@ -15,9 +17,13 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.junit.internal.messages"; //$NON-NLS-1$
 
+	public static String ResultSerializer_No_Test_Session = null;
+
 	public static String JUnitCommand_Cannot_open_launch_config;
 
 	public static String JUnitCommand_No_launch_config;
+
+	public static String JUnitCommand_Export_interrupted;
 
 	public static String TestListener_Elapsed_time;
 
