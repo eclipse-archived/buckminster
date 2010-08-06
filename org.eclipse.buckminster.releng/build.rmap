@@ -7,6 +7,7 @@
   <rm:locator pattern="^org\.slf4j\.extendable$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.zest(\..+)?$" searchPathRef="gef"/>
+  <rm:locator pattern="^org\.eclipse\.[ej]git(\..+)?$" searchPathRef="git"/>
   <rm:locator pattern="^org\.eclipse\.draw2d(\..+)?$" searchPathRef="gef"/>
   <rm:locator pattern="^com\.ibm\.icu\.base$" searchPathRef="orbit"/>
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
@@ -14,7 +15,6 @@
   <rm:locator pattern="^org\.tigris\.subversion(\..+)?" searchPathRef="subclipse"/>
   <rm:locator pattern="^org\.eclipse\.team\.svn(\..+)?$" searchPathRef="subversive"/>
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
-  <rm:locator pattern="^org\.eclipse\.[ej]git(\..+)?$" searchPathRef="git"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="modeling" failOnError="false"/>
   <rm:locator searchPathRef="simultanious.release"/>
@@ -92,7 +92,7 @@
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
-      <rm:uri format="{0}/releases/helios">
+      <rm:uri format="{0}/egit/updates">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
