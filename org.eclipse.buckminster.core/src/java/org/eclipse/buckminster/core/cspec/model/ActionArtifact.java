@@ -70,7 +70,7 @@ public class ActionArtifact extends Artifact implements IActionArtifact {
 	}
 
 	@Override
-	protected IPath getExpandedBase(Map<String, ? extends Object> local) throws CoreException {
+	protected IPath getExpandedBase(Map<String, String> local) throws CoreException {
 		return getAction().getExpandedBase(getBase(), local);
 	}
 }

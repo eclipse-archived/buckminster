@@ -49,22 +49,12 @@ public class ComponentRequestItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This returns ComponentRequest.gif. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/ComponentRequest"));
-	}
-
-	/**
 	 * This returns the property descriptors for the adapted class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -84,31 +74,35 @@ public class ComponentRequestItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
+		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
 	}
 
 	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc
+	 * This returns the label text for the adapted class.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
-		String label = ((ComponentRequest) object).getId();
-		return label == null || label.length() == 0 ? getString("_UI_ComponentRequest_type") : getString("_UI_ComponentRequest_type") + " " + label;
+		String label = ((ComponentRequest)object).getId();
+		return label == null || label.length() == 0 ?
+			getString("_UI_ComponentRequest_type") :
+			getString("_UI_ComponentRequest_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to
-	 * update any cached children and by creating a viewer notification, which
-	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to update any cached
+	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -131,23 +125,41 @@ public class ComponentRequestItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addFilterPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_ComponentRequest_filter_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ComponentRequest_filter_feature", "_UI_ComponentRequest_type"), CommonPackage.Literals.COMPONENT_REQUEST__FILTER, true,
-				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ComponentRequest_filter_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ComponentRequest_filter_feature", "_UI_ComponentRequest_type"),
+				 CommonPackage.Literals.COMPONENT_REQUEST__FILTER,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Id feature. <!-- begin-user-doc
+	 * This adds a property descriptor for the Id feature.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected void addIdPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_ComponentRequest_id_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ComponentRequest_id_feature", "_UI_ComponentRequest_type"), CommonPackage.Literals.COMPONENT_REQUEST__ID, true, false,
-				false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ComponentRequest_id_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ComponentRequest_id_feature", "_UI_ComponentRequest_type"),
+				 CommonPackage.Literals.COMPONENT_REQUEST__ID,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -157,23 +169,41 @@ public class ComponentRequestItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addRangePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_ComponentRequest_range_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ComponentRequest_range_feature", "_UI_ComponentRequest_type"), CommonPackage.Literals.COMPONENT_REQUEST__RANGE, true,
-				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ComponentRequest_range_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ComponentRequest_range_feature", "_UI_ComponentRequest_type"),
+				 CommonPackage.Literals.COMPONENT_REQUEST__RANGE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Type feature. <!-- begin-user-doc
+	 * This adds a property descriptor for the Type feature.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected void addTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_ComponentRequest_type_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_ComponentRequest_type_feature", "_UI_ComponentRequest_type"), CommonPackage.Literals.COMPONENT_REQUEST__TYPE, true,
-				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_ComponentRequest_type_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_ComponentRequest_type_feature", "_UI_ComponentRequest_type"),
+				 CommonPackage.Literals.COMPONENT_REQUEST__TYPE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -183,6 +213,7 @@ public class ComponentRequestItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

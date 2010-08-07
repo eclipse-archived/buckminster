@@ -12,7 +12,7 @@ package org.eclipse.buckminster.core.common.parser;
 
 import java.util.Map;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.MissingRequiredAttributeException;
 import org.xml.sax.Attributes;
@@ -45,7 +45,7 @@ public class PropertyConstantHandler extends PropertyHandler {
 	void addYourself(Map<String, String> props) {
 		String key = getKey();
 		props.put(key, value);
-		if (props instanceof ExpandingProperties<?>)
-			((ExpandingProperties<?>) props).setMutable(key, getMutable());
+		if (props instanceof ExpandingProperties)
+			((ExpandingProperties) props).setMutable(key, getMutable());
 	}
 }

@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.PathGroup;
@@ -23,10 +22,12 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.rmap.model.Locator;
-import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.rmap.model.ResourceMap;
-import org.eclipse.buckminster.core.rmap.model.SearchPath;
+import org.eclipse.buckminster.core.resolver.ResourceMapResolver;
+import org.eclipse.buckminster.rmap.Locator;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.ResourceMap;
+import org.eclipse.buckminster.rmap.RmapFactory;
+import org.eclipse.buckminster.rmap.SearchPath;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.buckminster.sax.Utils;
@@ -118,7 +119,7 @@ public class Generator extends NamedElement implements IGenerator {
 
 		Set<String> paths = fileNames.keySet();
 		String readerType = IReaderType.LOCAL;
-		Format uri;
+		String uri;
 		boolean isFile = false;
 		IPath componentLocation;
 		if (paths.size() == 1) {
@@ -133,26 +134,34 @@ public class Generator extends NamedElement implements IGenerator {
 		} else
 			componentLocation = pg.getBase();
 		try {
-			uri = new Format(URLUtils.normalizeToURL(componentLocation.toOSString()).toString());
+			uri = URLUtils.normalizeToURL(componentLocation.toOSString()).toString();
 		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 
 		IComponentIdentifier ci = getGeneratedIdentifier();
 		String cType = ci.getComponentTypeID();
-		ResourceMap rmap = new ResourceMap(null);
-		SearchPath searchPath = new SearchPath(rmap, "default"); //$NON-NLS-1$
-		Map<String, String> props = new HashMap<String, String>(2);
+		RmapFactory factory = RmapFactory.eINSTANCE;
+		ResourceMap rmap = factory.createResourceMap();
+		SearchPath searchPath = factory.createSearchPath();
+		searchPath.setName("default"); //$NON-NLS-1$
+		rmap.getSearchPaths().add(searchPath);
+		Provider provider = ResourceMapResolver.immutableProvider(readerType, cType, uri, null);
+		searchPath.getProviders().add(provider);
+		Map<String, String> props = provider.getProperties();
 		props.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
 		props.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
-		Provider provider = new Provider(searchPath, readerType, new String[] { cType }, null, uri, null, null, null, props, null, null);
-		searchPath.addProvider(provider);
-		rmap.addSearchPath(searchPath);
-		rmap.addMatcher(new Locator(rmap, null, "default")); //$NON-NLS-1$
+
+		Locator locator = factory.createLocator();
+		locator.setSearchPath(searchPath);
+		rmap.getMatchers().add(locator);
+
 		ComponentQueryBuilder query = new ComponentQueryBuilder();
 		query.setRootRequest(new ComponentRequest(ci.getName(), ci.getComponentTypeID(), null));
 		ResolutionContext rctx = new ResolutionContext(query.createComponentQuery());
-		BOMNode node = rmap.resolve(rctx.getRootNodeQuery(), monitor);
+		BOMNode node =
+
+		rmap.resolve(rctx.getRootNodeQuery(), monitor);
 		Resolution res = node.getResolution();
 		if (res != null) {
 			if (isFile)

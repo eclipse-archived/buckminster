@@ -9,22 +9,20 @@ package org.eclipse.buckminster.model.common;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Rx Pattern</b></em>'. <!-- end-user-doc -->
- * 
- * <!-- begin-model-doc --> Defines a partial regexp as a pattern <!--
- * end-model-doc -->
- * 
+ *
+ * <!-- begin-model-doc -->
+ * Defines a partial regexp as a pattern
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.RxPattern#getPattern <em>
- * Pattern</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.RxPattern#getPrefix <em>
- * Prefix</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.RxPattern#getSuffix <em>
- * Suffix</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.RxPattern#getPattern <em>Pattern</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.RxPattern#getPrefix <em>Prefix</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.RxPattern#getSuffix <em>Suffix</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.buckminster.model.common.CommonPackage#getRxPattern()
  * @model
  * @generated

@@ -38,10 +38,6 @@ import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.mspec.parser.MaterializationSpecParser;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.query.parser.ComponentQueryParser;
-import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.rmap.model.ResourceMap;
-import org.eclipse.buckminster.core.rmap.parser.ProviderParser;
-import org.eclipse.buckminster.core.rmap.parser.ResourceMapParser;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
@@ -104,8 +100,8 @@ public class ParserFactory implements IParserFactory {
 
 	@Override
 	public IParser<BillOfMaterials> getBillOfMaterialsParser(boolean validating) throws CoreException {
-		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, Provider.TAG, CSpec.TAG, Resolution.TAG,
-				BOMNode.TAG), validating);
+		return new BillOfMaterialsParser(getParserExtensions(BillOfMaterials.TAG, ComponentQuery.TAG, CSpec.TAG, Resolution.TAG, BOMNode.TAG),
+				validating);
 	}
 
 	@Override
@@ -134,23 +130,13 @@ public class ParserFactory implements IParserFactory {
 	}
 
 	@Override
-	public IParser<Provider> getProviderParser(boolean validating) throws CoreException {
-		return new ProviderParser(getParserExtensions(Provider.TAG), validating);
-	}
-
-	@Override
 	public IParser<Resolution> getResolutionParser() throws CoreException {
 		return new ResolutionParser(getParserExtensions(Resolution.TAG));
 	}
 
 	@Override
-	public IParser<ResourceMap> getResourceMapParser(boolean validating) throws CoreException {
-		return new ResourceMapParser(getParserExtensions(ResourceMap.TAG, Provider.TAG), validating);
-	}
-
-	@Override
 	public IParser<WorkspaceBinding> getWorkspaceBindingParser(boolean validating) throws CoreException {
-		return new WorkspaceBindingParser(getParserExtensions(Provider.TAG, CSpec.TAG, Resolution.TAG), validating);
+		return new WorkspaceBindingParser(getParserExtensions(CSpec.TAG, Resolution.TAG), validating);
 	}
 
 	private synchronized List<ParserExtension> getParserExtensions(String... parserIds) {

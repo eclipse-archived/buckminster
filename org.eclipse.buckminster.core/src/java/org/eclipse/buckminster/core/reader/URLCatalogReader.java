@@ -22,12 +22,12 @@ import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -95,19 +95,16 @@ public class URLCatalogReader extends AbstractCatalogReader {
 
 	@Override
 	protected boolean innerExists(String fileName, IProgressMonitor monitor) throws CoreException {
-		InputStream input = null;
 		try {
 			File source = FileUtils.getFile(getURL());
 			if (source != null)
 				return new File(source, fileName).exists();
 
 			URL fileUrl = new URL(getURL(), fileName);
-			input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(), monitor);
+			DownloadManager.getCache().getRemoteInfo(fileUrl, null);
 			return true;
 		} catch (IOException e) {
 			return false;
-		} finally {
-			IOUtils.close(input);
 		}
 	}
 
@@ -181,7 +178,7 @@ public class URLCatalogReader extends AbstractCatalogReader {
 				fullName = file.getAbsolutePath();
 			} else {
 				URL fileUrl = new URL(getURL(), fileName);
-				input = CorePlugin.getDefault().openCachedURL(fileUrl, getConnectContext(), MonitorUtils.subMonitor(monitor, 1));
+				input = DownloadManager.getCache().open(fileUrl, null, fileName, null, MonitorUtils.subMonitor(monitor, 1));
 				fullName = fileUrl.toString();
 			}
 			input = new BufferedInputStream(input);

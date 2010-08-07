@@ -12,8 +12,8 @@ package org.eclipse.buckminster.pde.internal;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.resolver.MalformedProviderURIException;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractVersionFinder;
 import org.eclipse.buckminster.core.version.VersionHelper;

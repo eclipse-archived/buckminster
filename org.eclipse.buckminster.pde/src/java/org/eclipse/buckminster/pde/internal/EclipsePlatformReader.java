@@ -31,7 +31,7 @@ import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
-import org.eclipse.buckminster.core.rmap.model.MalformedProviderURIException;
+import org.eclipse.buckminster.core.resolver.MalformedProviderURIException;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.Messages;

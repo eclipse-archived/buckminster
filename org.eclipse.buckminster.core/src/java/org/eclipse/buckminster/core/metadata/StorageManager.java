@@ -15,7 +15,6 @@ import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.parser.IParserFactory;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
@@ -39,18 +38,11 @@ public class StorageManager {
 
 	private final ISaxableStorage<Resolution> resolutions;
 
-	private final ISaxableStorage<Provider> providers;
-
 	private final ISaxableStorage<Materialization> materializations;
 
 	public StorageManager(File baseLocation) throws CoreException {
 		CorePlugin plugin = CorePlugin.getDefault();
 		IParserFactory pf = plugin.getParserFactory();
-
-		// NOTE: The order in which these entries are created and cleared
-		// in case of changes is important. It is in depencency order.
-		//
-		providers = new MemoryStorage<Provider>(Provider.class);
 
 		cspecs = new MemoryStorage<CSpec>(CSpec.class);
 
@@ -71,10 +63,6 @@ public class StorageManager {
 		return materializations;
 	}
 
-	public ISaxableStorage<Provider> getProviders() throws CoreException {
-		return providers;
-	}
-
 	public ISaxableStorage<Resolution> getResolutions() throws CoreException {
 		return resolutions;
 	}
@@ -84,8 +72,7 @@ public class StorageManager {
 	}
 
 	private void initialize() throws CoreException {
-		if (materializations.sequenceChanged() || resolutions.sequenceChanged() || cspecs.sequenceChanged() || providers.sequenceChanged()
-				|| wsBindings.sequenceChanged()) {
+		if (materializations.sequenceChanged() || resolutions.sequenceChanged() || cspecs.sequenceChanged() || wsBindings.sequenceChanged()) {
 			// Don't use another thread here. It will deadlock
 			//
 			WorkspaceInfo.forceRefreshOnAll(new NullProgressMonitor());

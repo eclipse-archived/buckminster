@@ -131,7 +131,7 @@ public abstract class AbstractMaterializer extends AbstractExtension implements 
 
 	@Override
 	public IReaderType getMaterializationReaderType(Resolution resolution) throws CoreException {
-		return resolution.getProvider().getReaderType();
+		return CorePlugin.getDefault().getReaderType(resolution.getReaderTypeId());
 	}
 
 	public abstract String getMaterializerRootDir() throws CoreException;

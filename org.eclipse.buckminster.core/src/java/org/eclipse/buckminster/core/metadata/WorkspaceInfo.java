@@ -159,7 +159,7 @@ public class WorkspaceInfo {
 			// Re-resolve all known bundles from the target platform
 			//
 			for (IResolution res : resolutions) {
-				if (!IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
+				if (!IReaderType.ECLIPSE_PLATFORM.equals(res.getReaderTypeId()))
 					continue;
 
 				try {
@@ -267,7 +267,7 @@ public class WorkspaceInfo {
 			Materialization mat = getMaterialization(componentIdentifier);
 			if (mat == null) {
 				Resolution resolution = getResolution(componentIdentifier);
-				location = resolution.getProvider().getReaderType().getFixedLocation(resolution);
+				location = CorePlugin.getDefault().getReaderType(resolution.getReaderTypeId()).getFixedLocation(resolution);
 				if (location == null) {
 					if (performContextStack != null) {
 						mat = performContextStack.peek().getGeneratedMaterialization(componentIdentifier);
@@ -736,11 +736,11 @@ public class WorkspaceInfo {
 					// a lower
 					// precedence.
 					//
-					if (prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
-						if (!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+					if (prevRes.getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
+						if (!res.getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
 							continue;
 					} else {
-						if (res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
+						if (res.getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
 							resolutionKeys.put(cn, prevTsKey);
 							continue;
 						}
@@ -815,7 +815,7 @@ public class WorkspaceInfo {
 					}
 				}
 				if (location == null)
-					location = res.getProvider().getReaderType().getFixedLocation(res);
+					location = CorePlugin.getDefault().getReaderType(res.getReaderTypeId()).getFixedLocation(res);
 				if (location != null)
 					locationCache.put(ci, location);
 			}

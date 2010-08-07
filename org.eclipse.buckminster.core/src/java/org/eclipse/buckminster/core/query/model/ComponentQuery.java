@@ -26,11 +26,9 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -39,9 +37,11 @@ import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
-import org.eclipse.buckminster.core.rmap.model.ProviderScore;
+import org.eclipse.buckminster.core.resolver.ProviderScore;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.model.common.util.BMProperties;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -138,7 +138,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		if (props == null || props.size() == 0)
 			properties = Collections.emptyMap();
 		else
-			properties = Collections.unmodifiableMap(new ExpandingProperties<String>(props));
+			properties = Collections.unmodifiableMap(new ExpandingProperties(props));
 
 		contextURL = bld.getContextURL();
 	}
@@ -187,7 +187,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		return documentation;
 	}
 
-	public ComponentRequest getExpandedRootRequest(Map<String, ? extends Object> props) {
+	public ComponentRequest getExpandedRootRequest(Map<String, String> props) {
 		String name = rootRequest.getName();
 		String expName = ExpandingProperties.expand(props, name, 0);
 		return name.equals(expName) ? rootRequest : new ComponentRequest(expName, rootRequest.getComponentTypeID(), rootRequest.getVersionRange());
@@ -197,7 +197,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		if (allProperties != null)
 			return allProperties;
 
-		allProperties = new ExpandingProperties<String>();
+		allProperties = new ExpandingProperties();
 		allProperties.putAll(properties);
 
 		if (propertiesURL != null) {
@@ -207,7 +207,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 				input = DownloadManager.read(propsURL, getConnectContext());
 				Map<String, String> urlProps = new BMProperties(input);
 				if (urlProps.size() > 0) {
-					allProperties = new ExpandingProperties<String>(allProperties);
+					allProperties = new ExpandingProperties(allProperties);
 					allProperties.putAll(urlProps);
 				}
 			} catch (Exception e) {
@@ -313,13 +313,13 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	}
 
 	public URL getResolvedPropertiesURL() {
-		return propertiesURL == null ? null : URLUtils.resolveURL(contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(),
-				propertiesURL, 0));
+		return propertiesURL == null ? null : URLUtils.resolveURL(contextURL,
+				ExpandingProperties.expand(BMProperties.getSystemProperties(), propertiesURL, 0));
 	}
 
 	public URL getResolvedResourceMapURL() {
-		return resourceMapURL == null ? null : URLUtils.resolveURL(contextURL, ExpandingProperties.expand(BMProperties.getSystemProperties(),
-				resourceMapURL, 0));
+		return resourceMapURL == null ? null : URLUtils.resolveURL(contextURL,
+				ExpandingProperties.expand(BMProperties.getSystemProperties(), resourceMapURL, 0));
 	}
 
 	@Override

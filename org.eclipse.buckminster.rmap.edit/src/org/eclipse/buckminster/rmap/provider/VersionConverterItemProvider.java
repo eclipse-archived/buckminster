@@ -13,6 +13,7 @@ import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.RmapPackage;
 import org.eclipse.buckminster.rmap.VersionConverter;
 
+import org.eclipse.buckminster.rmap.VersionSelectorType;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -52,15 +53,13 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to
-	 * deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand},
-	 * {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in
-	 * {@link #createCommand}. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
@@ -76,12 +75,14 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addTypePropertyDescriptor(object);
+			addVersionFormatPropertyDescriptor(object);
 			addVersionTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -93,37 +94,43 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
+		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
 	}
 
 	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc
+	 * This returns the label text for the adapted class.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
-		String label = ((VersionConverter) object).getType();
-		return label == null || label.length() == 0 ? getString("_UI_VersionConverter_type") : getString("_UI_VersionConverter_type") + " " + label;
+		VersionSelectorType labelValue = ((VersionConverter)object).getType();
+		String label = labelValue == null ? null : labelValue.toString();
+		return label == null || label.length() == 0 ?
+			getString("_UI_VersionConverter_type") :
+			getString("_UI_VersionConverter_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to
-	 * update any cached children and by creating a viewer notification, which
-	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to update any cached
+	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(VersionConverter.class)) {
 			case RmapPackage.VERSION_CONVERTER__TYPE:
+			case RmapPackage.VERSION_CONVERTER__VERSION_FORMAT:
 			case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
@@ -135,16 +142,47 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This adds a property descriptor for the Type feature. <!-- begin-user-doc
+	 * This adds a property descriptor for the Type feature.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected void addTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_VersionConverter_type_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_VersionConverter_type_feature", "_UI_VersionConverter_type"), RmapPackage.Literals.VERSION_CONVERTER__TYPE, true, false,
-				false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_VersionConverter_type_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_VersionConverter_type_feature", "_UI_VersionConverter_type"),
+				 RmapPackage.Literals.VERSION_CONVERTER__TYPE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Version Format feature. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addVersionFormatPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_VersionConverter_versionFormat_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_VersionConverter_versionFormat_feature", "_UI_VersionConverter_type"),
+				 RmapPackage.Literals.VERSION_CONVERTER__VERSION_FORMAT,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -154,10 +192,19 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addVersionTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_VersionConverter_versionType_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_VersionConverter_versionType_feature", "_UI_VersionConverter_type"),
-				RmapPackage.Literals.VERSION_CONVERTER__VERSION_TYPE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_VersionConverter_versionType_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_VersionConverter_versionType_feature", "_UI_VersionConverter_type"),
+				 RmapPackage.Literals.VERSION_CONVERTER__VERSION_TYPE,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -167,22 +214,25 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.VERSION_CONVERTER__TRANSFORMERS, RmapFactory.eINSTANCE.createTransform()));
+		newChildDescriptors.add
+			(createChildParameter
+				(RmapPackage.Literals.VERSION_CONVERTER__TRANSFORMERS,
+				 RmapFactory.eINSTANCE.createTransform()));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper
-		// feature to use for
+		// Check the type of the specified child object and return the proper feature to use for
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);

@@ -91,6 +91,7 @@ public class RmapModelWizard extends Wizard implements INewWizard {
 		 * 
 		 * @generated
 		 */
+
 		@Override
 		protected boolean validatePage() {
 			if (super.validatePage()) {
@@ -178,6 +179,7 @@ public class RmapModelWizard extends Wizard implements INewWizard {
 	 * 
 	 * @generated NOT
 	 */
+
 	@Override
 	public void addPages() {
 		// Create a page, set the title, and the initial model file name.
@@ -239,7 +241,7 @@ public class RmapModelWizard extends Wizard implements INewWizard {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.workbench = workbench;
 		this.selection = selection;
@@ -253,6 +255,7 @@ public class RmapModelWizard extends Wizard implements INewWizard {
 	 * 
 	 * @generated NOT
 	 */
+
 	@Override
 	public boolean performFinish() {
 		try {
@@ -263,6 +266,7 @@ public class RmapModelWizard extends Wizard implements INewWizard {
 			// Do the work within an operation.
 			//
 			WorkspaceModifyOperation operation = new WorkspaceModifyOperation() {
+
 				@Override
 				protected void execute(IProgressMonitor progressMonitor) {
 					try {
@@ -308,7 +312,7 @@ public class RmapModelWizard extends Wizard implements INewWizard {
 			if (activePart instanceof ISetSelectionTarget) {
 				final ISelection targetSelection = new StructuredSelection(modelFile);
 				getShell().getDisplay().asyncExec(new Runnable() {
-					@Override
+
 					public void run() {
 						((ISetSelectionTarget) activePart).selectReveal(targetSelection);
 					}
@@ -321,8 +325,8 @@ public class RmapModelWizard extends Wizard implements INewWizard {
 				page.openEditor(new FileEditorInput(modelFile), workbench.getEditorRegistry().getDefaultEditor(modelFile.getFullPath().toString())
 						.getId());
 			} catch (PartInitException exception) {
-				MessageDialog.openError(workbenchWindow.getShell(), RmapEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception
-						.getMessage());
+				MessageDialog.openError(workbenchWindow.getShell(), RmapEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"),
+						exception.getMessage());
 				return false;
 			}
 

@@ -7,13 +7,13 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.parser;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.parser.ActionHandler;
 import org.eclipse.buckminster.core.cspecext.builder.AlterActionBuilder;
 import org.eclipse.buckminster.core.cspecext.builder.AlterAttributeBuilder;
 import org.eclipse.buckminster.core.cspecext.model.AlterAction;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.xml.sax.Attributes;
@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
 class AlterActionHandler extends AlterAttributeHandler {
 	private final AlterPropertiesHandler alterActorPropertiesHandler = new AlterPropertiesHandler(this, AlterAction.ELEM_ALTER_ACTOR_PROPERTIES) {
 		@Override
-		public ExpandingProperties<String> getProperties() {
+		public ExpandingProperties getProperties() {
 			return getAlterActionBuilder().getAlterActorProperties();
 		}
 
@@ -37,7 +37,7 @@ class AlterActionHandler extends AlterAttributeHandler {
 
 	private final AlterPropertiesHandler alterPropertiesHandler = new AlterPropertiesHandler(this, AlterAction.ELEM_ALTER_PROPERTIES) {
 		@Override
-		public ExpandingProperties<String> getProperties() {
+		public ExpandingProperties getProperties() {
 			return getAlterActionBuilder().getAlterProperties();
 		}
 

@@ -18,12 +18,11 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecision;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
-import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.rmap.VersionConverter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
@@ -53,11 +52,6 @@ public abstract class AbstractReader implements IComponentReader {
 	}
 
 	@Override
-	public IConnectContext getConnectContext() {
-		return providerMatch.getConnectContext();
-	}
-
-	@Override
 	public NodeQuery getNodeQuery() {
 		return providerMatch.getNodeQuery();
 	}
@@ -73,7 +67,7 @@ public abstract class AbstractReader implements IComponentReader {
 	}
 
 	@Override
-	public IVersionConverter getVersionConverter() throws CoreException {
+	public VersionConverter getVersionConverter() throws CoreException {
 		return this.getProviderMatch().getVersionConverter();
 	}
 

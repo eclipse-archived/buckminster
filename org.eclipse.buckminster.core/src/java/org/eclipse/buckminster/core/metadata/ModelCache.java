@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.CoreException;
  * @author Thomas Hallgren
  */
 public class ModelCache implements IModelCache {
-	private Map<String, ? extends Object> properties;
+	private Map<String, String> properties;
 
 	private Map<String, PathGroup[]> pathGroupsCache;
 
@@ -30,7 +30,7 @@ public class ModelCache implements IModelCache {
 	public ModelCache() {
 	}
 
-	public ModelCache(Map<String, ? extends Object> properties) {
+	public ModelCache(Map<String, String> properties) {
 		this.properties = properties;
 	}
 
@@ -57,7 +57,7 @@ public class ModelCache implements IModelCache {
 	}
 
 	@Override
-	public synchronized Map<String, ? extends Object> getProperties() {
+	public synchronized Map<String, String> getProperties() {
 		if (properties == null)
 			properties = new HashMap<String, String>();
 		return properties;

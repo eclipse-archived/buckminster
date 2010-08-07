@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.runtime.IFileInfo;
 
 public interface IResolution extends IFileInfo {

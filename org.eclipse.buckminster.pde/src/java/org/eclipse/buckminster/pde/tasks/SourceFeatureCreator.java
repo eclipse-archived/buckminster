@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.model.common.util.BMProperties;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;

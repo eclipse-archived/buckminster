@@ -8,26 +8,23 @@ package org.eclipse.buckminster.rmap;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.rmap.util.TransformMismatchException;
 import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Transform</b></em>'. <!-- end-user-doc -->
- * 
+ *
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.Transform#getFromPattern <em>From
- * Pattern</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.Transform#getFromReplacement <em>From
- * Replacement</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.Transform#getToPattern <em>To Pattern
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.Transform#getToReplacement <em>To
- * Replacement</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.Transform#getFromPattern <em>From Pattern</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.Transform#getFromReplacement <em>From Replacement</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.Transform#getToPattern <em>To Pattern</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.Transform#getToReplacement <em>To Replacement</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.buckminster.rmap.RmapPackage#getTransform()
  * @model
  * @generated
@@ -59,7 +56,6 @@ public interface Transform extends EObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * 
 	 * @return the value of the '<em>From Replacement</em>' attribute.
 	 * @see #setFromReplacement(String)
 	 * @see org.eclipse.buckminster.rmap.RmapPackage#getTransform_FromReplacement()
@@ -104,55 +100,59 @@ public interface Transform extends EObject {
 	String getToReplacement();
 
 	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.Transform#getFromPattern
-	 * <em>From Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Transform#getFromPattern <em>From Pattern</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>From Pattern</em>' attribute.
+	 * @param value the new value of the '<em>From Pattern</em>' attribute.
 	 * @see #getFromPattern()
 	 * @generated
 	 */
 	void setFromPattern(Pattern value);
 
 	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.Transform#getFromReplacement
-	 * <em>From Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Transform#getFromReplacement <em>From Replacement</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>From Replacement</em>' attribute.
+	 * @param value the new value of the '<em>From Replacement</em>' attribute.
 	 * @see #getFromReplacement()
 	 * @generated
 	 */
 	void setFromReplacement(String value);
 
 	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.Transform#getToPattern
-	 * <em>To Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Transform#getToPattern <em>To Pattern</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>To Pattern</em>' attribute.
+	 * @param value the new value of the '<em>To Pattern</em>' attribute.
 	 * @see #getToPattern()
 	 * @generated
 	 */
 	void setToPattern(Pattern value);
 
 	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.Transform#getToReplacement
-	 * <em>To Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Transform#getToReplacement <em>To Replacement</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>To Replacement</em>' attribute.
+	 * @param value the new value of the '<em>To Replacement</em>' attribute.
 	 * @see #getToReplacement()
 	 * @generated
 	 */
 	void setToReplacement(String value);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model exceptions="org.eclipse.buckminster.rmap.TransformMismatchException"
+	 * @generated
+	 */
+	String transformFrom(String source) throws TransformMismatchException;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model exceptions="org.eclipse.buckminster.rmap.TransformMismatchException"
+	 * @generated
+	 */
+	String transformTo(String source) throws TransformMismatchException;
 
 } // Transform

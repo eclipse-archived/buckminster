@@ -52,7 +52,7 @@ public class Attribute extends NamedElement implements Cloneable, IAttribute {
 		filter = null;
 	}
 
-	public void addDynamicProperties(Map<String, Object> properties) throws CoreException {
+	public void addDynamicProperties(Map<String, String> properties) throws CoreException {
 	}
 
 	/**

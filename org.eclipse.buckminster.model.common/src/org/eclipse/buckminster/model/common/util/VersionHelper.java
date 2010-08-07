@@ -204,7 +204,6 @@ public class VersionHelper {
 		ArrayList<VersionType> knownTypeList = new ArrayList<VersionType>(knownTypes.values());
 		Collections.sort(knownTypeList, new Comparator<VersionType>() {
 
-			@Override
 			public int compare(VersionType o1, VersionType o2) {
 				return o1.getId().compareTo(o2.getId());
 			}

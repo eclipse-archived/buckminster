@@ -10,7 +10,6 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,8 +23,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author thhal
  */
 public class RemoteFileCache extends ShortDurationFileCache {
-	public RemoteFileCache(long keepAlive, String prefix, String suffix, File tempDir) {
-		super(keepAlive, prefix, suffix, tempDir);
+	public RemoteFileCache(long keepAlive) {
+		super(keepAlive);
 	}
 
 	public InputStream openRemoteFile(final RemoteFile remoteFile, IProgressMonitor monitor) throws IOException, CoreException {

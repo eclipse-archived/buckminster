@@ -117,7 +117,7 @@ public class PerformContext implements IActionContext {
 
 	private final PrintStream outputStream;
 
-	private final Map<String, ? extends Object> properties;
+	private final Map<String, String> properties;
 
 	public PerformContext(GlobalContext globalCtx, Action action, PrintStream out, PrintStream err, IProgressMonitor cancellationMonitor)
 			throws CoreException {
@@ -289,7 +289,7 @@ public class PerformContext implements IActionContext {
 	}
 
 	@Override
-	public final Map<String, ? extends Object> getProperties() {
+	public final Map<String, String> getProperties() {
 		return properties;
 	}
 

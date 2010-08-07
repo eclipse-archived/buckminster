@@ -10,10 +10,10 @@ package org.eclipse.buckminster.core.cspecext.builder;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspecext.model.AlterAttribute;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 
 /**
  * @author Thomas Hallgren
@@ -23,7 +23,7 @@ public abstract class AlterAttributeBuilder {
 
 	private final HashSet<String> removedHints = new HashSet<String>();
 
-	private final ExpandingProperties<String> alteredHints = new ExpandingProperties<String>();
+	private final ExpandingProperties alteredHints = new ExpandingProperties();
 
 	private String cspecName = null;
 
@@ -47,7 +47,7 @@ public abstract class AlterAttributeBuilder {
 
 	public abstract AlterAttribute<?> createAlterAttribute();
 
-	public ExpandingProperties<String> getAlteredHints() {
+	public ExpandingProperties getAlteredHints() {
 		return alteredHints;
 	}
 

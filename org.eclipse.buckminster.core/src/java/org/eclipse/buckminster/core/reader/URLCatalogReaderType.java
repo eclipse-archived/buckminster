@@ -39,12 +39,13 @@ import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ProviderScore;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.rmap.model.ProviderScore;
+import org.eclipse.buckminster.core.resolver.ResourceMapResolver;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -244,7 +245,7 @@ public class URLCatalogReaderType extends CatalogReaderType {
 		NodeQuery nq = new NodeQuery(context, rq, null);
 
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.UNKNOWN);
-		Provider provider = Provider.immutableProvider(readerType, ctype.getId(), urlString);
+		Provider provider = ResourceMapResolver.immutableProvider(readerType, ctype.getId(), urlString, null);
 		ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
 		return pm.getReader(monitor);
 	}
@@ -327,7 +328,7 @@ public class URLCatalogReaderType extends CatalogReaderType {
 		return getURI(repositoryLocation).getPath();
 	}
 
-	public URI getURI(Provider provider, Map<String, ? extends Object> properties) throws CoreException {
+	public URI getURI(Provider provider, Map<String, String> properties) throws CoreException {
 		return getURI(provider.getURI(properties));
 	}
 

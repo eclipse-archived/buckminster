@@ -20,18 +20,18 @@ import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
-import org.eclipse.buckminster.core.common.model.CircularExpansionException;
 import org.eclipse.buckminster.core.common.model.Constant;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.Format;
-import org.eclipse.buckminster.core.common.model.IProperties;
 import org.eclipse.buckminster.core.common.model.PropertyRef;
 import org.eclipse.buckminster.core.common.model.Replace;
 import org.eclipse.buckminster.core.common.model.Split;
 import org.eclipse.buckminster.core.common.model.ValueHolder;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.model.common.util.BMProperties;
+import org.eclipse.buckminster.model.common.util.CircularExpansionException;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
+import org.eclipse.buckminster.model.common.util.IProperties;
 import org.eclipse.buckminster.sax.TopHandler;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;

@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.reader.ITeamReaderType;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;

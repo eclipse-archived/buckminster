@@ -33,7 +33,6 @@ import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -77,15 +76,13 @@ public class URLFileReader extends AbstractReader implements IFileReader {
 	@Override
 	public void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor) throws CoreException {
 		URL url = getURL();
-		IConnectContext cctx = getConnectContext();
-
 		monitor.beginTask(null, 1000);
 		monitor.subTask(NLS.bind(Messages.Copying_from_0, url));
 
 		InputStream in = null;
 		try {
 			IFileInfo[] fiHandle = new IFileInfo[1];
-			in = DownloadManager.getCache().open(url, cctx, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
+			in = DownloadManager.getCache().open(url, null, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
 			fileInfo = fiHandle[0];
 
 			MaterializerEndPoint unpacker = MaterializerEndPoint.create(location, fileInfo.getRemoteName(), resolution, ctx);
@@ -119,7 +116,7 @@ public class URLFileReader extends AbstractReader implements IFileReader {
 	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException {
 		ICache cache = DownloadManager.getCache();
 		IFileInfo[] fiHandle = new IFileInfo[1];
-		InputStream input = cache.open(getURL(), getConnectContext(), null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
+		InputStream input = cache.open(getURL(), null, null, fiHandle, MonitorUtils.subMonitor(monitor, 800));
 		fileInfo = fiHandle[0];
 		return input;
 	}

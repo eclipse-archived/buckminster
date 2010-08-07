@@ -59,7 +59,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 
 		// We still want to bind stuff produced by the local reader
 		//
-		String readerTypeName = resolution.getProvider().getReaderTypeId();
+		String readerTypeName = resolution.getReaderTypeId();
 		if (!IReaderType.LOCAL.equals(readerTypeName))
 			//
 			// From the platform. Don't bind this
@@ -107,7 +107,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 			// Store the resolution unless it stems from the current target
 			// platform
 			//
-			String readerType = resolution.getProvider().getReaderTypeId();
+			String readerType = resolution.getReaderTypeId();
 			if (!IReaderType.ECLIPSE_PLATFORM.equals(readerType)) {
 				resolution.store(sm);
 				Materialization mat = getMaterialization(resolution);
@@ -491,7 +491,7 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 				return wb;
 			}
 
-			Map<String, ? extends Object> props = context.getProperties(resolution.getRequest());
+			Map<String, String> props = context.getProperties(resolution.getRequest());
 			IPath productPath = ((TopLevelAttribute) bindEntryPoint).getUniquePath(wb.getComponentLocation(), new ModelCache(props));
 			String bindingName = context.getBindingName(resolution, props);
 

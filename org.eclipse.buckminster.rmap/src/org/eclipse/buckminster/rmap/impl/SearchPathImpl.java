@@ -32,20 +32,17 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.SearchPathImpl#getName <em>Name
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.SearchPathImpl#getProviders <em>
- * Providers</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.SearchPathImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.SearchPathImpl#getProviders <em>Providers</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -55,7 +52,6 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	/**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -63,9 +59,8 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getProviders() <em>Providers</em>}'
-	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getProviders() <em>Providers</em>}' containment reference list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getProviders()
 	 * @generated
 	 * @ordered
@@ -74,7 +69,6 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected SearchPathImpl() {
@@ -83,9 +77,9 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -99,23 +93,23 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case RmapPackage.SEARCH_PATH__PROVIDERS:
-				return ((InternalEList<?>) getProviders()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>)getProviders()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -129,19 +123,18 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.SEARCH_PATH__NAME:
-				setName((String) newValue);
+				setName((String)newValue);
 				return;
 			case RmapPackage.SEARCH_PATH__PROVIDERS:
 				getProviders().clear();
-				getProviders().addAll((Collection<? extends Provider>) newValue);
+				getProviders().addAll((Collection<? extends Provider>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -149,9 +142,9 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -167,20 +160,18 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getName() {
 		return name;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EList<Provider> getProviders() {
 		if (providers == null) {
 			providers = new EObjectContainmentEList<Provider>(Provider.class, this, RmapPackage.SEARCH_PATH__PROVIDERS);
@@ -190,10 +181,9 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -203,13 +193,12 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
-		if (eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: ");
@@ -220,9 +209,9 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return RmapPackage.Literals.SEARCH_PATH;

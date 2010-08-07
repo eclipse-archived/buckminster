@@ -356,7 +356,7 @@ class StringFilterImpl extends FilterImpl {
 	private boolean compare(String string) {
 		switch (getOp()) {
 			case EQUAL:
-				return string.equals(stringValue);
+				return string.equals("*") || string.equals(stringValue); //$NON-NLS-1$
 			case APPROX:
 				string = approxString(string);
 				String string2 = approxString(stringValue);

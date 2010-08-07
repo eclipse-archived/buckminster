@@ -17,12 +17,11 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.resolver.IResolverBackchannel;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.rmap.VersionConverter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * A Component reader knows how to read a component stored at some arbitrary
@@ -43,11 +42,6 @@ public interface IComponentReader extends IResolverBackchannel, Closeable {
 	 * Returns the component type
 	 */
 	IComponentType getComponentType();
-
-	/**
-	 * Returns the security context used for connect (if any).
-	 */
-	IConnectContext getConnectContext();
 
 	/**
 	 * Returns the current node query.
@@ -71,7 +65,7 @@ public interface IComponentReader extends IResolverBackchannel, Closeable {
 	 * @return A version converter.
 	 * @throws CoreException
 	 */
-	IVersionConverter getVersionConverter() throws CoreException;
+	VersionConverter getVersionConverter() throws CoreException;
 
 	/**
 	 * Materialize (download and unpack) the the file appointed by this reader

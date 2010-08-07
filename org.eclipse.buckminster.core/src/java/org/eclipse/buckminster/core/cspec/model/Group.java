@@ -187,8 +187,7 @@ public class Group extends TopLevelAttribute implements IGroup {
 	}
 
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local, Stack<IAttributeFilter> filters)
-			throws CoreException {
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters) throws CoreException {
 		IPath prereqRebase = getPrerequisiteRebase();
 		if (prereqRebase != null) {
 			prereqRebase = PerformManager.expandPath(local, prereqRebase);

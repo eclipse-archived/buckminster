@@ -12,7 +12,6 @@ import java.util.Stack;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IAttributeFilter;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
@@ -21,6 +20,7 @@ import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -59,7 +59,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable {
 	}
 
 	@Override
-	public void addDynamicProperties(Map<String, Object> properties) throws CoreException {
+	public void addDynamicProperties(Map<String, String> properties) throws CoreException {
 		String actionOutput;
 		CSpec cspec = getCSpec();
 
@@ -82,7 +82,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable {
 		}
 		String uniqueFolder = bld.toString();
 
-		String tempRootStr = (String) properties.get(KeyConstants.ACTION_TEMP_ROOT);
+		String tempRootStr = properties.get(KeyConstants.ACTION_TEMP_ROOT);
 		IPath tempRoot;
 		if (tempRootStr == null) {
 			tempRoot = Path.fromOSString(System.getProperty("java.io.tmpdir")).append("buckminster"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -92,7 +92,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable {
 
 		String actionTemp = tempRoot.append(uniqueFolder).append("temp").toPortableString(); //$NON-NLS-1$
 
-		String outputRoot = (String) properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
+		String outputRoot = properties.get(KeyConstants.ACTION_OUTPUT_ROOT);
 		if (outputRoot == null)
 			outputRoot = tempRoot.append("build").toOSString(); //$NON-NLS-1$
 
@@ -171,7 +171,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable {
 			String qName = getQualifiedName();
 			pga = cache.get(qName);
 			if (pga == null) {
-				ExpandingProperties<Object> local = new ExpandingProperties<Object>(ctx.getProperties());
+				ExpandingProperties local = new ExpandingProperties(ctx.getProperties());
 				addDynamicProperties(local);
 				pga = internalGetPathGroups(ctx, local, filters);
 				cache.put(qName, pga);
@@ -179,7 +179,7 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable {
 		} else {
 			// Can't use the cache
 			//
-			ExpandingProperties<Object> local = new ExpandingProperties<Object>(ctx.getProperties());
+			ExpandingProperties local = new ExpandingProperties(ctx.getProperties());
 			addDynamicProperties(local);
 			pga = internalGetPathGroups(ctx, local, filters);
 		}
@@ -218,6 +218,6 @@ public abstract class TopLevelAttribute extends Attribute implements Cloneable {
 	@Override
 	protected abstract AttributeBuilder createAttributeBuilder(CSpecBuilder cspecBuilder);
 
-	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local, Stack<IAttributeFilter> filters)
+	protected abstract PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters)
 			throws CoreException;
 }

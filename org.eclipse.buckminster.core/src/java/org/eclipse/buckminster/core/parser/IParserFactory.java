@@ -19,8 +19,6 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.rmap.model.ResourceMap;
 import org.eclipse.core.runtime.CoreException;
 
 /**
@@ -110,18 +108,6 @@ public interface IParserFactory {
 	IParser<MaterializationSpec> getMaterializationSpecParser(boolean validating) throws CoreException;
 
 	/**
-	 * Creates a SAX parser that can parse a IProvider.
-	 * 
-	 * @param validating
-	 *            <code>true</code> if a validating parser is desired
-	 * @return a IProvider parser.
-	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to
-	 *             configuration problems.
-	 */
-	IParser<Provider> getProviderParser(boolean validating) throws CoreException;
-
-	/**
 	 * Creates a SAX parser that can parse a Resolution.
 	 * 
 	 * @return a Resolution parser.
@@ -130,18 +116,6 @@ public interface IParserFactory {
 	 *             configuration problems.
 	 */
 	IParser<Resolution> getResolutionParser() throws CoreException;
-
-	/**
-	 * Creates a SAX parser that can parse a CSpec.
-	 * 
-	 * @param validating
-	 *            <code>true</code> if a validating parser is desired
-	 * @return a CSpec parser.
-	 * @throws CoreException
-	 *             if the Java Runtime cannot support SAX parsers due to
-	 *             configuration problems.
-	 */
-	IParser<ResourceMap> getResourceMapParser(boolean validating) throws CoreException;
 
 	/**
 	 * Creates a SAX parser that can parse a WorkspaceBinding.

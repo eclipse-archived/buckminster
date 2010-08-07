@@ -22,8 +22,6 @@ import org.xml.sax.SAXException;
 public abstract class PropertyManagerHandler extends ExtensionAwareHandler implements ChildPoppedListener {
 	private PropertyConstantHandler propertyConstantHandler;
 
-	private PropertyElementHandler propertyElementHandler;
-
 	private final String tag;
 
 	public PropertyManagerHandler(AbstractHandler parent, String tag) {
@@ -44,10 +42,6 @@ public abstract class PropertyManagerHandler extends ExtensionAwareHandler imple
 			if (propertyConstantHandler == null)
 				propertyConstantHandler = new PropertyConstantHandler(this);
 			ch = propertyConstantHandler;
-		} else if (PropertyElementHandler.TAG.equals(localName)) {
-			if (propertyElementHandler == null)
-				propertyElementHandler = new PropertyElementHandler(this);
-			ch = propertyElementHandler;
 		} else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;

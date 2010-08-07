@@ -7,25 +7,20 @@
 package org.eclipse.buckminster.model.common.impl;
 
 import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
-import org.eclipse.buckminster.model.common.Constant;
-import org.eclipse.buckminster.model.common.Format;
-import org.eclipse.buckminster.model.common.PropertyRef;
-import org.eclipse.buckminster.model.common.Replace;
-import org.eclipse.buckminster.model.common.Split;
-import org.eclipse.buckminster.model.common.ToLower;
-import org.eclipse.buckminster.model.common.ToUpper;
+import org.eclipse.buckminster.model.common.Value;
 import org.eclipse.buckminster.model.common.ValueFilter;
-
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -34,108 +29,26 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getConstants
- * <em>Constants</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getFormats
- * <em>Formats</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getPropertyRefs
- * <em>Property Refs</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getReplacements
- * <em>Replacements</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getSplits
- * <em>Splits</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToLowers
- * <em>To Lowers</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getToUppers
- * <em>To Uppers</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getMultiValueGroup <em>Multi Value Group</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getValues <em>Values</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
-public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter {
+public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 	/**
-	 * The cached value of the '{@link #getConstants() <em>Constants</em>}'
-	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getConstants()
+	 * The cached value of the '{@link #getMultiValueGroup() <em>Multi Value Group</em>}' attribute list.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @see #getMultiValueGroup()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Constant> constants;
-
-	/**
-	 * The cached value of the '{@link #getFormats() <em>Formats</em>}'
-	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getFormats()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Format> formats;
-
-	/**
-	 * The cached value of the '{@link #getPropertyRefs()
-	 * <em>Property Refs</em>}' containment reference list. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
-	 * 
-	 * @see #getPropertyRefs()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<PropertyRef> propertyRefs;
-
-	/**
-	 * The cached value of the '{@link #getReplacements() <em>Replacements</em>}
-	 * ' containment reference list. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @see #getReplacements()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Replace> replacements;
-
-	/**
-	 * The cached value of the '{@link #getSplits() <em>Splits</em>}'
-	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getSplits()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Split> splits;
-
-	/**
-	 * The cached value of the '{@link #getToLowers() <em>To Lowers</em>}'
-	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getToLowers()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<ToLower> toLowers;
-
-	/**
-	 * The cached value of the '{@link #getToUppers() <em>To Uppers</em>}'
-	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getToUppers()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<ToUpper> toUppers;
+	protected FeatureMap multiValueGroup;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected ValueFilterImpl() {
@@ -144,118 +57,68 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case CommonPackage.VALUE_FILTER__CONSTANTS:
-				return getConstants();
-			case CommonPackage.VALUE_FILTER__FORMATS:
-				return getFormats();
-			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-				return getPropertyRefs();
-			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-				return getReplacements();
-			case CommonPackage.VALUE_FILTER__SPLITS:
-				return getSplits();
-			case CommonPackage.VALUE_FILTER__TO_LOWERS:
-				return getToLowers();
-			case CommonPackage.VALUE_FILTER__TO_UPPERS:
-				return getToUppers();
+			case CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP:
+				if (coreType) return getMultiValueGroup();
+				return ((FeatureMap.Internal)getMultiValueGroup()).getWrapper();
+			case CommonPackage.VALUE_FILTER__VALUES:
+				return getValues();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case CommonPackage.VALUE_FILTER__CONSTANTS:
-				return ((InternalEList<?>) getConstants()).basicRemove(otherEnd, msgs);
-			case CommonPackage.VALUE_FILTER__FORMATS:
-				return ((InternalEList<?>) getFormats()).basicRemove(otherEnd, msgs);
-			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-				return ((InternalEList<?>) getPropertyRefs()).basicRemove(otherEnd, msgs);
-			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-				return ((InternalEList<?>) getReplacements()).basicRemove(otherEnd, msgs);
-			case CommonPackage.VALUE_FILTER__SPLITS:
-				return ((InternalEList<?>) getSplits()).basicRemove(otherEnd, msgs);
-			case CommonPackage.VALUE_FILTER__TO_LOWERS:
-				return ((InternalEList<?>) getToLowers()).basicRemove(otherEnd, msgs);
-			case CommonPackage.VALUE_FILTER__TO_UPPERS:
-				return ((InternalEList<?>) getToUppers()).basicRemove(otherEnd, msgs);
+			case CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP:
+				return ((InternalEList<?>)getMultiValueGroup()).basicRemove(otherEnd, msgs);
+			case CommonPackage.VALUE_FILTER__VALUES:
+				return ((InternalEList<?>)getValues()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case CommonPackage.VALUE_FILTER__CONSTANTS:
-				return constants != null && !constants.isEmpty();
-			case CommonPackage.VALUE_FILTER__FORMATS:
-				return formats != null && !formats.isEmpty();
-			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-				return propertyRefs != null && !propertyRefs.isEmpty();
-			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-				return replacements != null && !replacements.isEmpty();
-			case CommonPackage.VALUE_FILTER__SPLITS:
-				return splits != null && !splits.isEmpty();
-			case CommonPackage.VALUE_FILTER__TO_LOWERS:
-				return toLowers != null && !toLowers.isEmpty();
-			case CommonPackage.VALUE_FILTER__TO_UPPERS:
-				return toUppers != null && !toUppers.isEmpty();
+			case CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP:
+				return multiValueGroup != null && !multiValueGroup.isEmpty();
+			case CommonPackage.VALUE_FILTER__VALUES:
+				return !getValues().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case CommonPackage.VALUE_FILTER__CONSTANTS:
-				getConstants().clear();
-				getConstants().addAll((Collection<? extends Constant>) newValue);
+			case CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP:
+				((FeatureMap.Internal)getMultiValueGroup()).set(newValue);
 				return;
-			case CommonPackage.VALUE_FILTER__FORMATS:
-				getFormats().clear();
-				getFormats().addAll((Collection<? extends Format>) newValue);
-				return;
-			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-				getPropertyRefs().clear();
-				getPropertyRefs().addAll((Collection<? extends PropertyRef>) newValue);
-				return;
-			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-				getReplacements().clear();
-				getReplacements().addAll((Collection<? extends Replace>) newValue);
-				return;
-			case CommonPackage.VALUE_FILTER__SPLITS:
-				getSplits().clear();
-				getSplits().addAll((Collection<? extends Split>) newValue);
-				return;
-			case CommonPackage.VALUE_FILTER__TO_LOWERS:
-				getToLowers().clear();
-				getToLowers().addAll((Collection<? extends ToLower>) newValue);
-				return;
-			case CommonPackage.VALUE_FILTER__TO_UPPERS:
-				getToUppers().clear();
-				getToUppers().addAll((Collection<? extends ToUpper>) newValue);
+			case CommonPackage.VALUE_FILTER__VALUES:
+				getValues().clear();
+				getValues().addAll((Collection<? extends Value>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -263,32 +126,17 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case CommonPackage.VALUE_FILTER__CONSTANTS:
-				getConstants().clear();
+			case CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP:
+				getMultiValueGroup().clear();
 				return;
-			case CommonPackage.VALUE_FILTER__FORMATS:
-				getFormats().clear();
-				return;
-			case CommonPackage.VALUE_FILTER__PROPERTY_REFS:
-				getPropertyRefs().clear();
-				return;
-			case CommonPackage.VALUE_FILTER__REPLACEMENTS:
-				getReplacements().clear();
-				return;
-			case CommonPackage.VALUE_FILTER__SPLITS:
-				getSplits().clear();
-				return;
-			case CommonPackage.VALUE_FILTER__TO_LOWERS:
-				getToLowers().clear();
-				return;
-			case CommonPackage.VALUE_FILTER__TO_UPPERS:
-				getToUppers().clear();
+			case CommonPackage.VALUE_FILTER__VALUES:
+				getValues().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -296,107 +144,100 @@ public abstract class ValueFilterImpl extends BObjectImpl implements ValueFilter
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
-	public EList<Constant> getConstants() {
-		if (constants == null) {
-			constants = new EObjectContainmentEList<Constant>(Constant.class, this, CommonPackage.VALUE_FILTER__CONSTANTS);
+	public FeatureMap getMultiValueGroup() {
+		if (multiValueGroup == null) {
+			multiValueGroup = new BasicFeatureMap(this, CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP);
 		}
-		return constants;
+		return multiValueGroup;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
-	public EList<Format> getFormats() {
-		if (formats == null) {
-			formats = new EObjectContainmentEList<Format>(Format.class, this, CommonPackage.VALUE_FILTER__FORMATS);
-		}
-		return formats;
+
+	public EList<Value> getValues() {
+		return getMultiValueGroup().list(CommonPackage.Literals.VALUE_FILTER__VALUES);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated NOT
+	 */
+	public List<String> getValues(Map<String, String> properties) {
+		return checkedGetValues(properties, 0);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
-	public EList<PropertyRef> getPropertyRefs() {
-		if (propertyRefs == null) {
-			propertyRefs = new EObjectContainmentEList<PropertyRef>(PropertyRef.class, this, CommonPackage.VALUE_FILTER__PROPERTY_REFS);
-		}
-		return propertyRefs;
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (multiValueGroup: ");
+		result.append(multiValueGroup);
+		result.append(')');
+		return result.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
-	public EList<Replace> getReplacements() {
-		if (replacements == null) {
-			replacements = new EObjectContainmentEList<Replace>(Replace.class, this, CommonPackage.VALUE_FILTER__REPLACEMENTS);
-		}
-		return replacements;
-	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EList<Split> getSplits() {
-		if (splits == null) {
-			splits = new EObjectContainmentEList<Split>(Split.class, this, CommonPackage.VALUE_FILTER__SPLITS);
-		}
-		return splits;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EList<ToLower> getToLowers() {
-		if (toLowers == null) {
-			toLowers = new EObjectContainmentEList<ToLower>(ToLower.class, this, CommonPackage.VALUE_FILTER__TO_LOWERS);
-		}
-		return toLowers;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EList<ToUpper> getToUppers() {
-		if (toUppers == null) {
-			toUppers = new EObjectContainmentEList<ToUpper>(ToUpper.class, this, CommonPackage.VALUE_FILTER__TO_UPPERS);
-		}
-		return toUppers;
-	}
-
-	@Override
-	public void toString(StringBuilder bld) {
-
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.VALUE_FILTER;
 	}
+
+	String checkedGetSourceValue(Map<String, String> properties, int recursionGuard) {
+		List<Value> values = getValues();
+		int top = values.size();
+
+		if (top == 0)
+			return NO_VALUE;
+		if (top == 1)
+			return ((ValueImpl) values.get(0)).checkedGetValue(properties, recursionGuard);
+
+		StringBuilder bld = new StringBuilder();
+		for (int idx = 0; idx < top; ++idx) {
+			ValueImpl valueHolder = (ValueImpl) values.get(idx);
+			if (valueHolder.isMultiValued()) {
+				List<?> vs = valueHolder.checkedGetValues(properties, recursionGuard);
+				for (int vidx = 0; vidx < vs.size(); ++vidx)
+					bld.append(vs.get(vidx));
+			} else
+				bld.append(valueHolder.checkedGetValue(properties, recursionGuard));
+		}
+		return bld.toString();
+	}
+
+	List<String> checkedGetSourceValues(Map<String, String> properties, int recursionGuard) {
+		List<Value> values = getValues();
+		int top = values.size();
+
+		if (top == 0)
+			return Collections.emptyList();
+		if (top == 1)
+			return ((ValueImpl) values.get(0)).checkedGetValues(properties, recursionGuard);
+
+		ArrayList<String> parameters = new ArrayList<String>(top);
+		for (int idx = 0; idx < top; ++idx) {
+			ValueImpl valueHolder = (ValueImpl) values.get(idx);
+			if (valueHolder.isMultiValued()) {
+				List<String> vs = valueHolder.checkedGetValues(properties, recursionGuard);
+				for (int vidx = 0; vidx < vs.size(); ++vidx)
+					parameters.add(vs.get(vidx));
+			} else
+				parameters.add(valueHolder.checkedGetValue(properties, recursionGuard));
+		}
+		return parameters;
+	}
+
 } // ValueFilterImpl

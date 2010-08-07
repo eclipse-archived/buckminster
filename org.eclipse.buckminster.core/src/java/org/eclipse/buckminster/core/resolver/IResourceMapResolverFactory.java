@@ -9,7 +9,7 @@ package org.eclipse.buckminster.core.resolver;
 
 import java.net.URL;
 
-import org.eclipse.buckminster.core.rmap.model.ResourceMap;
+import org.eclipse.buckminster.rmap.ResourceMap;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ecf.core.security.IConnectContext;
 

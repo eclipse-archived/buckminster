@@ -13,7 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.buckminster.core.helpers.MapUnion;
+import org.eclipse.buckminster.model.common.util.IProperties;
+import org.eclipse.buckminster.model.common.util.MapUnion;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -25,11 +26,6 @@ import org.xml.sax.helpers.AttributesImpl;
 public abstract class SAXEmitter {
 	public static void emitProperties(ContentHandler handler, Map<String, String> props, String namespace, String prefix, boolean raw,
 			boolean includeDefaults) throws SAXException {
-		if (raw && props instanceof ExpandingProperties<?>) {
-			((ExpandingProperties<?>) props).emitProperties(handler, namespace, prefix, includeDefaults);
-			return;
-		}
-
 		TreeSet<String> sorted = new TreeSet<String>();
 		if (includeDefaults) {
 			for (String name : props.keySet()) {

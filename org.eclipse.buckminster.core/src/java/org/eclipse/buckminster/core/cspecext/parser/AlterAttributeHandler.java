@@ -7,7 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.parser;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
@@ -15,6 +14,7 @@ import org.eclipse.buckminster.core.cspec.parser.AttributeHandler;
 import org.eclipse.buckminster.core.cspec.parser.IAttributeBuilderSupport;
 import org.eclipse.buckminster.core.cspecext.builder.AlterAttributeBuilder;
 import org.eclipse.buckminster.core.cspecext.model.AlterAttribute;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -29,7 +29,7 @@ abstract class AlterAttributeHandler extends AlterHandler implements IAttributeB
 
 	private final AlterPropertiesHandler alterInstallationHints = new AlterPropertiesHandler(this, AlterAttribute.ELEM_ALTER_INSTALLER_HINTS) {
 		@Override
-		public ExpandingProperties<String> getProperties() {
+		public ExpandingProperties getProperties() {
 			return builder.getAlteredHints();
 		}
 

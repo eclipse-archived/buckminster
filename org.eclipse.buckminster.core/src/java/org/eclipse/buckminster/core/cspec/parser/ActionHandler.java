@@ -7,12 +7,12 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.parser;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.core.runtime.IPath;
@@ -35,7 +35,7 @@ public class ActionHandler extends TopLevelAttributeHandler {
 		super(parent, publ);
 		actorPropsHandler = new PropertyManagerHandler(this, Action.ELEM_ACTOR_PROPERTIES) {
 			@Override
-			public ExpandingProperties<String> getProperties() {
+			public ExpandingProperties getProperties() {
 				return getActionBuilder().getActorProperties();
 			}
 		};
@@ -43,7 +43,7 @@ public class ActionHandler extends TopLevelAttributeHandler {
 		productsHandler = new ProductsHandler(this);
 		propsHandler = new PropertyManagerHandler(this, Action.ELEM_PROPERTIES) {
 			@Override
-			public ExpandingProperties<String> getProperties() {
+			public ExpandingProperties getProperties() {
 				return getActionBuilder().getProperties();
 			}
 		};

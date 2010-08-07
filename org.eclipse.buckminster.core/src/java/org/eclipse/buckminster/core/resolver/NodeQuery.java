@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
@@ -29,11 +28,11 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.rmap.model.ProviderScore;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.core.version.VersionType;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
@@ -49,25 +48,25 @@ import org.eclipse.osgi.util.NLS;
 public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel {
 	private final RMContext context;
 
-	private final Map<String, ? extends Object> properties;
+	private final Map<String, String> properties;
 
 	private final QualifiedDependency qDep;
 
 	private transient IComponentType componentType;
 
-	public NodeQuery(NodeQuery query, Map<String, ? extends Object> additionalProperties) {
+	public NodeQuery(NodeQuery query, Map<String, String> additionalProperties) {
 		this(query, additionalProperties, true);
 	}
 
-	public NodeQuery(NodeQuery query, Map<String, ? extends Object> additionalProperties, boolean additionalPrioritized) {
+	public NodeQuery(NodeQuery query, Map<String, String> additionalProperties, boolean additionalPrioritized) {
 		context = query.getContext();
 		qDep = query.getQualifiedDependency();
 
-		Map<String, ? extends Object> qprops = query.getProperties();
+		Map<String, String> qprops = query.getProperties();
 		if (additionalProperties.isEmpty())
 			properties = qprops;
 		else {
-			ExpandingProperties<Object> propUnion = new ExpandingProperties<Object>(qprops.size() + additionalProperties.size());
+			ExpandingProperties propUnion = new ExpandingProperties(qprops.size() + additionalProperties.size());
 			if (additionalPrioritized) {
 				propUnion.putAll(qprops, true);
 				propUnion.putAll(additionalProperties);
@@ -269,11 +268,11 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	 *            The component request.
 	 * @return the properties that the resolver should use.
 	 */
-	public Map<String, ? extends Object> getProperties() {
+	public Map<String, String> getProperties() {
 		return properties;
 	}
 
-	public Object getProperty(String mapName) {
+	public String getProperty(String mapName) {
 		return getProperties().get(mapName);
 	}
 

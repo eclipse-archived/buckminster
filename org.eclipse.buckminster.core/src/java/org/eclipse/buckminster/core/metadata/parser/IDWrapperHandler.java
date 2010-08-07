@@ -13,7 +13,6 @@ import org.eclipse.buckminster.core.cspec.parser.CSpecHandler;
 import org.eclipse.buckminster.core.metadata.model.IDWrapper;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.query.parser.ComponentQueryHandler;
-import org.eclipse.buckminster.core.rmap.parser.ProviderHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -55,8 +54,6 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 			wrapper = new IDWrapper(id, ((BomNodeHandler) child).getDepNode());
 		else if (child == cspecHandler)
 			wrapper = new IDWrapper(id, cspecHandler.getCSpec());
-		else if (child instanceof ProviderHandler)
-			wrapper = new IDWrapper(id, ((ProviderHandler) child).getProvider());
 		else if (child == resolutionHandler)
 			wrapper = new IDWrapper(id, resolutionHandler.getResolution());
 		else if (child == componentQueryHandler)
@@ -68,8 +65,6 @@ public class IDWrapperHandler extends ExtensionAwareHandler implements ChildPopp
 		ChildHandler ch;
 		if (CSpecHandler.TAG.equals(localName))
 			ch = cspecHandler;
-		else if (ProviderHandler.TAG.equals(localName))
-			ch = createContentHandler(ProviderHandler.class, uri, attrs);
 		else if (ResolutionHandler.TAG.equals(localName))
 			ch = resolutionHandler;
 		else if (ResolvedNodeHandler.TAG.equals(localName))

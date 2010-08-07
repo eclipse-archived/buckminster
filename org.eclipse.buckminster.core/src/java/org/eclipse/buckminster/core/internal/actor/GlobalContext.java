@@ -19,7 +19,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
@@ -30,6 +29,7 @@ import org.eclipse.buckminster.core.helpers.FileUtils.DeleteException;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -46,7 +46,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 
 	private final HashSet<Action> actionsPerformed = new HashSet<Action>();
 
-	private final Map<String, ? extends Object> globalProps;
+	private final Map<String, String> globalProps;
 
 	private final boolean forcedExecution;
 
@@ -60,7 +60,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 
 	private List<Materialization> generatedMaterializations;
 
-	public GlobalContext(Map<String, ? extends Object> userProps, boolean forcedExecution, boolean quietExecution) {
+	public GlobalContext(Map<String, String> userProps, boolean forcedExecution, boolean quietExecution) {
 		super(userProps);
 		this.globalProps = RMContext.getGlobalPropertyAdditions();
 		this.forcedExecution = forcedExecution;
@@ -78,11 +78,11 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 	}
 
 	@Override
-	public Map<String, ? extends Object> getExecutionProperties(Attribute attribute) throws CoreException {
+	public Map<String, String> getExecutionProperties(Attribute attribute) throws CoreException {
 		Map<String, String> actionProps = (attribute instanceof IAction) ? ((IAction) attribute).getProperties() : Collections
 				.<String, String> emptyMap();
 		int mapSize = globalProps.size() + actionProps.size() + 10;
-		ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(mapSize);
+		ExpandingProperties allProps = new ExpandingProperties(mapSize);
 		allProps.putAll(globalProps, true);
 		allProps.putAll(actionProps, true);
 		allProps.putAll(super.getProperties());
@@ -123,9 +123,9 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 	 * @author Guillaume CHATELET
 	 */
 	@Override
-	public synchronized Map<String, ? extends Object> getProperties() {
-		Map<String, ? extends Object> userProperties = super.getProperties();
-		ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(userProperties.size() + globalProps.size());
+	public synchronized Map<String, String> getProperties() {
+		Map<String, String> userProperties = super.getProperties();
+		ExpandingProperties allProps = new ExpandingProperties(userProperties.size() + globalProps.size());
 		allProps.putAll(globalProps, true);
 		allProps.putAll(userProperties);
 		return allProps;

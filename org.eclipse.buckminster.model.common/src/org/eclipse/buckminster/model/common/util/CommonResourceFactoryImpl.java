@@ -17,15 +17,14 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 /**
  * <!-- begin-user-doc --> The <b>Resource Factory</b> associated with the
  * package. <!-- end-user-doc -->
- * 
  * @see org.eclipse.buckminster.model.common.util.CommonResourceImpl
  * @generated
  */
 public class CommonResourceFactoryImpl extends ResourceFactoryImpl {
 	/**
-	 * Creates an instance of the resource factory. <!-- begin-user-doc --> <!--
+	 * Creates an instance of the resource factory.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public CommonResourceFactoryImpl() {
@@ -38,6 +37,7 @@ public class CommonResourceFactoryImpl extends ResourceFactoryImpl {
 	 * 
 	 * @generated NOT
 	 */
+
 	@Override
 	public Resource createResource(URI uri) {
 		XMLResource result = new CommonResourceImpl(uri);

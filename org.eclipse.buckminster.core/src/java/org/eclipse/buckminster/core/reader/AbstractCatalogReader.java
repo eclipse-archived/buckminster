@@ -224,7 +224,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			if (fos.endsWith(".zip") || fos.endsWith(".jar")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
 				File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
-				FileUtils.unzip(URLUtils.normalizeToURL(fos), getConnectContext(), null, dest, ConflictResolution.REPLACE, monitor);
+				FileUtils.unzip(URLUtils.normalizeToURL(fos), null, null, dest, ConflictResolution.REPLACE, monitor);
 				return dest;
 			}
 
@@ -282,7 +282,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			throw new IllegalOverlayException(Messages.Only_zip_and_jar_archives_allowed_for_remote_overlays);
 
 		File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
-		FileUtils.unzip(url, getConnectContext(), null, dest, ConflictResolution.REPLACE, monitor);
+		FileUtils.unzip(url, null, null, dest, ConflictResolution.REPLACE, monitor);
 		return dest;
 	}
 }

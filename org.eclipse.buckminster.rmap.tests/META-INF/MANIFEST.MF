@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.eclipse.buckminster.rmap.tests;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.buckminster.rmap.tests
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.buckminster.rmap;visibility:=reexport,
+ org.eclipse.buckminster.model.common;visibility:=reexport,
+ org.eclipse.emf.ecore.xmi;visibility:=reexport,
+ org.junit;visibility:=reexport,
+ org.eclipse.equinox.p2.metadata;bundle-version="2.0.0"
+Bundle-ActivationPolicy: lazy

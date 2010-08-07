@@ -6,8 +6,11 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.Constant;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -21,28 +24,24 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.impl.ConstantImpl#getValue
- * <em>Value</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.ConstantImpl#getValue <em>Value</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
-public class ConstantImpl extends BObjectImpl implements Constant {
+public class ConstantImpl extends ValueImpl implements Constant {
 	/**
 	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
 	protected static final String VALUE_EDEFAULT = null;
-
 	/**
 	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
@@ -51,18 +50,22 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected ConstantImpl() {
 		super();
 	}
 
+	@Override
+	public String checkedGetValue(Map<String, String> properties, int recursionGuard) {
+		return ExpandingProperties.expand(properties, value, recursionGuard + 1);
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -74,9 +77,9 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -88,14 +91,14 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.CONSTANT__VALUE:
-				setValue((String) newValue);
+				setValue((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -103,9 +106,9 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -118,20 +121,18 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getValue() {
 		return value;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setValue(String newValue) {
 		String oldValue = value;
 		value = newValue;
@@ -139,32 +140,26 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CONSTANT__VALUE, oldValue, value));
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
-	public void toString(StringBuilder result) {
-		if (eIsProxy()) {
-			result.append(super.toString());
-			return;
-		}
+	public String toString() {
+		if (eIsProxy()) return super.toString();
 
+		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (value: ");
 		result.append(value);
 		result.append(')');
+		return result.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public String toStringGen() {
-		return null;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.CONSTANT;

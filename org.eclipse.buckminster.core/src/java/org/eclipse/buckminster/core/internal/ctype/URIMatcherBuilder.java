@@ -14,6 +14,7 @@ import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.resolver.ResourceMapResolver;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -29,6 +30,6 @@ public class URIMatcherBuilder extends AbstractResolutionBuilder {
 	@Override
 	public BOMNode build(IComponentReader[] rdr, boolean forResolutionAidOnly, IProgressMonitor mon) throws CoreException {
 		MonitorUtils.complete(mon);
-		return new ResolvedNode(pm.getProvider().getURIMatcher().createResolution(pm), Collections.<BOMNode> emptyList());
+		return new ResolvedNode(ResourceMapResolver.createResolution(pm.getProvider().getMatcher(), pm), Collections.<BOMNode> emptyList());
 	}
 }

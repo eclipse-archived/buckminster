@@ -16,7 +16,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ITargetPlatform;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
@@ -25,6 +24,7 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -70,8 +70,8 @@ public class P2Materializer extends AbstractMaterializer {
 		Map<String, String> props = URLUtils.queryAsParameters(repoLocation.getQuery());
 		if (props.remove("importType") != null) //$NON-NLS-1$
 			try {
-				repoLocation = new URI(repoLocation.getScheme(), repoLocation.getAuthority(), repoLocation.getPath(), URLUtils
-						.encodeFromQueryPairs(props), repoLocation.getFragment());
+				repoLocation = new URI(repoLocation.getScheme(), repoLocation.getAuthority(), repoLocation.getPath(),
+						URLUtils.encodeFromQueryPairs(props), repoLocation.getFragment());
 			} catch (URISyntaxException e) {
 				throw new IllegalArgumentException(e);
 			}
@@ -136,7 +136,7 @@ public class P2Materializer extends AbstractMaterializer {
 		for (Resolution res : resolutions) {
 			IMaterializationNode node = mspec.getMatchingNode(res);
 			IPath installLocation = null;
-			Map<String, ? extends Object> props = context.getProperties(res);
+			Map<String, String> props = context.getProperties(res);
 			if (node != null) {
 				installLocation = node.getInstallLocation();
 				if (installLocation != null) {
@@ -260,8 +260,8 @@ public class P2Materializer extends AbstractMaterializer {
 				IQueryResult<IInstallableUnit> result = mdr.query(QueryUtil.createIUQuery(name, range), subSubMon.newChild(250));
 				Iterator<IInstallableUnit> itor = result.iterator();
 				if (!itor.hasNext())
-					throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2, new Object[] { cid.getName(), version,
-							res.getRepository() }));
+					throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2,
+							new Object[] { cid.getName(), version, res.getRepository() }));
 
 				IInstallableUnit iu = itor.next();
 				ius.add(iu);

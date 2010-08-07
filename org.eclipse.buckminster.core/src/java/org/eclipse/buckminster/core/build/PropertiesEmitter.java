@@ -19,8 +19,8 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.model.common.util.BMProperties;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;

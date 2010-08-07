@@ -20,8 +20,8 @@ import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.model.common.util.BMProperties;
 
 class JarInfo implements IConstants {
 	static final String PROP_PACK200_CONDITIONED = "pack200.conditioned"; //$NON-NLS-1$

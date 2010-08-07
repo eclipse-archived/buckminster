@@ -6,6 +6,9 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.RxGroup;
 import org.eclipse.buckminster.model.common.RxPart;
@@ -27,22 +30,18 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxPartsGroup
- * <em>Rx Parts Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxPart
- * <em>Rx Part</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxPartsGroup <em>Rx Parts Group</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxParts <em>Rx Parts</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class RxGroupImpl extends RxPartImpl implements RxGroup {
 	/**
-	 * The cached value of the '{@link #getRxPartsGroup()
-	 * <em>Rx Parts Group</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getRxPartsGroup() <em>Rx Parts Group</em>}' attribute list.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getRxPartsGroup()
 	 * @generated
 	 * @ordered
@@ -51,7 +50,6 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected RxGroupImpl() {
@@ -60,64 +58,85 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
-				if (coreType)
-					return getRxPartsGroup();
-				return ((FeatureMap.Internal) getRxPartsGroup()).getWrapper();
-			case CommonPackage.RX_GROUP__RX_PART:
-				return getRxPart();
+				if (coreType) return getRxPartsGroup();
+				return ((FeatureMap.Internal)getRxPartsGroup()).getWrapper();
+			case CommonPackage.RX_GROUP__RX_PARTS:
+				return getRxParts();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
+	@Override
+	public void addPattern(StringBuilder bld, List<RxPart> namedParts) {
+		if (getName() != null) {
+			bld.append('(');
+			namedParts.add(this);
+		} else if (isOptional())
+			bld.append("(?:"); //$NON-NLS-1$
+
+		for (RxPart part : getRxParts())
+			part.addPattern(bld, namedParts);
+
+		if (getName() != null)
+			bld.append(')');
+		else if (isOptional())
+			bld.append(")?"); //$NON-NLS-1$
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
-				return ((InternalEList<?>) getRxPartsGroup()).basicRemove(otherEnd, msgs);
-			case CommonPackage.RX_GROUP__RX_PART:
-				return ((InternalEList<?>) getRxPart()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>)getRxPartsGroup()).basicRemove(otherEnd, msgs);
+			case CommonPackage.RX_GROUP__RX_PARTS:
+				return ((InternalEList<?>)getRxParts()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
 				return rxPartsGroup != null && !rxPartsGroup.isEmpty();
-			case CommonPackage.RX_GROUP__RX_PART:
-				return !getRxPart().isEmpty();
+			case CommonPackage.RX_GROUP__RX_PARTS:
+				return !getRxParts().isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
-				((FeatureMap.Internal) getRxPartsGroup()).set(newValue);
+				((FeatureMap.Internal)getRxPartsGroup()).set(newValue);
+				return;
+			case CommonPackage.RX_GROUP__RX_PARTS:
+				getRxParts().clear();
+				getRxParts().addAll((Collection<? extends RxPart>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -125,14 +144,17 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
 				getRxPartsGroup().clear();
+				return;
+			case CommonPackage.RX_GROUP__RX_PARTS:
+				getRxParts().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -140,20 +162,9 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
-	public EList<RxPart> getRxPart() {
-		return getRxPartsGroup().list(CommonPackage.Literals.RX_GROUP__RX_PART);
-	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
 	public FeatureMap getRxPartsGroup() {
 		if (rxPartsGroup == null) {
 			rxPartsGroup = new BasicFeatureMap(this, CommonPackage.RX_GROUP__RX_PARTS_GROUP);
@@ -161,33 +172,35 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 		return rxPartsGroup;
 	}
 
-	@Override
-	public void toString(StringBuilder result) {
-		if (eIsProxy()) {
-			result.append(super.toString());
-			return;
-		}
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<RxPart> getRxParts() {
+		return getRxPartsGroup().list(CommonPackage.Literals.RX_GROUP__RX_PARTS);
+	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (rxPartsGroup: ");
 		result.append(rxPartsGroup);
 		result.append(')');
+		return result.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	@Override
-	public String toStringGen() {
-		return null;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.RX_GROUP;

@@ -31,7 +31,7 @@ public class ShortDurationFileCache extends TimedHashMap<String, CacheEntry> {
 		FileHandle materialize(IProgressMonitor monitor, FileInfoBuilder fileInfo) throws IOException, CoreException;
 	}
 
-	public ShortDurationFileCache(long keepAlive, String prefix, String suffix, File tempDir) {
+	public ShortDurationFileCache(long keepAlive) {
 		super(keepAlive, new TimedHashMap.EvictionPolicy<String, CacheEntry>() {
 			@Override
 			public void evict(Entry<String, CacheEntry> entry) {

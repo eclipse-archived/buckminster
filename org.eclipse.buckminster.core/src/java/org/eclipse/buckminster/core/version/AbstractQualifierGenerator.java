@@ -15,10 +15,10 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -38,7 +38,7 @@ public abstract class AbstractQualifierGenerator extends AbstractExtension imple
 			if (ctx == null)
 				return null;
 
-			Map<String, ? extends Object> props = ctx.getProperties();
+			Map<String, String> props = ctx.getProperties();
 			IMetadataRepository repo = getReferenceRepository(props, MonitorUtils.subMonitor(monitor, 1990));
 			if (repo == null)
 				return null;
@@ -59,7 +59,7 @@ public abstract class AbstractQualifierGenerator extends AbstractExtension imple
 		}
 	}
 
-	synchronized IMetadataRepository getReferenceRepository(Map<String, ? extends Object> props, IProgressMonitor monitor) throws CoreException {
+	synchronized IMetadataRepository getReferenceRepository(Map<String, String> props, IProgressMonitor monitor) throws CoreException {
 
 		Object refURIVal = props.get(KeyConstants.REFERENCE_REPOSITORY);
 		if (!(refURIVal instanceof String)) {

@@ -31,11 +31,11 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -194,7 +194,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	}
 
 	public URI getArtifactURI(RMContext context) throws CoreException {
-		return getProvider().getReaderType().getArtifactURL(this, context);
+		return CorePlugin.getDefault().getReaderType(getReaderTypeId()).getArtifactURL(this, context);
 	}
 
 	@Override
@@ -278,9 +278,9 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public synchronized Map<String, ? extends Object> getProperties() {
 		if (properties == null) {
 			HashMap<String, Object> props = new HashMap<String, Object>();
-			props.put(KeyConstants.READER_TYPE, provider.getReaderTypeId());
+			props.put(KeyConstants.READER_TYPE, getReaderTypeId());
 			props.put(KeyConstants.IS_MUTABLE, Boolean.toString(provider.isMutable()));
-			props.put(KeyConstants.IS_SOURCE, Boolean.toString(provider.hasSource()));
+			props.put(KeyConstants.IS_SOURCE, Boolean.toString(provider.isSource()));
 			props.putAll(cspec.getComponentIdentifier().getProperties());
 			properties = props;
 		}
@@ -297,15 +297,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		return provider;
 	}
 
-	/**
-	 * Returns the id of the contained provider
-	 * 
-	 * @return the id of the contained provider
-	 */
-	public UUID getProviderId() {
-		return provider.getId();
-	}
-
 	public ProviderMatch getProviderMatch(RMContext context) throws CoreException {
 		ProviderMatch pm = new ProviderMatch(provider, getComponentType(), getVersionMatch(), context.getNodeQuery(getQualifiedDependency()));
 		pm.setRepositoryURI(repository);
@@ -318,7 +309,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	@Override
 	public String getReaderTypeId() {
-		return getProvider().getReaderTypeId();
+		return getProvider().getReaderType();
 	}
 
 	@Override
@@ -500,7 +491,6 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public void store(StorageManager sm) throws CoreException {
 		WorkspaceInfo.updateResolutionCache(getComponentIdentifier(), this);
 		cspec.store(sm);
-		provider.store(sm);
 		synchronized (sm.getResolutions()) {
 			sm.getResolutions().putElement(this);
 		}
@@ -538,7 +528,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
 		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, materializable ? "true" //$NON-NLS-1$
 				: "false"); //$NON-NLS-1$
-		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, provider.getId().toString());
+		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, provider.eResource().getURIFragment(provider));
 		Utils.addAttribute(attrs, ATTR_REPOSITORY, repository);
 
 		if (componentTypeId != null)

@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
@@ -35,6 +34,7 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -161,7 +161,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		if (materializer == null) {
 			materializer = getMaterializerID();
 			if (materializer == null)
-				materializer = resolution.getProvider().getReaderType().getRecommendedMaterializer();
+				materializer = CorePlugin.getDefault().getReaderType(resolution.getReaderTypeId()).getRecommendedMaterializer();
 		}
 		return materializer;
 	}

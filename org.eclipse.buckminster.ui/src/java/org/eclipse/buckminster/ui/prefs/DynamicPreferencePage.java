@@ -262,7 +262,6 @@ public class DynamicPreferencePage extends FieldEditorPreferencePage implements 
 			public void widgetSelected(SelectionEvent e) {
 				CorePlugin plugin = CorePlugin.getDefault();
 				plugin.clearRemoteFileCache();
-				plugin.clearURLCache();
 			}
 		});
 

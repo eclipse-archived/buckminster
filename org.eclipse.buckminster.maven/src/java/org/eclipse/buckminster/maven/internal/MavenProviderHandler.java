@@ -12,7 +12,7 @@ package org.eclipse.buckminster.maven.internal;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
+import org.eclipse.buckminster.core.resolver.BidirectionalTransformer;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.rmap.parser.ProviderHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;

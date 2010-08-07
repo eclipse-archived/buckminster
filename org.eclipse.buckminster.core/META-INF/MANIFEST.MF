@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.buckminster.cmdline;bundle-version="1.0.350",
  org.eclipse.equinox.p2.artifact.repository;bundle-version="1.0.100",
  org.eclipse.equinox.p2.metadata;bundle-version="2.0.0",
  org.eclipse.equinox.p2.core;bundle-version="2.0.0",
- org.eclipse.jsch.core;bundle-version="1.1.200"
+ org.eclipse.jsch.core;bundle-version="1.1.200",
+ org.eclipse.buckminster.rmap;bundle-version="1.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5
@@ -51,6 +52,4 @@ Export-Package: org.eclipse.buckminster.core,
  org.eclipse.buckminster.core.query.model,
  org.eclipse.buckminster.core.reader,
  org.eclipse.buckminster.core.resolver,
- org.eclipse.buckminster.core.rmap.model,
- org.eclipse.buckminster.core.rmap.parser,
  org.eclipse.buckminster.core.version

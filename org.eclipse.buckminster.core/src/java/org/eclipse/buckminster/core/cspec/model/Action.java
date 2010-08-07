@@ -17,7 +17,6 @@ import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.IAttribute;
@@ -30,6 +29,7 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.sax.ISaxableElement;
 import org.eclipse.buckminster.sax.Utils;
@@ -124,17 +124,17 @@ public class Action extends TopLevelAttribute implements IAction {
 		return actorProperties;
 	}
 
-	public String getBindingName(Map<String, ? extends Object> globalProps) {
+	public String getBindingName(Map<String, String> globalProps) {
 		Map<String, String> actionProps = getProperties();
 		if (actionProps.containsKey(BINDING_NAME)) {
-			ExpandingProperties<Object> allProps = new ExpandingProperties<Object>(globalProps);
+			ExpandingProperties allProps = new ExpandingProperties(globalProps);
 			allProps.putAll(actionProps);
-			return (String) allProps.get(BINDING_NAME);
+			return allProps.get(BINDING_NAME);
 		}
 		return null;
 	}
 
-	public IPath getExpandedBase(IPath base, Map<String, ? extends Object> local) {
+	public IPath getExpandedBase(IPath base, Map<String, String> local) {
 		if (base == null)
 			return getExpandedDefaultBase(local);
 
@@ -144,7 +144,7 @@ public class Action extends TopLevelAttribute implements IAction {
 		return base;
 	}
 
-	public IPath getExpandedDefaultBase(Map<String, ? extends Object> local) {
+	public IPath getExpandedDefaultBase(Map<String, String> local) {
 		return PerformManager.expandPath(local, Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF));
 	}
 
@@ -395,8 +395,7 @@ public class Action extends TopLevelAttribute implements IAction {
 	}
 
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local, Stack<IAttributeFilter> filters)
-			throws CoreException {
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters) throws CoreException {
 		CSpec cspec = getCSpec();
 		ArrayList<PathGroup> pathGroups = new ArrayList<PathGroup>();
 

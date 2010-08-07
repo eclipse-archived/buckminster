@@ -12,7 +12,6 @@ package org.eclipse.buckminster.core;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,7 +25,6 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.ctype.MissingBuilderException;
 import org.eclipse.buckminster.core.ctype.MissingComponentTypeException;
-import org.eclipse.buckminster.core.helpers.ShortDurationURLCache;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
@@ -66,7 +64,6 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
 import org.eclipse.osgi.util.NLS;
@@ -231,13 +228,11 @@ public class CorePlugin extends LogAwarePlugin {
 		}
 	}
 
-	private final RemoteFileCache remoteFileCache = new RemoteFileCache(30000, "bm-remote", ".cache", null); //$NON-NLS-1$ //$NON-NLS-2$
+	private final RemoteFileCache remoteFileCache = new RemoteFileCache(30000);
 
 	private ResourceBundle resourceBundle;
 
 	private final Map<String, Map<String, Object>> singletonExtensionCache = new HashMap<String, Map<String, Object>>();
-
-	private final ShortDurationURLCache urlCache = new ShortDurationURLCache();
 
 	private WorkspaceJob updatePrefsJob;
 
@@ -256,13 +251,6 @@ public class CorePlugin extends LogAwarePlugin {
 	 */
 	public void clearRemoteFileCache() {
 		remoteFileCache.clear();
-	}
-
-	/**
-	 * Clear the remote file cache
-	 */
-	public void clearURLCache() {
-		urlCache.clear();
 	}
 
 	/**
@@ -506,17 +494,6 @@ public class CorePlugin extends LogAwarePlugin {
 	 */
 	public InputStream openCachedRemoteFile(ICatalogReader reader, String fileName, IProgressMonitor monitor) throws IOException, CoreException {
 		return remoteFileCache.openRemoteFile(new RemoteFile(reader, fileName), monitor);
-	}
-
-	/**
-	 * Opens a url using the short duration cache maintained by this plugin.
-	 * 
-	 * @param url
-	 * @return input stream for the url
-	 * @throws IOException
-	 */
-	public InputStream openCachedURL(URL url, IConnectContext cctx, IProgressMonitor monitor) throws IOException, CoreException {
-		return urlCache.openURL(url, cctx, monitor);
 	}
 
 	/**

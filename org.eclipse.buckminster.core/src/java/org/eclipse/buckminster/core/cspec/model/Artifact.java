@@ -87,7 +87,7 @@ public class Artifact extends TopLevelAttribute implements IArtifact {
 			}
 	}
 
-	protected IPath getExpandedBase(Map<String, ? extends Object> local) throws CoreException {
+	protected IPath getExpandedBase(Map<String, String> local) throws CoreException {
 		if (base == null)
 			return getCSpec().getComponentLocation();
 
@@ -96,8 +96,7 @@ public class Artifact extends TopLevelAttribute implements IArtifact {
 	}
 
 	@Override
-	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local, Stack<IAttributeFilter> filters)
-			throws CoreException {
+	protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters) throws CoreException {
 		int idx = paths.size();
 		IPath[] pathArr;
 		if (idx > 0) {

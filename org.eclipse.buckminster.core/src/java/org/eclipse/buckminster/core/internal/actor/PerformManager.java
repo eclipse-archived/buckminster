@@ -20,7 +20,6 @@ import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IActor;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.actor.IPerformManager;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IActionArtifact;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
@@ -36,6 +35,7 @@ import org.eclipse.buckminster.core.helpers.NullOutputStream;
 import org.eclipse.buckminster.core.metadata.AmbigousComponentException;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -210,7 +210,7 @@ public class PerformManager implements IPerformManager {
 
 	private static final PrintStream nullPrintStream = new PrintStream(NullOutputStream.INSTANCE);
 
-	public static IPath expandPath(Map<String, ? extends Object> properties, IPath path) {
+	public static IPath expandPath(Map<String, String> properties, IPath path) {
 		if (path != null)
 			path = new Path(ExpandingProperties.expand(properties, path.toPortableString(), 0));
 		return path;
@@ -280,7 +280,7 @@ public class PerformManager implements IPerformManager {
 	}
 
 	@Override
-	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, ? extends Object> props, boolean forced, boolean quiet,
+	public IGlobalContext perform(ICSpecData cspec, String attributeName, Map<String, String> props, boolean forced, boolean quiet,
 			IProgressMonitor monitor) throws CoreException {
 		return perform(Collections.singletonList(((CSpec) cspec.getAdapter(CSpec.class)).getRequiredAttribute(attributeName)), props, forced, quiet,
 				monitor);
@@ -297,7 +297,7 @@ public class PerformManager implements IPerformManager {
 	}
 
 	@Override
-	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, ? extends Object> userProps, boolean forced, boolean quiet,
+	public IGlobalContext perform(List<? extends IAttribute> attributes, Map<String, String> userProps, boolean forced, boolean quiet,
 			IProgressMonitor monitor) throws CoreException {
 		GlobalContext globalCtx = new GlobalContext(userProps, forced, quiet);
 		monitor.beginTask(null, 1000);

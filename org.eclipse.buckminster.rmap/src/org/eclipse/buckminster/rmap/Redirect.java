@@ -9,14 +9,14 @@ package org.eclipse.buckminster.rmap;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Redirect</b></em>'. <!-- end-user-doc -->
- * 
+ *
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.buckminster.rmap.RmapPackage#getRedirect()
  * @model
  * @generated
@@ -40,12 +40,9 @@ public interface Redirect extends Matcher {
 	String getHref();
 
 	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Href</em>' attribute.
+	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Href</em>' attribute.
 	 * @see #getHref()
 	 * @generated
 	 */

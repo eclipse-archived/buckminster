@@ -23,11 +23,11 @@ import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.model.common.util.UnmodifiableMapUnion;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IStatus;
 
@@ -48,7 +48,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	public ResolutionContext(ComponentQuery componentQuery, ResolutionContext parentContext) {
-		super(parentContext == null ? componentQuery.getGlobalProperties() : new UnmodifiableMapUnion<String, Object>(
+		super(parentContext == null ? componentQuery.getGlobalProperties() : new UnmodifiableMapUnion<String, String>(
 				componentQuery.getGlobalProperties(), parentContext));
 		this.componentQuery = componentQuery;
 		this.parentContext = parentContext;
@@ -57,7 +57,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	public ResolutionContext(MaterializationSpec mspec, ComponentQuery componentQuery) {
-		super(new UnmodifiableMapUnion<String, Object>(componentQuery.getGlobalProperties(), mspec.getProperties()));
+		super(new UnmodifiableMapUnion<String, String>(componentQuery.getGlobalProperties(), mspec.getProperties()));
 		this.componentQuery = componentQuery;
 		this.parentContext = null;
 	}
@@ -113,10 +113,10 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	@Override
-	public Map<String, ? extends Object> getProperties(ComponentName cName) {
+	public Map<String, String> getProperties(ComponentName cName) {
 		IAdvisorNode parentNode = null;
 		IAdvisorNode node = null;
-		Map<String, ? extends Object> p = super.getProperties(cName);
+		Map<String, String> p = super.getProperties(cName);
 		if (parentContext != null)
 			parentNode = parentContext.getComponentQuery().getMatchingNode(cName, this);
 
@@ -125,10 +125,10 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 			return p;
 
 		if (parentNode != null)
-			p = new UnmodifiableMapUnion<String, Object>(parentNode.getProperties(), p);
+			p = new UnmodifiableMapUnion<String, String>(parentNode.getProperties(), p);
 
 		if (node != null && node != parentNode)
-			p = new UnmodifiableMapUnion<String, Object>(node.getProperties(), p);
+			p = new UnmodifiableMapUnion<String, String>(node.getProperties(), p);
 
 		return p;
 	}

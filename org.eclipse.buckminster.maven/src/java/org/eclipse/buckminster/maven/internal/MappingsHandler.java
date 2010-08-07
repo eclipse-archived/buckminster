@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
-import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
+import org.eclipse.buckminster.core.resolver.BidirectionalTransformer;
 import org.eclipse.buckminster.core.rmap.parser.BidirectionalTransformerHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;

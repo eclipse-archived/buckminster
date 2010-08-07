@@ -21,8 +21,8 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
@@ -96,13 +96,13 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 
 	public Resolution getResolution() throws SAXException {
 		if (request == null)
-			throw new SAXParseException(NLS
-					.bind(Messages.Missing_required_element_0, XMLConstants.BM_METADATA_PREFIX + '.' + Resolution.ELEM_REQUEST), this
-					.getDocumentLocator());
+			throw new SAXParseException(
+					NLS.bind(Messages.Missing_required_element_0, XMLConstants.BM_METADATA_PREFIX + '.' + Resolution.ELEM_REQUEST),
+					this.getDocumentLocator());
 
 		if (versionMatch == null)
-			throw new SAXParseException(NLS.bind(Messages.Missing_required_element_0, XMLConstants.BM_METADATA_PREFIX + '.' + VersionMatch.TAG), this
-					.getDocumentLocator());
+			throw new SAXParseException(NLS.bind(Messages.Missing_required_element_0, XMLConstants.BM_METADATA_PREFIX + '.' + VersionMatch.TAG),
+					this.getDocumentLocator());
 
 		if (componentType == null)
 			componentType = legacyComponentType();

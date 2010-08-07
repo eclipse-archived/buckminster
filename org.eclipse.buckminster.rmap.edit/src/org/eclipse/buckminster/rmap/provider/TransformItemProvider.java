@@ -32,10 +32,9 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a
- * {@link org.eclipse.buckminster.rmap.Transform} object. <!-- begin-user-doc
+ * This is the item provider adapter for a {@link org.eclipse.buckminster.rmap.Transform} object.
+ * <!-- begin-user-doc
  * --> <!-- end-user-doc -->
- * 
  * @generated
  */
 public class TransformItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
@@ -56,6 +55,7 @@ public class TransformItemProvider extends ItemProviderAdapter implements IEditi
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -75,32 +75,36 @@ public class TransformItemProvider extends ItemProviderAdapter implements IEditi
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
+		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
 	}
 
 	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc
+	 * This returns the label text for the adapted class.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
-		Pattern labelValue = ((Transform) object).getFromPattern();
+		Pattern labelValue = ((Transform)object).getFromPattern();
 		String label = labelValue == null ? null : labelValue.toString();
-		return label == null || label.length() == 0 ? getString("_UI_Transform_type") : getString("_UI_Transform_type") + " " + label;
+		return label == null || label.length() == 0 ?
+			getString("_UI_Transform_type") :
+			getString("_UI_Transform_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to
-	 * update any cached children and by creating a viewer notification, which
-	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to update any cached
+	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -123,10 +127,19 @@ public class TransformItemProvider extends ItemProviderAdapter implements IEditi
 	 * @generated
 	 */
 	protected void addFromPatternPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Transform_fromPattern_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Transform_fromPattern_feature", "_UI_Transform_type"), RmapPackage.Literals.TRANSFORM__FROM_PATTERN, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transform_fromPattern_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transform_fromPattern_feature", "_UI_Transform_type"),
+				 RmapPackage.Literals.TRANSFORM__FROM_PATTERN,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -136,10 +149,19 @@ public class TransformItemProvider extends ItemProviderAdapter implements IEditi
 	 * @generated
 	 */
 	protected void addFromReplacementPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Transform_fromReplacement_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Transform_fromReplacement_feature", "_UI_Transform_type"), RmapPackage.Literals.TRANSFORM__FROM_REPLACEMENT, true,
-				false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transform_fromReplacement_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transform_fromReplacement_feature", "_UI_Transform_type"),
+				 RmapPackage.Literals.TRANSFORM__FROM_REPLACEMENT,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -149,10 +171,19 @@ public class TransformItemProvider extends ItemProviderAdapter implements IEditi
 	 * @generated
 	 */
 	protected void addToPatternPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Transform_toPattern_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Transform_toPattern_feature", "_UI_Transform_type"), RmapPackage.Literals.TRANSFORM__TO_PATTERN, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transform_toPattern_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transform_toPattern_feature", "_UI_Transform_type"),
+				 RmapPackage.Literals.TRANSFORM__TO_PATTERN,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -162,10 +193,19 @@ public class TransformItemProvider extends ItemProviderAdapter implements IEditi
 	 * @generated
 	 */
 	protected void addToReplacementPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Transform_toReplacement_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Transform_toReplacement_feature", "_UI_Transform_type"), RmapPackage.Literals.TRANSFORM__TO_REPLACEMENT, true, false,
-				false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_Transform_toReplacement_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_Transform_toReplacement_feature", "_UI_Transform_type"),
+				 RmapPackage.Literals.TRANSFORM__TO_REPLACEMENT,
+				 true,
+				 false,
+				 false,
+				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+				 null,
+				 null));
 	}
 
 	/**
@@ -175,6 +215,7 @@ public class TransformItemProvider extends ItemProviderAdapter implements IEditi
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

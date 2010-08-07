@@ -23,8 +23,6 @@ import java.util.UUID;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.common.model.Format;
-import org.eclipse.buckminster.core.common.model.PropertyRef;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
@@ -47,13 +45,16 @@ import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
-import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.rmap.model.ProviderScore;
-import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.Format;
+import org.eclipse.buckminster.model.common.PropertyRef;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.RmapFactory;
+import org.eclipse.buckminster.rmap.VersionConverter;
+import org.eclipse.buckminster.rmap.VersionSelectorType;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -91,15 +92,28 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 		Map<String, String> props = new HashMap<String, String>(2);
 		props.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
 		props.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
-		VersionConverterDesc pdeConverter = new VersionConverterDesc("tag", null, //$NON-NLS-1$
-				new BidirectionalTransformer[0]);
-		INSTALLED_BUNDLE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM, new String[] { IComponentType.OSGI_BUNDLE }, pdeConverter,
-				new Format("plugin/${" //$NON-NLS-1$
-						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, props, null, null); //$NON-NLS-1$
+		VersionConverter pdeConverter = RmapFactory.eINSTANCE.createVersionConverter();
+		pdeConverter.setType(VersionSelectorType.TAG);
 
-		INSTALLED_FEATURE_PROVIDER = new Provider(null, IReaderType.ECLIPSE_PLATFORM, new String[] { IComponentType.ECLIPSE_FEATURE }, pdeConverter,
-				new Format("feature/${" //$NON-NLS-1$
-						+ KeyConstants.COMPONENT_NAME + "}"), null, null, null, props, null, null); //$NON-NLS-1$
+		INSTALLED_BUNDLE_PROVIDER = RmapFactory.eINSTANCE.createProvider();
+		INSTALLED_BUNDLE_PROVIDER.setReaderType(IReaderType.ECLIPSE_PLATFORM);
+		INSTALLED_BUNDLE_PROVIDER.getComponentTypes().add(IComponentType.OSGI_BUNDLE);
+		INSTALLED_BUNDLE_PROVIDER.setVersionConverter(pdeConverter);
+
+		Format fmt = CommonFactory.eINSTANCE.createFormat();
+		fmt.setFormat("plugin/${" + KeyConstants.COMPONENT_NAME + '}'); //$NON-NLS-1$
+		INSTALLED_BUNDLE_PROVIDER.setURI(fmt);
+		INSTALLED_BUNDLE_PROVIDER.getProperties().putAll(props);
+
+		INSTALLED_FEATURE_PROVIDER = RmapFactory.eINSTANCE.createProvider();
+		INSTALLED_FEATURE_PROVIDER.setReaderType(IReaderType.ECLIPSE_PLATFORM);
+		INSTALLED_FEATURE_PROVIDER.getComponentTypes().add(IComponentType.ECLIPSE_FEATURE);
+		INSTALLED_FEATURE_PROVIDER.setVersionConverter(pdeConverter);
+
+		fmt = CommonFactory.eINSTANCE.createFormat();
+		fmt.setFormat("feature/${" + KeyConstants.COMPONENT_NAME + '}'); //$NON-NLS-1$
+		INSTALLED_FEATURE_PROVIDER.setURI(fmt);
+		INSTALLED_FEATURE_PROVIDER.getProperties().putAll(props);
 	}
 
 	public static Resolution fromPath(IPath productPath, String name) throws CoreException {
@@ -131,10 +145,15 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 				if (repoStr.length() > nameIndex)
 					parameterized += repoStr.substring(nameIndex, repoStr.length());
 
-				repoURI = new Format(parameterized);
-				repoURI.addValueHolder(new PropertyRef<String>(String.class, KeyConstants.COMPONENT_NAME));
-			} else
-				repoURI = new Format(repoStr);
+				repoURI = CommonFactory.eINSTANCE.createFormat();
+				repoURI.setFormat(parameterized);
+				PropertyRef propRef = CommonFactory.eINSTANCE.createPropertyRef();
+				propRef.setKey(KeyConstants.COMPONENT_NAME);
+				repoURI.getValues().add(propRef);
+			} else {
+				repoURI = CommonFactory.eINSTANCE.createFormat();
+				repoURI.setFormat(repoStr);
+			}
 		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
@@ -150,8 +169,10 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
 		NodeQuery nq = new NodeQuery(context, rq, null);
-		Provider provider = new Provider(null, IReaderType.LOCAL, possibleTypes.toArray(new String[possibleTypes.size()]), null, repoURI, null, null,
-				null, null, null, null);
+		Provider provider = RmapFactory.eINSTANCE.createProvider();
+		provider.setReaderType(IReaderType.LOCAL);
+		provider.getComponentTypes().addAll(possibleTypes);
+		provider.setURI(repoURI);
 		monitor.beginTask(null, possibleTypes.size() * 100);
 		int largestCSpecSize = -1;
 		Resolution bestMatch = null;
@@ -302,8 +323,8 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 							return new ResolvedNode(query, res);
 						}
 						if (!isSilent)
-							query.logDecision(ResolverDecisionType.MATCH_REJECTED, mat.getComponentIdentifier(), NLS.bind(
-									Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
+							query.logDecision(ResolverDecisionType.MATCH_REJECTED, mat.getComponentIdentifier(),
+									NLS.bind(Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
 					} else if (!isSilent)
 						log.debug("Workspace project found at %s", mat.getComponentLocation()); //$NON-NLS-1$
 				}
@@ -349,8 +370,8 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 						return new ResolvedNode(query, resolution);
 					}
 					if (!isSilent)
-						query.logDecision(ResolverDecisionType.MATCH_REJECTED, ci, NLS.bind(
-								Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
+						query.logDecision(ResolverDecisionType.MATCH_REJECTED, ci,
+								NLS.bind(Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
 				} else if (!isSilent)
 					log.debug("Workspace project for %s is not designated by %s", request.getProjectName(), request); //$NON-NLS-1$
 			} else if (!isSilent)
@@ -380,7 +401,7 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 			}
 
 			MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null); //$NON-NLS-1$
-			ProviderMatch match = provider.findMatch(query, problemCollector, new NullProgressMonitor());
+			ProviderMatch match = ResourceMapResolver.findMatch(provider, query, problemCollector, new NullProgressMonitor());
 			if (match == null)
 				// The reason will have been logged already
 				return null;
@@ -388,8 +409,8 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 			monitor.beginTask(null, 30);
 			try {
 				IComponentReader[] reader = new IComponentReader[] { match.getReader(MonitorUtils.subMonitor(monitor, 10)) };
-				BOMNode node = match.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10)).build(reader, false,
-						MonitorUtils.subMonitor(monitor, 10));
+				BOMNode node = match.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10))
+						.build(reader, false, MonitorUtils.subMonitor(monitor, 10));
 				IOUtils.close(reader[0]);
 
 				res = node.getResolution();

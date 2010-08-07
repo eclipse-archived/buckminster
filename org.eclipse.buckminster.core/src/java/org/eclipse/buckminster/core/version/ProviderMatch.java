@@ -12,6 +12,7 @@ package org.eclipse.buckminster.core.version;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
@@ -19,18 +20,13 @@ import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.rmap.model.ProviderScore;
+import org.eclipse.buckminster.core.resolver.ProviderScore;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.VersionConverter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
- * A <code>VersionSelectorMatch</code> is the result of a comparison between a
- * desired version and an existing version using a specific {@link MatchRule}.
- * The rule denoted in a <code>VersionSelectorMatch</code> is often tighter then
- * the rule expressed as a rule when the match was performed.
- * 
  * @author Thomas Hallgren
  */
 public final class ProviderMatch implements Comparable<ProviderMatch> {
@@ -116,13 +112,6 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 		return componentType;
 	}
 
-	public IConnectContext getConnectContext() {
-		IConnectContext cctx = provider.getConnectContext();
-		if (cctx == null)
-			cctx = getNodeQuery().getComponentQuery().getConnectContext();
-		return cctx;
-	}
-
 	public Map<String, String> getMatcherMap() {
 		return matcherMap;
 	}
@@ -175,7 +164,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 	}
 
 	public IReaderType getReaderType() throws CoreException {
-		return provider.getReaderType();
+		return CorePlugin.getDefault().getReaderType(provider.getReaderType());
 	}
 
 	public synchronized String getRepositoryURI() {
@@ -184,23 +173,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 		return repositoryURI;
 	}
 
-	public String getUniqueKey() {
-		StringBuilder bld = new StringBuilder();
-		bld.append(provider.getId());
-		bld.append('[');
-		ComponentRequest rq = query.getComponentRequest();
-		bld.append(rq.getName());
-		String type = rq.getComponentTypeID();
-		if (type != null) {
-			bld.append(':');
-			bld.append(type);
-		}
-		versionMatch.toString(bld);
-		bld.append(']');
-		return bld.toString();
-	}
-
-	public IVersionConverter getVersionConverter() throws CoreException {
+	public VersionConverter getVersionConverter() throws CoreException {
 		return provider.getVersionConverter();
 	}
 
@@ -232,16 +205,5 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 
 	public void setVersionMatch(VersionMatch versionMatch) {
 		this.versionMatch = versionMatch;
-	}
-
-	/**
-	 * Returns a string representation of the match. Only intended for debug
-	 * purposes
-	 * 
-	 * @return A string representation of the match
-	 */
-	@Override
-	public String toString() {
-		return getUniqueKey();
 	}
 }

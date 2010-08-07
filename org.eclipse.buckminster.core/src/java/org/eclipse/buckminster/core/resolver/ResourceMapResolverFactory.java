@@ -9,10 +9,6 @@ package org.eclipse.buckminster.core.resolver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
@@ -21,16 +17,24 @@ import org.eclipse.buckminster.core.prefedit.IPreferenceDescriptor;
 import org.eclipse.buckminster.core.prefedit.PreferenceDescriptor;
 import org.eclipse.buckminster.core.prefedit.PreferenceType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.rmap.model.ResourceMap;
+import org.eclipse.buckminster.rmap.ResourceMap;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.common.util.WrappedException;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -71,33 +75,6 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 	private boolean localResolve = LOCAL_RESOLVE_DEFAULT;
 
 	private int resolverThreadsMax = RESOLVER_THREADS_MAX_DEFAULT;
-
-	private static final UUID CACHE_KEY_RESOURCE_MAP = UUID.randomUUID();
-
-	public static ResourceMap getCachedResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException {
-		Map<String, ResourceMap> rmapCache = getResourceMapCache(context.getUserCache());
-		String key = url.toString().intern();
-		synchronized (key) {
-			ResourceMap rmap = rmapCache.get(key);
-			if (rmap == null) {
-				rmap = ResourceMap.fromURL(url, cctx);
-				rmapCache.put(key, rmap);
-			}
-			return rmap;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static Map<String, ResourceMap> getResourceMapCache(Map<UUID, Object> ctxUserCache) {
-		synchronized (ctxUserCache) {
-			Map<String, ResourceMap> resourceMapCache = (Map<String, ResourceMap>) ctxUserCache.get(CACHE_KEY_RESOURCE_MAP);
-			if (resourceMapCache == null) {
-				resourceMapCache = Collections.synchronizedMap(new HashMap<String, ResourceMap>());
-				ctxUserCache.put(CACHE_KEY_RESOURCE_MAP, resourceMapCache);
-			}
-			return resourceMapCache;
-		}
-	}
 
 	@Override
 	public IResolver createResolver(ResolutionContext context) throws CoreException {
@@ -145,9 +122,20 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 
 	@Override
 	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException {
-		if (url == null || isOverrideQueryURL())
-			url = getResourceMapURL();
-		return getCachedResourceMap(context, url, cctx);
+		String stream = url.toExternalForm();
+		Resource resource;
+		try {
+			ResourceSet rs = new ResourceSetImpl();
+			// TODO: Figure out how to use the IConnectionContext with EMF load
+			resource = rs.getResource(URI.createURI(url.toString()), true);
+		} catch (WrappedException e) {
+			throw BuckminsterException.wrap(e.getCause());
+		}
+		EList<EObject> content = resource.getContents();
+		if (content.size() != 1)
+			throw BuckminsterException.fromMessage(NLS.bind("Unable to parse rmap file from {0}", stream)); //$NON-NLS-1$
+
+		return (ResourceMap) content.get(0);
 	}
 
 	/**

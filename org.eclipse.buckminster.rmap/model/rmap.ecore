@@ -3,162 +3,19 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="rmap"
     nsURI="http://www.eclipse.org/buckminster/RMap-1.0" nsPrefix="rm">
-  <eClassifiers xsi:type="ecore:EClass" name="Matcher" abstract="true">
-    <eOperations name="matches" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-      <eParameters name="componentName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//Pattern"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BranchPoint">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestamp" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="revision" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tag" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="onMergeConflict" eType="#//ConflictPolicy"
+        defaultValueLiteral="FAIL"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Redirect" eSuperTypes="#//Matcher">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="href" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Locator" eSuperTypes="#//Matcher">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="searchPath" lowerBound="1"
-        eType="#//SearchPath" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="searchPathRef"/>
-        <details key="kind" value="attribute"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="failOnError" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        defaultValueLiteral="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SearchPath">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//ID"
-        iD="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="providers" upperBound="-1"
-        eType="#//Provider" containment="true">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="provider"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ResourceMap" eSuperTypes="#//Properties">
-    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-      <details key="name" value="ResourceMap"/>
-    </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="locators" upperBound="-1"
-        eType="#//Locator" containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="locator"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="redirects" upperBound="-1"
-        eType="#//Redirect" containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="redirect"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="searchPaths" upperBound="-1"
-        eType="#//SearchPath" containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="searchPath"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
-        containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="documentation"/>
-        <details key="kind" value="element"/>
-        <details key="namespace" value="##targetNamespace"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="repositories" upperBound="-1"
-        eType="#//Repository" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Provider" eSuperTypes="#//Properties">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="componentTypes" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" transient="true"
-        defaultValueLiteral=""/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="componentTypesAttr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        volatile="true" derived="true">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="componentTypes"/>
-        <details key="kind" value="attribute"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="readerType" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        defaultValueLiteral="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        defaultValueLiteral="true"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolutionFilter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="versionConverter" eType="#//VersionConverter"
-        containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="uri" lowerBound="1" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Format"
-        containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="matchers" upperBound="-1"
-        eType="#//URIMatcher" containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="matcher"/>
-        <details key="kind" value="element"/>
-        <details key="namespace" value="##targetNamespace"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
-        containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="documentation"/>
-        <details key="kind" value="element"/>
-        <details key="namespace" value="##targetNamespace"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="repository" eType="#//Repository"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Transform">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromPattern" lowerBound="1"
-        eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//Pattern"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromReplacement" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toPattern" lowerBound="1"
-        eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//Pattern"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toReplacement" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VersionConverter">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        defaultValueLiteral="OSGi"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="transformers" upperBound="-1"
-        eType="#//Transform" containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="transform"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DocumentRoot">
+  <eClassifiers xsi:type="ecore:EClass" name="DocumentRoot" eSuperTypes="platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//AbstractDocumentRoot">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value=""/>
       <details key="kind" value="mixed"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mixed" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="elementWildcard"/>
-        <details key="name" value=":mixed"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="xMLNSPrefixMap" upperBound="-1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EStringToStringMapEntry"
         transient="true" containment="true" resolveProxies="false">
@@ -176,7 +33,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="match" upperBound="-2"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -186,7 +43,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="group" upperBound="-2"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxGroup"
+        eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxGroup"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -195,7 +52,7 @@
         <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="name" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" upperBound="-2" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -205,7 +62,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="version" upperBound="-2"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -215,7 +72,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="revision" upperBound="-2"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -225,7 +82,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" upperBound="-2"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+        eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -234,7 +91,7 @@
         <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="os" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="os" upperBound="-2" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -243,7 +100,7 @@
         <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ws" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ws" upperBound="-2" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -252,7 +109,7 @@
         <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="arch" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arch" upperBound="-2" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -261,7 +118,7 @@
         <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="nl" upperBound="-2" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nl" upperBound="-2" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxPattern"
         volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
@@ -278,52 +135,113 @@
         <details key="name" value="rmap"/>
       </eAnnotations>
     </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="URIMatcher">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="base" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="attribute"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="rxPartsGroup" unique="false"
-        lowerBound="1" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="group"/>
-        <details key="name" value="rxPart:group"/>
-        <details key="namespace" value="http://www.eclipse.org/buckminster/Common-1.0"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="rxParts" lowerBound="1"
-        upperBound="-1" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//RxPart"
-        changeable="false" volatile="true" transient="true" derived="true" containment="true"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="locators" upperBound="-2"
+        eType="#//Locator" volatile="true" transient="true" derived="true" containment="true"
         resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
-        <details key="name" value="rxPart"/>
-        <details key="namespace" value="http://www.eclipse.org/buckminster/Common-1.0"/>
-        <details key="group" value="http://www.eclipse.org/buckminster/Common-1.0#rxPart:group"/>
+        <details key="name" value="locator"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="matcher"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="matcher" upperBound="-2"
+        eType="#//Matcher">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="matcher"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="redirects" upperBound="-2"
+        eType="#//Redirect" volatile="true" transient="true" derived="true" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="redirect"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="affiliation" value="matcher"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Properties">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyConstant"
+  <eClassifiers xsi:type="ecore:EClass" name="Locator" eSuperTypes="#//Matcher">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="searchPath" eType="#//SearchPath"
+        resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="searchPathRef"/>
+        <details key="kind" value="attribute"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="failOnError" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Matcher" abstract="true">
+    <eOperations name="matches" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="componentName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Pattern"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Provider" eSuperTypes="platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Properties">
+    <eOperations name="getURI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="componentTypes" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" transient="true"
+        defaultValueLiteral=""/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="componentTypesAttr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        volatile="true" derived="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="componentTypes"/>
+        <details key="kind" value="attribute"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="readerType" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        volatile="true" defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        volatile="true" defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="resolutionFilter" eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Filter"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="versionConverter" eType="#//VersionConverter"
         containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="property"/>
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyElements" upperBound="-1"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyElement"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="URI" lowerBound="1" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Format"
         containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="propertyElement"/>
+        <details key="name" value="uri"/>
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="matcher" eType="#//URIMatcher"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="matcher"/>
+        <details key="kind" value="element"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="documentation"/>
+        <details key="kind" value="element"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="repository" eType="#//Repository"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Redirect" eSuperTypes="#//Matcher">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="href" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Repository">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//ID">
@@ -332,87 +250,131 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="connection" lowerBound="1"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Format"
+        eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Format"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="branches" upperBound="-1"
-        eType="#//branch" containment="true"/>
+        eType="#//BranchPoint" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="checkout" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowDirty" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="false"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="update" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         defaultValueLiteral="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="branch">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestamp" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="revision" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tag" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="onMergeConflict" eType="#//ConflictPolicy"
-        defaultValueLiteral="FAIL"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="ConflictPolicy">
-    <eLiterals name="use-workspace" literal="USE_WORKSPACE"/>
-    <eLiterals name="use-scm" value="1" literal="USE_SCM"/>
-    <eLiterals name="fail" value="2" literal="FAIL"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="ProviderScore">
-    <eLiterals name="rejected" literal="REJECTED"/>
-    <eLiterals name="bad" value="1" literal="BAD"/>
-    <eLiterals name="fair" value="2" literal="FAIR"/>
-    <eLiterals name="good" value="3" literal="GOOD"/>
-    <eLiterals name="preferred" value="4" literal="PREFERRED"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VersionMatch">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="artifactInfo" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionSelector"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bll"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VersionSelector">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="branchName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="SelectorType">
-    <eLiterals name="latest" literal="LATEST"/>
-    <eLiterals name="tag" value="1" literal="TAG"/>
-    <eLiterals name="revision" value="2" literal="REVISION"/>
-    <eLiterals name="timestamp" value="3" literal="TIMESTAMP"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="LatestSelector" eSuperTypes="#//VersionSelector"/>
-  <eClassifiers xsi:type="ecore:EClass" name="TagSelector" eSuperTypes="#//VersionSelector">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="tagName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RevisionSelector" eSuperTypes="#//VersionSelector">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="revision" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TimestampSelector" eSuperTypes="#//VersionSelector">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestamp" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="VersionMatch">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="artifactInfo" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="selector" eType="#//VersionSelector"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//Version"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="NodeQuery" instanceClassName="org.eclipse.buckminster.core.resolver.NodeQuery"
-      serializable="false"/>
-  <eClassifiers xsi:type="ecore:EClass" name="ProviderMatch">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="componentType" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="nodeQuery" lowerBound="1"
-        eType="#//NodeQuery"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="originalProvider" lowerBound="1"
-        eType="#//Provider"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="provider" lowerBound="1"
-        eType="#//Provider"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="versionMatch" eType="#//VersionMatch.1"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="providerScore" lowerBound="1"
-        eType="#//ProviderScore"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repositoryURI" lowerBound="1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="matcherMap" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
-      <eAnnotations/>
+  <eClassifiers xsi:type="ecore:EClass" name="ResourceMap" eSuperTypes="platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Properties">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="rmap"/>
+    </eAnnotations>
+    <eOperations name="getContextURL" eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//URL"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="matcherGroup" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="group"/>
+        <details key="name" value="matcher:group"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="repositories" upperBound="-1"
+        eType="#//Repository" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="matchers" upperBound="-1"
+        eType="#//Matcher" volatile="true" transient="true" derived="true" containment="true"
+        resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="name" value="matcher"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="group" value="matcher:group"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="searchPaths" upperBound="-1"
+        eType="#//SearchPath" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="searchPath"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="kind" value="element"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="documentation"/>
+        <details key="kind" value="element"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SearchPath">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//ID"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="providers" upperBound="-1"
+        eType="#//Provider" containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="provider"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="kind" value="element"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Transform">
+    <eOperations name="transformFrom" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        eExceptions="#//TransformMismatchException">
+      <eParameters name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="transformTo" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        eExceptions="#//TransformMismatchException">
+      <eParameters name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromPattern" lowerBound="1"
+        eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Pattern"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="fromReplacement" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toPattern" lowerBound="1"
+        eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Pattern"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="toReplacement" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="URIMatcher" eSuperTypes="platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//RxAssembly">
+    <eOperations name="getComponentType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="base" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="attribute"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionFormat" eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//IVersionFormat"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VersionConverter">
+    <eOperations name="createVersion" eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Version">
+      <eParameters name="identifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="createIdentifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eParameters name="version" eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Version"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="#//VersionSelectorType"
+        defaultValueLiteral="BRANCH"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="transformers" upperBound="-1"
+        eType="#//Transform" containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="transform"/>
+        <details key="namespace" value="##targetNamespace"/>
+        <details key="kind" value="element"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionFormat" eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//IVersionFormat"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="versionType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="OSGi"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="VersionSelectorType">
+    <eLiterals name="BRANCH" literal="BRANCH"/>
+    <eLiterals name="TAG" value="1" literal="TAG"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ConflictPolicy">
+    <eLiterals name="useWorkspace" literal="USE_WORKSPACE"/>
+    <eLiterals name="useSCM" value="1" literal="USE_SCM"/>
+    <eLiterals name="fail" value="2" literal="FAIL"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="TransformMismatchException" instanceClassName="org.eclipse.buckminster.rmap.util.TransformMismatchException"/>
 </ecore:EPackage>

@@ -10,7 +10,7 @@
 package org.eclipse.buckminster.core.version;
 
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
-import org.eclipse.buckminster.core.rmap.model.BidirectionalTransformer;
+import org.eclipse.buckminster.rmap.Transform;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.IVersionFormat;
@@ -20,9 +20,9 @@ import org.eclipse.equinox.p2.metadata.Version;
  * @author Thomas Hallgren
  */
 public abstract class AbstractConverter extends AbstractExtension implements IVersionConverter {
-	private static final BidirectionalTransformer[] noTransformers = new BidirectionalTransformer[0];
+	private static final Transform[] noTransformers = new Transform[0];
 
-	private BidirectionalTransformer[] transformers = noTransformers;
+	private Transform[] transformers = noTransformers;
 
 	private IVersionFormat versionFormat = getDefaultVersionFormat();
 
@@ -36,7 +36,7 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 	 * 
 	 * @param transformer
 	 */
-	public final void setTransformers(BidirectionalTransformer[] transformers) {
+	public final void setTransformers(Transform[] transformers) {
 		transformers = transformers == null ? noTransformers : transformers;
 	}
 
@@ -64,7 +64,7 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 		String result = source.toString();
 		if (transformers.length > 0) {
 			boolean matchFound = false;
-			for (BidirectionalTransformer transformer : transformers) {
+			for (Transform transformer : transformers) {
 				String transformed = transformer.transformFrom(result);
 				if (transformed != null) {
 					matchFound = true;
@@ -92,7 +92,7 @@ public abstract class AbstractConverter extends AbstractExtension implements IVe
 	protected Version createVersionFromSelectorComponent(String source) throws CoreException {
 		if (transformers.length > 0) {
 			boolean matchFound = false;
-			for (BidirectionalTransformer transformer : transformers) {
+			for (Transform transformer : transformers) {
 				String transformed = transformer.transformTo(source);
 				if (transformed != null) {
 					matchFound = true;

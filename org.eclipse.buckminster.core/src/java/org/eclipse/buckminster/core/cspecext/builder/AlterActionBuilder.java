@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
@@ -20,6 +19,7 @@ import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspecext.model.AlterAction;
 import org.eclipse.buckminster.core.cspecext.model.AlterAttribute;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -30,11 +30,11 @@ public class AlterActionBuilder extends AlterAttributeBuilder {
 
 	private final HashSet<String> removedPrerequisites = new HashSet<String>();
 
-	private final ExpandingProperties<String> alteredActorProperties = new ExpandingProperties<String>();
+	private final ExpandingProperties alteredActorProperties = new ExpandingProperties();
 
 	private final HashSet<String> removedActorProperties = new HashSet<String>();
 
-	private final ExpandingProperties<String> alteredProperties = new ExpandingProperties<String>();
+	private final ExpandingProperties alteredProperties = new ExpandingProperties();
 
 	private final HashSet<String> removedProperties = new HashSet<String>();
 
@@ -98,11 +98,11 @@ public class AlterActionBuilder extends AlterAttributeBuilder {
 				removedActorProperties, alteredActorProperties, removedProperties, alteredProperties, removedPaths);
 	}
 
-	public ExpandingProperties<String> getAlterActorProperties() {
+	public ExpandingProperties getAlterActorProperties() {
 		return alteredActorProperties;
 	}
 
-	public ExpandingProperties<String> getAlterProperties() {
+	public ExpandingProperties getAlterProperties() {
 		return alteredProperties;
 	}
 

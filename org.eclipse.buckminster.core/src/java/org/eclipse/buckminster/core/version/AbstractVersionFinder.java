@@ -11,10 +11,10 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.core.resolver.ProviderScore;
 import org.eclipse.buckminster.core.resolver.ResolverDecision;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
-import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.rmap.model.ProviderScore;
+import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.security.IConnectContext;
@@ -46,10 +46,7 @@ public abstract class AbstractVersionFinder implements IVersionFinder {
 
 	@Override
 	public IConnectContext getConnectContext() {
-		IConnectContext cctx = provider.getConnectContext();
-		if (cctx == null)
-			cctx = query.getComponentQuery().getConnectContext();
-		return cctx;
+		return query.getComponentQuery().getConnectContext();
 	}
 
 	@Override

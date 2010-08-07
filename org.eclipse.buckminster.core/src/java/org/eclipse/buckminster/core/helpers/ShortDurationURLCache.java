@@ -29,13 +29,8 @@ import org.eclipse.ecf.core.security.IConnectContext;
  * 
  */
 public class ShortDurationURLCache extends ShortDurationFileCache {
-	public ShortDurationURLCache() {
-		// FIXME: Should be preferences
-		super(300000, "url", "cache", null); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	public ShortDurationURLCache(long keepAlive, String prefix, String suffix, File tempDir) {
-		super(keepAlive, prefix, suffix, tempDir);
+	public ShortDurationURLCache(long keepAlive) {
+		super(keepAlive);
 	}
 
 	public InputStream openURL(final URL url, final IConnectContext cctx, IProgressMonitor monitor) throws IOException, CoreException {

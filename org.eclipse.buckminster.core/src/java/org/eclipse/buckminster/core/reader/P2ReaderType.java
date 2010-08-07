@@ -23,9 +23,9 @@ import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -40,7 +40,7 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 
 public class P2ReaderType extends CatalogReaderType {
-	public static IArtifactRepository getArtifactRepository(Provider provider, Map<String, ? extends Object> properties, IProgressMonitor monitor)
+	public static IArtifactRepository getArtifactRepository(Provider provider, Map<String, String> properties, IProgressMonitor monitor)
 			throws CoreException {
 		return getArtifactRepository(getURI(provider, properties), monitor);
 	}
@@ -73,7 +73,7 @@ public class P2ReaderType extends CatalogReaderType {
 		return result.isEmpty() ? null : result.iterator().next();
 	}
 
-	public static IMetadataRepository getMetadataRepository(Provider provider, Map<String, ? extends Object> properties, IProgressMonitor monitor)
+	public static IMetadataRepository getMetadataRepository(Provider provider, Map<String, String> properties, IProgressMonitor monitor)
 			throws CoreException {
 		return getMetadataRepository(getURI(provider, properties), monitor);
 	}
@@ -99,7 +99,7 @@ public class P2ReaderType extends CatalogReaderType {
 		}
 	}
 
-	public static URI getURI(Provider provider, Map<String, ? extends Object> properties) throws CoreException {
+	public static URI getURI(Provider provider, Map<String, String> properties) throws CoreException {
 		return P2Materializer.cleanURIFromImportType(URLUtils.normalizeToURI(provider.getURI(properties), true));
 	}
 

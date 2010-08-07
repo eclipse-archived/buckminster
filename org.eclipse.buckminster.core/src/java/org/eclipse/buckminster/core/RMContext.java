@@ -21,9 +21,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.common.model.Constant;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
-import org.eclipse.buckminster.core.common.model.ValueHolder;
 import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
@@ -31,14 +28,14 @@ import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
-import org.eclipse.buckminster.core.helpers.FilterUtils;
-import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.BuildTimestampQualifierGenerator;
+import org.eclipse.buckminster.model.common.util.BMProperties;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
+import org.eclipse.buckminster.model.common.util.UnmodifiableMapUnion;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -55,7 +52,7 @@ import org.eclipse.core.variables.VariablesPlugin;
  * 
  * @author Thomas Hallgren
  */
-public class RMContext extends ExpandingProperties<Object> {
+public class RMContext extends ExpandingProperties {
 	public class TagInfo {
 		private final int tagId;
 
@@ -188,12 +185,12 @@ public class RMContext extends ExpandingProperties<Object> {
 		staticAdditions = additions;
 	}
 
-	public static Map<String, ? extends Object> getGlobalPropertyAdditions() {
+	public static Map<String, String> getGlobalPropertyAdditions() {
 		Map<String, String> sysProps = BMProperties.getSystemProperties();
 		IStringVariableManager varMgr = VariablesPlugin.getDefault().getStringVariableManager();
 		IValueVariable[] vars = varMgr.getValueVariables();
 
-		Map<String, Object> additions = new HashMap<String, Object>(staticAdditions.size() + sysProps.size() + vars.length + 6);
+		Map<String, String> additions = new HashMap<String, String>(staticAdditions.size() + sysProps.size() + vars.length + 6);
 		additions.putAll(staticAdditions);
 
 		try {
@@ -210,19 +207,11 @@ public class RMContext extends ExpandingProperties<Object> {
 		}
 		additions.put(BuildTimestampQualifierGenerator.FORMAT_PROPERTY, DateAndTimeUtils.toISOFormat(new Date()));
 
-		for (IValueVariable var : varMgr.getValueVariables()) {
-			Object value = var.getValue();
-			if (FilterUtils.MATCH_ALL.equals(value))
-				value = FilterUtils.MATCH_ALL_OBJ;
-			additions.put(var.getName(), value);
-		}
+		for (IValueVariable var : varMgr.getValueVariables())
+			additions.put(var.getName(), var.getValue());
 
-		for (Map.Entry<String, String> sysProp : sysProps.entrySet()) {
-			Object value = sysProp.getValue();
-			if (FilterUtils.MATCH_ALL.equals(value))
-				value = FilterUtils.MATCH_ALL_OBJ;
-			additions.put(sysProp.getKey(), value);
-		}
+		for (Map.Entry<String, String> sysProp : sysProps.entrySet())
+			additions.put(sysProp.getKey(), sysProp.getValue());
 		return additions;
 	}
 
@@ -238,11 +227,11 @@ public class RMContext extends ExpandingProperties<Object> {
 
 	private boolean silentStatus;
 
-	public RMContext(Map<String, ? extends Object> properties) {
+	public RMContext(Map<String, String> properties) {
 		this(properties, null);
 	}
 
-	public RMContext(Map<String, ? extends Object> properties, RMContext source) {
+	public RMContext(Map<String, String> properties, RMContext source) {
 		super(getGlobalPropertyAdditions());
 		if (properties != null)
 			putAll(properties, true);
@@ -333,7 +322,7 @@ public class RMContext extends ExpandingProperties<Object> {
 		return false;
 	}
 
-	public String getBindingName(Resolution resolution, Map<String, ? extends Object> props) throws CoreException {
+	public String getBindingName(Resolution resolution, Map<String, String> props) throws CoreException {
 		ComponentRequest request = resolution.getRequest();
 		String name = null;
 
@@ -382,8 +371,8 @@ public class RMContext extends ExpandingProperties<Object> {
 		return query;
 	}
 
-	public Map<String, ? extends Object> getProperties(ComponentName cName) {
-		return new UnmodifiableMapUnion<String, Object>(cName.getProperties(), this);
+	public Map<String, String> getProperties(ComponentName cName) {
+		return new UnmodifiableMapUnion<String, String>(cName.getProperties(), this);
 	}
 
 	public NodeQuery getRootNodeQuery() {
@@ -430,19 +419,6 @@ public class RMContext extends ExpandingProperties<Object> {
 
 	public void setContinueOnError(boolean flag) {
 		continueOnError = flag;
-	}
-
-	@Override
-	public ValueHolder<Object> setProperty(String key, ValueHolder<Object> propertyHolder) {
-		if (propertyHolder instanceof Constant<?>) {
-			Constant<Object> c = (Constant<Object>) propertyHolder;
-			if ("*".equals(c.getConstantValue())) //$NON-NLS-1$
-			{
-				propertyHolder = new Constant<Object>(FilterUtils.MATCH_ALL_OBJ);
-				propertyHolder.setMutable(c.isMutable());
-			}
-		}
-		return super.setProperty(key, propertyHolder);
 	}
 
 	public void setSilentStatus(boolean flag) {

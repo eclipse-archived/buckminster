@@ -9,21 +9,19 @@ package org.eclipse.buckminster.model.common;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Property Ref</b></em>'. <!-- end-user-doc -->
- * 
+ *
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.PropertyRef#getKey <em>Key
- * </em>}</li>
+ *   <li>{@link org.eclipse.buckminster.model.common.PropertyRef#getKey <em>Key</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.buckminster.model.common.CommonPackage#getPropertyRef()
  * @model
- * @extends BObject
  * @generated
  */
-public interface PropertyRef extends BObject {
+public interface PropertyRef extends Value {
 	/**
 	 * Returns the value of the '<em><b>Key</b></em>' attribute. <!--
 	 * begin-user-doc -->
@@ -43,12 +41,9 @@ public interface PropertyRef extends BObject {
 	String getKey();
 
 	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.model.common.PropertyRef#getKey
-	 * <em>Key</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Key</em>' attribute.
+	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.PropertyRef#getKey <em>Key</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Key</em>' attribute.
 	 * @see #getKey()
 	 * @generated
 	 */

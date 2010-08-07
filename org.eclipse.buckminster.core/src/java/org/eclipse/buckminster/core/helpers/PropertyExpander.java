@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.PathGroup;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
@@ -65,14 +65,14 @@ public class PropertyExpander {
 	 * @return
 	 * @throws CoreException
 	 */
-	final private static Map<String, ? extends Object> getVariables(IActionContext ctx) throws CoreException {
-		final Map<String, Object> map = new HashMap<String, Object>();
+	final private static Map<String, String> getVariables(IActionContext ctx) throws CoreException {
+		final Map<String, String> map = new HashMap<String, String>();
 		map.putAll(getNamedPathMap(ctx));
 		map.putAll(ctx.getProperties());
 		return map;
 	}
 
-	private final Map<String, ? extends Object> variableMap;
+	private final Map<String, String> variableMap;
 
 	public PropertyExpander(IActionContext ctx) throws CoreException {
 		variableMap = getVariables(ctx);

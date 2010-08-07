@@ -14,7 +14,7 @@ import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.helpers.BMProperties;
+import org.eclipse.buckminster.model.common.util.BMProperties;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Trivial;

@@ -16,10 +16,11 @@ import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.IResolution;
-import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.resolver.ResourceMapResolver;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.runtime.IFileInfo;
 import org.eclipse.core.runtime.CoreException;
 
@@ -148,7 +149,7 @@ public class ResolutionBuilder implements IResolution {
 			String componentType = cspec.getComponentTypeID();
 			if (componentType == null)
 				componentType = IComponentType.UNKNOWN;
-			return Provider.immutableProvider(readerTypeId, componentType, repository, resolutionFilter);
+			return ResourceMapResolver.immutableProvider(readerTypeId, componentType, repository, resolutionFilter);
 		}
 		return provider;
 	}

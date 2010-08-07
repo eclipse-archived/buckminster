@@ -178,7 +178,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 			}
 
 			@Override
-			protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, ? extends Object> local, Stack<IAttributeFilter> filters)
+			protected PathGroup[] internalGetPathGroups(IModelCache ctx, Map<String, String> local, Stack<IAttributeFilter> filters)
 					throws CoreException {
 				IPath me = getComponentLocation();
 				PathGroup meGroup;

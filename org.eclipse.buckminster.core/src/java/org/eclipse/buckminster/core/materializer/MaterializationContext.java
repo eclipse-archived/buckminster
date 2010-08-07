@@ -10,9 +10,9 @@ package org.eclipse.buckminster.core.materializer;
 
 import java.util.Map;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.cspec.IComponentRequest;
@@ -20,7 +20,6 @@ import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -28,6 +27,8 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
+import org.eclipse.buckminster.model.common.util.UnmodifiableMapUnion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -57,7 +58,7 @@ public class MaterializationContext extends RMContext {
 	}
 
 	public MaterializationContext(BillOfMaterials bom, MaterializationSpec mspec, RMContext context) {
-		super(new UnmodifiableMapUnion<String, Object>(mspec.getProperties(), context), context);
+		super(new UnmodifiableMapUnion<String, String>(mspec.getProperties(), context), context);
 		this.bom = bom;
 		this.materializationSpec = mspec;
 	}
@@ -208,16 +209,16 @@ public class MaterializationContext extends RMContext {
 	}
 
 	@Override
-	public Map<String, ? extends Object> getProperties(ComponentName cName) {
-		Map<String, ? extends Object> p = super.getProperties(cName);
+	public Map<String, String> getProperties(ComponentName cName) {
+		Map<String, String> p = super.getProperties(cName);
 		IMaterializationNode node = materializationSpec.getMatchingNode(cName);
-		return node == null ? p : new UnmodifiableMapUnion<String, Object>(node.getProperties(), p);
+		return node == null ? p : new UnmodifiableMapUnion<String, String>(node.getProperties(), p);
 	}
 
-	public Map<String, ? extends Object> getProperties(Resolution resolution) {
-		Map<String, ? extends Object> p = super.getProperties(resolution.getComponentIdentifier());
+	public Map<String, String> getProperties(Resolution resolution) {
+		Map<String, String> p = super.getProperties(resolution.getComponentIdentifier());
 		IMaterializationNode node = materializationSpec.getMatchingNode(resolution);
-		return node == null ? p : new UnmodifiableMapUnion<String, Object>(node.getProperties(), p);
+		return node == null ? p : new UnmodifiableMapUnion<String, String>(node.getProperties(), p);
 	}
 
 	public String getSuffixedName(Resolution resolution, String remoteName) throws CoreException {
@@ -231,7 +232,7 @@ public class MaterializationContext extends RMContext {
 			name = remoteName;
 
 		if (name == null) {
-			IReaderType rd = resolution.getProvider().getReaderType();
+			IReaderType rd = CorePlugin.getDefault().getReaderType(resolution.getReaderTypeId());
 			IPath leaf = rd.getLeafArtifact(resolution, this);
 			if (leaf == null || leaf.segmentCount() == 0)
 				throw BuckminsterException.fromMessage(NLS.bind(Messages.Unable_to_determine_suffix_for_unpack_of_0, cName));
@@ -317,7 +318,7 @@ public class MaterializationContext extends RMContext {
 			return;
 
 		Resolution res = node.getResolution();
-		if (res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getProvider().getReaderTypeId()))
+		if (res == null || IReaderType.ECLIPSE_PLATFORM.equals(res.getReaderTypeId()))
 			return;
 
 		addTagInfo(nodeRequest, tagInfo);

@@ -9,8 +9,8 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.IPerformManager;
-import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.model.common.util.BMProperties;
 import org.eclipse.buckminster.pde.prefs.TargetPlatformPathHandler;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;

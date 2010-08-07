@@ -24,18 +24,16 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getPattern <em>
- * Pattern</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getPattern <em>Pattern</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -43,9 +41,8 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	protected static final Pattern PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -54,7 +51,6 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected MatcherImpl() {
@@ -63,9 +59,9 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -77,9 +73,9 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -91,14 +87,14 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.MATCHER__PATTERN:
-				setPattern((Pattern) newValue);
+				setPattern((Pattern)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -106,9 +102,9 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -121,20 +117,27 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Pattern getPattern() {
 		return pattern;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * @generated NOT
+	 */
+
+	public boolean matches(String componentName) {
+		return pattern == null || pattern.matcher(componentName).find();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
+
 	public void setPattern(Pattern newPattern) {
 		Pattern oldPattern = pattern;
 		pattern = newPattern;
@@ -144,13 +147,12 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
-		if (eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (pattern: ");
@@ -161,9 +163,9 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return RmapPackage.Literals.MATCHER;

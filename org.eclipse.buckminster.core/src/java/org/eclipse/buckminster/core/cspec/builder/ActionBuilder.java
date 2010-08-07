@@ -10,7 +10,6 @@ package org.eclipse.buckminster.core.cspec.builder;
 import java.util.HashSet;
 import java.util.List;
 
-import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
@@ -19,6 +18,7 @@ import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IPath;
 public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 	private String actorName;
 
-	private final ExpandingProperties<String> actorProperties = new ExpandingProperties<String>();
+	private final ExpandingProperties actorProperties = new ExpandingProperties();
 
 	private boolean always = Action.ALWAYS_DEFAULT;
 
@@ -43,7 +43,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 
 	private final HashSet<IPath> productPaths = new HashSet<IPath>();
 
-	private final ExpandingProperties<String> properties = new ExpandingProperties<String>();
+	private final ExpandingProperties properties = new ExpandingProperties();
 
 	private UpToDatePolicy upToDatePolicy = UpToDatePolicy.DEFAULT;
 
@@ -107,7 +107,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 	}
 
 	@Override
-	public ExpandingProperties<String> getActorProperties() {
+	public ExpandingProperties getActorProperties() {
 		return actorProperties;
 	}
 
@@ -165,7 +165,7 @@ public class ActionBuilder extends TopLevelAttributeBuilder implements IAction {
 	}
 
 	@Override
-	public ExpandingProperties<String> getProperties() {
+	public ExpandingProperties getProperties() {
 		return properties;
 	}
 

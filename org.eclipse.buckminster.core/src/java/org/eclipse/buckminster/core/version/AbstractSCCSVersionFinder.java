@@ -15,7 +15,9 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
-import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.VersionConverter;
+import org.eclipse.buckminster.rmap.VersionSelectorType;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -90,19 +92,19 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder {
 					trunk = true;
 			}
 
-			IVersionConverter versionConverter = getProvider().getVersionConverter();
+			VersionConverter versionConverter = getProvider().getVersionConverter();
 			if (versionConverter != null) {
 				// We are using a versionConverter. This rules out anything
 				// found
 				// on the trunk.
 				//
-				logDecision(ResolverDecisionType.USING_VERSION_CONVERTER, versionConverter.getId());
+				logDecision(ResolverDecisionType.USING_VERSION_CONVERTER, versionConverter.getType());
 
 				trunk = false;
 
 				// Exactly one of the tags or branches must be valid
 				//
-				if (versionConverter.getSelectorType() == VersionSelector.BRANCH) {
+				if (versionConverter.getType() == VersionSelectorType.BRANCH) {
 					if (tags == false)
 						branches = true;
 				} else {
@@ -182,8 +184,8 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder {
 			return null;
 		}
 
-		IVersionConverter vConverter = getProvider().getVersionConverter();
-		if (vConverter != null && vConverter.getSelectorType() != (branches ? VersionSelector.BRANCH : VersionSelector.TAG)) {
+		VersionConverter vConverter = getProvider().getVersionConverter();
+		if (vConverter != null && vConverter.getType() != (branches ? VersionSelectorType.BRANCH : VersionSelectorType.TAG)) {
 			// Version converter not for the desired type so we will not find
 			// anything
 			//
@@ -226,15 +228,15 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder {
 				// This one will be discriminated anyway so there's no need to
 				// include it
 				//
-				logDecision(branches ? ResolverDecisionType.BRANCH_REJECTED : ResolverDecisionType.TAG_REJECTED, branchOrTag, NLS.bind(
-						Messages.r_not_in_path_0, VersionSelector.toString(branchTagPath)));
+				logDecision(branches ? ResolverDecisionType.BRANCH_REJECTED : ResolverDecisionType.TAG_REJECTED, branchOrTag,
+						NLS.bind(Messages.r_not_in_path_0, VersionSelector.toString(branchTagPath)));
 				continue;
 			}
 
 			Version version;
 			VersionMatch match = null;
 			if (vConverter != null) {
-				version = vConverter.createVersion(branchOrTag);
+				version = vConverter.createVersion(branchOrTag.toString());
 				if (version == null) {
 					// Converter could not make sense of this tag. Skip it
 					//
@@ -281,7 +283,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder {
 				// Unknown component type will not check the existence of any
 				// artifacts. We need to
 				// do that here
-				//						
+				//
 				if (!checkComponentExistence(match, MonitorUtils.subMonitor(monitor, 10))) {
 					logDecision(branches ? ResolverDecisionType.BRANCH_REJECTED : ResolverDecisionType.TAG_REJECTED, branchOrTag,
 							Messages.No_component_was_found);
