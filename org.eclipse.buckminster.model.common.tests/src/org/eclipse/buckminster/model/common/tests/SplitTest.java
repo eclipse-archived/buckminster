@@ -15,6 +15,7 @@ import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Split;
 import org.eclipse.buckminster.model.common.SplitType;
+import org.eclipse.buckminster.model.common.Value;
 
 /**
  * <!-- begin-user-doc --> A test case for the model object '
@@ -52,19 +53,14 @@ public class SplitTest extends ValueFilterTest {
 	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
 	 * @see org.eclipse.buckminster.model.common.Split#getCompiledPattern()
-	 * @generated
+	 * @generated NOT
 	 */
 	public void testGetCompiledPattern() {
-		// TODO: implement this feature getter test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
 	}
 
 	@Override
 	public void testGetValue__Map() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+		assertEquals("test.component_one1.23.qualifier", getFixture().getValue(Collections.<String,String>emptyMap()));
 	}
 
 	@Override
@@ -78,9 +74,9 @@ public class SplitTest extends ValueFilterTest {
 
 	@Override
 	public void testGetValues() {
-		// TODO: implement this feature getter test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+		List<Value> values = getFixture().getValues();
+		assertNotNull(values);
+		assertEquals(1, values.size());
 	}
 
 	@Override
@@ -110,7 +106,7 @@ public class SplitTest extends ValueFilterTest {
 		CommonFactory factory = CommonFactory.eINSTANCE;
 		Split split = factory.createSplit();
 		split.setStyle(SplitType.GROUPS);
-		split.setPattern(".*/([a-zA-Z0-9._-]+)_(([0-9]+)(?:\\.([0-9]+))?(?:\\.([0-9]+))?(?:\\.([a-zA-Z0-9_-]+))?)");
+		split.setPattern(".*/([a-zA-Z0-9._-]+)_([0-9]+(?:\\.[0-9]+)?(?:\\.[0-9]+)?(?:\\.[a-zA-Z0-9_-]+)?)\\.tar\\.gz");
 		Constant constant = factory.createConstant();
 		constant.setValue("http://www.test.org/downloads/test.component_one_1.23.qualifier.tar.gz");
 		split.getValues().add(constant);

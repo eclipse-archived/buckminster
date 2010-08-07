@@ -375,15 +375,18 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 		String source = checkedGetSourceValue(properties, recursionGuard);
 		if (source == null)
 			return Collections.emptyList();
-		if (getStyle() == SplitType.GROUPS) {
-			Matcher m = getCompiledPattern().matcher(source);
-			int nGroups = m.groupCount();
-			ArrayList<String> result = new ArrayList<String>(nGroups);
-			for (int idx = 0; idx < nGroups; ++idx)
-				result.add(m.group(nGroups + 1));
-			return result;
-		}
-		return Arrays.asList(getCompiledPattern().split(source, limit));
+		if (getStyle() != SplitType.GROUPS)
+			return Arrays.asList(getCompiledPattern().split(source, limit));
+
+		Matcher m = getCompiledPattern().matcher(source);
+		if(!m.matches())
+			return Collections.emptyList();
+
+		int nGroups = m.groupCount();
+		ArrayList<String> result = new ArrayList<String>(nGroups);
+		for (int idx = 0; idx < nGroups; ++idx)
+			result.add(m.group(idx + 1));
+		return result;
 	}
 
 	/**
