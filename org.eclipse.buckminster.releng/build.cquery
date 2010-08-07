@@ -7,5 +7,5 @@
     <cq:advisorNode namePattern="^com\.mountainminds\.eclemma\.core$" useMaterialization="false" useTargetPlatform="false" versionOverride="[1.4.2,1.4.3)">
         <cq:documentation xmlns="http://www.w3.org/1999/xhtml">Limiting eclemma to 1.4.2 due to Eclipse IP</cq:documentation>
     </cq:advisorNode>
-    <cq:advisorNode namePattern=".*" useMaterialization="false" useTargetPlatform="false"/>
+    <cq:advisorNode namePattern=".*" useMaterialization="false" useTargetPlatform="false" branchTagPath="switch-to-ecore"/>
 </cq:componentQuery>
