@@ -27,27 +27,33 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertiesImpl#getPropertyConstants <em>Property Constants</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertiesImpl#getPropertyElements <em>Property Elements</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertiesImpl#getPropertyConstants
+ * <em>Property Constants</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertiesImpl#getPropertyElements
+ * <em>Property Elements</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	/**
-	 * The cached value of the '{@link #getPropertyConstants() <em>Property Constants</em>}' map.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getPropertyConstants()
+	 * <em>Property Constants</em>}' map. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getPropertyConstants()
 	 * @generated
 	 * @ordered
 	 */
 	protected EMap<String, Value> propertyConstants;
 	/**
-	 * The cached value of the '{@link #getPropertyElements() <em>Property Elements</em>}' map.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getPropertyElements()
+	 * <em>Property Elements</em>}' map. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getPropertyElements()
 	 * @generated
 	 * @ordered
@@ -56,6 +62,7 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected PropertiesImpl() {
@@ -64,6 +71,7 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -71,17 +79,22 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case CommonPackage.PROPERTIES__PROPERTY_CONSTANTS:
-				if (coreType) return getPropertyConstants();
-				else return getPropertyConstants().map();
+				if (coreType)
+					return getPropertyConstants();
+				else
+					return getPropertyConstants().map();
 			case CommonPackage.PROPERTIES__PROPERTY_ELEMENTS:
-				if (coreType) return getPropertyElements();
-				else return getPropertyElements().map();
+				if (coreType)
+					return getPropertyElements();
+				else
+					return getPropertyElements().map();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -89,15 +102,16 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case CommonPackage.PROPERTIES__PROPERTY_CONSTANTS:
-				return ((InternalEList<?>)getPropertyConstants()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getPropertyConstants()).basicRemove(otherEnd, msgs);
 			case CommonPackage.PROPERTIES__PROPERTY_ELEMENTS:
-				return ((InternalEList<?>)getPropertyElements()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getPropertyElements()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -114,6 +128,7 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -121,10 +136,10 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.PROPERTIES__PROPERTY_CONSTANTS:
-				((EStructuralFeature.Setting)getPropertyConstants()).set(newValue);
+				((EStructuralFeature.Setting) getPropertyConstants()).set(newValue);
 				return;
 			case CommonPackage.PROPERTIES__PROPERTY_ELEMENTS:
-				((EStructuralFeature.Setting)getPropertyElements()).set(newValue);
+				((EStructuralFeature.Setting) getPropertyElements()).set(newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -132,6 +147,7 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -159,28 +175,33 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EMap<String, Value> getPropertyConstants() {
 		if (propertyConstants == null) {
-			propertyConstants = new EcoreEMap<String,Value>(CommonPackage.Literals.PROPERTY_CONSTANT, PropertyConstantImpl.class, this, CommonPackage.PROPERTIES__PROPERTY_CONSTANTS);
+			propertyConstants = new EcoreEMap<String, Value>(CommonPackage.Literals.PROPERTY_CONSTANT, PropertyConstantImpl.class, this,
+					CommonPackage.PROPERTIES__PROPERTY_CONSTANTS);
 		}
 		return propertyConstants;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EMap<String, Value> getPropertyElements() {
 		if (propertyElements == null) {
-			propertyElements = new EcoreEMap<String,Value>(CommonPackage.Literals.PROPERTY_ELEMENT, PropertyElementImpl.class, this, CommonPackage.PROPERTIES__PROPERTY_ELEMENTS);
+			propertyElements = new EcoreEMap<String, Value>(CommonPackage.Literals.PROPERTY_ELEMENT, PropertyElementImpl.class, this,
+					CommonPackage.PROPERTIES__PROPERTY_ELEMENTS);
 		}
 		return propertyElements;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

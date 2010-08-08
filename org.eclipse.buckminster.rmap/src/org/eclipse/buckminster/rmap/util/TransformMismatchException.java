@@ -17,7 +17,9 @@ public class TransformMismatchException extends RuntimeException {
 	private static final long serialVersionUID = -4031798723194792558L;
 
 	public TransformMismatchException(Transform invalid) {
-		super(NLS.bind("The substitution {0} {1} is not reversed by {2} {3}", new Object[] { invalid.getFromPattern().toString(),
-				invalid.getFromReplacement(), invalid.getToPattern().toString(), invalid.getToReplacement() }));
+		super(NLS.bind(
+				"The substitution {0} {1} is not reversed by {2} {3}",
+				new Object[] { invalid.getFromPattern().toString(), invalid.getFromReplacement(), invalid.getToPattern().toString(),
+						invalid.getToReplacement() }));
 	}
 }

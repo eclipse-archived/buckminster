@@ -12,14 +12,15 @@ import org.eclipse.emf.ecore.EObject;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Value</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.Value#isMutable <em>Mutable</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Value#isMutable <em>Mutable
+ * </em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getValue()
  * @model abstract="true"
  * @generated
@@ -28,6 +29,7 @@ public interface Value extends EObject {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model
 	 * @generated
 	 */
@@ -35,20 +37,21 @@ public interface Value extends EObject {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
 	boolean isMultiValued();
 
 	/**
-	 * Returns the value of the '<em><b>Mutable</b></em>' attribute.
-	 * The default value is <code>"true"</code>.
-	 * <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Mutable</b></em>' attribute. The default
+	 * value is <code>"true"</code>. <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Mutable</em>' attribute isn't clear, there
 	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Mutable</em>' attribute.
 	 * @see #setMutable(boolean)
 	 * @see org.eclipse.buckminster.model.common.CommonPackage#getValue_Mutable()

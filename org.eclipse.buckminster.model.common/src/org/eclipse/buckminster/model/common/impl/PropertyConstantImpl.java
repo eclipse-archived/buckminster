@@ -26,19 +26,28 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyConstantImpl#getTypedKey <em>Key</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyConstantImpl#getTypedValue <em>Value</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyConstantImpl#isMutable <em>Mutable</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyConstantImpl#getStringValue <em>String Value</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyConstantImpl#getTypedKey
+ * <em>Key</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyConstantImpl#getTypedValue
+ * <em>Value</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyConstantImpl#isMutable
+ * <em>Mutable</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyConstantImpl#getStringValue
+ * <em>String Value</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
-public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry<String,Value> {
+public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry<String, Value> {
 	/**
 	 * The default value of the '{@link #getTypedKey() <em>Key</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getTypedKey()
 	 * @generated
 	 * @ordered
@@ -48,6 +57,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	/**
 	 * The cached value of the '{@link #getTypedKey() <em>Key</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getTypedKey()
 	 * @generated
 	 * @ordered
@@ -55,8 +65,9 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	protected String key = KEY_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isMutable() <em>Mutable</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #isMutable() <em>Mutable</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isMutable()
 	 * @generated
 	 * @ordered
@@ -64,8 +75,9 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	protected static final boolean MUTABLE_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #isMutable() <em>Mutable</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #isMutable() <em>Mutable</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isMutable()
 	 * @generated
 	 * @ordered
@@ -73,8 +85,9 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	protected boolean mutable = MUTABLE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getStringValue() <em>String Value</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getStringValue() <em>String Value</em>}
+	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getStringValue()
 	 * @generated
 	 * @ordered
@@ -82,8 +95,9 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	protected static final String STRING_VALUE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getStringValue() <em>String Value</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getStringValue() <em>String Value</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getStringValue()
 	 * @generated
 	 * @ordered
@@ -92,12 +106,14 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected int hash = -1;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected PropertyConstantImpl() {
@@ -106,19 +122,24 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetTypedValue(Value newValue, NotificationChain msgs) {
-		// TODO: implement this method to set the contained 'Value' containment reference
-		// -> this method is automatically invoked to keep the containment relationship in synch
+		// TODO: implement this method to set the contained 'Value' containment
+		// reference
+		// -> this method is automatically invoked to keep the containment
+		// relationship in synch
 		// -> do not modify other features
-		// -> return msgs, after adding any generated Notification to it (if it is null, a NotificationChain object must be created first)
+		// -> return msgs, after adding any generated Notification to it (if it
+		// is null, a NotificationChain object must be created first)
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -138,6 +159,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -152,6 +174,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -171,6 +194,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -178,13 +202,13 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.PROPERTY_CONSTANT__KEY:
-				setTypedKey((String)newValue);
+				setTypedKey((String) newValue);
 				return;
 			case CommonPackage.PROPERTY_CONSTANT__MUTABLE:
-				setMutable((Boolean)newValue);
+				setMutable((Boolean) newValue);
 				return;
 			case CommonPackage.PROPERTY_CONSTANT__STRING_VALUE:
-				setStringValue((String)newValue);
+				setStringValue((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -192,6 +216,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -213,17 +238,19 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@SuppressWarnings("unchecked")
 	public EMap<String, Value> getEMap() {
 		EObject container = eContainer();
-		return container == null ? null : (EMap<String, Value>)container.eGet(eContainmentFeature());
+		return container == null ? null : (EMap<String, Value>) container.eGet(eContainmentFeature());
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -237,6 +264,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getKey() {
@@ -245,6 +273,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getStringValue() {
@@ -253,6 +282,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getTypedKey() {
@@ -276,6 +306,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Value getValue() {
@@ -284,6 +315,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public boolean isMutable() {
@@ -292,6 +324,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -301,6 +334,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setKey(String key) {
@@ -309,6 +343,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setMutable(boolean newMutable) {
@@ -320,6 +355,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setStringValue(String newStringValue) {
@@ -331,6 +367,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setTypedKey(String newKey) {
@@ -359,6 +396,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Value setValue(Value value) {
@@ -369,11 +407,13 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (key: ");
@@ -388,6 +428,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

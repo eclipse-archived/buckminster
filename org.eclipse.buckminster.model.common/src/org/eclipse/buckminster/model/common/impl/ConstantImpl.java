@@ -24,16 +24,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ConstantImpl#getValue <em>Value</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.ConstantImpl#getValue
+ * <em>Value</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class ConstantImpl extends ValueImpl implements Constant {
 	/**
 	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
@@ -42,6 +44,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 	/**
 	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
@@ -50,6 +53,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ConstantImpl() {
@@ -63,6 +67,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -77,6 +82,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -91,6 +97,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -98,7 +105,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.CONSTANT__VALUE:
-				setValue((String)newValue);
+				setValue((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -106,6 +113,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -121,6 +129,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -130,6 +139,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -142,11 +152,13 @@ public class ConstantImpl extends ValueImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (value: ");
@@ -157,6 +169,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

@@ -6,10 +6,24 @@
  */
 package org.eclipse.buckminster.rmap.tests;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import junit.textui.TestRunner;
+
+import org.eclipse.buckminster.rmap.ResourceMap;
+import org.eclipse.buckminster.rmap.RmapPackage;
+import org.eclipse.buckminster.rmap.util.RmapResourceFactoryImpl;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.osgi.framework.Bundle;
 
 /**
  * <!-- begin-user-doc -->
@@ -18,6 +32,34 @@ import junit.textui.TestRunner;
  * @generated
  */
 public class RmapTests extends TestSuite {
+
+	private static File toFile(URL url) throws IOException
+	{
+		return new File(new Path(FileLocator.toFileURL(url).getPath()).toOSString());
+	}
+
+	public static File getTestData(String fileName) throws Exception
+	{
+		Bundle self = Activator.context.getBundle();
+		URL base = self.getEntry("testData");
+		if(base == null)
+			throw new RuntimeException("Unable to find \"testData\" folder");
+		return new File(toFile(base), fileName);
+	}
+
+	public static ResourceMap loadTestResourceMap(String fileName) throws Exception {
+		ResourceSet resourceSet = new ResourceSetImpl();
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put
+			(Resource.Factory.Registry.DEFAULT_EXTENSION, 
+			 new RmapResourceFactoryImpl());
+
+		resourceSet.getPackageRegistry().put
+			(RmapPackage.eNS_URI, 
+			 RmapPackage.eINSTANCE);
+        
+			Resource resource = resourceSet.getResource(URI.createFileURI(getTestData(fileName).getAbsolutePath()), true);
+			return (ResourceMap)resource.getContents().get(0);
+	}
 
 	/**
 	 * <!-- begin-user-doc -->

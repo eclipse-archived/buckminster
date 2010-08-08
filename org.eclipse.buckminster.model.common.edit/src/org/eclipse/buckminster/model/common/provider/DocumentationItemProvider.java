@@ -55,10 +55,13 @@ public class DocumentationItemProvider extends ItemProviderAdapter implements IE
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This specifies how to implement {@link #getChildren} and is used to
+	 * deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand},
+	 * {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in
+	 * {@link #createCommand}. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -97,13 +100,13 @@ public class DocumentationItemProvider extends ItemProviderAdapter implements IE
 
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
+		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -113,10 +116,11 @@ public class DocumentationItemProvider extends ItemProviderAdapter implements IE
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -145,113 +149,64 @@ public class DocumentationItemProvider extends ItemProviderAdapter implements IE
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__COMMENT,
-					 "")));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__COMMENT, "")));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__TEXT,
-					 "")));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__TEXT, "")));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__PROCESSING_INSTRUCTION,
-					 XMLTypeFactory.eINSTANCE.createProcessingInstruction())));
+		newChildDescriptors.add(createChildParameter(
+				CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__PROCESSING_INSTRUCTION,
+						XMLTypeFactory.eINSTANCE.createProcessingInstruction())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__CDATA,
-					 "")));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(XMLTypePackage.Literals.XML_TYPE_DOCUMENT_ROOT__CDATA, "")));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__CONSTANT,
-					 CommonFactory.eINSTANCE.createConstant())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__CONSTANT, CommonFactory.eINSTANCE.createConstant())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__FORMAT,
-					 CommonFactory.eINSTANCE.createFormat())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__FORMAT, CommonFactory.eINSTANCE.createFormat())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__PROPERTY_REF,
-					 CommonFactory.eINSTANCE.createPropertyRef())));
+		newChildDescriptors
+				.add(createChildParameter(
+						CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__PROPERTY_REF,
+								CommonFactory.eINSTANCE.createPropertyRef())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__REPLACE,
-					 CommonFactory.eINSTANCE.createReplace())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__REPLACE, CommonFactory.eINSTANCE.createReplace())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__SPLIT,
-					 CommonFactory.eINSTANCE.createSplit())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__SPLIT, CommonFactory.eINSTANCE.createSplit())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_LOWER,
-					 CommonFactory.eINSTANCE.createToLower())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_LOWER, CommonFactory.eINSTANCE.createToLower())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_UPPER,
-					 CommonFactory.eINSTANCE.createToUpper())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_UPPER, CommonFactory.eINSTANCE.createToUpper())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_PATTERN,
-					 CommonFactory.eINSTANCE.createRxPattern())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_PATTERN, CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_GROUP,
-					 CommonFactory.eINSTANCE.createRxGroup())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_GROUP, CommonFactory.eINSTANCE.createRxGroup())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.DOCUMENTATION__MIXED,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_GROUP,
-					 CommonFactory.eINSTANCE.createRxAssembly())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_GROUP, CommonFactory.eINSTANCE.createRxAssembly())));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper feature to use for
+		// Check the type of the specified child object and return the proper
+		// feature to use for
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);

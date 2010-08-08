@@ -16,12 +16,14 @@ import org.eclipse.buckminster.model.common.Constant;
 /**
  * <!-- begin-user-doc --> A test case for the model object '
  * <em><b>Constant</b></em>'. <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class ConstantTest extends ValueTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -44,14 +46,14 @@ public class ConstantTest extends ValueTest {
 	}
 
 	/**
-	 * Returns the fixture for this Constant test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Constant test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected Constant getFixture() {
-		return (Constant)fixture;
+		return (Constant) fixture;
 	}
 
 	/**
@@ -68,6 +70,7 @@ public class ConstantTest extends ValueTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

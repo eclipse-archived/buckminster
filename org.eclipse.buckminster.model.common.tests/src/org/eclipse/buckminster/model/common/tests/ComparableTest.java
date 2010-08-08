@@ -14,17 +14,19 @@ import junit.framework.TestCase;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link java.lang.Comparable#compareTo(java.lang.Object) <em>Compare To</em>}</li>
+ * <li>{@link java.lang.Comparable#compareTo(java.lang.Object) <em>Compare To
+ * </em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public abstract class ComparableTest extends TestCase {
 
 	/**
-	 * The fixture for this Comparable test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this Comparable test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Comparable<?> fixture = null;
@@ -40,9 +42,10 @@ public abstract class ComparableTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link java.lang.Comparable#compareTo(java.lang.Object) <em>Compare To</em>}' operation.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link java.lang.Comparable#compareTo(java.lang.Object)
+	 * <em>Compare To</em>}' operation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 * @generated
 	 */
@@ -53,9 +56,9 @@ public abstract class ComparableTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Comparable test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this Comparable test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Comparable<?> getFixture() {
@@ -63,9 +66,9 @@ public abstract class ComparableTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Comparable test case.
-	 * <!-- begin-user-doc -->
+	 * Sets the fixture for this Comparable test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(Comparable<?> fixture) {

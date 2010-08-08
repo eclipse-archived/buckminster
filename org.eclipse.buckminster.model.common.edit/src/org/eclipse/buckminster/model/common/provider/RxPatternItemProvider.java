@@ -64,25 +64,24 @@ public class RxPatternItemProvider extends RxPartItemProvider implements IEditin
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		String label = ((RxPattern)object).getName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_RxPattern_type") :
-			getString("_UI_RxPattern_type") + " " + label;
+		String label = ((RxPattern) object).getName();
+		return label == null || label.length() == 0 ? getString("_UI_RxPattern_type") : getString("_UI_RxPattern_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -107,19 +106,10 @@ public class RxPatternItemProvider extends RxPartItemProvider implements IEditin
 	 * @generated
 	 */
 	protected void addPatternPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_RxPattern_pattern_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_RxPattern_pattern_feature", "_UI_RxPattern_type"),
-				 CommonPackage.Literals.RX_PATTERN__PATTERN,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_RxPattern_pattern_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_RxPattern_pattern_feature", "_UI_RxPattern_type"),
+				CommonPackage.Literals.RX_PATTERN__PATTERN, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -129,19 +119,10 @@ public class RxPatternItemProvider extends RxPartItemProvider implements IEditin
 	 * @generated
 	 */
 	protected void addPrefixPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_RxPattern_prefix_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_RxPattern_prefix_feature", "_UI_RxPattern_type"),
-				 CommonPackage.Literals.RX_PATTERN__PREFIX,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_RxPattern_prefix_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_RxPattern_prefix_feature", "_UI_RxPattern_type"),
+				CommonPackage.Literals.RX_PATTERN__PREFIX, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -151,19 +132,10 @@ public class RxPatternItemProvider extends RxPartItemProvider implements IEditin
 	 * @generated
 	 */
 	protected void addSuffixPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_RxPattern_suffix_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_RxPattern_suffix_feature", "_UI_RxPattern_type"),
-				 CommonPackage.Literals.RX_PATTERN__SUFFIX,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_RxPattern_suffix_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_RxPattern_suffix_feature", "_UI_RxPattern_type"),
+				CommonPackage.Literals.RX_PATTERN__SUFFIX, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

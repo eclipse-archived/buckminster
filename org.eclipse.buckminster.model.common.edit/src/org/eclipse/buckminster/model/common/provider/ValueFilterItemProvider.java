@@ -48,10 +48,13 @@ public class ValueFilterItemProvider extends ValueItemProvider implements IEditi
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This specifies how to implement {@link #getChildren} and is used to
+	 * deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand},
+	 * {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in
+	 * {@link #createCommand}. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -62,6 +65,39 @@ public class ValueFilterItemProvider extends ValueItemProvider implements IEditi
 			childrenFeatures.add(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP);
 		}
 		return childrenFeatures;
+	}
+
+	/**
+	 * This returns the label text for
+	 * {@link org.eclipse.emf.edit.command.CreateChildCommand}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
+		Object childFeature = feature;
+		Object childObject = child;
+
+		if (childFeature instanceof EStructuralFeature && FeatureMapUtil.isFeatureMap((EStructuralFeature) childFeature)) {
+			FeatureMap.Entry entry = (FeatureMap.Entry) childObject;
+			childFeature = entry.getEStructuralFeature();
+			childObject = entry.getValue();
+		}
+
+		boolean qualify = childFeature == CommonPackage.Literals.VALUE_FILTER__VALUES
+				|| childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__CONSTANT
+				|| childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__FORMAT
+				|| childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__PROPERTY_REF
+				|| childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__REPLACE
+				|| childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__SPLIT
+				|| childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_LOWER
+				|| childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_UPPER;
+
+		if (qualify) {
+			return getString("_UI_CreateChild_text2", new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
+		}
+		return super.getCreateChildText(owner, feature, child, selection);
 	}
 
 	/**
@@ -81,23 +117,24 @@ public class ValueFilterItemProvider extends ValueItemProvider implements IEditi
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		ValueFilter valueFilter = (ValueFilter)object;
+		ValueFilter valueFilter = (ValueFilter) object;
 		return getString("_UI_ValueFilter_type") + " " + valueFilter.isMutable();
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -124,99 +161,41 @@ public class ValueFilterItemProvider extends ValueItemProvider implements IEditi
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__CONSTANT,
-					 CommonFactory.eINSTANCE.createConstant())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__CONSTANT, CommonFactory.eINSTANCE.createConstant())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__FORMAT,
-					 CommonFactory.eINSTANCE.createFormat())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__FORMAT, CommonFactory.eINSTANCE.createFormat())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__PROPERTY_REF,
-					 CommonFactory.eINSTANCE.createPropertyRef())));
+		newChildDescriptors
+				.add(createChildParameter(
+						CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
+						FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__PROPERTY_REF,
+								CommonFactory.eINSTANCE.createPropertyRef())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__REPLACE,
-					 CommonFactory.eINSTANCE.createReplace())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__REPLACE, CommonFactory.eINSTANCE.createReplace())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__SPLIT,
-					 CommonFactory.eINSTANCE.createSplit())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__SPLIT, CommonFactory.eINSTANCE.createSplit())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_LOWER,
-					 CommonFactory.eINSTANCE.createToLower())));
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_LOWER, CommonFactory.eINSTANCE.createToLower())));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
-				 FeatureMapUtil.createEntry
-					(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_UPPER,
-					 CommonFactory.eINSTANCE.createToUpper())));
-	}
-
-	/**
-	 * This returns the label text for {@link org.eclipse.emf.edit.command.CreateChildCommand}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String getCreateChildText(Object owner, Object feature, Object child, Collection<?> selection) {
-		Object childFeature = feature;
-		Object childObject = child;
-
-		if (childFeature instanceof EStructuralFeature && FeatureMapUtil.isFeatureMap((EStructuralFeature)childFeature)) {
-			FeatureMap.Entry entry = (FeatureMap.Entry)childObject;
-			childFeature = entry.getEStructuralFeature();
-			childObject = entry.getValue();
-		}
-
-		boolean qualify =
-			childFeature == CommonPackage.Literals.VALUE_FILTER__VALUES ||
-			childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__CONSTANT ||
-			childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__FORMAT ||
-			childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__PROPERTY_REF ||
-			childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__REPLACE ||
-			childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__SPLIT ||
-			childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_LOWER ||
-			childFeature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_UPPER;
-
-		if (qualify) {
-			return getString
-				("_UI_CreateChild_text2",
-				 new Object[] { getTypeText(childObject), getFeatureText(childFeature), getTypeText(owner) });
-		}
-		return super.getCreateChildText(owner, feature, child, selection);
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.VALUE_FILTER__MULTI_VALUE_GROUP,
+				FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__TO_UPPER, CommonFactory.eINSTANCE.createToUpper())));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper feature to use for
+		// Check the type of the specified child object and return the proper
+		// feature to use for
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);

@@ -7,30 +7,41 @@
 package org.eclipse.buckminster.model.common;
 
 import java.util.List;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Rx Part</b></em>'. <!-- end-user-doc -->
- *
- * <!-- begin-model-doc -->
- * Defines a partial regexp
- * <!-- end-model-doc -->
- *
+ * 
+ * <!-- begin-model-doc --> Defines a partial regexp <!-- end-model-doc -->
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.RxPart#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>Optional</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.RxPart#getName <em>Name</em>}
+ * </li>
+ * <li>{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>
+ * Optional</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getRxPart()
  * @model abstract="true"
  * @generated
  */
 public interface RxPart extends EObject {
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model 
+	 *        collectorDataType="org.eclipse.buckminster.model.common.StringBuilder"
+	 *        namedPartsDataType=
+	 *        "org.eclipse.buckminster.model.common.List<org.eclipse.buckminster.model.common.RxPart>"
+	 *        namedPartsMany="false"
+	 * @generated
+	 */
+	void addPattern(StringBuilder collector, List<RxPart> namedParts);
+
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc -->
@@ -72,9 +83,11 @@ public interface RxPart extends EObject {
 	boolean isOptional();
 
 	/**
-	 * Returns whether the value of the '{@link org.eclipse.buckminster.model.common.RxPart#isOptional <em>Optional</em>}' attribute is set.
-	 * <!-- begin-user-doc --> <!--
+	 * Returns whether the value of the '
+	 * {@link org.eclipse.buckminster.model.common.RxPart#isOptional
+	 * <em>Optional</em>}' attribute is set. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @return whether the value of the '<em>Optional</em>' attribute is set.
 	 * @see #unsetOptional()
 	 * @see #isOptional()
@@ -84,17 +97,12 @@ public interface RxPart extends EObject {
 	boolean isSetOptional();
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model collectorDataType="org.eclipse.buckminster.model.common.StringBuilder" namedPartsDataType="org.eclipse.buckminster.model.common.List<org.eclipse.buckminster.model.common.RxPart>" namedPartsMany="false"
-	 * @generated
-	 */
-	void addPattern(StringBuilder collector, List<RxPart> namedParts);
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.RxPart#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.model.common.RxPart#getName <em>Name</em>}
+	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Name</em>' attribute.
 	 * @see #getName()
 	 * @generated
 	 */

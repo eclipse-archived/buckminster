@@ -14,16 +14,18 @@ import org.eclipse.equinox.p2.metadata.Version;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Component Identifier</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.ComponentIdentifier#getType <em>Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.ComponentIdentifier#getType
+ * <em>Type</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getComponentIdentifier()
- * @model superTypes="org.eclipse.buckminster.model.common.IVersionedId org.eclipse.buckminster.model.common.Comparable<org.eclipse.buckminster.model.common.ComponentIdentifier>"
+ * @model superTypes=
+ *        "org.eclipse.buckminster.model.common.IVersionedId org.eclipse.buckminster.model.common.Comparable<org.eclipse.buckminster.model.common.ComponentIdentifier>"
  * @generated
  */
 public interface ComponentIdentifier extends EObject, IVersionedId, Comparable<ComponentIdentifier> {
@@ -45,25 +47,28 @@ public interface ComponentIdentifier extends EObject, IVersionedId, Comparable<C
 	String getType();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.ComponentIdentifier#getType <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Type</em>' attribute.
-	 * @see #getType()
-	 * @generated
-	 */
-	void setType(String value);
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * 
 	 * @model
 	 * @generated
 	 */
 	void setId(String id);
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.model.common.ComponentIdentifier#getType
+	 * <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Type</em>' attribute.
+	 * @see #getType()
+	 * @generated
+	 */
+	void setType(String value);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model versionDataType="org.eclipse.buckminster.model.common.Version"
 	 * @generated
 	 */

@@ -13,29 +13,65 @@ public abstract class DynamicFeatureEList<E> extends FeatureEList<E> {
 		super(feature, featureMap);
 	}
 
-	protected abstract EStructuralFeature getEStructuralFeature(Object value);
-
 	@Override
-	public boolean contains(Object object) {
-		return featureMap.contains(getEStructuralFeature(object), object);
+	public void add(int index, Object object) {
+		featureMap.add(getEStructuralFeature(object), index, object);
 	}
 
 	@Override
-	public int indexOf(Object object) {
-		return featureMap.indexOf(getEStructuralFeature(object), object);
+	public boolean add(Object object) {
+		return featureMap.add(getEStructuralFeature(object), object);
 	}
 
 	@Override
-	public int lastIndexOf(Object object) {
-		return featureMap.lastIndexOf(getEStructuralFeature(object), object);
+	public boolean addAll(Collection<? extends E> collection) {
+		boolean result = false;
+		for (E object : collection)
+			if (featureMap.add(getEStructuralFeature(object), object))
+				result = true;
+		return result;
 	}
 
 	@Override
-	public boolean containsAll(Collection<?> collection) {
-		for (Object object : collection)
-			if (!featureMap.contains(getEStructuralFeature(object), object))
-				return false;
+	public boolean addAll(int index, Collection<? extends E> collection) {
+		if (collection.isEmpty())
+			return false;
+		for (E object : collection)
+			featureMap.add(index++, getEStructuralFeature(object), object);
 		return true;
+	}
+
+	@Override
+	public boolean addAllUnique(Collection<? extends E> collection) {
+		if (collection.isEmpty())
+			return false;
+		for (E object : collection)
+			featureMap.addUnique(getEStructuralFeature(object), object);
+		return true;
+	}
+
+	@Override
+	public boolean addAllUnique(int index, Collection<? extends E> collection) {
+		if (collection.isEmpty())
+			return false;
+		for (E object : collection)
+			featureMap.addUnique(getEStructuralFeature(object), index++, object);
+		return true;
+	}
+
+	@Override
+	public void addUnique(int index, Object object) {
+		featureMap.addUnique(getEStructuralFeature(object), index, object);
+	}
+
+	@Override
+	public void addUnique(Object object) {
+		featureMap.addUnique(getEStructuralFeature(object), object);
+	}
+
+	@Override
+	public NotificationChain basicAdd(E object, NotificationChain notifications) {
+		return featureMap.basicAdd(getEStructuralFeature(object), object, notifications);
 	}
 
 	@Override
@@ -62,74 +98,48 @@ public abstract class DynamicFeatureEList<E> extends FeatureEList<E> {
 	}
 
 	@Override
-	public boolean add(Object object) {
-		return featureMap.add(getEStructuralFeature(object), object);
+	public NotificationChain basicRemove(Object object, NotificationChain notifications) {
+		return featureMap.basicRemove(getEStructuralFeature(object), object, notifications);
 	}
 
 	@Override
-	public void add(int index, Object object) {
-		featureMap.add(getEStructuralFeature(object), index, object);
+	public boolean contains(Object object) {
+		return featureMap.contains(getEStructuralFeature(object), object);
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends E> collection) {
-		boolean result = false;
-		for (E object : collection)
-			if (featureMap.add(getEStructuralFeature(object), object))
-				result = true;
-		return result;
-	}
-
-	@Override
-	public boolean addAll(int index, Collection<? extends E> collection) {
-		if (collection.isEmpty())
-			return false;
-		for (E object : collection)
-			featureMap.add(index++, getEStructuralFeature(object), object);
+	public boolean containsAll(Collection<?> collection) {
+		for (Object object : collection)
+			if (!featureMap.contains(getEStructuralFeature(object), object))
+				return false;
 		return true;
 	}
 
 	@Override
-	public void addUnique(Object object) {
-		featureMap.addUnique(getEStructuralFeature(object), object);
+	public int indexOf(Object object) {
+		return featureMap.indexOf(getEStructuralFeature(object), object);
 	}
 
 	@Override
-	public void addUnique(int index, Object object) {
-		featureMap.addUnique(getEStructuralFeature(object), index, object);
+	public int lastIndexOf(Object object) {
+		return featureMap.lastIndexOf(getEStructuralFeature(object), object);
 	}
 
 	@Override
-	public boolean addAllUnique(Collection<? extends E> collection) {
-		if (collection.isEmpty())
-			return false;
-		for (E object : collection)
-			featureMap.addUnique(getEStructuralFeature(object), object);
-		return true;
+	@SuppressWarnings("unchecked")
+	public E move(int targetIndex, int sourceIndex) {
+		Object sourceObj = get(sourceIndex);
+		return (E) featureMap.move(getEStructuralFeature(sourceObj), targetIndex, sourceIndex);
 	}
 
 	@Override
-	public boolean addAllUnique(int index, Collection<? extends E> collection) {
-		if (collection.isEmpty())
-			return false;
-		for (E object : collection)
-			featureMap.addUnique(getEStructuralFeature(object), index++, object);
-		return true;
-	}
-
-	@Override
-	public NotificationChain basicAdd(E object, NotificationChain notifications) {
-		return featureMap.basicAdd(getEStructuralFeature(object), object, notifications);
+	public void move(int index, Object object) {
+		featureMap.move(getEStructuralFeature(object), index, object);
 	}
 
 	@Override
 	public boolean remove(Object object) {
 		return featureMap.remove(getEStructuralFeature(object), object);
-	}
-
-	@Override
-	public NotificationChain basicRemove(Object object, NotificationChain notifications) {
-		return featureMap.basicRemove(getEStructuralFeature(object), object, notifications);
 	}
 
 	@Override
@@ -139,18 +149,6 @@ public abstract class DynamicFeatureEList<E> extends FeatureEList<E> {
 			if (featureMap.remove(getEStructuralFeature(object), object))
 				result = true;
 		return result;
-	}
-
-	@Override
-	public void move(int index, Object object) {
-		featureMap.move(getEStructuralFeature(object), index, object);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public E move(int targetIndex, int sourceIndex) {
-		Object sourceObj = get(sourceIndex);
-		return (E) featureMap.move(getEStructuralFeature(sourceObj), targetIndex, sourceIndex);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -164,4 +162,6 @@ public abstract class DynamicFeatureEList<E> extends FeatureEList<E> {
 	public E setUnique(int index, E object) {
 		return (E) featureMap.setUnique(getEStructuralFeature(object), index, object);
 	}
+
+	protected abstract EStructuralFeature getEStructuralFeature(Object value);
 }

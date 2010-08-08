@@ -14,17 +14,21 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Component Request</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getId <em>Id</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getRange <em>Range</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getType <em>Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getId <em>Id
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getRange
+ * <em>Range</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getFilter
+ * <em>Filter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getType <em>
+ * Type</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getComponentRequest()
  * @model
  * @generated
@@ -37,6 +41,7 @@ public interface ComponentRequest extends EObject {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model
 	 * @generated
 	 */
@@ -112,6 +117,7 @@ public interface ComponentRequest extends EObject {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model
 	 * @generated
 	 */
@@ -119,6 +125,7 @@ public interface ComponentRequest extends EObject {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
@@ -138,27 +145,36 @@ public interface ComponentRequest extends EObject {
 	void setFilter(Filter value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.ComponentRequest#getId <em>Id</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Id</em>' attribute.
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getId
+	 * <em>Id</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Id</em>' attribute.
 	 * @see #getId()
 	 * @generated
 	 */
 	void setId(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.ComponentRequest#getRange <em>Range</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Range</em>' attribute.
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getRange
+	 * <em>Range</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Range</em>' attribute.
 	 * @see #getRange()
 	 * @generated
 	 */
 	void setRange(VersionRange value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.model.common.ComponentRequest#getType <em>Type</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Type</em>' attribute.
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getType
+	 * <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Type</em>' attribute.
 	 * @see #getType()
 	 * @generated
 	 */

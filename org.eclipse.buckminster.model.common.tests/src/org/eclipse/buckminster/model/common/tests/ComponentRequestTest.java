@@ -28,17 +28,25 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#designates(org.eclipse.buckminster.model.common.ComponentIdentifier) <em>Designates</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#isOptional() <em>Is Optional</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#isEnabled(java.util.Map) <em>Is Enabled</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.ComponentRequest#designates(org.eclipse.buckminster.model.common.ComponentIdentifier)
+ * <em>Designates</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.ComponentRequest#isOptional()
+ * <em>Is Optional</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.ComponentRequest#isEnabled(java.util.Map)
+ * <em>Is Enabled</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class ComponentRequestTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -46,9 +54,9 @@ public class ComponentRequestTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Component Request test case.
-	 * <!-- begin-user-doc -->
+	 * The fixture for this Component Request test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ComponentRequest fixture = null;
@@ -152,6 +160,7 @@ public class ComponentRequestTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

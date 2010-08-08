@@ -25,13 +25,21 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getId <em>Id</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getRange <em>Range</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getFilter <em>Filter</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getType <em>Type</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getId
+ * <em>Id</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getRange
+ * <em>Range</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getFilter
+ * <em>Filter</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl#getType
+ * <em>Type</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class ComponentRequestImpl extends EObjectImpl implements ComponentRequest {
@@ -58,6 +66,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 	/**
 	 * The default value of the '{@link #getRange() <em>Range</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getRange()
 	 * @generated
 	 * @ordered
@@ -67,6 +76,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 	/**
 	 * The cached value of the '{@link #getRange() <em>Range</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getRange()
 	 * @generated
 	 * @ordered
@@ -74,8 +84,9 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 	protected VersionRange range = RANGE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFilter() <em>Filter</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getFilter() <em>Filter</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getFilter()
 	 * @generated
 	 * @ordered
@@ -85,6 +96,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 	/**
 	 * The cached value of the '{@link #getFilter() <em>Filter</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getFilter()
 	 * @generated
 	 * @ordered
@@ -94,6 +106,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 	/**
 	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getType()
 	 * @generated
 	 * @ordered
@@ -103,6 +116,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 	/**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getType()
 	 * @generated
 	 * @ordered
@@ -111,6 +125,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ComponentRequestImpl() {
@@ -130,6 +145,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -150,6 +166,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -170,6 +187,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -177,16 +195,16 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.COMPONENT_REQUEST__ID:
-				setId((String)newValue);
+				setId((String) newValue);
 				return;
 			case CommonPackage.COMPONENT_REQUEST__RANGE:
-				setRange((VersionRange)newValue);
+				setRange((VersionRange) newValue);
 				return;
 			case CommonPackage.COMPONENT_REQUEST__FILTER:
-				setFilter((Filter)newValue);
+				setFilter((Filter) newValue);
 				return;
 			case CommonPackage.COMPONENT_REQUEST__TYPE:
-				setType((String)newValue);
+				setType((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -194,6 +212,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -218,6 +237,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -227,6 +247,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -236,6 +257,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -245,6 +267,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -274,6 +297,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -286,6 +310,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -298,6 +323,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -310,6 +336,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -322,11 +349,13 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (id: ");
@@ -343,6 +372,7 @@ public class ComponentRequestImpl extends EObjectImpl implements ComponentReques
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

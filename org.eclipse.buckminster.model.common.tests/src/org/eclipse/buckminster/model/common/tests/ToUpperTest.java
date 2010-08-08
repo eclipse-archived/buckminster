@@ -13,19 +13,19 @@ import junit.textui.TestRunner;
 
 import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.Constant;
-import org.eclipse.buckminster.model.common.Replace;
-import org.eclipse.buckminster.model.common.ToLower;
 import org.eclipse.buckminster.model.common.ToUpper;
 
 /**
  * <!-- begin-user-doc --> A test case for the model object '
  * <em><b>To Upper</b></em>'. <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class ToUpperTest extends ValueFilterTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -44,7 +44,12 @@ public class ToUpperTest extends ValueFilterTest {
 
 	@Override
 	public void testGetValue__Map() {
-		assertEquals("SOMELOWERCASE", fixture.getValue(Collections.<String,String>emptyMap()));
+		assertEquals("SOMELOWERCASE", fixture.getValue(Collections.<String, String> emptyMap()));
+	}
+
+	@Override
+	public void testGetValues() {
+		assertEquals(1, ((ToUpper) fixture).getValues().size());
 	}
 
 	@Override
@@ -55,20 +60,15 @@ public class ToUpperTest extends ValueFilterTest {
 		assertEquals("SOMELOWERCASE", result.get(0));
 	}
 
-	@Override
-	public void testGetValues() {
-		assertEquals(1, ((ToUpper) fixture).getValues().size());
-	}
-
 	/**
-	 * Returns the fixture for this To Upper test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this To Upper test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected ToUpper getFixture() {
-		return (ToUpper)fixture;
+		return (ToUpper) fixture;
 	}
 
 	/**
@@ -83,11 +83,12 @@ public class ToUpperTest extends ValueFilterTest {
 		setFixture(factory.createToUpper());
 		Constant c = factory.createConstant();
 		c.setValue("SomeLowerCase");
-		((ToUpper)fixture).getValues().add(c);
+		((ToUpper) fixture).getValues().add(c);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

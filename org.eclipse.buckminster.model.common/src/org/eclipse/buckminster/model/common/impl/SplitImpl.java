@@ -30,19 +30,25 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getLimit <em>Limit</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getPattern <em>Pattern</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getStyle <em>Style</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getCompiledPattern <em>Compiled Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getLimit <em>
+ * Limit</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getPattern
+ * <em>Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.SplitImpl#getStyle <em>
+ * Style</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.SplitImpl#getCompiledPattern
+ * <em>Compiled Pattern</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class SplitImpl extends ValueFilterImpl implements Split {
 	/**
 	 * The default value of the '{@link #getLimit() <em>Limit</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getLimit()
 	 * @generated
 	 * @ordered
@@ -52,6 +58,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	/**
 	 * The cached value of the '{@link #getLimit() <em>Limit</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getLimit()
 	 * @generated
 	 * @ordered
@@ -59,8 +66,9 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	protected int limit = LIMIT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -68,8 +76,9 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	protected static final String PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -79,6 +88,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	/**
 	 * The default value of the '{@link #getStyle() <em>Style</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getStyle()
 	 * @generated
 	 * @ordered
@@ -88,6 +98,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	/**
 	 * The cached value of the '{@link #getStyle() <em>Style</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getStyle()
 	 * @generated
 	 * @ordered
@@ -95,18 +106,19 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	protected SplitType style = STYLE_EDEFAULT;
 
 	/**
-	 * This is true if the Style attribute has been set.
-	 * <!-- begin-user-doc -->
+	 * This is true if the Style attribute has been set. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
 	protected boolean styleESet;
 
 	/**
-	 * The default value of the '{@link #getCompiledPattern() <em>Compiled Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getCompiledPattern()
+	 * <em>Compiled Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getCompiledPattern()
 	 * @generated
 	 * @ordered
@@ -114,9 +126,10 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	protected static final Pattern COMPILED_PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getCompiledPattern() <em>Compiled Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getCompiledPattern()
+	 * <em>Compiled Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getCompiledPattern()
 	 * @generated
 	 * @ordered
@@ -125,6 +138,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected SplitImpl() {
@@ -149,6 +163,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -169,6 +184,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -189,6 +205,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -196,13 +213,13 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.SPLIT__LIMIT:
-				setLimit((Integer)newValue);
+				setLimit((Integer) newValue);
 				return;
 			case CommonPackage.SPLIT__PATTERN:
-				setPattern((String)newValue);
+				setPattern((String) newValue);
 				return;
 			case CommonPackage.SPLIT__STYLE:
-				setStyle((SplitType)newValue);
+				setStyle((SplitType) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -210,6 +227,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -250,6 +268,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -259,6 +278,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -268,6 +288,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -282,6 +303,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -291,6 +313,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -308,6 +331,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setPatternGen(String newPattern) {
@@ -324,6 +348,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setStyleGen(SplitType newStyle) {
@@ -337,11 +362,13 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (limit: ");
@@ -349,7 +376,10 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 		result.append(", pattern: ");
 		result.append(pattern);
 		result.append(", style: ");
-		if (styleESet) result.append(style); else result.append("<unset>");
+		if (styleESet)
+			result.append(style);
+		else
+			result.append("<unset>");
 		result.append(", compiledPattern: ");
 		result.append(compiledPattern);
 		result.append(')');
@@ -358,6 +388,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -379,7 +410,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 			return Arrays.asList(getCompiledPattern().split(source, limit));
 
 		Matcher m = getCompiledPattern().matcher(source);
-		if(!m.matches())
+		if (!m.matches())
 			return Collections.emptyList();
 
 		int nGroups = m.groupCount();
@@ -391,6 +422,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

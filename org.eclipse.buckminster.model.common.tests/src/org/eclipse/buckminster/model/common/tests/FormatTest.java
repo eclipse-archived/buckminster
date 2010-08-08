@@ -20,12 +20,14 @@ import org.eclipse.buckminster.model.common.Value;
 /**
  * <!-- begin-user-doc --> A test case for the model object '
  * <em><b>Format</b></em>'. <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class FormatTest extends ValueFilterTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -51,6 +53,12 @@ public class FormatTest extends ValueFilterTest {
 	}
 
 	@Override
+	public void testGetValues() {
+		List<Value> values = getFixture().getValues();
+		assertEquals(2, values.size());
+	}
+
+	@Override
 	public void testGetValues__Map() {
 		Map<String, String> actors = new HashMap<String, String>();
 		actors.put("jumper", "fox");
@@ -61,21 +69,15 @@ public class FormatTest extends ValueFilterTest {
 		assertEquals("The quick brown fox jumps over the lazy dog", result.get(0));
 	}
 
-	@Override
-	public void testGetValues() {
-		List<Value> values = getFixture().getValues();
-		assertEquals(2, values.size());
-	}
-
 	/**
-	 * Returns the fixture for this Format test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Format test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected Format getFixture() {
-		return (Format)fixture;
+		return (Format) fixture;
 	}
 
 	/**
@@ -101,6 +103,7 @@ public class FormatTest extends ValueFilterTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

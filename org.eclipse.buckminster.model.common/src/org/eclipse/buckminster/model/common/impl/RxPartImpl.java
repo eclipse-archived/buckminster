@@ -21,17 +21,20 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.RxPartImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.RxPartImpl#isOptional <em>Optional</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.RxPartImpl#getName <em>
+ * Name</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.RxPartImpl#isOptional
+ * <em>Optional</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -41,6 +44,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 	/**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -48,8 +52,9 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isOptional() <em>Optional</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #isOptional() <em>Optional</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isOptional()
 	 * @generated
 	 * @ordered
@@ -57,8 +62,9 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 	protected static final boolean OPTIONAL_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isOptional() <em>Optional</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #isOptional() <em>Optional</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isOptional()
 	 * @generated
 	 * @ordered
@@ -66,9 +72,9 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 	protected boolean optional = OPTIONAL_EDEFAULT;
 
 	/**
-	 * This is true if the Optional attribute has been set.
-	 * <!-- begin-user-doc
+	 * This is true if the Optional attribute has been set. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 * @ordered
 	 */
@@ -76,6 +82,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected RxPartImpl() {
@@ -84,6 +91,14 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public abstract void addPattern(StringBuilder collector, List<RxPart> namedParts);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -100,6 +115,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -116,6 +132,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -123,10 +140,10 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.RX_PART__NAME:
-				setName((String)newValue);
+				setName((String) newValue);
 				return;
 			case CommonPackage.RX_PART__OPTIONAL:
-				setOptional((Boolean)newValue);
+				setOptional((Boolean) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -134,6 +151,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -152,6 +170,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -161,6 +180,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -170,6 +190,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -178,14 +199,8 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated NOT
-	 */
-	public abstract void addPattern(StringBuilder collector, List<RxPart> namedParts);
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -198,6 +213,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -212,23 +228,29 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: ");
 		result.append(name);
 		result.append(", optional: ");
-		if (optionalESet) result.append(optional); else result.append("<unset>");
+		if (optionalESet)
+			result.append(optional);
+		else
+			result.append("<unset>");
 		result.append(')');
 		return result.toString();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -243,6 +265,7 @@ public abstract class RxPartImpl extends EObjectImpl implements RxPart {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

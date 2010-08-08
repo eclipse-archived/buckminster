@@ -24,21 +24,26 @@ import org.eclipse.buckminster.model.common.RxPattern;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.RxAssembly#getPattern() <em>Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.RxAssembly#getPattern() <em>
+ * Pattern</em>}</li>
  * </ul>
  * </p>
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.RxAssembly#getMatchMap(java.lang.CharSequence) <em>Get Match Map</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.RxAssembly#getMatchMap(java.lang.CharSequence)
+ * <em>Get Match Map</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class RxAssemblyTest extends RxGroupTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -103,14 +108,14 @@ public class RxAssemblyTest extends RxGroupTest {
 	}
 
 	/**
-	 * Returns the fixture for this Rx Assembly test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this Rx Assembly test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected RxAssembly getFixture() {
-		return (RxAssembly)fixture;
+		return (RxAssembly) fixture;
 	}
 
 	/**
@@ -168,6 +173,7 @@ public class RxAssemblyTest extends RxGroupTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

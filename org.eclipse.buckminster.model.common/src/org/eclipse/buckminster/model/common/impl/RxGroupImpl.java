@@ -7,21 +7,27 @@
 package org.eclipse.buckminster.model.common.impl;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.RxGroup;
 import org.eclipse.buckminster.model.common.RxPart;
+import org.eclipse.buckminster.model.common.RxPattern;
+import org.eclipse.buckminster.model.common.util.DynamicFeatureEList;
 
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.notify.impl.NotificationImpl;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
@@ -30,18 +36,22 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxPartsGroup <em>Rx Parts Group</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxParts <em>Rx Parts</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxPartsGroup
+ * <em>Rx Parts Group</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.RxGroupImpl#getRxParts
+ * <em>Rx Parts</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class RxGroupImpl extends RxPartImpl implements RxGroup {
 	/**
-	 * The cached value of the '{@link #getRxPartsGroup() <em>Rx Parts Group</em>}' attribute list.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getRxPartsGroup()
+	 * <em>Rx Parts Group</em>}' attribute list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getRxPartsGroup()
 	 * @generated
 	 * @ordered
@@ -50,27 +60,11 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected RxGroupImpl() {
 		super();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-		switch (featureID) {
-			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
-				if (coreType) return getRxPartsGroup();
-				return ((FeatureMap.Internal)getRxPartsGroup()).getWrapper();
-			case CommonPackage.RX_GROUP__RX_PARTS:
-				return getRxParts();
-		}
-		return super.eGet(featureID, resolve, coreType);
 	}
 
 	@Override
@@ -81,8 +75,7 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 		} else if (isOptional())
 			bld.append("(?:"); //$NON-NLS-1$
 
-		for (RxPart part : getRxParts())
-			part.addPattern(bld, namedParts);
+		addChildrenPatterns(bld, namedParts);
 
 		if (getName() != null)
 			bld.append(')');
@@ -92,6 +85,26 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	@Override
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
+				if (coreType)
+					return getRxPartsGroup();
+				return ((FeatureMap.Internal) getRxPartsGroup()).getWrapper();
+			case CommonPackage.RX_GROUP__RX_PARTS:
+				return getRxParts();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -99,15 +112,16 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
-				return ((InternalEList<?>)getRxPartsGroup()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getRxPartsGroup()).basicRemove(otherEnd, msgs);
 			case CommonPackage.RX_GROUP__RX_PARTS:
-				return ((InternalEList<?>)getRxParts()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getRxParts()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -124,6 +138,7 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -132,11 +147,11 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
-				((FeatureMap.Internal)getRxPartsGroup()).set(newValue);
+				((FeatureMap.Internal) getRxPartsGroup()).set(newValue);
 				return;
 			case CommonPackage.RX_GROUP__RX_PARTS:
 				getRxParts().clear();
-				getRxParts().addAll((Collection<? extends RxPart>)newValue);
+				getRxParts().addAll((Collection<? extends RxPart>) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -144,6 +159,7 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -162,19 +178,7 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public FeatureMap getRxPartsGroup() {
-		if (rxPartsGroup == null) {
-			rxPartsGroup = new BasicFeatureMap(this, CommonPackage.RX_GROUP__RX_PARTS_GROUP);
-		}
-		return rxPartsGroup;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public EList<RxPart> getRxParts() {
@@ -183,11 +187,49 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	@SuppressWarnings("serial")
+	public FeatureMap getRxPartsGroup() {
+		if (rxPartsGroup == null) {
+			rxPartsGroup = new BasicFeatureMap(this, CommonPackage.RX_GROUP__RX_PARTS_GROUP) {
+				@Override
+				public <T> EList<T> list(EStructuralFeature feature) {
+					return new DynamicFeatureEList<T>(feature, this) {
+						@Override
+						protected EStructuralFeature getEStructuralFeature(Object value) {
+							if (value instanceof RxPattern)
+								return CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_PATTERN;
+							if (value instanceof RxGroup)
+								return CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_GROUP;
+							return getEStructuralFeature();
+						}
+					};
+				}
+
+				@Override
+				protected NotificationImpl createNotification(int eventType, EStructuralFeature feature, Object oldObject, Object newObject,
+						int index, boolean wasSet) {
+					if (feature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_PATTERN
+							|| feature == CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_GROUP)
+						feature = CommonPackage.Literals.RX_GROUP__RX_PARTS;
+					return new FeatureMapUtil.FeatureENotificationImpl(owner, eventType, feature, oldObject, newObject, index, wasSet);
+				}
+			};
+		}
+		return rxPartsGroup;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (rxPartsGroup: ");
@@ -198,12 +240,30 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.RX_GROUP;
+	}
+
+	void addChildrenPatterns(StringBuilder bld, List<RxPart> namedParts) {
+		Iterator<FeatureMap.Entry> entries = getRxPartsGroup().iterator();
+		while (entries.hasNext()) {
+			FeatureMap.Entry entry = entries.next();
+			RxPart part = (RxPart) entry.getValue();
+			if (part.getName() == null) {
+				String featureName = entry.getEStructuralFeature().getName();
+				if (!(featureName == null || featureName.equals("rxPattern") || featureName.equals("rxGroup")))
+					// The feature is something that is added by another package
+					// such as the RmapPackage
+					// URIMatcher when it adds os, ws, arch, version, etc.
+					part.setName("tagged." + featureName);
+			}
+			part.addPattern(bld, namedParts);
+		}
 	}
 
 } // RxGroupImpl

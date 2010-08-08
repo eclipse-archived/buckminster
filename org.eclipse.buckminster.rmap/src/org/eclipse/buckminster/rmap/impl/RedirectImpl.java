@@ -21,16 +21,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.RedirectImpl#getHref <em>Href</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.RedirectImpl#getHref <em>Href
+ * </em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class RedirectImpl extends MatcherImpl implements Redirect {
 	/**
 	 * The default value of the '{@link #getHref() <em>Href</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getHref()
 	 * @generated
 	 * @ordered
@@ -40,6 +42,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 	/**
 	 * The cached value of the '{@link #getHref() <em>Href</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getHref()
 	 * @generated
 	 * @ordered
@@ -48,6 +51,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected RedirectImpl() {
@@ -56,6 +60,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -70,6 +75,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -84,6 +90,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -91,7 +98,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.REDIRECT__HREF:
-				setHref((String)newValue);
+				setHref((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -99,6 +106,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -114,6 +122,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -123,6 +132,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -135,12 +145,14 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (href: ");
@@ -151,6 +163,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

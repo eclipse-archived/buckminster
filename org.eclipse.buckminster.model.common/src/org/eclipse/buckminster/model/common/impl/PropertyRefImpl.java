@@ -26,10 +26,11 @@ import org.eclipse.osgi.util.NLS;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyRefImpl#getKey <em>Key</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.PropertyRefImpl#getKey
+ * <em>Key</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class PropertyRefImpl extends ValueImpl implements PropertyRef {
@@ -55,6 +56,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected PropertyRefImpl() {
@@ -64,7 +66,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 	@Override
 	public String checkedGetValue(Map<String, String> properties, int recursionGuard) {
 		String expandedKey = getKey();
-		if(expandedKey == null)
+		if (expandedKey == null)
 			return null;
 		expandedKey = ExpandingProperties.expand(properties, expandedKey, recursionGuard + 1);
 		if (properties instanceof ExpandingProperties)
@@ -77,6 +79,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -91,6 +94,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -105,6 +109,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -112,7 +117,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.PROPERTY_REF__KEY:
-				setKey((String)newValue);
+				setKey((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -120,6 +125,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -135,6 +141,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -144,6 +151,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -156,11 +164,13 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (key: ");
@@ -171,6 +181,7 @@ public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:locator searchPathRef="default"/>
+  <rm:searchPath name="default">
+    <rm:provider readerType="url" source="false" mutable="false">
+      <rm:matcher base="http://download.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/">
+        <rm:name prefix="http://download.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/download.php?dropFile=" pattern="[a-zA-Z_.-]+"/>
+        <rm:version prefix="-" pattern="[0-9]+((.[0-9]+)+(.[a-zA-Z0-9_-]+)?)?"/>
+        <rm:os prefix="-" pattern="win32|linux|solaris|hpux|macosx" optional="true"/>
+        <rm:ws prefix="-" pattern="win32,gtk,motif,cocoa,carbon" optional="true"/>
+        <rm:arch prefix="-" pattern="x86|x86_64|sparc|ppc|ppc64|ia64_32" optional="true"/>
+        <rm:match prefix="." pattern="zip|tar\\.gz"/>
+      </rm:matcher>
+    </rm:provider>
+  </rm:searchPath>
+</rm:rmap>

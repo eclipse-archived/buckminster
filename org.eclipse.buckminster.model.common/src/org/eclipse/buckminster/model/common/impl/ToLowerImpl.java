@@ -18,12 +18,13 @@ import org.eclipse.emf.ecore.EClass;
  * <em><b>To Lower</b></em>'. <!-- end-user-doc -->
  * <p>
  * </p>
- *
+ * 
  * @generated
  */
 public class ToLowerImpl extends ValueFilterImpl implements ToLower {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ToLowerImpl() {
@@ -38,6 +39,7 @@ public class ToLowerImpl extends ValueFilterImpl implements ToLower {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

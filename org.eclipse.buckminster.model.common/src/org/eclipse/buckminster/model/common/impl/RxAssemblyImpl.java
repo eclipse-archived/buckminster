@@ -30,16 +30,19 @@ import org.eclipse.osgi.util.NLS;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.RxAssemblyImpl#getPattern <em>Pattern</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.RxAssemblyImpl#getPattern
+ * <em>Pattern</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -47,8 +50,9 @@ public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 	protected static final Pattern PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -59,6 +63,7 @@ public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected RxAssemblyImpl() {
@@ -67,6 +72,7 @@ public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -81,6 +87,7 @@ public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -140,14 +147,12 @@ public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 
 	public Pattern getPattern() {
 		// TODO: Reset pattern if RxParts change
-		if(pattern == null) {
+		if (pattern == null) {
 			StringBuilder bld = new StringBuilder();
 			bld.append('^');
 			parameters = new ArrayList<RxPart>();
-			for (RxPart part : getRxParts())
-				part.addPattern(bld, parameters);
+			addChildrenPatterns(bld, parameters);
 			bld.append('$');
-
 			String patternStr = bld.toString();
 			pattern = Pattern.compile(patternStr);
 			Buckminster.getLogger().debug("URI pattern %s created", patternStr); //$NON-NLS-1$
@@ -157,11 +162,13 @@ public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (pattern: ");
@@ -172,6 +179,7 @@ public class RxAssemblyImpl extends RxGroupImpl implements RxAssembly {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

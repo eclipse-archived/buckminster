@@ -19,15 +19,18 @@ import org.eclipse.buckminster.model.common.Documentation;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.Documentation#getAny() <em>Any</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Documentation#getAny() <em>
+ * Any</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class DocumentationTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -35,9 +38,9 @@ public class DocumentationTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Documentation test case.
-	 * <!-- begin-user-doc -->
+	 * The fixture for this Documentation test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Documentation fixture = null;
@@ -65,9 +68,9 @@ public class DocumentationTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Documentation test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this Documentation test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Documentation getFixture() {
@@ -75,9 +78,9 @@ public class DocumentationTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Documentation test case.
-	 * <!-- begin-user-doc
+	 * Sets the fixture for this Documentation test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(Documentation fixture) {
@@ -86,6 +89,7 @@ public class DocumentationTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -96,6 +100,7 @@ public class DocumentationTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

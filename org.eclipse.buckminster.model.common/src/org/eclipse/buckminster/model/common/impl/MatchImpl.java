@@ -24,19 +24,27 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.MatchImpl#getPattern <em>Pattern</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.MatchImpl#isQuotePattern <em>Quote Pattern</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.MatchImpl#getReplacement <em>Replacement</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.MatchImpl#getCompiledPattern <em>Compiled Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.MatchImpl#getPattern
+ * <em>Pattern</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.MatchImpl#isQuotePattern
+ * <em>Quote Pattern</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.MatchImpl#getReplacement
+ * <em>Replacement</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.MatchImpl#getCompiledPattern
+ * <em>Compiled Pattern</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class MatchImpl extends EObjectImpl implements Match {
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -44,8 +52,9 @@ public class MatchImpl extends EObjectImpl implements Match {
 	protected static final String PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -53,9 +62,10 @@ public class MatchImpl extends EObjectImpl implements Match {
 	protected String pattern = PATTERN_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isQuotePattern() <em>Quote Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #isQuotePattern()
+	 * <em>Quote Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #isQuotePattern()
 	 * @generated
 	 * @ordered
@@ -63,8 +73,9 @@ public class MatchImpl extends EObjectImpl implements Match {
 	protected static final boolean QUOTE_PATTERN_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isQuotePattern() <em>Quote Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #isQuotePattern() <em>Quote Pattern</em>}
+	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isQuotePattern()
 	 * @generated
 	 * @ordered
@@ -81,8 +92,9 @@ public class MatchImpl extends EObjectImpl implements Match {
 	protected boolean quotePatternESet;
 
 	/**
-	 * The default value of the '{@link #getReplacement() <em>Replacement</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getReplacement() <em>Replacement</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getReplacement()
 	 * @generated
 	 * @ordered
@@ -90,8 +102,9 @@ public class MatchImpl extends EObjectImpl implements Match {
 	protected static final String REPLACEMENT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getReplacement() <em>Replacement</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getReplacement() <em>Replacement</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getReplacement()
 	 * @generated
 	 * @ordered
@@ -99,9 +112,10 @@ public class MatchImpl extends EObjectImpl implements Match {
 	protected String replacement = REPLACEMENT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getCompiledPattern() <em>Compiled Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getCompiledPattern()
+	 * <em>Compiled Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getCompiledPattern()
 	 * @generated
 	 * @ordered
@@ -109,9 +123,10 @@ public class MatchImpl extends EObjectImpl implements Match {
 	protected static final Pattern COMPILED_PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getCompiledPattern() <em>Compiled Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getCompiledPattern()
+	 * <em>Compiled Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getCompiledPattern()
 	 * @generated
 	 * @ordered
@@ -120,6 +135,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected MatchImpl() {
@@ -128,6 +144,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -148,6 +165,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -168,6 +186,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -175,13 +194,13 @@ public class MatchImpl extends EObjectImpl implements Match {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.MATCH__PATTERN:
-				setPattern((String)newValue);
+				setPattern((String) newValue);
 				return;
 			case CommonPackage.MATCH__QUOTE_PATTERN:
-				setQuotePattern((Boolean)newValue);
+				setQuotePattern((Boolean) newValue);
 				return;
 			case CommonPackage.MATCH__REPLACEMENT:
-				setReplacement((String)newValue);
+				setReplacement((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -189,6 +208,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -229,6 +249,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -238,6 +259,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -247,6 +269,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -256,6 +279,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -289,6 +313,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setPatternGen(String newPattern) {
@@ -305,6 +330,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setQuotePatternGen(boolean newQuotePattern) {
@@ -313,11 +339,13 @@ public class MatchImpl extends EObjectImpl implements Match {
 		boolean oldQuotePatternESet = quotePatternESet;
 		quotePatternESet = true;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.MATCH__QUOTE_PATTERN, oldQuotePattern, quotePattern, !oldQuotePatternESet));
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.MATCH__QUOTE_PATTERN, oldQuotePattern, quotePattern,
+					!oldQuotePatternESet));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -330,17 +358,22 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (pattern: ");
 		result.append(pattern);
 		result.append(", quotePattern: ");
-		if (quotePatternESet) result.append(quotePattern); else result.append("<unset>");
+		if (quotePatternESet)
+			result.append(quotePattern);
+		else
+			result.append("<unset>");
 		result.append(", replacement: ");
 		result.append(replacement);
 		result.append(", compiledPattern: ");
@@ -351,6 +384,7 @@ public class MatchImpl extends EObjectImpl implements Match {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -360,11 +394,13 @@ public class MatchImpl extends EObjectImpl implements Match {
 		quotePattern = QUOTE_PATTERN_EDEFAULT;
 		quotePatternESet = false;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, CommonPackage.MATCH__QUOTE_PATTERN, oldQuotePattern, QUOTE_PATTERN_EDEFAULT, oldQuotePatternESet));
+			eNotify(new ENotificationImpl(this, Notification.UNSET, CommonPackage.MATCH__QUOTE_PATTERN, oldQuotePattern, QUOTE_PATTERN_EDEFAULT,
+					oldQuotePatternESet));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

@@ -6,6 +6,8 @@
  */
 package org.eclipse.buckminster.rmap.tests;
 
+import java.util.regex.Pattern;
+
 import junit.framework.TestCase;
 
 import junit.textui.TestRunner;
@@ -79,11 +81,15 @@ public class TransformTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see junit.framework.TestCase#setUp()
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	protected void setUp() throws Exception {
 		setFixture(RmapFactory.eINSTANCE.createTransform());
+		fixture.setFromPattern(Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"));
+		fixture.setFromReplacement("REL$1_$2_$3$4");
+		fixture.setToPattern(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"));
+		fixture.setToReplacement("$1.$2.$3.$4");
 	}
 
 	/**
@@ -102,12 +108,10 @@ public class TransformTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.buckminster.rmap.Transform#transformFrom(java.lang.String)
-	 * @generated
+	 * @generated NOT
 	 */
 	public void testTransformFrom__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+		assertEquals("REL1_2_3apa", fixture.transformFrom("1.2.3.apa"));
 	}
 
 	/**
@@ -115,12 +119,10 @@ public class TransformTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.buckminster.rmap.Transform#transformTo(java.lang.String)
-	 * @generated
+	 * @generated NOT
 	 */
 	public void testTransformTo__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+		assertEquals("1.2.3.apa", fixture.transformTo("REL1_2_3apa"));
 	}
 
 } //TransformTest

@@ -27,18 +27,25 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getTypedKey <em>Key</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getValueGroup <em>Value Group</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getTypedValue <em>Value</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getTypedKey
+ * <em>Key</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getValueGroup
+ * <em>Value Group</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getTypedValue
+ * <em>Value</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
-public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<String,Value> {
+public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<String, Value> {
 	/**
 	 * The default value of the '{@link #getTypedKey() <em>Key</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getTypedKey()
 	 * @generated
 	 * @ordered
@@ -48,6 +55,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 	/**
 	 * The cached value of the '{@link #getTypedKey() <em>Key</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getTypedKey()
 	 * @generated
 	 * @ordered
@@ -55,8 +63,9 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 	protected String key = KEY_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getValueGroup() <em>Value Group</em>}' attribute list.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getValueGroup() <em>Value Group</em>}'
+	 * attribute list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getValueGroup()
 	 * @generated
 	 * @ordered
@@ -65,12 +74,14 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected int hash = -1;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected PropertyElementImpl() {
@@ -79,14 +90,16 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetTypedValue(Value newValue, NotificationChain msgs) {
-		return ((FeatureMap.Internal)getValueGroup()).basicAdd(CommonPackage.Literals.PROPERTY_ELEMENT__VALUE, newValue, msgs);
+		return ((FeatureMap.Internal) getValueGroup()).basicAdd(CommonPackage.Literals.PROPERTY_ELEMENT__VALUE, newValue, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -96,8 +109,9 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 			case CommonPackage.PROPERTY_ELEMENT__KEY:
 				return getTypedKey();
 			case CommonPackage.PROPERTY_ELEMENT__VALUE_GROUP:
-				if (coreType) return getValueGroup();
-				return ((FeatureMap.Internal)getValueGroup()).getWrapper();
+				if (coreType)
+					return getValueGroup();
+				return ((FeatureMap.Internal) getValueGroup()).getWrapper();
 			case CommonPackage.PROPERTY_ELEMENT__VALUE:
 				return getTypedValue();
 		}
@@ -106,6 +120,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -113,7 +128,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case CommonPackage.PROPERTY_ELEMENT__VALUE_GROUP:
-				return ((InternalEList<?>)getValueGroup()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getValueGroup()).basicRemove(otherEnd, msgs);
 			case CommonPackage.PROPERTY_ELEMENT__VALUE:
 				return basicSetTypedValue(null, msgs);
 		}
@@ -122,6 +137,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -140,6 +156,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -147,13 +164,13 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.PROPERTY_ELEMENT__KEY:
-				setTypedKey((String)newValue);
+				setTypedKey((String) newValue);
 				return;
 			case CommonPackage.PROPERTY_ELEMENT__VALUE_GROUP:
-				((FeatureMap.Internal)getValueGroup()).set(newValue);
+				((FeatureMap.Internal) getValueGroup()).set(newValue);
 				return;
 			case CommonPackage.PROPERTY_ELEMENT__VALUE:
-				setTypedValue((Value)newValue);
+				setTypedValue((Value) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -161,6 +178,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -174,7 +192,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 				getValueGroup().clear();
 				return;
 			case CommonPackage.PROPERTY_ELEMENT__VALUE:
-				setTypedValue((Value)null);
+				setTypedValue((Value) null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -182,17 +200,19 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@SuppressWarnings("unchecked")
 	public EMap<String, Value> getEMap() {
 		EObject container = eContainer();
-		return container == null ? null : (EMap<String, Value>)container.eGet(eContainmentFeature());
+		return container == null ? null : (EMap<String, Value>) container.eGet(eContainmentFeature());
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -206,6 +226,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -215,6 +236,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getTypedKey() {
@@ -223,15 +245,17 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	public Value getTypedValue() {
-		return (Value)getValueGroup().get(CommonPackage.Literals.PROPERTY_ELEMENT__VALUE, true);
+		return (Value) getValueGroup().get(CommonPackage.Literals.PROPERTY_ELEMENT__VALUE, true);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -241,6 +265,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public FeatureMap getValueGroup() {
@@ -252,6 +277,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -261,6 +287,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -270,6 +297,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setTypedKey(String newKey) {
@@ -291,6 +319,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -302,11 +331,13 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (key: ");
@@ -319,6 +350,7 @@ public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

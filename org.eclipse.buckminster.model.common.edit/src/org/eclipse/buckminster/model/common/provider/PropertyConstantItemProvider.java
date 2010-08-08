@@ -32,6 +32,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
 /**
  * This is the item provider adapter for a {@link java.util.Map.Entry} object.
  * <!-- begin-user-doc --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class PropertyConstantItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
@@ -73,26 +74,27 @@ public class PropertyConstantItemProvider extends ItemProviderAdapter implements
 	 */
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
+		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
-		Map.Entry<?, ?> propertyConstant = (Map.Entry<?, ?>)object;
+		Map.Entry<?, ?> propertyConstant = (Map.Entry<?, ?>) object;
 		return "" + propertyConstant.getKey() + " -> " + propertyConstant.getValue();
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -110,25 +112,16 @@ public class PropertyConstantItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This adds a property descriptor for the Key feature.
-	 * <!-- begin-user-doc
+	 * This adds a property descriptor for the Key feature. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void addKeyPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PropertyConstant_key_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PropertyConstant_key_feature", "_UI_PropertyConstant_type"),
-				 CommonPackage.Literals.PROPERTY_CONSTANT__KEY,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_PropertyConstant_key_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_PropertyConstant_key_feature", "_UI_PropertyConstant_type"),
+				CommonPackage.Literals.PROPERTY_CONSTANT__KEY, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -138,19 +131,10 @@ public class PropertyConstantItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addMutablePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PropertyConstant_mutable_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PropertyConstant_mutable_feature", "_UI_PropertyConstant_type"),
-				 CommonPackage.Literals.PROPERTY_CONSTANT__MUTABLE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_PropertyConstant_mutable_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_PropertyConstant_mutable_feature", "_UI_PropertyConstant_type"),
+				CommonPackage.Literals.PROPERTY_CONSTANT__MUTABLE, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -160,19 +144,10 @@ public class PropertyConstantItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addStringValuePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PropertyConstant_stringValue_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PropertyConstant_stringValue_feature", "_UI_PropertyConstant_type"),
-				 CommonPackage.Literals.PROPERTY_CONSTANT__STRING_VALUE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_PropertyConstant_stringValue_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_PropertyConstant_stringValue_feature", "_UI_PropertyConstant_type"),
+				CommonPackage.Literals.PROPERTY_CONSTANT__STRING_VALUE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -182,19 +157,10 @@ public class PropertyConstantItemProvider extends ItemProviderAdapter implements
 	 * @generated
 	 */
 	protected void addValuePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PropertyConstant_value_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PropertyConstant_value_feature", "_UI_PropertyConstant_type"),
-				 CommonPackage.Literals.PROPERTY_CONSTANT__VALUE,
-				 true,
-				 false,
-				 false,
-				 null,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_PropertyConstant_value_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_PropertyConstant_value_feature", "_UI_PropertyConstant_type"),
+				CommonPackage.Literals.PROPERTY_CONSTANT__VALUE, true, false, false, null, null, null));
 	}
 
 	/**

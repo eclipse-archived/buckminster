@@ -14,34 +14,39 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Value Filter</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.ValueFilter#getMultiValueGroup <em>Multi Value Group</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.ValueFilter#getValues <em>Values</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.ValueFilter#getMultiValueGroup
+ * <em>Multi Value Group</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.ValueFilter#getValues <em>
+ * Values</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getValueFilter()
  * @model abstract="true"
  * @generated
  */
 public interface ValueFilter extends Value {
 	/**
-	 * Returns the value of the '<em><b>Multi Value Group</b></em>' attribute list.
-	 * The list contents are of type {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}.
-	 * <!-- begin-user-doc
+	 * Returns the value of the '<em><b>Multi Value Group</b></em>' attribute
+	 * list. The list contents are of type
+	 * {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}. <!-- begin-user-doc
 	 * -->
 	 * <p>
 	 * If the meaning of the '<em>Multi Value Group</em>' attribute list isn't
 	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * 
 	 * @return the value of the '<em>Multi Value Group</em>' attribute list.
 	 * @see org.eclipse.buckminster.model.common.CommonPackage#getValueFilter_MultiValueGroup()
-	 * @model dataType="org.eclipse.emf.ecore.EFeatureMapEntry" required="true" many="true"
-	 *        extendedMetaData="kind='group' name='basicValue:group' namespace='##targetNamespace'"
+	 * @model dataType="org.eclipse.emf.ecore.EFeatureMapEntry" required="true"
+	 *        many="true" extendedMetaData=
+	 *        "kind='group' name='basicValue:group' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	FeatureMap getMultiValueGroup();
@@ -68,9 +73,11 @@ public interface ValueFilter extends Value {
 	EList<Value> getValues();
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model dataType="org.eclipse.buckminster.model.common.List<org.eclipse.emf.ecore.EString>" many="false"
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model dataType=
+	 *        "org.eclipse.buckminster.model.common.List<org.eclipse.emf.ecore.EString>"
+	 *        many="false"
 	 * @generated
 	 */
 	List<String> getValues(Map<String, String> properties);

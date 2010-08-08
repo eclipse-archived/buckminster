@@ -16,24 +16,35 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String, int) <em>Begin Task</em>}</li>
- *   <li>{@link org.eclipse.core.runtime.IProgressMonitor#done() <em>Done</em>}</li>
- *   <li>{@link org.eclipse.core.runtime.IProgressMonitor#internalWorked(double) <em>Internal Worked</em>}</li>
- *   <li>{@link org.eclipse.core.runtime.IProgressMonitor#isCancelled() <em>Is Cancelled</em>}</li>
- *   <li>{@link org.eclipse.core.runtime.IProgressMonitor#setCancelled(boolean) <em>Set Cancelled</em>}</li>
- *   <li>{@link org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String) <em>Set Task Name</em>}</li>
- *   <li>{@link org.eclipse.core.runtime.IProgressMonitor#subTask(java.lang.String) <em>Sub Task</em>}</li>
- *   <li>{@link org.eclipse.core.runtime.IProgressMonitor#worked(int) <em>Worked</em>}</li>
+ * <li>
+ * {@link org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String, int)
+ * <em>Begin Task</em>}</li>
+ * <li>{@link org.eclipse.core.runtime.IProgressMonitor#done() <em>Done</em>}</li>
+ * <li>{@link org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
+ * <em>Internal Worked</em>}</li>
+ * <li>{@link org.eclipse.core.runtime.IProgressMonitor#isCancelled() <em>Is
+ * Cancelled</em>}</li>
+ * <li>{@link org.eclipse.core.runtime.IProgressMonitor#setCancelled(boolean)
+ * <em>Set Cancelled</em>}</li>
+ * <li>
+ * {@link org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
+ * <em>Set Task Name</em>}</li>
+ * <li>
+ * {@link org.eclipse.core.runtime.IProgressMonitor#subTask(java.lang.String)
+ * <em>Sub Task</em>}</li>
+ * <li>{@link org.eclipse.core.runtime.IProgressMonitor#worked(int) <em>Worked
+ * </em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public abstract class IProgressMonitorTest extends TestCase {
 
 	/**
-	 * The fixture for this IProgress Monitor test case.
-	 * <!-- begin-user-doc -->
+	 * The fixture for this IProgress Monitor test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IProgressMonitor fixture = null;
@@ -49,10 +60,13 @@ public abstract class IProgressMonitorTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String, int) <em>Begin Task</em>}' operation.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String, int)
+	 * <em>Begin Task</em>}' operation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * @see org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String, int)
+	 * 
+	 * @see org.eclipse.core.runtime.IProgressMonitor#beginTask(java.lang.String,
+	 *      int)
 	 * @generated
 	 */
 	public void testBeginTask__String_int() {
@@ -62,8 +76,9 @@ public abstract class IProgressMonitorTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.core.runtime.IProgressMonitor#done() <em>Done</em>}' operation.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Tests the '{@link org.eclipse.core.runtime.IProgressMonitor#done()
+	 * <em>Done</em>}' operation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see org.eclipse.core.runtime.IProgressMonitor#done()
 	 * @generated
 	 */
@@ -74,9 +89,11 @@ public abstract class IProgressMonitorTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.core.runtime.IProgressMonitor#internalWorked(double) <em>Internal Worked</em>}' operation.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
+	 * <em>Internal Worked</em>}' operation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.core.runtime.IProgressMonitor#internalWorked(double)
 	 * @generated
 	 */
@@ -87,9 +104,11 @@ public abstract class IProgressMonitorTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.core.runtime.IProgressMonitor#isCancelled() <em>Is Cancelled</em>}' operation.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.core.runtime.IProgressMonitor#isCancelled()
+	 * <em>Is Cancelled</em>}' operation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.core.runtime.IProgressMonitor#isCancelled()
 	 * @generated
 	 */
@@ -100,9 +119,11 @@ public abstract class IProgressMonitorTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.core.runtime.IProgressMonitor#setCancelled(boolean) <em>Set Cancelled</em>}' operation.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.core.runtime.IProgressMonitor#setCancelled(boolean)
+	 * <em>Set Cancelled</em>}' operation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.core.runtime.IProgressMonitor#setCancelled(boolean)
 	 * @generated
 	 */
@@ -113,9 +134,11 @@ public abstract class IProgressMonitorTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String) <em>Set Task Name</em>}' operation.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
+	 * <em>Set Task Name</em>}' operation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.core.runtime.IProgressMonitor#setTaskName(java.lang.String)
 	 * @generated
 	 */

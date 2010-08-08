@@ -22,15 +22,17 @@ import org.eclipse.buckminster.model.common.Value;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link java.util.Map.Entry#getTypedValue() <em>Value</em>}</li>
+ * <li>{@link java.util.Map.Entry#getTypedValue() <em>Value</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class PropertyElementTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -38,9 +40,9 @@ public class PropertyElementTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Property Element test case.
-	 * <!-- begin-user-doc -->
+	 * The fixture for this Property Element test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Map.Entry<String, Value> fixture = null;
@@ -56,8 +58,9 @@ public class PropertyElementTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link java.util.Map.Entry#getTypedValue() <em>Value</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Tests the '{@link java.util.Map.Entry#getTypedValue() <em>Value</em>}'
+	 * feature getter. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see java.util.Map.Entry#getTypedValue()
 	 * @generated
 	 */
@@ -68,9 +71,11 @@ public class PropertyElementTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link java.util.Map.Entry#setTypedValue(org.eclipse.buckminster.model.common.Value) <em>Value</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link java.util.Map.Entry#setTypedValue(org.eclipse.buckminster.model.common.Value)
+	 * <em>Value</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see java.util.Map.Entry#setTypedValue(org.eclipse.buckminster.model.common.Value)
 	 * @generated
 	 */
@@ -91,9 +96,9 @@ public class PropertyElementTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Property Element test case.
-	 * <!-- begin-user-doc
+	 * Sets the fixture for this Property Element test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(Map.Entry<String, Value> fixture) {
@@ -102,17 +107,19 @@ public class PropertyElementTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void setUp() throws Exception {
-		setFixture((Map.Entry<String, Value>)CommonFactory.eINSTANCE.create(CommonPackage.Literals.PROPERTY_ELEMENT));
+		setFixture((Map.Entry<String, Value>) CommonFactory.eINSTANCE.create(CommonPackage.Literals.PROPERTY_ELEMENT));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

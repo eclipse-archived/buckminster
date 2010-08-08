@@ -12,16 +12,18 @@ import org.eclipse.equinox.p2.metadata.IVersionFormat;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>URI Matcher</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getBase <em>Base</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getVersionFormat <em>Version Format</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getVersionType <em>Version Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getBase <em>Base</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getVersionFormat <em>
+ * Version Format</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getVersionType <em>Version
+ * Type</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.rmap.RmapPackage#getURIMatcher()
  * @model
  * @generated
@@ -46,6 +48,7 @@ public interface URIMatcher extends RxAssembly {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model kind="operation"
 	 * @generated
 	 */
@@ -86,29 +89,38 @@ public interface URIMatcher extends RxAssembly {
 	String getVersionType();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.URIMatcher#getBase <em>Base</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Base</em>' attribute.
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.rmap.URIMatcher#getBase <em>Base</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Base</em>' attribute.
 	 * @see #getBase()
 	 * @generated
 	 */
 	void setBase(String value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.URIMatcher#getVersionFormat <em>Version Format</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.rmap.URIMatcher#getVersionFormat
+	 * <em>Version Format</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * @param value the new value of the '<em>Version Format</em>' attribute.
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Version Format</em>' attribute.
 	 * @see #getVersionFormat()
 	 * @generated
 	 */
 	void setVersionFormat(IVersionFormat value);
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.URIMatcher#getVersionType <em>Version Type</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.rmap.URIMatcher#getVersionType
+	 * <em>Version Type</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * @param value the new value of the '<em>Version Type</em>' attribute.
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Version Type</em>' attribute.
 	 * @see #getVersionType()
 	 * @generated
 	 */

@@ -20,15 +20,18 @@ import org.eclipse.equinox.p2.metadata.Version;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link java.lang.Comparable#compareTo(java.lang.Object) <em>Compare To</em>}</li>
+ * <li>{@link java.lang.Comparable#compareTo(java.lang.Object) <em>Compare To
+ * </em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class ComponentIdentifierTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -36,9 +39,9 @@ public class ComponentIdentifierTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Component Identifier test case.
-	 * <!-- begin-user-doc
+	 * The fixture for this Component Identifier test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ComponentIdentifier fixture = null;
@@ -121,6 +124,7 @@ public class ComponentIdentifierTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

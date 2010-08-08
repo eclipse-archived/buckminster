@@ -67,7 +67,7 @@ public class RmapExample {
 			System.out.println("Enter a list of file paths or URIs that have content like this:");
 			try {
 				Resource resource = resourceSet.createResource(URI.createURI("http:///My.rmap"));
-				EObject documentRoot = RmapFactory.eINSTANCE.createAbstractDocumentRoot();
+				EObject documentRoot = RmapFactory.eINSTANCE.createDocumentRoot();
 				Constant root = CommonFactory.eINSTANCE.createConstant();
 				documentRoot.eSet(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__CONSTANT, root);
 				resource.getContents().add(documentRoot);

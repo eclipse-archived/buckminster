@@ -16,17 +16,20 @@ import org.eclipse.buckminster.model.common.RxPart;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.RxPart#addPattern(java.lang.StringBuilder, java.util.List) <em>Add Pattern</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.RxPart#addPattern(java.lang.StringBuilder, java.util.List)
+ * <em>Add Pattern</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public abstract class RxPartTest extends TestCase {
 
 	/**
-	 * The fixture for this Rx Part test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this Rx Part test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected RxPart fixture = null;
@@ -56,9 +59,9 @@ public abstract class RxPartTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Rx Part test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Rx Part test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected RxPart getFixture() {
@@ -66,9 +69,9 @@ public abstract class RxPartTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Rx Part test case.
-	 * <!-- begin-user-doc --> <!--
+	 * Sets the fixture for this Rx Part test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(RxPart fixture) {

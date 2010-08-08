@@ -23,16 +23,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.FormatImpl#getFormat <em>Format</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.FormatImpl#getFormat
+ * <em>Format</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class FormatImpl extends ValueFilterImpl implements Format {
 	/**
-	 * The default value of the '{@link #getFormat() <em>Format</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getFormat() <em>Format</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getFormat()
 	 * @generated
 	 * @ordered
@@ -42,6 +44,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 	/**
 	 * The cached value of the '{@link #getFormat() <em>Format</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getFormat()
 	 * @generated
 	 * @ordered
@@ -50,6 +53,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected FormatImpl() {
@@ -65,6 +69,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -79,6 +84,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -93,6 +99,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -100,7 +107,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.FORMAT__FORMAT:
-				setFormat((String)newValue);
+				setFormat((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -108,6 +115,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -123,6 +131,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -132,6 +141,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -144,11 +154,13 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (format: ");
@@ -159,6 +171,7 @@ public class FormatImpl extends ValueFilterImpl implements Format {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

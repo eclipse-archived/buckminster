@@ -9,18 +9,20 @@ package org.eclipse.buckminster.model.common;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Format</b></em>'. <!-- end-user-doc -->
- *
- * <!-- begin-model-doc -->
- * A Format is the base for a java.text.Format that in turn is used when creating a string from a set of parameter values. A parameter is denoted by {&lt;n&gt;} where &lt;n&gt; denotes n'th parameter element using zero for the first parameter.
- * <!-- end-model-doc -->
- *
+ * 
+ * <!-- begin-model-doc --> A Format is the base for a java.text.Format that in
+ * turn is used when creating a string from a set of parameter values. A
+ * parameter is denoted by {&lt;n&gt;} where &lt;n&gt; denotes n'th parameter
+ * element using zero for the first parameter. <!-- end-model-doc -->
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.Format#getFormat <em>Format</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Format#getFormat <em>Format
+ * </em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getFormat()
  * @model
  * @generated

@@ -18,21 +18,26 @@ import org.eclipse.buckminster.model.common.Match;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.Match#getCompiledPattern() <em>Compiled Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Match#getCompiledPattern()
+ * <em>Compiled Pattern</em>}</li>
  * </ul>
  * </p>
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.Match#match(java.lang.String) <em>Match</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.Match#match(java.lang.String)
+ * <em>Match</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class MatchTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -40,17 +45,17 @@ public class MatchTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Match test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this Match test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Match fixture = null;
 
 	/**
-	 * Constructs a new Match test case with the given name.
-	 * <!-- begin-user-doc
+	 * Constructs a new Match test case with the given name. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public MatchTest(String name) {
@@ -83,9 +88,9 @@ public class MatchTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Match test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Match test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Match getFixture() {
@@ -93,9 +98,9 @@ public class MatchTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Match test case.
-	 * <!-- begin-user-doc --> <!--
+	 * Sets the fixture for this Match test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(Match fixture) {
@@ -117,6 +122,7 @@ public class MatchTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

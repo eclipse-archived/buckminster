@@ -21,15 +21,18 @@ import org.eclipse.buckminster.model.common.Replace;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.Replace#getCompiledPattern() <em>Compiled Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Replace#getCompiledPattern()
+ * <em>Compiled Pattern</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class ReplaceTest extends ValueFilterTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -65,6 +68,11 @@ public class ReplaceTest extends ValueFilterTest {
 	}
 
 	@Override
+	public void testGetValues() {
+		assertEquals(1, ((Replace) fixture).getValues().size());
+	}
+
+	@Override
 	public void testGetValues__Map() {
 		List<String> result = getFixture().getValues(Collections.<String, String> emptyMap());
 		assertNotNull(result);
@@ -72,20 +80,15 @@ public class ReplaceTest extends ValueFilterTest {
 		assertEquals("foos/bars", result.get(0));
 	}
 
-	@Override
-	public void testGetValues() {
-		assertEquals(1, ((Replace) fixture).getValues().size());
-	}
-
 	/**
-	 * Returns the fixture for this Replace test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Replace test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected Replace getFixture() {
-		return (Replace)fixture;
+		return (Replace) fixture;
 	}
 
 	/**
@@ -107,6 +110,7 @@ public class ReplaceTest extends ValueFilterTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

@@ -17,15 +17,18 @@ import org.eclipse.buckminster.model.common.RxGroup;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.RxGroup#getRxParts() <em>Rx Parts</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.RxGroup#getRxParts() <em>Rx
+ * Parts</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class RxGroupTest extends RxPartTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -42,7 +45,6 @@ public class RxGroupTest extends RxPartTest {
 		super(name);
 	}
 
-
 	/**
 	 * Tests the '
 	 * {@link org.eclipse.buckminster.model.common.RxGroup#getRxParts()
@@ -56,18 +58,19 @@ public class RxGroupTest extends RxPartTest {
 	}
 
 	/**
-	 * Returns the fixture for this Rx Group test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Rx Group test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected RxGroup getFixture() {
-		return (RxGroup)fixture;
+		return (RxGroup) fixture;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -78,6 +81,7 @@ public class RxGroupTest extends RxPartTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

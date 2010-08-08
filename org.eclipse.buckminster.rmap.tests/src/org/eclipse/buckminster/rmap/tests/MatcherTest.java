@@ -10,9 +10,7 @@ import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
-import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
-import org.eclipse.buckminster.model.common.impl.CommonFactoryImpl;
 import org.eclipse.buckminster.rmap.Matcher;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 

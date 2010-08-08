@@ -16,19 +16,22 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getBasicValue() <em>Basic Value</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getConstant() <em>Constant</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getFormat() <em>Format</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getPropertyRef() <em>Property Ref</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getReplace() <em>Replace</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getSplit() <em>Split</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getToLower() <em>To Lower</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getToUpper() <em>To Upper</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getRxPart() <em>Rx Part</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getRxPattern() <em>Rx Pattern</em>}</li>
- *   <li>{@link org.eclipse.emf.ecore.EObject#getRxGroup() <em>Rx Group</em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getBasicValue() <em>Basic Value
+ * </em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getConstant() <em>Constant</em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getFormat() <em>Format</em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getPropertyRef() <em>Property Ref
+ * </em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getReplace() <em>Replace</em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getSplit() <em>Split</em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getToLower() <em>To Lower</em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getToUpper() <em>To Upper</em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getRxPart() <em>Rx Part</em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getRxPattern() <em>Rx Pattern</em>}</li>
+ * <li>{@link org.eclipse.emf.ecore.EObject#getRxGroup() <em>Rx Group</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public abstract class AbstractDocumentRootTest extends TestCase {
@@ -44,6 +47,7 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	/**
 	 * Constructs a new Abstract Document Root test case with the given name.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public AbstractDocumentRootTest(String name) {
@@ -51,9 +55,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getBasicValue() <em>Basic Value</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getBasicValue()
+	 * <em>Basic Value</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getBasicValue()
 	 * @generated
 	 */
@@ -64,9 +69,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getConstant() <em>Constant</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getConstant()
+	 * <em>Constant</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getConstant()
 	 * @generated
 	 */
@@ -77,9 +83,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getFormat() <em>Format</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getFormat()
+	 * <em>Format</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getFormat()
 	 * @generated
 	 */
@@ -90,9 +97,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getPropertyRef() <em>Property Ref</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getPropertyRef()
+	 * <em>Property Ref</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getPropertyRef()
 	 * @generated
 	 */
@@ -103,9 +111,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getReplace() <em>Replace</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getReplace()
+	 * <em>Replace</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getReplace()
 	 * @generated
 	 */
@@ -116,9 +125,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getRxGroup() <em>Rx Group</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getRxGroup()
+	 * <em>Rx Group</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getRxGroup()
 	 * @generated
 	 */
@@ -129,9 +139,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getRxPart() <em>Rx Part</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getRxPart()
+	 * <em>Rx Part</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getRxPart()
 	 * @generated
 	 */
@@ -142,9 +153,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getRxPattern() <em>Rx Pattern</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getRxPattern()
+	 * <em>Rx Pattern</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getRxPattern()
 	 * @generated
 	 */
@@ -155,9 +167,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getSplit() <em>Split</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getSplit()
+	 * <em>Split</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getSplit()
 	 * @generated
 	 */
@@ -168,9 +181,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getToLower() <em>To Lower</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getToLower()
+	 * <em>To Lower</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getToLower()
 	 * @generated
 	 */
@@ -181,9 +195,10 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getToUpper() <em>To Upper</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getToUpper()
+	 * <em>To Upper</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getToUpper()
 	 * @generated
 	 */
@@ -194,9 +209,11 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#setConstant(org.eclipse.buckminster.model.common.Constant) <em>Constant</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.emf.ecore.EObject#setConstant(org.eclipse.buckminster.model.common.Constant)
+	 * <em>Constant</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#setConstant(org.eclipse.buckminster.model.common.Constant)
 	 * @generated
 	 */
@@ -207,9 +224,11 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#setFormat(org.eclipse.buckminster.model.common.Format) <em>Format</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.emf.ecore.EObject#setFormat(org.eclipse.buckminster.model.common.Format)
+	 * <em>Format</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#setFormat(org.eclipse.buckminster.model.common.Format)
 	 * @generated
 	 */
@@ -220,9 +239,11 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#setPropertyRef(org.eclipse.buckminster.model.common.PropertyRef) <em>Property Ref</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.emf.ecore.EObject#setPropertyRef(org.eclipse.buckminster.model.common.PropertyRef)
+	 * <em>Property Ref</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#setPropertyRef(org.eclipse.buckminster.model.common.PropertyRef)
 	 * @generated
 	 */
@@ -233,9 +254,11 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#setReplace(org.eclipse.buckminster.model.common.Replace) <em>Replace</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.emf.ecore.EObject#setReplace(org.eclipse.buckminster.model.common.Replace)
+	 * <em>Replace</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#setReplace(org.eclipse.buckminster.model.common.Replace)
 	 * @generated
 	 */
@@ -246,9 +269,11 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#setRxGroup(org.eclipse.buckminster.model.common.RxGroup) <em>Rx Group</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.emf.ecore.EObject#setRxGroup(org.eclipse.buckminster.model.common.RxGroup)
+	 * <em>Rx Group</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#setRxGroup(org.eclipse.buckminster.model.common.RxGroup)
 	 * @generated
 	 */
@@ -259,9 +284,11 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#setRxPattern(org.eclipse.buckminster.model.common.RxPattern) <em>Rx Pattern</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.emf.ecore.EObject#setRxPattern(org.eclipse.buckminster.model.common.RxPattern)
+	 * <em>Rx Pattern</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#setRxPattern(org.eclipse.buckminster.model.common.RxPattern)
 	 * @generated
 	 */
@@ -272,9 +299,11 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#setSplit(org.eclipse.buckminster.model.common.Split) <em>Split</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.emf.ecore.EObject#setSplit(org.eclipse.buckminster.model.common.Split)
+	 * <em>Split</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#setSplit(org.eclipse.buckminster.model.common.Split)
 	 * @generated
 	 */
@@ -285,9 +314,11 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#setToLower(org.eclipse.buckminster.model.common.ToLower) <em>To Lower</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.emf.ecore.EObject#setToLower(org.eclipse.buckminster.model.common.ToLower)
+	 * <em>To Lower</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#setToLower(org.eclipse.buckminster.model.common.ToLower)
 	 * @generated
 	 */
@@ -298,9 +329,11 @@ public abstract class AbstractDocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#setToUpper(org.eclipse.buckminster.model.common.ToUpper) <em>To Upper</em>}' feature setter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.emf.ecore.EObject#setToUpper(org.eclipse.buckminster.model.common.ToUpper)
+	 * <em>To Upper</em>}' feature setter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#setToUpper(org.eclipse.buckminster.model.common.ToUpper)
 	 * @generated
 	 */

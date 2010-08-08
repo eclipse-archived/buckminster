@@ -29,9 +29,10 @@ import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.rmap.Provider} object.
- * <!-- begin-user-doc -->
+ * This is the item provider adapter for a
+ * {@link org.eclipse.buckminster.rmap.Provider} object. <!-- begin-user-doc -->
  * <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class ProviderItemProvider extends PropertiesItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider,
@@ -47,10 +48,13 @@ public class ProviderItemProvider extends PropertiesItemProvider implements IEdi
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This specifies how to implement {@link #getChildren} and is used to
+	 * deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand},
+	 * {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in
+	 * {@link #createCommand}. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -89,25 +93,24 @@ public class ProviderItemProvider extends PropertiesItemProvider implements IEdi
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		String label = ((Provider)object).getReaderType();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Provider_type") :
-			getString("_UI_Provider_type") + " " + label;
+		String label = ((Provider) object).getReaderType();
+		return label == null || label.length() == 0 ? getString("_UI_Provider_type") : getString("_UI_Provider_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -153,19 +156,10 @@ public class ProviderItemProvider extends PropertiesItemProvider implements IEdi
 	 * @generated
 	 */
 	protected void addMutablePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Provider_mutable_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Provider_mutable_feature", "_UI_Provider_type"),
-				 RmapPackage.Literals.PROVIDER__MUTABLE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Provider_mutable_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Provider_mutable_feature", "_UI_Provider_type"),
+				RmapPackage.Literals.PROVIDER__MUTABLE, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -188,19 +182,10 @@ public class ProviderItemProvider extends PropertiesItemProvider implements IEdi
 	 * @generated
 	 */
 	protected void addRepositoryPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Provider_repository_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Provider_repository_feature", "_UI_Provider_type"),
-				 RmapPackage.Literals.PROVIDER__REPOSITORY,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Provider_repository_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Provider_repository_feature", "_UI_Provider_type"),
+				RmapPackage.Literals.PROVIDER__REPOSITORY, true, false, true, null, null, null));
 	}
 
 	/**
@@ -210,19 +195,10 @@ public class ProviderItemProvider extends PropertiesItemProvider implements IEdi
 	 * @generated
 	 */
 	protected void addResolutionFilterPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Provider_resolutionFilter_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Provider_resolutionFilter_feature", "_UI_Provider_type"),
-				 RmapPackage.Literals.PROVIDER__RESOLUTION_FILTER,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Provider_resolutionFilter_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Provider_resolutionFilter_feature", "_UI_Provider_type"),
+				RmapPackage.Literals.PROVIDER__RESOLUTION_FILTER, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -232,19 +208,10 @@ public class ProviderItemProvider extends PropertiesItemProvider implements IEdi
 	 * @generated
 	 */
 	protected void addSourcePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Provider_source_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Provider_source_feature", "_UI_Provider_type"),
-				 RmapPackage.Literals.PROVIDER__SOURCE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Provider_source_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Provider_source_feature", "_UI_Provider_type"),
+				RmapPackage.Literals.PROVIDER__SOURCE, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -259,35 +226,26 @@ public class ProviderItemProvider extends PropertiesItemProvider implements IEdi
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add
-			(createChildParameter
-				(RmapPackage.Literals.PROVIDER__VERSION_CONVERTER,
-				 RmapFactory.eINSTANCE.createVersionConverter()));
+		newChildDescriptors
+				.add(createChildParameter(RmapPackage.Literals.PROVIDER__VERSION_CONVERTER, RmapFactory.eINSTANCE.createVersionConverter()));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(RmapPackage.Literals.PROVIDER__URI,
-				 CommonFactory.eINSTANCE.createFormat()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.PROVIDER__URI, CommonFactory.eINSTANCE.createFormat()));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(RmapPackage.Literals.PROVIDER__MATCHER,
-				 RmapFactory.eINSTANCE.createURIMatcher()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.PROVIDER__MATCHER, RmapFactory.eINSTANCE.createURIMatcher()));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(RmapPackage.Literals.PROVIDER__DOCUMENTATION,
-				 CommonFactory.eINSTANCE.createDocumentation()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.PROVIDER__DOCUMENTATION, CommonFactory.eINSTANCE.createDocumentation()));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper feature to use for
+		// Check the type of the specified child object and return the proper
+		// feature to use for
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);

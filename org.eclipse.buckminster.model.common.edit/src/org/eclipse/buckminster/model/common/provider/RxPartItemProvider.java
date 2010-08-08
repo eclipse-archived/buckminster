@@ -75,29 +75,28 @@ public class RxPartItemProvider extends ItemProviderAdapter implements IEditingD
 
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
+		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		String label = ((RxPart)object).getName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_RxPart_type") :
-			getString("_UI_RxPart_type") + " " + label;
+		String label = ((RxPart) object).getName();
+		return label == null || label.length() == 0 ? getString("_UI_RxPart_type") : getString("_UI_RxPart_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -115,25 +114,16 @@ public class RxPartItemProvider extends ItemProviderAdapter implements IEditingD
 	}
 
 	/**
-	 * This adds a property descriptor for the Name feature.
-	 * <!-- begin-user-doc
+	 * This adds a property descriptor for the Name feature. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void addNamePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_RxPart_name_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_RxPart_name_feature", "_UI_RxPart_type"),
-				 CommonPackage.Literals.RX_PART__NAME,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_RxPart_name_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_RxPart_name_feature", "_UI_RxPart_type"), CommonPackage.Literals.RX_PART__NAME,
+				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -143,19 +133,10 @@ public class RxPartItemProvider extends ItemProviderAdapter implements IEditingD
 	 * @generated
 	 */
 	protected void addOptionalPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_RxPart_optional_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_RxPart_optional_feature", "_UI_RxPart_type"),
-				 CommonPackage.Literals.RX_PART__OPTIONAL,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_RxPart_optional_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_RxPart_optional_feature", "_UI_RxPart_type"),
+				CommonPackage.Literals.RX_PART__OPTIONAL, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**

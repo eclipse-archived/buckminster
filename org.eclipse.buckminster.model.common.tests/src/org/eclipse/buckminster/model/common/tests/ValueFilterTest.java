@@ -14,15 +14,19 @@ import org.eclipse.buckminster.model.common.ValueFilter;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.ValueFilter#getValues() <em>Values</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.ValueFilter#getValues() <em>
+ * Values</em>}</li>
  * </ul>
  * </p>
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.ValueFilter#getValues(java.util.Map) <em>Get Values</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.ValueFilter#getValues(java.util.Map)
+ * <em>Get Values</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public abstract class ValueFilterTest extends ValueTest {
@@ -49,23 +53,25 @@ public abstract class ValueFilterTest extends ValueTest {
 	public abstract void testGetValues();
 
 	/**
-	 * Tests the '{@link org.eclipse.buckminster.model.common.ValueFilter#getValues(java.util.Map) <em>Get Values</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.model.common.ValueFilter#getValues(java.util.Map)
+	 * <em>Get Values</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.buckminster.model.common.ValueFilter#getValues(java.util.Map)
 	 * @generated NOT
 	 */
 	public abstract void testGetValues__Map();
 
 	/**
-	 * Returns the fixture for this Value Filter test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this Value Filter test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected ValueFilter getFixture() {
-		return (ValueFilter)fixture;
+		return (ValueFilter) fixture;
 	}
 
 } // ValueFilterTest

@@ -7,26 +7,21 @@
 package org.eclipse.buckminster.model.common;
 
 import java.lang.CharSequence;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.FeatureMap;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Rx Assembly</b></em>'. <!-- end-user-doc -->
- *
+ * 
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.RxAssembly#getPattern <em>Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.RxAssembly#getPattern <em>
+ * Pattern</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getRxAssembly()
  * @model
  * @generated
@@ -34,6 +29,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 public interface RxAssembly extends RxGroup {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @model inputDataType="org.eclipse.buckminster.model.common.CharSequence"
 	 * @generated
 	 */

@@ -9,7 +9,6 @@ package org.eclipse.buckminster.rmap.provider;
 import java.util.Collection;
 import java.util.List;
 
-import java.util.regex.Pattern;
 import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 
@@ -35,9 +34,10 @@ import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.rmap.URIMatcher} object.
- * <!-- begin-user-doc
+ * This is the item provider adapter for a
+ * {@link org.eclipse.buckminster.rmap.URIMatcher} object. <!-- begin-user-doc
  * --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class URIMatcherItemProvider extends RxAssemblyItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider,
@@ -90,26 +90,24 @@ public class URIMatcherItemProvider extends RxAssemblyItemProvider implements IE
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		Pattern labelValue = ((URIMatcher)object).getPattern();
-		String label = labelValue == null ? null : labelValue.toString();
-		return label == null || label.length() == 0 ?
-			getString("_UI_URIMatcher_type") :
-			getString("_UI_URIMatcher_type") + " " + label;
+		String label = ((URIMatcher) object).getName();
+		return label == null || label.length() == 0 ? getString("_UI_URIMatcher_type") : getString("_UI_URIMatcher_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -128,25 +126,16 @@ public class URIMatcherItemProvider extends RxAssemblyItemProvider implements IE
 	}
 
 	/**
-	 * This adds a property descriptor for the Base feature.
-	 * <!-- begin-user-doc
+	 * This adds a property descriptor for the Base feature. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void addBasePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_URIMatcher_base_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_URIMatcher_base_feature", "_UI_URIMatcher_type"),
-				 RmapPackage.Literals.URI_MATCHER__BASE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_URIMatcher_base_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_URIMatcher_base_feature", "_UI_URIMatcher_type"),
+				RmapPackage.Literals.URI_MATCHER__BASE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -156,19 +145,10 @@ public class URIMatcherItemProvider extends RxAssemblyItemProvider implements IE
 	 * @generated
 	 */
 	protected void addVersionFormatPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_URIMatcher_versionFormat_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_URIMatcher_versionFormat_feature", "_UI_URIMatcher_type"),
-				 RmapPackage.Literals.URI_MATCHER__VERSION_FORMAT,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_URIMatcher_versionFormat_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_URIMatcher_versionFormat_feature", "_UI_URIMatcher_type"),
+				RmapPackage.Literals.URI_MATCHER__VERSION_FORMAT, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -178,19 +158,10 @@ public class URIMatcherItemProvider extends RxAssemblyItemProvider implements IE
 	 * @generated
 	 */
 	protected void addVersionTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_URIMatcher_versionType_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_URIMatcher_versionType_feature", "_UI_URIMatcher_type"),
-				 RmapPackage.Literals.URI_MATCHER__VERSION_TYPE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_URIMatcher_versionType_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_URIMatcher_versionType_feature", "_UI_URIMatcher_type"),
+				RmapPackage.Literals.URI_MATCHER__VERSION_TYPE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -205,34 +176,34 @@ public class URIMatcherItemProvider extends RxAssemblyItemProvider implements IE
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__MATCH, CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__GROUP, CommonFactory.eINSTANCE.createRxGroup())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NAME, CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__VERSION, CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__REVISION, CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP, CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__OS, CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__WS, CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__ARCH, CommonFactory.eINSTANCE.createRxPattern())));
 
-		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_ASSEMBLY__RX_PARTS_GROUP,
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP,
 				FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NL, CommonFactory.eINSTANCE.createRxPattern())));
 	}
 

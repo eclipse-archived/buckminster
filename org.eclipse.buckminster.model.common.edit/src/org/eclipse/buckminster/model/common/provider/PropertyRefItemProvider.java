@@ -62,23 +62,24 @@ public class PropertyRefItemProvider extends ValueItemProvider implements IEditi
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		PropertyRef propertyRef = (PropertyRef)object;
+		PropertyRef propertyRef = (PropertyRef) object;
 		return getString("_UI_PropertyRef_type") + " " + propertyRef.isMutable();
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -95,25 +96,16 @@ public class PropertyRefItemProvider extends ValueItemProvider implements IEditi
 	}
 
 	/**
-	 * This adds a property descriptor for the Key feature.
-	 * <!-- begin-user-doc
+	 * This adds a property descriptor for the Key feature. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void addKeyPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_PropertyRef_key_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_PropertyRef_key_feature", "_UI_PropertyRef_type"),
-				 CommonPackage.Literals.PROPERTY_REF__KEY,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_PropertyRef_key_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_PropertyRef_key_feature", "_UI_PropertyRef_type"),
+				CommonPackage.Literals.PROPERTY_REF__KEY, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

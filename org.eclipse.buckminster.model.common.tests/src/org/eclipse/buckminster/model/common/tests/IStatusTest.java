@@ -16,18 +16,19 @@ import org.eclipse.core.runtime.IStatus;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.core.runtime.IStatus#isOK() <em>Is OK</em>}</li>
- *   <li>{@link org.eclipse.core.runtime.IStatus#matches(int) <em>Matches</em>}</li>
+ * <li>{@link org.eclipse.core.runtime.IStatus#isOK() <em>Is OK</em>}</li>
+ * <li>{@link org.eclipse.core.runtime.IStatus#matches(int) <em>Matches</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public abstract class IStatusTest extends TestCase {
 
 	/**
-	 * The fixture for this IStatus test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this IStatus test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IStatus fixture = null;
@@ -43,8 +44,9 @@ public abstract class IStatusTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.core.runtime.IStatus#isOK() <em>Is OK</em>}' operation.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Tests the '{@link org.eclipse.core.runtime.IStatus#isOK() <em>Is OK</em>}
+	 * ' operation. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see org.eclipse.core.runtime.IStatus#isOK()
 	 * @generated
 	 */
@@ -69,9 +71,9 @@ public abstract class IStatusTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this IStatus test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this IStatus test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IStatus getFixture() {
@@ -79,9 +81,9 @@ public abstract class IStatusTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this IStatus test case.
-	 * <!-- begin-user-doc --> <!--
+	 * Sets the fixture for this IStatus test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(IStatus fixture) {

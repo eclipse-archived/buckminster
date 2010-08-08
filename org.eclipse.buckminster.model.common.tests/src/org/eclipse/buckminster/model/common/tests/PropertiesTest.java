@@ -16,17 +16,19 @@ import org.eclipse.buckminster.model.common.Properties;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.Properties#getProperties() <em>Get Properties</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Properties#getProperties()
+ * <em>Get Properties</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public abstract class PropertiesTest extends TestCase {
 
 	/**
-	 * The fixture for this Properties test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this Properties test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Properties fixture = null;
@@ -42,9 +44,11 @@ public abstract class PropertiesTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.buckminster.model.common.Properties#getProperties() <em>Get Properties</em>}' operation.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.model.common.Properties#getProperties()
+	 * <em>Get Properties</em>}' operation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.buckminster.model.common.Properties#getProperties()
 	 * @generated
 	 */
@@ -55,9 +59,9 @@ public abstract class PropertiesTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Properties test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this Properties test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Properties getFixture() {
@@ -65,9 +69,9 @@ public abstract class PropertiesTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Properties test case.
-	 * <!-- begin-user-doc -->
+	 * Sets the fixture for this Properties test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(Properties fixture) {

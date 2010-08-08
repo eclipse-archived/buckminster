@@ -18,12 +18,13 @@ import org.eclipse.emf.ecore.EClass;
  * <em><b>To Upper</b></em>'. <!-- end-user-doc -->
  * <p>
  * </p>
- *
+ * 
  * @generated
  */
 public class ToUpperImpl extends ValueFilterImpl implements ToUpper {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ToUpperImpl() {
@@ -38,6 +39,7 @@ public class ToUpperImpl extends ValueFilterImpl implements ToUpper {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

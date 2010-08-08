@@ -26,24 +26,27 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueImpl#isMutable <em>Mutable</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.impl.ValueImpl#isMutable <em>
+ * Mutable</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public abstract class ValueImpl extends EObjectImpl implements Value {
 	/**
-	 * The default value of the '{@link #isMutable() <em>Mutable</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #isMutable() <em>Mutable</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isMutable()
 	 * @generated
 	 * @ordered
 	 */
 	protected static final boolean MUTABLE_EDEFAULT = true;
 	/**
-	 * The cached value of the '{@link #isMutable() <em>Mutable</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #isMutable() <em>Mutable</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isMutable()
 	 * @generated
 	 * @ordered
@@ -53,6 +56,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ValueImpl() {
@@ -76,6 +80,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -90,6 +95,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -104,6 +110,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -111,7 +118,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.VALUE__MUTABLE:
-				setMutable((Boolean)newValue);
+				setMutable((Boolean) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -119,6 +126,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -154,6 +162,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -163,6 +172,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -175,11 +185,13 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (mutable: ");
@@ -207,6 +219,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

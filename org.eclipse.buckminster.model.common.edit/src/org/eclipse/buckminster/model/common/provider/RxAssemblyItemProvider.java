@@ -9,23 +9,13 @@ package org.eclipse.buckminster.model.common.provider;
 import java.util.Collection;
 import java.util.List;
 
-import java.util.regex.Pattern;
-
-import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.RxAssembly;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
-
-import org.eclipse.emf.ecore.EStructuralFeature;
-
-import org.eclipse.emf.ecore.util.FeatureMap;
-import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
-import org.eclipse.emf.edit.provider.IChildCreationExtender;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -33,7 +23,6 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -73,25 +62,24 @@ public class RxAssemblyItemProvider extends RxGroupItemProvider implements IEdit
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		String label = ((RxAssembly)object).getName();
-		return label == null || label.length() == 0 ?
-			getString("_UI_RxAssembly_type") :
-			getString("_UI_RxAssembly_type") + " " + label;
+		String label = ((RxAssembly) object).getName();
+		return label == null || label.length() == 0 ? getString("_UI_RxAssembly_type") : getString("_UI_RxAssembly_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -114,19 +102,10 @@ public class RxAssemblyItemProvider extends RxGroupItemProvider implements IEdit
 	 * @generated
 	 */
 	protected void addPatternPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_RxAssembly_pattern_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_RxAssembly_pattern_feature", "_UI_RxAssembly_type"),
-				 CommonPackage.Literals.RX_ASSEMBLY__PATTERN,
-				 false,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_RxAssembly_pattern_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_RxAssembly_pattern_feature", "_UI_RxAssembly_type"),
+				CommonPackage.Literals.RX_ASSEMBLY__PATTERN, false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

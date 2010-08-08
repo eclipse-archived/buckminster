@@ -53,11 +53,13 @@ import org.osgi.framework.InvalidSyntaxException;
 /**
  * <!-- begin-user-doc --> An implementation of the model <b>Factory</b>. <!--
  * end-user-doc -->
+ * 
  * @generated
  */
 public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @deprecated
 	 * @generated
 	 */
@@ -67,28 +69,27 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	}
 
 	/**
-	 * Creates the default factory implementation.
-	 * <!-- begin-user-doc --> <!--
+	 * Creates the default factory implementation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static CommonFactory init() {
 		try {
-			CommonFactory theCommonFactory = (CommonFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/Common-1.0"); 
+			CommonFactory theCommonFactory = (CommonFactory) EPackage.Registry.INSTANCE.getEFactory("http://www.eclipse.org/buckminster/Common-1.0");
 			if (theCommonFactory != null) {
 				return theCommonFactory;
 			}
-		}
-		catch (Exception exception) {
+		} catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
 		return new CommonFactoryImpl();
 	}
 
 	/**
-	 * Creates an instance of the factory.
-	 * <!-- begin-user-doc --> <!--
+	 * Creates an instance of the factory. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public CommonFactoryImpl() {
@@ -97,6 +98,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String convertCharSequenceToString(EDataType eDataType, Object instanceValue) {
@@ -105,6 +107,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String convertCoreExceptionToString(EDataType eDataType, Object instanceValue) {
@@ -122,6 +125,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String convertIStatusArrayToString(EDataType eDataType, Object instanceValue) {
@@ -141,17 +145,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public List<?> createListFromString(EDataType eDataType, String initialValue) {
-		return (List<?>)super.createFromString(initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String convertListToString(EDataType eDataType, Object instanceValue) {
@@ -169,6 +164,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String convertPropertyKeyToString(EDataType eDataType, Object instanceValue) {
@@ -176,25 +172,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public StringBuilder createStringBuilderFromString(EDataType eDataType, String initialValue) {
-		return (StringBuilder)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertStringBuilderToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
-	}
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String convertSplitTypeToString(EDataType eDataType, Object instanceValue) {
@@ -203,6 +182,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String convertStringBuilderToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(eDataType, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String convertThrowableToString(EDataType eDataType, Object instanceValue) {
@@ -211,6 +200,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -290,28 +280,45 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case CommonPackage.COMPONENT_IDENTIFIER: return createComponentIdentifier();
-			case CommonPackage.COMPONENT_REQUEST: return createComponentRequest();
-			case CommonPackage.CONSTANT: return createConstant();
-			case CommonPackage.DOCUMENTATION: return createDocumentation();
-			case CommonPackage.FORMAT: return createFormat();
-			case CommonPackage.MATCH: return createMatch();
-			case CommonPackage.PROPERTY_CONSTANT: return (EObject)createPropertyConstant();
-			case CommonPackage.PROPERTY_ELEMENT: return (EObject)createPropertyElement();
-			case CommonPackage.PROPERTY_REF: return createPropertyRef();
-			case CommonPackage.REPLACE: return createReplace();
-			case CommonPackage.RX_ASSEMBLY: return createRxAssembly();
-			case CommonPackage.RX_GROUP: return createRxGroup();
-			case CommonPackage.RX_PATTERN: return createRxPattern();
-			case CommonPackage.SPLIT: return createSplit();
-			case CommonPackage.TO_LOWER: return createToLower();
-			case CommonPackage.TO_UPPER: return createToUpper();
+			case CommonPackage.COMPONENT_IDENTIFIER:
+				return createComponentIdentifier();
+			case CommonPackage.COMPONENT_REQUEST:
+				return createComponentRequest();
+			case CommonPackage.CONSTANT:
+				return createConstant();
+			case CommonPackage.DOCUMENTATION:
+				return createDocumentation();
+			case CommonPackage.FORMAT:
+				return createFormat();
+			case CommonPackage.MATCH:
+				return createMatch();
+			case CommonPackage.PROPERTY_CONSTANT:
+				return (EObject) createPropertyConstant();
+			case CommonPackage.PROPERTY_ELEMENT:
+				return (EObject) createPropertyElement();
+			case CommonPackage.PROPERTY_REF:
+				return createPropertyRef();
+			case CommonPackage.REPLACE:
+				return createReplace();
+			case CommonPackage.RX_ASSEMBLY:
+				return createRxAssembly();
+			case CommonPackage.RX_GROUP:
+				return createRxGroup();
+			case CommonPackage.RX_PATTERN:
+				return createRxPattern();
+			case CommonPackage.SPLIT:
+				return createSplit();
+			case CommonPackage.TO_LOWER:
+				return createToLower();
+			case CommonPackage.TO_UPPER:
+				return createToUpper();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -319,14 +326,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public CharSequence createCharSequenceFromString(EDataType eDataType, String initialValue) {
-		return (CharSequence)super.createFromString(eDataType, initialValue);
+		return (CharSequence) super.createFromString(eDataType, initialValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -337,6 +346,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -347,6 +357,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -357,14 +368,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public CoreException createCoreExceptionFromString(EDataType eDataType, String initialValue) {
-		return (CoreException)super.createFromString(eDataType, initialValue);
+		return (CoreException) super.createFromString(eDataType, initialValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -388,6 +401,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -398,6 +412,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -441,10 +456,11 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public IStatus[] createIStatusArrayFromString(EDataType eDataType, String initialValue) {
-		return (IStatus[])super.createFromString(initialValue);
+		return (IStatus[]) super.createFromString(initialValue);
 	}
 
 	/**
@@ -464,6 +480,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public List<?> createListFromString(EDataType eDataType, String initialValue) {
+		return (List<?>) super.createFromString(initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -483,6 +509,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -493,6 +520,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -503,14 +531,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String createPropertyKeyFromString(EDataType eDataType, String initialValue) {
-		return (String)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.STRING, initialValue);
+		return (String) XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.STRING, initialValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -521,6 +551,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -530,8 +561,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public RxAssembly createRxAssembly() {
@@ -541,6 +572,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -551,6 +583,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -561,6 +594,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -571,24 +605,37 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public SplitType createSplitTypeFromString(EDataType eDataType, String initialValue) {
 		SplitType result = SplitType.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		if (result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	public Throwable createThrowableFromString(EDataType eDataType, String initialValue) {
-		return (Throwable)super.createFromString(eDataType, initialValue);
+	public StringBuilder createStringBuilderFromString(EDataType eDataType, String initialValue) {
+		return (StringBuilder) super.createFromString(eDataType, initialValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Throwable createThrowableFromString(EDataType eDataType, String initialValue) {
+		return (Throwable) super.createFromString(eDataType, initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -599,6 +646,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -649,11 +697,12 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	public CommonPackage getCommonPackage() {
-		return (CommonPackage)getEPackage();
+		return (CommonPackage) getEPackage();
 	}
 
 } // CommonFactoryImpl

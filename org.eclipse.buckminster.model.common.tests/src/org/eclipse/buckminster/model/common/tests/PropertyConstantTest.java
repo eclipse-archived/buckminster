@@ -22,15 +22,17 @@ import org.eclipse.buckminster.model.common.Value;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link java.util.Map.Entry#getTypedValue() <em>Value</em>}</li>
+ * <li>{@link java.util.Map.Entry#getTypedValue() <em>Value</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class PropertyConstantTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -38,9 +40,9 @@ public class PropertyConstantTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Property Constant test case.
-	 * <!-- begin-user-doc -->
+	 * The fixture for this Property Constant test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Map.Entry<String, Value> fixture = null;
@@ -56,8 +58,9 @@ public class PropertyConstantTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link java.util.Map.Entry#getTypedValue() <em>Value</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Tests the '{@link java.util.Map.Entry#getTypedValue() <em>Value</em>}'
+	 * feature getter. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see java.util.Map.Entry#getTypedValue()
 	 * @generated
 	 */
@@ -89,17 +92,19 @@ public class PropertyConstantTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	protected void setUp() throws Exception {
-		setFixture((Map.Entry<String, Value>)CommonFactory.eINSTANCE.create(CommonPackage.Literals.PROPERTY_CONSTANT));
+		setFixture((Map.Entry<String, Value>) CommonFactory.eINSTANCE.create(CommonPackage.Literals.PROPERTY_CONSTANT));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

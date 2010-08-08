@@ -21,12 +21,18 @@ import org.eclipse.equinox.p2.metadata.Version;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl#getId <em>Id</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl#getVersion <em>Version</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl#getType <em>Type</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl#getId
+ * <em>Id</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl#getVersion
+ * <em>Version</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl#getType
+ * <em>Type</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIdentifier {
@@ -51,8 +57,9 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 	protected String id = ID_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getVersion() <em>Version</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getVersion()
 	 * @generated
 	 * @ordered
@@ -60,8 +67,9 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 	protected static final Version VERSION_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getVersion() <em>Version</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getVersion()
 	 * @generated
 	 * @ordered
@@ -71,6 +79,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 	/**
 	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getType()
 	 * @generated
 	 * @ordered
@@ -80,6 +89,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 	/**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getType()
 	 * @generated
 	 * @ordered
@@ -88,6 +98,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ComponentIdentifierImpl() {
@@ -113,35 +124,9 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 		return cmp;
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-
-		if (!(o instanceof ComponentIdentifier))
-			return false;
-
-		ComponentIdentifier ci = (ComponentIdentifier) o;
-		return Trivial.equalsAllowNull(getId(), ci.getId()) && Trivial.equalsAllowNull(getType(), ci.getType())
-				&& Trivial.equalsAllowNull(getVersion(), ci.getVersion());
-	}
-
-	@Override
-	public int hashCode() {
-		int hc = id == null ? 31 : id.hashCode();
-		if (type != null) {
-			hc *= 37;
-			hc += type.hashCode();
-		}
-		if (version != null) {
-			hc *= 37;
-			hc += version.hashCode();
-		}
-		return hc;
-	}
-
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -160,6 +145,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -176,8 +162,22 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 		return super.eIsSet(featureID);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+
+		if (!(o instanceof ComponentIdentifier))
+			return false;
+
+		ComponentIdentifier ci = (ComponentIdentifier) o;
+		return Trivial.equalsAllowNull(getId(), ci.getId()) && Trivial.equalsAllowNull(getType(), ci.getType())
+				&& Trivial.equalsAllowNull(getVersion(), ci.getVersion());
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -185,13 +185,13 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.COMPONENT_IDENTIFIER__ID:
-				setId((String)newValue);
+				setId((String) newValue);
 				return;
 			case CommonPackage.COMPONENT_IDENTIFIER__VERSION:
-				setVersion((Version)newValue);
+				setVersion((Version) newValue);
 				return;
 			case CommonPackage.COMPONENT_IDENTIFIER__TYPE:
-				setType((String)newValue);
+				setType((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -199,6 +199,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -220,6 +221,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -229,6 +231,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -238,6 +241,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -245,8 +249,23 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 		return version;
 	}
 
+	@Override
+	public int hashCode() {
+		int hc = id == null ? 31 : id.hashCode();
+		if (type != null) {
+			hc *= 37;
+			hc += type.hashCode();
+		}
+		if (version != null) {
+			hc *= 37;
+			hc += version.hashCode();
+		}
+		return hc;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setId(String newId) {
@@ -258,6 +277,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -270,6 +290,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setVersion(Version newVersion) {
@@ -281,11 +302,13 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (id: ");
@@ -300,6 +323,7 @@ public class ComponentIdentifierImpl extends EObjectImpl implements ComponentIde
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

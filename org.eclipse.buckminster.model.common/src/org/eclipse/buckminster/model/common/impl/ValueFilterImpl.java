@@ -29,18 +29,23 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getMultiValueGroup <em>Multi Value Group</em>}</li>
- *   <li>{@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getValues <em>Values</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getMultiValueGroup
+ * <em>Multi Value Group</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ValueFilterImpl#getValues
+ * <em>Values</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 	/**
-	 * The cached value of the '{@link #getMultiValueGroup() <em>Multi Value Group</em>}' attribute list.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getMultiValueGroup()
+	 * <em>Multi Value Group</em>}' attribute list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getMultiValueGroup()
 	 * @generated
 	 * @ordered
@@ -49,6 +54,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ValueFilterImpl() {
@@ -57,6 +63,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -64,8 +71,9 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP:
-				if (coreType) return getMultiValueGroup();
-				return ((FeatureMap.Internal)getMultiValueGroup()).getWrapper();
+				if (coreType)
+					return getMultiValueGroup();
+				return ((FeatureMap.Internal) getMultiValueGroup()).getWrapper();
 			case CommonPackage.VALUE_FILTER__VALUES:
 				return getValues();
 		}
@@ -74,6 +82,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -81,15 +90,16 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP:
-				return ((InternalEList<?>)getMultiValueGroup()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getMultiValueGroup()).basicRemove(otherEnd, msgs);
 			case CommonPackage.VALUE_FILTER__VALUES:
-				return ((InternalEList<?>)getValues()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getValues()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -106,6 +116,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -114,11 +125,11 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP:
-				((FeatureMap.Internal)getMultiValueGroup()).set(newValue);
+				((FeatureMap.Internal) getMultiValueGroup()).set(newValue);
 				return;
 			case CommonPackage.VALUE_FILTER__VALUES:
 				getValues().clear();
-				getValues().addAll((Collection<? extends Value>)newValue);
+				getValues().addAll((Collection<? extends Value>) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -126,6 +137,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -144,6 +156,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public FeatureMap getMultiValueGroup() {
@@ -155,6 +168,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -163,8 +177,8 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated NOT
 	 */
 	public List<String> getValues(Map<String, String> properties) {
@@ -173,11 +187,13 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (multiValueGroup: ");
@@ -188,6 +204,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

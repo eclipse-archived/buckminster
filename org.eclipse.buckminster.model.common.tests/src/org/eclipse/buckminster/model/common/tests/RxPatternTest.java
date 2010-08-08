@@ -14,12 +14,14 @@ import org.eclipse.buckminster.model.common.RxPattern;
 /**
  * <!-- begin-user-doc --> A test case for the model object '
  * <em><b>Rx Pattern</b></em>'. <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class RxPatternTest extends RxPartTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -37,18 +39,19 @@ public class RxPatternTest extends RxPartTest {
 	}
 
 	/**
-	 * Returns the fixture for this Rx Pattern test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this Rx Pattern test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected RxPattern getFixture() {
-		return (RxPattern)fixture;
+		return (RxPattern) fixture;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -59,6 +62,7 @@ public class RxPatternTest extends RxPartTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

@@ -13,14 +13,15 @@ import org.eclipse.equinox.p2.metadata.IVersionedId;
 /**
  * <!-- begin-user-doc --> A test case for the model object '
  * <em><b>IVersioned Id</b></em>'. <!-- end-user-doc -->
+ * 
  * @generated
  */
 public abstract class IVersionedIdTest extends TestCase {
 
 	/**
-	 * The fixture for this IVersioned Id test case.
-	 * <!-- begin-user-doc -->
+	 * The fixture for this IVersioned Id test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IVersionedId fixture = null;
@@ -36,9 +37,9 @@ public abstract class IVersionedIdTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this IVersioned Id test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this IVersioned Id test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected IVersionedId getFixture() {
@@ -46,9 +47,9 @@ public abstract class IVersionedIdTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this IVersioned Id test case.
-	 * <!-- begin-user-doc
+	 * Sets the fixture for this IVersioned Id test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(IVersionedId fixture) {

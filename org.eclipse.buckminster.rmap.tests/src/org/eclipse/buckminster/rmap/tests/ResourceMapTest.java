@@ -6,6 +6,8 @@
  */
 package org.eclipse.buckminster.rmap.tests;
 
+import java.net.URL;
+
 import junit.framework.TestCase;
 
 import junit.textui.TestRunner;
@@ -27,8 +29,6 @@ import org.eclipse.buckminster.rmap.SearchPath;
  * The following features are tested:
  * <ul>
  *   <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getMatchers() <em>Matchers</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getLocators() <em>Locators</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getRedirects() <em>Redirects</em>}</li>
  * </ul>
  * </p>
  * <p>
@@ -140,40 +140,20 @@ public class ResourceMapTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.ResourceMap#getLocators() <em>Locators</em>}' feature getter.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.ResourceMap#getLocators()
-	 * @generated
-	 */
-	public void testGetLocators() {
-		// TODO: implement this feature getter test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.ResourceMap#getRedirects() <em>Redirects</em>}' feature getter.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.ResourceMap#getRedirects()
-	 * @generated
-	 */
-	public void testGetRedirects() {
-		// TODO: implement this feature getter test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
 	 * Tests the '{@link org.eclipse.buckminster.rmap.ResourceMap#getContextURL() <em>Get Context URL</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.buckminster.rmap.ResourceMap#getContextURL()
 	 * @generated NOT
 	 */
-	public void testGetContextURL() {
-		assertNotNull(fixture.getContextURL());
+	public void testGetContextURL() throws Exception {
+		assertNull(fixture.getContextURL());
+		ResourceMap rmap = RmapTests.loadTestResourceMap("urimatcher.rmap");
+		URL contextURL = rmap.getContextURL();
+		assertNotNull(contextURL);
+		String path = contextURL.getPath();
+		assertNotNull(path);
+		assertTrue(path.endsWith("/urimatcher.rmap"));
 	}
 
 } //ResourceMapTest

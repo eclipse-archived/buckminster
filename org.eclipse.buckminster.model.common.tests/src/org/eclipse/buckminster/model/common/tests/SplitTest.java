@@ -23,15 +23,18 @@ import org.eclipse.buckminster.model.common.Value;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.model.common.Split#getCompiledPattern() <em>Compiled Pattern</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Split#getCompiledPattern()
+ * <em>Compiled Pattern</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class SplitTest extends ValueFilterTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -39,9 +42,9 @@ public class SplitTest extends ValueFilterTest {
 	}
 
 	/**
-	 * Constructs a new Split test case with the given name.
-	 * <!-- begin-user-doc
+	 * Constructs a new Split test case with the given name. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public SplitTest(String name) {
@@ -49,9 +52,11 @@ public class SplitTest extends ValueFilterTest {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.buckminster.model.common.Split#getCompiledPattern() <em>Compiled Pattern</em>}' feature getter.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.model.common.Split#getCompiledPattern()
+	 * <em>Compiled Pattern</em>}' feature getter. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.buckminster.model.common.Split#getCompiledPattern()
 	 * @generated NOT
 	 */
@@ -60,7 +65,14 @@ public class SplitTest extends ValueFilterTest {
 
 	@Override
 	public void testGetValue__Map() {
-		assertEquals("test.component_one1.23.qualifier", getFixture().getValue(Collections.<String,String>emptyMap()));
+		assertEquals("test.component_one1.23.qualifier", getFixture().getValue(Collections.<String, String> emptyMap()));
+	}
+
+	@Override
+	public void testGetValues() {
+		List<Value> values = getFixture().getValues();
+		assertNotNull(values);
+		assertEquals(1, values.size());
 	}
 
 	@Override
@@ -73,26 +85,19 @@ public class SplitTest extends ValueFilterTest {
 	}
 
 	@Override
-	public void testGetValues() {
-		List<Value> values = getFixture().getValues();
-		assertNotNull(values);
-		assertEquals(1, values.size());
-	}
-
-	@Override
 	public void testIsMultiValued() {
 		assertTrue(fixture.isMultiValued());
 	}
 
 	/**
-	 * Returns the fixture for this Split test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Split test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected Split getFixture() {
-		return (Split)fixture;
+		return (Split) fixture;
 	}
 
 	/**
@@ -115,6 +120,7 @@ public class SplitTest extends ValueFilterTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

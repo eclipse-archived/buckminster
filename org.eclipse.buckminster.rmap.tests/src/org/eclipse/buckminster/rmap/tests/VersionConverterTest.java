@@ -6,12 +6,17 @@
  */
 package org.eclipse.buckminster.rmap.tests;
 
+import java.util.regex.Pattern;
+
 import junit.framework.TestCase;
 
 import junit.textui.TestRunner;
 
+import org.eclipse.buckminster.model.common.util.VersionHelper;
 import org.eclipse.buckminster.rmap.RmapFactory;
+import org.eclipse.buckminster.rmap.Transform;
 import org.eclipse.buckminster.rmap.VersionConverter;
+import org.eclipse.equinox.p2.metadata.Version;
 
 /**
  * <!-- begin-user-doc -->
@@ -79,11 +84,34 @@ public class VersionConverterTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see junit.framework.TestCase#setUp()
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(RmapFactory.eINSTANCE.createVersionConverter());
+		RmapFactory factory = RmapFactory.eINSTANCE;
+		setFixture(factory.createVersionConverter());
+		fixture.setVersionFormat(VersionHelper.getOSGiFormat());
+
+		Transform transform = factory.createTransform();
+		transform.setFromPattern(Pattern.compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"));
+		transform.setFromReplacement("REL$1_$2_$3");
+		transform.setToPattern(Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"));
+		transform.setToReplacement("$1.$2.0.$3");
+		fixture.getTransformers().add(transform);
+
+		transform = factory.createTransform();
+		transform.setFromPattern(Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"));
+		transform.setFromReplacement("REL$1_$2_$3$4");
+		transform.setToPattern(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"));
+		transform.setToReplacement("$1.$2.$3.$4");
+		fixture.getTransformers().add(transform);
+
+		transform = factory.createTransform();
+		transform.setFromPattern(Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)"));
+		transform.setFromReplacement("REL$1_$2_$3");
+		transform.setToPattern(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"));
+		transform.setToReplacement("$1.$2.$3");
+		fixture.getTransformers().add(transform);
 	}
 
 	/**
@@ -102,12 +130,20 @@ public class VersionConverterTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.buckminster.rmap.VersionConverter#createVersion(java.lang.String)
-	 * @generated
+	 * @generated NOT
 	 */
 	public void testCreateVersion__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+		Version version = fixture.createVersion("REL1_2_3foo");
+		assertNotNull(version);
+		assertEquals("1.2.3.foo", version.toString());
+		
+		version = fixture.createVersion("REL1_2_foo");
+		assertNotNull(version);
+		assertEquals("1.2.0.foo", version.toString());
+		
+		version = fixture.createVersion("REL1_2_3");
+		assertNotNull(version);
+		assertEquals("1.2.3", version.toString());
 	}
 
 	/**
@@ -115,12 +151,12 @@ public class VersionConverterTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.buckminster.rmap.VersionConverter#createIdentifier(org.eclipse.equinox.p2.metadata.Version)
-	 * @generated
+	 * @generated NOT
 	 */
 	public void testCreateIdentifier__Version() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+		assertEquals("REL1_2_3foo", fixture.createIdentifier(Version.create("1.2.3.foo")));
+		assertEquals("REL1_2_foo", fixture.createIdentifier(Version.create("1.2.0.foo")));
+		assertEquals("REL1_2_3", fixture.createIdentifier(Version.create("1.2.3")));
 	}
 
 } //VersionConverterTest
