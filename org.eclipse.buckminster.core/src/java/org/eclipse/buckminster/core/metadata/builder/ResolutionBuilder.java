@@ -12,13 +12,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.resolver.ResourceMapResolver;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.runtime.IFileInfo;
@@ -52,7 +53,7 @@ public class ResolutionBuilder implements IResolution {
 
 	private String repository;
 
-	private final ComponentRequestBuilder request = new ComponentRequestBuilder();
+	private final ComponentRequest request = CommonFactory.eINSTANCE.createComponentRequest();
 
 	private Filter resolutionFilter;
 
@@ -91,7 +92,7 @@ public class ResolutionBuilder implements IResolution {
 		provider = null;
 		readerTypeId = null;
 		repository = null;
-		request.clear();
+		setRequest(null);
 		resolutionFilter = null;
 		revision = null;
 		size = -1L;
@@ -170,7 +171,7 @@ public class ResolutionBuilder implements IResolution {
 	}
 
 	@Override
-	public ComponentRequestBuilder getRequest() {
+	public ComponentRequest getRequest() {
 		return request;
 	}
 
@@ -212,7 +213,7 @@ public class ResolutionBuilder implements IResolution {
 		resolutionFilter = resolution.getResolutionFilter();
 		remoteName = resolution.getRemoteName();
 		repository = resolution.getRepository();
-		request.initFrom(resolution.getRequest());
+		setRequest(resolution.getRequest());
 		size = resolution.getSize();
 		artifactInfo = resolution.getArtifactInfo();
 		branchOrTag = resolution.getMatchedBranchOrTag();
@@ -294,6 +295,20 @@ public class ResolutionBuilder implements IResolution {
 
 	public void setRepository(String repository) {
 		this.repository = repository;
+	}
+
+	public final void setRequest(ComponentRequest cr) {
+		if (cr == null) {
+			request.setId(null);
+			request.setType(null);
+			request.setRange(null);
+			request.setFilter(null);
+		} else {
+			request.setId(cr.getId());
+			request.setType(cr.getType());
+			request.setRange(cr.getRange());
+			request.setFilter(cr.getFilter());
+		}
 	}
 
 	public void setResolutionFilter(Filter resolutionFilter) {

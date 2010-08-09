@@ -16,13 +16,12 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Trivial;
 
@@ -32,7 +31,7 @@ import org.eclipse.buckminster.runtime.Trivial;
 public class ComponentQueryBuilder implements IComponentQuery {
 	private final ArrayList<AdvisorNodeBuilder> advisorNodes = new ArrayList<AdvisorNodeBuilder>();
 
-	private final ComponentRequestBuilder rootRequest = new ComponentRequestBuilder();
+	private final ComponentRequest rootRequest = CommonFactory.eINSTANCE.createComponentRequest();
 
 	private Documentation documentation;
 
@@ -57,7 +56,7 @@ public class ComponentQueryBuilder implements IComponentQuery {
 	}
 
 	public void clear() {
-		rootRequest.clear();
+		setRootRequest(null);
 		advisorNodes.clear();
 		contextURL = null;
 		properties = null;
@@ -114,10 +113,6 @@ public class ComponentQueryBuilder implements IComponentQuery {
 
 	@Override
 	public ComponentRequest getRootRequest() {
-		return rootRequest.createComponentRequest();
-	}
-
-	public ComponentRequestBuilder getRootRequestBuilder() {
 		return rootRequest;
 	}
 
@@ -141,7 +136,7 @@ public class ComponentQueryBuilder implements IComponentQuery {
 		contextURL = query.getContextURL();
 		propertiesURL = query.getPropertiesURL();
 		resourceMapURL = query.getResourceMapURL();
-		rootRequest.initFrom(query.getRootRequest());
+		setRootRequest(query.getRootRequest());
 		documentation = query.getDocumentation();
 		shortDesc = query.getShortDesc();
 	}
@@ -185,8 +180,18 @@ public class ComponentQueryBuilder implements IComponentQuery {
 		this.resourceMapURL = resourceMapURL;
 	}
 
-	public final void setRootRequest(IComponentRequest rootRequest) {
-		this.rootRequest.initFrom(rootRequest);
+	public final void setRootRequest(ComponentRequest cr) {
+		if (cr == null) {
+			rootRequest.setId(null);
+			rootRequest.setType(null);
+			rootRequest.setRange(null);
+			rootRequest.setFilter(null);
+		} else {
+			rootRequest.setId(cr.getId());
+			rootRequest.setType(cr.getType());
+			rootRequest.setRange(cr.getRange());
+			rootRequest.setFilter(cr.getFilter());
+		}
 	}
 
 	public void setShortDesc(String shortDesc) {

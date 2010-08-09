@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
@@ -32,6 +33,7 @@ import org.eclipse.buckminster.model.common.SplitType;
 import org.eclipse.buckminster.model.common.ToLower;
 import org.eclipse.buckminster.model.common.ToUpper;
 import org.eclipse.buckminster.model.common.Value;
+import org.eclipse.buckminster.model.common.util.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.core.runtime.CoreException;
@@ -289,6 +291,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 		switch (eClass.getClassifierID()) {
 			case CommonPackage.COMPONENT_IDENTIFIER:
 				return createComponentIdentifier();
+			case CommonPackage.COMPONENT_NAME:
+				return createComponentName();
 			case CommonPackage.COMPONENT_REQUEST:
 				return createComponentRequest();
 			case CommonPackage.CONSTANT:
@@ -342,6 +346,47 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	public ComponentIdentifier createComponentIdentifier() {
 		ComponentIdentifierImpl componentIdentifier = new ComponentIdentifierImpl();
 		return componentIdentifier;
+	}
+
+	public ComponentIdentifier createComponentIdentifier(String componentIdentifierStr) {
+		Version version = null;
+		int verIdx = componentIdentifierStr.indexOf('$');
+		if (verIdx >= 0) {
+			String versionStr = componentIdentifierStr.substring(verIdx + 1);
+			componentIdentifierStr = componentIdentifierStr.substring(0, verIdx);
+
+			String versionType = null;
+			int typeIdx = versionStr.indexOf('#');
+			if (typeIdx > 0) {
+				versionType = versionStr.substring(typeIdx + 1);
+				versionStr = versionStr.substring(0, typeIdx);
+				version = VersionHelper.createVersion(versionType, versionStr);
+			} else
+				version = VersionHelper.parseVersion(versionStr);
+		}
+
+		String componentType = null;
+		int catIdx = componentIdentifierStr.indexOf(':');
+		if (catIdx >= 0) {
+			componentType = componentIdentifierStr.substring(catIdx + 1);
+			componentIdentifierStr = componentIdentifierStr.substring(0, catIdx);
+		}
+
+		ComponentIdentifier result = createComponentIdentifier();
+		result.setId(componentIdentifierStr);
+		result.setType(componentType);
+		result.setVersion(version);
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public ComponentName createComponentName() {
+		ComponentNameImpl componentName = new ComponentNameImpl();
+		return componentName;
 	}
 
 	/**

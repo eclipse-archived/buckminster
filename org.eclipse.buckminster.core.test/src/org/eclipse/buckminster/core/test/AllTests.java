@@ -6,8 +6,7 @@ import junit.framework.TestSuite;
 import org.eclipse.buckminster.core.test.command.CommandsTest;
 import org.eclipse.buckminster.core.test.cspec.CSpecBuilderTest;
 import org.eclipse.buckminster.core.test.cspec.CSpecParserTest;
-import org.eclipse.buckminster.core.test.property.PropertyFormatTest;
-import org.eclipse.buckminster.core.test.rmap.RMapTest;
+import org.eclipse.buckminster.core.test.rmap.ResolverTest;
 
 public class AllTests {
 
@@ -18,8 +17,7 @@ public class AllTests {
 		suite.addTestSuite(CommandsTest.class);
 		suite.addTestSuite(CSpecBuilderTest.class);
 		suite.addTestSuite(CSpecParserTest.class);
-		suite.addTestSuite(PropertyFormatTest.class);
-		suite.addTestSuite(RMapTest.class);
+		suite.addTestSuite(ResolverTest.class);
 		// $JUnit-END$
 		return suite;
 	}

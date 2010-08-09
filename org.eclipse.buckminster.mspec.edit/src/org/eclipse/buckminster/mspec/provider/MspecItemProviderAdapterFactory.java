@@ -10,10 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.buckminster.model.common.CommonFactory;
-import org.eclipse.buckminster.model.common.CommonPackage;
-import org.eclipse.buckminster.model.common.Documentation;
-import org.eclipse.buckminster.model.common.util.CommonSwitch;
 import org.eclipse.buckminster.mspec.MspecPackage;
 
 import org.eclipse.buckminster.mspec.util.MspecAdapterFactory;
@@ -24,9 +20,6 @@ import org.eclipse.emf.common.notify.Notifier;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.FeatureMapUtil;
-import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 
 import org.eclipse.emf.edit.provider.ChangeNotifier;
@@ -55,97 +48,6 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
  */
 public class MspecItemProviderAdapterFactory extends MspecAdapterFactory implements ComposeableAdapterFactory, IChangeNotifier, IDisposable,
 		IChildCreationExtender {
-	/**
-	 * A child creation extender for the {@link CommonPackage}. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public static class CommonChildCreationExtender implements IChildCreationExtender {
-		/**
-		 * The switch for creating child descriptors specific to each extended
-		 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		protected static class CreationSwitch extends CommonSwitch<Object> {
-			/**
-			 * The child descriptors being populated. <!-- begin-user-doc -->
-			 * <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			protected List<Object> newChildDescriptors;
-
-			/**
-			 * The domain in which to create the children. <!-- begin-user-doc
-			 * --> <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			protected EditingDomain editingDomain;
-
-			/**
-			 * Creates the a switch for populating child descriptors in the
-			 * given domain. <!-- begin-user-doc --> <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			CreationSwitch(List<Object> newChildDescriptors, EditingDomain editingDomain) {
-				this.newChildDescriptors = newChildDescriptors;
-				this.editingDomain = editingDomain;
-			}
-
-			/**
-			 * <!-- begin-user-doc --> <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			@Override
-			public Object caseDocumentation(Documentation object) {
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						MspecPackage.Literals.DOCUMENT_ROOT__PROPERTY, CommonFactory.eINSTANCE.createPropertyConstant())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						MspecPackage.Literals.DOCUMENT_ROOT__PROPERTY_ELEMENT, CommonFactory.eINSTANCE.createPropertyElement())));
-
-				return null;
-			}
-
-			/**
-			 * <!-- begin-user-doc --> <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			protected CommandParameter createChildParameter(Object feature, Object child) {
-				return new CommandParameter(null, feature, child);
-			}
-
-		}
-
-		/**
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		@Override
-		public Collection<Object> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
-			ArrayList<Object> result = new ArrayList<Object>();
-			new CreationSwitch(result, editingDomain).doSwitch((EObject) object);
-			return result;
-		}
-
-		/**
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		@Override
-		public ResourceLocator getResourceLocator() {
-			return MspecEditPlugin.INSTANCE;
-		}
-	}
-
 	/**
 	 * This keeps track of the root adapter factory that delegates to this
 	 * adapter factory. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -246,6 +148,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter adapt(Notifier notifier, Object type) {
 		return super.adapt(notifier, this);
@@ -256,6 +159,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object adapt(Object object, Object type) {
 		if (isFactoryForType(type)) {
@@ -273,7 +177,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void addListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.addListener(notifyChangedListener);
 	}
@@ -284,6 +188,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createDocumentRootAdapter() {
 		if (documentRootItemProvider == null) {
@@ -300,6 +205,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMaterializationDirectiveAdapter() {
 		if (materializationDirectiveItemProvider == null) {
@@ -316,6 +222,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMaterializationNodeAdapter() {
 		if (materializationNodeItemProvider == null) {
@@ -332,6 +239,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMaterializationSpecAdapter() {
 		if (materializationSpecItemProvider == null) {
@@ -348,6 +256,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createUnpackAdapter() {
 		if (unpackItemProvider == null) {
@@ -363,7 +272,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void dispose() {
 		if (documentRootItemProvider != null)
 			documentRootItemProvider.dispose();
@@ -384,7 +293,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void fireNotifyChanged(Notification notification) {
 		changeNotifier.fireNotifyChanged(notification);
 
@@ -407,7 +316,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
 		return childCreationExtenderManager.getNewChildDescriptors(object, editingDomain);
 	}
@@ -417,7 +326,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ResourceLocator getResourceLocator() {
 		return childCreationExtenderManager;
 	}
@@ -428,7 +337,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ComposeableAdapterFactory getRootAdapterFactory() {
 		return parentAdapterFactory == null ? this : parentAdapterFactory.getRootAdapterFactory();
 	}
@@ -438,6 +347,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean isFactoryForType(Object type) {
 		return supportedTypes.contains(type) || super.isFactoryForType(type);
@@ -448,7 +358,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void removeListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.removeListener(notifyChangedListener);
 	}
@@ -459,7 +369,7 @@ public class MspecItemProviderAdapterFactory extends MspecAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setParentAdapterFactory(ComposedAdapterFactory parentAdapterFactory) {
 		this.parentAdapterFactory = parentAdapterFactory;
 	}

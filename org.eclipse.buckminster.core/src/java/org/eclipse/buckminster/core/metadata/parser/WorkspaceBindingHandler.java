@@ -12,17 +12,16 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.common.parser.PropertyManagerHandler;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.equinox.p2.metadata.Version;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -61,16 +60,15 @@ public class WorkspaceBindingHandler extends PropertyManagerHandler {
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException {
 		super.handleAttributes(attrs);
-		String name = getStringValue(attrs, NamedElement.ATTR_NAME);
-		String ctype = getOptionalStringValue(attrs, ComponentName.ATTR_COMPONENT_TYPE);
-		Version version;
+		cid = CommonFactory.eINSTANCE.createComponentIdentifier();
+		cid.setId(getStringValue(attrs, NamedElement.ATTR_NAME));
+		cid.setType(getOptionalStringValue(attrs, "componentType")); //$NON-NLS-1$
 		try {
-			version = VersionHelper.parseVersionAttributes(attrs);
+			cid.setVersion(VersionHelper.parseVersionAttributes(attrs));
 		} catch (CoreException e) {
 			throw new SAXParseException(e.getMessage(), getDocumentLocator());
 		}
 		properties = null;
-		cid = new ComponentIdentifier(name, ctype, version);
 		location = Path.fromPortableString(this.getStringValue(attrs, Materialization.ATTR_LOCATION));
 		wsRoot = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_LOCATION));
 		wsRelativePath = Path.fromPortableString(getStringValue(attrs, WorkspaceBinding.ATTR_WS_RELATIVE_PATH));

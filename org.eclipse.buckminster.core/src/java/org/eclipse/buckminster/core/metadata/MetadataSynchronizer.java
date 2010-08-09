@@ -19,9 +19,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -31,6 +28,9 @@ import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.reader.EclipsePreferencesReader;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.runtime.AttachableProgressMonitor;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
@@ -282,11 +282,11 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 
 		monitor.beginTask(null, 100);
 		try {
-			ComponentRequest request;
+			ComponentRequest request = CommonFactory.eINSTANCE.createComponentRequest();
 			if (oldInfo == null)
-				request = new ComponentRequest(project.getName(), null, null);
+				request.setId(project.getName());
 			else
-				request = new ComponentRequest(oldInfo.getRequest().getName(), null, null);
+				request.setId(oldInfo.getRequest().getId());
 
 			ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 			queryBld.setRootRequest(request);
@@ -400,7 +400,7 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 	}
 
 	private static void updateProjectReferences(IProject project, ICSpecData cspec, IProgressMonitor monitor) throws CoreException {
-		Collection<? extends IComponentRequest> crefs = cspec.getDependencies();
+		Collection<? extends ComponentRequest> crefs = cspec.getDependencies();
 		if (crefs.size() == 0) {
 			// No use continuing. Project doesn't have any references.
 			//
@@ -419,7 +419,7 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 		Logger logger = CorePlugin.getLogger();
 		monitor.beginTask(null, 50 + crefs.size() * 10);
 		ArrayList<IProject> refdProjs = null;
-		for (IComponentRequest cref : crefs) {
+		for (ComponentRequest cref : crefs) {
 			for (IResource resource : WorkspaceInfo.getResources(cref)) {
 				if (!(resource instanceof IProject))
 					//
@@ -431,7 +431,7 @@ public class MetadataSynchronizer implements IResourceChangeListener {
 
 				IProject refdProj = (IProject) resource;
 				if (!refdProj.isOpen()) {
-					logger.warning(NLS.bind(Messages.Project_0_references_closed_project_1, project.getName(), cref.getName()));
+					logger.warning(NLS.bind(Messages.Project_0_references_closed_project_1, project.getName(), cref.getId()));
 				} else if (!oldSet.contains(refdProj.getName())) {
 					// Didn't have this one.
 					//

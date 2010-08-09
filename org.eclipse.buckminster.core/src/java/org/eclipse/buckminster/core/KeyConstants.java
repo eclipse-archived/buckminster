@@ -14,12 +14,6 @@ package org.eclipse.buckminster.core;
  * @author Thomas Hallgren
  */
 public interface KeyConstants {
-	String COMPONENT_NAME = "buckminster.component"; //$NON-NLS-1$
-
-	String VERSION_DESIGNATOR = "buckminster.version.designator"; //$NON-NLS-1$
-
-	String COMPONENT_VERSION = "buckminster.version"; //$NON-NLS-1$
-
 	String READER_TYPE = "buckminster.readerType"; //$NON-NLS-1$
 
 	String IS_MUTABLE = "buckminster.mutable"; //$NON-NLS-1$
@@ -39,8 +33,6 @@ public interface KeyConstants {
 	String SNAPSHOT = "buckminster.snapshot"; //$NON-NLS-1$
 
 	String OVERRIDE_ECLIPSE_INSTALLED = "buckminster.override.eclipse.installed"; //$NON-NLS-1$
-
-	String COMPONENT_TYPE = "buckminster.component.type"; //$NON-NLS-1$
 
 	String ACTION_OUTPUT_ROOT = "buckminster.output.root"; //$NON-NLS-1$
 

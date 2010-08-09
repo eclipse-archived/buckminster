@@ -5,20 +5,18 @@
  * listed above, as the Initial Contributor under such license. The text of
  * such license is available at www.eclipse.org.
  *****************************************************************************/
-package org.eclipse.buckminster.core.cspec.model;
+package org.eclipse.buckminster.model.common.util;
 
-import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
-import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
  */
-public class ComponentRequestConflictException extends LocalizedException {
+public class ComponentRequestConflictException extends IllegalArgumentException {
 	private static final long serialVersionUID = -1279777286044718638L;
 
-	public ComponentRequestConflictException(IComponentRequest rq1, IComponentRequest rq2) {
-		super(NLS.bind(Messages.Component_request_0_is_in_conflict_with_request_1, rq1, rq2));
+	public ComponentRequestConflictException(ComponentRequest rq1, ComponentRequest rq2) {
+		super(NLS.bind("Component request {0} is in conflict with request {1}", rq1, rq2));
 	}
 }

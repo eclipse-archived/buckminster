@@ -10,12 +10,12 @@ package org.eclipse.buckminster.core.actor;
 import java.util.Map;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -50,7 +50,7 @@ public interface IGlobalContext extends IModelCache {
 	 * @return A generated materialization or <code>null</code> if no
 	 *         materialization for the given cid has been added to this context.
 	 */
-	Materialization getGeneratedMaterialization(IComponentIdentifier cid);
+	Materialization getGeneratedMaterialization(ComponentIdentifier cid);
 
 	/**
 	 * Obtains a generated resolution from the context that matches the request
@@ -60,7 +60,7 @@ public interface IGlobalContext extends IModelCache {
 	 * @return A generated resolution or <code>null</code> if no matching
 	 *         resolution has been added to this context.
 	 */
-	Resolution getGeneratedResolution(IComponentRequest request);
+	Resolution getGeneratedResolution(ComponentRequest request);
 
 	/**
 	 * Returns the cache that is in effect for the whole top level invocation

@@ -78,12 +78,12 @@ public interface RmapPackage extends EPackage {
 		EClass REDIRECT = eINSTANCE.getRedirect();
 
 		/**
-		 * The meta object literal for the '<em><b>Href</b></em>' attribute
-		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * The meta object literal for the '<em><b>Redirect To</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
-		EAttribute REDIRECT__HREF = eINSTANCE.getRedirect_Href();
+		EAttribute REDIRECT__REDIRECT_TO = eINSTANCE.getRedirect_RedirectTo();
 
 		/**
 		 * The meta object literal for the '
@@ -1410,13 +1410,13 @@ public interface RmapPackage extends EPackage {
 	int REDIRECT__PATTERN = MATCHER__PATTERN;
 
 	/**
-	 * The feature id for the '<em><b>Href</b></em>' attribute. <!--
+	 * The feature id for the '<em><b>Redirect To</b></em>' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int REDIRECT__HREF = MATCHER_FEATURE_COUNT + 0;
+	int REDIRECT__REDIRECT_TO = MATCHER_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Redirect</em>' class. <!--
@@ -2325,15 +2325,15 @@ public interface RmapPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.rmap.Redirect#getRedirectTo
+	 * <em>Redirect To</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the attribute '<em>Href</em>'.
-	 * @see org.eclipse.buckminster.rmap.Redirect#getHref()
+	 * @return the meta object for the attribute '<em>Redirect To</em>'.
+	 * @see org.eclipse.buckminster.rmap.Redirect#getRedirectTo()
 	 * @see #getRedirect()
 	 * @generated
 	 */
-	EAttribute getRedirect_Href();
+	EAttribute getRedirect_RedirectTo();
 
 	/**
 	 * Returns the meta object for class '

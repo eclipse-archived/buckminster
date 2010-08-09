@@ -15,9 +15,9 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -31,7 +31,7 @@ import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 
 public abstract class AbstractQualifierGenerator extends AbstractExtension implements IQualifierGenerator {
-	protected IInstallableUnit obtainFromReferenceRepo(IComponentIdentifier identifier, IProgressMonitor monitor) throws CoreException {
+	protected IInstallableUnit obtainFromReferenceRepo(ComponentIdentifier identifier, IProgressMonitor monitor) throws CoreException {
 		MonitorUtils.begin(monitor, 2000);
 		try {
 			IActionContext ctx = AbstractActor.getActiveContext();
@@ -43,8 +43,8 @@ public abstract class AbstractQualifierGenerator extends AbstractExtension imple
 			if (repo == null)
 				return null;
 
-			String id = identifier.getName();
-			if (IComponentType.ECLIPSE_FEATURE.equals(identifier.getComponentTypeID()))
+			String id = identifier.getId();
+			if (IComponentType.ECLIPSE_FEATURE.equals(identifier.getType()))
 				id += ".feature.group"; //$NON-NLS-1$
 
 			VersionRange range = VersionHelper.unqualifiedRange(identifier.getVersion());

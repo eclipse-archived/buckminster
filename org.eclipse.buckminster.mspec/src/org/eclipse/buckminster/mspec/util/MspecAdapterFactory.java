@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.mspec.util;
 
+import org.eclipse.buckminster.model.common.Properties;
 import org.eclipse.buckminster.mspec.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -38,6 +39,12 @@ public class MspecAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	protected MspecSwitch<Adapter> modelSwitch = new MspecSwitch<Adapter>() {
+
+		@Override
+		public Adapter caseAbstractDocumentRoot(EObject object) {
+			return createAbstractDocumentRootAdapter();
+		}
+
 		@Override
 		public Adapter caseDocumentRoot(EObject object) {
 			return createDocumentRootAdapter();
@@ -56,6 +63,11 @@ public class MspecAdapterFactory extends AdapterFactoryImpl {
 		@Override
 		public Adapter caseMaterializationSpec(MaterializationSpec object) {
 			return createMaterializationSpecAdapter();
+		}
+
+		@Override
+		public Adapter caseProperties(Properties object) {
+			return createPropertiesAdapter();
 		}
 
 		@Override
@@ -82,6 +94,21 @@ public class MspecAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.emf.ecore.EObject <em>Abstract Document Root</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.emf.ecore.EObject
+	 * @generated
+	 */
+	public Adapter createAbstractDocumentRootAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates an adapter for the <code>target</code>. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
@@ -90,6 +117,7 @@ public class MspecAdapterFactory extends AdapterFactoryImpl {
 	 * @return the adapter for the <code>target</code>.
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createAdapter(Notifier target) {
 		return modelSwitch.doSwitch((EObject) target);
@@ -171,6 +199,22 @@ public class MspecAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.model.common.Properties
+	 * <em>Properties</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.Properties
+	 * @generated
+	 */
+	public Adapter createPropertiesAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
 	 * {@link org.eclipse.buckminster.mspec.Unpack <em>Unpack</em>}'. <!--
 	 * begin-user-doc --> This default implementation returns null so that we
 	 * can easily ignore cases; it's useful to ignore a case when inheritance
@@ -193,6 +237,7 @@ public class MspecAdapterFactory extends AdapterFactoryImpl {
 	 * @return whether this factory is applicable for the type of the object.
 	 * @generated
 	 */
+
 	@Override
 	public boolean isFactoryForType(Object object) {
 		if (object == modelPackage) {

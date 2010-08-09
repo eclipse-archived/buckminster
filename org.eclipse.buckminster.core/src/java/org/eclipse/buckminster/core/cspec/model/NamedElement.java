@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.model;
 
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
 import org.eclipse.buckminster.sax.Utils;
 import org.xml.sax.helpers.AttributesImpl;
@@ -18,6 +19,10 @@ public abstract class NamedElement extends AbstractSaxableElement {
 	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
 
 	private final String name;
+
+	protected NamedElement(ComponentName source) {
+		name = source.getId();
+	}
 
 	protected NamedElement(NamedElement source) {
 		name = source.getName();

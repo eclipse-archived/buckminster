@@ -27,14 +27,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.common.util.WrappedException;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.osgi.util.NLS;
 
 /**
  * @author Thomas Hallgren
@@ -122,20 +114,7 @@ public class ResourceMapResolverFactory extends AbstractExtension implements IRe
 
 	@Override
 	public ResourceMap getResourceMap(ResolutionContext context, URL url, IConnectContext cctx) throws CoreException {
-		String stream = url.toExternalForm();
-		Resource resource;
-		try {
-			ResourceSet rs = new ResourceSetImpl();
-			// TODO: Figure out how to use the IConnectionContext with EMF load
-			resource = rs.getResource(URI.createURI(url.toString()), true);
-		} catch (WrappedException e) {
-			throw BuckminsterException.wrap(e.getCause());
-		}
-		EList<EObject> content = resource.getContents();
-		if (content.size() != 1)
-			throw BuckminsterException.fromMessage(NLS.bind("Unable to parse rmap file from {0}", stream)); //$NON-NLS-1$
-
-		return (ResourceMap) content.get(0);
+		return ResourceMapResolver.getResourceMap(url, cctx);
 	}
 
 	/**

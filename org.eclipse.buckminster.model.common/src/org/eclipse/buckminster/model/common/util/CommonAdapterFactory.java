@@ -9,6 +9,7 @@ package org.eclipse.buckminster.model.common.util;
 import java.util.Map;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
@@ -70,6 +71,11 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 		@Override
 		public Adapter caseComponentIdentifier(ComponentIdentifier object) {
 			return createComponentIdentifierAdapter();
+		}
+
+		@Override
+		public Adapter caseComponentName(ComponentName object) {
+			return createComponentNameAdapter();
 		}
 
 		@Override
@@ -258,6 +264,22 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createComponentIdentifierAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.model.common.ComponentName
+	 * <em>Component Name</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.ComponentName
+	 * @generated
+	 */
+	public Adapter createComponentNameAdapter() {
 		return null;
 	}
 

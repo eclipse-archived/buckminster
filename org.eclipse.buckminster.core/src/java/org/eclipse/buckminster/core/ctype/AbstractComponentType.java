@@ -22,7 +22,6 @@ import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -31,6 +30,7 @@ import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -308,9 +308,9 @@ public abstract class AbstractComponentType extends AbstractExtension implements
 		try {
 			reader[0] = rInfo.getReader(MonitorUtils.subMonitor(monitor, 200));
 			ComponentRequest request = rInfo.getNodeQuery().getComponentRequest();
-			String componentType = request.getComponentTypeID();
+			String componentType = request.getType();
 			if (componentType != null && !getId().equals(componentType))
-				throw new ComponentTypeMismatchException(request.getName(), componentType, getId());
+				throw new ComponentTypeMismatchException(request.getId(), componentType, getId());
 
 			IResolutionBuilder builder = getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 800));
 			return builder.build(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 1000));

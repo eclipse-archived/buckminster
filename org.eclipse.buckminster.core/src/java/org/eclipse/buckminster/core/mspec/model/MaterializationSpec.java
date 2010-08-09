@@ -20,9 +20,6 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.IComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -33,7 +30,10 @@ import org.eclipse.buckminster.core.mspec.builder.MaterializationNodeBuilder;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
+import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -136,14 +136,14 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 	}
 
 	@Override
-	public IMaterializationNode getMatchingNode(IComponentName cName) {
-		if (currentBom != null && cName instanceof IComponentIdentifier) {
+	public IMaterializationNode getMatchingNode(ComponentName cName) {
+		if (currentBom != null && cName instanceof ComponentIdentifier) {
 			try {
-				return getMatchingNode(currentBom.getResolvedNode(((IComponentIdentifier) cName)).getResolution());
+				return getMatchingNode(currentBom.getResolvedNode(((ComponentIdentifier) cName)).getResolution());
 			} catch (CoreException e) {
 			}
 		}
-		return getMatchingNode(cName, ((ComponentName) cName).getProperties());
+		return getMatchingNode(cName, cName.getProperties());
 	}
 
 	@Override
@@ -205,7 +205,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return url;
 	}
 
-	public boolean isExcluded(IComponentName cname) {
+	public boolean isExcluded(ComponentName cname) {
 		IMaterializationNode node = getMatchingNode(cname);
 		return node != null && node.isExclude();
 	}
@@ -261,14 +261,14 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		return cr;
 	}
 
-	private IMaterializationNode getMatchingNode(IComponentName cName, Map<String, ? extends Object> props) {
+	private IMaterializationNode getMatchingNode(ComponentName cName, Map<String, ? extends Object> props) {
 		for (MaterializationNode aNode : nodes) {
 			Pattern pattern = aNode.getNamePattern();
-			if (!(pattern == null || pattern.matcher(cName.getName()).find()))
+			if (!(pattern == null || pattern.matcher(cName.getId()).find()))
 				continue;
 
 			String matchingCType = aNode.getComponentTypeID();
-			if (!(matchingCType == null || matchingCType.equals(cName.getComponentTypeID())))
+			if (!(matchingCType == null || matchingCType.equals(cName.getType())))
 				continue;
 
 			Filter filter = aNode.getFilter();
@@ -281,19 +281,19 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 
 	private String getProjectName(ComponentName cName, IMaterializationNode node) throws CoreException {
 		if (node == null)
-			return cName.getProjectName();
+			return LocalResolver.getProjectName(cName);
 
 		Pattern bindingNamePattern = node.getBindingNamePattern();
 		String bindingNameReplacement = node.getBindingNameReplacement();
 		if (bindingNamePattern == null || bindingNameReplacement == null)
-			return cName.getProjectName();
+			return LocalResolver.getProjectName(cName);
 
-		Matcher matcher = bindingNamePattern.matcher(cName.getName());
+		Matcher matcher = bindingNamePattern.matcher(cName.getId());
 		if (matcher.matches()) {
 			String repl = matcher.replaceAll(bindingNameReplacement).trim();
 			if (repl.length() > 0)
 				return repl;
 		}
-		return cName.getProjectName();
+		return LocalResolver.getProjectName(cName);
 	}
 }

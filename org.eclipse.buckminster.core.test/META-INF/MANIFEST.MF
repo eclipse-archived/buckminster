@@ -5,6 +5,8 @@ Bundle-SymbolicName: org.eclipse.buckminster.core.test
 Bundle-Version: 1.0.350
 Bundle-Vendor: Eclipse.org
 Require-Bundle: org.eclipse.buckminster.core;bundle-version="1.2.360",
+ org.eclipse.buckminster.model.common;bundle-version="1.1.0",
+ org.eclipse.buckminster.rmap;bundle-version="1.1.0",
  org.eclipse.buckminster.osgi.filter;bundle-version="1.0.0",
  org.eclipse.buckminster.sax,
  org.eclipse.buckminster.download;bundle-version="1.1.0",

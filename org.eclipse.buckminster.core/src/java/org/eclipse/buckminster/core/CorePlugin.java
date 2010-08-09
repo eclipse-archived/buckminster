@@ -41,6 +41,11 @@ import org.eclipse.buckminster.core.version.IQualifierGenerator;
 import org.eclipse.buckminster.core.version.IVersionConverter;
 import org.eclipse.buckminster.core.version.MissingMaterializerException;
 import org.eclipse.buckminster.core.version.MissingVersionConverterException;
+import org.eclipse.buckminster.model.common.CommonPackage;
+import org.eclipse.buckminster.mspec.MspecPackage;
+import org.eclipse.buckminster.mspec.util.MspecResourceFactoryImpl;
+import org.eclipse.buckminster.rmap.RmapPackage;
+import org.eclipse.buckminster.rmap.util.RmapResourceFactoryImpl;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
@@ -64,6 +69,9 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.emf.ecore.EPackage.Registry;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.IProvisioningAgentProvider;
 import org.eclipse.osgi.util.NLS;
@@ -231,6 +239,8 @@ public class CorePlugin extends LogAwarePlugin {
 	private final RemoteFileCache remoteFileCache = new RemoteFileCache(30000);
 
 	private ResourceBundle resourceBundle;
+
+	private ResourceSet resourceSet;
 
 	private final Map<String, Map<String, Object>> singletonExtensionCache = new HashMap<String, Map<String, Object>>();
 
@@ -471,6 +481,21 @@ public class CorePlugin extends LogAwarePlugin {
 			resourceBundle = null;
 		}
 		return resourceBundle;
+	}
+
+	public synchronized ResourceSet getResourceSet() {
+		if (resourceSet == null) {
+			resourceSet = new ResourceSetImpl();
+			Map<String, Object> extToFactoryMap = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
+			extToFactoryMap.put(".rmap", new RmapResourceFactoryImpl()); //$NON-NLS-1$
+			extToFactoryMap.put(".mspec", new MspecResourceFactoryImpl()); //$NON-NLS-1$
+
+			Registry packageRegistry = resourceSet.getPackageRegistry();
+			packageRegistry.put(CommonPackage.eNS_URI, CommonPackage.eINSTANCE);
+			packageRegistry.put(RmapPackage.eNS_URI, RmapPackage.eINSTANCE);
+			packageRegistry.put(MspecPackage.eNS_URI, MspecPackage.eINSTANCE);
+		}
+		return resourceSet;
 	}
 
 	public IVersionConverter getVersionConverter(String versionConverter) throws CoreException {

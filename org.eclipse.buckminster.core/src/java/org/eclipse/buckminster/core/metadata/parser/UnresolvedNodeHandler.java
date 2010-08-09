@@ -10,14 +10,14 @@ package org.eclipse.buckminster.core.metadata.parser;
 import java.util.ArrayList;
 
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.parser.ComponentRequestHandler;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -30,7 +30,7 @@ class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListene
 
 	private ComponentRequest componentRequest;
 
-	private final ComponentRequestHandler requestHandler = new ComponentRequestHandler(this, new ComponentRequestBuilder());
+	private final ComponentRequestHandler requestHandler = new ComponentRequestHandler(this);
 
 	private ArrayList<String> attributes;
 
@@ -43,7 +43,7 @@ class UnresolvedNodeHandler extends BomNodeHandler implements ChildPoppedListene
 	@Override
 	public void childPopped(ChildHandler child) throws SAXParseException {
 		if (child == requestHandler)
-			componentRequest = requestHandler.getBuilder().createComponentRequest();
+			componentRequest = EcoreUtil.copy(requestHandler.getBuilder());
 		else if (child == attributeRefHandler) {
 			if (attributes == null)
 				attributes = new ArrayList<String>();

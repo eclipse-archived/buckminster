@@ -21,8 +21,8 @@ import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.IPerformManager;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -94,7 +94,7 @@ public class Perform extends WorkspaceCommand {
 			if (component == null || attribute == null)
 				throw new UsageException(Messages.Attribute_names_must_be_in_the_form_component_name_attribute_name);
 
-			CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
+			CSpec cspec = WorkspaceInfo.getResolution(CommonFactory.eINSTANCE.createComponentIdentifier(component)).getCSpec();
 			addAttribute(cspec.getRequiredAttribute(attribute));
 		}
 	}

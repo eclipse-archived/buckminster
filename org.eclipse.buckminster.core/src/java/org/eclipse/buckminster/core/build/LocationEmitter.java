@@ -17,14 +17,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -103,7 +102,7 @@ public class LocationEmitter extends PropertiesEmitter {
 
 	private void appendComponentProperties(CSpec cspec, Set<String> attributes, IModelCache cache, HashSet<ComponentIdentifier> seenIds)
 			throws CoreException {
-		IComponentIdentifier cid = cspec.getComponentIdentifier();
+		ComponentIdentifier cid = cspec.getComponentIdentifier();
 		if (seenIds.contains(cid))
 			return;
 

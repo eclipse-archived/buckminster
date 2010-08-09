@@ -26,9 +26,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.common.model.SAXEmitter;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.core.helpers.SAXEmitter;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
 import org.eclipse.buckminster.core.parser.IParser;
@@ -40,6 +38,8 @@ import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.resolver.ProviderScore;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.BMProperties;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.osgi.filter.Filter;
@@ -51,6 +51,7 @@ import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.ContentHandler;
@@ -122,7 +123,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		shortDesc = bld.getShortDesc();
 		propertiesURL = bld.getPropertiesURL();
 		resourceMapURL = bld.getResourceMapURL();
-		rootRequest = bld.getRootRequest();
+		rootRequest = EcoreUtil.copy(bld.getRootRequest());
 
 		List<AdvisorNodeBuilder> advisorNodeBuilders = bld.getAdvisoryNodes();
 		if (advisorNodeBuilders.size() == 0)
@@ -188,9 +189,13 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	}
 
 	public ComponentRequest getExpandedRootRequest(Map<String, String> props) {
-		String name = rootRequest.getName();
+		String name = rootRequest.getId();
 		String expName = ExpandingProperties.expand(props, name, 0);
-		return name.equals(expName) ? rootRequest : new ComponentRequest(expName, rootRequest.getComponentTypeID(), rootRequest.getVersionRange());
+		if (name.equals(expName))
+			return rootRequest;
+		ComponentRequest result = EcoreUtil.copy(rootRequest);
+		result.setId(expName);
+		return result;
 	}
 
 	public synchronized Map<String, String> getGlobalProperties() {
@@ -222,14 +227,14 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 	}
 
 	public IAdvisorNode getMatchingNode(ComponentName cName, Map<String, ? extends Object> props) {
-		String name = cName.getName();
+		String name = cName.getId();
 		for (IAdvisorNode aNode : advisorNodes) {
 			Pattern pattern = aNode.getNamePattern();
 			if (!(pattern == null || pattern.matcher(name).find()))
 				continue;
 
 			String matchingType = aNode.getComponentTypeID();
-			if (!(matchingType == null || matchingType.equals(cName.getComponentTypeID())))
+			if (!(matchingType == null || matchingType.equals(cName.getType())))
 				continue;
 
 			Filter filter = aNode.getFilter();
@@ -447,7 +452,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 		if (documentation != null)
 			documentation.toSax(handler, namespace, prefix, documentation.getDefaultTag());
 
-		rootRequest.toSax(handler, namespace, prefix, ELEM_ROOT_REQUEST);
+		SAXEmitter.emit(handler, rootRequest, namespace, prefix, ELEM_ROOT_REQUEST);
 		SAXEmitter.emitProperties(handler, properties, namespace, prefix, true, false);
 
 		for (AdvisorNode node : advisorNodes)

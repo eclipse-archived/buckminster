@@ -288,7 +288,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 		createEReference(providerEClass, PROVIDER__REPOSITORY);
 
 		redirectEClass = createEClass(REDIRECT);
-		createEAttribute(redirectEClass, REDIRECT__HREF);
+		createEAttribute(redirectEClass, REDIRECT__REDIRECT_TO);
 
 		repositoryEClass = createEClass(REPOSITORY);
 		createEAttribute(repositoryEClass, REPOSITORY__ID);
@@ -761,8 +761,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * 
 	 * @generated
 	 */
-
-	public EAttribute getRedirect_Href() {
+	public EAttribute getRedirect_RedirectTo() {
 		return (EAttribute) redirectEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -1240,8 +1239,8 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(redirectEClass, Redirect.class, "Redirect", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getRedirect_Href(), ecorePackage.getEString(), "href", null, 1, 1, Redirect.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
-				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRedirect_RedirectTo(), ecorePackage.getEString(), "redirectTo", null, 1, 1, Redirect.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(repositoryEClass, Repository.class, "Repository", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getRepository_Id(), theXMLTypePackage.getID(), "id", null, 1, 1, Repository.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
@@ -1270,6 +1269,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getResourceMap_SearchPaths(), this.getSearchPath(), null, "searchPaths", null, 0, -1, ResourceMap.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		getResourceMap_SearchPaths().getEKeys().add(this.getSearchPath_Name());
 		initEReference(getResourceMap_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null, 0, 1, ResourceMap.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -1392,6 +1392,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 		addAnnotation(getProvider_Matcher(), source, new String[] { "name", "matcher", "kind", "element", "namespace", "##targetNamespace" });
 		addAnnotation(getProvider_Documentation(), source, new String[] { "name", "documentation", "kind", "element", "namespace",
 				"##targetNamespace" });
+		addAnnotation(getRedirect_RedirectTo(), source, new String[] { "name", "href", "kind", "attribute" });
 		addAnnotation(getRepository_Id(), source, new String[] { "namespace", "" });
 		addAnnotation(resourceMapEClass, source, new String[] { "name", "rmap" });
 		addAnnotation(getResourceMap_MatcherGroup(), source, new String[] { "kind", "group", "name", "matcher:group", "namespace",

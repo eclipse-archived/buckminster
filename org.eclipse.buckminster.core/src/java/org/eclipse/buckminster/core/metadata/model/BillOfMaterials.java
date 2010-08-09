@@ -16,12 +16,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationSpecBuilder;
@@ -30,7 +28,8 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -119,7 +118,6 @@ public class BillOfMaterials extends BOMNode {
 			if (resolution != null) {
 				// Add the Resolution to the contents
 				//
-				addIfNotAdded(resolution.getProvider(), unique, wrappers);
 				addIfNotAdded(resolution.getCSpec(), unique, wrappers);
 				addIfNotAdded(resolution, unique, wrappers);
 
@@ -154,10 +152,11 @@ public class BillOfMaterials extends BOMNode {
 	}
 
 	public void addMaterializationNodes(MaterializationSpecBuilder bld) throws CoreException {
+		CorePlugin plugin = CorePlugin.getDefault();
 		for (Resolution res : findAll(null)) {
 			if (!res.isMaterializable())
 				continue;
-			res.getProvider().getReaderType().addMaterializationNode(bld, res);
+			plugin.getReaderType(res.getProvider().getReaderType()).addMaterializationNode(bld, res);
 		}
 	}
 
@@ -233,7 +232,7 @@ public class BillOfMaterials extends BOMNode {
 		return getTopNode().getResolutionId();
 	}
 
-	public synchronized BOMNode getResolvedNode(IComponentIdentifier identifier) throws CoreException {
+	public synchronized BOMNode getResolvedNode(ComponentIdentifier identifier) throws CoreException {
 		if (nodeMap == null) {
 			HashMap<ComponentIdentifier, BOMNode> nm = new HashMap<ComponentIdentifier, BOMNode>();
 			buildNodeMap(getTopNode(), nm);
@@ -307,12 +306,6 @@ public class BillOfMaterials extends BOMNode {
 			collectNodeContents(getTopNode(), unique, wrappers);
 		} catch (CoreException e) {
 			throw new SAXException(e);
-		}
-
-		for (IDWrapper wrapper : wrappers) {
-			UUIDKeyed wrapped = wrapper.getWrapped();
-			if (wrapped instanceof Provider)
-				((Provider) wrapped).addPrefixMappings(prefixMappings);
 		}
 
 		Set<Map.Entry<String, String>> pfxMappings = prefixMappings.entrySet();

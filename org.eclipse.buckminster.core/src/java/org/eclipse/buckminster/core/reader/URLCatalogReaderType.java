@@ -32,7 +32,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -45,6 +44,8 @@ import org.eclipse.buckminster.core.resolver.ResourceMapResolver;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -237,7 +238,8 @@ public class URLCatalogReaderType extends CatalogReaderType {
 
 	static IComponentReader getDirectReader(URL url, String readerType, IProgressMonitor monitor) throws CoreException {
 		String urlString = url.toString();
-		ComponentRequest rq = new ComponentRequest(urlString, null, null);
+		ComponentRequest rq = CommonFactory.eINSTANCE.createComponentRequest();
+		rq.setId(urlString);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(rq);
 		queryBld.setPlatformAgnostic(true);

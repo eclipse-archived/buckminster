@@ -8,10 +8,10 @@
 package org.eclipse.buckminster.core.cspec.builder;
 
 import org.eclipse.buckminster.core.cspec.IAttribute;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
@@ -25,8 +25,8 @@ public abstract class TopLevelAttributeBuilder extends AttributeBuilder {
 		super(cspecBuilder);
 	}
 
-	public final void addExternalPrerequisite(IComponentRequest request, String attr) throws PrerequisiteAlreadyDefinedException {
-		addPrerequisite(createPrerequisite(request.getName(), request.getComponentTypeID(), request.getVersionRange(), attr, null, null));
+	public final void addExternalPrerequisite(ComponentRequest request, String attr) throws PrerequisiteAlreadyDefinedException {
+		addPrerequisite(createPrerequisite(request.getId(), request.getType(), request.getRange(), attr, null, null));
 	}
 
 	public final void addLocalPrerequisite(AttributeBuilder attr) throws PrerequisiteAlreadyDefinedException {

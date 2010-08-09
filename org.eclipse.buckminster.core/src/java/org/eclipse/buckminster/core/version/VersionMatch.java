@@ -11,7 +11,6 @@ package org.eclipse.buckminster.core.version;
 
 import java.util.Date;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.AbstractSaxableElement;
@@ -162,6 +161,6 @@ public class VersionMatch extends AbstractSaxableElement {
 			Utils.addAttribute(attrs, ATTR_TIMESTAMP, DateAndTimeUtils.toISOFormat(timestamp));
 
 		if (version != null)
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
+			Utils.addAttribute(attrs, "version", version.toString()); //$NON-NLS-1$
 	}
 }

@@ -19,7 +19,6 @@ import java.util.TreeMap;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.FileUtils.DeleteException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -31,6 +30,7 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
@@ -235,7 +235,7 @@ public class FileSystemMaterializer extends AbstractMaterializer {
 				for (Materialization mi : rg) {
 					ComponentIdentifier ci = mi.getComponentIdentifier();
 					Resolution cr = resolutionPerID.get(ci);
-					matMon.subTask(ci.getName());
+					matMon.subTask(ci.getId());
 
 					boolean success = false;
 					IComponentReader reader = readerType.getReader(cr, context, MonitorUtils.subMonitor(matMon, 20));

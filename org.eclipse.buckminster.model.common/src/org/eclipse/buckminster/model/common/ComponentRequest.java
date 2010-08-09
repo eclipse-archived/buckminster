@@ -8,7 +8,6 @@ package org.eclipse.buckminster.model.common;
 
 import java.util.Map;
 import org.eclipse.buckminster.osgi.filter.Filter;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
 /**
@@ -18,14 +17,10 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getId <em>Id
- * </em>}</li>
  * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getRange
  * <em>Range</em>}</li>
  * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getFilter
  * <em>Filter</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.ComponentRequest#getType <em>
- * Type</em>}</li>
  * </ul>
  * </p>
  * 
@@ -33,11 +28,18 @@ import org.eclipse.equinox.p2.metadata.VersionRange;
  * @model
  * @generated
  */
-public interface ComponentRequest extends EObject {
-	static final String FILTER_ECLIPSE_P2_OPTIONAL = "(!(eclipse.p2.optional=false))"; //$NON-NLS-1$
-
+public interface ComponentRequest extends ComponentName {
 	static final Filter P2_OPTIONAL_FILTER = (Filter) CommonFactory.eINSTANCE.createFromString(CommonPackage.Literals.FILTER,
-			FILTER_ECLIPSE_P2_OPTIONAL);
+			CommonConstants.FILTER_ECLIPSE_P2_OPTIONAL);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model 
+	 *        resultDataType="org.eclipse.buckminster.model.common.StringBuilder"
+	 * @generated
+	 */
+	void appendViewName(StringBuilder result);
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -65,23 +67,6 @@ public interface ComponentRequest extends EObject {
 	Filter getFilter();
 
 	/**
-	 * Returns the value of the '<em><b>Id</b></em>' attribute. <!--
-	 * begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Id</em>' attribute isn't clear, there really
-	 * should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Id</em>' attribute.
-	 * @see #setId(String)
-	 * @see org.eclipse.buckminster.model.common.CommonPackage#getComponentRequest_Id()
-	 * @model
-	 * @generated
-	 */
-	String getId();
-
-	/**
 	 * Returns the value of the '<em><b>Range</b></em>' attribute. <!--
 	 * begin-user-doc -->
 	 * <p>
@@ -99,21 +84,12 @@ public interface ComponentRequest extends EObject {
 	VersionRange getRange();
 
 	/**
-	 * Returns the value of the '<em><b>Type</b></em>' attribute. <!--
-	 * begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Type</em>' attribute isn't clear, there really
-	 * should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Type</em>' attribute.
-	 * @see #setType(String)
-	 * @see org.eclipse.buckminster.model.common.CommonPackage#getComponentRequest_Type()
-	 * @model
+	 * @model kind="operation"
 	 * @generated
 	 */
-	String getType();
+	String getViewName();
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -132,6 +108,14 @@ public interface ComponentRequest extends EObject {
 	boolean isOptional();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	ComponentRequest merge(ComponentRequest request);
+
+	/**
 	 * Sets the value of the '
 	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getFilter
 	 * <em>Filter</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc
@@ -146,18 +130,6 @@ public interface ComponentRequest extends EObject {
 
 	/**
 	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getId
-	 * <em>Id</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Id</em>' attribute.
-	 * @see #getId()
-	 * @generated
-	 */
-	void setId(String value);
-
-	/**
-	 * Sets the value of the '
 	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getRange
 	 * <em>Range</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -167,17 +139,5 @@ public interface ComponentRequest extends EObject {
 	 * @generated
 	 */
 	void setRange(VersionRange value);
-
-	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getType
-	 * <em>Type</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Type</em>' attribute.
-	 * @see #getType()
-	 * @generated
-	 */
-	void setType(String value);
 
 } // ComponentRequest

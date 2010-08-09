@@ -14,12 +14,11 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
@@ -60,7 +59,7 @@ public class RevisionQualifierGenerator extends AbstractQualifierGenerator {
 
 			boolean subBuildId = false;
 			MessageFormat mf = new MessageFormat(format);
-			for (IComponentIdentifier dependency : dependencies) {
+			for (ComponentIdentifier dependency : dependencies) {
 				Version depVer = dependency.getVersion();
 				if (depVer == null)
 					continue;

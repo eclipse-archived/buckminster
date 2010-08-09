@@ -7,13 +7,13 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.version;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ProviderScore;
 import org.eclipse.buckminster.core.resolver.ResolverDecision;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;

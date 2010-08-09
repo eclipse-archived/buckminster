@@ -30,7 +30,7 @@ import org.eclipse.emf.common.util.EList;
  * </p>
  * 
  * @see org.eclipse.buckminster.mspec.MspecPackage#getMaterializationSpec()
- * @model
+ * @model extendedMetaData="name='mspec'"
  * @generated
  */
 public interface MaterializationSpec extends MaterializationDirective {

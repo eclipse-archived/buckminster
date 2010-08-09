@@ -18,6 +18,7 @@ import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Group;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -118,7 +119,7 @@ public class GroupBuilder extends TopLevelAttributeBuilder implements IGroup {
 		this.rebase = rebase == null ? null : rebase.addTrailingSeparator();
 	}
 
-	void finalWrapUp(List<ComponentRequestBuilder> dependencies) {
+	void finalWrapUp(List<ComponentRequest> dependencies) {
 		for (PrerequisiteBuilder pq : prerequisites)
 			pq.finalWrapUp(dependencies);
 	}

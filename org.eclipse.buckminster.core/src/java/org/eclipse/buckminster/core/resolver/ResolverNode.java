@@ -138,7 +138,7 @@ public class ResolverNode {
 						// circular dependency. This
 						// means we must alter the resolution of this node
 						//
-						String depName = child.getQuery().getComponentRequest().getName();
+						String depName = child.getQuery().getComponentRequest().getId();
 						CSpec cspec = resolution.getCSpec();
 						CSpecBuilder bld = new CSpecBuilder();
 						bld.initFrom(cspec);

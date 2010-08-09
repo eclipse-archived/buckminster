@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Path;
 public abstract class CatalogReaderType extends AbstractReaderType {
 	@Override
 	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException {
-		IPath path = Path.fromPortableString(resolution.getComponentIdentifier().getName());
+		IPath path = Path.fromPortableString(resolution.getComponentIdentifier().getId());
 		int segCount = path.segmentCount();
 		if (segCount > 1)
 			path = path.removeFirstSegments(segCount - 1);

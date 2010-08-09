@@ -28,13 +28,14 @@ import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.ActionArtifact;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.NullOutputStream;
 import org.eclipse.buckminster.core.metadata.AmbigousComponentException;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Logger;
@@ -338,11 +339,14 @@ public class PerformManager implements IPerformManager {
 					cType = cspec.getComponentTypeID();
 				} else {
 					ComponentRequest rq = cspec.getDependency(preq.getComponentName(), preq.getComponentType(), preq.getVersionRange());
-					cName = rq.getName();
-					cType = rq.getComponentTypeID();
+					cName = rq.getId();
+					cType = rq.getType();
 				}
 
-				List<Generator> generators = WorkspaceInfo.getGenerators(new ComponentRequest(cName, cType, null));
+				ComponentRequest cr = CommonFactory.eINSTANCE.createComponentRequest();
+				cr.setId(cName);
+				cr.setType(cType);
+				List<Generator> generators = WorkspaceInfo.getGenerators(cr);
 				if (generators.size() == 0)
 					//
 					// There is no known generator for the component
@@ -357,9 +361,14 @@ public class PerformManager implements IPerformManager {
 				Generator actionGenerator = null;
 				for (Generator generator : generators) {
 					String component = generator.getComponent();
-					CSpec candidate = component == null ? generator.getCSpec() : WorkspaceInfo.getResolution(
-							new ComponentRequest(component, null, null), false).getCSpec();
-
+					CSpec candidate;
+					if (component == null)
+						candidate = generator.getCSpec();
+					else {
+						ComponentRequest gcr = CommonFactory.eINSTANCE.createComponentRequest();
+						gcr.setId(component);
+						candidate = WorkspaceInfo.getResolution(gcr, false).getCSpec();
+					}
 					if (candidate.equals(cspec)) {
 						actionGenerator = generator;
 						generatorCSpec = candidate;

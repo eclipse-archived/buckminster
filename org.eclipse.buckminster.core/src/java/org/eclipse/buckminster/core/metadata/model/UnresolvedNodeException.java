@@ -8,8 +8,8 @@
 package org.eclipse.buckminster.core.metadata.model;
 
 import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -18,7 +18,7 @@ import org.eclipse.osgi.util.NLS;
 public class UnresolvedNodeException extends LocalizedException {
 	private static final long serialVersionUID = 6297785682251941992L;
 
-	public UnresolvedNodeException(IComponentRequest request) {
+	public UnresolvedNodeException(ComponentRequest request) {
 		super(NLS.bind(Messages.Attempt_to_use_an_unresolved_node_Request_is_0, request));
 	}
 }

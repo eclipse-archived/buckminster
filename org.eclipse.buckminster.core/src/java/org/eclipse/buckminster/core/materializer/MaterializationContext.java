@@ -13,12 +13,6 @@ import java.util.Map;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.IComponentName;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -27,6 +21,9 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.model.common.util.UnmodifiableMapUnion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -178,8 +175,8 @@ public class MaterializationContext extends RMContext {
 			// No filename is available, let's use a name built from
 			// <componentname>_<version>
 			//
-			IComponentIdentifier ci = resolution.getComponentIdentifier();
-			StringBuilder nameBld = new StringBuilder(ci.getName());
+			ComponentIdentifier ci = resolution.getComponentIdentifier();
+			StringBuilder nameBld = new StringBuilder(ci.getId());
 			Version version = ci.getVersion();
 			if (version != null) {
 				nameBld.append('_');
@@ -223,7 +220,7 @@ public class MaterializationContext extends RMContext {
 
 	public String getSuffixedName(Resolution resolution, String remoteName) throws CoreException {
 		MaterializationSpec mspec = getMaterializationSpec();
-		IComponentName cName = resolution.getComponentIdentifier();
+		ComponentName cName = resolution.getComponentIdentifier();
 		if (!(resolution.isUnpack() || mspec.isUnpack(resolution)))
 			return null;
 
@@ -303,15 +300,15 @@ public class MaterializationContext extends RMContext {
 	}
 
 	@Override
-	protected void initializeTagInfo(IComponentRequest request) {
+	protected void initializeTagInfo(ComponentRequest request) {
 		addTagInfosFromBom(request);
 	}
 
-	private void addTagInfosFromBom(IComponentRequest request) {
+	private void addTagInfosFromBom(ComponentRequest request) {
 		addTagInfosFromNode(bom.getQuery().getTagInfo(), bom, request);
 	}
 
-	private void addTagInfosFromNode(String tagInfo, BOMNode node, IComponentRequest request) {
+	private void addTagInfosFromNode(String tagInfo, BOMNode node, ComponentRequest request) {
 		ComponentRequest nodeRequest = node.getRequest();
 		if (hasTagInfo(nodeRequest))
 			// Tag info already generated

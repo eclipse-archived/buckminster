@@ -13,9 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;

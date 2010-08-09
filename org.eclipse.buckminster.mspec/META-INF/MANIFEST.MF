@@ -6,8 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
- J2SE-1.5
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.buckminster.mspec,
  org.eclipse.buckminster.mspec.impl,
  org.eclipse.buckminster.mspec.util

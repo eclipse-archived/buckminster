@@ -7,7 +7,6 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.parser;
 
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.parser.ComponentRequestHandler;
 import org.eclipse.buckminster.core.cspecext.builder.AlterDependencyBuilder;
 import org.eclipse.buckminster.core.cspecext.model.AlterDependency;
@@ -29,7 +28,7 @@ class AlterDependencyHandler extends AlterHandler {
 
 	AlterDependencyHandler(AbstractHandler parent) {
 		super(parent);
-		baseHandler = new ComponentRequestHandler(parent, new ComponentRequestBuilder());
+		baseHandler = new ComponentRequestHandler(parent);
 	}
 
 	@Override

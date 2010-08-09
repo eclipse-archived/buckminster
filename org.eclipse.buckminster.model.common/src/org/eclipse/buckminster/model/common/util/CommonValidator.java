@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
@@ -181,6 +182,15 @@ public class CommonValidator extends EObjectValidator {
 	 */
 	public boolean validateComponentIdentifier(ComponentIdentifier componentIdentifier, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(componentIdentifier, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateComponentName(ComponentName componentName, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(componentName, diagnostics, context);
 	}
 
 	/**
@@ -557,6 +567,8 @@ public class CommonValidator extends EObjectValidator {
 				return validateComparable((Comparable<?>) value, diagnostics, context);
 			case CommonPackage.COMPONENT_IDENTIFIER:
 				return validateComponentIdentifier((ComponentIdentifier) value, diagnostics, context);
+			case CommonPackage.COMPONENT_NAME:
+				return validateComponentName((ComponentName) value, diagnostics, context);
 			case CommonPackage.COMPONENT_REQUEST:
 				return validateComponentRequest((ComponentRequest) value, diagnostics, context);
 			case CommonPackage.CONSTANT:

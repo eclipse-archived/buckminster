@@ -7,13 +7,7 @@
 package org.eclipse.buckminster.mspec;
 
 import org.eclipse.buckminster.model.common.Documentation;
-import org.eclipse.buckminster.model.common.Property;
-
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
-
-import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.buckminster.model.common.Properties;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
@@ -22,15 +16,6 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * <p>
  * The following features are supported:
  * <ul>
- * <li>
- * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getDocumentation
- * <em>Documentation</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getPropertyGroup
- * <em>Property Group</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getProperties
- * <em>Properties</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getConflictResolution
  * <em>Conflict Resolution</em>}</li>
@@ -43,6 +28,9 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * <li>
  * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getWorkspaceLocation
  * <em>Workspace Location</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.mspec.MaterializationDirective#getDocumentation
+ * <em>Documentation</em>}</li>
  * </ul>
  * </p>
  * 
@@ -50,7 +38,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @model
  * @generated
  */
-public interface MaterializationDirective extends EObject {
+public interface MaterializationDirective extends Properties {
 	/**
 	 * Returns the value of the '<em><b>Conflict Resolution</b></em>' attribute.
 	 * The default value is <code>"UPDATE"</code>. The literals are from the
@@ -121,46 +109,6 @@ public interface MaterializationDirective extends EObject {
 	 * @generated
 	 */
 	String getMaterializer();
-
-	/**
-	 * Returns the value of the '<em><b>Properties</b></em>' containment
-	 * reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.model.common.Property}. <!--
-	 * begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Properties</em>' containment reference list
-	 * isn't clear, there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Properties</em>' containment reference
-	 *         list.
-	 * @see org.eclipse.buckminster.mspec.MspecPackage#getMaterializationDirective_Properties()
-	 * @model containment="true" required="true" transient="true"
-	 *        changeable="false" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='basicProperty' namespace='http://www.eclipse.org/buckminster/Common-1.0' group='http://www.eclipse.org/buckminster/Common-1.0#basicProperty:group'"
-	 * @generated
-	 */
-	EList<Property> getProperties();
-
-	/**
-	 * Returns the value of the '<em><b>Property Group</b></em>' attribute list.
-	 * The list contents are of type
-	 * {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}. <!-- begin-user-doc
-	 * -->
-	 * <p>
-	 * If the meaning of the '<em>Property Group</em>' attribute list isn't
-	 * clear, there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Property Group</em>' attribute list.
-	 * @see org.eclipse.buckminster.mspec.MspecPackage#getMaterializationDirective_PropertyGroup()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry"
-	 *        required="true" many="true" extendedMetaData="kind='group' name='basicProperty:group' namespace='http://www.eclipse.org/buckminster/Common-1.0'"
-	 * @generated
-	 */
-	FeatureMap getPropertyGroup();
 
 	/**
 	 * Returns the value of the '<em><b>Workspace Location</b></em>' attribute.

@@ -24,12 +24,7 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.metadata.MetadataSynchronizer.WorkspaceCatchUpJob;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
@@ -42,6 +37,10 @@ import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -84,23 +83,23 @@ public class WorkspaceInfo {
 
 	private static boolean hasBeenFullyInitialized;
 
-	private static final HashMap<IComponentIdentifier, IPath> locationCache = new HashMap<IComponentIdentifier, IPath>();
+	private static final HashMap<ComponentIdentifier, IPath> locationCache = new HashMap<ComponentIdentifier, IPath>();
 
 	private static final IResource[] noResources = new IResource[0];
 
-	private static final HashMap<IComponentIdentifier, Resolution> resolutionCache = new HashMap<IComponentIdentifier, Resolution>();
+	private static final HashMap<ComponentIdentifier, Resolution> resolutionCache = new HashMap<ComponentIdentifier, Resolution>();
 
 	private static Stack<IGlobalContext> performContextStack;
 
 	private static final Map<ComponentIdentifier, Resolution> tpResolutions = new HashMap<ComponentIdentifier, Resolution>();
 
-	public static void clearCachedLocation(IComponentIdentifier cid) {
+	public static void clearCachedLocation(ComponentIdentifier cid) {
 		synchronized (locationCache) {
 			locationCache.remove(cid);
 		}
 	}
 
-	public static BillOfMaterials deepResolveLocal(IComponentRequest request, boolean useWorkspace, boolean continueOnError) throws CoreException {
+	public static BillOfMaterials deepResolveLocal(ComponentRequest request, boolean useWorkspace, boolean continueOnError) throws CoreException {
 		checkFirstUse();
 
 		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
@@ -111,8 +110,8 @@ public class WorkspaceInfo {
 		// do something using an existing materialization or something external.
 		//
 		AdvisorNodeBuilder nodeBld = qbld.addAdvisorNode();
-		nodeBld.setNamePattern(Pattern.compile('^' + Pattern.quote(request.getName()) + '$'));
-		nodeBld.setComponentTypeID(request.getComponentTypeID());
+		nodeBld.setNamePattern(Pattern.compile('^' + Pattern.quote(request.getId()) + '$'));
+		nodeBld.setComponentTypeID(request.getType());
 		nodeBld.setUseTargetPlatform(true);
 		nodeBld.setUseWorkspace(useWorkspace);
 		nodeBld.setUseMaterialization(false);
@@ -232,7 +231,7 @@ public class WorkspaceInfo {
 		String componentId = null;
 		try {
 			componentId = resource.getPersistentProperty(PPKEY_COMPONENT_ID);
-			return componentId == null ? null : ComponentIdentifier.parse(componentId);
+			return componentId == null ? null : CommonFactory.eINSTANCE.createComponentIdentifier(componentId);
 		} catch (CoreException e) {
 			return null;
 		}
@@ -311,7 +310,7 @@ public class WorkspaceInfo {
 		return id == null ? null : getResolution(id).getCSpec();
 	}
 
-	public static List<Generator> getGenerators(IComponentRequest request) throws CoreException {
+	public static List<Generator> getGenerators(ComponentRequest request) throws CoreException {
 		List<Generator> generators = null;
 		for (Resolution res : getAllResolutions()) {
 			for (Generator generator : res.getCSpec().getGeneratorList()) {
@@ -325,6 +324,24 @@ public class WorkspaceInfo {
 		if (generators == null)
 			generators = Collections.emptyList();
 		return generators;
+	}
+
+	public static Materialization getMaterialization(ComponentIdentifier cid) throws CoreException {
+		// Add all components for which we have a materialization
+		//
+		StorageManager sm = StorageManager.getDefault();
+		checkFirstUse();
+
+		for (Materialization mat : sm.getMaterializations().getElements()) {
+			if (cid.equals(mat.getComponentIdentifier())) {
+				if (!mat.getComponentLocation().toFile().exists()) {
+					mat.remove(StorageManager.getDefault());
+					mat = null;
+				}
+				return mat;
+			}
+		}
+		return null;
 	}
 
 	public static Materialization getMaterialization(ComponentRequest request) throws CoreException {
@@ -351,24 +368,6 @@ public class WorkspaceInfo {
 		return bestFit;
 	}
 
-	public static Materialization getMaterialization(IComponentIdentifier cid) throws CoreException {
-		// Add all components for which we have a materialization
-		//
-		StorageManager sm = StorageManager.getDefault();
-		checkFirstUse();
-
-		for (Materialization mat : sm.getMaterializations().getElements()) {
-			if (cid.equals(mat.getComponentIdentifier())) {
-				if (!mat.getComponentLocation().toFile().exists()) {
-					mat.remove(StorageManager.getDefault());
-					mat = null;
-				}
-				return mat;
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * Returns the optional <code>Materialization</code> for the component.
 	 * Components found in the target platform will not have a materialization.
@@ -392,7 +391,7 @@ public class WorkspaceInfo {
 	 *         found.
 	 * @throws CoreException
 	 */
-	public static IProject getProject(IComponentIdentifier componentIdentifier) throws CoreException {
+	public static IProject getProject(ComponentIdentifier componentIdentifier) throws CoreException {
 		return extractProject(getResources(componentIdentifier));
 	}
 
@@ -409,10 +408,13 @@ public class WorkspaceInfo {
 		return extractProject(getResources(materialization));
 	}
 
-	public static IProject[] getProjectsInResolution(IComponentIdentifier componentIdentifier) throws CoreException {
+	public static IProject[] getProjectsInResolution(ComponentIdentifier componentIdentifier) throws CoreException {
 		VersionRange versionRange = VersionHelper.exactRange(componentIdentifier.getVersion());
-		ComponentRequest componetRequest = new ComponentRequest(componentIdentifier.getName(), componentIdentifier.getComponentTypeID(), versionRange);
-		BillOfMaterials resolution = deepResolveLocal(componetRequest, true, true);
+		ComponentRequest request = CommonFactory.eINSTANCE.createComponentRequest();
+		request.setId(componentIdentifier.getId());
+		request.setType(componentIdentifier.getType());
+		request.setRange(versionRange);
+		BillOfMaterials resolution = deepResolveLocal(request, true, true);
 		ArrayList<IProject> projects = new ArrayList<IProject>();
 
 		for (Resolution member : resolution.findAll(Collections.<Resolution> emptySet())) {
@@ -458,12 +460,12 @@ public class WorkspaceInfo {
 					// Both are without version. One must be without type then
 					//
 					ComponentIdentifier candCid = candidate.getCSpec().getComponentIdentifier();
-					if (candCid.getComponentType() == null) {
-						if (cid.getComponentType() == null)
+					if (candCid.getType() == null) {
+						if (cid.getType() == null)
 							throw new AmbigousComponentException(wanted.toString());
 						candidate = res;
 					} else {
-						if (cid.getComponentType() != null)
+						if (cid.getType() != null)
 							throw new AmbigousComponentException(wanted.toString());
 					}
 				}
@@ -478,7 +480,11 @@ public class WorkspaceInfo {
 			Version v = wanted.getVersion();
 			VersionRange vd = VersionHelper.exactRange(v);
 			try {
-				return resolveLocal(new ComponentRequest(wanted.getName(), wanted.getComponentTypeID(), vd), true);
+				ComponentRequest cr = CommonFactory.eINSTANCE.createComponentRequest();
+				cr.setId(wanted.getId());
+				cr.setType(wanted.getType());
+				cr.setRange(vd);
+				return resolveLocal(cr, true);
 			} catch (CoreException e) {
 				CorePlugin.getLogger().debug(e, e.getMessage());
 			}
@@ -537,7 +543,7 @@ public class WorkspaceInfo {
 	 * @return The found workspace resources.
 	 * @throws CoreException
 	 */
-	public static IResource[] getResources(IComponentIdentifier componentIdentifier) throws CoreException {
+	public static IResource[] getResources(ComponentIdentifier componentIdentifier) throws CoreException {
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
@@ -549,7 +555,7 @@ public class WorkspaceInfo {
 		return noResources;
 	}
 
-	public static IResource[] getResources(IComponentRequest request) throws CoreException {
+	public static IResource[] getResources(ComponentRequest request) throws CoreException {
 		StorageManager sm = StorageManager.getDefault();
 		checkFirstUse();
 
@@ -611,7 +617,7 @@ public class WorkspaceInfo {
 		performContextStack.push(context);
 	}
 
-	public static Resolution resolveLocal(IComponentRequest request, boolean useWorkspace) throws CoreException {
+	public static Resolution resolveLocal(ComponentRequest request, boolean useWorkspace) throws CoreException {
 		Resolution res;
 
 		if (performContextStack != null) {
@@ -639,11 +645,11 @@ public class WorkspaceInfo {
 		hasBeenFullyInitialized = true;
 	}
 
-	public static void setComponentIdentifier(IResource resource, IComponentIdentifier identifier) throws CoreException {
+	public static void setComponentIdentifier(IResource resource, ComponentIdentifier identifier) throws CoreException {
 		resource.setPersistentProperty(PPKEY_COMPONENT_ID, identifier == null ? null : identifier.toString());
 	}
 
-	public static void updateResolutionCache(IComponentIdentifier cid, Resolution resolution) {
+	public static void updateResolutionCache(ComponentIdentifier cid, Resolution resolution) {
 		synchronized (resolutionCache) {
 			if (resolution == null)
 				resolutionCache.remove(cid);

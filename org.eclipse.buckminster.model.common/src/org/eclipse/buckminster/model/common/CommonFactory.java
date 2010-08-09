@@ -34,6 +34,21 @@ public interface CommonFactory extends EFactory {
 	ComponentIdentifier createComponentIdentifier();
 
 	/**
+	 * @param componentIdentifierStr
+	 * @return a new object of class '<em>Component Identifier</em>'.
+	 */
+	ComponentIdentifier createComponentIdentifier(String componentIdentifierStr);
+
+	/**
+	 * Returns a new object of class '<em>Component Name</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Component Name</em>'.
+	 * @generated
+	 */
+	ComponentName createComponentName();
+
+	/**
 	 * Returns a new object of class '<em>Component Request</em>'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 

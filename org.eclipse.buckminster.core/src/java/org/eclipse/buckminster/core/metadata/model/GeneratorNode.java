@@ -12,14 +12,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.VersionRange;
@@ -48,7 +48,7 @@ public class GeneratorNode extends BOMNode {
 
 	private final String component;
 
-	private final IComponentIdentifier generates;
+	private final ComponentIdentifier generates;
 
 	private final CSpec declaringCSpec;
 
@@ -59,7 +59,7 @@ public class GeneratorNode extends BOMNode {
 		this.generates = generator.getGeneratedIdentifier();
 	}
 
-	public GeneratorNode(CSpec declaringCSpec, String component, String attribute, IComponentIdentifier generates) {
+	public GeneratorNode(CSpec declaringCSpec, String component, String attribute, ComponentIdentifier generates) {
 		this.declaringCSpec = declaringCSpec;
 		this.component = component;
 		this.attribute = attribute;
@@ -67,7 +67,12 @@ public class GeneratorNode extends BOMNode {
 	}
 
 	public GeneratorNode(CSpec declaringCSpec, String component, String attribute, String generates) {
-		this(declaringCSpec, component, attribute, new ComponentIdentifier(generates, null, null));
+		this.declaringCSpec = declaringCSpec;
+		this.component = component;
+		this.attribute = attribute;
+		ComponentIdentifier ci = CommonFactory.eINSTANCE.createComponentIdentifier();
+		ci.setId(generates);
+		this.generates = ci;
 	}
 
 	/**
@@ -93,7 +98,7 @@ public class GeneratorNode extends BOMNode {
 		return TAG;
 	}
 
-	public IComponentIdentifier getGeneratesId() {
+	public ComponentIdentifier getGeneratesId() {
 		return generates;
 	}
 
@@ -104,10 +109,12 @@ public class GeneratorNode extends BOMNode {
 
 	@Override
 	public ComponentRequest getRequest() {
-		VersionRange range = null;
+		ComponentRequest cr = CommonFactory.eINSTANCE.createComponentRequest();
+		cr.setId(generates.getId());
+		cr.setType(generates.getType());
 		if (generates.getVersion() != null)
-			range = new VersionRange(generates.getVersion(), true, generates.getVersion(), false);
-		return new ComponentRequest(generates.getName(), generates.getComponentTypeID(), range);
+			cr.setRange(new VersionRange(generates.getVersion(), true, generates.getVersion(), false));
+		return cr;
 	}
 
 	@Override
@@ -126,9 +133,9 @@ public class GeneratorNode extends BOMNode {
 		Utils.addAttribute(attrs, ATTR_ATTRIBUTE, attribute);
 		if (component != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT, component);
-		Utils.addAttribute(attrs, ATTR_GENERATES, generates.getName());
-		if (generates.getComponentTypeID() != null)
-			Utils.addAttribute(attrs, ATTR_GENERATES_TYPE, generates.getComponentTypeID());
+		Utils.addAttribute(attrs, ATTR_GENERATES, generates.getId());
+		if (generates.getType() != null)
+			Utils.addAttribute(attrs, ATTR_GENERATES_TYPE, generates.getType());
 		if (generates.getVersion() != null)
 			Utils.addAttribute(attrs, ATTR_GENERATES_VERSION, generates.getVersion().toString());
 	}

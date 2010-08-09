@@ -17,16 +17,15 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.UnmodifiableMapUnion;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.IStatus;
@@ -37,7 +36,7 @@ import org.eclipse.core.runtime.IStatus;
 public class ResolutionContext extends RMContext implements IResolverBackchannel {
 	private final ComponentQuery componentQuery;
 
-	private HashMap<IComponentIdentifier, GeneratorNode> generators;
+	private HashMap<ComponentIdentifier, GeneratorNode> generators;
 
 	private final ResolutionContext parentContext;
 
@@ -63,7 +62,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	}
 
 	@Override
-	public synchronized void addRequestStatus(IComponentRequest request, IStatus resolveStatus) {
+	public synchronized void addRequestStatus(ComponentRequest request, IStatus resolveStatus) {
 		if (parentContext != null)
 			parentContext.addRequestStatus(request, resolveStatus);
 		else
@@ -96,7 +95,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 		return componentQuery;
 	}
 
-	public synchronized List<ResolverDecision> getDecisionLog(IComponentRequest request) {
+	public synchronized List<ResolverDecision> getDecisionLog(ComponentRequest request) {
 		if (parentContext != null)
 			return parentContext.getDecisionLog(request);
 		return Utils.createUnmodifiableList(decisionLog.get(request));
@@ -187,7 +186,7 @@ public class ResolutionContext extends RMContext implements IResolverBackchannel
 	public void setGenerators(CSpec cspec, Collection<? extends IGenerator> generatorList) {
 		for (IGenerator generator : generatorList) {
 			if (generators == null)
-				generators = new HashMap<IComponentIdentifier, GeneratorNode>();
+				generators = new HashMap<ComponentIdentifier, GeneratorNode>();
 			generators.put(generator.getGeneratedIdentifier(), new GeneratorNode(cspec, generator));
 		}
 	}

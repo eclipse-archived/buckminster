@@ -11,12 +11,12 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.sax.AbstractHandler;
-import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -38,23 +38,21 @@ class GeneratorNodeHandler extends BomNodeHandler {
 	public void handleAttributes(Attributes attrs) throws SAXException {
 		UUID cspecId = null;
 		try {
+			ComponentIdentifier ci = CommonFactory.eINSTANCE.createComponentIdentifier();
 			cspecId = UUID.fromString(this.getStringValue(attrs, GeneratorNode.ATTR_DECLARING_CSPEC_ID));
 			String component = getOptionalStringValue(attrs, GeneratorNode.ATTR_COMPONENT);
 			String attribute = getStringValue(attrs, GeneratorNode.ATTR_ATTRIBUTE);
-			String generates = getStringValue(attrs, GeneratorNode.ATTR_GENERATES);
-			String generatesType = getOptionalStringValue(attrs, GeneratorNode.ATTR_GENERATES_TYPE);
+			ci.setId(getStringValue(attrs, GeneratorNode.ATTR_GENERATES));
+			ci.setType(getOptionalStringValue(attrs, GeneratorNode.ATTR_GENERATES_TYPE));
 			String tmp = getOptionalStringValue(attrs, GeneratorNode.ATTR_GENERATES_VERSION);
-			Version generatesVersion = null;
 			if (tmp != null) {
 				try {
-					generatesVersion = VersionHelper.parseVersion(tmp);
+					ci.setVersion(VersionHelper.parseVersion(tmp));
 				} catch (IllegalArgumentException e) {
 					throw new SAXParseException(e.getMessage(), getDocumentLocator());
 				}
 			}
-
-			node = new GeneratorNode((CSpec) getWrapped(cspecId), component, attribute, new ComponentIdentifier(generates, generatesType,
-					generatesVersion));
+			node = new GeneratorNode((CSpec) getWrapped(cspecId), component, attribute, ci);
 		} catch (ClassCastException e) {
 			throw new SAXParseException(NLS.bind(Messages.Wrapper_0_does_not_wrap_cspec, cspecId), getDocumentLocator());
 		}

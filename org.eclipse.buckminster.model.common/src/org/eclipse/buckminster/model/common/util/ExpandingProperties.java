@@ -91,6 +91,9 @@ public class ExpandingProperties implements IProperties<String> {
 		if (recursionGuard > MAX_NESTING_DEPTH)
 			throw new CircularExpansionException(topValue);
 
+		if (value == null)
+			return null;
+
 		StringBuilder bld = null;
 		int fragmentStart = 0;
 		int top = value.length();

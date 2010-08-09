@@ -43,8 +43,8 @@ import org.eclipse.buckminster.core.cspec.SaxablePath;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
+import org.eclipse.buckminster.core.helpers.SAXEmitter;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
@@ -52,6 +52,8 @@ import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.UUIDKeyed;
@@ -59,6 +61,7 @@ import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.xml.sax.ContentHandler;
@@ -221,21 +224,21 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 			attributes = Collections.unmodifiableMap(map);
 		}
 
-		List<ComponentRequestBuilder> deps = cspecBld.getDependencyBuilders();
+		List<ComponentRequest> deps = cspecBld.getDependencyBuilders();
 		top = (deps == null) ? 0 : deps.size();
 		if (top == 0)
 			dependencies = Collections.emptyList();
 		else {
 			List<ComponentRequest> list;
 			if (top == 1) {
-				dependencies = Collections.singletonList(deps.get(0).createComponentRequest());
+				dependencies = Collections.singletonList(EcoreUtil.copy(deps.get(0)));
 			} else {
 				// We use a TreeMap to assert that the dependencies will be
 				// written in the exact same order at all times
 				//
 				list = new ArrayList<ComponentRequest>();
-				for (ComponentRequestBuilder dep : deps)
-					list.add(dep.createComponentRequest());
+				for (ComponentRequest dep : deps)
+					list.add(EcoreUtil.copy(dep));
 				dependencies = Collections.unmodifiableList(list);
 			}
 		}
@@ -314,7 +317,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 
 	@Override
 	public String getComponentTypeID() {
-		return componentIdentifier.getComponentTypeID();
+		return componentIdentifier.getType();
 	}
 
 	@Override
@@ -327,23 +330,16 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		return dependencies;
 	}
 
-	@SuppressWarnings("deprecation")
-	@Deprecated
-	@Override
-	public ComponentRequest getDependency(String depName, String depType) throws MissingDependencyException {
-		return getDependency(depName, depType, null);
-	}
-
 	@Override
 	public ComponentRequest getDependency(String depName, String depType, VersionRange depRange) throws MissingDependencyException {
 		int idx = dependencies.size();
 		while (--idx >= 0) {
 			ComponentRequest dependency = dependencies.get(idx);
-			if (!depName.equals(dependency.getName()))
+			if (!depName.equals(dependency.getId()))
 				continue;
-			if (depType != null && dependency.getComponentTypeID() != null && !depType.equals(dependency.getComponentTypeID()))
+			if (depType != null && dependency.getType() != null && !depType.equals(dependency.getType()))
 				continue;
-			if (depRange != null && dependency.getVersionRange() != null && dependency.getVersionRange().intersect(depRange) == null)
+			if (depRange != null && dependency.getRange() != null && dependency.getRange().intersect(depRange) == null)
 				continue;
 			return dependency;
 		}
@@ -367,7 +363,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 
 	@Override
 	public String getName() {
-		return componentIdentifier.getName();
+		return componentIdentifier.getId();
 	}
 
 	public Attribute getPrebind() {
@@ -400,7 +396,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 	 *            True if the result should be pruned to only include
 	 *            dependencies that has an attribute.
 	 * @return A list of attribute qualified dependencies, unique per
-	 *         IComponentRequest.
+	 *         ComponentRequest.
 	 * @see #getActionsByName(String[])
 	 * @see #getGroupsByName(String[])
 	 */
@@ -687,14 +683,14 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 
 	@Override
 	protected void addAttributes(AttributesImpl attrs) {
-		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, componentIdentifier.getName());
-		String ctypeID = componentIdentifier.getComponentTypeID();
+		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, componentIdentifier.getId());
+		String ctypeID = componentIdentifier.getType();
 		if (ctypeID != null)
-			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, ctypeID);
+			Utils.addAttribute(attrs, "componentType", ctypeID); //$NON-NLS-1$
 
 		Version version = componentIdentifier.getVersion();
 		if (version != null)
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
+			Utils.addAttribute(attrs, "version", version.toString()); //$NON-NLS-1$
 
 		if (projectInfo != null)
 			Utils.addAttribute(attrs, ATTR_PROJECT_INFO, projectInfo.toString());
@@ -711,7 +707,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		if (documentation != null)
 			documentation.toSax(handler, namespace, prefix, documentation.getDefaultTag());
 
-		Utils.emitCollection(namespace, prefix, ELEM_DEPENDENCIES, ELEM_DEPENDENCY, dependencies, handler);
+		SAXEmitter.emitComponentRequests(namespace, prefix, ELEM_DEPENDENCIES, ELEM_DEPENDENCY, dependencies, handler);
 		Utils.emitCollection(namespace, prefix, ELEM_GENERATORS, Generator.TAG, generators.values(), handler);
 		ArrayList<Attribute> topArtifacts = new ArrayList<Attribute>();
 		ArrayList<Attribute> actions = new ArrayList<Attribute>();

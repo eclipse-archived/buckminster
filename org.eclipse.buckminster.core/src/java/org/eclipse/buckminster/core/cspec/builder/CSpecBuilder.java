@@ -25,25 +25,26 @@ import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.AttributeAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.GeneratorAlreadyDefinedException;
 import org.eclipse.buckminster.core.cspec.model.MissingAttributeException;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.CommonConstants;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.equinox.internal.p2.metadata.RequiredCapability;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IRequirement;
@@ -65,11 +66,11 @@ public class CSpecBuilder implements ICSpecData {
 
 	private String componentType;
 
-	private List<ComponentRequestBuilder> dependencies;
+	private List<ComponentRequest> dependencies;
 
 	private Documentation documentation;
 
-	private HashMap<IComponentIdentifier, GeneratorBuilder> generators;
+	private HashMap<ComponentIdentifier, GeneratorBuilder> generators;
 
 	private String name;
 
@@ -189,9 +190,9 @@ public class CSpecBuilder implements ICSpecData {
 
 			if (cap.getMin() == 0) {
 				if (filterStr == null)
-					filterStr = ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL;
+					filterStr = CommonConstants.FILTER_ECLIPSE_P2_OPTIONAL;
 				else {
-					filterStr = "(&" + ComponentRequest.FILTER_ECLIPSE_P2_OPTIONAL + filterStr + ')'; //$NON-NLS-1$
+					filterStr = "(&" + CommonConstants.FILTER_ECLIPSE_P2_OPTIONAL + filterStr + ')'; //$NON-NLS-1$
 				}
 			} else if (hasBogusFragments && ctype == IComponentType.OSGI_BUNDLE && filterStr != null) {
 				// Don't add unless this requirement can be satisfied within the
@@ -202,10 +203,10 @@ public class CSpecBuilder implements ICSpecData {
 					continue;
 			}
 
-			ComponentRequestBuilder crb = new ComponentRequestBuilder();
-			crb.setName(id);
-			crb.setComponentTypeID(ctype);
-			crb.setVersionRange(RequiredCapability.extractRange(matches));
+			ComponentRequest crb = CommonFactory.eINSTANCE.createComponentRequest();
+			crb.setId(id);
+			crb.setType(ctype);
+			crb.setRange(RequiredCapability.extractRange(matches));
 
 			if (filterStr != null) {
 				try {
@@ -219,12 +220,12 @@ public class CSpecBuilder implements ICSpecData {
 			addDependency(crb);
 		}
 		if (!isFeature && !name.endsWith(".source")) { //$NON-NLS-1$
-			ComponentRequestBuilder srcDep = createDependencyBuilder();
-			srcDep.setName(name + ".source"); //$NON-NLS-1$
-			srcDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
-			srcDep.setVersionRange(VersionHelper.exactRange(iu.getVersion()));
+			ComponentRequest srcDep = CommonFactory.eINSTANCE.createComponentRequest();
+			srcDep.setId(name + ".source"); //$NON-NLS-1$
+			srcDep.setType(IComponentType.OSGI_BUNDLE);
+			srcDep.setRange(VersionHelper.exactRange(iu.getVersion()));
 			try {
-				srcDep.setFilter(FilterFactory.newInstance(ComponentRequest.FILTER_OPTIONAL_SOURCE_BUNDLE));
+				srcDep.setFilter(FilterFactory.newInstance(CommonConstants.FILTER_OPTIONAL_SOURCE_BUNDLE));
 			} catch (InvalidSyntaxException e) {
 				// This won't happen on that particular filter
 			}
@@ -260,38 +261,31 @@ public class CSpecBuilder implements ICSpecData {
 		attributes.put(attrName, attribute.getAttributeBuilder(this));
 	}
 
-	public boolean addDependency(IComponentRequest dependency) throws CoreException {
-		ComponentRequestBuilder bld;
-		if (dependency instanceof ComponentRequestBuilder)
-			bld = (ComponentRequestBuilder) dependency;
-		else {
-			bld = createDependencyBuilder();
-			bld.initFrom(dependency);
-		}
-
+	public boolean addDependency(ComponentRequest dependency) throws CoreException {
+		ComponentRequest bld = EcoreUtil.copy(dependency);
 		if (dependencies == null) {
-			dependencies = new ArrayList<ComponentRequestBuilder>();
+			dependencies = new ArrayList<ComponentRequest>();
 			dependencies.add(bld);
 			return true;
 		}
 
-		String depName = dependency.getName();
-		String depType = dependency.getComponentTypeID();
-		VersionRange depRange = dependency.getVersionRange();
+		String depName = dependency.getId();
+		String depType = dependency.getType();
+		VersionRange depRange = dependency.getRange();
 		Filter depFilter = dependency.getFilter();
 		int idx = dependencies.size();
 		while (--idx >= 0) {
-			ComponentRequestBuilder old = dependencies.get(idx);
-			if (!old.getName().equals(depName))
+			ComponentRequest old = dependencies.get(idx);
+			if (!old.getId().equals(depName))
 				// Name differ
 				continue;
 
-			String oldType = old.getComponentTypeID();
+			String oldType = old.getType();
 			if (oldType != null && depType != null && !oldType.equals(depType))
 				// Type differ
 				continue;
 
-			VersionRange oldRange = old.getVersionRange();
+			VersionRange oldRange = old.getRange();
 			if (oldRange != null && depRange != null && oldRange.intersect(depRange) == null)
 				// No version range intersect
 				continue;
@@ -338,10 +332,10 @@ public class CSpecBuilder implements ICSpecData {
 				// This was a duplicate
 				return false;
 
-			bld.setComponentTypeID(depType);
+			bld.setType(depType);
 			bld.setFilter(depFilter);
-			bld.setName(depName);
-			bld.setVersionRange(depRange);
+			bld.setId(depName);
+			bld.setRange(depRange);
 			dependencies.remove(idx);
 			dependencies.add(bld);
 			return false;
@@ -353,9 +347,9 @@ public class CSpecBuilder implements ICSpecData {
 	}
 
 	public void addGenerator(IGenerator generator) throws GeneratorAlreadyDefinedException {
-		IComponentIdentifier ci = generator.getGeneratedIdentifier();
+		ComponentIdentifier ci = generator.getGeneratedIdentifier();
 		if (generators == null)
-			generators = new HashMap<IComponentIdentifier, GeneratorBuilder>();
+			generators = new HashMap<ComponentIdentifier, GeneratorBuilder>();
 		else if (generators.containsKey(ci))
 			throw new GeneratorAlreadyDefinedException(name, ci);
 
@@ -407,10 +401,6 @@ public class CSpecBuilder implements ICSpecData {
 
 	public CSpec createCSpec() {
 		return new CSpec(this);
-	}
-
-	public ComponentRequestBuilder createDependencyBuilder() {
-		return new ComponentRequestBuilder();
 	}
 
 	public GeneratorBuilder createGeneratorBuilder() {
@@ -470,7 +460,11 @@ public class CSpecBuilder implements ICSpecData {
 
 	@Override
 	public ComponentIdentifier getComponentIdentifier() {
-		return new ComponentIdentifier(name, componentType, version);
+		ComponentIdentifier ci = CommonFactory.eINSTANCE.createComponentIdentifier();
+		ci.setId(name);
+		ci.setType(componentType);
+		ci.setVersion(version);
+		return ci;
 	}
 
 	@Override
@@ -479,28 +473,21 @@ public class CSpecBuilder implements ICSpecData {
 	}
 
 	@Override
-	public Collection<ComponentRequestBuilder> getDependencies() {
-		return dependencies == null ? Collections.<ComponentRequestBuilder> emptyList() : dependencies;
-	}
-
-	@SuppressWarnings("deprecation")
-	@Deprecated
-	@Override
-	public ComponentRequestBuilder getDependency(String depName, String depType) throws MissingDependencyException {
-		return getDependency(depName, depType, null);
+	public Collection<ComponentRequest> getDependencies() {
+		return dependencies == null ? Collections.<ComponentRequest> emptyList() : dependencies;
 	}
 
 	@Override
-	public ComponentRequestBuilder getDependency(String depName, String depType, VersionRange depRange) throws MissingDependencyException {
+	public ComponentRequest getDependency(String depName, String depType, VersionRange depRange) throws MissingDependencyException {
 		if (dependencies != null) {
 			int idx = dependencies.size();
 			while (--idx >= 0) {
-				ComponentRequestBuilder dependency = dependencies.get(idx);
-				if (!depName.equals(dependency.getName()))
+				ComponentRequest dependency = dependencies.get(idx);
+				if (!depName.equals(dependency.getId()))
 					continue;
-				if (depType != null && dependency.getComponentTypeID() != null && !depType.equals(dependency.getComponentTypeID()))
+				if (depType != null && dependency.getType() != null && !depType.equals(dependency.getType()))
 					continue;
-				if (depRange != null && dependency.getVersionRange() != null && dependency.getVersionRange().intersect(depRange) == null)
+				if (depRange != null && dependency.getRange() != null && dependency.getRange().intersect(depRange) == null)
 					continue;
 				return dependency;
 			}
@@ -508,7 +495,7 @@ public class CSpecBuilder implements ICSpecData {
 		return null;
 	}
 
-	public List<ComponentRequestBuilder> getDependencyBuilders() {
+	public List<ComponentRequest> getDependencyBuilders() {
 		return dependencies;
 	}
 
@@ -567,22 +554,10 @@ public class CSpecBuilder implements ICSpecData {
 		throw new MissingAttributeException(name, attrName);
 	}
 
-	public ComponentRequestBuilder getRequiredDependency(IComponentRequest dep) throws MissingDependencyException {
-		ComponentRequestBuilder dependency = getDependency(dep.getName(), dep.getComponentTypeID(), dep.getVersionRange());
+	public ComponentRequest getRequiredDependency(ComponentRequest dep) throws MissingDependencyException {
+		ComponentRequest dependency = getDependency(dep.getId(), dep.getType(), dep.getRange());
 		if (dependency == null)
 			throw new MissingDependencyException(name, dep.toString());
-		return dependency;
-	}
-
-	/**
-	 * @deprecated Use
-	 *             {@link #getRequiredDependency(String, String, VersionRange)}
-	 */
-	@Deprecated
-	public ComponentRequestBuilder getRequiredDependency(String dependencyName, String componentTypeID) throws MissingDependencyException {
-		ComponentRequestBuilder dependency = getDependency(dependencyName, componentTypeID, null);
-		if (dependency == null)
-			throw new MissingDependencyException(name, dependencyName);
 		return dependency;
 	}
 
@@ -624,17 +599,17 @@ public class CSpecBuilder implements ICSpecData {
 		} else
 			attributes = null;
 
-		Collection<? extends IComponentRequest> deps = cspec.getDependencies();
+		Collection<? extends ComponentRequest> deps = cspec.getDependencies();
 		if (deps.size() > 0) {
-			dependencies = new ArrayList<ComponentRequestBuilder>(deps.size());
-			for (IComponentRequest dep : deps)
+			dependencies = new ArrayList<ComponentRequest>(deps.size());
+			for (ComponentRequest dep : deps)
 				addDependency(dep);
 		} else
 			dependencies = null;
 
 		Collection<? extends IGenerator> gens = cspec.getGeneratorList();
 		if (gens.size() > 0) {
-			generators = new HashMap<IComponentIdentifier, GeneratorBuilder>(gens.size());
+			generators = new HashMap<ComponentIdentifier, GeneratorBuilder>(gens.size());
 			for (IGenerator gen : gens) {
 				GeneratorBuilder gb = createGeneratorBuilder();
 				gb.initFrom(gen);

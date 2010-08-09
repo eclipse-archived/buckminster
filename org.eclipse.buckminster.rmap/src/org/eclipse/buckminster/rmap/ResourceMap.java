@@ -132,7 +132,7 @@ public interface ResourceMap extends Properties {
 	 * @return the value of the '<em>Search Paths</em>' containment reference
 	 *         list.
 	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_SearchPaths()
-	 * @model containment="true" extendedMetaData=
+	 * @model containment="true" keys="name" extendedMetaData=
 	 *        "name='searchPath' namespace='##targetNamespace' kind='element'"
 	 * @generated
 	 */

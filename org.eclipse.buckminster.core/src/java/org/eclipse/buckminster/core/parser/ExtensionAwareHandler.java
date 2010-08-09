@@ -13,8 +13,6 @@ package org.eclipse.buckminster.core.parser;
 import javax.xml.XMLConstants;
 
 import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.osgi.util.NLS;
@@ -30,23 +28,6 @@ public abstract class ExtensionAwareHandler extends ChildHandler {
 	public <H extends ChildHandler> H createContentHandler(Class<H> instanceClass, String namespace, Attributes attrs) throws SAXException {
 		String xsiType = attrs.getValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "type"); //$NON-NLS-1$
 		return ((AbstractParser<?>) this.getTopHandler()).createContentHandler(this, instanceClass, namespace, xsiType);
-	}
-
-	protected String getComponentType(Attributes attrs) throws SAXException {
-		String tmp = getOptionalStringValue(attrs, ComponentName.ATTR_COMPONENT_TYPE);
-		if (tmp == null) {
-			// Legacy. 0.1.0 had component category "plugin" and "feature"
-			//
-			tmp = getOptionalStringValue(attrs, "category"); //$NON-NLS-1$
-			if (tmp != null) {
-				logAttributeDeprecation(getTAG(), "category", ComponentName.ATTR_COMPONENT_TYPE); //$NON-NLS-1$
-				if (tmp.equals("plugin")) //$NON-NLS-1$
-					tmp = IComponentType.OSGI_BUNDLE;
-				else if (tmp.equals("feature")) //$NON-NLS-1$
-					tmp = IComponentType.ECLIPSE_FEATURE;
-			}
-		}
-		return tmp;
 	}
 
 	protected void logAttributeDeprecation(String elementName, String attrName, String useInstead) {
@@ -75,8 +56,8 @@ public abstract class ExtensionAwareHandler extends ChildHandler {
 
 	protected void logElementIgnored(String elementName) {
 		Locator locator = this.getDocumentLocator();
-		warningOnce(String.format(NLS.bind(Messages.Use_of_deprecated_element_0_was_ignored_1_line_2, new Object[] { elementName,
-				locator.getSystemId(), new Integer(locator.getLineNumber()) })));
+		warningOnce(String.format(NLS.bind(Messages.Use_of_deprecated_element_0_was_ignored_1_line_2,
+				new Object[] { elementName, locator.getSystemId(), new Integer(locator.getLineNumber()) })));
 	}
 
 	protected void warningOnce(String warning) {

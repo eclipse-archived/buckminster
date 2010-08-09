@@ -13,10 +13,11 @@ import java.util.Set;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
+import org.eclipse.buckminster.core.helpers.SAXEmitter;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.xml.sax.ContentHandler;
@@ -66,7 +67,7 @@ public class UnresolvedNode extends BOMNode {
 	@Override
 	protected void emitElements(ContentHandler receiver, String namespace, String prefix) throws SAXException {
 		ComponentRequest request = dependency.getRequest();
-		request.toSax(receiver, namespace, prefix, request.getDefaultTag());
+		SAXEmitter.emit(receiver, request, namespace, prefix, "component"); //$NON-NLS-1$
 		Set<String> names = dependency.getAttributeNames();
 		int top = names.size();
 		if (top > 0) {

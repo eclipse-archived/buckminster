@@ -239,7 +239,6 @@ public class MspecModelWizard extends Wizard implements INewWizard {
 	 * 
 	 * @generated
 	 */
-	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		this.workbench = workbench;
 		this.selection = selection;
@@ -308,7 +307,6 @@ public class MspecModelWizard extends Wizard implements INewWizard {
 			if (activePart instanceof ISetSelectionTarget) {
 				final ISelection targetSelection = new StructuredSelection(modelFile);
 				getShell().getDisplay().asyncExec(new Runnable() {
-					@Override
 					public void run() {
 						((ISetSelectionTarget) activePart).selectReveal(targetSelection);
 					}
@@ -321,8 +319,8 @@ public class MspecModelWizard extends Wizard implements INewWizard {
 				page.openEditor(new FileEditorInput(modelFile), workbench.getEditorRegistry().getDefaultEditor(modelFile.getFullPath().toString())
 						.getId());
 			} catch (PartInitException exception) {
-				MessageDialog.openError(workbenchWindow.getShell(), MspecEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception
-						.getMessage());
+				MessageDialog.openError(workbenchWindow.getShell(), MspecEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"),
+						exception.getMessage());
 				return false;
 			}
 

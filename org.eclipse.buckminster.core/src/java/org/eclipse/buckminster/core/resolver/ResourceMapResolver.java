@@ -27,7 +27,6 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
@@ -49,6 +48,7 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Format;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.model.common.util.VersionHelper;
@@ -76,6 +76,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.common.util.WrappedException;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.equinox.p2.metadata.IVersionFormat;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
@@ -133,7 +140,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			IFileInfo info = DownloadManager.readInfo(URLUtils.normalizeToURL(pm.getRepositoryURI()), null);
 			NodeQuery nq = pm.getNodeQuery();
 			ResolutionBuilder resBld = new ResolutionBuilder(bld);
-			resBld.getRequest().initFrom(nq.getComponentRequest());
+			resBld.setRequest(nq.getComponentRequest());
 			resBld.setAttributes(nq.getRequiredAttributes());
 			resBld.setProvider(pm.getProvider());
 			resBld.setRepository(pm.getProvider().getURI(nq.getProperties()));
@@ -167,8 +174,8 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 				continue;
 
 			String matchedName = matchMap.get(COMPONENT_NAME_PARAM);
-			if (!cq.getName().equals(matchedName)) {
-				logger.debug("URI name %s does not match %s", matchedName, cq.getName()); //$NON-NLS-1$
+			if (!cq.getId().equals(matchedName)) {
+				logger.debug("URI name %s does not match %s", matchedName, cq.getId()); //$NON-NLS-1$
 				continue;
 			}
 
@@ -180,7 +187,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 					if (fmt == null)
 						fmt = VersionHelper.getVersionType(matcher.getVersionType()).getFormat();
 					version = fmt.parse(tmp);
-					VersionRange vd = cq.getVersionRange();
+					VersionRange vd = cq.getRange();
 					if (!(vd == null || vd.isIncluded(version))) {
 						logger.debug("URI version %s is not designated by %s", version, vd); //$NON-NLS-1$
 						continue;
@@ -245,6 +252,34 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		return pm;
 	}
 
+	public static ResourceMap getResourceMap(ResourceMap rmap, Map<String, String> properties, Redirect redirect, IResolverBackchannel backChannel)
+			throws CoreException {
+		String expanded = ExpandingProperties.expand(properties, redirect.getRedirectTo(), 0);
+		if (expanded == null)
+			throw new IllegalArgumentException("Unable to expand redirect");
+		URL resolvedURL = URLUtils.resolveURL(rmap.getContextURL(), expanded);
+		backChannel.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, resolvedURL);
+		return getResourceMap(resolvedURL, null);
+	}
+
+	public static ResourceMap getResourceMap(URL url, IConnectContext cctx) throws CoreException {
+		String stream = url.toExternalForm();
+		Resource resource;
+		try {
+			ResourceSet rs = CorePlugin.getDefault().getResourceSet();
+			// TODO: Figure out how to use the IConnectionContext with EMF load
+			resource = rs.getResource(URI.createURI(stream), true);
+		} catch (WrappedException e) {
+			throw BuckminsterException.wrap(e.getCause());
+		}
+		EList<EObject> content = resource.getContents();
+		if (content.size() != 1)
+			throw BuckminsterException.fromMessage(NLS.bind("Unable to parse rmap file from {0}", stream)); //$NON-NLS-1$
+
+		return (ResourceMap) content.get(0);
+
+	}
+
 	public static Provider immutableProvider(String readerType, String componentType, String uri, Filter resolutionFilter) {
 		Provider provider = RmapFactory.eINSTANCE.createProvider();
 		provider.setReaderType(readerType);
@@ -281,6 +316,56 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		return resFilter.matchCase(query.getProperties());
 	}
 
+	public static BOMNode resolve(ResourceMap rmap, NodeQuery query, IProgressMonitor monitor) throws CoreException {
+		monitor.beginTask(null, 2000);
+
+		ComponentRequest request = query.getComponentRequest();
+		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), 0, NLS.bind(
+				Messages.no_suitable_provider_for_0_was_found_in_resourceMap_1, request, rmap.getContextURL()), null);
+
+		Map<String, String> props;
+		if (rmap.getProperties().isEmpty())
+			props = query.getProperties();
+		else {
+			query = new NodeQuery(query, rmap.getProperties(), false);
+			props = query.getProperties();
+		}
+
+		String componentName = request.getId();
+		for (Matcher matcher : rmap.getMatchers()) {
+			if (!matcher.matches(componentName))
+				continue;
+
+			if (matcher instanceof Redirect)
+				return resolve(getResourceMap(rmap, props, (Redirect) matcher, query), query, monitor);
+
+			Locator locator = (Locator) matcher;
+			try {
+				SearchPath sp = locator.getSearchPath();
+				query.logDecision(ResolverDecisionType.USING_SEARCH_PATH, sp.getName());
+				return resolve(query, sp, monitor);
+			} catch (CoreException e) {
+				problemCollector.add(e.getStatus());
+				if (locator.isFailOnError())
+					break;
+			}
+		}
+
+		if (problemCollector.getChildren().length == 0) {
+			query.logDecision(ResolverDecisionType.SEARCH_PATH_NOT_FOUND, (Object) null);
+			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, NLS.bind(Messages.Unable_to_find_a_searchPath_for_0,
+					request), null));
+		}
+
+		if (request.isOptional()) {
+			// The component is optional so this should not be considered an
+			// error.
+			return new UnresolvedNode(new QualifiedDependency(request, query.getRequiredAttributes()));
+		}
+
+		throw new CoreException(problemCollector);
+	}
+
 	static ProviderMatch findMatch(Provider provider, NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException {
 		String readerType = provider.getReaderType();
 		String providerURI = getProviderURI(query, provider);
@@ -300,7 +385,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		monitor.beginTask(null, 120);
 		try {
 			ComponentRequest request = query.getComponentRequest();
-			String componentTypeID = request.getComponentTypeID();
+			String componentTypeID = request.getType();
 
 			// The component request is equipped with a component type. It must
 			// match the types that this provider provides.
@@ -451,21 +536,78 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		return provider.getURI().getValue(properties);
 	}
 
-	private static Filter getFilter(Map<String, String> matchMap) {
-		return FilterUtils.createFilter(matchMap.get(OS_PARAM), matchMap.get(WS_PARAM), matchMap.get(ARCH_PARAM), matchMap.get(NL_PARAM));
+	static BOMNode resolve(NodeQuery query, SearchPath searchPath, IProgressMonitor monitor) throws CoreException {
+		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
+				Messages.No_suitable_provider_for_component_0_was_found_in_searchPath_1, query.getComponentRequest(), searchPath.getName()), null);
+
+		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
+		try {
+			for (boolean first = true;; first = false) {
+				ProviderMatch providerMatch = getProvider(searchPath, query, noGoodList, problemCollector,
+						MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
+				MonitorUtils.testCancelStatus(monitor);
+
+				Provider provider = providerMatch.getProvider();
+				IComponentType cType = providerMatch.getComponentType();
+				try {
+					BOMNode node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
+					Resolution resolution = node.getResolution();
+					MonitorUtils.testCancelStatus(monitor);
+					Filter[] filterHandle = new Filter[1];
+					if (!resolution.isFilterMatchFor(query, filterHandle)) {
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.FILTER_MISMATCH, filterHandle[0]);
+						noGoodList.add(providerMatch.getOriginalProvider());
+						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
+						continue;
+					}
+
+					CSpec cspec = resolution.getCSpec();
+
+					// Assert that the cspec can handle required actions and
+					// exports
+					//
+					Version version = cspec.getVersion();
+					VersionRange range = query.getVersionRange();
+					if (range != null && provider.getVersionConverter() == null) {
+						// A missing version converter means that the actual
+						// version check is deferred
+						// and later performed on the retreived CSpec. Later is
+						// now ...
+						//
+						if (!range.isIncluded(version)) {
+							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, version,
+									NLS.bind(Messages.Not_designated_by_0, range));
+							noGoodList.add(providerMatch.getOriginalProvider());
+							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
+							continue;
+						}
+					}
+
+					// Verify that all required attributes are in this cspec
+					//
+					cspec.getAttributes(query.getRequiredAttributes());
+					if (version != null) {
+						// Replace the resolution version if it is default and
+						// a non default version is present in the CSpec
+						//
+						VersionMatch vm = resolution.getVersionMatch();
+						if (vm.getVersion() == null)
+							node = new ResolvedNode(new Resolution(version, resolution), node.getChildren());
+					}
+					return node;
+				} catch (CoreException e) {
+					ResolverDecision decision = query.logDecision(ResolverDecisionType.EXCEPTION, e.getMessage());
+					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), e));
+					noGoodList.add(providerMatch.getOriginalProvider());
+				}
+			}
+		} finally {
+			monitor.done();
+		}
 	}
 
-	private static IStatus transformToWarning(IStatus status) {
-		if (status instanceof MultiStatus) {
-			IStatus[] children = status.getChildren();
-			int idx = children.length;
-			while (--idx >= 0)
-				children[idx] = transformToWarning(children[idx]);
-			return new MultiStatus(status.getPlugin(), status.getCode(), children, status.getMessage(), status.getException());
-		}
-
-		return (status.getSeverity() < IStatus.ERROR) ? status : new Status(IStatus.WARNING, status.getPlugin(), status.getCode(),
-				status.getMessage(), status.getException());
+	private static Filter getFilter(Map<String, String> matchMap) {
+		return FilterUtils.createFilter(matchMap.get(OS_PARAM), matchMap.get(WS_PARAM), matchMap.get(ARCH_PARAM), matchMap.get(NL_PARAM));
 	}
 
 	private boolean singleThreaded = false;
@@ -507,13 +649,6 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			if (node.isInvalidated() && !node.isForceUnresolved())
 				schedule(node);
 		}
-	}
-
-	public ResourceMap getResourceMap(ResourceMap rmap, Map<String, String> properties, Redirect redirect, NodeQuery query) throws CoreException {
-		String expanded = ExpandingProperties.expand(properties, redirect.getHref(), 0);
-		URL resolvedURL = URLUtils.resolveURL(rmap.getContextURL(), expanded);
-		query.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, resolvedURL);
-		return factory.getResourceMap(query.getResolutionContext(), resolvedURL, query.getComponentQuery().getConnectContext());
 	}
 
 	@Override
@@ -672,132 +807,6 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		//
 		--jobCounter;
 		scheduleNext();
-	}
-
-	BOMNode resolve(NodeQuery query, SearchPath searchPath, IProgressMonitor monitor) throws CoreException {
-		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
-				Messages.No_suitable_provider_for_component_0_was_found_in_searchPath_1, query.getComponentRequest(), searchPath.getName()), null);
-
-		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
-		try {
-			for (boolean first = true;; first = false) {
-				ProviderMatch providerMatch = getProvider(searchPath, query, noGoodList, problemCollector,
-						MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
-				MonitorUtils.testCancelStatus(monitor);
-
-				Provider provider = providerMatch.getProvider();
-				IComponentType cType = providerMatch.getComponentType();
-				try {
-					BOMNode node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
-					Resolution resolution = node.getResolution();
-					MonitorUtils.testCancelStatus(monitor);
-					Filter[] filterHandle = new Filter[1];
-					if (!resolution.isFilterMatchFor(query, filterHandle)) {
-						ResolverDecision decision = query.logDecision(ResolverDecisionType.FILTER_MISMATCH, filterHandle[0]);
-						noGoodList.add(providerMatch.getOriginalProvider());
-						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
-						continue;
-					}
-
-					CSpec cspec = resolution.getCSpec();
-
-					// Assert that the cspec can handle required actions and
-					// exports
-					//
-					Version version = cspec.getVersion();
-					VersionRange range = query.getVersionRange();
-					if (range != null && provider.getVersionConverter() == null) {
-						// A missing version converter means that the actual
-						// version check is deferred
-						// and later performed on the retreived CSpec. Later is
-						// now ...
-						//
-						if (!range.isIncluded(version)) {
-							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, version,
-									NLS.bind(Messages.Not_designated_by_0, range));
-							noGoodList.add(providerMatch.getOriginalProvider());
-							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
-							continue;
-						}
-					}
-
-					// Verify that all required attributes are in this cspec
-					//
-					cspec.getAttributes(query.getRequiredAttributes());
-					if (version != null) {
-						// Replace the resolution version if it is default and
-						// a non default version is present in the CSpec
-						//
-						VersionMatch vm = resolution.getVersionMatch();
-						if (vm.getVersion() == null)
-							node = new ResolvedNode(new Resolution(version, resolution), node.getChildren());
-					}
-					return node;
-				} catch (CoreException e) {
-					ResolverDecision decision = query.logDecision(ResolverDecisionType.EXCEPTION, e.getMessage());
-					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), e));
-					noGoodList.add(providerMatch.getOriginalProvider());
-				}
-			}
-		} finally {
-			monitor.done();
-		}
-	}
-
-	BOMNode resolve(ResourceMap rmap, NodeQuery query, IProgressMonitor monitor) throws CoreException {
-		monitor.beginTask(null, 2000);
-
-		ComponentRequest request = query.getComponentRequest();
-		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), 0, NLS.bind(
-				Messages.no_suitable_provider_for_0_was_found_in_resourceMap_1, request, rmap.getContextURL()), null);
-
-		Map<String, String> props;
-		if (rmap.getProperties().isEmpty())
-			props = query.getProperties();
-		else {
-			query = new NodeQuery(query, rmap.getProperties(), false);
-			props = query.getProperties();
-		}
-
-		String componentName = request.getName();
-		for (Matcher matcher : rmap.getMatchers()) {
-			if (!matcher.matches(componentName))
-				continue;
-
-			if (matcher instanceof Redirect)
-				return resolve(getResourceMap(rmap, props, (Redirect) matcher, query), query, monitor);
-
-			Locator locator = (Locator) matcher;
-			try {
-				SearchPath sp = locator.getSearchPath();
-				query.logDecision(ResolverDecisionType.USING_SEARCH_PATH, sp.getName());
-				return resolve(query, sp, monitor);
-			} catch (CoreException e) {
-				problemCollector.add(e.getStatus());
-				if (locator.isFailOnError())
-					break;
-			}
-		}
-
-		if (problemCollector.getChildren().length == 0) {
-			query.logDecision(ResolverDecisionType.SEARCH_PATH_NOT_FOUND, (Object) null);
-			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, NLS.bind(Messages.Unable_to_find_a_searchPath_for_0,
-					request), null));
-		}
-
-		if (request.isOptional()) {
-			// The component is optional so this should not be considered an
-			// error
-			// A warning is appropriate though, since this probably indicates
-			// some
-			// kind of problem.
-			//
-			if (!request.isSynthetic())
-				query.getContext().addRequestStatus(request, transformToWarning(problemCollector));
-			return new UnresolvedNode(new QualifiedDependency(request, query.getRequiredAttributes()));
-		}
-
-		throw new CoreException(problemCollector);
 	}
 
 	boolean schedule(ResolverNodeWithJob node) {

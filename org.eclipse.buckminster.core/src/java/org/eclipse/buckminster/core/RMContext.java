@@ -23,16 +23,15 @@ import java.util.UUID;
 
 import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.IAttribute;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.Action;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.BuildTimestampQualifierGenerator;
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.BMProperties;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.model.common.util.UnmodifiableMapUnion;
@@ -250,7 +249,7 @@ public class RMContext extends ExpandingProperties {
 	 * @param resolveStatus
 	 *            A status that indicates an error during processing.
 	 */
-	public synchronized void addRequestStatus(IComponentRequest request, IStatus st) {
+	public synchronized void addRequestStatus(ComponentRequest request, IStatus st) {
 		Logger logger = CorePlugin.getLogger();
 		if (logger.isInfoEnabled())
 			st = addTagId(getTagId(request), st);
@@ -334,7 +333,7 @@ public class RMContext extends ExpandingProperties {
 		}
 
 		if (name == null)
-			name = request.getName();
+			name = request.getId();
 		return name;
 	}
 
@@ -425,7 +424,7 @@ public class RMContext extends ExpandingProperties {
 		silentStatus = flag;
 	}
 
-	protected synchronized boolean hasTagInfo(IComponentRequest request) {
+	protected synchronized boolean hasTagInfo(ComponentRequest request) {
 		// This method is called during TagInfo initialization. Do not
 		// initialize here.
 		return tagInfos.containsKey(request);
@@ -441,7 +440,7 @@ public class RMContext extends ExpandingProperties {
 	/**
 	 * Override in subclasses to perform lazy initialization of tag info.
 	 */
-	protected void initializeTagInfo(IComponentRequest request) {
+	protected void initializeTagInfo(ComponentRequest request) {
 		// nothing to to here. must be overriden by subclasses
 	}
 
@@ -475,7 +474,7 @@ public class RMContext extends ExpandingProperties {
 		logger.info(bld.toString());
 	}
 
-	private synchronized String getTagId(IComponentRequest request) {
+	private synchronized String getTagId(ComponentRequest request) {
 		TagInfo tagInfo = tagInfos.get(request);
 		if (tagInfo == null)
 			initializeTagInfo(request);

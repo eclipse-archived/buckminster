@@ -8,7 +8,6 @@
 package org.eclipse.buckminster.core.cspec.parser;
 
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -44,7 +43,7 @@ class DependenciesHandler extends ExtensionAwareHandler implements ChildPoppedLi
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
 		if (CSpec.ELEM_DEPENDENCY.equals(localName))
-			ch = new ComponentRequestHandler(this, new ComponentRequestBuilder());
+			ch = new ComponentRequestHandler(this);
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;

@@ -14,13 +14,13 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ProviderScore;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.rmap.VersionConverter;
 import org.eclipse.core.runtime.CoreException;
@@ -83,8 +83,8 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 	public CSpecBuilder createCSpec() {
 		CSpecBuilder bld = new CSpecBuilder();
 		ComponentRequest request = query.getComponentRequest();
-		bld.setName(request.getName());
-		bld.setComponentTypeID(request.getComponentTypeID());
+		bld.setName(request.getId());
+		bld.setComponentTypeID(request.getType());
 		bld.setVersion(versionMatch.getVersion());
 		return bld;
 	}
@@ -95,7 +95,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 		NodeQuery nq = getNodeQuery();
 		resBld.setMaterializable(true);
 		resBld.setComponentTypeId(getComponentType().getId());
-		resBld.getRequest().initFrom(nq.getComponentRequest());
+		resBld.setRequest(nq.getComponentRequest());
 		resBld.setAttributes(nq.getRequiredAttributes());
 		resBld.setProvider(getProvider());
 		resBld.setVersionMatch(getVersionMatch());
@@ -105,7 +105,7 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 	}
 
 	public String getComponentName() {
-		return query.getComponentRequest().getName();
+		return query.getComponentRequest().getId();
 	}
 
 	public IComponentType getComponentType() {

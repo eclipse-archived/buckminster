@@ -7,8 +7,8 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.resolver;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 

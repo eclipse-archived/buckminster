@@ -157,6 +157,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -179,6 +180,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -193,6 +195,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -215,8 +218,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
@@ -244,6 +247,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -271,7 +275,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public int getMaxParallelJobs() {
 		return maxParallelJobs;
 	}
@@ -281,7 +285,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EList<MaterializationNode> getMspecNodes() {
 		if (mspecNodes == null) {
 			mspecNodes = new EObjectContainmentEList<MaterializationNode>(MaterializationNode.class, this,
@@ -295,7 +299,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getName() {
 		return name;
 	}
@@ -305,7 +309,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -315,7 +319,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getUrl() {
 		return url;
 	}
@@ -325,7 +329,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setMaxParallelJobs(int newMaxParallelJobs) {
 		int oldMaxParallelJobs = maxParallelJobs;
 		maxParallelJobs = newMaxParallelJobs;
@@ -339,7 +343,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -352,7 +356,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setShortDesc(String newShortDesc) {
 		String oldShortDesc = shortDesc;
 		shortDesc = newShortDesc;
@@ -365,7 +369,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setUrl(String newUrl) {
 		String oldUrl = url;
 		url = newUrl;
@@ -378,6 +382,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
 		if (eIsProxy())
@@ -401,6 +406,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return MspecPackage.Literals.MATERIALIZATION_SPEC;

@@ -16,7 +16,6 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ITargetPlatform;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.TargetPlatform;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -24,6 +23,7 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -192,7 +192,7 @@ public class P2Materializer extends AbstractMaterializer {
 				SubMonitor subSubMon = subMon.newChild(800 / ress.size());
 				subSubMon.setWorkRemaining(1000);
 
-				IComponentIdentifier cid = res.getComponentIdentifier();
+				ComponentIdentifier cid = res.getComponentIdentifier();
 				Version version = Version.create(cid.getVersion().toString());
 				URI repoURI = cleanURIFromImportType(URI.create(res.getRepository()));
 				String path = repoURI.getPath();
@@ -204,14 +204,14 @@ public class P2Materializer extends AbstractMaterializer {
 					if (!IReaderType.URL.equals(rType))
 						throw BuckminsterException.fromMessage(NLS.bind(Messages.p2_materializer_cannot_process_readertype_0, rType));
 
-					IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getComponentTypeID());
+					IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getType());
 					IPath location = Path.fromOSString(destDir.getAbsolutePath());
 					IPath ctypeRelative = ctype.getRelativeLocation();
 					if (ctypeRelative != null)
 						location = location.append(ctypeRelative);
 					location.toFile().mkdirs();
 
-					String leafName = cid.getName() + '_' + cid.getVersion();
+					String leafName = cid.getId() + '_' + cid.getVersion();
 					if (res.isUnpack()) {
 						location = location.append(leafName);
 						location = location.addTrailingSeparator();
@@ -231,11 +231,11 @@ public class P2Materializer extends AbstractMaterializer {
 					}
 
 					SimpleArtifactDescriptor desc;
-					if (IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID())) {
-						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE, cid.getName(), version));
+					if (IComponentType.ECLIPSE_FEATURE.equals(cid.getType())) {
+						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE, cid.getId(), version));
 						desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
 					} else {
-						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(), version));
+						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getId(), version));
 						if (res.isUnpack())
 							desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
 					}
@@ -250,8 +250,8 @@ public class P2Materializer extends AbstractMaterializer {
 				}
 
 				VersionRange range = new VersionRange(version, true, version, true);
-				String name = cid.getName();
-				boolean isFeature = IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID());
+				String name = cid.getId();
+				boolean isFeature = IComponentType.ECLIPSE_FEATURE.equals(cid.getType());
 
 				if (isFeature)
 					// Since this is what we want in the target platform
@@ -261,7 +261,7 @@ public class P2Materializer extends AbstractMaterializer {
 				Iterator<IInstallableUnit> itor = result.iterator();
 				if (!itor.hasNext())
 					throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2,
-							new Object[] { cid.getName(), version, res.getRepository() }));
+							new Object[] { cid.getId(), version, res.getRepository() }));
 
 				IInstallableUnit iu = itor.next();
 				ius.add(iu);

@@ -10,7 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import junit.framework.Assert;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import junit.textui.TestRunner;
 
@@ -33,21 +35,27 @@ import org.osgi.framework.Bundle;
  */
 public class RmapTests extends TestSuite {
 
-	private static File toFile(URL url) throws IOException
+	private static File toFile(URL url)
 	{
-		return new File(new Path(FileLocator.toFileURL(url).getPath()).toOSString());
+		File file = null;
+		try {
+			file = new File(new Path(FileLocator.toFileURL(url).getPath()).toOSString());
+		} catch (IOException e) {
+			Assert.fail("Exception while converting URL \"" + url + "\" to a file: " + e.getMessage());
+		}
+		return file;
 	}
 
-	public static File getTestData(String fileName) throws Exception
+	public static File getTestData(String fileName)
 	{
 		Bundle self = Activator.context.getBundle();
 		URL base = self.getEntry("testData");
 		if(base == null)
-			throw new RuntimeException("Unable to find \"testData\" folder");
+			Assert.fail("Unable to find \"testData\" folder");
 		return new File(toFile(base), fileName);
 	}
 
-	public static ResourceMap loadTestResourceMap(String fileName) throws Exception {
+	public static ResourceMap loadTestResourceMap(String fileName) {
 		ResourceSet resourceSet = new ResourceSetImpl();
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put
 			(Resource.Factory.Registry.DEFAULT_EXTENSION, 

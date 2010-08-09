@@ -18,23 +18,32 @@ import java.util.Date;
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.IParser;
 import org.eclipse.buckminster.core.parser.IParserFactory;
-import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.resolver.ResourceMapResolver;
 import org.eclipse.buckminster.core.version.VersionMatch;
-import org.eclipse.buckminster.core.version.VersionType;
-import org.eclipse.buckminster.model.common.util.BMProperties;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.ResourceMap;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 
 public class CSpecBuilderTest extends TestCase {
+	private static ComponentRequest createComponentRequest(String name, String type, String range) {
+		ComponentRequest result = CommonFactory.eINSTANCE.createComponentRequest();
+		result.setId(name);
+		result.setType(type);
+		result.setRange(range == null ? null : new VersionRange(range));
+		return result;
+	}
+
 	public void testSaxGenerator() throws Exception {
 		CorePlugin plugin = CorePlugin.getDefault();
 		if (plugin == null)
@@ -43,23 +52,20 @@ public class CSpecBuilderTest extends TestCase {
 		CSpecBuilder cspecBld = new CSpecBuilder();
 		cspecBld.setName("my.test.project"); //$NON-NLS-1$
 		cspecBld.setVersion(Version.parseVersion("1.2.3")); //$NON-NLS-1$
-		ComponentRequest c1 = new ComponentRequest("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)", //$NON-NLS-1$ //$NON-NLS-2$
-				VersionType.OSGI, null);
+		ComponentRequest c1 = createComponentRequest("org.apache.ant", IComponentType.OSGI_BUNDLE, "[1.6.2,2.0.0)");
 		cspecBld.addDependency(c1);
-		cspecBld.addDependency(new ComponentRequest("se.tada.util.sax", null, null, null, null)); //$NON-NLS-1$
-		cspecBld.addDependency(new ComponentRequest("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0", //$NON-NLS-1$ //$NON-NLS-2$
-				VersionType.OSGI, null));
-		cspecBld.addDependency(new ComponentRequest("org.junit", null, "3.1.8", VersionType.OSGI, null)); //$NON-NLS-1$ //$NON-NLS-2$
+		cspecBld.addDependency(createComponentRequest("se.tada.util.sax", null, null)); //$NON-NLS-1$
+		cspecBld.addDependency(createComponentRequest("org.eclipse.team.core", IComponentType.OSGI_BUNDLE, "3.1.0")); //$NON-NLS-1$ //$NON-NLS-2$
+		cspecBld.addDependency(createComponentRequest("org.junit", null, "3.1.8")); //$NON-NLS-1$ //$NON-NLS-2$
 
 		CSpec c = cspecBld.createCSpec();
 
+		ResourceMap rmap = ResourceMapResolver.getResourceMap(getClass().getResource("/testData/rmaps/local_main.rmap"), null);
+		Provider provider = (Provider) rmap.eResource().getEObject("//@searchPaths[name='default']/@providers.0");
 		StorageManager sm = StorageManager.getDefault();
-		ComponentRequest request = new ComponentRequest("test", null, null); //$NON-NLS-1$
+		ComponentRequest request = createComponentRequest("test", null, null); //$NON-NLS-1$
 		Version vs = Version.parseVersion("1.0.0"); //$NON-NLS-1$
 		VersionMatch fixed = new VersionMatch(vs, null, -1, new Date(), null);
-		Provider provider = new Provider(null, "svn", new String[] { IComponentType.BUCKMINSTER }, //$NON-NLS-1$
-				null, new Format("svn://foo.bar.com/foobar"), null, null, null, BMProperties.getSystemProperties(), null, null); //$NON-NLS-1$
-		sm.getProviders().putElement(provider);
 		sm.getCSpecs().putElement(c);
 		Resolution resolution = new Resolution(c, IComponentType.BUCKMINSTER, fixed, provider, true, request, Collections.<String> emptyList(), null,
 				provider.getURI(Collections.<String, String> emptyMap()), null, null, 0L, -1L, false);

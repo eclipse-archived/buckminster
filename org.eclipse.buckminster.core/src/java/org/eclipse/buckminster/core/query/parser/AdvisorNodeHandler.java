@@ -79,7 +79,7 @@ public class AdvisorNodeHandler extends PropertyManagerHandler {
 	public void handleAttributes(Attributes attrs) throws SAXException {
 		builder = new AdvisorNodeBuilder();
 		builder.setNamePattern(getOptionalPatternValue(attrs, AdvisorNode.ATTR_NAME_PATTERN));
-		builder.setComponentTypeID(getComponentType(attrs));
+		builder.setComponentTypeID(getOptionalStringValue(attrs, "componentType")); //$NON-NLS-1$
 
 		String filterStr = getOptionalStringValue(attrs, AdvisorNode.ATTR_FILTER);
 		if (filterStr != null) {

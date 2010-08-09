@@ -10,9 +10,9 @@ package org.eclipse.buckminster.core.metadata.model;
 import java.util.Map;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.common.model.SAXEmitter;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.core.helpers.SAXEmitter;
 import org.eclipse.buckminster.core.metadata.StorageManager;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;

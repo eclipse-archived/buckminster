@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
@@ -113,6 +114,23 @@ public class CommonSwitch<T1> {
 	 * @generated
 	 */
 	public T1 caseComponentIdentifier(ComponentIdentifier object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Component Name</em>'. <!-- begin-user-doc --> This implementation
+	 * returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Component Name</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseComponentName(ComponentName object) {
 		return null;
 	}
 
@@ -560,6 +578,8 @@ public class CommonSwitch<T1> {
 				ComponentIdentifier componentIdentifier = (ComponentIdentifier) theEObject;
 				T1 result = caseComponentIdentifier(componentIdentifier);
 				if (result == null)
+					result = caseComponentName(componentIdentifier);
+				if (result == null)
 					result = caseIVersionedId(componentIdentifier);
 				if (result == null)
 					result = caseComparable(componentIdentifier);
@@ -567,9 +587,22 @@ public class CommonSwitch<T1> {
 					result = defaultCase(theEObject);
 				return result;
 			}
+			case CommonPackage.COMPONENT_NAME: {
+				ComponentName componentName = (ComponentName) theEObject;
+				T1 result = caseComponentName(componentName);
+				if (result == null)
+					result = caseComparable(componentName);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
 			case CommonPackage.COMPONENT_REQUEST: {
 				ComponentRequest componentRequest = (ComponentRequest) theEObject;
 				T1 result = caseComponentRequest(componentRequest);
+				if (result == null)
+					result = caseComponentName(componentRequest);
+				if (result == null)
+					result = caseComparable(componentRequest);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;

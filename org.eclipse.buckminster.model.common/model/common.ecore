@@ -133,24 +133,46 @@
       </eParameters>
     </eOperations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ComponentIdentifier">
-    <eOperations name="setId">
-      <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentIdentifier" eSuperTypes="#//ComponentName #//IVersionedId">
+    <eOperations name="matches" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&lt;p>Match this &lt;code>ComponentIdentifier&lt;/code> with another instance. The match is done as follows&lt;/p>&#xA;&lt;ul>&#xA;&lt;li>The match is always false if the id differ&lt;/li>&#xA;&lt;li>The types match if both instances have equal types or if a type is missing&lt;/li>&#xA;&lt;li>The versions match if both instances have equal versions or if a version is missing&lt;/li>&#xA;&lt;/ul>"/>
+      </eAnnotations>
+      <eParameters name="ci" eType="#//ComponentIdentifier"/>
     </eOperations>
-    <eOperations name="setVersion">
-      <eParameters name="version" eType="#//Version"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="#//Version"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentName">
+    <eOperations name="getProperties">
+      <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+        <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eGenericType>
     </eOperations>
+    <eOperations name="toPureComponentName" eType="#//ComponentName"/>
+    <eOperations name="toString">
+      <eParameters name="result" eType="#//StringBuilder"/>
+    </eOperations>
+    <eOperations name="matches" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&lt;p>Match this &lt;code>ComponentIdentifier&lt;/code> with another instance. The match is done as follows&lt;/p>&#xA;&lt;ul>&#xA;&lt;li>The match is always false if the id differ&lt;/li>&#xA;&lt;li>The types match if both instances have equal types or if a type is missing&lt;/li>&#xA;&lt;/ul>"/>
+      </eAnnotations>
+      <eParameters name="cn" eType="#//ComponentName"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eGenericSuperTypes eClassifier="#//IVersionedId"/>
     <eGenericSuperTypes eClassifier="#//Comparable">
-      <eTypeArguments eClassifier="#//ComponentIdentifier"/>
+      <eTypeArguments eClassifier="#//ComponentName"/>
     </eGenericSuperTypes>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ComponentRequest">
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentRequest" eSuperTypes="#//ComponentName">
+    <eOperations name="appendViewName">
+      <eParameters name="result" eType="#//StringBuilder"/>
+    </eOperations>
     <eOperations name="designates" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eParameters name="cid" eType="#//ComponentIdentifier"/>
     </eOperations>
-    <eOperations name="isOptional" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eOperations name="getViewName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eOperations name="isEnabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
       <eParameters name="properties">
         <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
@@ -161,10 +183,12 @@
         </eGenericType>
       </eParameters>
     </eOperations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="isOptional" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eOperations name="merge" eType="#//ComponentRequest">
+      <eParameters name="request" eType="#//ComponentRequest"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="range" eType="#//VersionRange"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="#//Filter"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Constant" eSuperTypes="#//Value">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -251,8 +275,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IVersionedId" instanceClassName="org.eclipse.equinox.p2.metadata.IVersionedId"
       abstract="true" interface="true">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="#//Version"/>
+    <eOperations name="getId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="getVersion" eType="#//Version"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Match">
     <eOperations name="match" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -489,7 +513,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="style" eType="#//SplitType"
-        defaultValueLiteral="quoted" unsettable="true">
+        defaultValueLiteral="unquoted" unsettable="true">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
       </eAnnotations>

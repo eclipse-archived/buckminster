@@ -227,7 +227,7 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 		if (componentType != null)
 			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, componentType);
 		if (versionRange != null)
-			Utils.addAttribute(attrs, ComponentRequest.ATTR_VERSION_DESIGNATOR, versionRange.toString());
+			Utils.addAttribute(attrs, "versionDesignator", versionRange.toString()); //$NON-NLS-1$
 		if (filter != null)
 			Utils.addAttribute(attrs, ATTR_FILTER, filter.toString());
 	}

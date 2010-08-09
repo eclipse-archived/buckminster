@@ -9,8 +9,8 @@
 package org.eclipse.buckminster.core.materializer;
 
 import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.LocalizedException;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 
@@ -20,7 +20,7 @@ import org.eclipse.osgi.util.NLS;
 public class FileFolderMismatchException extends LocalizedException {
 	private static final long serialVersionUID = -8203237901604381801L;
 
-	public FileFolderMismatchException(IComponentIdentifier ci, IPath path) {
+	public FileFolderMismatchException(ComponentIdentifier ci, IPath path) {
 		super(NLS.bind(Messages.Unable_to_reuse_location_0_for_component_1, path, ci));
 	}
 }

@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.cspec.IComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.Platform;
@@ -77,7 +77,7 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 	}
 
 	@Override
-	public IMaterializationNode getMatchingNode(IComponentName cName) {
+	public IMaterializationNode getMatchingNode(ComponentName cName) {
 		return getMatchingNodeBuilder(cName);
 	}
 
@@ -86,13 +86,13 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		return getMatchingNodeBuilder(res);
 	}
 
-	public MaterializationNodeBuilder getMatchingNodeBuilder(IComponentName cName) {
-		String cn = cName.getName();
+	public MaterializationNodeBuilder getMatchingNodeBuilder(ComponentName cName) {
+		String cn = cName.getId();
 		for (MaterializationNodeBuilder aNode : nodes) {
 			Pattern pattern = aNode.getNamePattern();
 			if (pattern != null && pattern.matcher(cn).find()) {
 				String matchingCType = aNode.getComponentTypeID();
-				if (matchingCType == null || matchingCType.equals(cName.getComponentTypeID()))
+				if (matchingCType == null || matchingCType.equals(cName.getType()))
 					return aNode;
 			}
 		}
@@ -104,11 +104,11 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 		ComponentIdentifier ci = res.getComponentIdentifier();
 		for (MaterializationNodeBuilder aNode : nodes) {
 			Pattern pattern = aNode.getNamePattern();
-			if (!(pattern == null || pattern.matcher(ci.getName()).find()))
+			if (!(pattern == null || pattern.matcher(ci.getId()).find()))
 				continue;
 
 			String matchingCType = aNode.getComponentTypeID();
-			if (!(matchingCType == null || matchingCType.equals(ci.getComponentTypeID())))
+			if (!(matchingCType == null || matchingCType.equals(ci.getType())))
 				continue;
 
 			Filter filter = aNode.getFilter();

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
+  <rm:searchPath name="default">
+    <rm:provider componentTypes="osgi.bundle" readerType="eclipse.platform">
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:versionConverter type="TAG"/>
+      <rm:uri format="plugin/{0}">
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+    </rm:provider>
+    <rm:provider componentTypes="eclipse.feature" readerType="eclipse.platform">
+      <rm:property key="buckminster.mutable" value="false"/>
+      <rm:property key="buckminster.source" value="false"/>
+      <rm:versionConverter type="TAG"/>
+      <rm:uri format="feature/{0}">
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+    </rm:provider>
+    <rm:provider componentTypes="eclipse.feature" readerType="local">
+      <rm:uri format="{0}">
+        <bc:propertyRef key="local.component.path"/>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+</rm:rmap>

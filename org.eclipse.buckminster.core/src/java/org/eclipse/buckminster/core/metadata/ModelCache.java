@@ -13,8 +13,8 @@ import java.util.Map;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.core.runtime.CoreException;
 
 /**

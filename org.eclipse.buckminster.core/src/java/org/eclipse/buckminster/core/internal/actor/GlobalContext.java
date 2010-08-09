@@ -20,8 +20,6 @@ import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.cspec.IAction;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.helpers.FileUtils;
@@ -29,6 +27,8 @@ import org.eclipse.buckminster.core.helpers.FileUtils.DeleteException;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -91,7 +91,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 	}
 
 	@Override
-	public synchronized Materialization getGeneratedMaterialization(IComponentIdentifier ci) {
+	public synchronized Materialization getGeneratedMaterialization(ComponentIdentifier ci) {
 		if (generatedMaterializations != null) {
 			for (Materialization mat : generatedMaterializations)
 				if (ci.equals(mat.getComponentIdentifier()))
@@ -101,7 +101,7 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 	}
 
 	@Override
-	public synchronized Resolution getGeneratedResolution(IComponentRequest request) {
+	public synchronized Resolution getGeneratedResolution(ComponentRequest request) {
 		if (generatedResolutions != null) {
 			for (Resolution res : generatedResolutions)
 				if (request.designates(res.getComponentIdentifier()))

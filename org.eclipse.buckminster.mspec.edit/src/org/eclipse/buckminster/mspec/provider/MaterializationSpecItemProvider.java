@@ -57,6 +57,7 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
@@ -72,6 +73,7 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/MaterializationSpec"));
@@ -83,6 +85,7 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -102,6 +105,7 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		String label = ((MaterializationSpec) object).getName();
@@ -117,6 +121,7 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -143,8 +148,8 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addMaxParallelJobsPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationSpec_maxParallelJobs_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MaterializationSpec_maxParallelJobs_feature", "_UI_MaterializationSpec_type"),
+				getResourceLocator(), getString("_UI_MaterializationSpec_maxParallelJobs_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationSpec_maxParallelJobs_feature", "_UI_MaterializationSpec_type"),
 				MspecPackage.Literals.MATERIALIZATION_SPEC__MAX_PARALLEL_JOBS, true, false, false, ItemPropertyDescriptor.INTEGRAL_VALUE_IMAGE, null,
 				null));
 	}
@@ -157,9 +162,9 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addNamePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationSpec_name_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MaterializationSpec_name_feature", "_UI_MaterializationSpec_type"), MspecPackage.Literals.MATERIALIZATION_SPEC__NAME,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_MaterializationSpec_name_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationSpec_name_feature", "_UI_MaterializationSpec_type"),
+				MspecPackage.Literals.MATERIALIZATION_SPEC__NAME, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -170,8 +175,8 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addShortDescPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationSpec_shortDesc_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MaterializationSpec_shortDesc_feature", "_UI_MaterializationSpec_type"),
+				getResourceLocator(), getString("_UI_MaterializationSpec_shortDesc_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationSpec_shortDesc_feature", "_UI_MaterializationSpec_type"),
 				MspecPackage.Literals.MATERIALIZATION_SPEC__SHORT_DESC, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -183,9 +188,9 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addUrlPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationSpec_url_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MaterializationSpec_url_feature", "_UI_MaterializationSpec_type"), MspecPackage.Literals.MATERIALIZATION_SPEC__URL,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_MaterializationSpec_url_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationSpec_url_feature", "_UI_MaterializationSpec_type"),
+				MspecPackage.Literals.MATERIALIZATION_SPEC__URL, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -195,12 +200,13 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add(createChildParameter(MspecPackage.Literals.MATERIALIZATION_SPEC__MSPEC_NODES, MspecFactory.eINSTANCE
-				.createMaterializationNode()));
+		newChildDescriptors.add(createChildParameter(MspecPackage.Literals.MATERIALIZATION_SPEC__MSPEC_NODES,
+				MspecFactory.eINSTANCE.createMaterializationNode()));
 	}
 
 	/**
@@ -208,6 +214,7 @@ public class MaterializationSpecItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper

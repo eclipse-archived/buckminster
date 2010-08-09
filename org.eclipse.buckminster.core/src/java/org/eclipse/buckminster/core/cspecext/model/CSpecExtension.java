@@ -17,14 +17,14 @@ import org.eclipse.buckminster.core.cspec.IActionArtifact;
 import org.eclipse.buckminster.core.cspec.IArtifact;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.ICSpecData;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.TopLevelAttribute;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.Version;
@@ -78,15 +78,17 @@ public class CSpecExtension {
 
 	public void alterCSpec(CSpecBuilder cspecBuilder) throws CoreException {
 		for (String removedDep : removedDependencies) {
-			cspecBuilder.getRequiredDependency(new ComponentRequest(removedDep, null, null));
+			ComponentRequest cr = CommonFactory.eINSTANCE.createComponentRequest();
+			cr.setId(removedDep);
+			cspecBuilder.getRequiredDependency(cr);
 			cspecBuilder.removeDependency(removedDep);
 		}
 
 		for (AlterDependency alterDep : alteredDependencies.values())
 			alterDep.alterDependency(cspecBuilder.getRequiredDependency(alterDep));
 
-		Collection<? extends IComponentRequest> addedDeps = base.getDependencies();
-		for (IComponentRequest addedDep : addedDeps)
+		Collection<? extends ComponentRequest> addedDeps = base.getDependencies();
+		for (ComponentRequest addedDep : addedDeps)
 			cspecBuilder.addDependency(addedDep);
 
 		for (IGenerator addedGenerator : base.getGeneratorList()) {

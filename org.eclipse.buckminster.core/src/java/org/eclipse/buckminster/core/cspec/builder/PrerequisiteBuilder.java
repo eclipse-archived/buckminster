@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
@@ -183,7 +184,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 		return bld.toString();
 	}
 
-	void finalWrapUp(List<ComponentRequestBuilder> dependencies) {
+	void finalWrapUp(List<ComponentRequest> dependencies) {
 		if (componentType != null || versionRange != null) {
 			// Count number of hits on this type and number of hits total
 			int hitsTotal = 0;
@@ -191,14 +192,14 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 			int hitsOnRange = 0;
 			int idx = dependencies.size();
 			while (--idx >= 0) {
-				ComponentRequestBuilder dep = dependencies.get(idx);
-				if (component.equals(dep.getName())) {
+				ComponentRequest dep = dependencies.get(idx);
+				if (component.equals(dep.getId())) {
 					++hitsTotal;
 					if (componentType != null) {
-						if (componentType.equals(dep.getComponentTypeID())) {
+						if (componentType.equals(dep.getType())) {
 							++hitsOnType;
 							if (versionRange != null) {
-								if (dep.getVersionRange() != null && dep.getVersionRange().intersect(versionRange) != null) {
+								if (dep.getRange() != null && dep.getRange().intersect(versionRange) != null) {
 									++hitsOnRange;
 								}
 							}
@@ -206,7 +207,7 @@ public class PrerequisiteBuilder extends CSpecElementBuilder implements IPrerequ
 						continue;
 					}
 					if (versionRange != null) {
-						if (dep.getVersionRange() != null && dep.getVersionRange().intersect(versionRange) != null)
+						if (dep.getRange() != null && dep.getRange().intersect(versionRange) != null)
 							++hitsOnRange;
 						else
 							continue;

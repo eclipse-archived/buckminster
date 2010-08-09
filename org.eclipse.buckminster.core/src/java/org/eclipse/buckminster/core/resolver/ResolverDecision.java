@@ -8,26 +8,26 @@
 
 package org.eclipse.buckminster.core.resolver;
 
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 
 /**
  * @author Thomas Hallgren
  * 
  */
 public class ResolverDecision {
-	private final IComponentRequest request;
+	private final ComponentRequest request;
 
 	private final ResolverDecisionType type;
 
 	private final Object[] args;
 
-	public ResolverDecision(IComponentRequest request, ResolverDecisionType type, Object[] args) {
+	public ResolverDecision(ComponentRequest request, ResolverDecisionType type, Object[] args) {
 		this.request = request;
 		this.type = type;
 		this.args = args;
 	}
 
-	public IComponentRequest getRequest() {
+	public ComponentRequest getRequest() {
 		return request;
 	}
 

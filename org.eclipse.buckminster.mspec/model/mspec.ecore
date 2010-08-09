@@ -6,18 +6,11 @@
   <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
     <details key="documentation" value="A replacement pattern matched against the component name when creating a workspace project name. Must be used in combination with bindingNameReplacement"/>
   </eAnnotations>
-  <eClassifiers xsi:type="ecore:EClass" name="DocumentRoot">
+  <eClassifiers xsi:type="ecore:EClass" name="DocumentRoot" eSuperTypes="../../org.eclipse.buckminster.model.common/model/common.ecore#//AbstractDocumentRoot">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value=""/>
       <details key="kind" value="mixed"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mixed" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="elementWildcard"/>
-        <details key="name" value=":mixed"/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="xMLNSPrefixMap" upperBound="-1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EStringToStringMapEntry"
         transient="true" containment="true" resolveProxies="false">
@@ -32,26 +25,6 @@
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="xsi:schemaLocation"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="property" upperBound="-2"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyConstant"
-        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="property"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#basicProperty"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyElement" upperBound="-2"
-        eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//PropertyElement"
-        volatile="true" transient="true" derived="true" containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="propertyElement"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="affiliation" value="http://www.eclipse.org/buckminster/Common-1.0#basicProperty"/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mspec" lowerBound="1" eType="#//MaterializationSpec"
@@ -106,33 +79,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//Filter"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="MaterializationDirective">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
-        containment="true">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="namespace" value="##targetNamespace"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="propertyGroup" unique="false"
-        lowerBound="1" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="group"/>
-        <details key="name" value="basicProperty:group"/>
-        <details key="namespace" value="http://www.eclipse.org/buckminster/Common-1.0"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" lowerBound="1"
-        upperBound="-1" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Property"
-        changeable="false" volatile="true" transient="true" derived="true" containment="true"
-        resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="basicProperty"/>
-        <details key="namespace" value="http://www.eclipse.org/buckminster/Common-1.0"/>
-        <details key="group" value="http://www.eclipse.org/buckminster/Common-1.0#basicProperty:group"/>
-      </eAnnotations>
-    </eStructuralFeatures>
+  <eClassifiers xsi:type="ecore:EClass" name="MaterializationDirective" eSuperTypes="../../org.eclipse.buckminster.model.common/model/common.ecore#//Properties">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="conflictResolution" eType="#//ConflictResolution"
         defaultValueLiteral="UPDATE"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="installLocation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -146,8 +93,18 @@
         <details key="documentation" value="Path to the designated workspace. Only in effect for materializers that has a conceptual understanding of a workspace. Defaults to the installLocation. In a node, this path can be relative to the global path."/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
+        containment="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="element"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MaterializationSpec" eSuperTypes="#//MaterializationDirective">
+    <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+      <details key="name" value="mspec"/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mspecNodes" upperBound="-1"
         eType="#//MaterializationNode" containment="true">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">

@@ -15,8 +15,8 @@
   </genAnnotations>
   <foreignModel>rmap.ecore</foreignModel>
   <genPackages prefix="Rmap" basePackage="org.eclipse.buckminster" resource="XML"
-      disposableProviderFactory="true" multipleEditorPages="false" extensibleProviderFactory="true"
-      childCreationExtenders="true" ecorePackage="rmap.ecore#/">
+      disposableProviderFactory="true" generateExampleClass="false" multipleEditorPages="false"
+      extensibleProviderFactory="true" childCreationExtenders="true" ecorePackage="rmap.ecore#/">
     <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
       <genAnnotations source="rmap.xsd"/>
     </genAnnotations>
@@ -83,7 +83,7 @@
       </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="rmap.ecore#//Redirect">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Redirect/href"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Redirect/redirectTo"/>
     </genClasses>
     <genClasses image="false" ecoreClass="rmap.ecore#//Repository">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute rmap.ecore#//Repository/id"/>

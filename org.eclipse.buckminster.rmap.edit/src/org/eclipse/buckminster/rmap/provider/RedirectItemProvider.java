@@ -58,7 +58,7 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addHrefPropertyDescriptor(object);
+			addRedirectToPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -91,7 +91,7 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Redirect.class)) {
-			case RmapPackage.REDIRECT__HREF:
+			case RmapPackage.REDIRECT__REDIRECT_TO:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
@@ -99,16 +99,16 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 	}
 
 	/**
-	 * This adds a property descriptor for the Href feature. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Redirect To feature. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addHrefPropertyDescriptor(Object object) {
+	protected void addRedirectToPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Redirect_href_feature"),
-				getString("_UI_PropertyDescriptor_description", "_UI_Redirect_href_feature", "_UI_Redirect_type"),
-				RmapPackage.Literals.REDIRECT__HREF, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_Redirect_redirectTo_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Redirect_redirectTo_feature", "_UI_Redirect_type"),
+				RmapPackage.Literals.REDIRECT__REDIRECT_TO, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

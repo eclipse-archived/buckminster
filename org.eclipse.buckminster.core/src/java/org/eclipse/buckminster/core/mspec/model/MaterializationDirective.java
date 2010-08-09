@@ -11,7 +11,7 @@ package org.eclipse.buckminster.core.mspec.model;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.common.model.SAXEmitter;
+import org.eclipse.buckminster.core.helpers.SAXEmitter;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.IMaterializationDirective;
 import org.eclipse.buckminster.core.mspec.builder.MaterializationDirectiveBuilder;

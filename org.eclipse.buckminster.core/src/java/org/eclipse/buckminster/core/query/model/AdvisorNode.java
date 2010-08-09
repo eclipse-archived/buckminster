@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
+import org.eclipse.buckminster.core.helpers.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;

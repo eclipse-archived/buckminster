@@ -7,11 +7,11 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.parser;
 
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.core.runtime.CoreException;
@@ -24,31 +24,37 @@ import org.xml.sax.SAXParseException;
  * @author Thomas Hallgren
  */
 public class ComponentRequestHandler extends ExtensionAwareHandler {
-	public static final String TAG = ComponentRequest.TAG;
+	public static final String TAG = "component"; //$NON-NLS-1$
 
-	private final ComponentRequestBuilder builder;
+	private final ComponentRequest builder;
 
-	public ComponentRequestHandler(AbstractHandler parent, ComponentRequestBuilder builder) {
+	public ComponentRequestHandler(AbstractHandler parent) {
+		this(parent, CommonFactory.eINSTANCE.createComponentRequest());
+	}
+
+	public ComponentRequestHandler(AbstractHandler parent, ComponentRequest builder) {
 		super(parent);
 		this.builder = builder;
 	}
 
-	public ComponentRequestBuilder getBuilder() {
+	public ComponentRequest getBuilder() {
 		return builder;
 	}
 
 	@Override
 	public void handleAttributes(Attributes attrs) throws SAXException {
-		builder.clear();
-		builder.setName(getStringValue(attrs, NamedElement.ATTR_NAME));
-		builder.setComponentTypeID(getComponentType(attrs));
+		builder.setFilter(null);
+		builder.setId(getStringValue(attrs, NamedElement.ATTR_NAME));
+		builder.setType(getOptionalStringValue(attrs, "componentType")); //$NON-NLS-1$
 		try {
-			builder.setVersionRange(VersionHelper.parseVersionRangeAttributes(attrs));
+			builder.setRange(VersionHelper.parseVersionRangeAttributes(attrs));
 		} catch (CoreException e) {
 			throw new SAXParseException(e.getMessage(), getDocumentLocator());
 		}
-		String filter = getOptionalStringValue(attrs, ComponentRequest.ATTR_FILTER);
-		if (filter != null) {
+		String filter = getOptionalStringValue(attrs, "filter"); //$NON-NLS-1$
+		if (filter == null)
+			builder.setFilter(null);
+		else {
 			try {
 				builder.setFilter(FilterFactory.newInstance(filter));
 			} catch (InvalidSyntaxException e) {

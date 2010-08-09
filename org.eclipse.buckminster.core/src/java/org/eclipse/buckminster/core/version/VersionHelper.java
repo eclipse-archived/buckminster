@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.buckminster.sax.AbstractHandler;
@@ -321,12 +319,12 @@ public class VersionHelper {
 	}
 
 	public static Version parseVersionAttributes(Attributes attrs) throws CoreException {
-		String tmp = AbstractHandler.getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION);
+		String tmp = AbstractHandler.getOptionalStringValue(attrs, "version"); //$NON-NLS-1$
 		if (tmp == null)
 			return null;
 
 		try {
-			String type = AbstractHandler.getOptionalStringValue(attrs, ComponentIdentifier.ATTR_VERSION_TYPE);
+			String type = AbstractHandler.getOptionalStringValue(attrs, "versionType"); //$NON-NLS-1$
 			return (type == null) ? parseVersion(tmp) : createVersion(type, tmp);
 		} catch (IllegalArgumentException e) {
 			throw BuckminsterException.wrap(e);
@@ -334,7 +332,7 @@ public class VersionHelper {
 	}
 
 	public static VersionRange parseVersionRangeAttributes(Attributes attrs) throws CoreException {
-		return parseVersionRangeAttributes(attrs, ComponentRequest.ATTR_VERSION_DESIGNATOR, ComponentIdentifier.ATTR_VERSION_TYPE);
+		return parseVersionRangeAttributes(attrs, "versionDesignator", "versionType"); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
 	public static VersionRange parseVersionRangeAttributes(Attributes attrs, String versionAttr, String versionTypeAttr) throws CoreException {

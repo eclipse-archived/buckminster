@@ -8,7 +8,7 @@
 
 package org.eclipse.buckminster.core.resolver;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 
 /**
  * @author Thomas Hallgren

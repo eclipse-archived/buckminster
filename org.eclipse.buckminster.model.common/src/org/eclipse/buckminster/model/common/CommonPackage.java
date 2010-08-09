@@ -772,22 +772,6 @@ public interface CommonPackage extends EPackage {
 		EClass IVERSIONED_ID = eINSTANCE.getIVersionedId();
 
 		/**
-		 * The meta object literal for the '<em><b>Id</b></em>' attribute
-		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute IVERSIONED_ID__ID = eINSTANCE.getIVersionedId_Id();
-
-		/**
-		 * The meta object literal for the '<em><b>Version</b></em>' attribute
-		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute IVERSIONED_ID__VERSION = eINSTANCE.getIVersionedId_Version();
-
-		/**
 		 * The meta object literal for the '
 		 * {@link org.eclipse.buckminster.model.common.impl.ComponentRequestImpl
 		 * <em>Component Request</em>}' class. <!-- begin-user-doc --> <!--
@@ -800,28 +784,12 @@ public interface CommonPackage extends EPackage {
 		EClass COMPONENT_REQUEST = eINSTANCE.getComponentRequest();
 
 		/**
-		 * The meta object literal for the '<em><b>Id</b></em>' attribute
-		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute COMPONENT_REQUEST__ID = eINSTANCE.getComponentRequest_Id();
-
-		/**
 		 * The meta object literal for the '<em><b>Range</b></em>' attribute
 		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
 		EAttribute COMPONENT_REQUEST__RANGE = eINSTANCE.getComponentRequest_Range();
-
-		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' attribute
-		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EAttribute COMPONENT_REQUEST__TYPE = eINSTANCE.getComponentRequest_Type();
 
 		/**
 		 * The meta object literal for the '<em><b>Filter</b></em>' attribute
@@ -844,12 +812,40 @@ public interface CommonPackage extends EPackage {
 		EClass COMPONENT_IDENTIFIER = eINSTANCE.getComponentIdentifier();
 
 		/**
+		 * The meta object literal for the '<em><b>Version</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute COMPONENT_IDENTIFIER__VERSION = eINSTANCE.getComponentIdentifier_Version();
+
+		/**
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.model.common.impl.ComponentNameImpl
+		 * <em>Component Name</em>}' class. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.model.common.impl.ComponentNameImpl
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getComponentName()
+		 * @generated
+		 */
+		EClass COMPONENT_NAME = eINSTANCE.getComponentName();
+
+		/**
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute COMPONENT_NAME__ID = eINSTANCE.getComponentName_Id();
+
+		/**
 		 * The meta object literal for the '<em><b>Type</b></em>' attribute
 		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * 
 		 * @generated
 		 */
-		EAttribute COMPONENT_IDENTIFIER__TYPE = eINSTANCE.getComponentIdentifier_Type();
+		EAttribute COMPONENT_NAME__TYPE = eINSTANCE.getComponentName_Type();
 
 		/**
 		 * The meta object literal for the '{@link java.lang.Comparable
@@ -1053,7 +1049,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getConstant()
 	 * @generated
 	 */
-	int CONSTANT = 4;
+	int CONSTANT = 5;
 
 	/**
 	 * The meta object id for the '
@@ -1065,7 +1061,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getDocumentation()
 	 * @generated
 	 */
-	int DOCUMENTATION = 5;
+	int DOCUMENTATION = 6;
 
 	/**
 	 * The meta object id for the '
@@ -1077,7 +1073,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getValueFilter()
 	 * @generated
 	 */
-	int VALUE_FILTER = 24;
+	int VALUE_FILTER = 25;
 
 	/**
 	 * The meta object id for the '
@@ -1088,7 +1084,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getFormat()
 	 * @generated
 	 */
-	int FORMAT = 6;
+	int FORMAT = 7;
 
 	/**
 	 * The meta object id for the '
@@ -1100,7 +1096,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIProgressMonitor()
 	 * @generated
 	 */
-	int IPROGRESS_MONITOR = 7;
+	int IPROGRESS_MONITOR = 8;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.core.runtime.IStatus
@@ -1110,7 +1106,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIStatus()
 	 * @generated
 	 */
-	int ISTATUS = 8;
+	int ISTATUS = 9;
 
 	/**
 	 * The meta object id for the '
@@ -1121,7 +1117,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getMatch()
 	 * @generated
 	 */
-	int MATCH = 10;
+	int MATCH = 11;
 
 	/**
 	 * The meta object id for the '
@@ -1133,7 +1129,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPropertyConstant()
 	 * @generated
 	 */
-	int PROPERTY_CONSTANT = 12;
+	int PROPERTY_CONSTANT = 13;
 
 	/**
 	 * The meta object id for the '
@@ -1145,7 +1141,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPropertyElement()
 	 * @generated
 	 */
-	int PROPERTY_ELEMENT = 13;
+	int PROPERTY_ELEMENT = 14;
 
 	/**
 	 * The meta object id for the '
@@ -1157,7 +1153,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPropertyRef()
 	 * @generated
 	 */
-	int PROPERTY_REF = 14;
+	int PROPERTY_REF = 15;
 
 	/**
 	 * The meta object id for the '
@@ -1168,7 +1164,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getReplace()
 	 * @generated
 	 */
-	int REPLACE = 15;
+	int REPLACE = 16;
 
 	/**
 	 * The meta object id for the '
@@ -1179,7 +1175,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getRxPart()
 	 * @generated
 	 */
-	int RX_PART = 18;
+	int RX_PART = 19;
 
 	/**
 	 * The meta object id for the '
@@ -1190,7 +1186,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getRxGroup()
 	 * @generated
 	 */
-	int RX_GROUP = 17;
+	int RX_GROUP = 18;
 
 	/**
 	 * The meta object id for the '
@@ -1202,7 +1198,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getRxPattern()
 	 * @generated
 	 */
-	int RX_PATTERN = 19;
+	int RX_PATTERN = 20;
 
 	/**
 	 * The meta object id for the '
@@ -1213,7 +1209,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getSplit()
 	 * @generated
 	 */
-	int SPLIT = 20;
+	int SPLIT = 21;
 
 	/**
 	 * The meta object id for the '
@@ -1224,7 +1220,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getToLower()
 	 * @generated
 	 */
-	int TO_LOWER = 21;
+	int TO_LOWER = 22;
 
 	/**
 	 * The meta object id for the '
@@ -1235,7 +1231,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getToUpper()
 	 * @generated
 	 */
-	int TO_UPPER = 22;
+	int TO_UPPER = 23;
 
 	/**
 	 * The meta object id for the '
@@ -1247,7 +1243,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIVersionedId()
 	 * @generated
 	 */
-	int IVERSIONED_ID = 9;
+	int IVERSIONED_ID = 10;
 
 	/**
 	 * The meta object id for the '
@@ -1259,7 +1255,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getComponentRequest()
 	 * @generated
 	 */
-	int COMPONENT_REQUEST = 3;
+	int COMPONENT_REQUEST = 4;
 
 	/**
 	 * The meta object id for the '
@@ -1270,7 +1266,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getValue()
 	 * @generated
 	 */
-	int VALUE = 23;
+	int VALUE = 24;
 
 	/**
 	 * The meta object id for the '
@@ -1434,31 +1430,43 @@ public interface CommonPackage extends EPackage {
 	int COMPARABLE_FEATURE_COUNT = 0;
 
 	/**
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.model.common.impl.ComponentNameImpl
+	 * <em>Component Name</em>}' class. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.model.common.impl.ComponentNameImpl
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getComponentName()
+	 * @generated
+	 */
+	int COMPONENT_NAME = 3;
+
+	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int IVERSIONED_ID__ID = 0;
+	int COMPONENT_NAME__ID = COMPARABLE_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Version</b></em>' attribute. <!--
+	 * The feature id for the '<em><b>Type</b></em>' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int IVERSIONED_ID__VERSION = 1;
+	int COMPONENT_NAME__TYPE = COMPARABLE_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of structural features of the '<em>IVersioned Id</em>' class.
+	 * The number of structural features of the '<em>Component Name</em>' class.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int IVERSIONED_ID_FEATURE_COUNT = 2;
+	int COMPONENT_NAME_FEATURE_COUNT = COMPARABLE_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!--
@@ -1467,16 +1475,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int COMPONENT_IDENTIFIER__ID = IVERSIONED_ID__ID;
-
-	/**
-	 * The feature id for the '<em><b>Version</b></em>' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int COMPONENT_IDENTIFIER__VERSION = IVERSIONED_ID__VERSION;
+	int COMPONENT_IDENTIFIER__ID = COMPONENT_NAME__ID;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' containment reference. <!--
@@ -1485,7 +1484,16 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int COMPONENT_IDENTIFIER__TYPE = IVERSIONED_ID_FEATURE_COUNT + 0;
+	int COMPONENT_IDENTIFIER__TYPE = COMPONENT_NAME__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Version</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_IDENTIFIER__VERSION = COMPONENT_NAME_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Component Identifier</em>'
@@ -1494,7 +1502,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int COMPONENT_IDENTIFIER_FEATURE_COUNT = IVERSIONED_ID_FEATURE_COUNT + 1;
+	int COMPONENT_IDENTIFIER_FEATURE_COUNT = COMPONENT_NAME_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Id</b></em>' attribute. <!--
@@ -1503,25 +1511,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int COMPONENT_REQUEST__ID = 0;
-
-	/**
-	 * The feature id for the '<em><b>Range</b></em>' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int COMPONENT_REQUEST__RANGE = 1;
-
-	/**
-	 * The feature id for the '<em><b>Filter</b></em>' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int COMPONENT_REQUEST__FILTER = 2;
+	int COMPONENT_REQUEST__ID = COMPONENT_NAME__ID;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' containment reference. <!--
@@ -1530,7 +1520,25 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int COMPONENT_REQUEST__TYPE = 3;
+	int COMPONENT_REQUEST__TYPE = COMPONENT_NAME__TYPE;
+
+	/**
+	 * The feature id for the '<em><b>Range</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_REQUEST__RANGE = COMPONENT_NAME_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Filter</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int COMPONENT_REQUEST__FILTER = COMPONENT_NAME_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Component Request</em>'
@@ -1539,7 +1547,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int COMPONENT_REQUEST_FEATURE_COUNT = 4;
+	int COMPONENT_REQUEST_FEATURE_COUNT = COMPONENT_NAME_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Mutable</b></em>' attribute. <!--
@@ -1776,6 +1784,15 @@ public interface CommonPackage extends EPackage {
 	int ISTATUS_FEATURE_COUNT = 6;
 
 	/**
+	 * The number of structural features of the '<em>IVersioned Id</em>' class.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int IVERSIONED_ID_FEATURE_COUNT = 0;
+
+	/**
 	 * The feature id for the '<em><b>Pattern</b></em>' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -1830,7 +1847,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getProperties()
 	 * @generated
 	 */
-	int PROPERTIES = 11;
+	int PROPERTIES = 12;
 
 	/**
 	 * The feature id for the '<em><b>Property Constants</b></em>' map. <!--
@@ -2058,7 +2075,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getRxAssembly()
 	 * @generated
 	 */
-	int RX_ASSEMBLY = 16;
+	int RX_ASSEMBLY = 17;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!--
@@ -2393,7 +2410,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getSplitType()
 	 * @generated
 	 */
-	int SPLIT_TYPE = 25;
+	int SPLIT_TYPE = 26;
 
 	/**
 	 * The meta object id for the '<em>Core Exception</em>' data type. <!--
@@ -2403,7 +2420,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getCoreException()
 	 * @generated
 	 */
-	int CORE_EXCEPTION = 27;
+	int CORE_EXCEPTION = 28;
 
 	/**
 	 * The meta object id for the '<em>Property Key</em>' data type. <!--
@@ -2413,7 +2430,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPropertyKey()
 	 * @generated
 	 */
-	int PROPERTY_KEY = 33;
+	int PROPERTY_KEY = 34;
 
 	/**
 	 * The meta object id for the '<em>String Builder</em>' data type. <!--
@@ -2423,7 +2440,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getStringBuilder()
 	 * @generated
 	 */
-	int STRING_BUILDER = 34;
+	int STRING_BUILDER = 35;
 
 	/**
 	 * The meta object id for the '<em>Throwable</em>' data type. <!--
@@ -2433,7 +2450,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getThrowable()
 	 * @generated
 	 */
-	int THROWABLE = 35;
+	int THROWABLE = 36;
 
 	/**
 	 * The meta object id for the '<em>Uuid</em>' data type. <!-- begin-user-doc
@@ -2443,7 +2460,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getUuid()
 	 * @generated
 	 */
-	int UUID = 37;
+	int UUID = 38;
 
 	/**
 	 * The meta object id for the '<em>Pattern</em>' data type. <!--
@@ -2453,7 +2470,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPattern()
 	 * @generated
 	 */
-	int PATTERN = 32;
+	int PATTERN = 33;
 
 	/**
 	 * The meta object id for the '<em>Filter</em>' data type. <!--
@@ -2463,7 +2480,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getFilter()
 	 * @generated
 	 */
-	int FILTER = 28;
+	int FILTER = 29;
 
 	/**
 	 * The meta object id for the '<em>IStatus Array</em>' data type. <!--
@@ -2472,7 +2489,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIStatusArray()
 	 * @generated
 	 */
-	int ISTATUS_ARRAY = 29;
+	int ISTATUS_ARRAY = 30;
 
 	/**
 	 * The meta object id for the '<em>Version</em>' data type. <!--
@@ -2482,7 +2499,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getVersion()
 	 * @generated
 	 */
-	int VERSION = 39;
+	int VERSION = 40;
 
 	/**
 	 * The meta object id for the '<em>Char Sequence</em>' data type. <!--
@@ -2492,7 +2509,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getCharSequence()
 	 * @generated
 	 */
-	int CHAR_SEQUENCE = 26;
+	int CHAR_SEQUENCE = 27;
 
 	/**
 	 * The meta object id for the '<em>IVersion Format</em>' data type. <!--
@@ -2502,7 +2519,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIVersionFormat()
 	 * @generated
 	 */
-	int IVERSION_FORMAT = 30;
+	int IVERSION_FORMAT = 31;
 
 	/**
 	 * The meta object id for the '<em>List</em>' data type. <!-- begin-user-doc
@@ -2512,7 +2529,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getList()
 	 * @generated
 	 */
-	int LIST = 31;
+	int LIST = 32;
 
 	/**
 	 * The meta object id for the '<em>Version Range</em>' data type. <!--
@@ -2522,7 +2539,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getVersionRange()
 	 * @generated
 	 */
-	int VERSION_RANGE = 38;
+	int VERSION_RANGE = 39;
 
 	/**
 	 * The meta object id for the '<em>URL</em>' data type. <!-- begin-user-doc
@@ -2532,7 +2549,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getURL()
 	 * @generated
 	 */
-	int URL = 36;
+	int URL = 37;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.emf.ecore.EObject
@@ -2742,15 +2759,50 @@ public interface CommonPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.model.common.ComponentIdentifier#getType
-	 * <em>Type</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.model.common.ComponentIdentifier#getVersion
+	 * <em>Version</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the meta object for the attribute '<em>Type</em>'.
-	 * @see org.eclipse.buckminster.model.common.ComponentIdentifier#getType()
+	 * @return the meta object for the attribute '<em>Version</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentIdentifier#getVersion()
 	 * @see #getComponentIdentifier()
 	 * @generated
 	 */
-	EAttribute getComponentIdentifier_Type();
+	EAttribute getComponentIdentifier_Version();
+
+	/**
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.model.common.ComponentName
+	 * <em>Component Name</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Component Name</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentName
+	 * @generated
+	 */
+	EClass getComponentName();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.model.common.ComponentName#getId
+	 * <em>Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentName#getId()
+	 * @see #getComponentName()
+	 * @generated
+	 */
+	EAttribute getComponentName_Id();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.model.common.ComponentName#getType
+	 * <em>Type</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.eclipse.buckminster.model.common.ComponentName#getType()
+	 * @see #getComponentName()
+	 * @generated
+	 */
+	EAttribute getComponentName_Type();
 
 	/**
 	 * Returns the meta object for class '
@@ -2778,18 +2830,6 @@ public interface CommonPackage extends EPackage {
 
 	/**
 	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getId
-	 * <em>Id</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Id</em>'.
-	 * @see org.eclipse.buckminster.model.common.ComponentRequest#getId()
-	 * @see #getComponentRequest()
-	 * @generated
-	 */
-	EAttribute getComponentRequest_Id();
-
-	/**
-	 * Returns the meta object for the attribute '
 	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getRange
 	 * <em>Range</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -2799,18 +2839,6 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getComponentRequest_Range();
-
-	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.model.common.ComponentRequest#getType
-	 * <em>Type</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Type</em>'.
-	 * @see org.eclipse.buckminster.model.common.ComponentRequest#getType()
-	 * @see #getComponentRequest()
-	 * @generated
-	 */
-	EAttribute getComponentRequest_Type();
 
 	/**
 	 * Returns the meta object for class '
@@ -3047,30 +3075,6 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getIVersionedId();
-
-	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.equinox.p2.metadata.IVersionedId#getId <em>Id</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Id</em>'.
-	 * @see org.eclipse.equinox.p2.metadata.IVersionedId#getId()
-	 * @see #getIVersionedId()
-	 * @generated
-	 */
-	EAttribute getIVersionedId_Id();
-
-	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.equinox.p2.metadata.IVersionedId#getVersion
-	 * <em>Version</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the attribute '<em>Version</em>'.
-	 * @see org.eclipse.equinox.p2.metadata.IVersionedId#getVersion()
-	 * @see #getIVersionedId()
-	 * @generated
-	 */
-	EAttribute getIVersionedId_Version();
 
 	/**
 	 * Returns the meta object for data type '

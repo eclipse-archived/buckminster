@@ -12,7 +12,6 @@ package org.eclipse.buckminster.core.test;
 
 import junit.framework.TestCase;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.materializer.MaterializationJob;
@@ -23,6 +22,8 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
@@ -40,18 +41,23 @@ public class SimpleLoaderTest extends TestCase {
 	@Override
 	public void setUp() throws Exception {
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest("buckminster.test.build_a", null, null)); //$NON-NLS-1$
-		queryBld.setResourceMapURL(getClass().getResource("/testData/rmaps/local_main.rmap").toString()); //$NON-NLS-1$
+		ComponentRequest request = CommonFactory.eINSTANCE.createComponentRequest();
+		request.setId("buckminster.test.build_a");
+		queryBld.setRootRequest(request);
+		queryBld.setResourceMapURL(getClass().getResource("/testData/rmaps/local_main.rmap").toString());
 		query = queryBld.createComponentQuery();
 	}
 
 	public void testMaterialize() throws Exception {
-		IResolver resolver = new MainResolver(new ResolutionContext(query));
+		ResolutionContext rctx = new ResolutionContext(query);
+		IResolver resolver = new MainResolver(rctx);
 		BillOfMaterials bom = resolver.resolve(nullMonitor);
+		assertFalse(rctx.emitWarningAndErrorTags());
 		MaterializationSpecBuilder mspecBuilder = new MaterializationSpecBuilder();
 		mspecBuilder.setName(bom.getViewName());
 		mspecBuilder.setMaterializerID(IMaterializer.WORKSPACE);
-		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), resolver.getContext());
+		MaterializationContext matCtx = new MaterializationContext(bom, mspecBuilder.createMaterializationSpec(), rctx);
 		MaterializationJob.run(matCtx);
+		assertFalse(matCtx.emitWarningAndErrorTags());
 	}
 }

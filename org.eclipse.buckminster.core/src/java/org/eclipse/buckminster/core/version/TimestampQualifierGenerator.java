@@ -17,14 +17,15 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.helpers.DateAndTimeUtils;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.Version;
 
@@ -135,9 +136,9 @@ public class TimestampQualifierGenerator extends AbstractQualifierGenerator {
 						// source in the workspace. If
 						// found, we use the SCM timestamp for that source.
 						//
-						depVer = VersionHelper.replaceQualifier(depVer, "qualifier"); //$NON-NLS-1$
-						depLastMod = getLastModification(new ComponentIdentifier(dependency.getName(), dependency.getComponentTypeID(), depVer),
-								context);
+						ComponentIdentifier ci = EcoreUtil.copy(dependency);
+						ci.setVersion(VersionHelper.replaceQualifier(depVer, "qualifier")); //$NON-NLS-1$
+						depLastMod = getLastModification(ci, context);
 					} catch (CoreException e) {
 					}
 				}

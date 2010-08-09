@@ -21,9 +21,8 @@ import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.helpers.SAXEmitter;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.metadata.IResolution;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
@@ -34,12 +33,16 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.xml.sax.ContentHandler;
@@ -159,7 +162,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 		this.provider = bld.getProvider();
 		this.remoteName = bld.getRemoteName();
 		this.repository = bld.getRepository();
-		this.request = bld.getRequest().createComponentRequest();
+		this.request = EcoreUtil.copy(bld.getRequest());
 		this.size = bld.getSize();
 		this.versionMatch = bld.getVersionMatch();
 		this.unpack = bld.isUnpack();
@@ -184,7 +187,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 
 	@Override
 	public void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
-		request.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
+		SAXEmitter.emit(handler, request, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, ELEM_REQUEST);
 		versionMatch.toSax(handler, XMLConstants.BM_METADATA_NS, XMLConstants.BM_METADATA_PREFIX, versionMatch.getDefaultTag());
 	}
 
@@ -267,7 +270,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * @return the name.
 	 */
 	public final String getName() {
-		return request.getName();
+		return request.getId();
 	}
 
 	@Override
@@ -366,7 +369,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * @return The original (unresolved) version designator
 	 */
 	public final VersionRange getVersionDesignator() throws CoreException {
-		return request.getVersionRange();
+		return request.getRange();
 	}
 
 	@Override
@@ -384,16 +387,16 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	 * @throws CoreException
 	 */
 	public boolean isDesignatedBy(ComponentRequest rq) throws CoreException {
-		if (!rq.getName().equals(request.getName()))
+		if (!rq.getId().equals(request.getId()))
 			return false;
 
 		// If the request has a component type then it must match
 		//
-		String componentType = rq.getComponentTypeID();
-		if (componentType != null && !componentType.equals(request.getComponentTypeID()))
+		String componentType = rq.getType();
+		if (componentType != null && !componentType.equals(request.getType()))
 			return false;
 
-		VersionRange vd = rq.getVersionRange();
+		VersionRange vd = rq.getRange();
 		return vd == null ? true : vd.isIncluded(getVersion());
 	}
 
@@ -514,7 +517,7 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append(Messages.Name);
-		result.append(request.getName());
+		result.append(request.getId());
 		result.append(", "); //$NON-NLS-1$
 		versionMatch.toString(result);
 		return result.toString();
@@ -528,11 +531,14 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 			Utils.addAttribute(attrs, ATTR_ATTRIBUTES, tmp);
 		Utils.addAttribute(attrs, ATTR_MATERIALIZABLE, materializable ? "true" //$NON-NLS-1$
 				: "false"); //$NON-NLS-1$
-		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, provider.eResource().getURIFragment(provider));
-		Utils.addAttribute(attrs, ATTR_REPOSITORY, repository);
+		Resource r = provider.eResource();
+		if (r == null)
+			throw new SAXException("Unable to serialize resolution with transient provider"); //$NON-NLS-1$
 
-		if (componentTypeId != null)
-			Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, componentTypeId);
+		Utils.addAttribute(attrs, ATTR_PROVIDER_ID, r.getURI().appendFragment(r.getURIFragment(provider)).toString());
+		Utils.addAttribute(attrs, ATTR_REPOSITORY, repository);
+		Utils.addAttribute(attrs, ATTR_COMPONENT_TYPE, componentTypeId);
+
 		if (persistentId != null)
 			Utils.addAttribute(attrs, ATTR_PERSISTENT_ID, persistentId);
 		if (remoteName != null)

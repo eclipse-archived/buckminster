@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
@@ -23,6 +22,9 @@ import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.resolver.ResourceMapResolver;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.rmap.Locator;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.rmap.ResourceMap;
@@ -69,7 +71,7 @@ public class Generator extends NamedElement implements IGenerator {
 		this.cspec = cspec;
 		this.component = component;
 		this.attribute = attribute;
-		this.generatesType = generates.getComponentTypeID();
+		this.generatesType = generates.getType();
 		this.generatesVersion = generates.getVersion();
 	}
 
@@ -93,8 +95,12 @@ public class Generator extends NamedElement implements IGenerator {
 	}
 
 	@Override
-	public IComponentIdentifier getGeneratedIdentifier() {
-		return new ComponentIdentifier(getName(), generatesType, generatesVersion);
+	public ComponentIdentifier getGeneratedIdentifier() {
+		ComponentIdentifier ci = CommonFactory.eINSTANCE.createComponentIdentifier();
+		ci.setId(getName());
+		ci.setType(generatesType);
+		ci.setVersion(generatesVersion);
+		return ci;
 	}
 
 	public String getGenerates() {
@@ -139,8 +145,8 @@ public class Generator extends NamedElement implements IGenerator {
 			throw BuckminsterException.wrap(e);
 		}
 
-		IComponentIdentifier ci = getGeneratedIdentifier();
-		String cType = ci.getComponentTypeID();
+		ComponentIdentifier ci = getGeneratedIdentifier();
+		String cType = ci.getType();
 		RmapFactory factory = RmapFactory.eINSTANCE;
 		ResourceMap rmap = factory.createResourceMap();
 		SearchPath searchPath = factory.createSearchPath();
@@ -157,11 +163,12 @@ public class Generator extends NamedElement implements IGenerator {
 		rmap.getMatchers().add(locator);
 
 		ComponentQueryBuilder query = new ComponentQueryBuilder();
-		query.setRootRequest(new ComponentRequest(ci.getName(), ci.getComponentTypeID(), null));
+		ComponentRequest cr = CommonFactory.eINSTANCE.createComponentRequest();
+		cr.setId(ci.getId());
+		cr.setType(ci.getType());
+		query.setRootRequest(cr);
 		ResolutionContext rctx = new ResolutionContext(query.createComponentQuery());
-		BOMNode node =
-
-		rmap.resolve(rctx.getRootNodeQuery(), monitor);
+		BOMNode node = ResourceMapResolver.resolve(rmap, rctx.getRootNodeQuery(), monitor);
 		Resolution res = node.getResolution();
 		if (res != null) {
 			if (isFile)

@@ -15,10 +15,7 @@ import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
-import org.eclipse.emf.edit.provider.IChildCreationExtender;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -26,7 +23,6 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -36,7 +32,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * 
  * @generated
  */
-public class ComponentRequestItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
+public class ComponentRequestItemProvider extends ComponentNameItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider,
 		ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!--
@@ -60,24 +56,10 @@ public class ComponentRequestItemProvider extends ItemProviderAdapter implements
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addIdPropertyDescriptor(object);
 			addRangePropertyDescriptor(object);
 			addFilterPropertyDescriptor(object);
-			addTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
-	}
-
-	/**
-	 * Return the resource locator for this item provider's resources. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	@Override
-	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
 	}
 
 	/**
@@ -107,10 +89,8 @@ public class ComponentRequestItemProvider extends ItemProviderAdapter implements
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(ComponentRequest.class)) {
-			case CommonPackage.COMPONENT_REQUEST__ID:
 			case CommonPackage.COMPONENT_REQUEST__RANGE:
 			case CommonPackage.COMPONENT_REQUEST__FILTER:
-			case CommonPackage.COMPONENT_REQUEST__TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
@@ -131,19 +111,6 @@ public class ComponentRequestItemProvider extends ItemProviderAdapter implements
 	}
 
 	/**
-	 * This adds a property descriptor for the Id feature. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addIdPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_ComponentRequest_id_feature"),
-				getString("_UI_PropertyDescriptor_description", "_UI_ComponentRequest_id_feature", "_UI_ComponentRequest_type"),
-				CommonPackage.Literals.COMPONENT_REQUEST__ID, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
-	}
-
-	/**
 	 * This adds a property descriptor for the Range feature. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -154,19 +121,6 @@ public class ComponentRequestItemProvider extends ItemProviderAdapter implements
 				getResourceLocator(), getString("_UI_ComponentRequest_range_feature"),
 				getString("_UI_PropertyDescriptor_description", "_UI_ComponentRequest_range_feature", "_UI_ComponentRequest_type"),
 				CommonPackage.Literals.COMPONENT_REQUEST__RANGE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Type feature. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_ComponentRequest_type_feature"),
-				getString("_UI_PropertyDescriptor_description", "_UI_ComponentRequest_type_feature", "_UI_ComponentRequest_type"),
-				CommonPackage.Literals.COMPONENT_REQUEST__TYPE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

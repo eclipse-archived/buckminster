@@ -10,23 +10,25 @@ package org.eclipse.buckminster.core.metadata.parser;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.XMLConstants;
-import org.eclipse.buckminster.core.cspec.ICSpecData;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.parser.ComponentRequestHandler;
-import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.parser.ExtensionAwareHandler;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.sax.AbstractHandler;
 import org.eclipse.buckminster.sax.ChildHandler;
 import org.eclipse.buckminster.sax.ChildPoppedListener;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.osgi.util.NLS;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -38,7 +40,7 @@ import org.xml.sax.SAXParseException;
 public class ResolutionHandler extends ExtensionAwareHandler implements ChildPoppedListener {
 	public static final String TAG = Resolution.TAG;
 
-	private final ComponentRequestHandler componentRequestHandler = new ComponentRequestHandler(this, new ComponentRequestBuilder());
+	private final ComponentRequestHandler componentRequestHandler = new ComponentRequestHandler(this);
 
 	private final VersionMatchHandler versionMatchHandler = new VersionMatchHandler(this);
 
@@ -46,7 +48,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 
 	private UUID cspecId;
 
-	private UUID providerId;
+	private URI providerId;
 
 	private ComponentRequest request;
 
@@ -77,7 +79,7 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 	@Override
 	public void childPopped(ChildHandler child) throws SAXException {
 		if (child == componentRequestHandler)
-			request = componentRequestHandler.getBuilder().createComponentRequest();
+			request = EcoreUtil.copy(componentRequestHandler.getBuilder());
 		else if (child == versionMatchHandler)
 			versionMatch = versionMatchHandler.getVersionMatch();
 	}
@@ -104,21 +106,19 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 			throw new SAXParseException(NLS.bind(Messages.Missing_required_element_0, XMLConstants.BM_METADATA_PREFIX + '.' + VersionMatch.TAG),
 					this.getDocumentLocator());
 
-		if (componentType == null)
-			componentType = legacyComponentType();
+		ResourceSet resourceSet = CorePlugin.getDefault().getResourceSet();
+		Resource rmap = resourceSet.getResource(providerId, true);
+		Provider provider = (Provider) rmap.getEObject(providerId.fragment());
 
 		AbstractHandler parent = getParentHandler();
 		CSpec cspec;
-		Provider provider;
 		if (parent instanceof IDWrapperHandler) {
 			IDWrapperHandler wh = (IDWrapperHandler) parent;
 			cspec = (CSpec) wh.getWrapped(cspecId);
-			provider = (Provider) wh.getWrapped(providerId);
 		} else {
 			try {
 				StorageManager sm = StorageManager.getDefault();
 				cspec = sm.getCSpecs().getElement(cspecId);
-				provider = sm.getProviders().getElement(providerId);
 			} catch (CoreException e) {
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}
@@ -133,8 +133,8 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 		versionMatch = null;
 		cspecId = UUID.fromString(this.getStringValue(attrs, Resolution.ATTR_CSPEC_ID));
 		materializable = getBooleanValue(attrs, Resolution.ATTR_MATERIALIZABLE);
-		providerId = UUID.fromString(getStringValue(attrs, Resolution.ATTR_PROVIDER_ID));
-		componentType = getOptionalStringValue(attrs, Resolution.ATTR_COMPONENT_TYPE);
+		providerId = URI.createURI(getStringValue(attrs, Resolution.ATTR_PROVIDER_ID));
+		componentType = getStringValue(attrs, Resolution.ATTR_COMPONENT_TYPE);
 		persistentId = getOptionalStringValue(attrs, Resolution.ATTR_PERSISTENT_ID);
 		repository = getStringValue(attrs, Resolution.ATTR_REPOSITORY);
 		remoteName = getOptionalStringValue(attrs, Resolution.ATTR_REMOTE_NAME);
@@ -153,37 +153,5 @@ public class ResolutionHandler extends ExtensionAwareHandler implements ChildPop
 					attributes.add(attr);
 			}
 		}
-	}
-
-	private String legacyComponentType() throws SAXException {
-		AbstractHandler parent = getParentHandler();
-		ICSpecData cspec;
-		Provider provider;
-		if (parent instanceof IDWrapperHandler) {
-			IDWrapperHandler wh = (IDWrapperHandler) parent;
-			cspec = (ICSpecData) wh.getWrapped(cspecId);
-			provider = (Provider) wh.getWrapped(providerId);
-		} else {
-			try {
-				StorageManager sm = StorageManager.getDefault();
-				cspec = sm.getCSpecs().getElement(cspecId);
-				provider = sm.getProviders().getElement(providerId);
-			} catch (CoreException e) {
-				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
-			}
-		}
-		String[] ctypeIDs = provider.getComponentTypeIDs();
-		if (ctypeIDs.length == 1)
-			return ctypeIDs[0];
-
-		String ctype = cspec.getComponentIdentifier().getComponentTypeID();
-		if (ctype != null)
-			return ctype;
-
-		if (ctypeIDs.length == 3 && ctypeIDs[0].equals(IComponentType.OSGI_BUNDLE) && ctypeIDs[1].equals(IComponentType.ECLIPSE_FEATURE)
-				&& ctypeIDs[2].equals(IComponentType.BUCKMINSTER))
-			return IComponentType.BUCKMINSTER;
-
-		return IComponentType.UNKNOWN;
 	}
 }

@@ -8,6 +8,7 @@ package org.eclipse.buckminster.mspec.util;
 
 import java.util.List;
 
+import org.eclipse.buckminster.model.common.Properties;
 import org.eclipse.buckminster.mspec.*;
 
 import org.eclipse.emf.ecore.EClass;
@@ -42,6 +43,23 @@ public class MspecSwitch<T> {
 		if (modelPackage == null) {
 			modelPackage = MspecPackage.eINSTANCE;
 		}
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Abstract Document Root</em>'. <!-- begin-user-doc --> This
+	 * implementation returns null; returning a non-null result will terminate
+	 * the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Abstract Document Root</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseAbstractDocumentRoot(EObject object) {
+		return null;
 	}
 
 	/**
@@ -109,6 +127,23 @@ public class MspecSwitch<T> {
 	 * @generated
 	 */
 	public T caseMaterializationSpec(MaterializationSpec object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Properties</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Properties</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseProperties(Properties object) {
 		return null;
 	}
 
@@ -192,6 +227,8 @@ public class MspecSwitch<T> {
 				EObject documentRoot = theEObject;
 				T result = caseDocumentRoot(documentRoot);
 				if (result == null)
+					result = caseAbstractDocumentRoot(documentRoot);
+				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
@@ -201,12 +238,16 @@ public class MspecSwitch<T> {
 				if (result == null)
 					result = caseMaterializationDirective(materializationNode);
 				if (result == null)
+					result = caseProperties(materializationNode);
+				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case MspecPackage.MATERIALIZATION_DIRECTIVE: {
 				MaterializationDirective materializationDirective = (MaterializationDirective) theEObject;
 				T result = caseMaterializationDirective(materializationDirective);
+				if (result == null)
+					result = caseProperties(materializationDirective);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
@@ -216,6 +257,8 @@ public class MspecSwitch<T> {
 				T result = caseMaterializationSpec(materializationSpec);
 				if (result == null)
 					result = caseMaterializationDirective(materializationSpec);
+				if (result == null)
+					result = caseProperties(materializationSpec);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;

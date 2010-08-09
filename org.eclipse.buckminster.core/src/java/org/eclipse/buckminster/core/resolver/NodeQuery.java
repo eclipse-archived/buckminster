@@ -20,10 +20,8 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.cspec.IAttribute;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.query.IComponentQuery;
@@ -32,6 +30,7 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.core.version.VersionType;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.Version;
@@ -40,8 +39,8 @@ import org.eclipse.osgi.util.NLS;
 
 /**
  * The <code>NodeQuery</code> combines the {@link IComponentQuery} with one
- * specific {@link IComponentRequest} during recursive resolution of a
- * dependency tree.
+ * specific {@link ComponentRequest} during recursive resolution of a dependency
+ * tree.
  * 
  * @author Thomas Hallgren
  */
@@ -240,7 +239,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 	public synchronized IComponentType getComponentType() {
 		if (componentType == null) {
 			try {
-				componentType = getComponentRequest().getComponentType();
+				componentType = CorePlugin.getDefault().getComponentType(getComponentRequest().getType());
 			} catch (CoreException e) {
 				throw new IllegalStateException(Messages.Unable_to_obtain_component_type, e);
 			}
@@ -352,7 +351,7 @@ public class NodeQuery implements Comparator<VersionMatch>, IResolverBackchannel
 		ComponentRequest request = getComponentRequest();
 		VersionRange vds = getComponentQuery().getVersionOverride(request, context);
 		if (vds == null)
-			vds = request.getVersionRange();
+			vds = request.getRange();
 		if (vds == null)
 			return vds;
 

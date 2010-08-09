@@ -93,7 +93,7 @@ public class SplitImpl extends ValueFilterImpl implements Split {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final SplitType STYLE_EDEFAULT = SplitType.QUOTED;
+	protected static final SplitType STYLE_EDEFAULT = SplitType.UNQUOTED;
 
 	/**
 	 * The cached value of the '{@link #getStyle() <em>Style</em>}' attribute.

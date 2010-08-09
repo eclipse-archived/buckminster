@@ -17,7 +17,6 @@ import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
-import org.eclipse.buckminster.core.common.model.SAXEmitter;
 import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IAttributeFilter;
@@ -26,6 +25,7 @@ import org.eclipse.buckminster.core.cspec.SaxablePath;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
+import org.eclipse.buckminster.core.helpers.SAXEmitter;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;

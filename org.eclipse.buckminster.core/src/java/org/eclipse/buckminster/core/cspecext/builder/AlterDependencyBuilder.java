@@ -7,29 +7,33 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspecext.builder;
 
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspecext.model.AlterDependency;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * @author Thomas Hallgren
  */
 public class AlterDependencyBuilder {
-	private final ComponentRequestBuilder baseBuilder;
+	private final ComponentRequest baseBuilder;
 
-	public AlterDependencyBuilder(ComponentRequestBuilder baseBuilder) {
+	public AlterDependencyBuilder(ComponentRequest baseBuilder) {
 		this.baseBuilder = baseBuilder;
 	}
 
 	public void clear() {
-		baseBuilder.clear();
+		baseBuilder.setId(null);
+		baseBuilder.setType(null);
+		baseBuilder.setRange(null);
+		baseBuilder.setFilter(null);
 	}
 
 	public AlterDependency createAlterDependency() throws CoreException {
-		return new AlterDependency(baseBuilder.createComponentRequest());
+		return new AlterDependency(EcoreUtil.copy(baseBuilder));
 	}
 
 	public String getName() {
-		return baseBuilder.getName();
+		return baseBuilder.getId();
 	}
 }

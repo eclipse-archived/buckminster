@@ -7,11 +7,11 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.cspec.builder;
 
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.Generator;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.equinox.p2.metadata.Version;
 
 /**
@@ -55,7 +55,11 @@ public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator 
 
 	@Override
 	public ComponentIdentifier getGeneratedIdentifier() {
-		return new ComponentIdentifier(getName(), generatesType, generatesVersion);
+		ComponentIdentifier ci = CommonFactory.eINSTANCE.createComponentIdentifier();
+		ci.setId(getName());
+		ci.setType(generatesType);
+		ci.setVersion(generatesVersion);
+		return ci;
 	}
 
 	public String getGenerates() {
@@ -63,11 +67,11 @@ public class GeneratorBuilder extends CSpecElementBuilder implements IGenerator 
 	}
 
 	public void initFrom(IGenerator generator) {
-		IComponentIdentifier ci = generator.getGeneratedIdentifier();
-		super.initFrom(ci.getName());
+		ComponentIdentifier ci = generator.getGeneratedIdentifier();
+		super.initFrom(ci.getId());
 		component = generator.getComponent();
 		attribute = generator.getAttribute();
-		generatesType = ci.getComponentTypeID();
+		generatesType = ci.getType();
 		generatesVersion = ci.getVersion();
 	}
 

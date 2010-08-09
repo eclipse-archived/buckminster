@@ -225,6 +225,15 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	protected RxAssemblyItemProvider rxAssemblyItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.model.common.ComponentName} instances.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ComponentNameItemProvider componentNameItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
@@ -293,6 +302,22 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 		}
 
 		return componentIdentifierItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a
+	 * {@link org.eclipse.buckminster.model.common.ComponentName}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createComponentNameAdapter() {
+		if (componentNameItemProvider == null) {
+			componentNameItemProvider = new ComponentNameItemProvider(this);
+		}
+
+		return componentNameItemProvider;
 	}
 
 	/**
@@ -559,6 +584,8 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	public void dispose() {
 		if (componentIdentifierItemProvider != null)
 			componentIdentifierItemProvider.dispose();
+		if (componentNameItemProvider != null)
+			componentNameItemProvider.dispose();
 		if (componentRequestItemProvider != null)
 			componentRequestItemProvider.dispose();
 		if (constantItemProvider != null)

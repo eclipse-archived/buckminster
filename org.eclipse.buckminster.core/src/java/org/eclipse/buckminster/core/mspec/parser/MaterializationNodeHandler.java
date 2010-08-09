@@ -60,7 +60,7 @@ public class MaterializationNodeHandler extends MaterializationDirectiveHandler 
 				throw new SAXParseException(e.getMessage(), getDocumentLocator(), e);
 			}
 		}
-		builder.setComponentTypeID(getComponentType(attrs));
+		builder.setComponentTypeID(getOptionalStringValue(attrs, "componentType")); //$NON-NLS-1$
 		builder.setExclude(getOptionalBooleanValue(attrs, MaterializationNode.ATTR_EXCLUDE, false));
 		String tmp = getOptionalStringValue(attrs, MaterializationNode.ATTR_LEAF_ARTIFACT);
 		if (tmp != null)

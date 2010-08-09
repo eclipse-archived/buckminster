@@ -11,7 +11,7 @@ package org.eclipse.buckminster.core.materializer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 
 /**
  * @author Thomas Hallgren

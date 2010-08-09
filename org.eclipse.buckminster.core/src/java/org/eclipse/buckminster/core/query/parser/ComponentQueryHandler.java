@@ -54,7 +54,7 @@ public class ComponentQueryHandler extends PropertyManagerHandler {
 	public ChildHandler createHandler(String uri, String localName, Attributes attrs) throws SAXException {
 		ChildHandler ch;
 		if (ComponentQuery.ELEM_ROOT_REQUEST.equals(localName))
-			ch = new ComponentRequestHandler(this, builder.getRootRequestBuilder());
+			ch = new ComponentRequestHandler(this, builder.getRootRequest());
 		else if (AdvisorNodeHandler.TAG.equals(localName)) {
 			if (advisorNodeHandler == null)
 				advisorNodeHandler = new AdvisorNodeHandler(this);

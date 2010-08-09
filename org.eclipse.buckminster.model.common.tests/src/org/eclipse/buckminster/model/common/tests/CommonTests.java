@@ -28,14 +28,21 @@ public class CommonTests extends TestSuite {
 		TestRunner.run(suite());
 	}
 
+	public static Test suite() {
+		TestSuite suite = (TestSuite) suiteGen();
+		suite.addTestSuite(NonAbstractPropertiesTest.class);
+		return suite;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	public static Test suite() {
+	public static Test suiteGen() {
 		TestSuite suite = new CommonTests("common Tests");
 		suite.addTestSuite(ComponentIdentifierTest.class);
+		suite.addTestSuite(ComponentNameTest.class);
 		suite.addTestSuite(ComponentRequestTest.class);
 		suite.addTestSuite(ConstantTest.class);
 		suite.addTestSuite(DocumentationTest.class);

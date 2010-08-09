@@ -10,11 +10,10 @@ package org.eclipse.buckminster.core.metadata.model;
 import java.io.File;
 
 import org.eclipse.buckminster.core.XMLConstants;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.NamedElement;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -108,13 +107,13 @@ public class Materialization extends UUIDKeyed implements IUUIDPersisted {
 	@Override
 	protected void addAttributes(AttributesImpl attrs) throws SAXException {
 		Utils.addAttribute(attrs, ATTR_LOCATION, componentLocation.toPortableString());
-		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, componentIdentifier.getName());
-		String tmp = componentIdentifier.getComponentTypeID();
+		Utils.addAttribute(attrs, NamedElement.ATTR_NAME, componentIdentifier.getId());
+		String tmp = componentIdentifier.getType();
 		if (tmp != null)
-			Utils.addAttribute(attrs, ComponentName.ATTR_COMPONENT_TYPE, tmp);
+			Utils.addAttribute(attrs, "componentName", tmp); //$NON-NLS-1$
 
 		Version version = componentIdentifier.getVersion();
 		if (version != null)
-			Utils.addAttribute(attrs, ComponentIdentifier.ATTR_VERSION, version.toString());
+			Utils.addAttribute(attrs, "version", version.toString()); //$NON-NLS-1$
 	}
 }

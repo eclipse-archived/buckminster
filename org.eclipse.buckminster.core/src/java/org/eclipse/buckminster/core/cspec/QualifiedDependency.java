@@ -12,10 +12,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.query.IAdvisorNode;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
 public class QualifiedDependency {
@@ -37,7 +38,8 @@ public class QualifiedDependency {
 		VersionRange dsg = advice.getVersionOverride();
 		if (dsg != null) {
 			change = true;
-			rq = new ComponentRequest(rq.getName(), rq.getComponentTypeID(), dsg);
+			rq = EcoreUtil.copy(rq);
+			rq.setRange(dsg);
 		}
 
 		Collection<String> attrs = advice.getAttributes();
@@ -109,7 +111,7 @@ public class QualifiedDependency {
 	 */
 	public QualifiedDependency mergeDependency(QualifiedDependency newQDep) throws CoreException {
 		Set<String> attrs = newQDep.getAttributeNames();
-		ComponentRequest newRequest = request.mergeDesignator(newQDep.getRequest());
+		ComponentRequest newRequest = request.merge(newQDep.getRequest());
 		if (newRequest == request && hasAllAttributes(attrs))
 			return this;
 

@@ -21,13 +21,8 @@ import java.util.Stack;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.QualifiedDependency;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequestConflictException;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
@@ -48,13 +43,12 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.model.common.CommonFactory;
-import org.eclipse.buckminster.model.common.Format;
-import org.eclipse.buckminster.model.common.PropertyRef;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ComponentRequest;
+import org.eclipse.buckminster.model.common.util.ComponentRequestConflictException;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.rmap.Provider;
-import org.eclipse.buckminster.rmap.RmapFactory;
-import org.eclipse.buckminster.rmap.VersionConverter;
-import org.eclipse.buckminster.rmap.VersionSelectorType;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
@@ -70,6 +64,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -85,36 +82,9 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings({ "serial" })
 public class LocalResolver extends HashMap<String, ResolverNode[]> implements IResolver {
-	public static final Provider INSTALLED_BUNDLE_PROVIDER;
-
-	public static final Provider INSTALLED_FEATURE_PROVIDER;
-	static {
-		Map<String, String> props = new HashMap<String, String>(2);
-		props.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
-		props.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
-		VersionConverter pdeConverter = RmapFactory.eINSTANCE.createVersionConverter();
-		pdeConverter.setType(VersionSelectorType.TAG);
-
-		INSTALLED_BUNDLE_PROVIDER = RmapFactory.eINSTANCE.createProvider();
-		INSTALLED_BUNDLE_PROVIDER.setReaderType(IReaderType.ECLIPSE_PLATFORM);
-		INSTALLED_BUNDLE_PROVIDER.getComponentTypes().add(IComponentType.OSGI_BUNDLE);
-		INSTALLED_BUNDLE_PROVIDER.setVersionConverter(pdeConverter);
-
-		Format fmt = CommonFactory.eINSTANCE.createFormat();
-		fmt.setFormat("plugin/${" + KeyConstants.COMPONENT_NAME + '}'); //$NON-NLS-1$
-		INSTALLED_BUNDLE_PROVIDER.setURI(fmt);
-		INSTALLED_BUNDLE_PROVIDER.getProperties().putAll(props);
-
-		INSTALLED_FEATURE_PROVIDER = RmapFactory.eINSTANCE.createProvider();
-		INSTALLED_FEATURE_PROVIDER.setReaderType(IReaderType.ECLIPSE_PLATFORM);
-		INSTALLED_FEATURE_PROVIDER.getComponentTypes().add(IComponentType.ECLIPSE_FEATURE);
-		INSTALLED_FEATURE_PROVIDER.setVersionConverter(pdeConverter);
-
-		fmt = CommonFactory.eINSTANCE.createFormat();
-		fmt.setFormat("feature/${" + KeyConstants.COMPONENT_NAME + '}'); //$NON-NLS-1$
-		INSTALLED_FEATURE_PROVIDER.setURI(fmt);
-		INSTALLED_FEATURE_PROVIDER.getProperties().putAll(props);
-	}
+	private static Provider tpBundleProvider;
+	private static Provider tpFeatureProvider;
+	private static Provider localProvider;
 
 	public static Resolution fromPath(IPath productPath, String name) throws CoreException {
 		return fromPath(productPath, name, null, new NullProgressMonitor());
@@ -134,26 +104,9 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 				possibleTypes.add(IComponentType.UNKNOWN);
 		}
 
-		Format repoURI;
+		String repoStr;
 		try {
-			String repoStr = productPath.toFile().toURI().toURL().toString();
-			int nameIndex = repoStr.lastIndexOf(name);
-			if (nameIndex > 0) {
-				String parameterized = repoStr.substring(0, nameIndex);
-				parameterized += "{0}"; //$NON-NLS-1$
-				nameIndex += name.length();
-				if (repoStr.length() > nameIndex)
-					parameterized += repoStr.substring(nameIndex, repoStr.length());
-
-				repoURI = CommonFactory.eINSTANCE.createFormat();
-				repoURI.setFormat(parameterized);
-				PropertyRef propRef = CommonFactory.eINSTANCE.createPropertyRef();
-				propRef.setKey(KeyConstants.COMPONENT_NAME);
-				repoURI.getValues().add(propRef);
-			} else {
-				repoURI = CommonFactory.eINSTANCE.createFormat();
-				repoURI.setFormat(repoStr);
-			}
+			repoStr = productPath.toFile().toURI().toURL().toString();
 		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
@@ -162,47 +115,52 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 		// produces the
 		// largest CSPEC (should be fast considering the IPath is local
 		//
-		ComponentRequest rq = new ComponentRequest(name, givenCtypeId, null);
+		ComponentRequest rq = CommonFactory.eINSTANCE.createComponentRequest();
+		rq.setId(name);
+		rq.setType(givenCtypeId);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(rq);
 		queryBld.setPlatformAgnostic(true);
 		ComponentQuery cquery = queryBld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(cquery);
+		context.put("local.component.path", repoStr); //$NON-NLS-1$
 		NodeQuery nq = new NodeQuery(context, rq, null);
-		Provider provider = RmapFactory.eINSTANCE.createProvider();
-		provider.setReaderType(IReaderType.LOCAL);
-		provider.getComponentTypes().addAll(possibleTypes);
-		provider.setURI(repoURI);
-		monitor.beginTask(null, possibleTypes.size() * 100);
-		int largestCSpecSize = -1;
-		Resolution bestMatch = null;
-		for (String ctypeId : possibleTypes) {
-			IComponentType ctype = CorePlugin.getDefault().getComponentType(ctypeId);
-			ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
+		Provider provider = getLocalProvider();
+		synchronized (provider) {
+			List<String> ctypes = provider.getComponentTypes();
+			ctypes.clear();
+			ctypes.addAll(possibleTypes);
+			monitor.beginTask(null, possibleTypes.size() * 100);
+			int largestCSpecSize = -1;
+			Resolution bestMatch = null;
+			for (String ctypeId : possibleTypes) {
+				IComponentType ctype = CorePlugin.getDefault().getComponentType(ctypeId);
+				ProviderMatch pm = new ProviderMatch(provider, ctype, VersionMatch.DEFAULT, ProviderScore.GOOD, nq);
 
-			try {
-				BOMNode node = ctype.getResolution(pm, MonitorUtils.subMonitor(monitor, 100));
-				Resolution resolution = node.getResolution();
-				if (resolution == null)
+				try {
+					BOMNode node = ctype.getResolution(pm, MonitorUtils.subMonitor(monitor, 100));
+					Resolution resolution = node.getResolution();
+					if (resolution == null)
+						continue;
+
+					int imageSize = resolution.getCSpec().getImage().length;
+					if (bestMatch == null || largestCSpecSize < imageSize) {
+						largestCSpecSize = imageSize;
+						bestMatch = resolution;
+					}
+				} catch (MissingCSpecSourceException e) {
 					continue;
-
-				int imageSize = resolution.getCSpec().getImage().length;
-				if (bestMatch == null || largestCSpecSize < imageSize) {
-					largestCSpecSize = imageSize;
-					bestMatch = resolution;
 				}
-			} catch (MissingCSpecSourceException e) {
-				continue;
 			}
+			if (bestMatch == null)
+				throw new MissingComponentException(rq.toString());
+			return bestMatch;
 		}
-		if (bestMatch == null)
-			throw new MissingComponentException(rq.toString());
-		return bestMatch;
 	}
 
 	public static Resolution fromPath(NodeQuery query, IPath path, Resolution oldInfo) throws CoreException {
 		ComponentRequest request = query.getComponentRequest();
-		Resolution resolution = fromPath(path, request.getName(), request.getComponentTypeID(), new NullProgressMonitor());
+		Resolution resolution = fromPath(path, request.getId(), request.getType(), new NullProgressMonitor());
 
 		// Retain old component info if present. We only wanted the cspec
 		// changes
@@ -210,6 +168,38 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 		if (oldInfo != null)
 			resolution = new Resolution(resolution.getCSpec(), oldInfo);
 		return resolution;
+	}
+
+	public static String getProjectName(ComponentName cname) throws CoreException {
+		String projName = cname.getId();
+		String ctype = cname.getType();
+		if (ctype != null)
+			projName = CorePlugin.getDefault().getComponentType(ctype).getProjectName(projName);
+		return projName;
+	}
+
+	private static Provider getLocalProvider() {
+		initProviders();
+		return localProvider;
+	}
+
+	private static Provider getTargetPlatformProvider(String ctype) {
+		initProviders();
+		if (IComponentType.OSGI_BUNDLE.equals(ctype))
+			return tpBundleProvider;
+		if (IComponentType.ECLIPSE_FEATURE.equals(ctype))
+			return tpFeatureProvider;
+		throw new UnsupportedOperationException("No target platform provider for component type " + ctype); //$NON-NLS-1$
+	}
+
+	private static synchronized void initProviders() {
+		if (tpBundleProvider == null) {
+			ResourceSet resourceSet = CorePlugin.getDefault().getResourceSet();
+			Resource resource = resourceSet.getResource(URI.createPlatformPluginURI("/org.eclipse.buckminster.core/xml/tp.rmap", true), true); //$NON-NLS-1$
+			tpBundleProvider = (Provider) resource.getEObject("//@searchPaths[name='default']/@providers.0"); //$NON-NLS-1$
+			tpFeatureProvider = (Provider) resource.getEObject("//@searchPaths[name='default']/@providers.1"); //$NON-NLS-1$
+			localProvider = (Provider) resource.getEObject("//@searchPaths[name='default']/@providers.2"); //$NON-NLS-1$
+		}
 	}
 
 	private final ResolutionContext context;
@@ -345,14 +335,14 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 					query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "workspace"); //$NON-NLS-1$
 				IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
 				try {
-					existingProject = wsRoot.getProject(request.getProjectName());
+					existingProject = wsRoot.getProject(getProjectName(request));
 				} catch (IllegalArgumentException e) {
 					// Query did not produce a name that is valid for a project
 				}
 			}
 			if (existingProject != null && existingProject.isOpen()) {
 				if (!isSilent)
-					log.debug("Found workspace project for %s", request.getProjectName()); //$NON-NLS-1$
+					log.debug("Found workspace project for %s", getProjectName(request)); //$NON-NLS-1$
 				Resolution resolution = fromPath(query, existingProject.getLocation(), null);
 				ComponentIdentifier ci = resolution.getComponentIdentifier();
 				if (request.designates(ci)) {
@@ -373,7 +363,7 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 						query.logDecision(ResolverDecisionType.MATCH_REJECTED, ci,
 								NLS.bind(Messages.Filter_0_does_not_match_the_current_property_set, failingFilter[0]));
 				} else if (!isSilent)
-					log.debug("Workspace project for %s is not designated by %s", request.getProjectName(), request); //$NON-NLS-1$
+					log.debug("Workspace project for %s is not designated by %s", getProjectName(request), request); //$NON-NLS-1$
 			} else if (!isSilent)
 				log.debug("No open workspace project found that corresponds to %s", request); //$NON-NLS-1$
 		} else if (!isSilent)
@@ -387,14 +377,13 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 
 			if (!isSilent)
 				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, IReaderType.LOCAL, "target"); //$NON-NLS-1$
+
 			// Generate the resolution from the target platform
 			//
 			Provider provider;
-			String ctypeID = request.getComponentTypeID();
-			if (IComponentType.OSGI_BUNDLE.equals(ctypeID))
-				provider = INSTALLED_BUNDLE_PROVIDER;
-			else if (IComponentType.ECLIPSE_FEATURE.equals(ctypeID))
-				provider = INSTALLED_FEATURE_PROVIDER;
+			String ctypeID = request.getType();
+			if (IComponentType.OSGI_BUNDLE.equals(ctypeID) || IComponentType.ECLIPSE_FEATURE.equals(ctypeID))
+				provider = getTargetPlatformProvider(ctypeID);
 			else {
 				query.logDecision(ResolverDecisionType.COMPONENT_TYPE_MISMATCH, ctypeID);
 				return null;
@@ -451,8 +440,8 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 		// designator to play a role here.
 		//
 		ComponentRequest request = qDep.getRequest();
-		String key = request.getName();
-		String type = request.getComponentTypeID();
+		String key = request.getId();
+		String type = request.getType();
 		ResolverNode[] nrs;
 		boolean infant;
 		synchronized (this) {
@@ -480,7 +469,7 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 		for (int idx = 0; idx < top; ++idx) {
 			nr = nrs[idx];
 			ComponentRequest oldRq = nr.getQuery().getComponentRequest();
-			if (!(type == null || oldRq.getComponentTypeID() == null || type.equals(oldRq.getComponentTypeID())))
+			if (!(type == null || oldRq.getType() == null || type.equals(oldRq.getType())))
 				continue;
 
 			if (newRqOptional != oldRq.isOptional()) {
@@ -488,7 +477,7 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 				// optional.
 				//
 				try {
-					request.mergeDesignator(oldRq);
+					request.merge(oldRq);
 				} catch (ComponentRequestConflictException e) {
 					if (oldRq.isOptional()) {
 						// Previous request now in conflict and must be
@@ -513,8 +502,7 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 				// We have a conflict. Two components with the same
 				// name but incompatible versions or filters.
 				//
-				IStatus err = e.getStatus();
-				context.addRequestStatus(nr.getQuery().getComponentRequest(), new Status(IStatus.WARNING, err.getPlugin(), err.getMessage()));
+				context.addRequestStatus(nr.getQuery().getComponentRequest(), new Status(IStatus.WARNING, CorePlugin.getID(), e.getMessage()));
 			}
 		}
 

@@ -241,7 +241,13 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="repository" eType="#//Repository"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Redirect" eSuperTypes="#//Matcher">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="href" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="redirectTo" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="href"/>
+        <details key="kind" value="attribute"/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Repository">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//ID">
@@ -290,7 +296,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="searchPaths" upperBound="-1"
-        eType="#//SearchPath" containment="true" resolveProxies="false">
+        eType="#//SearchPath" containment="true" resolveProxies="false" eKeys="#//SearchPath/name">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="name" value="searchPath"/>
         <details key="namespace" value="##targetNamespace"/>

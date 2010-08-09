@@ -16,6 +16,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceFactoryImpl;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 
 import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.impl.ElementHandlerImpl;
 
 /**
  * <!-- begin-user-doc --> The <b>Resource Factory</b> associated with the
@@ -38,14 +39,16 @@ public class RmapResourceFactoryImpl extends ResourceFactoryImpl {
 	@Override
 	public Resource createResource(URI uri) {
 		// We subclass the Properties instance but we don't want to use the
-		// Common
-		// namespace so we redefine the namespace here.
+		// Common namespace so we redefine the namespace here.
 		//
 		ExtendedMetaData extMeta = ExtendedMetaData.INSTANCE;
 		extMeta.setNamespace(CommonPackage.Literals.PROPERTIES__PROPERTY_CONSTANTS, RmapPackage.eNS_URI);
 		extMeta.setNamespace(CommonPackage.Literals.PROPERTIES__PROPERTY_ELEMENTS, RmapPackage.eNS_URI);
 
 		XMLResource result = (XMLResource) createResourceGen(uri);
+		result.getDefaultSaveOptions().put(XMLResource.OPTION_SCHEMA_LOCATION, Boolean.FALSE);
+		result.getDefaultSaveOptions().put(XMLResource.OPTION_ELEMENT_HANDLER, new ElementHandlerImpl(false));
+
 		// Don't want the document root in the editor
 		result.getDefaultLoadOptions().put(XMLResource.OPTION_SUPPRESS_DOCUMENT_ROOT, Boolean.TRUE);
 		return result;

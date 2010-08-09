@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 
 public interface IComponentQuery {
@@ -24,7 +24,7 @@ public interface IComponentQuery {
 
 	String getResourceMapURL();
 
-	IComponentRequest getRootRequest();
+	ComponentRequest getRootRequest();
 
 	String getShortDesc();
 }

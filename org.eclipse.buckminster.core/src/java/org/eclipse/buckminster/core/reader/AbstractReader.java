@@ -13,12 +13,12 @@ package org.eclipse.buckminster.core.reader;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecision;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.rmap.VersionConverter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;

@@ -154,6 +154,8 @@ public class ResourceMapTest extends TestCase {
 		String path = contextURL.getPath();
 		assertNotNull(path);
 		assertTrue(path.endsWith("/urimatcher.rmap"));
+		Provider p = rmap.getSearchPaths().get(0).getProviders().get(0);
+		System.out.println(rmap.eResource().getURIFragment(p));
 	}
 
 } //ResourceMapTest

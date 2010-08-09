@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
@@ -228,6 +229,13 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	private EClass componentIdentifierEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass componentNameEClass = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -457,13 +465,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		comparableEClass = createEClass(COMPARABLE);
 
 		componentIdentifierEClass = createEClass(COMPONENT_IDENTIFIER);
-		createEAttribute(componentIdentifierEClass, COMPONENT_IDENTIFIER__TYPE);
+		createEAttribute(componentIdentifierEClass, COMPONENT_IDENTIFIER__VERSION);
+
+		componentNameEClass = createEClass(COMPONENT_NAME);
+		createEAttribute(componentNameEClass, COMPONENT_NAME__ID);
+		createEAttribute(componentNameEClass, COMPONENT_NAME__TYPE);
 
 		componentRequestEClass = createEClass(COMPONENT_REQUEST);
-		createEAttribute(componentRequestEClass, COMPONENT_REQUEST__ID);
 		createEAttribute(componentRequestEClass, COMPONENT_REQUEST__RANGE);
 		createEAttribute(componentRequestEClass, COMPONENT_REQUEST__FILTER);
-		createEAttribute(componentRequestEClass, COMPONENT_REQUEST__TYPE);
 
 		constantEClass = createEClass(CONSTANT);
 		createEAttribute(constantEClass, CONSTANT__VALUE);
@@ -487,8 +497,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEAttribute(iStatusEClass, ISTATUS__SEVERITY);
 
 		iVersionedIdEClass = createEClass(IVERSIONED_ID);
-		createEAttribute(iVersionedIdEClass, IVERSIONED_ID__ID);
-		createEAttribute(iVersionedIdEClass, IVERSIONED_ID__VERSION);
 
 		matchEClass = createEClass(MATCH);
 		createEAttribute(matchEClass, MATCH__PATTERN);
@@ -747,9 +755,35 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
-
-	public EAttribute getComponentIdentifier_Type() {
+	public EAttribute getComponentIdentifier_Version() {
 		return (EAttribute) componentIdentifierEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getComponentName() {
+		return componentNameEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getComponentName_Id() {
+		return (EAttribute) componentNameEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getComponentName_Type() {
+		return (EAttribute) componentNameEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -769,26 +803,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 */
 
 	public EAttribute getComponentRequest_Filter() {
-		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	public EAttribute getComponentRequest_Id() {
-		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	public EAttribute getComponentRequest_Range() {
 		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -798,8 +812,8 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 
-	public EAttribute getComponentRequest_Type() {
-		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(3);
+	public EAttribute getComponentRequest_Range() {
+		return (EAttribute) componentRequestEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1000,26 +1014,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 	public EClass getIVersionedId() {
 		return iVersionedIdEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	public EAttribute getIVersionedId_Id() {
-		return (EAttribute) iVersionedIdEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	public EAttribute getIVersionedId_Version() {
-		return (EAttribute) iVersionedIdEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1633,12 +1627,13 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		EGenericType g1 = createEGenericType(this.getIVersionedId());
-		componentIdentifierEClass.getEGenericSuperTypes().add(g1);
-		g1 = createEGenericType(this.getComparable());
-		EGenericType g2 = createEGenericType(this.getComponentIdentifier());
+		componentIdentifierEClass.getESuperTypes().add(this.getComponentName());
+		componentIdentifierEClass.getESuperTypes().add(this.getIVersionedId());
+		EGenericType g1 = createEGenericType(this.getComparable());
+		EGenericType g2 = createEGenericType(this.getComponentName());
 		g1.getETypeArguments().add(g2);
-		componentIdentifierEClass.getEGenericSuperTypes().add(g1);
+		componentNameEClass.getEGenericSuperTypes().add(g1);
+		componentRequestEClass.getESuperTypes().add(this.getComponentName());
 		constantEClass.getESuperTypes().add(this.getValue());
 		formatEClass.getESuperTypes().add(this.getValueFilter());
 		propertyRefEClass.getESuperTypes().add(this.getValue());
@@ -1686,29 +1681,47 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		initEClass(componentIdentifierEClass, ComponentIdentifier.class, "ComponentIdentifier", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getComponentIdentifier_Type(), ecorePackage.getEString(), "type", null, 0, 1, ComponentIdentifier.class, !IS_TRANSIENT,
+		initEAttribute(getComponentIdentifier_Version(), this.getVersion(), "version", null, 0, 1, ComponentIdentifier.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		op = addEOperation(componentIdentifierEClass, null, "setId", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, ecorePackage.getEString(), "id", 0, 1, IS_UNIQUE, IS_ORDERED);
+		op = addEOperation(componentIdentifierEClass, ecorePackage.getEBoolean(), "matches", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getComponentIdentifier(), "ci", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		op = addEOperation(componentIdentifierEClass, null, "setVersion", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, this.getVersion(), "version", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEClass(componentNameEClass, ComponentName.class, "ComponentName", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getComponentName_Id(), ecorePackage.getEString(), "id", null, 0, 1, ComponentName.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getComponentName_Type(), ecorePackage.getEString(), "type", null, 0, 1, ComponentName.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		op = addEOperation(componentNameEClass, null, "getProperties", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		initEOperation(op, g1);
+
+		addEOperation(componentNameEClass, this.getComponentName(), "toPureComponentName", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(componentNameEClass, null, "toString", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getStringBuilder(), "result", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(componentNameEClass, ecorePackage.getEBoolean(), "matches", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getComponentName(), "cn", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(componentRequestEClass, ComponentRequest.class, "ComponentRequest", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getComponentRequest_Id(), ecorePackage.getEString(), "id", null, 0, 1, ComponentRequest.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getComponentRequest_Range(), this.getVersionRange(), "range", null, 0, 1, ComponentRequest.class, !IS_TRANSIENT, !IS_VOLATILE,
 				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getComponentRequest_Filter(), this.getFilter(), "filter", null, 0, 1, ComponentRequest.class, !IS_TRANSIENT, !IS_VOLATILE,
 				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getComponentRequest_Type(), ecorePackage.getEString(), "type", null, 0, 1, ComponentRequest.class, !IS_TRANSIENT,
-				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		op = addEOperation(componentRequestEClass, null, "appendViewName", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getStringBuilder(), "result", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = addEOperation(componentRequestEClass, ecorePackage.getEBoolean(), "designates", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getComponentIdentifier(), "cid", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		addEOperation(componentRequestEClass, ecorePackage.getEBoolean(), "isOptional", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEOperation(componentRequestEClass, ecorePackage.getEString(), "getViewName", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = addEOperation(componentRequestEClass, ecorePackage.getEBoolean(), "isEnabled", 0, 1, IS_UNIQUE, IS_ORDERED);
 		g1 = createEGenericType(ecorePackage.getEMap());
@@ -1719,6 +1732,11 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		EGenericType g3 = createEGenericType(ecorePackage.getEJavaObject());
 		g2.setEUpperBound(g3);
 		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(componentRequestEClass, ecorePackage.getEBoolean(), "isOptional", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(componentRequestEClass, this.getComponentRequest(), "merge", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getComponentRequest(), "request", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(constantEClass, Constant.class, "Constant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getConstant_Value(), ecorePackage.getEString(), "value", null, 0, 1, Constant.class, !IS_TRANSIENT, !IS_VOLATILE,
@@ -1781,10 +1799,10 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		addEParameter(op, ecorePackage.getEInt(), "severityMask", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(iVersionedIdEClass, IVersionedId.class, "IVersionedId", IS_ABSTRACT, IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIVersionedId_Id(), ecorePackage.getEString(), "id", null, 0, 1, IVersionedId.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIVersionedId_Version(), this.getVersion(), "version", null, 0, 1, IVersionedId.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		addEOperation(iVersionedIdEClass, ecorePackage.getEString(), "getId", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(iVersionedIdEClass, this.getVersion(), "getVersion", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(matchEClass, Match.class, "Match", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMatch_Pattern(), ecorePackage.getEString(), "pattern", null, 1, 1, Match.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
@@ -1892,7 +1910,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSplit_Pattern(), ecorePackage.getEString(), "pattern", null, 1, 1, Split.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
 				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getSplit_Style(), this.getSplitType(), "style", "quoted", 0, 1, Split.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+		initEAttribute(getSplit_Style(), this.getSplitType(), "style", "unquoted", 0, 1, Split.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
 				IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSplit_CompiledPattern(), this.getPattern(), "compiledPattern", null, 0, 1, Split.class, IS_TRANSIENT, !IS_VOLATILE,
 				!IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);

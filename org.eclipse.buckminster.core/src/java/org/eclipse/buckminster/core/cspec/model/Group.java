@@ -23,6 +23,8 @@ import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -160,7 +162,10 @@ public class Group extends TopLevelAttribute implements IGroup {
 				if (attr != null && attr.isProducedByActions(ctx))
 					return true;
 			} catch (MissingComponentException e) {
-				return !WorkspaceInfo.getGenerators(new ComponentRequest(pq.getComponentName(), pq.getComponentType(), null)).isEmpty();
+				ComponentRequest rq = CommonFactory.eINSTANCE.createComponentRequest();
+				rq.setId(pq.getComponentName());
+				rq.setType(pq.getComponentType());
+				return !WorkspaceInfo.getGenerators(rq).isEmpty();
 			}
 		}
 		return false;

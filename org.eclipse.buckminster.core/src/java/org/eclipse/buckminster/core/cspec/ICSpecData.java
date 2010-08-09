@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.common.model.Documentation;
 import org.eclipse.buckminster.core.cspec.model.MissingDependencyException;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.equinox.p2.metadata.Version;
@@ -16,20 +18,13 @@ public interface ICSpecData extends IAdaptable {
 
 	Map<String, ? extends IAttribute> getAttributes();
 
-	IComponentIdentifier getComponentIdentifier();
+	ComponentIdentifier getComponentIdentifier();
 
 	String getComponentTypeID();
 
-	Collection<? extends IComponentRequest> getDependencies();
+	Collection<? extends ComponentRequest> getDependencies();
 
-	/**
-	 * @deprecated Use
-	 *             {@link #getDependency(String, String, VersionRange)}
-	 */
-	@Deprecated
-	IComponentRequest getDependency(String dependencyName, String componentType) throws MissingDependencyException;
-
-	IComponentRequest getDependency(String dependencyName, String componentType, VersionRange range) throws MissingDependencyException;
+	ComponentRequest getDependency(String dependencyName, String componentType, VersionRange range) throws MissingDependencyException;
 
 	Documentation getDocumentation();
 
