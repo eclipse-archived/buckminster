@@ -12,14 +12,19 @@ package org.eclipse.buckminster.core.reader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
+import org.eclipse.buckminster.core.resolver.IResolverBackchannel;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecision;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.rmap.VersionConverter;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,7 +32,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractReader implements IComponentReader {
+public abstract class AbstractReader implements IComponentReader, IResolverBackchannel {
 	private final ProviderMatch providerMatch;
 
 	private final IReaderType readerType;
@@ -37,7 +42,6 @@ public abstract class AbstractReader implements IComponentReader {
 		this.readerType = readerType;
 	}
 
-	@Override
 	public boolean canMaterialize() {
 		return true;
 	}
@@ -46,27 +50,32 @@ public abstract class AbstractReader implements IComponentReader {
 	public void close() {
 	}
 
-	@Override
 	public IComponentType getComponentType() {
 		return providerMatch.getComponentType();
 	}
 
-	@Override
 	public NodeQuery getNodeQuery() {
 		return providerMatch.getNodeQuery();
 	}
 
 	@Override
+	public Map<String, String> getProperties() {
+		return providerMatch.getProvider().getProperties(providerMatch.getNodeQuery().getProperties());
+	}
+
 	public ProviderMatch getProviderMatch() {
 		return providerMatch;
 	}
 
-	@Override
 	public IReaderType getReaderType() {
 		return readerType;
 	}
 
 	@Override
+	public String getReaderTypeID() {
+		return readerType.getId();
+	}
+
 	public VersionConverter getVersionConverter() throws CoreException {
 		return this.getProviderMatch().getVersionConverter();
 	}
@@ -80,6 +89,9 @@ public abstract class AbstractReader implements IComponentReader {
 	public ResolverDecision logDecision(ResolverDecisionType decisionType, Object... args) {
 		return getNodeQuery().logDecision(decisionType, args);
 	}
+
+	public abstract void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor)
+			throws CoreException;
 
 	protected void copyOverlay(IPath destination, IProgressMonitor monitor) throws CoreException {
 		// TODO: Handle file overlays

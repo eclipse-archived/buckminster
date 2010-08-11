@@ -16,6 +16,7 @@ import java.io.InputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;

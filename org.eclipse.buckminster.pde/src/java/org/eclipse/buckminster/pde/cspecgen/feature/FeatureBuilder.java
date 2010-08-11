@@ -18,7 +18,7 @@ import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.PropertiesParser;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
+import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
@@ -50,7 +50,7 @@ public class FeatureBuilder extends PDEBuilder {
 	}
 
 	@Override
-	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor)
+	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, AbstractCatalogReader reader, IProgressMonitor monitor)
 			throws CoreException {
 		monitor.beginTask(null, 100);
 		IFeature feature;

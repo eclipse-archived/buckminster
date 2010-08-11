@@ -12,8 +12,9 @@ package org.eclipse.buckminster.core.internal.ctype;
 
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
-import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.p2.metadata.Version;
@@ -31,7 +32,7 @@ public class UnknownComponentType extends AbstractComponentType {
 
 	@Override
 	public IResolutionBuilder getResolutionBuilder(IComponentReader reader, IProgressMonitor monitor) throws CoreException {
-		ProviderMatch pm = reader.getProviderMatch();
+		ProviderMatch pm = ((AbstractReader) reader).getProviderMatch();
 		return (pm.getMatcherMap() == null) ? defaultBuilder : new URIMatcherBuilder(pm);
 	}
 }

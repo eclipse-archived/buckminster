@@ -13,14 +13,15 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IFileReader;
+import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IFileReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -66,7 +67,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		try {
 			usingInstalledReader = reader instanceof EclipsePlatformReader;
 			CSpecBuilder cspecBuilder = new CSpecBuilder();
-			parseFile(cspecBuilder, forResolutionAidOnly, catRdr, MonitorUtils.subMonitor(monitor, 1000));
+			parseFile(cspecBuilder, forResolutionAidOnly, (AbstractCatalogReader) catRdr, MonitorUtils.subMonitor(monitor, 1000));
 			applyExtensions(cspecBuilder, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 200));
 			return createNode(reader, cspecBuilder);
 		} finally {
@@ -82,7 +83,7 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 		return usingInstalledReader;
 	}
 
-	protected abstract void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor)
+	protected abstract void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, AbstractCatalogReader reader, IProgressMonitor monitor)
 			throws CoreException;
 
 	protected void setModel(IModel model) {

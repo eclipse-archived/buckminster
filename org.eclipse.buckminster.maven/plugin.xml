@@ -21,16 +21,5 @@
                path="pom.xml"/>
       </componentType>
    </extension>
-   <extension
-         point="org.eclipse.buckminster.core.parserExtensions">
-      <parserExtension
-            namespace="http://www.eclipse.org/buckminster/MavenProvider-1.0"
-            parserIds="provider"
-            resource="/maven-provider-1.0.xsd">
-         <handler
-               class="org.eclipse.buckminster.maven.internal.MavenProviderHandler"
-               type="MavenProvider"/>
-      </parserExtension>
-   </extension>
 
 </plugin>

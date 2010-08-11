@@ -14,11 +14,11 @@ import java.net.URI;
 import java.util.Date;
 
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.subversion.GenericCache;
 import org.eclipse.buckminster.subversion.GenericRemoteReader;
 import org.eclipse.buckminster.subversion.ISubversionSession;
@@ -89,7 +89,7 @@ public class SubversiveRemoteFileReader extends GenericRemoteReader<SVNEntry, SV
 		} finally {
 			if (!success) {
 				try {
-					FileUtils.deleteRecursive(destDir, new NullProgressMonitor());
+					IOUtils.deleteRecursive(destDir, new NullProgressMonitor());
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}

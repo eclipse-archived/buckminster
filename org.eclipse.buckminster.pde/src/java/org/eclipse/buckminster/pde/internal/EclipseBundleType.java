@@ -11,7 +11,7 @@ package org.eclipse.buckminster.pde.internal;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
-import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;

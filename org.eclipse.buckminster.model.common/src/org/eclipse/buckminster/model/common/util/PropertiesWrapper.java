@@ -28,7 +28,7 @@ import java.util.Set;
  * 
  * @author Thomas Hallgren
  */
-abstract class PropertiesWrapper extends AbstractMap<String, String> implements IProperties<String> {
+abstract class PropertiesWrapper extends AbstractMap<String, String> implements IProperties {
 	class BackedEntry implements Map.Entry<String, String> {
 		private final String key;
 

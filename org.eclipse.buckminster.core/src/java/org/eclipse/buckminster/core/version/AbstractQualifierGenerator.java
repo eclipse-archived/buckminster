@@ -12,11 +12,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
+import org.eclipse.buckminster.model.common.CommonConstants;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -61,7 +61,7 @@ public abstract class AbstractQualifierGenerator extends AbstractExtension imple
 
 	synchronized IMetadataRepository getReferenceRepository(Map<String, String> props, IProgressMonitor monitor) throws CoreException {
 
-		Object refURIVal = props.get(KeyConstants.REFERENCE_REPOSITORY);
+		Object refURIVal = props.get(CommonConstants.REFERENCE_REPOSITORY);
 		if (!(refURIVal instanceof String)) {
 			MonitorUtils.complete(monitor);
 			return null;

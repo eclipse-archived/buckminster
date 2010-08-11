@@ -28,6 +28,7 @@ import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -56,7 +57,7 @@ public class URLCatalogReader extends AbstractCatalogReader {
 	}
 
 	@Override
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
+	public void materialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		URL url = getURL();
 		File source = FileUtils.getFile(url);
 		if (source == null)
@@ -81,7 +82,7 @@ public class URLCatalogReader extends AbstractCatalogReader {
 				// as atomic as possible.
 				//
 				try {
-					FileUtils.deleteRecursive(destDir, new NullProgressMonitor());
+					IOUtils.deleteRecursive(destDir, new NullProgressMonitor());
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}

@@ -11,8 +11,8 @@ import java.util.Map;
 
 import org.eclipse.buckminster.core.commands.Perform;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
+import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 
@@ -27,7 +27,7 @@ public class PerformTask {
 	public PerformTask(String component, String attribute, boolean inWorkspace, boolean quiet, Map<String, String> properties) throws CoreException {
 		command = new Perform();
 
-		CSpec cspec = WorkspaceInfo.getResolution(ComponentIdentifier.parse(component)).getCSpec();
+		CSpec cspec = WorkspaceInfo.getResolution(CommonFactory.eINSTANCE.createComponentIdentifier(component)).getCSpec();
 		command.addAttribute(cspec.getRequiredAttribute(attribute));
 		command.addProperties(properties);
 		command.setInWorkspace(inWorkspace);

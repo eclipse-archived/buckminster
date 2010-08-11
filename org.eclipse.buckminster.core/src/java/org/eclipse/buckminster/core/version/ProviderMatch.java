@@ -16,13 +16,13 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
-import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ProviderScore;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.rmap.VersionConverter;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -122,6 +122,10 @@ public final class ProviderMatch implements Comparable<ProviderMatch> {
 
 	public Provider getOriginalProvider() {
 		return originalProvider;
+	}
+
+	public Map<String, String> getProperties() {
+		return provider.getProperties(query.getProperties());
 	}
 
 	/**

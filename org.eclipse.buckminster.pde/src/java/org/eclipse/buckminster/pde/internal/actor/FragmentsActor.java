@@ -19,8 +19,6 @@ import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.metadata.IResolution;
@@ -28,6 +26,9 @@ import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
@@ -62,10 +63,10 @@ public class FragmentsActor extends AbstractActor {
 		if (outputDir == null)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.missing_product_base_in_0_actor, ID));
 
-		Map<String, ? extends Object> properties = ctx.getProperties();
+		Map<String, String> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
-		IPluginModelBase plugin = PluginRegistry.findModel(cid.getName());
+		IPluginModelBase plugin = PluginRegistry.findModel(cid.getId());
 		if (plugin == null)
 			return true;
 
@@ -87,7 +88,10 @@ public class FragmentsActor extends AbstractActor {
 				//
 				continue;
 
-			ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionHelper.exactRange(fragment.getVersion()));
+			ComponentRequest request = CommonFactory.eINSTANCE.createComponentRequest();
+			request.setId(fragmentName);
+			request.setType(IComponentType.OSGI_BUNDLE);
+			request.setRange(VersionHelper.exactRange(fragment.getVersion()));
 
 			String filterStr = fragment.getPlatformFilter();
 			if (filterStr != null) {
@@ -122,10 +126,10 @@ public class FragmentsActor extends AbstractActor {
 		if (outputDir == null)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.missing_product_base_in_0_actor, ID));
 
-		Map<String, ? extends Object> properties = ctx.getProperties();
+		Map<String, String> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
-		IPluginModelBase launcherPlugin = PluginRegistry.findModel(cid.getName());
+		IPluginModelBase launcherPlugin = PluginRegistry.findModel(cid.getId());
 		if (launcherPlugin == null) {
 			MonitorUtils.complete(monitor);
 			return Status.OK_STATUS;
@@ -143,7 +147,7 @@ public class FragmentsActor extends AbstractActor {
 			return Status.OK_STATUS;
 		}
 
-		String fragmentAttribute = (String) properties.get(PROP_FRAGMENT_ATTRIBUTE);
+		String fragmentAttribute = properties.get(PROP_FRAGMENT_ATTRIBUTE);
 		if (fragmentAttribute == null)
 			fragmentAttribute = IPDEConstants.ATTRIBUTE_BUNDLE_JAR;
 
@@ -160,8 +164,10 @@ public class FragmentsActor extends AbstractActor {
 					//
 					continue;
 
-				ComponentRequest request = new ComponentRequest(fragmentName, IComponentType.OSGI_BUNDLE, VersionHelper.exactRange(fragment
-						.getVersion()));
+				ComponentRequest request = CommonFactory.eINSTANCE.createComponentRequest();
+				request.setId(fragmentName);
+				request.setType(IComponentType.OSGI_BUNDLE);
+				request.setRange(VersionHelper.exactRange(fragment.getVersion()));
 
 				String filterStr = fragment.getPlatformFilter();
 				if (filterStr != null) {

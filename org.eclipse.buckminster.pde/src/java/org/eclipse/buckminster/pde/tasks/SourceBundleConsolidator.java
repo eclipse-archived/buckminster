@@ -70,7 +70,7 @@ public class SourceBundleConsolidator extends BundleConsolidator {
 				if (bundleName == null)
 					bundleName = symbolicName;
 			}
-			String format = (String) ctx.getProperties().get(IPDEConstants.PROP_PDE_SOURCE_BUNDLE_LABEL_FORMAT);
+			String format = ctx.getProperties().get(IPDEConstants.PROP_PDE_SOURCE_BUNDLE_LABEL_FORMAT);
 			if (format == null)
 				format = LABEL_FORMAT;
 			bundleName = MessageFormat.format(format, bundleName);

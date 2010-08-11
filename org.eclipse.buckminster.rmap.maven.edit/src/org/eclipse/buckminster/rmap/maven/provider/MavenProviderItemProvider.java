@@ -57,6 +57,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
@@ -72,6 +73,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/MavenProvider"));
@@ -83,6 +85,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -98,6 +101,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		String label = ((MavenProvider) object).getComponentTypesAttr();
@@ -112,6 +116,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -131,6 +136,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
@@ -143,6 +149,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper

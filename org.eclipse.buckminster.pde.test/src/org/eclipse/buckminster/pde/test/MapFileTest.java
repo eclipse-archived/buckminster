@@ -11,11 +11,13 @@ package org.eclipse.buckminster.pde.test;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.buckminster.pde.mapfile.MapFile;
-import org.eclipse.buckminster.pde.mapfile.MapFileEntry;
+import org.eclipse.buckminster.model.common.util.BMProperties;
+import org.eclipse.buckminster.rmap.pde.util.MapFile;
+import org.eclipse.buckminster.rmap.pde.util.MapFileEntry;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
 
@@ -23,30 +25,27 @@ import org.eclipse.buckminster.runtime.Logger;
  * @author Thomas Hallgren
  * 
  */
-public class MapFileTest extends TestCase
-{
+public class MapFileTest extends TestCase {
 	@Override
-	public void setUp() throws Exception
-	{
+	public void setUp() throws Exception {
 		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
 		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
 	}
 
-	public void testMap() throws Exception
-	{
+	public void testMap() throws Exception {
 		ArrayList<MapFileEntry> bld = new ArrayList<MapFileEntry>();
 		URL url = new URL("http://download.eclipse.org/tools/orbit/downloads/drops/R20100114021427/directory.txt"); //$NON-NLS-1$
 		InputStream input = url.openStream();
-		MapFile.parse(input, url.toString(), bld);
+		Map<String, String> props = BMProperties.getSystemProperties();
+		MapFile.parse(input, url.toString(), props, bld);
 		input.close();
 
-		url = new URL(
-				"http://download.eclipse.org/tools/orbit/downloads/drops/R20100114021427/orbitBundles-R20100114021427.map"); //$NON-NLS-1$
+		url = new URL("http://download.eclipse.org/tools/orbit/downloads/drops/R20100114021427/orbitBundles-R20100114021427.map"); //$NON-NLS-1$
 		input = url.openStream();
-		MapFile.parse(input, url.toString(), bld);
+		MapFile.parse(input, url.toString(), props, bld);
 		input.close();
 
-		for(MapFileEntry entry : bld)
+		for (MapFileEntry entry : bld)
 			System.out.println(entry);
 	}
 }

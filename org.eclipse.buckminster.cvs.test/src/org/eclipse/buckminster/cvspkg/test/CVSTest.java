@@ -17,24 +17,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
-import java.util.regex.Pattern;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.Format;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
-import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.reader.IVersionFinder;
-import org.eclipse.buckminster.core.resolver.BidirectionalTransformer;
-import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.rmap.model.Provider;
-import org.eclipse.buckminster.core.rmap.model.VersionConverterDesc;
 import org.eclipse.buckminster.cvspkg.internal.CVSSession;
 import org.eclipse.buckminster.cvspkg.internal.FileSystemCopier;
 import org.eclipse.buckminster.model.common.util.BMProperties;
@@ -48,7 +37,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.team.internal.ccvs.core.CVSException;
 import org.eclipse.team.internal.ccvs.core.CVSProviderPlugin;
 import org.eclipse.team.internal.ccvs.core.CVSTag;
@@ -109,7 +97,7 @@ public class CVSTest extends TestCase
 
 	public void testCheckOut() throws Exception
 	{
-		File destDir = FileUtils.createTempFolder("cvs", ".test");
+		File destDir = IOUtils.createTempFolder("cvs", ".test", IOUtils.getTempRoot(BMProperties.getSystemProperties()));
 
 		IProgressMonitor nullMonitor = new NullProgressMonitor();
 
@@ -174,41 +162,6 @@ public class CVSTest extends TestCase
 		ICVSRepositoryLocation[] locations = cvsProvider.getKnownRepositories();
 		for(ICVSRepositoryLocation location : locations)
 			System.out.println(location.getLocation(false));
-	}
-
-	public void testTags() throws Exception
-	{
-		CorePlugin plugin = CorePlugin.getDefault();
-		IReaderType rd = plugin.getReaderType("cvs");
-		VersionConverterDesc vd = new VersionConverterDesc("tag", null, new BidirectionalTransformer[] {
-				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)([a-zA-Z]\\w*)"), "$1.$2.$3.$4",
-						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3$4"),
-				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_([a-zA-Z]\\w*)"), "$1.$2.0.$3",
-						Pattern.compile("(\\d+)\\.(\\d+)\\.0\\.([a-zA-Z]\\w*)"), "REL$1_$2_$3"),
-				new BidirectionalTransformer(Pattern.compile("REL(\\d+)_(\\d+)_(\\d+)"), "$1.$2.$3",
-						Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)"), "REL$1_$2_$3") });
-
-		IComponentType unknown = plugin.getComponentType(IComponentType.UNKNOWN);
-		Provider provider = new Provider(null, rd.getId(), new String[] { unknown.getId() }, vd, new Format(
-				":pserver:anoncvs:foo@anoncvs.postgresql.org:/projects/cvsroot,pgsql/src/backend"), null, null, null,
-				BMProperties.getSystemProperties(), null, null);
-		ComponentQueryBuilder cq = new ComponentQueryBuilder();
-		ComponentRequestBuilder rqBld = cq.getRootRequestBuilder();
-		rqBld.setName("pgsql");
-		rqBld.setVersionRange(new VersionRange("[8.0.0,8.0.4]"));
-		cq.setResourceMapURL(getClass().getResource("test.rmap").toString());
-		ResolutionContext context = new ResolutionContext(cq.createComponentQuery());
-		IVersionFinder versionFinder = rd.getVersionFinder(provider, unknown, context.getRootNodeQuery(),
-				new NullProgressMonitor());
-		try
-		{
-			System.out.println("[8.0.0,8.0.4] resulted in version: "
-					+ versionFinder.getBestVersion(new NullProgressMonitor()));
-		}
-		finally
-		{
-			versionFinder.close();
-		}
 	}
 
 	private void readFile(String fileName) throws CoreException, IOException

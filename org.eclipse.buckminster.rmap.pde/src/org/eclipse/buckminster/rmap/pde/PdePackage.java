@@ -97,17 +97,17 @@ public interface PdePackage extends EPackage {
 	int PDE_MAP_PROVIDER = 0;
 
 	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference
-	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Property Constants</b></em>' map. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PDE_MAP_PROVIDER__PROPERTIES = RmapPackage.PROVIDER__PROPERTIES;
+	int PDE_MAP_PROVIDER__PROPERTY_CONSTANTS = RmapPackage.PROVIDER__PROPERTY_CONSTANTS;
 
 	/**
-	 * The feature id for the '<em><b>Property Elements</b></em>' containment
-	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Property Elements</b></em>' map. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
@@ -187,13 +187,13 @@ public interface PdePackage extends EPackage {
 	int PDE_MAP_PROVIDER__URI = RmapPackage.PROVIDER__URI;
 
 	/**
-	 * The feature id for the '<em><b>Matchers</b></em>' containment reference
-	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Matcher</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PDE_MAP_PROVIDER__MATCHERS = RmapPackage.PROVIDER__MATCHERS;
+	int PDE_MAP_PROVIDER__MATCHER = RmapPackage.PROVIDER__MATCHER;
 
 	/**
 	 * The feature id for the '<em><b>Documentation</b></em>' containment
@@ -203,6 +203,15 @@ public interface PdePackage extends EPackage {
 	 * @ordered
 	 */
 	int PDE_MAP_PROVIDER__DOCUMENTATION = RmapPackage.PROVIDER__DOCUMENTATION;
+
+	/**
+	 * The feature id for the '<em><b>Repository</b></em>' reference. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PDE_MAP_PROVIDER__REPOSITORY = RmapPackage.PROVIDER__REPOSITORY;
 
 	/**
 	 * The number of structural features of the '<em>PDE Map Provider</em>'

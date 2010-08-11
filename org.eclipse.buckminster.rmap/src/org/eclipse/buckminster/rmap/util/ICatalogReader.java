@@ -8,17 +8,14 @@
  * The text of such license is available at www.eclipse.org.
  *******************************************************************************/
 
-package org.eclipse.buckminster.core.reader;
+package org.eclipse.buckminster.rmap.util;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * A catalog reader knows how to read individual files from a component stored
@@ -40,40 +37,6 @@ public interface ICatalogReader extends IComponentReader {
 	boolean exists(String fileName, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Obtain the content of file <code>fileName</code> as a local file.
-	 * 
-	 * @param fileName
-	 *            The file to obtain
-	 * @param monitor
-	 *            The progress monitor.
-	 * @return a handle to a file
-	 */
-	FileHandle getContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException;
-
-	/**
-	 * Obtain files from the root directory whos name matches the given pattern.
-	 * 
-	 * @param matchPattern
-	 * @param monitor
-	 * @return A list of files, possibly empty but never null
-	 * @throws CoreException
-	 * @throws IOException
-	 */
-	List<FileHandle> getRootFiles(Pattern matchPattern, IProgressMonitor monitor) throws CoreException, IOException;
-
-	/**
-	 * Same as {@link #materialize(IPath, IProgressMonitor)} but overlay folders
-	 * are not considered.
-	 * 
-	 * @param destination
-	 *            The destination for the materialization
-	 * @param monitor
-	 *            The progress monitor.
-	 * @throws CoreException
-	 */
-	void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException;
-
-	/**
 	 * Returns a list of strings representing what is found at the root of this
 	 * reader. Folders with end with a slash.
 	 * 
@@ -84,14 +47,15 @@ public interface ICatalogReader extends IComponentReader {
 	List<String> list(IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Read the project specific preferences for Buckminster from the remote
-	 * source.
+	 * Materialize the catalog to the given <code>destination</code>
 	 * 
+	 * @param destination
+	 *            The destination for the materialization
 	 * @param monitor
-	 * @return The found preferences or <code>null</code> if the file is missing
+	 *            The progress monitor.
 	 * @throws CoreException
 	 */
-	IEclipsePreferences readBuckminsterPreferences(IProgressMonitor monitor) throws CoreException;
+	void materialize(IPath destination, IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Read a file and send the result to the <code>consumer</code>.

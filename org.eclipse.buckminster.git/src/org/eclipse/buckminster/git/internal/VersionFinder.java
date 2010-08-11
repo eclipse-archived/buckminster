@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.AbstractSCCSVersionFinder;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,7 +22,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 
 	public VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException {
 		super(provider, ctype, query);
-		repoAccess = new RepositoryAccess(getProvider().getURI(getQuery().getProperties()), getProvider().getProviderProperties());
+		repoAccess = new RepositoryAccess(getProvider().getURI(getQuery().getProperties()), getProvider().getProperties());
 	}
 
 	@Override

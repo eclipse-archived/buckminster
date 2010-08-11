@@ -2,9 +2,9 @@ package org.eclipse.buckminster.pde;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
+import org.eclipse.buckminster.model.common.CommonConstants;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
@@ -230,7 +230,7 @@ public interface IPDEConstants {
 
 	static final String MANIFEST_HEADER_SOURCE_BUNDLE = "Eclipse-SourceBundle"; //$NON-NLS-1$
 
-	static final IPath OUTPUT_DIR = new Path(KeyConstants.ACTION_OUTPUT_REF + '/');
+	static final IPath OUTPUT_DIR = new Path(CommonConstants.ACTION_OUTPUT_REF + '/');
 
 	static final String PLUGIN_FILE = "plugin.xml"; //$NON-NLS-1$
 
@@ -326,7 +326,7 @@ public interface IPDEConstants {
 
 	static final String TASK_UNZIP = "unzip"; //$NON-NLS-1$
 
-	static final IPath TEMP_DIR = new Path(KeyConstants.ACTION_TEMPDIR_REF + '/');
+	static final IPath TEMP_DIR = new Path(CommonConstants.ACTION_TEMPDIR_REF + '/');
 
 	static final String TOP_FOLDER_SUFFIX = ".topfolder"; //$NON-NLS-1$
 

@@ -6,9 +6,9 @@ import java.io.IOException;
 
 import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -25,11 +25,11 @@ public class GitReader extends AbstractCatalogReader {
 		Provider provider = providerMatch.getProvider();
 		repoAccess = new RepositoryAccess(//
 				provider.getURI(providerMatch.getNodeQuery().getProperties()),//
-				provider.getProviderProperties());
+				provider.getProperties());
 	}
 
 	@Override
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
+	public void materialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		repoAccess.checkout(getProviderMatch().getVersionMatch(), destination.toFile(), monitor);
 	}
 

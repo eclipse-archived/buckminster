@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
@@ -30,11 +29,12 @@ import org.eclipse.buckminster.core.actor.MissingPrerequisiteException;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.model.common.CommonConstants;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.util.BMProperties;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -264,7 +264,7 @@ public class P2SiteGenerator extends AbstractActor {
 		if (outputDir == null)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.missing_product_base_in_0_actor, ID));
 
-		Map<String, ? extends Object> properties = ctx.getProperties();
+		Map<String, String> properties = ctx.getProperties();
 		outputDir = new Path(ExpandingProperties.expand(properties, outputDir.toPortableString(), 0));
 
 		// We could of course check that all files referenced by the
@@ -390,7 +390,7 @@ public class P2SiteGenerator extends AbstractActor {
 		File outputDir = outputPath.toFile().getAbsoluteFile();
 		outputDir.mkdirs();
 
-		Map<String, ? extends Object> props = ctx.getProperties();
+		Map<String, String> props = ctx.getProperties();
 		File siteDir = null;
 		File siteFile = site.toFile().getAbsoluteFile();
 		if (siteFile.isDirectory()) {
@@ -405,7 +405,7 @@ public class P2SiteGenerator extends AbstractActor {
 			// We need a temporary folder where we expand the site since we want
 			// the output
 			// to contain a zip when the input is a zip.
-			siteDir = new File(props.get(KeyConstants.ACTION_TEMP).toString());
+			siteDir = new File(props.get(CommonConstants.ACTION_TEMP).toString());
 			try {
 				FileUtils.unzipFile(siteFile, siteDir);
 			} catch (IOException e) {
@@ -444,8 +444,8 @@ public class P2SiteGenerator extends AbstractActor {
 
 	private void collectBundles(CSpec cspec, Map<IVersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException {
 		ComponentIdentifier ci = cspec.getComponentIdentifier();
-		if (IComponentType.OSGI_BUNDLE.equals(ci.getComponentTypeID()))
-			if (cspecs.put(new VersionedId(ci.getName(), ci.getVersion()), cspec) != null)
+		if (IComponentType.OSGI_BUNDLE.equals(ci.getType()))
+			if (cspecs.put(new VersionedId(ci.getId(), ci.getVersion()), cspec) != null)
 				return;
 
 		Attribute refs = cspec.getAttribute(IPDEConstants.ATTRIBUTE_BUNDLE_JARS);
@@ -468,7 +468,7 @@ public class P2SiteGenerator extends AbstractActor {
 
 	private void collectFeatures(CSpec cspec, Map<IVersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException {
 		ComponentIdentifier ci = cspec.getComponentIdentifier();
-		if (cspecs.put(new VersionedId(ci.getName(), ci.getVersion()), cspec) != null)
+		if (cspecs.put(new VersionedId(ci.getId(), ci.getVersion()), cspec) != null)
 			return;
 
 		Attribute refs = cspec.getAttribute(IPDEConstants.ATTRIBUTE_FEATURE_REFS);

@@ -28,9 +28,10 @@ import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
-import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
@@ -246,7 +247,7 @@ public class FileSystemMaterializer extends AbstractMaterializer {
 						if (!location.hasTrailingSeparator() && location.toFile().isDirectory())
 							mi = new Materialization(location.addTrailingSeparator(), ci);
 						mi.store(sm);
-						reader.materialize(location, cr, context, matSubMon);
+						((AbstractReader) reader).materialize(location, cr, context, matSubMon);
 						adjustedMinfos.add(mi);
 						success = true;
 					} catch (CoreException e) {

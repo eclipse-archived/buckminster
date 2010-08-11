@@ -15,6 +15,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.buckminster.core.Messages;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IFileReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -30,7 +33,7 @@ public class ZipArchiveReader extends AbstractCatalogReader {
 	private final IFileReader zipFileReader;
 
 	public ZipArchiveReader(IFileReader fileReader) {
-		super(fileReader.getReaderType(), fileReader.getProviderMatch());
+		super(((AbstractReader) fileReader).getReaderType(), ((AbstractReader) fileReader).getProviderMatch());
 		zipFileReader = fileReader;
 	}
 
@@ -39,7 +42,7 @@ public class ZipArchiveReader extends AbstractCatalogReader {
 	}
 
 	@Override
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
+	public void materialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		throw new UnsupportedOperationException(Messages.Cannot_materialize);
 	}
 

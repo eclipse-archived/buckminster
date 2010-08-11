@@ -24,12 +24,13 @@ import java.util.jar.Manifest;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.ITeamReaderType;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.Messages;
@@ -112,8 +113,11 @@ public class BundleConsolidator extends VersionConsolidator {
 			if (versionStr != null) {
 				try {
 					Version version = Version.parseVersion(versionStr);
-					ComponentIdentifier ci = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
-					newVersion = replaceQualifier(ci, Collections.<ComponentIdentifier> emptyList());
+					ComponentIdentifier cid = CommonFactory.eINSTANCE.createComponentIdentifier();
+					cid.setId(id);
+					cid.setType(IComponentType.OSGI_BUNDLE);
+					cid.setVersion(version);
+					newVersion = replaceQualifier(cid, Collections.<ComponentIdentifier> emptyList());
 
 					if (!(newVersion == null || version.equals(newVersion))) {
 						a.put(new Attributes.Name(Constants.BUNDLE_VERSION), newVersion.toString());
@@ -212,8 +216,10 @@ public class BundleConsolidator extends VersionConsolidator {
 
 				Version v = null;
 				try {
-					CSpec cspec = ctx.getGlobalContext().findCSpec(ctx.getCSpec(),
-							new ComponentRequest(element.getValue(), IComponentType.OSGI_BUNDLE, null));
+					ComponentRequest cr = CommonFactory.eINSTANCE.createComponentRequest();
+					cr.setId(element.getValue());
+					cr.setType(IComponentType.OSGI_BUNDLE);
+					CSpec cspec = ctx.getGlobalContext().findCSpec(ctx.getCSpec(), cr);
 					v = cspec.getVersion();
 				} catch (CoreException e) {
 					continue;

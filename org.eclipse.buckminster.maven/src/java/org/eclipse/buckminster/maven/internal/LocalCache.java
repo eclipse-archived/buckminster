@@ -29,7 +29,6 @@ import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.osgi.util.NLS;
 
 /**
@@ -69,8 +68,8 @@ public class LocalCache {
 		}
 
 		if (totRead != buffer.length)
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_read_the_0_character_hexadecimal_form_of_the_digest_for_1, Integer
-					.valueOf(size), name));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_read_the_0_character_hexadecimal_form_of_the_digest_for_1,
+					Integer.valueOf(size), name));
 
 		byte[] result = new byte[size];
 		for (int idx = 0; idx < size; ++idx) {
@@ -81,7 +80,7 @@ public class LocalCache {
 		return result;
 	}
 
-	private static byte[] readRemoteDigest(StringBuilder urlBld, IConnectContext cctx, String suffix, int nBytes) throws CoreException {
+	private static byte[] readRemoteDigest(StringBuilder urlBld, String suffix, int nBytes) throws CoreException {
 		int len = urlBld.length();
 		urlBld.append(suffix);
 		String urlStr = urlBld.toString();
@@ -89,7 +88,7 @@ public class LocalCache {
 
 		InputStream input = null;
 		try {
-			input = DownloadManager.read(new URL(urlStr), cctx);
+			input = DownloadManager.read(new URL(urlStr), null);
 			return readHex(urlStr, input, nBytes);
 		} catch (IOException e) {
 			return null;
@@ -118,13 +117,13 @@ public class LocalCache {
 		return localCacheRoot;
 	}
 
-	public InputStream openFile(URL repository, IConnectContext cctx, IPath path, IProgressMonitor monitor) throws CoreException, IOException {
+	public InputStream openFile(URL repository, IPath path, IProgressMonitor monitor) throws CoreException, IOException {
 		IProgressMonitor subMonitor = monitor;
 		int failureCounter = 0;
 		for (;;) {
 			File localFile;
 			try {
-				localFile = obtainLocalFile(repository, cctx, path, failureCounter, subMonitor);
+				localFile = obtainLocalFile(repository, path, failureCounter, subMonitor);
 				monitor.subTask(Messages.verifying_digest_with_dots);
 				return new FileInputStream(localFile);
 			} catch (CoreException e) {
@@ -141,8 +140,8 @@ public class LocalCache {
 		}
 	}
 
-	private synchronized File obtainLocalFile(URL repository, IConnectContext cctx, IPath path, int failureCounter, IProgressMonitor monitor)
-			throws IOException, CoreException {
+	private synchronized File obtainLocalFile(URL repository, IPath path, int failureCounter, IProgressMonitor monitor) throws IOException,
+			CoreException {
 		IPath fullPath = localCacheRoot.append(path);
 		File file = fullPath.toFile();
 
@@ -161,13 +160,13 @@ public class LocalCache {
 		byte[] remoteSha1 = null;
 		byte[] remoteMd5 = null;
 		if ((failureCounter & 1) == 0) {
-			remoteMd5 = readRemoteDigest(urlBld, cctx, MD5_SUFFIX, MD5_LEN);
+			remoteMd5 = readRemoteDigest(urlBld, MD5_SUFFIX, MD5_LEN);
 			if (remoteMd5 == null)
-				remoteSha1 = readRemoteDigest(urlBld, cctx, SHA1_SUFFIX, SHA1_LEN);
+				remoteSha1 = readRemoteDigest(urlBld, SHA1_SUFFIX, SHA1_LEN);
 		} else {
-			remoteSha1 = readRemoteDigest(urlBld, cctx, SHA1_SUFFIX, SHA1_LEN);
+			remoteSha1 = readRemoteDigest(urlBld, SHA1_SUFFIX, SHA1_LEN);
 			if (remoteSha1 == null)
-				remoteMd5 = readRemoteDigest(urlBld, cctx, MD5_SUFFIX, MD5_LEN);
+				remoteMd5 = readRemoteDigest(urlBld, MD5_SUFFIX, MD5_LEN);
 		}
 
 		byte[] remoteDigest;
@@ -221,7 +220,7 @@ public class LocalCache {
 				throw new IOException(NLS.bind(Messages.unable_to_create_directory_0, outputDir));
 
 			output = new DigestOutputStream(new FileOutputStream(file), md);
-			DownloadManager.readInto(remoteURL, cctx, output, monitor);
+			DownloadManager.readInto(remoteURL, null, output, monitor);
 		} finally {
 			IOUtils.close(output);
 		}

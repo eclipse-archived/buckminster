@@ -13,9 +13,9 @@ package org.eclipse.buckminster.pde.internal;
 import java.io.File;
 import java.io.InputStream;
 
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;

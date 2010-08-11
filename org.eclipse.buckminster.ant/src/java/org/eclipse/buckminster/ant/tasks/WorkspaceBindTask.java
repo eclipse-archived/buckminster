@@ -15,7 +15,6 @@ import java.io.InputStream;
 
 import org.apache.tools.ant.util.FileUtils;
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -30,6 +29,8 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -70,7 +71,9 @@ public class WorkspaceBindTask {
 		// with eclipse.installed component type.
 		//
 		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
-		qbld.setRootRequest(new ComponentRequest(projDesc.getName(), null, null));
+		ComponentRequest cr = CommonFactory.eINSTANCE.createComponentRequest();
+		cr.setId(projDesc.getName());
+		qbld.setRootRequest(cr);
 		qbld.setPlatformAgnostic(true);
 		ComponentQuery query = qbld.createComponentQuery();
 		ResolutionContext context = new ResolutionContext(query);

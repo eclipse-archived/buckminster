@@ -12,16 +12,14 @@ import org.eclipse.buckminster.rmap.Locator;
 import org.eclipse.buckminster.rmap.RmapFactory;
 
 /**
- * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>Locator</b></em>'.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A test case for the model object '
+ * <em><b>Locator</b></em>'. <!-- end-user-doc -->
  * @generated
  */
 public class LocatorTest extends MatcherTest {
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -29,9 +27,9 @@ public class LocatorTest extends MatcherTest {
 	}
 
 	/**
-	 * Constructs a new Locator test case with the given name.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Constructs a new Locator test case with the given name. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public LocatorTest(String name) {
@@ -50,8 +48,7 @@ public class LocatorTest extends MatcherTest {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -61,8 +58,7 @@ public class LocatorTest extends MatcherTest {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */
@@ -71,4 +67,4 @@ public class LocatorTest extends MatcherTest {
 		setFixture(null);
 	}
 
-} //LocatorTest
+} // LocatorTest

@@ -21,11 +21,13 @@ import org.eclipse.buckminster.core.metadata.builder.ResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.parser.IParser;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IFileReader;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IFileReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -40,7 +42,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  */
 public abstract class AbstractResolutionBuilder extends AbstractExtension implements IResolutionBuilder {
 	public static String getMetadataFile(ICatalogReader reader, String prefName, String defaultPath, IProgressMonitor monitor) throws CoreException {
-		return getMetadataFile(reader.readBuckminsterPreferences(monitor), prefName, defaultPath);
+		return getMetadataFile(((AbstractCatalogReader) reader).readBuckminsterPreferences(monitor), prefName, defaultPath);
 	}
 
 	public static String getMetadataFile(IEclipsePreferences prefs, String prefName, String defaultPath) {
@@ -69,7 +71,7 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 
 	@Override
 	public ResolvedNode createNode(IComponentReader reader, CSpecBuilder cspecBuilder) throws CoreException {
-		return new ResolvedNode(reader.getNodeQuery(), createResolution(reader, cspecBuilder));
+		return new ResolvedNode(((AbstractReader) reader).getNodeQuery(), createResolution(reader, cspecBuilder));
 	}
 
 	@Override
@@ -142,8 +144,8 @@ public abstract class AbstractResolutionBuilder extends AbstractExtension implem
 	}
 
 	protected Resolution createResolution(IComponentReader reader, CSpecBuilder cspecBuilder, boolean unpack) throws CoreException {
-		ResolutionBuilder resBld = reader.getProviderMatch().createResolution(cspecBuilder, unpack);
-		resBld.setMaterializable(reader.canMaterialize());
+		ResolutionBuilder resBld = ((AbstractReader) reader).getProviderMatch().createResolution(cspecBuilder, unpack);
+		resBld.setMaterializable(((AbstractReader) reader).canMaterialize());
 		if (reader instanceof ZipArchiveReader)
 			reader = ((ZipArchiveReader) reader).getFileReader();
 		if (reader instanceof IFileReader)

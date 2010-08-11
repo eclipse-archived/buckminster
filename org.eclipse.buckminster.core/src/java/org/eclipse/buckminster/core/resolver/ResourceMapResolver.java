@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.download.DownloadManager;
 import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Format;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
@@ -62,8 +64,10 @@ import org.eclipse.buckminster.rmap.RmapConstants;
 import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.SearchPath;
 import org.eclipse.buckminster.rmap.URIMatcher;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IFileInfo;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -93,6 +97,19 @@ import org.eclipse.osgi.util.NLS;
  */
 @SuppressWarnings("serial")
 public class ResourceMapResolver extends LocalResolver implements IJobChangeListener, IResolver {
+
+	private static class FoundMatch {
+		final Provider originalProvider;
+		final ProviderMatch match;
+		final BOMNode node;
+
+		public FoundMatch(Provider originalProvider, ProviderMatch match, BOMNode node) {
+			super();
+			this.originalProvider = originalProvider;
+			this.match = match;
+			this.node = node;
+		}
+	}
 
 	public static final String TAGGED_PREFIX = "tagged."; //$NON-NLS-1$
 
@@ -256,7 +273,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			throws CoreException {
 		String expanded = ExpandingProperties.expand(properties, redirect.getRedirectTo(), 0);
 		if (expanded == null)
-			throw new IllegalArgumentException("Unable to expand redirect");
+			throw new IllegalArgumentException("Unable to expand redirect"); //$NON-NLS-1$
 		URL resolvedURL = URLUtils.resolveURL(rmap.getContextURL(), expanded);
 		backChannel.logDecision(ResolverDecisionType.REDIRECT_TO_RESOURCE_MAP, resolvedURL);
 		return getResourceMap(resolvedURL, null);
@@ -316,6 +333,26 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		return resFilter.matchCase(query.getProperties());
 	}
 
+	public static BOMNode resolve(Provider provider, NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException {
+		FoundMatch matchObj = findMatch(provider, query, problemCollector, monitor);
+		if (matchObj == null)
+			return null;
+		if (matchObj.node != null)
+			return matchObj.node;
+
+		ProviderMatch providerMatch = matchObj.match;
+		monitor.beginTask(null, 30);
+		try {
+			IComponentReader[] reader = new IComponentReader[] { providerMatch.getReader(MonitorUtils.subMonitor(monitor, 10)) };
+			BOMNode node = providerMatch.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10))
+					.build(reader, false, MonitorUtils.subMonitor(monitor, 10));
+			IOUtils.close(reader[0]);
+			return node;
+		} finally {
+			monitor.done();
+		}
+	}
+
 	public static BOMNode resolve(ResourceMap rmap, NodeQuery query, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 2000);
 
@@ -366,12 +403,97 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		throw new CoreException(problemCollector);
 	}
 
-	static ProviderMatch findMatch(Provider provider, NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor) throws CoreException {
-		String readerType = provider.getReaderType();
+	static String getProviderURI(NodeQuery query, Provider provider) {
+		return provider.getURI().toString() + '[' + getProviderURI(provider, query.getProperties()) + ']';
+	}
+
+	static String getProviderURI(Provider provider, Map<String, String> properties) {
+		return provider.getURI().getValue(properties);
+	}
+
+	static BOMNode resolve(NodeQuery query, SearchPath searchPath, IProgressMonitor monitor) throws CoreException {
+		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
+				Messages.No_suitable_provider_for_component_0_was_found_in_searchPath_1, query.getComponentRequest(), searchPath.getName()), null);
+
+		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
+		try {
+			for (boolean first = true;; first = false) {
+				FoundMatch matchObj = findMatch(searchPath, query, noGoodList, problemCollector, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
+				MonitorUtils.testCancelStatus(monitor);
+
+				try {
+					BOMNode node;
+					if (matchObj.node != null)
+						node = matchObj.node;
+					else {
+						ProviderMatch providerMatch = matchObj.match;
+						IComponentType cType = providerMatch.getComponentType();
+						node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
+					}
+
+					Resolution resolution = node.getResolution();
+					MonitorUtils.testCancelStatus(monitor);
+					Filter[] filterHandle = new Filter[1];
+					if (!resolution.isFilterMatchFor(query, filterHandle)) {
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.FILTER_MISMATCH, filterHandle[0]);
+						noGoodList.add(matchObj.originalProvider);
+						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
+						continue;
+					}
+
+					CSpec cspec = resolution.getCSpec();
+
+					// Assert that the cspec can handle required actions and
+					// exports
+					//
+					Version version = cspec.getVersion();
+					VersionRange range = query.getVersionRange();
+					if (range != null && resolution.getProvider().getVersionConverter() == null) {
+						// A missing version converter means that the actual
+						// version check is deferred
+						// and later performed on the retreived CSpec. Later is
+						// now ...
+						//
+						if (!range.isIncluded(version)) {
+							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, version,
+									NLS.bind(Messages.Not_designated_by_0, range));
+							noGoodList.add(matchObj.originalProvider);
+							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
+							continue;
+						}
+					}
+
+					// Verify that all required attributes are in this cspec
+					//
+					cspec.getAttributes(query.getRequiredAttributes());
+					if (version != null) {
+						// Replace the resolution version if it is default and
+						// a non default version is present in the CSpec
+						//
+						VersionMatch vm = resolution.getVersionMatch();
+						if (vm.getVersion() == null)
+							node = new ResolvedNode(new Resolution(version, resolution), node.getChildren());
+					}
+					return node;
+				} catch (CoreException e) {
+					ResolverDecision decision = query.logDecision(ResolverDecisionType.EXCEPTION, e.getMessage());
+					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), e));
+					noGoodList.add(matchObj.originalProvider);
+				}
+			}
+		} finally {
+			monitor.done();
+		}
+	}
+
+	private static FoundMatch findMatch(Provider provider, NodeQuery query, MultiStatus problemCollector, IProgressMonitor monitor)
+			throws CoreException {
+		CorePlugin plugin = CorePlugin.getDefault();
+		String readerTypeID = provider.getReaderType();
 		String providerURI = getProviderURI(query, provider);
 		ProviderScore score = query.getProviderScore(provider.isMutable(), provider.isSource());
 		if (score == ProviderScore.REJECTED) {
-			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI,
+			ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerTypeID, providerURI,
 					Messages.Score_is_below_threshold);
 			problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 			return null;
@@ -379,7 +501,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 		URIMatcher uriMatcher = provider.getMatcher();
 		if (uriMatcher != null)
-			return getMatch(uriMatcher, provider, query, monitor);
+			return new FoundMatch(provider, getMatch(uriMatcher, provider, query, monitor), null);
 
 		IVersionFinder versionFinder = null;
 		monitor.beginTask(null, 120);
@@ -409,13 +531,22 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 					// The ECLIPSE_PLATFORM reader is silent here since it is
 					// always consulted
 					//
-					if (!provider.getReaderType().equals(IReaderType.ECLIPSE_PLATFORM)) {
-						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI,
+					if (!readerTypeID.equals(IReaderType.ECLIPSE_PLATFORM)) {
+						ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerTypeID, providerURI,
 								String.format(NLS.bind(Messages.Components_of_type_0_are_not_supported, componentTypeID)));
 						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
 					}
 					return null;
 				}
+			}
+
+			IReaderType readerType = plugin.getReaderType(readerTypeID);
+			if (provider.hasDelegationMap()) {
+				IComponentReader reader = readerType.getReader(provider, plugin.getComponentType(IComponentType.UNKNOWN), query,
+						VersionMatch.DEFAULT, MonitorUtils.subMonitor(monitor, 20));
+				Map<ComponentIdentifier, Map<String, String>> queryHints = new HashMap<ComponentIdentifier, Map<String, String>>();
+				ResourceMap delegationMap = provider.getDelegationMap(reader, problemCollector, queryHints, monitor);
+				return new FoundMatch(provider, null, resolve(delegationMap, query, monitor));
 			}
 
 			VersionMatch candidate = null;
@@ -424,11 +555,9 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			try {
 				for (String ctypeId : componentTypes) {
 					try {
-						CorePlugin plugin = CorePlugin.getDefault();
 						IComponentType ctype = plugin.getComponentType(ctypeId);
-						versionFinder = plugin.getReaderType(provider.getReaderType()).getVersionFinder(provider, ctype, query,
-								MonitorUtils.subMonitor(monitor, 20));
-						candidate = versionFinder.getBestVersion(MonitorUtils.subMonitor(monitor, 80));
+						versionFinder = readerType.getVersionFinder(provider, ctype, query, MonitorUtils.subMonitor(monitor, 20));
+						candidate = versionFinder.getBestVersion(MonitorUtils.subMonitor(monitor, 60));
 						if (candidate == null)
 							continue;
 						ctypeUsed = ctype;
@@ -442,14 +571,14 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 			}
 
 			if (candidate == null) {
-				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerType, providerURI,
+				ResolverDecision decision = query.logDecision(ResolverDecisionType.REJECTING_PROVIDER, readerTypeID, providerURI,
 						Messages.No_component_match_was_found);
 				problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), problem == null ? null
 						: BuckminsterException.unwind(problem)));
 				return null;
 			}
 			query.logDecision(ResolverDecisionType.MATCH_FOUND, candidate);
-			return versionFinder.getProviderMatch(candidate, ctypeUsed, score);
+			return new FoundMatch(provider, versionFinder.getProviderMatch(candidate, ctypeUsed, score), null);
 		} finally {
 			if (versionFinder != null)
 				versionFinder.close();
@@ -457,7 +586,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 		}
 	}
 
-	static ProviderMatch getProvider(SearchPath searchPath, NodeQuery query, ArrayList<Provider> noGoodList, MultiStatus problemCollector,
+	private static FoundMatch findMatch(SearchPath searchPath, NodeQuery query, ArrayList<Provider> noGoodList, MultiStatus problemCollector,
 			IProgressMonitor monitor) throws CoreException {
 		List<org.eclipse.buckminster.rmap.Provider> providers = searchPath.getProviders();
 		int provCnt = providers.size();
@@ -480,12 +609,16 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 				}
 
 				query.logDecision(ResolverDecisionType.TRYING_PROVIDER, provider.getReaderType(), getProviderURI(query, provider));
-				ProviderMatch match = findMatch(provider, query, problemCollector, MonitorUtils.subMonitor(monitor, 1000));
-				if (match == null) {
+				FoundMatch matchObj = findMatch(provider, query, problemCollector, MonitorUtils.subMonitor(monitor, 1000));
+				if (matchObj == null) {
 					noGoodList.add(provider);
 					continue;
 				}
 
+				if (matchObj.node != null)
+					return matchObj;
+
+				ProviderMatch match = matchObj.match;
 				String readerType = provider.getReaderType();
 				ProviderScore score = match.getProviderScore();
 
@@ -522,85 +655,7 @@ public class ResourceMapResolver extends LocalResolver implements IJobChangeList
 
 			Provider best = bestMatch.getOriginalProvider();
 			query.logDecision(ResolverDecisionType.USING_PROVIDER, best.getReaderType(), getProviderURI(query, best));
-			return bestMatch;
-		} finally {
-			monitor.done();
-		}
-	}
-
-	static String getProviderURI(NodeQuery query, Provider provider) {
-		return provider.getURI().toString() + '[' + getProviderURI(provider, query.getProperties()) + ']';
-	}
-
-	static String getProviderURI(Provider provider, Map<String, String> properties) {
-		return provider.getURI().getValue(properties);
-	}
-
-	static BOMNode resolve(NodeQuery query, SearchPath searchPath, IProgressMonitor monitor) throws CoreException {
-		MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.ERROR, NLS.bind(
-				Messages.No_suitable_provider_for_component_0_was_found_in_searchPath_1, query.getComponentRequest(), searchPath.getName()), null);
-
-		ArrayList<Provider> noGoodList = new ArrayList<Provider>();
-		try {
-			for (boolean first = true;; first = false) {
-				ProviderMatch providerMatch = getProvider(searchPath, query, noGoodList, problemCollector,
-						MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
-				MonitorUtils.testCancelStatus(monitor);
-
-				Provider provider = providerMatch.getProvider();
-				IComponentType cType = providerMatch.getComponentType();
-				try {
-					BOMNode node = cType.getResolution(providerMatch, MonitorUtils.subMonitor(monitor, first ? 1000 : 0));
-					Resolution resolution = node.getResolution();
-					MonitorUtils.testCancelStatus(monitor);
-					Filter[] filterHandle = new Filter[1];
-					if (!resolution.isFilterMatchFor(query, filterHandle)) {
-						ResolverDecision decision = query.logDecision(ResolverDecisionType.FILTER_MISMATCH, filterHandle[0]);
-						noGoodList.add(providerMatch.getOriginalProvider());
-						problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
-						continue;
-					}
-
-					CSpec cspec = resolution.getCSpec();
-
-					// Assert that the cspec can handle required actions and
-					// exports
-					//
-					Version version = cspec.getVersion();
-					VersionRange range = query.getVersionRange();
-					if (range != null && provider.getVersionConverter() == null) {
-						// A missing version converter means that the actual
-						// version check is deferred
-						// and later performed on the retreived CSpec. Later is
-						// now ...
-						//
-						if (!range.isIncluded(version)) {
-							ResolverDecision decision = query.logDecision(ResolverDecisionType.VERSION_REJECTED, version,
-									NLS.bind(Messages.Not_designated_by_0, range));
-							noGoodList.add(providerMatch.getOriginalProvider());
-							problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), null));
-							continue;
-						}
-					}
-
-					// Verify that all required attributes are in this cspec
-					//
-					cspec.getAttributes(query.getRequiredAttributes());
-					if (version != null) {
-						// Replace the resolution version if it is default and
-						// a non default version is present in the CSpec
-						//
-						VersionMatch vm = resolution.getVersionMatch();
-						if (vm.getVersion() == null)
-							node = new ResolvedNode(new Resolution(version, resolution), node.getChildren());
-					}
-					return node;
-				} catch (CoreException e) {
-					ResolverDecision decision = query.logDecision(ResolverDecisionType.EXCEPTION, e.getMessage());
-					problemCollector.add(new Status(IStatus.ERROR, CorePlugin.getID(), IStatus.OK, decision.toString(), e));
-					noGoodList.add(providerMatch.getOriginalProvider());
-				}
-			}
+			return new FoundMatch(best, bestMatch, null);
 		} finally {
 			monitor.done();
 		}

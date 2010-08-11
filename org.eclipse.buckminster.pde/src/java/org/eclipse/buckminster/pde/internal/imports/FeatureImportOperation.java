@@ -13,12 +13,13 @@ package org.eclipse.buckminster.pde.internal.imports;
 import java.io.File;
 import java.util.List;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.EclipseImportReaderType;
@@ -116,7 +117,7 @@ public class FeatureImportOperation implements IWorkspaceRunnable {
 	private void createProject(IProgressMonitor monitor) throws CoreException {
 		MaterializationContext context = (MaterializationContext) query.getContext();
 		ComponentRequest request = query.getComponentRequest();
-		String projectName = request.getProjectName();
+		String projectName = LocalResolver.getProjectName(request);
 		monitor.beginTask(NLS.bind(Messages.importing_feature_0, projectName), 100);
 		IProject project = root.getProject(projectName);
 		try {

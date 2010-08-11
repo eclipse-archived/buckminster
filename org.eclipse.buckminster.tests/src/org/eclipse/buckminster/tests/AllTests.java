@@ -17,6 +17,9 @@ public class AllTests {
 		suite.addTest(org.eclipse.buckminster.maven.test.AllTests.suite());
 		suite.addTest(org.eclipse.buckminster.osgi.filter.test.AllTests.suite());
 		suite.addTest(org.eclipse.buckminster.pde.test.AllTests.suite());
+		suite.addTest(org.eclipse.buckminster.model.common.tests.CommonAllTests.suite());
+		suite.addTest(org.eclipse.buckminster.rmap.tests.RmapAllTests.suite());
+		suite.addTest(org.eclipse.buckminster.rmap.maven.tests.MavenAllTests.suite());
 		//$JUnit-END$
 		return suite;
 	}

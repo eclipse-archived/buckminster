@@ -19,24 +19,29 @@ import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.core.cspec.WellKnownExports;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.PrerequisiteAlreadyDefinedException;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.MissingVersionTypeException;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionType;
 import org.eclipse.buckminster.maven.MavenPlugin;
 import org.eclipse.buckminster.maven.Messages;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.maven.MapEntry;
+import org.eclipse.buckminster.rmap.maven.MavenFactory;
+import org.eclipse.buckminster.rmap.maven.MavenProvider;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -87,8 +92,8 @@ public class MavenComponentType extends AbstractComponentType {
 		}
 	}
 
-	static String addDependencies(IComponentReader reader, Document pomDoc, CSpecBuilder cspec, GroupBuilder archives,
-			ExpandingProperties<String> properties) throws CoreException {
+	static String addDependencies(IComponentReader reader, Document pomDoc, CSpecBuilder cspec, GroupBuilder archives, ExpandingProperties properties)
+			throws CoreException {
 		Element project = pomDoc.getDocumentElement();
 		Node parentNode = null;
 		Node propertiesNode = null;
@@ -145,8 +150,8 @@ public class MavenComponentType extends AbstractComponentType {
 			processProperties(properties, propertiesNode);
 
 		if (dependenciesNode != null) {
-			NodeQuery nq = reader.getNodeQuery();
-			Provider provider = reader.getProviderMatch().getProvider();
+			NodeQuery nq = ((AbstractReader) reader).getNodeQuery();
+			Provider provider = ((AbstractReader) reader).getProviderMatch().getProvider();
 			ComponentQuery query = nq.getComponentQuery();
 			Map<String, ? extends Object> ctx = nq.getContext();
 			for (Node dep = dependenciesNode.getFirstChild(); dep != null; dep = dep.getNextSibling()) {
@@ -229,7 +234,7 @@ public class MavenComponentType extends AbstractComponentType {
 	}
 
 	private static void addDependency(ComponentQuery query, Map<String, ? extends Object> context, Provider provider, CSpecBuilder cspec,
-			GroupBuilder archives, ExpandingProperties<String> properties, Node dep) throws CoreException {
+			GroupBuilder archives, ExpandingProperties properties, Node dep) throws CoreException {
 		String id = null;
 		String groupId = null;
 		String artifactId = null;
@@ -283,8 +288,8 @@ public class MavenComponentType extends AbstractComponentType {
 		if (versionStr != null)
 			versionStr = ExpandingProperties.expand(properties, versionStr, 0);
 
-		String componentName = (provider instanceof MavenProvider) ? ((MavenProvider) provider).getComponentName(groupId, artifactId) : MavenProvider
-				.getDefaultName(groupId, artifactId);
+		String componentName = (provider instanceof MavenProvider) ? ((MavenProvider) provider).getComponentName(groupId, artifactId)
+				: MavenFactory.eINSTANCE.getDefaultName(groupId, artifactId);
 
 		if (componentName.contains("${")) //$NON-NLS-1$
 		{
@@ -294,31 +299,33 @@ public class MavenComponentType extends AbstractComponentType {
 			return;
 		}
 
-		ComponentName adviceKey = new ComponentName(componentName, ID);
+		ComponentName adviceKey = CommonFactory.eINSTANCE.createComponentName();
+		adviceKey.setId(componentName);
+		adviceKey.setType(ID);
 		if (query.skipComponent(adviceKey, context))
 			return;
 
-		ComponentRequestBuilder depBld = cspec.createDependencyBuilder();
-		depBld.setName(componentName);
-		depBld.setComponentTypeID(ID);
+		ComponentRequest depBld = CommonFactory.eINSTANCE.createComponentRequest();
+		depBld.setId(componentName);
+		depBld.setType(ID);
 
 		VersionRange vd = query.getVersionOverride(adviceKey, context);
 		if (vd == null)
 			vd = createVersionRange(versionStr);
-		depBld.setVersionRange(vd);
+		depBld.setRange(vd);
 
 		try {
 			cspec.addDependency(depBld);
 			archives.addExternalPrerequisite(depBld, WellKnownExports.JAVA_BINARIES);
 		} catch (PrerequisiteAlreadyDefinedException e) {
-			ComponentRequestBuilder oldDep = cspec.getRequiredDependency(depBld);
-			if (!Trivial.equalsAllowNull(vd, oldDep.getVersionRange()))
+			ComponentRequest oldDep = cspec.getRequiredDependency(depBld);
+			if (!Trivial.equalsAllowNull(vd, oldDep.getRange()))
 				MavenPlugin.getLogger().warning(e.getMessage());
 		}
 	}
 
-	private static void processParentNode(MavenReader reader, CSpecBuilder cspec, GroupBuilder archives, ExpandingProperties<String> properties,
-			Node parent) throws CoreException {
+	private static void processParentNode(MavenReader reader, CSpecBuilder cspec, GroupBuilder archives, ExpandingProperties properties, Node parent)
+			throws CoreException {
 		String groupId = null;
 		String artifactId = null;
 		String versionStr = null;
@@ -350,10 +357,13 @@ public class MavenComponentType extends AbstractComponentType {
 		}
 
 		Provider provider = reader.getProviderMatch().getProvider();
-		String componentName = (provider instanceof MavenProvider) ? ((MavenProvider) provider).getComponentName(groupId, artifactId) : MavenProvider
-				.getDefaultName(groupId, artifactId);
+		String componentName = (provider instanceof MavenProvider) ? ((MavenProvider) provider).getComponentName(groupId, artifactId)
+				: MavenFactory.eINSTANCE.getDefaultName(groupId, artifactId);
 
-		MapEntry entry = new MapEntry(componentName, groupId, artifactId, null);
+		MapEntry entry = MavenFactory.eINSTANCE.createMapEntry();
+		entry.setName(componentName);
+		entry.setGroupId(groupId);
+		entry.setArtifactId(artifactId);
 		MavenReaderType mrt = (MavenReaderType) reader.getReaderType();
 		VersionMatch vm = mrt.createVersionMatch(reader, entry, versionStr);
 		IPath parentPath = mrt.getPomPath(entry, vm);
@@ -366,7 +376,7 @@ public class MavenComponentType extends AbstractComponentType {
 		addDependencies(reader, parentDoc, cspec, archives, properties);
 	}
 
-	private static void processProperties(ExpandingProperties<String> properties, Node node) {
+	private static void processProperties(ExpandingProperties properties, Node node) {
 		for (Node child = node.getFirstChild(); child != null; child = child.getNextSibling()) {
 			if (child.getNodeType() != Node.ELEMENT_NODE)
 				continue;

@@ -6,28 +6,23 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.pde.mapfile;
+package org.eclipse.buckminster.rmap.pde.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
-import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.rmap.pde.Messages;
+import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.pde.build.IFetchFactory;
@@ -38,9 +33,8 @@ import org.eclipse.pde.internal.build.FetchTaskFactoriesRegistry;
  */
 @SuppressWarnings("restriction")
 public class MapFile {
-	private static final Pattern pattern = Pattern.compile("^" + "\\s*([^@=,\\s]+)\\s*@" // The type, i.e. bundle, //$NON-NLS-1$ //$NON-NLS-2$
-			// feature, plugin, or
-			// fragment
+	private static final Pattern pattern = Pattern.compile("^" //$NON-NLS-1$
+			+ "\\s*([^@=,\\s]+)\\s*@" // The type, i.e. bundle, feature, plugin, or fragment //$NON-NLS-1$
 			+ "\\s*([^@,=\\s]+)\\s*" // Element ID //$NON-NLS-1$
 			+ "(?:,\\s*([^@,=\\s]+)\\s*)?=" // Optional version //$NON-NLS-1$
 			+ "(?:\\s*([A-Za-z_][A-Za-z0-9_-]*)\\s*,)?\\s*" // Optional fetch type specifier (default is CVS) //$NON-NLS-1$
@@ -48,15 +42,12 @@ public class MapFile {
 
 	private static FetchTaskFactoriesRegistry fetchTaskFactories;
 
-	public static void parse(InputStream inputStream, String streamName, List<MapFileEntry> receivingList) throws IOException {
-		CorePlugin core = CorePlugin.getDefault();
-		Logger logger = CorePlugin.getLogger();
+	public static void parse(InputStream inputStream, String streamName, Map<String,String> properties, List<MapFileEntry> receivingList) throws IOException {
+		Logger logger = Buckminster.getLogger();
 
 		if (fetchTaskFactories == null)
 			fetchTaskFactories = new FetchTaskFactoriesRegistry();
-		AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream();
-		FileUtils.substituteParameters(inputStream, buffer, '@', Collections.singletonMap("CVSTag", "HEAD")); //$NON-NLS-1$ //$NON-NLS-2$
-		BufferedReader input = new BufferedReader(new InputStreamReader(buffer.getInputStream()));
+		BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
 		String line;
 		nextLine: while ((line = input.readLine()) != null) {
 			// find first non-whitespace character on the line
@@ -109,9 +100,9 @@ public class MapFile {
 			String type = m.group(1);
 			String ctypeId;
 			if ("plugin".equals(type) || "bundle".equals(type) || "fragment".equals(type)) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				ctypeId = IComponentType.OSGI_BUNDLE;
+				ctypeId = "osgi.bundle";
 			else if ("feature".equals(type)) //$NON-NLS-1$
-				ctypeId = IComponentType.ECLIPSE_FEATURE;
+				ctypeId = "eclipse.feature";
 			else {
 				// We don't recognize this type
 				//
@@ -135,6 +126,15 @@ public class MapFile {
 			Map<String, String> props = new HashMap<String, String>();
 			try {
 				ff.parseMapFileEntry(fetchTypeSpecific, null, props);
+				String tag = props.get(IFetchFactory.KEY_ELEMENT_TAG);
+				if(tag != null && tag.length() > 2 && tag.charAt(0) == '@' && tag.charAt(tag.length() - 1) == '@') {
+					String tagKey = tag.substring(1, tag.length() - 1);
+					tag = properties.get(tagKey);
+					if(tag == null)
+						props.remove(IFetchFactory.KEY_ELEMENT_TAG);
+					else
+						props.put(IFetchFactory.KEY_ELEMENT_TAG, tag);
+				}
 			} catch (Exception e) {
 				logger.warning(NLS.bind(Messages.fetch_factory_0_unable_to_parse_1_in_PDEmap_2, new Object[] { fetchType, fetchTypeSpecific,
 						streamName }));
@@ -167,15 +167,11 @@ public class MapFile {
 			} else if (readerTypeID.equals("p2iu")) //$NON-NLS-1$
 				readerTypeID = "p2"; //$NON-NLS-1$
 
-			ComponentIdentifier cid = new ComponentIdentifier(identifier, ctypeId, version);
-			IReaderType readerType;
-			try {
-				readerType = core.getReaderType(readerTypeID);
-			} catch (CoreException e) {
-				logger.warning(NLS.bind(Messages.Unable_to_obtain_readertype_for_fetchtype_0_in_PDEmap_1, fetchType, streamName));
-				continue;
-			}
-			receivingList.add(new MapFileEntry(cid, readerType, props));
+			ComponentIdentifier cid = CommonFactory.eINSTANCE.createComponentIdentifier();
+			cid.setId(identifier);
+			cid.setType(ctypeId);
+			cid.setVersion(version);
+			receivingList.add(new MapFileEntry(cid, readerTypeID, props));
 		}
 	}
 }

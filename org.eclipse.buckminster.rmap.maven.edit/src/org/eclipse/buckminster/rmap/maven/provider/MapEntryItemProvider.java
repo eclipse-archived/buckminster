@@ -49,6 +49,7 @@ public class MapEntryItemProvider extends GroupAndArtifactItemProvider implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/MapEntry"));
@@ -60,6 +61,7 @@ public class MapEntryItemProvider extends GroupAndArtifactItemProvider implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -77,6 +79,7 @@ public class MapEntryItemProvider extends GroupAndArtifactItemProvider implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		String label = ((MapEntry) object).getName();
@@ -91,6 +94,7 @@ public class MapEntryItemProvider extends GroupAndArtifactItemProvider implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -111,9 +115,9 @@ public class MapEntryItemProvider extends GroupAndArtifactItemProvider implement
 	 */
 	protected void addAliasesPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MapEntry_aliases_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MapEntry_aliases_feature", "_UI_MapEntry_type"), MavenPackage.Literals.MAP_ENTRY__ALIASES, true, false, true, null,
-				null, null));
+				getResourceLocator(), getString("_UI_MapEntry_aliases_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MapEntry_aliases_feature", "_UI_MapEntry_type"),
+				MavenPackage.Literals.MAP_ENTRY__ALIASES, true, false, true, null, null, null));
 	}
 
 	/**
@@ -124,9 +128,9 @@ public class MapEntryItemProvider extends GroupAndArtifactItemProvider implement
 	 */
 	protected void addNamePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MapEntry_name_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MapEntry_name_feature", "_UI_MapEntry_type"), MavenPackage.Literals.MAP_ENTRY__NAME, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_MapEntry_name_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MapEntry_name_feature", "_UI_MapEntry_type"),
+				MavenPackage.Literals.MAP_ENTRY__NAME, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -136,6 +140,7 @@ public class MapEntryItemProvider extends GroupAndArtifactItemProvider implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

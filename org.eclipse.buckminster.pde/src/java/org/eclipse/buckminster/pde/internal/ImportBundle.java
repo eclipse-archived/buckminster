@@ -12,7 +12,6 @@ package org.eclipse.buckminster.pde.internal;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
 import org.eclipse.buckminster.core.metadata.StorageManager;
@@ -20,12 +19,16 @@ import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
-import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.rmap.model.Provider;
+import org.eclipse.buckminster.core.resolver.ResourceMapResolver;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -51,21 +54,24 @@ public class ImportBundle {
 		// to resolve, but we have to make it look that way for now.
 		//
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
-		queryBld.setRootRequest(new ComponentRequest(bundleName, IComponentType.OSGI_BUNDLE, null));
+		ComponentRequest rq = CommonFactory.eINSTANCE.createComponentRequest();
+		rq.setId(bundleName);
+		rq.setType(IComponentType.OSGI_BUNDLE);
+		queryBld.setRootRequest(rq);
 		queryBld.setPlatformAgnostic(true);
 		ResolutionContext context = new ResolutionContext(queryBld.createComponentQuery());
 
 		// Create the provider that will perform the import.
 		//
 		IComponentType ctype = CorePlugin.getDefault().getComponentType(IComponentType.OSGI_BUNDLE);
-		Provider provider = Provider.immutableProvider(IReaderType.ECLIPSE_IMPORT, ctype.getId(), siteURL.toString());
+		Provider provider = ResourceMapResolver.immutableProvider(IReaderType.ECLIPSE_IMPORT, ctype.getId(), siteURL.toString(), null);
 
 		// Next, we need a reader and a Resolution builder in order to create
 		// the real resolution
 		// from witch we can derive the origin of the component etc.
 		//
 		IProgressMonitor monitor = new NullProgressMonitor();
-		IReaderType rt = provider.getReaderType();
+		IReaderType rt = CorePlugin.getDefault().getReaderType(provider.getReaderType());
 		IComponentReader[] reader = new IComponentReader[1];
 		reader[0] = rt.getReader(provider, ctype, context.getRootNodeQuery(), VersionMatch.DEFAULT, monitor);
 		try {
@@ -74,7 +80,7 @@ public class ImportBundle {
 
 			// Materialize the plugin, i.e. import it into the workspace
 			//
-			reader[0].materialize(outputDir, null, null, monitor);
+			((AbstractReader) reader[0]).materialize(outputDir, null, null, monitor);
 
 			// Fetch the cspec from the materialized component (it's changed)
 			//

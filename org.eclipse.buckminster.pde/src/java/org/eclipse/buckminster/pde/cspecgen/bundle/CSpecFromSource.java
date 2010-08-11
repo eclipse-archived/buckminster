@@ -18,27 +18,28 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.ant.tasks.VersionQualifierTask;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.WellknownActions;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GeneratorBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.ProjectDescReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.jdt.ClasspathReader;
+import org.eclipse.buckminster.model.common.CommonConstants;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.actor.FragmentsActor;
 import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.internal.resources.LinkDescription;
@@ -118,7 +119,7 @@ public class CSpecFromSource extends CSpecGenerator {
 	public void generate(IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 100);
 
-		boolean localReader = IReaderType.LOCAL.equals(getReader().getReaderType().getId());
+		boolean localReader = IReaderType.LOCAL.equals(getReader().getReaderTypeID());
 
 		CSpecBuilder cspec = getCSpec();
 		GroupBuilder classpath = cspec.addGroup(ATTRIBUTE_JAVA_BINARIES, true);
@@ -155,7 +156,7 @@ public class CSpecFromSource extends CSpecGenerator {
 
 		IPath[] projectRootReplacement = new IPath[1];
 		HashMap<IPath, ArtifactBuilder> eclipseBuildProducts = new HashMap<IPath, ArtifactBuilder>();
-		IPath componentHome = Path.fromPortableString(KeyConstants.ACTION_HOME_REF);
+		IPath componentHome = Path.fromPortableString(CommonConstants.ACTION_HOME_REF);
 		IPath defaultOutputLocation = null;
 		GroupBuilder ebSrcBld = null;
 		int cnt = 0;
@@ -298,9 +299,9 @@ public class CSpecFromSource extends CSpecGenerator {
 			// Add dependencies unless they have been added as imports already
 			//
 			for (String depName : secondaryDeps.getTokens()) {
-				ComponentRequestBuilder dep = cspec.createDependencyBuilder();
-				dep.setName(depName);
-				dep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
+				ComponentRequest dep = CommonFactory.eINSTANCE.createComponentRequest();
+				dep.setId(depName);
+				dep.setType(IComponentType.OSGI_BUNDLE);
 				addDependency(dep);
 			}
 		}
@@ -573,7 +574,7 @@ public class CSpecFromSource extends CSpecGenerator {
 			if (pluginId.equals(Constants.SYSTEM_BUNDLE_SYMBOLICNAME))
 				continue;
 
-			ComponentRequestBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
+			ComponentRequest dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if (skipComponent(query, dependency) || !addDependency(dependency))
 				continue;
 

@@ -23,13 +23,14 @@ import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IFileReader;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.maven.Messages;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IFileReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -46,7 +47,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 	@Override
 	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IComponentReader reader = readerHandle[0];
-		ProviderMatch ri = reader.getProviderMatch();
+		ProviderMatch ri = ((AbstractReader) reader).getProviderMatch();
 		monitor.beginTask(null, 3000);
 		monitor.subTask(Messages.generating_cspec_from_maven_artifact);
 		try {
@@ -74,7 +75,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 					} else
 						pomDoc = ((IFileReader) reader).readFile(this, subMon);
 				} catch (FileNotFoundException e2) {
-					throw new MissingCSpecSourceException(reader.getProviderMatch());
+					throw new MissingCSpecSourceException(ri);
 				}
 			}
 
@@ -82,7 +83,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 			cspecBld.setComponentTypeID(MavenComponentType.ID);
 			GroupBuilder archives = AbstractComponentType.addSelfAsJarArtifactGroups(cspecBld);
 			if (pomDoc != null) {
-				ExpandingProperties<String> properties = new ExpandingProperties<String>();
+				ExpandingProperties properties = new ExpandingProperties();
 				String packaging = MavenComponentType.addDependencies(reader, pomDoc, cspecBld, archives, properties);
 				if (reader instanceof MavenReader && !"jar".equals(packaging)) //$NON-NLS-1$
 					((MavenReader) reader).setPackaging(packaging);

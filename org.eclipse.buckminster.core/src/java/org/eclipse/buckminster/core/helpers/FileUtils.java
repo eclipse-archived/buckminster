@@ -26,7 +26,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
@@ -110,8 +109,6 @@ public abstract class FileUtils {
 	private static final Pattern[] defaultExcludes;
 
 	private static final Object THREADLOCK = new Object();
-
-	private static HashSet<File> foldersToRemove;
 
 	static {
 		ArrayList<Pattern> bld = new ArrayList<Pattern>();
@@ -319,62 +316,6 @@ public abstract class FileUtils {
 	}
 
 	/**
-	 * Creates a folder based on an abstract file handle. The folder and all its
-	 * content will be deleted when the process exists. The <code>tmpDir</code>
-	 * directory must not exist when this method is called.
-	 * 
-	 * @param tmpDir
-	 *            The directory to create
-	 * @throws MkdirException
-	 *             If the directory could not be created.
-	 */
-	public static synchronized void createTempFolder(File tmpDir) throws MkdirException {
-		if (!tmpDir.mkdirs())
-			throw new MkdirException(tmpDir);
-
-		if (foldersToRemove == null) {
-			foldersToRemove = new HashSet<File>();
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				@Override
-				public void run() {
-					// Prevent that foldersToRemove is updated during the
-					// remove
-					//
-					HashSet<File> folders = new HashSet<File>(foldersToRemove);
-					foldersToRemove = null;
-					for (File folder : folders) {
-						try {
-							deleteRecursive(folder, null);
-						} catch (Exception e) {
-							// We're shutting down so this is ignored
-							System.err.println("Failed to remove directory " + folder + " :" + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
-						}
-					}
-				}
-			});
-		}
-		foldersToRemove.add(tmpDir);
-	}
-
-	/**
-	 * Creates a folder based on a generated name. The folder and all its
-	 * content will be deleted when the process exists.
-	 */
-	public static synchronized File createTempFolder(String prefix, String suffix) throws CoreException {
-		File tmpFile;
-		try {
-			tmpFile = File.createTempFile(prefix, suffix);
-		} catch (IOException e) {
-			throw BuckminsterException.wrap(e);
-		}
-		if (!tmpFile.delete())
-			throw new MkdirException(tmpFile);
-
-		createTempFolder(tmpFile);
-		return tmpFile;
-	}
-
-	/**
 	 * Copy everything found in the <code>sourceDirectory</code> to the
 	 * <code>destinationDirectory</code>. The destination is prepared according
 	 * to the given <code>strategy</code>.
@@ -446,39 +387,6 @@ public abstract class FileUtils {
 				} else
 					deepCopyUnchecked(file, new File(dest, file.getName()), includes, excludes, subMonitor);
 			}
-		} finally {
-			MonitorUtils.done(monitor);
-		}
-	}
-
-	public static void deleteRecursive(File file, IProgressMonitor monitor) throws DeleteException {
-		MonitorUtils.begin(monitor, 1000);
-		try {
-			if (file == null)
-				return;
-
-			File[] list = file.listFiles();
-			int count = (list == null) ? 0 : list.length;
-			if (count > 0) {
-				IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 900);
-				MonitorUtils.begin(subMon, count * 100);
-				try {
-					if (foldersToRemove != null)
-						foldersToRemove.remove(file);
-
-					while (--count >= 0)
-						deleteRecursive(list[count], MonitorUtils.subMonitor(subMon, 100));
-				} finally {
-					MonitorUtils.done(subMon);
-				}
-			} else
-				MonitorUtils.worked(monitor, 900);
-
-			if (!file.delete() && file.exists())
-				throw new DeleteException(file);
-			MonitorUtils.worked(monitor, 100);
-		} catch (SecurityException e) {
-			throw new DeleteException(file, e);
 		} finally {
 			MonitorUtils.done(monitor);
 		}
@@ -750,7 +658,11 @@ public abstract class FileUtils {
 
 						if (strategy == ConflictResolution.REPLACE) {
 							for (File file : list)
-								deleteRecursive(file, MonitorUtils.subMonitor(subMonitor, 100));
+								try {
+									IOUtils.deleteRecursive(file, MonitorUtils.subMonitor(subMonitor, 100));
+								} catch (IOException e) {
+									throw BuckminsterException.wrap(e);
+								}
 						}
 					} finally {
 						MonitorUtils.done(subMonitor);

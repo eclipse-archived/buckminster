@@ -44,19 +44,14 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
  * The following operations are tested:
  * <ul>
  *   <li>{@link org.eclipse.buckminster.rmap.Provider#getURI(java.util.Map) <em>Get URI</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.Provider#getDelegationMap(org.eclipse.buckminster.rmap.util.IComponentReader, org.eclipse.core.runtime.IStatus, java.util.Map, org.eclipse.core.runtime.IProgressMonitor) <em>Get Delegation Map</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.Provider#getProperties(java.util.Map) <em>Get Properties</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.Provider#hasDelegationMap() <em>Has Delegation Map</em>}</li>
  * </ul>
  * </p>
  * @generated
  */
 public class ProviderTest extends TestCase {
-
-	/**
-	 * The fixture for this Provider test case.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @generated
-	 */
-	protected Provider fixture = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -67,6 +62,14 @@ public class ProviderTest extends TestCase {
 	}
 
 	/**
+	 * The fixture for this Provider test case.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @generated
+	 */
+	protected Provider fixture = null;
+
+	/**
 	 * Constructs a new Provider test case with the given name. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -74,46 +77,6 @@ public class ProviderTest extends TestCase {
 	 */
 	public ProviderTest(String name) {
 		super(name);
-	}
-
-	/**
-	 * Sets the fixture for this Provider test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void setFixture(Provider fixture) {
-		this.fixture = fixture;
-	}
-
-	/**
-	 * Returns the fixture for this Provider test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Provider getFixture() {
-		return fixture;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see junit.framework.TestCase#setUp()
-	 * @generated
-	 */
-	@Override
-	protected void setUp() throws Exception {
-		setFixture(RmapFactory.eINSTANCE.createProvider());
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see junit.framework.TestCase#tearDown()
-	 * @generated
-	 */
-	@Override
-	protected void tearDown() throws Exception {
-		setFixture(null);
 	}
 
 	/**
@@ -129,25 +92,79 @@ public class ProviderTest extends TestCase {
 		List<String> ctypes = getFixture().getComponentTypes();
 		ctypes.add("osgi.bundle");
 		ctypes.add("buckminster");
-		assertEquals("osgi.bundle,buckminster", getFixture()
-				.getComponentTypesAttr());
+		assertEquals("osgi.bundle,buckminster", getFixture().getComponentTypesAttr());
+	}
+
+	/**
+	 * Tests the '{@link org.eclipse.buckminster.rmap.Provider#getProperties(java.util.Map) <em>Get Properties</em>}' operation.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @see org.eclipse.buckminster.rmap.Provider#getProperties(java.util.Map)
+	 * @generated
+	 */
+	public void testGetProperties__Map() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link org.eclipse.buckminster.rmap.Provider#hasDelegationMap() <em>Has Delegation Map</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.buckminster.rmap.Provider#hasDelegationMap()
+	 * @generated
+	 */
+	public void testHasDelegationMap() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 	/**
 	 * Tests the '
-	 * {@link org.eclipse.buckminster.rmap.Provider#setComponentTypesAttr(java.lang.String)
-	 * <em>Component Types Attr</em>}' feature setter. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.rmap.Provider#getURI(java.util.Map)
+	 * <em>Get URI</em>}' operation. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
 	 * 
-	 * @see org.eclipse.buckminster.rmap.Provider#setComponentTypesAttr(java.lang.String)
+	 * @see org.eclipse.buckminster.rmap.Provider#getURI(java.util.Map)
 	 * @generated NOT
 	 */
-	public void testSetComponentTypesAttr() {
-		getFixture().setComponentTypesAttr("eclipse.feature,osgi.bundle");
-		List<String> ctypes = getFixture().getComponentTypes();
-		assertEquals(2, ctypes.size());
-		assertEquals("eclipse.feature", ctypes.get(0));
-		assertEquals("osgi.bundle", ctypes.get(1));
+	public void testGetURI__Map() {
+		PropertyRef pref = CommonFactory.eINSTANCE.createPropertyRef();
+		pref.setKey("buckminster.component");
+		Format format = CommonFactory.eINSTANCE.createFormat();
+		format.setFormat("http://test.org/components/{0}.jar");
+		format.getValues().add(pref);
+		getFixture().setURI(format);
+		assertEquals("http://test.org/components/testing.jar", getFixture().getURI(Collections.singletonMap("buckminster.component", "testing")));
+	}
+
+	/**
+	 * Tests the '{@link org.eclipse.buckminster.rmap.Provider#getDelegationMap(org.eclipse.buckminster.rmap.util.IComponentReader, org.eclipse.core.runtime.IStatus, java.util.Map, org.eclipse.core.runtime.IProgressMonitor) <em>Get Delegation Map</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.buckminster.rmap.Provider#getDelegationMap(org.eclipse.buckminster.rmap.util.IComponentReader, org.eclipse.core.runtime.IStatus, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 * @generated
+	 */
+	public void testGetDelegationMap__IComponentReader_IStatus_Map_IProgressMonitor() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link org.eclipse.buckminster.rmap.Provider#isMutable()
+	 * <em>Mutable</em>}' feature getter. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.Provider#isMutable()
+	 * @generated NOT
+	 */
+	public void testIsMutable() {
+		assertTrue(getFixture().isMutable());
+		getFixture().getProperties().put(RmapConstants.IS_MUTABLE, "false");
+		assertFalse(getFixture().isMutable());
 	}
 
 	/**
@@ -170,18 +187,14 @@ public class ProviderTest extends TestCase {
 	public void testLoadResource() {
 		ResourceSet resourceSet = new ResourceSetImpl();
 
-		resourceSet
-				.getResourceFactoryRegistry()
-				.getExtensionToFactoryMap()
-				.put(Resource.Factory.Registry.DEFAULT_EXTENSION,
-						new RmapResourceFactoryImpl());
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+				.put(Resource.Factory.Registry.DEFAULT_EXTENSION, new RmapResourceFactoryImpl());
 
-		resourceSet.getPackageRegistry().put(CommonPackage.eNS_URI,
-				CommonPackage.eINSTANCE);
-		resourceSet.getPackageRegistry().put(RmapPackage.eNS_URI,
-				RmapPackage.eINSTANCE);
+		resourceSet.getPackageRegistry().put(CommonPackage.eNS_URI, CommonPackage.eINSTANCE);
+		resourceSet.getPackageRegistry().put(RmapPackage.eNS_URI, RmapPackage.eINSTANCE);
 
-		URI uri = URI.createFileURI(RmapTests.getTestData("urimatcher.rmap").getAbsolutePath()).appendFragment("//@searchPaths[name='default']/@providers.0");
+		URI uri = URI.createFileURI(RmapTests.getTestData("urimatcher.rmap").getAbsolutePath()).appendFragment(
+				"//@searchPaths[name='default']/@providers.0");
 		Resource resource = resourceSet.getResource(uri, true);
 		Object provider = resource.getEObject(uri.fragment());
 		assertNotNull(provider);
@@ -190,34 +203,19 @@ public class ProviderTest extends TestCase {
 
 	/**
 	 * Tests the '
-	 * {@link org.eclipse.buckminster.rmap.Provider#setSource(boolean)
-	 * <em>Source</em>}' feature setter. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
+	 * {@link org.eclipse.buckminster.rmap.Provider#setComponentTypesAttr(java.lang.String)
+	 * <em>Component Types Attr</em>}' feature setter. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * 
-	 * @see org.eclipse.buckminster.rmap.Provider#setSource(boolean)
+	 * @see org.eclipse.buckminster.rmap.Provider#setComponentTypesAttr(java.lang.String)
 	 * @generated NOT
 	 */
-	public void testSetSource() {
-		Map<String, String> props = getFixture().getProperties();
-		assertFalse(props.containsKey(RmapConstants.IS_SOURCE));
-		getFixture().setSource(false);
-		assertTrue(props.containsKey(RmapConstants.IS_SOURCE));
-		getFixture().setSource(true);
-		assertFalse(props.containsKey(RmapConstants.IS_SOURCE));
-	}
-
-	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.Provider#isMutable()
-	 * <em>Mutable</em>}' feature getter. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.rmap.Provider#isMutable()
-	 * @generated NOT
-	 */
-	public void testIsMutable() {
-		assertTrue(getFixture().isMutable());
-		getFixture().getProperties().put(RmapConstants.IS_MUTABLE, "false");
-		assertFalse(getFixture().isMutable());
+	public void testSetComponentTypesAttr() {
+		getFixture().setComponentTypesAttr("eclipse.feature,osgi.bundle");
+		List<String> ctypes = getFixture().getComponentTypes();
+		assertEquals(2, ctypes.size());
+		assertEquals("eclipse.feature", ctypes.get(0));
+		assertEquals("osgi.bundle", ctypes.get(1));
 	}
 
 	/**
@@ -240,25 +238,60 @@ public class ProviderTest extends TestCase {
 
 	/**
 	 * Tests the '
-	 * {@link org.eclipse.buckminster.rmap.Provider#getURI(java.util.Map)
-	 * <em>Get URI</em>}' operation. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * {@link org.eclipse.buckminster.rmap.Provider#setSource(boolean)
+	 * <em>Source</em>}' feature setter. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
-	 * @see org.eclipse.buckminster.rmap.Provider#getURI(java.util.Map)
+	 * @see org.eclipse.buckminster.rmap.Provider#setSource(boolean)
 	 * @generated NOT
 	 */
-	public void testGetURI__Map() {
-		PropertyRef pref = CommonFactory.eINSTANCE.createPropertyRef();
-		pref.setKey("buckminster.component");
-		Format format = CommonFactory.eINSTANCE.createFormat();
-		format.setFormat("http://test.org/components/{0}.jar");
-		format.getValues().add(pref);
-		getFixture().setURI(format);
-		assertEquals(
-				"http://test.org/components/testing.jar",
-				getFixture().getURI(
-						Collections.singletonMap("buckminster.component",
-								"testing")));
+	public void testSetSource() {
+		Map<String, String> props = getFixture().getProperties();
+		assertFalse(props.containsKey(RmapConstants.IS_SOURCE));
+		getFixture().setSource(false);
+		assertTrue(props.containsKey(RmapConstants.IS_SOURCE));
+		getFixture().setSource(true);
+		assertFalse(props.containsKey(RmapConstants.IS_SOURCE));
+	}
+
+	/**
+	 * Returns the fixture for this Provider test case.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected Provider getFixture() {
+		return fixture;
+	}
+
+	/**
+	 * Sets the fixture for this Provider test case.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void setFixture(Provider fixture) {
+		this.fixture = fixture;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @see junit.framework.TestCase#setUp()
+	 * @generated
+	 */
+	@Override
+	protected void setUp() throws Exception {
+		setFixture(RmapFactory.eINSTANCE.createProvider());
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @see junit.framework.TestCase#tearDown()
+	 * @generated
+	 */
+	@Override
+	protected void tearDown() throws Exception {
+		setFixture(null);
 	}
 
 } // ProviderTest

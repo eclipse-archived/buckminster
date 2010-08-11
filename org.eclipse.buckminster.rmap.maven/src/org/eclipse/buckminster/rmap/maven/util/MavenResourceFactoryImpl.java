@@ -38,6 +38,7 @@ public class MavenResourceFactoryImpl extends ResourceFactoryImpl {
 	 * 
 	 * @generated NOT
 	 */
+
 	@Override
 	public Resource createResource(URI uri) {
 		XMLResource result = new MavenResourceImpl(uri);

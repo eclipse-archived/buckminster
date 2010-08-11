@@ -18,9 +18,9 @@ import java.net.URI;
 import java.net.URL;
 
 import org.eclipse.buckminster.core.Messages;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;

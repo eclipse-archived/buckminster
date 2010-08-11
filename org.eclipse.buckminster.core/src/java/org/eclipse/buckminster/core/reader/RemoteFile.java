@@ -14,6 +14,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 import org.eclipse.buckminster.core.helpers.FileHandle;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -36,7 +37,7 @@ public class RemoteFile implements Closeable {
 	}
 
 	public FileHandle getContents(IProgressMonitor monitor) throws CoreException, IOException {
-		return reader.getContents(fileName, monitor);
+		return ((AbstractCatalogReader) reader).getContents(fileName, monitor);
 	}
 
 	@Override

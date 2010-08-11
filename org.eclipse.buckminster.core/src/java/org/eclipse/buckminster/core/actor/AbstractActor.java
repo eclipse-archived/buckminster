@@ -15,13 +15,13 @@ import java.util.Properties;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.cspec.PathGroup;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.model.common.CommonConstants;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -182,7 +182,7 @@ public abstract class AbstractActor implements IActor, IExecutableExtension {
 				logger.info(bld.toString());
 			}
 
-			ctx.getGlobalContext().scheduleRemoval(new Path(props.get(KeyConstants.ACTION_TEMP).toString()));
+			ctx.getGlobalContext().scheduleRemoval(new Path(props.get(CommonConstants.ACTION_TEMP).toString()));
 			IStatus status = internalPerform(ctx, monitor);
 			if (isDebug || !quiet) {
 				StringBuilder bld = new StringBuilder();

@@ -43,28 +43,21 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getMatcherGroup
- * <em>Matcher Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getRepositories
- * <em>Repositories</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getMatchers <em>
- * Matchers</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getSearchPaths
- * <em>Search Paths</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getDocumentation
- * <em>Documentation</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getMatcherGroup <em>Matcher Group</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getRepositories <em>Repositories</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getMatchers <em>Matchers</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getSearchPaths <em>Search Paths</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getDocumentation <em>Documentation</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	/**
-	 * The cached value of the '{@link #getMatcherGroup()
-	 * <em>Matcher Group</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getMatcherGroup() <em>Matcher Group</em>}' attribute list.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getMatcherGroup()
 	 * @generated
 	 * @ordered
@@ -83,9 +76,8 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	protected EList<Repository> repositories;
 
 	/**
-	 * The cached value of the '{@link #getSearchPaths() <em>Search Paths</em>}'
-	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getSearchPaths() <em>Search Paths</em>}' containment reference list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getSearchPaths()
 	 * @generated
 	 * @ordered
@@ -93,10 +85,9 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	protected EList<SearchPath> searchPaths;
 
 	/**
-	 * The cached value of the '{@link #getDocumentation()
-	 * <em>Documentation</em>}' containment reference. <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' containment reference.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #getDocumentation()
 	 * @generated
 	 * @ordered
@@ -105,7 +96,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected ResourceMapImpl() {
@@ -114,26 +104,20 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs) {
 		Documentation oldDocumentation = documentation;
 		documentation = newDocumentation;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.RESOURCE_MAP__DOCUMENTATION, oldDocumentation,
-					newDocumentation);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.RESOURCE_MAP__DOCUMENTATION, oldDocumentation, newDocumentation);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -141,9 +125,8 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case RmapPackage.RESOURCE_MAP__MATCHER_GROUP:
-				if (coreType)
-					return getMatcherGroup();
-				return ((FeatureMap.Internal) getMatcherGroup()).getWrapper();
+				if (coreType) return getMatcherGroup();
+				return ((FeatureMap.Internal)getMatcherGroup()).getWrapper();
 			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
 				return getRepositories();
 			case RmapPackage.RESOURCE_MAP__MATCHERS:
@@ -158,7 +141,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -166,13 +148,13 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case RmapPackage.RESOURCE_MAP__MATCHER_GROUP:
-				return ((InternalEList<?>) getMatcherGroup()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>)getMatcherGroup()).basicRemove(otherEnd, msgs);
 			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
-				return ((InternalEList<?>) getRepositories()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>)getRepositories()).basicRemove(otherEnd, msgs);
 			case RmapPackage.RESOURCE_MAP__MATCHERS:
-				return ((InternalEList<?>) getMatchers()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>)getMatchers()).basicRemove(otherEnd, msgs);
 			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
-				return ((InternalEList<?>) getSearchPaths()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>)getSearchPaths()).basicRemove(otherEnd, msgs);
 			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
 				return basicSetDocumentation(null, msgs);
 		}
@@ -181,7 +163,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -204,7 +185,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
@@ -212,22 +192,22 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.RESOURCE_MAP__MATCHER_GROUP:
-				((FeatureMap.Internal) getMatcherGroup()).set(newValue);
+				((FeatureMap.Internal)getMatcherGroup()).set(newValue);
 				return;
 			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
 				getRepositories().clear();
-				getRepositories().addAll((Collection<? extends Repository>) newValue);
+				getRepositories().addAll((Collection<? extends Repository>)newValue);
 				return;
 			case RmapPackage.RESOURCE_MAP__MATCHERS:
 				getMatchers().clear();
-				getMatchers().addAll((Collection<? extends Matcher>) newValue);
+				getMatchers().addAll((Collection<? extends Matcher>)newValue);
 				return;
 			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
 				getSearchPaths().clear();
-				getSearchPaths().addAll((Collection<? extends SearchPath>) newValue);
+				getSearchPaths().addAll((Collection<? extends SearchPath>)newValue);
 				return;
 			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
-				setDocumentation((Documentation) newValue);
+				setDocumentation((Documentation)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -235,7 +215,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -255,7 +234,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 				getSearchPaths().clear();
 				return;
 			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
-				setDocumentation((Documentation) null);
+				setDocumentation((Documentation)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -280,7 +259,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -326,7 +304,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -336,7 +313,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -349,7 +325,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -362,7 +337,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -370,27 +344,23 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
 			if (documentation != null)
-				msgs = ((InternalEObject) documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.RESOURCE_MAP__DOCUMENTATION, null,
-						msgs);
+				msgs = ((InternalEObject)documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.RESOURCE_MAP__DOCUMENTATION, null, msgs);
 			if (newDocumentation != null)
-				msgs = ((InternalEObject) newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.RESOURCE_MAP__DOCUMENTATION, null,
-						msgs);
+				msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.RESOURCE_MAP__DOCUMENTATION, null, msgs);
 			msgs = basicSetDocumentation(newDocumentation, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.RESOURCE_MAP__DOCUMENTATION, newDocumentation, newDocumentation));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (matcherGroup: ");
@@ -401,7 +371,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 

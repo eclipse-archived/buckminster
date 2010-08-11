@@ -190,6 +190,55 @@
         </eGenericType>
       </eParameters>
     </eOperations>
+    <eOperations name="getDelegationMap" eType="#//ResourceMap" eExceptions="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//CoreException">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&lt;p>Some providers are backed by other resource map like files. The PDE map files&#xA;and the Team PSF files are examples of this. This method returns the resource map&#xA;representation of the backing files&lt;/p>&#xA;&lt;p>It is the resolvers responsibility to check if the provider is delegating and if&#xA;it is, use the delegation map.&lt;/p>&#xA;@return A resource map to use for delegation&#xA;@throws CoreException if the delegation map cannot be produced&#xA;@throws UnsupportedOperationException if the provider is not a delegating kind&#xA;@see #hasDelegationMap()"/>
+      </eAnnotations>
+      <eParameters name="reader" eType="#//IComponentReader">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The reader used when exploring the sources used as input"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="problemCollector" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//IStatus">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A MultiStatus that will receive any warnings and errors"/>
+        </eAnnotations>
+      </eParameters>
+      <eParameters name="queryHints">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="A map that will receive query hints such as tags"/>
+        </eAnnotations>
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//ComponentIdentifier"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+            <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+            <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          </eTypeArguments>
+        </eGenericType>
+      </eParameters>
+      <eParameters name="monitor" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//IProgressMonitor">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Monitor used for progress reporting"/>
+        </eAnnotations>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getProperties">
+      <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+        <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eGenericType>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="hasDelegationMap" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="&lt;p>Some providers are backed by other resource map like files. The PDE map files&#xA;and the Team PSF files are examples of this. This method returns &lt;code>true&lt;/code>&#xA;if this is such a provider&lt;/p>&#xA;&lt;p>It is the resolvers responsibility to check if the provider is delegating and if&#xA;it is, use the {@link #getDelegationMap(IComponentReader, IStatus, Map, IProgressMonitor)}&#xA;&#x9; * method to obtain the new resource map&lt;/p>&#xA;@return &lt;code>true&lt;/code> if this is a delegating provider&#xA;"/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="componentTypes" upperBound="-1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" transient="true"
         defaultValueLiteral=""/>
@@ -383,4 +432,5 @@
     <eLiterals name="fail" value="2" literal="FAIL"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="TransformMismatchException" instanceClassName="org.eclipse.buckminster.rmap.util.TransformMismatchException"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="IComponentReader" instanceClassName="org.eclipse.buckminster.rmap.util.IComponentReader"/>
 </ecore:EPackage>

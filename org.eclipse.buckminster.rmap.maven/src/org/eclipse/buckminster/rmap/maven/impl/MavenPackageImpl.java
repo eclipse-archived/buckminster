@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.rmap.maven.impl;
 
+import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.rmap.RmapPackage;
 
 import org.eclipse.buckminster.rmap.maven.GroupAndArtifact;
@@ -17,6 +18,7 @@ import org.eclipse.buckminster.rmap.maven.MavenPackage;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -173,7 +175,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EClass getGroupAndArtifact() {
 		return groupAndArtifactEClass;
 	}
@@ -183,7 +185,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getGroupAndArtifact_ArtifactId() {
 		return (EAttribute) groupAndArtifactEClass.getEStructuralFeatures().get(0);
 	}
@@ -193,7 +195,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getGroupAndArtifact_GroupId() {
 		return (EAttribute) groupAndArtifactEClass.getEStructuralFeatures().get(1);
 	}
@@ -203,7 +205,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EClass getMapEntry() {
 		return mapEntryEClass;
 	}
@@ -213,7 +215,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EReference getMapEntry_Aliases() {
 		return (EReference) mapEntryEClass.getEStructuralFeatures().get(1);
 	}
@@ -223,7 +225,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMapEntry_Name() {
 		return (EAttribute) mapEntryEClass.getEStructuralFeatures().get(0);
 	}
@@ -233,7 +235,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EClass getMappings() {
 		return mappingsEClass;
 	}
@@ -243,7 +245,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EReference getMappings_Entries() {
 		return (EReference) mappingsEClass.getEStructuralFeatures().get(0);
 	}
@@ -253,7 +255,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EReference getMappings_Rules() {
 		return (EReference) mappingsEClass.getEStructuralFeatures().get(1);
 	}
@@ -263,7 +265,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public MavenFactory getMavenFactory() {
 		return (MavenFactory) getEFactoryInstance();
 	}
@@ -273,7 +275,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EClass getMavenProvider() {
 		return mavenProviderEClass;
 	}
@@ -283,7 +285,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EReference getMavenProvider_Mappings() {
 		return (EReference) mavenProviderEClass.getEStructuralFeatures().get(0);
 	}
@@ -307,6 +309,7 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 
 		// Obtain other dependent packages
 		RmapPackage theRmapPackage = (RmapPackage) EPackage.Registry.INSTANCE.getEPackage(RmapPackage.eNS_URI);
+		CommonPackage theCommonPackage = (CommonPackage) EPackage.Registry.INSTANCE.getEPackage(CommonPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -323,6 +326,10 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 		initEAttribute(getGroupAndArtifact_GroupId(), ecorePackage.getEString(), "groupId", null, 0, 1, GroupAndArtifact.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		EOperation op = addEOperation(groupAndArtifactEClass, ecorePackage.getEBoolean(), "isMatchFor", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "group", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "artifact", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(mapEntryEClass, MapEntry.class, "MapEntry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMapEntry_Name(), ecorePackage.getEString(), "name", null, 0, 1, MapEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
 				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -338,6 +345,14 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 		initEClass(mavenProviderEClass, MavenProvider.class, "MavenProvider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getMavenProvider_Mappings(), this.getMappings(), null, "mappings", null, 0, 1, MavenProvider.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		op = addEOperation(mavenProviderEClass, ecorePackage.getEString(), "getComponentName", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "groupId", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "artifactId", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(mavenProviderEClass, this.getMapEntry(), "getMapEntry", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEException(op, theCommonPackage.getCoreException());
 
 		// Create resource
 		createResource(eNS_URI);

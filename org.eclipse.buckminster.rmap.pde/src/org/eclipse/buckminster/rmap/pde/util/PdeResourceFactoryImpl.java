@@ -38,6 +38,7 @@ public class PdeResourceFactoryImpl extends ResourceFactoryImpl {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Resource createResource(URI uri) {
 		XMLResource result = new PdeResourceImpl(uri);

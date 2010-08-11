@@ -30,11 +30,11 @@ import java.util.zip.ZipInputStream;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.resolver.MalformedProviderURIException;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -157,7 +157,7 @@ public class EclipsePlatformReader extends AbstractCatalogReader {
 	 * installed plugin, that should be done using the import plugin wizard.
 	 */
 	@Override
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) {
+	public void materialize(IPath destination, IProgressMonitor monitor) {
 		throw new UnsupportedOperationException("checkout"); //$NON-NLS-1$
 	}
 

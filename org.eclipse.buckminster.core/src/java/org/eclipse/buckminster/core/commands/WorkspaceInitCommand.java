@@ -21,6 +21,7 @@ import org.eclipse.buckminster.cmdline.SimpleErrorExitException;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.model.common.util.BMProperties;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
@@ -122,7 +123,8 @@ public abstract class WorkspaceInitCommand extends WorkspaceCommand {
 			File fileTemplate;
 			if (path.endsWith(".zip") || path.endsWith(".jar")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
-				File dest = FileUtils.createTempFolder("bmtpl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+				File tmpDir = IOUtils.getTempRoot(BMProperties.getSystemProperties());
+				File dest = IOUtils.createTempFolder("bmtpl", ".tmp", tmpDir); //$NON-NLS-1$ //$NON-NLS-2$
 				InputStream input = null;
 				try {
 					input = new BufferedInputStream(templateURL.openStream());

@@ -19,13 +19,14 @@ import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.BuckminsterPreferences;
 import org.eclipse.buckminster.runtime.Logger;
@@ -37,46 +38,40 @@ import org.osgi.framework.Bundle;
 /**
  * @author Thomas Hallgren
  */
-public abstract class AbstractTestCase extends TestCase
-{
-	public static File getTestData(String fileName) throws Exception
-	{
+public abstract class AbstractTestCase extends TestCase {
+	public static File getTestData(String fileName) throws Exception {
 		Bundle self = Activator.context.getBundle();
 		URL base = self.getEntry("testData");
-		if(base == null)
+		if (base == null)
 			throw new RuntimeException("Unable to find \"testData\" folder");
 		return new File(toFile(base), fileName);
 	}
 
-	public static File getTestOutputFolder(String name) throws CoreException, IOException
-	{
+	public static File getTestOutputFolder(String name) throws CoreException, IOException {
 		return Activator.context.getDataFile(name);
 	}
 
-	private static File toFile(URL url) throws IOException
-	{
+	private static File toFile(URL url) throws IOException {
 		return new File(new Path(FileLocator.toFileURL(url).getPath()).toOSString());
 	}
 
-	public AbstractTestCase()
-	{
+	public AbstractTestCase() {
 	}
 
-	public AbstractTestCase(String name)
-	{
+	public AbstractTestCase(String name) {
 		super(name);
 	}
 
 	@Override
-	public void setUp() throws Exception
-	{
+	public void setUp() throws Exception {
 		BuckminsterPreferences.setLogLevelConsole(Logger.DEBUG);
 		BuckminsterPreferences.setLogLevelEclipseLogger(Logger.SILENT);
 	}
 
-	protected IResolver createResolver(String componentName, String componentType) throws Exception
-	{
-		ComponentRequest request = new ComponentRequest(componentName, componentType, null);
+	protected IResolver createResolver(String componentName, String componentType) throws Exception {
+		ComponentRequest request = CommonFactory.eINSTANCE.createComponentRequest();
+		request.setId(componentName);
+		request.setType(componentType);
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);
 		queryBld.setResourceMapURL(getRMAP().toString());
@@ -87,35 +82,26 @@ public abstract class AbstractTestCase extends TestCase
 		return new MainResolver(new ResolutionContext(query));
 	}
 
-	protected CorePlugin getPlugin() throws Exception
-	{
+	protected CorePlugin getPlugin() throws Exception {
 		CorePlugin plugin = CorePlugin.getDefault();
-		if(plugin == null)
+		if (plugin == null)
 			throw new Exception("This test must be run as a \"JUnit Plug-in Test\""); //$NON-NLS-1$
 		return plugin;
 	}
 
-	protected URL getRMAP()
-	{
-		try
-		{
+	protected URL getRMAP() {
+		try {
 			return new URL("http://www.eclipse.org/buckminster/samples/rmaps/dogfood2.rmap"); //$NON-NLS-1$
-		}
-		catch(MalformedURLException e)
-		{
+		} catch (MalformedURLException e) {
 			return null;
 		}
 	}
 
 	@Override
-	protected void runTest() throws Throwable
-	{
-		try
-		{
+	protected void runTest() throws Throwable {
+		try {
 			super.runTest();
-		}
-		catch(CoreException e)
-		{
+		} catch (CoreException e) {
 			BuckminsterException.deeplyPrint(e, System.err, true);
 			throw e;
 		}

@@ -43,9 +43,9 @@ public class PDEMapProviderItemProvider extends ProviderItemProvider implements 
 	}
 
 	/**
-	 * This returns PDEMapProvider.gif. <!-- begin-user-doc --> <!--
+	 * This returns PDEMapProvider.gif.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
@@ -69,23 +69,24 @@ public class PDEMapProviderItemProvider extends ProviderItemProvider implements 
 	}
 
 	/**
-	 * This returns the label text for the adapted class. <!-- begin-user-doc
+	 * This returns the label text for the adapted class.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((PDEMapProvider) object).getComponentTypesAttr();
-		return label == null || label.length() == 0 ? getString("_UI_PDEMapProvider_type") : getString("_UI_PDEMapProvider_type") + " " + label;
+		String label = ((PDEMapProvider)object).getComponentTypesAttr();
+		return label == null || label.length() == 0 ?
+			getString("_UI_PDEMapProvider_type") :
+			getString("_UI_PDEMapProvider_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to
-	 * update any cached children and by creating a viewer notification, which
-	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to update any cached
+	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override

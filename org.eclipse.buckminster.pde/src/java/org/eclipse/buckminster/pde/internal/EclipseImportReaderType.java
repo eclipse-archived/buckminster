@@ -30,8 +30,6 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -40,23 +38,26 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
-import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.EclipseImportBase.Key;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
-import org.eclipse.buckminster.pde.mapfile.MapFile;
-import org.eclipse.buckminster.pde.mapfile.MapFileEntry;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.pde.util.MapFile;
+import org.eclipse.buckminster.rmap.pde.util.MapFileEntry;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -69,7 +70,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.equinox.internal.p2.artifact.repository.ArtifactRequest;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.processing.ProcessingStepHandler;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
@@ -192,7 +192,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 
 	private static final UUID CACHE_KEY_SITE_CACHE = UUID.randomUUID();
 
-	public static File getTempSite(Map<UUID, Object> ucache) throws CoreException {
+	public static File getTempSite(Map<UUID, Object> ucache, Map<String, String> properties) throws CoreException, IOException {
 		Map<String, File> siteCache = getSiteCache(ucache);
 		synchronized (siteCache) {
 			String key = EclipseImportReaderType.class.getSimpleName() + ":tempSite"; //$NON-NLS-1$
@@ -200,7 +200,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			if (tempSite != null)
 				return tempSite;
 
-			tempSite = FileUtils.createTempFolder("bmsite", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+			tempSite = IOUtils.createTempFolder("bmsite", ".tmp", IOUtils.getTempRoot(properties)); //$NON-NLS-1$ //$NON-NLS-2$
 			new File(tempSite, PLUGINS_FOLDER).mkdir();
 			new File(tempSite, FEATURES_FOLDER).mkdir();
 			siteCache.put(key, tempSite);
@@ -208,15 +208,16 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		}
 	}
 
-	static URL createRemoteComponentURL(URL remoteLocation, IConnectContext cctx, ComponentIdentifier cid, String subDir) throws CoreException {
+	static URL createRemoteComponentURL(URL remoteLocation, ComponentIdentifier cid, String subDir, Map<String, String> properties)
+			throws CoreException {
 		if (remoteLocation.getPath().endsWith(".jar")) //$NON-NLS-1$
 			return remoteLocation;
 
 		if (remoteLocation.getPath().endsWith(".map")) //$NON-NLS-1$
 		{
-			for (MapFileEntry entry : getMapEntries(remoteLocation, cctx)) {
+			for (MapFileEntry entry : getMapEntries(remoteLocation, properties)) {
 				ComponentIdentifier entryCid = entry.getComponentIdentifier();
-				if (!(entryCid.getName().equals(cid.getName()) && entryCid.getComponentTypeID().equals(cid.getComponentTypeID())))
+				if (!(entryCid.getId().equals(cid.getId()) && entryCid.getType().equals(cid.getType())))
 					continue;
 
 				if (VersionHelper.equalsUnqualified(cid.getVersion(), entryCid.getVersion()))
@@ -226,24 +227,24 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 						// Just skip
 					}
 			}
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_0_in_map_1, cid.getName(), remoteLocation));
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.unable_to_find_0_in_map_1, cid.getId(), remoteLocation));
 		}
 		try {
-			return new URL(remoteLocation, subDir + '/' + cid.getName() + '_' + cid.getVersion() + ".jar"); //$NON-NLS-1$
+			return new URL(remoteLocation, subDir + '/' + cid.getId() + '_' + cid.getVersion() + ".jar"); //$NON-NLS-1$
 		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		}
 	}
 
-	static List<MapFileEntry> getMapEntries(URL location, IConnectContext cctx) throws CoreException {
+	static List<MapFileEntry> getMapEntries(URL location, Map<String, String> properties) throws CoreException {
 		InputStream input = null;
 		try {
 			ArrayList<MapFileEntry> mapEntries = new ArrayList<MapFileEntry>();
-			input = DownloadManager.read(location, cctx);
-			MapFile.parse(input, location.toString(), mapEntries);
+			input = DownloadManager.read(location, null);
+			MapFile.parse(input, location.toString(), properties, mapEntries);
 			ArrayList<MapFileEntry> binaryEntries = new ArrayList<MapFileEntry>();
 			for (MapFileEntry entry : mapEntries) {
-				if (!IReaderType.URL.equals(entry.getReaderType().getId()))
+				if (!IReaderType.URL.equals(entry.getReaderType()))
 					continue;
 
 				Map<String, String> props = entry.getProperties();
@@ -297,7 +298,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			boolean isFeature = IComponentType.ECLIPSE_FEATURE.equals(resolution.getComponentTypeId());
 			String subDir = isFeature ? FEATURES_FOLDER : PLUGINS_FOLDER;
 
-			return createRemoteComponentURL(siteURL, null, resolution.getComponentIdentifier(), subDir).toURI();
+			return createRemoteComponentURL(siteURL, resolution.getComponentIdentifier(), subDir, context).toURI();
 		} catch (MalformedURLException e) {
 			throw BuckminsterException.wrap(e);
 		} catch (URISyntaxException e) {
@@ -341,9 +342,9 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 			return null;
 		VersionRange vr = new VersionRange(bv, true, bv, true);
 
-		IComponentRequest cr = query.getComponentRequest();
-		String name = cr.getName();
-		if (IComponentType.ECLIPSE_FEATURE.equals(cr.getComponentTypeID()) && !name.endsWith(IPDEConstants.FEATURE_GROUP))
+		ComponentRequest cr = query.getComponentRequest();
+		String name = cr.getId();
+		if (IComponentType.ECLIPSE_FEATURE.equals(cr.getType()) && !name.endsWith(IPDEConstants.FEATURE_GROUP))
 			name += IPDEConstants.FEATURE_GROUP;
 		IQueryResult<IInstallableUnit> c = mdr.query(QueryUtil.createIUQuery(name, vr), null);
 		if (c.isEmpty())
@@ -408,10 +409,9 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 		monitor.subTask(NLS.bind(Messages.localizing_0, name));
 
 		try {
-			IConnectContext cctx = rInfo.getConnectContext();
 			String typeDir = isPlugin ? PLUGINS_FOLDER : FEATURES_FOLDER;
 
-			File tempSite = getTempSite(userCache);
+			File tempSite = getTempSite(userCache, rInfo.getProperties());
 			File subDir = new File(tempSite, typeDir);
 			String jarName = null;
 			File jarFile = null;
@@ -432,8 +432,11 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				if (jarFile == null)
 					throw BuckminsterException.fromMessage(NLS.bind(Messages.IU_0_1_has_no_artifacts, iu.getId(), iu.getVersion()));
 			} else {
-				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), cctx, new ComponentIdentifier(rInfo.getComponentName(), rInfo
-						.getComponentType().getId(), vm.getVersion()), typeDir);
+				ComponentIdentifier cid = CommonFactory.eINSTANCE.createComponentIdentifier();
+				cid.setId(rInfo.getComponentName());
+				cid.setType(rInfo.getComponentType().getId());
+				cid.setVersion(vm.getVersion());
+				URL pluginURL = createRemoteComponentURL(base.getRemoteLocation(), cid, typeDir, rInfo.getProperties());
 
 				// Use a temporary local site
 				//
@@ -445,7 +448,7 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				jarFile = new File(subDir, jarName);
 				InputStream input = null;
 				try {
-					input = DownloadManager.getCache().open(pluginURL, cctx, null, null, MonitorUtils.subMonitor(monitor, 900));
+					input = DownloadManager.getCache().open(pluginURL, null, null, null, MonitorUtils.subMonitor(monitor, 900));
 					FileUtils.copyFile(input, subDir, jarName, MonitorUtils.subMonitor(monitor, 900));
 				} finally {
 					IOUtils.close(input);

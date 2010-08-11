@@ -21,10 +21,11 @@ import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
-import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -221,7 +222,7 @@ public class P2Materializer extends AbstractMaterializer {
 					IReaderType readerType = CorePlugin.getDefault().getReaderType(rType);
 					IComponentReader reader = readerType.getReader(res, context, subSubMon.newChild(10));
 					try {
-						reader.materialize(location, res, context, subSubMon.newChild(500));
+						((AbstractReader) reader).materialize(location, res, context, subSubMon.newChild(500));
 					} finally {
 						try {
 							reader.close();

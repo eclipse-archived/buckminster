@@ -15,18 +15,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
-import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
@@ -157,13 +157,13 @@ public class EclipsePlatformReaderType extends CatalogReaderType {
 		VersionRange vd = version == null ? null : VersionHelper.exactRange(version);
 		String location;
 		ComponentRequest rq = cr.getRequest();
-		if (IComponentType.ECLIPSE_FEATURE.equals(rq.getComponentTypeID())) {
-			IFeatureModel model = PDETargetPlatform.getBestFeature(rq.getName(), vd, null);
+		if (IComponentType.ECLIPSE_FEATURE.equals(rq.getType())) {
+			IFeatureModel model = PDETargetPlatform.getBestFeature(rq.getId(), vd, null);
 			if (model == null)
 				return null;
 			location = model.getInstallLocation();
 		} else {
-			BundleInfo plugin = PDETargetPlatform.getBestPlugin(rq.getName(), vd, null);
+			BundleInfo plugin = PDETargetPlatform.getBestPlugin(rq.getId(), vd, null);
 			if (plugin == null)
 				return null;
 			File fileLoc = getBundleLocation(plugin);

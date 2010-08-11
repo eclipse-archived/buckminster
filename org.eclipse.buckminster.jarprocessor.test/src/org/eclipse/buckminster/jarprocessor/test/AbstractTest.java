@@ -6,8 +6,8 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.runtime.Buckminster;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -42,7 +42,7 @@ public abstract class AbstractTest extends TestCase {
 			testFolder = new File(toFile(url), name);
 		}
 		if (testFolder.exists())
-			FileUtils.deleteRecursive(testFolder, null);
+			IOUtils.deleteRecursive(testFolder, null);
 		testFolder.mkdirs();
 		return testFolder;
 	}

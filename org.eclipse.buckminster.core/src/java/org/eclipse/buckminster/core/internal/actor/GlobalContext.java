@@ -7,6 +7,7 @@
  *****************************************************************************/
 package org.eclipse.buckminster.core.internal.actor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,14 +23,13 @@ import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.model.Action;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
-import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.helpers.FileUtils.DeleteException;
 import org.eclipse.buckminster.core.metadata.ModelCache;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -206,8 +206,8 @@ public class GlobalContext extends ModelCache implements IGlobalContext {
 		try {
 			while (--idx >= 0) {
 				try {
-					FileUtils.deleteRecursive(scheduledRemovals.get(idx).toFile(), MonitorUtils.subMonitor(monitor, 10));
-				} catch (DeleteException e) {
+					IOUtils.deleteRecursive(scheduledRemovals.get(idx).toFile(), MonitorUtils.subMonitor(monitor, 10));
+				} catch (IOException e) {
 					CorePlugin.getLogger().warning(e.getMessage());
 				}
 			}

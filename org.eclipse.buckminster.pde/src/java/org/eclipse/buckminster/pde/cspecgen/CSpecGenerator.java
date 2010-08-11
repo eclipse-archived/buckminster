@@ -20,16 +20,12 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.ant.actor.AntActor;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.TargetPlatform;
-import org.eclipse.buckminster.core.cspec.IComponentRequest;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.AttributeBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
 import org.eclipse.buckminster.core.cspec.builder.PrerequisiteBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FileHandle;
@@ -37,10 +33,12 @@ import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.helpers.PropertiesParser;
 import org.eclipse.buckminster.core.helpers.TextUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
+import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.jarprocessor.JarProcessorActor;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -48,6 +46,7 @@ import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.actor.P2SiteGenerator;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.Trivial;
@@ -359,13 +358,13 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	private final CSpecBuilder cspecBuilder;
 
-	private final ICatalogReader reader;
+	private final AbstractCatalogReader reader;
 
 	private Map<String, String> properties;
 
 	protected CSpecGenerator(CSpecBuilder cspecBuilder, ICatalogReader reader) {
 		this.cspecBuilder = cspecBuilder;
-		this.reader = reader;
+		this.reader = (AbstractCatalogReader) reader;
 	}
 
 	public VersionRange convertMatchRule(MatchRule pdeMatchRule, String version) throws CoreException {
@@ -389,7 +388,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return cspecBuilder;
 	}
 
-	public ICatalogReader getReader() {
+	public AbstractCatalogReader getReader() {
 		return reader;
 	}
 
@@ -402,10 +401,10 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 
 	protected void addBundleHostDependency(IFragmentModel fragmentModel) throws CoreException {
 		IFragment fragment = fragmentModel.getFragment();
-		ComponentRequestBuilder bundleHostDep = cspecBuilder.createDependencyBuilder();
-		bundleHostDep.setName(fragment.getPluginId());
-		bundleHostDep.setVersionRange(VersionHelper.createRange(VersionFormat.OSGI_FORMAT, fragment.getPluginVersion()));
-		bundleHostDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
+		ComponentRequest bundleHostDep = CommonFactory.eINSTANCE.createComponentRequest();
+		bundleHostDep.setId(fragment.getPluginId());
+		bundleHostDep.setRange(VersionHelper.createRange(VersionFormat.OSGI_FORMAT, fragment.getPluginVersion()));
+		bundleHostDep.setType(IComponentType.OSGI_BUNDLE);
 		try {
 			bundleHostDep.setFilter(FilterFactory.newInstance("(bundleHost=true)")); //$NON-NLS-1$
 		} catch (InvalidSyntaxException e) {
@@ -414,15 +413,15 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		addDependency(bundleHostDep);
 	}
 
-	protected boolean addDependency(ComponentRequestBuilder dependency) throws CoreException {
+	protected boolean addDependency(ComponentRequest dependency) throws CoreException {
 		return cspecBuilder.addDependency(dependency);
 	}
 
-	protected void addExternalPrerequisite(GroupBuilder group, IComponentRequest dependency, String name) throws CoreException {
+	protected void addExternalPrerequisite(GroupBuilder group, ComponentRequest dependency, String name) throws CoreException {
 		PrerequisiteBuilder pqBld = group.createPrerequisiteBuilder();
-		pqBld.setComponentName(dependency.getName());
-		pqBld.setComponentType(dependency.getComponentTypeID());
-		pqBld.setVersionRange(dependency.getVersionRange());
+		pqBld.setComponentName(dependency.getId());
+		pqBld.setComponentType(dependency.getType());
+		pqBld.setVersionRange(dependency.getRange());
 		pqBld.setName(name);
 		group.addPrerequisite(pqBld);
 	}
@@ -467,7 +466,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			if (pluginId.equals("system.bundle")) //$NON-NLS-1$
 				continue;
 
-			ComponentRequestBuilder dependency = createDependency(bundle, IComponentType.OSGI_BUNDLE);
+			ComponentRequest dependency = createDependency(bundle, IComponentType.OSGI_BUNDLE);
 			if (skipComponent(query, dependency) || !addDependency(dependency))
 				continue;
 
@@ -489,7 +488,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 	protected boolean addProducts(final IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 2000);
 		try {
-			List<FileHandle> productConfigs = reader.getRootFiles(PRODUCT_CONFIGURATION_FILE_PATTERN, MonitorUtils.subMonitor(monitor, 500));
+			List<FileHandle> productConfigs = (reader).getRootFiles(PRODUCT_CONFIGURATION_FILE_PATTERN, MonitorUtils.subMonitor(monitor, 500));
 			if (productConfigs.size() == 0)
 				return false;
 
@@ -520,14 +519,14 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return copyPlugins;
 	}
 
-	protected ComponentRequestBuilder createDependency(ImportSpecification pluginImport, String category) throws CoreException {
+	protected ComponentRequest createDependency(ImportSpecification pluginImport, String category) throws CoreException {
 		Filter filter = null;
 		if (pluginImport.isOptional())
 			filter = ComponentRequest.P2_OPTIONAL_FILTER;
 		return createDependency(pluginImport.getName(), category, pluginImport.getVersionRange(), filter);
 	}
 
-	protected ComponentRequestBuilder createDependency(IVersionedId versionedName, String componentType) throws CoreException {
+	protected ComponentRequest createDependency(IVersionedId versionedName, String componentType) throws CoreException {
 		String versionRange = null;
 		Version v = versionedName.getVersion();
 		if (!(v == null || Version.emptyVersion.equals(v)))
@@ -535,27 +534,25 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		return createDependency(versionedName.getId(), componentType, versionRange, null);
 	}
 
-	protected ComponentRequestBuilder createDependency(String name, String componentType, String versionDesignator, Filter filter)
-			throws CoreException {
+	protected ComponentRequest createDependency(String name, String componentType, String versionDesignator, Filter filter) throws CoreException {
 		versionDesignator = Trivial.trim(versionDesignator);
 		if (versionDesignator != null && versionDesignator.equals("0.0.0")) //$NON-NLS-1$
 			versionDesignator = null;
 		return createDependency(name, componentType, VersionHelper.createRange(VersionFormat.OSGI_FORMAT, versionDesignator), filter);
 	}
 
-	protected ComponentRequestBuilder createDependency(String name, String componentType, String version, MatchRule pdeMatchRule, Filter filter)
+	protected ComponentRequest createDependency(String name, String componentType, String version, MatchRule pdeMatchRule, Filter filter)
 			throws CoreException {
 		return createDependency(name, componentType, convertMatchRule(pdeMatchRule, version), filter);
 	}
 
-	protected ComponentRequestBuilder createDependency(String name, String componentType, VersionRange versionRange, Filter filter)
-			throws CoreException {
-		ComponentRequestBuilder bld = getCSpec().createDependencyBuilder();
-		bld.setName(name);
-		bld.setComponentTypeID(componentType);
-		bld.setVersionRange(versionRange);
-		bld.setFilter(filter);
-		return bld;
+	protected ComponentRequest createDependency(String name, String componentType, VersionRange versionRange, Filter filter) throws CoreException {
+		ComponentRequest cr = CommonFactory.eINSTANCE.createComponentRequest();
+		cr.setId(name);
+		cr.setType(componentType);
+		cr.setRange(versionRange);
+		cr.setFilter(filter);
+		return cr;
 	}
 
 	protected void createSiteAction(String rawSiteAttribute, String siteDefiningAttribute) throws CoreException {
@@ -635,7 +632,7 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 			if (token.indexOf('*') >= 0) {
 				Pattern pattern = convertIncludeToPattern(token);
 				try {
-					for (FileHandle matchingFile : reader.getRootFiles(pattern, new NullProgressMonitor()))
+					for (FileHandle matchingFile : (reader).getRootFiles(pattern, new NullProgressMonitor()))
 						result.add(matchingFile.getName());
 				} catch (IOException e) {
 					throw BuckminsterException.wrap(e);
@@ -696,8 +693,8 @@ public abstract class CSpecGenerator implements IBuildPropertiesConstants, IPDEC
 		}
 	}
 
-	protected boolean skipComponent(ComponentQuery query, ComponentRequestBuilder bld) {
-		return query.skipComponent(new ComponentName(bld.getName(), bld.getComponentTypeID()), getReader().getNodeQuery().getContext());
+	protected boolean skipComponent(ComponentQuery query, ComponentRequest bld) {
+		return query.skipComponent(bld, getReader().getProperties());
 	}
 
 	private void addProduct(FileHandle productConfig, boolean theOneAndOnly, IProgressMonitor monitor) throws CoreException, IOException {

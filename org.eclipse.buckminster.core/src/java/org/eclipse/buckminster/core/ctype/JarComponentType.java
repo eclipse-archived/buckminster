@@ -13,8 +13,9 @@ package org.eclipse.buckminster.core.ctype;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
-import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,7 +28,7 @@ public class JarComponentType extends AbstractComponentType {
 		@Override
 		public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 			IComponentReader reader = readerHandle[0];
-			ProviderMatch ri = reader.getProviderMatch();
+			ProviderMatch ri = ((AbstractReader) reader).getProviderMatch();
 			CSpecBuilder dflt = ri.createCSpec();
 			addSelfAsJarArtifactGroups(dflt);
 			applyExtensions(dflt, forResolutionAidOnly, reader, monitor);

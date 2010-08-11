@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.XMLConstants;
@@ -37,6 +36,7 @@ import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.RmapConstants;
 import org.eclipse.buckminster.sax.UUIDKeyed;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.CoreException;
@@ -281,9 +281,9 @@ public class Resolution extends UUIDKeyed implements IUUIDPersisted, IResolution
 	public synchronized Map<String, ? extends Object> getProperties() {
 		if (properties == null) {
 			HashMap<String, Object> props = new HashMap<String, Object>();
-			props.put(KeyConstants.READER_TYPE, getReaderTypeId());
-			props.put(KeyConstants.IS_MUTABLE, Boolean.toString(provider.isMutable()));
-			props.put(KeyConstants.IS_SOURCE, Boolean.toString(provider.isSource()));
+			props.put(RmapConstants.READER_TYPE, getReaderTypeId());
+			props.put(RmapConstants.IS_MUTABLE, Boolean.toString(provider.isMutable()));
+			props.put(RmapConstants.IS_SOURCE, Boolean.toString(provider.isSource()));
 			props.putAll(cspec.getComponentIdentifier().getProperties());
 			properties = props;
 		}

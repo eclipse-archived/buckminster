@@ -18,16 +18,17 @@ import java.util.StringTokenizer;
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -52,7 +53,13 @@ import org.osgi.framework.Constants;
 public class CSpecFromBinary extends CSpecGenerator {
 	private static final String SYSTEM_BUNDLE = "org.eclipse.osgi"; //$NON-NLS-1$
 
-	private static final ComponentName SYSTEM_BUNDLE_CNAME = new ComponentName(SYSTEM_BUNDLE, IComponentType.OSGI_BUNDLE);
+	private static final ComponentName SYSTEM_BUNDLE_CNAME;
+
+	static {
+		SYSTEM_BUNDLE_CNAME = CommonFactory.eINSTANCE.createComponentName();
+		SYSTEM_BUNDLE_CNAME.setId(SYSTEM_BUNDLE);
+		SYSTEM_BUNDLE_CNAME.setType(IComponentType.OSGI_BUNDLE);
+	}
 
 	private final IPluginBase plugin;
 
@@ -240,7 +247,7 @@ public class CSpecFromBinary extends CSpecGenerator {
 			if (pluginId.equals(Constants.SYSTEM_BUNDLE_SYMBOLICNAME))
 				continue;
 
-			ComponentRequestBuilder dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
+			ComponentRequest dependency = createDependency(pluginImport, IComponentType.OSGI_BUNDLE);
 			if (skipComponent(cquery, dependency) || !addDependency(dependency))
 				continue;
 

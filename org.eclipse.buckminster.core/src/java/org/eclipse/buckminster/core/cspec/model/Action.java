@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.cspec.IAction;
 import org.eclipse.buckminster.core.cspec.IAttribute;
 import org.eclipse.buckminster.core.cspec.IAttributeFilter;
@@ -29,6 +28,7 @@ import org.eclipse.buckminster.core.helpers.SAXEmitter;
 import org.eclipse.buckminster.core.internal.actor.ActorFactory;
 import org.eclipse.buckminster.core.internal.actor.PerformManager;
 import org.eclipse.buckminster.core.metadata.model.IModelCache;
+import org.eclipse.buckminster.model.common.CommonConstants;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.sax.ISaxableElement;
@@ -145,7 +145,7 @@ public class Action extends TopLevelAttribute implements IAction {
 	}
 
 	public IPath getExpandedDefaultBase(Map<String, String> local) {
-		return PerformManager.expandPath(local, Path.fromPortableString(KeyConstants.ACTION_OUTPUT_REF));
+		return PerformManager.expandPath(local, Path.fromPortableString(CommonConstants.ACTION_OUTPUT_REF));
 	}
 
 	@Override

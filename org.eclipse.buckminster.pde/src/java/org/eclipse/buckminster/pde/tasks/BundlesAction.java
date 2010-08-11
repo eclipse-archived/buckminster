@@ -11,9 +11,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
+import org.eclipse.buckminster.model.common.CommonConstants;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
@@ -85,7 +85,7 @@ public class BundlesAction extends org.eclipse.equinox.p2.publisher.eclipse.Bund
 		if (cspec.getAttribute(IPDEConstants.ACTION_ABOUT_MAPPINGS) != null) {
 			BundlePropertyAdvice advice = new BundlePropertyAdvice(bundleDescription.getSymbolicName(), Version.create(bundleDescription.getVersion()
 					.toString()));
-			advice.put(KeyConstants.BUILD_ID, buildId);
+			advice.put(CommonConstants.BUILD_ID, buildId);
 			info.addAdvice(advice);
 		}
 	}

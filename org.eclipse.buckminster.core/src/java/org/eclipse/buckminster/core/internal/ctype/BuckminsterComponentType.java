@@ -14,9 +14,10 @@ import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ctype.AbstractComponentType;
 import org.eclipse.buckminster.core.ctype.BuckminsterCSpecBuilder;
 import org.eclipse.buckminster.core.ctype.IResolutionBuilder;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,7 +37,7 @@ public class BuckminsterComponentType extends AbstractComponentType {
 		// just find it again.
 		//
 		if (reader instanceof ICatalogReader) {
-			NodeQuery query = reader.getNodeQuery();
+			NodeQuery query = ((AbstractReader) reader).getNodeQuery();
 			boolean atTop = query.getComponentRequest().equals(query.getComponentQuery().getExpandedRootRequest(query.getContext()));
 			if (!atTop) {
 				return ((ICatalogReader) reader).exists(CorePlugin.CQUERY_FILE, monitor) ? CorePlugin.getDefault().getResolutionBuilder(

@@ -12,7 +12,6 @@ package org.eclipse.buckminster.pde.test;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
@@ -21,18 +20,20 @@ import org.eclipse.buckminster.core.query.model.ComponentQuery;
 import org.eclipse.buckminster.core.resolver.IResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.sax.Utils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 
 /**
  * @author Thomas Hallgren
  */
-public class RMapTest extends PDETestCase
-{
-	public void testEclipseInstalled() throws Exception
-	{
+public class RMapTest extends PDETestCase {
+	public void testEclipseInstalled() throws Exception {
 		this.getPlugin();
-		ComponentRequest request = new ComponentRequest("org.eclipse.pde", IComponentType.OSGI_BUNDLE, null); //$NON-NLS-1$
+		ComponentRequest request = CommonFactory.eINSTANCE.createComponentRequest();
+		request.setId("org.eclipse.pde");
+		request.setType(IComponentType.OSGI_BUNDLE);
 
 		ComponentQueryBuilder queryBld = new ComponentQueryBuilder();
 		queryBld.setRootRequest(request);

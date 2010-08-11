@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-public class BMProperties implements IProperties<String> {
-	private static final IProperties<String> systemProperties = new PropertiesWrapper() {
+public class BMProperties implements IProperties {
+	private static final IProperties systemProperties = new PropertiesWrapper() {
 
 		@Override
 		protected Properties getProperties() {
@@ -33,7 +33,7 @@ public class BMProperties implements IProperties<String> {
 	/** A table of hex digits */
 	private static final char[] hexDigit = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-	public static IProperties<String> getSystemProperties() {
+	public static IProperties getSystemProperties() {
 		return systemProperties;
 	}
 
@@ -211,7 +211,7 @@ public class BMProperties implements IProperties<String> {
 	}
 
 	public Set<String> immutableKeySet() {
-		return (map instanceof IProperties<?>) ? ((IProperties<String>) map).immutableKeySet() : map.keySet();
+		return (map instanceof IProperties) ? ((IProperties) map).immutableKeySet() : map.keySet();
 	}
 
 	public boolean isEmpty() {
@@ -219,7 +219,7 @@ public class BMProperties implements IProperties<String> {
 	}
 
 	public boolean isMutable(String key) {
-		return (map instanceof IProperties<?>) ? ((IProperties<String>) map).isMutable(key) : true;
+		return (map instanceof IProperties) ? ((IProperties) map).isMutable(key) : true;
 	}
 
 	public Set<String> keySet() {
@@ -227,12 +227,12 @@ public class BMProperties implements IProperties<String> {
 	}
 
 	public Set<String> mutableKeySet() {
-		return (map instanceof IProperties<?>) ? ((IProperties<String>) map).mutableKeySet() : map.keySet();
+		return (map instanceof IProperties) ? ((IProperties) map).mutableKeySet() : map.keySet();
 	}
 
 	public Set<String> overlayKeySet() {
-		if (map instanceof IProperties<?>)
-			return ((IProperties<String>) map).overlayKeySet();
+		if (map instanceof IProperties)
+			return ((IProperties) map).overlayKeySet();
 		if (map instanceof MapUnion<?, ?>)
 			return ((MapUnion<String, String>) map).overlayKeySet();
 		return map.keySet();
@@ -243,8 +243,8 @@ public class BMProperties implements IProperties<String> {
 	}
 
 	public String put(String key, String value, boolean mutable) {
-		if (map instanceof IProperties<?>)
-			return ((IProperties<String>) map).put(key, value, mutable);
+		if (map instanceof IProperties)
+			return ((IProperties) map).put(key, value, mutable);
 		if (!mutable)
 			throw new UnsupportedOperationException();
 		return map.put(key, value);
@@ -259,8 +259,8 @@ public class BMProperties implements IProperties<String> {
 	}
 
 	public void setMutable(String key, boolean flag) throws UnsupportedOperationException {
-		if (map instanceof IProperties<?>)
-			((IProperties<String>) map).setMutable(key, flag);
+		if (map instanceof IProperties)
+			((IProperties) map).setMutable(key, flag);
 		else if (!flag)
 			throw new UnsupportedOperationException();
 	}
@@ -274,7 +274,7 @@ public class BMProperties implements IProperties<String> {
 	}
 
 	public boolean supportsMutability() {
-		return (map instanceof IProperties<?>) ? ((IProperties<String>) map).supportsMutability() : false;
+		return (map instanceof IProperties) ? ((IProperties) map).supportsMutability() : false;
 	}
 
 	public Collection<String> values() {

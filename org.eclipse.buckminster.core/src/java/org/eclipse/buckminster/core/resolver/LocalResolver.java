@@ -38,7 +38,6 @@ import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNode;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
@@ -51,7 +50,6 @@ import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.BuckminsterException;
-import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.IProject;
@@ -390,18 +388,13 @@ public class LocalResolver extends HashMap<String, ResolverNode[]> implements IR
 			}
 
 			MultiStatus problemCollector = new MultiStatus(CorePlugin.getID(), IStatus.OK, "", null); //$NON-NLS-1$
-			ProviderMatch match = ResourceMapResolver.findMatch(provider, query, problemCollector, new NullProgressMonitor());
-			if (match == null)
+			BOMNode node = ResourceMapResolver.resolve(provider, query, problemCollector, new NullProgressMonitor());
+			if (node == null)
 				// The reason will have been logged already
 				return null;
 
 			monitor.beginTask(null, 30);
 			try {
-				IComponentReader[] reader = new IComponentReader[] { match.getReader(MonitorUtils.subMonitor(monitor, 10)) };
-				BOMNode node = match.getComponentType().getResolutionBuilder(reader[0], MonitorUtils.subMonitor(monitor, 10))
-						.build(reader, false, MonitorUtils.subMonitor(monitor, 10));
-				IOUtils.close(reader[0]);
-
 				res = node.getResolution();
 				Filter[] failingFilter = new Filter[1];
 				if (res.isFilterMatchFor(query, failingFilter)) {

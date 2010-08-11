@@ -15,10 +15,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.buckminster.core.helpers.FileUtils;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IFileReader;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IFileReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.resources.ResourcesPlugin;

@@ -47,8 +47,7 @@ public abstract class SAXEmitter {
 			Utils.addAttribute(attrs, "filter", request.getFilter().toString()); //$NON-NLS-1$
 	}
 
-	public static void emit(ContentHandler handler, ComponentIdentifier ci, String namespace, String prefix, String localName)
-			throws SAXException {
+	public static void emit(ContentHandler handler, ComponentIdentifier ci, String namespace, String prefix, String localName) throws SAXException {
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		AttributesImpl attrs = new AttributesImpl();
 		addAttributes(ci, attrs);
@@ -56,8 +55,7 @@ public abstract class SAXEmitter {
 		handler.endElement(namespace, localName, qName);
 	}
 
-	public static void emit(ContentHandler handler, ComponentRequest request, String namespace, String prefix, String localName)
-			throws SAXException {
+	public static void emit(ContentHandler handler, ComponentRequest request, String namespace, String prefix, String localName) throws SAXException {
 		String qName = Utils.makeQualifiedName(prefix, localName);
 		AttributesImpl attrs = new AttributesImpl();
 		addAttributes(request, attrs);
@@ -95,8 +93,8 @@ public abstract class SAXEmitter {
 			}
 		} else {
 			Set<String> keySet;
-			if (props instanceof IProperties<?>)
-				keySet = ((IProperties<?>) props).overlayKeySet();
+			if (props instanceof IProperties)
+				keySet = ((IProperties) props).overlayKeySet();
 			else if (props instanceof MapUnion<?, ?>)
 				keySet = ((MapUnion<String, String>) props).overlayKeySet();
 			else
@@ -109,7 +107,7 @@ public abstract class SAXEmitter {
 		String pqName = Utils.makeQualifiedName(prefix, plName);
 
 		AttributesImpl attrs = new AttributesImpl();
-		boolean withMutableAttr = (props instanceof IProperties<?>) && ((IProperties<?>) props).supportsMutability();
+		boolean withMutableAttr = (props instanceof IProperties) && ((IProperties) props).supportsMutability();
 		for (String name : sorted) {
 			String value = props.get(name);
 			if (value == null || value.length() == 0)
@@ -118,7 +116,7 @@ public abstract class SAXEmitter {
 			attrs.clear();
 			Utils.addAttribute(attrs, "key", name); //$NON-NLS-1$
 			Utils.addAttribute(attrs, "value", value); //$NON-NLS-1$
-			if (withMutableAttr && ((IProperties<?>) props).isMutable(name))
+			if (withMutableAttr && ((IProperties) props).isMutable(name))
 				Utils.addAttribute(attrs, "mutable", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 			handler.startElement(namespace, plName, pqName, attrs);
 			handler.endElement(namespace, plName, pqName);

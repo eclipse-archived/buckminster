@@ -24,9 +24,7 @@ import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
@@ -40,6 +38,9 @@ import org.eclipse.buckminster.pde.internal.EclipsePlatformReader;
 import org.eclipse.buckminster.pde.internal.model.ExternalBuildModel;
 import org.eclipse.buckminster.pde.internal.model.ExternalBundleModel;
 import org.eclipse.buckminster.pde.internal.model.ExternalExtensionsModel;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -71,7 +72,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	private static IPath platformPluginsFolder = Path.fromOSString(TargetPlatform.getPlatformInstallLocation().getAbsolutePath()).append(
 			IPDEConstants.PLUGINS_FOLDER);
 
-	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly, IProgressMonitor monitor)
+	public static IPluginModelBase parsePluginModelBase(AbstractCatalogReader reader, boolean forResolutionAidOnly, IProgressMonitor monitor)
 			throws CoreException {
 		File locationFile = null;
 		if (reader instanceof EclipsePlatformReader) {
@@ -97,7 +98,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				// from
 				// source
 				//
-				reader = (ICatalogReader) URLCatalogReaderType.getReader(locationFile.toURI().toURL(), null);
+				reader = (AbstractCatalogReader) URLCatalogReaderType.getReader(locationFile.toURI().toURL(), null);
 			} catch (MissingComponentException e) {
 			} catch (IllegalStateException e) {
 				throw new MissingCSpecSourceException(reader.getProviderMatch());
@@ -231,7 +232,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	}
 
 	@Override
-	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, ICatalogReader reader, IProgressMonitor monitor)
+	protected void parseFile(CSpecBuilder cspecBuilder, boolean forResolutionAidOnly, AbstractCatalogReader reader, IProgressMonitor monitor)
 			throws CoreException {
 		monitor.beginTask(null, 100);
 		try {

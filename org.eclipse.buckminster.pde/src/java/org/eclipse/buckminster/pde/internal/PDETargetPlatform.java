@@ -14,11 +14,12 @@ import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ITargetPlatform;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AbstractExtension;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.runtime.Buckminster;
 import org.eclipse.buckminster.runtime.Logger;
@@ -214,11 +215,19 @@ public class PDETargetPlatform extends AbstractExtension implements ITargetPlatf
 				List<ComponentIdentifier> result = new ArrayList<ComponentIdentifier>();
 				for (IFeatureModel feature : target.getAllFeatures()) {
 					IFeature f = feature.getFeature();
-					result.add(new ComponentIdentifier(f.getId(), IComponentType.ECLIPSE_FEATURE, Version.parseVersion(f.getVersion())));
+					ComponentIdentifier cid = CommonFactory.eINSTANCE.createComponentIdentifier();
+					cid.setId(f.getId());
+					cid.setType(IComponentType.ECLIPSE_FEATURE);
+					cid.setVersion(Version.parseVersion(f.getVersion()));
+					result.add(cid);
 				}
 				for (IResolvedBundle bundle : target.getBundles()) {
 					BundleInfo b = bundle.getBundleInfo();
-					result.add(new ComponentIdentifier(b.getSymbolicName(), IComponentType.OSGI_BUNDLE, Version.parseVersion(b.getVersion())));
+					ComponentIdentifier cid = CommonFactory.eINSTANCE.createComponentIdentifier();
+					cid.setId(b.getSymbolicName());
+					cid.setType(IComponentType.OSGI_BUNDLE);
+					cid.setVersion(Version.parseVersion(b.getVersion()));
+					result.add(cid);
 				}
 				return result;
 			}

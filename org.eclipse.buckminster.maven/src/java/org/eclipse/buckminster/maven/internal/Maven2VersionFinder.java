@@ -18,9 +18,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.maven.MapEntry;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -72,7 +73,7 @@ public class Maven2VersionFinder extends MavenVersionFinder {
 		try {
 			DocumentBuilder docBld = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = Maven2ReaderType.getMetadataDocument(docBld, MavenReaderType.createURL(uri, rootPath + "maven-metadata.xml"), //$NON-NLS-1$
-					lc, getConnectContext(), monitor);
+					lc, monitor);
 			for (String versionStr : Maven2ReaderType.getVersions(doc)) {
 				VersionMatch vm = readerType.createVersionMatch(docBld, this, mapEntry, range, versionStr);
 				if (vm != null)

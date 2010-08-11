@@ -21,6 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.rmap.maven.MapEntry;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -57,7 +58,7 @@ public class MavenReader extends URLFileReader implements ILocationResolver {
 	@Override
 	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException {
 		IPath artifactPath = ((MavenReaderType) getReaderType()).getArtifactPath(mapEntry, getVersionMatch());
-		return ((MavenReaderType) getReaderType()).getLocalCache().openFile(getURI().toURL(), getConnectContext(), artifactPath, monitor);
+		return ((MavenReaderType) getReaderType()).getLocalCache().openFile(getURI().toURL(), artifactPath, monitor);
 	}
 
 	Document getPOMDocument(IProgressMonitor monitor) throws CoreException {
@@ -74,7 +75,7 @@ public class MavenReader extends URLFileReader implements ILocationResolver {
 		monitor.beginTask(null, 2000);
 		try {
 			URL repoURL = repoURI.toURL();
-			input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
+			input = rt.getLocalCache().openFile(repoURI.toURL(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			String repoPath = repoURL.getPath();
@@ -92,7 +93,7 @@ public class MavenReader extends URLFileReader implements ILocationResolver {
 					throw e;
 
 				IOUtils.close(input);
-				input = rt.getLocalCache().openFile(repoURI.toURL(), getConnectContext(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
+				input = rt.getLocalCache().openFile(repoURI.toURL(), pomPath, MonitorUtils.subMonitor(monitor, 1000));
 				InputSource source = new InputSource(new BufferedInputStream(input));
 				source.setSystemId(new URI(repoURI.getScheme(), repoURI.getAuthority(), repoPath, repoURI.getQuery(), repoURI.getFragment())
 						.toString());

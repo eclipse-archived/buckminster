@@ -13,19 +13,19 @@ import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
-import org.eclipse.buckminster.core.cspec.builder.ComponentRequestBuilder;
 import org.eclipse.buckminster.core.cspec.builder.GroupBuilder;
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.UpToDatePolicy;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.FilterUtils;
 import org.eclipse.buckminster.core.query.model.ComponentQuery;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -133,7 +133,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		if (features.size() == 0)
 			return;
 
-		ComponentQuery query = getReader().getNodeQuery().getComponentQuery();
+		ComponentQuery query = ((AbstractReader) getReader()).getNodeQuery().getComponentQuery();
 		CSpecBuilder cspec = getCSpec();
 		ActionBuilder fullClean = cspec.getRequiredAction(ATTRIBUTE_FULL_CLEAN);
 		GroupBuilder featureRefs = cspec.getRequiredGroup(ATTRIBUTE_FEATURE_REFS);
@@ -146,7 +146,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 			if (productFeature.getId().equals(self))
 				continue;
 
-			ComponentRequestBuilder dep = createDependency(productFeature, IComponentType.ECLIPSE_FEATURE);
+			ComponentRequest dep = createDependency(productFeature, IComponentType.ECLIPSE_FEATURE);
 			if (skipComponent(query, dep))
 				continue;
 
@@ -183,12 +183,12 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		GroupBuilder sourceBundleJars = cspec.getRequiredGroup(ATTRIBUTE_SOURCE_BUNDLE_JARS);
 		GroupBuilder productConfigExports = cspec.getRequiredGroup(ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		for (IFeatureChild includedFeature : features) {
-			ComponentRequestBuilder dep = createDependency(includedFeature);
+			ComponentRequest dep = createDependency(includedFeature);
 			if (skipComponent(query, dep))
 				continue;
 
 			cspec.addDependency(dep);
-			String idWithoutSource = getIdWithoutSource(dep.getName());
+			String idWithoutSource = getIdWithoutSource(dep.getId());
 			if (idWithoutSource == null) {
 				featureRefs.addExternalPrerequisite(dep, ATTRIBUTE_FEATURE_JARS);
 				bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_JARS);
@@ -252,7 +252,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 					continue;
 			}
 
-			ComponentRequestBuilder dep = createDependency(plugin);
+			ComponentRequest dep = createDependency(plugin);
 			if (skipComponent(query, dep))
 				continue;
 
@@ -266,7 +266,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 		}
 	}
 
-	ComponentRequestBuilder createDependency(IFeatureChild featureChild) throws CoreException {
+	ComponentRequest createDependency(IFeatureChild featureChild) throws CoreException {
 		Filter filter = FilterUtils.createFilter(featureChild.getOS(), featureChild.getWS(), featureChild.getArch(), featureChild.getNL());
 		if (featureChild.isOptional())
 			filter = ComponentRequest.P2_OPTIONAL_FILTER.addFilterWithAnd(filter);
@@ -274,7 +274,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 				MatchRule.fromPDE(featureChild.getMatch()), filter);
 	}
 
-	ComponentRequestBuilder createDependency(IFeaturePlugin plugin) throws CoreException {
+	ComponentRequest createDependency(IFeaturePlugin plugin) throws CoreException {
 		Filter filter = FilterUtils.createFilter(plugin.getOS(), plugin.getWS(), plugin.getArch(), plugin.getNL());
 		return createDependency(plugin.getId(), IComponentType.OSGI_BUNDLE, plugin.getVersion(), MatchRule.NONE, filter);
 	}

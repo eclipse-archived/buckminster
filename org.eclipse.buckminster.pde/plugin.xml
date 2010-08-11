@@ -69,17 +69,6 @@
           id="buckminster.pdetasks"
           resource="/org/eclipse/buckminster/pde/antscripts/build.xml"/>
  </extension>
- <extension
-       point="org.eclipse.buckminster.core.parserExtensions">
-      <parserExtension
-            namespace="http://www.eclipse.org/buckminster/PDEMapProvider-1.0"
-            parserIds="provider"
-            resource="/map-provider-1.0.xsd">
-         <handler
-               class="org.eclipse.buckminster.pde.mapprovider.PDEMapProviderHandler"
-               type="PDEMapProvider"/>
-      </parserExtension>
- </extension>
 	<extension point="org.eclipse.ant.core.antTasks">
   <antTask
         class="org.eclipse.buckminster.pde.ant.TargetPlatformLocation"

@@ -22,9 +22,8 @@ import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.SearchPath;
 
 /**
- * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>Resource Map</b></em>'.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A test case for the model object '
+ * <em><b>Resource Map</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following features are tested:
  * <ul>
@@ -42,16 +41,7 @@ import org.eclipse.buckminster.rmap.SearchPath;
 public class ResourceMapTest extends TestCase {
 
 	/**
-	 * The fixture for this Resource Map test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ResourceMap fixture = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -59,13 +49,64 @@ public class ResourceMapTest extends TestCase {
 	}
 
 	/**
-	 * Constructs a new Resource Map test case with the given name.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The fixture for this Resource Map test case.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @generated
+	 */
+	protected ResourceMap fixture = null;
+
+	/**
+	 * Constructs a new Resource Map test case with the given name. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public ResourceMapTest(String name) {
 		super(name);
+	}
+
+	/**
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.ResourceMap#getContextURL()
+	 * <em>Get Context URL</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.ResourceMap#getContextURL()
+	 * @generated NOT
+	 */
+	public void testGetContextURL() throws Exception {
+		assertNull(fixture.getContextURL());
+		ResourceMap rmap = RmapTests.loadTestResourceMap("urimatcher.rmap");
+		URL contextURL = rmap.getContextURL();
+		assertNotNull(contextURL);
+		String path = contextURL.getPath();
+		assertNotNull(path);
+		assertTrue(path.endsWith("/urimatcher.rmap"));
+		Provider p = rmap.getSearchPaths().get(0).getProviders().get(0);
+		System.out.println(rmap.eResource().getURIFragment(p));
+	}
+
+	/**
+	 * Tests the '{@link org.eclipse.buckminster.rmap.ResourceMap#getMatchers()
+	 * <em>Matchers</em>}' feature getter. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.ResourceMap#getMatchers()
+	 * @generated NOT
+	 */
+	public void testGetMatchers() {
+		assertFalse(fixture.getMatchers().isEmpty());
+	}
+
+	/**
+	 * Returns the fixture for this Resource Map test case.
+	 * <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ResourceMap getFixture() {
+		return fixture;
 	}
 
 	/**
@@ -79,18 +120,8 @@ public class ResourceMapTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Resource Map test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected ResourceMap getFixture() {
-		return fixture;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated NOT
 	 */
@@ -118,8 +149,7 @@ public class ResourceMapTest extends TestCase {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */
@@ -128,34 +158,4 @@ public class ResourceMapTest extends TestCase {
 		setFixture(null);
 	}
 
-	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.ResourceMap#getMatchers() <em>Matchers</em>}' feature getter.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.ResourceMap#getMatchers()
-	 * @generated NOT
-	 */
-	public void testGetMatchers() {
-		assertFalse(fixture.getMatchers().isEmpty());
-	}
-
-	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.ResourceMap#getContextURL() <em>Get Context URL</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.ResourceMap#getContextURL()
-	 * @generated NOT
-	 */
-	public void testGetContextURL() throws Exception {
-		assertNull(fixture.getContextURL());
-		ResourceMap rmap = RmapTests.loadTestResourceMap("urimatcher.rmap");
-		URL contextURL = rmap.getContextURL();
-		assertNotNull(contextURL);
-		String path = contextURL.getPath();
-		assertNotNull(path);
-		assertTrue(path.endsWith("/urimatcher.rmap"));
-		Provider p = rmap.getSearchPaths().get(0).getProviders().get(0);
-		System.out.println(rmap.eResource().getURIFragment(p));
-	}
-
-} //ResourceMapTest
+} // ResourceMapTest

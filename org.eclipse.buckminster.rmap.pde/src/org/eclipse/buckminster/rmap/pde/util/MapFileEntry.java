@@ -6,12 +6,11 @@
  * such license is available at www.eclipse.org.
  ******************************************************************************/
 
-package org.eclipse.buckminster.pde.mapfile;
+package org.eclipse.buckminster.rmap.pde.util;
 
 import java.util.Map;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
-import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 
 /**
  * @author Thomas Hallgren
@@ -19,11 +18,11 @@ import org.eclipse.buckminster.core.reader.IReaderType;
 public class MapFileEntry {
 	private final ComponentIdentifier componentIdentifier;
 
-	private final IReaderType readerType;
+	private final String readerType;
 
 	private final Map<String, String> properties;
 
-	protected MapFileEntry(ComponentIdentifier componentIdentifier, IReaderType readerType, Map<String, String> properties) {
+	protected MapFileEntry(ComponentIdentifier componentIdentifier, String readerType, Map<String, String> properties) {
 		this.componentIdentifier = componentIdentifier;
 		this.readerType = readerType;
 		this.properties = properties;
@@ -37,7 +36,7 @@ public class MapFileEntry {
 		return properties;
 	}
 
-	public IReaderType getReaderType() {
+	public String getReaderType() {
 		return readerType;
 	}
 
@@ -46,7 +45,7 @@ public class MapFileEntry {
 		StringBuilder bld = new StringBuilder();
 		componentIdentifier.toString(bld);
 		bld.append(", "); //$NON-NLS-1$
-		bld.append(readerType.getId());
+		bld.append(readerType);
 		bld.append(", "); //$NON-NLS-1$
 		bld.append(properties);
 		return bld.toString();

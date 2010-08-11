@@ -26,25 +26,19 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getFromPattern
- * <em>From Pattern</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.rmap.impl.TransformImpl#getFromReplacement
- * <em>From Replacement</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getToPattern <em>
- * To Pattern</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getToReplacement
- * <em>To Replacement</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getFromPattern <em>From Pattern</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getFromReplacement <em>From Replacement</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getToPattern <em>To Pattern</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.TransformImpl#getToReplacement <em>To Replacement</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class TransformImpl extends EObjectImpl implements Transform {
 	/**
-	 * The default value of the '{@link #getFromPattern() <em>From Pattern</em>}
-	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getFromPattern() <em>From Pattern</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getFromPattern()
 	 * @generated
 	 * @ordered
@@ -65,9 +59,8 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	}
 
 	/**
-	 * The cached value of the '{@link #getFromPattern() <em>From Pattern</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getFromPattern() <em>From Pattern</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getFromPattern()
 	 * @generated
 	 * @ordered
@@ -75,10 +68,9 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	protected Pattern fromPattern = FROM_PATTERN_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getFromReplacement()
-	 * <em>From Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getFromReplacement() <em>From Replacement</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getFromReplacement()
 	 * @generated
 	 * @ordered
@@ -86,10 +78,9 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	protected static final String FROM_REPLACEMENT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFromReplacement()
-	 * <em>From Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getFromReplacement() <em>From Replacement</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getFromReplacement()
 	 * @generated
 	 * @ordered
@@ -97,9 +88,8 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	protected String fromReplacement = FROM_REPLACEMENT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getToPattern() <em>To Pattern</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getToPattern() <em>To Pattern</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getToPattern()
 	 * @generated
 	 * @ordered
@@ -107,9 +97,8 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	protected static final Pattern TO_PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getToPattern() <em>To Pattern</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getToPattern() <em>To Pattern</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getToPattern()
 	 * @generated
 	 * @ordered
@@ -117,10 +106,9 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	protected Pattern toPattern = TO_PATTERN_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getToReplacement()
-	 * <em>To Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getToReplacement() <em>To Replacement</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getToReplacement()
 	 * @generated
 	 * @ordered
@@ -128,10 +116,9 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	protected static final String TO_REPLACEMENT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getToReplacement()
-	 * <em>To Replacement</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getToReplacement() <em>To Replacement</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getToReplacement()
 	 * @generated
 	 * @ordered
@@ -140,7 +127,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected TransformImpl() {
@@ -149,7 +135,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -170,7 +155,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -191,7 +175,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -199,16 +182,16 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.TRANSFORM__FROM_PATTERN:
-				setFromPattern((Pattern) newValue);
+				setFromPattern((Pattern)newValue);
 				return;
 			case RmapPackage.TRANSFORM__FROM_REPLACEMENT:
-				setFromReplacement((String) newValue);
+				setFromReplacement((String)newValue);
 				return;
 			case RmapPackage.TRANSFORM__TO_PATTERN:
-				setToPattern((Pattern) newValue);
+				setToPattern((Pattern)newValue);
 				return;
 			case RmapPackage.TRANSFORM__TO_REPLACEMENT:
-				setToReplacement((String) newValue);
+				setToReplacement((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -216,7 +199,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -241,7 +223,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -251,7 +232,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -261,7 +241,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -271,7 +250,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -281,7 +259,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -294,7 +271,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -307,7 +283,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -320,7 +295,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -333,14 +307,12 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String toString() {
-		if (eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (fromPattern: ");
@@ -375,7 +347,6 @@ public class TransformImpl extends EObjectImpl implements Transform {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 

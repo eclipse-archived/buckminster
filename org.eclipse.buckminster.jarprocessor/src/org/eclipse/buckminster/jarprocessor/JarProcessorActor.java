@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
@@ -16,6 +15,7 @@ import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.Prerequisite;
 import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.model.common.CommonConstants;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -97,7 +97,7 @@ public class JarProcessorActor extends AbstractActor {
 	}
 
 	private File getTempDir() {
-		return new File((String) context.getProperties().get(KeyConstants.ACTION_TEMP));
+		return new File(context.getProperties().get(CommonConstants.ACTION_TEMP));
 	}
 
 	private void packJars(File inputDir, File outputDir, Map<String, ? extends Object> props) throws CoreException, IOException {

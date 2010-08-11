@@ -35,25 +35,17 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getId <em>Id
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getConnection
- * <em>Connection</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getType <em>Type
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getBranches <em>
- * Branches</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#isCheckout <em>
- * Checkout</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#isAllowDirty <em>
- * Allow Dirty</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#isUpdate <em>
- * Update</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getDocumentation
- * <em>Documentation</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getId <em>Id</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getConnection <em>Connection</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getBranches <em>Branches</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#isCheckout <em>Checkout</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#isAllowDirty <em>Allow Dirty</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#isUpdate <em>Update</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.RepositoryImpl#getDocumentation <em>Documentation</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class RepositoryImpl extends EObjectImpl implements Repository {
@@ -78,9 +70,8 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	protected String id = ID_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getConnection() <em>Connection</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getConnection() <em>Connection</em>}' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getConnection()
 	 * @generated
 	 * @ordered
@@ -90,7 +81,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	/**
 	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #getType()
 	 * @generated
 	 * @ordered
@@ -100,7 +90,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	/**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #getType()
 	 * @generated
 	 * @ordered
@@ -108,9 +97,8 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	protected String type = TYPE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getBranches() <em>Branches</em>}'
-	 * containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getBranches() <em>Branches</em>}' containment reference list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getBranches()
 	 * @generated
 	 * @ordered
@@ -118,9 +106,8 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	protected EList<BranchPoint> branches;
 
 	/**
-	 * The default value of the '{@link #isCheckout() <em>Checkout</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #isCheckout() <em>Checkout</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isCheckout()
 	 * @generated
 	 * @ordered
@@ -128,9 +115,8 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	protected static final boolean CHECKOUT_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #isCheckout() <em>Checkout</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #isCheckout() <em>Checkout</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isCheckout()
 	 * @generated
 	 * @ordered
@@ -138,9 +124,8 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	protected boolean checkout = CHECKOUT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isAllowDirty() <em>Allow Dirty</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #isAllowDirty() <em>Allow Dirty</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isAllowDirty()
 	 * @generated
 	 * @ordered
@@ -148,9 +133,8 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	protected static final boolean ALLOW_DIRTY_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isAllowDirty() <em>Allow Dirty</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #isAllowDirty() <em>Allow Dirty</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isAllowDirty()
 	 * @generated
 	 * @ordered
@@ -160,7 +144,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	/**
 	 * The default value of the '{@link #isUpdate() <em>Update</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #isUpdate()
 	 * @generated
 	 * @ordered
@@ -170,7 +153,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	/**
 	 * The cached value of the '{@link #isUpdate() <em>Update</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #isUpdate()
 	 * @generated
 	 * @ordered
@@ -178,10 +160,9 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	protected boolean update = UPDATE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getDocumentation()
-	 * <em>Documentation</em>}' containment reference. <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' containment reference.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #getDocumentation()
 	 * @generated
 	 * @ordered
@@ -190,7 +171,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected RepositoryImpl() {
@@ -199,45 +179,34 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetConnection(Format newConnection, NotificationChain msgs) {
 		Format oldConnection = connection;
 		connection = newConnection;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.REPOSITORY__CONNECTION, oldConnection,
-					newConnection);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.REPOSITORY__CONNECTION, oldConnection, newConnection);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs) {
 		Documentation oldDocumentation = documentation;
 		documentation = newDocumentation;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.REPOSITORY__DOCUMENTATION, oldDocumentation,
-					newDocumentation);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.REPOSITORY__DOCUMENTATION, oldDocumentation, newDocumentation);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -266,7 +235,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -276,7 +244,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 			case RmapPackage.REPOSITORY__CONNECTION:
 				return basicSetConnection(null, msgs);
 			case RmapPackage.REPOSITORY__BRANCHES:
-				return ((InternalEList<?>) getBranches()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>)getBranches()).basicRemove(otherEnd, msgs);
 			case RmapPackage.REPOSITORY__DOCUMENTATION:
 				return basicSetDocumentation(null, msgs);
 		}
@@ -285,7 +253,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -314,7 +281,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
@@ -322,29 +288,29 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.REPOSITORY__ID:
-				setId((String) newValue);
+				setId((String)newValue);
 				return;
 			case RmapPackage.REPOSITORY__CONNECTION:
-				setConnection((Format) newValue);
+				setConnection((Format)newValue);
 				return;
 			case RmapPackage.REPOSITORY__TYPE:
-				setType((String) newValue);
+				setType((String)newValue);
 				return;
 			case RmapPackage.REPOSITORY__BRANCHES:
 				getBranches().clear();
-				getBranches().addAll((Collection<? extends BranchPoint>) newValue);
+				getBranches().addAll((Collection<? extends BranchPoint>)newValue);
 				return;
 			case RmapPackage.REPOSITORY__CHECKOUT:
-				setCheckout((Boolean) newValue);
+				setCheckout((Boolean)newValue);
 				return;
 			case RmapPackage.REPOSITORY__ALLOW_DIRTY:
-				setAllowDirty((Boolean) newValue);
+				setAllowDirty((Boolean)newValue);
 				return;
 			case RmapPackage.REPOSITORY__UPDATE:
-				setUpdate((Boolean) newValue);
+				setUpdate((Boolean)newValue);
 				return;
 			case RmapPackage.REPOSITORY__DOCUMENTATION:
-				setDocumentation((Documentation) newValue);
+				setDocumentation((Documentation)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -352,7 +318,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -363,7 +328,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 				setId(ID_EDEFAULT);
 				return;
 			case RmapPackage.REPOSITORY__CONNECTION:
-				setConnection((Format) null);
+				setConnection((Format)null);
 				return;
 			case RmapPackage.REPOSITORY__TYPE:
 				setType(TYPE_EDEFAULT);
@@ -381,7 +346,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 				setUpdate(UPDATE_EDEFAULT);
 				return;
 			case RmapPackage.REPOSITORY__DOCUMENTATION:
-				setDocumentation((Documentation) null);
+				setDocumentation((Documentation)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -389,7 +354,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -402,7 +366,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -412,7 +375,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -422,7 +384,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -432,7 +393,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -442,7 +402,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -452,7 +411,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -462,7 +420,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -472,7 +429,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -485,7 +441,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -498,7 +453,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -506,19 +460,18 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 		if (newConnection != connection) {
 			NotificationChain msgs = null;
 			if (connection != null)
-				msgs = ((InternalEObject) connection).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.REPOSITORY__CONNECTION, null, msgs);
+				msgs = ((InternalEObject)connection).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.REPOSITORY__CONNECTION, null, msgs);
 			if (newConnection != null)
-				msgs = ((InternalEObject) newConnection).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.REPOSITORY__CONNECTION, null, msgs);
+				msgs = ((InternalEObject)newConnection).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.REPOSITORY__CONNECTION, null, msgs);
 			msgs = basicSetConnection(newConnection, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.REPOSITORY__CONNECTION, newConnection, newConnection));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -526,21 +479,18 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
 			if (documentation != null)
-				msgs = ((InternalEObject) documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.REPOSITORY__DOCUMENTATION, null,
-						msgs);
+				msgs = ((InternalEObject)documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.REPOSITORY__DOCUMENTATION, null, msgs);
 			if (newDocumentation != null)
-				msgs = ((InternalEObject) newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.REPOSITORY__DOCUMENTATION, null,
-						msgs);
+				msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.REPOSITORY__DOCUMENTATION, null, msgs);
 			msgs = basicSetDocumentation(newDocumentation, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.REPOSITORY__DOCUMENTATION, newDocumentation, newDocumentation));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -553,7 +503,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -566,7 +515,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -579,14 +527,12 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String toString() {
-		if (eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (id: ");
@@ -605,7 +551,6 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 

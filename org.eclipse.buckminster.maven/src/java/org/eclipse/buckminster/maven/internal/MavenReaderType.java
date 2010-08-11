@@ -15,19 +15,22 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
-import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
+import org.eclipse.buckminster.model.common.ComponentRequest;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.maven.MapEntry;
+import org.eclipse.buckminster.rmap.maven.MavenFactory;
+import org.eclipse.buckminster.rmap.maven.MavenProvider;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -81,9 +84,9 @@ public class MavenReaderType extends URLCatalogReaderType {
 	}
 
 	static MapEntry getGroupAndArtifact(Provider provider, ComponentRequest request) throws CoreException {
-		String name = request.getName();
-		return (provider instanceof MavenProvider) ? ((MavenProvider) provider).getGroupAndArtifact(name) : MavenProvider
-				.getDefaultGroupAndArtifact(name);
+		String name = request.getId();
+		return (provider instanceof MavenProvider) ? ((MavenProvider) provider).getMapEntry(name) : MavenFactory.eINSTANCE
+				.createDefaultMapEntry(name);
 	}
 
 	private final LocalCache localCache;

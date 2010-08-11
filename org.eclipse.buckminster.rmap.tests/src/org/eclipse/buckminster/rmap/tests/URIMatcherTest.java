@@ -22,9 +22,8 @@ import org.eclipse.buckminster.rmap.URIMatcher;
 import org.eclipse.emf.ecore.util.FeatureMap;
 
 /**
- * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>URI Matcher</b></em>'.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A test case for the model object '
+ * <em><b>URI Matcher</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following operations are tested:
  * <ul>
@@ -36,16 +35,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 public class URIMatcherTest extends TestCase {
 
 	/**
-	 * The fixture for this URI Matcher test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected URIMatcher fixture = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -53,13 +43,70 @@ public class URIMatcherTest extends TestCase {
 	}
 
 	/**
-	 * Constructs a new URI Matcher test case with the given name.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The fixture for this URI Matcher test case.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @generated
+	 */
+	protected URIMatcher fixture = null;
+
+	/**
+	 * Constructs a new URI Matcher test case with the given name. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public URIMatcherTest(String name) {
 		super(name);
+	}
+
+	/**
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.URIMatcher#getComponentType()
+	 * <em>Get Component Type</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.URIMatcher#getComponentType()
+	 * @generated NOT
+	 */
+	public void testGetComponentType() {
+		assertNull(getFixture().getComponentType());
+
+		RmapFactory factory = RmapFactory.eINSTANCE;
+		Provider provider = factory.createProvider();
+		provider.getComponentTypes().add("osgi.bundle");
+		provider.setMatcher(getFixture());
+		assertEquals("osgi.bundle", fixture.getComponentType());
+
+		provider.getComponentTypes().add("eclipse.feature");
+		assertNull(getFixture().getComponentType());
+	}
+
+	public void testGetMatchMap__CharSequence() {
+		Map<String, String> result = getFixture().getMatchMap(
+				"http://download.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/download.php?dropFile=eclipse-SDK-3.6-win32.zip");
+		assertNotNull(result);
+		assertEquals("eclipse-SDK", result.get("tagged.name"));
+		assertEquals("3.6", result.get("tagged.version"));
+		assertEquals("win32", result.get("tagged.os"));
+
+		result = getFixture().getMatchMap(
+				"http://download.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/download.php?dropFile=eclipse-SDK-3.6-win32-x86_64.zip");
+		assertNotNull(result);
+		assertEquals("eclipse-SDK", result.get("tagged.name"));
+		assertEquals("3.6", result.get("tagged.version"));
+		assertEquals("win32", result.get("tagged.os"));
+		assertEquals("x86_64", result.get("tagged.arch"));
+	}
+
+	/**
+	 * Returns the fixture for this URI Matcher test case.
+	 * <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected URIMatcher getFixture() {
+		return fixture;
 	}
 
 	/**
@@ -73,18 +120,8 @@ public class URIMatcherTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this URI Matcher test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected URIMatcher getFixture() {
-		return fixture;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated NOT
 	 */
@@ -126,29 +163,12 @@ public class URIMatcherTest extends TestCase {
 		end.setPrefix(".");
 		end.setPattern("zip|tar\\.gz");
 		matchers.add(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_PATTERN, end);
-		
 
 		setFixture(matcher);
 	}
 
-	public void testGetMatchMap__CharSequence() {
-		Map<String, String> result = getFixture().getMatchMap("http://download.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/download.php?dropFile=eclipse-SDK-3.6-win32.zip");
-		assertNotNull(result);
-		assertEquals("eclipse-SDK", result.get("tagged.name"));
-		assertEquals("3.6", result.get("tagged.version"));
-		assertEquals("win32", result.get("tagged.os"));
-
-		result = getFixture().getMatchMap("http://download.eclipse.org/eclipse/downloads/drops/R-3.6-201006080911/download.php?dropFile=eclipse-SDK-3.6-win32-x86_64.zip");
-		assertNotNull(result);
-		assertEquals("eclipse-SDK", result.get("tagged.name"));
-		assertEquals("3.6", result.get("tagged.version"));
-		assertEquals("win32", result.get("tagged.os"));
-		assertEquals("x86_64", result.get("tagged.arch"));
-	}
-
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */
@@ -157,24 +177,4 @@ public class URIMatcherTest extends TestCase {
 		setFixture(null);
 	}
 
-	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.URIMatcher#getComponentType() <em>Get Component Type</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.URIMatcher#getComponentType()
-	 * @generated NOT
-	 */
-	public void testGetComponentType() {
-		assertNull(getFixture().getComponentType());
-
-		RmapFactory factory = RmapFactory.eINSTANCE;
-		Provider provider = factory.createProvider();
-		provider.getComponentTypes().add("osgi.bundle");
-		provider.setMatcher(getFixture());
-		assertEquals("osgi.bundle", fixture.getComponentType());
-
-		provider.getComponentTypes().add("eclipse.feature");
-		assertNull(getFixture().getComponentType());
-	}
-
-} //URIMatcherTest
+} // URIMatcherTest

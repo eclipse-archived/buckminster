@@ -66,8 +66,12 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		}
 	}
 
+	public boolean isUnpack() {
+		return base.isUnpack();
+	}
+
 	@Override
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
+	public void materialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 1000);
 		try {
 			localize(!base.isFeature(), MonitorUtils.subMonitor(monitor, 800));
@@ -77,10 +81,6 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 		} finally {
 			monitor.done();
 		}
-	}
-
-	public boolean isUnpack() {
-		return base.isUnpack();
 	}
 
 	@Override
@@ -170,8 +170,7 @@ public class EclipseImportReader extends AbstractRemoteReader implements IPDECon
 	private int getImportType() {
 		int importType = base.getType();
 		if (importType == PluginImportOperation.IMPORT_UNKNOWN)
-			importType = getProviderMatch().getProvider().hasSource() ? PluginImportOperation.IMPORT_WITH_SOURCE
-					: PluginImportOperation.IMPORT_BINARY;
+			importType = getProviderMatch().getProvider().isSource() ? PluginImportOperation.IMPORT_WITH_SOURCE : PluginImportOperation.IMPORT_BINARY;
 		return importType;
 	}
 

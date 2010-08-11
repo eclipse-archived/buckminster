@@ -26,22 +26,18 @@ import org.eclipse.equinox.p2.metadata.IVersionFormat;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl#getBase <em>Base
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl#getVersionFormat
- * <em>Version Format</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl#getVersionType
- * <em>Version Type</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl#getBase <em>Base</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl#getVersionFormat <em>Version Format</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl#getVersionType <em>Version Type</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	/**
 	 * The default value of the '{@link #getBase() <em>Base</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #getBase()
 	 * @generated
 	 * @ordered
@@ -51,7 +47,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	/**
 	 * The cached value of the '{@link #getBase() <em>Base</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see #getBase()
 	 * @generated
 	 * @ordered
@@ -59,10 +54,9 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	protected String base = BASE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getVersionFormat()
-	 * <em>Version Format</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getVersionFormat() <em>Version Format</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getVersionFormat()
 	 * @generated
 	 * @ordered
@@ -70,10 +64,9 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	protected static final IVersionFormat VERSION_FORMAT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getVersionFormat()
-	 * <em>Version Format</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getVersionFormat() <em>Version Format</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #getVersionFormat()
 	 * @generated
 	 * @ordered
@@ -81,9 +74,8 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	protected IVersionFormat versionFormat = VERSION_FORMAT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getVersionType() <em>Version Type</em>}
-	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getVersionType() <em>Version Type</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getVersionType()
 	 * @generated
 	 * @ordered
@@ -91,9 +83,8 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	protected static final String VERSION_TYPE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getVersionType() <em>Version Type</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getVersionType() <em>Version Type</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getVersionType()
 	 * @generated
 	 * @ordered
@@ -102,7 +93,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected URIMatcherImpl() {
@@ -111,7 +101,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -130,7 +119,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -149,7 +137,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -157,13 +144,13 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.URI_MATCHER__BASE:
-				setBase((String) newValue);
+				setBase((String)newValue);
 				return;
 			case RmapPackage.URI_MATCHER__VERSION_FORMAT:
-				setVersionFormat((IVersionFormat) newValue);
+				setVersionFormat((IVersionFormat)newValue);
 				return;
 			case RmapPackage.URI_MATCHER__VERSION_TYPE:
-				setVersionType((String) newValue);
+				setVersionType((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -171,7 +158,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -193,7 +179,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -227,7 +212,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -237,7 +221,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -250,7 +233,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -263,7 +245,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -276,13 +257,11 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (base: ");
@@ -297,7 +276,6 @@ public class URIMatcherImpl extends RxAssemblyImpl implements URIMatcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 

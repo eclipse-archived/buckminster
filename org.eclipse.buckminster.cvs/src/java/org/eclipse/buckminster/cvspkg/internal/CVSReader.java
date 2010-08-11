@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.core.helpers.FileHandle;
 import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.cvspkg.Messages;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
@@ -76,7 +76,7 @@ public class CVSReader extends AbstractCatalogReader {
 	}
 
 	@Override
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
+	public void materialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		monitor.beginTask(null, 100);
 
 		CVSRepositoryLocation cvsLocation = (CVSRepositoryLocation) session.getLocation();

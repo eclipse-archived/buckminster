@@ -16,9 +16,8 @@ import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.Transform;
 
 /**
- * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>Transform</b></em>'.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A test case for the model object '
+ * <em><b>Transform</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following operations are tested:
  * <ul>
@@ -31,16 +30,7 @@ import org.eclipse.buckminster.rmap.Transform;
 public class TransformTest extends TestCase {
 
 	/**
-	 * The fixture for this Transform test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected Transform fixture = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -48,9 +38,17 @@ public class TransformTest extends TestCase {
 	}
 
 	/**
-	 * Constructs a new Transform test case with the given name.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The fixture for this Transform test case.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @generated
+	 */
+	protected Transform fixture = null;
+
+	/**
+	 * Constructs a new Transform test case with the given name. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public TransformTest(String name) {
@@ -58,13 +56,29 @@ public class TransformTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Transform test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.Transform#transformFrom(java.lang.String)
+	 * <em>Transform From</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.Transform#transformFrom(java.lang.String)
+	 * @generated NOT
 	 */
-	protected void setFixture(Transform fixture) {
-		this.fixture = fixture;
+	public void testTransformFrom__String() {
+		assertEquals("REL1_2_3apa", fixture.transformFrom("1.2.3.apa"));
+	}
+
+	/**
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.Transform#transformTo(java.lang.String)
+	 * <em>Transform To</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.Transform#transformTo(java.lang.String)
+	 * @generated NOT
+	 */
+	public void testTransformTo__String() {
+		assertEquals("1.2.3.apa", fixture.transformTo("REL1_2_3apa"));
 	}
 
 	/**
@@ -78,8 +92,18 @@ public class TransformTest extends TestCase {
 	}
 
 	/**
+	 * Sets the fixture for this Transform test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void setFixture(Transform fixture) {
+		this.fixture = fixture;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated NOT
 	 */
@@ -93,8 +117,7 @@ public class TransformTest extends TestCase {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */
@@ -103,26 +126,4 @@ public class TransformTest extends TestCase {
 		setFixture(null);
 	}
 
-	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.Transform#transformFrom(java.lang.String) <em>Transform From</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.Transform#transformFrom(java.lang.String)
-	 * @generated NOT
-	 */
-	public void testTransformFrom__String() {
-		assertEquals("REL1_2_3apa", fixture.transformFrom("1.2.3.apa"));
-	}
-
-	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.Transform#transformTo(java.lang.String) <em>Transform To</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.Transform#transformTo(java.lang.String)
-	 * @generated NOT
-	 */
-	public void testTransformTo__String() {
-		assertEquals("1.2.3.apa", fixture.transformTo("REL1_2_3apa"));
-	}
-
-} //TransformTest
+} // TransformTest

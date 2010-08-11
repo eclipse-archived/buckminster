@@ -14,9 +14,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.pde.cspecgen.feature.CSpecFromFeature;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.pde.internal.model.EditableFeatureModel;
@@ -65,7 +66,10 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 			}
 			Version version = findBestVersion(featureVers, id, "feature", refId, vstr); //$NON-NLS-1$
 			if (version != null) {
-				ComponentIdentifier cid = new ComponentIdentifier(id, IComponentType.ECLIPSE_FEATURE, version);
+				ComponentIdentifier cid = CommonFactory.eINSTANCE.createComponentIdentifier();
+				cid.setId(id);
+				cid.setType(IComponentType.ECLIPSE_FEATURE);
+				cid.setVersion(version);
 				deps.add(cid);
 				String nvstr = cid.getVersion().toString();
 				if (!nvstr.equals(vstr))
@@ -78,7 +82,10 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 			String vstr = ref.getVersion();
 			Version version = findBestVersion(pluginVers, id, "plugin", ref.getId(), vstr); //$NON-NLS-1$
 			if (version != null) {
-				ComponentIdentifier cid = new ComponentIdentifier(id, IComponentType.OSGI_BUNDLE, version);
+				ComponentIdentifier cid = CommonFactory.eINSTANCE.createComponentIdentifier();
+				cid.setId(id);
+				cid.setType(IComponentType.OSGI_BUNDLE);
+				cid.setVersion(version);
 				deps.add(cid);
 				String nvstr = cid.getVersion().toString();
 				if (!nvstr.equals(vstr))
@@ -105,8 +112,11 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 		}
 
 		if (versionStr.endsWith(PROPERTY_QUALIFIER)) {
-			ComponentIdentifier ci = new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, version);
-			Version newVersion = replaceQualifier(ci, deps);
+			ComponentIdentifier cid = CommonFactory.eINSTANCE.createComponentIdentifier();
+			cid.setId(feature.getId());
+			cid.setType(IComponentType.ECLIPSE_FEATURE);
+			cid.setVersion(version);
+			Version newVersion = replaceQualifier(cid, deps);
 			if (newVersion != null && !version.equals(newVersion)) {
 				String newVersionStr = newVersion.toString();
 				feature.setVersion(newVersionStr);
@@ -116,7 +126,7 @@ public class FeatureConsolidator extends GroupConsolidator implements IModelChan
 				}
 				version = newVersion;
 			}
-			if (isUsingGenerator(ci))
+			if (isUsingGenerator(cid))
 				return;
 		}
 

@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.internal.imports.PluginImportOperation;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -157,7 +157,7 @@ final class EclipseImportBase {
 
 		this.query = uri.getQuery();
 		this.key = key;
-		this.feature = IComponentType.ECLIPSE_FEATURE.equals(key.getRequest().getComponentTypeID());
+		this.feature = IComponentType.ECLIPSE_FEATURE.equals(key.getRequest().getType());
 
 		Map<String, String> params = URLUtils.queryAsParameters(uri.getQuery());
 		String importType = params.get(PARAM_IMPORT_TYPE);
@@ -185,7 +185,7 @@ final class EclipseImportBase {
 	}
 
 	String getComponentName() {
-		return key.getRequest().getName();
+		return key.getRequest().getId();
 	}
 
 	List<IFeatureModel> getFeatureModels(EclipseImportReaderType readerType, IProgressMonitor monitor) throws CoreException {

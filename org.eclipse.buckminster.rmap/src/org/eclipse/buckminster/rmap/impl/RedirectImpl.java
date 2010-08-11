@@ -21,18 +21,16 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.impl.RedirectImpl#getRedirectTo <em>
- * Redirect To</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.impl.RedirectImpl#getRedirectTo <em>Redirect To</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class RedirectImpl extends MatcherImpl implements Redirect {
 	/**
-	 * The default value of the '{@link #getRedirectTo() <em>Redirect To</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getRedirectTo() <em>Redirect To</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getRedirectTo()
 	 * @generated
 	 * @ordered
@@ -40,9 +38,8 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 	protected static final String REDIRECT_TO_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getRedirectTo() <em>Redirect To</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getRedirectTo() <em>Redirect To</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getRedirectTo()
 	 * @generated
 	 * @ordered
@@ -51,7 +48,6 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected RedirectImpl() {
@@ -60,7 +56,6 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -75,7 +70,6 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -90,7 +84,6 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -98,7 +91,7 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.REDIRECT__REDIRECT_TO:
-				setRedirectTo((String) newValue);
+				setRedirectTo((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -106,7 +99,6 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -122,7 +114,6 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -132,7 +123,6 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
@@ -145,14 +135,12 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String toString() {
-		if (eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (redirectTo: ");
@@ -163,7 +151,6 @@ public class RedirectImpl extends MatcherImpl implements Redirect {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 

@@ -16,16 +16,15 @@ import org.eclipse.emf.common.util.Enumerator;
  * <!-- begin-user-doc --> A representation of the literals of the enumeration '
  * <em><b>Version Selector Type</b></em>', and utility methods for working with
  * them. <!-- end-user-doc -->
- * 
  * @see org.eclipse.buckminster.rmap.RmapPackage#getVersionSelectorType()
  * @model
  * @generated
  */
 public enum VersionSelectorType implements Enumerator {
 	/**
-	 * The '<em><b>BRANCH</b></em>' literal object. <!-- begin-user-doc --> <!--
+	 * The '<em><b>BRANCH</b></em>' literal object.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #BRANCH_VALUE
 	 * @generated
 	 * @ordered
@@ -33,9 +32,9 @@ public enum VersionSelectorType implements Enumerator {
 	BRANCH(0, "BRANCH", "BRANCH"),
 
 	/**
-	 * The '<em><b>TAG</b></em>' literal object. <!-- begin-user-doc --> <!--
+	 * The '<em><b>TAG</b></em>' literal object.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @see #TAG_VALUE
 	 * @generated
 	 * @ordered
@@ -43,13 +42,13 @@ public enum VersionSelectorType implements Enumerator {
 	TAG(1, "TAG", "TAG");
 
 	/**
-	 * The '<em><b>BRANCH</b></em>' literal value. <!-- begin-user-doc -->
+	 * The '<em><b>BRANCH</b></em>' literal value.
+	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>BRANCH</b></em>' literal object isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #BRANCH
 	 * @model
 	 * @generated
@@ -58,13 +57,13 @@ public enum VersionSelectorType implements Enumerator {
 	public static final int BRANCH_VALUE = 0;
 
 	/**
-	 * The '<em><b>TAG</b></em>' literal value. <!-- begin-user-doc -->
+	 * The '<em><b>TAG</b></em>' literal value.
+	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of '<em><b>TAG</b></em>' literal object isn't clear, there
 	 * really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * 
 	 * @see #TAG
 	 * @model
 	 * @generated
@@ -75,39 +74,36 @@ public enum VersionSelectorType implements Enumerator {
 	/**
 	 * An array of all the '<em><b>Version Selector Type</b></em>' enumerators.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
-	private static final VersionSelectorType[] VALUES_ARRAY = new VersionSelectorType[] { BRANCH, TAG, };
+	private static final VersionSelectorType[] VALUES_ARRAY = new VersionSelectorType[] {
+			BRANCH,
+			TAG,
+		};
 
 	/**
-	 * A public read-only list of all the '<em><b>Version Selector Type</b></em>
-	 * ' enumerators. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * A public read-only list of all the '<em><b>Version Selector Type</b></em>' enumerators.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public static final List<VersionSelectorType> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Version Selector Type</b></em>' literal with the
-	 * specified integer value. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Returns the '<em><b>Version Selector Type</b></em>' literal with the specified integer value.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public static VersionSelectorType get(int value) {
 		switch (value) {
-			case BRANCH_VALUE:
-				return BRANCH;
-			case TAG_VALUE:
-				return TAG;
+			case BRANCH_VALUE: return BRANCH;
+			case TAG_VALUE: return TAG;
 		}
 		return null;
 	}
 
 	/**
-	 * Returns the '<em><b>Version Selector Type</b></em>' literal with the
-	 * specified literal value. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Returns the '<em><b>Version Selector Type</b></em>' literal with the specified literal value.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public static VersionSelectorType get(String literal) {
@@ -121,9 +117,8 @@ public enum VersionSelectorType implements Enumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Version Selector Type</b></em>' literal with the
-	 * specified name. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Returns the '<em><b>Version Selector Type</b></em>' literal with the specified name.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	public static VersionSelectorType getByName(String name) {
@@ -138,29 +133,26 @@ public enum VersionSelectorType implements Enumerator {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private final int value;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private final String name;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private final String literal;
 
 	/**
-	 * Only this class can construct instances. <!-- begin-user-doc --> <!--
+	 * Only this class can construct instances.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	private VersionSelectorType(int value, String name, String literal) {
@@ -171,35 +163,31 @@ public enum VersionSelectorType implements Enumerator {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getLiteral() {
-		return literal;
+	  return literal;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getName() {
-		return name;
+	  return name;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public int getValue() {
-		return value;
+	  return value;
 	}
 
 	/**
-	 * Returns the literal value of the enumerator, which is its string
-	 * representation. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * Returns the literal value of the enumerator, which is its string representation.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	@Override

@@ -64,7 +64,7 @@ public abstract class PropertiesTest extends TestCase {
 	}
 
 	public void testCircularExpansionTrap() {
-		IProperties<String> props = new ExpandingProperties();
+		IProperties props = new ExpandingProperties();
 		props.put("some.text", "text is ${some.text.again}!");
 		props.put("some.other.text", "Hello ${some.text}!");
 		props.put("some.text.again", "Ouch! ${some.other.text}");
@@ -78,7 +78,7 @@ public abstract class PropertiesTest extends TestCase {
 	}
 
 	public void testExpandingProperties() {
-		IProperties<String> props = new ExpandingProperties(BMProperties.getSystemProperties());
+		IProperties props = new ExpandingProperties(BMProperties.getSystemProperties());
 		props.put("salut", "Hello ${user.name}!");
 		props.put("salut.home", "${salut} Your $${user.home} is ${user.home}");
 
@@ -111,7 +111,7 @@ public abstract class PropertiesTest extends TestCase {
 		String expected = new MessageFormat(fmtString).format(new String[] { "pserver", System.getProperty("user.name"), "buckminster.tigris.org",
 				"/cvs" });
 
-		IProperties<String> props = BMProperties.getSystemProperties();
+		IProperties props = BMProperties.getSystemProperties();
 		String result = fmt.getValue(props);
 		log(result);
 		assertEquals(expected, result);
@@ -186,7 +186,7 @@ public abstract class PropertiesTest extends TestCase {
 		pref.setKey("java.version");
 		fmt.getValues().add(pref);
 
-		IProperties<String> props = BMProperties.getSystemProperties();
+		IProperties props = BMProperties.getSystemProperties();
 		String result = fmt.getValue(props);
 		String expected = "You are " + props.get("user.name") + ", the parent of your home is "
 				+ (new File(props.get("user.home"))).getParent().replace('\\', '/') + " and you run Java version " + props.get("java.version");

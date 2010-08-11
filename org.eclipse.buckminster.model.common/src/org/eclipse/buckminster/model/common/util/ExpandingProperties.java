@@ -41,7 +41,7 @@ import org.eclipse.buckminster.model.common.impl.ValueImpl;
  * 
  * @author Thomas Hallgren
  */
-public class ExpandingProperties implements IProperties<String> {
+public class ExpandingProperties implements IProperties {
 	class EntryWrapper implements Entry<String, String> {
 		private final Entry<String, Value> entry;
 

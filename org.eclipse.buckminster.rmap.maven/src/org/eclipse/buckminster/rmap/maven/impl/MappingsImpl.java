@@ -76,6 +76,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -92,6 +93,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -108,6 +110,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -124,8 +127,8 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case MavenPackage.MAPPINGS__ENTRIES:
@@ -145,6 +148,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -163,7 +167,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EList<MapEntry> getEntries() {
 		if (entries == null) {
 			entries = new EObjectContainmentEList<MapEntry>(MapEntry.class, this, MavenPackage.MAPPINGS__ENTRIES);
@@ -176,7 +180,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EList<Transform> getRules() {
 		if (rules == null) {
 			rules = new EObjectContainmentEList<Transform>(Transform.class, this, MavenPackage.MAPPINGS__RULES);
@@ -189,6 +193,7 @@ public class MappingsImpl extends EObjectImpl implements Mappings {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return MavenPackage.Literals.MAPPINGS;

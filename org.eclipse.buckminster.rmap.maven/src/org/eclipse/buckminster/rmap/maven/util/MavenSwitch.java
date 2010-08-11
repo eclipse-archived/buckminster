@@ -8,7 +8,7 @@ package org.eclipse.buckminster.rmap.maven.util;
 
 import java.util.List;
 
-import org.eclipse.buckminster.rmap.Properties;
+import org.eclipse.buckminster.model.common.Properties;
 import org.eclipse.buckminster.rmap.Provider;
 
 import org.eclipse.buckminster.rmap.maven.*;

@@ -17,5 +17,6 @@ Require-Bundle: org.eclipse.buckminster.core.test,
  org.eclipse.buckminster.osgi.filter.test,
  org.eclipse.buckminster.pde.test,
  org.eclipse.buckminster.rmap.tests,
+ org.eclipse.buckminster.rmap.maven.tests,
  org.junit
 Export-Package: org.eclipse.buckminster.tests

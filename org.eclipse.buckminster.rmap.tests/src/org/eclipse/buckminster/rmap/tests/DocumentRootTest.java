@@ -13,9 +13,9 @@ import junit.framework.TestCase;
  */
 public class DocumentRootTest extends TestCase {
 	/**
-	 * Constructs a new Document Root test case with the given name.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Constructs a new Document Root test case with the given name. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public DocumentRootTest(String name) {
@@ -23,13 +23,14 @@ public class DocumentRootTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getMatch() <em>Match</em>}' feature getter.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Tests the '{@link org.eclipse.emf.ecore.EObject#getMatch()
+	 * <em>Match</em>}' feature getter. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
 	 * @see org.eclipse.emf.ecore.EObject#getMatch()
 	 * @generated NOT
 	 */
 	public void testNothing() {
 		// Dummy to avoid warnings
 	}
-} //DocumentRootTest
+} // DocumentRootTest

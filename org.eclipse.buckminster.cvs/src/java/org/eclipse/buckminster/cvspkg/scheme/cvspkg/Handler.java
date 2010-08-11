@@ -21,20 +21,21 @@ import java.net.URLConnection;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
-import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.cvspkg.Messages;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.RmapFactory;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -134,10 +135,15 @@ public class Handler extends AbstractURLStreamHandlerService {
 				VersionMatch vm = versionSelector == null ? null
 						: new VersionMatch(null, VersionSelector.fromString(versionSelector), -1, null, null);
 				IProgressMonitor nullMon = new NullProgressMonitor();
-				Provider provider = new Provider(null,
-						"cvs", new String[] { IComponentType.UNKNOWN }, null, new Format(bld.toString()), null, null, null, null, null, null); //$NON-NLS-1$
+
+				Provider provider = RmapFactory.eINSTANCE.createProvider();
+				provider.setReaderType("cvs"); //$NON-NLS-1$
+				provider.getComponentTypes().add(IComponentType.UNKNOWN);
+				org.eclipse.buckminster.model.common.Format fmt = CommonFactory.eINSTANCE.createFormat();
+				fmt.setFormat(bld.toString());
+				provider.setURI(fmt);
 				ComponentQueryBuilder cqBld = new ComponentQueryBuilder();
-				cqBld.getRootRequestBuilder().setName(fileName);
+				cqBld.getRootRequest().setId(fileName);
 				if (vm == null)
 					vm = VersionMatch.DEFAULT;
 				reader = (ICatalogReader) cvsReaderType.getReader(provider, plugin.getComponentType(IComponentType.UNKNOWN), new ResolutionContext(

@@ -31,6 +31,9 @@ import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.Logger;
@@ -71,7 +74,6 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
-	@Override
 	public final FileHandle getContents(String fileName, IProgressMonitor monitor) throws CoreException, IOException {
 		ProviderMatch ri = getProviderMatch();
 		Logger logger = CorePlugin.getLogger();
@@ -94,7 +96,6 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 		}
 	}
 
-	@Override
 	public final List<FileHandle> getRootFiles(Pattern matchPattern, IProgressMonitor monitor) throws CoreException, IOException {
 		ArrayList<FileHandle> files = new ArrayList<FileHandle>();
 		monitor.beginTask(null, 100);
@@ -126,14 +127,13 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 
 		monitor.beginTask(null, 100);
 		try {
-			innerMaterialize(location, MonitorUtils.subMonitor(monitor, 80));
+			materialize(location, MonitorUtils.subMonitor(monitor, 80));
 			copyOverlay(location, MonitorUtils.subMonitor(monitor, 10));
 		} finally {
 			monitor.done();
 		}
 	}
 
-	@Override
 	public synchronized IEclipsePreferences readBuckminsterPreferences(IProgressMonitor monitor) throws CoreException {
 		if (prefStateKnown) {
 			MonitorUtils.complete(monitor);
@@ -223,7 +223,7 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 			String fos = fileOverlay.toString();
 			if (fos.endsWith(".zip") || fos.endsWith(".jar")) //$NON-NLS-1$ //$NON-NLS-2$
 			{
-				File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+				File dest = IOUtils.createTempFolder("bmovl", ".tmp", IOUtils.getTempRoot(getProperties())); //$NON-NLS-1$ //$NON-NLS-2$
 				FileUtils.unzip(URLUtils.normalizeToURL(fos), null, null, dest, ConflictResolution.REPLACE, monitor);
 				return dest;
 			}
@@ -276,12 +276,12 @@ public abstract class AbstractCatalogReader extends AbstractReader implements IC
 
 	protected abstract <T> T innerReadFile(String fileName, IStreamConsumer<T> consumer, IProgressMonitor monitor) throws CoreException, IOException;
 
-	private File obtainRemoteOverlayFolder(URL url, IProgressMonitor monitor) throws CoreException {
+	private File obtainRemoteOverlayFolder(URL url, IProgressMonitor monitor) throws CoreException, IOException {
 		String path = url.getPath();
 		if (!(path.endsWith(".zip") || path.endsWith(".jar"))) //$NON-NLS-1$ //$NON-NLS-2$
 			throw new IllegalOverlayException(Messages.Only_zip_and_jar_archives_allowed_for_remote_overlays);
 
-		File dest = FileUtils.createTempFolder("bmovl", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
+		File dest = IOUtils.createTempFolder("bmovl", ".tmp", IOUtils.getTempRoot(getProperties())); //$NON-NLS-1$ //$NON-NLS-2$
 		FileUtils.unzip(url, null, null, dest, ConflictResolution.REPLACE, monitor);
 		return dest;
 	}

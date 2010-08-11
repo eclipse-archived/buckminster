@@ -25,12 +25,13 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.materializer.MaterializationContext;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
+import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
+import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.pde.Messages;
 import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.internal.EclipseImportReaderType;
@@ -166,7 +167,7 @@ public class PluginImportOperation extends JarImportOperation {
 	public void importPlugin(IProgressMonitor monitor) throws CoreException {
 		MaterializationContext context = (MaterializationContext) query.getContext();
 		ComponentRequest request = query.getComponentRequest();
-		String projectName = request.getProjectName();
+		String projectName = LocalResolver.getProjectName(request);
 		String id = model.getPluginBase().getId();
 		MonitorUtils.begin(monitor, NLS.bind(Messages.importing_plugin_0, id), 7);
 		try {
@@ -559,8 +560,8 @@ public class PluginImportOperation extends JarImportOperation {
 		if (isJARd()) {
 			extractJARdPlugin(MonitorUtils.subMonitor(monitor, 3));
 		} else {
-			importContent(new File(model.getInstallLocation()), project.getFullPath(), FileSystemStructureProvider.INSTANCE, null, MonitorUtils
-					.subMonitor(monitor, 1));
+			importContent(new File(model.getInstallLocation()), project.getFullPath(), FileSystemStructureProvider.INSTANCE, null,
+					MonitorUtils.subMonitor(monitor, 1));
 			importSourceArchives(MonitorUtils.subMonitor(monitor, 1));
 
 			// make sure all libraries have been imported

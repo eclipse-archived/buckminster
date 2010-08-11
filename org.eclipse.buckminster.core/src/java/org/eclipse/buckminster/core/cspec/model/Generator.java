@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IGlobalContext;
 import org.eclipse.buckminster.core.cspec.IGenerator;
 import org.eclipse.buckminster.core.cspec.PathGroup;
@@ -28,6 +27,7 @@ import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.rmap.Locator;
 import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.rmap.ResourceMap;
+import org.eclipse.buckminster.rmap.RmapConstants;
 import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.SearchPath;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -155,8 +155,8 @@ public class Generator extends NamedElement implements IGenerator {
 		Provider provider = ResourceMapResolver.immutableProvider(readerType, cType, uri, null);
 		searchPath.getProviders().add(provider);
 		Map<String, String> props = provider.getProperties();
-		props.put(KeyConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
-		props.put(KeyConstants.IS_SOURCE, "false"); //$NON-NLS-1$
+		props.put(RmapConstants.IS_MUTABLE, "false"); //$NON-NLS-1$
+		props.put(RmapConstants.IS_SOURCE, "false"); //$NON-NLS-1$
 
 		Locator locator = factory.createLocator();
 		locator.setSearchPath(searchPath);

@@ -24,18 +24,18 @@ import org.eclipse.buckminster.core.helpers.AccessibleByteArrayOutputStream;
 import org.eclipse.buckminster.core.reader.IVersionFinder;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
-import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.download.DownloadManager;
+import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.maven.MapEntry;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.w3c.dom.Document;
@@ -49,12 +49,12 @@ import org.xml.sax.SAXParseException;
  * 
  */
 public class Maven2ReaderType extends MavenReaderType {
-	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IConnectContext cctx, IProgressMonitor monitor)
-			throws CoreException, FileNotFoundException {
+	public static Document getMetadataDocument(DocumentBuilder docBld, URL url, LocalCache cache, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException {
 		try {
 			AccessibleByteArrayOutputStream buffer = new AccessibleByteArrayOutputStream(0x2000, 0x100000);
 			try {
-				DownloadManager.readInto(url, cctx, buffer, monitor);
+				DownloadManager.readInto(url, null, buffer, monitor);
 				return docBld.parse(buffer.getInputStream());
 			} catch (SAXParseException e) {
 				String msg = e.getMessage();
@@ -185,7 +185,7 @@ public class Maven2ReaderType extends MavenReaderType {
 			try {
 				LocalCache lc = getLocalCache();
 				Document doc = getMetadataDocument(docBld, createURL(uri, rootPath + v + "/" //$NON-NLS-1$
-						+ "maven-metadata.xml"), lc, resolver.getConnectContext(), new NullProgressMonitor()); //$NON-NLS-1$
+						+ "maven-metadata.xml"), lc, new NullProgressMonitor()); //$NON-NLS-1$
 				v = getSnapshotVersion(doc, v);
 				if (v == null)
 					return null;

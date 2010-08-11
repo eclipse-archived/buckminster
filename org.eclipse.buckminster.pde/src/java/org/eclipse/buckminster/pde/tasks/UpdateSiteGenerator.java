@@ -21,14 +21,14 @@ import java.util.jar.JarFile;
 
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IGroup;
 import org.eclipse.buckminster.core.cspec.IPrerequisite;
 import org.eclipse.buckminster.core.cspec.model.Attribute;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.internal.FeatureModelReader;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -120,8 +120,13 @@ public class UpdateSiteGenerator extends VersionConsolidator {
 					if (outputFile != null)
 						generateFromFeature(cspec, file, feature);
 
-					if (generateQualifier)
-						deps.add(new ComponentIdentifier(feature.getId(), IComponentType.ECLIPSE_FEATURE, Version.create(feature.getVersion())));
+					if (generateQualifier) {
+						ComponentIdentifier ci = CommonFactory.eINSTANCE.createComponentIdentifier();
+						ci.setId(feature.getId());
+						ci.setType(IComponentType.ECLIPSE_FEATURE);
+						ci.setVersion(Version.create(feature.getVersion()));
+						deps.add(ci);
+					}
 				} finally {
 					if (jarFile != null)
 						jarFile.close();
@@ -131,7 +136,7 @@ public class UpdateSiteGenerator extends VersionConsolidator {
 			if (outputFile != null)
 				Utils.serialize(saxableSite, output);
 
-			IComponentIdentifier ci = cspec.getComponentIdentifier();
+			ComponentIdentifier ci = cspec.getComponentIdentifier();
 			return generateQualifier ? replaceQualifier(cspec.getComponentIdentifier(), deps) : ci.getVersion();
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);

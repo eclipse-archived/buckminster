@@ -13,7 +13,8 @@ package org.eclipse.buckminster.core.internal.ctype;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
-import org.eclipse.buckminster.core.reader.IComponentReader;
+import org.eclipse.buckminster.core.reader.AbstractReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -24,7 +25,7 @@ public class DefaultResolutionBuilder extends AbstractResolutionBuilder {
 	@Override
 	public BOMNode build(IComponentReader[] readerHandle, boolean forResolutionAidOnly, IProgressMonitor monitor) throws CoreException {
 		IComponentReader reader = readerHandle[0];
-		CSpecBuilder bld = reader.getProviderMatch().createCSpec();
+		CSpecBuilder bld = ((AbstractReader) reader).getProviderMatch().createCSpec();
 		applyExtensions(bld, forResolutionAidOnly, reader, monitor);
 		return createNode(reader, bld);
 	}

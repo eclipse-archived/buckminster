@@ -202,8 +202,6 @@ public class ComponentNameTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		setFixture(CommonFactory.eINSTANCE.createComponentName());
-		getFixture().setId("org.eclipse.buckminster.model.common.tests");
-		getFixture().setType("osgi.bundle");
 	}
 
 	/**

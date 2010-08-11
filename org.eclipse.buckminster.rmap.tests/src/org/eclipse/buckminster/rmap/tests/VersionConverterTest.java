@@ -19,9 +19,8 @@ import org.eclipse.buckminster.rmap.VersionConverter;
 import org.eclipse.equinox.p2.metadata.Version;
 
 /**
- * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>Version Converter</b></em>'.
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> A test case for the model object '
+ * <em><b>Version Converter</b></em>'. <!-- end-user-doc -->
  * <p>
  * The following operations are tested:
  * <ul>
@@ -34,6 +33,14 @@ import org.eclipse.equinox.p2.metadata.Version;
 public class VersionConverterTest extends TestCase {
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public static void main(String[] args) {
+		TestRunner.run(VersionConverterTest.class);
+	}
+
+	/**
 	 * The fixture for this Version Converter test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -42,18 +49,9 @@ public class VersionConverterTest extends TestCase {
 	protected VersionConverter fixture = null;
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public static void main(String[] args) {
-		TestRunner.run(VersionConverterTest.class);
-	}
-
-	/**
-	 * Constructs a new Version Converter test case with the given name.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Constructs a new Version Converter test case with the given name. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public VersionConverterTest(String name) {
@@ -61,19 +59,47 @@ public class VersionConverterTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Version Converter test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.VersionConverter#createIdentifier(org.eclipse.equinox.p2.metadata.Version)
+	 * <em>Create Identifier</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.VersionConverter#createIdentifier(org.eclipse.equinox.p2.metadata.Version)
+	 * @generated NOT
 	 */
-	protected void setFixture(VersionConverter fixture) {
-		this.fixture = fixture;
+	public void testCreateIdentifier__Version() {
+		assertEquals("REL1_2_3foo", fixture.createIdentifier(Version.create("1.2.3.foo")));
+		assertEquals("REL1_2_foo", fixture.createIdentifier(Version.create("1.2.0.foo")));
+		assertEquals("REL1_2_3", fixture.createIdentifier(Version.create("1.2.3")));
 	}
 
 	/**
-	 * Returns the fixture for this Version Converter test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.VersionConverter#createVersion(java.lang.String)
+	 * <em>Create Version</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.VersionConverter#createVersion(java.lang.String)
+	 * @generated NOT
+	 */
+	public void testCreateVersion__String() {
+		Version version = fixture.createVersion("REL1_2_3foo");
+		assertNotNull(version);
+		assertEquals("1.2.3.foo", version.toString());
+
+		version = fixture.createVersion("REL1_2_foo");
+		assertNotNull(version);
+		assertEquals("1.2.0.foo", version.toString());
+
+		version = fixture.createVersion("REL1_2_3");
+		assertNotNull(version);
+		assertEquals("1.2.3", version.toString());
+	}
+
+	/**
+	 * Returns the fixture for this Version Converter test case. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected VersionConverter getFixture() {
@@ -81,8 +107,18 @@ public class VersionConverterTest extends TestCase {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Sets the fixture for this Version Converter test case. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void setFixture(VersionConverter fixture) {
+		this.fixture = fixture;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated NOT
 	 */
@@ -115,8 +151,7 @@ public class VersionConverterTest extends TestCase {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */
@@ -125,38 +160,4 @@ public class VersionConverterTest extends TestCase {
 		setFixture(null);
 	}
 
-	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.VersionConverter#createVersion(java.lang.String) <em>Create Version</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.VersionConverter#createVersion(java.lang.String)
-	 * @generated NOT
-	 */
-	public void testCreateVersion__String() {
-		Version version = fixture.createVersion("REL1_2_3foo");
-		assertNotNull(version);
-		assertEquals("1.2.3.foo", version.toString());
-		
-		version = fixture.createVersion("REL1_2_foo");
-		assertNotNull(version);
-		assertEquals("1.2.0.foo", version.toString());
-		
-		version = fixture.createVersion("REL1_2_3");
-		assertNotNull(version);
-		assertEquals("1.2.3", version.toString());
-	}
-
-	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.VersionConverter#createIdentifier(org.eclipse.equinox.p2.metadata.Version) <em>Create Identifier</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.VersionConverter#createIdentifier(org.eclipse.equinox.p2.metadata.Version)
-	 * @generated NOT
-	 */
-	public void testCreateIdentifier__Version() {
-		assertEquals("REL1_2_3foo", fixture.createIdentifier(Version.create("1.2.3.foo")));
-		assertEquals("REL1_2_foo", fixture.createIdentifier(Version.create("1.2.0.foo")));
-		assertEquals("REL1_2_3", fixture.createIdentifier(Version.create("1.2.3")));
-	}
-
-} //VersionConverterTest
+} // VersionConverterTest

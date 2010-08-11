@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 import org.eclipse.buckminster.ant.Messages;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.actor.AbstractActor;
-import org.eclipse.buckminster.core.cspec.model.ComponentIdentifier;
 import org.eclipse.buckminster.core.version.IQualifierGenerator;
 import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.util.BMProperties;
 import org.eclipse.buckminster.model.common.util.UnmodifiableMapUnion;
 import org.eclipse.buckminster.runtime.BuckminsterException;
@@ -135,7 +135,7 @@ public class VersionQualifierTask {
 				// version
 				//
 				StringBuilder bld = new StringBuilder();
-				bld.append(id.getName());
+				bld.append(id.getId());
 				bld.append(',');
 				int lenWithId = bld.length();
 

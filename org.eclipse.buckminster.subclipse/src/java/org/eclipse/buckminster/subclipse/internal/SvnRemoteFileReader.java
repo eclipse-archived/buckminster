@@ -18,11 +18,11 @@ import java.util.Date;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.RMContext;
-import org.eclipse.buckminster.core.helpers.FileUtils;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionSelector;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.subclipse.Messages;
 import org.eclipse.buckminster.subversion.GenericCache;
@@ -127,7 +127,7 @@ public class SvnRemoteFileReader extends GenericRemoteReader<ISVNDirEntry, SVNRe
 		} finally {
 			if (!success) {
 				try {
-					FileUtils.deleteRecursive(destDir, new NullProgressMonitor());
+					IOUtils.deleteRecursive(destDir, new NullProgressMonitor());
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}

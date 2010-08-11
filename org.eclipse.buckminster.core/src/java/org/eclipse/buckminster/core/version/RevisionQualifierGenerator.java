@@ -12,12 +12,12 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.actor.IActionContext;
 import org.eclipse.buckminster.core.metadata.MissingComponentException;
 import org.eclipse.buckminster.core.metadata.WorkspaceInfo;
 import org.eclipse.buckminster.core.reader.AbstractReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.model.common.CommonConstants;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -111,7 +111,7 @@ public class RevisionQualifierGenerator extends AbstractQualifierGenerator {
 			if (prevIU == null)
 				return newVersion;
 
-			String oldBuildId = prevIU.getProperty(KeyConstants.BUILD_ID);
+			String oldBuildId = prevIU.getProperty(CommonConstants.BUILD_ID);
 			if (oldBuildId == null || oldBuildId.equals(buildId))
 				return newVersion;
 

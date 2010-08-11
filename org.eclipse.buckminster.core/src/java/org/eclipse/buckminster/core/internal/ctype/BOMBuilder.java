@@ -14,14 +14,15 @@ import java.io.InputStream;
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.cspec.AbstractResolutionBuilder;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
-import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
+import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.UnresolvedNodeException;
 import org.eclipse.buckminster.core.parser.IParser;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IFileReader;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.core.reader.AbstractReader;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IFileReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,11 +42,11 @@ public class BOMBuilder extends AbstractResolutionBuilder implements IStreamCons
 				bom = ((IFileReader) reader).readFile(this, monitor);
 
 			if (bom.getResolution() == null)
-				throw new UnresolvedNodeException(reader.getNodeQuery().getComponentRequest());
+				throw new UnresolvedNodeException(((AbstractReader) reader).getNodeQuery().getComponentRequest());
 
 			return bom;
 		} catch (FileNotFoundException e) {
-			throw new MissingCSpecSourceException(reader.getProviderMatch());
+			throw new MissingCSpecSourceException(((AbstractReader) reader).getProviderMatch());
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}

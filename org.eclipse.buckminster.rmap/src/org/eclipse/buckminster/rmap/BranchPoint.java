@@ -13,21 +13,18 @@ import org.eclipse.emf.ecore.EObject;
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Branch Point</b></em>'. <!-- end-user-doc -->
- * 
+ *
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getName <em>Name</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getTimestamp <em>
- * Timestamp</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getRevision <em>Revision
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getTag <em>Tag</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getOnMergeConflict <em>On
- * Merge Conflict</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getTimestamp <em>Timestamp</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getRevision <em>Revision</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getTag <em>Tag</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.BranchPoint#getOnMergeConflict <em>On Merge Conflict</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @see org.eclipse.buckminster.rmap.RmapPackage#getBranchPoint()
  * @model
  * @generated
@@ -122,25 +119,19 @@ public interface BranchPoint extends EObject {
 	Date getTimestamp();
 
 	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.BranchPoint#getName <em>Name</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Name</em>' attribute.
+	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.BranchPoint#getName <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Name</em>' attribute.
 	 * @see #getName()
 	 * @generated
 	 */
 	void setName(String value);
 
 	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.BranchPoint#getOnMergeConflict
-	 * <em>On Merge Conflict</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.BranchPoint#getOnMergeConflict <em>On Merge Conflict</em>}' attribute.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>On Merge Conflict</em>' attribute.
+	 * @param value the new value of the '<em>On Merge Conflict</em>' attribute.
 	 * @see org.eclipse.buckminster.rmap.ConflictPolicy
 	 * @see #getOnMergeConflict()
 	 * @generated
@@ -161,12 +152,9 @@ public interface BranchPoint extends EObject {
 	void setRevision(String value);
 
 	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.BranchPoint#getTag <em>Tag</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Tag</em>' attribute.
+	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.BranchPoint#getTag <em>Tag</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Tag</em>' attribute.
 	 * @see #getTag()
 	 * @generated
 	 */

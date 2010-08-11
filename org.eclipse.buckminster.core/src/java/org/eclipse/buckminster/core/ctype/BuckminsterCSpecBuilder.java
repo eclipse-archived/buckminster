@@ -20,10 +20,11 @@ import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.parser.IParser;
-import org.eclipse.buckminster.core.reader.ICatalogReader;
-import org.eclipse.buckminster.core.reader.IComponentReader;
-import org.eclipse.buckminster.core.reader.IFileReader;
-import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.core.reader.AbstractReader;
+import org.eclipse.buckminster.rmap.util.ICatalogReader;
+import org.eclipse.buckminster.rmap.util.IComponentReader;
+import org.eclipse.buckminster.rmap.util.IFileReader;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -41,8 +42,8 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 			CSpecBuilder cspecBld = new CSpecBuilder();
 			if (reader instanceof ICatalogReader) {
 				ICatalogReader catRdr = (ICatalogReader) reader;
-				String fileName = getMetadataFile(catRdr, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE, MonitorUtils
-						.subMonitor(monitor, 100));
+				String fileName = getMetadataFile(catRdr, IComponentType.PREF_CSPEC_FILE, CorePlugin.CSPEC_FILE,
+						MonitorUtils.subMonitor(monitor, 100));
 				cspecBld.initFrom(catRdr.readFile(fileName, this, MonitorUtils.subMonitor(monitor, 100)));
 			} else
 				cspecBld.initFrom(((IFileReader) reader).readFile(this, MonitorUtils.subMonitor(monitor, 1000)));
@@ -50,7 +51,7 @@ public class BuckminsterCSpecBuilder extends AbstractResolutionBuilder implement
 			applyExtensions(cspecBld, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 1000));
 			return createNode(reader, cspecBld);
 		} catch (FileNotFoundException e) {
-			throw new MissingCSpecSourceException(reader.getProviderMatch());
+			throw new MissingCSpecSourceException(((AbstractReader) reader).getProviderMatch());
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		} finally {

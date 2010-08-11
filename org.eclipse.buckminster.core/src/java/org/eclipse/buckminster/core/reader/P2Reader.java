@@ -9,6 +9,7 @@ import java.net.URI;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.rmap.util.IStreamConsumer;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -42,7 +43,7 @@ public class P2Reader extends AbstractCatalogReader {
 	}
 
 	@Override
-	public void innerMaterialize(IPath destination, IProgressMonitor monitor) throws CoreException {
+	public void materialize(IPath destination, IProgressMonitor monitor) throws CoreException {
 		IArtifactRepository ar = getArtifactRepository(getURI(), monitor);
 		OutputStream out = null;
 		try {

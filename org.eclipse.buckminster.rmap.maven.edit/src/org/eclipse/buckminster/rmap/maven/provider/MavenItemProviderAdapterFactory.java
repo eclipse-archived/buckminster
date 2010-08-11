@@ -97,10 +97,11 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 			 * 
 			 * @generated
 			 */
+
 			@Override
 			public Object caseSearchPath(SearchPath object) {
-				newChildDescriptors.add(createChildParameter(RmapPackage.Literals.SEARCH_PATH__PROVIDERS, MavenFactory.eINSTANCE
-						.createMavenProvider()));
+				newChildDescriptors.add(createChildParameter(RmapPackage.Literals.SEARCH_PATH__PROVIDERS,
+						MavenFactory.eINSTANCE.createMavenProvider()));
 
 				return null;
 			}
@@ -121,7 +122,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 		 * 
 		 * @generated
 		 */
-		@Override
+
 		public Collection<Object> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
 			ArrayList<Object> result = new ArrayList<Object>();
 			new CreationSwitch(result, editingDomain).doSwitch((EObject) object);
@@ -133,7 +134,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 		 * 
 		 * @generated
 		 */
-		@Override
+
 		public ResourceLocator getResourceLocator() {
 			return MavenEditPlugin.INSTANCE;
 		}
@@ -230,6 +231,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter adapt(Notifier notifier, Object type) {
 		return super.adapt(notifier, this);
@@ -240,6 +242,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object adapt(Object object, Object type) {
 		if (isFactoryForType(type)) {
@@ -257,7 +260,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void addListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.addListener(notifyChangedListener);
 	}
@@ -269,6 +272,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createGroupAndArtifactAdapter() {
 		if (groupAndArtifactItemProvider == null) {
@@ -285,6 +289,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMapEntryAdapter() {
 		if (mapEntryItemProvider == null) {
@@ -301,6 +306,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMappingsAdapter() {
 		if (mappingsItemProvider == null) {
@@ -317,6 +323,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMavenProviderAdapter() {
 		if (mavenProviderItemProvider == null) {
@@ -332,7 +339,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void dispose() {
 		if (groupAndArtifactItemProvider != null)
 			groupAndArtifactItemProvider.dispose();
@@ -351,7 +358,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void fireNotifyChanged(Notification notification) {
 		changeNotifier.fireNotifyChanged(notification);
 
@@ -374,7 +381,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
 		return childCreationExtenderManager.getNewChildDescriptors(object, editingDomain);
 	}
@@ -384,7 +391,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ResourceLocator getResourceLocator() {
 		return childCreationExtenderManager;
 	}
@@ -395,7 +402,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ComposeableAdapterFactory getRootAdapterFactory() {
 		return parentAdapterFactory == null ? this : parentAdapterFactory.getRootAdapterFactory();
 	}
@@ -405,6 +412,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean isFactoryForType(Object type) {
 		return supportedTypes.contains(type) || super.isFactoryForType(type);
@@ -415,7 +423,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void removeListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.removeListener(notifyChangedListener);
 	}
@@ -426,7 +434,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setParentAdapterFactory(ComposedAdapterFactory parentAdapterFactory) {
 		this.parentAdapterFactory = parentAdapterFactory;
 	}
