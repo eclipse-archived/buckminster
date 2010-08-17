@@ -119,7 +119,7 @@ public class P2ReaderType extends CatalogReaderType {
 	}
 
 	public static IFileArtifactRepository getTempAR(SubMonitor subMon) throws CoreException {
-		File tempRepositoryFolder = CorePlugin.getDefault().getStateLocation().append("tempAR").toFile(); //$NON-NLS-1$
+		File tempRepositoryFolder = new File(CorePlugin.getDefault().getResolverAgentLocation(), "tempAr"); //$NON-NLS-1$
 		IArtifactRepositoryManager manager = getArtifactRepositoryManager();
 		URI tempRepositoryURI = tempRepositoryFolder.toURI();
 		IFileArtifactRepository tempAr;
