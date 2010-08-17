@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -70,8 +71,8 @@ public class P2Materializer extends AbstractMaterializer {
 		Map<String, String> props = URLUtils.queryAsParameters(repoLocation.getQuery());
 		if (props.remove("importType") != null) //$NON-NLS-1$
 			try {
-				repoLocation = new URI(repoLocation.getScheme(), repoLocation.getAuthority(), repoLocation.getPath(), URLUtils
-						.encodeFromQueryPairs(props), repoLocation.getFragment());
+				repoLocation = new URI(repoLocation.getScheme(), repoLocation.getAuthority(), repoLocation.getPath(),
+						URLUtils.encodeFromQueryPairs(props), repoLocation.getFragment());
 			} catch (URISyntaxException e) {
 				throw new IllegalArgumentException(e);
 			}
@@ -260,8 +261,8 @@ public class P2Materializer extends AbstractMaterializer {
 				IQueryResult<IInstallableUnit> result = mdr.query(QueryUtil.createIUQuery(name, range), subSubMon.newChild(250));
 				Iterator<IInstallableUnit> itor = result.iterator();
 				if (!itor.hasNext())
-					throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2, new Object[] { cid.getName(), version,
-							res.getRepository() }));
+					throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2,
+							new Object[] { cid.getName(), version, res.getRepository() }));
 
 				IInstallableUnit iu = itor.next();
 				ius.add(iu);
@@ -278,6 +279,9 @@ public class P2Materializer extends AbstractMaterializer {
 				} else
 					subSubMon.worked(250);
 			}
+
+			IArtifactRepository tempAr = P2ReaderType.getTempAR(subMon.newChild(1));
+			knownARs.put(tempAr.getLocation(), tempAr);
 
 			// create the operands from the list of IUs
 			InstallableUnitOperand[] operands = new InstallableUnitOperand[ius.size()];

@@ -9,7 +9,10 @@
  *******************************************************************************/
 package org.eclipse.buckminster.core.reader;
 
+import java.io.File;
 import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.CorePlugin;
@@ -26,20 +29,32 @@ import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.rmap.model.Provider;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.Logger;
+import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.equinox.internal.p2.touchpoint.eclipse.PublisherUtil;
 import org.eclipse.equinox.p2.core.ProvisionException;
+import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
+import org.eclipse.equinox.p2.repository.artifact.IArtifactRequest;
+import org.eclipse.equinox.p2.repository.artifact.IFileArtifactRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 
+@SuppressWarnings("restriction")
 public class P2ReaderType extends CatalogReaderType {
+	public static final String SIMPLE_ARTIFACTS_TYPE = org.eclipse.equinox.internal.p2.artifact.repository.Activator.ID + ".simpleRepository"; //$NON-NLS-1$
+
 	public static IArtifactRepository getArtifactRepository(Provider provider, Map<String, ? extends Object> properties, IProgressMonitor monitor)
 			throws CoreException {
 		return getArtifactRepository(getURI(provider, properties), monitor);
@@ -50,11 +65,7 @@ public class P2ReaderType extends CatalogReaderType {
 	}
 
 	public static IArtifactRepository getArtifactRepository(URI repoLocation, IProgressMonitor monitor) throws CoreException {
-		IArtifactRepositoryManager manager = (IArtifactRepositoryManager) CorePlugin.getDefault().getResolverAgent()
-				.getService(IArtifactRepositoryManager.SERVICE_NAME);
-		if (manager == null)
-			throw new IllegalStateException("No artifact repository manager found"); //$NON-NLS-1$
-
+		IArtifactRepositoryManager manager = getArtifactRepositoryManager();
 		SubMonitor subMon = SubMonitor.convert(monitor, 200);
 		try {
 			return manager.loadRepository(repoLocation, subMon.newChild(100));
@@ -64,6 +75,14 @@ public class P2ReaderType extends CatalogReaderType {
 			if (monitor != null)
 				monitor.done();
 		}
+	}
+
+	public static IArtifactRepositoryManager getArtifactRepositoryManager() throws CoreException {
+		IArtifactRepositoryManager manager = (IArtifactRepositoryManager) CorePlugin.getDefault().getResolverAgent()
+				.getService(IArtifactRepositoryManager.SERVICE_NAME);
+		if (manager == null)
+			throw new IllegalStateException("No artifact repository manager found"); //$NON-NLS-1$
+		return manager;
 	}
 
 	public static IInstallableUnit getIU(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
@@ -99,6 +118,20 @@ public class P2ReaderType extends CatalogReaderType {
 		}
 	}
 
+	public static IFileArtifactRepository getTempAR(SubMonitor subMon) throws CoreException {
+		File tempRepositoryFolder = CorePlugin.getDefault().getStateLocation().append("tempAR").toFile(); //$NON-NLS-1$
+		IArtifactRepositoryManager manager = getArtifactRepositoryManager();
+		URI tempRepositoryURI = tempRepositoryFolder.toURI();
+		IFileArtifactRepository tempAr;
+		try {
+			tempAr = (IFileArtifactRepository) manager.loadRepository(tempRepositoryURI, subMon);
+		} catch (ProvisionException e) {
+			tempAr = (IFileArtifactRepository) manager.createRepository(tempRepositoryURI,
+					"temporary artifacts" + " artifacts", SIMPLE_ARTIFACTS_TYPE, Collections.<String, String> emptyMap()); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		return tempAr;
+	}
+
 	public static URI getURI(Provider provider, Map<String, ? extends Object> properties) throws CoreException {
 		return P2Materializer.cleanURIFromImportType(URLUtils.normalizeToURI(provider.getURI(properties), true));
 	}
@@ -129,12 +162,23 @@ public class P2ReaderType extends CatalogReaderType {
 
 	public BOMNode getResolution(ProviderMatch providerMatch, IProgressMonitor monitor) throws CoreException {
 		SubMonitor subMon = SubMonitor.convert(monitor, 20);
-		IInstallableUnit iu = getIU(providerMatch, subMon.newChild(10));
-		if (iu == null)
-			throw new MissingComponentException(providerMatch.getNodeQuery().getComponentRequest().toString());
-		IMetadataRepository mdr = getMetadataRepository(providerMatch, subMon.newChild(10));
-		return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(new CSpecBuilder(providerMatch
-				.getNodeQuery().getProperties(), mdr, iu), false)));
+		try {
+			IInstallableUnit iu = getIU(providerMatch, subMon.newChild(22));
+			if (iu == null)
+				throw new MissingComponentException(providerMatch.getNodeQuery().getComponentRequest().toString());
+
+			MonitorUtils.testCancelStatus(subMon);
+			if (Boolean.valueOf(iu.getProperty(IInstallableUnit.PROP_PARTIAL_IU)).booleanValue())
+				iu = resolvePartialIU(iu, providerMatch, subMon.newChild(10));
+			else
+				subMon.worked(10);
+
+			IMetadataRepository mdr = getMetadataRepository(providerMatch, subMon.newChild(2));
+			return new ResolvedNode(providerMatch.getNodeQuery(), new Resolution(providerMatch.createResolution(new CSpecBuilder(providerMatch
+					.getNodeQuery().getProperties(), mdr, iu), false)));
+		} finally {
+			MonitorUtils.done(monitor);
+		}
 	}
 
 	@Override
@@ -142,5 +186,52 @@ public class P2ReaderType extends CatalogReaderType {
 			throws CoreException {
 		IMetadataRepository mdr = getMetadataRepository(provider, nodeQuery.getProperties(), monitor);
 		return new P2VersionFinder(provider, ctype, nodeQuery, mdr);
+	}
+
+	IInstallableUnit resolvePartialIU(IInstallableUnit iu, ProviderMatch providerMatch, SubMonitor subMon) throws CoreException {
+		Logger logger = CorePlugin.getLogger();
+		String info = "Converting partial IU for " + iu.getId() + "..."; //$NON-NLS-1$//$NON-NLS-2$
+		subMon.beginTask(info, 1110);
+		logger.debug(info);
+		IArtifactRepository sourceAr = getArtifactRepository(providerMatch, subMon.newChild(100));
+		MonitorUtils.testCancelStatus(subMon);
+
+		Collection<IArtifactKey> artifacts = iu.getArtifacts();
+		IArtifactKey key = artifacts.iterator().next();
+		IFileArtifactRepository tempAr = getTempAR(subMon.newChild(10));
+		MonitorUtils.testCancelStatus(subMon);
+
+		IArtifactRequest request = getArtifactRepositoryManager().createMirrorRequest(key, tempAr, null, null);
+		request.perform(sourceAr, subMon.newChild(1000));
+		IStatus result = request.getResult();
+		switch (result.getSeverity()) {
+			case IStatus.INFO:
+				logger.info(result.getMessage());
+			case IStatus.OK:
+				// Unfortunately, this doesn't necessarily mean that everything
+				// is OK. Zero sized files are
+				// silently ignored. See bug 290986
+				// We can't have that here.
+				if (!tempAr.contains(key))
+					throw BuckminsterException.fromMessage("Zero bytes copied while mirroring partial IU artifact %s", key); //$NON-NLS-1$
+				break;
+			case IStatus.CANCEL:
+				throw new OperationCanceledException();
+			default:
+				if (result.getCode() == org.eclipse.equinox.p2.core.ProvisionException.ARTIFACT_EXISTS) {
+					logger.debug("Artifact %s is already present", key); //$NON-NLS-1$
+					break;
+				}
+				throw BuckminsterException.wrap(result);
+		}
+
+		File bundleFile = tempAr.getArtifactFile(key);
+		if (bundleFile == null)
+			throw BuckminsterException.fromMessage("Unable to resolve partial IU. Artifact file for %s could not be found", key); //$NON-NLS-1$
+
+		IInstallableUnit preparedIU = PublisherUtil.createBundleIU(key, bundleFile);
+		if (preparedIU == null)
+			throw BuckminsterException.fromMessage("Unable to resolve partial IU. Artifact file for %s did not contain a bundle manifest", key); //$NON-NLS-1$
+		return preparedIU;
 	}
 }
