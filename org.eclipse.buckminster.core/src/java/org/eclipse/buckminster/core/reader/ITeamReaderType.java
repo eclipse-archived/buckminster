@@ -8,8 +8,6 @@
 
 package org.eclipse.buckminster.core.reader;
 
-import java.util.Map;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,22 +35,13 @@ public interface ITeamReaderType extends IReaderType {
 	String getSourceReference(IResource resource, IProgressMonitor monitor) throws CoreException;
 
 	/**
-	 * Tag the given <code>resources</code> with the given <code>tag</code>
-	 * possibly using a different way of accessing (as specified in
-	 * <code>mappings</code>) the repository the <code>resources</code> are
-	 * shared with than would be normally used by the associated
-	 * {@link RepositoryProvider}.
+	 * Tag the given <code>resources</code> with the given <code>tag</code>.
 	 * 
 	 * @param provider
 	 *            the <code>RepositoryProvider</code> the <code>resources</code>
 	 *            are associated with
 	 * @param resources
 	 *            the resources to tag
-	 * @param mappings
-	 *            the mappings of the ways of accessing the repositories (these
-	 *            are typically used to specify credentials with write
-	 *            permissions to the repositories in cases the corresponding
-	 *            repository providers offer just a read only access)
 	 * @param tag
 	 *            the tag to tag the resources with
 	 * @param recurse
@@ -62,6 +51,5 @@ public interface ITeamReaderType extends IReaderType {
 	 * @return the resulting status of the tagging
 	 * @throws CoreException
 	 */
-	IStatus tag(RepositoryProvider provider, IResource[] resources, Map<String, String> mappings, String tag, boolean recurse,
-			IProgressMonitor monitor) throws CoreException;
+	IStatus tag(RepositoryProvider provider, IResource[] resources, String tag, boolean recurse, IProgressMonitor monitor) throws CoreException;
 }

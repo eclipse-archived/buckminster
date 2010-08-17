@@ -32,8 +32,8 @@ import org.eclipse.team.core.RepositoryProvider;
  */
 public class TeamPerformContext {
 
-	// an instance of IReaderType used for caching of negative results of reader
-	// type lookups
+	// an instance of ITeamReaderType used for caching of negative results
+	// of reader type lookups
 	private static final ITeamReaderType NO_READER_TYPE = (ITeamReaderType) Proxy.newProxyInstance(TeamPerformContext.class.getClassLoader(),
 			new Class<?>[] { ITeamReaderType.class }, new InvocationHandler() {
 				@Override
@@ -135,9 +135,8 @@ public class TeamPerformContext {
 	public ITeamReaderType getReaderTypeForRepositoryProvider(String providerID) throws CoreException {
 		ITeamReaderType readerType = readerTypeCache.get(providerID);
 		if (readerType == null) {
-			IReaderType fundamentalReaderType = AbstractReaderType.getTypeForRepositoryProvider(providerID);
-			readerType = (fundamentalReaderType != null && fundamentalReaderType instanceof ITeamReaderType)
-					? (ITeamReaderType) fundamentalReaderType : NO_READER_TYPE;
+			IReaderType baseReaderType = AbstractReaderType.getTypeForRepositoryProvider(providerID);
+			readerType = (baseReaderType != null && baseReaderType instanceof ITeamReaderType) ? (ITeamReaderType) baseReaderType : NO_READER_TYPE;
 			readerTypeCache.put(providerID, readerType);
 		}
 		if (readerType == NO_READER_TYPE)

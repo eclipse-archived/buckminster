@@ -13,12 +13,10 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.buckminster.team.messages"; //$NON-NLS-1$
 	public static String list_separator;
-	public static String mapping_label;
 	public static String exclude_label;
 	public static String include_label;
 	public static String _0_entry_1_invalid_2;
 	public static String property_settings_problems_0;
-	public static String mapping_entry_not_exactly_three_fields;
 	public static String problems_during_0;
 	public static String processing_of_0;
 	public static String processing_project_0;
