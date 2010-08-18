@@ -10,9 +10,6 @@ package org.eclipse.buckminster.team;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -40,18 +37,13 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 
 	protected static class TagContext extends TeamPerformContext {
 
-		private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+"); //$NON-NLS-1$
-
 		private String tag;
-
-		private HashMap<String, LinkedHashMap<String, String>> mappings = new HashMap<String, LinkedHashMap<String, String>>();
 
 		private Pattern[] includes, excludes;
 
 		public TagContext(IActionContext actionContext) throws CoreException {
 			super(actionContext);
 
-			TreeMap<Integer, Map.Entry<String, ?>> sortedMappings = new TreeMap<Integer, Map.Entry<String, ?>>();
 			TreeMap<Integer, Map.Entry<String, ?>> sortedIncludes = new TreeMap<Integer, Map.Entry<String, ?>>();
 			TreeMap<Integer, Map.Entry<String, ?>> sortedExcludes = new TreeMap<Integer, Map.Entry<String, ?>>();
 			StringBuilder message = null;
@@ -60,17 +52,7 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 			// interest
 			for (Map.Entry<String, ?> property : actionContext.getAction().getActorProperties().entrySet()) {
 				String name = property.getKey();
-				if (name.startsWith(MAPPING_PROPERTY_PREFIX)) {
-					try {
-						int key = Integer.parseInt(name.substring(MAPPING_PROPERTY_PREFIX.length()));
-						if (key >= 0) {
-							sortedMappings.put(Integer.valueOf(key), property);
-							continue;
-						}
-					} catch (NumberFormatException e) {
-						// fall through
-					}
-				} else if (name.startsWith(EXCLUDE_PROPERTY_PREFIX)) {
+				if (name.startsWith(EXCLUDE_PROPERTY_PREFIX)) {
 					try {
 						int key = Integer.parseInt(name.substring(EXCLUDE_PROPERTY_PREFIX.length()));
 						if (key >= 0) {
@@ -106,30 +88,9 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 
 			if (message != null)
 				throw new CoreException(createStatus(NLS.bind(Messages.unrecognized_properties_supplied_0, message.toString()) + '\n'
-						+ NLS.bind(Messages.recognized_properties_0, TAG_PROPERTY_NAME + Messages.list_separator + MAPPING_PROPERTY_PREFIX + "<n>" //$NON-NLS-1$
-								+ Messages.list_separator + INCLUDE_PROPERTY_PREFIX + "<n>" + Messages.list_separator + EXCLUDE_PROPERTY_PREFIX //$NON-NLS-1$
-								+ "<n>"))); //$NON-NLS-1$
-
-			for (Map.Entry<String, ?> mapping : sortedMappings.values()) {
-				String mappingString = ExpandingProperties.expand(actionContext.getProperties(), (String) mapping.getValue(), 0);
-				String[] mappingFields = WHITESPACE_PATTERN.split(mappingString.trim(), 0);
-				if (mappingFields.length != 3) {
-					if (message == null)
-						message = new StringBuilder();
-					else
-						message.append('\n');
-					message.append(NLS.bind(Messages._0_entry_1_invalid_2, new Object[] { Messages.mapping_label, mapping.getKey(),
-							Messages.mapping_entry_not_exactly_three_fields }));
-					continue;
-				}
-
-				LinkedHashMap<String, String> readerTypeSpecificMappings = mappings.get(mappingFields[0]);
-				if (readerTypeSpecificMappings == null) {
-					readerTypeSpecificMappings = new LinkedHashMap<String, String>();
-					mappings.put(mappingFields[0], readerTypeSpecificMappings);
-				}
-				readerTypeSpecificMappings.put(mappingFields[1], mappingFields[2]);
-			}
+						+ NLS.bind(Messages.recognized_properties_0, TAG_PROPERTY_NAME + Messages.list_separator //
+								+ INCLUDE_PROPERTY_PREFIX + "<n>" + Messages.list_separator//$NON-NLS-1$
+								+ EXCLUDE_PROPERTY_PREFIX + "<n>"))); //$NON-NLS-1$
 
 			ArrayList<Pattern> patternList = new ArrayList<Pattern>(Math.max(sortedIncludes.size(), sortedExcludes.size()));
 			for (Map.Entry<String, ?> include : sortedIncludes.values()) {
@@ -142,8 +103,10 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 						message = new StringBuilder();
 					else
 						message.append('\n');
-					message.append(NLS.bind(Messages._0_entry_1_invalid_2, new Object[] { Messages.include_label, include.getKey(),
-							NLS.bind(Messages.specified_pattern_is_invalid_0, e.getMessage()) }));
+					message.append(NLS.bind(
+							Messages._0_entry_1_invalid_2,
+							new Object[] { Messages.include_label, include.getKey(),
+									NLS.bind(Messages.specified_pattern_is_invalid_0, e.getMessage()) }));
 					continue;
 				}
 
@@ -163,8 +126,10 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 						message = new StringBuilder();
 					else
 						message.append('\n');
-					message.append(NLS.bind(Messages._0_entry_1_invalid_2, new Object[] { Messages.exclude_label, exclude.getKey(),
-							NLS.bind(Messages.specified_pattern_is_invalid_0, e.getMessage()) }));
+					message.append(NLS.bind(
+							Messages._0_entry_1_invalid_2,
+							new Object[] { Messages.exclude_label, exclude.getKey(),
+									NLS.bind(Messages.specified_pattern_is_invalid_0, e.getMessage()) }));
 					continue;
 				}
 
@@ -175,13 +140,6 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 				throw new CoreException(createStatus(NLS.bind(Messages.property_settings_problems_0, message.toString())));
 
 			excludes = patternList.toArray(new Pattern[patternList.size()]);
-		}
-
-		public Map<String, String> getMappings(String readerTypeId) {
-			LinkedHashMap<String, String> readerTypeSpecificMappings = mappings.get(readerTypeId);
-			if (readerTypeSpecificMappings == null)
-				return Collections.emptyMap();
-			return readerTypeSpecificMappings;
 		}
 
 		public String getTag() {
@@ -202,8 +160,6 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 	}
 
 	public static final String TAG_PROPERTY_NAME = "tag"; //$NON-NLS-1$
-
-	public static final String MAPPING_PROPERTY_PREFIX = "mapping."; //$NON-NLS-1$
 
 	public static final String INCLUDE_PROPERTY_PREFIX = "include."; //$NON-NLS-1$
 
@@ -228,10 +184,9 @@ public class TagTeamActor extends AbstractTeamActor<TagTeamActor.TagContext> {
 	protected void processResources(TagContext tagContext, RepositoryProvider provider, IResource[] resources, boolean recurse,
 			IProgressMonitor monitor) throws CoreException, InterruptedException {
 		ITeamReaderType readerType = tagContext.getCachedReaderTypeForRepositoryProvider(provider.getID());
-		Map<String, String> mappings = tagContext.getMappings(readerType.getId());
 		String tag = tagContext.getTag();
 
-		IStatus status = readerType.tag(provider, resources, mappings, tag, recurse, monitor);
+		IStatus status = readerType.tag(provider, resources, tag, recurse, monitor);
 		if (status.matches(IStatus.INFO | IStatus.WARNING)) {
 			PrintStream outputPrintStream = tagContext.getActionContext().getOutputStream();
 			BuckminsterException.deeplyPrint(new CoreException(status), outputPrintStream, false);
