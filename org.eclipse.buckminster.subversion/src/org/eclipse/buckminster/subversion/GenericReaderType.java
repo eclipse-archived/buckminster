@@ -2,7 +2,6 @@ package org.eclipse.buckminster.subversion;
 
 import java.net.URI;
 import java.util.Date;
-import java.util.Map;
 
 import org.eclipse.buckminster.core.RMContext;
 import org.eclipse.buckminster.core.helpers.TextUtils;
@@ -152,8 +151,7 @@ public abstract class GenericReaderType<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_
 	}
 
 	@Override
-	public IStatus tag(RepositoryProvider provider, IResource[] resources, Map<String, String> mappings, String tag, boolean recurse,
-			IProgressMonitor monitor) {
+	public IStatus tag(RepositoryProvider provider, IResource[] resources, String tag, boolean recurse, IProgressMonitor monitor) {
 		throw new UnsupportedOperationException();
 	}
 

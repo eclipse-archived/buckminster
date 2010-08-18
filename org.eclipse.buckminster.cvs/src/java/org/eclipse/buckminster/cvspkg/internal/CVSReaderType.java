@@ -19,7 +19,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Date;
 import java.util.Map;
-import java.util.Properties;
 import java.util.StringTokenizer;
 
 import org.eclipse.buckminster.core.RMContext;
@@ -338,14 +337,9 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 	}
 
 	@Override
-	public IStatus tag(RepositoryProvider provider, IResource[] resources, Map<String, String> mappings, String tag, boolean recurse,
-			IProgressMonitor progress) throws CVSException {
+	public IStatus tag(RepositoryProvider provider, IResource[] resources, String tag, boolean recurse, IProgressMonitor progress)
+			throws CVSException {
 		CVSWorkspaceRoot root = ((CVSTeamProvider) provider).getCVSWorkspaceRoot();
-		String mappedLocationString = mapLocation(mappings, root.getRemoteLocation());
-		KnownRepositories knownRepositories = KnownRepositories.getInstance();
-		boolean isUnknown = !knownRepositories.isKnownRepository(mappedLocationString);
-		ICVSRepositoryLocation mappedLocation = knownRepositories.getRepository(mappedLocationString);
-
 		Command.LocalOption[] commandOptions = Command.NO_LOCAL_OPTIONS;
 
 		if (!recurse)
@@ -357,12 +351,7 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 		// Execute the command
 		progress.beginTask(null, 100);
 		try {
-			// if the repository is unknown, add it to the list of known
-			// repositories list temporarily
-			if (isUnknown)
-				knownRepositories.addRepository(mappedLocation, false);
-
-			Session session = new Session(mappedLocation, root.getLocalRoot());
+			Session session = new Session(root.getRemoteLocation(), root.getLocalRoot());
 			// Opening the session takes 20% of the time
 			session.open(MonitorUtils.subMonitor(progress, 20), true);
 			try {
@@ -372,14 +361,7 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 				session.close();
 			}
 		} finally {
-			try {
-				// remove the repository from the list of known repositories if
-				// it was not there before
-				if (isUnknown)
-					knownRepositories.disposeRepository(mappedLocation);
-			} finally {
-				progress.done();
-			}
+			progress.done();
 		}
 	}
 
@@ -395,38 +377,6 @@ public class CVSReaderType extends CatalogReaderType implements ITeamReaderType 
 		}
 
 		return arguments;
-	}
-
-	/**
-	 * Return the repository location string resulting from the re-mapping of
-	 * the given <code>originalLocation</code> according to the given
-	 * <code>mappings</code>.
-	 */
-	protected String mapLocation(Map<String, String> mappings, ICVSRepositoryLocation originalLocation) throws CVSException {
-		Properties locationConfiguration = new Properties();
-
-		// the location mapping key string (which is expected to be a textual
-		// representation of a repository location) should not contain any user
-		// name or password part so we need to create a copy of the original
-		// location to ensure that these fields are not present in its string
-		// representation which we are going to use to lookup the mapping
-		locationConfiguration.put("connection", originalLocation.getMethod().getName()); //$NON-NLS-1$
-		locationConfiguration.put("host", originalLocation.getHost()); //$NON-NLS-1$
-		locationConfiguration.put("port", Integer.toString(originalLocation.getPort())); //$NON-NLS-1$
-		locationConfiguration.put("root", originalLocation.getRootDirectory()); //$NON-NLS-1$
-		locationConfiguration.put("ecoding", originalLocation.getEncoding()); //$NON-NLS-1$
-
-		// we need to set the user to an empty string to prevent an NPE in
-		// CVSRepositoryLocation.fromProperties()
-		locationConfiguration.put("user", ""); //$NON-NLS-1$ //$NON-NLS-2$
-
-		String locationString = CVSRepositoryLocation.fromProperties(locationConfiguration).getLocation(false);
-
-		locationString = mappings.get(locationString);
-		if (locationString == null)
-			return originalLocation.getLocation(false);
-
-		return locationString;
 	}
 
 	/**
