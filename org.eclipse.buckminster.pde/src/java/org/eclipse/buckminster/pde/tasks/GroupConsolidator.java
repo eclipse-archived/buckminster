@@ -183,6 +183,8 @@ abstract class GroupConsolidator extends VersionQualifierTask implements IPDECon
 				IFeature feature = model.getFeature();
 				String id = feature.getId();
 				String version = feature.getVersion();
+				if (version == null)
+					continue;
 
 				int ctxQualLen = -1;
 				if (version.indexOf('-') > 0) {
