@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.psf.feature"
-      version="1.0.0.qualifier"
       label="%featureName"
+      version="1.0.0.qualifier"
       provider-name="%providerName">
 
    <description>
@@ -18,35 +18,11 @@
    </license>
 
    <requires>
-      <import plugin="org.eclipse.emf.common"/>
-      <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.emf.ecore.xmi"/>
-      <import plugin="org.eclipse.emf.edit"/>
+      <import feature="org.eclipse.buckminster.core.feature"/>
    </requires>
 
    <plugin
-         id="org.eclipse.buckminster.team.psf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.buckminster.rmap.psf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.buckminster.rmap"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.buckminster.model.common"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -60,14 +36,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.buckminster.model.common.edit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.buckminster.rmap.edit"
+         id="org.eclipse.buckminster.team.psf"
          download-size="0"
          install-size="0"
          version="0.0.0"
