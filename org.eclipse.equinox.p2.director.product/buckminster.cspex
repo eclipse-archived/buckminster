@@ -3,6 +3,10 @@
 	xmlns:com="http://www.eclipse.org/buckminster/Common-1.0"
 	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
 
+    <dependencies>
+       <dependency name="org.eclipse.buckminster.site.eclipse.headless" componentType="eclipse.feature"/>
+    </dependencies>
+
 	<actions>
 		<public name="create.product" actor="ant">
             <actorProperties>
@@ -13,8 +17,9 @@
                 <property key="profile" value="Director"/>
                 <property key="iu" value="org.eclipse.equinox.p2.director.product"/>
             </properties>
-			<prerequisites alias="repository">
-				<attribute name="site.p2"/>
+			<prerequisites>
+				<attribute alias="buckyRepo" component="org.eclipse.buckminster.site.eclipse.headless" name="site.p2"/>
+				<attribute alias="productRepo" name="site.p2"/>
 			</prerequisites>
             <products alias="destination" base="${buckminster.output}" upToDatePolicy="NOT_EMPTY">
             	<path path="director/"/>
