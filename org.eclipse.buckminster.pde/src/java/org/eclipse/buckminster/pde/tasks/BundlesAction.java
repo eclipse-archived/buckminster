@@ -22,8 +22,6 @@ import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescriptio
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.actions.IPropertyAdvice;
-import org.eclipse.equinox.p2.publisher.eclipse.BundleShapeAdvice;
-import org.eclipse.equinox.p2.publisher.eclipse.IBundleShapeAdvice;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactDescriptor;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 
@@ -68,32 +66,17 @@ public class BundlesAction extends org.eclipse.equinox.p2.publisher.eclipse.Bund
 		Map<String, ? extends Object> props = AbstractActor.getActiveContext().getProperties();
 		String buildId = (String) props.get("build.id"); //$NON-NLS-1$
 
-		for (BundleDescription bundleDescription : bundleDescriptions) {
-			if (bundleDescription == null)
-				continue;
-
-			if (buildId != null)
+		if (buildId != null) {
+			for (BundleDescription bundleDescription : bundleDescriptions)
 				createBuildIdAdvice(bundleDescription, buildId);
-
-			String id = bundleDescription.getSymbolicName();
-			if ("org.eclipse.pde.build".equals(id)) { //$NON-NLS-1$
-				@SuppressWarnings("unchecked")
-				Map<String, String> manifest = (Map<String, String>) bundleDescription.getUserObject();
-				if (manifest != null && manifest.containsKey(BUNDLE_SHAPE))
-					continue;
-				org.osgi.framework.Version v = bundleDescription.getVersion();
-				if (v == null)
-					continue;
-
-				// Circumvent
-				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=323298
-				info.addAdvice(new BundleShapeAdvice(id, Version.create(v.toString()), IBundleShapeAdvice.DIR));
-			}
 		}
 		super.generateBundleIUs(bundleDescriptions, result, monitor);
 	}
 
 	private void createBuildIdAdvice(BundleDescription bundleDescription, String buildId) {
+		if (bundleDescription == null)
+			return;
+
 		CSpec cspec = findCSpec(bundleDescription);
 		if (cspec == null)
 			return;

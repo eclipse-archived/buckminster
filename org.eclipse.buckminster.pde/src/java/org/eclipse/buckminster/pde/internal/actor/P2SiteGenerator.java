@@ -66,13 +66,16 @@ import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.Publisher;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
+import org.eclipse.equinox.p2.publisher.eclipse.BundleShapeAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
+import org.eclipse.equinox.p2.publisher.eclipse.IBundleShapeAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
 import org.eclipse.equinox.p2.repository.IRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
@@ -328,6 +331,7 @@ public class P2SiteGenerator extends AbstractActor {
 		mdr.setProperty(IRepository.PROP_COMPRESSED, trueStr);
 		info.setMetadataRepository(mdr);
 
+		addAdvice(siteDescriptor, info);
 		IPublisherAction[] actions = createActions(ctx, sourceFolder, siteDescriptor, siteFolder, productConfigs);
 		Publisher publisher = new Publisher(info);
 		IStatus result = publisher.publish(actions, new NullProgressMonitor());
@@ -440,6 +444,18 @@ public class P2SiteGenerator extends AbstractActor {
 			}
 		}
 		return Status.OK_STATUS;
+	}
+
+	private void addAdvice(Object siteDescriptor, PublisherInfo info) {
+		if (siteDescriptor instanceof Feature) {
+			Feature feature = (Feature) siteDescriptor;
+			FeatureEntry entries[] = feature.getEntries();
+			for (int i = 0; i < entries.length; i++) {
+				FeatureEntry entry = entries[i];
+				if (entry.isUnpack() && entry.isPlugin() && !entry.isRequires())
+					info.addAdvice(new BundleShapeAdvice(entry.getId(), Version.parseVersion(entry.getVersion()), IBundleShapeAdvice.DIR));
+			}
+		}
 	}
 
 	private void collectBundles(CSpec cspec, Map<IVersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException {
