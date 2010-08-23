@@ -17,10 +17,6 @@
       %license
    </license>
 
-   <requires>
-      <import feature="org.eclipse.buckminster.core.feature"/>
-   </requires>
-
    <plugin
          id="org.eclipse.buckminster.rmap.psf"
          download-size="0"
