@@ -237,7 +237,7 @@ class RepositoryAccess {
 	void inspectRef(StringBuilder sb, Ref ref) throws IOException {
 		sb.append(ref.getName());
 		sb.append('\n');
-		sb.append(ref.getObjectId().abbreviate(repository).name());
+		sb.append(ref.getObjectId().abbreviate(8).name());
 		sb.append(" - "); //$NON-NLS-1$
 		inspectObj(sb, ref.getObjectId());
 	}
