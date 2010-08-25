@@ -9,7 +9,6 @@
   <rm:locator pattern="^org\.eclipse\.zest(\..+)?$" searchPathRef="gef"/>
   <rm:locator pattern="^org\.eclipse\.[ej]git(\..+)?$" searchPathRef="git"/>
   <rm:locator pattern="^org\.eclipse\.draw2d(\..+)?$" searchPathRef="gef"/>
-  <rm:locator pattern="^com\.ibm\.icu\.base$" searchPathRef="orbit"/>
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
   <rm:locator pattern="^org\.tmatesoft\.svnkit(\..+)?" searchPathRef="svnkit"/>
   <rm:locator pattern="^org\.tigris\.subversion(\..+)?" searchPathRef="subclipse"/>
@@ -17,6 +16,7 @@
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="modeling" failOnError="false"/>
+  <rm:locator searchPathRef="orbit" failOnError="false"/>
   <rm:locator searchPathRef="simultanious.release"/>
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="svn">
