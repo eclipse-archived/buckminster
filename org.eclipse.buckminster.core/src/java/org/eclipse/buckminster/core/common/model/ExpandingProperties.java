@@ -44,7 +44,7 @@ import org.xml.sax.helpers.AttributesImpl;
  * 
  * @author Thomas Hallgren
  */
-public class ExpandingProperties<T extends Object> implements IProperties<T> {
+public class ExpandingProperties<T extends Object> implements IProperties<T>, IExpandingMap<String, T> {
 	class EntryWrapper implements Entry<String, T> {
 		private final Entry<String, ValueHolder<T>> entry;
 
@@ -297,6 +297,12 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 	@Override
 	public T get(Object key) {
 		return key instanceof String ? getExpandedProperty((String) key, 0) : null;
+	}
+
+	@Override
+	public T get(Object key, Map<String, T> expansionScope) {
+		ValueHolder<T> vh = map.get(key);
+		return vh == null ? null : vh.checkedGetValue(expansionScope, 0);
 	}
 
 	@Override

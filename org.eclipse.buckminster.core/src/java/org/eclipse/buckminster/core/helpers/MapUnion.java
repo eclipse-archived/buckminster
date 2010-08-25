@@ -19,10 +19,12 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.eclipse.buckminster.core.common.model.IExpandingMap;
+
 /**
  * @author Thomas Hallgren
  */
-public class MapUnion<K, V> extends AbstractMap<K, V> {
+public class MapUnion<K, V> extends AbstractMap<K, V> implements IExpandingMap<K, V> {
 	abstract class AbstractIterator<X> implements Iterator<X> {
 		private Iterator<K> currentIterator = overlay.keySet().iterator();
 
@@ -196,9 +198,24 @@ public class MapUnion<K, V> extends AbstractMap<K, V> {
 
 	@Override
 	public V get(Object key) {
-		V value = overlay.get(key);
+		return get(key, this);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public V get(Object key, Map<K, V> expansionScope) {
+		V value;
+		if (overlay instanceof IExpandingMap)
+			value = ((IExpandingMap<K, V>) overlay).get(key, expansionScope);
+		else
+			value = overlay.get(key);
+
 		if (value == null && !overlay.containsKey(key)) {
-			value = immutable.get(key);
+			if (immutable instanceof IExpandingMap)
+				value = ((IExpandingMap<K, V>) immutable).get(key, expansionScope);
+			else
+				value = immutable.get(key);
+
 			if (value != null && antiMap.containsKey(key))
 				value = null;
 		}

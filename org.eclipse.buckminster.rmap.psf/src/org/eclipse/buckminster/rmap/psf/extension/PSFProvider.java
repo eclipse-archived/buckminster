@@ -143,8 +143,9 @@ public class PSFProvider extends Provider {
 						continue;
 
 					Format uri = new Format(repoLocation);
+					@SuppressWarnings("unchecked")
 					Provider delegated = new Provider(getSearchPath(), rt.getId(), getComponentTypeIDs(), getVersionConverterDesc(), uri, null, null,
-							getResolutionFilter(), getProviderProperties(), null, null);
+							getResolutionFilter(), (Map<String,String>)getProperties(query.getProperties()), null, null);
 
 					NodeQuery tmpQuery = query;
 					VersionSelector vs = refInfo.getSelector();

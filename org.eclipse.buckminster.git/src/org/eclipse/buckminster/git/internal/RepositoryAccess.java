@@ -12,18 +12,23 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.egit.core.EclipseGitProgressTransformer;
-import org.eclipse.jgit.lib.Commit;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.GitIndex;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.RepositoryConfig;
-import org.eclipse.jgit.lib.Tag;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.lib.Tree;
 import org.eclipse.jgit.lib.TreeEntry;
 import org.eclipse.jgit.lib.WorkDirCheckout;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTag;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.RemoteConfig;
@@ -57,6 +62,8 @@ class RepositoryAccess {
 
 	private Repository repository;
 
+	private RevWalk revWalk;
+
 	private final URIish repoURI;
 
 	RepositoryAccess(String fmt, Map<String, String> properties) throws CoreException {
@@ -74,6 +81,8 @@ class RepositoryAccess {
 		String remoteURIStr = properties.get(IPropertyKeys.PROP_REMOTE_URI);
 		if (remoteURIStr != null)
 			try {
+				if(remoteURIStr.startsWith("file:/") && remoteURIStr.length() > 6 && remoteURIStr.charAt(6) != '/') //$NON-NLS-1$
+					remoteURIStr = "file:///" + remoteURIStr.substring(6); //$NON-NLS-1$
 				repoURI = new URIish(remoteURIStr);
 			} catch (URISyntaxException e) {
 				throw BuckminsterException.wrap(e);
@@ -100,7 +109,7 @@ class RepositoryAccess {
 			Repository local = getRepository(monitor);
 			synchronized (localRepo.getAbsolutePath().intern()) {
 				GitIndex index = new GitIndex(local);
-				WorkDirCheckout co = new WorkDirCheckout(local, local.getWorkDir(), index, getComponentTree(versionMatch, monitor));
+				WorkDirCheckout co = new WorkDirCheckout(local, local.getWorkTree(), index, getComponentTree(versionMatch, monitor));
 				co.checkout();
 				index.write();
 			}
@@ -110,48 +119,43 @@ class RepositoryAccess {
 	}
 
 	synchronized void close() {
+		if (revWalk != null) {
+			revWalk.dispose();
+			revWalk = null;
+		}
 		if (repository != null) {
 			repository.close();
 			repository = null;
 		}
 	}
 
-	Commit getCommit(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException {
+	RevCommit getCommit(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException {
 		try {
-			Object obj;
+			ObjectId objId = null;
 			Repository repo = getRepository(monitor);
-			String gitTag = getGitTag(versionMatch);
-			Ref ref;
-			if (gitTag != null) {
-				ref = repo.getRef(gitTag);
-				if (ref == null)
-					throw BuckminsterException.fromMessage("Unable to obtain Ref for tag %s", gitTag); //$NON-NLS-1$
-				obj = repo.mapObject(ref.getObjectId(), ref.getName());
-				while (obj instanceof Tag)
-					obj = repo.mapObject(((Tag) obj).getObjId(), null);
+			String revstr = getGitTag(versionMatch);
+			if (revstr != null) {
+				objId = repo.resolve(revstr);
+				if (objId == null)
+					throw BuckminsterException.fromMessage("Unable to obtain ObjectID for tag %s", revstr); //$NON-NLS-1$
 			} else {
-				String gitBranch = getGitBranch(versionMatch);
-				ref = repo.getRef(gitBranch);
-				if (ref == null) {
+				revstr = getGitBranch(versionMatch);
+				objId = repo.resolve(revstr);
+				if (objId == null) {
 					String remoteBranch = getGitRemoteBranch(versionMatch);
-					ref = repo.getRef(remoteBranch);
-					if (ref == null)
-						throw BuckminsterException.fromMessage("Unable to obtain Ref for branch %s", gitBranch); //$NON-NLS-1$
+					objId = repo.resolve(revstr);
+					if (objId == null)
+						throw BuckminsterException.fromMessage("Unable to obtain ObjectID for branch %s", revstr); //$NON-NLS-1$
 
 					// We need to clone the remote branch in order to get the
 					// Commit.
 					fetch(versionMatch, monitor);
-					ref = repository.getRef(gitBranch);
-					if (ref == null)
+					objId = repo.resolve(revstr);
+					if (objId == null)
 						throw BuckminsterException.fromMessage("Unable to obtain cloned local Ref for branch %s", remoteBranch); //$NON-NLS-1$
 				}
-				obj = repo.mapObject(ref.getObjectId(), ref.getName());
 			}
-
-			// inspectObj(obj);
-			if (!(obj instanceof Commit))
-				throw BuckminsterException.fromMessage("Unable to obtain Commit for ref %s", ref.getName()); //$NON-NLS-1$
-			return (Commit) obj;
+			return revWalk.parseCommit(objId);
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
@@ -163,11 +167,11 @@ class RepositoryAccess {
 
 	Tree getComponentTree(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException {
 		try {
-			Commit c = getCommit(versionMatch, monitor);
+			RevCommit c = getCommit(versionMatch, monitor);
 			if (component == null)
-				return c.getTree();
+				return repository.mapTree(c.getTree());
 
-			return (Tree) c.getTree().findTreeMember(component);
+			return (Tree) repository.mapTree(c.getTree()).findTreeMember(component);
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
 		}
@@ -179,11 +183,12 @@ class RepositoryAccess {
 
 		boolean infant = !localRepo.exists();
 		try {
-			repository = new Repository(localRepo);
+			repository = new FileRepository(localRepo);
 			if (infant) {
 				repository.create();
 				fetch(null, monitor); // Initial clone
 			}
+			revWalk = new RevWalk(repository);
 		} catch (IOException e) {
 			throw BuckminsterException.wrap(e);
 		}
@@ -198,17 +203,17 @@ class RepositoryAccess {
 	}
 
 	void inspectObj(StringBuilder sb, Object obj) throws IOException {
-		if (obj instanceof Commit) {
-			final Commit c = ((Commit) obj);
-			appendObjectSummary(sb, "commit", c.getAuthor(), c.getMessage()); //$NON-NLS-1$
-			for (TreeEntry te : c.getTree().members()) {
+		if (obj instanceof RevCommit) {
+			final RevCommit c = ((RevCommit) obj);
+			appendObjectSummary(sb, "commit", c.getAuthorIdent(), c.getShortMessage()); //$NON-NLS-1$
+			for (TreeEntry te : repository.mapTree(c.getTree()).members()) {
 				sb.append("  "); //$NON-NLS-1$
 				sb.append(te.getFullName());
 				sb.append("\n"); //$NON-NLS-1$
 			}
-		} else if (obj instanceof Tag) {
-			final Tag t = ((Tag) obj);
-			appendObjectSummary(sb, "tag", t.getAuthor(), t.getMessage()); //$NON-NLS-1$
+		} else if (obj instanceof RevTag) {
+			final RevTag t = ((RevTag) obj);
+			appendObjectSummary(sb, "tag", t.getTaggerIdent(), t.getShortMessage()); //$NON-NLS-1$
 		} else if (obj instanceof Tree) {
 			sb.append("tree"); //$NON-NLS-1$
 			for (TreeEntry te : ((Tree) obj).members()) {
@@ -230,12 +235,11 @@ class RepositoryAccess {
 	}
 
 	void inspectRef(StringBuilder sb, Ref ref) throws IOException {
-		Object obj = repository.mapObject(ref.getObjectId(), ref.getName());
 		sb.append(ref.getName());
 		sb.append('\n');
 		sb.append(ref.getObjectId().abbreviate(repository).name());
 		sb.append(" - "); //$NON-NLS-1$
-		inspectObj(sb, obj);
+		inspectObj(sb, ref.getObjectId());
 	}
 
 	boolean isAutoFetch() {
@@ -257,7 +261,7 @@ class RepositoryAccess {
 			head.disableRefLog();
 			head.link(gitBranch);
 
-			RepositoryConfig localConfig = repository.getConfig();
+			StoredConfig localConfig = repository.getConfig();
 			RemoteConfig remoteConfig = new RemoteConfig(localConfig, remoteName);
 			remoteConfig.addURI(repoURI);
 
@@ -276,8 +280,8 @@ class RepositoryAccess {
 			String branchName = gitBranch.substring(Constants.R_HEADS.length());
 
 			// setup the default remote branch for branchName
-			localConfig.setString(RepositoryConfig.BRANCH_SECTION, branchName, "remote", remoteName); //$NON-NLS-1$
-			localConfig.setString(RepositoryConfig.BRANCH_SECTION, branchName, "merge", gitBranch); //$NON-NLS-1$
+			localConfig.setString("branch", branchName, "remote", remoteName); //$NON-NLS-1$ //$NON-NLS-2$
+			localConfig.setString("branch", branchName, "merge", gitBranch); //$NON-NLS-1$ //$NON-NLS-2$
 			localConfig.save();
 
 			tn = Transport.open(repository, remoteConfig);
@@ -287,9 +291,15 @@ class RepositoryAccess {
 				// This is bad. The desired branch was not found
 				throw BuckminsterException.fromMessage("Unable to find branch %s in remote repository %s", gitBranch, repoURI); //$NON-NLS-1$
 
-			Commit c = repository.mapCommit(advHead.getObjectId());
+			if (!Constants.HEAD.equals(advHead.getName())) {
+				RefUpdate u = repository.updateRef(Constants.HEAD);
+				u.disableRefLog();
+				u.link(advHead.getName());
+			}
+
+			RevCommit c = parseCommit(advHead);
 			RefUpdate u = repository.updateRef(Constants.HEAD);
-			u.setNewObjectId(c.getCommitId());
+			u.setNewObjectId(c.getId());
 			u.forceUpdate();
 		} catch (URISyntaxException e) {
 			throw BuckminsterException.wrap(e);
@@ -298,6 +308,17 @@ class RepositoryAccess {
 				tn.close();
 			monitor.done();
 		}
+	}
+
+	private RevCommit parseCommit(final Ref branch) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		final RevWalk rw = new RevWalk(repository);
+		final RevCommit commit;
+		try {
+			commit = rw.parseCommit(branch.getObjectId());
+		} finally {
+			rw.release();
+		}
+		return commit;
 	}
 
 	private String getBranchName(VersionMatch versionMatch) {
@@ -333,5 +354,9 @@ class RepositoryAccess {
 			return null;
 
 		return Constants.R_TAGS + vs.getName();
+	}
+
+	RevWalk getRevWalk() {
+		return revWalk;
 	}
 }
