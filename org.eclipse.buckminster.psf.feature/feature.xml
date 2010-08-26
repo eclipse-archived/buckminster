@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.buckminster.psf.feature"
-      label="%featureName"
       version="1.0.0.qualifier"
+      label="%featureName"
       provider-name="%providerName">
 
    <description>
@@ -18,7 +18,28 @@
    </license>
 
    <plugin
+         id="org.eclipse.buckminster.team.psf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.buckminster.rmap.psf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.rmap"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.model.common"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -32,7 +53,14 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.buckminster.team.psf"
+         id="org.eclipse.buckminster.model.common.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.buckminster.rmap.edit"
          download-size="0"
          install-size="0"
          version="0.0.0"
