@@ -23,6 +23,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
+import org.eclipse.buckminster.pde.PDEPlugin;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.pde.internal.build.IXMLConstants;
 import org.eclipse.pde.internal.build.Utils;
 import org.eclipse.pde.internal.swt.tools.IconExe;
@@ -212,6 +214,7 @@ public class BrandingIron implements IXMLConstants {
 	 * @param iconName
 	 */
 	private void brandMacSplash(String initialRoot, String target, String iconName) {
+		Logger logger = PDEPlugin.getLogger();
 		String splashContents = "/Resources/Splash.app/Contents"; //$NON-NLS-1$
 		modifyInfoPListFile(initialRoot + splashContents, target + splashContents, iconName);
 
@@ -245,7 +248,7 @@ public class BrandingIron implements IXMLConstants {
 					// ignore
 				}
 			} catch (IOException e) {
-				System.out.println("Could not copy macosx splash launcher"); //$NON-NLS-1$
+				logger.error(e, "Could not copy macosx splash launcher"); //$NON-NLS-1$
 			}
 		}
 	}
@@ -269,6 +272,7 @@ public class BrandingIron implements IXMLConstants {
 	}
 
 	private void brandWindows() throws Exception {
+		Logger logger = PDEPlugin.getLogger();
 		File templateLauncher = new File(root, name + ".exe"); //$NON-NLS-1$
 		if (!templateLauncher.exists())
 			templateLauncher = new File(root, "launcher.exe"); //$NON-NLS-1$
@@ -281,7 +285,7 @@ public class BrandingIron implements IXMLConstants {
 				System.arraycopy(icons, 0, args, 1, icons.length);
 				IconExe.main(args);
 			} else {
-				System.out.println("Warning: Could not find executable to brand."); //$NON-NLS-1$
+				logger.warning("Could not find executable to brand."); //$NON-NLS-1$
 			}
 		}
 		if (templateLauncher.exists() && !templateLauncher.getName().equals(name + ".exe")) //$NON-NLS-1$
@@ -289,13 +293,15 @@ public class BrandingIron implements IXMLConstants {
 	}
 
 	private void copyMacIni(String initialRoot, String target, String iconName) {
+		Logger logger = PDEPlugin.getLogger();
 		// 3 possibilities, in order of preference:
 		// rcp.app/Contents/MacOS/rcp.ini (targetFile)
 		// Eclipse.app/Contents/MacOS/rcp.ini (brandedIni)
 		// Eclipse.app/Contents/MacOs/eclipse.ini (ini)
 		File targetFile = getCanonicalFile(new File(target, "/MacOS/" + name + ".ini")); //$NON-NLS-1$//$NON-NLS-2$
 		File brandedIni = getCanonicalFile(new File(initialRoot, "/MacOS/" + name + ".ini")); //$NON-NLS-1$ //$NON-NLS-2$
-		File ini = getCanonicalFile(new File(initialRoot, "/MacOS/Eclipse.ini")); //$NON-NLS-1$
+		File ini = getCanonicalFile(new File(initialRoot, "/MacOS/eclipse.ini")); //$NON-NLS-1$
+		File ini2 = getCanonicalFile(new File(initialRoot, "/MacOS/Eclipse.ini")); //$NON-NLS-1$
 
 		if (targetFile.exists()) {
 			// an ini already exists at the target, use that
@@ -303,21 +309,33 @@ public class BrandingIron implements IXMLConstants {
 				brandedIni.delete();
 			if (ini.exists() && !ini.equals(targetFile))
 				ini.delete();
+			if (ini2.exists() && !ini2.equals(targetFile))
+				ini2.delete();
 			ini = targetFile;
 		} else if (brandedIni.exists()) {
 			// take the one that is already branded
-			if (ini.exists() && !ini.equals(brandedIni))
+			if (ini.exists() && !ini.equals(targetFile))
 				ini.delete();
+			if (ini2.exists() && !ini2.equals(targetFile))
+				ini2.delete();
 			ini = brandedIni;
-		} else if (!ini.exists()) {
-			return;
+		} else {
+			if (ini.exists()) {
+				if (ini2.exists()) {
+					logger.warning("Found both %s and %s. Discarding the latter", ini.getAbsolutePath(), ini2.getAbsolutePath()); //$NON-NLS-1$
+					ini2.delete(); // This should not happen really
+				}
+			} else if (ini2.exists()) {
+				ini = ini2;
+			} else
+				return;
 		}
 
 		StringBuffer buffer;
 		try {
 			buffer = readFile(ini);
 		} catch (IOException e) {
-			System.out.println("Impossible to brand ini file"); //$NON-NLS-1$
+			logger.error(e, "Impossible to brand ini file"); //$NON-NLS-1$
 			return;
 		}
 
@@ -334,15 +352,16 @@ public class BrandingIron implements IXMLConstants {
 			if (!ini.equals(targetFile))
 				ini.delete();
 		} catch (FileNotFoundException e) {
-			System.out.println("Impossible to brand ini file"); //$NON-NLS-1$
+			logger.error(e, "Impossible to brand ini file"); //$NON-NLS-1$
 			return;
 		} catch (IOException e) {
-			System.out.println("Impossible to brand ini file"); //$NON-NLS-1$
+			logger.error(e, "Impossible to brand ini file"); //$NON-NLS-1$
 			return;
 		}
 	}
 
 	private void copyMacLauncher(String initialRoot, String target) {
+		Logger logger = PDEPlugin.getLogger();
 		String targetLauncher = target + "/MacOS/"; //$NON-NLS-1$
 		File launcher = getCanonicalFile(new File(initialRoot + "/MacOS/launcher")); //$NON-NLS-1$
 		File eclipseLauncher = getCanonicalFile(new File(initialRoot + "/MacOS/eclipse")); //$NON-NLS-1$
@@ -366,7 +385,7 @@ public class BrandingIron implements IXMLConstants {
 			}
 			Utils.copy(launcher, targetFile);
 		} catch (IOException e) {
-			System.out.println("Could not copy macosx launcher"); //$NON-NLS-1$
+			logger.error(e, "Could not copy macosx launcher"); //$NON-NLS-1$
 			return;
 		}
 		try {
@@ -391,12 +410,13 @@ public class BrandingIron implements IXMLConstants {
 	}
 
 	private void modifyInfoPListFile(String initialRoot, String targetRoot, String iconName) {
+		Logger logger = PDEPlugin.getLogger();
 		File infoPList = new File(initialRoot, "Info.plist"); //$NON-NLS-1$
 		StringBuffer buffer;
 		try {
 			buffer = readFile(infoPList);
 		} catch (IOException e) {
-			System.out.println("Impossible to brand info.plist file"); //$NON-NLS-1$
+			logger.error(e, "Impossible to brand info.plist file"); //$NON-NLS-1$
 			return;
 		}
 		int exePos = scan(buffer, 0, MARKER_NAME);
@@ -447,10 +467,10 @@ public class BrandingIron implements IXMLConstants {
 			target.getParentFile().mkdirs();
 			transferStreams(new ByteArrayInputStream(buffer.toString().getBytes()), new FileOutputStream(target));
 		} catch (FileNotFoundException e) {
-			System.out.println("Impossible to brand info.plist file"); //$NON-NLS-1$
+			logger.error(e, "Impossible to brand info.plist file"); //$NON-NLS-1$
 			return;
 		} catch (IOException e) {
-			System.out.println("Impossible to brand info.plist file"); //$NON-NLS-1$
+			logger.error(e, "Impossible to brand info.plist file"); //$NON-NLS-1$
 			return;
 		}
 		try {
@@ -462,6 +482,7 @@ public class BrandingIron implements IXMLConstants {
 	}
 
 	private void moveContents(File source, File target) {
+		Logger logger = PDEPlugin.getLogger();
 		if (!source.exists())
 			return;
 
@@ -469,7 +490,7 @@ public class BrandingIron implements IXMLConstants {
 			if (source.getCanonicalFile().equals(target.getCanonicalFile()))
 				return;
 		} catch (IOException e) {
-			System.out.println("Could not copy macosx resources."); //$NON-NLS-1$
+			logger.error(e, "Could not copy macosx resources."); //$NON-NLS-1$
 			return;
 		}
 
