@@ -3,6 +3,9 @@ package org.eclipse.buckminster.pde.tasks;
 import java.io.File;
 
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ExecutablesDescriptor;
@@ -38,15 +41,25 @@ public class EquinoxExecutableAction extends org.eclipse.equinox.p2.publisher.ec
 				IPath iconPath = Path.fromOSString(iconFile.getPath());
 				if (rootPath.isPrefixOf(iconPath)) {
 					// The iconPath is bogus since it is relative to the project
-					// files parent
-					// rather than to the project parent (the workspace). This
-					// happens on Windows
-					// platforms. So we strip one more segment then the root has
-					// and then we
-					// prepend the root again.
-					//
+					// files parent rather than to the project parent (the
+					// workspace). This either happens on Windows platforms or
+					// if the project containing the icon is not directly in the
+					// workspace root (e.g. inside an intermediate "plugins"-
+					// folder when it has been materialized using Buckminster.
 					iconPath = iconPath.removeFirstSegments(rootPath.segmentCount() + 1).setDevice(null).makeRelative();
-					iconPath = rootPath.append(iconPath);
+
+					// First check, if the path references a project that is
+					// not directly in the workspace's root
+					IProject prj = ResourcesPlugin.getWorkspace().getRoot().getProject(iconPath.segment(0));
+					IResource iconRes = prj.findMember(iconPath.removeFirstSegments(1));
+					if (iconRes.exists()) {
+						iconPath = iconRes.getLocation();
+					} else {
+						// Windows: we strip one more segment then the root has
+						// and then we prepend the root again.
+						//
+						iconPath = rootPath.append(iconPath);
+					}
 				} else {
 					// The iconPath was considered absolute and hence not
 					// altered. The problem
