@@ -321,7 +321,7 @@ public class BrandingIron implements IXMLConstants {
 			ini = brandedIni;
 		} else {
 			if (ini.exists()) {
-				if (ini2.exists()) {
+				if (ini2.exists() && !ini2.equals(ini)) {
 					logger.warning("Found both %s and %s. Discarding the latter", ini.getAbsolutePath(), ini2.getAbsolutePath()); //$NON-NLS-1$
 					ini2.delete(); // This should not happen really
 				}
