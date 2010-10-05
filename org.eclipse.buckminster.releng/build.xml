@@ -18,6 +18,10 @@
 		<isset property="env.WORKSPACE" />
 	</condition>
 
+    <condition property="no.proxy" value="${env.no_proxy}, dev.eclipse.org, download.cloudsmith.com" else="dev.eclipse.org, download.cloudsmith.com">
+    	<isset property="env.no_proxy" />
+	</condition>
+
 	<!--Default properties intended to be overridden by entries in the
 		above property file.
 	-->
@@ -58,6 +62,7 @@
 
 			<!-- Launch the eclipse application -->
 			<java fork="true" jar="${@{app}.launcher}" dir="${@{app}.deploy.dir}" failonerror="true">
+		        <env key="no_proxy" value="${no.proxy}" />
 				<args />
 			</java>
 		</sequential>
@@ -75,7 +80,7 @@
 					<arg value="-data" />
 					<arg value="@{workspace}" />
 					<arg value="--loglevel" />
-					<arg value="${buckminster.loglevel}" />
+					<arg value="${}" />
 					<arg value="--displaystacktrace" />
 					<globargs />
 					<arg value="@{command}" />
