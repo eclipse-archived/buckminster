@@ -114,6 +114,7 @@
 		<eclipse.launch app="director">
 			<args>
 		        <env key="no_proxy" value="${no.proxy}" />
+				<env key="http_proxy" value="proxy.eclipse.org:9898"/> 
 				<jvmarg value="-Dhttp.proxyHost=proxy.eclipse.org"/>
 				<jvmarg value="-Dhttp.proxyPort=9898"/>
 				<jvmarg value="-Declipse.p2.mirrors=false" />
