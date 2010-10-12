@@ -18,10 +18,6 @@
 		<isset property="env.WORKSPACE" />
 	</condition>
 
-    <condition property="no.proxy" value="${env.no_proxy}, dev.eclipse.org" else="dev.eclipse.org">
-    	<isset property="env.no_proxy" />
-	</condition>
-
 	<!--Default properties intended to be overridden by entries in the
 		above property file.
 	-->
@@ -62,6 +58,20 @@
 
 			<!-- Launch the eclipse application -->
 			<java fork="true" jar="${@{app}.launcher}" dir="${@{app}.deploy.dir}" failonerror="true">
+		        <env key="no_proxy" value="localhost, 127.0.0.1, 172.30.206.0, eclipse.org" />
+				<env key="http_proxy" value="proxy.eclipse.org:9898"/> 
+				<env key="https_proxy" value="proxy.eclipse.org:9898"/> 
+				<env key="ftp_proxy" value="proxy.eclipse.org:9898"/> 
+				<jvmarg value="-Dhttp.proxyHost=proxy.eclipse.org"/>
+				<jvmarg value="-Dhttp.proxyPort=9898"/>
+				<jvmarg value="-Dhttps.proxyHost=proxy.eclipse.org"/>
+				<jvmarg value="-Dhttps.proxyPort=9898"/>
+				<jvmarg value="-Dftp.proxyHost=proxy.eclipse.org"/>
+				<jvmarg value="-Dftp.proxyPort=9898"/>
+				<jvmarg value="-DhttpnonProxyHosts=*.eclipse.org"/>
+				<jvmarg value="-DhttpsnonProxyHosts=*.eclipse.org"/>
+				<jvmarg value="-DftpnonProxyHosts=*.eclipse.org"/>
+				<jvmarg value="-Declipse.p2.mirrors=false" />
 				<args />
 			</java>
 		</sequential>
@@ -113,11 +123,6 @@
 		<echo message="External site: ${bm.external.site}" />
 		<eclipse.launch app="director">
 			<args>
-		        <env key="no_proxy" value="${no.proxy}" />
-				<env key="http_proxy" value="proxy.eclipse.org:9898"/> 
-				<jvmarg value="-Dhttp.proxyHost=proxy.eclipse.org"/>
-				<jvmarg value="-Dhttp.proxyPort=9898"/>
-				<jvmarg value="-Declipse.p2.mirrors=false" />
 				<arg value="-r" />
 				<arg value="${bm.headless.site}" />
 				<arg value="-r" />
