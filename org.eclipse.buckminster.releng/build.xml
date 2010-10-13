@@ -114,7 +114,6 @@
 		<get src="${director.url}" dest="${director.zip}" />
 		<mkdir dir="${tools}" />
 		<unzip src="${director.zip}" dest="${tools}" />
-		<mkdir dir="${tools}/director/configuration"/>
 		<delete file="${director.zip}" />
 	</target>
 
@@ -123,7 +122,8 @@
 	</condition>
 
 	<target name="set.director.proxies" if="at.eclipse.org">
-		<copy file="org.eclipse.core.net.prefs" todir="${tools}/director/configuration"/>
+		<mkdir dir="${tools}/director/configuration/.settings"/>
+		<copy file="org.eclipse.core.net.prefs" todir="${tools}/director/configuration/.settings"/>
 	</target>
 
 	<target name="install.buckminster" unless="buckminster.exists" depends="get.director,set.director.proxies">
@@ -157,7 +157,8 @@
 	</target>
 
 	<target name="set.buckminster.proxies" if="at.eclipse.org">
-		<copy file="org.eclipse.core.net.prefs" todir="${tools}/buckminster/configuration"/>
+		<mkdir dir="${tools}/buckminster/configuration/.settings"/>
+		<copy file="org.eclipse.core.net.prefs" todir="${tools}/buckminster/configuration/.settings"/>
 	</target>
 
 	<target name="get.workspace" unless="workspace.gzip.exists">
