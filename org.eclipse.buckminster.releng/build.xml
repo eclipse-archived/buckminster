@@ -28,6 +28,7 @@
 
 	<property name="buckminster.output.root" location="${result}/output" />
 	<property name="buckminster.temp.root" location="${result}/temp" />
+	<property name="buckminster.loglevel" value="WARNING" />
 	<property name="eclipse.staging.area" location="${result}/signing" />
 
 	<property name="workspace.gzip" value="workspace-template.tar.gz" />
@@ -89,7 +90,7 @@
 					<arg value="-data" />
 					<arg value="@{workspace}" />
 					<arg value="--loglevel" />
-					<arg value="${}" />
+					<arg value="${buckminster.loglevel}" />
 					<arg value="--displaystacktrace" />
 					<globargs />
 					<arg value="@{command}" />
