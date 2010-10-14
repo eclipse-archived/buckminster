@@ -22,7 +22,7 @@
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="http_proxy" value="proxy.eclipse.org:9898"/>
 <mapEntry key="https_proxy" value="proxy.eclipse.org:9898"/>
-<mapEntry key="no_proxy" value="eclipse.org"/>
+<mapEntry key="no_proxy" value="www.eclipse.org"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value=""/>
 <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
