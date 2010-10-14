@@ -18,8 +18,8 @@
    <feature id="org.eclipse.buckminster.psf.feature" version="0.0.0">
       <category name="buckminster"/>
    </feature>
-   <feature id="org.eclipse.buckminster.subclipse.feature" version="0.0.0">
-      <category name="buckminster.subclipse"/>
+<!--   <feature id="org.eclipse.buckminster.subclipse.feature" version="0.0.0">
+      <category name="buckminster.subclipse"/> -->
    </feature>
    <feature id="org.eclipse.buckminster.subversive.feature" version="0.0.0">
       <category name="buckminster.subversive"/>
