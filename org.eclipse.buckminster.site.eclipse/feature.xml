@@ -41,11 +41,11 @@
    <includes
          id="org.eclipse.buckminster.psf.feature"
          version="0.0.0"/>
-<!--
+
    <includes
          id="org.eclipse.buckminster.subclipse.feature"
          version="0.0.0"/>
--->
+
    <includes
          id="org.eclipse.buckminster.subversive.feature"
          version="0.0.0"/>
