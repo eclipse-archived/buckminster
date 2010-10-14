@@ -117,16 +117,7 @@
 		<delete file="${director.zip}" />
 	</target>
 
-	<condition property="at.eclipse.org">
-		<equals arg1="eclipse.local" arg2="${signing.type}"/>
-	</condition>
-
-	<target name="set.director.proxies" if="at.eclipse.org">
-		<mkdir dir="${tools}/director/configuration/.settings"/>
-		<copy file="org.eclipse.core.net.prefs" todir="${tools}/director/configuration/.settings"/>
-	</target>
-
-	<target name="install.buckminster" unless="buckminster.exists" depends="get.director,set.director.proxies">
+	<target name="install.buckminster" unless="buckminster.exists" depends="get.director">
 		<echo message="Configuring headless buckminster with needed features" />
 		<echo message="Headless site: ${bm.headless.site}" />
 		<echo message="External site: ${bm.external.site}" />
@@ -154,11 +145,6 @@
 				<arg value="org.eclipse.buckminster.emma.headless.feature.feature.group" />
 			</args>
 		</eclipse.launch>
-	</target>
-
-	<target name="set.buckminster.proxies" if="at.eclipse.org">
-		<mkdir dir="${tools}/buckminster/configuration/.settings"/>
-		<copy file="org.eclipse.core.net.prefs" todir="${tools}/buckminster/configuration/.settings"/>
 	</target>
 
 	<target name="get.workspace" unless="workspace.gzip.exists">
@@ -193,7 +179,7 @@
 		</echoproperties>
 	</target>
 
-	<target name="provision" depends="init.checks,init.workspace,install.buckminster,set.buckminster.proxies,init.build.properties">
+	<target name="provision" depends="init.checks,init.workspace,install.buckminster,init.build.properties">
 		<echo message="Importing projects into workspace ${workspace} and binaries into target platform ${targetPlatformPath}" />
 
 		<buckminster command="setpref">
