@@ -84,7 +84,7 @@
   </rm:searchPath>
   <rm:searchPath name="git">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/egit/updates-nightly">
+      <rm:uri format="{0}/egit/updates-0.9">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
