@@ -3,6 +3,7 @@
     <cs:dependencies>
         <cs:dependency name="org.eclipse.buckminster.site.eclipse" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.site.eclipse.headless" componentType="eclipse.feature"/>
+        <cs:dependency name="org.eclipse.buckminster.site.external" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.equinox.executable" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.rcp" componentType="eclipse.feature"/>
         <cs:dependency name="org.eclipse.buckminster.tests" componentType="osgi.bundle"/>
