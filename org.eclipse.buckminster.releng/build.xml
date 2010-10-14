@@ -193,6 +193,8 @@
 		<echo message="Running JUnit tests" />
 		<buckminster command="junit">
 			<cmdargs>
+		        <env key="no_proxy" value="localhost, 127.0.0.1, 172.30.206.0, eclipse.org" />
+				<env key="http_proxy" value="proxy.eclipse.org:9898"/> 
 				<arg value="-l" />
 				<arg value="org.eclipse.buckminster.tests/AllTests.launch" />
 				<arg value="-o" />
