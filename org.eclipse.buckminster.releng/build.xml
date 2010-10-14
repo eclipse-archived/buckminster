@@ -189,7 +189,7 @@
 		<buckminster command="build" />
 	</target>
 
-	<target name="test">
+	<target name="test" depends="init.build.properties">
 		<echo message="Running JUnit tests" />
 		<buckminster command="junit">
 			<cmdargs>
