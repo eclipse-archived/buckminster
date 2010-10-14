@@ -52,6 +52,7 @@
 			<!-- jvmarg value="-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y"/ -->
 		</java>
 
+
 		<!-- Copy needed platform specific fragments -->
 		<copy todir="${destination}/plugins">
 			<fileset dir="${targetPlatformPath}/plugins" excludes="*.source_*.jar">
