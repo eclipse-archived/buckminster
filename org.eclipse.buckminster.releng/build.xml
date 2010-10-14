@@ -59,10 +59,6 @@
 
 			<!-- Launch the eclipse application -->
 			<java fork="true" jar="${@{app}.launcher}" dir="${@{app}.deploy.dir}" failonerror="true">
-		        <env key="no_proxy" value="localhost, 127.0.0.1, 172.30.206.0, eclipse.org" />
-				<env key="http_proxy" value="proxy.eclipse.org:9898"/> 
-				<env key="https_proxy" value="proxy.eclipse.org:9898"/> 
-				<env key="ftp_proxy" value="proxy.eclipse.org:9898"/> 
 				<args />
 			</java>
 		</sequential>
