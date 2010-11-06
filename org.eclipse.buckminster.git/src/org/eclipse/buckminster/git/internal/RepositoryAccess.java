@@ -41,6 +41,8 @@ import org.eclipse.jgit.transport.URIish;
  */
 @SuppressWarnings("deprecation")
 class RepositoryAccess {
+	private static final Object NULL_STRING = "null";
+
 	private static void appendObjectSummary(final StringBuilder sb, final String type, final PersonIdent author, final String message) {
 		sb.append(type + " by "); //$NON-NLS-1$
 		sb.append(author.getName());
@@ -83,7 +85,17 @@ class RepositoryAccess {
 			try {
 				if(remoteURIStr.startsWith("file:/") && remoteURIStr.length() > 6 && remoteURIStr.charAt(6) != '/') //$NON-NLS-1$
 					remoteURIStr = "file:///" + remoteURIStr.substring(6); //$NON-NLS-1$
-				repoURI = new URIish(remoteURIStr);
+				URIish uri = new URIish(remoteURIStr);
+				String username = uri.getUser();
+				if (username != null) {
+					if (NULL_STRING.equals(username))
+						uri = uri.setUser(null);
+					
+					String password = uri.getPass();
+					if (password != null && NULL_STRING.equals(password))
+						uri = uri.setPass(null);
+				}
+				repoURI = uri;
 			} catch (URISyntaxException e) {
 				throw BuckminsterException.wrap(e);
 			}
