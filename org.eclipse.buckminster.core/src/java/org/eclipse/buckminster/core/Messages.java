@@ -431,6 +431,8 @@ public class Messages extends NLS {
 
 	public static String Unable_to_instantiate_Query_Resolver_Factory_0;
 
+	public static String Building_0;
+
 	public static String Building_workspace;
 
 	public static String Periodic_workspace_save;
