@@ -26,6 +26,11 @@ import java.util.TreeSet;
 import org.eclipse.buckminster.core.helpers.BMProperties;
 import org.eclipse.buckminster.core.helpers.MapUnion;
 import org.eclipse.buckminster.sax.Utils;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.variables.IDynamicVariable;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.IValueVariable;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -193,7 +198,9 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 				if (inResolve && c == '}')
 					return idx - 1;
 
-				if (!Character.isJavaIdentifierPart(c))
+				// ':' is allowed after the prefix for eclipse variables like
+				// env_vars:
+				if (!(Character.isJavaIdentifierPart(c) || c == ':'))
 					return -1; // Illegal character
 			}
 		}
@@ -507,11 +514,58 @@ public class ExpandingProperties<T extends Object> implements IProperties<T> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	T getExpandedProperty(String key, int recursionGuard) {
-		return convertValue(map.get(key), recursionGuard);
+		if (map.containsKey(key))
+			return convertValue(map.get(key), recursionGuard);
+		try {
+			return (T) resolveEclipseVariables(key);
+		} catch (ClassCastException e) {
+			// String is not compatible to T
+		}
+		return null;
 	}
 
 	private T convertValue(ValueHolder<T> vh, int recursionGuard) {
 		return vh == null ? null : vh.checkedGetValue(this, recursionGuard);
+	}
+
+	private String resolveEclipseVariables(String key) {
+		if (key == null)
+			return null;
+		IStringVariableManager variableManager = VariablesPlugin.getDefault().getStringVariableManager();
+
+		int index = key.indexOf(':');
+		// i.e. the key has a prefix and an argument like env_var:FOOBAR
+		if (index > 1) {
+			String varName = key.substring(0, index);
+			IDynamicVariable variable = variableManager.getDynamicVariable(varName);
+			if (variable == null)
+				return null;
+			try {
+				if (key.length() > index + 1)
+					return variable.getValue(key.substring(index + 1));
+				return variable.getValue(null);
+			} catch (CoreException e) {
+				// the value could not be resolved
+				return null;
+			}
+		}
+		// first try value variables
+		IValueVariable variable = variableManager.getValueVariable(key);
+		if (variable == null) {
+			// fall back to dynamic variables without arguments
+			IDynamicVariable dynamicVariable = variableManager.getDynamicVariable(key);
+			if (dynamicVariable == null)
+				return null;
+			try {
+				return dynamicVariable.getValue(null);
+			} catch (CoreException e) {
+				// the value could not be resolved
+				return null;
+			}
+		}
+		return variable.getValue();
+
 	}
 }
