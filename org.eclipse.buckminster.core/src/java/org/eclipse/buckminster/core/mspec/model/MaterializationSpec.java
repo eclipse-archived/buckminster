@@ -24,6 +24,7 @@ import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.IComponentIdentifier;
 import org.eclipse.buckminster.core.cspec.IComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentName;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.materializer.IMaterializer;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -161,7 +162,8 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		if (materializer == null) {
 			materializer = getMaterializerID();
 			if (materializer == null) {
-				if (!resolution.getProvider().hasSource()) {
+				if ((IComponentType.OSGI_BUNDLE.equals(resolution.getComponentTypeId()) || IComponentType.ECLIPSE_FEATURE.equals(resolution
+						.getComponentTypeId())) && !resolution.getProvider().hasSource()) {
 					materializer = IMaterializer.P2;
 				} else {
 					materializer = resolution.getProvider().getReaderType().getRecommendedMaterializer();
