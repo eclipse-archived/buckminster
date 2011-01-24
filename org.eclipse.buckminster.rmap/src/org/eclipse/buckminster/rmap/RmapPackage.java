@@ -63,6 +63,28 @@ public interface RmapPackage extends EPackage {
 		EAttribute MATCHER__PATTERN = eINSTANCE.getMatcher_Pattern();
 
 		/**
+		 * The meta object literal for the '<em><b>Component Types Attr</b></em>' attribute feature.
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MATCHER__COMPONENT_TYPES_ATTR = eINSTANCE.getMatcher_ComponentTypesAttr();
+
+		/**
+		 * The meta object literal for the '<em><b>Component Types</b></em>' attribute list feature.
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MATCHER__COMPONENT_TYPES = eINSTANCE.getMatcher_ComponentTypes();
+
+		/**
+		 * The meta object literal for the '<em><b>Resolution Filter</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MATCHER__RESOLUTION_FILTER = eINSTANCE.getMatcher_ResolutionFilter();
+
+		/**
 		 * The meta object literal for the '
 		 * {@link org.eclipse.buckminster.rmap.impl.RedirectImpl
 		 * <em>Redirect</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -194,20 +216,6 @@ public interface RmapPackage extends EPackage {
 		EClass PROVIDER = eINSTANCE.getProvider();
 
 		/**
-		 * The meta object literal for the '<em><b>Component Types</b></em>' attribute list feature.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PROVIDER__COMPONENT_TYPES = eINSTANCE.getProvider_ComponentTypes();
-
-		/**
-		 * The meta object literal for the '<em><b>Component Types Attr</b></em>' attribute feature.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PROVIDER__COMPONENT_TYPES_ATTR = eINSTANCE.getProvider_ComponentTypesAttr();
-
-		/**
 		 * The meta object literal for the '<em><b>Reader Type</b></em>' attribute feature.
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @generated
@@ -227,13 +235,6 @@ public interface RmapPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PROVIDER__MUTABLE = eINSTANCE.getProvider_Mutable();
-
-		/**
-		 * The meta object literal for the '<em><b>Resolution Filter</b></em>' attribute feature.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute PROVIDER__RESOLUTION_FILTER = eINSTANCE.getProvider_ResolutionFilter();
 
 		/**
 		 * The meta object literal for the '<em><b>Version Converter</b></em>' containment reference feature.
@@ -478,6 +479,14 @@ public interface RmapPackage extends EPackage {
 		EReference DOCUMENT_ROOT__REDIRECTS = eINSTANCE.getDocumentRoot_Redirects();
 
 		/**
+		 * The meta object literal for the '<em><b>Providers</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DOCUMENT_ROOT__PROVIDERS = eINSTANCE.getDocumentRoot_Providers();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.buckminster.rmap.impl.URIMatcherImpl <em>URI Matcher</em>}' class.
 		 * <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
@@ -654,8 +663,7 @@ public interface RmapPackage extends EPackage {
 
 		/**
 		 * The meta object literal for the '<em>IComponent Reader</em>' data type.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
+		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 * @see org.eclipse.buckminster.rmap.util.IComponentReader
 		 * @see org.eclipse.buckminster.rmap.impl.RmapPackageImpl#getIComponentReader()
 		 * @generated
@@ -1107,12 +1115,21 @@ public interface RmapPackage extends EPackage {
 	int DOCUMENT_ROOT__REDIRECTS = CommonPackage.ABSTRACT_DOCUMENT_ROOT_FEATURE_COUNT + 15;
 
 	/**
+	 * The feature id for the '<em><b>Providers</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCUMENT_ROOT__PROVIDERS = CommonPackage.ABSTRACT_DOCUMENT_ROOT_FEATURE_COUNT + 16;
+
+	/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = CommonPackage.ABSTRACT_DOCUMENT_ROOT_FEATURE_COUNT + 16;
+	int DOCUMENT_ROOT_FEATURE_COUNT = CommonPackage.ABSTRACT_DOCUMENT_ROOT_FEATURE_COUNT + 17;
 
 	/**
 	 * The feature id for the '<em><b>Pattern</b></em>' attribute. <!--
@@ -1124,13 +1141,38 @@ public interface RmapPackage extends EPackage {
 	int MATCHER__PATTERN = 0;
 
 	/**
+	 * The feature id for the '<em><b>Component Types Attr</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MATCHER__COMPONENT_TYPES_ATTR = 1;
+
+	/**
+	 * The feature id for the '<em><b>Component Types</b></em>' attribute list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MATCHER__COMPONENT_TYPES = 2;
+
+	/**
+	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MATCHER__RESOLUTION_FILTER = 3;
+
+	/**
 	 * The number of structural features of the '<em>Matcher</em>' class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MATCHER_FEATURE_COUNT = 1;
+	int MATCHER_FEATURE_COUNT = 4;
 
 	/**
 	 * The feature id for the '<em><b>Pattern</b></em>' attribute. <!--
@@ -1140,6 +1182,31 @@ public interface RmapPackage extends EPackage {
 	 * @ordered
 	 */
 	int LOCATOR__PATTERN = MATCHER__PATTERN;
+
+	/**
+	 * The feature id for the '<em><b>Component Types Attr</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCATOR__COMPONENT_TYPES_ATTR = MATCHER__COMPONENT_TYPES_ATTR;
+
+	/**
+	 * The feature id for the '<em><b>Component Types</b></em>' attribute list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCATOR__COMPONENT_TYPES = MATCHER__COMPONENT_TYPES;
+
+	/**
+	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCATOR__RESOLUTION_FILTER = MATCHER__RESOLUTION_FILTER;
 
 	/**
 	 * The feature id for the '<em><b>Search Path</b></em>' reference. <!--
@@ -1187,12 +1254,13 @@ public interface RmapPackage extends EPackage {
 	int PROVIDER__PROPERTY_ELEMENTS = CommonPackage.PROPERTIES__PROPERTY_ELEMENTS;
 
 	/**
-	 * The feature id for the '<em><b>Component Types</b></em>' attribute list.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Pattern</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__COMPONENT_TYPES = CommonPackage.PROPERTIES_FEATURE_COUNT + 0;
+	int PROVIDER__PATTERN = CommonPackage.PROPERTIES_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Component Types Attr</b></em>' attribute.
@@ -1203,13 +1271,29 @@ public interface RmapPackage extends EPackage {
 	int PROVIDER__COMPONENT_TYPES_ATTR = CommonPackage.PROPERTIES_FEATURE_COUNT + 1;
 
 	/**
+	 * The feature id for the '<em><b>Component Types</b></em>' attribute list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDER__COMPONENT_TYPES = CommonPackage.PROPERTIES_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDER__RESOLUTION_FILTER = CommonPackage.PROPERTIES_FEATURE_COUNT + 3;
+
+	/**
 	 * The feature id for the '<em><b>Reader Type</b></em>' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__READER_TYPE = CommonPackage.PROPERTIES_FEATURE_COUNT + 2;
+	int PROVIDER__READER_TYPE = CommonPackage.PROPERTIES_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Source</b></em>' attribute. <!--
@@ -1218,7 +1302,7 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__SOURCE = CommonPackage.PROPERTIES_FEATURE_COUNT + 3;
+	int PROVIDER__SOURCE = CommonPackage.PROPERTIES_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Mutable</b></em>' attribute. <!--
@@ -1227,48 +1311,7 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__MUTABLE = CommonPackage.PROPERTIES_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PROVIDER__RESOLUTION_FILTER = CommonPackage.PROPERTIES_FEATURE_COUNT + 5;
-
-	/**
-	 * The feature id for the '<em><b>Version Converter</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PROVIDER__VERSION_CONVERTER = CommonPackage.PROPERTIES_FEATURE_COUNT + 6;
-
-	/**
-	 * The feature id for the '<em><b>URI</b></em>' containment reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int PROVIDER__URI = CommonPackage.PROPERTIES_FEATURE_COUNT + 7;
-
-	/**
-	 * The feature id for the '<em><b>Matcher</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PROVIDER__MATCHER = CommonPackage.PROPERTIES_FEATURE_COUNT + 8;
-
-	/**
-	 * The feature id for the '<em><b>Documentation</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PROVIDER__DOCUMENTATION = CommonPackage.PROPERTIES_FEATURE_COUNT + 9;
+	int PROVIDER__MUTABLE = CommonPackage.PROPERTIES_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Repository</b></em>' reference. <!--
@@ -1277,7 +1320,40 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__REPOSITORY = CommonPackage.PROPERTIES_FEATURE_COUNT + 10;
+	int PROVIDER__REPOSITORY = CommonPackage.PROPERTIES_FEATURE_COUNT + 7;
+
+	/**
+	 * The feature id for the '<em><b>Version Converter</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDER__VERSION_CONVERTER = CommonPackage.PROPERTIES_FEATURE_COUNT + 8;
+
+	/**
+	 * The feature id for the '<em><b>URI</b></em>' containment reference. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDER__URI = CommonPackage.PROPERTIES_FEATURE_COUNT + 9;
+
+	/**
+	 * The feature id for the '<em><b>Matcher</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDER__MATCHER = CommonPackage.PROPERTIES_FEATURE_COUNT + 10;
+
+	/**
+	 * The feature id for the '<em><b>Documentation</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROVIDER__DOCUMENTATION = CommonPackage.PROPERTIES_FEATURE_COUNT + 11;
 
 	/**
 	 * The number of structural features of the '<em>Provider</em>' class. <!--
@@ -1286,7 +1362,7 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER_FEATURE_COUNT = CommonPackage.PROPERTIES_FEATURE_COUNT + 11;
+	int PROVIDER_FEATURE_COUNT = CommonPackage.PROPERTIES_FEATURE_COUNT + 12;
 
 	/**
 	 * The feature id for the '<em><b>Pattern</b></em>' attribute. <!--
@@ -1296,6 +1372,31 @@ public interface RmapPackage extends EPackage {
 	 * @ordered
 	 */
 	int REDIRECT__PATTERN = MATCHER__PATTERN;
+
+	/**
+	 * The feature id for the '<em><b>Component Types Attr</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REDIRECT__COMPONENT_TYPES_ATTR = MATCHER__COMPONENT_TYPES_ATTR;
+
+	/**
+	 * The feature id for the '<em><b>Component Types</b></em>' attribute list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REDIRECT__COMPONENT_TYPES = MATCHER__COMPONENT_TYPES;
+
+	/**
+	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REDIRECT__RESOLUTION_FILTER = MATCHER__RESOLUTION_FILTER;
 
 	/**
 	 * The feature id for the '<em><b>Redirect To</b></em>' attribute. <!--
@@ -1680,9 +1781,9 @@ public interface RmapPackage extends EPackage {
 	int TRANSFORM_MISMATCH_EXCEPTION = 14;
 
 	/**
-	 * The meta object id for the '<em>IComponent Reader</em>' data type.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * The meta object id for the '<em>IComponent Reader</em>' data type. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see org.eclipse.buckminster.rmap.util.IComponentReader
 	 * @see org.eclipse.buckminster.rmap.impl.RmapPackageImpl#getIComponentReader()
 	 * @generated
@@ -1875,6 +1976,17 @@ public interface RmapPackage extends EPackage {
 	EReference getDocumentRoot_Redirects();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getProviders <em>Providers</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Providers</em>'.
+	 * @see org.eclipse.emf.ecore.EObject#getProviders()
+	 * @see #getDocumentRoot()
+	 * @generated
+	 */
+	EReference getDocumentRoot_Providers();
+
+	/**
 	 * Returns the meta object for the containment reference '{@link org.eclipse.emf.ecore.EObject#getRevision <em>Revision</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @return the meta object for the containment reference '<em>Revision</em>'.
@@ -1957,6 +2069,19 @@ public interface RmapPackage extends EPackage {
 	EReference getDocumentRoot_XSISchemaLocation();
 
 	/**
+	 * Returns the meta object for data type '
+	 * {@link org.eclipse.buckminster.rmap.util.IComponentReader
+	 * <em>IComponent Reader</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the meta object for data type '<em>IComponent Reader</em>'.
+	 * @see org.eclipse.buckminster.rmap.util.IComponentReader
+	 * @model instanceClass="org.eclipse.buckminster.rmap.util.IComponentReader"
+	 * @generated
+	 */
+	EDataType getIComponentReader();
+
+	/**
 	 * Returns the meta object for class '
 	 * {@link org.eclipse.buckminster.rmap.Locator <em>Locator</em>}'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -1999,6 +2124,38 @@ public interface RmapPackage extends EPackage {
 	EClass getMatcher();
 
 	/**
+	 * Returns the meta object for the attribute list '{@link org.eclipse.buckminster.rmap.Matcher#getComponentTypes <em>Component Types</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Component Types</em>'.
+	 * @see org.eclipse.buckminster.rmap.Matcher#getComponentTypes()
+	 * @see #getMatcher()
+	 * @generated
+	 */
+	EAttribute getMatcher_ComponentTypes();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.rmap.Matcher#getResolutionFilter <em>Resolution Filter</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Resolution Filter</em>'.
+	 * @see org.eclipse.buckminster.rmap.Matcher#getResolutionFilter()
+	 * @see #getMatcher()
+	 * @generated
+	 */
+	EAttribute getMatcher_ResolutionFilter();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.rmap.Matcher#getComponentTypesAttr <em>Component Types Attr</em>}'.
+	 * <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * @return the meta object for the attribute '<em>Component Types Attr</em>'.
+	 * @see org.eclipse.buckminster.rmap.Matcher#getComponentTypesAttr()
+	 * @see #getMatcher()
+	 * @generated
+	 */
+	EAttribute getMatcher_ComponentTypesAttr();
+
+	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.rmap.Matcher#getPattern <em>Pattern</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Pattern</em>'.
@@ -2018,27 +2175,6 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getProvider();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link org.eclipse.buckminster.rmap.Provider#getComponentTypes <em>Component Types</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Component Types</em>'.
-	 * @see org.eclipse.buckminster.rmap.Provider#getComponentTypes()
-	 * @see #getProvider()
-	 * @generated
-	 */
-	EAttribute getProvider_ComponentTypes();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.rmap.Provider#getComponentTypesAttr <em>Component Types Attr</em>}'.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @return the meta object for the attribute '<em>Component Types Attr</em>'.
-	 * @see org.eclipse.buckminster.rmap.Provider#getComponentTypesAttr()
-	 * @see #getProvider()
-	 * @generated
-	 */
-	EAttribute getProvider_ComponentTypesAttr();
 
 	/**
 	 * Returns the meta object for the containment reference '{@link org.eclipse.buckminster.rmap.Provider#getDocumentation <em>Documentation</em>}'.
@@ -2089,19 +2225,6 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getProvider_Repository();
-
-	/**
-	 * Returns the meta object for the attribute '
-	 * {@link org.eclipse.buckminster.rmap.Provider#getResolutionFilter
-	 * <em>Resolution Filter</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @return the meta object for the attribute '<em>Resolution Filter</em>'.
-	 * @see org.eclipse.buckminster.rmap.Provider#getResolutionFilter()
-	 * @see #getProvider()
-	 * @generated
-	 */
-	EAttribute getProvider_ResolutionFilter();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.eclipse.buckminster.rmap.Provider#isSource <em>Source</em>}'.
@@ -2412,17 +2535,6 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 */
 	EDataType getTransformMismatchException();
-
-	/**
-	 * Returns the meta object for data type '{@link org.eclipse.buckminster.rmap.util.IComponentReader <em>IComponent Reader</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for data type '<em>IComponent Reader</em>'.
-	 * @see org.eclipse.buckminster.rmap.util.IComponentReader
-	 * @model instanceClass="org.eclipse.buckminster.rmap.util.IComponentReader"
-	 * @generated
-	 */
-	EDataType getIComponentReader();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.buckminster.rmap.URIMatcher <em>URI Matcher</em>}'.

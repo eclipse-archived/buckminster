@@ -17,6 +17,7 @@ import org.eclipse.buckminster.model.common.util.DynamicFeatureEList;
 import org.eclipse.buckminster.model.common.util.UnmodifiableMapUnion;
 import org.eclipse.buckminster.rmap.Locator;
 import org.eclipse.buckminster.rmap.Matcher;
+import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.rmap.Redirect;
 import org.eclipse.buckminster.rmap.Repository;
 import org.eclipse.buckminster.rmap.ResourceMap;
@@ -283,6 +284,8 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 						protected EStructuralFeature getEStructuralFeature(Object value) {
 							if (value instanceof Locator)
 								return RmapPackage.Literals.DOCUMENT_ROOT__LOCATORS;
+							if (value instanceof Provider)
+								return RmapPackage.Literals.DOCUMENT_ROOT__PROVIDERS;
 							if (value instanceof Redirect)
 								return RmapPackage.Literals.DOCUMENT_ROOT__REDIRECTS;
 							return getEStructuralFeature();
@@ -293,7 +296,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 				@Override
 				protected NotificationImpl createNotification(int eventType, EStructuralFeature feature, Object oldObject, Object newObject,
 						int index, boolean wasSet) {
-					if (feature == RmapPackage.Literals.DOCUMENT_ROOT__LOCATORS || feature == RmapPackage.Literals.DOCUMENT_ROOT__REDIRECTS)
+					if (feature == RmapPackage.Literals.DOCUMENT_ROOT__LOCATORS || feature == RmapPackage.Literals.DOCUMENT_ROOT__PROVIDERS || feature == RmapPackage.Literals.DOCUMENT_ROOT__REDIRECTS)
 						feature = RmapPackage.Literals.RESOURCE_MAP__MATCHERS;
 					return new FeatureMapUtil.FeatureENotificationImpl(owner, eventType, feature, oldObject, newObject, index, wasSet);
 				}

@@ -7,17 +7,15 @@
 package org.eclipse.buckminster.rmap;
 
 import java.util.Map;
+
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.Format;
-
 import org.eclipse.buckminster.model.common.Properties;
-import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.rmap.util.IComponentReader;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
@@ -26,17 +24,14 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#getComponentTypes <em>Component Types</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#getComponentTypesAttr <em>Component Types Attr</em>}</li>
  *   <li>{@link org.eclipse.buckminster.rmap.Provider#getReaderType <em>Reader Type</em>}</li>
  *   <li>{@link org.eclipse.buckminster.rmap.Provider#isSource <em>Source</em>}</li>
  *   <li>{@link org.eclipse.buckminster.rmap.Provider#isMutable <em>Mutable</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#getResolutionFilter <em>Resolution Filter</em>}</li>
+ *   <li>{@link org.eclipse.buckminster.rmap.Provider#getRepository <em>Repository</em>}</li>
  *   <li>{@link org.eclipse.buckminster.rmap.Provider#getVersionConverter <em>Version Converter</em>}</li>
  *   <li>{@link org.eclipse.buckminster.rmap.Provider#getURI <em>URI</em>}</li>
  *   <li>{@link org.eclipse.buckminster.rmap.Provider#getMatcher <em>Matcher</em>}</li>
  *   <li>{@link org.eclipse.buckminster.rmap.Provider#getDocumentation <em>Documentation</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#getRepository <em>Repository</em>}</li>
  * </ul>
  * </p>
  *
@@ -44,40 +39,42 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface Provider extends Properties {
+public interface Provider extends Properties, Matcher {
 	/**
-	 * Returns the value of the '<em><b>Component Types</b></em>' attribute
-	 * list. The list contents are of type {@link java.lang.String}. <!--
-	 * begin-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Component Types</em>' attribute list isn't
-	 * clear, there really should be more of a description here...
+	 * Some providers are backed by other resource map like files. The PDE map
+	 * files and the Team PSF files are examples of this. This method returns
+	 * the resource map representation of the backing files
 	 * </p>
-	 * <!-- end-user-doc -->
+	 * <p>
+	 * It is the resolvers responsibility to check if the provider is delegating
+	 * and if it is, use the delegation map.
+	 * </p>
 	 * 
-	 * @return the value of the '<em>Component Types</em>' attribute list.
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getProvider_ComponentTypes()
-	 * @model default="" transient="true"
+	 * @return A resource map to use for delegation
+	 * @throws CoreException
+	 *             if the delegation map cannot be produced
+	 * @throws UnsupportedOperationException
+	 *             if the provider is not a delegating kind
+	 * @see #hasDelegationMap()
+	 * @param reader
+	 *            The reader used when exploring the sources used as input
+	 * @param problemCollector
+	 *            A MultiStatus that will receive any warnings and errors
+	 * @param queryHints
+	 *            A map that will receive query hints such as tags
+	 * @param monitor
+	 *            Monitor used for progress reporting <!-- end-model-doc -->
+	 * @model exceptions="org.eclipse.buckminster.model.common.CoreException"
+	 *        readerDataType="org.eclipse.buckminster.rmap.IComponentReader"
+	 *        problemCollectorType
+	 *        ="org.eclipse.buckminster.model.common.IStatus" monitorType=
+	 *        "org.eclipse.buckminster.model.common.IProgressMonitor"
 	 * @generated
 	 */
-	EList<String> getComponentTypes();
-
-	/**
-	 * Returns the value of the '<em><b>Component Types Attr</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Component Types Attr</em>' attribute isn't
-	 * clear, there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Component Types Attr</em>' attribute.
-	 * @see #setComponentTypesAttr(String)
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getProvider_ComponentTypesAttr()
-	 * @model volatile="true" derived="true"
-	 *        extendedMetaData="name='componentTypes' kind='attribute'"
-	 * @generated
-	 */
-	String getComponentTypesAttr();
+	ResourceMap getDelegationMap(IComponentReader reader, IStatus problemCollector, Map<ComponentIdentifier, Map<String, String>> queryHints,
+			IProgressMonitor monitor) throws CoreException;
 
 	/**
 	 * Returns the value of the '<em><b>Documentation</b></em>' containment reference.
@@ -121,24 +118,6 @@ public interface Provider extends Properties {
 	Map<String, String> getProperties(Map<String, String> properties);
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * <p>Some providers are backed by other resource map like files. The PDE map files
-	 * and the Team PSF files are examples of this. This method returns <code>true</code>
-	 * if this is such a provider</p>
-	 * <p>It is the resolvers responsibility to check if the provider is delegating and if
-	 * it is, use the {@link #getDelegationMap(IComponentReader, IStatus, Map, IProgressMonitor)}
-	 * method to obtain the new resource map</p>
-	 * @return <code>true</code> if this is a delegating provider
-	 * 
-	 * <!-- end-model-doc -->
-	 * @model
-	 * @generated
-	 */
-	boolean hasDelegationMap();
-
-	/**
 	 * Returns the value of the '<em><b>Reader Type</b></em>' attribute. <!--
 	 * begin-user-doc -->
 	 * <p>
@@ -173,22 +152,6 @@ public interface Provider extends Properties {
 	Repository getRepository();
 
 	/**
-	 * Returns the value of the '<em><b>Resolution Filter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Resolution Filter</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Resolution Filter</em>' attribute.
-	 * @see #setResolutionFilter(Filter)
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getProvider_ResolutionFilter()
-	 * @model dataType="org.eclipse.buckminster.model.common.Filter"
-	 * @generated
-	 */
-	Filter getResolutionFilter();
-
-	/**
 	 * Returns the value of the '<em><b>URI</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -213,29 +176,6 @@ public interface Provider extends Properties {
 	String getURI(Map<String, String> properties);
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * <p>Some providers are backed by other resource map like files. The PDE map files
-	 * and the Team PSF files are examples of this. This method returns the resource map
-	 * representation of the backing files</p>
-	 * <p>It is the resolvers responsibility to check if the provider is delegating and if
-	 * it is, use the delegation map.</p>
-	 * @return A resource map to use for delegation
-	 * @throws CoreException if the delegation map cannot be produced
-	 * @throws UnsupportedOperationException if the provider is not a delegating kind
-	 * @see #hasDelegationMap()
-	 * @param reader The reader used when exploring the sources used as input
-	 * @param problemCollector A MultiStatus that will receive any warnings and errors
-	 * @param queryHints A map that will receive query hints such as tags
-	 * @param monitor Monitor used for progress reporting
-	 * <!-- end-model-doc -->
-	 * @model exceptions="org.eclipse.buckminster.model.common.CoreException" readerDataType="org.eclipse.buckminster.rmap.IComponentReader" problemCollectorType="org.eclipse.buckminster.model.common.IStatus" monitorType="org.eclipse.buckminster.model.common.IProgressMonitor"
-	 * @generated
-	 */
-	ResourceMap getDelegationMap(IComponentReader reader, IStatus problemCollector, Map<ComponentIdentifier, Map<String, String>> queryHints, IProgressMonitor monitor) throws CoreException;
-
-	/**
 	 * Returns the value of the '<em><b>Version Converter</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -251,6 +191,28 @@ public interface Provider extends Properties {
 	 * @generated
 	 */
 	VersionConverter getVersionConverter();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc -->
+	 * <p>
+	 * Some providers are backed by other resource map like files. The PDE map
+	 * files and the Team PSF files are examples of this. This method returns
+	 * <code>true</code> if this is such a provider
+	 * </p>
+	 * <p>
+	 * It is the resolvers responsibility to check if the provider is delegating
+	 * and if it is, use the
+	 * {@link #getDelegationMap(IComponentReader, IStatus, Map, IProgressMonitor)}
+	 * method to obtain the new resource map
+	 * </p>
+	 * 
+	 * @return <code>true</code> if this is a delegating provider
+	 * 
+	 *         <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	boolean hasDelegationMap();
 
 	/**
 	 * Returns the value of the '<em><b>Mutable</b></em>' attribute.
@@ -285,16 +247,6 @@ public interface Provider extends Properties {
 	 * @generated
 	 */
 	boolean isSource();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Provider#getComponentTypesAttr <em>Component Types Attr</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @param value the new value of the '<em>Component Types Attr</em>' attribute.
-	 * @see #getComponentTypesAttr()
-	 * @generated
-	 */
-	void setComponentTypesAttr(String value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Provider#getDocumentation <em>Documentation</em>}' containment reference.
@@ -343,16 +295,6 @@ public interface Provider extends Properties {
 	 * @generated
 	 */
 	void setRepository(Repository value);
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Provider#getResolutionFilter <em>Resolution Filter</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @param value the new value of the '<em>Resolution Filter</em>' attribute.
-	 * @see #getResolutionFilter()
-	 * @generated
-	 */
-	void setResolutionFilter(Filter value);
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.buckminster.rmap.Provider#isSource <em>Source</em>}' attribute.

@@ -132,8 +132,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	private EDataType transformMismatchExceptionEDataType = null;
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
 	private EDataType iComponentReaderEDataType = null;
@@ -253,6 +252,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 		createEReference(documentRootEClass, DOCUMENT_ROOT__LOCATORS);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__MATCHER);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__REDIRECTS);
+		createEReference(documentRootEClass, DOCUMENT_ROOT__PROVIDERS);
 
 		locatorEClass = createEClass(LOCATOR);
 		createEReference(locatorEClass, LOCATOR__SEARCH_PATH);
@@ -260,19 +260,19 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 
 		matcherEClass = createEClass(MATCHER);
 		createEAttribute(matcherEClass, MATCHER__PATTERN);
+		createEAttribute(matcherEClass, MATCHER__COMPONENT_TYPES_ATTR);
+		createEAttribute(matcherEClass, MATCHER__COMPONENT_TYPES);
+		createEAttribute(matcherEClass, MATCHER__RESOLUTION_FILTER);
 
 		providerEClass = createEClass(PROVIDER);
-		createEAttribute(providerEClass, PROVIDER__COMPONENT_TYPES);
-		createEAttribute(providerEClass, PROVIDER__COMPONENT_TYPES_ATTR);
 		createEAttribute(providerEClass, PROVIDER__READER_TYPE);
 		createEAttribute(providerEClass, PROVIDER__SOURCE);
 		createEAttribute(providerEClass, PROVIDER__MUTABLE);
-		createEAttribute(providerEClass, PROVIDER__RESOLUTION_FILTER);
+		createEReference(providerEClass, PROVIDER__REPOSITORY);
 		createEReference(providerEClass, PROVIDER__VERSION_CONVERTER);
 		createEReference(providerEClass, PROVIDER__URI);
 		createEReference(providerEClass, PROVIDER__MATCHER);
 		createEReference(providerEClass, PROVIDER__DOCUMENTATION);
-		createEReference(providerEClass, PROVIDER__REPOSITORY);
 
 		redirectEClass = createEClass(REDIRECT);
 		createEAttribute(redirectEClass, REDIRECT__REDIRECT_TO);
@@ -478,6 +478,15 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	}
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getDocumentRoot_Providers() {
+		return (EReference)documentRootEClass.getEStructuralFeatures().get(16);
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -544,6 +553,14 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EDataType getIComponentReader() {
+		return iComponentReaderEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
 
 	public EClass getLocator() {
 		return locatorEClass;
@@ -580,6 +597,31 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getMatcher_ComponentTypes() {
+		return (EAttribute)matcherEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getMatcher_ResolutionFilter() {
+		return (EAttribute)matcherEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getMatcher_ComponentTypesAttr() {
+		return (EAttribute)matcherEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
 
 	public EAttribute getMatcher_Pattern() {
 		return (EAttribute)matcherEClass.getEStructuralFeatures().get(0);
@@ -599,88 +641,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
-	public EAttribute getProvider_ComponentTypes() {
-		return (EAttribute)providerEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public EAttribute getProvider_ComponentTypesAttr() {
-		return (EAttribute)providerEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
 	public EReference getProvider_Documentation() {
-		return (EReference)providerEClass.getEStructuralFeatures().get(9);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public EReference getProvider_Matcher() {
-		return (EReference)providerEClass.getEStructuralFeatures().get(8);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public EAttribute getProvider_Mutable() {
-		return (EAttribute)providerEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public EAttribute getProvider_ReaderType() {
-		return (EAttribute)providerEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public EReference getProvider_Repository() {
-		return (EReference)providerEClass.getEStructuralFeatures().get(10);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public EAttribute getProvider_ResolutionFilter() {
-		return (EAttribute)providerEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public EAttribute getProvider_Source() {
-		return (EAttribute)providerEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public EReference getProvider_URI() {
 		return (EReference)providerEClass.getEStructuralFeatures().get(7);
 	}
 
@@ -689,8 +650,62 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
-	public EReference getProvider_VersionConverter() {
+	public EReference getProvider_Matcher() {
 		return (EReference)providerEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+
+	public EAttribute getProvider_Mutable() {
+		return (EAttribute)providerEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+
+	public EAttribute getProvider_ReaderType() {
+		return (EAttribute)providerEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+
+	public EReference getProvider_Repository() {
+		return (EReference)providerEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+
+	public EAttribute getProvider_Source() {
+		return (EAttribute)providerEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+
+	public EReference getProvider_URI() {
+		return (EReference)providerEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+
+	public EReference getProvider_VersionConverter() {
+		return (EReference)providerEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -935,15 +950,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	}
 
 	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EDataType getIComponentReader() {
-		return iComponentReaderEDataType;
-	}
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1060,6 +1066,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 		documentRootEClass.getESuperTypes().add(theCommonPackage.getAbstractDocumentRoot());
 		locatorEClass.getESuperTypes().add(this.getMatcher());
 		providerEClass.getESuperTypes().add(theCommonPackage.getProperties());
+		providerEClass.getESuperTypes().add(this.getMatcher());
 		redirectEClass.getESuperTypes().add(this.getMatcher());
 		resourceMapEClass.getESuperTypes().add(theCommonPackage.getProperties());
 		uriMatcherEClass.getESuperTypes().add(theCommonPackage.getRxAssembly());
@@ -1089,6 +1096,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 		initEReference(getDocumentRoot_Locators(), this.getLocator(), null, "locators", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Matcher(), this.getMatcher(), null, "matcher", null, 0, -2, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Redirects(), this.getRedirect(), null, "redirects", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEReference(getDocumentRoot_Providers(), this.getProvider(), null, "providers", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		initEClass(locatorEClass, Locator.class, "Locator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLocator_SearchPath(), this.getSearchPath(), null, "searchPath", null, 0, 1, Locator.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1096,26 +1104,34 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 
 		initEClass(matcherEClass, Matcher.class, "Matcher", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMatcher_Pattern(), theCommonPackage.getPattern(), "pattern", null, 0, 1, Matcher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMatcher_ComponentTypesAttr(), ecorePackage.getEString(), "componentTypesAttr", null, 0, 1, Matcher.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMatcher_ComponentTypes(), ecorePackage.getEString(), "componentTypes", "", 0, -1, Matcher.class, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMatcher_ResolutionFilter(), theCommonPackage.getFilter(), "resolutionFilter", null, 0, 1, Matcher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		EOperation op = addEOperation(matcherEClass, ecorePackage.getEBoolean(), "matches", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, ecorePackage.getEString(), "componentName", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "componentName", 0, 1, IS_UNIQUE, IS_ORDERED);
+		EGenericType g1 = createEGenericType(ecorePackage.getEMap());
+		EGenericType g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(matcherEClass, this.getResourceMap(), "getResourceMap", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(providerEClass, Provider.class, "Provider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getProvider_ComponentTypes(), ecorePackage.getEString(), "componentTypes", "", 0, -1, Provider.class, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getProvider_ComponentTypesAttr(), ecorePackage.getEString(), "componentTypesAttr", null, 0, 1, Provider.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProvider_ReaderType(), ecorePackage.getEString(), "readerType", null, 1, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProvider_Source(), ecorePackage.getEBoolean(), "source", "true", 0, 1, Provider.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProvider_Mutable(), ecorePackage.getEBoolean(), "mutable", "true", 0, 1, Provider.class, !IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getProvider_ResolutionFilter(), theCommonPackage.getFilter(), "resolutionFilter", null, 0, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getProvider_Repository(), this.getRepository(), null, "repository", null, 0, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProvider_VersionConverter(), this.getVersionConverter(), null, "versionConverter", null, 0, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProvider_URI(), theCommonPackage.getFormat(), null, "URI", null, 1, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProvider_Matcher(), this.getURIMatcher(), null, "matcher", null, 0, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProvider_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null, 0, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getProvider_Repository(), this.getRepository(), null, "repository", null, 0, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		op = addEOperation(providerEClass, ecorePackage.getEString(), "getURI", 0, 1, IS_UNIQUE, IS_ORDERED);
-		EGenericType g1 = createEGenericType(ecorePackage.getEMap());
-		EGenericType g2 = createEGenericType(ecorePackage.getEString());
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
 		g1.getETypeArguments().add(g2);
 		g2 = createEGenericType(ecorePackage.getEString());
 		g1.getETypeArguments().add(g2);
@@ -1390,19 +1406,28 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 			 "affiliation", "matcher"
 		   });		
 		addAnnotation
+		  (getDocumentRoot_Providers(), 
+		   source, 
+		   new String[] {
+			 "kind", "element",
+			 "name", "provider",
+			 "namespace", "##targetNamespace",
+			 "affiliation", "matcher"
+		   });		
+		addAnnotation
 		  (getLocator_SearchPath(), 
 		   source, 
 		   new String[] {
 			 "name", "searchPathRef",
 			 "kind", "attribute"
-		   });								
+		   });		
 		addAnnotation
-		  (getProvider_ComponentTypesAttr(), 
+		  (getMatcher_ComponentTypesAttr(), 
 		   source, 
 		   new String[] {
 			 "name", "componentTypes",
 			 "kind", "attribute"
-		   });		
+		   });								
 		addAnnotation
 		  (getProvider_VersionConverter(), 
 		   source, 

@@ -76,6 +76,14 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String convertIComponentReaderToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(eDataType, instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
 
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
@@ -98,24 +106,6 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 	 * @generated
 	 */
 	public String convertTransformMismatchExceptionToString(EDataType eDataType, Object instanceValue) {
-		return super.convertToString(eDataType, instanceValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public IComponentReader createIComponentReaderFromString(EDataType eDataType, String initialValue) {
-		return (IComponentReader)super.createFromString(eDataType, initialValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertIComponentReaderToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
 
@@ -200,6 +190,14 @@ public class RmapFactoryImpl extends EFactoryImpl implements RmapFactory {
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * @generated
+	 */
+	public IComponentReader createIComponentReaderFromString(EDataType eDataType, String initialValue) {
+		return (IComponentReader)super.createFromString(eDataType, initialValue);
 	}
 
 	/**

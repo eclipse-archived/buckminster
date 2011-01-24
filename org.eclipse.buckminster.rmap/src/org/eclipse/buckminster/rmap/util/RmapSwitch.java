@@ -369,6 +369,7 @@ public class RmapSwitch<T> {
 				Provider provider = (Provider)theEObject;
 				T result = caseProvider(provider);
 				if (result == null) result = caseProperties(provider);
+				if (result == null) result = caseMatcher(provider);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
