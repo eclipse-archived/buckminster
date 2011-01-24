@@ -160,8 +160,13 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 		String materializer = (node == null) ? null : node.getMaterializerID();
 		if (materializer == null) {
 			materializer = getMaterializerID();
-			if (materializer == null)
-				materializer = resolution.getProvider().getReaderType().getRecommendedMaterializer();
+			if (materializer == null) {
+				if (!resolution.getProvider().hasSource()) {
+					materializer = IMaterializer.P2;
+				} else {
+					materializer = resolution.getProvider().getReaderType().getRecommendedMaterializer();
+				}
+			}
 		}
 		return materializer;
 	}
