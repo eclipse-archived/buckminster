@@ -17,6 +17,7 @@ import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
+import org.eclipse.buckminster.model.common.ConflictResolution;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.Format;
@@ -37,6 +38,7 @@ import org.eclipse.buckminster.model.common.ValueFilter;
 import org.eclipse.buckminster.model.common.util.CommonValidator;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.ecore.EAttribute;
@@ -214,6 +216,13 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	private EEnum conflictResolutionEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private EClass iVersionedIdEClass = null;
 
 	/**
@@ -299,6 +308,13 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	private EDataType filterEDataType = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EDataType iPathEDataType = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -563,12 +579,14 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEReference(valueFilterEClass, VALUE_FILTER__VALUES);
 
 		// Create enums
+		conflictResolutionEEnum = createEEnum(CONFLICT_RESOLUTION);
 		splitTypeEEnum = createEEnum(SPLIT_TYPE);
 
 		// Create data types
 		charSequenceEDataType = createEDataType(CHAR_SEQUENCE);
 		coreExceptionEDataType = createEDataType(CORE_EXCEPTION);
 		filterEDataType = createEDataType(FILTER);
+		iPathEDataType = createEDataType(IPATH);
 		iStatusArrayEDataType = createEDataType(ISTATUS_ARRAY);
 		iVersionFormatEDataType = createEDataType(IVERSION_FORMAT);
 		listEDataType = createEDataType(LIST);
@@ -821,6 +839,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * 
 	 * @generated
 	 */
+	public EEnum getConflictResolution() {
+		return conflictResolutionEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 
 	public EClass getConstant() {
 		return constantEClass;
@@ -914,6 +941,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 	public EAttribute getFormat_Format() {
 		return (EAttribute) formatEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EDataType getIPath() {
+		return iPathEDataType;
 	}
 
 	/**
@@ -1952,6 +1988,12 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEOperation(op, g1);
 
 		// Initialize enums and add enum literals
+		initEEnum(conflictResolutionEEnum, ConflictResolution.class, "ConflictResolution");
+		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.FAIL);
+		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.KEEP);
+		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.REPLACE);
+		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.UPDATE);
+
 		initEEnum(splitTypeEEnum, SplitType.class, "SplitType");
 		addEEnumLiteral(splitTypeEEnum, SplitType.QUOTED);
 		addEEnumLiteral(splitTypeEEnum, SplitType.UNQUOTED);
@@ -1961,6 +2003,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEDataType(charSequenceEDataType, CharSequence.class, "CharSequence", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(coreExceptionEDataType, CoreException.class, "CoreException", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(filterEDataType, Filter.class, "Filter", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(iPathEDataType, IPath.class, "IPath", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(iStatusArrayEDataType, IStatus[].class, "IStatusArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(iVersionFormatEDataType, IVersionFormat.class, "IVersionFormat", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 		initEDataType(listEDataType, List.class, "List", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);

@@ -19,6 +19,7 @@ import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
+import org.eclipse.buckminster.model.common.ConflictResolution;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.Format;
@@ -37,7 +38,9 @@ import org.eclipse.buckminster.model.common.util.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.osgi.filter.FilterFactory;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
@@ -112,6 +115,15 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	public String convertConflictResolutionToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public String convertCoreExceptionToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(eDataType, instanceValue);
 	}
@@ -123,6 +135,15 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 */
 	public String convertFilterToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public String convertIPathToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : ((IPath) instanceValue).toPortableString();
 	}
 
 	/**
@@ -209,6 +230,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
+			case CommonPackage.CONFLICT_RESOLUTION:
+				return convertConflictResolutionToString(eDataType, instanceValue);
 			case CommonPackage.SPLIT_TYPE:
 				return convertSplitTypeToString(eDataType, instanceValue);
 			case CommonPackage.CHAR_SEQUENCE:
@@ -217,6 +240,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 				return convertCoreExceptionToString(eDataType, instanceValue);
 			case CommonPackage.FILTER:
 				return convertFilterToString(eDataType, instanceValue);
+			case CommonPackage.IPATH:
+				return convertIPathToString(eDataType, instanceValue);
 			case CommonPackage.ISTATUS_ARRAY:
 				return convertIStatusArrayToString(eDataType, instanceValue);
 			case CommonPackage.IVERSION_FORMAT:
@@ -405,6 +430,18 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * 
 	 * @generated
 	 */
+	public ConflictResolution createConflictResolutionFromString(EDataType eDataType, String initialValue) {
+		ConflictResolution result = ConflictResolution.get(initialValue);
+		if (result == null)
+			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 
 	public Constant createConstant() {
 		ConstantImpl constant = new ConstantImpl();
@@ -464,6 +501,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
+			case CommonPackage.CONFLICT_RESOLUTION:
+				return createConflictResolutionFromString(eDataType, initialValue);
 			case CommonPackage.SPLIT_TYPE:
 				return createSplitTypeFromString(eDataType, initialValue);
 			case CommonPackage.CHAR_SEQUENCE:
@@ -472,6 +511,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 				return createCoreExceptionFromString(eDataType, initialValue);
 			case CommonPackage.FILTER:
 				return createFilterFromString(eDataType, initialValue);
+			case CommonPackage.IPATH:
+				return createIPathFromString(eDataType, initialValue);
 			case CommonPackage.ISTATUS_ARRAY:
 				return createIStatusArrayFromString(eDataType, initialValue);
 			case CommonPackage.IVERSION_FORMAT:
@@ -497,6 +538,15 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public IPath createIPathFromString(EDataType eDataType, String initialValue) {
+		return initialValue == null ? null : Path.fromPortableString(initialValue);
 	}
 
 	/**

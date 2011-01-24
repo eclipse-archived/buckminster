@@ -568,8 +568,15 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="CharSequence" instanceClassName="java.lang.CharSequence"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="ConflictResolution">
+    <eLiterals name="FAIL"/>
+    <eLiterals name="KEEP" value="1"/>
+    <eLiterals name="REPLACE" value="2"/>
+    <eLiterals name="UPDATE" value="3"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="CoreException" instanceClassName="org.eclipse.core.runtime.CoreException"/>
   <eClassifiers xsi:type="ecore:EDataType" name="Filter" instanceClassName="org.eclipse.buckminster.osgi.filter.Filter"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="IPath" instanceClassName="org.eclipse.core.runtime.IPath"/>
   <eClassifiers xsi:type="ecore:EDataType" name="IStatusArray" instanceClassName="org.eclipse.core.runtime.IStatus[]"/>
   <eClassifiers xsi:type="ecore:EDataType" name="IVersionFormat" instanceClassName="org.eclipse.equinox.p2.metadata.IVersionFormat"/>
   <eClassifiers xsi:type="ecore:EDataType" name="List" instanceClassName="java.util.List">

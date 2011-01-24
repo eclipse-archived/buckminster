@@ -761,6 +761,18 @@ public interface CommonPackage extends EPackage {
 
 		/**
 		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.model.common.ConflictResolution
+		 * <em>Conflict Resolution</em>}' enum. <!-- begin-user-doc --> <!--
+		 * end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.model.common.ConflictResolution
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getConflictResolution()
+		 * @generated
+		 */
+		EEnum CONFLICT_RESOLUTION = eINSTANCE.getConflictResolution();
+
+		/**
+		 * The meta object literal for the '
 		 * {@link org.eclipse.equinox.p2.metadata.IVersionedId
 		 * <em>IVersioned Id</em>}' class. <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
@@ -939,6 +951,16 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EDataType FILTER = eINSTANCE.getFilter();
+
+		/**
+		 * The meta object literal for the '<em>IPath</em>' data type. <!--
+		 * begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.core.runtime.IPath
+		 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIPath()
+		 * @generated
+		 */
+		EDataType IPATH = eINSTANCE.getIPath();
 
 		/**
 		 * The meta object literal for the '<em>IStatus Array</em>' data type.
@@ -2403,6 +2425,18 @@ public interface CommonPackage extends EPackage {
 
 	/**
 	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.model.common.ConflictResolution
+	 * <em>Conflict Resolution</em>}' enum. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.model.common.ConflictResolution
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getConflictResolution()
+	 * @generated
+	 */
+	int CONFLICT_RESOLUTION = 26;
+
+	/**
+	 * The meta object id for the '
 	 * {@link org.eclipse.buckminster.model.common.SplitType
 	 * <em>Split Type</em>}' enum. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -2410,7 +2444,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getSplitType()
 	 * @generated
 	 */
-	int SPLIT_TYPE = 26;
+	int SPLIT_TYPE = 27;
 
 	/**
 	 * The meta object id for the '<em>Core Exception</em>' data type. <!--
@@ -2420,7 +2454,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getCoreException()
 	 * @generated
 	 */
-	int CORE_EXCEPTION = 28;
+	int CORE_EXCEPTION = 29;
 
 	/**
 	 * The meta object id for the '<em>Property Key</em>' data type. <!--
@@ -2430,7 +2464,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPropertyKey()
 	 * @generated
 	 */
-	int PROPERTY_KEY = 34;
+	int PROPERTY_KEY = 36;
 
 	/**
 	 * The meta object id for the '<em>String Builder</em>' data type. <!--
@@ -2440,7 +2474,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getStringBuilder()
 	 * @generated
 	 */
-	int STRING_BUILDER = 35;
+	int STRING_BUILDER = 37;
 
 	/**
 	 * The meta object id for the '<em>Throwable</em>' data type. <!--
@@ -2450,7 +2484,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getThrowable()
 	 * @generated
 	 */
-	int THROWABLE = 36;
+	int THROWABLE = 38;
 
 	/**
 	 * The meta object id for the '<em>Uuid</em>' data type. <!-- begin-user-doc
@@ -2460,7 +2494,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getUuid()
 	 * @generated
 	 */
-	int UUID = 38;
+	int UUID = 40;
 
 	/**
 	 * The meta object id for the '<em>Pattern</em>' data type. <!--
@@ -2470,7 +2504,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getPattern()
 	 * @generated
 	 */
-	int PATTERN = 33;
+	int PATTERN = 35;
 
 	/**
 	 * The meta object id for the '<em>Filter</em>' data type. <!--
@@ -2480,7 +2514,17 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getFilter()
 	 * @generated
 	 */
-	int FILTER = 29;
+	int FILTER = 30;
+
+	/**
+	 * The meta object id for the '<em>IPath</em>' data type. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.core.runtime.IPath
+	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIPath()
+	 * @generated
+	 */
+	int IPATH = 31;
 
 	/**
 	 * The meta object id for the '<em>IStatus Array</em>' data type. <!--
@@ -2489,7 +2533,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIStatusArray()
 	 * @generated
 	 */
-	int ISTATUS_ARRAY = 30;
+	int ISTATUS_ARRAY = 32;
 
 	/**
 	 * The meta object id for the '<em>Version</em>' data type. <!--
@@ -2499,7 +2543,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getVersion()
 	 * @generated
 	 */
-	int VERSION = 40;
+	int VERSION = 42;
 
 	/**
 	 * The meta object id for the '<em>Char Sequence</em>' data type. <!--
@@ -2509,7 +2553,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getCharSequence()
 	 * @generated
 	 */
-	int CHAR_SEQUENCE = 27;
+	int CHAR_SEQUENCE = 28;
 
 	/**
 	 * The meta object id for the '<em>IVersion Format</em>' data type. <!--
@@ -2519,7 +2563,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getIVersionFormat()
 	 * @generated
 	 */
-	int IVERSION_FORMAT = 31;
+	int IVERSION_FORMAT = 33;
 
 	/**
 	 * The meta object id for the '<em>List</em>' data type. <!-- begin-user-doc
@@ -2529,7 +2573,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getList()
 	 * @generated
 	 */
-	int LIST = 32;
+	int LIST = 34;
 
 	/**
 	 * The meta object id for the '<em>Version Range</em>' data type. <!--
@@ -2539,7 +2583,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getVersionRange()
 	 * @generated
 	 */
-	int VERSION_RANGE = 39;
+	int VERSION_RANGE = 41;
 
 	/**
 	 * The meta object id for the '<em>URL</em>' data type. <!-- begin-user-doc
@@ -2549,7 +2593,7 @@ public interface CommonPackage extends EPackage {
 	 * @see org.eclipse.buckminster.model.common.impl.CommonPackageImpl#getURL()
 	 * @generated
 	 */
-	int URL = 37;
+	int URL = 39;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.emf.ecore.EObject
@@ -2841,6 +2885,18 @@ public interface CommonPackage extends EPackage {
 	EAttribute getComponentRequest_Range();
 
 	/**
+	 * Returns the meta object for enum '
+	 * {@link org.eclipse.buckminster.model.common.ConflictResolution
+	 * <em>Conflict Resolution</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @return the meta object for enum '<em>Conflict Resolution</em>'.
+	 * @see org.eclipse.buckminster.model.common.ConflictResolution
+	 * @generated
+	 */
+	EEnum getConflictResolution();
+
+	/**
 	 * Returns the meta object for class '
 	 * {@link org.eclipse.buckminster.model.common.Constant <em>Constant</em>}'.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -2956,6 +3012,18 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getFormat_Format();
+
+	/**
+	 * Returns the meta object for data type '
+	 * {@link org.eclipse.core.runtime.IPath <em>IPath</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for data type '<em>IPath</em>'.
+	 * @see org.eclipse.core.runtime.IPath
+	 * @model instanceClass="org.eclipse.core.runtime.IPath"
+	 * @generated
+	 */
+	EDataType getIPath();
 
 	/**
 	 * Returns the meta object for class '

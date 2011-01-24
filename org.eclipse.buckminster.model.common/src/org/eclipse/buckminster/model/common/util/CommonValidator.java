@@ -17,6 +17,7 @@ import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
 import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
+import org.eclipse.buckminster.model.common.ConflictResolution;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.Format;
@@ -36,6 +37,7 @@ import org.eclipse.buckminster.model.common.Value;
 import org.eclipse.buckminster.model.common.ValueFilter;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.DiagnosticChain;
@@ -207,6 +209,15 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
+	public boolean validateConflictResolution(ConflictResolution conflictResolution, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public boolean validateConstant(Constant constant, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(constant, diagnostics, context);
 	}
@@ -245,6 +256,15 @@ public class CommonValidator extends EObjectValidator {
 	 */
 	public boolean validateFormat(Format format, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(format, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateIPath(IPath iPath, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
 	}
 
 	/**
@@ -613,6 +633,8 @@ public class CommonValidator extends EObjectValidator {
 				return validateValue((Value) value, diagnostics, context);
 			case CommonPackage.VALUE_FILTER:
 				return validateValueFilter((ValueFilter) value, diagnostics, context);
+			case CommonPackage.CONFLICT_RESOLUTION:
+				return validateConflictResolution((ConflictResolution) value, diagnostics, context);
 			case CommonPackage.SPLIT_TYPE:
 				return validateSplitType((SplitType) value, diagnostics, context);
 			case CommonPackage.CHAR_SEQUENCE:
@@ -621,6 +643,8 @@ public class CommonValidator extends EObjectValidator {
 				return validateCoreException((CoreException) value, diagnostics, context);
 			case CommonPackage.FILTER:
 				return validateFilter((Filter) value, diagnostics, context);
+			case CommonPackage.IPATH:
+				return validateIPath((IPath) value, diagnostics, context);
 			case CommonPackage.ISTATUS_ARRAY:
 				return validateIStatusArray((IStatus[]) value, diagnostics, context);
 			case CommonPackage.IVERSION_FORMAT:
