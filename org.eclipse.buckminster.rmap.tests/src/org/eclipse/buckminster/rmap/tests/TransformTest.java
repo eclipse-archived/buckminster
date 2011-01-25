@@ -21,16 +21,22 @@ import org.eclipse.buckminster.rmap.Transform;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.Transform#transformFrom(java.lang.String) <em>Transform From</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.Transform#transformTo(java.lang.String) <em>Transform To</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.Transform#transformFrom(java.lang.String)
+ * <em>Transform From</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.Transform#transformTo(java.lang.String)
+ * <em>Transform To</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class TransformTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -38,9 +44,9 @@ public class TransformTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Transform test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this Transform test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Transform fixture = null;
@@ -82,9 +88,9 @@ public class TransformTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Transform test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Transform test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Transform getFixture() {
@@ -92,9 +98,9 @@ public class TransformTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Transform test case.
-	 * <!-- begin-user-doc -->
+	 * Sets the fixture for this Transform test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(Transform fixture) {
@@ -118,6 +124,7 @@ public class TransformTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

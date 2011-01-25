@@ -28,9 +28,10 @@ import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.rmap.Redirect} object.
- * <!-- begin-user-doc -->
+ * This is the item provider adapter for a
+ * {@link org.eclipse.buckminster.rmap.Redirect} object. <!-- begin-user-doc -->
  * <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class RedirectItemProvider extends MatcherItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider,
@@ -63,26 +64,25 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		Pattern labelValue = ((Redirect)object).getPattern();
+		Pattern labelValue = ((Redirect) object).getPattern();
 		String label = labelValue == null ? null : labelValue.toString();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Redirect_type") :
-			getString("_UI_Redirect_type") + " " + label;
+		return label == null || label.length() == 0 ? getString("_UI_Redirect_type") : getString("_UI_Redirect_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -105,19 +105,10 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 	 * @generated
 	 */
 	protected void addRedirectToPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Redirect_redirectTo_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Redirect_redirectTo_feature", "_UI_Redirect_type"),
-				 RmapPackage.Literals.REDIRECT__REDIRECT_TO,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Redirect_redirectTo_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Redirect_redirectTo_feature", "_UI_Redirect_type"),
+				RmapPackage.Literals.REDIRECT__REDIRECT_TO, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

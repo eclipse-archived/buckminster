@@ -35,9 +35,10 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.rmap.Repository} object.
- * <!-- begin-user-doc
+ * This is the item provider adapter for a
+ * {@link org.eclipse.buckminster.rmap.Repository} object. <!-- begin-user-doc
  * --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class RepositoryItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
@@ -53,10 +54,13 @@ public class RepositoryItemProvider extends ItemProviderAdapter implements IEdit
 	}
 
 	/**
-	 * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
-	 * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-	 * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * This specifies how to implement {@link #getChildren} and is used to
+	 * deduce an appropriate feature for an
+	 * {@link org.eclipse.emf.edit.command.AddCommand},
+	 * {@link org.eclipse.emf.edit.command.RemoveCommand} or
+	 * {@link org.eclipse.emf.edit.command.MoveCommand} in
+	 * {@link #createCommand}. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -101,29 +105,28 @@ public class RepositoryItemProvider extends ItemProviderAdapter implements IEdit
 
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
+		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		String label = ((Repository)object).getId();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Repository_type") :
-			getString("_UI_Repository_type") + " " + label;
+		String label = ((Repository) object).getId();
+		return label == null || label.length() == 0 ? getString("_UI_Repository_type") : getString("_UI_Repository_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -155,19 +158,10 @@ public class RepositoryItemProvider extends ItemProviderAdapter implements IEdit
 	 * @generated
 	 */
 	protected void addAllowDirtyPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Repository_allowDirty_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Repository_allowDirty_feature", "_UI_Repository_type"),
-				 RmapPackage.Literals.REPOSITORY__ALLOW_DIRTY,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Repository_allowDirty_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Repository_allowDirty_feature", "_UI_Repository_type"),
+				RmapPackage.Literals.REPOSITORY__ALLOW_DIRTY, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -177,63 +171,36 @@ public class RepositoryItemProvider extends ItemProviderAdapter implements IEdit
 	 * @generated
 	 */
 	protected void addCheckoutPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Repository_checkout_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Repository_checkout_feature", "_UI_Repository_type"),
-				 RmapPackage.Literals.REPOSITORY__CHECKOUT,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Repository_checkout_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Repository_checkout_feature", "_UI_Repository_type"),
+				RmapPackage.Literals.REPOSITORY__CHECKOUT, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Id feature.
-	 * <!-- begin-user-doc
+	 * This adds a property descriptor for the Id feature. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void addIdPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Repository_id_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Repository_id_feature", "_UI_Repository_type"),
-				 RmapPackage.Literals.REPOSITORY__ID,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Repository_id_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Repository_id_feature", "_UI_Repository_type"),
+				RmapPackage.Literals.REPOSITORY__ID, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
-	 * This adds a property descriptor for the Type feature.
-	 * <!-- begin-user-doc
+	 * This adds a property descriptor for the Type feature. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void addTypePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Repository_type_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Repository_type_feature", "_UI_Repository_type"),
-				 RmapPackage.Literals.REPOSITORY__TYPE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Repository_type_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Repository_type_feature", "_UI_Repository_type"),
+				RmapPackage.Literals.REPOSITORY__TYPE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -243,19 +210,10 @@ public class RepositoryItemProvider extends ItemProviderAdapter implements IEdit
 	 * @generated
 	 */
 	protected void addUpdatePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Repository_update_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Repository_update_feature", "_UI_Repository_type"),
-				 RmapPackage.Literals.REPOSITORY__UPDATE,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Repository_update_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Repository_update_feature", "_UI_Repository_type"),
+				RmapPackage.Literals.REPOSITORY__UPDATE, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -270,30 +228,23 @@ public class RepositoryItemProvider extends ItemProviderAdapter implements IEdit
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add
-			(createChildParameter
-				(RmapPackage.Literals.REPOSITORY__CONNECTION,
-				 CommonFactory.eINSTANCE.createFormat()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.REPOSITORY__CONNECTION, CommonFactory.eINSTANCE.createFormat()));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(RmapPackage.Literals.REPOSITORY__BRANCHES,
-				 RmapFactory.eINSTANCE.createBranchPoint()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.REPOSITORY__BRANCHES, RmapFactory.eINSTANCE.createBranchPoint()));
 
-		newChildDescriptors.add
-			(createChildParameter
-				(RmapPackage.Literals.REPOSITORY__DOCUMENTATION,
-				 CommonFactory.eINSTANCE.createDocumentation()));
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.REPOSITORY__DOCUMENTATION, CommonFactory.eINSTANCE.createDocumentation()));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
-		// Check the type of the specified child object and return the proper feature to use for
+		// Check the type of the specified child object and return the proper
+		// feature to use for
 		// adding (see {@link AddCommand}) it as a child.
 
 		return super.getChildFeature(object, child);

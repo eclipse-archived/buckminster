@@ -9,6 +9,7 @@ package org.eclipse.buckminster.rmap.tests;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -16,18 +17,23 @@ import junit.textui.TestRunner;
 
 import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.Format;
 import org.eclipse.buckminster.model.common.PropertyRef;
 import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.buckminster.rmap.ResourceMap;
 import org.eclipse.buckminster.rmap.RmapConstants;
 import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.RmapPackage;
+import org.eclipse.buckminster.rmap.SearchPath;
 import org.eclipse.buckminster.rmap.impl.ProviderImpl;
 import org.eclipse.buckminster.rmap.util.RmapResourceFactoryImpl;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * <!-- begin-user-doc --> A test case for the model object '
@@ -35,26 +41,41 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#getComponentTypesAttr() <em>Component Types Attr</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#isSource() <em>Source</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#isMutable() <em>Mutable</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.Matcher#getComponentTypesAttr() <em>
+ * Component Types Attr</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.Provider#isSource() <em>Source</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.Provider#isMutable() <em>Mutable
+ * </em>}</li>
  * </ul>
  * </p>
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#getURI(java.util.Map) <em>Get URI</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#getDelegationMap(org.eclipse.buckminster.rmap.util.IComponentReader, org.eclipse.core.runtime.IStatus, java.util.Map, org.eclipse.core.runtime.IProgressMonitor) <em>Get Delegation Map</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#getProperties(java.util.Map) <em>Get Properties</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.Provider#hasDelegationMap() <em>Has Delegation Map</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.Provider#getURI(java.util.Map) <em>
+ * Get URI</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.Provider#getDelegationMap(org.eclipse.buckminster.rmap.util.IComponentReader, org.eclipse.core.runtime.IStatus, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+ * <em>Get Delegation Map</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.Provider#getProperties(java.util.Map)
+ * <em>Get Properties</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.Provider#hasDelegationMap() <em>Has
+ * Delegation Map</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.Matcher#matches(org.eclipse.buckminster.model.common.ComponentName, java.util.Map)
+ * <em>Matches</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.Matcher#getResourceMap() <em>Get
+ * Resource Map</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class ProviderTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -62,9 +83,9 @@ public class ProviderTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Provider test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this Provider test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Provider fixture = null;
@@ -96,29 +117,75 @@ public class ProviderTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.Provider#getProperties(java.util.Map) <em>Get Properties</em>}' operation.
-	 * <!-- begin-user-doc --> <!--
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.Provider#getDelegationMap(org.eclipse.buckminster.rmap.util.IComponentReader, org.eclipse.core.runtime.IStatus, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+	 * <em>Get Delegation Map</em>}' operation. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.Provider#getProperties(java.util.Map)
-	 * @generated
+	 * 
+	 * @see org.eclipse.buckminster.rmap.Provider#getDelegationMap(org.eclipse.buckminster.rmap.util.IComponentReader,
+	 *      org.eclipse.core.runtime.IStatus, java.util.Map,
+	 *      org.eclipse.core.runtime.IProgressMonitor)
+	 * @generated NOT
 	 */
-	public void testGetProperties__Map() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+	public void testGetDelegationMap__IComponentReader_IStatus_Map_IProgressMonitor() {
+		try {
+			getFixture().getDelegationMap(null, null, null, null);
+			fail();
+		} catch (CoreException e) {
+			fail(e.getMessage());
+		} catch (UnsupportedOperationException e) {
+		}
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.Provider#hasDelegationMap() <em>Has Delegation Map</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.Provider#hasDelegationMap()
-	 * @generated
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.Provider#getProperties(java.util.Map)
+	 * <em>Get Properties</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.Provider#getProperties(java.util.Map)
+	 * @generated NOT
 	 */
-	public void testHasDelegationMap() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+	public void testGetProperties__Map() {
+		RmapFactory factory = RmapFactory.eINSTANCE;
+		ResourceMap rmap = factory.createResourceMap();
+		SearchPath sp = factory.createSearchPath();
+		rmap.getSearchPaths().add(sp);
+		sp.getProviders().add(fixture);
+
+		rmap.getProperties().put("a", "rmap");
+		rmap.getProperties().put("b", "rmap");
+		rmap.getProperties().put("c", "rmap");
+		fixture.getProperties().put("a", "provider");
+		fixture.getProperties().put("b", "provider");
+		Map<String, String> context = Collections.singletonMap("a", "context");
+
+		Map<String, String> result = fixture.getProperties(context);
+		assertEquals(3, result.size());
+		assertEquals("context", result.get("a"));
+		assertEquals("provider", result.get("b"));
+		assertEquals("rmap", result.get("c"));
+	}
+
+	/**
+	 * Tests the '{@link org.eclipse.buckminster.rmap.Matcher#getResourceMap()
+	 * <em>Get Resource Map</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.Matcher#getResourceMap()
+	 * @generated NOT
+	 */
+	public void testGetResourceMap() {
+		ResourceMap rmap = RmapFactory.eINSTANCE.createResourceMap();
+		rmap.getMatchers().add(getFixture());
+		assertTrue(getFixture().getResourceMap() == rmap);
+		rmap.getMatchers().clear();
+		assertNull(getFixture().getResourceMap());
+		SearchPath sp = RmapFactory.eINSTANCE.createSearchPath();
+		sp.getProviders().add(getFixture());
+		assertNull(getFixture().getResourceMap());
+		rmap.getSearchPaths().add(sp);
+		assertTrue(getFixture().getResourceMap() == rmap);
 	}
 
 	/**
@@ -141,16 +208,16 @@ public class ProviderTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link org.eclipse.buckminster.rmap.Provider#getDelegationMap(org.eclipse.buckminster.rmap.util.IComponentReader, org.eclipse.core.runtime.IStatus, java.util.Map, org.eclipse.core.runtime.IProgressMonitor) <em>Get Delegation Map</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.buckminster.rmap.Provider#getDelegationMap(org.eclipse.buckminster.rmap.util.IComponentReader, org.eclipse.core.runtime.IStatus, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
-	 * @generated
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.Provider#hasDelegationMap()
+	 * <em>Has Delegation Map</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.Provider#hasDelegationMap()
+	 * @generated NOT
 	 */
-	public void testGetDelegationMap__IComponentReader_IStatus_Map_IProgressMonitor() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+	public void testHasDelegationMap() {
+		assertFalse(getFixture().hasDelegationMap());
 	}
 
 	/**
@@ -199,6 +266,23 @@ public class ProviderTest extends TestCase {
 		Object provider = resource.getEObject(uri.fragment());
 		assertNotNull(provider);
 		assertEquals(ProviderImpl.class, provider.getClass());
+	}
+
+	/**
+	 * Tests the '
+	 * {@link org.eclipse.buckminster.rmap.Matcher#matches(org.eclipse.buckminster.model.common.ComponentName, java.util.Map)
+	 * <em>Matches</em>}' operation. <!-- begin-user-doc --> <!-- end-user-doc
+	 * -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.Matcher#matches(org.eclipse.buckminster.model.common.ComponentName,
+	 *      java.util.Map)
+	 * @generated NOT
+	 */
+	public void testMatches__ComponentName_Map() {
+		ComponentName cn = CommonFactory.eINSTANCE.createComponentName();
+		cn.setId("this.pattern");
+		fixture.setPattern((Pattern) EcoreUtil.createFromString(CommonPackage.Literals.PATTERN, "this\\.pattern"));
+		assertTrue(fixture.matches(cn, Collections.<String, String> emptyMap()));
 	}
 
 	/**
@@ -255,9 +339,9 @@ public class ProviderTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Provider test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Provider test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected Provider getFixture() {
@@ -265,9 +349,9 @@ public class ProviderTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Provider test case.
-	 * <!-- begin-user-doc -->
+	 * Sets the fixture for this Provider test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(Provider fixture) {
@@ -276,6 +360,7 @@ public class ProviderTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -286,6 +371,7 @@ public class ProviderTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

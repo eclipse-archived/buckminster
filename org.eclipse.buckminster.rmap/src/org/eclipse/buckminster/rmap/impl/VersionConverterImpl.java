@@ -33,19 +33,27 @@ import org.eclipse.equinox.p2.metadata.VersionFormatException;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getType <em>Type</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getTransformers <em>Transformers</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getVersionFormat <em>Version Format</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getVersionType <em>Version Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getType
+ * <em>Type</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getTransformers
+ * <em>Transformers</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getVersionFormat
+ * <em>Version Format</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.VersionConverterImpl#getVersionType
+ * <em>Version Type</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class VersionConverterImpl extends EObjectImpl implements VersionConverter {
 	/**
 	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getType()
 	 * @generated
 	 * @ordered
@@ -55,6 +63,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	/**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getType()
 	 * @generated
 	 * @ordered
@@ -73,9 +82,10 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	protected EList<Transform> transformers;
 
 	/**
-	 * The default value of the '{@link #getVersionFormat() <em>Version Format</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getVersionFormat()
+	 * <em>Version Format</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getVersionFormat()
 	 * @generated
 	 * @ordered
@@ -83,9 +93,10 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	protected static final IVersionFormat VERSION_FORMAT_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getVersionFormat() <em>Version Format</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getVersionFormat()
+	 * <em>Version Format</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getVersionFormat()
 	 * @generated
 	 * @ordered
@@ -93,8 +104,9 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	protected IVersionFormat versionFormat = VERSION_FORMAT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getVersionType() <em>Version Type</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getVersionType() <em>Version Type</em>}
+	 * ' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getVersionType()
 	 * @generated
 	 * @ordered
@@ -102,8 +114,9 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	protected static final String VERSION_TYPE_EDEFAULT = "OSGi";
 
 	/**
-	 * The cached value of the '{@link #getVersionType() <em>Version Type</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getVersionType() <em>Version Type</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getVersionType()
 	 * @generated
 	 * @ordered
@@ -112,6 +125,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected VersionConverterImpl() {
@@ -187,6 +201,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -207,6 +222,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -214,13 +230,14 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
-				return ((InternalEList<?>)getTransformers()).basicRemove(otherEnd, msgs);
+				return ((InternalEList<?>) getTransformers()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -241,6 +258,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -248,17 +266,17 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.VERSION_CONVERTER__TYPE:
-				setType((VersionSelectorType)newValue);
+				setType((VersionSelectorType) newValue);
 				return;
 			case RmapPackage.VERSION_CONVERTER__TRANSFORMERS:
 				getTransformers().clear();
-				getTransformers().addAll((Collection<? extends Transform>)newValue);
+				getTransformers().addAll((Collection<? extends Transform>) newValue);
 				return;
 			case RmapPackage.VERSION_CONVERTER__VERSION_FORMAT:
-				setVersionFormat((IVersionFormat)newValue);
+				setVersionFormat((IVersionFormat) newValue);
 				return;
 			case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
-				setVersionType((String)newValue);
+				setVersionType((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -266,6 +284,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -290,6 +309,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -302,6 +322,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -311,6 +332,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -320,6 +342,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -329,6 +352,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setType(VersionSelectorType newType) {
@@ -340,6 +364,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -352,6 +377,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -364,12 +390,14 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (type: ");
@@ -384,6 +412,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

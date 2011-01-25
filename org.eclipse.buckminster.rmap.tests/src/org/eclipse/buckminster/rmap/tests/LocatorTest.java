@@ -14,12 +14,14 @@ import org.eclipse.buckminster.rmap.RmapFactory;
 /**
  * <!-- begin-user-doc --> A test case for the model object '
  * <em><b>Locator</b></em>'. <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class LocatorTest extends MatcherTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -37,18 +39,19 @@ public class LocatorTest extends MatcherTest {
 	}
 
 	/**
-	 * Returns the fixture for this Locator test case.
-	 * <!-- begin-user-doc -->
+	 * Returns the fixture for this Locator test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected Locator getFixture() {
-		return (Locator)fixture;
+		return (Locator) fixture;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -59,6 +62,7 @@ public class LocatorTest extends MatcherTest {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

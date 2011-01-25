@@ -27,21 +27,25 @@ import org.eclipse.buckminster.rmap.SearchPath;
  * <p>
  * The following features are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getMatchers() <em>Matchers</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getMatchers() <em>
+ * Matchers</em>}</li>
  * </ul>
  * </p>
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getContextURL() <em>Get Context URL</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getContextURL() <em>Get
+ * Context URL</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class ResourceMapTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -49,9 +53,9 @@ public class ResourceMapTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Resource Map test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this Resource Map test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ResourceMap fixture = null;
@@ -100,9 +104,9 @@ public class ResourceMapTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Resource Map test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this Resource Map test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ResourceMap getFixture() {
@@ -110,9 +114,9 @@ public class ResourceMapTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Resource Map test case.
-	 * <!-- begin-user-doc -->
+	 * Sets the fixture for this Resource Map test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(ResourceMap fixture) {
@@ -150,6 +154,7 @@ public class ResourceMapTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

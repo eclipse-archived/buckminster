@@ -29,211 +29,31 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getPattern <em>Pattern</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getComponentTypesAttr <em>Component Types Attr</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getComponentTypes <em>Component Types</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getResolutionFilter <em>Resolution Filter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getPattern <em>
+ * Pattern</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getComponentTypesAttr
+ * <em>Component Types Attr</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getComponentTypes
+ * <em>Component Types</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.MatcherImpl#getResolutionFilter
+ * <em>Resolution Filter</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
 	 */
 	protected static final Pattern PATTERN_EDEFAULT = null;
 
-	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getPattern()
-	 * @generated
-	 * @ordered
-	 */
-	protected Pattern pattern = PATTERN_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getComponentTypesAttr() <em>Component Types Attr</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @see #getComponentTypesAttr()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String COMPONENT_TYPES_ATTR_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getComponentTypes() <em>Component Types</em>}' attribute list.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @see #getComponentTypes()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<String> componentTypes;
-
-	/**
-	 * The default value of the '{@link #getResolutionFilter() <em>Resolution Filter</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @see #getResolutionFilter()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final Filter RESOLUTION_FILTER_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getResolutionFilter() <em>Resolution Filter</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * @see #getResolutionFilter()
-	 * @generated
-	 * @ordered
-	 */
-	protected Filter resolutionFilter = RESOLUTION_FILTER_EDEFAULT;
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected MatcherImpl() {
-		super();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
-		switch (featureID) {
-			case RmapPackage.MATCHER__PATTERN:
-				return getPattern();
-			case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
-				return getComponentTypesAttr();
-			case RmapPackage.MATCHER__COMPONENT_TYPES:
-				return getComponentTypes();
-			case RmapPackage.MATCHER__RESOLUTION_FILTER:
-				return getResolutionFilter();
-		}
-		return super.eGet(featureID, resolve, coreType);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	@Override
-	public boolean eIsSet(int featureID) {
-		switch (featureID) {
-			case RmapPackage.MATCHER__PATTERN:
-				return PATTERN_EDEFAULT == null ? pattern != null : !PATTERN_EDEFAULT.equals(pattern);
-			case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
-				return COMPONENT_TYPES_ATTR_EDEFAULT == null ? getComponentTypesAttr() != null : !COMPONENT_TYPES_ATTR_EDEFAULT.equals(getComponentTypesAttr());
-			case RmapPackage.MATCHER__COMPONENT_TYPES:
-				return componentTypes != null && !componentTypes.isEmpty();
-			case RmapPackage.MATCHER__RESOLUTION_FILTER:
-				return RESOLUTION_FILTER_EDEFAULT == null ? resolutionFilter != null : !RESOLUTION_FILTER_EDEFAULT.equals(resolutionFilter);
-		}
-		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void eSet(int featureID, Object newValue) {
-		switch (featureID) {
-			case RmapPackage.MATCHER__PATTERN:
-				setPattern((Pattern)newValue);
-				return;
-			case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
-				setComponentTypesAttr((String)newValue);
-				return;
-			case RmapPackage.MATCHER__COMPONENT_TYPES:
-				getComponentTypes().clear();
-				getComponentTypes().addAll((Collection<? extends String>)newValue);
-				return;
-			case RmapPackage.MATCHER__RESOLUTION_FILTER:
-				setResolutionFilter((Filter)newValue);
-				return;
-		}
-		super.eSet(featureID, newValue);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	@Override
-	public void eUnset(int featureID) {
-		switch (featureID) {
-			case RmapPackage.MATCHER__PATTERN:
-				setPattern(PATTERN_EDEFAULT);
-				return;
-			case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
-				setComponentTypesAttr(COMPONENT_TYPES_ATTR_EDEFAULT);
-				return;
-			case RmapPackage.MATCHER__COMPONENT_TYPES:
-				getComponentTypes().clear();
-				return;
-			case RmapPackage.MATCHER__RESOLUTION_FILTER:
-				setResolutionFilter(RESOLUTION_FILTER_EDEFAULT);
-				return;
-		}
-		super.eUnset(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EList<String> getComponentTypes() {
-		if (componentTypes == null) {
-			componentTypes = new EDataTypeUniqueEList<String>(String.class, this, RmapPackage.MATCHER__COMPONENT_TYPES);
-		}
-		return componentTypes;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Filter getResolutionFilter() {
-		return resolutionFilter;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setResolutionFilter(Filter newResolutionFilter) {
-		Filter oldResolutionFilter = resolutionFilter;
-		resolutionFilter = newResolutionFilter;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.MATCHER__RESOLUTION_FILTER, oldResolutionFilter, resolutionFilter));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public String getComponentTypesAttr() {
-		return getComponentTypesAttr(this);
-	}
-	
 	static String getComponentTypesAttr(Matcher matcher) {
 		EList<String> ctypes = matcher.getComponentTypes();
 		int top = ctypes.size();
@@ -250,33 +70,6 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 			bld.append(ctypes.get(idx));
 		}
 		return bld.toString();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-
-	public Pattern getPattern() {
-		return pattern;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public boolean matches(ComponentName componentName, Map<String, String> properties) {
-		return matches(this, componentName, properties);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated NOT
-	 */
-	public ResourceMap getResourceMap() {
-		return (ResourceMap)eContainer();
 	}
 
 	static boolean matches(Matcher matcher, ComponentName componentName, Map<String, String> properties) {
@@ -304,15 +97,6 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 		return true;
 	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public void setComponentTypesAttr(String newComponentTypesAttr) {
-		setComponentTypesAttr(this, newComponentTypesAttr);
-	}
-	
 	static void setComponentTypesAttr(Matcher matcher, String newComponentTypesAttr) {
 		EList<String> ctypes = matcher.getComponentTypes();
 		ctypes.clear();
@@ -331,7 +115,233 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 	}
 
 	/**
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getPattern()
+	 * @generated
+	 * @ordered
+	 */
+	protected Pattern pattern = PATTERN_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getComponentTypesAttr()
+	 * <em>Component Types Attr</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getComponentTypesAttr()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String COMPONENT_TYPES_ATTR_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getComponentTypes()
+	 * <em>Component Types</em>}' attribute list. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getComponentTypes()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<String> componentTypes;
+
+	/**
+	 * The default value of the '{@link #getResolutionFilter()
+	 * <em>Resolution Filter</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getResolutionFilter()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final Filter RESOLUTION_FILTER_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getResolutionFilter()
+	 * <em>Resolution Filter</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getResolutionFilter()
+	 * @generated
+	 * @ordered
+	 */
+	protected Filter resolutionFilter = RESOLUTION_FILTER_EDEFAULT;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected MatcherImpl() {
+		super();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	@Override
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case RmapPackage.MATCHER__PATTERN:
+				return getPattern();
+			case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
+				return getComponentTypesAttr();
+			case RmapPackage.MATCHER__COMPONENT_TYPES:
+				return getComponentTypes();
+			case RmapPackage.MATCHER__RESOLUTION_FILTER:
+				return getResolutionFilter();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	@Override
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case RmapPackage.MATCHER__PATTERN:
+				return PATTERN_EDEFAULT == null ? pattern != null : !PATTERN_EDEFAULT.equals(pattern);
+			case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
+				return COMPONENT_TYPES_ATTR_EDEFAULT == null ? getComponentTypesAttr() != null : !COMPONENT_TYPES_ATTR_EDEFAULT
+						.equals(getComponentTypesAttr());
+			case RmapPackage.MATCHER__COMPONENT_TYPES:
+				return componentTypes != null && !componentTypes.isEmpty();
+			case RmapPackage.MATCHER__RESOLUTION_FILTER:
+				return RESOLUTION_FILTER_EDEFAULT == null ? resolutionFilter != null : !RESOLUTION_FILTER_EDEFAULT.equals(resolutionFilter);
+		}
+		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case RmapPackage.MATCHER__PATTERN:
+				setPattern((Pattern) newValue);
+				return;
+			case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
+				setComponentTypesAttr((String) newValue);
+				return;
+			case RmapPackage.MATCHER__COMPONENT_TYPES:
+				getComponentTypes().clear();
+				getComponentTypes().addAll((Collection<? extends String>) newValue);
+				return;
+			case RmapPackage.MATCHER__RESOLUTION_FILTER:
+				setResolutionFilter((Filter) newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	@Override
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case RmapPackage.MATCHER__PATTERN:
+				setPattern(PATTERN_EDEFAULT);
+				return;
+			case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
+				setComponentTypesAttr(COMPONENT_TYPES_ATTR_EDEFAULT);
+				return;
+			case RmapPackage.MATCHER__COMPONENT_TYPES:
+				getComponentTypes().clear();
+				return;
+			case RmapPackage.MATCHER__RESOLUTION_FILTER:
+				setResolutionFilter(RESOLUTION_FILTER_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EList<String> getComponentTypes() {
+		if (componentTypes == null) {
+			componentTypes = new EDataTypeUniqueEList<String>(String.class, this, RmapPackage.MATCHER__COMPONENT_TYPES);
+		}
+		return componentTypes;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public String getComponentTypesAttr() {
+		return getComponentTypesAttr(this);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	public Pattern getPattern() {
+		return pattern;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Filter getResolutionFilter() {
+		return resolutionFilter;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public ResourceMap getResourceMap() {
+		return (ResourceMap) eContainer();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean matches(ComponentName componentName, Map<String, String> properties) {
+		return matches(this, componentName, properties);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public void setComponentTypesAttr(String newComponentTypesAttr) {
+		setComponentTypesAttr(this, newComponentTypesAttr);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -344,12 +354,26 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setResolutionFilter(Filter newResolutionFilter) {
+		Filter oldResolutionFilter = resolutionFilter;
+		resolutionFilter = newResolutionFilter;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.MATCHER__RESOLUTION_FILTER, oldResolutionFilter, resolutionFilter));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (pattern: ");
@@ -364,6 +388,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

@@ -11,6 +11,7 @@ import java.util.List;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.model.common.provider.util.ExtensionPropertyDescriptor;
 import org.eclipse.buckminster.rmap.Matcher;
 import org.eclipse.buckminster.rmap.RmapPackage;
 
@@ -32,9 +33,10 @@ import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.buckminster.rmap.Matcher} object.
- * <!-- begin-user-doc -->
+ * This is the item provider adapter for a
+ * {@link org.eclipse.buckminster.rmap.Matcher} object. <!-- begin-user-doc -->
  * <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class MatcherItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
@@ -62,6 +64,9 @@ public class MatcherItemProvider extends ItemProviderAdapter implements IEditing
 			super.getPropertyDescriptors(object);
 
 			addPatternPropertyDescriptor(object);
+			addComponentTypesAttrPropertyDescriptor(object);
+			addComponentTypesPropertyDescriptor(object);
+			addResolutionFilterPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -75,30 +80,29 @@ public class MatcherItemProvider extends ItemProviderAdapter implements IEditing
 
 	@Override
 	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender)adapterFactory).getResourceLocator();
+		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
 	}
 
 	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc
+	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String getText(Object object) {
-		Pattern labelValue = ((Matcher)object).getPattern();
+		Pattern labelValue = ((Matcher) object).getPattern();
 		String label = labelValue == null ? null : labelValue.toString();
-		return label == null || label.length() == 0 ?
-			getString("_UI_Matcher_type") :
-			getString("_UI_Matcher_type") + " " + label;
+		return label == null || label.length() == 0 ? getString("_UI_Matcher_type") : getString("_UI_Matcher_type") + " " + label;
 	}
 
 	/**
-	 * This handles model notifications by calling {@link #updateChildren} to update any cached
-	 * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-	 * <!-- begin-user-doc --> <!--
+	 * This handles model notifications by calling {@link #updateChildren} to
+	 * update any cached children and by creating a viewer notification, which
+	 * it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -108,10 +112,39 @@ public class MatcherItemProvider extends ItemProviderAdapter implements IEditing
 
 		switch (notification.getFeatureID(Matcher.class)) {
 			case RmapPackage.MATCHER__PATTERN:
+			case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
+			case RmapPackage.MATCHER__COMPONENT_TYPES:
+			case RmapPackage.MATCHER__RESOLUTION_FILTER:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
 		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Component Types Attr feature.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addComponentTypesAttrPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Matcher_componentTypesAttr_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Matcher_componentTypesAttr_feature", "_UI_Matcher_type"),
+				RmapPackage.Literals.MATCHER__COMPONENT_TYPES_ATTR, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Component Types feature. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	protected void addComponentTypesPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add(new ExtensionPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Matcher_componentTypes_feature"), getString("_UI_PropertyDescriptor_description",
+						"_UI_Matcher_componentTypes_feature", "_UI_Matcher_type"), RmapPackage.Literals.MATCHER__COMPONENT_TYPES, true, false, false,
+				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null, "org.eclipse.buckminster.core.componentTypes", "id", false));
 	}
 
 	/**
@@ -121,19 +154,23 @@ public class MatcherItemProvider extends ItemProviderAdapter implements IEditing
 	 * @generated
 	 */
 	protected void addPatternPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_Matcher_pattern_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_Matcher_pattern_feature", "_UI_Matcher_type"),
-				 RmapPackage.Literals.MATCHER__PATTERN,
-				 true,
-				 false,
-				 false,
-				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Matcher_pattern_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Matcher_pattern_feature", "_UI_Matcher_type"),
+				RmapPackage.Literals.MATCHER__PATTERN, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Resolution Filter feature. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addResolutionFilterPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Matcher_resolutionFilter_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Matcher_resolutionFilter_feature", "_UI_Matcher_type"),
+				RmapPackage.Literals.MATCHER__RESOLUTION_FILTER, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

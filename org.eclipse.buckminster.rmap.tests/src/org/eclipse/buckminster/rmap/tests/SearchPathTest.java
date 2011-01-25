@@ -16,12 +16,14 @@ import org.eclipse.buckminster.rmap.SearchPath;
 /**
  * <!-- begin-user-doc --> A test case for the model object '
  * <em><b>Search Path</b></em>'. <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class SearchPathTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -29,9 +31,9 @@ public class SearchPathTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Search Path test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this Search Path test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected SearchPath fixture = null;
@@ -47,9 +49,9 @@ public class SearchPathTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Search Path test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this Search Path test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected SearchPath getFixture() {
@@ -57,9 +59,9 @@ public class SearchPathTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Search Path test case.
-	 * <!-- begin-user-doc -->
+	 * Sets the fixture for this Search Path test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(SearchPath fixture) {
@@ -68,6 +70,7 @@ public class SearchPathTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -78,6 +81,7 @@ public class SearchPathTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

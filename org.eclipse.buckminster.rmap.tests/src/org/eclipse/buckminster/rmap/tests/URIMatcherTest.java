@@ -27,15 +27,18 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getComponentType() <em>Get Component Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getComponentType() <em>Get
+ * Component Type</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class URIMatcherTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -43,9 +46,9 @@ public class URIMatcherTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this URI Matcher test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this URI Matcher test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected URIMatcher fixture = null;
@@ -100,9 +103,9 @@ public class URIMatcherTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this URI Matcher test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this URI Matcher test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected URIMatcher getFixture() {
@@ -110,9 +113,9 @@ public class URIMatcherTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this URI Matcher test case.
-	 * <!-- begin-user-doc -->
+	 * Sets the fixture for this URI Matcher test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(URIMatcher fixture) {
@@ -169,6 +172,7 @@ public class URIMatcherTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

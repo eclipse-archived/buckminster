@@ -25,20 +25,27 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getTimestamp <em>Timestamp</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getRevision <em>Revision</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getTag <em>Tag</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getOnMergeConflict <em>On Merge Conflict</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getName <em>Name
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getTimestamp
+ * <em>Timestamp</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getRevision <em>
+ * Revision</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getTag <em>Tag
+ * </em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.BranchPointImpl#getOnMergeConflict
+ * <em>On Merge Conflict</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -48,6 +55,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	/**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -55,8 +63,9 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getTimestamp() <em>Timestamp</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getTimestamp() <em>Timestamp</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getTimestamp()
 	 * @generated
 	 * @ordered
@@ -64,8 +73,9 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	protected static final Date TIMESTAMP_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getTimestamp() <em>Timestamp</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getTimestamp() <em>Timestamp</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getTimestamp()
 	 * @generated
 	 * @ordered
@@ -73,8 +83,9 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	protected Date timestamp = TIMESTAMP_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getRevision() <em>Revision</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getRevision() <em>Revision</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getRevision()
 	 * @generated
 	 * @ordered
@@ -82,8 +93,9 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	protected static final String REVISION_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getRevision() <em>Revision</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRevision() <em>Revision</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getRevision()
 	 * @generated
 	 * @ordered
@@ -111,9 +123,10 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	protected String tag = TAG_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getOnMergeConflict() <em>On Merge Conflict</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getOnMergeConflict()
+	 * <em>On Merge Conflict</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getOnMergeConflict()
 	 * @generated
 	 * @ordered
@@ -121,9 +134,10 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	protected static final ConflictPolicy ON_MERGE_CONFLICT_EDEFAULT = ConflictPolicy.FAIL;
 
 	/**
-	 * The cached value of the '{@link #getOnMergeConflict() <em>On Merge Conflict</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getOnMergeConflict()
+	 * <em>On Merge Conflict</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getOnMergeConflict()
 	 * @generated
 	 * @ordered
@@ -132,6 +146,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected BranchPointImpl() {
@@ -140,6 +155,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -162,6 +178,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -184,6 +201,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -191,19 +209,19 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.BRANCH_POINT__NAME:
-				setName((String)newValue);
+				setName((String) newValue);
 				return;
 			case RmapPackage.BRANCH_POINT__TIMESTAMP:
-				setTimestamp((Date)newValue);
+				setTimestamp((Date) newValue);
 				return;
 			case RmapPackage.BRANCH_POINT__REVISION:
-				setRevision((String)newValue);
+				setRevision((String) newValue);
 				return;
 			case RmapPackage.BRANCH_POINT__TAG:
-				setTag((String)newValue);
+				setTag((String) newValue);
 				return;
 			case RmapPackage.BRANCH_POINT__ON_MERGE_CONFLICT:
-				setOnMergeConflict((ConflictPolicy)newValue);
+				setOnMergeConflict((ConflictPolicy) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -211,6 +229,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -238,6 +257,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -247,6 +267,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -256,6 +277,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -265,6 +287,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -274,6 +297,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -283,6 +307,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -295,6 +320,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -307,6 +333,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -319,6 +346,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -331,6 +359,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -343,12 +372,14 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: ");
@@ -367,6 +398,7 @@ public class BranchPointImpl extends EObjectImpl implements BranchPoint {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 

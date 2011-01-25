@@ -29,6 +29,7 @@ import org.osgi.framework.Bundle;
 /**
  * <!-- begin-user-doc --> A test suite for the '<em><b>rmap</b></em>' package.
  * <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class RmapTests extends TestSuite {
@@ -54,6 +55,7 @@ public class RmapTests extends TestSuite {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -62,6 +64,7 @@ public class RmapTests extends TestSuite {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static Test suite() {
@@ -89,6 +92,7 @@ public class RmapTests extends TestSuite {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public RmapTests(String name) {

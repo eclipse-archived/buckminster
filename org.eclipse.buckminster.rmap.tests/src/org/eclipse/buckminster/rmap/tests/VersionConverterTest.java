@@ -24,16 +24,22 @@ import org.eclipse.equinox.p2.metadata.Version;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.VersionConverter#createVersion(java.lang.String) <em>Create Version</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.VersionConverter#createIdentifier(org.eclipse.equinox.p2.metadata.Version) <em>Create Identifier</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.VersionConverter#createVersion(java.lang.String)
+ * <em>Create Version</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.VersionConverter#createIdentifier(org.eclipse.equinox.p2.metadata.Version)
+ * <em>Create Identifier</em>}</li>
  * </ul>
  * </p>
+ * 
  * @generated
  */
 public class VersionConverterTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -41,9 +47,9 @@ public class VersionConverterTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Version Converter test case.
-	 * <!-- begin-user-doc -->
+	 * The fixture for this Version Converter test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected VersionConverter fixture = null;
@@ -152,6 +158,7 @@ public class VersionConverterTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

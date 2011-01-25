@@ -16,12 +16,14 @@ import org.eclipse.buckminster.rmap.RmapFactory;
 /**
  * <!-- begin-user-doc --> A test case for the model object '
  * <em><b>Branch Point</b></em>'. <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class BranchPointTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -29,9 +31,9 @@ public class BranchPointTest extends TestCase {
 	}
 
 	/**
-	 * The fixture for this Branch Point test case.
-	 * <!-- begin-user-doc --> <!--
+	 * The fixture for this Branch Point test case. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected BranchPoint fixture = null;
@@ -47,9 +49,9 @@ public class BranchPointTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Branch Point test case.
-	 * <!-- begin-user-doc
+	 * Returns the fixture for this Branch Point test case. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected BranchPoint getFixture() {
@@ -57,9 +59,9 @@ public class BranchPointTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Branch Point test case.
-	 * <!-- begin-user-doc -->
+	 * Sets the fixture for this Branch Point test case. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected void setFixture(BranchPoint fixture) {
@@ -68,6 +70,7 @@ public class BranchPointTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -78,6 +81,7 @@ public class BranchPointTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

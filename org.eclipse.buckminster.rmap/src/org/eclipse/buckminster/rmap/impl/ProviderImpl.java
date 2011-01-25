@@ -51,27 +51,43 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getPattern <em>Pattern</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getComponentTypesAttr <em>Component Types Attr</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getComponentTypes <em>Component Types</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getResolutionFilter <em>Resolution Filter</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getReaderType <em>Reader Type</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#isSource <em>Source</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#isMutable <em>Mutable</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getRepository <em>Repository</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getVersionConverter <em>Version Converter</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getURI <em>URI</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getMatcher <em>Matcher</em>}</li>
- *   <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getDocumentation <em>Documentation</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getPattern <em>
+ * Pattern</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getComponentTypesAttr
+ * <em>Component Types Attr</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getComponentTypes
+ * <em>Component Types</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getResolutionFilter
+ * <em>Resolution Filter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getReaderType <em>
+ * Reader Type</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#isSource <em>Source
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#isMutable <em>
+ * Mutable</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getRepository <em>
+ * Repository</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getVersionConverter
+ * <em>Version Converter</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getURI <em>URI
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getMatcher <em>
+ * Matcher</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getDocumentation
+ * <em>Documentation</em>}</li>
  * </ul>
  * </p>
- *
+ * 
  * @generated
  */
 public class ProviderImpl extends PropertiesImpl implements Provider {
 	/**
-	 * The default value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -79,8 +95,9 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected static final Pattern PATTERN_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getPattern()
 	 * @generated
 	 * @ordered
@@ -88,9 +105,10 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected Pattern pattern = PATTERN_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getComponentTypesAttr() <em>Component Types Attr</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getComponentTypesAttr()
+	 * <em>Component Types Attr</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getComponentTypesAttr()
 	 * @generated
 	 * @ordered
@@ -98,9 +116,10 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected static final String COMPONENT_TYPES_ATTR_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getComponentTypes() <em>Component Types</em>}' attribute list.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getComponentTypes()
+	 * <em>Component Types</em>}' attribute list. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getComponentTypes()
 	 * @generated
 	 * @ordered
@@ -108,9 +127,10 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected EList<String> componentTypes;
 
 	/**
-	 * The default value of the '{@link #getResolutionFilter() <em>Resolution Filter</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The default value of the '{@link #getResolutionFilter()
+	 * <em>Resolution Filter</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getResolutionFilter()
 	 * @generated
 	 * @ordered
@@ -118,9 +138,10 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected static final Filter RESOLUTION_FILTER_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getResolutionFilter() <em>Resolution Filter</em>}' attribute.
-	 * <!-- begin-user-doc --> <!--
+	 * The cached value of the '{@link #getResolutionFilter()
+	 * <em>Resolution Filter</em>}' attribute. <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
+	 * 
 	 * @see #getResolutionFilter()
 	 * @generated
 	 * @ordered
@@ -128,8 +149,9 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected Filter resolutionFilter = RESOLUTION_FILTER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getReaderType() <em>Reader Type</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getReaderType() <em>Reader Type</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getReaderType()
 	 * @generated
 	 * @ordered
@@ -137,8 +159,9 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected static final String READER_TYPE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getReaderType() <em>Reader Type</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getReaderType() <em>Reader Type</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getReaderType()
 	 * @generated
 	 * @ordered
@@ -148,6 +171,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	/**
 	 * The default value of the '{@link #isSource() <em>Source</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isSource()
 	 * @generated
 	 * @ordered
@@ -155,8 +179,9 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected static final boolean SOURCE_EDEFAULT = true;
 
 	/**
-	 * The default value of the '{@link #isMutable() <em>Mutable</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #isMutable() <em>Mutable</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #isMutable()
 	 * @generated
 	 * @ordered
@@ -164,8 +189,9 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected static final boolean MUTABLE_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #getRepository() <em>Repository</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getRepository() <em>Repository</em>}'
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getRepository()
 	 * @generated
 	 * @ordered
@@ -173,9 +199,10 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected Repository repository;
 
 	/**
-	 * The cached value of the '{@link #getVersionConverter() <em>Version Converter</em>}' containment reference.
-	 * <!-- begin-user-doc
+	 * The cached value of the '{@link #getVersionConverter()
+	 * <em>Version Converter</em>}' containment reference. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @see #getVersionConverter()
 	 * @generated
 	 * @ordered
@@ -183,8 +210,9 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected VersionConverter versionConverter;
 
 	/**
-	 * The cached value of the '{@link #getURI() <em>URI</em>}' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getURI() <em>URI</em>}' containment
+	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getURI()
 	 * @generated
 	 * @ordered
@@ -192,8 +220,9 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected Format uri;
 
 	/**
-	 * The cached value of the '{@link #getMatcher() <em>Matcher</em>}' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getMatcher() <em>Matcher</em>}'
+	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @see #getMatcher()
 	 * @generated
 	 * @ordered
@@ -201,9 +230,10 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected URIMatcher matcher;
 
 	/**
-	 * The cached value of the '{@link #getDocumentation() <em>Documentation</em>}' containment reference.
-	 * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getDocumentation()
+	 * <em>Documentation</em>}' containment reference. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * 
 	 * @see #getDocumentation()
 	 * @generated
 	 * @ordered
@@ -212,6 +242,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	protected ProviderImpl() {
@@ -220,6 +251,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Repository basicGetRepository() {
@@ -228,20 +260,26 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetDocumentation(Documentation newDocumentation, NotificationChain msgs) {
 		Documentation oldDocumentation = documentation;
 		documentation = newDocumentation;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__DOCUMENTATION, oldDocumentation, newDocumentation);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__DOCUMENTATION, oldDocumentation,
+					newDocumentation);
+			if (msgs == null)
+				msgs = notification;
+			else
+				msgs.add(notification);
 		}
 		return msgs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetMatcher(URIMatcher newMatcher, NotificationChain msgs) {
@@ -249,13 +287,17 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 		matcher = newMatcher;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__MATCHER, oldMatcher, newMatcher);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
+			if (msgs == null)
+				msgs = notification;
+			else
+				msgs.add(notification);
 		}
 		return msgs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetURI(Format newURI, NotificationChain msgs) {
@@ -263,27 +305,84 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 		uri = newURI;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__URI, oldURI, newURI);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
+			if (msgs == null)
+				msgs = notification;
+			else
+				msgs.add(notification);
 		}
 		return msgs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetVersionConverter(VersionConverter newVersionConverter, NotificationChain msgs) {
 		VersionConverter oldVersionConverter = versionConverter;
 		versionConverter = newVersionConverter;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__VERSION_CONVERTER, oldVersionConverter, newVersionConverter);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__VERSION_CONVERTER,
+					oldVersionConverter, newVersionConverter);
+			if (msgs == null)
+				msgs = notification;
+			else
+				msgs.add(notification);
 		}
 		return msgs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+		if (baseClass == Matcher.class) {
+			switch (derivedFeatureID) {
+				case RmapPackage.PROVIDER__PATTERN:
+					return RmapPackage.MATCHER__PATTERN;
+				case RmapPackage.PROVIDER__COMPONENT_TYPES_ATTR:
+					return RmapPackage.MATCHER__COMPONENT_TYPES_ATTR;
+				case RmapPackage.PROVIDER__COMPONENT_TYPES:
+					return RmapPackage.MATCHER__COMPONENT_TYPES;
+				case RmapPackage.PROVIDER__RESOLUTION_FILTER:
+					return RmapPackage.MATCHER__RESOLUTION_FILTER;
+				default:
+					return -1;
+			}
+		}
+		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+		if (baseClass == Matcher.class) {
+			switch (baseFeatureID) {
+				case RmapPackage.MATCHER__PATTERN:
+					return RmapPackage.PROVIDER__PATTERN;
+				case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR:
+					return RmapPackage.PROVIDER__COMPONENT_TYPES_ATTR;
+				case RmapPackage.MATCHER__COMPONENT_TYPES:
+					return RmapPackage.PROVIDER__COMPONENT_TYPES;
+				case RmapPackage.MATCHER__RESOLUTION_FILTER:
+					return RmapPackage.PROVIDER__RESOLUTION_FILTER;
+				default:
+					return -1;
+			}
+		}
+		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -305,7 +404,8 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 			case RmapPackage.PROVIDER__MUTABLE:
 				return isMutable();
 			case RmapPackage.PROVIDER__REPOSITORY:
-				if (resolve) return getRepository();
+				if (resolve)
+					return getRepository();
 				return basicGetRepository();
 			case RmapPackage.PROVIDER__VERSION_CONVERTER:
 				return getVersionConverter();
@@ -321,6 +421,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -341,6 +442,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -350,7 +452,8 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 			case RmapPackage.PROVIDER__PATTERN:
 				return PATTERN_EDEFAULT == null ? pattern != null : !PATTERN_EDEFAULT.equals(pattern);
 			case RmapPackage.PROVIDER__COMPONENT_TYPES_ATTR:
-				return COMPONENT_TYPES_ATTR_EDEFAULT == null ? getComponentTypesAttr() != null : !COMPONENT_TYPES_ATTR_EDEFAULT.equals(getComponentTypesAttr());
+				return COMPONENT_TYPES_ATTR_EDEFAULT == null ? getComponentTypesAttr() != null : !COMPONENT_TYPES_ATTR_EDEFAULT
+						.equals(getComponentTypesAttr());
 			case RmapPackage.PROVIDER__COMPONENT_TYPES:
 				return componentTypes != null && !componentTypes.isEmpty();
 			case RmapPackage.PROVIDER__RESOLUTION_FILTER:
@@ -377,42 +480,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
-		if (baseClass == Matcher.class) {
-			switch (derivedFeatureID) {
-				case RmapPackage.PROVIDER__PATTERN: return RmapPackage.MATCHER__PATTERN;
-				case RmapPackage.PROVIDER__COMPONENT_TYPES_ATTR: return RmapPackage.MATCHER__COMPONENT_TYPES_ATTR;
-				case RmapPackage.PROVIDER__COMPONENT_TYPES: return RmapPackage.MATCHER__COMPONENT_TYPES;
-				case RmapPackage.PROVIDER__RESOLUTION_FILTER: return RmapPackage.MATCHER__RESOLUTION_FILTER;
-				default: return -1;
-			}
-		}
-		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
-		if (baseClass == Matcher.class) {
-			switch (baseFeatureID) {
-				case RmapPackage.MATCHER__PATTERN: return RmapPackage.PROVIDER__PATTERN;
-				case RmapPackage.MATCHER__COMPONENT_TYPES_ATTR: return RmapPackage.PROVIDER__COMPONENT_TYPES_ATTR;
-				case RmapPackage.MATCHER__COMPONENT_TYPES: return RmapPackage.PROVIDER__COMPONENT_TYPES;
-				case RmapPackage.MATCHER__RESOLUTION_FILTER: return RmapPackage.PROVIDER__RESOLUTION_FILTER;
-				default: return -1;
-			}
-		}
-		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
@@ -420,41 +488,41 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.PROVIDER__PATTERN:
-				setPattern((Pattern)newValue);
+				setPattern((Pattern) newValue);
 				return;
 			case RmapPackage.PROVIDER__COMPONENT_TYPES_ATTR:
-				setComponentTypesAttr((String)newValue);
+				setComponentTypesAttr((String) newValue);
 				return;
 			case RmapPackage.PROVIDER__COMPONENT_TYPES:
 				getComponentTypes().clear();
-				getComponentTypes().addAll((Collection<? extends String>)newValue);
+				getComponentTypes().addAll((Collection<? extends String>) newValue);
 				return;
 			case RmapPackage.PROVIDER__RESOLUTION_FILTER:
-				setResolutionFilter((Filter)newValue);
+				setResolutionFilter((Filter) newValue);
 				return;
 			case RmapPackage.PROVIDER__READER_TYPE:
-				setReaderType((String)newValue);
+				setReaderType((String) newValue);
 				return;
 			case RmapPackage.PROVIDER__SOURCE:
-				setSource((Boolean)newValue);
+				setSource((Boolean) newValue);
 				return;
 			case RmapPackage.PROVIDER__MUTABLE:
-				setMutable((Boolean)newValue);
+				setMutable((Boolean) newValue);
 				return;
 			case RmapPackage.PROVIDER__REPOSITORY:
-				setRepository((Repository)newValue);
+				setRepository((Repository) newValue);
 				return;
 			case RmapPackage.PROVIDER__VERSION_CONVERTER:
-				setVersionConverter((VersionConverter)newValue);
+				setVersionConverter((VersionConverter) newValue);
 				return;
 			case RmapPackage.PROVIDER__URI:
-				setURI((Format)newValue);
+				setURI((Format) newValue);
 				return;
 			case RmapPackage.PROVIDER__MATCHER:
-				setMatcher((URIMatcher)newValue);
+				setMatcher((URIMatcher) newValue);
 				return;
 			case RmapPackage.PROVIDER__DOCUMENTATION:
-				setDocumentation((Documentation)newValue);
+				setDocumentation((Documentation) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -462,6 +530,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -490,19 +559,19 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 				setMutable(MUTABLE_EDEFAULT);
 				return;
 			case RmapPackage.PROVIDER__REPOSITORY:
-				setRepository((Repository)null);
+				setRepository((Repository) null);
 				return;
 			case RmapPackage.PROVIDER__VERSION_CONVERTER:
-				setVersionConverter((VersionConverter)null);
+				setVersionConverter((VersionConverter) null);
 				return;
 			case RmapPackage.PROVIDER__URI:
-				setURI((Format)null);
+				setURI((Format) null);
 				return;
 			case RmapPackage.PROVIDER__MATCHER:
-				setMatcher((URIMatcher)null);
+				setMatcher((URIMatcher) null);
 				return;
 			case RmapPackage.PROVIDER__DOCUMENTATION:
-				setDocumentation((Documentation)null);
+				setDocumentation((Documentation) null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -510,6 +579,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -541,6 +611,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -550,11 +621,21 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
 	public URIMatcher getMatcher() {
 		return matcher;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Pattern getPattern() {
+		return pattern;
 	}
 
 	/**
@@ -574,6 +655,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public String getReaderType() {
@@ -582,12 +664,13 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Repository getRepository() {
 		if (repository != null && repository.eIsProxy()) {
-			InternalEObject oldRepository = (InternalEObject)repository;
-			repository = (Repository)eResolveProxy(oldRepository);
+			InternalEObject oldRepository = (InternalEObject) repository;
+			repository = (Repository) eResolveProxy(oldRepository);
 			if (repository != oldRepository) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, RmapPackage.PROVIDER__REPOSITORY, oldRepository, repository));
@@ -598,6 +681,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Filter getResolutionFilter() {
@@ -606,6 +690,19 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public ResourceMap getResourceMap() {
+		EObject c = eContainer();
+		if (c instanceof SearchPath)
+			c = c.eContainer();
+		return (ResourceMap) c;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public Format getURI() {
@@ -623,6 +720,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public VersionConverter getVersionConverter() {
@@ -636,27 +734,6 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 */
 	public boolean hasDelegationMap() {
 		return false;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public boolean matches(ComponentName componentName, Map<String, String> properties) {
-		return MatcherImpl.matches(this, componentName, properties);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public ResourceMap getResourceMap() {
-		EObject c = eContainer();
-		if (c instanceof SearchPath)
-			c = c.eContainer();
-		return (ResourceMap) c;
 	}
 
 	/**
@@ -684,43 +761,56 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	public boolean matches(ComponentName componentName, Map<String, String> properties) {
+		return MatcherImpl.matches(this, componentName, properties);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
 	public void setComponentTypesAttr(String newComponentTypesAttr) {
 		MatcherImpl.setComponentTypesAttr(this, newComponentTypesAttr);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
 			if (documentation != null)
-				msgs = ((InternalEObject)documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__DOCUMENTATION, null, msgs);
+				msgs = ((InternalEObject) documentation).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__DOCUMENTATION, null,
+						msgs);
 			if (newDocumentation != null)
-				msgs = ((InternalEObject)newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__DOCUMENTATION, null, msgs);
+				msgs = ((InternalEObject) newDocumentation).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__DOCUMENTATION, null,
+						msgs);
 			msgs = basicSetDocumentation(newDocumentation, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
+			if (msgs != null)
+				msgs.dispatch();
+		} else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__DOCUMENTATION, newDocumentation, newDocumentation));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setMatcher(URIMatcher newMatcher) {
 		if (newMatcher != matcher) {
 			NotificationChain msgs = null;
 			if (matcher != null)
-				msgs = ((InternalEObject)matcher).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__MATCHER, null, msgs);
+				msgs = ((InternalEObject) matcher).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__MATCHER, null, msgs);
 			if (newMatcher != null)
-				msgs = ((InternalEObject)newMatcher).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__MATCHER, null, msgs);
+				msgs = ((InternalEObject) newMatcher).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__MATCHER, null, msgs);
 			msgs = basicSetMatcher(newMatcher, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
+			if (msgs != null)
+				msgs.dispatch();
+		} else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__MATCHER, newMatcher, newMatcher));
 	}
 
@@ -739,6 +829,19 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setPattern(Pattern newPattern) {
+		Pattern oldPattern = pattern;
+		pattern = newPattern;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__PATTERN, oldPattern, pattern));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setReaderType(String newReaderType) {
@@ -750,6 +853,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setRepository(Repository newRepository) {
@@ -761,6 +865,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setResolutionFilter(Filter newResolutionFilter) {
@@ -785,47 +890,53 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setURI(Format newURI) {
 		if (newURI != uri) {
 			NotificationChain msgs = null;
 			if (uri != null)
-				msgs = ((InternalEObject)uri).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__URI, null, msgs);
+				msgs = ((InternalEObject) uri).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__URI, null, msgs);
 			if (newURI != null)
-				msgs = ((InternalEObject)newURI).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__URI, null, msgs);
+				msgs = ((InternalEObject) newURI).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__URI, null, msgs);
 			msgs = basicSetURI(newURI, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
+			if (msgs != null)
+				msgs.dispatch();
+		} else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__URI, newURI, newURI));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public void setVersionConverter(VersionConverter newVersionConverter) {
 		if (newVersionConverter != versionConverter) {
 			NotificationChain msgs = null;
 			if (versionConverter != null)
-				msgs = ((InternalEObject)versionConverter).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__VERSION_CONVERTER, null, msgs);
+				msgs = ((InternalEObject) versionConverter).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__VERSION_CONVERTER,
+						null, msgs);
 			if (newVersionConverter != null)
-				msgs = ((InternalEObject)newVersionConverter).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__VERSION_CONVERTER, null, msgs);
+				msgs = ((InternalEObject) newVersionConverter).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - RmapPackage.PROVIDER__VERSION_CONVERTER,
+						null, msgs);
 			msgs = basicSetVersionConverter(newVersionConverter, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
+			if (msgs != null)
+				msgs.dispatch();
+		} else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__VERSION_CONVERTER, newVersionConverter, newVersionConverter));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy()) return super.toString();
+		if (eIsProxy())
+			return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (pattern: ");
@@ -842,30 +953,12 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	@Override
 	protected EClass eStaticClass() {
 		return RmapPackage.Literals.PROVIDER;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Pattern getPattern() {
-		return pattern;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setPattern(Pattern newPattern) {
-		Pattern oldPattern = pattern;
-		pattern = newPattern;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__PATTERN, oldPattern, pattern));
 	}
 
 } // ProviderImpl

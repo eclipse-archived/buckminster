@@ -270,9 +270,9 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="readerType" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        volatile="true" defaultValueLiteral="true"/>
+        volatile="true" defaultValueLiteral="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-        volatile="true" defaultValueLiteral="true"/>
+        volatile="true" defaultValueLiteral="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="repository" eType="#//Repository"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="versionConverter" eType="#//VersionConverter"
         containment="true" resolveProxies="false">
@@ -341,6 +341,14 @@
       <details key="name" value="rmap"/>
     </eAnnotations>
     <eOperations name="getContextURL" eType="ecore:EDataType platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//URL"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="name" value="documentation"/>
+        <details key="kind" value="element"/>
+        <details key="namespace" value="##targetNamespace"/>
+      </eAnnotations>
+    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="matcherGroup" upperBound="-1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -367,14 +375,6 @@
         <details key="name" value="searchPath"/>
         <details key="namespace" value="##targetNamespace"/>
         <details key="kind" value="element"/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="documentation" eType="ecore:EClass platform:/plugin/org.eclipse.buckminster.model.common/model/common.ecore#//Documentation"
-        containment="true" resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="name" value="documentation"/>
-        <details key="kind" value="element"/>
-        <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
   </eClassifiers>

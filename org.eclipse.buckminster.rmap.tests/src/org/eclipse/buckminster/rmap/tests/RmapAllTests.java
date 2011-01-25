@@ -14,12 +14,14 @@ import junit.textui.TestRunner;
 /**
  * <!-- begin-user-doc --> A test suite for the '<em><b>Rmap</b></em>' model.
  * <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class RmapAllTests extends TestSuite {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -28,6 +30,7 @@ public class RmapAllTests extends TestSuite {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public static Test suite() {
@@ -38,6 +41,7 @@ public class RmapAllTests extends TestSuite {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public RmapAllTests(String name) {
