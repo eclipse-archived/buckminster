@@ -13,6 +13,7 @@ import org.eclipse.buckminster.model.common.Properties;
 import org.eclipse.buckminster.model.common.Value;
 import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -39,6 +40,38 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * @generated
  */
 public abstract class PropertiesImpl extends EObjectImpl implements Properties {
+	public static class UniquePreservingEcoreEMap<K, V> extends EcoreEMap<K, V> {
+		private static final long serialVersionUID = -949893869873732019L;
+
+		public UniquePreservingEcoreEMap(EClass entryEClass, Class<?> entryClass,
+				EList<org.eclipse.emf.common.util.BasicEMap.Entry<K, V>> delegateEList) {
+			super(entryEClass, entryClass, delegateEList);
+		}
+
+		public UniquePreservingEcoreEMap(EClass entryEClass, Class<?> entryClass, InternalEObject owner, int featureID) {
+			super(entryEClass, entryClass, owner, featureID);
+		}
+
+		@Override
+		public boolean add(Map.Entry<K, V> e) {
+			int idx = indexOfKey(e.getKey());
+			if (idx >= 0) {
+				set(idx, e);
+				return false;
+			}
+			return super.add(e);
+		}
+
+		@Override
+		public void addUnique(Map.Entry<K, V> e) {
+			int idx = indexOfKey(e.getKey());
+			if (idx >= 0)
+				set(idx, e);
+			else
+				super.add(e);
+		}
+	}
+
 	/**
 	 * The cached value of the '{@link #getPropertyConstants()
 	 * <em>Property Constants</em>}' map. <!-- begin-user-doc --> <!--
@@ -49,6 +82,7 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	 * @ordered
 	 */
 	protected EMap<String, Value> propertyConstants;
+
 	/**
 	 * The cached value of the '{@link #getPropertyElements()
 	 * <em>Property Elements</em>}' map. <!-- begin-user-doc --> <!--
@@ -132,7 +166,6 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	 * @generated
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.PROPERTIES__PROPERTY_CONSTANTS:
@@ -176,12 +209,12 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public EMap<String, Value> getPropertyConstants() {
 		if (propertyConstants == null) {
-			propertyConstants = new EcoreEMap<String, Value>(CommonPackage.Literals.PROPERTY_CONSTANT, PropertyConstantImpl.class, this,
-					CommonPackage.PROPERTIES__PROPERTY_CONSTANTS);
+			propertyConstants = new UniquePreservingEcoreEMap<String, Value>(CommonPackage.Literals.PROPERTY_CONSTANT, PropertyConstantImpl.class,
+					this, CommonPackage.PROPERTIES__PROPERTY_CONSTANTS);
 		}
 		return propertyConstants;
 	}
@@ -189,11 +222,11 @@ public abstract class PropertiesImpl extends EObjectImpl implements Properties {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	public EMap<String, Value> getPropertyElements() {
 		if (propertyElements == null) {
-			propertyElements = new EcoreEMap<String, Value>(CommonPackage.Literals.PROPERTY_ELEMENT, PropertyElementImpl.class, this,
+			propertyElements = new UniquePreservingEcoreEMap<String, Value>(CommonPackage.Literals.PROPERTY_ELEMENT, PropertyElementImpl.class, this,
 					CommonPackage.PROPERTIES__PROPERTY_ELEMENTS);
 		}
 		return propertyElements;

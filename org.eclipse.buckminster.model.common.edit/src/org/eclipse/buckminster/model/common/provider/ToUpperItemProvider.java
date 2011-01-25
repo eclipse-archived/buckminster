@@ -10,10 +10,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
-import org.eclipse.buckminster.model.common.ToUpper;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
@@ -96,13 +94,12 @@ public class ToUpperItemProvider extends ValueFilterItemProvider implements IEdi
 	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 
 	@Override
 	public String getText(Object object) {
-		ToUpper toUpper = (ToUpper) object;
-		return getString("_UI_ToUpper_type") + " " + toUpper.isMutable();
+		return getString("_UI_ToUpper_type");
 	}
 
 	/**

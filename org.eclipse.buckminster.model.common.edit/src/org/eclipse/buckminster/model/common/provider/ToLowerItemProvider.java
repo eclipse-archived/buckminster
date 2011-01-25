@@ -10,10 +10,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
-import org.eclipse.buckminster.model.common.ToLower;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
@@ -96,13 +94,12 @@ public class ToLowerItemProvider extends ValueFilterItemProvider implements IEdi
 	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 
 	@Override
 	public String getText(Object object) {
-		ToLower toLower = (ToLower) object;
-		return getString("_UI_ToLower_type") + " " + toLower.isMutable();
+		return getString("_UI_ToLower_type");
 	}
 
 	/**

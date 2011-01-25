@@ -100,13 +100,13 @@ public class FormatItemProvider extends ValueFilterItemProvider implements IEdit
 	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 
 	@Override
 	public String getText(Object object) {
 		Format format = (Format) object;
-		return getString("_UI_Format_type") + " " + format.isMutable();
+		return getString("_UI_Format_type") + " " + format.getFormat();
 	}
 
 	/**

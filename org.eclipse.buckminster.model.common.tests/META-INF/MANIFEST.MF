@@ -10,8 +10,5 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.buckminster.model.common.tests
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.model.common;visibility:=reexport,
- org.eclipse.equinox.p2.metadata,
- org.eclipse.buckminster.osgi.filter,
- org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.junit;visibility:=reexport
 Bundle-ActivationPolicy: lazy

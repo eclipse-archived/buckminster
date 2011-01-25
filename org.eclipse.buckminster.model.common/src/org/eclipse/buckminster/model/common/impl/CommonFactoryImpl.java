@@ -474,8 +474,15 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * @generated NOT
 	 */
 	public Filter createFilterFromString(EDataType eDataType, String initialValue) {
+		if (initialValue != null) {
+			initialValue = initialValue.trim();
+			if (initialValue.length() == 0)
+				initialValue = null;
+		}
+		if (initialValue == null)
+			return null;
 		try {
-			return initialValue == null ? null : FilterFactory.newInstance(initialValue);
+			return FilterFactory.newInstance(initialValue);
 		} catch (InvalidSyntaxException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -599,6 +606,13 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * @generated NOT
 	 */
 	public Pattern createPatternFromString(EDataType eDataType, String initialValue) {
+		if (initialValue != null) {
+			initialValue = initialValue.trim();
+			if (initialValue.length() == 0)
+				initialValue = null;
+		}
+		if (initialValue == null)
+			return null;
 		return Pattern.compile(initialValue);
 	}
 
@@ -756,8 +770,15 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * @generated NOT
 	 */
 	public URL createURLFromString(EDataType eDataType, String initialValue) {
+		if (initialValue != null) {
+			initialValue = initialValue.trim();
+			if (initialValue.length() == 0)
+				initialValue = null;
+		}
+		if (initialValue == null)
+			return null;
 		try {
-			return initialValue == null ? null : new URL(initialValue);
+			return new URL(initialValue);
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException(e.getMessage());
 		}
@@ -769,6 +790,11 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * @generated NOT
 	 */
 	public UUID createUuidFromString(EDataType eDataType, String initialValue) {
+		if (initialValue != null) {
+			initialValue = initialValue.trim();
+			if (initialValue.length() == 0)
+				initialValue = null;
+		}
 		return initialValue == null ? null : UUID.fromString(initialValue);
 	}
 
@@ -787,6 +813,11 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * @generated NOT
 	 */
 	public VersionRange createVersionRangeFromString(EDataType eDataType, String initialValue) {
+		if (initialValue != null) {
+			initialValue = initialValue.trim();
+			if (initialValue.length() == 0)
+				initialValue = null;
+		}
 		return initialValue == null ? null : new VersionRange(initialValue);
 	}
 

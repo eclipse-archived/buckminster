@@ -104,13 +104,13 @@ public class SplitItemProvider extends ValueFilterItemProvider implements IEditi
 	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 
 	@Override
 	public String getText(Object object) {
 		Split split = (Split) object;
-		return getString("_UI_Split_type") + " " + split.isMutable();
+		return getString("_UI_Split_type") + " " + split.getPattern();
 	}
 
 	/**

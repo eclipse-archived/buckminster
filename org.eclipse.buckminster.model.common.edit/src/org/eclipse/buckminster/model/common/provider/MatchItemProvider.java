@@ -52,7 +52,7 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 	 * This returns the property descriptors for the adapted class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 
 	@Override
@@ -63,7 +63,7 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 			addPatternPropertyDescriptor(object);
 			addQuotePatternPropertyDescriptor(object);
 			addReplacementPropertyDescriptor(object);
-			addCompiledPatternPropertyDescriptor(object);
+			// addCompiledPatternPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}

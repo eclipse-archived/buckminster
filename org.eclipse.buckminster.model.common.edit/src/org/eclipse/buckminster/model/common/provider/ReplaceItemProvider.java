@@ -106,7 +106,7 @@ public class ReplaceItemProvider extends ValueFilterItemProvider implements IEdi
 	 * This returns the property descriptors for the adapted class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 
 	@Override
@@ -117,7 +117,7 @@ public class ReplaceItemProvider extends ValueFilterItemProvider implements IEdi
 			addPatternPropertyDescriptor(object);
 			addQuotePatternPropertyDescriptor(object);
 			addReplacementPropertyDescriptor(object);
-			addCompiledPatternPropertyDescriptor(object);
+			// addCompiledPatternPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -126,13 +126,13 @@ public class ReplaceItemProvider extends ValueFilterItemProvider implements IEdi
 	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 
 	@Override
 	public String getText(Object object) {
 		Replace replace = (Replace) object;
-		return getString("_UI_Replace_type") + " " + replace.isMutable();
+		return replace.getPattern() == null ? "" : replace.getPattern() + '/' + replace.getReplacement();
 	}
 
 	/**

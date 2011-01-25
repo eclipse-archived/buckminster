@@ -65,13 +65,13 @@ public class ConstantItemProvider extends ValueItemProvider implements IEditingD
 	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 
 	@Override
 	public String getText(Object object) {
 		Constant constant = (Constant) object;
-		return getString("_UI_Constant_type") + " " + constant.isMutable();
+		return getString("_UI_Constant_type") + " " + constant.getValue();
 	}
 
 	/**

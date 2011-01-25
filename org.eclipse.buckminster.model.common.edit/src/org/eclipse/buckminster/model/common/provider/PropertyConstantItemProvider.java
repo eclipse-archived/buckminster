@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
+import org.eclipse.buckminster.model.common.Constant;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
@@ -81,12 +82,14 @@ public class PropertyConstantItemProvider extends ItemProviderAdapter implements
 	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	public String getText(Object object) {
-		Map.Entry<?, ?> propertyConstant = (Map.Entry<?, ?>) object;
-		return "" + propertyConstant.getKey() + " -> " + propertyConstant.getValue();
+		@SuppressWarnings("unchecked")
+		Map.Entry<String, Constant> propertyConstant = (Map.Entry<String, Constant>) object;
+		Constant v = propertyConstant.getValue();
+		return "" + propertyConstant.getKey() + " -> " + (v == null ? "null" : v.getValue());
 	}
 
 	/**
