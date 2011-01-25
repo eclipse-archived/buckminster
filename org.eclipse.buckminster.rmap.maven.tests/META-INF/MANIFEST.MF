@@ -10,8 +10,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.buckminster.rmap.maven.tests
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.rmap.maven;visibility:=reexport,
- org.eclipse.buckminster.model.common;visibility:=reexport,
- org.eclipse.buckminster.rmap;visibility:=reexport,
- org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.junit;visibility:=reexport
 Bundle-ActivationPolicy: lazy

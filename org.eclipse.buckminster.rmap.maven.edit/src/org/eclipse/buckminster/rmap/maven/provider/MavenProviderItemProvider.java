@@ -9,6 +9,7 @@ package org.eclipse.buckminster.rmap.maven.provider;
 import java.util.Collection;
 import java.util.List;
 
+import java.util.regex.Pattern;
 import org.eclipse.buckminster.rmap.maven.MavenProvider;
 import org.eclipse.buckminster.rmap.maven.MavenFactory;
 import org.eclipse.buckminster.rmap.maven.MavenPackage;
@@ -104,7 +105,8 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 
 	@Override
 	public String getText(Object object) {
-		String label = ((MavenProvider) object).getComponentTypesAttr();
+		Pattern labelValue = ((MavenProvider) object).getPattern();
+		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ? getString("_UI_MavenProvider_type") : getString("_UI_MavenProvider_type") + " " + label;
 	}
 

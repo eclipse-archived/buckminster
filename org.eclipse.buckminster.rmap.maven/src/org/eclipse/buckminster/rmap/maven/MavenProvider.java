@@ -54,7 +54,8 @@ public interface MavenProvider extends Provider {
 	 * @return the value of the '<em>Mappings</em>' containment reference.
 	 * @see #setMappings(Mappings)
 	 * @see org.eclipse.buckminster.rmap.maven.MavenPackage#getMavenProvider_Mappings()
-	 * @model containment="true" extendedMetaData="kind='element'"
+	 * @model containment="true" extendedMetaData=
+	 *        "name='mappings' kind='element' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	Mappings getMappings();

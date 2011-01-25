@@ -372,9 +372,9 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	protected void createExtendedMetaDataAnnotations() {
 		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
 		addAnnotation(getMapEntry_Aliases(), source, new String[] { "name", "alias", "kind", "element" });
-		addAnnotation(getMappings_Entries(), source, new String[] { "kind", "element", "name", "entry" });
-		addAnnotation(getMappings_Rules(), source, new String[] { "name", "rule", "kind", "element" });
-		addAnnotation(getMavenProvider_Mappings(), source, new String[] { "kind", "element" });
+		addAnnotation(getMappings_Entries(), source, new String[] { "kind", "element", "name", "entry", "namespace", "##targetNamespace" });
+		addAnnotation(getMappings_Rules(), source, new String[] { "name", "rule", "kind", "element", "namespace", "##targetNamespace" });
+		addAnnotation(getMavenProvider_Mappings(), source, new String[] { "name", "mappings", "kind", "element", "namespace", "##targetNamespace" });
 	}
 
 } // MavenPackageImpl

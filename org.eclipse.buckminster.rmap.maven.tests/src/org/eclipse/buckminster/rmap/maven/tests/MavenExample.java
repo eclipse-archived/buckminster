@@ -13,8 +13,6 @@ import org.eclipse.buckminster.rmap.maven.GroupAndArtifact;
 import org.eclipse.buckminster.rmap.maven.MavenFactory;
 import org.eclipse.buckminster.rmap.maven.MavenPackage;
 
-import org.eclipse.buckminster.rmap.maven.util.MavenResourceFactoryImpl;
-
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.URI;
 
@@ -26,6 +24,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import org.eclipse.emf.ecore.util.Diagnostician;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 /**
  * <!-- begin-user-doc --> A sample utility for the '<em><b>maven</b></em>'
@@ -51,7 +50,7 @@ public class MavenExample {
 		// extensions.
 		//
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-				.put(Resource.Factory.Registry.DEFAULT_EXTENSION, new MavenResourceFactoryImpl());
+				.put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
 
 		// Register the package to ensure it is available during loading.
 		//
