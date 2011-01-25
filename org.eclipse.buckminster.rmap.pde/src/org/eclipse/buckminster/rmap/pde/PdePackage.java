@@ -115,13 +115,13 @@ public interface PdePackage extends EPackage {
 	int PDE_MAP_PROVIDER__PROPERTY_ELEMENTS = RmapPackage.PROVIDER__PROPERTY_ELEMENTS;
 
 	/**
-	 * The feature id for the '<em><b>Component Types</b></em>' attribute list.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Pattern</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PDE_MAP_PROVIDER__COMPONENT_TYPES = RmapPackage.PROVIDER__COMPONENT_TYPES;
+	int PDE_MAP_PROVIDER__PATTERN = RmapPackage.PROVIDER__PATTERN;
 
 	/**
 	 * The feature id for the '<em><b>Component Types Attr</b></em>' attribute.
@@ -131,6 +131,24 @@ public interface PdePackage extends EPackage {
 	 * @ordered
 	 */
 	int PDE_MAP_PROVIDER__COMPONENT_TYPES_ATTR = RmapPackage.PROVIDER__COMPONENT_TYPES_ATTR;
+
+	/**
+	 * The feature id for the '<em><b>Component Types</b></em>' attribute list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PDE_MAP_PROVIDER__COMPONENT_TYPES = RmapPackage.PROVIDER__COMPONENT_TYPES;
+
+	/**
+	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int PDE_MAP_PROVIDER__RESOLUTION_FILTER = RmapPackage.PROVIDER__RESOLUTION_FILTER;
 
 	/**
 	 * The feature id for the '<em><b>Reader Type</b></em>' attribute. <!--
@@ -160,13 +178,13 @@ public interface PdePackage extends EPackage {
 	int PDE_MAP_PROVIDER__MUTABLE = RmapPackage.PROVIDER__MUTABLE;
 
 	/**
-	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Repository</b></em>' reference. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PDE_MAP_PROVIDER__RESOLUTION_FILTER = RmapPackage.PROVIDER__RESOLUTION_FILTER;
+	int PDE_MAP_PROVIDER__REPOSITORY = RmapPackage.PROVIDER__REPOSITORY;
 
 	/**
 	 * The feature id for the '<em><b>Version Converter</b></em>' containment
@@ -203,15 +221,6 @@ public interface PdePackage extends EPackage {
 	 * @ordered
 	 */
 	int PDE_MAP_PROVIDER__DOCUMENTATION = RmapPackage.PROVIDER__DOCUMENTATION;
-
-	/**
-	 * The feature id for the '<em><b>Repository</b></em>' reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int PDE_MAP_PROVIDER__REPOSITORY = RmapPackage.PROVIDER__REPOSITORY;
 
 	/**
 	 * The number of structural features of the '<em>PDE Map Provider</em>'

@@ -42,7 +42,8 @@ public class MapFile {
 
 	private static FetchTaskFactoriesRegistry fetchTaskFactories;
 
-	public static void parse(InputStream inputStream, String streamName, Map<String,String> properties, List<MapFileEntry> receivingList) throws IOException {
+	public static void parse(InputStream inputStream, String streamName, Map<String, String> properties, List<MapFileEntry> receivingList)
+			throws IOException {
 		Logger logger = Buckminster.getLogger();
 
 		if (fetchTaskFactories == null)
@@ -127,10 +128,10 @@ public class MapFile {
 			try {
 				ff.parseMapFileEntry(fetchTypeSpecific, null, props);
 				String tag = props.get(IFetchFactory.KEY_ELEMENT_TAG);
-				if(tag != null && tag.length() > 2 && tag.charAt(0) == '@' && tag.charAt(tag.length() - 1) == '@') {
+				if (tag != null && tag.length() > 2 && tag.charAt(0) == '@' && tag.charAt(tag.length() - 1) == '@') {
 					String tagKey = tag.substring(1, tag.length() - 1);
 					tag = properties.get(tagKey);
-					if(tag == null)
+					if (tag == null)
 						props.remove(IFetchFactory.KEY_ELEMENT_TAG);
 					else
 						props.put(IFetchFactory.KEY_ELEMENT_TAG, tag);

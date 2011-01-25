@@ -15,9 +15,9 @@ import org.eclipse.emf.common.EMFPlugin;
 import org.eclipse.emf.common.util.ResourceLocator;
 
 /**
- * This is the central singleton for the Pde edit plugin.
- * <!-- begin-user-doc
+ * This is the central singleton for the Pde edit plugin. <!-- begin-user-doc
  * --> <!-- end-user-doc -->
+ * 
  * @generated
  */
 public final class PdeEditPlugin extends EMFPlugin {
@@ -29,8 +29,8 @@ public final class PdeEditPlugin extends EMFPlugin {
 	 */
 	public static class Implementation extends EclipsePlugin {
 		/**
-		 * Creates an instance.
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * Creates an instance. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
 		 * @generated
 		 */
 		public Implementation() {
@@ -59,9 +59,9 @@ public final class PdeEditPlugin extends EMFPlugin {
 	private static Implementation plugin;
 
 	/**
-	 * Returns the singleton instance of the Eclipse plugin.
-	 * <!-- begin-user-doc
+	 * Returns the singleton instance of the Eclipse plugin. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @return the singleton instance.
 	 * @generated
 	 */
@@ -70,22 +70,18 @@ public final class PdeEditPlugin extends EMFPlugin {
 	}
 
 	/**
-	 * Create the instance.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * Create the instance. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 	public PdeEditPlugin() {
-		super
-		  (new ResourceLocator [] {
-		     CommonEditPlugin.INSTANCE,
-		     RmapEditPlugin.INSTANCE,
-		   });
+		super(new ResourceLocator[] { CommonEditPlugin.INSTANCE, RmapEditPlugin.INSTANCE, });
 	}
 
 	/**
-	 * Returns the singleton instance of the Eclipse plugin.
-	 * <!-- begin-user-doc
+	 * Returns the singleton instance of the Eclipse plugin. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
+	 * 
 	 * @return the singleton instance.
 	 * @generated
 	 */

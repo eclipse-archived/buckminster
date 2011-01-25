@@ -11,12 +11,6 @@ Export-Package: org.eclipse.buckminster.rmap.pde,
  org.eclipse.buckminster.rmap.pde.impl,
  org.eclipse.buckminster.rmap.pde.util
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.emf.ecore;visibility:=reexport,
- org.eclipse.emf.ecore.xmi;visibility:=reexport,
- org.eclipse.buckminster.model.common;visibility:=reexport,
  org.eclipse.buckminster.rmap;visibility:=reexport,
- org.eclipse.buckminster.osgi.filter,
- org.eclipse.buckminster.runtime,
- org.eclipse.pde.build,
- org.eclipse.equinox.p2.metadata
+ org.eclipse.pde.build
 Bundle-ActivationPolicy: lazy
