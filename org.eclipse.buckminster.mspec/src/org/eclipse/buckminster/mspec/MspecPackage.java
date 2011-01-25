@@ -9,7 +9,6 @@ package org.eclipse.buckminster.mspec;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -298,18 +297,6 @@ public interface MspecPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute UNPACK__SUFFIX = eINSTANCE.getUnpack_Suffix();
-
-		/**
-		 * The meta object literal for the '
-		 * {@link org.eclipse.buckminster.mspec.ConflictResolution
-		 * <em>Conflict Resolution</em>}' enum. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @see org.eclipse.buckminster.mspec.ConflictResolution
-		 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getConflictResolution()
-		 * @generated
-		 */
-		EEnum CONFLICT_RESOLUTION = eINSTANCE.getConflictResolution();
 
 	}
 
@@ -914,30 +901,6 @@ public interface MspecPackage extends EPackage {
 	 * @ordered
 	 */
 	int UNPACK_FEATURE_COUNT = 2;
-
-	/**
-	 * The meta object id for the '
-	 * {@link org.eclipse.buckminster.mspec.ConflictResolution
-	 * <em>Conflict Resolution</em>}' enum. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see org.eclipse.buckminster.mspec.ConflictResolution
-	 * @see org.eclipse.buckminster.mspec.impl.MspecPackageImpl#getConflictResolution()
-	 * @generated
-	 */
-	int CONFLICT_RESOLUTION = 5;
-
-	/**
-	 * Returns the meta object for enum '
-	 * {@link org.eclipse.buckminster.mspec.ConflictResolution
-	 * <em>Conflict Resolution</em>}'. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @return the meta object for enum '<em>Conflict Resolution</em>'.
-	 * @see org.eclipse.buckminster.mspec.ConflictResolution
-	 * @generated
-	 */
-	EEnum getConflictResolution();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.emf.ecore.EObject

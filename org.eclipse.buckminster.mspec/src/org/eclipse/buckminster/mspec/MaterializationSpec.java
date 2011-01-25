@@ -6,6 +6,11 @@
  */
 package org.eclipse.buckminster.mspec;
 
+import java.net.URL;
+import java.util.Map;
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ConflictResolution;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 
 /**
@@ -34,6 +39,59 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface MaterializationSpec extends MaterializationDirective {
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	ConflictResolution getConflictResolution(ComponentName component, Map<String, String> properties);
+
+	/**
+	 * Returns the value of the '<em><b>Context URL</b></em>' attribute. <!--
+	 * begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Context URL</em>' attribute isn't clear, there
+	 * really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Context URL</em>' attribute.
+	 * @see #isSetContextURL()
+	 * @see #unsetContextURL()
+	 * @see #setContextURL(URL)
+	 * @see org.eclipse.buckminster.mspec.MspecPackage#getMaterializationSpec_ContextURL()
+	 * @model unsettable="true"
+	 *        dataType="org.eclipse.buckminster.model.common.URL"
+	 *        volatile="true" derived="true"
+	 * @generated
+	 */
+	URL getContextURL();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model dataType="org.eclipse.buckminster.model.common.IPath"
+	 * @generated
+	 */
+	IPath getLeafArtifact(ComponentName component, Map<String, String> properties);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	MaterializationNode getMatchingNode(ComponentName component, Map<String, String> properties);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	String getMaterializer(ComponentName component, Map<String, String> properties);
+
 	/**
 	 * Returns the value of the '<em><b>Max Parallel Jobs</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -89,6 +147,30 @@ public interface MaterializationSpec extends MaterializationDirective {
 	String getName();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	String getProjectName(ComponentName component, Map<String, String> properties);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model dataType="org.eclipse.buckminster.model.common.URL"
+	 * @generated
+	 */
+	URL getResolvedURL(Map<String, String> properties);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model dataType="org.eclipse.buckminster.model.common.IPath"
+	 * @generated
+	 */
+	IPath getResourcePath(ComponentName component, Map<String, String> properties);
+
+	/**
 	 * Returns the value of the '<em><b>Short Desc</b></em>' attribute. <!--
 	 * begin-user-doc -->
 	 * <p>
@@ -106,6 +188,14 @@ public interface MaterializationSpec extends MaterializationDirective {
 	String getShortDesc();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	String getSuffix(ComponentName component, Map<String, String> properties);
+
+	/**
 	 * Returns the value of the '<em><b>Url</b></em>' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc --> A URL
 	 * appointing the BillOfMaterials or ComponentQuery to materialize <!--
@@ -118,6 +208,30 @@ public interface MaterializationSpec extends MaterializationDirective {
 	 * @generated
 	 */
 	String getUrl();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	boolean isExcluded(ComponentName component, Map<String, String> properties);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	boolean isExpand(ComponentName component, Map<String, String> properties);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	boolean isUnpack(ComponentName component, Map<String, String> properties);
 
 	/**
 	 * Sets the value of the '

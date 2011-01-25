@@ -7,21 +7,18 @@
 package org.eclipse.buckminster.mspec.impl;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
-
-import org.eclipse.buckminster.mspec.ConflictResolution;
 import org.eclipse.buckminster.mspec.MaterializationDirective;
 import org.eclipse.buckminster.mspec.MaterializationNode;
 import org.eclipse.buckminster.mspec.MaterializationSpec;
 import org.eclipse.buckminster.mspec.MspecFactory;
 import org.eclipse.buckminster.mspec.MspecPackage;
 import org.eclipse.buckminster.mspec.Unpack;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EGenericType;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
@@ -65,13 +62,6 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 	private EClass unpackEClass = null;
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	private EEnum conflictResolutionEEnum = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -201,19 +191,6 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 		unpackEClass = createEClass(UNPACK);
 		createEAttribute(unpackEClass, UNPACK__EXPAND);
 		createEAttribute(unpackEClass, UNPACK__SUFFIX);
-
-		// Create enums
-		conflictResolutionEEnum = createEEnum(CONFLICT_RESOLUTION);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	public EEnum getConflictResolution() {
-		return conflictResolutionEEnum;
 	}
 
 	/**
@@ -576,18 +553,24 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 		initEAttribute(getMaterializationNode_Filter(), theCommonPackage.getFilter(), "filter", null, 0, 1, MaterializationNode.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		addEOperation(materializationNodeEClass, ecorePackage.getEBoolean(), "isExpand", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(materializationNodeEClass, ecorePackage.getEBoolean(), "isUnpack", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(materializationNodeEClass, ecorePackage.getEString(), "getSuffix", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(materializationDirectiveEClass, MaterializationDirective.class, "MaterializationDirective", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getMaterializationDirective_ConflictResolution(), this.getConflictResolution(), "conflictResolution", "UPDATE", 0, 1,
-				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
+		initEAttribute(getMaterializationDirective_ConflictResolution(), theCommonPackage.getConflictResolution(), "conflictResolution", "UPDATE", 0,
+				1, MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
 				IS_ORDERED);
-		initEAttribute(getMaterializationDirective_InstallLocation(), ecorePackage.getEString(), "installLocation", null, 0, 1,
+		initEAttribute(getMaterializationDirective_InstallLocation(), theCommonPackage.getIPath(), "installLocation", null, 0, 1,
 				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
 				IS_ORDERED);
 		initEAttribute(getMaterializationDirective_Materializer(), ecorePackage.getEString(), "materializer", null, 0, 1,
 				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
 				IS_ORDERED);
-		initEAttribute(getMaterializationDirective_WorkspaceLocation(), ecorePackage.getEString(), "workspaceLocation", null, 0, 1,
+		initEAttribute(getMaterializationDirective_WorkspaceLocation(), theCommonPackage.getIPath(), "workspaceLocation", null, 0, 1,
 				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
 				IS_ORDERED);
 		initEReference(getMaterializationDirective_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null, 0, 1,
@@ -608,18 +591,111 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 		initEAttribute(getMaterializationSpec_MaxParallelJobs(), ecorePackage.getEInt(), "maxParallelJobs", null, 0, 1, MaterializationSpec.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		EOperation op = addEOperation(materializationSpecEClass, this.getMaterializationNode(), "getMatchingNode", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		EGenericType g1 = createEGenericType(ecorePackage.getEMap());
+		EGenericType g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, theCommonPackage.getConflictResolution(), "getConflictResolution", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(materializationSpecEClass, theCommonPackage.getURL(), "getContextURL", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, theCommonPackage.getIPath(), "getLeafArtifact", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEString(), "getMaterializer", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEString(), "getProjectName", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, theCommonPackage.getURL(), "getResolvedURL", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, theCommonPackage.getIPath(), "getResourcePath", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEString(), "getSuffix", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEBoolean(), "isExcluded", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEBoolean(), "isExpand", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEBoolean(), "isUnpack", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(unpackEClass, Unpack.class, "Unpack", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getUnpack_Expand(), ecorePackage.getEBoolean(), "expand", "true", 0, 1, Unpack.class, !IS_TRANSIENT, !IS_VOLATILE,
 				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getUnpack_Suffix(), ecorePackage.getEString(), "suffix", null, 0, 1, Unpack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
 				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		// Initialize enums and add enum literals
-		initEEnum(conflictResolutionEEnum, ConflictResolution.class, "ConflictResolution");
-		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.FAIL);
-		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.KEEP);
-		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.REPLACE);
-		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.UPDATE);
 
 		// Create resource
 		createResource(eNS_URI);

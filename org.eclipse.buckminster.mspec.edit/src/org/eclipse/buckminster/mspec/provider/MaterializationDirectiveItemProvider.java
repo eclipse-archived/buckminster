@@ -10,17 +10,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ConflictResolution;
 import org.eclipse.buckminster.model.common.provider.PropertiesItemProvider;
 import org.eclipse.buckminster.model.common.provider.util.ExtensionPropertyDescriptor;
-import org.eclipse.buckminster.mspec.ConflictResolution;
 import org.eclipse.buckminster.mspec.MaterializationDirective;
 import org.eclipse.buckminster.mspec.MspecPackage;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;

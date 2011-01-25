@@ -6,8 +6,10 @@
  */
 package org.eclipse.buckminster.mspec;
 
+import org.eclipse.buckminster.model.common.ConflictResolution;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.Properties;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
@@ -42,8 +44,9 @@ public interface MaterializationDirective extends Properties {
 	/**
 	 * Returns the value of the '<em><b>Conflict Resolution</b></em>' attribute.
 	 * The default value is <code>"UPDATE"</code>. The literals are from the
-	 * enumeration {@link org.eclipse.buckminster.mspec.ConflictResolution}.
-	 * <!-- begin-user-doc -->
+	 * enumeration
+	 * {@link org.eclipse.buckminster.model.common.ConflictResolution}. <!--
+	 * begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Conflict Resolution</em>' attribute isn't
 	 * clear, there really should be more of a description here...
@@ -51,7 +54,7 @@ public interface MaterializationDirective extends Properties {
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Conflict Resolution</em>' attribute.
-	 * @see org.eclipse.buckminster.mspec.ConflictResolution
+	 * @see org.eclipse.buckminster.model.common.ConflictResolution
 	 * @see #setConflictResolution(ConflictResolution)
 	 * @see org.eclipse.buckminster.mspec.MspecPackage#getMaterializationDirective_ConflictResolution()
 	 * @model default="UPDATE"
@@ -87,12 +90,12 @@ public interface MaterializationDirective extends Properties {
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Install Location</em>' attribute.
-	 * @see #setInstallLocation(String)
+	 * @see #setInstallLocation(IPath)
 	 * @see org.eclipse.buckminster.mspec.MspecPackage#getMaterializationDirective_InstallLocation()
-	 * @model
+	 * @model dataType="org.eclipse.buckminster.model.common.IPath"
 	 * @generated
 	 */
-	String getInstallLocation();
+	IPath getInstallLocation();
 
 	/**
 	 * Returns the value of the '<em><b>Materializer</b></em>' attribute. <!--
@@ -124,7 +127,7 @@ public interface MaterializationDirective extends Properties {
 	 * @model
 	 * @generated
 	 */
-	String getWorkspaceLocation();
+	IPath getWorkspaceLocation();
 
 	/**
 	 * Sets the value of the '
@@ -134,7 +137,7 @@ public interface MaterializationDirective extends Properties {
 	 * 
 	 * @param value
 	 *            the new value of the '<em>Conflict Resolution</em>' attribute.
-	 * @see org.eclipse.buckminster.mspec.ConflictResolution
+	 * @see org.eclipse.buckminster.model.common.ConflictResolution
 	 * @see #getConflictResolution()
 	 * @generated
 	 */
@@ -165,7 +168,7 @@ public interface MaterializationDirective extends Properties {
 	 * @see #getInstallLocation()
 	 * @generated
 	 */
-	void setInstallLocation(String value);
+	void setInstallLocation(IPath value);
 
 	/**
 	 * Sets the value of the '
@@ -191,6 +194,6 @@ public interface MaterializationDirective extends Properties {
 	 * @see #getWorkspaceLocation()
 	 * @generated
 	 */
-	void setWorkspaceLocation(String value);
+	void setWorkspaceLocation(IPath value);
 
 } // MaterializationDirective

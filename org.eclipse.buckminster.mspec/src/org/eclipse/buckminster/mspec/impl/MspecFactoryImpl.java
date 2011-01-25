@@ -6,15 +6,16 @@
  */
 package org.eclipse.buckminster.mspec.impl;
 
-import org.eclipse.buckminster.mspec.*;
-
+import org.eclipse.buckminster.mspec.MaterializationDirective;
+import org.eclipse.buckminster.mspec.MaterializationNode;
+import org.eclipse.buckminster.mspec.MaterializationSpec;
+import org.eclipse.buckminster.mspec.MspecFactory;
+import org.eclipse.buckminster.mspec.MspecPackage;
+import org.eclipse.buckminster.mspec.Unpack;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 /**
@@ -68,31 +69,6 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory {
 	 * 
 	 * @generated
 	 */
-	public String convertConflictResolutionToString(EDataType eDataType, Object instanceValue) {
-		return instanceValue == null ? null : instanceValue.toString();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	@Override
-	public String convertToString(EDataType eDataType, Object instanceValue) {
-		switch (eDataType.getClassifierID()) {
-			case MspecPackage.CONFLICT_RESOLUTION:
-				return convertConflictResolutionToString(eDataType, instanceValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
-		}
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 
 	@Override
 	public EObject create(EClass eClass) {
@@ -117,38 +93,10 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory {
 	 * 
 	 * @generated
 	 */
-	public ConflictResolution createConflictResolutionFromString(EDataType eDataType, String initialValue) {
-		ConflictResolution result = ConflictResolution.get(initialValue);
-		if (result == null)
-			throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 
 	public EObject createDocumentRoot() {
 		EObject documentRoot = super.create(MspecPackage.Literals.DOCUMENT_ROOT);
 		return documentRoot;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	@Override
-	public Object createFromString(EDataType eDataType, String initialValue) {
-		switch (eDataType.getClassifierID()) {
-			case MspecPackage.CONFLICT_RESOLUTION:
-				return createConflictResolutionFromString(eDataType, initialValue);
-			default:
-				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
-		}
 	}
 
 	/**

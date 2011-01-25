@@ -11,8 +11,5 @@ Export-Package: org.eclipse.buckminster.mspec,
  org.eclipse.buckminster.mspec.impl,
  org.eclipse.buckminster.mspec.util
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.emf.ecore;visibility:=reexport,
- org.eclipse.emf.ecore.xmi;visibility:=reexport,
- org.eclipse.buckminster.model.common;visibility:=reexport,
- org.eclipse.buckminster.osgi.filter;bundle-version="1.0.0"
+ org.eclipse.buckminster.model.common;visibility:=reexport
 Bundle-ActivationPolicy: lazy

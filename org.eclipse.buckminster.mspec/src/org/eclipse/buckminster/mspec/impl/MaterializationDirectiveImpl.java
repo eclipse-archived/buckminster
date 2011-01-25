@@ -6,11 +6,12 @@
  */
 package org.eclipse.buckminster.mspec.impl;
 
+import org.eclipse.buckminster.model.common.ConflictResolution;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.impl.PropertiesImpl;
-import org.eclipse.buckminster.mspec.ConflictResolution;
 import org.eclipse.buckminster.mspec.MaterializationDirective;
 import org.eclipse.buckminster.mspec.MspecPackage;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
@@ -75,7 +76,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String INSTALL_LOCATION_EDEFAULT = null;
+	protected static final IPath INSTALL_LOCATION_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getInstallLocation()
@@ -86,7 +87,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 * @ordered
 	 */
-	protected String installLocation = INSTALL_LOCATION_EDEFAULT;
+	protected IPath installLocation = INSTALL_LOCATION_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getMaterializer()
@@ -118,7 +119,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String WORKSPACE_LOCATION_EDEFAULT = null;
+	protected static final IPath WORKSPACE_LOCATION_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getWorkspaceLocation()
@@ -129,7 +130,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 * @ordered
 	 */
-	protected String workspaceLocation = WORKSPACE_LOCATION_EDEFAULT;
+	protected IPath workspaceLocation = WORKSPACE_LOCATION_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getDocumentation()
@@ -244,13 +245,13 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 				setConflictResolution((ConflictResolution) newValue);
 				return;
 			case MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION:
-				setInstallLocation((String) newValue);
+				setInstallLocation((IPath) newValue);
 				return;
 			case MspecPackage.MATERIALIZATION_DIRECTIVE__MATERIALIZER:
 				setMaterializer((String) newValue);
 				return;
 			case MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION:
-				setWorkspaceLocation((String) newValue);
+				setWorkspaceLocation((IPath) newValue);
 				return;
 			case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
 				setDocumentation((Documentation) newValue);
@@ -313,7 +314,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
-	public String getInstallLocation() {
+	public IPath getInstallLocation() {
 		return installLocation;
 	}
 
@@ -333,7 +334,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
-	public String getWorkspaceLocation() {
+	public IPath getWorkspaceLocation() {
 		return workspaceLocation;
 	}
 
@@ -379,9 +380,8 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * 
 	 * @generated
 	 */
-
-	public void setInstallLocation(String newInstallLocation) {
-		String oldInstallLocation = installLocation;
+	public void setInstallLocation(IPath newInstallLocation) {
+		IPath oldInstallLocation = installLocation;
 		installLocation = newInstallLocation;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION, oldInstallLocation,
@@ -406,9 +406,8 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * 
 	 * @generated
 	 */
-
-	public void setWorkspaceLocation(String newWorkspaceLocation) {
-		String oldWorkspaceLocation = workspaceLocation;
+	public void setWorkspaceLocation(IPath newWorkspaceLocation) {
+		IPath oldWorkspaceLocation = workspaceLocation;
 		workspaceLocation = newWorkspaceLocation;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MspecPackage.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION, oldWorkspaceLocation,

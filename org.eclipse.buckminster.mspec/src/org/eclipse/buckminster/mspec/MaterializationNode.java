@@ -155,6 +155,14 @@ public interface MaterializationNode extends MaterializationDirective {
 	String getResourcePath();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
+	String getSuffix();
+
+	/**
 	 * Returns the value of the '<em><b>Unpack</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -185,6 +193,22 @@ public interface MaterializationNode extends MaterializationDirective {
 	 * @generated
 	 */
 	boolean isExclude();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
+	boolean isExpand();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 * @generated
+	 */
+	boolean isUnpack();
 
 	/**
 	 * Sets the value of the '

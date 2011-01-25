@@ -39,7 +39,6 @@ public class MspecAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	protected MspecSwitch<Adapter> modelSwitch = new MspecSwitch<Adapter>() {
-
 		@Override
 		public Adapter caseAbstractDocumentRoot(EObject object) {
 			return createAbstractDocumentRootAdapter();

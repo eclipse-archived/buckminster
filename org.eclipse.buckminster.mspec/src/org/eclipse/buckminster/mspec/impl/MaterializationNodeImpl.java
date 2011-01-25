@@ -499,6 +499,15 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public String getSuffix() {
+		return getUnpack() == null ? null : getUnpack().getSuffix();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
 
@@ -514,6 +523,24 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 
 	public boolean isExclude() {
 		return exclude;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isExpand() {
+		return getUnpack() == null ? false : getUnpack().isExpand();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isUnpack() {
+		return getUnpack() != null;
 	}
 
 	/**

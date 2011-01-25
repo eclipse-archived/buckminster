@@ -36,6 +36,9 @@
     </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MaterializationNode" eSuperTypes="#//MaterializationDirective">
+    <eOperations name="isExpand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eOperations name="isUnpack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eOperations name="getSuffix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="namePattern" lowerBound="1"
         eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//Pattern">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -80,15 +83,15 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="filter" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//Filter"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="MaterializationDirective" eSuperTypes="../../org.eclipse.buckminster.model.common/model/common.ecore#//Properties">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="conflictResolution" eType="#//ConflictResolution"
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="conflictResolution" eType="ecore:EEnum ../../org.eclipse.buckminster.model.common/model/common.ecore#//ConflictResolution"
         defaultValueLiteral="UPDATE"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="installLocation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="installLocation" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//IPath"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="materializer" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The materializer to use. Possible values includes &amp;quot;filesystem&amp;quot;, &amp;quot;workspace&amp;quot;, and &amp;quot;p2&amp;quot; but other might be added through the buckminster.materializers extension point."/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="workspaceLocation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="workspaceLocation" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//IPath">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Path to the designated workspace. Only in effect for materializers that has a conceptual understanding of a workspace. Defaults to the installLocation. In a node, this path can be relative to the global path."/>
       </eAnnotations>
@@ -105,6 +108,105 @@
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="mspec"/>
     </eAnnotations>
+    <eOperations name="getMatchingNode" eType="#//MaterializationNode">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getConflictResolution" eType="ecore:EEnum ../../org.eclipse.buckminster.model.common/model/common.ecore#//ConflictResolution">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getContextURL" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//URL"/>
+    <eOperations name="getLeafArtifact" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//IPath">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getMaterializer" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getProjectName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getResolvedURL" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//URL">
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getResourcePath" eType="ecore:EDataType ../../org.eclipse.buckminster.model.common/model/common.ecore#//IPath">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="getSuffix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="isExcluded" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="isExpand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
+    <eOperations name="isUnpack" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="component" eType="ecore:EClass ../../org.eclipse.buckminster.model.common/model/common.ecore#//ComponentName"/>
+      <eParameters name="properties">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        </eGenericType>
+      </eParameters>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="mspecNodes" upperBound="-1"
         eType="#//MaterializationNode" containment="true">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -121,12 +223,6 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxParallelJobs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="ConflictResolution">
-    <eLiterals name="FAIL"/>
-    <eLiterals name="KEEP" value="1"/>
-    <eLiterals name="REPLACE" value="2"/>
-    <eLiterals name="UPDATE" value="3"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Unpack">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="expand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
