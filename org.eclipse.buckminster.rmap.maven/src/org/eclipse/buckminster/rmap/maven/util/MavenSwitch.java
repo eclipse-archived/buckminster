@@ -170,6 +170,40 @@ public class MavenSwitch<T> {
 
 	/**
 	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Scope</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Scope</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseScope(Scope object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Scopes</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Scopes</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseScopes(Scopes object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
 	 * <em>EObject</em>'. <!-- begin-user-doc --> This implementation returns
 	 * null; returning a non-null result will terminate the switch, but this is
 	 * the last case anyway. <!-- end-user-doc -->
@@ -259,6 +293,20 @@ public class MavenSwitch<T> {
 					result = caseProperties(mavenProvider);
 				if (result == null)
 					result = caseMatcher(mavenProvider);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case MavenPackage.SCOPES: {
+				Scopes scopes = (Scopes) theEObject;
+				T result = caseScopes(scopes);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case MavenPackage.SCOPE: {
+				Scope scope = (Scope) theEObject;
+				T result = caseScope(scope);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;

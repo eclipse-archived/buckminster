@@ -69,6 +69,24 @@ public interface MavenFactory extends EFactory {
 	MavenProvider createMavenProvider();
 
 	/**
+	 * Returns a new object of class '<em>Scope</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Scope</em>'.
+	 * @generated
+	 */
+	Scope createScope();
+
+	/**
+	 * Returns a new object of class '<em>Scopes</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Scopes</em>'.
+	 * @generated
+	 */
+	Scopes createScopes();
+
+	/**
 	 * Returns the default name for the given groupId/artifactId mapping
 	 * 
 	 * @param groupId

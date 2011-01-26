@@ -15,6 +15,7 @@ import org.eclipse.buckminster.rmap.maven.MapEntry;
 import org.eclipse.buckminster.rmap.maven.Mappings;
 import org.eclipse.buckminster.rmap.maven.MavenPackage;
 import org.eclipse.buckminster.rmap.maven.MavenProvider;
+import org.eclipse.buckminster.rmap.maven.Scopes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.emf.common.notify.Notification;
@@ -33,6 +34,12 @@ import org.eclipse.osgi.util.NLS;
  * <li>
  * {@link org.eclipse.buckminster.rmap.maven.impl.MavenProviderImpl#getMappings
  * <em>Mappings</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.maven.impl.MavenProviderImpl#getScopes
+ * <em>Scopes</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.rmap.maven.impl.MavenProviderImpl#isTransitive
+ * <em>Transitive</em>}</li>
  * </ul>
  * </p>
  * 
@@ -106,6 +113,34 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	protected Mappings mappings;
 
 	/**
+	 * The cached value of the '{@link #getScopes() <em>Scopes</em>}'
+	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #getScopes()
+	 * @generated
+	 * @ordered
+	 */
+	protected Scopes scopes;
+	/**
+	 * The default value of the '{@link #isTransitive() <em>Transitive</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #isTransitive()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean TRANSITIVE_EDEFAULT = true;
+	/**
+	 * The cached value of the '{@link #isTransitive() <em>Transitive</em>}'
+	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see #isTransitive()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean transitive = TRANSITIVE_EDEFAULT;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -138,12 +173,34 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated
 	 */
+	public NotificationChain basicSetScopes(Scopes newScopes, NotificationChain msgs) {
+		Scopes oldScopes = scopes;
+		scopes = newScopes;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MavenPackage.MAVEN_PROVIDER__SCOPES, oldScopes, newScopes);
+			if (msgs == null)
+				msgs = notification;
+			else
+				msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case MavenPackage.MAVEN_PROVIDER__MAPPINGS:
 				return getMappings();
+			case MavenPackage.MAVEN_PROVIDER__SCOPES:
+				return getScopes();
+			case MavenPackage.MAVEN_PROVIDER__TRANSITIVE:
+				return isTransitive();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -159,6 +216,8 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 		switch (featureID) {
 			case MavenPackage.MAVEN_PROVIDER__MAPPINGS:
 				return basicSetMappings(null, msgs);
+			case MavenPackage.MAVEN_PROVIDER__SCOPES:
+				return basicSetScopes(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -174,6 +233,10 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 		switch (featureID) {
 			case MavenPackage.MAVEN_PROVIDER__MAPPINGS:
 				return mappings != null;
+			case MavenPackage.MAVEN_PROVIDER__SCOPES:
+				return scopes != null;
+			case MavenPackage.MAVEN_PROVIDER__TRANSITIVE:
+				return transitive != TRANSITIVE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -190,6 +253,12 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 			case MavenPackage.MAVEN_PROVIDER__MAPPINGS:
 				setMappings((Mappings) newValue);
 				return;
+			case MavenPackage.MAVEN_PROVIDER__SCOPES:
+				setScopes((Scopes) newValue);
+				return;
+			case MavenPackage.MAVEN_PROVIDER__TRANSITIVE:
+				setTransitive((Boolean) newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -205,6 +274,12 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 		switch (featureID) {
 			case MavenPackage.MAVEN_PROVIDER__MAPPINGS:
 				setMappings((Mappings) null);
+				return;
+			case MavenPackage.MAVEN_PROVIDER__SCOPES:
+				setScopes((Scopes) null);
+				return;
+			case MavenPackage.MAVEN_PROVIDER__TRANSITIVE:
+				setTransitive(TRANSITIVE_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -295,6 +370,24 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated
 	 */
+	public Scopes getScopes() {
+		return scopes;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean isTransitive() {
+		return transitive;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 
 	public void setMappings(Mappings newMappings) {
 		if (newMappings != mappings) {
@@ -308,6 +401,54 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 				msgs.dispatch();
 		} else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MavenPackage.MAVEN_PROVIDER__MAPPINGS, newMappings, newMappings));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setScopes(Scopes newScopes) {
+		if (newScopes != scopes) {
+			NotificationChain msgs = null;
+			if (scopes != null)
+				msgs = ((InternalEObject) scopes).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MavenPackage.MAVEN_PROVIDER__SCOPES, null, msgs);
+			if (newScopes != null)
+				msgs = ((InternalEObject) newScopes).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MavenPackage.MAVEN_PROVIDER__SCOPES, null, msgs);
+			msgs = basicSetScopes(newScopes, msgs);
+			if (msgs != null)
+				msgs.dispatch();
+		} else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MavenPackage.MAVEN_PROVIDER__SCOPES, newScopes, newScopes));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setTransitive(boolean newTransitive) {
+		boolean oldTransitive = transitive;
+		transitive = newTransitive;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MavenPackage.MAVEN_PROVIDER__TRANSITIVE, oldTransitive, transitive));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy())
+			return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (transitive: ");
+		result.append(transitive);
+		result.append(')');
+		return result.toString();
 	}
 
 	/**

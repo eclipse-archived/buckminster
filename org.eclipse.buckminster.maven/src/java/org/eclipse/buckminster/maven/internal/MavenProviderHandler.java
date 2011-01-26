@@ -22,10 +22,15 @@ import org.xml.sax.SAXException;
 
 public class MavenProviderHandler extends ProviderHandler {
 	private final MappingsHandler mappingsHandler = new MappingsHandler(this);
+	private final ScopesHandler scopesHandler = new ScopesHandler(this);
 
 	private Map<String, MapEntry> mappings;
 
 	private List<BidirectionalTransformer> rules;
+
+	private Map<String, Scope> scopes;
+
+	private boolean transitive;
 
 	public MavenProviderHandler(AbstractHandler parent) {
 		super(parent);
@@ -36,6 +41,8 @@ public class MavenProviderHandler extends ProviderHandler {
 		if (child instanceof MappingsHandler) {
 			mappings = ((MappingsHandler) child).getEntriesAndClear();
 			rules = ((MappingsHandler) child).getRuleAndClear();
+		} else if (child instanceof ScopesHandler) {
+			scopes = ((ScopesHandler) child).getScopesAndClear();
 		} else
 			super.childPopped(child);
 	}
@@ -45,6 +52,8 @@ public class MavenProviderHandler extends ProviderHandler {
 		ChildHandler ch;
 		if (MavenProvider.ELEM_MAPPINGS.equals(localName))
 			ch = mappingsHandler;
+		else if (MavenProvider.ELEM_SCOPES.equals(localName))
+			ch = scopesHandler;
 		else
 			ch = super.createHandler(uri, localName, attrs);
 		return ch;
@@ -53,7 +62,7 @@ public class MavenProviderHandler extends ProviderHandler {
 	@Override
 	public Provider getProvider() {
 		return new MavenProvider(getSearchPath(), getReaderType(), getComponentTypes(), getVersionConverter(), getUriFormat(), getResolutionFilter(),
-				getProperties(), getDocumentation(), mappings, rules);
+				getProperties(), getDocumentation(), mappings, rules, scopes, transitive);
 	}
 
 	@Override
@@ -61,5 +70,7 @@ public class MavenProviderHandler extends ProviderHandler {
 		super.handleAttributes(attrs);
 		mappings = null;
 		rules = null;
+		scopes = null;
+		transitive = getOptionalBooleanValue(attrs, MavenProvider.ATTR_TRANSITIVE, true);
 	}
 }

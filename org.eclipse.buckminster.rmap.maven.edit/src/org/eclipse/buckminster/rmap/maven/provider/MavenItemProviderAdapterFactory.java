@@ -101,7 +101,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 			@Override
 			public Object caseResourceMap(ResourceMap object) {
 				// newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS,
-				//		MavenFactory.eINSTANCE.createMavenProvider()));
+				// MavenFactory.eINSTANCE.createMavenProvider()));
 
 				return null;
 			}
@@ -226,6 +226,24 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	protected MavenProviderItemProvider mavenProviderItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.rmap.maven.Scopes} instances. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ScopesItemProvider scopesItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.rmap.maven.Scope} instances. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ScopeItemProvider scopeItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
@@ -348,6 +366,38 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	}
 
 	/**
+	 * This creates an adapter for a
+	 * {@link org.eclipse.buckminster.rmap.maven.Scope}. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createScopeAdapter() {
+		if (scopeItemProvider == null) {
+			scopeItemProvider = new ScopeItemProvider(this);
+		}
+
+		return scopeItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a
+	 * {@link org.eclipse.buckminster.rmap.maven.Scopes}. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createScopesAdapter() {
+		if (scopesItemProvider == null) {
+			scopesItemProvider = new ScopesItemProvider(this);
+		}
+
+		return scopesItemProvider;
+	}
+
+	/**
 	 * This disposes all of the item providers created by this factory. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -363,6 +413,10 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 			mappingsItemProvider.dispose();
 		if (mavenProviderItemProvider != null)
 			mavenProviderItemProvider.dispose();
+		if (scopesItemProvider != null)
+			scopesItemProvider.dispose();
+		if (scopeItemProvider != null)
+			scopeItemProvider.dispose();
 	}
 
 	/**

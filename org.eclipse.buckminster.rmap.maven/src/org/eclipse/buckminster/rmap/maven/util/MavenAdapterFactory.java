@@ -79,6 +79,16 @@ public class MavenAdapterFactory extends AdapterFactoryImpl {
 		}
 
 		@Override
+		public Adapter caseScope(Scope object) {
+			return createScopeAdapter();
+		}
+
+		@Override
+		public Adapter caseScopes(Scopes object) {
+			return createScopesAdapter();
+		}
+
+		@Override
 		public Adapter defaultCase(EObject object) {
 			return createEObjectAdapter();
 		}
@@ -226,6 +236,36 @@ public class MavenAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createProviderAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.rmap.maven.Scope <em>Scope</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.rmap.maven.Scope
+	 * @generated
+	 */
+	public Adapter createScopeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.rmap.maven.Scopes <em>Scopes</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.rmap.maven.Scopes
+	 * @generated
+	 */
+	public Adapter createScopesAdapter() {
 		return null;
 	}
 

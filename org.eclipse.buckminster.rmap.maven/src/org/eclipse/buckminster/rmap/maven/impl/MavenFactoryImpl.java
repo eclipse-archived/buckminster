@@ -80,6 +80,10 @@ public class MavenFactoryImpl extends EFactoryImpl implements MavenFactory {
 				return createMappings();
 			case MavenPackage.MAVEN_PROVIDER:
 				return createMavenProvider();
+			case MavenPackage.SCOPES:
+				return createScopes();
+			case MavenPackage.SCOPE:
+				return createScope();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -131,6 +135,26 @@ public class MavenFactoryImpl extends EFactoryImpl implements MavenFactory {
 	public MavenProvider createMavenProvider() {
 		MavenProviderImpl mavenProvider = new MavenProviderImpl();
 		return mavenProvider;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Scope createScope() {
+		ScopeImpl scope = new ScopeImpl();
+		return scope;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public Scopes createScopes() {
+		ScopesImpl scopes = new ScopesImpl();
+		return scopes;
 	}
 
 	public String getDefaultName(String groupId, String artifactId) {

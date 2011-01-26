@@ -13,6 +13,8 @@ import org.eclipse.buckminster.rmap.maven.GroupAndArtifact;
 import org.eclipse.buckminster.rmap.maven.MapEntry;
 import org.eclipse.buckminster.rmap.maven.Mappings;
 import org.eclipse.buckminster.rmap.maven.MavenProvider;
+import org.eclipse.buckminster.rmap.maven.Scope;
+import org.eclipse.buckminster.rmap.maven.Scopes;
 import org.eclipse.buckminster.rmap.maven.MavenFactory;
 import org.eclipse.buckminster.rmap.maven.MavenPackage;
 
@@ -106,6 +108,20 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	 * 
 	 * @generated
 	 */
+	private EClass scopesEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	private EClass scopeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	private static boolean isInited = false;
 
 	/**
@@ -168,6 +184,15 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 
 		mavenProviderEClass = createEClass(MAVEN_PROVIDER);
 		createEReference(mavenProviderEClass, MAVEN_PROVIDER__MAPPINGS);
+		createEReference(mavenProviderEClass, MAVEN_PROVIDER__SCOPES);
+		createEAttribute(mavenProviderEClass, MAVEN_PROVIDER__TRANSITIVE);
+
+		scopesEClass = createEClass(SCOPES);
+		createEReference(scopesEClass, SCOPES__SCOPE);
+
+		scopeEClass = createEClass(SCOPE);
+		createEAttribute(scopeEClass, SCOPE__NAME);
+		createEAttribute(scopeEClass, SCOPE__EXCLUDE);
 	}
 
 	/**
@@ -291,6 +316,69 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 	}
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getMavenProvider_Scopes() {
+		return (EReference) mavenProviderEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getMavenProvider_Transitive() {
+		return (EAttribute) mavenProviderEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getScope() {
+		return scopeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getScope_Exclude() {
+		return (EAttribute) scopeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EAttribute getScope_Name() {
+		return (EAttribute) scopeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EClass getScopes() {
+		return scopesEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public EReference getScopes_Scope() {
+		return (EReference) scopesEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
 	 * Complete the initialization of the package and its meta-model. This
 	 * method is guarded to have no affect on any invocation but its first. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -345,6 +433,10 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 		initEClass(mavenProviderEClass, MavenProvider.class, "MavenProvider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getMavenProvider_Mappings(), this.getMappings(), null, "mappings", null, 0, 1, MavenProvider.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMavenProvider_Scopes(), this.getScopes(), null, "scopes", null, 0, 1, MavenProvider.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMavenProvider_Transitive(), ecorePackage.getEBoolean(), "transitive", "true", 0, 1, MavenProvider.class, !IS_TRANSIENT,
+				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		op = addEOperation(mavenProviderEClass, ecorePackage.getEString(), "getComponentName", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "groupId", 0, 1, IS_UNIQUE, IS_ORDERED);
@@ -353,6 +445,16 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 		op = addEOperation(mavenProviderEClass, this.getMapEntry(), "getMapEntry", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEException(op, theCommonPackage.getCoreException());
+
+		initEClass(scopesEClass, Scopes.class, "Scopes", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getScopes_Scope(), this.getScope(), null, "scope", null, 0, -1, Scopes.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(scopeEClass, Scope.class, "Scope", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getScope_Name(), ecorePackage.getEString(), "name", null, 1, 1, Scope.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
+				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getScope_Exclude(), ecorePackage.getEBoolean(), "exclude", "true", 1, 1, Scope.class, !IS_TRANSIENT, !IS_VOLATILE,
+				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -375,6 +477,8 @@ public class MavenPackageImpl extends EPackageImpl implements MavenPackage {
 		addAnnotation(getMappings_Entries(), source, new String[] { "kind", "element", "name", "entry", "namespace", "##targetNamespace" });
 		addAnnotation(getMappings_Rules(), source, new String[] { "name", "rule", "kind", "element", "namespace", "##targetNamespace" });
 		addAnnotation(getMavenProvider_Mappings(), source, new String[] { "name", "mappings", "kind", "element", "namespace", "##targetNamespace" });
+		addAnnotation(getMavenProvider_Scopes(), source, new String[] { "name", "scopes", "kind", "element", "namespace", "##targetNamespace" });
+		addAnnotation(getScopes_Scope(), source, new String[] { "kind", "element", "name", "scope", "namespace", "##targetNamespace" });
 	}
 
 } // MavenPackageImpl

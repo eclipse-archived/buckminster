@@ -9,36 +9,35 @@ package org.eclipse.buckminster.rmap.maven.provider;
 import java.util.Collection;
 import java.util.List;
 
-import java.util.regex.Pattern;
-import org.eclipse.buckminster.rmap.maven.MavenProvider;
 import org.eclipse.buckminster.rmap.maven.MavenFactory;
 import org.eclipse.buckminster.rmap.maven.MavenPackage;
-
-import org.eclipse.buckminster.rmap.provider.ProviderItemProvider;
+import org.eclipse.buckminster.rmap.maven.Scopes;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.ResourceLocator;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
 
-import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
+import org.eclipse.emf.edit.provider.IChildCreationExtender;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
-import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
+import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
  * This is the item provider adapter for a
- * {@link org.eclipse.buckminster.rmap.maven.MavenProvider} object. <!--
- * begin-user-doc --> <!-- end-user-doc -->
+ * {@link org.eclipse.buckminster.rmap.maven.Scopes} object. <!-- begin-user-doc
+ * --> <!-- end-user-doc -->
  * 
  * @generated
  */
-public class MavenProviderItemProvider extends ProviderItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider,
+public class ScopesItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
 		ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!--
@@ -46,7 +45,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
-	public MavenProviderItemProvider(AdapterFactory adapterFactory) {
+	public ScopesItemProvider(AdapterFactory adapterFactory) {
 		super(adapterFactory);
 	}
 
@@ -60,27 +59,23 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
-
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(MavenPackage.Literals.MAVEN_PROVIDER__MAPPINGS);
-			childrenFeatures.add(MavenPackage.Literals.MAVEN_PROVIDER__SCOPES);
+			childrenFeatures.add(MavenPackage.Literals.SCOPES__SCOPE);
 		}
 		return childrenFeatures;
 	}
 
 	/**
-	 * This returns MavenProvider.gif. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
+	 * This returns Scopes.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-
 	@Override
 	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/MavenProvider"));
+		return overlayImage(object, getResourceLocator().getImage("full/obj16/Scopes"));
 	}
 
 	/**
@@ -89,15 +84,24 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
-
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addTransitivePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * Return the resource locator for this item provider's resources. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public ResourceLocator getResourceLocator() {
+		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
 	}
 
 	/**
@@ -106,12 +110,9 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
-
 	@Override
 	public String getText(Object object) {
-		Pattern labelValue = ((MavenProvider) object).getPattern();
-		String label = labelValue == null ? null : labelValue.toString();
-		return label == null || label.length() == 0 ? getString("_UI_MavenProvider_type") : getString("_UI_MavenProvider_type") + " " + label;
+		return getString("_UI_Scopes_type");
 	}
 
 	/**
@@ -122,34 +123,16 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
-
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
-		switch (notification.getFeatureID(MavenProvider.class)) {
-			case MavenPackage.MAVEN_PROVIDER__TRANSITIVE:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-			case MavenPackage.MAVEN_PROVIDER__MAPPINGS:
-			case MavenPackage.MAVEN_PROVIDER__SCOPES:
+		switch (notification.getFeatureID(Scopes.class)) {
+			case MavenPackage.SCOPES__SCOPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
 		super.notifyChanged(notification);
-	}
-
-	/**
-	 * This adds a property descriptor for the Transitive feature. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected void addTransitivePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MavenProvider_transitive_feature"),
-				getString("_UI_PropertyDescriptor_description", "_UI_MavenProvider_transitive_feature", "_UI_MavenProvider_type"),
-				MavenPackage.Literals.MAVEN_PROVIDER__TRANSITIVE, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -159,14 +142,11 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
-
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add(createChildParameter(MavenPackage.Literals.MAVEN_PROVIDER__MAPPINGS, MavenFactory.eINSTANCE.createMappings()));
-
-		newChildDescriptors.add(createChildParameter(MavenPackage.Literals.MAVEN_PROVIDER__SCOPES, MavenFactory.eINSTANCE.createScopes()));
+		newChildDescriptors.add(createChildParameter(MavenPackage.Literals.SCOPES__SCOPE, MavenFactory.eINSTANCE.createScope()));
 	}
 
 	/**
@@ -174,7 +154,6 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
-
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper
