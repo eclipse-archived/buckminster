@@ -155,7 +155,7 @@ class RepositoryAccess {
 				objId = repo.resolve(revstr);
 				if (objId == null) {
 					String remoteBranch = getGitRemoteBranch(versionMatch);
-					objId = repo.resolve(revstr);
+					objId = repo.resolve(remoteBranch);
 					if (objId == null)
 						throw BuckminsterException.fromMessage("Unable to obtain ObjectID for branch %s", revstr); //$NON-NLS-1$
 
