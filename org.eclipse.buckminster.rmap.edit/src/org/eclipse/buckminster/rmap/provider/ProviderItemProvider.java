@@ -74,7 +74,7 @@ public class ProviderItemProvider extends PropertiesItemProvider implements IEdi
 	 * This returns the property descriptors for the adapted class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 
 	@Override
@@ -83,7 +83,6 @@ public class ProviderItemProvider extends PropertiesItemProvider implements IEdi
 			super.getPropertyDescriptors(object);
 
 			addPatternPropertyDescriptor(object);
-			addComponentTypesAttrPropertyDescriptor(object);
 			addComponentTypesPropertyDescriptor(object);
 			addResolutionFilterPropertyDescriptor(object);
 			addReaderTypePropertyDescriptor(object);

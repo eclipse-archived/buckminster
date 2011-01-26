@@ -96,12 +96,12 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 			/**
 			 * <!-- begin-user-doc --> <!-- end-user-doc -->
 			 * 
-			 * @generated
+			 * @generated NOT
 			 */
 			@Override
 			public Object caseResourceMap(ResourceMap object) {
-				newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS,
-						MavenFactory.eINSTANCE.createMavenProvider()));
+				// newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS,
+				//		MavenFactory.eINSTANCE.createMavenProvider()));
 
 				return null;
 			}

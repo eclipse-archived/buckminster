@@ -121,7 +121,7 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 	 * describing the children that can be created under this object. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
@@ -132,7 +132,8 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, RmapFactory.eINSTANCE.createLocator()));
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, RmapFactory.eINSTANCE.createProvider()));
+		// Not in 3.6
+		// newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, RmapFactory.eINSTANCE.createProvider()));
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, RmapFactory.eINSTANCE.createRedirect()));
 

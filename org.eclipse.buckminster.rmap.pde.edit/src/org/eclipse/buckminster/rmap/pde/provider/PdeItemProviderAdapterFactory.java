@@ -96,12 +96,12 @@ public class PdeItemProviderAdapterFactory extends PdeAdapterFactory implements 
 			/**
 			 * <!-- begin-user-doc --> <!-- end-user-doc -->
 			 * 
-			 * @generated
+			 * @generated NOT
 			 */
 			@Override
 			public Object caseResourceMap(ResourceMap object) {
-				newChildDescriptors
-						.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, PdeFactory.eINSTANCE.createPDEMapProvider()));
+				// newChildDescriptors
+				//		.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, PdeFactory.eINSTANCE.createPDEMapProvider()));
 
 				return null;
 			}

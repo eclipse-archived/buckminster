@@ -103,11 +103,11 @@ public class PsfItemProviderAdapterFactory extends PsfAdapterFactory implements 
 			/**
 			 * <!-- begin-user-doc --> <!-- end-user-doc -->
 			 * 
-			 * @generated
+			 * @generated NOT
 			 */
 			@Override
 			public Object caseResourceMap(ResourceMap object) {
-				newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, PsfFactory.eINSTANCE.createPSFProvider()));
+				// newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, PsfFactory.eINSTANCE.createPSFProvider()));
 
 				return null;
 			}
