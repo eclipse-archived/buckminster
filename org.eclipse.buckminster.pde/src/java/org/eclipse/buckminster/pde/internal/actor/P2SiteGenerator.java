@@ -17,8 +17,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
@@ -462,8 +464,11 @@ public class P2SiteGenerator extends AbstractActor {
 		}
 	}
 
-	private void collectBundles(CSpec cspec, Map<IVersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException {
+	private void collectBundles(CSpec cspec, Map<IVersionedId, CSpec> cspecs, Set<ComponentIdentifier> cis, IActionContext ctx) throws CoreException {
 		ComponentIdentifier ci = cspec.getComponentIdentifier();
+        if(!cis.add(ci))
+            return;
+        
 		if (IComponentType.OSGI_BUNDLE.equals(ci.getComponentTypeID()))
 			if (cspecs.put(new VersionedId(ci.getName(), ci.getVersion()), cspec) != null)
 				return;
@@ -475,14 +480,15 @@ public class P2SiteGenerator extends AbstractActor {
 		for (Prerequisite preq : refs.getPrerequisites()) {
 			Attribute ref = preq.getReferencedAttribute(cspec, ctx);
 			if (ref != null)
-				collectBundles(ref.getCSpec(), cspecs, ctx);
+				collectBundles(ref.getCSpec(), cspecs, cis, ctx);
 		}
 	}
 
 	private Map<IVersionedId, CSpec> collectBundles(IActionContext ctx) throws CoreException {
 		CSpec cspec = ctx.getAction().getCSpec();
 		Map<IVersionedId, CSpec> cspecs = new HashMap<IVersionedId, CSpec>();
-		collectBundles(cspec, cspecs, ctx);
+		Set<ComponentIdentifier> cis = new HashSet<ComponentIdentifier>();
+		collectBundles(cspec, cspecs, cis, ctx);
 		return cspecs;
 	}
 
