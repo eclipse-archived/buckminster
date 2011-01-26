@@ -17,9 +17,7 @@ import org.eclipse.buckminster.model.common.util.DynamicFeatureEList;
 import org.eclipse.buckminster.model.common.util.UnmodifiableMapUnion;
 import org.eclipse.buckminster.rmap.Locator;
 import org.eclipse.buckminster.rmap.Matcher;
-import org.eclipse.buckminster.rmap.Provider;
 import org.eclipse.buckminster.rmap.Redirect;
-import org.eclipse.buckminster.rmap.Repository;
 import org.eclipse.buckminster.rmap.ResourceMap;
 import org.eclipse.buckminster.rmap.RmapPackage;
 import org.eclipse.buckminster.rmap.SearchPath;
@@ -49,8 +47,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <em>Documentation</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getMatcherGroup
  * <em>Matcher Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getRepositories
- * <em>Repositories</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getMatchers <em>
  * Matchers</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.impl.ResourceMapImpl#getSearchPaths
@@ -82,17 +78,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * @ordered
 	 */
 	protected FeatureMap matcherGroup;
-
-	/**
-	 * The cached value of the '{@link #getRepositories() <em>Repositories</em>}
-	 * ' containment reference list. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @see #getRepositories()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<Repository> repositories;
 
 	/**
 	 * The cached value of the '{@link #getSearchPaths() <em>Search Paths</em>}'
@@ -147,8 +132,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 				if (coreType)
 					return getMatcherGroup();
 				return ((FeatureMap.Internal) getMatcherGroup()).getWrapper();
-			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
-				return getRepositories();
 			case RmapPackage.RESOURCE_MAP__MATCHERS:
 				return getMatchers();
 			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
@@ -170,8 +153,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 				return basicSetDocumentation(null, msgs);
 			case RmapPackage.RESOURCE_MAP__MATCHER_GROUP:
 				return ((InternalEList<?>) getMatcherGroup()).basicRemove(otherEnd, msgs);
-			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
-				return ((InternalEList<?>) getRepositories()).basicRemove(otherEnd, msgs);
 			case RmapPackage.RESOURCE_MAP__MATCHERS:
 				return ((InternalEList<?>) getMatchers()).basicRemove(otherEnd, msgs);
 			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
@@ -193,8 +174,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 				return documentation != null;
 			case RmapPackage.RESOURCE_MAP__MATCHER_GROUP:
 				return matcherGroup != null && !matcherGroup.isEmpty();
-			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
-				return repositories != null && !repositories.isEmpty();
 			case RmapPackage.RESOURCE_MAP__MATCHERS:
 				return !getMatchers().isEmpty();
 			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
@@ -217,10 +196,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 				return;
 			case RmapPackage.RESOURCE_MAP__MATCHER_GROUP:
 				((FeatureMap.Internal) getMatcherGroup()).set(newValue);
-				return;
-			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
-				getRepositories().clear();
-				getRepositories().addAll((Collection<? extends Repository>) newValue);
 				return;
 			case RmapPackage.RESOURCE_MAP__MATCHERS:
 				getMatchers().clear();
@@ -248,9 +223,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 				return;
 			case RmapPackage.RESOURCE_MAP__MATCHER_GROUP:
 				getMatcherGroup().clear();
-				return;
-			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
-				getRepositories().clear();
 				return;
 			case RmapPackage.RESOURCE_MAP__MATCHERS:
 				getMatchers().clear();
@@ -306,8 +278,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 						protected EStructuralFeature getEStructuralFeature(Object value) {
 							if (value instanceof Locator)
 								return RmapPackage.Literals.DOCUMENT_ROOT__LOCATORS;
-							if (value instanceof Provider)
-								return RmapPackage.Literals.DOCUMENT_ROOT__PROVIDERS;
 							if (value instanceof Redirect)
 								return RmapPackage.Literals.DOCUMENT_ROOT__REDIRECTS;
 							return getEStructuralFeature();
@@ -318,8 +288,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 				@Override
 				protected NotificationImpl createNotification(int eventType, EStructuralFeature feature, Object oldObject, Object newObject,
 						int index, boolean wasSet) {
-					if (feature == RmapPackage.Literals.DOCUMENT_ROOT__LOCATORS || feature == RmapPackage.Literals.DOCUMENT_ROOT__PROVIDERS
-							|| feature == RmapPackage.Literals.DOCUMENT_ROOT__REDIRECTS)
+					if (feature == RmapPackage.Literals.DOCUMENT_ROOT__LOCATORS || feature == RmapPackage.Literals.DOCUMENT_ROOT__REDIRECTS)
 						feature = RmapPackage.Literals.RESOURCE_MAP__MATCHERS;
 					return new FeatureMapUtil.FeatureENotificationImpl(owner, eventType, feature, oldObject, newObject, index, wasSet);
 				}
@@ -336,19 +305,6 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 
 	public EList<Matcher> getMatchers() {
 		return getMatcherGroup().list(RmapPackage.Literals.RESOURCE_MAP__MATCHERS);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	public EList<Repository> getRepositories() {
-		if (repositories == null) {
-			repositories = new EObjectContainmentEList<Repository>(Repository.class, this, RmapPackage.RESOURCE_MAP__REPOSITORIES);
-		}
-		return repositories;
 	}
 
 	/**

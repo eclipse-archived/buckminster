@@ -163,16 +163,6 @@
         <details key="affiliation" value="matcher"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="providers" upperBound="-2"
-        eType="#//Provider" volatile="true" transient="true" derived="true" containment="true"
-        resolveProxies="false">
-      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-        <details key="kind" value="element"/>
-        <details key="name" value="provider"/>
-        <details key="namespace" value="##targetNamespace"/>
-        <details key="affiliation" value="matcher"/>
-      </eAnnotations>
-    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Locator" eSuperTypes="#//Matcher">
     <eStructuralFeatures xsi:type="ecore:EReference" name="searchPath" eType="#//SearchPath"
@@ -357,8 +347,6 @@
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="repositories" upperBound="-1"
-        eType="#//Repository" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="matchers" upperBound="-1"
         eType="#//Matcher" volatile="true" transient="true" derived="true" containment="true"
         resolveProxies="false">

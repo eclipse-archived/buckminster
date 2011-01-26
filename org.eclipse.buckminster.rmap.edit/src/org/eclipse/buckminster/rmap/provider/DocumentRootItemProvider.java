@@ -69,7 +69,6 @@ public class DocumentRootItemProvider extends AbstractDocumentRootItemProvider i
 			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__ARCH);
 			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__NL);
 			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__RMAP);
-			childrenFeatures.add(RmapPackage.Literals.DOCUMENT_ROOT__PROVIDERS);
 		}
 		return childrenFeatures;
 	}
@@ -154,7 +153,6 @@ public class DocumentRootItemProvider extends AbstractDocumentRootItemProvider i
 			case RmapPackage.DOCUMENT_ROOT__ARCH:
 			case RmapPackage.DOCUMENT_ROOT__NL:
 			case RmapPackage.DOCUMENT_ROOT__RMAP:
-			case RmapPackage.DOCUMENT_ROOT__PROVIDERS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}

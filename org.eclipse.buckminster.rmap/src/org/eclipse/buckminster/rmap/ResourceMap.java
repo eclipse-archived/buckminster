@@ -25,8 +25,6 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * Documentation</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getMatcherGroup <em>
  * Matcher Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getRepositories <em>
- * Repositories</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getMatchers <em>Matchers
  * </em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getSearchPaths <em>Search
@@ -100,24 +98,6 @@ public interface ResourceMap extends Properties {
 	 * @generated
 	 */
 	EList<Matcher> getMatchers();
-
-	/**
-	 * Returns the value of the '<em><b>Repositories</b></em>' containment
-	 * reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.rmap.Repository}. <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Repositories</em>' containment reference list
-	 * isn't clear, there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Repositories</em>' containment reference
-	 *         list.
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_Repositories()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<Repository> getRepositories();
 
 	/**
 	 * Returns the value of the '<em><b>Search Paths</b></em>' containment

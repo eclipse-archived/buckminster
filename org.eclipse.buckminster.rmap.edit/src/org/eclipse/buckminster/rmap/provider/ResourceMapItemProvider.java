@@ -60,7 +60,6 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__DOCUMENTATION);
-			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__REPOSITORIES);
 			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__MATCHERS);
 			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__SEARCH_PATHS);
 		}
@@ -109,7 +108,6 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 
 		switch (notification.getFeatureID(ResourceMap.class)) {
 			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
-			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
 			case RmapPackage.RESOURCE_MAP__MATCHERS:
 			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
@@ -131,8 +129,6 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 
 		newChildDescriptors
 				.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__DOCUMENTATION, CommonFactory.eINSTANCE.createDocumentation()));
-
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__REPOSITORIES, RmapFactory.eINSTANCE.createRepository()));
 
 		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, RmapFactory.eINSTANCE.createLocator()));
 

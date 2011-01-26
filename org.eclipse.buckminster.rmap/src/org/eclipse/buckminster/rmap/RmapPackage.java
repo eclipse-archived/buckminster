@@ -187,15 +187,6 @@ public interface RmapPackage extends EPackage {
 		EAttribute RESOURCE_MAP__MATCHER_GROUP = eINSTANCE.getResourceMap_MatcherGroup();
 
 		/**
-		 * The meta object literal for the '<em><b>Repositories</b></em>'
-		 * containment reference list feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference RESOURCE_MAP__REPOSITORIES = eINSTANCE.getResourceMap_Repositories();
-
-		/**
 		 * The meta object literal for the '<em><b>Matchers</b></em>'
 		 * containment reference list feature. <!-- begin-user-doc --> <!--
 		 * end-user-doc -->
@@ -532,15 +523,6 @@ public interface RmapPackage extends EPackage {
 		 * @generated
 		 */
 		EReference DOCUMENT_ROOT__REDIRECTS = eINSTANCE.getDocumentRoot_Redirects();
-
-		/**
-		 * The meta object literal for the '<em><b>Providers</b></em>'
-		 * containment reference feature. <!-- begin-user-doc --> <!--
-		 * end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference DOCUMENT_ROOT__PROVIDERS = eINSTANCE.getDocumentRoot_Providers();
 
 		/**
 		 * The meta object literal for the '
@@ -1231,22 +1213,13 @@ public interface RmapPackage extends EPackage {
 	int DOCUMENT_ROOT__REDIRECTS = CommonPackage.ABSTRACT_DOCUMENT_ROOT_FEATURE_COUNT + 15;
 
 	/**
-	 * The feature id for the '<em><b>Providers</b></em>' containment reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int DOCUMENT_ROOT__PROVIDERS = CommonPackage.ABSTRACT_DOCUMENT_ROOT_FEATURE_COUNT + 16;
-
-	/**
 	 * The number of structural features of the '<em>Document Root</em>' class.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int DOCUMENT_ROOT_FEATURE_COUNT = CommonPackage.ABSTRACT_DOCUMENT_ROOT_FEATURE_COUNT + 17;
+	int DOCUMENT_ROOT_FEATURE_COUNT = CommonPackage.ABSTRACT_DOCUMENT_ROOT_FEATURE_COUNT + 16;
 
 	/**
 	 * The feature id for the '<em><b>Pattern</b></em>' attribute. <!--
@@ -1663,22 +1636,13 @@ public interface RmapPackage extends EPackage {
 	int RESOURCE_MAP__MATCHER_GROUP = CommonPackage.PROPERTIES_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Repositories</b></em>' containment
-	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int RESOURCE_MAP__REPOSITORIES = CommonPackage.PROPERTIES_FEATURE_COUNT + 2;
-
-	/**
 	 * The feature id for the '<em><b>Matchers</b></em>' reference list. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int RESOURCE_MAP__MATCHERS = CommonPackage.PROPERTIES_FEATURE_COUNT + 3;
+	int RESOURCE_MAP__MATCHERS = CommonPackage.PROPERTIES_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Search Paths</b></em>' containment
@@ -1687,7 +1651,7 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RESOURCE_MAP__SEARCH_PATHS = CommonPackage.PROPERTIES_FEATURE_COUNT + 4;
+	int RESOURCE_MAP__SEARCH_PATHS = CommonPackage.PROPERTIES_FEATURE_COUNT + 3;
 
 	/**
 	 * The number of structural features of the '<em>Resource Map</em>' class.
@@ -1696,7 +1660,7 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int RESOURCE_MAP_FEATURE_COUNT = CommonPackage.PROPERTIES_FEATURE_COUNT + 5;
+	int RESOURCE_MAP_FEATURE_COUNT = CommonPackage.PROPERTIES_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute. <!--
@@ -2130,19 +2094,6 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getDocumentRoot_Os();
-
-	/**
-	 * Returns the meta object for the containment reference '
-	 * {@link org.eclipse.emf.ecore.EObject#getProviders <em>Providers</em>}'.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the containment reference '<em>Providers</em>
-	 *         '.
-	 * @see org.eclipse.emf.ecore.EObject#getProviders()
-	 * @see #getDocumentRoot()
-	 * @generated
-	 */
-	EReference getDocumentRoot_Providers();
 
 	/**
 	 * Returns the meta object for the containment reference '
@@ -2647,19 +2598,6 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getResourceMap_Matchers();
-
-	/**
-	 * Returns the meta object for the containment reference list '
-	 * {@link org.eclipse.buckminster.rmap.ResourceMap#getRepositories
-	 * <em>Repositories</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the containment reference list '
-	 *         <em>Repositories</em>'.
-	 * @see org.eclipse.buckminster.rmap.ResourceMap#getRepositories()
-	 * @see #getResourceMap()
-	 * @generated
-	 */
-	EReference getResourceMap_Repositories();
 
 	/**
 	 * Returns the meta object for the containment reference list '

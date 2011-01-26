@@ -156,9 +156,6 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
 						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__REDIRECTS, RmapFactory.eINSTANCE.createRedirect())));
 
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__PROVIDERS, RmapFactory.eINSTANCE.createProvider())));
-
 				newChildDescriptors
 						.add(createChildParameter(
 								CommonPackage.Literals.DOCUMENTATION__MIXED,

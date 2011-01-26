@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import java.util.List;
-import org.eclipse.buckminster.model.common.CommonPackage;
-import org.eclipse.buckminster.model.common.Documentation;
-import org.eclipse.buckminster.model.common.util.CommonSwitch;
 import org.eclipse.buckminster.rmap.ResourceMap;
 import org.eclipse.buckminster.rmap.RmapPackage;
 import org.eclipse.buckminster.rmap.SearchPath;
@@ -27,7 +24,6 @@ import org.eclipse.emf.common.notify.Notifier;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.edit.command.CommandParameter;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ChangeNotifier;
@@ -56,92 +52,6 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
  */
 public class MavenItemProviderAdapterFactory extends MavenAdapterFactory implements ComposeableAdapterFactory, IChangeNotifier, IDisposable,
 		IChildCreationExtender {
-	/**
-	 * A child creation extender for the {@link CommonPackage}. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public static class CommonChildCreationExtender implements IChildCreationExtender {
-		/**
-		 * The switch for creating child descriptors specific to each extended
-		 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		protected static class CreationSwitch extends CommonSwitch<Object> {
-			/**
-			 * The child descriptors being populated. <!-- begin-user-doc -->
-			 * <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			protected List<Object> newChildDescriptors;
-
-			/**
-			 * The domain in which to create the children. <!-- begin-user-doc
-			 * --> <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			protected EditingDomain editingDomain;
-
-			/**
-			 * Creates the a switch for populating child descriptors in the
-			 * given domain. <!-- begin-user-doc --> <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			CreationSwitch(List<Object> newChildDescriptors, EditingDomain editingDomain) {
-				this.newChildDescriptors = newChildDescriptors;
-				this.editingDomain = editingDomain;
-			}
-
-			/**
-			 * <!-- begin-user-doc --> <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			@Override
-			public Object caseDocumentation(Documentation object) {
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
-						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__PROVIDERS, MavenFactory.eINSTANCE.createMavenProvider())));
-
-				return null;
-			}
-
-			/**
-			 * <!-- begin-user-doc --> <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			protected CommandParameter createChildParameter(Object feature, Object child) {
-				return new CommandParameter(null, feature, child);
-			}
-
-		}
-
-		/**
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		public Collection<Object> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
-			ArrayList<Object> result = new ArrayList<Object>();
-			new CreationSwitch(result, editingDomain).doSwitch((EObject) object);
-			return result;
-		}
-
-		/**
-		 * <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		public ResourceLocator getResourceLocator() {
-			return MavenEditPlugin.INSTANCE;
-		}
-	}
-
 	/**
 	 * A child creation extender for the {@link RmapPackage}. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -181,19 +91,6 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 			CreationSwitch(List<Object> newChildDescriptors, EditingDomain editingDomain) {
 				this.newChildDescriptors = newChildDescriptors;
 				this.editingDomain = editingDomain;
-			}
-
-			/**
-			 * <!-- begin-user-doc --> <!-- end-user-doc -->
-			 * 
-			 * @generated
-			 */
-			@Override
-			public Object caseDocumentRoot(EObject object) {
-				newChildDescriptors.add(createChildParameter(RmapPackage.Literals.DOCUMENT_ROOT__PROVIDERS,
-						MavenFactory.eINSTANCE.createMavenProvider()));
-
-				return null;
 			}
 
 			/**

@@ -274,7 +274,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 		createEReference(documentRootEClass, DOCUMENT_ROOT__LOCATORS);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__MATCHER);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__REDIRECTS);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__PROVIDERS);
 
 		locatorEClass = createEClass(LOCATOR);
 		createEReference(locatorEClass, LOCATOR__SEARCH_PATH);
@@ -312,7 +311,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 		resourceMapEClass = createEClass(RESOURCE_MAP);
 		createEReference(resourceMapEClass, RESOURCE_MAP__DOCUMENTATION);
 		createEAttribute(resourceMapEClass, RESOURCE_MAP__MATCHER_GROUP);
-		createEReference(resourceMapEClass, RESOURCE_MAP__REPOSITORIES);
 		createEReference(resourceMapEClass, RESOURCE_MAP__MATCHERS);
 		createEReference(resourceMapEClass, RESOURCE_MAP__SEARCH_PATHS);
 
@@ -504,15 +502,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 
 	public EReference getDocumentRoot_Os() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(8);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public EReference getDocumentRoot_Providers() {
-		return (EReference) documentRootEClass.getEStructuralFeatures().get(16);
 	}
 
 	/**
@@ -917,16 +906,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 */
 
 	public EReference getResourceMap_Matchers() {
-		return (EReference) resourceMapEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
-	public EReference getResourceMap_Repositories() {
 		return (EReference) resourceMapEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -937,7 +916,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 */
 
 	public EReference getResourceMap_SearchPaths() {
-		return (EReference) resourceMapEClass.getEStructuralFeatures().get(4);
+		return (EReference) resourceMapEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -1218,8 +1197,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 				!IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Redirects(), this.getRedirect(), null, "redirects", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
 				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_Providers(), this.getProvider(), null, "providers", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE,
-				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		initEClass(locatorEClass, Locator.class, "Locator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLocator_SearchPath(), this.getSearchPath(), null, "searchPath", null, 0, 1, Locator.class, !IS_TRANSIENT, !IS_VOLATILE,
@@ -1333,8 +1310,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getResourceMap_MatcherGroup(), ecorePackage.getEFeatureMapEntry(), "matcherGroup", null, 0, -1, ResourceMap.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getResourceMap_Repositories(), this.getRepository(), null, "repositories", null, 0, -1, ResourceMap.class, !IS_TRANSIENT,
-				!IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getResourceMap_Matchers(), this.getMatcher(), null, "matchers", null, 0, -1, ResourceMap.class, IS_TRANSIENT, IS_VOLATILE,
 				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getResourceMap_SearchPaths(), this.getSearchPath(), null, "searchPaths", null, 0, -1, ResourceMap.class, !IS_TRANSIENT,
@@ -1453,8 +1428,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 				"affiliation", "matcher" });
 		addAnnotation(getDocumentRoot_Matcher(), source, new String[] { "kind", "element", "name", "matcher", "namespace", "##targetNamespace" });
 		addAnnotation(getDocumentRoot_Redirects(), source, new String[] { "kind", "element", "name", "redirect", "namespace", "##targetNamespace",
-				"affiliation", "matcher" });
-		addAnnotation(getDocumentRoot_Providers(), source, new String[] { "kind", "element", "name", "provider", "namespace", "##targetNamespace",
 				"affiliation", "matcher" });
 		addAnnotation(getLocator_SearchPath(), source, new String[] { "name", "searchPathRef", "kind", "attribute" });
 		addAnnotation(getMatcher_ComponentTypesAttr(), source, new String[] { "name", "componentTypes", "kind", "attribute" });
