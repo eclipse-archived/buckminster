@@ -4,6 +4,7 @@ Bundle-Name: Buckminster Maven Plug-in
 Bundle-SymbolicName: org.eclipse.buckminster.maven; singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Require-Bundle: org.eclipse.buckminster.core,
+ org.eclipse.buckminster.mspec,
  org.eclipse.buckminster.rmap.maven,
  org.eclipse.buckminster.download,
  org.eclipse.buckminster.runtime,

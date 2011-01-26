@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.eclipse.buckminster.cvspkg.CVSPlugin
 Bundle-Vendor: Eclipse Buckminster Project
 Require-Bundle: org.eclipse.buckminster.core,
+ org.eclipse.buckminster.mspec,
  org.eclipse.buckminster.rmap,
  org.eclipse.buckminster.runtime,
  org.eclipse.buckminster.sax,
