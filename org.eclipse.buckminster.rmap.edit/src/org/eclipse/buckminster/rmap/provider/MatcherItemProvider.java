@@ -64,9 +64,6 @@ public class MatcherItemProvider extends ItemProviderAdapter implements IEditing
 			super.getPropertyDescriptors(object);
 
 			addPatternPropertyDescriptor(object);
-			addComponentTypesAttrPropertyDescriptor(object);
-			addComponentTypesPropertyDescriptor(object);
-			addResolutionFilterPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
