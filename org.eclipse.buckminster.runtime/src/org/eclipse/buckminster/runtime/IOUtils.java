@@ -141,6 +141,7 @@ public class IOUtils {
 	 * content will be deleted when the process exists.
 	 */
 	public static synchronized File createTempFolder(String prefix, String suffix, File directory) throws IOException {
+		directory.mkdirs();
 		File tmpFile = File.createTempFile(prefix, suffix, directory);
 		if (!tmpFile.delete())
 			throw new IOException("Unable to delete file: " + tmpFile.getAbsolutePath()); //$NON-NLS-1$
@@ -185,10 +186,9 @@ public class IOUtils {
 	public static File getTempRoot(Map<String, String> properties) {
 		String tempRootStr = properties.get(Buckminster.ACTION_TEMP_ROOT);
 		File tempRoot;
-		if (tempRootStr == null) {
+		if (tempRootStr == null)
 			tempRoot = new File(new File(System.getProperty("java.io.tmpdir")), "buckminster"); //$NON-NLS-1$ //$NON-NLS-2$
-			properties.put(Buckminster.ACTION_TEMP_ROOT, tempRoot.getAbsolutePath());
-		} else
+		else
 			tempRoot = new File(tempRootStr);
 		return tempRoot;
 	}
