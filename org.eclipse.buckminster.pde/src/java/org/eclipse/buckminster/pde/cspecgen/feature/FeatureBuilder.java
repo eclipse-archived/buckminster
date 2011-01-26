@@ -29,6 +29,7 @@ import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 
@@ -76,9 +77,16 @@ public class FeatureBuilder extends PDEBuilder {
 		}
 
 		CSpecGenerator generator;
-		if (reader instanceof ZipArchiveReader && ((ZipArchiveReader) reader).getFileReader() instanceof URLFileReader) {
+		if (reader instanceof EclipsePlatformReader) {
+			// Binary features found in the target platform are handled here.
+			//
+			String location = ((EclipsePlatformReader) reader).getFeatureModel().getInstallLocation();
+			generator = new CSpecFromBinary(cspecBuilder, reader, feature, new Path(location));
+		} else if (reader instanceof ZipArchiveReader && ((ZipArchiveReader) reader).getFileReader() instanceof URLFileReader) {
+			// Binary features found elsewhere are handled here.
+			//
 			URI uri = ((URLFileReader) ((ZipArchiveReader) reader).getFileReader()).getURI();
-			generator = new CSpecFromBinary(cspecBuilder, reader, feature, uri);
+			generator = new CSpecFromBinary(cspecBuilder, reader, feature, new Path(uri.getPath()));
 		} else {
 			Map<String, String> buildProperties = null;
 			if (!forResolutionAidOnly) {

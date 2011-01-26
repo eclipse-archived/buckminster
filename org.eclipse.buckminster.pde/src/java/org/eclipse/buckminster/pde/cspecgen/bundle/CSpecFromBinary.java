@@ -147,7 +147,7 @@ public class CSpecFromBinary extends CSpecGenerator {
 				setFilter(bundle.getHeader(ICoreConstants.PLATFORM_FILTER));
 			}
 
-			String jarName = buildArtifactName(true);
+			String jarName = buildArtifactName(plugin.getId(), plugin.getVersion(), true);
 			boolean isImportedBundle = false;
 
 			ArtifactBuilder bundleClasspath = null;
@@ -248,20 +248,5 @@ public class CSpecFromBinary extends CSpecGenerator {
 			if (pluginImport.isExported())
 				addExternalPrerequisite(reExports, dependency, ATTRIBUTE_JAVA_BINARIES);
 		}
-	}
-
-	private String buildArtifactName(boolean asJar) {
-		StringBuilder bld = new StringBuilder();
-		bld.append(plugin.getId());
-		String ver = plugin.getVersion();
-		if (ver != null) {
-			bld.append('_');
-			bld.append(ver);
-		}
-		if (asJar)
-			bld.append(".jar"); //$NON-NLS-1$
-		else
-			bld.append('/');
-		return bld.toString();
 	}
 }
