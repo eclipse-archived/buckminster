@@ -52,7 +52,7 @@ public class EquinoxExecutableAction extends org.eclipse.equinox.p2.publisher.ec
 					// not directly in the workspace's root
 					IProject prj = ResourcesPlugin.getWorkspace().getRoot().getProject(iconPath.segment(0));
 					IResource iconRes = prj.findMember(iconPath.removeFirstSegments(1));
-					if (iconRes.exists()) {
+					if (iconRes != null && iconRes.exists()) {
 						iconPath = iconRes.getLocation();
 					} else {
 						// Windows: we strip one more segment then the root has
