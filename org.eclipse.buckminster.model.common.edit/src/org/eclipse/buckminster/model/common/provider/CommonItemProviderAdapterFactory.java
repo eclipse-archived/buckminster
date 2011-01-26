@@ -118,8 +118,8 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 
 	/**
 	 * This keeps track of the one adapter used for all
-	 * {@link org.eclipse.buckminster.model.common.PropertyConstant} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * {@link java.util.Map.Entry} instances. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
@@ -127,8 +127,8 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 
 	/**
 	 * This keeps track of the one adapter used for all
-	 * {@link org.eclipse.buckminster.model.common.PropertyElement} instances.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * {@link java.util.Map.Entry} instances. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @generated
 	 */
@@ -199,15 +199,6 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 
 	/**
 	 * This keeps track of the one adapter used for all
-	 * {@link org.eclipse.emf.ecore.EObject} instances. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	protected DocumentRootItemProvider documentRootItemProvider;
-
-	/**
-	 * This keeps track of the one adapter used for all
 	 * {@link org.eclipse.buckminster.model.common.ComponentRequest} instances.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -223,6 +214,24 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * @generated
 	 */
 	protected ComponentIdentifierItemProvider componentIdentifierItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.model.common.RxAssembly} instances. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected RxAssemblyItemProvider rxAssemblyItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.model.common.ComponentName} instances.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ComponentNameItemProvider componentNameItemProvider;
 
 	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc
@@ -244,6 +253,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter adapt(Notifier notifier, Object type) {
 		return super.adapt(notifier, this);
@@ -254,6 +264,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object adapt(Object object, Object type) {
 		if (isFactoryForType(type)) {
@@ -271,7 +282,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void addListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.addListener(notifyChangedListener);
 	}
@@ -283,6 +294,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createComponentIdentifierAdapter() {
 		if (componentIdentifierItemProvider == null) {
@@ -294,11 +306,28 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 
 	/**
 	 * This creates an adapter for a
+	 * {@link org.eclipse.buckminster.model.common.ComponentName}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createComponentNameAdapter() {
+		if (componentNameItemProvider == null) {
+			componentNameItemProvider = new ComponentNameItemProvider(this);
+		}
+
+		return componentNameItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a
 	 * {@link org.eclipse.buckminster.model.common.ComponentRequest}. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createComponentRequestAdapter() {
 		if (componentRequestItemProvider == null) {
@@ -315,6 +344,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createConstantAdapter() {
 		if (constantItemProvider == null) {
@@ -331,6 +361,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createDocumentationAdapter() {
 		if (documentationItemProvider == null) {
@@ -341,27 +372,13 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	}
 
 	/**
-	 * This creates an adapter for a {@link org.eclipse.emf.ecore.EObject}. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Adapter createDocumentRootAdapter() {
-		if (documentRootItemProvider == null) {
-			documentRootItemProvider = new DocumentRootItemProvider(this);
-		}
-
-		return documentRootItemProvider;
-	}
-
-	/**
 	 * This creates an adapter for a
 	 * {@link org.eclipse.buckminster.model.common.Format}. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createFormatAdapter() {
 		if (formatItemProvider == null) {
@@ -378,6 +395,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMatchAdapter() {
 		if (matchItemProvider == null) {
@@ -394,6 +412,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createPropertyConstantAdapter() {
 		if (propertyConstantItemProvider == null) {
@@ -410,6 +429,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createPropertyElementAdapter() {
 		if (propertyElementItemProvider == null) {
@@ -426,6 +446,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createPropertyRefAdapter() {
 		if (propertyRefItemProvider == null) {
@@ -442,6 +463,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createReplaceAdapter() {
 		if (replaceItemProvider == null) {
@@ -453,11 +475,28 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 
 	/**
 	 * This creates an adapter for a
+	 * {@link org.eclipse.buckminster.model.common.RxAssembly}. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createRxAssemblyAdapter() {
+		if (rxAssemblyItemProvider == null) {
+			rxAssemblyItemProvider = new RxAssemblyItemProvider(this);
+		}
+
+		return rxAssemblyItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a
 	 * {@link org.eclipse.buckminster.model.common.RxGroup}. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createRxGroupAdapter() {
 		if (rxGroupItemProvider == null) {
@@ -474,6 +513,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createRxPatternAdapter() {
 		if (rxPatternItemProvider == null) {
@@ -490,6 +530,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createSplitAdapter() {
 		if (splitItemProvider == null) {
@@ -506,6 +547,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createToLowerAdapter() {
 		if (toLowerItemProvider == null) {
@@ -522,6 +564,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createToUpperAdapter() {
 		if (toUpperItemProvider == null) {
@@ -537,8 +580,14 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void dispose() {
+		if (componentIdentifierItemProvider != null)
+			componentIdentifierItemProvider.dispose();
+		if (componentNameItemProvider != null)
+			componentNameItemProvider.dispose();
+		if (componentRequestItemProvider != null)
+			componentRequestItemProvider.dispose();
 		if (constantItemProvider != null)
 			constantItemProvider.dispose();
 		if (documentationItemProvider != null)
@@ -555,6 +604,8 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 			propertyRefItemProvider.dispose();
 		if (replaceItemProvider != null)
 			replaceItemProvider.dispose();
+		if (rxAssemblyItemProvider != null)
+			rxAssemblyItemProvider.dispose();
 		if (rxGroupItemProvider != null)
 			rxGroupItemProvider.dispose();
 		if (rxPatternItemProvider != null)
@@ -565,12 +616,6 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 			toLowerItemProvider.dispose();
 		if (toUpperItemProvider != null)
 			toUpperItemProvider.dispose();
-		if (documentRootItemProvider != null)
-			documentRootItemProvider.dispose();
-		if (componentRequestItemProvider != null)
-			componentRequestItemProvider.dispose();
-		if (componentIdentifierItemProvider != null)
-			componentIdentifierItemProvider.dispose();
 	}
 
 	/**
@@ -580,7 +625,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void fireNotifyChanged(Notification notification) {
 		changeNotifier.fireNotifyChanged(notification);
 
@@ -603,7 +648,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
 		return childCreationExtenderManager.getNewChildDescriptors(object, editingDomain);
 	}
@@ -613,7 +658,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ResourceLocator getResourceLocator() {
 		return childCreationExtenderManager;
 	}
@@ -624,7 +669,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ComposeableAdapterFactory getRootAdapterFactory() {
 		return parentAdapterFactory == null ? this : parentAdapterFactory.getRootAdapterFactory();
 	}
@@ -634,6 +679,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean isFactoryForType(Object type) {
 		return supportedTypes.contains(type) || super.isFactoryForType(type);
@@ -644,7 +690,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void removeListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.removeListener(notifyChangedListener);
 	}
@@ -655,7 +701,7 @@ public class CommonItemProviderAdapterFactory extends CommonAdapterFactory imple
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setParentAdapterFactory(ComposedAdapterFactory parentAdapterFactory) {
 		this.parentAdapterFactory = parentAdapterFactory;
 	}

@@ -86,6 +86,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -102,6 +103,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -116,6 +118,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -132,8 +135,8 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case RmapPackage.SEARCH_PATH__NAME:
@@ -152,6 +155,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -170,7 +174,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getName() {
 		return name;
 	}
@@ -180,7 +184,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EList<Provider> getProviders() {
 		if (providers == null) {
 			providers = new EObjectContainmentEList<Provider>(Provider.class, this, RmapPackage.SEARCH_PATH__PROVIDERS);
@@ -193,7 +197,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -206,6 +210,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
 		if (eIsProxy())
@@ -223,6 +228,7 @@ public class SearchPathImpl extends EObjectImpl implements SearchPath {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return RmapPackage.Literals.SEARCH_PATH;

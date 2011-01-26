@@ -11,16 +11,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
 Export-Package: org.eclipse.buckminster.rmap.psf,
  org.eclipse.buckminster.rmap.psf.impl,
  org.eclipse.buckminster.rmap.psf.util
-Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport,
- org.eclipse.emf.ecore.xmi;visibility:=reexport,
- org.eclipse.buckminster.model.common;visibility:=reexport,
- org.eclipse.buckminster.rmap;visibility:=reexport,
- org.eclipse.buckminster.core,
- org.eclipse.buckminster.team.psf,
- org.eclipse.buckminster.runtime,
- org.eclipse.buckminster.osgi.filter,
- org.eclipse.buckminster.sax,
- org.eclipse.team.core,
- org.eclipse.equinox.p2.metadata,
+Require-Bundle: org.eclipse.buckminster.rmap;visibility:=reexport,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy

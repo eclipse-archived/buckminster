@@ -6,7 +6,9 @@
  */
 package org.eclipse.buckminster.rmap.maven.util;
 
-import org.eclipse.buckminster.rmap.Properties;
+import org.eclipse.buckminster.model.common.Properties;
+
+import org.eclipse.buckminster.rmap.Matcher;
 import org.eclipse.buckminster.rmap.Provider;
 
 import org.eclipse.buckminster.rmap.maven.*;
@@ -54,6 +56,11 @@ public class MavenAdapterFactory extends AdapterFactoryImpl {
 		@Override
 		public Adapter caseMappings(Mappings object) {
 			return createMappingsAdapter();
+		}
+
+		@Override
+		public Adapter caseMatcher(Matcher object) {
+			return createMatcherAdapter();
 		}
 
 		@Override
@@ -162,6 +169,21 @@ public class MavenAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.rmap.Matcher <em>Matcher</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.rmap.Matcher
+	 * @generated
+	 */
+	public Adapter createMatcherAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
 	 * {@link org.eclipse.buckminster.rmap.maven.MavenProvider
 	 * <em>Provider</em>}'. <!-- begin-user-doc --> This default implementation
 	 * returns null so that we can easily ignore cases; it's useful to ignore a
@@ -178,13 +200,14 @@ public class MavenAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.rmap.Properties <em>Properties</em>}'.
-	 * <!-- begin-user-doc --> This default implementation returns null so that
-	 * we can easily ignore cases; it's useful to ignore a case when inheritance
-	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.model.common.Properties
+	 * <em>Properties</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.rmap.Properties
+	 * @see org.eclipse.buckminster.model.common.Properties
 	 * @generated
 	 */
 	public Adapter createPropertiesAdapter() {

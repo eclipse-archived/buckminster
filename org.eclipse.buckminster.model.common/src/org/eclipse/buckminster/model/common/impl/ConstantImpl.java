@@ -6,8 +6,11 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.Constant;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -28,7 +31,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * 
  * @generated
  */
-public class ConstantImpl extends BObjectImpl implements Constant {
+public class ConstantImpl extends ValueImpl implements Constant {
 	/**
 	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -38,7 +41,6 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 	 * @ordered
 	 */
 	protected static final String VALUE_EDEFAULT = null;
-
 	/**
 	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -58,11 +60,17 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 		super();
 	}
 
+	@Override
+	public String checkedGetValue(Map<String, String> properties, int recursionGuard) {
+		return ExpandingProperties.expand(properties, value, recursionGuard + 1);
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -77,6 +85,7 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -91,6 +100,7 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -106,6 +116,7 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -121,7 +132,7 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getValue() {
 		return value;
 	}
@@ -131,7 +142,7 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setValue(String newValue) {
 		String oldValue = value;
 		value = newValue;
@@ -139,25 +150,21 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CONSTANT__VALUE, oldValue, value));
 	}
 
-	@Override
-	public void toString(StringBuilder result) {
-		if (eIsProxy()) {
-			result.append(super.toString());
-			return;
-		}
-
-		result.append(" (value: ");
-		result.append(value);
-		result.append(')');
-	}
-
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
-	public String toStringGen() {
-		return null;
+	@Override
+	public String toString() {
+		if (eIsProxy())
+			return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (value: ");
+		result.append(value);
+		result.append(')');
+		return result.toString();
 	}
 
 	/**
@@ -165,6 +172,7 @@ public class ConstantImpl extends BObjectImpl implements Constant {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.CONSTANT;

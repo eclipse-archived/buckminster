@@ -62,6 +62,14 @@ public interface GroupAndArtifact extends EObject {
 	String getGroupId();
 
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	boolean isMatchFor(String group, String artifact);
+
+	/**
 	 * Sets the value of the '
 	 * {@link org.eclipse.buckminster.rmap.maven.GroupAndArtifact#getArtifactId
 	 * <em>Artifact Id</em>}' attribute. <!-- begin-user-doc --> <!--

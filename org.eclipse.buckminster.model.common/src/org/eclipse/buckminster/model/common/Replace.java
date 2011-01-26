@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.model.common;
 
+import java.util.regex.Pattern;
 import org.eclipse.emf.common.util.EList;
 
 /**
@@ -23,6 +24,8 @@ import org.eclipse.emf.common.util.EList;
  * Quote Pattern</em>}</li>
  * <li>{@link org.eclipse.buckminster.model.common.Replace#getReplacement <em>
  * Replacement</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Replace#getCompiledPattern
+ * <em>Compiled Pattern</em>}</li>
  * </ul>
  * </p>
  * 
@@ -31,6 +34,23 @@ import org.eclipse.emf.common.util.EList;
  * @generated
  */
 public interface Replace extends ValueFilter {
+	/**
+	 * Returns the value of the '<em><b>Compiled Pattern</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Compiled Pattern</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Compiled Pattern</em>' attribute.
+	 * @see org.eclipse.buckminster.model.common.CommonPackage#getReplace_CompiledPattern()
+	 * @model dataType="org.eclipse.buckminster.model.common.Pattern"
+	 *        transient="true" changeable="false" derived="true"
+	 * @generated
+	 */
+	Pattern getCompiledPattern();
+
 	/**
 	 * Returns the value of the '<em><b>Matches</b></em>' containment reference
 	 * list. The list contents are of type
@@ -44,8 +64,8 @@ public interface Replace extends ValueFilter {
 	 * 
 	 * @return the value of the '<em>Matches</em>' containment reference list.
 	 * @see org.eclipse.buckminster.model.common.CommonPackage#getReplace_Matches()
-	 * @model containment="true"
-	 *        extendedMetaData="namespace='##targetNamespace' kind='element'"
+	 * @model containment="true" extendedMetaData=
+	 *        "namespace='##targetNamespace' kind='element' name='match'"
 	 * @generated
 	 */
 	EList<Match> getMatches();

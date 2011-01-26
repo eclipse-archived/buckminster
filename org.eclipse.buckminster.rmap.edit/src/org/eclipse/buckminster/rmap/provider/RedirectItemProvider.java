@@ -47,27 +47,18 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 	}
 
 	/**
-	 * This returns Redirect.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Redirect"));
-	}
-
-	/**
 	 * This returns the property descriptors for the adapted class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
-			addHrefPropertyDescriptor(object);
+			addRedirectToPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -78,6 +69,7 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		Pattern labelValue = ((Redirect) object).getPattern();
@@ -93,12 +85,13 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(Redirect.class)) {
-			case RmapPackage.REDIRECT__HREF:
+			case RmapPackage.REDIRECT__REDIRECT_TO:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
@@ -106,16 +99,16 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 	}
 
 	/**
-	 * This adds a property descriptor for the Href feature. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
+	 * This adds a property descriptor for the Redirect To feature. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected void addHrefPropertyDescriptor(Object object) {
+	protected void addRedirectToPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Redirect_href_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Redirect_href_feature", "_UI_Redirect_type"), RmapPackage.Literals.REDIRECT__HREF, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_Redirect_redirectTo_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Redirect_redirectTo_feature", "_UI_Redirect_type"),
+				RmapPackage.Literals.REDIRECT__REDIRECT_TO, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -125,6 +118,7 @@ public class RedirectItemProvider extends MatcherItemProvider implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

@@ -6,8 +6,12 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
+import java.util.Map;
+
+import org.eclipse.buckminster.model.common.CommonConstants;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.util.VersionHelper;
 import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.emf.common.notify.Notification;
@@ -22,40 +26,14 @@ import org.eclipse.equinox.p2.metadata.Version;
  * The following features are implemented:
  * <ul>
  * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl#getId
- * <em>Id</em>}</li>
- * <li>
  * {@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl#getVersion
  * <em>Version</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.ComponentIdentifierImpl#getType
- * <em>Type</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIdentifier {
-	/**
-	 * The default value of the '{@link #getId() <em>Id</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getId()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String ID_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getId() <em>Id</em>}' attribute. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getId()
-	 * @generated
-	 * @ordered
-	 */
-	protected String id = ID_EDEFAULT;
-
+public class ComponentIdentifierImpl extends ComponentNameImpl implements ComponentIdentifier {
 	/**
 	 * The default value of the '{@link #getVersion() <em>Version</em>}'
 	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -77,26 +55,6 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	protected Version version = VERSION_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getType()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String TYPE_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getType()
-	 * @generated
-	 * @ordered
-	 */
-	protected String type = TYPE_EDEFAULT;
-
-	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -105,22 +63,14 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 		super();
 	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
 	@Override
-	public int compareTo(ComponentIdentifier o) {
+	public int compareTo(ComponentName o) {
 		if (this == o)
 			return 0;
 
-		int cmp = Trivial.compareAllowNull(getId(), o.getId());
-		if (cmp == 0) {
-			cmp = Trivial.compareAllowNull(getVersion(), o.getVersion());
-			if (cmp == 0)
-				cmp = Trivial.compareAllowNull(getType(), o.getType());
-		}
+		int cmp = super.compareTo(o);
+		if (cmp == 0)
+			cmp = Trivial.compareAllowNull(getVersion(), (o instanceof ComponentIdentifier) ? ((ComponentIdentifier) o).getVersion() : null);
 		return cmp;
 	}
 
@@ -129,15 +79,12 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case CommonPackage.COMPONENT_IDENTIFIER__ID:
-				return getId();
 			case CommonPackage.COMPONENT_IDENTIFIER__VERSION:
 				return getVersion();
-			case CommonPackage.COMPONENT_IDENTIFIER__TYPE:
-				return getType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -147,17 +94,19 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case CommonPackage.COMPONENT_IDENTIFIER__ID:
-				return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
 			case CommonPackage.COMPONENT_IDENTIFIER__VERSION:
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
-			case CommonPackage.COMPONENT_IDENTIFIER__TYPE:
-				return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
 		}
 		return super.eIsSet(featureID);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return this == o || (super.equals(o) && Trivial.equalsAllowNull(getVersion(), ((ComponentIdentifier) o).getVersion()));
 	}
 
 	/**
@@ -165,17 +114,12 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case CommonPackage.COMPONENT_IDENTIFIER__ID:
-				setId((String) newValue);
-				return;
 			case CommonPackage.COMPONENT_IDENTIFIER__VERSION:
 				setVersion((Version) newValue);
-				return;
-			case CommonPackage.COMPONENT_IDENTIFIER__TYPE:
-				setType((String) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -186,30 +130,23 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case CommonPackage.COMPONENT_IDENTIFIER__ID:
-				setId(ID_EDEFAULT);
-				return;
 			case CommonPackage.COMPONENT_IDENTIFIER__VERSION:
 				setVersion(VERSION_EDEFAULT);
-				return;
-			case CommonPackage.COMPONENT_IDENTIFIER__TYPE:
-				setType(TYPE_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
 	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
-	public String getId() {
-		return id;
+	public Map<String, String> getProperties() {
+		Map<String, String> p = super.getProperties();
+		if (getVersion() != null)
+			p.put(CommonConstants.COMPONENT_VERSION, getVersion().toString());
+		return p;
 	}
 
 	/**
@@ -217,44 +154,27 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
-	@Override
-	public String getType() {
-		return type;
-	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
 	public Version getVersion() {
 		return version;
 	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setId(String newId) {
-		String oldId = id;
-		id = newId;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.COMPONENT_IDENTIFIER__ID, oldId, id));
+	@Override
+	public int hashCode() {
+		int hc = super.hashCode();
+		hc *= 37;
+		if (version != null)
+			hc += version.hashCode();
+		return hc;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	@Override
-	public void setType(String newType) {
-		String oldType = type;
-		type = newType;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.COMPONENT_IDENTIFIER__TYPE, oldType, type));
+	public boolean matches(ComponentIdentifier ci) {
+		return super.matches(ci) && (getVersion() == null || ci.getVersion() == null || getVersion().equals(ci.getVersion()));
 	}
 
 	/**
@@ -270,20 +190,19 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	}
 
 	@Override
-	public void toString(StringBuilder result) {
-		if (eIsProxy()) {
-			result.append(super.toString());
-			return;
-		}
+	public ComponentName toPureComponentName() {
+		ComponentName cn = new ComponentNameImpl();
+		cn.setId(getId());
+		cn.setType(getType());
+		return cn;
+	}
 
-		result.append(id);
-		if (type != null) {
-			result.append(':');
-			result.append(type);
-		}
-		if (version != null) {
-			result.append('$');
-			result.append(VersionHelper.getHumanReadable(version));
+	@Override
+	public void toString(StringBuilder result) {
+		super.toString(result);
+		result.append('$');
+		if (getVersion() != null) {
+			result.append(VersionHelper.getHumanReadable(getVersion()));
 		}
 	}
 
@@ -301,6 +220,7 @@ public class ComponentIdentifierImpl extends BObjectImpl implements ComponentIde
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.COMPONENT_IDENTIFIER;

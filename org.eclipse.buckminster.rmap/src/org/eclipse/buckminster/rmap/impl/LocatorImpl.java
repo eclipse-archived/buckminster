@@ -13,6 +13,7 @@ import org.eclipse.buckminster.rmap.SearchPath;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
@@ -75,6 +76,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -91,6 +93,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -107,6 +110,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -125,6 +129,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -143,7 +148,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public SearchPath getSearchPath() {
 		return searchPath;
 	}
@@ -153,7 +158,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public boolean isFailOnError() {
 		return failOnError;
 	}
@@ -163,7 +168,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setFailOnError(boolean newFailOnError) {
 		boolean oldFailOnError = failOnError;
 		failOnError = newFailOnError;
@@ -176,7 +181,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setSearchPath(SearchPath newSearchPath) {
 		SearchPath oldSearchPath = searchPath;
 		searchPath = newSearchPath;
@@ -189,6 +194,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
 		if (eIsProxy())
@@ -206,6 +212,7 @@ public class LocatorImpl extends MatcherImpl implements Locator {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return RmapPackage.Literals.LOCATOR;

@@ -6,6 +6,10 @@
  */
 package org.eclipse.buckminster.rmap.util;
 
+import org.eclipse.buckminster.model.common.Properties;
+import org.eclipse.buckminster.model.common.RxAssembly;
+import org.eclipse.buckminster.model.common.RxGroup;
+import org.eclipse.buckminster.model.common.RxPart;
 import org.eclipse.buckminster.rmap.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -39,6 +43,16 @@ public class RmapAdapterFactory extends AdapterFactoryImpl {
 	 */
 	protected RmapSwitch<Adapter> modelSwitch = new RmapSwitch<Adapter>() {
 		@Override
+		public Adapter caseAbstractDocumentRoot(EObject object) {
+			return createAbstractDocumentRootAdapter();
+		}
+
+		@Override
+		public Adapter caseBranchPoint(BranchPoint object) {
+			return createBranchPointAdapter();
+		}
+
+		@Override
 		public Adapter caseDocumentRoot(EObject object) {
 			return createDocumentRootAdapter();
 		}
@@ -69,8 +83,28 @@ public class RmapAdapterFactory extends AdapterFactoryImpl {
 		}
 
 		@Override
+		public Adapter caseRepository(Repository object) {
+			return createRepositoryAdapter();
+		}
+
+		@Override
 		public Adapter caseResourceMap(ResourceMap object) {
 			return createResourceMapAdapter();
+		}
+
+		@Override
+		public Adapter caseRxAssembly(RxAssembly object) {
+			return createRxAssemblyAdapter();
+		}
+
+		@Override
+		public Adapter caseRxGroup(RxGroup object) {
+			return createRxGroupAdapter();
+		}
+
+		@Override
+		public Adapter caseRxPart(RxPart object) {
+			return createRxPartAdapter();
 		}
 
 		@Override
@@ -112,6 +146,21 @@ public class RmapAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.emf.ecore.EObject <em>Abstract Document Root</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.emf.ecore.EObject
+	 * @generated
+	 */
+	public Adapter createAbstractDocumentRootAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates an adapter for the <code>target</code>. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
@@ -120,9 +169,25 @@ public class RmapAdapterFactory extends AdapterFactoryImpl {
 	 * @return the adapter for the <code>target</code>.
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createAdapter(Notifier target) {
 		return modelSwitch.doSwitch((EObject) target);
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.rmap.BranchPoint <em>Branch Point</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.rmap.BranchPoint
+	 * @generated
+	 */
+	public Adapter createBranchPointAdapter() {
+		return null;
 	}
 
 	/**
@@ -183,13 +248,14 @@ public class RmapAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.rmap.Properties <em>Properties</em>}'.
-	 * <!-- begin-user-doc --> This default implementation returns null so that
-	 * we can easily ignore cases; it's useful to ignore a case when inheritance
-	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.model.common.Properties
+	 * <em>Properties</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.rmap.Properties
+	 * @see org.eclipse.buckminster.model.common.Properties
 	 * @generated
 	 */
 	public Adapter createPropertiesAdapter() {
@@ -228,6 +294,21 @@ public class RmapAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.rmap.Repository <em>Repository</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.rmap.Repository
+	 * @generated
+	 */
+	public Adapter createRepositoryAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
 	 * {@link org.eclipse.buckminster.rmap.ResourceMap <em>Resource Map</em>}'.
 	 * <!-- begin-user-doc --> This default implementation returns null so that
 	 * we can easily ignore cases; it's useful to ignore a case when inheritance
@@ -238,6 +319,52 @@ public class RmapAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createResourceMapAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.model.common.RxAssembly
+	 * <em>Rx Assembly</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.RxAssembly
+	 * @generated
+	 */
+	public Adapter createRxAssemblyAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.model.common.RxGroup <em>Rx Group</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.RxGroup
+	 * @generated
+	 */
+	public Adapter createRxGroupAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.model.common.RxPart <em>Rx Part</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.RxPart
+	 * @generated
+	 */
+	public Adapter createRxPartAdapter() {
 		return null;
 	}
 
@@ -311,6 +438,7 @@ public class RmapAdapterFactory extends AdapterFactoryImpl {
 	 * @return whether this factory is applicable for the type of the object.
 	 * @generated
 	 */
+
 	@Override
 	public boolean isFactoryForType(Object object) {
 		if (object == modelPackage) {

@@ -6,6 +6,9 @@
  */
 package org.eclipse.buckminster.rmap.util;
 
+import java.io.IOException;
+import java.util.Map;
+
 import org.eclipse.emf.common.util.URI;
 
 import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
@@ -28,6 +31,11 @@ public class RmapResourceImpl extends XMLResourceImpl {
 	 */
 	public RmapResourceImpl(URI uri) {
 		super(uri);
+	}
+
+	@Override
+	public void load(Map<?, ?> options) throws IOException {
+		super.load(options);
 	}
 
 } // RmapResourceImpl

@@ -13,6 +13,7 @@ import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.RmapPackage;
 import org.eclipse.buckminster.rmap.VersionConverter;
 
+import org.eclipse.buckminster.rmap.VersionSelectorType;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -61,6 +62,7 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
@@ -76,12 +78,14 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
 			addTypePropertyDescriptor(object);
+			addVersionFormatPropertyDescriptor(object);
 			addVersionTypePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
@@ -93,6 +97,7 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
 		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
@@ -104,9 +109,11 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
-		String label = ((VersionConverter) object).getType();
+		VersionSelectorType labelValue = ((VersionConverter) object).getType();
+		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ? getString("_UI_VersionConverter_type") : getString("_UI_VersionConverter_type") + " " + label;
 	}
 
@@ -118,12 +125,14 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(VersionConverter.class)) {
 			case RmapPackage.VERSION_CONVERTER__TYPE:
+			case RmapPackage.VERSION_CONVERTER__VERSION_FORMAT:
 			case RmapPackage.VERSION_CONVERTER__VERSION_TYPE:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
@@ -142,9 +151,22 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 */
 	protected void addTypePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_VersionConverter_type_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_VersionConverter_type_feature", "_UI_VersionConverter_type"), RmapPackage.Literals.VERSION_CONVERTER__TYPE, true, false,
-				false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_VersionConverter_type_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_VersionConverter_type_feature", "_UI_VersionConverter_type"),
+				RmapPackage.Literals.VERSION_CONVERTER__TYPE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Version Format feature. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addVersionFormatPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_VersionConverter_versionFormat_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_VersionConverter_versionFormat_feature", "_UI_VersionConverter_type"),
+				RmapPackage.Literals.VERSION_CONVERTER__VERSION_FORMAT, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -155,8 +177,8 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 */
 	protected void addVersionTypePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_VersionConverter_versionType_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_VersionConverter_versionType_feature", "_UI_VersionConverter_type"),
+				getResourceLocator(), getString("_UI_VersionConverter_versionType_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_VersionConverter_versionType_feature", "_UI_VersionConverter_type"),
 				RmapPackage.Literals.VERSION_CONVERTER__VERSION_TYPE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -167,6 +189,7 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
@@ -179,6 +202,7 @@ public class VersionConverterItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper

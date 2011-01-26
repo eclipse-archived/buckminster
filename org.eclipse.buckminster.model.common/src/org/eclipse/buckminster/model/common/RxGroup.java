@@ -21,8 +21,8 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * <ul>
  * <li>{@link org.eclipse.buckminster.model.common.RxGroup#getRxPartsGroup <em>
  * Rx Parts Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.model.common.RxGroup#getRxPart <em>Rx Part
- * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.RxGroup#getRxParts <em>Rx
+ * Parts</em>}</li>
  * </ul>
  * </p>
  * 
@@ -32,23 +32,24 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  */
 public interface RxGroup extends RxPart {
 	/**
-	 * Returns the value of the '<em><b>Rx Part</b></em>' containment reference
+	 * Returns the value of the '<em><b>Rx Parts</b></em>' containment reference
 	 * list. The list contents are of type
 	 * {@link org.eclipse.buckminster.model.common.RxPart}. <!-- begin-user-doc
 	 * -->
 	 * <p>
-	 * If the meaning of the '<em>Rx Part</em>' containment reference list isn't
-	 * clear, there really should be more of a description here...
+	 * If the meaning of the '<em>Rx Parts</em>' containment reference list
+	 * isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Rx Part</em>' containment reference list.
-	 * @see org.eclipse.buckminster.model.common.CommonPackage#getRxGroup_RxPart()
-	 * @model containment="true" transient="true" changeable="false"
-	 *        volatile="true" derived="true" extendedMetaData="kind='element' name='rxPart' namespace='##targetNamespace' group='rxPart:group'"
+	 * @return the value of the '<em>Rx Parts</em>' containment reference list.
+	 * @see org.eclipse.buckminster.model.common.CommonPackage#getRxGroup_RxParts()
+	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData=
+	 *        "kind='element' name='rxPart' namespace='##targetNamespace' group='rxPart:group'"
 	 * @generated
 	 */
-	EList<RxPart> getRxPart();
+	EList<RxPart> getRxParts();
 
 	/**
 	 * Returns the value of the '<em><b>Rx Parts Group</b></em>' attribute list.

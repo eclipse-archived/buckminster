@@ -6,22 +6,30 @@
  */
 package org.eclipse.buckminster.mspec.impl;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.model.common.ComponentName;
+import org.eclipse.buckminster.model.common.ConflictResolution;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
 import org.eclipse.buckminster.mspec.MaterializationNode;
 import org.eclipse.buckminster.mspec.MaterializationSpec;
 import org.eclipse.buckminster.mspec.MspecPackage;
-
+import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.buckminster.runtime.URLUtils;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -157,6 +165,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -179,6 +188,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -193,6 +203,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -215,8 +226,8 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case MspecPackage.MATERIALIZATION_SPEC__MSPEC_NODES:
@@ -244,6 +255,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -269,9 +281,96 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public ConflictResolution getConflictResolution(ComponentName component, Map<String, String> properties) {
+		MaterializationNode node = getMatchingNode(component, properties);
+		ConflictResolution cr = null;
+		if (node != null)
+			cr = node.getConflictResolution();
+
+		if (cr == null) {
+			cr = getConflictResolution();
+			if (cr == null)
+				cr = CONFLICT_RESOLUTION_EDEFAULT;
+		}
+		return cr;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public URL getContextURL() {
+		Resource resource = eResource();
+		if (resource == null)
+			return null;
+
+		try {
+			return new URL(resource.getURI().toString());
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public IPath getLeafArtifact(ComponentName component, Map<String, String> properties) {
+		MaterializationNode node = getMatchingNode(component, properties);
+		if (node == null)
+			return null;
+		String la = node.getLeafArtifact();
+		return la == null ? null : Path.fromPortableString(la);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public MaterializationNode getMatchingNode(ComponentName component, Map<String, String> properties) {
+		for (MaterializationNode aNode : getMspecNodes()) {
+			Pattern pattern = aNode.getNamePattern();
+			if (!(pattern == null || pattern.matcher(component.getId()).find()))
+				continue;
+
+			String matchingCType = aNode.getComponentType();
+			if (!(matchingCType == null || matchingCType.equals(component.getType())))
+				continue;
+
+			Filter filter = aNode.getFilter();
+			if (!(filter == null || filter.match(properties)))
+				continue;
+			return aNode;
+		}
+		return null;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public String getMaterializer(ComponentName component, Map<String, String> properties) {
+		String mat = null;
+		MaterializationNode node = getMatchingNode(component, properties);
+		if (node != null)
+			mat = node.getMaterializer();
+		if (mat == null)
+			mat = getMaterializer();
+		return mat;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
+
 	public int getMaxParallelJobs() {
 		return maxParallelJobs;
 	}
@@ -281,7 +380,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EList<MaterializationNode> getMspecNodes() {
 		if (mspecNodes == null) {
 			mspecNodes = new EObjectContainmentEList<MaterializationNode>(MaterializationNode.class, this,
@@ -295,7 +394,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getName() {
 		return name;
 	}
@@ -303,9 +402,57 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public String getProjectName(ComponentName component, Map<String, String> properties) {
+		MaterializationNode node = getMatchingNode(component, properties);
+		if (node == null)
+			return null;
+
+		Pattern bindingNamePattern = node.getBindingNamePattern();
+		String bindingNameReplacement = node.getBindingNameReplacement();
+		if (bindingNamePattern == null || bindingNameReplacement == null)
+			return null;
+
+		Matcher matcher = bindingNamePattern.matcher(component.getId());
+		if (matcher.matches()) {
+			String repl = matcher.replaceAll(bindingNameReplacement).trim();
+			if (repl.length() > 0)
+				return repl;
+		}
+		return null;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public URL getResolvedURL(Map<String, String> properties) {
+		if (getContextURL() == null || getUrl() == null)
+			return null;
+		return URLUtils.resolveURL(getContextURL(), ExpandingProperties.expand(properties, getUrl(), 0));
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public IPath getResourcePath(ComponentName component, Map<String, String> properties) {
+		MaterializationNode node = getMatchingNode(component, properties);
+		if (node == null)
+			return null;
+		String path = node.getResourcePath();
+		return path == null ? null : Path.fromPortableString(path);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -313,11 +460,11 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	@Override
-	public String getUrl() {
-		return url;
+	public String getSuffix(ComponentName component, Map<String, String> properties) {
+		MaterializationNode node = getMatchingNode(component, properties);
+		return node == null ? null : node.getSuffix();
 	}
 
 	/**
@@ -325,7 +472,47 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isExcluded(ComponentName component, Map<String, String> properties) {
+		MaterializationNode node = getMatchingNode(component, properties);
+		return node != null && node.isExclude();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isExpand(ComponentName component, Map<String, String> properties) {
+		MaterializationNode node = getMatchingNode(component, properties);
+		return node != null && (node.isUnpack() && node.isExpand());
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isUnpack(ComponentName component, Map<String, String> properties) {
+		MaterializationNode node = getMatchingNode(component, properties);
+		return node != null && node.isUnpack();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
 	public void setMaxParallelJobs(int newMaxParallelJobs) {
 		int oldMaxParallelJobs = maxParallelJobs;
 		maxParallelJobs = newMaxParallelJobs;
@@ -339,7 +526,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -352,7 +539,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setShortDesc(String newShortDesc) {
 		String oldShortDesc = shortDesc;
 		shortDesc = newShortDesc;
@@ -365,7 +552,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setUrl(String newUrl) {
 		String oldUrl = url;
 		url = newUrl;
@@ -378,6 +565,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
 		if (eIsProxy())
@@ -401,6 +589,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return MspecPackage.Literals.MATERIALIZATION_SPEC;

@@ -7,6 +7,7 @@
 package org.eclipse.buckminster.rmap.maven;
 
 import org.eclipse.buckminster.rmap.Provider;
+import org.eclipse.core.runtime.CoreException;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
@@ -26,6 +27,22 @@ import org.eclipse.buckminster.rmap.Provider;
  */
 public interface MavenProvider extends Provider {
 	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	String getComponentName(String groupId, String artifactId);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model exceptions="org.eclipse.buckminster.model.common.CoreException"
+	 * @generated
+	 */
+	MapEntry getMapEntry(String name) throws CoreException;
+
+	/**
 	 * Returns the value of the '<em><b>Mappings</b></em>' containment
 	 * reference. <!-- begin-user-doc -->
 	 * <p>
@@ -37,7 +54,8 @@ public interface MavenProvider extends Provider {
 	 * @return the value of the '<em>Mappings</em>' containment reference.
 	 * @see #setMappings(Mappings)
 	 * @see org.eclipse.buckminster.rmap.maven.MavenPackage#getMavenProvider_Mappings()
-	 * @model containment="true" extendedMetaData="kind='element'"
+	 * @model containment="true" extendedMetaData=
+	 *        "name='mappings' kind='element' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	Mappings getMappings();

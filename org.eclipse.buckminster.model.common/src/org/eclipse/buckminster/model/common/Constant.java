@@ -20,10 +20,9 @@ package org.eclipse.buckminster.model.common;
  * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getConstant()
  * @model
- * @extends BObject
  * @generated
  */
-public interface Constant extends BObject {
+public interface Constant extends Value {
 	/**
 	 * Returns the value of the '<em><b>Value</b></em>' attribute. <!--
 	 * begin-user-doc -->

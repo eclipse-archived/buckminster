@@ -6,12 +6,8 @@
  */
 package org.eclipse.buckminster.rmap;
 
-import org.eclipse.buckminster.model.common.RxPart;
-
-import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.buckminster.model.common.RxAssembly;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
@@ -21,10 +17,10 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * The following features are supported:
  * <ul>
  * <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getBase <em>Base</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getRxPartsGroup <em>Rx
- * Parts Group</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getRxParts <em>Rx Parts
- * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getVersionFormat <em>
+ * Version Format</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.URIMatcher#getVersionType <em>Version
+ * Type</em>}</li>
  * </ul>
  * </p>
  * 
@@ -32,7 +28,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * @model
  * @generated
  */
-public interface URIMatcher extends EObject {
+public interface URIMatcher extends RxAssembly {
 	/**
 	 * Returns the value of the '<em><b>Base</b></em>' attribute. <!--
 	 * begin-user-doc -->
@@ -51,43 +47,46 @@ public interface URIMatcher extends EObject {
 	String getBase();
 
 	/**
-	 * Returns the value of the '<em><b>Rx Parts</b></em>' containment reference
-	 * list. The list contents are of type
-	 * {@link org.eclipse.buckminster.model.common.RxPart}. <!-- begin-user-doc
-	 * -->
-	 * <p>
-	 * If the meaning of the '<em>Rx Parts</em>' containment reference list
-	 * isn't clear, there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Rx Parts</em>' containment reference list.
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getURIMatcher_RxParts()
-	 * @model containment="true" required="true" transient="true"
-	 *        changeable="false" volatile="true" derived="true"
-	 *        extendedMetaData="kind='element' name='rxPart' namespace='http://www.eclipse.org/buckminster/Common-1.0' group='http://www.eclipse.org/buckminster/Common-1.0#rxPart:group'"
+	 * @model kind="operation"
 	 * @generated
 	 */
-	EList<RxPart> getRxParts();
+	String getComponentType();
 
 	/**
-	 * Returns the value of the '<em><b>Rx Parts Group</b></em>' attribute list.
-	 * The list contents are of type
-	 * {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}. <!-- begin-user-doc
-	 * -->
+	 * Returns the value of the '<em><b>Version Format</b></em>' attribute. <!--
+	 * begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Rx Parts Group</em>' attribute list isn't
-	 * clear, there really should be more of a description here...
+	 * If the meaning of the '<em>Version Format</em>' attribute isn't clear,
+	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Rx Parts Group</em>' attribute list.
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getURIMatcher_RxPartsGroup()
-	 * @model unique="false" dataType="org.eclipse.emf.ecore.EFeatureMapEntry"
-	 *        required="true" many="true" extendedMetaData="kind='group' name='rxPart:group' namespace='http://www.eclipse.org/buckminster/Common-1.0'"
+	 * @return the value of the '<em>Version Format</em>' attribute.
+	 * @see #setVersionFormat(String)
+	 * @see org.eclipse.buckminster.rmap.RmapPackage#getURIMatcher_VersionFormat()
+	 * @model
 	 * @generated
 	 */
-	FeatureMap getRxPartsGroup();
+	IVersionFormat getVersionFormat();
+
+	/**
+	 * Returns the value of the '<em><b>Version Type</b></em>' attribute. <!--
+	 * begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Version Type</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Version Type</em>' attribute.
+	 * @see #setVersionType(String)
+	 * @see org.eclipse.buckminster.rmap.RmapPackage#getURIMatcher_VersionType()
+	 * @model
+	 * @generated
+	 */
+	String getVersionType();
 
 	/**
 	 * Sets the value of the '
@@ -100,5 +99,31 @@ public interface URIMatcher extends EObject {
 	 * @generated
 	 */
 	void setBase(String value);
+
+	/**
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.rmap.URIMatcher#getVersionFormat
+	 * <em>Version Format</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Version Format</em>' attribute.
+	 * @see #getVersionFormat()
+	 * @generated
+	 */
+	void setVersionFormat(IVersionFormat value);
+
+	/**
+	 * Sets the value of the '
+	 * {@link org.eclipse.buckminster.rmap.URIMatcher#getVersionType
+	 * <em>Version Type</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @param value
+	 *            the new value of the '<em>Version Type</em>' attribute.
+	 * @see #getVersionType()
+	 * @generated
+	 */
+	void setVersionType(String value);
 
 } // URIMatcher

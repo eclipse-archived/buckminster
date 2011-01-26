@@ -12,9 +12,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
 Export-Package: org.eclipse.buckminster.rmap.pde.provider
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.buckminster.rmap.pde;visibility:=reexport,
- org.eclipse.emf.edit;visibility:=reexport,
- org.eclipse.buckminster.model.common;visibility:=reexport,
- org.eclipse.buckminster.model.common.edit;visibility:=reexport,
- org.eclipse.buckminster.rmap;visibility:=reexport,
  org.eclipse.buckminster.rmap.edit;visibility:=reexport
 Bundle-ActivationPolicy: lazy

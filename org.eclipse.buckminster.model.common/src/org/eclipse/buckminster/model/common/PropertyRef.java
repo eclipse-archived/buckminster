@@ -20,10 +20,9 @@ package org.eclipse.buckminster.model.common;
  * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getPropertyRef()
  * @model
- * @extends BObject
  * @generated
  */
-public interface PropertyRef extends BObject {
+public interface PropertyRef extends Value {
 	/**
 	 * Returns the value of the '<em><b>Key</b></em>' attribute. <!--
 	 * begin-user-doc -->

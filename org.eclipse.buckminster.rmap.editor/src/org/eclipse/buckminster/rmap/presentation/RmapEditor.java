@@ -142,6 +142,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		 * 
 		 * @generated
 		 */
+
 		@Override
 		public Object[] getChildren(Object object) {
 			Object parent = super.getParent(object);
@@ -153,6 +154,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		 * 
 		 * @generated
 		 */
+
 		@Override
 		public Object[] getElements(Object object) {
 			Object parent = super.getParent(object);
@@ -164,6 +166,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		 * 
 		 * @generated
 		 */
+
 		@Override
 		public Object getParent(Object object) {
 			return null;
@@ -174,6 +177,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		 * 
 		 * @generated
 		 */
+
 		@Override
 		public boolean hasChildren(Object object) {
 			Object parent = super.getParent(object);
@@ -307,7 +311,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * @generated
 	 */
 	protected IPartListener partListener = new IPartListener() {
-		@Override
 		public void partActivated(IWorkbenchPart p) {
 			if (p instanceof ContentOutline) {
 				if (((ContentOutline) p).getCurrentPage() == contentOutlinePage) {
@@ -325,22 +328,18 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 			}
 		}
 
-		@Override
 		public void partBroughtToTop(IWorkbenchPart p) {
 			// Ignore.
 		}
 
-		@Override
 		public void partClosed(IWorkbenchPart p) {
 			// Ignore.
 		}
 
-		@Override
 		public void partDeactivated(IWorkbenchPart p) {
 			// Ignore.
 		}
 
-		@Override
 		public void partOpened(IWorkbenchPart p) {
 			// Ignore.
 		}
@@ -410,7 +409,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 
 						if (updateProblemIndication) {
 							getSite().getShell().getDisplay().asyncExec(new Runnable() {
-								@Override
 								public void run() {
 									updateProblemIndication();
 								}
@@ -442,7 +440,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * @generated
 	 */
 	protected IResourceChangeListener resourceChangeListener = new IResourceChangeListener() {
-		@Override
 		public void resourceChanged(IResourceChangeEvent event) {
 			IResourceDelta delta = event.getDelta();
 			try {
@@ -459,7 +456,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 						return removedResources;
 					}
 
-					@Override
 					public boolean visit(IResourceDelta delta) {
 						if (delta.getResource().getType() == IResource.FILE) {
 							if (delta.getKind() == IResourceDelta.REMOVED || delta.getKind() == IResourceDelta.CHANGED
@@ -485,7 +481,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 
 				if (!visitor.getRemovedResources().isEmpty()) {
 					getSite().getShell().getDisplay().asyncExec(new Runnable() {
-						@Override
 						public void run() {
 							removedResources.addAll(visitor.getRemovedResources());
 							if (!isDirty()) {
@@ -497,7 +492,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 
 				if (!visitor.getChangedResources().isEmpty()) {
 					getSite().getShell().getDisplay().asyncExec(new Runnable() {
-						@Override
 						public void run() {
 							changedResources.addAll(visitor.getChangedResources());
 							if (getSite().getPage().getActiveEditor() == RmapEditor.this) {
@@ -529,7 +523,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		selectionChangedListeners.add(listener);
 	}
@@ -548,8 +542,8 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 			basicDiagnostic.merge(EcoreUtil.computeDiagnostic(resource, true));
 			return basicDiagnostic;
 		} else if (exception != null) {
-			return new BasicDiagnostic(Diagnostic.ERROR, "org.eclipse.buckminster.rmap.editor", 0, getString("_UI_CreateModelError_message", resource
-					.getURI()), new Object[] { exception });
+			return new BasicDiagnostic(Diagnostic.ERROR, "org.eclipse.buckminster.rmap.editor", 0, getString("_UI_CreateModelError_message",
+					resource.getURI()), new Object[] { exception });
 		} else {
 			return Diagnostic.OK_INSTANCE;
 		}
@@ -588,6 +582,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void createPages() {
 		// Creates the model from the editor input
@@ -615,7 +610,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 			setPageText(pageIndex, getString("_UI_SelectionPage_label"));
 
 			getSite().getShell().getDisplay().asyncExec(new Runnable() {
-				@Override
 				public void run() {
 					setActivePage(0);
 				}
@@ -639,7 +633,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		});
 
 		getSite().getShell().getDisplay().asyncExec(new Runnable() {
-			@Override
 			public void run() {
 				updateProblemIndication();
 			}
@@ -651,6 +644,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void dispose() {
 		updateProblemIndication = false;
@@ -682,6 +676,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
 		// Save only resources that have actually changed.
@@ -742,6 +737,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void doSaveAs() {
 		SaveAsDialog saveAsDialog = new SaveAsDialog(getSite().getShell());
@@ -779,8 +775,8 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("rawtypes")
 	@Override
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class key) {
 		if (key.equals(IContentOutlinePage.class)) {
 			return showOutlineView() ? getContentOutlinePage() : null;
@@ -856,7 +852,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 			contentOutlinePage.addSelectionChangedListener(new ISelectionChangedListener() {
 				// This ensures that we handle selections correctly.
 				//
-				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					handleContentOutlineSelection(event.getSelection());
 				}
@@ -875,7 +870,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EditingDomain getEditingDomain() {
 		return editingDomain;
 	}
@@ -914,7 +909,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ISelection getSelection() {
 		return editorSelection;
 	}
@@ -925,7 +920,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Viewer getViewer() {
 		return currentViewer;
 	}
@@ -935,7 +930,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void gotoMarker(IMarker marker) {
 		try {
 			if (marker.getType().equals(EValidator.MARKER)) {
@@ -986,6 +981,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void init(IEditorSite site, IEditorInput editorInput) {
 		setSite(site);
@@ -1002,6 +998,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean isDirty() {
 		return ((BasicCommandStack) editingDomain.getCommandStack()).isSaveNeeded();
@@ -1013,6 +1010,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean isSaveAsAllowed() {
 		return true;
@@ -1025,7 +1023,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void menuAboutToShow(IMenuManager menuManager) {
 		((IMenuListener) getEditorSite().getActionBarContributor()).menuAboutToShow(menuManager);
 	}
@@ -1036,7 +1034,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		selectionChangedListeners.remove(listener);
 	}
@@ -1059,7 +1057,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 					// This just notifies those things that are affected by the
 					// section.
 					//
-					@Override
 					public void selectionChanged(SelectionChangedEvent selectionChangedEvent) {
 						setSelection(selectionChangedEvent.getSelection());
 					}
@@ -1094,6 +1091,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void setFocus() {
 		getControl(getActivePage()).setFocus();
@@ -1106,7 +1104,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setSelection(ISelection selection) {
 		editorSelection = selection;
 
@@ -1128,7 +1126,6 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		//
 		if (theSelection != null && !theSelection.isEmpty()) {
 			Runnable runnable = new Runnable() {
-				@Override
 				public void run() {
 					// Try to select the items in the current content viewer of
 					// the editor.
@@ -1217,6 +1214,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void firePropertyChange(int action) {
 		super.firePropertyChange(action);
@@ -1343,10 +1341,8 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 		// be the selection of the viewer with focus.
 		//
 		commandStack.addCommandStackListener(new CommandStackListener() {
-			@Override
 			public void commandStackChanged(final EventObject event) {
 				getContainer().getDisplay().asyncExec(new Runnable() {
-					@Override
 					public void run() {
 						firePropertyChange(IEditorPart.PROP_DIRTY);
 
@@ -1397,6 +1393,7 @@ public class RmapEditor extends MultiPageEditorPart implements IEditingDomainPro
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void pageChange(int pageIndex) {
 		super.pageChange(pageIndex);

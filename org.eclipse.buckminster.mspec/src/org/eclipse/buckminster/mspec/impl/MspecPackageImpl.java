@@ -7,21 +7,18 @@
 package org.eclipse.buckminster.mspec.impl;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
-
-import org.eclipse.buckminster.mspec.ConflictResolution;
 import org.eclipse.buckminster.mspec.MaterializationDirective;
 import org.eclipse.buckminster.mspec.MaterializationNode;
 import org.eclipse.buckminster.mspec.MaterializationSpec;
 import org.eclipse.buckminster.mspec.MspecFactory;
 import org.eclipse.buckminster.mspec.MspecPackage;
 import org.eclipse.buckminster.mspec.Unpack;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EGenericType;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 /**
@@ -65,13 +62,6 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * @generated
 	 */
 	private EClass unpackEClass = null;
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	private EEnum conflictResolutionEEnum = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -169,11 +159,8 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 
 		// Create classes and their features
 		documentRootEClass = createEClass(DOCUMENT_ROOT);
-		createEAttribute(documentRootEClass, DOCUMENT_ROOT__MIXED);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__XMLNS_PREFIX_MAP);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__XSI_SCHEMA_LOCATION);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__PROPERTY);
-		createEReference(documentRootEClass, DOCUMENT_ROOT__PROPERTY_ELEMENT);
 		createEReference(documentRootEClass, DOCUMENT_ROOT__MSPEC);
 
 		materializationNodeEClass = createEClass(MATERIALIZATION_NODE);
@@ -188,13 +175,11 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 		createEAttribute(materializationNodeEClass, MATERIALIZATION_NODE__FILTER);
 
 		materializationDirectiveEClass = createEClass(MATERIALIZATION_DIRECTIVE);
-		createEReference(materializationDirectiveEClass, MATERIALIZATION_DIRECTIVE__DOCUMENTATION);
-		createEAttribute(materializationDirectiveEClass, MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP);
-		createEReference(materializationDirectiveEClass, MATERIALIZATION_DIRECTIVE__PROPERTIES);
 		createEAttribute(materializationDirectiveEClass, MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION);
 		createEAttribute(materializationDirectiveEClass, MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION);
 		createEAttribute(materializationDirectiveEClass, MATERIALIZATION_DIRECTIVE__MATERIALIZER);
 		createEAttribute(materializationDirectiveEClass, MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION);
+		createEReference(materializationDirectiveEClass, MATERIALIZATION_DIRECTIVE__DOCUMENTATION);
 
 		materializationSpecEClass = createEClass(MATERIALIZATION_SPEC);
 		createEReference(materializationSpecEClass, MATERIALIZATION_SPEC__MSPEC_NODES);
@@ -206,9 +191,6 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 		unpackEClass = createEClass(UNPACK);
 		createEAttribute(unpackEClass, UNPACK__EXPAND);
 		createEAttribute(unpackEClass, UNPACK__SUFFIX);
-
-		// Create enums
-		conflictResolutionEEnum = createEEnum(CONFLICT_RESOLUTION);
 	}
 
 	/**
@@ -216,17 +198,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
-	public EEnum getConflictResolution() {
-		return conflictResolutionEEnum;
-	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
 	public EClass getDocumentRoot() {
 		return documentRootEClass;
 	}
@@ -236,58 +208,8 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
-	public EAttribute getDocumentRoot_Mixed() {
-		return (EAttribute) documentRootEClass.getEStructuralFeatures().get(0);
-	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
 	public EReference getDocumentRoot_Mspec() {
-		return (EReference) documentRootEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EReference getDocumentRoot_Property() {
-		return (EReference) documentRootEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EReference getDocumentRoot_PropertyElement() {
-		return (EReference) documentRootEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EReference getDocumentRoot_XMLNSPrefixMap() {
-		return (EReference) documentRootEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EReference getDocumentRoot_XSISchemaLocation() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -296,7 +218,27 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
+	public EReference getDocumentRoot_XMLNSPrefixMap() {
+		return (EReference) documentRootEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	public EReference getDocumentRoot_XSISchemaLocation() {
+		return (EReference) documentRootEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
 	public EClass getMaterializationDirective() {
 		return materializationDirectiveEClass;
 	}
@@ -306,9 +248,9 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationDirective_ConflictResolution() {
-		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(3);
+		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -316,9 +258,9 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EReference getMaterializationDirective_Documentation() {
-		return (EReference) materializationDirectiveEClass.getEStructuralFeatures().get(0);
+		return (EReference) materializationDirectiveEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -326,38 +268,8 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationDirective_InstallLocation() {
-		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EAttribute getMaterializationDirective_Materializer() {
-		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EReference getMaterializationDirective_Properties() {
-		return (EReference) materializationDirectiveEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public EAttribute getMaterializationDirective_PropertyGroup() {
 		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -366,9 +278,9 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
-	public EAttribute getMaterializationDirective_WorkspaceLocation() {
-		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(6);
+
+	public EAttribute getMaterializationDirective_Materializer() {
+		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -376,7 +288,17 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
+	public EAttribute getMaterializationDirective_WorkspaceLocation() {
+		return (EAttribute) materializationDirectiveEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
 	public EClass getMaterializationNode() {
 		return materializationNodeEClass;
 	}
@@ -386,7 +308,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationNode_BindingNamePattern() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(5);
 	}
@@ -396,7 +318,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationNode_BindingNameReplacement() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(6);
 	}
@@ -406,7 +328,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationNode_ComponentType() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(2);
 	}
@@ -416,7 +338,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationNode_Exclude() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(4);
 	}
@@ -426,7 +348,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationNode_Filter() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(8);
 	}
@@ -436,7 +358,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationNode_LeafArtifact() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(1);
 	}
@@ -446,7 +368,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationNode_NamePattern() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(0);
 	}
@@ -456,7 +378,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationNode_ResourcePath() {
 		return (EAttribute) materializationNodeEClass.getEStructuralFeatures().get(3);
 	}
@@ -466,7 +388,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EReference getMaterializationNode_Unpack() {
 		return (EReference) materializationNodeEClass.getEStructuralFeatures().get(7);
 	}
@@ -476,7 +398,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EClass getMaterializationSpec() {
 		return materializationSpecEClass;
 	}
@@ -486,7 +408,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationSpec_MaxParallelJobs() {
 		return (EAttribute) materializationSpecEClass.getEStructuralFeatures().get(4);
 	}
@@ -496,7 +418,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EReference getMaterializationSpec_MspecNodes() {
 		return (EReference) materializationSpecEClass.getEStructuralFeatures().get(0);
 	}
@@ -506,7 +428,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationSpec_Name() {
 		return (EAttribute) materializationSpecEClass.getEStructuralFeatures().get(1);
 	}
@@ -516,7 +438,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationSpec_ShortDesc() {
 		return (EAttribute) materializationSpecEClass.getEStructuralFeatures().get(2);
 	}
@@ -526,7 +448,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getMaterializationSpec_Url() {
 		return (EAttribute) materializationSpecEClass.getEStructuralFeatures().get(3);
 	}
@@ -536,7 +458,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public MspecFactory getMspecFactory() {
 		return (MspecFactory) getEFactoryInstance();
 	}
@@ -546,7 +468,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EClass getUnpack() {
 		return unpackEClass;
 	}
@@ -556,7 +478,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getUnpack_Expand() {
 		return (EAttribute) unpackEClass.getEStructuralFeatures().get(0);
 	}
@@ -566,7 +488,7 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EAttribute getUnpack_Suffix() {
 		return (EAttribute) unpackEClass.getEStructuralFeatures().get(1);
 	}
@@ -596,21 +518,17 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		documentRootEClass.getESuperTypes().add(theCommonPackage.getAbstractDocumentRoot());
 		materializationNodeEClass.getESuperTypes().add(this.getMaterializationDirective());
+		materializationDirectiveEClass.getESuperTypes().add(theCommonPackage.getProperties());
 		materializationSpecEClass.getESuperTypes().add(this.getMaterializationDirective());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(documentRootEClass, null, "DocumentRoot", !IS_ABSTRACT, !IS_INTERFACE, !IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDocumentRoot_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, null, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_XMLNSPrefixMap(), ecorePackage.getEStringToStringMapEntry(), null, "xMLNSPrefixMap", null, 0, -1, null,
 				IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_XSISchemaLocation(), ecorePackage.getEStringToStringMapEntry(), null, "xSISchemaLocation", null, 0, -1, null,
 				IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_Property(), theCommonPackage.getPropertyConstant(), null, "property", null, 0, -2, null, IS_TRANSIENT,
-				IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-		initEReference(getDocumentRoot_PropertyElement(), theCommonPackage.getPropertyElement(), null, "propertyElement", null, 0, -2, null,
-				IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEReference(getDocumentRoot_Mspec(), this.getMaterializationSpec(), null, "mspec", null, 1, 1, null, !IS_TRANSIENT, !IS_VOLATILE,
 				IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -635,29 +553,29 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 		initEAttribute(getMaterializationNode_Filter(), theCommonPackage.getFilter(), "filter", null, 0, 1, MaterializationNode.class, !IS_TRANSIENT,
 				!IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		addEOperation(materializationNodeEClass, ecorePackage.getEBoolean(), "isExpand", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(materializationNodeEClass, ecorePackage.getEBoolean(), "isUnpack", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(materializationNodeEClass, ecorePackage.getEString(), "getSuffix", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(materializationDirectiveEClass, MaterializationDirective.class, "MaterializationDirective", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getMaterializationDirective_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null, 0, 1,
-				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMaterializationDirective_PropertyGroup(), ecorePackage.getEFeatureMapEntry(), "propertyGroup", null, 1, -1,
-				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED,
+		initEAttribute(getMaterializationDirective_ConflictResolution(), theCommonPackage.getConflictResolution(), "conflictResolution", "UPDATE", 0,
+				1, MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
 				IS_ORDERED);
-		initEReference(getMaterializationDirective_Properties(), theCommonPackage.getProperty(), null, "properties", null, 1, -1,
-				MaterializationDirective.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
-				IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-		initEAttribute(getMaterializationDirective_ConflictResolution(), this.getConflictResolution(), "conflictResolution", "UPDATE", 0, 1,
-				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
-				IS_ORDERED);
-		initEAttribute(getMaterializationDirective_InstallLocation(), ecorePackage.getEString(), "installLocation", null, 0, 1,
+		initEAttribute(getMaterializationDirective_InstallLocation(), theCommonPackage.getIPath(), "installLocation", null, 0, 1,
 				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
 				IS_ORDERED);
 		initEAttribute(getMaterializationDirective_Materializer(), ecorePackage.getEString(), "materializer", null, 0, 1,
 				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
 				IS_ORDERED);
-		initEAttribute(getMaterializationDirective_WorkspaceLocation(), ecorePackage.getEString(), "workspaceLocation", null, 0, 1,
+		initEAttribute(getMaterializationDirective_WorkspaceLocation(), theCommonPackage.getIPath(), "workspaceLocation", null, 0, 1,
 				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED,
 				IS_ORDERED);
+		initEReference(getMaterializationDirective_Documentation(), theCommonPackage.getDocumentation(), null, "documentation", null, 0, 1,
+				MaterializationDirective.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE,
+				IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(materializationSpecEClass, MaterializationSpec.class, "MaterializationSpec", !IS_ABSTRACT, !IS_INTERFACE,
 				IS_GENERATED_INSTANCE_CLASS);
@@ -673,18 +591,111 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 		initEAttribute(getMaterializationSpec_MaxParallelJobs(), ecorePackage.getEInt(), "maxParallelJobs", null, 0, 1, MaterializationSpec.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		EOperation op = addEOperation(materializationSpecEClass, this.getMaterializationNode(), "getMatchingNode", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		EGenericType g1 = createEGenericType(ecorePackage.getEMap());
+		EGenericType g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, theCommonPackage.getConflictResolution(), "getConflictResolution", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(materializationSpecEClass, theCommonPackage.getURL(), "getContextURL", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, theCommonPackage.getIPath(), "getLeafArtifact", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEString(), "getMaterializer", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEString(), "getProjectName", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, theCommonPackage.getURL(), "getResolvedURL", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, theCommonPackage.getIPath(), "getResourcePath", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEString(), "getSuffix", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEBoolean(), "isExcluded", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEBoolean(), "isExpand", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(materializationSpecEClass, ecorePackage.getEBoolean(), "isUnpack", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theCommonPackage.getComponentName(), "component", 0, 1, IS_UNIQUE, IS_ORDERED);
+		g1 = createEGenericType(ecorePackage.getEMap());
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		g2 = createEGenericType(ecorePackage.getEString());
+		g1.getETypeArguments().add(g2);
+		addEParameter(op, g1, "properties", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(unpackEClass, Unpack.class, "Unpack", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getUnpack_Expand(), ecorePackage.getEBoolean(), "expand", "true", 0, 1, Unpack.class, !IS_TRANSIENT, !IS_VOLATILE,
 				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getUnpack_Suffix(), ecorePackage.getEString(), "suffix", null, 0, 1, Unpack.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE,
 				!IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		// Initialize enums and add enum literals
-		initEEnum(conflictResolutionEEnum, ConflictResolution.class, "ConflictResolution");
-		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.FAIL);
-		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.KEEP);
-		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.REPLACE);
-		addEEnumLiteral(conflictResolutionEEnum, ConflictResolution.UPDATE);
 
 		// Create resource
 		createResource(eNS_URI);
@@ -704,20 +715,12 @@ public class MspecPackageImpl extends EPackageImpl implements MspecPackage {
 	protected void createExtendedMetaDataAnnotations() {
 		String source = "http:///org/eclipse/emf/ecore/util/ExtendedMetaData";
 		addAnnotation(documentRootEClass, source, new String[] { "name", "", "kind", "mixed" });
-		addAnnotation(getDocumentRoot_Mixed(), source, new String[] { "kind", "elementWildcard", "name", ":mixed" });
 		addAnnotation(getDocumentRoot_XMLNSPrefixMap(), source, new String[] { "kind", "attribute", "name", "xmlns:prefix" });
 		addAnnotation(getDocumentRoot_XSISchemaLocation(), source, new String[] { "kind", "attribute", "name", "xsi:schemaLocation" });
-		addAnnotation(getDocumentRoot_Property(), source, new String[] { "kind", "element", "name", "property", "namespace", "##targetNamespace",
-				"affiliation", "http://www.eclipse.org/buckminster/Common-1.0#basicProperty" });
-		addAnnotation(getDocumentRoot_PropertyElement(), source, new String[] { "kind", "element", "name", "propertyElement", "namespace",
-				"##targetNamespace", "affiliation", "http://www.eclipse.org/buckminster/Common-1.0#basicProperty" });
 		addAnnotation(getDocumentRoot_Mspec(), source, new String[] { "kind", "element", "namespace", "##targetNamespace" });
 		addAnnotation(getMaterializationNode_Unpack(), source, new String[] { "kind", "element", "name", "unpack", "namespace", "##targetNamespace" });
 		addAnnotation(getMaterializationDirective_Documentation(), source, new String[] { "kind", "element", "namespace", "##targetNamespace" });
-		addAnnotation(getMaterializationDirective_PropertyGroup(), source, new String[] { "kind", "group", "name", "basicProperty:group",
-				"namespace", "http://www.eclipse.org/buckminster/Common-1.0" });
-		addAnnotation(getMaterializationDirective_Properties(), source, new String[] { "kind", "element", "name", "basicProperty", "namespace",
-				"http://www.eclipse.org/buckminster/Common-1.0", "group", "http://www.eclipse.org/buckminster/Common-1.0#basicProperty:group" });
+		addAnnotation(materializationSpecEClass, source, new String[] { "name", "mspec" });
 		addAnnotation(getMaterializationSpec_MspecNodes(), source, new String[] { "name", "mspecNode", "kind", "element", "namespace",
 				"##targetNamespace" });
 	}

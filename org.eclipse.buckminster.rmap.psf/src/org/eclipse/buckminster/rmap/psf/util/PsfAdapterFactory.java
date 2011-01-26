@@ -6,7 +6,8 @@
  */
 package org.eclipse.buckminster.rmap.psf.util;
 
-import org.eclipse.buckminster.rmap.Properties;
+import org.eclipse.buckminster.model.common.Properties;
+import org.eclipse.buckminster.rmap.Matcher;
 import org.eclipse.buckminster.rmap.Provider;
 
 import org.eclipse.buckminster.rmap.psf.*;
@@ -41,6 +42,11 @@ public class PsfAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	protected PsfSwitch<Adapter> modelSwitch = new PsfSwitch<Adapter>() {
+		@Override
+		public Adapter caseMatcher(Matcher object) {
+			return createMatcherAdapter();
+		}
+
 		@Override
 		public Adapter caseProperties(Properties object) {
 			return createPropertiesAdapter();
@@ -101,13 +107,29 @@ public class PsfAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.rmap.Properties <em>Properties</em>}'.
-	 * <!-- begin-user-doc --> This default implementation returns null so that
-	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * {@link org.eclipse.buckminster.rmap.Matcher <em>Matcher</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance
 	 * will catch all the cases anyway. <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.rmap.Properties
+	 * @see org.eclipse.buckminster.rmap.Matcher
+	 * @generated
+	 */
+	public Adapter createMatcherAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.model.common.Properties
+	 * <em>Properties</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.Properties
 	 * @generated
 	 */
 	public Adapter createPropertiesAdapter() {

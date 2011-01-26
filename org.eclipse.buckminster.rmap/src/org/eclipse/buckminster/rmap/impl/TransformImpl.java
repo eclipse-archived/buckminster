@@ -6,10 +6,12 @@
  */
 package org.eclipse.buckminster.rmap.impl;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.rmap.RmapPackage;
 import org.eclipse.buckminster.rmap.Transform;
+import org.eclipse.buckminster.rmap.util.TransformMismatchException;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -48,6 +50,19 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * @ordered
 	 */
 	protected static final Pattern FROM_PATTERN_EDEFAULT = null;
+
+	private static String replace(String source, Pattern pattern, String replacement) {
+		Matcher matcher = pattern.matcher(source);
+		if (matcher.find()) {
+			StringBuffer sb = new StringBuffer();
+			do {
+				matcher.appendReplacement(sb, replacement);
+			} while (matcher.find());
+			matcher.appendTail(sb);
+			return sb.toString();
+		}
+		return null;
+	}
 
 	/**
 	 * The cached value of the '{@link #getFromPattern() <em>From Pattern</em>}'
@@ -137,6 +152,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -157,6 +173,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -177,6 +194,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -201,6 +219,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -225,7 +244,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Pattern getFromPattern() {
 		return fromPattern;
 	}
@@ -235,7 +254,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getFromReplacement() {
 		return fromReplacement;
 	}
@@ -245,7 +264,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Pattern getToPattern() {
 		return toPattern;
 	}
@@ -255,7 +274,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getToReplacement() {
 		return toReplacement;
 	}
@@ -265,7 +284,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setFromPattern(Pattern newFromPattern) {
 		Pattern oldFromPattern = fromPattern;
 		fromPattern = newFromPattern;
@@ -278,7 +297,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setFromReplacement(String newFromReplacement) {
 		String oldFromReplacement = fromReplacement;
 		fromReplacement = newFromReplacement;
@@ -291,7 +310,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setToPattern(Pattern newToPattern) {
 		Pattern oldToPattern = toPattern;
 		toPattern = newToPattern;
@@ -304,7 +323,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setToReplacement(String newToReplacement) {
 		String oldToReplacement = toReplacement;
 		toReplacement = newToReplacement;
@@ -317,6 +336,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
 		if (eIsProxy())
@@ -338,11 +358,53 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public String transformFrom(String source) throws TransformMismatchException {
+		return transform(source, fromPattern, fromReplacement, toPattern, toReplacement);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public String transformTo(String source) throws TransformMismatchException {
+		return transform(source, toPattern, toReplacement, fromPattern, fromReplacement);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return RmapPackage.Literals.TRANSFORM;
+	}
+
+	private String transform(String source, Pattern pattern, String replacement, Pattern reversePattern, String reverseReplacement)
+			throws TransformMismatchException {
+		String result = replace(source, pattern, replacement);
+		if (result == null)
+			return null;
+
+		String reverse = replace(result, reversePattern, reverseReplacement);
+		if (reverse == null)
+			//
+			// Matches only one direction. Don't replace then.
+			//
+			return null;
+
+		// This pattern was possible to replace in both directions. The result
+		// should
+		// be the same in that case.
+		//
+		if (source.equals(reverse))
+			return result;
+
+		throw new TransformMismatchException(this);
 	}
 
 } // TransformImpl

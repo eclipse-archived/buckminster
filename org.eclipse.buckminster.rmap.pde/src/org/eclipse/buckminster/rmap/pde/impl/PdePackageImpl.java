@@ -134,7 +134,6 @@ public class PdePackageImpl extends EPackageImpl implements PdePackage {
 	 * 
 	 * @generated
 	 */
-	@Override
 	public PdeFactory getPdeFactory() {
 		return (PdeFactory) getEFactoryInstance();
 	}
@@ -144,7 +143,6 @@ public class PdePackageImpl extends EPackageImpl implements PdePackage {
 	 * 
 	 * @generated
 	 */
-	@Override
 	public EClass getPDEMapProvider() {
 		return pdeMapProviderEClass;
 	}

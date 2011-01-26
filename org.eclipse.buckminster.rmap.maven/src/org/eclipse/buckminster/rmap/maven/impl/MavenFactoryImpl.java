@@ -68,6 +68,7 @@ public class MavenFactoryImpl extends EFactoryImpl implements MavenFactory {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
@@ -84,12 +85,16 @@ public class MavenFactoryImpl extends EFactoryImpl implements MavenFactory {
 		}
 	}
 
+	public MapEntry createDefaultMapEntry(String name) {
+		return MavenProviderImpl.getDefaultMapEntry(name);
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public GroupAndArtifact createGroupAndArtifact() {
 		GroupAndArtifactImpl groupAndArtifact = new GroupAndArtifactImpl();
 		return groupAndArtifact;
@@ -100,7 +105,7 @@ public class MavenFactoryImpl extends EFactoryImpl implements MavenFactory {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public MapEntry createMapEntry() {
 		MapEntryImpl mapEntry = new MapEntryImpl();
 		return mapEntry;
@@ -111,7 +116,7 @@ public class MavenFactoryImpl extends EFactoryImpl implements MavenFactory {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Mappings createMappings() {
 		MappingsImpl mappings = new MappingsImpl();
 		return mappings;
@@ -122,10 +127,14 @@ public class MavenFactoryImpl extends EFactoryImpl implements MavenFactory {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public MavenProvider createMavenProvider() {
 		MavenProviderImpl mavenProvider = new MavenProviderImpl();
 		return mavenProvider;
+	}
+
+	public String getDefaultName(String groupId, String artifactId) {
+		return MavenProviderImpl.getDefaultName(groupId, artifactId);
 	}
 
 	/**
@@ -133,7 +142,7 @@ public class MavenFactoryImpl extends EFactoryImpl implements MavenFactory {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public MavenPackage getMavenPackage() {
 		return (MavenPackage) getEPackage();
 	}

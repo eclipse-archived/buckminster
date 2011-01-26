@@ -8,7 +8,9 @@ package org.eclipse.buckminster.rmap.maven.util;
 
 import java.util.List;
 
-import org.eclipse.buckminster.rmap.Properties;
+import org.eclipse.buckminster.model.common.Properties;
+
+import org.eclipse.buckminster.rmap.Matcher;
 import org.eclipse.buckminster.rmap.Provider;
 
 import org.eclipse.buckminster.rmap.maven.*;
@@ -95,6 +97,23 @@ public class MavenSwitch<T> {
 	 * @generated
 	 */
 	public T caseMappings(Mappings object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Matcher</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Matcher</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMatcher(Matcher object) {
 		return null;
 	}
 
@@ -238,6 +257,8 @@ public class MavenSwitch<T> {
 					result = caseProvider(mavenProvider);
 				if (result == null)
 					result = caseProperties(mavenProvider);
+				if (result == null)
+					result = caseMatcher(mavenProvider);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;

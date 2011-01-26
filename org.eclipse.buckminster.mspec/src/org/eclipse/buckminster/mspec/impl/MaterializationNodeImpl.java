@@ -273,6 +273,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -303,6 +304,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -317,6 +319,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -348,6 +351,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -387,6 +391,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -426,7 +431,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Pattern getBindingNamePattern() {
 		return bindingNamePattern;
 	}
@@ -436,7 +441,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getBindingNameReplacement() {
 		return bindingNameReplacement;
 	}
@@ -446,7 +451,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getComponentType() {
 		return componentType;
 	}
@@ -456,7 +461,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Filter getFilter() {
 		return filter;
 	}
@@ -466,7 +471,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getLeafArtifact() {
 		return leafArtifact;
 	}
@@ -476,7 +481,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Pattern getNamePattern() {
 		return namePattern;
 	}
@@ -486,7 +491,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getResourcePath() {
 		return resourcePath;
 	}
@@ -494,9 +499,18 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public String getSuffix() {
+		return getUnpack() == null ? null : getUnpack().getSuffix();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Unpack getUnpack() {
 		return unpack;
 	}
@@ -506,7 +520,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public boolean isExclude() {
 		return exclude;
 	}
@@ -514,9 +528,27 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public boolean isExpand() {
+		return getUnpack() == null ? false : getUnpack().isExpand();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated NOT
+	 */
+	public boolean isUnpack() {
+		return getUnpack() != null;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setBindingNamePattern(Pattern newBindingNamePattern) {
 		Pattern oldBindingNamePattern = bindingNamePattern;
 		bindingNamePattern = newBindingNamePattern;
@@ -530,7 +562,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setBindingNameReplacement(String newBindingNameReplacement) {
 		String oldBindingNameReplacement = bindingNameReplacement;
 		bindingNameReplacement = newBindingNameReplacement;
@@ -544,7 +576,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setComponentType(String newComponentType) {
 		String oldComponentType = componentType;
 		componentType = newComponentType;
@@ -557,7 +589,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setExclude(boolean newExclude) {
 		boolean oldExclude = exclude;
 		exclude = newExclude;
@@ -570,7 +602,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setFilter(Filter newFilter) {
 		Filter oldFilter = filter;
 		filter = newFilter;
@@ -583,7 +615,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setLeafArtifact(String newLeafArtifact) {
 		String oldLeafArtifact = leafArtifact;
 		leafArtifact = newLeafArtifact;
@@ -596,7 +628,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setNamePattern(Pattern newNamePattern) {
 		Pattern oldNamePattern = namePattern;
 		namePattern = newNamePattern;
@@ -609,7 +641,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setResourcePath(String newResourcePath) {
 		String oldResourcePath = resourcePath;
 		resourcePath = newResourcePath;
@@ -622,7 +654,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setUnpack(Unpack newUnpack) {
 		if (newUnpack != unpack) {
 			NotificationChain msgs = null;
@@ -644,6 +676,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
 		if (eIsProxy())
@@ -675,6 +708,7 @@ public class MaterializationNodeImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return MspecPackage.Literals.MATERIALIZATION_NODE;

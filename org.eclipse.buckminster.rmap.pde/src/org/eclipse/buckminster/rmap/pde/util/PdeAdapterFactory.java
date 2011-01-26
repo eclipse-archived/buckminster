@@ -6,7 +6,8 @@
  */
 package org.eclipse.buckminster.rmap.pde.util;
 
-import org.eclipse.buckminster.rmap.Properties;
+import org.eclipse.buckminster.model.common.Properties;
+import org.eclipse.buckminster.rmap.Matcher;
 import org.eclipse.buckminster.rmap.Provider;
 
 import org.eclipse.buckminster.rmap.pde.*;
@@ -41,6 +42,11 @@ public class PdeAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	protected PdeSwitch<Adapter> modelSwitch = new PdeSwitch<Adapter>() {
+		@Override
+		public Adapter caseMatcher(Matcher object) {
+			return createMatcherAdapter();
+		}
+
 		@Override
 		public Adapter casePDEMapProvider(PDEMapProvider object) {
 			return createPDEMapProviderAdapter();
@@ -83,6 +89,7 @@ public class PdeAdapterFactory extends AdapterFactoryImpl {
 	 * @return the adapter for the <code>target</code>.
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createAdapter(Notifier target) {
 		return modelSwitch.doSwitch((EObject) target);
@@ -96,6 +103,21 @@ public class PdeAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createEObjectAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.rmap.Matcher <em>Matcher</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.rmap.Matcher
+	 * @generated
+	 */
+	public Adapter createMatcherAdapter() {
 		return null;
 	}
 
@@ -117,13 +139,14 @@ public class PdeAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.rmap.Properties <em>Properties</em>}'.
-	 * <!-- begin-user-doc --> This default implementation returns null so that
-	 * we can easily ignore cases; it's useful to ignore a case when inheritance
-	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.model.common.Properties
+	 * <em>Properties</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.rmap.Properties
+	 * @see org.eclipse.buckminster.model.common.Properties
 	 * @generated
 	 */
 	public Adapter createPropertiesAdapter() {
@@ -154,6 +177,7 @@ public class PdeAdapterFactory extends AdapterFactoryImpl {
 	 * @return whether this factory is applicable for the type of the object.
 	 * @generated
 	 */
+
 	@Override
 	public boolean isFactoryForType(Object object) {
 		if (object == modelPackage) {

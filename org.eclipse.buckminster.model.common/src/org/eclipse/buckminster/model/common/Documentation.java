@@ -6,6 +6,7 @@
  */
 package org.eclipse.buckminster.model.common;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.FeatureMap;
 
 /**
@@ -27,10 +28,9 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getDocumentation()
  * @model extendedMetaData="name='Documentation' kind='mixed'"
- * @extends BObject
  * @generated
  */
-public interface Documentation extends BObject {
+public interface Documentation extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Any</b></em>' attribute list. The list

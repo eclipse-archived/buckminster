@@ -6,6 +6,8 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.Match;
 
@@ -14,6 +16,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '
@@ -29,12 +32,15 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <li>
  * {@link org.eclipse.buckminster.model.common.impl.MatchImpl#getReplacement
  * <em>Replacement</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.MatchImpl#getCompiledPattern
+ * <em>Compiled Pattern</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class MatchImpl extends BObjectImpl implements Match {
+public class MatchImpl extends EObjectImpl implements Match {
 	/**
 	 * The default value of the '{@link #getPattern() <em>Pattern</em>}'
 	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -106,6 +112,28 @@ public class MatchImpl extends BObjectImpl implements Match {
 	protected String replacement = REPLACEMENT_EDEFAULT;
 
 	/**
+	 * The default value of the '{@link #getCompiledPattern()
+	 * <em>Compiled Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getCompiledPattern()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final Pattern COMPILED_PATTERN_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getCompiledPattern()
+	 * <em>Compiled Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getCompiledPattern()
+	 * @generated
+	 * @ordered
+	 */
+	protected Pattern compiledPattern = COMPILED_PATTERN_EDEFAULT;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -119,6 +147,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -128,6 +157,8 @@ public class MatchImpl extends BObjectImpl implements Match {
 				return isQuotePattern();
 			case CommonPackage.MATCH__REPLACEMENT:
 				return getReplacement();
+			case CommonPackage.MATCH__COMPILED_PATTERN:
+				return getCompiledPattern();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -137,6 +168,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -146,6 +178,8 @@ public class MatchImpl extends BObjectImpl implements Match {
 				return isSetQuotePattern();
 			case CommonPackage.MATCH__REPLACEMENT:
 				return REPLACEMENT_EDEFAULT == null ? replacement != null : !REPLACEMENT_EDEFAULT.equals(replacement);
+			case CommonPackage.MATCH__COMPILED_PATTERN:
+				return COMPILED_PATTERN_EDEFAULT == null ? compiledPattern != null : !COMPILED_PATTERN_EDEFAULT.equals(compiledPattern);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -155,6 +189,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -176,6 +211,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -195,9 +231,28 @@ public class MatchImpl extends BObjectImpl implements Match {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+
+	public synchronized Pattern getCompiledPattern() {
+		if (compiledPattern == null) {
+			String tmp = getPattern();
+			if (tmp == null)
+				return null;
+
+			if (isQuotePattern())
+				tmp = Pattern.quote(tmp);
+			compiledPattern = Pattern.compile(tmp);
+		}
+		return compiledPattern;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getPattern() {
 		return pattern;
 	}
@@ -207,7 +262,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getReplacement() {
 		return replacement;
 	}
@@ -217,7 +272,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public boolean isQuotePattern() {
 		return quotePattern;
 	}
@@ -227,7 +282,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public boolean isSetQuotePattern() {
 		return quotePatternESet;
 	}
@@ -235,14 +290,25 @@ public class MatchImpl extends BObjectImpl implements Match {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
-	@Override
-	public void setPattern(String newPattern) {
-		String oldPattern = pattern;
-		pattern = newPattern;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.MATCH__PATTERN, oldPattern, pattern));
+
+	public String match(String resolved) {
+		Matcher matcher = getCompiledPattern().matcher(resolved);
+		if (matcher.find()) {
+			StringBuffer sb = new StringBuffer();
+			do {
+				matcher.appendReplacement(sb, getReplacement());
+			} while (matcher.find());
+			matcher.appendTail(sb);
+			return sb.toString();
+		}
+		return null;
+	}
+
+	public synchronized void setPattern(String newPattern) {
+		setPatternGen(newPattern);
+		compiledPattern = null;
 	}
 
 	/**
@@ -250,8 +316,24 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
-	@Override
-	public void setQuotePattern(boolean newQuotePattern) {
+	public void setPatternGen(String newPattern) {
+		String oldPattern = pattern;
+		pattern = newPattern;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.MATCH__PATTERN, oldPattern, pattern));
+	}
+
+	public synchronized void setQuotePattern(boolean newQuotePattern) {
+		setQuotePatternGen(newQuotePattern);
+		compiledPattern = null;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setQuotePatternGen(boolean newQuotePattern) {
 		boolean oldQuotePattern = quotePattern;
 		quotePattern = newQuotePattern;
 		boolean oldQuotePatternESet = quotePatternESet;
@@ -266,7 +348,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setReplacement(String newReplacement) {
 		String oldReplacement = replacement;
 		replacement = newReplacement;
@@ -274,13 +356,17 @@ public class MatchImpl extends BObjectImpl implements Match {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.MATCH__REPLACEMENT, oldReplacement, replacement));
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
-	public void toString(StringBuilder result) {
-		if (eIsProxy()) {
-			result.append(super.toString());
-			return;
-		}
+	public String toString() {
+		if (eIsProxy())
+			return super.toString();
 
+		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (pattern: ");
 		result.append(pattern);
 		result.append(", quotePattern: ");
@@ -290,16 +376,10 @@ public class MatchImpl extends BObjectImpl implements Match {
 			result.append("<unset>");
 		result.append(", replacement: ");
 		result.append(replacement);
+		result.append(", compiledPattern: ");
+		result.append(compiledPattern);
 		result.append(')');
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public String toStringGen() {
-		return null;
+		return result.toString();
 	}
 
 	/**
@@ -307,7 +387,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void unsetQuotePattern() {
 		boolean oldQuotePattern = quotePattern;
 		boolean oldQuotePatternESet = quotePatternESet;
@@ -323,6 +403,7 @@ public class MatchImpl extends BObjectImpl implements Match {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.MATCH;

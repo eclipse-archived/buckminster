@@ -10,16 +10,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.model.common.CommonFactory;
-
+import org.eclipse.buckminster.model.common.provider.PropertiesItemProvider;
 import org.eclipse.buckminster.rmap.ResourceMap;
 import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.RmapPackage;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -57,27 +54,17 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__LOCATORS);
-			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__REDIRECTS);
-			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__SEARCH_PATHS);
 			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__DOCUMENTATION);
+			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__REPOSITORIES);
+			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__MATCHERS);
+			childrenFeatures.add(RmapPackage.Literals.RESOURCE_MAP__SEARCH_PATHS);
 		}
 		return childrenFeatures;
-	}
-
-	/**
-	 * This returns ResourceMap.gif. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/ResourceMap"));
 	}
 
 	/**
@@ -86,6 +73,7 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -101,6 +89,7 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		return getString("_UI_ResourceMap_type");
@@ -119,10 +108,10 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(ResourceMap.class)) {
-			case RmapPackage.RESOURCE_MAP__LOCATORS:
-			case RmapPackage.RESOURCE_MAP__REDIRECTS:
-			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
 			case RmapPackage.RESOURCE_MAP__DOCUMENTATION:
+			case RmapPackage.RESOURCE_MAP__REPOSITORIES:
+			case RmapPackage.RESOURCE_MAP__MATCHERS:
+			case RmapPackage.RESOURCE_MAP__SEARCH_PATHS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -140,14 +129,18 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__LOCATORS, RmapFactory.eINSTANCE.createLocator()));
-
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__REDIRECTS, RmapFactory.eINSTANCE.createRedirect()));
-
-		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__SEARCH_PATHS, RmapFactory.eINSTANCE.createSearchPath()));
-
 		newChildDescriptors
 				.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__DOCUMENTATION, CommonFactory.eINSTANCE.createDocumentation()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__REPOSITORIES, RmapFactory.eINSTANCE.createRepository()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, RmapFactory.eINSTANCE.createLocator()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, RmapFactory.eINSTANCE.createProvider()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS, RmapFactory.eINSTANCE.createRedirect()));
+
+		newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__SEARCH_PATHS, RmapFactory.eINSTANCE.createSearchPath()));
 	}
 
 	/**
@@ -155,6 +148,7 @@ public class ResourceMapItemProvider extends PropertiesItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper

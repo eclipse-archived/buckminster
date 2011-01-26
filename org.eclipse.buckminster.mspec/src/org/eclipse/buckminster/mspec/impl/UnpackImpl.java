@@ -86,6 +86,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -102,6 +103,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -118,6 +120,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -136,6 +139,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -154,7 +158,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getSuffix() {
 		return suffix;
 	}
@@ -164,7 +168,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public boolean isExpand() {
 		return expand;
 	}
@@ -174,7 +178,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setExpand(boolean newExpand) {
 		boolean oldExpand = expand;
 		expand = newExpand;
@@ -187,7 +191,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setSuffix(String newSuffix) {
 		String oldSuffix = suffix;
 		suffix = newSuffix;
@@ -200,6 +204,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
 		if (eIsProxy())
@@ -219,6 +224,7 @@ public class UnpackImpl extends EObjectImpl implements Unpack {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return MspecPackage.Literals.UNPACK;
