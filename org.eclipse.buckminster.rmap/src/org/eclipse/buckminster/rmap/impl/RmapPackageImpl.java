@@ -289,7 +289,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 		createEAttribute(providerEClass, PROVIDER__READER_TYPE);
 		createEAttribute(providerEClass, PROVIDER__SOURCE);
 		createEAttribute(providerEClass, PROVIDER__MUTABLE);
-		createEReference(providerEClass, PROVIDER__REPOSITORY);
 		createEReference(providerEClass, PROVIDER__VERSION_CONVERTER);
 		createEReference(providerEClass, PROVIDER__URI);
 		createEReference(providerEClass, PROVIDER__MATCHER);
@@ -687,7 +686,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 */
 
 	public EReference getProvider_Documentation() {
-		return (EReference) providerEClass.getEStructuralFeatures().get(7);
+		return (EReference) providerEClass.getEStructuralFeatures().get(6);
 	}
 
 	/**
@@ -697,7 +696,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 */
 
 	public EReference getProvider_Matcher() {
-		return (EReference) providerEClass.getEStructuralFeatures().get(6);
+		return (EReference) providerEClass.getEStructuralFeatures().get(5);
 	}
 
 	/**
@@ -726,16 +725,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
-	public EReference getProvider_Repository() {
-		return (EReference) providerEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-
 	public EAttribute getProvider_Source() {
 		return (EAttribute) providerEClass.getEStructuralFeatures().get(1);
 	}
@@ -747,7 +736,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 */
 
 	public EReference getProvider_URI() {
-		return (EReference) providerEClass.getEStructuralFeatures().get(5);
+		return (EReference) providerEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -757,7 +746,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 */
 
 	public EReference getProvider_VersionConverter() {
-		return (EReference) providerEClass.getEStructuralFeatures().get(4);
+		return (EReference) providerEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -1232,8 +1221,6 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProvider_Mutable(), ecorePackage.getEBoolean(), "mutable", "true", 0, 1, Provider.class, !IS_TRANSIENT, IS_VOLATILE,
 				IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-		initEReference(getProvider_Repository(), this.getRepository(), null, "repository", null, 0, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE,
-				IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProvider_VersionConverter(), this.getVersionConverter(), null, "versionConverter", null, 0, 1, Provider.class,
 				!IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProvider_URI(), theCommonPackage.getFormat(), null, "URI", null, 1, 1, Provider.class, !IS_TRANSIENT, !IS_VOLATILE,

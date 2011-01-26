@@ -28,8 +28,6 @@ import org.eclipse.core.runtime.IStatus;
  * Type</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.Provider#isSource <em>Source</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.Provider#isMutable <em>Mutable</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.Provider#getRepository <em>Repository
- * </em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.Provider#getVersionConverter <em>
  * Version Converter</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.Provider#getURI <em>URI</em>}</li>
@@ -141,23 +139,6 @@ public interface Provider extends Properties, Matcher {
 	 * @generated
 	 */
 	String getReaderType();
-
-	/**
-	 * Returns the value of the '<em><b>Repository</b></em>' reference. <!--
-	 * begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Repository</em>' reference isn't clear, there
-	 * really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * 
-	 * @return the value of the '<em>Repository</em>' reference.
-	 * @see #setRepository(Repository)
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getProvider_Repository()
-	 * @model
-	 * @generated
-	 */
-	Repository getRepository();
 
 	/**
 	 * Returns the value of the '<em><b>URI</b></em>' containment reference.
@@ -310,19 +291,6 @@ public interface Provider extends Properties, Matcher {
 	 * @generated
 	 */
 	void setReaderType(String value);
-
-	/**
-	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.Provider#getRepository
-	 * <em>Repository</em>}' reference. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @param value
-	 *            the new value of the '<em>Repository</em>' reference.
-	 * @see #getRepository()
-	 * @generated
-	 */
-	void setRepository(Repository value);
 
 	/**
 	 * Sets the value of the '

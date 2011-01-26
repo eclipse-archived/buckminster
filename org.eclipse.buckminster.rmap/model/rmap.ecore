@@ -263,7 +263,6 @@
         volatile="true" defaultValueLiteral="true" derived="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="mutable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
         volatile="true" defaultValueLiteral="true" derived="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="repository" eType="#//Repository"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="versionConverter" eType="#//VersionConverter"
         containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">

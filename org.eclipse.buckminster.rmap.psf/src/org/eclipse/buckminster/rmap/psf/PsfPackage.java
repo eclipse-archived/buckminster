@@ -187,15 +187,6 @@ public interface PsfPackage extends EPackage {
 	int PSF_PROVIDER__MUTABLE = RmapPackage.PROVIDER__MUTABLE;
 
 	/**
-	 * The feature id for the '<em><b>Repository</b></em>' reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int PSF_PROVIDER__REPOSITORY = RmapPackage.PROVIDER__REPOSITORY;
-
-	/**
 	 * The feature id for the '<em><b>Version Converter</b></em>' containment
 	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 

@@ -20,7 +20,6 @@ import org.eclipse.buckminster.model.common.util.MapUnion;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.rmap.Matcher;
 import org.eclipse.buckminster.rmap.Provider;
-import org.eclipse.buckminster.rmap.Repository;
 import org.eclipse.buckminster.rmap.ResourceMap;
 import org.eclipse.buckminster.rmap.RmapConstants;
 import org.eclipse.buckminster.rmap.RmapPackage;
@@ -67,8 +66,6 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  * </em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#isMutable <em>
  * Mutable</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getRepository <em>
- * Repository</em>}</li>
  * <li>
  * {@link org.eclipse.buckminster.rmap.impl.ProviderImpl#getVersionConverter
  * <em>Version Converter</em>}</li>
@@ -189,16 +186,6 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	protected static final boolean MUTABLE_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #getRepository() <em>Repository</em>}'
-	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getRepository()
-	 * @generated
-	 * @ordered
-	 */
-	protected Repository repository;
-
-	/**
 	 * The cached value of the '{@link #getVersionConverter()
 	 * <em>Version Converter</em>}' containment reference. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
@@ -247,15 +234,6 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 */
 	protected ProviderImpl() {
 		super();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Repository basicGetRepository() {
-		return repository;
 	}
 
 	/**
@@ -403,10 +381,6 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 				return isSource();
 			case RmapPackage.PROVIDER__MUTABLE:
 				return isMutable();
-			case RmapPackage.PROVIDER__REPOSITORY:
-				if (resolve)
-					return getRepository();
-				return basicGetRepository();
 			case RmapPackage.PROVIDER__VERSION_CONVERTER:
 				return getVersionConverter();
 			case RmapPackage.PROVIDER__URI:
@@ -464,8 +438,6 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 				return isSource() != SOURCE_EDEFAULT;
 			case RmapPackage.PROVIDER__MUTABLE:
 				return isMutable() != MUTABLE_EDEFAULT;
-			case RmapPackage.PROVIDER__REPOSITORY:
-				return repository != null;
 			case RmapPackage.PROVIDER__VERSION_CONVERTER:
 				return versionConverter != null;
 			case RmapPackage.PROVIDER__URI:
@@ -508,9 +480,6 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 				return;
 			case RmapPackage.PROVIDER__MUTABLE:
 				setMutable((Boolean) newValue);
-				return;
-			case RmapPackage.PROVIDER__REPOSITORY:
-				setRepository((Repository) newValue);
 				return;
 			case RmapPackage.PROVIDER__VERSION_CONVERTER:
 				setVersionConverter((VersionConverter) newValue);
@@ -557,9 +526,6 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 				return;
 			case RmapPackage.PROVIDER__MUTABLE:
 				setMutable(MUTABLE_EDEFAULT);
-				return;
-			case RmapPackage.PROVIDER__REPOSITORY:
-				setRepository((Repository) null);
 				return;
 			case RmapPackage.PROVIDER__VERSION_CONVERTER:
 				setVersionConverter((VersionConverter) null);
@@ -660,23 +626,6 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 */
 	public String getReaderType() {
 		return readerType;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public Repository getRepository() {
-		if (repository != null && repository.eIsProxy()) {
-			InternalEObject oldRepository = (InternalEObject) repository;
-			repository = (Repository) eResolveProxy(oldRepository);
-			if (repository != oldRepository) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, RmapPackage.PROVIDER__REPOSITORY, oldRepository, repository));
-			}
-		}
-		return repository;
 	}
 
 	/**
@@ -849,18 +798,6 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 		readerType = newReaderType;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__READER_TYPE, oldReaderType, readerType));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public void setRepository(Repository newRepository) {
-		Repository oldRepository = repository;
-		repository = newRepository;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, RmapPackage.PROVIDER__REPOSITORY, oldRepository, repository));
 	}
 
 	/**

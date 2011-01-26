@@ -284,14 +284,6 @@ public interface RmapPackage extends EPackage {
 		EReference PROVIDER__DOCUMENTATION = eINSTANCE.getProvider_Documentation();
 
 		/**
-		 * The meta object literal for the '<em><b>Repository</b></em>'
-		 * reference feature. <!-- begin-user-doc --> <!-- end-user-doc -->
-		 * 
-		 * @generated
-		 */
-		EReference PROVIDER__REPOSITORY = eINSTANCE.getProvider_Repository();
-
-		/**
 		 * The meta object literal for the '
 		 * {@link org.eclipse.buckminster.rmap.impl.TransformImpl
 		 * <em>Transform</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc
@@ -1411,22 +1403,13 @@ public interface RmapPackage extends EPackage {
 	int PROVIDER__MUTABLE = CommonPackage.PROPERTIES_FEATURE_COUNT + 6;
 
 	/**
-	 * The feature id for the '<em><b>Repository</b></em>' reference. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 * @ordered
-	 */
-	int PROVIDER__REPOSITORY = CommonPackage.PROPERTIES_FEATURE_COUNT + 7;
-
-	/**
 	 * The feature id for the '<em><b>Version Converter</b></em>' containment
 	 * reference. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__VERSION_CONVERTER = CommonPackage.PROPERTIES_FEATURE_COUNT + 8;
+	int PROVIDER__VERSION_CONVERTER = CommonPackage.PROPERTIES_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>URI</b></em>' containment reference. <!--
@@ -1435,7 +1418,7 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__URI = CommonPackage.PROPERTIES_FEATURE_COUNT + 9;
+	int PROVIDER__URI = CommonPackage.PROPERTIES_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Matcher</b></em>' containment reference.
@@ -1444,7 +1427,7 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__MATCHER = CommonPackage.PROPERTIES_FEATURE_COUNT + 10;
+	int PROVIDER__MATCHER = CommonPackage.PROPERTIES_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Documentation</b></em>' containment
@@ -1453,7 +1436,7 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER__DOCUMENTATION = CommonPackage.PROPERTIES_FEATURE_COUNT + 11;
+	int PROVIDER__DOCUMENTATION = CommonPackage.PROPERTIES_FEATURE_COUNT + 10;
 
 	/**
 	 * The number of structural features of the '<em>Provider</em>' class. <!--
@@ -1462,7 +1445,7 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROVIDER_FEATURE_COUNT = CommonPackage.PROPERTIES_FEATURE_COUNT + 12;
+	int PROVIDER_FEATURE_COUNT = CommonPackage.PROPERTIES_FEATURE_COUNT + 11;
 
 	/**
 	 * The feature id for the '<em><b>Pattern</b></em>' attribute. <!--
@@ -2366,18 +2349,6 @@ public interface RmapPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getProvider_ReaderType();
-
-	/**
-	 * Returns the meta object for the reference '
-	 * {@link org.eclipse.buckminster.rmap.Provider#getRepository
-	 * <em>Repository</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return the meta object for the reference '<em>Repository</em>'.
-	 * @see org.eclipse.buckminster.rmap.Provider#getRepository()
-	 * @see #getProvider()
-	 * @generated
-	 */
-	EReference getProvider_Repository();
 
 	/**
 	 * Returns the meta object for the attribute '
