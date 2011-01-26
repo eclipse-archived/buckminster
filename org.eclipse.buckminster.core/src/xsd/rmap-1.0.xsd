@@ -20,16 +20,30 @@
 		<attribute name="name" type="string" use="required"/>
 	</complexType>
 	<complexType name="ResourceMap">
-		<sequence>
-			<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
-			<choice maxOccurs="unbounded" minOccurs="0">
-				<element name="property" type="com:PropertyConstant"/>
-				<element name="propertyElement" type="com:PropertyElement"/>
-				<element name="searchPath" type="rm:SearchPath"/>
-				<element name="locator" type="rm:Locator"/>
-				<element name="redirect" type="rm:Redirect"/>
-			</choice>
-		</sequence>
+		<choice maxOccurs="1" minOccurs="1">
+			<sequence>
+				<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element name="property" type="com:PropertyConstant"/>
+					<element name="propertyElement" type="com:PropertyElement"/>
+					<element name="searchPath" type="rm:SearchPath"/>
+					<element name="locator" type="rm:Locator"/>
+					<element name="redirect" type="rm:Redirect"/>
+				</choice>
+			</sequence>
+			<sequence>
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element name="property" type="com:PropertyConstant"/>
+					<element name="propertyElement" type="com:PropertyElement"/>
+				</choice>
+				<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element name="locator" type="rm:Locator"/>
+					<element name="redirect" type="rm:Redirect"/>
+				</choice>
+				<element maxOccurs="unbounded" minOccurs="0" name="searchPath" type="rm:SearchPath"/>
+			</sequence>
+		</choice>
 	</complexType>
 	<complexType abstract="true" name="Matcher">
 		<attribute name="pattern" type="string" use="optional"/>
@@ -51,17 +65,29 @@
 	</complexType>
 
 	<complexType name="Provider">
-		<sequence>
-			<element maxOccurs="unbounded" minOccurs="0" name="matcher" type="rm:URIMatcher"/>
-			<element maxOccurs="1" minOccurs="1" name="uri" type="com:Format"/>
-			<choice maxOccurs="unbounded" minOccurs="0">
-				<element name="property" type="com:PropertyConstant"/>
-				<element name="propertyElement" type="com:PropertyElement"/>
-			</choice>
-			<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
-			<element maxOccurs="1" minOccurs="0" name="digest" type="rm:Digest"/>
-			<element maxOccurs="1" minOccurs="0" name="versionConverter" type="rm:VersionConverter"/>
-		</sequence>
+		<choice maxOccurs="1" minOccurs="1">
+			<sequence>
+				<element maxOccurs="unbounded" minOccurs="0" name="matcher" type="rm:URIMatcher"/>
+				<element maxOccurs="1" minOccurs="1" name="uri" type="com:Format"/>
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element name="property" type="com:PropertyConstant"/>
+					<element name="propertyElement" type="com:PropertyElement"/>
+				</choice>
+				<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
+				<element maxOccurs="1" minOccurs="0" name="digest" type="rm:Digest"/>
+				<element maxOccurs="1" minOccurs="0" name="versionConverter" type="rm:VersionConverter"/>
+			</sequence>
+			<sequence>
+				<choice maxOccurs="unbounded" minOccurs="0">
+					<element name="property" type="com:PropertyConstant"/>
+					<element name="propertyElement" type="com:PropertyElement"/>
+				</choice>
+				<element maxOccurs="1" minOccurs="0" name="versionConverter" type="rm:VersionConverter"/>
+				<element maxOccurs="1" minOccurs="1" name="uri" type="com:Format"/>
+				<element maxOccurs="unbounded" minOccurs="0" name="matcher" type="rm:URIMatcher"/>
+				<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
+			</sequence>
+		</choice>
 		<attribute name="componentTypes" type="string" use="optional">
 			<annotation>
 				<documentation>
