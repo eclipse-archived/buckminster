@@ -42,7 +42,7 @@ import org.xml.sax.SAXParseException;
  * @author Thomas Hallgren
  */
 public class MavenReader extends URLFileReader implements ILocationResolver {
-	private final MapEntry mapEntry;
+	private final IMapEntry mapEntry;
 
 	public MavenReader(MavenReaderType readerType, ProviderMatch rInfo) throws CoreException {
 		super(readerType, rInfo, readerType.getURI(rInfo));
@@ -60,14 +60,7 @@ public class MavenReader extends URLFileReader implements ILocationResolver {
 		return ((MavenReaderType) getReaderType()).getLocalCache().openFile(getURI().toURL(), getConnectContext(), artifactPath, monitor);
 	}
 
-	Document getPOMDocument(IProgressMonitor monitor) throws CoreException {
-		MavenReaderType rt = (MavenReaderType) getReaderType();
-		VersionMatch vs = getVersionMatch();
-		IPath pomPath = rt.getPomPath(mapEntry, vs);
-		return getPOMDocument(mapEntry, vs, pomPath, monitor);
-	}
-
-	Document getPOMDocument(MapEntry entry, VersionMatch vs, IPath pomPath, IProgressMonitor monitor) throws CoreException {
+	Document getPOMDocument(IMapEntry entry, VersionMatch vs, IPath pomPath, IProgressMonitor monitor) throws CoreException {
 		MavenReaderType rt = (MavenReaderType) getReaderType();
 		URI repoURI = getURI();
 		InputStream input = null;
@@ -111,6 +104,13 @@ public class MavenReader extends URLFileReader implements ILocationResolver {
 			MonitorUtils.worked(monitor, 1000);
 			monitor.done();
 		}
+	}
+
+	Document getPOMDocument(IProgressMonitor monitor) throws CoreException {
+		MavenReaderType rt = (MavenReaderType) getReaderType();
+		VersionMatch vs = getVersionMatch();
+		IPath pomPath = rt.getPomPath(mapEntry, vs);
+		return getPOMDocument(mapEntry, vs, pomPath, monitor);
 	}
 
 	VersionMatch getVersionMatch() throws CoreException {

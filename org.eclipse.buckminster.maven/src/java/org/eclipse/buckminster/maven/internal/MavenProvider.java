@@ -61,7 +61,7 @@ public class MavenProvider extends Provider {
 	 *            the name of the component
 	 * @return an entry with a Maven groupId and artifactId
 	 */
-	public static MapEntry getDefaultGroupAndArtifact(String name) {
+	public static IMapEntry getDefaultGroupAndArtifact(String name) {
 		int dotIdx = name.lastIndexOf('/');
 		return (dotIdx > 0) ? new MapEntry(name, name.substring(0, dotIdx), name.substring(dotIdx + 1), null) : new MapEntry(name, name, name, null);
 	}
@@ -174,7 +174,7 @@ public class MavenProvider extends Provider {
 	}
 
 	String getComponentName(String groupId, String artifactId) throws CoreException {
-		for (MapEntry me : mappings.values()) {
+		for (IMapEntry me : mappings.values()) {
 			if (me.isMatchFor(groupId, artifactId))
 				return me.getName();
 
@@ -198,8 +198,11 @@ public class MavenProvider extends Provider {
 		return getDefaultName(groupId, artifactId);
 	}
 
-	MapEntry getGroupAndArtifact(String name) throws CoreException {
-		MapEntry entry = mappings.get(name);
+	IMapEntry getGroupAndArtifact(String name) throws CoreException {
+		if (name.endsWith(".source")) //$NON-NLS-1$
+			return new SourceMapEntry(getGroupAndArtifact(name.substring(0, name.length() - 7)));
+
+		IMapEntry entry = mappings.get(name);
 		if (entry != null)
 			return entry;
 

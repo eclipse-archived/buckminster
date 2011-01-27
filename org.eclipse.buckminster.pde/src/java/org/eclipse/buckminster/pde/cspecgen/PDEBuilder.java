@@ -16,6 +16,7 @@ import org.eclipse.buckminster.core.metadata.model.ResolvedNode;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
+import org.eclipse.buckminster.core.reader.LocalReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.pde.IPDEConstants;
@@ -67,6 +68,8 @@ public abstract class PDEBuilder extends AbstractResolutionBuilder implements IP
 			usingInstalledReader = reader instanceof EclipsePlatformReader;
 			CSpecBuilder cspecBuilder = new CSpecBuilder();
 			parseFile(cspecBuilder, forResolutionAidOnly, catRdr, MonitorUtils.subMonitor(monitor, 1000));
+			if (!(reader instanceof LocalReader))
+				cspecBuilder.addSourceDependency();
 			applyExtensions(cspecBuilder, forResolutionAidOnly, reader, MonitorUtils.subMonitor(monitor, 200));
 			return createNode(reader, cspecBuilder);
 		} finally {

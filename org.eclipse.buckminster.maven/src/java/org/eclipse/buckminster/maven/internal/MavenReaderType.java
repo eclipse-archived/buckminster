@@ -80,7 +80,7 @@ public class MavenReaderType extends URLCatalogReaderType {
 		}
 	}
 
-	static MapEntry getGroupAndArtifact(Provider provider, ComponentRequest request) throws CoreException {
+	static IMapEntry getGroupAndArtifact(Provider provider, ComponentRequest request) throws CoreException {
 		String name = request.getName();
 		return (provider instanceof MavenProvider) ? ((MavenProvider) provider).getGroupAndArtifact(name) : MavenProvider
 				.getDefaultGroupAndArtifact(name);
@@ -94,7 +94,7 @@ public class MavenReaderType extends URLCatalogReaderType {
 
 	@Override
 	public IPath getInstallLocation(Resolution resolution, MaterializationContext context) throws CoreException {
-		MapEntry ga = getGroupAndArtifact(resolution.getProvider(), resolution.getRequest());
+		IMapEntry ga = getGroupAndArtifact(resolution.getProvider(), resolution.getRequest());
 		VersionMatch vs = resolution.getVersionMatch();
 		StringBuilder pbld = new StringBuilder();
 		appendFolder(pbld, getMaterializationFolder());
@@ -104,7 +104,7 @@ public class MavenReaderType extends URLCatalogReaderType {
 
 	@Override
 	public IPath getLeafArtifact(Resolution resolution, MaterializationContext context) throws CoreException {
-		MapEntry ga = getGroupAndArtifact(resolution.getProvider(), resolution.getRequest());
+		IMapEntry ga = getGroupAndArtifact(resolution.getProvider(), resolution.getRequest());
 		VersionMatch vs = resolution.getVersionMatch();
 		StringBuilder pbld = new StringBuilder();
 		appendFileName(pbld, ga.getArtifactId(), vs, null);
@@ -130,7 +130,7 @@ public class MavenReaderType extends URLCatalogReaderType {
 		return new MavenVersionFinder(this, provider, ctype, nodeQuery);
 	}
 
-	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	void appendArtifactFolder(StringBuilder pbld, IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		appendFolder(pbld, mapEntry.getGroupId());
 		appendFolder(pbld, "jars"); //$NON-NLS-1$
 	}
@@ -163,32 +163,32 @@ public class MavenReaderType extends URLCatalogReaderType {
 			pbld.append('/');
 	}
 
-	void appendPathToArtifact(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	void appendPathToArtifact(StringBuilder pbld, IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		appendArtifactFolder(pbld, mapEntry, vs);
 		appendFileName(pbld, mapEntry.getArtifactId(), vs, null);
 	}
 
-	void appendPathToPom(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	void appendPathToPom(StringBuilder pbld, IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		appendPomFolder(pbld, mapEntry, vs);
 		appendFileName(pbld, mapEntry.getArtifactId(), vs, ".pom"); //$NON-NLS-1$
 	}
 
-	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	void appendPomFolder(StringBuilder pbld, IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		appendFolder(pbld, mapEntry.getGroupId());
 		appendFolder(pbld, "poms"); //$NON-NLS-1$
 	}
 
-	VersionMatch createVersionMatch(ILocationResolver resolver, MapEntry mapEntry, String versionStr) throws CoreException {
+	VersionMatch createVersionMatch(ILocationResolver resolver, IMapEntry mapEntry, String versionStr) throws CoreException {
 		return MavenComponentType.createVersionMatch(versionStr, null);
 	}
 
-	IPath getArtifactPath(MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	IPath getArtifactPath(IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		StringBuilder pbld = new StringBuilder();
 		appendPathToArtifact(pbld, mapEntry, vs);
 		return new Path(pbld.toString());
 	}
 
-	URL getArtifactURL(URI repoURI, MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	URL getArtifactURL(URI repoURI, IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		StringBuilder pbld = new StringBuilder();
 		appendFolder(pbld, repoURI.getPath());
 		appendPathToArtifact(pbld, mapEntry, vs);
@@ -207,13 +207,13 @@ public class MavenReaderType extends URLCatalogReaderType {
 		return "maven"; //$NON-NLS-1$
 	}
 
-	IPath getPomPath(MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	IPath getPomPath(IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		StringBuilder pbld = new StringBuilder();
 		appendPathToPom(pbld, mapEntry, vs);
 		return new Path(pbld.toString());
 	}
 
-	URL getPomURL(URI repoURI, MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	URL getPomURL(URI repoURI, IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		StringBuilder pbld = new StringBuilder();
 		appendFolder(pbld, repoURI.getPath());
 		appendPathToPom(pbld, mapEntry, vs);
