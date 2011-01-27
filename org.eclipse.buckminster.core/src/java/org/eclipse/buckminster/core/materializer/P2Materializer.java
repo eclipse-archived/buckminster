@@ -201,53 +201,24 @@ public class P2Materializer extends AbstractMaterializer {
 				{
 					// This is a direct pointer to an artifact, not a repository
 					//
-					String rType = res.getReaderTypeId();
-					if (!IReaderType.URL.equals(rType))
-						throw BuckminsterException.fromMessage(NLS.bind(Messages.p2_materializer_cannot_process_readertype_0, rType));
-
-					IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getComponentTypeID());
-					IPath location = Path.fromOSString(destDir.getAbsolutePath());
-					IPath ctypeRelative = ctype.getRelativeLocation();
-					if (ctypeRelative != null)
-						location = location.append(ctypeRelative);
-					location.toFile().mkdirs();
-
-					String leafName = cid.getName() + '_' + cid.getVersion();
-					if (res.isUnpack()) {
-						location = location.append(leafName);
-						location = location.addTrailingSeparator();
-					} else
-						location = location.append(leafName + ".jar"); //$NON-NLS-1$
-
-					IReaderType readerType = CorePlugin.getDefault().getReaderType(rType);
-					IComponentReader reader = readerType.getReader(res, context, subSubMon.newChild(10));
-					try {
-						reader.materialize(location, res, context, subSubMon.newChild(500));
-					} finally {
-						try {
-							reader.close();
-						} catch (IOException e) {
-							throw BuckminsterException.wrap(e);
-						}
-					}
-
-					SimpleArtifactDescriptor desc;
-					if (IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID())) {
-						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE, cid.getName(), version));
-						desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
-					} else {
-						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(), version));
-						if (res.isUnpack())
-							desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
-					}
-					destAR.addDescriptor(desc);
+					fetchP2object(context, destDir, destAR, res, subSubMon, cid, version);
 					continue;
 				}
 
+				// Try URI as a P2 repository
 				IMetadataRepository mdr = knownMDRs.get(repoURI);
 				if (mdr == null) {
-					mdr = getMetadataRepository(mdrManager, repoURI, subSubMon.newChild(500));
-					knownMDRs.put(repoURI, mdr);
+					try {
+						mdr = getMetadataRepository(mdrManager, repoURI, subSubMon.newChild(500));
+						knownMDRs.put(repoURI, mdr);
+					} catch (ProvisionException pe) {
+						if (ProvisionException.REPOSITORY_NOT_FOUND != pe.getStatus().getCode())
+							throw pe;
+
+						// URI is not a p2 repository
+						fetchP2object(context, destDir, destAR, res, subSubMon, cid, version);
+						continue;
+					}
 				}
 
 				VersionRange range = new VersionRange(version, true, version, true);
@@ -325,5 +296,45 @@ public class P2Materializer extends AbstractMaterializer {
 		}
 		TargetPlatform.getInstance().locationsChanged(resPerLocation.keySet());
 		return Collections.emptyList();
+	}
+
+	private void fetchP2object(MaterializationContext context, File destDir, IArtifactRepository destAR, Resolution res, SubMonitor subSubMon,
+			IComponentIdentifier cid, Version version) throws CoreException {
+		IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getComponentTypeID());
+		IPath location = Path.fromOSString(destDir.getAbsolutePath());
+		IPath ctypeRelative = ctype.getRelativeLocation();
+		if (ctypeRelative != null)
+			location = location.append(ctypeRelative);
+		location.toFile().mkdirs();
+
+		String leafName = cid.getName() + '_' + cid.getVersion();
+		if (res.isUnpack()) {
+			location = location.append(leafName);
+			location = location.addTrailingSeparator();
+		} else
+			location = location.append(leafName + ".jar"); //$NON-NLS-1$
+
+		IReaderType readerType = CorePlugin.getDefault().getReaderType(res.getReaderTypeId());
+		IComponentReader reader = readerType.getReader(res, context, subSubMon.newChild(10));
+		try {
+			reader.materialize(location, res, context, subSubMon.newChild(500));
+		} finally {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				throw BuckminsterException.wrap(e);
+			}
+		}
+
+		SimpleArtifactDescriptor desc;
+		if (IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID())) {
+			desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE, cid.getName(), version));
+			desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
+		} else {
+			desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(), version));
+			if (res.isUnpack())
+				desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
+		}
+		destAR.addDescriptor(desc);
 	}
 }
