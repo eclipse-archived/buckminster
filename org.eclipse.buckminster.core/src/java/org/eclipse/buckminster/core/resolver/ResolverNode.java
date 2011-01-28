@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.cspec.builder.TopLevelAttributeBuilder;
 import org.eclipse.buckminster.core.cspec.model.CSpec;
 import org.eclipse.buckminster.core.cspec.model.CircularDependencyException;
 import org.eclipse.buckminster.core.cspec.model.Generator;
+import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.GeneratorNode;
@@ -131,6 +132,15 @@ public class ResolverNode {
 				ArrayList<BOMNode> childNodeArr = new ArrayList<BOMNode>(top);
 				circularDepTrap.push(resolution);
 				for (ResolverNode child : children) {
+					Resolution childRes = child.resolution;
+					if (childRes != null && IComponentType.OSGI_BUNDLE.equals(childRes.getComponentTypeId())) {
+						String childName = childRes.getName();
+						if (childName.endsWith(".source") && childName.length() == resolution.getName().length() + 7 && childName.startsWith(resolution.getName())) //$NON-NLS-1$
+							// We don't traverse source bundles since that
+							// dependency is synthesized
+							continue;
+					}
+
 					boolean sameChildTop = cquery.equals(child.query.getComponentQuery());
 					BOMNode childNode = child.collectNodes(nodeMap, circularDepTrap, sameChildTop);
 					if (childNode == null) {
