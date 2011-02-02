@@ -401,6 +401,11 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 		IProjectDescription description;
 		try {
 			description = workspace.loadProjectDescription(locationPath.append(".project")); //$NON-NLS-1$
+
+			// If we find the name in an existing description, then that name is
+			// of course prioritized.
+			//
+			suggestedProjectName = description.getName();
 		} catch (CoreException e) {
 			description = null;
 		}
