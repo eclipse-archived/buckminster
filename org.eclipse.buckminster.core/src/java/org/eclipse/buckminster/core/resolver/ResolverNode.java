@@ -124,23 +124,21 @@ public class ResolverNode {
 			throw new CircularDependencyException(attrs);
 		}
 
+		boolean transitive = true;
+		if (IComponentType.OSGI_BUNDLE.equals(resolution.getComponentTypeId())) {
+			// We don't traverse the children of source bundles since that
+			// dependency is synthesized
+			transitive = !resolution.getName().endsWith(".source"); //$NON-NLS-1$
+		}
+
 		List<BOMNode> childNodes;
 		int top = children.length;
 		ComponentQuery cquery = query.getComponentQuery();
-		if (top > 0) {
+		if (transitive && top > 0) {
 			try {
 				ArrayList<BOMNode> childNodeArr = new ArrayList<BOMNode>(top);
 				circularDepTrap.push(resolution);
 				for (ResolverNode child : children) {
-					Resolution childRes = child.resolution;
-					if (childRes != null && IComponentType.OSGI_BUNDLE.equals(childRes.getComponentTypeId())) {
-						String childName = childRes.getName();
-						if (childName.endsWith(".source") && childName.length() == resolution.getName().length() + 7 && childName.startsWith(resolution.getName())) //$NON-NLS-1$
-							// We don't traverse source bundles since that
-							// dependency is synthesized
-							continue;
-					}
-
 					boolean sameChildTop = cquery.equals(child.query.getComponentQuery());
 					BOMNode childNode = child.collectNodes(nodeMap, circularDepTrap, sameChildTop);
 					if (childNode == null) {
