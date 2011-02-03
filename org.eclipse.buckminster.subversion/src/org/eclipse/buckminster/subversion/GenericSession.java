@@ -162,6 +162,18 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 		return commonRoots;
 	}
 
+	private static String getScheme(URI uri) {
+		if (uri == null)
+			throw new IllegalArgumentException(Messages.URI_can_not_be_null_at_this_point);
+
+		String scheme = uri.getScheme();
+		if (scheme == null) {
+			CorePlugin.getLogger().warning(NLS.bind(Messages.URI_0_has_no_scheme, uri));
+			return "file"; //$NON-NLS-1$
+		}
+		return scheme.toLowerCase();
+	}
+
 	protected final VersionSelector branchOrTag;
 
 	protected REPO_LOCATION_TYPE repositoryLocation;
@@ -310,15 +322,16 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 			//
 
 			int rank = 0;
-			URI ourRoot = new URI(_urlLeadIn);
+			final URI ourRoot = new URI(_urlLeadIn);
+			final String ourProto = getScheme(ourRoot);
+
 			REPO_LOCATION_TYPE bestMatch = null;
 			for (REPO_LOCATION_TYPE location : getKnownRepositories()) {
 				URI repoRoot = new URI(getRootUrl(location));
 				if (!Trivial.equalsAllowNull(repoRoot.getHost(), ourRoot.getHost()))
 					continue;
 
-				String repoProto = repoRoot.getScheme().toLowerCase();
-				String ourProto = ourRoot.getScheme().toLowerCase();
+				String repoProto = getScheme(repoRoot);
 
 				// We let the protocol svn or http match a repo that uses
 				// svn+ssh or https
