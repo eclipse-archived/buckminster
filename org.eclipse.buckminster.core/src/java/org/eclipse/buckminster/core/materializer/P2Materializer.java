@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactDescriptor;
 import org.eclipse.equinox.internal.p2.engine.InstallableUnitOperand;
@@ -171,7 +172,8 @@ public class P2Materializer extends AbstractMaterializer {
 			rss.add(res);
 		}
 
-		SubMonitor subMon = SubMonitor.convert(monitor, resPerLocation.size() * 1000);
+		SubMonitor subMon = SubMonitor.convert(monitor, 100 + resPerLocation.size() * 1000);
+
 		IProvisioningAgent p2Agent = CorePlugin.getDefault().getResolverAgent();
 		IMetadataRepositoryManager mdrManager = (IMetadataRepositoryManager) p2Agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		IArtifactRepositoryManager arManager = (IArtifactRepositoryManager) p2Agent.getService(IArtifactRepositoryManager.SERVICE_NAME);
@@ -179,6 +181,15 @@ public class P2Materializer extends AbstractMaterializer {
 		IProfileRegistry registry = (IProfileRegistry) p2Agent.getService(IProfileRegistry.SERVICE_NAME);
 		Map<URI, IMetadataRepository> knownMDRs = new HashMap<URI, IMetadataRepository>();
 		Map<URI, IArtifactRepository> knownARs = new HashMap<URI, IArtifactRepository>();
+
+		try {
+			URI runtimeAR = Platform.getInstallLocation().getURL().toURI();
+			knownARs.put(runtimeAR, arManager.loadRepository(runtimeAR, subMon.newChild(100)));
+		} catch (Exception e) {
+			// Ignore
+			CorePlugin.getLogger().warning(e, "Unable to load runtime repository from"); //$NON-NLS-1$
+		}
+
 		for (Map.Entry<File, List<Resolution>> entry : resPerLocation.entrySet()) {
 			// ensure the user-specified artifact repos will be consulted by
 			// loading them
