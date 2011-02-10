@@ -136,10 +136,11 @@ public abstract class GenericReaderType<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_
 	@Override
 	final public void shareProject(IProject project, Resolution cr, RMContext context, IProgressMonitor monitor) throws CoreException {
 		VersionMatch vm = cr.getVersionMatch();
-		ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm.getNumericRevision(),
+		String repositoryURI = getRemoteLocation(project.getLocation().toFile(), monitor);
+		ISubversionSession<SVN_ENTRY_TYPE, SVN_REVISION_TYPE> session = getSession(repositoryURI, vm.getBranchOrTag(), vm.getNumericRevision(),
 				vm.getTimestamp(), context);
 		session.createCommonRoots(context);
-		session = getSession(cr.getRepository(), vm.getBranchOrTag(), vm.getNumericRevision(), vm.getTimestamp(), context);
+		session = getSession(repositoryURI, vm.getBranchOrTag(), vm.getNumericRevision(), vm.getTimestamp(), context);
 		try {
 			updateRepositoryMap(project, session);
 		} catch (Exception ex) {
@@ -147,7 +148,6 @@ public abstract class GenericReaderType<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_
 		} finally {
 			session.close();
 		}
-		MonitorUtils.complete(monitor);
 	}
 
 	@Override
