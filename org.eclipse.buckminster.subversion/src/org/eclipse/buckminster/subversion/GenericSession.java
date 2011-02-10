@@ -217,9 +217,11 @@ public abstract class GenericSession<REPO_LOCATION_TYPE, SVN_ENTRY_TYPE, SVN_REV
 			IPath fullPath = new Path(uri.getPath());
 			String[] pathSegments = fullPath.segments();
 			int idx = pathSegments.length;
-			while (--idx >= 0)
-				if (pathSegments[idx].equals("trunk")) //$NON-NLS-1$
+			while (--idx >= 0) {
+				String segment = pathSegments[idx];
+				if ("trunk".equals(segment) || "tags".equals(segment) || "branches".equals(segment)) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					break;
+			}
 
 			if (idx >= 0)
 				this.trunkStructure = true;
