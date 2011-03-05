@@ -2,7 +2,7 @@
 <rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
   <rm:property key="eclipse.download.prefix" value="http://download.eclipse.org"/>
   <rm:property key="eclipse.svn.prefix" value="http://dev.eclipse.org/svnroot"/>
-  <rm:property key="build.type" value="I"/>
+  <rm:property key="build.type" value="R"/>
   <rm:locator pattern="^org\.eclipse\.buckminster(\..+)?" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.slf4j\.extendable$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" searchPathRef="buckminster"/>
@@ -16,11 +16,8 @@
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="modeling" failOnError="false"/>
-<<<<<<< .working
-=======
   <rm:locator searchPathRef="orbit" failOnError="false"/>
   <rm:locator searchPathRef="simultanious.release"/>
->>>>>>> .merge-right.r11642
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="svn">
       <rm:uri format="{0}/tools/org.eclipse.buckminster/trunk/{1}?moduleAfterTag&amp;moduleAfterBranch">
@@ -31,27 +28,21 @@
   </rm:searchPath>
   <rm:searchPath name="platform">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=I)">
-      <rm:uri format="{0}/eclipse/updates/3.7-I-builds/">
+      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100603-1500">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=M)">
-<<<<<<< .working
-      <rm:uri format="{0}/eclipse/updates/3.7milestones/">
-=======
       <rm:uri format="{0}/eclipse/updates/3.6.x">
->>>>>>> .merge-right.r11642
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
-      <rm:uri format="{0}/eclipse/updates/3.7/">
+      <rm:uri format="{0}/eclipse/updates/3.6">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-<<<<<<< .working
-=======
   <rm:searchPath name="simultanious.release">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
       <rm:uri format="{0}/releases/maintenance">
@@ -64,7 +55,6 @@
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
->>>>>>> .merge-right.r11642
   <rm:searchPath name="orbit">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
       <rm:uri format="{0}/tools/orbit/downloads/drops/R20100519200754/repository">
@@ -124,21 +114,10 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="modeling">
-<<<<<<< .working
-=======
     <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="">
       <rm:uri format="{0}/modeling/emf/emf/updates/2.6">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
->>>>>>> .merge-right.r11642
-<<<<<<< .working
-    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/modeling/emf/emf/updates/2.6milestones/">
-        <bc:propertyRef key="eclipse.download.prefix"/>
-      </rm:uri>
-    </rm:provider>
-=======
->>>>>>> .merge-right.r11642
   </rm:searchPath>
 </rm:rmap>

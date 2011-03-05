@@ -28,6 +28,7 @@
 
 	<property name="buckminster.output.root" location="${result}/output" />
 	<property name="buckminster.temp.root" location="${result}/temp" />
+	<property name="buckminster.loglevel" value="WARNING" />
 	<property name="eclipse.staging.area" location="${result}/signing" />
 
 	<property name="workspace.gzip" value="workspace-template.tar.gz" />
@@ -109,7 +110,6 @@
 		<echo message="External site: ${bm.external.site}" />
 		<eclipse.launch app="director">
 			<args>
-				<jvmarg value="-Declipse.p2.mirrors=false" />
 				<arg value="-r" />
 				<arg value="${bm.headless.site}" />
 				<arg value="-r" />
@@ -168,12 +168,6 @@
 
 	<target name="provision" depends="init.checks,init.workspace,install.buckminster,init.build.properties">
 		<echo message="Importing projects into workspace ${workspace} and binaries into target platform ${targetPlatformPath}" />
-		<buckminster command="installJRE">
-			<cmdargs>
-				<arg value="--location" />
-				<arg value="${jdk1.4.dir}" />
-			</cmdargs>
-		</buckminster>
 
 		<buckminster command="setpref">
 			<cmdargs>
@@ -195,7 +189,7 @@
 		<buckminster command="build" />
 	</target>
 
-	<target name="test" depends="eclipse.build">
+	<target name="test" depends="init.build.properties">
 		<echo message="Running JUnit tests" />
 		<buckminster command="junit">
 			<cmdargs>
@@ -229,7 +223,7 @@
 
 	<target name="clean.all.promote.sites" depends="clean.all,promote.sites"/>
 
-	<target name="promote.sites" depends="test">
+	<target name="promote.sites" depends="eclipse.build,test">
 		<echo message="Performing org.eclipse.buckminster.releng#promote" />
 		<buckminster command="perform">
 			<cmdargs>

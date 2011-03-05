@@ -2,13 +2,14 @@
 <rm:rmap xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:rm="http://www.eclipse.org/buckminster/RMap-1.0">
   <rm:property key="eclipse.download.prefix" value="http://download.eclipse.org"/>
   <rm:property key="eclipse.svn.prefix" value="http://dev.eclipse.org/svnroot"/>
-  <rm:property key="build.type" value="I"/>
+  <rm:property key="build.type" value="R"/>
   <rm:locator pattern="^org\.eclipse\.buckminster(\..+)?" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.slf4j\.extendable$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.equinox\.p2\.director\.(product|feature)$" searchPathRef="buckminster"/>
   <rm:locator pattern="^org\.eclipse\.zest(\..+)?$" searchPathRef="gef"/>
   <rm:locator pattern="^org\.eclipse\.[ej]git(\..+)?$" searchPathRef="git"/>
   <rm:locator pattern="^org\.eclipse\.draw2d(\..+)?$" searchPathRef="gef"/>
+  <rm:locator pattern="^com\.ibm\.icu\.base$" searchPathRef="orbit"/>
   <rm:locator pattern="^com\.mountainminds\.eclemma\.core$" searchPathRef="emma"/>
   <rm:locator pattern="^org\.tmatesoft\.svnkit(\..+)?" searchPathRef="svnkit"/>
   <rm:locator pattern="^org\.tigris\.subversion(\..+)?" searchPathRef="subclipse"/>
@@ -16,11 +17,7 @@
   <rm:locator pattern="^org\.polarion(\..+)?" searchPathRef="polarion"/>
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="modeling" failOnError="false"/>
-<<<<<<< .working
-=======
-  <rm:locator searchPathRef="orbit" failOnError="false"/>
   <rm:locator searchPathRef="simultanious.release"/>
->>>>>>> .merge-right.r11642
   <rm:searchPath name="buckminster">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="svn">
       <rm:uri format="{0}/tools/org.eclipse.buckminster/trunk/{1}?moduleAfterTag&amp;moduleAfterBranch">
@@ -31,30 +28,24 @@
   </rm:searchPath>
   <rm:searchPath name="platform">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=I)">
-      <rm:uri format="{0}/eclipse/updates/3.7-I-builds/">
+      <rm:uri format="{0}/eclipse/updates/3.6-I-builds/I20100603-1500">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=M)">
-<<<<<<< .working
-      <rm:uri format="{0}/eclipse/updates/3.7milestones/">
-=======
-      <rm:uri format="{0}/eclipse/updates/3.6.x">
->>>>>>> .merge-right.r11642
+      <rm:uri format="{0}/eclipse/updates/3.6milestones/S-3.6RC4-I201006031500">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
-      <rm:uri format="{0}/eclipse/updates/3.7/">
+      <rm:uri format="{0}/eclipse/updates/3.6">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
-<<<<<<< .working
-=======
   <rm:searchPath name="simultanious.release">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/releases/maintenance">
+      <rm:uri format="{0}/releases/staging">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -64,7 +55,6 @@
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
->>>>>>> .merge-right.r11642
   <rm:searchPath name="orbit">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
       <rm:uri format="{0}/tools/orbit/downloads/drops/R20100519200754/repository">
@@ -72,7 +62,7 @@
       </rm:uri>
     </rm:provider>
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/tools/orbit/downloads/drops/S20100721061755/repository">
+      <rm:uri format="{0}/tools/orbit/downloads/drops/R20100519200754/repository">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -88,13 +78,16 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="polarion">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
+      <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site"/>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
       <rm:uri format="http://community.polarion.com/projects/subversive/download/eclipse/2.0/update-site"/>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="git">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/egit/updates-0.9">
+      <rm:uri format="{0}/egit/updates-nightly">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
@@ -105,14 +98,24 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="subversive">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
+      <rm:uri format="{0}/technology/subversive/0.7/update-site">
+        <bc:propertyRef key="eclipse.download.prefix"/>
+      </rm:uri>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
       <rm:uri format="{0}/technology/subversive/0.7/update-site">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="gef">
-    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
+      <rm:uri format="{0}/tools/gef/updates/releases">
+        <bc:propertyRef key="eclipse.download.prefix"/>
+      </rm:uri>
+    </rm:provider>
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
       <rm:uri format="{0}/tools/gef/updates/milestones">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
@@ -124,21 +127,15 @@
     </rm:provider>
   </rm:searchPath>
   <rm:searchPath name="modeling">
-<<<<<<< .working
-=======
-    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="">
+    <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(build.type=R)">
       <rm:uri format="{0}/modeling/emf/emf/updates/2.6">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
->>>>>>> .merge-right.r11642
-<<<<<<< .working
     <rm:provider componentTypes="eclipse.feature,osgi.bundle" readerType="p2" source="false" mutable="false" resolutionFilter="(!(build.type=R))">
-      <rm:uri format="{0}/modeling/emf/emf/updates/2.6milestones/">
+      <rm:uri format="{0}/modeling/emf/emf/updates/2.6milestones">
         <bc:propertyRef key="eclipse.download.prefix"/>
       </rm:uri>
     </rm:provider>
-=======
->>>>>>> .merge-right.r11642
   </rm:searchPath>
 </rm:rmap>
