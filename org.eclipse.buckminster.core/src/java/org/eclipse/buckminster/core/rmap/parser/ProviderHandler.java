@@ -11,11 +11,11 @@
 package org.eclipse.buckminster.core.rmap.parser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.common.model.Documentation;
+import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.common.model.Format;
 import org.eclipse.buckminster.core.common.parser.DocumentationHandler;
 import org.eclipse.buckminster.core.common.parser.FormatHandler;
@@ -71,7 +71,7 @@ public class ProviderHandler extends PropertyManagerHandler {
 
 	private Filter resolutionFilter;
 
-	private final Map<String, String> properties = new HashMap<String, String>();
+	private final Map<String, String> properties = new ExpandingProperties<String>();
 
 	public ProviderHandler(AbstractHandler parent) {
 		super(parent, Provider.TAG);

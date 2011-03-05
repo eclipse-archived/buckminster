@@ -16,7 +16,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-class MapEntry extends GroupAndArtifact {
+class MapEntry extends GroupAndArtifact implements IMapEntry {
 	public static final String TAG = "entry"; //$NON-NLS-1$
 
 	public static final String ATTR_NAME = "name"; //$NON-NLS-1$
@@ -31,15 +31,32 @@ class MapEntry extends GroupAndArtifact {
 		this.aliases = Utils.createUnmodifiableList(aliases);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.buckminster.maven.internal.IMapEntry#getAliases()
+	 */
+	@Override
 	public List<GroupAndArtifact> getAliases() {
 		return aliases;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.buckminster.maven.internal.IMapEntry#getDefaultTag()
+	 */
 	@Override
 	public String getDefaultTag() {
 		return TAG;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.buckminster.maven.internal.IMapEntry#getName()
+	 */
+	@Override
 	public final String getName() {
 		return name;
 	}

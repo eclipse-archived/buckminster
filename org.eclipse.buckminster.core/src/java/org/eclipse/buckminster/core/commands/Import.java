@@ -102,8 +102,11 @@ public class Import extends WorkspaceInitCommand {
 		int len = unparsed.length;
 		if (len > 1)
 			throw new UsageException(Messages.Too_many_arguments);
-		else if (len < 1)
+		else if (len < 1) {
+			if (isHelpRequested())
+				return;
 			throw new UsageException(Messages.Missing_BOM_URL);
+		}
 		setURL(URLUtils.normalizeToURL(unparsed[0]));
 	}
 

@@ -10,6 +10,7 @@
 
 package org.eclipse.buckminster.core;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -463,13 +464,17 @@ public class CorePlugin extends LogAwarePlugin {
 			Buckminster bucky = Buckminster.getDefault();
 			IProvisioningAgentProvider agentProvider = bucky.getService(IProvisioningAgentProvider.class);
 			try {
-				IPath stateLocation = getStateLocation().append("p2.resolver"); //$NON-NLS-1$
-				resolverAgent = agentProvider.createAgent(stateLocation.toFile().toURI());
+				File agentLocation = getResolverAgentLocation();
+				resolverAgent = agentProvider.createAgent(agentLocation.toURI());
 			} finally {
 				bucky.ungetService(agentProvider);
 			}
 		}
 		return resolverAgent;
+	}
+
+	public File getResolverAgentLocation() {
+		return getStateLocation().append("p2.resolver").toFile(); //$NON-NLS-1$
 	}
 
 	/**

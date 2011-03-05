@@ -37,7 +37,7 @@ public class GeneratorNode extends BOMNode {
 
 	public static final String ATTR_GENERATES_TYPE = "generatesType"; //$NON-NLS-1$
 
-	public static final String ATTR_GENERATES_VERSION = "generatesType"; //$NON-NLS-1$
+	public static final String ATTR_GENERATES_VERSION = "generatesVersion"; //$NON-NLS-1$
 
 	public static final String ATTR_DECLARING_CSPEC_ID = "declaringCSpecId"; //$NON-NLS-1$
 
@@ -106,7 +106,7 @@ public class GeneratorNode extends BOMNode {
 	public ComponentRequest getRequest() {
 		VersionRange range = null;
 		if (generates.getVersion() != null)
-			range = new VersionRange(generates.getVersion(), true, generates.getVersion(), false);
+			range = new VersionRange(generates.getVersion(), true, generates.getVersion(), true);
 		return new ComponentRequest(generates.getName(), generates.getComponentTypeID(), range);
 	}
 

@@ -6,8 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5
-Require-Bundle: org.eclipse.buckminster.executor;bundle-version="1.0.0",
- org.eclipse.buckminster.core;bundle-version="1.2.360",
- org.eclipse.core.runtime;bundle-version="3.6.0",
- org.junit;bundle-version="4.8.1"
+Require-Bundle: org.eclipse.buckminster.executor,
+ org.eclipse.buckminster.core,
+ org.eclipse.core.runtime,
+ org.junit
 Export-Package: org.eclipse.buckminster.executor.test

@@ -20,6 +20,7 @@ import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.MetadataFactory.InstallableUnitDescription;
 import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
 import org.eclipse.equinox.p2.publisher.actions.IPropertyAdvice;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactDescriptor;
@@ -62,18 +63,19 @@ public class BundlesAction extends org.eclipse.equinox.p2.publisher.eclipse.Bund
 	}
 
 	@Override
-	protected void generateBundleIUs(BundleDescription[] bundleDescriptions, IPublisherResult result, IProgressMonitor monitor) {
+	protected void generateBundleIUs(BundleDescription[] bundleDescriptions, IPublisherInfo publisherInfo, IPublisherResult result,
+			IProgressMonitor monitor) {
 		Map<String, ? extends Object> props = AbstractActor.getActiveContext().getProperties();
 		String buildId = (String) props.get("build.id"); //$NON-NLS-1$
 
 		if (buildId != null) {
 			for (BundleDescription bundleDescription : bundleDescriptions)
-				createBuildIdAdvice(bundleDescription, buildId);
+				createBuildIdAdvice(bundleDescription, publisherInfo, buildId);
 		}
-		super.generateBundleIUs(bundleDescriptions, result, monitor);
+		super.generateBundleIUs(bundleDescriptions, publisherInfo, result, monitor);
 	}
 
-	private void createBuildIdAdvice(BundleDescription bundleDescription, String buildId) {
+	private void createBuildIdAdvice(BundleDescription bundleDescription, IPublisherInfo publisherInfo, String buildId) {
 		if (bundleDescription == null)
 			return;
 
@@ -86,7 +88,7 @@ public class BundlesAction extends org.eclipse.equinox.p2.publisher.eclipse.Bund
 			BundlePropertyAdvice advice = new BundlePropertyAdvice(bundleDescription.getSymbolicName(), Version.create(bundleDescription.getVersion()
 					.toString()));
 			advice.put(KeyConstants.BUILD_ID, buildId);
-			info.addAdvice(advice);
+			publisherInfo.addAdvice(advice);
 		}
 	}
 

@@ -6,6 +6,9 @@
  */
 package org.eclipse.buckminster.model.common;
 
+import java.util.regex.Pattern;
+import org.eclipse.emf.ecore.EObject;
+
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Match</b></em>'. <!-- end-user-doc -->
@@ -19,15 +22,33 @@ package org.eclipse.buckminster.model.common;
  * Quote Pattern</em>}</li>
  * <li>{@link org.eclipse.buckminster.model.common.Match#getReplacement <em>
  * Replacement</em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Match#getCompiledPattern <em>
+ * Compiled Pattern</em>}</li>
  * </ul>
  * </p>
  * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getMatch()
  * @model
- * @extends BObject
  * @generated
  */
-public interface Match extends BObject {
+public interface Match extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Compiled Pattern</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Compiled Pattern</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Compiled Pattern</em>' attribute.
+	 * @see org.eclipse.buckminster.model.common.CommonPackage#getMatch_CompiledPattern()
+	 * @model dataType="org.eclipse.buckminster.model.common.Pattern"
+	 *        transient="true" changeable="false" derived="true"
+	 * @generated
+	 */
+	Pattern getCompiledPattern();
+
 	/**
 	 * Returns the value of the '<em><b>Pattern</b></em>' attribute. <!--
 	 * begin-user-doc -->
@@ -96,6 +117,14 @@ public interface Match extends BObject {
 	 * @generated
 	 */
 	boolean isSetQuotePattern();
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model
+	 * @generated
+	 */
+	String match(String resolved);
 
 	/**
 	 * Sets the value of the '

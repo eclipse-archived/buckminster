@@ -40,6 +40,8 @@ abstract public class AbstractCommand {
 
 	private boolean addHelpFlags;
 
+	private boolean helpRequested = false;
+
 	private Map<String, String> properties;
 
 	public void addProperties(Map<String, String> props) {
@@ -59,7 +61,7 @@ abstract public class AbstractCommand {
 		return new ProgressProvider() {
 			@Override
 			public IProgressMonitor createMonitor(Job job) {
-				return this.getDefaultMonitor();
+				return getDefaultMonitor();
 			}
 		};
 	}
@@ -78,7 +80,7 @@ abstract public class AbstractCommand {
 	public int run(String cmdName) throws Exception {
 		calledUsingName = cmdName;
 		cmdInfo = CommandInfo.getCommand(cmdName);
-		return this.run(this.getProgressProvider().getDefaultMonitor());
+		return run(getProgressProvider().getDefaultMonitor());
 	}
 
 	protected void beginOptionProcessing() throws Exception {
@@ -149,21 +151,25 @@ abstract public class AbstractCommand {
 	}
 
 	protected void help() throws Exception {
-		this.help(this.getHelpStream());
+		help(getHelpStream());
 	}
 
 	protected void help(InputStream helpStream) throws Exception {
 		if (helpStream == null)
-			System.err.println(NLS.bind(Messages.AbstractCommand_Help_missing_for_0, this.getFullName()));
+			System.err.println(NLS.bind(Messages.AbstractCommand_Help_missing_for_0, getFullName()));
 		else {
 			try {
-				System.out.print(NLS.bind(Messages.AbstractCommand_Help_text_for_0, this.getFullName()));
+				System.out.print(NLS.bind(Messages.AbstractCommand_Help_text_for_0, getFullName()));
 				IOUtils.copy(helpStream, System.out, null);
 			} finally {
 				IOUtils.close(helpStream);
 			}
 			System.out.flush();
 		}
+	}
+
+	protected boolean isHelpRequested() {
+		return helpRequested;
 	}
 
 	protected abstract int run(IProgressMonitor monitor) throws Exception;
@@ -173,15 +179,15 @@ abstract public class AbstractCommand {
 		cmdInfo = commandInfo;
 
 		ArrayList<OptionDescriptor> optionDescriptors = new ArrayList<OptionDescriptor>();
-		this.getOptionDescriptors(optionDescriptors);
+		getOptionDescriptors(optionDescriptors);
 		if (addHelpFlags)
 			optionDescriptors.add(helpDescriptor);
 
 		Properties sysProps = null;
 		try {
-			boolean helpRequested = this.parseOptions(commandArgs, optionDescriptors);
-			if (helpRequested) {
-				this.help();
+			parseOptions(commandArgs, optionDescriptors);
+			if (isHelpRequested()) {
+				help();
 				return Headless.EXIT_OK;
 			}
 			if (properties != null && !properties.isEmpty()) {
@@ -191,11 +197,11 @@ abstract public class AbstractCommand {
 					cmdProps.setProperty(entry.getKey(), entry.getValue());
 				System.setProperties(cmdProps);
 			}
-			return this.run(this.getProgressProvider().getDefaultMonitor());
+			return run(getProgressProvider().getDefaultMonitor());
 		} catch (UsageException e) {
 			System.err.println(e.getMessage());
 			if (e.isEmitHelp())
-				this.help();
+				help();
 			return Headless.EXIT_FAIL;
 		} finally {
 			if (sysProps != null)
@@ -203,21 +209,20 @@ abstract public class AbstractCommand {
 		}
 	}
 
-	private boolean parseOptions(String[] args, List<OptionDescriptor> optionDescriptors) throws Exception {
+	private void parseOptions(String[] args, List<OptionDescriptor> optionDescriptors) throws Exception {
 		ParseResult pr = ParseResult.parse(args, optionDescriptors);
 		Option[] options = pr.getOptions();
-		boolean helpRequested = false;
-		this.beginOptionProcessing();
+		helpRequested = false;
+		beginOptionProcessing();
 		int top = options.length;
 		for (int idx = 0; idx < top; ++idx) {
 			Option option = options[idx];
 			if (option.is(helpDescriptor))
 				helpRequested = true;
 			else
-				this.handleOption(option);
+				handleOption(option);
 		}
-		this.endOptionProcessing();
-		this.handleUnparsed(pr.getUnparsed());
-		return helpRequested;
+		endOptionProcessing();
+		handleUnparsed(pr.getUnparsed());
 	}
 }

@@ -8,6 +8,7 @@
 
 package org.eclipse.buckminster.pde.cspecgen.bundle;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ import org.eclipse.core.internal.resources.LinkDescription;
 import org.eclipse.core.internal.resources.ProjectDescription;
 import org.eclipse.core.internal.utils.FileUtil;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -199,6 +201,16 @@ public class CSpecFromSource extends CSpecGenerator {
 				IPath base = projectRootReplacement[0];
 				if (base == null && !output.isAbsolute()) {
 					base = componentHome.append(output);
+					absPath = null;
+				}
+
+				/*
+				 * Convert single absolute path to be represented as base path
+				 * with no additional paths instead of null base path with one
+				 * additional path.
+				 */
+				if (base == null && absPath.isAbsolute()) {
+					base = absPath;
 					absPath = null;
 				}
 
@@ -832,7 +844,13 @@ public class CSpecFromSource extends CSpecGenerator {
 		for (Map.Entry<IPath, LinkDescription> entry : getLinkDescriptions().entrySet()) {
 			IPath linkSource = entry.getKey();
 			if (linkSource.isPrefixOf(path)) {
-				IPath linkTarget = FileUtil.toPath(entry.getValue().getLocationURI());
+				URI locationURI = entry.getValue().getLocationURI();
+				
+				/*
+				 * Explicitly resolve relative path via workspace linked resources
+				 */
+				URI resolvedURI = ResourcesPlugin.getWorkspace().getPathVariableManager().resolveURI(locationURI);
+				IPath linkTarget = FileUtil.toPath(resolvedURI);
 				int sourceSegs = linkSource.segmentCount();
 
 				if (projectRootReplacement != null) {

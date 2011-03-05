@@ -17,6 +17,10 @@ public class Messages extends NLS {
 
 	public static String unable_to_find_artifacts_at_0;
 
+	public static String URI_0_has_no_scheme;
+
+	public static String URI_can_not_be_null_at_this_point;
+
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

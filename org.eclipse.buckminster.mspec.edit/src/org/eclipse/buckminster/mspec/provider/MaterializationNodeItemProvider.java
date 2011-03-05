@@ -54,6 +54,7 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/MaterializationNode"));
@@ -65,6 +66,7 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -89,6 +91,7 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated NOT
 	 */
+
 	@Override
 	public String getText(Object object) {
 		MaterializationNode node = (MaterializationNode) object;
@@ -115,6 +118,7 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -141,11 +145,14 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 * @generated
 	 */
 	protected void addBindingNamePatternPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationNode_bindingNamePattern_feature"), getString(
-						"_UI_PropertyDescriptor_description", "_UI_MaterializationNode_bindingNamePattern_feature", "_UI_MaterializationNode_type"),
-				MspecPackage.Literals.MATERIALIZATION_NODE__BINDING_NAME_PATTERN, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				null, null));
+		itemPropertyDescriptors
+				.add(createItemPropertyDescriptor(
+						((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+						getResourceLocator(),
+						getString("_UI_MaterializationNode_bindingNamePattern_feature"),
+						getString("_UI_PropertyDescriptor_description", "_UI_MaterializationNode_bindingNamePattern_feature",
+								"_UI_MaterializationNode_type"), MspecPackage.Literals.MATERIALIZATION_NODE__BINDING_NAME_PATTERN, true, false,
+						false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -155,9 +162,11 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 * @generated
 	 */
 	protected void addBindingNameReplacementPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationNode_bindingNameReplacement_feature"), getString(
-						"_UI_PropertyDescriptor_description", "_UI_MaterializationNode_bindingNameReplacement_feature",
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(),
+				getString("_UI_MaterializationNode_bindingNameReplacement_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationNode_bindingNameReplacement_feature",
 						"_UI_MaterializationNode_type"), MspecPackage.Literals.MATERIALIZATION_NODE__BINDING_NAME_REPLACEMENT, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
@@ -184,8 +193,8 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addExcludePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationNode_exclude_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MaterializationNode_exclude_feature", "_UI_MaterializationNode_type"),
+				getResourceLocator(), getString("_UI_MaterializationNode_exclude_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationNode_exclude_feature", "_UI_MaterializationNode_type"),
 				MspecPackage.Literals.MATERIALIZATION_NODE__EXCLUDE, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
@@ -197,8 +206,8 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addFilterPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationNode_filter_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MaterializationNode_filter_feature", "_UI_MaterializationNode_type"),
+				getResourceLocator(), getString("_UI_MaterializationNode_filter_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationNode_filter_feature", "_UI_MaterializationNode_type"),
 				MspecPackage.Literals.MATERIALIZATION_NODE__FILTER, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -210,11 +219,13 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addLeafArtifactPropertyDescriptor(Object object) {
 		itemPropertyDescriptors
-				.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-						getString("_UI_MaterializationNode_leafArtifact_feature"), getString("_UI_PropertyDescriptor_description",
-								"_UI_MaterializationNode_leafArtifact_feature", "_UI_MaterializationNode_type"),
-						MspecPackage.Literals.MATERIALIZATION_NODE__LEAF_ARTIFACT, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-						null, null));
+				.add(createItemPropertyDescriptor(
+						((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+						getResourceLocator(),
+						getString("_UI_MaterializationNode_leafArtifact_feature"),
+						getString("_UI_PropertyDescriptor_description", "_UI_MaterializationNode_leafArtifact_feature",
+								"_UI_MaterializationNode_type"), MspecPackage.Literals.MATERIALIZATION_NODE__LEAF_ARTIFACT, true, false, false,
+						ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -225,9 +236,11 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addNamePatternPropertyDescriptor(Object object) {
 		itemPropertyDescriptors
-				.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-						getString("_UI_MaterializationNode_namePattern_feature"), getString("_UI_PropertyDescriptor_description",
-								"_UI_MaterializationNode_namePattern_feature", "_UI_MaterializationNode_type"),
+				.add(createItemPropertyDescriptor(
+						((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+						getResourceLocator(),
+						getString("_UI_MaterializationNode_namePattern_feature"),
+						getString("_UI_PropertyDescriptor_description", "_UI_MaterializationNode_namePattern_feature", "_UI_MaterializationNode_type"),
 						MspecPackage.Literals.MATERIALIZATION_NODE__NAME_PATTERN, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
 						null, null));
 	}
@@ -240,11 +253,13 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addResourcePathPropertyDescriptor(Object object) {
 		itemPropertyDescriptors
-				.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(), getResourceLocator(),
-						getString("_UI_MaterializationNode_resourcePath_feature"), getString("_UI_PropertyDescriptor_description",
-								"_UI_MaterializationNode_resourcePath_feature", "_UI_MaterializationNode_type"),
-						MspecPackage.Literals.MATERIALIZATION_NODE__RESOURCE_PATH, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-						null, null));
+				.add(createItemPropertyDescriptor(
+						((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+						getResourceLocator(),
+						getString("_UI_MaterializationNode_resourcePath_feature"),
+						getString("_UI_PropertyDescriptor_description", "_UI_MaterializationNode_resourcePath_feature",
+								"_UI_MaterializationNode_type"), MspecPackage.Literals.MATERIALIZATION_NODE__RESOURCE_PATH, true, false, false,
+						ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -255,8 +270,8 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 */
 	protected void addUnpackPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationNode_unpack_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_MaterializationNode_unpack_feature", "_UI_MaterializationNode_type"),
+				getResourceLocator(), getString("_UI_MaterializationNode_unpack_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationNode_unpack_feature", "_UI_MaterializationNode_type"),
 				MspecPackage.Literals.MATERIALIZATION_NODE__UNPACK, true, false, true, null, null, null));
 	}
 
@@ -267,6 +282,7 @@ public class MaterializationNodeItemProvider extends MaterializationDirectiveIte
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

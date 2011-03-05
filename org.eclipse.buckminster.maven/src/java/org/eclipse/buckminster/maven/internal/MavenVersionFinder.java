@@ -47,7 +47,7 @@ public class MavenVersionFinder extends AbstractVersionFinder implements ILocati
 
 	private final MavenReaderType readerType;
 
-	private final MapEntry mapEntry;
+	private final IMapEntry mapEntry;
 
 	private final URI uri;
 
@@ -164,7 +164,7 @@ public class MavenVersionFinder extends AbstractVersionFinder implements ILocati
 		return versions;
 	}
 
-	MapEntry getMapEntry() {
+	IMapEntry getMapEntry() {
 		return mapEntry;
 	}
 

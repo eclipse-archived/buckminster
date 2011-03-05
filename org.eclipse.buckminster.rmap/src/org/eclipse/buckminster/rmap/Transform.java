@@ -8,6 +8,7 @@ package org.eclipse.buckminster.rmap;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.buckminster.rmap.util.TransformMismatchException;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -154,5 +155,23 @@ public interface Transform extends EObject {
 	 * @generated
 	 */
 	void setToReplacement(String value);
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model 
+	 *        exceptions="org.eclipse.buckminster.rmap.TransformMismatchException"
+	 * @generated
+	 */
+	String transformFrom(String source) throws TransformMismatchException;
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model 
+	 *        exceptions="org.eclipse.buckminster.rmap.TransformMismatchException"
+	 * @generated
+	 */
+	String transformTo(String source) throws TransformMismatchException;
 
 } // Transform

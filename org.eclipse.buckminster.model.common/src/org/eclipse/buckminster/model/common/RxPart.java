@@ -6,6 +6,9 @@
  */
 package org.eclipse.buckminster.model.common;
 
+import java.util.List;
+import org.eclipse.emf.ecore.EObject;
+
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Rx Part</b></em>'. <!-- end-user-doc -->
@@ -24,10 +27,21 @@ package org.eclipse.buckminster.model.common;
  * 
  * @see org.eclipse.buckminster.model.common.CommonPackage#getRxPart()
  * @model abstract="true"
- * @extends BObject
  * @generated
  */
-public interface RxPart extends BObject {
+public interface RxPart extends EObject {
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model 
+	 *        collectorDataType="org.eclipse.buckminster.model.common.StringBuilder"
+	 *        namedPartsDataType=
+	 *        "org.eclipse.buckminster.model.common.List<org.eclipse.buckminster.model.common.RxPart>"
+	 *        namedPartsMany="false"
+	 * @generated
+	 */
+	void addPattern(StringBuilder collector, List<RxPart> namedParts);
+
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc --> <!-- begin-model-doc -->

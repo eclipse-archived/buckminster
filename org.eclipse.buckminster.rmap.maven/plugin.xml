@@ -17,10 +17,4 @@
             genModel="model/maven.genmodel"/>
    </extension>
 
-   <extension point="org.eclipse.emf.ecore.extension_parser">
-      <parser
-            type="maven"
-            class="org.eclipse.buckminster.rmap.maven.util.MavenResourceFactoryImpl"/>
-   </extension>
-
 </plugin>

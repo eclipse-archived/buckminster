@@ -15,9 +15,7 @@ import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
-import org.eclipse.emf.edit.provider.IChildCreationExtender;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -25,7 +23,6 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -35,7 +32,7 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * 
  * @generated
  */
-public class ConstantItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
+public class ConstantItemProvider extends ValueItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider,
 		ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!--
@@ -53,6 +50,7 @@ public class ConstantItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -64,26 +62,16 @@ public class ConstantItemProvider extends ItemProviderAdapter implements IEditin
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
-	}
-
-	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
+
 	@Override
 	public String getText(Object object) {
-		String label = ((Constant) object).getValue();
-		return label == null || label.length() == 0 ? getString("_UI_Constant_type") : getString("_UI_Constant_type") + " " + label;
+		Constant constant = (Constant) object;
+		return getString("_UI_Constant_type") + " " + constant.getValue();
 	}
 
 	/**
@@ -94,6 +82,7 @@ public class ConstantItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -114,9 +103,9 @@ public class ConstantItemProvider extends ItemProviderAdapter implements IEditin
 	 */
 	protected void addValuePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Constant_value_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Constant_value_feature", "_UI_Constant_type"), CommonPackage.Literals.CONSTANT__VALUE, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_Constant_value_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Constant_value_feature", "_UI_Constant_type"),
+				CommonPackage.Literals.CONSTANT__VALUE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -126,6 +115,7 @@ public class ConstantItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

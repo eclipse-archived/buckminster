@@ -32,6 +32,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
+import org.eclipse.debug.core.model.IFlushableStreamMonitor;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -68,6 +69,10 @@ public class Launch extends WorkspaceCommand {
 		@Override
 		public void streamAppended(String text, IStreamMonitor monitor) {
 			stream.print(text);
+			if (monitor instanceof IFlushableStreamMonitor) {
+				IFlushableStreamMonitor flushableMonitor = (IFlushableStreamMonitor) monitor;
+				flushableMonitor.flushContents();
+			}
 		}
 	}
 

@@ -81,6 +81,7 @@ public final class RmapEditPlugin extends EMFPlugin {
 	 * @return the singleton instance.
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getPluginResourceLocator() {
 		return plugin;

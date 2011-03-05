@@ -165,6 +165,7 @@ public class RmapActionBarContributor extends EditingDomainActionBarContributor 
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void contributeToMenu(IMenuManager menuManager) {
 		super.contributeToMenu(menuManager);
@@ -190,7 +191,6 @@ public class RmapActionBarContributor extends EditingDomainActionBarContributor 
 		// Force an update because Eclipse hides empty menus now.
 		//
 		submenuManager.addMenuListener(new IMenuListener() {
-			@Override
 			public void menuAboutToShow(IMenuManager menuManager) {
 				menuManager.updateAll(true);
 			}
@@ -205,6 +205,7 @@ public class RmapActionBarContributor extends EditingDomainActionBarContributor 
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void contributeToToolBar(IToolBarManager toolBarManager) {
 		toolBarManager.add(new Separator("rmap-settings"));
@@ -217,6 +218,7 @@ public class RmapActionBarContributor extends EditingDomainActionBarContributor 
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void menuAboutToShow(IMenuManager menuManager) {
 		super.menuAboutToShow(menuManager);
@@ -241,7 +243,7 @@ public class RmapActionBarContributor extends EditingDomainActionBarContributor 
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void selectionChanged(SelectionChangedEvent event) {
 		// Remove any menu items for old selection.
 		//
@@ -289,6 +291,7 @@ public class RmapActionBarContributor extends EditingDomainActionBarContributor 
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void setActiveEditor(IEditorPart part) {
 		super.setActiveEditor(part);
@@ -319,6 +322,7 @@ public class RmapActionBarContributor extends EditingDomainActionBarContributor 
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void addGlobalActions(IMenuManager menuManager) {
 		menuManager.insertAfter("additions-end", new Separator("ui-actions"));
@@ -426,6 +430,7 @@ public class RmapActionBarContributor extends EditingDomainActionBarContributor 
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected boolean removeAllReferencesOnDelete() {
 		return true;

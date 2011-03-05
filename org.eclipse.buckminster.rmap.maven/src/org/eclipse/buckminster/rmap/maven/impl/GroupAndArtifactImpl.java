@@ -8,6 +8,7 @@ package org.eclipse.buckminster.rmap.maven.impl;
 
 import org.eclipse.buckminster.rmap.maven.GroupAndArtifact;
 import org.eclipse.buckminster.rmap.maven.MavenPackage;
+import org.eclipse.buckminster.runtime.Trivial;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -88,6 +89,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -104,6 +106,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -120,6 +123,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -138,6 +142,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -156,7 +161,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getArtifactId() {
 		return artifactId;
 	}
@@ -166,7 +171,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getGroupId() {
 		return groupId;
 	}
@@ -174,9 +179,18 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+	public boolean isMatchFor(String group, String artifact) {
+		return Trivial.equalsAllowNull(getGroupId(), group) && Trivial.equalsAllowNull(getArtifactId(), artifact);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setArtifactId(String newArtifactId) {
 		String oldArtifactId = artifactId;
 		artifactId = newArtifactId;
@@ -189,7 +203,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setGroupId(String newGroupId) {
 		String oldGroupId = groupId;
 		groupId = newGroupId;
@@ -202,6 +216,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
 		if (eIsProxy())
@@ -221,6 +236,7 @@ public class GroupAndArtifactImpl extends EObjectImpl implements GroupAndArtifac
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return MavenPackage.Literals.GROUP_AND_ARTIFACT;

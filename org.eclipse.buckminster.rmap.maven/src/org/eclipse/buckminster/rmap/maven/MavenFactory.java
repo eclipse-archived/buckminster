@@ -25,6 +25,14 @@ public interface MavenFactory extends EFactory {
 	MavenFactory eINSTANCE = org.eclipse.buckminster.rmap.maven.impl.MavenFactoryImpl.init();
 
 	/**
+	 * Creates a default <code>MapEntry</code> for the given name
+	 * 
+	 * @param name
+	 * @return A default <code>MapEntry</code>
+	 */
+	MapEntry createDefaultMapEntry(String name);
+
+	/**
 	 * Returns a new object of class '<em>Group And Artifact</em>'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -59,6 +67,33 @@ public interface MavenFactory extends EFactory {
 	 * @generated
 	 */
 	MavenProvider createMavenProvider();
+
+	/**
+	 * Returns a new object of class '<em>Scope</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Scope</em>'.
+	 * @generated
+	 */
+	Scope createScope();
+
+	/**
+	 * Returns a new object of class '<em>Scopes</em>'. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Scopes</em>'.
+	 * @generated
+	 */
+	Scopes createScopes();
+
+	/**
+	 * Returns the default name for the given groupId/artifactId mapping
+	 * 
+	 * @param groupId
+	 * @param artifactId
+	 * @return The default name
+	 */
+	String getDefaultName(String groupId, String artifactId);
 
 	/**
 	 * Returns the package supported by this factory. <!-- begin-user-doc -->

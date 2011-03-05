@@ -149,8 +149,10 @@ public class MavenComponentType extends AbstractComponentType {
 			Provider provider = reader.getProviderMatch().getProvider();
 			ComponentQuery query = nq.getComponentQuery();
 			Map<String, ? extends Object> ctx = nq.getContext();
+			boolean transitive = (provider instanceof MavenProvider) ? ((MavenProvider) provider).isTransitive() : MavenProvider
+					.getDefaultTransitive();
 			for (Node dep = dependenciesNode.getFirstChild(); dep != null; dep = dep.getNextSibling()) {
-				if (dep.getNodeType() == Node.ELEMENT_NODE && "dependency".equals(dep.getNodeName())) //$NON-NLS-1$
+				if (dep.getNodeType() == Node.ELEMENT_NODE && "dependency".equals(dep.getNodeName()) && transitive) //$NON-NLS-1$
 					addDependency(query, ctx, provider, cspec, archives, properties, dep);
 			}
 		}
@@ -235,6 +237,7 @@ public class MavenComponentType extends AbstractComponentType {
 		String artifactId = null;
 		String versionStr = null;
 		String type = null;
+		String scope = null;
 		boolean optional = false;
 		for (Node depChild = dep.getFirstChild(); depChild != null; depChild = depChild.getNextSibling()) {
 			if (depChild.getNodeType() != Node.ELEMENT_NODE)
@@ -254,12 +257,22 @@ public class MavenComponentType extends AbstractComponentType {
 				type = nodeValue;
 			else if ("optional".equals(localName)) //$NON-NLS-1$
 				optional = Boolean.parseBoolean(nodeValue);
+			else if ("scope".equals(localName)) //$NON-NLS-1$
+				scope = nodeValue;
 		}
 
 		if (optional)
 			//
 			// Docs etc. We skip this here since we don't generate an
 			// actions that can make use of it
+			//
+			return;
+
+		boolean isScopeExcluded = (provider instanceof MavenProvider) ? ((MavenProvider) provider).isScopeExcluded(scope) : MavenProvider
+				.getDefaultIsScopeExcluded();
+		if (isScopeExcluded)
+			//
+			// Determine if the scope of this POM is one we should ignore
 			//
 			return;
 

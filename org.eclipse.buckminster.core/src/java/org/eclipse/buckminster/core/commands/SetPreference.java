@@ -51,8 +51,11 @@ public class SetPreference extends WorkspaceCommand {
 
 	@Override
 	protected void handleUnparsed(String[] unparsed) throws Exception {
-		if (unparsed.length < 1)
+		if (unparsed.length < 1) {
+			if (isHelpRequested())
+				return;
 			throw new UsageException(Messages.You_must_provide_at_least_one_preference_assignment);
+		}
 		assignments = unparsed;
 	}
 

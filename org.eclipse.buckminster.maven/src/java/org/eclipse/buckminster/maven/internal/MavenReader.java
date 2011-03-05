@@ -10,6 +10,8 @@
 package org.eclipse.buckminster.maven.internal;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -18,6 +20,9 @@ import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.eclipse.buckminster.core.helpers.FileUtils;
+import org.eclipse.buckminster.core.materializer.MaterializationContext;
+import org.eclipse.buckminster.core.metadata.model.Resolution;
 import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionMatch;
@@ -42,7 +47,20 @@ import org.xml.sax.SAXParseException;
  * @author Thomas Hallgren
  */
 public class MavenReader extends URLFileReader implements ILocationResolver {
-	private final MapEntry mapEntry;
+	static Document getPOMDocument(File file) throws Exception {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		InputStream input = new FileInputStream(file);
+		try {
+			InputSource source = new InputSource(new BufferedInputStream(input));
+			source.setSystemId(file.toURI().toString());
+			return builder.parse(source);
+		} finally {
+			IOUtils.close(input);
+		}
+	}
+
+	private final IMapEntry mapEntry;
 
 	public MavenReader(MavenReaderType readerType, ProviderMatch rInfo) throws CoreException {
 		super(readerType, rInfo, readerType.getURI(rInfo));
@@ -55,19 +73,31 @@ public class MavenReader extends URLFileReader implements ILocationResolver {
 	}
 
 	@Override
+	public void materialize(IPath location, Resolution resolution, MaterializationContext ctx, IProgressMonitor monitor) throws CoreException {
+		super.materialize(location, resolution, ctx, monitor);
+		try {
+			MavenReaderType rt = (MavenReaderType) getReaderType();
+			IPath pomPath = rt.getPomPath(mapEntry, getVersionMatch());
+			String pomName = pomPath.lastSegment();
+			InputStream pomInput = rt.getLocalCache().openFile(getURI().toURL(), getConnectContext(), pomPath, monitor);
+			try {
+				File destDir = location.removeLastSegments(1).toFile();
+				FileUtils.copyFile(pomInput, destDir, pomName, monitor);
+			} finally {
+				IOUtils.close(pomInput);
+			}
+		} catch (Exception e) {
+			// Ignore. The POM copy is not mandatory
+		}
+	}
+
+	@Override
 	public InputStream open(IProgressMonitor monitor) throws CoreException, IOException {
 		IPath artifactPath = ((MavenReaderType) getReaderType()).getArtifactPath(mapEntry, getVersionMatch());
 		return ((MavenReaderType) getReaderType()).getLocalCache().openFile(getURI().toURL(), getConnectContext(), artifactPath, monitor);
 	}
 
-	Document getPOMDocument(IProgressMonitor monitor) throws CoreException {
-		MavenReaderType rt = (MavenReaderType) getReaderType();
-		VersionMatch vs = getVersionMatch();
-		IPath pomPath = rt.getPomPath(mapEntry, vs);
-		return getPOMDocument(mapEntry, vs, pomPath, monitor);
-	}
-
-	Document getPOMDocument(MapEntry entry, VersionMatch vs, IPath pomPath, IProgressMonitor monitor) throws CoreException {
+	Document getPOMDocument(IMapEntry entry, VersionMatch vs, IPath pomPath, IProgressMonitor monitor) throws CoreException {
 		MavenReaderType rt = (MavenReaderType) getReaderType();
 		URI repoURI = getURI();
 		InputStream input = null;
@@ -111,6 +141,13 @@ public class MavenReader extends URLFileReader implements ILocationResolver {
 			MonitorUtils.worked(monitor, 1000);
 			monitor.done();
 		}
+	}
+
+	Document getPOMDocument(IProgressMonitor monitor) throws CoreException {
+		MavenReaderType rt = (MavenReaderType) getReaderType();
+		VersionMatch vs = getVersionMatch();
+		IPath pomPath = rt.getPomPath(mapEntry, vs);
+		return getPOMDocument(mapEntry, vs, pomPath, monitor);
 	}
 
 	VersionMatch getVersionMatch() throws CoreException {

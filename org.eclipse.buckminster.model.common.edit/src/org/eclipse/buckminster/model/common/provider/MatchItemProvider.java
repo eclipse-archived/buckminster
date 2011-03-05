@@ -49,21 +49,12 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 	}
 
 	/**
-	 * This returns Match.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Match"));
-	}
-
-	/**
 	 * This returns the property descriptors for the adapted class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated
+	 * @generated NOT
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -72,6 +63,7 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 			addPatternPropertyDescriptor(object);
 			addQuotePatternPropertyDescriptor(object);
 			addReplacementPropertyDescriptor(object);
+			// addCompiledPatternPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -82,6 +74,7 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
 		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
@@ -93,6 +86,7 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		String label = ((Match) object).getPattern();
@@ -107,6 +101,7 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -115,10 +110,24 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 			case CommonPackage.MATCH__PATTERN:
 			case CommonPackage.MATCH__QUOTE_PATTERN:
 			case CommonPackage.MATCH__REPLACEMENT:
+			case CommonPackage.MATCH__COMPILED_PATTERN:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 		}
 		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Compiled Pattern feature. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addCompiledPatternPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_Match_compiledPattern_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Match_compiledPattern_feature", "_UI_Match_type"),
+				CommonPackage.Literals.MATCH__COMPILED_PATTERN, false, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -129,9 +138,9 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 	 */
 	protected void addPatternPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Match_pattern_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Match_pattern_feature", "_UI_Match_type"), CommonPackage.Literals.MATCH__PATTERN, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_Match_pattern_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Match_pattern_feature", "_UI_Match_type"),
+				CommonPackage.Literals.MATCH__PATTERN, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -142,9 +151,9 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 	 */
 	protected void addQuotePatternPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Match_quotePattern_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Match_quotePattern_feature", "_UI_Match_type"), CommonPackage.Literals.MATCH__QUOTE_PATTERN, true, false, false,
-				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_Match_quotePattern_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Match_quotePattern_feature", "_UI_Match_type"),
+				CommonPackage.Literals.MATCH__QUOTE_PATTERN, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -155,9 +164,9 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 	 */
 	protected void addReplacementPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Match_replacement_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Match_replacement_feature", "_UI_Match_type"), CommonPackage.Literals.MATCH__REPLACEMENT, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_Match_replacement_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Match_replacement_feature", "_UI_Match_type"),
+				CommonPackage.Literals.MATCH__REPLACEMENT, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -167,6 +176,7 @@ public class MatchItemProvider extends ItemProviderAdapter implements IEditingDo
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

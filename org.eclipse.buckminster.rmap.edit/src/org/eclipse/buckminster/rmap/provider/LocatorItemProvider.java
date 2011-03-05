@@ -45,21 +45,12 @@ public class LocatorItemProvider extends MatcherItemProvider implements IEditing
 	}
 
 	/**
-	 * This returns Locator.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/Locator"));
-	}
-
-	/**
 	 * This returns the property descriptors for the adapted class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -77,6 +68,7 @@ public class LocatorItemProvider extends MatcherItemProvider implements IEditing
 	 * 
 	 * @generated NOT
 	 */
+
 	@Override
 	public String getText(Object object) {
 		Locator locator = (Locator) object;
@@ -105,6 +97,7 @@ public class LocatorItemProvider extends MatcherItemProvider implements IEditing
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -125,9 +118,9 @@ public class LocatorItemProvider extends MatcherItemProvider implements IEditing
 	 */
 	protected void addFailOnErrorPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Locator_failOnError_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Locator_failOnError_feature", "_UI_Locator_type"), RmapPackage.Literals.LOCATOR__FAIL_ON_ERROR, true, false, false,
-				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_Locator_failOnError_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Locator_failOnError_feature", "_UI_Locator_type"),
+				RmapPackage.Literals.LOCATOR__FAIL_ON_ERROR, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -138,9 +131,9 @@ public class LocatorItemProvider extends MatcherItemProvider implements IEditing
 	 */
 	protected void addSearchPathPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Locator_searchPath_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Locator_searchPath_feature", "_UI_Locator_type"), RmapPackage.Literals.LOCATOR__SEARCH_PATH, true, false, true, null,
-				null, null));
+				getResourceLocator(), getString("_UI_Locator_searchPath_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Locator_searchPath_feature", "_UI_Locator_type"),
+				RmapPackage.Literals.LOCATOR__SEARCH_PATH, true, false, true, null, null, null));
 	}
 
 	/**
@@ -150,6 +143,7 @@ public class LocatorItemProvider extends MatcherItemProvider implements IEditing
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

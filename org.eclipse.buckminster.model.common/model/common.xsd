@@ -1,10 +1,60 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="bc" ecore:package="org.eclipse.buckminster.model.common" targetNamespace="http://www.eclipse.org/buckminster/Common-1.0">
+<xsd:schema xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:documentRoot="AbstractDocumentRoot" ecore:nsPrefix="bc" ecore:package="org.eclipse.buckminster.model.common" targetNamespace="http://www.eclipse.org/buckminster/Common-1.0">
   <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
   <xsd:element abstract="true" name="rxPart" type="bc:RxPart"/>
-  <xsd:element abstract="true" name="basicProperty" type="bc:Property"/>
+  <xsd:element abstract="true" name="basicValue" type="bc:Value"/>
+  <xsd:element name="constant" substitutionGroup="bc:basicValue" type="bc:Constant"/>
+  <xsd:element name="format" substitutionGroup="bc:basicValue" type="bc:Format"/>
+  <xsd:element name="propertyRef" substitutionGroup="bc:basicValue" type="bc:PropertyRef"/>
+  <xsd:element name="replace" substitutionGroup="bc:basicValue" type="bc:Replace"/>
+  <xsd:element name="split" substitutionGroup="bc:basicValue" type="bc:Split"/>
+  <xsd:element name="toLower" substitutionGroup="bc:basicValue" type="bc:ToLower"/>
+  <xsd:element name="toUpper" substitutionGroup="bc:basicValue" type="bc:ToUpper"/>
+  <xsd:element name="basicProperty" type="bc:Property"/>
+  <xsd:element name="property" substitutionGroup="bc:basicProperty" type="bc:PropertyConstant"/>
+  <xsd:element name="propertyElement" substitutionGroup="bc:basicProperty" type="bc:PropertyElement"/>
+  <xsd:complexType abstract="true" ecore:instanceClass="java.lang.Comparable" ecore:interface="true" name="Comparable">
+    <xsd:annotation>
+      <xsd:appinfo ecore:key="typeParameters" source="http://www.eclipse.org/emf/2002/Ecore">
+        <typeParameter name="T"/>
+      </xsd:appinfo>
+      <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+        <operation name="compareTo" type="ecore:EInt">
+          <parameter name="o" type="T"/>
+        </operation>
+      </xsd:appinfo>
+    </xsd:annotation>
+  </xsd:complexType>
+  <xsd:complexType ecore:implements="bc:Comparable{bc:ComponentIdentifier}" name="ComponentIdentifier">
+    <xsd:complexContent>
+      <xsd:extension base="bc:IVersionedId">
+        <xsd:attribute name="type" type="ecore:EString"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="ComponentRequest">
+    <xsd:annotation>
+      <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+        <operation name="designates" type="ecore:EBoolean">
+          <parameter name="cid" type="bc:ComponentIdentifier"/>
+        </operation>
+        <operation name="isOptional" type="ecore:EBoolean"/>
+        <operation name="isEnabled" type="ecore:EBoolean">
+          <parameter name="properties" type="ecore:EMap{ecore:EString, ? extends ecore:EJavaObject}"/>
+        </operation>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:attribute name="id" type="ecore:EString"/>
+    <xsd:attribute name="range" type="bc:VersionRange"/>
+    <xsd:attribute name="filter" type="bc:Filter"/>
+    <xsd:attribute name="type" type="ecore:EString"/>
+  </xsd:complexType>
   <xsd:complexType name="Constant">
-    <xsd:attribute name="value" type="ecore:EString" use="required"/>
+    <xsd:complexContent>
+      <xsd:extension base="bc:Value">
+        <xsd:attribute name="value" type="ecore:EString"/>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
   <xsd:complexType mixed="true" name="Documentation">
     <xsd:sequence>
@@ -22,64 +72,146 @@
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
+  <xsd:complexType abstract="true" ecore:instanceClass="org.eclipse.core.runtime.IProgressMonitor" ecore:interface="true" name="IProgressMonitor">
+    <xsd:annotation>
+      <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+        <operation name="beginTask">
+          <parameter name="name" type="ecore:EString"/>
+          <parameter name="totalWork" type="ecore:EInt"/>
+        </operation>
+        <operation name="done"/>
+        <operation name="internalWorked">
+          <parameter name="work" type="ecore:EDouble"/>
+        </operation>
+        <operation name="isCancelled" type="ecore:EBoolean"/>
+        <operation name="setCancelled">
+          <parameter name="value" type="ecore:EBoolean"/>
+        </operation>
+        <operation name="setTaskName">
+          <parameter name="name" type="ecore:EString"/>
+        </operation>
+        <operation name="subTask">
+          <parameter name="name" type="ecore:EString"/>
+        </operation>
+        <operation name="worked">
+          <parameter name="work" type="ecore:EInt"/>
+        </operation>
+      </xsd:appinfo>
+    </xsd:annotation>
+  </xsd:complexType>
+  <xsd:complexType abstract="true" ecore:instanceClass="org.eclipse.core.runtime.IStatus" ecore:interface="true" name="IStatus">
+    <xsd:annotation>
+      <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+        <operation name="isOK" type="ecore:EBoolean"/>
+        <operation name="matches" type="ecore:EBoolean">
+          <parameter name="severityMask" type="ecore:EInt"/>
+        </operation>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:attribute name="children" type="bc:IStatusArray"/>
+    <xsd:attribute ecore:unsettable="false" name="code" type="ecore:EInt"/>
+    <xsd:attribute name="exception" type="bc:Throwable"/>
+    <xsd:attribute name="message" type="ecore:EString"/>
+    <xsd:attribute name="plugin" type="ecore:EString"/>
+    <xsd:attribute ecore:unsettable="false" name="severity" type="ecore:EInt"/>
+  </xsd:complexType>
+  <xsd:complexType abstract="true" ecore:instanceClass="org.eclipse.equinox.p2.metadata.IVersionedId" ecore:interface="true" name="IVersionedId">
+    <xsd:attribute name="id" type="ecore:EString"/>
+    <xsd:attribute name="version" type="bc:Version"/>
+  </xsd:complexType>
   <xsd:complexType name="Match">
+    <xsd:annotation>
+      <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+        <operation name="match" type="ecore:EString">
+          <parameter name="resolved" type="ecore:EString"/>
+        </operation>
+      </xsd:appinfo>
+    </xsd:annotation>
     <xsd:attribute name="pattern" type="ecore:EString" use="required"/>
     <xsd:attribute default="false" name="quotePattern" type="ecore:EBoolean"/>
     <xsd:attribute name="replacement" type="ecore:EString" use="required"/>
+    <xsd:attribute ecore:changeable="false" ecore:derived="true" ecore:transient="true" name="compiledPattern" type="bc:pattern"/>
   </xsd:complexType>
-  <xsd:complexType abstract="true" name="Property">
+  <xsd:complexType abstract="true" name="Properties">
+    <xsd:annotation>
+      <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+        <operation name="getProperties" type="ecore:EMap{ecore:EString, ecore:EString}"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice ecore:featureMap="propertyGroup" maxOccurs="unbounded">
+        <xsd:element ecore:lowerBound="0" ecore:name="valueMap" ecore:resolveProxies="true" ecore:upperBound="-1" ref="bc:basicProperty"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType abstract="true" ecore:instanceClass="java.util.Map$Entry" name="Property">
     <xsd:annotation>
       <xsd:documentation>A property that maps a key to a value. Several attributes in the cspec and rmap may be subject to property expansion.</xsd:documentation>
     </xsd:annotation>
-    <xsd:attribute name="key" type="bc:propertyKey" use="required"/>
-    <xsd:attribute name="mutable" type="ecore:EBoolean"/>
+    <xsd:sequence>
+      <xsd:element ecore:derived="true" ecore:lowerBound="1" ecore:transient="true" ecore:volatile="true" minOccurs="0" name="value" type="bc:Value"/>
+    </xsd:sequence>
+    <xsd:attribute name="key" type="ecore:EString" use="required"/>
   </xsd:complexType>
-  <xsd:complexType name="PropertyConstant">
+  <xsd:complexType ecore:instanceClass="java.util.Map$Entry" name="PropertyConstant">
     <xsd:annotation>
       <xsd:documentation>A simple property that maps a key to a constant value.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="bc:Property">
-        <xsd:attribute name="value" type="ecore:EString" use="required"/>
+        <xsd:attribute ecore:name="stringValue" name="value" type="ecore:EString" use="required"/>
+        <xsd:attribute default="true" ecore:unsettable="false" name="mutable" type="ecore:EBoolean"/>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
-  <xsd:complexType name="PropertyElement">
+  <xsd:complexType ecore:instanceClass="java.util.Map$Entry" name="PropertyElement">
     <xsd:annotation>
       <xsd:documentation>A simple property that maps a key to a constant value.</xsd:documentation>
     </xsd:annotation>
     <xsd:complexContent>
       <xsd:extension base="bc:Property">
         <xsd:sequence>
-          <xsd:element form="qualified" minOccurs="0" name="constant" type="bc:Constant"/>
-          <xsd:element form="qualified" minOccurs="0" name="format" type="bc:Format"/>
-          <xsd:element form="qualified" minOccurs="0" name="propertyRef" type="bc:PropertyRef"/>
-          <xsd:element form="qualified" minOccurs="0" name="replace" type="bc:Replace"/>
-          <xsd:element form="qualified" minOccurs="0" name="toLower" type="bc:ToLower"/>
-          <xsd:element form="qualified" minOccurs="0" name="toUpper" type="bc:ToUpper"/>
+          <xsd:choice ecore:featureMap="singleValueGroup">
+            <xsd:element ecore:changeable="false" ecore:lowerBound="1" ecore:name="complexValue" minOccurs="0" ref="bc:basicValue"/>
+          </xsd:choice>
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
-  <xsd:simpleType ecore:name="PropertyKey" name="propertyKey">
-    <xsd:restriction base="xsd:string">
-      <xsd:pattern value="[A-Za-z0-9_.${}/]+"/>
-    </xsd:restriction>
-  </xsd:simpleType>
   <xsd:complexType name="PropertyRef">
-    <xsd:attribute name="key" type="bc:propertyKey" use="required"/>
+    <xsd:complexContent>
+      <xsd:extension base="bc:Value">
+        <xsd:attribute name="key" type="bc:propertyKey" use="required"/>
+      </xsd:extension>
+    </xsd:complexContent>
   </xsd:complexType>
   <xsd:complexType name="Replace">
     <xsd:complexContent>
       <xsd:extension base="bc:ValueFilter">
         <xsd:sequence>
-          <xsd:element form="qualified" maxOccurs="unbounded" minOccurs="0" name="matches" type="bc:Match"/>
+          <xsd:element ecore:name="matches" form="qualified" maxOccurs="unbounded" minOccurs="0" name="match" type="bc:Match"/>
         </xsd:sequence>
         <xsd:attribute name="pattern" type="ecore:EString"/>
         <xsd:attribute default="false" name="quotePattern" type="ecore:EBoolean"/>
         <xsd:attribute name="replacement" type="ecore:EString"/>
+        <xsd:attribute ecore:changeable="false" ecore:derived="true" ecore:transient="true" name="compiledPattern" type="bc:pattern"/>
       </xsd:extension>
     </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType abstract="true" name="RxAssembly">
+    <xsd:annotation>
+      <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+        <operation name="getMatchMap" type="ecore:EMap{ecore:EString, ecore:EString}">
+          <parameter name="input" type="bc:CharSequence"/>
+        </operation>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice ecore:featureMap="rxPartsGroup" maxOccurs="unbounded">
+        <xsd:element ecore:changeable="false" ecore:lowerBound="1" ecore:name="rxParts" ecore:upperBound="-1" minOccurs="0" ref="bc:rxPart"/>
+      </xsd:choice>
+    </xsd:sequence>
+    <xsd:attribute ecore:changeable="false" ecore:transient="true" ecore:unsettable="true" name="pattern" type="bc:pattern"/>
   </xsd:complexType>
   <xsd:complexType name="RxGroup">
     <xsd:annotation>
@@ -145,22 +277,13 @@
   <xsd:complexType name="Split">
     <xsd:complexContent>
       <xsd:extension base="bc:ValueFilter">
-        <xsd:attribute ecore:unsettable="false" name="limit" type="ecore:EInt"/>
+        <xsd:attribute default="0" ecore:unsettable="false" name="limit" type="ecore:EInt"/>
         <xsd:attribute name="pattern" type="ecore:EString" use="required"/>
         <xsd:attribute default="quoted" name="style" type="bc:SplitType"/>
+        <xsd:attribute ecore:changeable="false" ecore:derived="true" ecore:transient="true" name="compiledPattern" type="bc:pattern"/>
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
-  <xsd:simpleType name="SplitType">
-    <xsd:annotation>
-      <xsd:documentation>A split can be done using a delimiter or a pattern containing capturing groups. In case of delimiter it can be quoted or not quoted.</xsd:documentation>
-    </xsd:annotation>
-    <xsd:restriction base="xsd:string">
-      <xsd:enumeration value="quoted"/>
-      <xsd:enumeration value="unquoted"/>
-      <xsd:enumeration value="groups"/>
-    </xsd:restriction>
-  </xsd:simpleType>
   <xsd:complexType name="ToLower">
     <xsd:complexContent>
       <xsd:extension base="bc:ValueFilter"/>
@@ -171,26 +294,76 @@
       <xsd:extension base="bc:ValueFilter"/>
     </xsd:complexContent>
   </xsd:complexType>
+  <xsd:complexType abstract="true" name="Value">
+    <xsd:annotation>
+      <xsd:appinfo ecore:key="operations" source="http://www.eclipse.org/emf/2002/Ecore">
+        <operation name="getValue" type="ecore:EString">
+          <parameter name="properties" type="ecore:EMap{ecore:EString, ecore:EString}"/>
+        </operation>
+        <operation name="isMultiValued" type="ecore:EBoolean"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:attribute default="true" ecore:unsettable="false" name="mutable" type="ecore:EBoolean"/>
+  </xsd:complexType>
+  <xsd:complexType abstract="true" name="ValueFilter">
+    <xsd:complexContent>
+      <xsd:extension base="bc:Value">
+        <xsd:sequence>
+          <xsd:choice ecore:featureMap="multiValueGroup" maxOccurs="unbounded">
+            <xsd:element ecore:changeable="false" ecore:lowerBound="1" ecore:name="values" ecore:upperBound="-1" minOccurs="0" ref="bc:basicValue"/>
+          </xsd:choice>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:simpleType ecore:instanceClass="org.eclipse.core.runtime.CoreException" name="CoreException">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:instanceClass="org.eclipse.buckminster.osgi.filter.Filter" name="Filter">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:instanceClass="org.eclipse.core.runtime.IStatus[]" name="IStatusArray">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:instanceClass="java.util.regex.Pattern" ecore:name="Pattern" name="pattern">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:name="PropertyKey" name="propertyKey">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Za-z0-9_.${}/]+"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="SplitType">
+    <xsd:annotation>
+      <xsd:documentation>A split can be done using a delimiter or a pattern containing capturing groups. In case of delimiter it can be quoted or not quoted.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="quoted"/>
+      <xsd:enumeration value="unquoted"/>
+      <xsd:enumeration value="groups"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:instanceClass="java.lang.Throwable" name="Throwable">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:instanceClass="java.net.URL" name="URL">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
   <xsd:simpleType ecore:instanceClass="java.util.UUID" ecore:name="Uuid" name="uuid">
     <xsd:restriction base="xsd:string">
       <xsd:pattern value="[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"/>
     </xsd:restriction>
   </xsd:simpleType>
-  <xsd:complexType abstract="true" name="ValueFilter">
-    <xsd:sequence>
-      <xsd:element ecore:name="constants" form="qualified" maxOccurs="unbounded" minOccurs="0" name="constant" type="bc:Constant"/>
-      <xsd:element ecore:name="formats" form="qualified" maxOccurs="unbounded" minOccurs="0" name="format" type="bc:Format"/>
-      <xsd:element ecore:name="propertyRefs" form="qualified" maxOccurs="unbounded" minOccurs="0" name="propertyRef" type="bc:PropertyRef"/>
-      <xsd:element ecore:name="replacements" form="qualified" maxOccurs="unbounded" minOccurs="0" name="replace" type="bc:Replace"/>
-      <xsd:element ecore:name="splits" form="qualified" maxOccurs="unbounded" minOccurs="0" name="split" type="bc:Split"/>
-      <xsd:element ecore:name="toLowers" form="qualified" maxOccurs="unbounded" minOccurs="0" name="toLower" type="bc:ToLower"/>
-      <xsd:element ecore:name="toUppers" form="qualified" maxOccurs="unbounded" minOccurs="0" name="toUpper" type="bc:ToUpper"/>
-    </xsd:sequence>
-  </xsd:complexType>
-  <xsd:simpleType ecore:instanceClass="java.util.regex.Pattern" ecore:name="Pattern" name="pattern">
+  <xsd:simpleType ecore:instanceClass="org.eclipse.equinox.p2.metadata.VersionRange" name="VersionRange">
     <xsd:restriction base="xsd:string"/>
   </xsd:simpleType>
-  <xsd:simpleType ecore:instanceClass="org.eclipse.buckminster.osgi.filter.Filter" name="Filter">
+  <xsd:simpleType ecore:instanceClass="org.eclipse.equinox.p2.metadata.Version" name="Version">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:instanceClass="java.lang.CharSequence" name="CharSequence">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  <xsd:simpleType ecore:instanceClass="org.eclipse.equinox.p2.metadata.IVersionFormat" name="IVersionFormat">
     <xsd:restriction base="xsd:string"/>
   </xsd:simpleType>
 </xsd:schema>

@@ -17,15 +17,16 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.KeyConstants;
 import org.eclipse.buckminster.core.TargetPlatform;
 import org.eclipse.buckminster.core.actor.AbstractActor;
 import org.eclipse.buckminster.core.actor.IActionContext;
-import org.eclipse.buckminster.core.actor.IllegalPrerequisiteException;
 import org.eclipse.buckminster.core.actor.MissingPrerequisiteException;
 import org.eclipse.buckminster.core.common.model.ExpandingProperties;
 import org.eclipse.buckminster.core.cspec.model.Action;
@@ -39,6 +40,7 @@ import org.eclipse.buckminster.core.metadata.model.IModelCache;
 import org.eclipse.buckminster.core.mspec.ConflictResolution;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
+import org.eclipse.buckminster.pde.PDEPlugin;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
 import org.eclipse.buckminster.pde.internal.PDETargetPlatform;
 import org.eclipse.buckminster.pde.tasks.BundlesAction;
@@ -51,6 +53,7 @@ import org.eclipse.buckminster.pde.tasks.SiteReferencesAction;
 import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.IOUtils;
+import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -66,13 +69,16 @@ import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.ProductFile;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionedId;
 import org.eclipse.equinox.p2.publisher.IPublisherAction;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.Publisher;
 import org.eclipse.equinox.p2.publisher.PublisherInfo;
+import org.eclipse.equinox.p2.publisher.eclipse.BundleShapeAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
+import org.eclipse.equinox.p2.publisher.eclipse.IBundleShapeAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.URLEntry;
 import org.eclipse.equinox.p2.repository.IRepository;
 import org.eclipse.equinox.p2.repository.artifact.IArtifactRepository;
@@ -273,7 +279,7 @@ public class P2SiteGenerator extends AbstractActor {
 		// manually removed things
 		// from it and then reverted the timestamp of the folder. It would be
 		// somewhat paranoid to
-		// check for htat.
+		// check for that.
 		return outputDir.append("content.jar").toFile().exists() && outputDir.append("artifacts.jar").toFile().exists(); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
@@ -328,6 +334,7 @@ public class P2SiteGenerator extends AbstractActor {
 		mdr.setProperty(IRepository.PROP_COMPRESSED, trueStr);
 		info.setMetadataRepository(mdr);
 
+		addAdvice(siteDescriptor, info);
 		IPublisherAction[] actions = createActions(ctx, sourceFolder, siteDescriptor, siteFolder, productConfigs);
 		Publisher publisher = new Publisher(info);
 		IStatus result = publisher.publish(actions, new NullProgressMonitor());
@@ -343,6 +350,7 @@ public class P2SiteGenerator extends AbstractActor {
 		IPath siteDefiner = null;
 		CSpec cspec = action.getCSpec();
 		List<IPath> productConfigs = null;
+		Logger logger = PDEPlugin.getLogger();
 		for (Prerequisite preq : action.getPrerequisites()) {
 			if (ALIAS_SITE.equals(preq.getAlias())) {
 				// This prerequisite should appoint the site as a folder
@@ -374,7 +382,9 @@ public class P2SiteGenerator extends AbstractActor {
 				continue;
 			}
 
-			throw new IllegalPrerequisiteException(action, preq.getName());
+			if (preq.isContributor())
+				logger.warning("prerequisite with name %s is ignored by action %s " //$NON-NLS-1$
+						+ "(set contributor=\"false\" on the prerequisite to get rid of this warning)", preq.getName(), action.getQualifiedName()); //$NON-NLS-1$
 		}
 
 		if (site == null)
@@ -442,8 +452,23 @@ public class P2SiteGenerator extends AbstractActor {
 		return Status.OK_STATUS;
 	}
 
-	private void collectBundles(CSpec cspec, Map<IVersionedId, CSpec> cspecs, IActionContext ctx) throws CoreException {
+	private void addAdvice(Object siteDescriptor, PublisherInfo info) {
+		if (siteDescriptor instanceof Feature) {
+			Feature feature = (Feature) siteDescriptor;
+			FeatureEntry entries[] = feature.getEntries();
+			for (int i = 0; i < entries.length; i++) {
+				FeatureEntry entry = entries[i];
+				if (entry.isUnpack() && entry.isPlugin() && !entry.isRequires())
+					info.addAdvice(new BundleShapeAdvice(entry.getId(), Version.parseVersion(entry.getVersion()), IBundleShapeAdvice.DIR));
+			}
+		}
+	}
+
+	private void collectBundles(CSpec cspec, Map<IVersionedId, CSpec> cspecs, Set<ComponentIdentifier> cis, IActionContext ctx) throws CoreException {
 		ComponentIdentifier ci = cspec.getComponentIdentifier();
+        if(!cis.add(ci))
+            return;
+        
 		if (IComponentType.OSGI_BUNDLE.equals(ci.getComponentTypeID()))
 			if (cspecs.put(new VersionedId(ci.getName(), ci.getVersion()), cspec) != null)
 				return;
@@ -455,14 +480,15 @@ public class P2SiteGenerator extends AbstractActor {
 		for (Prerequisite preq : refs.getPrerequisites()) {
 			Attribute ref = preq.getReferencedAttribute(cspec, ctx);
 			if (ref != null)
-				collectBundles(ref.getCSpec(), cspecs, ctx);
+				collectBundles(ref.getCSpec(), cspecs, cis, ctx);
 		}
 	}
 
 	private Map<IVersionedId, CSpec> collectBundles(IActionContext ctx) throws CoreException {
 		CSpec cspec = ctx.getAction().getCSpec();
 		Map<IVersionedId, CSpec> cspecs = new HashMap<IVersionedId, CSpec>();
-		collectBundles(cspec, cspecs, ctx);
+		Set<ComponentIdentifier> cis = new HashSet<ComponentIdentifier>();
+		collectBundles(cspec, cspecs, cis, ctx);
 		return cspecs;
 	}
 

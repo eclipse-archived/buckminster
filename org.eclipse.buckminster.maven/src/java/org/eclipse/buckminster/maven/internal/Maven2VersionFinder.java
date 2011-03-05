@@ -61,7 +61,7 @@ public class Maven2VersionFinder extends MavenVersionFinder {
 
 		List<VersionMatch> versions = new ArrayList<VersionMatch>();
 		Maven2ReaderType readerType = (Maven2ReaderType) getReaderType();
-		MapEntry mapEntry = getMapEntry();
+		IMapEntry mapEntry = getMapEntry();
 		URI uri = getURI();
 		StringBuilder pbld = new StringBuilder();
 		readerType.appendFolder(pbld, uri.getPath());

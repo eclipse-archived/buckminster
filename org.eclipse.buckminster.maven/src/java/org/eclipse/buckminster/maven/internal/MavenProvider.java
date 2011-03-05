@@ -44,6 +44,10 @@ public class MavenProvider extends Provider {
 
 	public static final String ELEM_RULE = "rule"; //$NON-NLS-1$
 
+	public static final String ELEM_SCOPES = "scopes"; //$NON-NLS-1$
+
+	public static final String ATTR_TRANSITIVE = "transitive"; //$NON-NLS-1$
+
 	/**
 	 * Apply default rules. I.e.
 	 * <ul>
@@ -57,9 +61,13 @@ public class MavenProvider extends Provider {
 	 *            the name of the component
 	 * @return an entry with a Maven groupId and artifactId
 	 */
-	public static MapEntry getDefaultGroupAndArtifact(String name) {
+	public static IMapEntry getDefaultGroupAndArtifact(String name) {
 		int dotIdx = name.lastIndexOf('/');
 		return (dotIdx > 0) ? new MapEntry(name, name.substring(0, dotIdx), name.substring(dotIdx + 1), null) : new MapEntry(name, name, name, null);
+	}
+
+	public static boolean getDefaultIsScopeExcluded() {
+		return false;
 	}
 
 	/**
@@ -91,20 +99,39 @@ public class MavenProvider extends Provider {
 		return groupId + '/' + artifactId;
 	}
 
+	public static boolean getDefaultTransitive() {
+		return true;
+	}
+
 	private final Map<String, MapEntry> mappings;
 
 	private final List<BidirectionalTransformer> rules;
 
+	private final Map<String, Scope> scopes;
+
+	private final boolean transitive;
+
 	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc versionConverterDesc,
 			Format uri, Filter resolutionFilter, Map<String, String> properties, Documentation documentation, Map<String, MapEntry> mappings,
 			List<BidirectionalTransformer> rules) {
+		this(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, resolutionFilter, properties, documentation, mappings, rules,
+				Collections.<String, Scope> emptyMap(), true);
+	}
+
+	public MavenProvider(SearchPath searchPath, String remoteReaderType, String[] componentTypes, VersionConverterDesc versionConverterDesc,
+			Format uri, Filter resolutionFilter, Map<String, String> properties, Documentation documentation, Map<String, MapEntry> mappings,
+			List<BidirectionalTransformer> rules, Map<String, Scope> scopes, boolean transitive) {
 		super(searchPath, remoteReaderType, componentTypes, versionConverterDesc, uri, null, null, resolutionFilter, properties, null, documentation);
 		if (mappings == null)
 			mappings = Collections.emptyMap();
 		if (rules == null)
 			rules = Collections.emptyList();
+		if (scopes == null)
+			scopes = Collections.emptyMap();
 		this.mappings = mappings;
 		this.rules = rules;
+		this.scopes = scopes;
+		this.transitive = transitive;
 	}
 
 	@Override
@@ -128,7 +155,7 @@ public class MavenProvider extends Provider {
 	@Override
 	protected void emitElements(ContentHandler handler, String namespace, String prefix) throws SAXException {
 		super.emitElements(handler, namespace, prefix);
-		if (mappings.size() == 0 && rules.size() == 0)
+		if (mappings.size() == 0 && rules.size() == 0 && scopes.size() == 0)
 			return;
 
 		String qName = Utils.makeQualifiedName(BM_MAVEN_PROVIDER_PREFIX, ELEM_MAPPINGS);
@@ -138,10 +165,16 @@ public class MavenProvider extends Provider {
 		for (BidirectionalTransformer rule : rules)
 			rule.toSax(handler, BM_MAVEN_PROVIDER_NS, BM_MAVEN_PROVIDER_PREFIX, ELEM_RULE);
 		handler.endElement(BM_MAVEN_PROVIDER_NS, ELEM_MAPPINGS, qName);
+
+		String sqName = Utils.makeQualifiedName(BM_MAVEN_PROVIDER_PREFIX, ELEM_SCOPES);
+		handler.startElement(BM_MAVEN_PROVIDER_NS, ELEM_SCOPES, sqName, ISaxableElement.EMPTY_ATTRIBUTES);
+		for (Scope scope : scopes.values())
+			scope.toSax(handler, BM_MAVEN_PROVIDER_NS, BM_MAVEN_PROVIDER_PREFIX, scope.getDefaultTag());
+		handler.endElement(BM_MAVEN_PROVIDER_NS, ELEM_SCOPES, sqName);
 	}
 
 	String getComponentName(String groupId, String artifactId) throws CoreException {
-		for (MapEntry me : mappings.values()) {
+		for (IMapEntry me : mappings.values()) {
 			if (me.isMatchFor(groupId, artifactId))
 				return me.getName();
 
@@ -165,8 +198,11 @@ public class MavenProvider extends Provider {
 		return getDefaultName(groupId, artifactId);
 	}
 
-	MapEntry getGroupAndArtifact(String name) throws CoreException {
-		MapEntry entry = mappings.get(name);
+	IMapEntry getGroupAndArtifact(String name) throws CoreException {
+		if (name.endsWith(".source")) //$NON-NLS-1$
+			return new SourceMapEntry(getGroupAndArtifact(name.substring(0, name.length() - 7)));
+
+		IMapEntry entry = mappings.get(name);
 		if (entry != null)
 			return entry;
 
@@ -185,5 +221,31 @@ public class MavenProvider extends Provider {
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.the_result_of_applying_a_match_rule_had_no_separator_slash_0, transformed));
 
 		return new MapEntry(name, transformed.substring(0, slashPos), transformed.substring(slashPos + 1), null);
+	}
+
+	boolean isScopeExcluded(String name) {
+		if (name == null)
+			return getDefaultIsScopeExcluded();
+
+		if (scopes.size() == 0)
+			// This specific scope isn't found, and no other scopes are
+			// mentioned so default behaviour will be to fall back to default
+			// behaviour of getting everything
+			return getDefaultIsScopeExcluded();
+
+		Scope scope = scopes.get(name);
+		if (scope == null)
+			// This specific scope isn't found, but our config does mention
+			// other scopes so this should be excluded. We assume the user using
+			// scopes will only want to mention scopes they care about,
+			// otherwise they would have to know the names of every single scope
+			// used throughout their maven repository
+			return true;
+
+		return scope.isExcluded();
+	}
+
+	boolean isTransitive() {
+		return transitive;
 	}
 }

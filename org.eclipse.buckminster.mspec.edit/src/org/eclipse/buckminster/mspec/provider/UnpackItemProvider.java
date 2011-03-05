@@ -53,6 +53,7 @@ public class UnpackItemProvider extends ItemProviderAdapter implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/Unpack"));
@@ -64,6 +65,7 @@ public class UnpackItemProvider extends ItemProviderAdapter implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -81,6 +83,7 @@ public class UnpackItemProvider extends ItemProviderAdapter implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
 		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
@@ -92,6 +95,7 @@ public class UnpackItemProvider extends ItemProviderAdapter implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		Unpack unpack = (Unpack) object;
@@ -106,6 +110,7 @@ public class UnpackItemProvider extends ItemProviderAdapter implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -127,9 +132,9 @@ public class UnpackItemProvider extends ItemProviderAdapter implements IEditingD
 	 */
 	protected void addExpandPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Unpack_expand_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Unpack_expand_feature", "_UI_Unpack_type"), MspecPackage.Literals.UNPACK__EXPAND, true, false, false,
-				ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_Unpack_expand_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Unpack_expand_feature", "_UI_Unpack_type"),
+				MspecPackage.Literals.UNPACK__EXPAND, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -140,9 +145,9 @@ public class UnpackItemProvider extends ItemProviderAdapter implements IEditingD
 	 */
 	protected void addSuffixPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_Unpack_suffix_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_Unpack_suffix_feature", "_UI_Unpack_type"), MspecPackage.Literals.UNPACK__SUFFIX, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_Unpack_suffix_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_Unpack_suffix_feature", "_UI_Unpack_type"),
+				MspecPackage.Literals.UNPACK__SUFFIX, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -152,6 +157,7 @@ public class UnpackItemProvider extends ItemProviderAdapter implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

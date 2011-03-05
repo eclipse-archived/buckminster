@@ -3,6 +3,7 @@ package org.eclipse.buckminster.git.internal;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.reader.AbstractCatalogReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
@@ -23,9 +24,9 @@ public class GitReader extends AbstractCatalogReader {
 	protected GitReader(IReaderType readerType, ProviderMatch providerMatch) throws CoreException {
 		super(readerType, providerMatch);
 		Provider provider = providerMatch.getProvider();
-		repoAccess = new RepositoryAccess(//
-				provider.getURI(providerMatch.getNodeQuery().getProperties()),//
-				provider.getProviderProperties());
+		@SuppressWarnings("unchecked")
+		Map<String,String> props = (Map<String,String>)provider.getProperties(providerMatch.getNodeQuery().getProperties());
+		repoAccess = new RepositoryAccess(provider.getURI(props), props);
 	}
 
 	@Override
@@ -48,8 +49,8 @@ public class GitReader extends AbstractCatalogReader {
 		if (blobEntry == null)
 			throw new FileNotFoundException(fileName);
 
-		Repository repo = blobEntry.getRepository();
-		ObjectLoader ol = repo.openBlob(blobEntry.getId());
+		Repository repo = repoAccess.getRepository(monitor);
+		ObjectLoader ol = repo.open(blobEntry.getId());
 		byte[] bytes = ol.getBytes();
 		return consumer.consumeStream(this, fileName, new ByteArrayInputStream(bytes), monitor);
 	}

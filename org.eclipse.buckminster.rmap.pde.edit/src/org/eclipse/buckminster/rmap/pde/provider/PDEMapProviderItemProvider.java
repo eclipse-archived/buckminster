@@ -9,6 +9,7 @@ package org.eclipse.buckminster.rmap.pde.provider;
 import java.util.Collection;
 import java.util.List;
 
+import java.util.regex.Pattern;
 import org.eclipse.buckminster.rmap.pde.PDEMapProvider;
 
 import org.eclipse.buckminster.rmap.provider.ProviderItemProvider;
@@ -76,7 +77,8 @@ public class PDEMapProviderItemProvider extends ProviderItemProvider implements 
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((PDEMapProvider) object).getComponentTypesAttr();
+		Pattern labelValue = ((PDEMapProvider) object).getPattern();
+		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ? getString("_UI_PDEMapProvider_type") : getString("_UI_PDEMapProvider_type") + " " + label;
 	}
 

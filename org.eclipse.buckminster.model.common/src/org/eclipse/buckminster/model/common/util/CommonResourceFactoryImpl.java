@@ -38,6 +38,7 @@ public class CommonResourceFactoryImpl extends ResourceFactoryImpl {
 	 * 
 	 * @generated NOT
 	 */
+
 	@Override
 	public Resource createResource(URI uri) {
 		XMLResource result = new CommonResourceImpl(uri);

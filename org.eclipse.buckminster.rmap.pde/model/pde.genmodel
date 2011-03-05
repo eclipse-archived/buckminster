@@ -2,7 +2,7 @@
 <genmodel:GenModel xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI" xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.rmap.pde/src"
     modelPluginID="org.eclipse.buckminster.rmap.pde" modelName="Pde" importerID="org.eclipse.emf.importer.ecore"
-    complianceLevel="6.0" copyrightFields="false" usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common ../../org.eclipse.buckminster.rmap/model/rmap.genmodel#//rmap">
+    complianceLevel="5.0" copyrightFields="false" usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common ../../org.eclipse.buckminster.rmap/model/rmap.genmodel#//rmap">
   <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
     <genAnnotations source="selectedPackages">
       <details key="http://www.eclipse.org/buckminster/PDEMapProvider-1.0" value="pde.xsd"/>
@@ -14,9 +14,8 @@
     <details key="directoryURI" value="."/>
   </genAnnotations>
   <foreignModel>pde.ecore</foreignModel>
-  <genPackages prefix="Pde" basePackage="org.eclipse.buckminster.rmap" resource="XML"
-      disposableProviderFactory="true" extensibleProviderFactory="true" childCreationExtenders="true"
-      ecorePackage="pde.ecore#/">
+  <genPackages prefix="Pde" basePackage="org.eclipse.buckminster.rmap" disposableProviderFactory="true"
+      extensibleProviderFactory="true" childCreationExtenders="true" ecorePackage="pde.ecore#/">
     <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
       <genAnnotations source="pde.xsd"/>
     </genAnnotations>

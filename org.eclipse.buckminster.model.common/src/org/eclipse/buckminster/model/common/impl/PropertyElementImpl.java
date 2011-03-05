@@ -7,21 +7,19 @@
 package org.eclipse.buckminster.model.common.impl;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
-import org.eclipse.buckminster.model.common.Constant;
-import org.eclipse.buckminster.model.common.Format;
-import org.eclipse.buckminster.model.common.PropertyElement;
-import org.eclipse.buckminster.model.common.PropertyRef;
-import org.eclipse.buckminster.model.common.Replace;
-import org.eclipse.buckminster.model.common.ToLower;
-import org.eclipse.buckminster.model.common.ToUpper;
-
+import org.eclipse.buckminster.model.common.Value;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
+import org.eclipse.emf.common.util.BasicEMap;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
+import org.eclipse.emf.ecore.util.BasicFeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '
@@ -30,88 +28,56 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * <ul>
  * <li>
- * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getConstant
- * <em>Constant</em>}</li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getTypedKey
+ * <em>Key</em>}</li>
  * <li>
- * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getFormat
- * <em>Format</em>}</li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getValueGroup
+ * <em>Value Group</em>}</li>
  * <li>
- * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getPropertyRef
- * <em>Property Ref</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getReplace
- * <em>Replace</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getToLower
- * <em>To Lower</em>}</li>
- * <li>
- * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getToUpper
- * <em>To Upper</em>}</li>
+ * {@link org.eclipse.buckminster.model.common.impl.PropertyElementImpl#getTypedValue
+ * <em>Value</em>}</li>
  * </ul>
  * </p>
  * 
  * @generated
  */
-public class PropertyElementImpl extends PropertyImpl implements PropertyElement {
+public class PropertyElementImpl extends EObjectImpl implements BasicEMap.Entry<String, Value> {
 	/**
-	 * The cached value of the '{@link #getConstant() <em>Constant</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The default value of the '{@link #getTypedKey() <em>Key</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see #getConstant()
+	 * @see #getTypedKey()
 	 * @generated
 	 * @ordered
 	 */
-	protected Constant constant;
+	protected static final String KEY_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getFormat() <em>Format</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getTypedKey() <em>Key</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see #getFormat()
+	 * @see #getTypedKey()
 	 * @generated
 	 * @ordered
 	 */
-	protected Format format;
+	protected String key = KEY_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getPropertyRef() <em>Property Ref</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The cached value of the '{@link #getValueGroup() <em>Value Group</em>}'
+	 * attribute list. <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see #getPropertyRef()
+	 * @see #getValueGroup()
 	 * @generated
 	 * @ordered
 	 */
-	protected PropertyRef propertyRef;
+	protected FeatureMap valueGroup;
 
 	/**
-	 * The cached value of the '{@link #getReplace() <em>Replace</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @see #getReplace()
 	 * @generated
-	 * @ordered
 	 */
-	protected Replace replace;
-
-	/**
-	 * The cached value of the '{@link #getToLower() <em>To Lower</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getToLower()
-	 * @generated
-	 * @ordered
-	 */
-	protected ToLower toLower;
-
-	/**
-	 * The cached value of the '{@link #getToUpper() <em>To Upper</em>}'
-	 * containment reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @see #getToUpper()
-	 * @generated
-	 * @ordered
-	 */
-	protected ToUpper toUpper;
+	protected int hash = -1;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -127,18 +93,8 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetConstant(Constant newConstant, NotificationChain msgs) {
-		Constant oldConstant = constant;
-		constant = newConstant;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__CONSTANT, oldConstant,
-					newConstant);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
-		}
-		return msgs;
+	public NotificationChain basicSetTypedValue(Value newValue, NotificationChain msgs) {
+		return ((FeatureMap.Internal) getValueGroup()).basicAdd(CommonPackage.Literals.PROPERTY_ELEMENT__VALUE, newValue, msgs);
 	}
 
 	/**
@@ -146,116 +102,18 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
-	public NotificationChain basicSetFormat(Format newFormat, NotificationChain msgs) {
-		Format oldFormat = format;
-		format = newFormat;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__FORMAT, oldFormat,
-					newFormat);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
-		}
-		return msgs;
-	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public NotificationChain basicSetPropertyRef(PropertyRef newPropertyRef, NotificationChain msgs) {
-		PropertyRef oldPropertyRef = propertyRef;
-		propertyRef = newPropertyRef;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__PROPERTY_REF,
-					oldPropertyRef, newPropertyRef);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public NotificationChain basicSetReplace(Replace newReplace, NotificationChain msgs) {
-		Replace oldReplace = replace;
-		replace = newReplace;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__REPLACE, oldReplace,
-					newReplace);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public NotificationChain basicSetToLower(ToLower newToLower, NotificationChain msgs) {
-		ToLower oldToLower = toLower;
-		toLower = newToLower;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__TO_LOWER, oldToLower,
-					newToLower);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	public NotificationChain basicSetToUpper(ToUpper newToUpper, NotificationChain msgs) {
-		ToUpper oldToUpper = toUpper;
-		toUpper = newToUpper;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__TO_UPPER, oldToUpper,
-					newToUpper);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case CommonPackage.PROPERTY_ELEMENT__CONSTANT:
-				return getConstant();
-			case CommonPackage.PROPERTY_ELEMENT__FORMAT:
-				return getFormat();
-			case CommonPackage.PROPERTY_ELEMENT__PROPERTY_REF:
-				return getPropertyRef();
-			case CommonPackage.PROPERTY_ELEMENT__REPLACE:
-				return getReplace();
-			case CommonPackage.PROPERTY_ELEMENT__TO_LOWER:
-				return getToLower();
-			case CommonPackage.PROPERTY_ELEMENT__TO_UPPER:
-				return getToUpper();
+			case CommonPackage.PROPERTY_ELEMENT__KEY:
+				return getTypedKey();
+			case CommonPackage.PROPERTY_ELEMENT__VALUE_GROUP:
+				if (coreType)
+					return getValueGroup();
+				return ((FeatureMap.Internal) getValueGroup()).getWrapper();
+			case CommonPackage.PROPERTY_ELEMENT__VALUE:
+				return getTypedValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -265,21 +123,14 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case CommonPackage.PROPERTY_ELEMENT__CONSTANT:
-				return basicSetConstant(null, msgs);
-			case CommonPackage.PROPERTY_ELEMENT__FORMAT:
-				return basicSetFormat(null, msgs);
-			case CommonPackage.PROPERTY_ELEMENT__PROPERTY_REF:
-				return basicSetPropertyRef(null, msgs);
-			case CommonPackage.PROPERTY_ELEMENT__REPLACE:
-				return basicSetReplace(null, msgs);
-			case CommonPackage.PROPERTY_ELEMENT__TO_LOWER:
-				return basicSetToLower(null, msgs);
-			case CommonPackage.PROPERTY_ELEMENT__TO_UPPER:
-				return basicSetToUpper(null, msgs);
+			case CommonPackage.PROPERTY_ELEMENT__VALUE_GROUP:
+				return ((InternalEList<?>) getValueGroup()).basicRemove(otherEnd, msgs);
+			case CommonPackage.PROPERTY_ELEMENT__VALUE:
+				return basicSetTypedValue(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -289,21 +140,16 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case CommonPackage.PROPERTY_ELEMENT__CONSTANT:
-				return constant != null;
-			case CommonPackage.PROPERTY_ELEMENT__FORMAT:
-				return format != null;
-			case CommonPackage.PROPERTY_ELEMENT__PROPERTY_REF:
-				return propertyRef != null;
-			case CommonPackage.PROPERTY_ELEMENT__REPLACE:
-				return replace != null;
-			case CommonPackage.PROPERTY_ELEMENT__TO_LOWER:
-				return toLower != null;
-			case CommonPackage.PROPERTY_ELEMENT__TO_UPPER:
-				return toUpper != null;
+			case CommonPackage.PROPERTY_ELEMENT__KEY:
+				return KEY_EDEFAULT == null ? key != null : !KEY_EDEFAULT.equals(key);
+			case CommonPackage.PROPERTY_ELEMENT__VALUE_GROUP:
+				return valueGroup != null && !valueGroup.isEmpty();
+			case CommonPackage.PROPERTY_ELEMENT__VALUE:
+				return getTypedValue() != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -313,26 +159,18 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case CommonPackage.PROPERTY_ELEMENT__CONSTANT:
-				setConstant((Constant) newValue);
+			case CommonPackage.PROPERTY_ELEMENT__KEY:
+				setTypedKey((String) newValue);
 				return;
-			case CommonPackage.PROPERTY_ELEMENT__FORMAT:
-				setFormat((Format) newValue);
+			case CommonPackage.PROPERTY_ELEMENT__VALUE_GROUP:
+				((FeatureMap.Internal) getValueGroup()).set(newValue);
 				return;
-			case CommonPackage.PROPERTY_ELEMENT__PROPERTY_REF:
-				setPropertyRef((PropertyRef) newValue);
-				return;
-			case CommonPackage.PROPERTY_ELEMENT__REPLACE:
-				setReplace((Replace) newValue);
-				return;
-			case CommonPackage.PROPERTY_ELEMENT__TO_LOWER:
-				setToLower((ToLower) newValue);
-				return;
-			case CommonPackage.PROPERTY_ELEMENT__TO_UPPER:
-				setToUpper((ToUpper) newValue);
+			case CommonPackage.PROPERTY_ELEMENT__VALUE:
+				setTypedValue((Value) newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -343,26 +181,18 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case CommonPackage.PROPERTY_ELEMENT__CONSTANT:
-				setConstant((Constant) null);
+			case CommonPackage.PROPERTY_ELEMENT__KEY:
+				setTypedKey(KEY_EDEFAULT);
 				return;
-			case CommonPackage.PROPERTY_ELEMENT__FORMAT:
-				setFormat((Format) null);
+			case CommonPackage.PROPERTY_ELEMENT__VALUE_GROUP:
+				getValueGroup().clear();
 				return;
-			case CommonPackage.PROPERTY_ELEMENT__PROPERTY_REF:
-				setPropertyRef((PropertyRef) null);
-				return;
-			case CommonPackage.PROPERTY_ELEMENT__REPLACE:
-				setReplace((Replace) null);
-				return;
-			case CommonPackage.PROPERTY_ELEMENT__TO_LOWER:
-				setToLower((ToLower) null);
-				return;
-			case CommonPackage.PROPERTY_ELEMENT__TO_UPPER:
-				setToUpper((ToUpper) null);
+			case CommonPackage.PROPERTY_ELEMENT__VALUE:
+				setTypedValue((Value) null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -373,9 +203,130 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
-	@Override
-	public Constant getConstant() {
-		return constant;
+
+	@SuppressWarnings("unchecked")
+	public EMap<String, Value> getEMap() {
+		EObject container = eContainer();
+		return container == null ? null : (EMap<String, Value>) container.eGet(eContainmentFeature());
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	public int getHash() {
+		if (hash == -1) {
+			Object theKey = getKey();
+			hash = (theKey == null ? 0 : theKey.hashCode());
+		}
+		return hash;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	public String getKey() {
+		return getTypedKey();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public String getTypedKey() {
+		return key;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	public Value getTypedValue() {
+		return (Value) getValueGroup().get(CommonPackage.Literals.PROPERTY_ELEMENT__VALUE, true);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	public Value getValue() {
+		return getTypedValue();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public FeatureMap getValueGroup() {
+		if (valueGroup == null) {
+			valueGroup = new BasicFeatureMap(this, CommonPackage.PROPERTY_ELEMENT__VALUE_GROUP);
+		}
+		return valueGroup;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	public void setHash(int hash) {
+		this.hash = hash;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	public void setKey(String key) {
+		setTypedKey(key);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public void setTypedKey(String newKey) {
+		String oldKey = key;
+		key = newKey;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__KEY, oldKey, key));
+	}
+
+	// This method is put here for a reason.
+	// If we declare the value as 'changeable' we get dublicated entries in the
+	// create menu (one
+	// that, if used, causes xsi:type decl's in the XML). If we don't use
+	// 'changeable' then we
+	// this method is assumed to exist but it isn't generated
+	public void setTypedValue(Value newValue) {
+		getValueGroup().set(CommonPackage.Literals.PROPERTY_ELEMENT__VALUE, newValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	public Value setValue(Value value) {
+		Value oldValue = getValue();
+		setTypedValue(value);
+		return oldValue;
 	}
 
 	/**
@@ -384,8 +335,17 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * @generated
 	 */
 	@Override
-	public Format getFormat() {
-		return format;
+	public String toString() {
+		if (eIsProxy())
+			return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (key: ");
+		result.append(key);
+		result.append(", valueGroup: ");
+		result.append(valueGroup);
+		result.append(')');
+		return result.toString();
 	}
 
 	/**
@@ -393,174 +353,7 @@ public class PropertyElementImpl extends PropertyImpl implements PropertyElement
 	 * 
 	 * @generated
 	 */
-	@Override
-	public PropertyRef getPropertyRef() {
-		return propertyRef;
-	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Replace getReplace() {
-		return replace;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public ToLower getToLower() {
-		return toLower;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public ToUpper getToUpper() {
-		return toUpper;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public void setConstant(Constant newConstant) {
-		if (newConstant != constant) {
-			NotificationChain msgs = null;
-			if (constant != null)
-				msgs = ((InternalEObject) constant).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__CONSTANT, null,
-						msgs);
-			if (newConstant != null)
-				msgs = ((InternalEObject) newConstant).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__CONSTANT, null,
-						msgs);
-			msgs = basicSetConstant(newConstant, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__CONSTANT, newConstant, newConstant));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public void setFormat(Format newFormat) {
-		if (newFormat != format) {
-			NotificationChain msgs = null;
-			if (format != null)
-				msgs = ((InternalEObject) format).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__FORMAT, null, msgs);
-			if (newFormat != null)
-				msgs = ((InternalEObject) newFormat).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__FORMAT, null, msgs);
-			msgs = basicSetFormat(newFormat, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__FORMAT, newFormat, newFormat));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public void setPropertyRef(PropertyRef newPropertyRef) {
-		if (newPropertyRef != propertyRef) {
-			NotificationChain msgs = null;
-			if (propertyRef != null)
-				msgs = ((InternalEObject) propertyRef).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__PROPERTY_REF,
-						null, msgs);
-			if (newPropertyRef != null)
-				msgs = ((InternalEObject) newPropertyRef).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__PROPERTY_REF,
-						null, msgs);
-			msgs = basicSetPropertyRef(newPropertyRef, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__PROPERTY_REF, newPropertyRef, newPropertyRef));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public void setReplace(Replace newReplace) {
-		if (newReplace != replace) {
-			NotificationChain msgs = null;
-			if (replace != null)
-				msgs = ((InternalEObject) replace).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__REPLACE, null, msgs);
-			if (newReplace != null)
-				msgs = ((InternalEObject) newReplace).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__REPLACE, null, msgs);
-			msgs = basicSetReplace(newReplace, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__REPLACE, newReplace, newReplace));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public void setToLower(ToLower newToLower) {
-		if (newToLower != toLower) {
-			NotificationChain msgs = null;
-			if (toLower != null)
-				msgs = ((InternalEObject) toLower)
-						.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__TO_LOWER, null, msgs);
-			if (newToLower != null)
-				msgs = ((InternalEObject) newToLower)
-						.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__TO_LOWER, null, msgs);
-			msgs = basicSetToLower(newToLower, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__TO_LOWER, newToLower, newToLower));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public void setToUpper(ToUpper newToUpper) {
-		if (newToUpper != toUpper) {
-			NotificationChain msgs = null;
-			if (toUpper != null)
-				msgs = ((InternalEObject) toUpper)
-						.eInverseRemove(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__TO_UPPER, null, msgs);
-			if (newToUpper != null)
-				msgs = ((InternalEObject) newToUpper)
-						.eInverseAdd(this, EOPPOSITE_FEATURE_BASE - CommonPackage.PROPERTY_ELEMENT__TO_UPPER, null, msgs);
-			msgs = basicSetToUpper(newToUpper, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_ELEMENT__TO_UPPER, newToUpper, newToUpper));
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.PROPERTY_ELEMENT;

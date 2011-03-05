@@ -7,9 +7,11 @@
  *****************************************************************************/
 package org.eclipse.buckminster.maven.internal;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,12 +30,17 @@ import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IFileReader;
 import org.eclipse.buckminster.core.reader.IStreamConsumer;
+import org.eclipse.buckminster.core.reader.LocalReader;
 import org.eclipse.buckminster.core.version.ProviderMatch;
+import org.eclipse.buckminster.core.version.VersionHelper;
+import org.eclipse.buckminster.core.version.VersionMatch;
+import org.eclipse.buckminster.core.version.VersionType;
 import org.eclipse.buckminster.maven.Messages;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -50,7 +57,7 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 		monitor.beginTask(null, 3000);
 		monitor.subTask(Messages.generating_cspec_from_maven_artifact);
 		try {
-			Document pomDoc;
+			Document pomDoc = null;
 			IProgressMonitor subMon = MonitorUtils.subMonitor(monitor, 2000);
 			if (reader instanceof MavenReader) {
 				// We are reading from a maven repository. In that case, we will
@@ -64,17 +71,38 @@ class MavenCSpecBuilder extends AbstractResolutionBuilder implements IStreamCons
 				// any
 				// case, we consider a missing file an exceptional condition.
 				//
-				try {
-					if (reader instanceof ICatalogReader) {
-						try {
-							pomDoc = ((ICatalogReader) reader).readFile("pom.xml", this, subMon); //$NON-NLS-1$
-						} catch (FileNotFoundException e) {
-							pomDoc = ((ICatalogReader) reader).readFile("project.xml", this, subMon); //$NON-NLS-1$
+				if (reader instanceof LocalReader) {
+					File jarFile = new File(URI.create(ri.getRepositoryURI()));
+					if (jarFile.isFile()) {
+
+						File jarFolder = jarFile.getParentFile();
+						Version v = VersionHelper.createVersion(VersionType.TRIPLET, jarFolder.getName());
+						ri.setVersionMatch(new VersionMatch(v, null, null, null, null));
+
+						String jarName = jarFile.getName();
+						int lastDot = jarName.lastIndexOf('.');
+						if (lastDot > 0) {
+							String pomName = jarName.substring(0, lastDot) + ".pom"; //$NON-NLS-1$
+							try {
+								pomDoc = MavenReader.getPOMDocument(new File(jarFolder, pomName));
+							} catch (Exception e) {
+								// Ignore
+							}
 						}
-					} else
-						pomDoc = ((IFileReader) reader).readFile(this, subMon);
-				} catch (FileNotFoundException e2) {
-					throw new MissingCSpecSourceException(reader.getProviderMatch());
+					}
+				} else {
+					try {
+						if (reader instanceof ICatalogReader) {
+							try {
+								pomDoc = ((ICatalogReader) reader).readFile("pom.xml", this, subMon); //$NON-NLS-1$
+							} catch (FileNotFoundException e) {
+								pomDoc = ((ICatalogReader) reader).readFile("project.xml", this, subMon); //$NON-NLS-1$
+							}
+						} else
+							pomDoc = ((IFileReader) reader).readFile(this, subMon);
+					} catch (FileNotFoundException e2) {
+						throw new MissingCSpecSourceException(reader.getProviderMatch());
+					}
 				}
 			}
 
