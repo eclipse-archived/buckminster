@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
+import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
 import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -35,6 +36,7 @@ import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
+import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
 @SuppressWarnings("restriction")
@@ -192,6 +194,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 			if (skipComponent(query, dep))
 				continue;
 
+			boolean sourceInTP = false;
 			cspec.addDependency(dep);
 			String idWithoutSource = getIdWithoutSource(dep.getName());
 			if (idWithoutSource == null) {
@@ -205,9 +208,21 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 				if (idWithoutSource.equals(cspec.getName())) {
 					continue;
 				}
+				IFeatureModel sourceFeature = EclipsePlatformReaderType.getBestFeature(dep.getName(), dep.getVersionRange(), null);
+				if (sourceFeature != null) {
+					// This one is present in the target platform so we include
+					// it just like any
+					// other feature.
+					featureRefs.addExternalPrerequisite(dep, ATTRIBUTE_FEATURE_JARS);
+					bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_JARS);
+					sourceInTP = true;
+				}
 			}
-			sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_BUNDLE_JARS);
-			featureSourceRefs.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_FEATURE_JARS);
+			if (!sourceInTP) {
+				// For source generation
+				sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_BUNDLE_JARS);
+				featureSourceRefs.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_FEATURE_JARS);
+			}
 		}
 	}
 
