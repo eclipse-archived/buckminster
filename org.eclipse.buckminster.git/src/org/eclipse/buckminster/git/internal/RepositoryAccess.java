@@ -41,7 +41,7 @@ import org.eclipse.jgit.transport.URIish;
  */
 @SuppressWarnings("deprecation")
 class RepositoryAccess {
-	private static final Object NULL_STRING = "null";
+	private static final Object NULL_STRING = "null"; //$NON-NLS-1$
 
 	private static void appendObjectSummary(final StringBuilder sb, final String type, final PersonIdent author, final String message) {
 		sb.append(type + " by "); //$NON-NLS-1$
@@ -83,14 +83,14 @@ class RepositoryAccess {
 		String remoteURIStr = properties.get(IPropertyKeys.PROP_REMOTE_URI);
 		if (remoteURIStr != null)
 			try {
-				if(remoteURIStr.startsWith("file:/") && remoteURIStr.length() > 6 && remoteURIStr.charAt(6) != '/') //$NON-NLS-1$
+				if (remoteURIStr.startsWith("file:/") && remoteURIStr.length() > 6 && remoteURIStr.charAt(6) != '/') //$NON-NLS-1$
 					remoteURIStr = "file:///" + remoteURIStr.substring(6); //$NON-NLS-1$
 				URIish uri = new URIish(remoteURIStr);
 				String username = uri.getUser();
 				if (username != null) {
 					if (NULL_STRING.equals(username))
 						uri = uri.setUser(null);
-					
+
 					String password = uri.getPass();
 					if (password != null && NULL_STRING.equals(password))
 						uri = uri.setPass(null);
@@ -118,8 +118,8 @@ class RepositoryAccess {
 
 	void checkout(VersionMatch versionMatch, File destination, IProgressMonitor monitor) throws CoreException {
 		try {
-			Repository local = getRepository(monitor);
 			synchronized (localRepo.getAbsolutePath().intern()) {
+				Repository local = getRepository(monitor);
 				GitIndex index = new GitIndex(local);
 				WorkDirCheckout co = new WorkDirCheckout(local, local.getWorkTree(), index, getComponentTree(versionMatch, monitor));
 				co.checkout();
@@ -189,22 +189,24 @@ class RepositoryAccess {
 		}
 	}
 
-	synchronized Repository getRepository(IProgressMonitor monitor) throws CoreException {
-		if (repository != null)
-			return repository;
+	Repository getRepository(IProgressMonitor monitor) throws CoreException {
+		synchronized (localRepo.getAbsolutePath().intern()) {
+			if (repository != null)
+				return repository;
 
-		boolean infant = !localRepo.exists();
-		try {
-			repository = new FileRepository(localRepo);
-			if (infant) {
-				repository.create();
-				fetch(null, monitor); // Initial clone
+			boolean infant = !localRepo.exists();
+			try {
+				repository = new FileRepository(localRepo);
+				if (infant) {
+					repository.create();
+					fetch(null, monitor); // Initial clone
+				}
+				revWalk = new RevWalk(repository);
+			} catch (IOException e) {
+				throw BuckminsterException.wrap(e);
 			}
-			revWalk = new RevWalk(repository);
-		} catch (IOException e) {
-			throw BuckminsterException.wrap(e);
+			return repository;
 		}
-		return repository;
 	}
 
 	void inspectObj(Object obj) throws IOException {
