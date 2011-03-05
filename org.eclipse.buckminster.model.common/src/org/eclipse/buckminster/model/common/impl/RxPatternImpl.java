@@ -6,7 +6,11 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+
 import org.eclipse.buckminster.model.common.CommonPackage;
+import org.eclipse.buckminster.model.common.RxPart;
 import org.eclipse.buckminster.model.common.RxPattern;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -43,6 +47,123 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * @ordered
 	 */
 	protected static final String PATTERN_EDEFAULT = null;
+
+	private static void addEscapedPattern(StringBuilder bld, String pattern, boolean willBeGroup) {
+		// No capturing groups permitted. All groups must therefore be converted
+		// into non capturing groups
+		//
+		int orDepth = -1;
+		int startPos = bld.length();
+		int parenDepth = 0;
+		boolean inCharGroup = false;
+		boolean stripOuter = false;
+
+		int top = pattern.length();
+		for (int idx = 0; idx < top;) {
+			char c = pattern.charAt(idx++);
+			switch (c) {
+				case '\\':
+					// Next is escaped
+					//
+					bld.append(c);
+					if (idx < top)
+						c = pattern.charAt(idx++);
+					break;
+				case '|':
+					if (orDepth == -1 || orDepth > parenDepth)
+						orDepth = parenDepth;
+					break;
+				case '[':
+					inCharGroup = true;
+					break;
+				case ']':
+					inCharGroup = false;
+					break;
+				case '(':
+					if (inCharGroup)
+						break;
+
+					++parenDepth;
+					if (idx == top)
+						break;
+
+					if (pattern.charAt(idx) != '?') {
+						// If the pattern starts with a group and this group
+						// contains the whole pattern
+						// then it should be stripped off
+						//
+						if (idx == 1)
+							stripOuter = true;
+						bld.append("(?"); //$NON-NLS-1$
+						c = ':';
+					} else {
+						if (idx == 1 && top > 2)
+							stripOuter = (pattern.charAt(2) == ':');
+					}
+					break;
+				case ')':
+					if (inCharGroup)
+						break;
+
+					parenDepth--;
+					if (parenDepth < 0)
+						break;
+
+					if (parenDepth == 0 && idx < top)
+						stripOuter = false;
+					break;
+			}
+			bld.append(c);
+		}
+
+		if (parenDepth != 0)
+			throw new PatternSyntaxException("Unbalanced parenthesis", pattern, 0);
+
+		if (stripOuter) {
+			if (willBeGroup || orDepth != 1) {
+				int tpos = startPos;
+				int fpos = startPos + 3; // We strip '(?:'
+				int epos = bld.length() - 1; // and ')'
+				while (fpos < epos)
+					bld.setCharAt(tpos++, bld.charAt(fpos++));
+				bld.setLength(tpos);
+			}
+		} else if (!willBeGroup && orDepth == 0) {
+			// A group must be added to limit what's affected by the
+			// OR expression
+			//
+			String subExpr = bld.substring(startPos, bld.length());
+			bld.setLength(startPos);
+			bld.append("(?:"); //$NON-NLS-1$
+			bld.append(subExpr);
+			bld.append(')');
+		}
+	}
+
+	private static void addQuotedString(StringBuilder bld, String str) {
+		int top = str.length();
+		for (int idx = 0; idx < top; ++idx) {
+			char c = str.charAt(idx);
+			switch (c) {
+				case '\\':
+				case '(':
+				case ')':
+				case '[':
+				case ']':
+				case '{':
+				case '}':
+				case '.':
+				case '?':
+				case '+':
+				case '*':
+				case '|':
+				case '^':
+				case '$':
+					bld.append('\\');
+			}
+			bld.append(c);
+		}
+	}
 
 	/**
 	 * The cached value of the '{@link #getPattern() <em>Pattern</em>}'
@@ -103,11 +224,38 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 		super();
 	}
 
+	@Override
+	public void addPattern(StringBuilder bld, List<RxPart> namedParts) {
+		if (!isOptional()) {
+			addInnerPattern(bld, namedParts, false);
+			return;
+		}
+
+		// Everything must be in a group that is marked as optional
+		//
+		bld.append('(');
+		if (prefix == null && suffix == null) {
+			if (name == null)
+				bld.append("?:"); // Non capturing group //$NON-NLS-1$
+			else
+				namedParts.add(this);
+			if (pattern != null)
+				addEscapedPattern(bld, pattern, true);
+		} else {
+			// Group as a whole must be a non capturing group
+			//
+			bld.append("?:"); //$NON-NLS-1$
+			addInnerPattern(bld, namedParts, true);
+		}
+		bld.append(")?"); //$NON-NLS-1$
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -126,6 +274,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -144,6 +293,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -165,6 +315,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -186,7 +337,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getPattern() {
 		return pattern;
 	}
@@ -196,7 +347,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getPrefix() {
 		return prefix;
 	}
@@ -206,7 +357,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getSuffix() {
 		return suffix;
 	}
@@ -216,7 +367,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setPattern(String newPattern) {
 		String oldPattern = pattern;
 		pattern = newPattern;
@@ -229,7 +380,7 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setPrefix(String newPrefix) {
 		String oldPrefix = prefix;
 		prefix = newPrefix;
@@ -242,38 +393,12 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setSuffix(String newSuffix) {
 		String oldSuffix = suffix;
 		suffix = newSuffix;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.RX_PATTERN__SUFFIX, oldSuffix, suffix));
-	}
-
-	@Override
-	public void toString(StringBuilder result) {
-		if (eIsProxy()) {
-			result.append(super.toString());
-			return;
-		}
-
-		result.append(" (pattern: ");
-		result.append(pattern);
-		result.append(", prefix: ");
-		result.append(prefix);
-		result.append(", suffix: ");
-		result.append(suffix);
-		result.append(')');
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	@Override
-	public String toStringGen() {
-		return null;
 	}
 
 	/**
@@ -282,8 +407,50 @@ public class RxPatternImpl extends RxPartImpl implements RxPattern {
 	 * @generated
 	 */
 	@Override
+	public String toString() {
+		if (eIsProxy())
+			return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (pattern: ");
+		result.append(pattern);
+		result.append(", prefix: ");
+		result.append(prefix);
+		result.append(", suffix: ");
+		result.append(suffix);
+		result.append(')');
+		return result.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.RX_PATTERN;
+	}
+
+	private void addInnerPattern(StringBuilder bld, List<RxPart> namedParts, boolean willBeGroup) {
+		if (prefix != null)
+			addQuotedString(bld, prefix);
+
+		if (pattern != null) {
+			if (getName() != null) {
+				// Pattern must be a capturing group
+				//
+				bld.append('(');
+				addEscapedPattern(bld, pattern, true);
+				bld.append(')');
+				namedParts.add(this);
+			} else
+				addEscapedPattern(bld, pattern, willBeGroup && prefix == null && suffix == null);
+		}
+
+		if (suffix != null)
+			addQuotedString(bld, suffix);
 	}
 
 } // RxPatternImpl

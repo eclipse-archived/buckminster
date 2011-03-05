@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.eclipse.buckminster.core.Messages;
 import org.eclipse.buckminster.core.ctype.IComponentType;
-import org.eclipse.buckminster.core.query.IAdvisorNode;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
 import org.eclipse.buckminster.core.resolver.ResolverDecisionType;
 import org.eclipse.buckminster.core.rmap.model.Provider;
@@ -294,15 +293,7 @@ public abstract class AbstractSCCSVersionFinder extends AbstractVersionFinder {
 					logDecision(ResolverDecisionType.MATCH_REJECTED, best, NLS.bind(Messages._0_is_a_better_match, match));
 
 				best = match;
-				if (vConverter == null) {
-					if (query.getResolutionPrio()[0] == IAdvisorNode.PRIO_BRANCHTAG_PATH_INDEX)
-						//
-						// Branch/Tag path have the highest prio so there's no
-						// need to
-						// check the next entry.
-						//
-						break;
-				} else if (versionRange != null && versionRange.getMinimum().equals(versionRange.getMaximum())) {
+				if (vConverter != null && versionRange != null && versionRange.getMinimum().equals(versionRange.getMaximum())) {
 					// Explicit hit on a version converted tag or branch. This
 					// will do just fine.
 					//

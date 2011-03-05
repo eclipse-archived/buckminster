@@ -7,7 +7,6 @@
 package org.eclipse.buckminster.model.common;
 
 import org.eclipse.emf.ecore.EFactory;
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc --> The <b>Factory</b> for the model. It provides a
@@ -33,6 +32,21 @@ public interface CommonFactory extends EFactory {
 	 * @generated
 	 */
 	ComponentIdentifier createComponentIdentifier();
+
+	/**
+	 * @param componentIdentifierStr
+	 * @return a new object of class '<em>Component Identifier</em>'.
+	 */
+	ComponentIdentifier createComponentIdentifier(String componentIdentifierStr);
+
+	/**
+	 * Returns a new object of class '<em>Component Name</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Component Name</em>'.
+	 * @generated
+	 */
+	ComponentName createComponentName();
 
 	/**
 	 * Returns a new object of class '<em>Component Request</em>'. <!--
@@ -62,15 +76,6 @@ public interface CommonFactory extends EFactory {
 	Documentation createDocumentation();
 
 	/**
-	 * Returns a new object of class '<em>Document Root</em>'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return a new object of class '<em>Document Root</em>'.
-	 * @generated
-	 */
-	EObject createDocumentRoot();
-
-	/**
 	 * Returns a new object of class '<em>Format</em>'. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
@@ -89,24 +94,6 @@ public interface CommonFactory extends EFactory {
 	Match createMatch();
 
 	/**
-	 * Returns a new object of class '<em>Property Constant</em>'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return a new object of class '<em>Property Constant</em>'.
-	 * @generated
-	 */
-	PropertyConstant createPropertyConstant();
-
-	/**
-	 * Returns a new object of class '<em>Property Element</em>'. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @return a new object of class '<em>Property Element</em>'.
-	 * @generated
-	 */
-	PropertyElement createPropertyElement();
-
-	/**
 	 * Returns a new object of class '<em>Property Ref</em>'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -123,6 +110,15 @@ public interface CommonFactory extends EFactory {
 	 * @generated
 	 */
 	Replace createReplace();
+
+	/**
+	 * Returns a new object of class '<em>Rx Assembly</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Rx Assembly</em>'.
+	 * @generated
+	 */
+	RxAssembly createRxAssembly();
 
 	/**
 	 * Returns a new object of class '<em>Rx Group</em>'. <!-- begin-user-doc

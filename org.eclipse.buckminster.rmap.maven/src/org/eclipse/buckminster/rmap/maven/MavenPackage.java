@@ -148,6 +148,69 @@ public interface MavenPackage extends EPackage {
 		 */
 		EReference MAVEN_PROVIDER__MAPPINGS = eINSTANCE.getMavenProvider_Mappings();
 
+		/**
+		 * The meta object literal for the '<em><b>Scopes</b></em>' containment
+		 * reference feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference MAVEN_PROVIDER__SCOPES = eINSTANCE.getMavenProvider_Scopes();
+
+		/**
+		 * The meta object literal for the '<em><b>Transitive</b></em>'
+		 * attribute feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute MAVEN_PROVIDER__TRANSITIVE = eINSTANCE.getMavenProvider_Transitive();
+
+		/**
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.rmap.maven.impl.ScopesImpl
+		 * <em>Scopes</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc
+		 * -->
+		 * 
+		 * @see org.eclipse.buckminster.rmap.maven.impl.ScopesImpl
+		 * @see org.eclipse.buckminster.rmap.maven.impl.MavenPackageImpl#getScopes()
+		 * @generated
+		 */
+		EClass SCOPES = eINSTANCE.getScopes();
+
+		/**
+		 * The meta object literal for the '<em><b>Scope</b></em>' containment
+		 * reference list feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EReference SCOPES__SCOPE = eINSTANCE.getScopes_Scope();
+
+		/**
+		 * The meta object literal for the '
+		 * {@link org.eclipse.buckminster.rmap.maven.impl.ScopeImpl
+		 * <em>Scope</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @see org.eclipse.buckminster.rmap.maven.impl.ScopeImpl
+		 * @see org.eclipse.buckminster.rmap.maven.impl.MavenPackageImpl#getScope()
+		 * @generated
+		 */
+		EClass SCOPE = eINSTANCE.getScope();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute SCOPE__NAME = eINSTANCE.getScope_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Exclude</b></em>' attribute
+		 * feature. <!-- begin-user-doc --> <!-- end-user-doc -->
+		 * 
+		 * @generated
+		 */
+		EAttribute SCOPE__EXCLUDE = eINSTANCE.getScope_Exclude();
+
 	}
 
 	/**
@@ -324,22 +387,40 @@ public interface MavenPackage extends EPackage {
 	int MAVEN_PROVIDER = 3;
 
 	/**
-	 * The feature id for the '<em><b>Properties</b></em>' containment reference
-	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Property Constants</b></em>' map. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAVEN_PROVIDER__PROPERTIES = RmapPackage.PROVIDER__PROPERTIES;
+	int MAVEN_PROVIDER__PROPERTY_CONSTANTS = RmapPackage.PROVIDER__PROPERTY_CONSTANTS;
 
 	/**
-	 * The feature id for the '<em><b>Property Elements</b></em>' containment
-	 * reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Property Elements</b></em>' map. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
 	int MAVEN_PROVIDER__PROPERTY_ELEMENTS = RmapPackage.PROVIDER__PROPERTY_ELEMENTS;
+
+	/**
+	 * The feature id for the '<em><b>Pattern</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_PROVIDER__PATTERN = RmapPackage.PROVIDER__PATTERN;
+
+	/**
+	 * The feature id for the '<em><b>Component Types Attr</b></em>' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_PROVIDER__COMPONENT_TYPES_ATTR = RmapPackage.PROVIDER__COMPONENT_TYPES_ATTR;
 
 	/**
 	 * The feature id for the '<em><b>Component Types</b></em>' attribute list.
@@ -351,13 +432,13 @@ public interface MavenPackage extends EPackage {
 	int MAVEN_PROVIDER__COMPONENT_TYPES = RmapPackage.PROVIDER__COMPONENT_TYPES;
 
 	/**
-	 * The feature id for the '<em><b>Component Types Attr</b></em>' attribute.
+	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAVEN_PROVIDER__COMPONENT_TYPES_ATTR = RmapPackage.PROVIDER__COMPONENT_TYPES_ATTR;
+	int MAVEN_PROVIDER__RESOLUTION_FILTER = RmapPackage.PROVIDER__RESOLUTION_FILTER;
 
 	/**
 	 * The feature id for the '<em><b>Reader Type</b></em>' attribute. <!--
@@ -387,13 +468,13 @@ public interface MavenPackage extends EPackage {
 	int MAVEN_PROVIDER__MUTABLE = RmapPackage.PROVIDER__MUTABLE;
 
 	/**
-	 * The feature id for the '<em><b>Resolution Filter</b></em>' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Repository</b></em>' reference. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAVEN_PROVIDER__RESOLUTION_FILTER = RmapPackage.PROVIDER__RESOLUTION_FILTER;
+	int MAVEN_PROVIDER__REPOSITORY = RmapPackage.PROVIDER__REPOSITORY;
 
 	/**
 	 * The feature id for the '<em><b>Version Converter</b></em>' containment
@@ -414,13 +495,13 @@ public interface MavenPackage extends EPackage {
 	int MAVEN_PROVIDER__URI = RmapPackage.PROVIDER__URI;
 
 	/**
-	 * The feature id for the '<em><b>Matchers</b></em>' containment reference
-	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * The feature id for the '<em><b>Matcher</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAVEN_PROVIDER__MATCHERS = RmapPackage.PROVIDER__MATCHERS;
+	int MAVEN_PROVIDER__MATCHER = RmapPackage.PROVIDER__MATCHER;
 
 	/**
 	 * The feature id for the '<em><b>Documentation</b></em>' containment
@@ -441,13 +522,98 @@ public interface MavenPackage extends EPackage {
 	int MAVEN_PROVIDER__MAPPINGS = RmapPackage.PROVIDER_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Scopes</b></em>' containment reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_PROVIDER__SCOPES = RmapPackage.PROVIDER_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Transitive</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int MAVEN_PROVIDER__TRANSITIVE = RmapPackage.PROVIDER_FEATURE_COUNT + 2;
+
+	/**
 	 * The number of structural features of the '<em>Provider</em>' class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 * @ordered
 	 */
-	int MAVEN_PROVIDER_FEATURE_COUNT = RmapPackage.PROVIDER_FEATURE_COUNT + 1;
+	int MAVEN_PROVIDER_FEATURE_COUNT = RmapPackage.PROVIDER_FEATURE_COUNT + 3;
+
+	/**
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.rmap.maven.impl.ScopesImpl
+	 * <em>Scopes</em>}' class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.maven.impl.ScopesImpl
+	 * @see org.eclipse.buckminster.rmap.maven.impl.MavenPackageImpl#getScopes()
+	 * @generated
+	 */
+	int SCOPES = 4;
+
+	/**
+	 * The feature id for the '<em><b>Scope</b></em>' containment reference
+	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SCOPES__SCOPE = 0;
+
+	/**
+	 * The number of structural features of the '<em>Scopes</em>' class. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SCOPES_FEATURE_COUNT = 1;
+
+	/**
+	 * The meta object id for the '
+	 * {@link org.eclipse.buckminster.rmap.maven.impl.ScopeImpl <em>Scope</em>}'
+	 * class. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @see org.eclipse.buckminster.rmap.maven.impl.ScopeImpl
+	 * @see org.eclipse.buckminster.rmap.maven.impl.MavenPackageImpl#getScope()
+	 * @generated
+	 */
+	int SCOPE = 5;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SCOPE__NAME = 0;
+
+	/**
+	 * The feature id for the '<em><b>Exclude</b></em>' attribute. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SCOPE__EXCLUDE = 1;
+
+	/**
+	 * The number of structural features of the '<em>Scope</em>' class. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 * @ordered
+	 */
+	int SCOPE_FEATURE_COUNT = 2;
 
 	/**
 	 * Returns the meta object for class '
@@ -589,5 +755,88 @@ public interface MavenPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getMavenProvider_Mappings();
+
+	/**
+	 * Returns the meta object for the containment reference '
+	 * {@link org.eclipse.buckminster.rmap.maven.MavenProvider#getScopes
+	 * <em>Scopes</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference '<em>Scopes</em>'.
+	 * @see org.eclipse.buckminster.rmap.maven.MavenProvider#getScopes()
+	 * @see #getMavenProvider()
+	 * @generated
+	 */
+	EReference getMavenProvider_Scopes();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.rmap.maven.MavenProvider#isTransitive
+	 * <em>Transitive</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Transitive</em>'.
+	 * @see org.eclipse.buckminster.rmap.maven.MavenProvider#isTransitive()
+	 * @see #getMavenProvider()
+	 * @generated
+	 */
+	EAttribute getMavenProvider_Transitive();
+
+	/**
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.rmap.maven.Scope <em>Scope</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Scope</em>'.
+	 * @see org.eclipse.buckminster.rmap.maven.Scope
+	 * @generated
+	 */
+	EClass getScope();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.rmap.maven.Scope#isExclude
+	 * <em>Exclude</em>}'. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Exclude</em>'.
+	 * @see org.eclipse.buckminster.rmap.maven.Scope#isExclude()
+	 * @see #getScope()
+	 * @generated
+	 */
+	EAttribute getScope_Exclude();
+
+	/**
+	 * Returns the meta object for the attribute '
+	 * {@link org.eclipse.buckminster.rmap.maven.Scope#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see org.eclipse.buckminster.rmap.maven.Scope#getName()
+	 * @see #getScope()
+	 * @generated
+	 */
+	EAttribute getScope_Name();
+
+	/**
+	 * Returns the meta object for class '
+	 * {@link org.eclipse.buckminster.rmap.maven.Scopes <em>Scopes</em>}'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for class '<em>Scopes</em>'.
+	 * @see org.eclipse.buckminster.rmap.maven.Scopes
+	 * @generated
+	 */
+	EClass getScopes();
+
+	/**
+	 * Returns the meta object for the containment reference list '
+	 * {@link org.eclipse.buckminster.rmap.maven.Scopes#getScope <em>Scope</em>}
+	 * '. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return the meta object for the containment reference list '
+	 *         <em>Scope</em>'.
+	 * @see org.eclipse.buckminster.rmap.maven.Scopes#getScope()
+	 * @see #getScopes()
+	 * @generated
+	 */
+	EReference getScopes_Scope();
 
 } // MavenPackage

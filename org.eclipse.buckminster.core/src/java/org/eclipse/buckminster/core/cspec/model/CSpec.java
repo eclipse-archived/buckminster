@@ -563,7 +563,7 @@ public class CSpec extends UUIDKeyed implements IUUIDPersisted, ICSpecData {
 		// be referenced from an attribute or from a generator
 		//
 		Collection<ComponentRequest> deps;
-		if (attrNames.isEmpty() && getGeneratorList().isEmpty())
+		if (!pruneForAttributes || attrNames.isEmpty() && getGeneratorList().isEmpty())
 			deps = getDependencies();
 		else {
 			Set<ComponentRequest> referencedDeps = new HashSet<ComponentRequest>();

@@ -75,6 +75,7 @@ public abstract class TransientItemProvider extends ItemProviderAdapter implemen
 
 	private Command createWrappedCommand(Command command, final EObject owner) {
 		return new CommandWrapper(command) {
+
 			@Override
 			public Collection<?> getAffectedObjects() {
 				Collection<?> affected = super.getAffectedObjects();

@@ -54,6 +54,7 @@ public class GroupAndArtifactItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/GroupAndArtifact"));
@@ -65,6 +66,7 @@ public class GroupAndArtifactItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -82,6 +84,7 @@ public class GroupAndArtifactItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
 		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
@@ -93,6 +96,7 @@ public class GroupAndArtifactItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		String label = ((GroupAndArtifact) object).getArtifactId();
@@ -107,6 +111,7 @@ public class GroupAndArtifactItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -128,8 +133,8 @@ public class GroupAndArtifactItemProvider extends ItemProviderAdapter implements
 	 */
 	protected void addArtifactIdPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_GroupAndArtifact_artifactId_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_GroupAndArtifact_artifactId_feature", "_UI_GroupAndArtifact_type"),
+				getResourceLocator(), getString("_UI_GroupAndArtifact_artifactId_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_GroupAndArtifact_artifactId_feature", "_UI_GroupAndArtifact_type"),
 				MavenPackage.Literals.GROUP_AND_ARTIFACT__ARTIFACT_ID, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
@@ -141,9 +146,9 @@ public class GroupAndArtifactItemProvider extends ItemProviderAdapter implements
 	 */
 	protected void addGroupIdPropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_GroupAndArtifact_groupId_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_GroupAndArtifact_groupId_feature", "_UI_GroupAndArtifact_type"), MavenPackage.Literals.GROUP_AND_ARTIFACT__GROUP_ID,
-				true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_GroupAndArtifact_groupId_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_GroupAndArtifact_groupId_feature", "_UI_GroupAndArtifact_type"),
+				MavenPackage.Literals.GROUP_AND_ARTIFACT__GROUP_ID, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -153,6 +158,7 @@ public class GroupAndArtifactItemProvider extends ItemProviderAdapter implements
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);

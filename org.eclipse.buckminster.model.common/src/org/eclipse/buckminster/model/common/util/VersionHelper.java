@@ -14,11 +14,13 @@ import org.eclipse.buckminster.runtime.Trivial;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.equinox.internal.p2.metadata.VersionFormat;
 import org.eclipse.equinox.p2.metadata.IVersionFormat;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionFormatException;
 import org.eclipse.equinox.p2.metadata.VersionRange;
 
+@SuppressWarnings("restriction")
 public class VersionHelper {
 	private static final Version sampleOSGiVersion;
 
@@ -33,6 +35,16 @@ public class VersionHelper {
 	static {
 		try {
 			sampleOSGiVersion = Version.parseVersion("1.0.0"); //$NON-NLS-1$
+			IVersionFormat osgiFormat = sampleOSGiVersion.getFormat();
+			VersionType osgiType = new VersionType(osgiFormat, VersionType.OSGI);
+
+			String osgiFmtString = osgiFormat.toString();
+			osgiFmtString = osgiFmtString.substring(7, osgiFmtString.length() - 1);
+			knownTypes.put(osgiFmtString, osgiType);
+
+			if (!osgiFmtString.equals(VersionFormat.OSGI_FORMAT_STRING))
+				knownTypes.put(VersionFormat.OSGI_FORMAT_STRING, osgiType);
+
 			IExtensionRegistry exReg = Platform.getExtensionRegistry();
 			IConfigurationElement[] elems = exReg.getConfigurationElementsFor(VERSION_TYPES_POINT);
 			int idx = elems.length;
@@ -40,7 +52,7 @@ public class VersionHelper {
 				IConfigurationElement elem = elems[idx];
 				String format = elem.getAttribute("format"); //$NON-NLS-1$
 				String id = elem.getAttribute("id"); //$NON-NLS-1$
-				VersionType vt = knownTypes.get(format);
+				VersionType vt = VersionType.OSGI.equals(id) ? osgiType : knownTypes.get(format);
 				if (vt != null) {
 					String[] labels = vt.getLabels();
 					int top = labels.length;
@@ -51,7 +63,7 @@ public class VersionHelper {
 					String[] newLabels = new String[top + 1];
 					System.arraycopy(labels, 0, newLabels, 0, top);
 					newLabels[top] = id;
-					vt = new VersionType(Version.compile(format), newLabels);
+					vt = new VersionType(vt.getFormat(), newLabels);
 				} else {
 					vt = new VersionType(Version.compile(format), id);
 				}
@@ -204,7 +216,6 @@ public class VersionHelper {
 		ArrayList<VersionType> knownTypeList = new ArrayList<VersionType>(knownTypes.values());
 		Collections.sort(knownTypeList, new Comparator<VersionType>() {
 
-			@Override
 			public int compare(VersionType o1, VersionType o2) {
 				return o1.getId().compareTo(o2.getId());
 			}
@@ -230,6 +241,33 @@ public class VersionHelper {
 			sb.append(orig);
 		else
 			version.toString(sb);
+	}
+
+	public static String getOriginal(VersionRange range) {
+		Version min = range.getMinimum();
+		Version max = range.getMaximum();
+		String minOrig = min.getOriginal();
+		if (minOrig == null) {
+			if (!min.equals(Version.emptyVersion))
+				return null;
+			minOrig = "0.0.0";
+		}
+
+		if (max.equals(Version.MAX_VERSION) && range.getIncludeMaximum())
+			// Open ended
+			return minOrig;
+
+		String maxOrig = max.getOriginal();
+		if (maxOrig == null)
+			return null;
+
+		StringBuilder bld = new StringBuilder();
+		bld.append(range.getIncludeMinimum() ? '[' : '(');
+		bld.append(minOrig);
+		bld.append(',');
+		bld.append(maxOrig);
+		bld.append(range.getIncludeMaximum() ? ']' : ')');
+		return bld.toString();
 	}
 
 	public static IVersionFormat getOSGiFormat() {

@@ -134,13 +134,13 @@ public class Maven2ReaderType extends MavenReaderType {
 	}
 
 	@Override
-	void appendArtifactFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vm) throws CoreException {
+	void appendArtifactFolder(StringBuilder pbld, IMapEntry mapEntry, VersionMatch vm) throws CoreException {
 		String artifactPath = vm.getArtifactInfo();
 		appendEntryFolder(pbld, mapEntry);
 		pbld.append(artifactPath, 0, artifactPath.lastIndexOf('/') + 1);
 	}
 
-	void appendEntryFolder(StringBuilder pbld, MapEntry mapEntry) throws CoreException {
+	void appendEntryFolder(StringBuilder pbld, IMapEntry mapEntry) throws CoreException {
 		StringTokenizer tokens = new StringTokenizer(mapEntry.getGroupId(), "."); //$NON-NLS-1$
 		while (tokens.hasMoreTokens())
 			appendFolder(pbld, tokens.nextToken());
@@ -161,17 +161,17 @@ public class Maven2ReaderType extends MavenReaderType {
 	}
 
 	@Override
-	void appendPathToArtifact(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	void appendPathToArtifact(StringBuilder pbld, IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		appendEntryFolder(pbld, mapEntry);
 		pbld.append(vs.getArtifactInfo());
 	}
 
 	@Override
-	void appendPomFolder(StringBuilder pbld, MapEntry mapEntry, VersionMatch vs) throws CoreException {
+	void appendPomFolder(StringBuilder pbld, IMapEntry mapEntry, VersionMatch vs) throws CoreException {
 		appendArtifactFolder(pbld, mapEntry, vs);
 	}
 
-	VersionMatch createVersionMatch(DocumentBuilder docBld, ILocationResolver resolver, MapEntry mapEntry, VersionRange range, String versionStr)
+	VersionMatch createVersionMatch(DocumentBuilder docBld, ILocationResolver resolver, IMapEntry mapEntry, VersionRange range, String versionStr)
 			throws CoreException {
 		URI uri = resolver.getURI();
 		StringBuilder pbld = new StringBuilder();
@@ -216,12 +216,14 @@ public class Maven2ReaderType extends MavenReaderType {
 		pbld.append(mapEntry.getArtifactId());
 		pbld.append('-');
 		pbld.append(VersionHelper.getOriginal(version));
+		if (mapEntry instanceof SourceMapEntry)
+			pbld.append("-sources"); //$NON-NLS-1$
 		pbld.append(".jar"); //$NON-NLS-1$
 		return new VersionMatch(version, null, -1, null, pbld.toString());
 	}
 
 	@Override
-	VersionMatch createVersionMatch(ILocationResolver resolver, MapEntry mapEntry, String versionStr) throws CoreException {
+	VersionMatch createVersionMatch(ILocationResolver resolver, IMapEntry mapEntry, String versionStr) throws CoreException {
 		if (versionStr == null)
 			return super.createVersionMatch(resolver, mapEntry, versionStr);
 

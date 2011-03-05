@@ -22,7 +22,10 @@
 				<sequence>
 					<element name="mappings" type="mpv:Mappings"
 						minOccurs="0" maxOccurs="1" />
+					<element name="scopes" type="mpv:Scopes"
+						minOccurs="0" maxOccurs="1" />
 				</sequence>
+				<attribute name="transitive" type="boolean" use="optional"/>
 			</extension>
 		</complexContent>
 	</complexType>
@@ -51,6 +54,19 @@
 				<attribute name="name" type="string" use="required" />
 			</extension>
 		</complexContent>
+	</complexType>
+	
+	<complexType name="Scopes">
+		<sequence>
+			<choice minOccurs="0" maxOccurs="unbounded">
+				<element name="scope" type="mpv:Scope" />
+			</choice>
+		</sequence>
+	</complexType>
+	
+	<complexType name="Scope">
+		<attribute name="name" type="string" use="required" />
+		<attribute name="exclude" type="boolean" use="required" />
 	</complexType>
 
 </schema>

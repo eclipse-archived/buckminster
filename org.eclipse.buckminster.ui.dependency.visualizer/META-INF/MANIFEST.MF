@@ -7,14 +7,14 @@ Bundle-Localization: plugin
 Bundle-Activator: org.eclipse.buckminster.ui.dependency.visualizer.Activator
 Require-Bundle: org.eclipse.zest.core;bundle-version="1.2.0",
  org.eclipse.zest.layouts;bundle-version="1.1.0",
- org.eclipse.buckminster.ui;bundle-version="1.3.0",
- org.eclipse.ui;bundle-version="3.6.0",
- org.eclipse.ui.forms;bundle-version="3.5.0",
- org.eclipse.ui.ide;bundle-version="3.6.0",
- org.eclipse.buckminster.core;bundle-version="1.2.360",
- org.eclipse.buckminster.sax;bundle-version="1.0.0",
- org.eclipse.core.resources;bundle-version="3.6.0",
- org.eclipse.equinox.p2.metadata;bundle-version="2.0.0"
+ org.eclipse.buckminster.ui,
+ org.eclipse.ui,
+ org.eclipse.ui.forms,
+ org.eclipse.ui.ide,
+ org.eclipse.buckminster.core,
+ org.eclipse.buckminster.sax,
+ org.eclipse.core.resources,
+ org.eclipse.equinox.p2.metadata
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5

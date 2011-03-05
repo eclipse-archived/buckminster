@@ -2,6 +2,7 @@ package org.eclipse.buckminster.git.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.resolver.NodeQuery;
@@ -11,18 +12,22 @@ import org.eclipse.buckminster.core.version.VersionMatch;
 import org.eclipse.buckminster.runtime.BuckminsterException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jgit.lib.Commit;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.Tag;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevObject;
+import org.eclipse.jgit.revwalk.RevTag;
+import org.eclipse.jgit.treewalk.TreeWalk;
 
 public class VersionFinder extends AbstractSCCSVersionFinder {
 	private RepositoryAccess repoAccess;
 
 	public VersionFinder(Provider provider, IComponentType ctype, NodeQuery query) throws CoreException {
 		super(provider, ctype, query);
-		repoAccess = new RepositoryAccess(getProvider().getURI(getQuery().getProperties()), getProvider().getProviderProperties());
+		@SuppressWarnings("unchecked")
+		Map<String,String> props = (Map<String,String>)provider.getProperties(query.getProperties());
+		repoAccess = new RepositoryAccess(getProvider().getURI(props), props);
 	}
 
 	@Override
@@ -52,9 +57,9 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 				if (lastSlash < 0)
 					continue;
 
-				Object obj = repo.mapObject(ref.getObjectId(), name);
+				RevObject obj = repoAccess.getRevWalk().parseAny(ref.getObjectId());
 				if (branches) {
-					if (!(obj instanceof Commit))
+					if(!(obj instanceof RevCommit))
 						continue;
 
 					// Last part of name is the branch
@@ -62,31 +67,31 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 					if (Constants.MASTER.equals(branch))
 						continue;
 
-					Commit c = (Commit) obj;
-					if (!(component == null || c.getTree().existsTree(component)))
+					RevCommit c = (RevCommit) obj;
+					if (!(component == null || TreeWalk.forPath(repo, component, c.getTree()) != null))
 						continue;
 
 					// repoAccess.inspectRef(ref);
 
 					// TODO: RevisionEntry should hold abbreviated object id
 					// instead of long revision
-					branchesOrTags.add(new RevisionEntry(branch, c.getAuthor().getWhen(), 0L));
+					branchesOrTags.add(new RevisionEntry(branch, c.getAuthorIdent().getWhen(), 0L));
 				} else {
-					if (!(obj instanceof Tag))
+					if (!(obj instanceof RevTag))
 						continue;
 
-					Tag tag = (Tag) obj;
+					RevTag tag = (RevTag) obj;
 					if (component != null) {
 						// Check that the component exists in the associated
 						// Commit
 						do {
-							obj = repo.mapObject(((Tag) obj).getObjId(), null);
-						} while (obj instanceof Tag);
+							obj = ((RevTag) obj).getObject();
+						} while (obj instanceof RevTag);
 
-						if (!(obj instanceof Commit && ((Commit) obj).getTree().existsTree(component)))
+						if (!(obj instanceof RevCommit && TreeWalk.forPath(repo, component, ((RevCommit)obj).getTree()) != null))
 							continue;
 					}
-					branchesOrTags.add(new RevisionEntry(tag.getTag(), tag.getAuthor().getWhen(), 0L));
+					branchesOrTags.add(new RevisionEntry(tag.getTagName(), tag.getTaggerIdent().getWhen(), 0L));
 				}
 			}
 			return branchesOrTags;
@@ -108,8 +113,8 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 				if (lastSlash < 0)
 					continue;
 
-				Object obj = repo.mapObject(ref.getObjectId(), name);
-				if (!(obj instanceof Commit))
+				RevObject obj = repoAccess.getRevWalk().parseAny(ref.getObjectId());
+				if (!(obj instanceof RevCommit))
 					continue;
 
 				// Last part of name is the branch
@@ -117,15 +122,15 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 				if (!Constants.MASTER.equals(branch))
 					continue;
 
-				Commit c = (Commit) obj;
-				if (!(component == null || c.getTree().existsTree(component)))
+				RevCommit c = (RevCommit) obj;
+				if (!(component == null || TreeWalk.forPath(repo, component, c.getTree()) != null))
 					continue;
 
 				// repoAccess.inspectRef(ref);
 
 				// TODO: RevisionEntry should hold abbreviated object id instead
 				// of long revision
-				return new RevisionEntry(component, c.getAuthor().getWhen(), 0L);
+				return new RevisionEntry(component, c.getAuthorIdent().getWhen(), 0L);
 			}
 			return null;
 		} catch (Exception e) {

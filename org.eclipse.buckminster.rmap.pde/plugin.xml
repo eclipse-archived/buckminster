@@ -17,10 +17,4 @@
             genModel="model/pde.genmodel"/>
    </extension>
 
-   <extension point="org.eclipse.emf.ecore.extension_parser">
-      <parser
-            type="pde"
-            class="org.eclipse.buckminster.rmap.pde.util.PdeResourceFactoryImpl"/>
-   </extension>
-
 </plugin>

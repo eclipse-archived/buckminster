@@ -41,6 +41,7 @@ public class CommonXMLProcessor extends XMLProcessor {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected Map<String, Resource.Factory> getRegistrations() {
 		if (registrations == null) {

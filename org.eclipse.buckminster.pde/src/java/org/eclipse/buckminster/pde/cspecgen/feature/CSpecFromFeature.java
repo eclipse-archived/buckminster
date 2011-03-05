@@ -25,6 +25,7 @@ import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.osgi.filter.Filter;
 import org.eclipse.buckminster.pde.MatchRule;
 import org.eclipse.buckminster.pde.cspecgen.CSpecGenerator;
+import org.eclipse.buckminster.pde.internal.EclipsePlatformReaderType;
 import org.eclipse.buckminster.pde.tasks.VersionConsolidator;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -35,15 +36,21 @@ import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 import org.eclipse.pde.internal.core.ifeature.IFeatureChild;
+import org.eclipse.pde.internal.core.ifeature.IFeatureModel;
 import org.eclipse.pde.internal.core.ifeature.IFeaturePlugin;
 
 @SuppressWarnings("restriction")
 public abstract class CSpecFromFeature extends CSpecGenerator {
+
+	private static final String SOURCE_SUFFIX = ".source"; //$NON-NLS-1$
+
+	private static final String SOURCE_FEATURE_SUFFIX = ".source.feature"; //$NON-NLS-1$
+
 	public static String getIdWithoutSource(String sourceId) {
-		if (sourceId.endsWith(".source")) //$NON-NLS-1$
-			return sourceId.substring(0, sourceId.length() - 7);
-		if (sourceId.endsWith(".source.feature")) //$NON-NLS-1$
-			return sourceId.substring(0, sourceId.length() - 15) + ".feature"; //$NON-NLS-1$
+		if (sourceId.endsWith(SOURCE_SUFFIX))
+			return sourceId.substring(0, sourceId.length() - SOURCE_SUFFIX.length());
+		if (sourceId.endsWith(SOURCE_FEATURE_SUFFIX))
+			return sourceId.substring(0, sourceId.length() - SOURCE_FEATURE_SUFFIX.length()) + ".feature"; //$NON-NLS-1$
 		return null;
 	}
 
@@ -187,6 +194,7 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 			if (skipComponent(query, dep))
 				continue;
 
+			boolean sourceInTP = false;
 			cspec.addDependency(dep);
 			String idWithoutSource = getIdWithoutSource(dep.getName());
 			if (idWithoutSource == null) {
@@ -200,9 +208,21 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 				if (idWithoutSource.equals(cspec.getName())) {
 					continue;
 				}
+				IFeatureModel sourceFeature = EclipsePlatformReaderType.getBestFeature(dep.getName(), dep.getVersionRange(), null);
+				if (sourceFeature != null) {
+					// This one is present in the target platform so we include
+					// it just like any
+					// other feature.
+					featureRefs.addExternalPrerequisite(dep, ATTRIBUTE_FEATURE_JARS);
+					bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_JARS);
+					sourceInTP = true;
+				}
 			}
-			sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_BUNDLE_JARS);
-			featureSourceRefs.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_FEATURE_JARS);
+			if (!sourceInTP) {
+				// For source generation
+				sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_BUNDLE_JARS);
+				featureSourceRefs.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_FEATURE_JARS);
+			}
 		}
 	}
 
@@ -260,7 +280,23 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 				continue;
 
 			bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_AND_FRAGMENTS);
-			sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
+
+			// We either add this bundles action to generate it's own source, or
+			// we add an already existing source bundle. Let's check with the
+			// target platform
+			if (!plugin.getId().endsWith(SOURCE_SUFFIX)) {
+				String sourceId = plugin.getId() + SOURCE_SUFFIX;
+				if (manager.findEntry(sourceId) == null)
+					sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_AND_FRAGMENTS_SOURCE);
+				else {
+					ComponentRequestBuilder sourceDep = new ComponentRequestBuilder();
+					sourceDep.setName(sourceId);
+					sourceDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
+					sourceDep.setVersionRange(dep.getVersionRange());
+					addDependency(sourceDep);
+					sourceBundleJars.addExternalPrerequisite(sourceDep, ATTRIBUTE_BUNDLE_JAR);
+				}
+			}
 			fullClean.addExternalPrerequisite(dep, ATTRIBUTE_FULL_CLEAN);
 			productConfigExports.addExternalPrerequisite(dep, ATTRIBUTE_PRODUCT_CONFIG_EXPORTS);
 		}

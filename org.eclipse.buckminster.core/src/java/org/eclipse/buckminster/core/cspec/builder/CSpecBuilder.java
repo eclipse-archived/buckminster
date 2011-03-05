@@ -218,18 +218,7 @@ public class CSpecBuilder implements ICSpecData {
 			}
 			addDependency(crb);
 		}
-		if (!isFeature && !name.endsWith(".source")) { //$NON-NLS-1$
-			ComponentRequestBuilder srcDep = createDependencyBuilder();
-			srcDep.setName(name + ".source"); //$NON-NLS-1$
-			srcDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
-			srcDep.setVersionRange(VersionHelper.exactRange(iu.getVersion()));
-			try {
-				srcDep.setFilter(FilterFactory.newInstance(ComponentRequest.FILTER_OPTIONAL_SOURCE_BUNDLE));
-			} catch (InvalidSyntaxException e) {
-				// This won't happen on that particular filter
-			}
-			addDependency(srcDep);
-		}
+		addSourceDependency();
 	}
 
 	public ActionBuilder addAction(String actionName, boolean publ, String actorName, boolean always) throws AttributeAlreadyDefinedException {
@@ -374,6 +363,21 @@ public class CSpecBuilder implements ICSpecData {
 
 	public ActionBuilder addInternalAction(String actionName, boolean publ) throws AttributeAlreadyDefinedException {
 		return addAction(actionName, publ, null, true);
+	}
+
+	public void addSourceDependency() throws CoreException {
+		if (componentType != null && name != null && version != null && componentType.equals(IComponentType.OSGI_BUNDLE) && !name.endsWith(".source")) { //$NON-NLS-1$
+			ComponentRequestBuilder srcDep = createDependencyBuilder();
+			srcDep.setName(name + ".source"); //$NON-NLS-1$
+			srcDep.setComponentTypeID(IComponentType.OSGI_BUNDLE);
+			srcDep.setVersionRange(VersionHelper.exactRange(version));
+			try {
+				srcDep.setFilter(FilterFactory.newInstance(ComponentRequest.FILTER_OPTIONAL_SOURCE_BUNDLE));
+			} catch (InvalidSyntaxException e) {
+				// This won't happen on that particular filter
+			}
+			addDependency(srcDep);
+		}
 	}
 
 	public void clear() {

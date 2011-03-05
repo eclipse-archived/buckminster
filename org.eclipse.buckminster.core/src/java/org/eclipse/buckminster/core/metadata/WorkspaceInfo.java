@@ -32,6 +32,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentName;
 import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.cspec.model.Generator;
 import org.eclipse.buckminster.core.metadata.MetadataSynchronizer.WorkspaceCatchUpJob;
+import org.eclipse.buckminster.core.metadata.model.BOMNode;
 import org.eclipse.buckminster.core.metadata.model.BillOfMaterials;
 import org.eclipse.buckminster.core.metadata.model.Materialization;
 import org.eclipse.buckminster.core.metadata.model.Resolution;
@@ -39,6 +40,7 @@ import org.eclipse.buckminster.core.query.builder.AdvisorNodeBuilder;
 import org.eclipse.buckminster.core.query.builder.ComponentQueryBuilder;
 import org.eclipse.buckminster.core.reader.IReaderType;
 import org.eclipse.buckminster.core.resolver.IResolver;
+import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.core.resolver.MainResolver;
 import org.eclipse.buckminster.core.resolver.ResolutionContext;
 import org.eclipse.buckminster.core.version.VersionHelper;
@@ -94,6 +96,10 @@ public class WorkspaceInfo {
 
 	private static final Map<ComponentIdentifier, Resolution> tpResolutions = new HashMap<ComponentIdentifier, Resolution>();
 
+	private static Resolution[] cachedActiveResolutions = new Resolution[0];
+
+	private static long cachedActiveResolutionsTimestamp = 0;
+
 	public static void clearCachedLocation(IComponentIdentifier cid) {
 		synchronized (locationCache) {
 			locationCache.remove(cid);
@@ -102,37 +108,7 @@ public class WorkspaceInfo {
 
 	public static BillOfMaterials deepResolveLocal(IComponentRequest request, boolean useWorkspace, boolean continueOnError) throws CoreException {
 		checkFirstUse();
-
-		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
-		qbld.setRootRequest(request);
-		qbld.setPlatformAgnostic(true);
-
-		// Add an advisor node that matches the request and prohibits that we
-		// do something using an existing materialization or something external.
-		//
-		AdvisorNodeBuilder nodeBld = qbld.addAdvisorNode();
-		nodeBld.setNamePattern(Pattern.compile('^' + Pattern.quote(request.getName()) + '$'));
-		nodeBld.setComponentTypeID(request.getComponentTypeID());
-		nodeBld.setUseTargetPlatform(true);
-		nodeBld.setUseWorkspace(useWorkspace);
-		nodeBld.setUseMaterialization(false);
-		nodeBld.setUseRemoteResolution(false);
-
-		// Add an advisor node that matches all remaining components and
-		// prohibits that we do something external.
-		//
-		nodeBld = qbld.addAdvisorNode();
-		nodeBld.setNamePattern(MATCH_ALL);
-		nodeBld.setUseTargetPlatform(true);
-		nodeBld.setUseWorkspace(useWorkspace);
-		nodeBld.setUseMaterialization(useWorkspace);
-		nodeBld.setUseRemoteResolution(false);
-		nodeBld.setUseRemoteResolution(false);
-
-		ResolutionContext ctx = new ResolutionContext(qbld.createComponentQuery());
-		ctx.setSilentStatus(true);
-		ctx.setContinueOnError(continueOnError);
-		IResolver main = new MainResolver(ctx);
+		IResolver main = new MainResolver(getLocalResolutionContext(request, useWorkspace, continueOnError));
 		return main.resolve(new NullProgressMonitor());
 	}
 
@@ -194,6 +170,14 @@ public class WorkspaceInfo {
 		HashSet<Resolution> bld = new HashSet<Resolution>();
 		for (Resolution cr : getActiveResolutions(sm))
 			bld.add(cr);
+
+		for (Materialization mat : sm.getMaterializations().getElements()) {
+			try {
+				bld.add(mat.getResolution());
+			} catch (Exception e) {
+				// ignore
+			}
+		}
 
 		synchronized (tpResolutions) {
 			for (ComponentIdentifier ci : TargetPlatform.getInstance().getComponents()) {
@@ -620,7 +604,11 @@ public class WorkspaceInfo {
 				return res;
 		}
 
-		res = deepResolveLocal(request, useWorkspace, false).getResolution();
+		ResolutionContext ctx = getLocalResolutionContext(request, useWorkspace, false);
+		LocalResolver lr = new LocalResolver(ctx);
+		lr.setRecursiveResolve(false);
+		BOMNode node = lr.localResolve(ctx.getRootNodeQuery(), new NullProgressMonitor());
+		res = node == null ? null : node.getResolution();
 		if (res == null)
 			throw new MissingComponentException(request.toString());
 
@@ -687,113 +675,158 @@ public class WorkspaceInfo {
 	}
 
 	private static Resolution[] getActiveResolutions(StorageManager sm) throws CoreException {
-		// Add the newest version of each known resolution
-		//
-		HashMap<ComponentName, TimestampedKey> resolutionKeys = new HashMap<ComponentName, TimestampedKey>();
-		ArrayList<TimestampedKey> duplicates = null;
-		ISaxableStorage<Resolution> ress = sm.getResolutions();
-		ISaxableStorage<Materialization> mats = sm.getMaterializations();
-		synchronized (ress) {
-			for (Resolution res : ress.getElements()) {
-				UUID resId = res.getId();
-				ComponentIdentifier ci = res.getComponentIdentifier();
+		synchronized (cachedActiveResolutions) {
+			long now = System.currentTimeMillis();
+			if (now - cachedActiveResolutionsTimestamp < 2000)
+				return cachedActiveResolutions;
+			// Add the newest version of each known resolution
+			//
+			HashMap<ComponentName, TimestampedKey> resolutionKeys = new HashMap<ComponentName, TimestampedKey>();
+			ArrayList<TimestampedKey> duplicates = null;
+			ISaxableStorage<Resolution> ress = sm.getResolutions();
+			ISaxableStorage<Materialization> mats = sm.getMaterializations();
+			synchronized (ress) {
+				for (Resolution res : ress.getElements()) {
+					UUID resId = res.getId();
+					ComponentIdentifier ci = res.getComponentIdentifier();
 
-				IPath location = getResolutionLocation(mats, res);
-				if (location == null)
-					continue;
+					IPath location = getResolutionLocation(mats, res);
+					if (location == null)
+						continue;
 
-				ComponentName cn = ci.toPureComponentName();
-				TimestampedKey tsKey = new TimestampedKey(resId, ress.getCreationTime(resId));
-				TimestampedKey prevTsKey = resolutionKeys.put(cn, tsKey);
-				if (prevTsKey == null)
-					continue;
+					ComponentName cn = ci.toPureComponentName();
+					TimestampedKey tsKey = new TimestampedKey(resId, ress.getCreationTime(resId));
+					TimestampedKey prevTsKey = resolutionKeys.put(cn, tsKey);
+					if (prevTsKey == null)
+						continue;
 
-				// Check real existence of locations. For performance reasons we
-				// only do
-				// this when ambiguities arise.
-				//
-				Resolution prevRes = ress.getElement(prevTsKey.getKey());
-				IPath prevLocation = getResolutionLocation(mats, prevRes);
-				if (prevLocation == null)
-					continue;
+					// Check real existence of locations. For performance
+					// reasons we
+					// only do
+					// this when ambiguities arise.
+					//
+					Resolution prevRes = ress.getElement(prevTsKey.getKey());
+					IPath prevLocation = getResolutionLocation(mats, prevRes);
+					if (prevLocation == null)
+						continue;
 
-				if (location.toFile().exists()) {
-					if (location.equals(prevLocation)) {
-						// Discriminate using timestamp
-						//
-						if (prevTsKey.getCreationTime() > tsKey.getCreationTime()) {
-							// We just replaced a newer entry. Put it back!
+					if (location.toFile().exists()) {
+						if (location.equals(prevLocation)) {
+							// Discriminate using timestamp
 							//
-							resolutionKeys.put(cn, prevTsKey);
-						}
-						continue;
-					}
-
-					if (!prevLocation.toFile().exists())
-						continue;
-
-					// A resolution towards the target platform will always have
-					// a lower
-					// precedence.
-					//
-					if (prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
-						if (!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
-							continue;
-					} else {
-						if (res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
-							resolutionKeys.put(cn, prevTsKey);
+							if (prevTsKey.getCreationTime() > tsKey.getCreationTime()) {
+								// We just replaced a newer entry. Put it back!
+								//
+								resolutionKeys.put(cn, prevTsKey);
+							}
 							continue;
 						}
-					}
 
-					Version currVersion = ci.getVersion();
-					Version prevVersion = prevRes.getComponentIdentifier().getVersion();
-					if (VersionHelper.equalsUnqualified(currVersion, prevVersion)) {
-						// Discriminate using timestamp
+						if (!prevLocation.toFile().exists())
+							continue;
+
+						// A resolution towards the target platform will always
+						// have
+						// a lower
+						// precedence.
 						//
-						if (prevTsKey.getCreationTime() > tsKey.getCreationTime())
-							resolutionKeys.put(cn, prevTsKey);
+						if (prevRes.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
+							if (!res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM))
+								continue;
+						} else {
+							if (res.getProvider().getReaderTypeId().equals(IReaderType.ECLIPSE_PLATFORM)) {
+								resolutionKeys.put(cn, prevTsKey);
+								continue;
+							}
+						}
+
+						Version currVersion = ci.getVersion();
+						Version prevVersion = prevRes.getComponentIdentifier().getVersion();
+						if (VersionHelper.equalsUnqualified(currVersion, prevVersion)) {
+							// Discriminate using timestamp
+							//
+							if (prevTsKey.getCreationTime() > tsKey.getCreationTime())
+								resolutionKeys.put(cn, prevTsKey);
+							continue;
+						}
+
+						// Apparently we have both locations present so we
+						// cannot
+						// discriminate one of them
+						//
+						if (duplicates == null)
+							duplicates = new ArrayList<TimestampedKey>();
+						duplicates.add(prevTsKey);
+
+						CorePlugin
+								.getLogger()
+								.debug("Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation); //$NON-NLS-1$
 						continue;
 					}
 
-					// Apparently we have both locations present so we cannot
-					// discriminate one of them
-					//
-					if (duplicates == null)
-						duplicates = new ArrayList<TimestampedKey>();
-					duplicates.add(prevTsKey);
-
-					CorePlugin
-							.getLogger()
-							.debug("Found two entries for component %s. Version %s located at %s and version %s at %s", cn, currVersion, location, prevVersion, prevLocation); //$NON-NLS-1$
-					continue;
-				}
-
-				if (prevLocation.toFile().exists()) {
-					// New entry is bogus and old entry is valid
-					//
-					resolutionKeys.put(cn, prevTsKey);
-				} else {
-					// None of the entries were valid. Simply remove the entry
-					//
-					resolutionKeys.remove(cn);
+					if (prevLocation.toFile().exists()) {
+						// New entry is bogus and old entry is valid
+						//
+						resolutionKeys.put(cn, prevTsKey);
+					} else {
+						// None of the entries were valid. Simply remove the
+						// entry
+						//
+						resolutionKeys.remove(cn);
+					}
 				}
 			}
-		}
 
-		int top = resolutionKeys.size();
-		if (duplicates != null)
-			top += duplicates.size();
+			int top = resolutionKeys.size();
+			if (duplicates != null)
+				top += duplicates.size();
 
-		Resolution[] result = new Resolution[top];
-		int idx = 0;
-		for (TimestampedKey tsKey : resolutionKeys.values())
-			result[idx++] = ress.getElement(tsKey.getKey());
-
-		if (duplicates != null)
-			for (TimestampedKey tsKey : duplicates)
+			Resolution[] result = new Resolution[top];
+			int idx = 0;
+			for (TimestampedKey tsKey : resolutionKeys.values())
 				result[idx++] = ress.getElement(tsKey.getKey());
-		return result;
+
+			if (duplicates != null)
+				for (TimestampedKey tsKey : duplicates)
+					result[idx++] = ress.getElement(tsKey.getKey());
+
+			cachedActiveResolutions = result;
+			cachedActiveResolutionsTimestamp = System.currentTimeMillis();
+			return result;
+		}
+	}
+
+	private static ResolutionContext getLocalResolutionContext(IComponentRequest request, boolean useWorkspace, boolean continueOnError) {
+		ComponentQueryBuilder qbld = new ComponentQueryBuilder();
+		qbld.setRootRequest(request);
+		qbld.setPlatformAgnostic(true);
+
+		// Add an advisor node that matches the request and prohibits that we
+		// do something using an existing materialization or something external.
+		//
+		AdvisorNodeBuilder nodeBld = qbld.addAdvisorNode();
+		nodeBld.setNamePattern(Pattern.compile('^' + Pattern.quote(request.getName()) + '$'));
+		nodeBld.setComponentTypeID(request.getComponentTypeID());
+		nodeBld.setUseTargetPlatform(true);
+		nodeBld.setUseWorkspace(useWorkspace);
+		nodeBld.setUseMaterialization(false);
+		nodeBld.setUseRemoteResolution(false);
+
+		// Add an advisor node that matches all remaining components and
+		// prohibits that we do something external.
+		//
+		nodeBld = qbld.addAdvisorNode();
+		nodeBld.setNamePattern(MATCH_ALL);
+		nodeBld.setUseTargetPlatform(true);
+		nodeBld.setUseWorkspace(useWorkspace);
+		nodeBld.setUseMaterialization(useWorkspace);
+		nodeBld.setUseRemoteResolution(false);
+		nodeBld.setUseRemoteResolution(false);
+
+		ResolutionContext ctx = new ResolutionContext(qbld.createComponentQuery());
+		ctx.setSilentStatus(true);
+		ctx.setContinueOnError(continueOnError);
+		return ctx;
 	}
 
 	private static IPath getResolutionLocation(ISaxableStorage<Materialization> mats, Resolution res) throws CoreException {

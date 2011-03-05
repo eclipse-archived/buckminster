@@ -2,7 +2,11 @@ This command will populate the workspace from a Bill of Materials (BOM)
 
 usage: import
        [{ -? | --help }]
+       [{ -D | --define} <key>[=<value>]]
+       [{ -P | --properties} <URL or Path>]
+       [{ -B | --bomfile} <filename>]
        [{ -C | --continueonerror}]
+       [{ -N | --noimport}]
        [{ -T | --template } <template workspace> ]
        <url_or_path>
 

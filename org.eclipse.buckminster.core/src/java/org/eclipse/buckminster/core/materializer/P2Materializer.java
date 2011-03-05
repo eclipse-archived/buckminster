@@ -1,7 +1,10 @@
 package org.eclipse.buckminster.core.materializer;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -11,6 +14,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.eclipse.buckminster.core.CorePlugin;
 import org.eclipse.buckminster.core.ITargetPlatform;
@@ -25,13 +34,16 @@ import org.eclipse.buckminster.core.mspec.IMaterializationNode;
 import org.eclipse.buckminster.core.mspec.IMaterializationSpec;
 import org.eclipse.buckminster.core.reader.IComponentReader;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.runtime.BuckminsterException;
+import org.eclipse.buckminster.runtime.IOUtils;
 import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactDescriptor;
 import org.eclipse.equinox.internal.p2.engine.InstallableUnitOperand;
@@ -47,6 +59,7 @@ import org.eclipse.equinox.p2.engine.IProfile;
 import org.eclipse.equinox.p2.engine.IProfileRegistry;
 import org.eclipse.equinox.p2.engine.IProvisioningPlan;
 import org.eclipse.equinox.p2.engine.ProvisioningContext;
+import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
@@ -57,6 +70,7 @@ import org.eclipse.equinox.p2.repository.artifact.IArtifactRepositoryManager;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepository;
 import org.eclipse.equinox.p2.repository.metadata.IMetadataRepositoryManager;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.Constants;
 
 @SuppressWarnings("restriction")
 public class P2Materializer extends AbstractMaterializer {
@@ -70,8 +84,8 @@ public class P2Materializer extends AbstractMaterializer {
 		Map<String, String> props = URLUtils.queryAsParameters(repoLocation.getQuery());
 		if (props.remove("importType") != null) //$NON-NLS-1$
 			try {
-				repoLocation = new URI(repoLocation.getScheme(), repoLocation.getAuthority(), repoLocation.getPath(), URLUtils
-						.encodeFromQueryPairs(props), repoLocation.getFragment());
+				repoLocation = new URI(repoLocation.getScheme(), repoLocation.getAuthority(), repoLocation.getPath(),
+						URLUtils.encodeFromQueryPairs(props), repoLocation.getFragment());
 			} catch (URISyntaxException e) {
 				throw new IllegalArgumentException(e);
 			}
@@ -158,7 +172,8 @@ public class P2Materializer extends AbstractMaterializer {
 			rss.add(res);
 		}
 
-		SubMonitor subMon = SubMonitor.convert(monitor, resPerLocation.size() * 1000);
+		SubMonitor subMon = SubMonitor.convert(monitor, 100 + resPerLocation.size() * 1000);
+
 		IProvisioningAgent p2Agent = CorePlugin.getDefault().getResolverAgent();
 		IMetadataRepositoryManager mdrManager = (IMetadataRepositoryManager) p2Agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		IArtifactRepositoryManager arManager = (IArtifactRepositoryManager) p2Agent.getService(IArtifactRepositoryManager.SERVICE_NAME);
@@ -166,6 +181,15 @@ public class P2Materializer extends AbstractMaterializer {
 		IProfileRegistry registry = (IProfileRegistry) p2Agent.getService(IProfileRegistry.SERVICE_NAME);
 		Map<URI, IMetadataRepository> knownMDRs = new HashMap<URI, IMetadataRepository>();
 		Map<URI, IArtifactRepository> knownARs = new HashMap<URI, IArtifactRepository>();
+
+		try {
+			URI runtimeAR = Platform.getInstallLocation().getURL().toURI();
+			knownARs.put(runtimeAR, arManager.loadRepository(runtimeAR, subMon.newChild(100)));
+		} catch (Exception e) {
+			// Ignore
+			CorePlugin.getLogger().warning(e, "Unable to load runtime repository from"); //$NON-NLS-1$
+		}
+
 		for (Map.Entry<File, List<Resolution>> entry : resPerLocation.entrySet()) {
 			// ensure the user-specified artifact repos will be consulted by
 			// loading them
@@ -200,53 +224,24 @@ public class P2Materializer extends AbstractMaterializer {
 				{
 					// This is a direct pointer to an artifact, not a repository
 					//
-					String rType = res.getReaderTypeId();
-					if (!IReaderType.URL.equals(rType))
-						throw BuckminsterException.fromMessage(NLS.bind(Messages.p2_materializer_cannot_process_readertype_0, rType));
-
-					IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getComponentTypeID());
-					IPath location = Path.fromOSString(destDir.getAbsolutePath());
-					IPath ctypeRelative = ctype.getRelativeLocation();
-					if (ctypeRelative != null)
-						location = location.append(ctypeRelative);
-					location.toFile().mkdirs();
-
-					String leafName = cid.getName() + '_' + cid.getVersion();
-					if (res.isUnpack()) {
-						location = location.append(leafName);
-						location = location.addTrailingSeparator();
-					} else
-						location = location.append(leafName + ".jar"); //$NON-NLS-1$
-
-					IReaderType readerType = CorePlugin.getDefault().getReaderType(rType);
-					IComponentReader reader = readerType.getReader(res, context, subSubMon.newChild(10));
-					try {
-						reader.materialize(location, res, context, subSubMon.newChild(500));
-					} finally {
-						try {
-							reader.close();
-						} catch (IOException e) {
-							throw BuckminsterException.wrap(e);
-						}
-					}
-
-					SimpleArtifactDescriptor desc;
-					if (IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID())) {
-						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE, cid.getName(), version));
-						desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
-					} else {
-						desc = new SimpleArtifactDescriptor(new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(), version));
-						if (res.isUnpack())
-							desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
-					}
-					destAR.addDescriptor(desc);
+					fetchP2object(context, destDir, destAR, res, subSubMon, cid, version);
 					continue;
 				}
 
+				// Try URI as a P2 repository
 				IMetadataRepository mdr = knownMDRs.get(repoURI);
 				if (mdr == null) {
-					mdr = getMetadataRepository(mdrManager, repoURI, subSubMon.newChild(500));
-					knownMDRs.put(repoURI, mdr);
+					try {
+						mdr = getMetadataRepository(mdrManager, repoURI, subSubMon.newChild(500));
+						knownMDRs.put(repoURI, mdr);
+					} catch (ProvisionException pe) {
+						if (ProvisionException.REPOSITORY_NOT_FOUND != pe.getStatus().getCode())
+							throw pe;
+
+						// URI is not a p2 repository
+						fetchP2object(context, destDir, destAR, res, subSubMon, cid, version);
+						continue;
+					}
 				}
 
 				VersionRange range = new VersionRange(version, true, version, true);
@@ -260,8 +255,8 @@ public class P2Materializer extends AbstractMaterializer {
 				IQueryResult<IInstallableUnit> result = mdr.query(QueryUtil.createIUQuery(name, range), subSubMon.newChild(250));
 				Iterator<IInstallableUnit> itor = result.iterator();
 				if (!itor.hasNext())
-					throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2, new Object[] { cid.getName(), version,
-							res.getRepository() }));
+					throw new ProvisionException(NLS.bind(Messages.Unable_to_resolve_0_1_in_MDR_2,
+							new Object[] { cid.getName(), version, res.getRepository() }));
 
 				IInstallableUnit iu = itor.next();
 				ius.add(iu);
@@ -278,6 +273,9 @@ public class P2Materializer extends AbstractMaterializer {
 				} else
 					subSubMon.worked(250);
 			}
+
+			IArtifactRepository tempAr = P2ReaderType.getTempAR(subMon.newChild(1));
+			knownARs.put(tempAr.getLocation(), tempAr);
 
 			// create the operands from the list of IUs
 			InstallableUnitOperand[] operands = new InstallableUnitOperand[ius.size()];
@@ -321,5 +319,132 @@ public class P2Materializer extends AbstractMaterializer {
 		}
 		TargetPlatform.getInstance().locationsChanged(resPerLocation.keySet());
 		return Collections.emptyList();
+	}
+
+	private void convertSourceJar(IComponentIdentifier cid, File bundleJar, Manifest mf) throws IOException {
+		File tempRoot = bundleJar.getParentFile();
+		File outFile = null;
+		ZipOutputStream out = null;
+		InputStream in = new FileInputStream(bundleJar);
+		try {
+			String name = cid.getName();
+			String binName = name.substring(0, name.length() - 7);
+			String strVer = cid.getVersion().toString();
+			if (mf == null)
+				mf = new Manifest();
+			Attributes attrs = mf.getMainAttributes();
+			attrs.putValue(Constants.BUNDLE_SYMBOLICNAME, name);
+			attrs.putValue(Constants.BUNDLE_NAME, "Source for " + binName); //$NON-NLS-1$
+			attrs.putValue(Constants.BUNDLE_VERSION, strVer);
+			attrs.putValue(Constants.BUNDLE_MANIFESTVERSION, "2"); //$NON-NLS-1$
+			attrs.putValue("Eclipse-SourceBundle", binName + ";version=" + strVer); //$NON-NLS-1$//$NON-NLS-2$
+
+			outFile = File.createTempFile("newbundle-", ".jar", tempRoot); //$NON-NLS-1$//$NON-NLS-2$
+			out = new ZipOutputStream(new FileOutputStream(outFile));
+			ZipEntry ze = new ZipEntry("META-INF/"); //$NON-NLS-1$
+			out.putNextEntry(ze);
+			ze = new ZipEntry("META-INF/MANIFEST.MF"); //$NON-NLS-1$
+			out.putNextEntry(ze);
+			mf.write(out);
+
+			ZipInputStream zin = new ZipInputStream(in);
+			while ((ze = zin.getNextEntry()) != null) {
+				if ("META-INF/".equals(ze.getName()) || "META-INF/MANIFEST.MF".equals(ze.getName())) //$NON-NLS-1$//$NON-NLS-2$
+					continue;
+				out.putNextEntry(ze);
+				if (!ze.isDirectory())
+					IOUtils.copy(zin, out, null);
+			}
+		} finally {
+			IOUtils.close(in);
+			IOUtils.close(out);
+		}
+		File tmpRename = File.createTempFile("oldbundle-", ".jar", tempRoot); //$NON-NLS-1$//$NON-NLS-2$;
+		if (bundleJar.renameTo(tmpRename)) {
+			if (outFile.renameTo(bundleJar))
+				tmpRename.delete();
+			else {
+				// Attempt to roll back
+				tmpRename.renameTo(bundleJar);
+				throw new IOException("Unable to rename " + outFile.getAbsolutePath() + " to " + bundleJar.getAbsolutePath()); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+		} else
+			throw new IOException("Unable to rename " + bundleJar.getAbsolutePath() + " to " + tmpRename.getAbsolutePath()); //$NON-NLS-1$//$NON-NLS-2$
+	}
+
+	private void fetchP2object(MaterializationContext context, File destDir, IArtifactRepository destAR, Resolution res, SubMonitor subSubMon,
+			IComponentIdentifier cid, Version version) throws CoreException {
+
+		IArtifactKey aKey;
+		if (IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID()))
+			aKey = new ArtifactKey(CLASSIFIER_ORG_ECLIPSE_UPDATE_FEATURE, cid.getName(), version);
+		else
+			aKey = new ArtifactKey(CLASSIFIER_OSGI_BUNDLE, cid.getName(), version);
+
+		if (destAR.contains(aKey))
+			return;
+
+		IComponentType ctype = CorePlugin.getDefault().getComponentType(cid.getComponentTypeID());
+		IPath location = Path.fromOSString(destDir.getAbsolutePath());
+		IPath ctypeRelative = ctype.getRelativeLocation();
+		if (ctypeRelative != null)
+			location = location.append(ctypeRelative);
+		location.toFile().mkdirs();
+
+		String leafName = cid.getName() + '_' + cid.getVersion();
+		if (res.isUnpack()) {
+			location = location.append(leafName);
+			location = location.addTrailingSeparator();
+		} else
+			location = location.append(leafName + ".jar"); //$NON-NLS-1$
+
+		IReaderType readerType = CorePlugin.getDefault().getReaderType(res.getReaderTypeId());
+		IComponentReader reader = readerType.getReader(res, context, subSubMon.newChild(10));
+		try {
+			reader.materialize(location, res, context, subSubMon.newChild(500));
+		} finally {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				throw BuckminsterException.wrap(e);
+			}
+		}
+
+		if (cid.getName().endsWith(".source") && IComponentType.OSGI_BUNDLE.equals(cid.getComponentTypeID()) && !res.isUnpack()) { //$NON-NLS-1$
+			// It is not unlikely that we have downloaded a source bundle from a
+			// maven repository at this point. They often lack the some settings
+			// required by Eclipse in their manifest. If that's the case, then
+			// we can fix it here so that source lookups will work in the IDE.
+			Object convertSource = context.get("buckminster.convert.source"); //$NON-NLS-1$
+			if (convertSource != null && "true".equalsIgnoreCase(convertSource.toString())) { //$NON-NLS-1$
+				try {
+					File bundleJar = location.toFile();
+					Manifest mf = null;
+					JarFile jar = null;
+					try {
+						jar = new JarFile(bundleJar);
+						mf = jar.getManifest();
+					} finally {
+						if (jar != null) {
+							try {
+								jar.close();
+							} catch (IOException e) {
+							}
+						}
+					}
+					if (mf == null || mf.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME) == null) {
+						convertSourceJar(cid, bundleJar, mf);
+					}
+				} catch (Exception e) {
+					// Not fatal but a warning is appropriate
+					CorePlugin.getLogger().warning(e.getMessage(), e);
+				}
+			}
+		}
+
+		SimpleArtifactDescriptor desc = new SimpleArtifactDescriptor(aKey);
+		if (IComponentType.ECLIPSE_FEATURE.equals(cid.getComponentTypeID()) || res.isUnpack())
+			desc.addRepositoryProperties(Collections.singletonMap(PROP_ARTIFACT_FOLDER, Boolean.toString(true)));
+		destAR.addDescriptor(desc);
 	}
 }

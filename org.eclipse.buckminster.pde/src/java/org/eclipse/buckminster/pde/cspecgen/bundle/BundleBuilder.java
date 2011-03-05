@@ -30,6 +30,7 @@ import org.eclipse.buckminster.core.reader.IStreamConsumer;
 import org.eclipse.buckminster.core.reader.URLCatalogReaderType;
 import org.eclipse.buckminster.core.reader.URLFileReader;
 import org.eclipse.buckminster.core.reader.ZipArchiveReader;
+import org.eclipse.buckminster.core.version.ProviderMatch;
 import org.eclipse.buckminster.core.version.VersionHelper;
 import org.eclipse.buckminster.pde.IPDEConstants;
 import org.eclipse.buckminster.pde.Messages;
@@ -47,6 +48,8 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.equinox.internal.p2.metadata.OSGiVersion;
+import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.pde.core.IModel;
 import org.eclipse.pde.core.build.IBuildModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
@@ -56,6 +59,7 @@ import org.eclipse.pde.internal.core.bundle.BundleFragmentModel;
 import org.eclipse.pde.internal.core.bundle.BundleModel;
 import org.eclipse.pde.internal.core.bundle.BundlePluginModel;
 import org.eclipse.pde.internal.core.bundle.BundlePluginModelBase;
+import org.eclipse.pde.internal.core.ibundle.IBundle;
 import org.eclipse.pde.internal.core.plugin.ExternalFragmentModel;
 import org.eclipse.pde.internal.core.plugin.ExternalPluginModel;
 import org.osgi.framework.Constants;
@@ -133,8 +137,22 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				boolean fragment = false;
 				BundleModel model = new ExternalBundleModel(locationFile);
 				loadModel(reader, BUNDLE_FILE, model, MonitorUtils.subMonitor(monitor, 1000));
-				if (model.getBundle().getHeader(Constants.BUNDLE_SYMBOLICNAME) == null)
-					throw new FileNotFoundException(Messages.not_an_OSGi_manifest);
+				IBundle bundle = model.getBundle();
+				if (bundle.getHeader(Constants.BUNDLE_SYMBOLICNAME) == null) {
+					ProviderMatch pm = reader.getProviderMatch();
+					String cName = pm.getComponentName();
+					if (!cName.endsWith(".source")) //$NON-NLS-1$
+						throw new FileNotFoundException(Messages.not_an_OSGi_manifest);
+					bundle.setHeader(Constants.BUNDLE_SYMBOLICNAME, cName);
+					Version v = pm.getVersionMatch().getVersion();
+					String vstr;
+					if (v instanceof OSGiVersion)
+						vstr = v.toString();
+					else
+						vstr = v.getOriginal();
+					if (vstr != null)
+						bundle.setHeader(Constants.BUNDLE_VERSION, vstr);
+				}
 
 				fragment = model.isFragmentModel();
 				BundlePluginModelBase bmodel = fragment ? new BundleFragmentModel() : new BundlePluginModel();

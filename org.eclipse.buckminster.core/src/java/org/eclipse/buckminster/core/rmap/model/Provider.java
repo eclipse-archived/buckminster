@@ -27,6 +27,7 @@ import org.eclipse.buckminster.core.cspec.model.ComponentRequest;
 import org.eclipse.buckminster.core.ctype.IComponentType;
 import org.eclipse.buckminster.core.ctype.MissingCSpecSourceException;
 import org.eclipse.buckminster.core.helpers.TextUtils;
+import org.eclipse.buckminster.core.helpers.UnmodifiableMapUnion;
 import org.eclipse.buckminster.core.metadata.ReferentialIntegrityException;
 import org.eclipse.buckminster.core.metadata.StorageManager;
 import org.eclipse.buckminster.core.metadata.model.IUUIDPersisted;
@@ -283,6 +284,8 @@ public class Provider extends UUIDKeyed implements IUUIDPersisted {
 	}
 
 	public Map<String, ? extends Object> getProperties(Map<String, ? extends Object> props) {
+		if (!properties.isEmpty())
+			props = new UnmodifiableMapUnion<String, Object>(props, properties);
 		if (searchPath != null)
 			props = searchPath.getResourceMap().getProperties(props);
 		return props;

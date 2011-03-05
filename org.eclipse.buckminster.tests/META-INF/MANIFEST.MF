@@ -6,14 +6,14 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Buckminster Project
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
  J2SE-1.5
-Require-Bundle: org.eclipse.buckminster.core.test;bundle-version="1.0.350",
- org.eclipse.buckminster.cvs.test;bundle-version="1.0.0",
- org.eclipse.buckminster.download.test;bundle-version="1.0.0",
- org.eclipse.buckminster.executor.test;bundle-version="1.0.0",
- org.eclipse.buckminster.git.test;bundle-version="1.0.0",
- org.eclipse.buckminster.jarprocessor.test;bundle-version="1.0.0",
- org.eclipse.buckminster.maven.test;bundle-version="1.0.0",
- org.eclipse.buckminster.osgi.filter.test;bundle-version="1.0.0",
- org.eclipse.buckminster.pde.test;bundle-version="1.0.0",
- org.junit;bundle-version="4.8.1"
+Require-Bundle: org.eclipse.buckminster.core.test,
+ org.eclipse.buckminster.cvs.test,
+ org.eclipse.buckminster.download.test,
+ org.eclipse.buckminster.executor.test,
+ org.eclipse.buckminster.git.test,
+ org.eclipse.buckminster.jarprocessor.test,
+ org.eclipse.buckminster.maven.test,
+ org.eclipse.buckminster.osgi.filter.test,
+ org.eclipse.buckminster.pde.test,
+ org.junit
 Export-Package: org.eclipse.buckminster.tests

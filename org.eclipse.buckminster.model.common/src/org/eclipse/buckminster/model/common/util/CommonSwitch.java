@@ -8,25 +8,29 @@ package org.eclipse.buckminster.model.common.util;
 
 import java.util.List;
 
+import java.util.Map;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.Format;
 import org.eclipse.buckminster.model.common.Match;
-import org.eclipse.buckminster.model.common.Property;
-import org.eclipse.buckminster.model.common.PropertyConstant;
-import org.eclipse.buckminster.model.common.PropertyElement;
+import org.eclipse.buckminster.model.common.Properties;
 import org.eclipse.buckminster.model.common.PropertyRef;
 import org.eclipse.buckminster.model.common.Replace;
+import org.eclipse.buckminster.model.common.RxAssembly;
 import org.eclipse.buckminster.model.common.RxGroup;
 import org.eclipse.buckminster.model.common.RxPart;
 import org.eclipse.buckminster.model.common.RxPattern;
 import org.eclipse.buckminster.model.common.Split;
 import org.eclipse.buckminster.model.common.ToLower;
 import org.eclipse.buckminster.model.common.ToUpper;
+import org.eclipse.buckminster.model.common.Value;
 import org.eclipse.buckminster.model.common.ValueFilter;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
@@ -64,6 +68,23 @@ public class CommonSwitch<T1> {
 
 	/**
 	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Abstract Document Root</em>'. <!-- begin-user-doc --> This
+	 * implementation returns null; returning a non-null result will terminate
+	 * the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Abstract Document Root</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseAbstractDocumentRoot(EObject object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
 	 * <em>Comparable</em>'. <!-- begin-user-doc --> This implementation returns
 	 * null; returning a non-null result will terminate the switch. <!--
 	 * end-user-doc -->
@@ -93,6 +114,23 @@ public class CommonSwitch<T1> {
 	 * @generated
 	 */
 	public T1 caseComponentIdentifier(ComponentIdentifier object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Component Name</em>'. <!-- begin-user-doc --> This implementation
+	 * returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Component Name</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseComponentName(ComponentName object) {
 		return null;
 	}
 
@@ -149,23 +187,6 @@ public class CommonSwitch<T1> {
 
 	/**
 	 * Returns the result of interpreting the object as an instance of '
-	 * <em>Document Root</em>'. <!-- begin-user-doc --> This implementation
-	 * returns null; returning a non-null result will terminate the switch. <!--
-	 * end-user-doc -->
-	 * 
-	 * @param object
-	 *            the target of the switch.
-	 * @return the result of interpreting the object as an instance of '
-	 *         <em>Document Root</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T1 caseDocumentRoot(EObject object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '
 	 * <em>Format</em>'. <!-- begin-user-doc --> This implementation returns
 	 * null; returning a non-null result will terminate the switch. <!--
 	 * end-user-doc -->
@@ -178,6 +199,40 @@ public class CommonSwitch<T1> {
 	 * @generated
 	 */
 	public T1 caseFormat(Format object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>IProgress Monitor</em>'. <!-- begin-user-doc --> This implementation
+	 * returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>IProgress Monitor</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseIProgressMonitor(IProgressMonitor object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>IStatus</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>IStatus</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseIStatus(IStatus object) {
 		return null;
 	}
 
@@ -217,18 +272,18 @@ public class CommonSwitch<T1> {
 
 	/**
 	 * Returns the result of interpreting the object as an instance of '
-	 * <em>Property</em>'. <!-- begin-user-doc --> This implementation returns
+	 * <em>Properties</em>'. <!-- begin-user-doc --> This implementation returns
 	 * null; returning a non-null result will terminate the switch. <!--
 	 * end-user-doc -->
 	 * 
 	 * @param object
 	 *            the target of the switch.
 	 * @return the result of interpreting the object as an instance of '
-	 *         <em>Property</em>'.
+	 *         <em>Properties</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T1 caseProperty(Property object) {
+	public T1 caseProperties(Properties object) {
 		return null;
 	}
 
@@ -245,7 +300,7 @@ public class CommonSwitch<T1> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T1 casePropertyConstant(PropertyConstant object) {
+	public T1 casePropertyConstant(Map.Entry<String, Value> object) {
 		return null;
 	}
 
@@ -262,7 +317,7 @@ public class CommonSwitch<T1> {
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T1 casePropertyElement(PropertyElement object) {
+	public T1 casePropertyElement(Map.Entry<String, Value> object) {
 		return null;
 	}
 
@@ -297,6 +352,23 @@ public class CommonSwitch<T1> {
 	 * @generated
 	 */
 	public T1 caseReplace(Replace object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Rx Assembly</em>'. <!-- begin-user-doc --> This implementation
+	 * returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Rx Assembly</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseRxAssembly(RxAssembly object) {
 		return null;
 	}
 
@@ -404,6 +476,23 @@ public class CommonSwitch<T1> {
 
 	/**
 	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Value</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Value</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T1 caseValue(Value object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
 	 * <em>Value Filter</em>'. <!-- begin-user-doc --> This implementation
 	 * returns null; returning a non-null result will terminate the switch. <!--
 	 * end-user-doc -->
@@ -478,9 +567,51 @@ public class CommonSwitch<T1> {
 	 */
 	protected T1 doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
+			case CommonPackage.ABSTRACT_DOCUMENT_ROOT: {
+				EObject abstractDocumentRoot = theEObject;
+				T1 result = caseAbstractDocumentRoot(abstractDocumentRoot);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case CommonPackage.COMPONENT_IDENTIFIER: {
+				ComponentIdentifier componentIdentifier = (ComponentIdentifier) theEObject;
+				T1 result = caseComponentIdentifier(componentIdentifier);
+				if (result == null)
+					result = caseComponentName(componentIdentifier);
+				if (result == null)
+					result = caseIVersionedId(componentIdentifier);
+				if (result == null)
+					result = caseComparable(componentIdentifier);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case CommonPackage.COMPONENT_NAME: {
+				ComponentName componentName = (ComponentName) theEObject;
+				T1 result = caseComponentName(componentName);
+				if (result == null)
+					result = caseComparable(componentName);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case CommonPackage.COMPONENT_REQUEST: {
+				ComponentRequest componentRequest = (ComponentRequest) theEObject;
+				T1 result = caseComponentRequest(componentRequest);
+				if (result == null)
+					result = caseComponentName(componentRequest);
+				if (result == null)
+					result = caseComparable(componentRequest);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
 			case CommonPackage.CONSTANT: {
 				Constant constant = (Constant) theEObject;
 				T1 result = caseConstant(constant);
+				if (result == null)
+					result = caseValue(constant);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
@@ -498,6 +629,8 @@ public class CommonSwitch<T1> {
 				if (result == null)
 					result = caseValueFilter(format);
 				if (result == null)
+					result = caseValue(format);
+				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
@@ -508,27 +641,25 @@ public class CommonSwitch<T1> {
 					result = defaultCase(theEObject);
 				return result;
 			}
-			case CommonPackage.PROPERTY: {
-				Property property = (Property) theEObject;
-				T1 result = caseProperty(property);
+			case CommonPackage.PROPERTIES: {
+				Properties properties = (Properties) theEObject;
+				T1 result = caseProperties(properties);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CommonPackage.PROPERTY_CONSTANT: {
-				PropertyConstant propertyConstant = (PropertyConstant) theEObject;
+				@SuppressWarnings("unchecked")
+				Map.Entry<String, Value> propertyConstant = (Map.Entry<String, Value>) theEObject;
 				T1 result = casePropertyConstant(propertyConstant);
-				if (result == null)
-					result = caseProperty(propertyConstant);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
 			case CommonPackage.PROPERTY_ELEMENT: {
-				PropertyElement propertyElement = (PropertyElement) theEObject;
+				@SuppressWarnings("unchecked")
+				Map.Entry<String, Value> propertyElement = (Map.Entry<String, Value>) theEObject;
 				T1 result = casePropertyElement(propertyElement);
-				if (result == null)
-					result = caseProperty(propertyElement);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
@@ -536,6 +667,8 @@ public class CommonSwitch<T1> {
 			case CommonPackage.PROPERTY_REF: {
 				PropertyRef propertyRef = (PropertyRef) theEObject;
 				T1 result = casePropertyRef(propertyRef);
+				if (result == null)
+					result = caseValue(propertyRef);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
@@ -545,6 +678,19 @@ public class CommonSwitch<T1> {
 				T1 result = caseReplace(replace);
 				if (result == null)
 					result = caseValueFilter(replace);
+				if (result == null)
+					result = caseValue(replace);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case CommonPackage.RX_ASSEMBLY: {
+				RxAssembly rxAssembly = (RxAssembly) theEObject;
+				T1 result = caseRxAssembly(rxAssembly);
+				if (result == null)
+					result = caseRxGroup(rxAssembly);
+				if (result == null)
+					result = caseRxPart(rxAssembly);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
@@ -580,6 +726,8 @@ public class CommonSwitch<T1> {
 				if (result == null)
 					result = caseValueFilter(split);
 				if (result == null)
+					result = caseValue(split);
+				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
@@ -588,6 +736,8 @@ public class CommonSwitch<T1> {
 				T1 result = caseToLower(toLower);
 				if (result == null)
 					result = caseValueFilter(toLower);
+				if (result == null)
+					result = caseValue(toLower);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
@@ -598,6 +748,15 @@ public class CommonSwitch<T1> {
 				if (result == null)
 					result = caseValueFilter(toUpper);
 				if (result == null)
+					result = caseValue(toUpper);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case CommonPackage.VALUE: {
+				Value value = (Value) theEObject;
+				T1 result = caseValue(value);
+				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
@@ -605,30 +764,7 @@ public class CommonSwitch<T1> {
 				ValueFilter valueFilter = (ValueFilter) theEObject;
 				T1 result = caseValueFilter(valueFilter);
 				if (result == null)
-					result = defaultCase(theEObject);
-				return result;
-			}
-			case CommonPackage.DOCUMENT_ROOT: {
-				EObject documentRoot = theEObject;
-				T1 result = caseDocumentRoot(documentRoot);
-				if (result == null)
-					result = defaultCase(theEObject);
-				return result;
-			}
-			case CommonPackage.COMPONENT_REQUEST: {
-				ComponentRequest componentRequest = (ComponentRequest) theEObject;
-				T1 result = caseComponentRequest(componentRequest);
-				if (result == null)
-					result = defaultCase(theEObject);
-				return result;
-			}
-			case CommonPackage.COMPONENT_IDENTIFIER: {
-				ComponentIdentifier componentIdentifier = (ComponentIdentifier) theEObject;
-				T1 result = caseComponentIdentifier(componentIdentifier);
-				if (result == null)
-					result = caseIVersionedId(componentIdentifier);
-				if (result == null)
-					result = caseComparable(componentIdentifier);
+					result = caseValue(valueFilter);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;

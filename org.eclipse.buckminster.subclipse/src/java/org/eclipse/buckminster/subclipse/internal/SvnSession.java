@@ -445,7 +445,7 @@ public class SvnSession extends GenericSession<ISVNRepositoryLocation, ISVNDirEn
 		ISVNPromptUserPassword pwCb = (username == null) ? plugin.getSvnPromptUserPassword() : new UnattendedPromptUserPassword();
 
 		if (pwCb != null)
-			client.addPasswordCallback(plugin.getSvnPromptUserPassword());
+			client.addPasswordCallback(pwCb);
 
 		clientAdapter = client;
 		if (bestMatch == null)

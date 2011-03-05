@@ -9,6 +9,7 @@ package org.eclipse.buckminster.rmap.psf.provider;
 import java.util.Collection;
 import java.util.List;
 
+import java.util.regex.Pattern;
 import org.eclipse.buckminster.rmap.provider.ProviderItemProvider;
 
 import org.eclipse.buckminster.rmap.psf.PSFProvider;
@@ -81,7 +82,8 @@ public class PSFProviderItemProvider extends ProviderItemProvider implements IEd
 	 */
 	@Override
 	public String getText(Object object) {
-		String label = ((PSFProvider) object).getComponentTypesAttr();
+		Pattern labelValue = ((PSFProvider) object).getPattern();
+		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ? getString("_UI_PSFProvider_type") : getString("_UI_PSFProvider_type") + " " + label;
 	}
 
@@ -113,9 +115,9 @@ public class PSFProviderItemProvider extends ProviderItemProvider implements IEd
 	 */
 	protected void addPsfFilePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_PSFProvider_psfFile_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_PSFProvider_psfFile_feature", "_UI_PSFProvider_type"), PsfPackage.Literals.PSF_PROVIDER__PSF_FILE, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_PSFProvider_psfFile_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_PSFProvider_psfFile_feature", "_UI_PSFProvider_type"),
+				PsfPackage.Literals.PSF_PROVIDER__PSF_FILE, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**

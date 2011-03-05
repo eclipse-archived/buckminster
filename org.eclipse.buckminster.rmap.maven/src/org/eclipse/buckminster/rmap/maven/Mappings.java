@@ -44,7 +44,8 @@ public interface Mappings extends EObject {
 	 * 
 	 * @return the value of the '<em>Entries</em>' containment reference list.
 	 * @see org.eclipse.buckminster.rmap.maven.MavenPackage#getMappings_Entries()
-	 * @model containment="true" extendedMetaData="kind='element' name='entry'"
+	 * @model containment="true" extendedMetaData=
+	 *        "kind='element' name='entry' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	EList<MapEntry> getEntries();
@@ -61,7 +62,8 @@ public interface Mappings extends EObject {
 	 * 
 	 * @return the value of the '<em>Rules</em>' containment reference list.
 	 * @see org.eclipse.buckminster.rmap.maven.MavenPackage#getMappings_Rules()
-	 * @model containment="true" extendedMetaData="name='rule' kind='element'"
+	 * @model containment="true" extendedMetaData=
+	 *        "name='rule' kind='element' namespace='##targetNamespace'"
 	 * @generated
 	 */
 	EList<Transform> getRules();

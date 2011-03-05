@@ -9,6 +9,7 @@ package org.eclipse.buckminster.rmap.maven.provider;
 import java.util.Collection;
 import java.util.List;
 
+import java.util.regex.Pattern;
 import org.eclipse.buckminster.rmap.maven.MavenProvider;
 import org.eclipse.buckminster.rmap.maven.MavenFactory;
 import org.eclipse.buckminster.rmap.maven.MavenPackage;
@@ -20,12 +21,14 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -57,11 +60,13 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(MavenPackage.Literals.MAVEN_PROVIDER__MAPPINGS);
+			childrenFeatures.add(MavenPackage.Literals.MAVEN_PROVIDER__SCOPES);
 		}
 		return childrenFeatures;
 	}
@@ -72,6 +77,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/MavenProvider"));
@@ -83,11 +89,13 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addTransitivePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -98,9 +106,11 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
-		String label = ((MavenProvider) object).getComponentTypesAttr();
+		Pattern labelValue = ((MavenProvider) object).getPattern();
+		String label = labelValue == null ? null : labelValue.toString();
 		return label == null || label.length() == 0 ? getString("_UI_MavenProvider_type") : getString("_UI_MavenProvider_type") + " " + label;
 	}
 
@@ -112,16 +122,34 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(MavenProvider.class)) {
+			case MavenPackage.MAVEN_PROVIDER__TRANSITIVE:
+				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+				return;
 			case MavenPackage.MAVEN_PROVIDER__MAPPINGS:
+			case MavenPackage.MAVEN_PROVIDER__SCOPES:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
 		super.notifyChanged(notification);
+	}
+
+	/**
+	 * This adds a property descriptor for the Transitive feature. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected void addTransitivePropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(), getString("_UI_MavenProvider_transitive_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MavenProvider_transitive_feature", "_UI_MavenProvider_type"),
+				MavenPackage.Literals.MAVEN_PROVIDER__TRANSITIVE, true, false, false, ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -131,11 +159,14 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
 		newChildDescriptors.add(createChildParameter(MavenPackage.Literals.MAVEN_PROVIDER__MAPPINGS, MavenFactory.eINSTANCE.createMappings()));
+
+		newChildDescriptors.add(createChildParameter(MavenPackage.Literals.MAVEN_PROVIDER__SCOPES, MavenFactory.eINSTANCE.createScopes()));
 	}
 
 	/**
@@ -143,6 +174,7 @@ public class MavenProviderItemProvider extends ProviderItemProvider implements I
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper

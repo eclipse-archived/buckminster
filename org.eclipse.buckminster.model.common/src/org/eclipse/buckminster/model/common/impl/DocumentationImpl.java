@@ -13,6 +13,7 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.BasicFeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -37,7 +38,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * 
  * @generated
  */
-public class DocumentationImpl extends BObjectImpl implements Documentation {
+public class DocumentationImpl extends EObjectImpl implements Documentation {
 	/**
 	 * The cached value of the '{@link #getMixed() <em>Mixed</em>}' attribute
 	 * list. <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -73,6 +74,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -97,6 +99,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -115,6 +118,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -133,6 +137,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -154,6 +159,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -175,7 +181,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public FeatureMap getAny() {
 		return (FeatureMap) getMixed().<FeatureMap.Entry> list(CommonPackage.Literals.DOCUMENTATION__ANY);
 	}
@@ -185,7 +191,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public FeatureMap getAnyAttribute() {
 		if (anyAttribute == null) {
 			anyAttribute = new BasicFeatureMap(this, CommonPackage.DOCUMENTATION__ANY_ATTRIBUTE);
@@ -198,7 +204,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public FeatureMap getMixed() {
 		if (mixed == null) {
 			mixed = new BasicFeatureMap(this, CommonPackage.DOCUMENTATION__MIXED);
@@ -206,27 +212,23 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 		return mixed;
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
-	public void toString(StringBuilder result) {
-		if (eIsProxy()) {
-			result.append(super.toString());
-			return;
-		}
+	public String toString() {
+		if (eIsProxy())
+			return super.toString();
 
+		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (mixed: ");
 		result.append(mixed);
 		result.append(", anyAttribute: ");
 		result.append(anyAttribute);
 		result.append(')');
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public String toStringGen() {
-		return null;
+		return result.toString();
 	}
 
 	/**
@@ -234,6 +236,7 @@ public class DocumentationImpl extends BObjectImpl implements Documentation {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.DOCUMENTATION;

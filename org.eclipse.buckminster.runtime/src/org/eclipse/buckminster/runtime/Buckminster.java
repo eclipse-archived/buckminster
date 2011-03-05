@@ -25,6 +25,10 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 
 	public static final String PLUGIN_ID = "org.eclipse.buckminster.runtime"; //$NON-NLS-1$
 
+	public static final String ACTION_TEMP_ROOT = "buckminster.temp.root"; //$NON-NLS-1$
+
+	public static final String ACTION_OUTPUT_ROOT = "buckminster.output.root"; //$NON-NLS-1$
+
 	private static Buckminster plugin;
 
 	// this tracks if Buckminster was invoked headless

@@ -83,6 +83,7 @@ public final class MspecEditPlugin extends EMFPlugin {
 	 * @return the singleton instance.
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getPluginResourceLocator() {
 		return plugin;

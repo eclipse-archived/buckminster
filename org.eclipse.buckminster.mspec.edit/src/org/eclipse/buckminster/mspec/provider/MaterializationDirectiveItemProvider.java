@@ -10,22 +10,15 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.buckminster.model.common.CommonFactory;
+import org.eclipse.buckminster.model.common.ConflictResolution;
+import org.eclipse.buckminster.model.common.provider.PropertiesItemProvider;
 import org.eclipse.buckminster.model.common.provider.util.ExtensionPropertyDescriptor;
-import org.eclipse.buckminster.mspec.ConflictResolution;
 import org.eclipse.buckminster.mspec.MaterializationDirective;
 import org.eclipse.buckminster.mspec.MspecPackage;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
-import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
-import org.eclipse.emf.ecore.util.FeatureMapUtil;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
-import org.eclipse.emf.edit.provider.IChildCreationExtender;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -33,7 +26,6 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 /**
@@ -43,8 +35,8 @@ import org.eclipse.emf.edit.provider.ViewerNotification;
  * 
  * @generated
  */
-public class MaterializationDirectiveItemProvider extends ItemProviderAdapter implements IEditingDomainItemProvider, IStructuredItemContentProvider,
-		ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
+public class MaterializationDirectiveItemProvider extends PropertiesItemProvider implements IEditingDomainItemProvider,
+		IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
 	/**
 	 * This constructs an instance from a factory and a notifier. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -65,12 +57,12 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
 			childrenFeatures.add(MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__DOCUMENTATION);
-			childrenFeatures.add(MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP);
 		}
 		return childrenFeatures;
 	}
@@ -81,6 +73,7 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/MaterializationDirective"));
@@ -92,6 +85,7 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -106,22 +100,12 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	}
 
 	/**
-	 * Return the resource locator for this item provider's resources. <!--
-	 * begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public ResourceLocator getResourceLocator() {
-		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
-	}
-
-	/**
 	 * This returns the label text for the adapted class. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		ConflictResolution labelValue = ((MaterializationDirective) object).getConflictResolution();
@@ -138,6 +122,7 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -150,7 +135,6 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
 				return;
 			case MspecPackage.MATERIALIZATION_DIRECTIVE__DOCUMENTATION:
-			case MspecPackage.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -164,9 +148,11 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	 * @generated
 	 */
 	protected void addConflictResolutionPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationDirective_conflictResolution_feature"), getString(
-						"_UI_PropertyDescriptor_description", "_UI_MaterializationDirective_conflictResolution_feature",
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(),
+				getString("_UI_MaterializationDirective_conflictResolution_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationDirective_conflictResolution_feature",
 						"_UI_MaterializationDirective_type"), MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__CONFLICT_RESOLUTION, true, false,
 				false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
@@ -178,9 +164,11 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	 * @generated
 	 */
 	protected void addInstallLocationPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationDirective_installLocation_feature"), getString(
-						"_UI_PropertyDescriptor_description", "_UI_MaterializationDirective_installLocation_feature",
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(),
+				getString("_UI_MaterializationDirective_installLocation_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationDirective_installLocation_feature",
 						"_UI_MaterializationDirective_type"), MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__INSTALL_LOCATION, true, false, false,
 				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
@@ -206,9 +194,11 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	 * @generated
 	 */
 	protected void addWorkspaceLocationPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_MaterializationDirective_workspaceLocation_feature"), getString(
-						"_UI_PropertyDescriptor_description", "_UI_MaterializationDirective_workspaceLocation_feature",
+		itemPropertyDescriptors.add(createItemPropertyDescriptor(
+				((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
+				getResourceLocator(),
+				getString("_UI_MaterializationDirective_workspaceLocation_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_MaterializationDirective_workspaceLocation_feature",
 						"_UI_MaterializationDirective_type"), MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__WORKSPACE_LOCATION, true, false,
 				false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
@@ -220,18 +210,13 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
 
-		newChildDescriptors.add(createChildParameter(MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__DOCUMENTATION, CommonFactory.eINSTANCE
-				.createDocumentation()));
-
-		newChildDescriptors.add(createChildParameter(MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP, FeatureMapUtil.createEntry(
-				MspecPackage.Literals.DOCUMENT_ROOT__PROPERTY, CommonFactory.eINSTANCE.createPropertyConstant())));
-
-		newChildDescriptors.add(createChildParameter(MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__PROPERTY_GROUP, FeatureMapUtil.createEntry(
-				MspecPackage.Literals.DOCUMENT_ROOT__PROPERTY_ELEMENT, CommonFactory.eINSTANCE.createPropertyElement())));
+		newChildDescriptors.add(createChildParameter(MspecPackage.Literals.MATERIALIZATION_DIRECTIVE__DOCUMENTATION,
+				CommonFactory.eINSTANCE.createDocumentation()));
 	}
 
 	/**
@@ -239,6 +224,7 @@ public class MaterializationDirectiveItemProvider extends ItemProviderAdapter im
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper

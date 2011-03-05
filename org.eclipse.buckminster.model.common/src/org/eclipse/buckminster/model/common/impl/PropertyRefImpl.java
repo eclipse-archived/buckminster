@@ -6,14 +6,19 @@
  */
 package org.eclipse.buckminster.model.common.impl;
 
+import java.util.Map;
+
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.PropertyRef;
+import org.eclipse.buckminster.model.common.util.ExpandingProperties;
+import org.eclipse.buckminster.runtime.Buckminster;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * <!-- begin-user-doc --> An implementation of the model object '
@@ -28,7 +33,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * 
  * @generated
  */
-public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
+public class PropertyRefImpl extends ValueImpl implements PropertyRef {
 	/**
 	 * The default value of the '{@link #getKey() <em>Key</em>}' attribute. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
@@ -58,11 +63,26 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 		super();
 	}
 
+	@Override
+	public String checkedGetValue(Map<String, String> properties, int recursionGuard) {
+		String expandedKey = getKey();
+		if (expandedKey == null)
+			return null;
+		expandedKey = ExpandingProperties.expand(properties, expandedKey, recursionGuard + 1);
+		if (properties instanceof ExpandingProperties)
+			return (((ExpandingProperties) properties).getExpandedProperty(expandedKey, recursionGuard + 1));
+		final String replacementValue = properties.get(expandedKey);
+		if (replacementValue == null)
+			Buckminster.getLogger().warning(NLS.bind("The property ''{0}'' has not been set and will default to null", key));
+		return ExpandingProperties.expand(properties, replacementValue, recursionGuard + 1);
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -77,6 +97,7 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -91,6 +112,7 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -106,6 +128,7 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -121,7 +144,7 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getKey() {
 		return key;
 	}
@@ -131,7 +154,7 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setKey(String newKey) {
 		String oldKey = key;
 		key = newKey;
@@ -139,25 +162,21 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.PROPERTY_REF__KEY, oldKey, key));
 	}
 
-	@Override
-	public void toString(StringBuilder result) {
-		if (eIsProxy()) {
-			result.append(super.toString());
-			return;
-		}
-
-		result.append(" (key: ");
-		result.append(key);
-		result.append(')');
-	}
-
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
-	 * @generated NOT
+	 * @generated
 	 */
-	public String toStringGen() {
-		return null;
+	@Override
+	public String toString() {
+		if (eIsProxy())
+			return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (key: ");
+		result.append(key);
+		result.append(')');
+		return result.toString();
 	}
 
 	/**
@@ -165,6 +184,7 @@ public class PropertyRefImpl extends BObjectImpl implements PropertyRef {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.PROPERTY_REF;

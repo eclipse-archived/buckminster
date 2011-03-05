@@ -58,6 +58,7 @@ import org.eclipse.equinox.p2.metadata.expression.IMatchExpression;
 import org.eclipse.equinox.p2.publisher.IPublisherAdvice;
 import org.eclipse.equinox.p2.publisher.IPublisherInfo;
 import org.eclipse.equinox.p2.publisher.IPublisherResult;
+import org.eclipse.equinox.p2.publisher.eclipse.AdviceFileAdvice;
 import org.eclipse.equinox.p2.publisher.eclipse.Feature;
 import org.eclipse.equinox.p2.publisher.eclipse.FeatureEntry;
 import org.eclipse.equinox.p2.repository.artifact.spi.ArtifactDescriptor;
@@ -222,6 +223,8 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 	private final Map<IVersionedId, Map<String, String>> properties = new HashMap<IVersionedId, Map<String, String>>();
 
+	private final Map<IVersionedId, File> adviceFiles = new HashMap<IVersionedId, File>();
+
 	public FeaturesAction(File[] featureBinaries, Map<IVersionedId, CSpec> cspecs) {
 		super(featureBinaries);
 		this.cspecs = cspecs;
@@ -234,14 +237,14 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 			try {
 				IPath location = cspec.getComponentLocation();
 				if (location.hasTrailingSeparator()) {
+					IVersionedId vn = entry.getKey();
+					vn = new VersionedId(vn.getId(), VersionHelper.replaceQualifier(vn.getVersion(), null));
 					File buildProps = location.append(IPDEBuildConstants.PROPERTIES_FILE).toFile();
 					InputStream input = null;
 					Properties props = new Properties();
 					try {
 						input = new BufferedInputStream(new FileInputStream(buildProps));
 						props.load(input);
-						IVersionedId vn = entry.getKey();
-						vn = new VersionedId(vn.getId(), VersionHelper.replaceQualifier(vn.getVersion(), null));
 						properties.put(vn, new BMProperties(props));
 						IPublisherAdvice rootAdvice = createRootAdvice(cspec.getName(), props, location, publisherInfo.getConfigurations());
 						if (rootAdvice != null)
@@ -253,6 +256,9 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 					} finally {
 						IOUtils.close(input);
 					}
+					File adviceFile = location.append("p2.inf").toFile(); //$NON-NLS-1$
+					if (adviceFile.canRead())
+						adviceFiles.put(vn, adviceFile);
 				}
 			} catch (CoreException e) {
 				return e.getStatus();
@@ -307,7 +313,13 @@ public class FeaturesAction extends org.eclipse.equinox.p2.publisher.eclipse.Fea
 
 	private void addCapabilityAdvice(Feature feature) {
 		Version v = Version.parseVersion(feature.getVersion());
-		Map<String, String> localProps = properties.get(new VersionedId(feature.getId(), VersionHelper.replaceQualifier(v, null)));
+		IVersionedId vn = new VersionedId(feature.getId(), VersionHelper.replaceQualifier(v, null));
+		Map<String, String> localProps = properties.get(vn);
+		File adviceFile = adviceFiles.get(vn);
+		if (adviceFile != null)
+			info.addAdvice(new AdviceFileAdvice(feature.getId() + IPDEConstants.FEATURE_GROUP, v, Path.fromOSString(adviceFile.getParent()), Path
+					.fromOSString(adviceFile.getName())));
+
 		Map<String, ? extends Object> props = AbstractActor.getActiveContext().getProperties();
 		if (localProps != null)
 			props = new MapUnion<String, Object>(localProps, props);

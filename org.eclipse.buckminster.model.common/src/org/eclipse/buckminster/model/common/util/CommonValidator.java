@@ -6,24 +6,26 @@
  */
 package org.eclipse.buckminster.model.common.util;
 
+import java.lang.CharSequence;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import java.util.regex.Pattern;
 
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
+import org.eclipse.buckminster.model.common.ConflictResolution;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.Format;
 import org.eclipse.buckminster.model.common.Match;
-import org.eclipse.buckminster.model.common.Property;
-import org.eclipse.buckminster.model.common.PropertyConstant;
-import org.eclipse.buckminster.model.common.PropertyElement;
+import org.eclipse.buckminster.model.common.Properties;
 import org.eclipse.buckminster.model.common.PropertyRef;
 import org.eclipse.buckminster.model.common.Replace;
+import org.eclipse.buckminster.model.common.RxAssembly;
 import org.eclipse.buckminster.model.common.RxGroup;
 import org.eclipse.buckminster.model.common.RxPart;
 import org.eclipse.buckminster.model.common.RxPattern;
@@ -31,18 +33,21 @@ import org.eclipse.buckminster.model.common.Split;
 import org.eclipse.buckminster.model.common.SplitType;
 import org.eclipse.buckminster.model.common.ToLower;
 import org.eclipse.buckminster.model.common.ToUpper;
+import org.eclipse.buckminster.model.common.Value;
 import org.eclipse.buckminster.model.common.ValueFilter;
 import org.eclipse.buckminster.osgi.filter.Filter;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.DiagnosticChain;
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.util.EObjectValidator;
-
 import org.eclipse.emf.ecore.xml.type.util.XMLTypeUtil;
 import org.eclipse.emf.ecore.xml.type.util.XMLTypeValidator;
+import org.eclipse.equinox.p2.metadata.IVersionFormat;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 import org.eclipse.equinox.p2.metadata.Version;
 import org.eclipse.equinox.p2.metadata.VersionRange;
@@ -135,6 +140,7 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
 		// TODO
@@ -142,6 +148,24 @@ public class CommonValidator extends EObjectValidator {
 		// this validator.
 		// Ensure that you remove @generated or mark it @generated NOT
 		return super.getResourceLocator();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateAbstractDocumentRoot(EObject abstractDocumentRoot, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(abstractDocumentRoot, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateCharSequence(CharSequence charSequence, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
 	}
 
 	/**
@@ -167,8 +191,26 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
+	public boolean validateComponentName(ComponentName componentName, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(componentName, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public boolean validateComponentRequest(ComponentRequest componentRequest, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(componentRequest, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateConflictResolution(ConflictResolution conflictResolution, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
 	}
 
 	/**
@@ -185,8 +227,8 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
-	public boolean validateDocumentation(Documentation documentation, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(documentation, diagnostics, context);
+	public boolean validateCoreException(CoreException coreException, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
 	}
 
 	/**
@@ -194,8 +236,8 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
-	public boolean validateDocumentRoot(EObject documentRoot, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(documentRoot, diagnostics, context);
+	public boolean validateDocumentation(Documentation documentation, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(documentation, diagnostics, context);
 	}
 
 	/**
@@ -221,8 +263,62 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
+	public boolean validateIPath(IPath iPath, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateIProgressMonitor(IProgressMonitor iProgressMonitor, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint((EObject) iProgressMonitor, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateIStatus(IStatus iStatus, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint((EObject) iStatus, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateIStatusArray(IStatus[] iStatusArray, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public boolean validateIVersionedId(IVersionedId iVersionedId, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint((EObject) iVersionedId, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateIVersionFormat(IVersionFormat iVersionFormat, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateList(List<?> list, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
 	}
 
 	/**
@@ -248,8 +344,8 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
-	public boolean validateProperty(Property property, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(property, diagnostics, context);
+	public boolean validateProperties(Properties properties, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(properties, diagnostics, context);
 	}
 
 	/**
@@ -257,8 +353,8 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
-	public boolean validatePropertyConstant(PropertyConstant propertyConstant, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(propertyConstant, diagnostics, context);
+	public boolean validatePropertyConstant(Map.Entry<?, ?> propertyConstant, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint((EObject) propertyConstant, diagnostics, context);
 	}
 
 	/**
@@ -266,8 +362,8 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
-	public boolean validatePropertyElement(PropertyElement propertyElement, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		return validate_EveryDefaultConstraint(propertyElement, diagnostics, context);
+	public boolean validatePropertyElement(Map.Entry<?, ?> propertyElement, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint((EObject) propertyElement, diagnostics, context);
 	}
 
 	/**
@@ -313,6 +409,15 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
+	public boolean validateRxAssembly(RxAssembly rxAssembly, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(rxAssembly, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public boolean validateRxGroup(RxGroup rxGroup, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(rxGroup, diagnostics, context);
 	}
@@ -350,6 +455,24 @@ public class CommonValidator extends EObjectValidator {
 	 * @generated
 	 */
 	public boolean validateSplitType(SplitType splitType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateStringBuilder(StringBuilder stringBuilder, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	public boolean validateThrowable(Throwable throwable, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return true;
 	}
 
@@ -405,6 +528,15 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
+	public boolean validateValue(Value value, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return validate_EveryDefaultConstraint(value, diagnostics, context);
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	public boolean validateValueFilter(ValueFilter valueFilter, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		return validate_EveryDefaultConstraint(valueFilter, diagnostics, context);
 	}
@@ -433,6 +565,7 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EPackage getEPackage() {
 		return CommonPackage.eINSTANCE;
@@ -444,27 +577,46 @@ public class CommonValidator extends EObjectValidator {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected boolean validate(int classifierID, Object value, DiagnosticChain diagnostics, Map<Object, Object> context) {
 		switch (classifierID) {
+			case CommonPackage.ABSTRACT_DOCUMENT_ROOT:
+				return validateAbstractDocumentRoot((EObject) value, diagnostics, context);
+			case CommonPackage.COMPARABLE:
+				return validateComparable((Comparable<?>) value, diagnostics, context);
+			case CommonPackage.COMPONENT_IDENTIFIER:
+				return validateComponentIdentifier((ComponentIdentifier) value, diagnostics, context);
+			case CommonPackage.COMPONENT_NAME:
+				return validateComponentName((ComponentName) value, diagnostics, context);
+			case CommonPackage.COMPONENT_REQUEST:
+				return validateComponentRequest((ComponentRequest) value, diagnostics, context);
 			case CommonPackage.CONSTANT:
 				return validateConstant((Constant) value, diagnostics, context);
 			case CommonPackage.DOCUMENTATION:
 				return validateDocumentation((Documentation) value, diagnostics, context);
 			case CommonPackage.FORMAT:
 				return validateFormat((Format) value, diagnostics, context);
+			case CommonPackage.IPROGRESS_MONITOR:
+				return validateIProgressMonitor((IProgressMonitor) value, diagnostics, context);
+			case CommonPackage.ISTATUS:
+				return validateIStatus((IStatus) value, diagnostics, context);
+			case CommonPackage.IVERSIONED_ID:
+				return validateIVersionedId((IVersionedId) value, diagnostics, context);
 			case CommonPackage.MATCH:
 				return validateMatch((Match) value, diagnostics, context);
-			case CommonPackage.PROPERTY:
-				return validateProperty((Property) value, diagnostics, context);
+			case CommonPackage.PROPERTIES:
+				return validateProperties((Properties) value, diagnostics, context);
 			case CommonPackage.PROPERTY_CONSTANT:
-				return validatePropertyConstant((PropertyConstant) value, diagnostics, context);
+				return validatePropertyConstant((Map.Entry<?, ?>) value, diagnostics, context);
 			case CommonPackage.PROPERTY_ELEMENT:
-				return validatePropertyElement((PropertyElement) value, diagnostics, context);
+				return validatePropertyElement((Map.Entry<?, ?>) value, diagnostics, context);
 			case CommonPackage.PROPERTY_REF:
 				return validatePropertyRef((PropertyRef) value, diagnostics, context);
 			case CommonPackage.REPLACE:
 				return validateReplace((Replace) value, diagnostics, context);
+			case CommonPackage.RX_ASSEMBLY:
+				return validateRxAssembly((RxAssembly) value, diagnostics, context);
 			case CommonPackage.RX_GROUP:
 				return validateRxGroup((RxGroup) value, diagnostics, context);
 			case CommonPackage.RX_PART:
@@ -477,34 +629,44 @@ public class CommonValidator extends EObjectValidator {
 				return validateToLower((ToLower) value, diagnostics, context);
 			case CommonPackage.TO_UPPER:
 				return validateToUpper((ToUpper) value, diagnostics, context);
+			case CommonPackage.VALUE:
+				return validateValue((Value) value, diagnostics, context);
 			case CommonPackage.VALUE_FILTER:
 				return validateValueFilter((ValueFilter) value, diagnostics, context);
-			case CommonPackage.DOCUMENT_ROOT:
-				return validateDocumentRoot((EObject) value, diagnostics, context);
-			case CommonPackage.IVERSIONED_ID:
-				return validateIVersionedId((IVersionedId) value, diagnostics, context);
-			case CommonPackage.COMPONENT_REQUEST:
-				return validateComponentRequest((ComponentRequest) value, diagnostics, context);
-			case CommonPackage.COMPONENT_IDENTIFIER:
-				return validateComponentIdentifier((ComponentIdentifier) value, diagnostics, context);
-			case CommonPackage.COMPARABLE:
-				return validateComparable((Comparable<?>) value, diagnostics, context);
+			case CommonPackage.CONFLICT_RESOLUTION:
+				return validateConflictResolution((ConflictResolution) value, diagnostics, context);
 			case CommonPackage.SPLIT_TYPE:
 				return validateSplitType((SplitType) value, diagnostics, context);
-			case CommonPackage.PROPERTY_KEY:
-				return validatePropertyKey((String) value, diagnostics, context);
-			case CommonPackage.UUID:
-				return validateUuid((UUID) value, diagnostics, context);
-			case CommonPackage.PATTERN:
-				return validatePattern((Pattern) value, diagnostics, context);
+			case CommonPackage.CHAR_SEQUENCE:
+				return validateCharSequence((CharSequence) value, diagnostics, context);
+			case CommonPackage.CORE_EXCEPTION:
+				return validateCoreException((CoreException) value, diagnostics, context);
 			case CommonPackage.FILTER:
 				return validateFilter((Filter) value, diagnostics, context);
-			case CommonPackage.VERSION:
-				return validateVersion((Version) value, diagnostics, context);
-			case CommonPackage.VERSION_RANGE:
-				return validateVersionRange((VersionRange) value, diagnostics, context);
+			case CommonPackage.IPATH:
+				return validateIPath((IPath) value, diagnostics, context);
+			case CommonPackage.ISTATUS_ARRAY:
+				return validateIStatusArray((IStatus[]) value, diagnostics, context);
+			case CommonPackage.IVERSION_FORMAT:
+				return validateIVersionFormat((IVersionFormat) value, diagnostics, context);
+			case CommonPackage.LIST:
+				return validateList((List<?>) value, diagnostics, context);
+			case CommonPackage.PATTERN:
+				return validatePattern((Pattern) value, diagnostics, context);
+			case CommonPackage.PROPERTY_KEY:
+				return validatePropertyKey((String) value, diagnostics, context);
+			case CommonPackage.STRING_BUILDER:
+				return validateStringBuilder((StringBuilder) value, diagnostics, context);
+			case CommonPackage.THROWABLE:
+				return validateThrowable((Throwable) value, diagnostics, context);
 			case CommonPackage.URL:
 				return validateURL((URL) value, diagnostics, context);
+			case CommonPackage.UUID:
+				return validateUuid((UUID) value, diagnostics, context);
+			case CommonPackage.VERSION_RANGE:
+				return validateVersionRange((VersionRange) value, diagnostics, context);
+			case CommonPackage.VERSION:
+				return validateVersion((Version) value, diagnostics, context);
 			default:
 				return true;
 		}

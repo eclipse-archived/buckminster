@@ -26,6 +26,15 @@ public interface RmapFactory extends EFactory {
 	RmapFactory eINSTANCE = org.eclipse.buckminster.rmap.impl.RmapFactoryImpl.init();
 
 	/**
+	 * Returns a new object of class '<em>Branch Point</em>'. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Branch Point</em>'.
+	 * @generated
+	 */
+	BranchPoint createBranchPoint();
+
+	/**
 	 * Returns a new object of class '<em>Document Root</em>'. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
@@ -44,15 +53,6 @@ public interface RmapFactory extends EFactory {
 	Locator createLocator();
 
 	/**
-	 * Returns a new object of class '<em>Properties</em>'. <!-- begin-user-doc
-	 * --> <!-- end-user-doc -->
-	 * 
-	 * @return a new object of class '<em>Properties</em>'.
-	 * @generated
-	 */
-	Properties createProperties();
-
-	/**
 	 * Returns a new object of class '<em>Provider</em>'. <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
 	 * 
@@ -69,6 +69,15 @@ public interface RmapFactory extends EFactory {
 	 * @generated
 	 */
 	Redirect createRedirect();
+
+	/**
+	 * Returns a new object of class '<em>Repository</em>'. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @return a new object of class '<em>Repository</em>'.
+	 * @generated
+	 */
+	Repository createRepository();
 
 	/**
 	 * Returns a new object of class '<em>Resource Map</em>'. <!--

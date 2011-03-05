@@ -57,6 +57,7 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
@@ -67,22 +68,12 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	}
 
 	/**
-	 * This returns SearchPath.gif. <!-- begin-user-doc --> <!-- end-user-doc
-	 * -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Object getImage(Object object) {
-		return overlayImage(object, getResourceLocator().getImage("full/obj16/SearchPath"));
-	}
-
-	/**
 	 * This returns the property descriptors for the adapted class. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -99,6 +90,7 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
 		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
@@ -110,6 +102,7 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		String label = ((SearchPath) object).getName();
@@ -124,6 +117,7 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -147,9 +141,9 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	 */
 	protected void addNamePropertyDescriptor(Object object) {
 		itemPropertyDescriptors.add(createItemPropertyDescriptor(((ComposeableAdapterFactory) adapterFactory).getRootAdapterFactory(),
-				getResourceLocator(), getString("_UI_SearchPath_name_feature"), getString("_UI_PropertyDescriptor_description",
-						"_UI_SearchPath_name_feature", "_UI_SearchPath_type"), RmapPackage.Literals.SEARCH_PATH__NAME, true, false, false,
-				ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
+				getResourceLocator(), getString("_UI_SearchPath_name_feature"),
+				getString("_UI_PropertyDescriptor_description", "_UI_SearchPath_name_feature", "_UI_SearchPath_type"),
+				RmapPackage.Literals.SEARCH_PATH__NAME, true, false, false, ItemPropertyDescriptor.GENERIC_VALUE_IMAGE, null, null));
 	}
 
 	/**
@@ -159,6 +153,7 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
@@ -171,6 +166,7 @@ public class SearchPathItemProvider extends ItemProviderAdapter implements IEdit
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper

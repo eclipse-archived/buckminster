@@ -6,30 +6,32 @@
  */
 package org.eclipse.buckminster.model.common.util;
 
+import java.util.Map;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.ComponentIdentifier;
+import org.eclipse.buckminster.model.common.ComponentName;
 import org.eclipse.buckminster.model.common.ComponentRequest;
 import org.eclipse.buckminster.model.common.Constant;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.Format;
 import org.eclipse.buckminster.model.common.Match;
-import org.eclipse.buckminster.model.common.Property;
-import org.eclipse.buckminster.model.common.PropertyConstant;
-import org.eclipse.buckminster.model.common.PropertyElement;
+import org.eclipse.buckminster.model.common.Properties;
 import org.eclipse.buckminster.model.common.PropertyRef;
 import org.eclipse.buckminster.model.common.Replace;
+import org.eclipse.buckminster.model.common.RxAssembly;
 import org.eclipse.buckminster.model.common.RxGroup;
 import org.eclipse.buckminster.model.common.RxPart;
 import org.eclipse.buckminster.model.common.RxPattern;
 import org.eclipse.buckminster.model.common.Split;
 import org.eclipse.buckminster.model.common.ToLower;
 import org.eclipse.buckminster.model.common.ToUpper;
+import org.eclipse.buckminster.model.common.Value;
 import org.eclipse.buckminster.model.common.ValueFilter;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
 
@@ -57,6 +59,11 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 */
 	protected CommonSwitch<Adapter> modelSwitch = new CommonSwitch<Adapter>() {
 		@Override
+		public Adapter caseAbstractDocumentRoot(EObject object) {
+			return createAbstractDocumentRootAdapter();
+		}
+
+		@Override
 		public <T> Adapter caseComparable(Comparable<T> object) {
 			return createComparableAdapter();
 		}
@@ -64,6 +71,11 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 		@Override
 		public Adapter caseComponentIdentifier(ComponentIdentifier object) {
 			return createComponentIdentifierAdapter();
+		}
+
+		@Override
+		public Adapter caseComponentName(ComponentName object) {
+			return createComponentNameAdapter();
 		}
 
 		@Override
@@ -82,13 +94,18 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 		}
 
 		@Override
-		public Adapter caseDocumentRoot(EObject object) {
-			return createDocumentRootAdapter();
+		public Adapter caseFormat(Format object) {
+			return createFormatAdapter();
 		}
 
 		@Override
-		public Adapter caseFormat(Format object) {
-			return createFormatAdapter();
+		public Adapter caseIProgressMonitor(IProgressMonitor object) {
+			return createIProgressMonitorAdapter();
+		}
+
+		@Override
+		public Adapter caseIStatus(IStatus object) {
+			return createIStatusAdapter();
 		}
 
 		@Override
@@ -102,17 +119,17 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 		}
 
 		@Override
-		public Adapter caseProperty(Property object) {
-			return createPropertyAdapter();
+		public Adapter caseProperties(Properties object) {
+			return createPropertiesAdapter();
 		}
 
 		@Override
-		public Adapter casePropertyConstant(PropertyConstant object) {
+		public Adapter casePropertyConstant(Map.Entry<String, Value> object) {
 			return createPropertyConstantAdapter();
 		}
 
 		@Override
-		public Adapter casePropertyElement(PropertyElement object) {
+		public Adapter casePropertyElement(Map.Entry<String, Value> object) {
 			return createPropertyElementAdapter();
 		}
 
@@ -124,6 +141,11 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 		@Override
 		public Adapter caseReplace(Replace object) {
 			return createReplaceAdapter();
+		}
+
+		@Override
+		public Adapter caseRxAssembly(RxAssembly object) {
+			return createRxAssemblyAdapter();
 		}
 
 		@Override
@@ -157,6 +179,11 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 		}
 
 		@Override
+		public Adapter caseValue(Value object) {
+			return createValueAdapter();
+		}
+
+		@Override
 		public Adapter caseValueFilter(ValueFilter object) {
 			return createValueFilterAdapter();
 		}
@@ -180,6 +207,21 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.emf.ecore.EObject <em>Abstract Document Root</em>}'.
+	 * <!-- begin-user-doc --> This default implementation returns null so that
+	 * we can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.emf.ecore.EObject
+	 * @generated
+	 */
+	public Adapter createAbstractDocumentRootAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates an adapter for the <code>target</code>. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
@@ -188,6 +230,7 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @return the adapter for the <code>target</code>.
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createAdapter(Notifier target) {
 		return modelSwitch.doSwitch((EObject) target);
@@ -221,6 +264,22 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createComponentIdentifierAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.model.common.ComponentName
+	 * <em>Component Name</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.ComponentName
+	 * @generated
+	 */
+	public Adapter createComponentNameAdapter() {
 		return null;
 	}
 
@@ -272,21 +331,6 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.emf.ecore.EObject <em>Document Root</em>}'. <!--
-	 * begin-user-doc --> This default implementation returns null so that we
-	 * can easily ignore cases; it's useful to ignore a case when inheritance
-	 * will catch all the cases anyway. <!-- end-user-doc -->
-	 * 
-	 * @return the new adapter.
-	 * @see org.eclipse.emf.ecore.EObject
-	 * @generated
-	 */
-	public Adapter createDocumentRootAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for the default case. <!-- begin-user-doc --> This
 	 * default implementation returns null. <!-- end-user-doc -->
 	 * 
@@ -309,6 +353,37 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createFormatAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.core.runtime.IProgressMonitor
+	 * <em>IProgress Monitor</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.core.runtime.IProgressMonitor
+	 * @generated
+	 */
+	public Adapter createIProgressMonitorAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.core.runtime.IStatus <em>IStatus</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.core.runtime.IStatus
+	 * @generated
+	 */
+	public Adapter createIStatusAdapter() {
 		return null;
 	}
 
@@ -345,29 +420,29 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.model.common.Property <em>Property</em>}'.
-	 * <!-- begin-user-doc --> This default implementation returns null so that
-	 * we can easily ignore cases; it's useful to ignore a case when inheritance
-	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.model.common.Properties
+	 * <em>Properties</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.model.common.Property
+	 * @see org.eclipse.buckminster.model.common.Properties
 	 * @generated
 	 */
-	public Adapter createPropertyAdapter() {
+	public Adapter createPropertiesAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.model.common.PropertyConstant
+	 * Creates a new adapter for an object of class '{@link java.util.Map.Entry
 	 * <em>Property Constant</em>}'. <!-- begin-user-doc --> This default
 	 * implementation returns null so that we can easily ignore cases; it's
 	 * useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.model.common.PropertyConstant
+	 * @see java.util.Map.Entry
 	 * @generated
 	 */
 	public Adapter createPropertyConstantAdapter() {
@@ -375,15 +450,14 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '
-	 * {@link org.eclipse.buckminster.model.common.PropertyElement
+	 * Creates a new adapter for an object of class '{@link java.util.Map.Entry
 	 * <em>Property Element</em>}'. <!-- begin-user-doc --> This default
 	 * implementation returns null so that we can easily ignore cases; it's
 	 * useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the new adapter.
-	 * @see org.eclipse.buckminster.model.common.PropertyElement
+	 * @see java.util.Map.Entry
 	 * @generated
 	 */
 	public Adapter createPropertyElementAdapter() {
@@ -418,6 +492,22 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createReplaceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.model.common.RxAssembly
+	 * <em>Rx Assembly</em>}'. <!-- begin-user-doc --> This default
+	 * implementation returns null so that we can easily ignore cases; it's
+	 * useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.RxAssembly
+	 * @generated
+	 */
+	public Adapter createRxAssemblyAdapter() {
 		return null;
 	}
 
@@ -514,6 +604,21 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 
 	/**
 	 * Creates a new adapter for an object of class '
+	 * {@link org.eclipse.buckminster.model.common.Value <em>Value</em>}'. <!--
+	 * begin-user-doc --> This default implementation returns null so that we
+	 * can easily ignore cases; it's useful to ignore a case when inheritance
+	 * will catch all the cases anyway. <!-- end-user-doc -->
+	 * 
+	 * @return the new adapter.
+	 * @see org.eclipse.buckminster.model.common.Value
+	 * @generated
+	 */
+	public Adapter createValueAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '
 	 * {@link org.eclipse.buckminster.model.common.ValueFilter
 	 * <em>Value Filter</em>}'. <!-- begin-user-doc --> This default
 	 * implementation returns null so that we can easily ignore cases; it's
@@ -537,6 +642,7 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @return whether this factory is applicable for the type of the object.
 	 * @generated
 	 */
+
 	@Override
 	public boolean isFactoryForType(Object object) {
 		if (object == modelPackage) {

@@ -13,7 +13,8 @@ package org.eclipse.buckminster.rmap;
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.Redirect#getRedirectTo <em>Redirect
+ * To</em>}</li>
  * </ul>
  * </p>
  * 
@@ -32,23 +33,24 @@ public interface Redirect extends Matcher {
 	 * <!-- end-user-doc -->
 	 * 
 	 * @return the value of the '<em>Href</em>' attribute.
-	 * @see #setHref(String)
+	 * @see #setRedirectTo(String)
 	 * @see org.eclipse.buckminster.rmap.RmapPackage#getRedirect_Href()
 	 * @model required="true"
 	 * @generated
 	 */
-	String getHref();
+	String getRedirectTo();
 
 	/**
 	 * Sets the value of the '
-	 * {@link org.eclipse.buckminster.rmap.Redirect#getHref <em>Href</em>}'
-	 * attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * {@link org.eclipse.buckminster.rmap.Redirect#getRedirectTo
+	 * <em>Redirect To</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
 	 * 
 	 * @param value
-	 *            the new value of the '<em>Href</em>' attribute.
-	 * @see #getHref()
+	 *            the new value of the '<em>Redirect To</em>' attribute.
+	 * @see #getRedirectTo()
 	 * @generated
 	 */
-	void setHref(String value);
+	void setRedirectTo(String value);
 
 } // Redirect

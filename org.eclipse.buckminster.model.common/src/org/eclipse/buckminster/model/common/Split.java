@@ -6,6 +6,8 @@
  */
 package org.eclipse.buckminster.model.common;
 
+import java.util.regex.Pattern;
+
 /**
  * <!-- begin-user-doc --> A representation of the model object '
  * <em><b>Split</b></em>'. <!-- end-user-doc -->
@@ -19,6 +21,8 @@ package org.eclipse.buckminster.model.common;
  * </em>}</li>
  * <li>{@link org.eclipse.buckminster.model.common.Split#getStyle <em>Style
  * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.model.common.Split#getCompiledPattern <em>
+ * Compiled Pattern</em>}</li>
  * </ul>
  * </p>
  * 
@@ -27,6 +31,23 @@ package org.eclipse.buckminster.model.common;
  * @generated
  */
 public interface Split extends ValueFilter {
+	/**
+	 * Returns the value of the '<em><b>Compiled Pattern</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Compiled Pattern</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Compiled Pattern</em>' attribute.
+	 * @see org.eclipse.buckminster.model.common.CommonPackage#getSplit_CompiledPattern()
+	 * @model dataType="org.eclipse.buckminster.model.common.Pattern"
+	 *        transient="true" changeable="false" derived="true"
+	 * @generated
+	 */
+	Pattern getCompiledPattern();
+
 	/**
 	 * Returns the value of the '<em><b>Limit</b></em>' attribute. <!--
 	 * begin-user-doc -->

@@ -9,6 +9,7 @@ package org.eclipse.buckminster.model.common.provider;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.RxGroup;
 import org.eclipse.emf.common.notify.AdapterFactory;
@@ -53,11 +54,12 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
 			super.getChildrenFeatures(object);
-			childrenFeatures.add(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP);
+			childrenFeatures.add(CommonPackage.Literals.RX_GROUP__RX_PARTS);
 		}
 		return childrenFeatures;
 	}
@@ -78,6 +80,7 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -93,6 +96,7 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		String label = ((RxGroup) object).getName();
@@ -107,15 +111,13 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
 
 		switch (notification.getFeatureID(RxGroup.class)) {
-			case CommonPackage.RX_GROUP__RX_PART:
-				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
-				return;
-			case CommonPackage.RX_GROUP__RX_PARTS_GROUP:
+			case CommonPackage.RX_GROUP__RX_PARTS:
 				fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
 				return;
 		}
@@ -129,9 +131,16 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
+
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS, CommonFactory.eINSTANCE.createRxGroup()));
+
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS, CommonFactory.eINSTANCE.createRxAssembly()));
+
+		newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS, CommonFactory.eINSTANCE.createRxPattern()));
 	}
 
 	/**
@@ -139,6 +148,7 @@ public class RxGroupItemProvider extends RxPartItemProvider implements IEditingD
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper

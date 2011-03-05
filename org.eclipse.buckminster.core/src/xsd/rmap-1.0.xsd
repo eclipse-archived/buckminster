@@ -21,8 +21,8 @@
 	</complexType>
 	<complexType name="ResourceMap">
 		<sequence>
-			<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
 			<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="documentation" type="com:Documentation"/>
 				<element name="property" type="com:PropertyConstant"/>
 				<element name="propertyElement" type="com:PropertyElement"/>
 				<element name="searchPath" type="rm:SearchPath"/>
@@ -52,15 +52,15 @@
 
 	<complexType name="Provider">
 		<sequence>
-			<element maxOccurs="unbounded" minOccurs="0" name="matcher" type="rm:URIMatcher"/>
-			<element maxOccurs="1" minOccurs="1" name="uri" type="com:Format"/>
 			<choice maxOccurs="unbounded" minOccurs="0">
+				<element name="matcher" type="rm:URIMatcher"/>
+				<element name="uri" type="com:Format"/>
 				<element name="property" type="com:PropertyConstant"/>
 				<element name="propertyElement" type="com:PropertyElement"/>
+				<element name="documentation" type="com:Documentation"/>
+				<element name="digest" type="rm:Digest"/>
+				<element name="versionConverter" type="rm:VersionConverter"/>
 			</choice>
-			<element maxOccurs="1" minOccurs="0" name="documentation" type="com:Documentation"/>
-			<element maxOccurs="1" minOccurs="0" name="digest" type="rm:Digest"/>
-			<element maxOccurs="1" minOccurs="0" name="versionConverter" type="rm:VersionConverter"/>
 		</sequence>
 		<attribute name="componentTypes" type="string" use="optional">
 			<annotation>

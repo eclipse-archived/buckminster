@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import java.util.List;
+import org.eclipse.buckminster.rmap.ResourceMap;
 import org.eclipse.buckminster.rmap.RmapPackage;
 import org.eclipse.buckminster.rmap.SearchPath;
 import org.eclipse.buckminster.rmap.maven.MavenFactory;
@@ -95,12 +96,26 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 			/**
 			 * <!-- begin-user-doc --> <!-- end-user-doc -->
 			 * 
-			 * @generated
+			 * @generated NOT
 			 */
 			@Override
+			public Object caseResourceMap(ResourceMap object) {
+				// newChildDescriptors.add(createChildParameter(RmapPackage.Literals.RESOURCE_MAP__MATCHERS,
+				// MavenFactory.eINSTANCE.createMavenProvider()));
+
+				return null;
+			}
+
+			/**
+			 * <!-- begin-user-doc --> <!-- end-user-doc -->
+			 * 
+			 * @generated
+			 */
+
+			@Override
 			public Object caseSearchPath(SearchPath object) {
-				newChildDescriptors.add(createChildParameter(RmapPackage.Literals.SEARCH_PATH__PROVIDERS, MavenFactory.eINSTANCE
-						.createMavenProvider()));
+				newChildDescriptors.add(createChildParameter(RmapPackage.Literals.SEARCH_PATH__PROVIDERS,
+						MavenFactory.eINSTANCE.createMavenProvider()));
 
 				return null;
 			}
@@ -121,7 +136,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 		 * 
 		 * @generated
 		 */
-		@Override
+
 		public Collection<Object> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
 			ArrayList<Object> result = new ArrayList<Object>();
 			new CreationSwitch(result, editingDomain).doSwitch((EObject) object);
@@ -133,7 +148,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 		 * 
 		 * @generated
 		 */
-		@Override
+
 		public ResourceLocator getResourceLocator() {
 			return MavenEditPlugin.INSTANCE;
 		}
@@ -211,6 +226,24 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	protected MavenProviderItemProvider mavenProviderItemProvider;
 
 	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.rmap.maven.Scopes} instances. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ScopesItemProvider scopesItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.rmap.maven.Scope} instances. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected ScopeItemProvider scopeItemProvider;
+
+	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc
 	 * -->
 	 * 
@@ -230,6 +263,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter adapt(Notifier notifier, Object type) {
 		return super.adapt(notifier, this);
@@ -240,6 +274,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object adapt(Object object, Object type) {
 		if (isFactoryForType(type)) {
@@ -257,7 +292,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void addListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.addListener(notifyChangedListener);
 	}
@@ -269,6 +304,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createGroupAndArtifactAdapter() {
 		if (groupAndArtifactItemProvider == null) {
@@ -285,6 +321,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMapEntryAdapter() {
 		if (mapEntryItemProvider == null) {
@@ -301,6 +338,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMappingsAdapter() {
 		if (mappingsItemProvider == null) {
@@ -317,6 +355,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createMavenProviderAdapter() {
 		if (mavenProviderItemProvider == null) {
@@ -327,12 +366,44 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	}
 
 	/**
+	 * This creates an adapter for a
+	 * {@link org.eclipse.buckminster.rmap.maven.Scope}. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createScopeAdapter() {
+		if (scopeItemProvider == null) {
+			scopeItemProvider = new ScopeItemProvider(this);
+		}
+
+		return scopeItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a
+	 * {@link org.eclipse.buckminster.rmap.maven.Scopes}. <!-- begin-user-doc
+	 * --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	@Override
+	public Adapter createScopesAdapter() {
+		if (scopesItemProvider == null) {
+			scopesItemProvider = new ScopesItemProvider(this);
+		}
+
+		return scopesItemProvider;
+	}
+
+	/**
 	 * This disposes all of the item providers created by this factory. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void dispose() {
 		if (groupAndArtifactItemProvider != null)
 			groupAndArtifactItemProvider.dispose();
@@ -342,6 +413,10 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 			mappingsItemProvider.dispose();
 		if (mavenProviderItemProvider != null)
 			mavenProviderItemProvider.dispose();
+		if (scopesItemProvider != null)
+			scopesItemProvider.dispose();
+		if (scopeItemProvider != null)
+			scopeItemProvider.dispose();
 	}
 
 	/**
@@ -351,7 +426,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void fireNotifyChanged(Notification notification) {
 		changeNotifier.fireNotifyChanged(notification);
 
@@ -374,7 +449,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
 		return childCreationExtenderManager.getNewChildDescriptors(object, editingDomain);
 	}
@@ -384,7 +459,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ResourceLocator getResourceLocator() {
 		return childCreationExtenderManager;
 	}
@@ -395,7 +470,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ComposeableAdapterFactory getRootAdapterFactory() {
 		return parentAdapterFactory == null ? this : parentAdapterFactory.getRootAdapterFactory();
 	}
@@ -405,6 +480,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean isFactoryForType(Object type) {
 		return supportedTypes.contains(type) || super.isFactoryForType(type);
@@ -415,7 +491,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void removeListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.removeListener(notifyChangedListener);
 	}
@@ -426,7 +502,7 @@ public class MavenItemProviderAdapterFactory extends MavenAdapterFactory impleme
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setParentAdapterFactory(ComposedAdapterFactory parentAdapterFactory) {
 		this.parentAdapterFactory = parentAdapterFactory;
 	}

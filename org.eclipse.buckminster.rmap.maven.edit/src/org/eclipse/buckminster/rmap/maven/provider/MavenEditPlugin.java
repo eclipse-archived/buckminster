@@ -85,6 +85,7 @@ public final class MavenEditPlugin extends EMFPlugin {
 	 * @return the singleton instance.
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getPluginResourceLocator() {
 		return plugin;

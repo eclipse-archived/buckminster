@@ -61,6 +61,7 @@ public class MappingsItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
 		if (childrenFeatures == null) {
@@ -76,6 +77,7 @@ public class MappingsItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object getImage(Object object) {
 		return overlayImage(object, getResourceLocator().getImage("full/obj16/Mappings"));
@@ -87,6 +89,7 @@ public class MappingsItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public List<IItemPropertyDescriptor> getPropertyDescriptors(Object object) {
 		if (itemPropertyDescriptors == null) {
@@ -102,6 +105,7 @@ public class MappingsItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public ResourceLocator getResourceLocator() {
 		return ((IChildCreationExtender) adapterFactory).getResourceLocator();
@@ -113,6 +117,7 @@ public class MappingsItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String getText(Object object) {
 		return getString("_UI_Mappings_type");
@@ -126,6 +131,7 @@ public class MappingsItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void notifyChanged(Notification notification) {
 		updateChildren(notification);
@@ -146,6 +152,7 @@ public class MappingsItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
 		super.collectNewChildDescriptors(newChildDescriptors, object);
@@ -160,6 +167,7 @@ public class MappingsItemProvider extends ItemProviderAdapter implements IEditin
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EStructuralFeature getChildFeature(Object object, Object child) {
 		// Check the type of the specified child object and return the proper

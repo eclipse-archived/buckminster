@@ -82,6 +82,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -98,6 +99,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -114,8 +116,8 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case MavenPackage.MAP_ENTRY__NAME:
@@ -134,6 +136,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -152,7 +155,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EList<GroupAndArtifact> getAliases() {
 		if (aliases == null) {
 			aliases = new EObjectEList<GroupAndArtifact>(GroupAndArtifact.class, this, MavenPackage.MAP_ENTRY__ALIASES);
@@ -165,7 +168,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getName() {
 		return name;
 	}
@@ -175,7 +178,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -188,6 +191,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public String toString() {
 		if (eIsProxy())
@@ -205,6 +209,7 @@ public class MapEntryImpl extends GroupAndArtifactImpl implements MapEntry {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return MavenPackage.Literals.MAP_ENTRY;

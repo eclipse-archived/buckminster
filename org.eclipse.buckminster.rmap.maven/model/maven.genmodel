@@ -15,15 +15,18 @@
     <details key="directoryURI" value="."/>
   </genAnnotations>
   <foreignModel>maven.ecore</foreignModel>
-  <genPackages prefix="Maven" basePackage="org.eclipse.buckminster.rmap" resource="XML"
-      disposableProviderFactory="true" extensibleProviderFactory="true" childCreationExtenders="true"
-      ecorePackage="maven.ecore#/">
+  <genPackages prefix="Maven" basePackage="org.eclipse.buckminster.rmap" disposableProviderFactory="true"
+      extensibleProviderFactory="true" childCreationExtenders="true" ecorePackage="maven.ecore#/">
     <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
       <genAnnotations source="maven.xsd"/>
     </genAnnotations>
     <genClasses ecoreClass="maven.ecore#//GroupAndArtifact">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven.ecore#//GroupAndArtifact/artifactId"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven.ecore#//GroupAndArtifact/groupId"/>
+      <genOperations ecoreOperation="maven.ecore#//GroupAndArtifact/isMatchFor">
+        <genParameters ecoreParameter="maven.ecore#//GroupAndArtifact/isMatchFor/group"/>
+        <genParameters ecoreParameter="maven.ecore#//GroupAndArtifact/isMatchFor/artifact"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="maven.ecore#//MapEntry">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute maven.ecore#//MapEntry/name"/>
@@ -35,6 +38,13 @@
     </genClasses>
     <genClasses ecoreClass="maven.ecore#//MavenProvider">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference maven.ecore#//MavenProvider/mappings"/>
+      <genOperations ecoreOperation="maven.ecore#//MavenProvider/getComponentName">
+        <genParameters ecoreParameter="maven.ecore#//MavenProvider/getComponentName/groupId"/>
+        <genParameters ecoreParameter="maven.ecore#//MavenProvider/getComponentName/artifactId"/>
+      </genOperations>
+      <genOperations ecoreOperation="maven.ecore#//MavenProvider/getMapEntry">
+        <genParameters ecoreParameter="maven.ecore#//MavenProvider/getMapEntry/name"/>
+      </genOperations>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

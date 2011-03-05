@@ -7,11 +7,15 @@
 package org.eclipse.buckminster.model.common.impl;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
+import java.util.regex.Pattern;
+
+import org.eclipse.buckminster.model.common.CommonFactory;
 import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.Match;
 import org.eclipse.buckminster.model.common.Replace;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
@@ -41,6 +45,9 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <li>
  * {@link org.eclipse.buckminster.model.common.impl.ReplaceImpl#getReplacement
  * <em>Replacement</em>}</li>
+ * <li>
+ * {@link org.eclipse.buckminster.model.common.impl.ReplaceImpl#getCompiledPattern
+ * <em>Compiled Pattern</em>}</li>
  * </ul>
  * </p>
  * 
@@ -128,6 +135,28 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	protected String replacement = REPLACEMENT_EDEFAULT;
 
 	/**
+	 * The default value of the '{@link #getCompiledPattern()
+	 * <em>Compiled Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getCompiledPattern()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final Pattern COMPILED_PATTERN_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getCompiledPattern()
+	 * <em>Compiled Pattern</em>}' attribute. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
+	 * @see #getCompiledPattern()
+	 * @generated
+	 * @ordered
+	 */
+	protected Pattern compiledPattern = COMPILED_PATTERN_EDEFAULT;
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
@@ -136,11 +165,38 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 		super();
 	}
 
+	@Override
+	public String checkedGetValue(Map<String, String> props, int recursionGuard) {
+		String resolved = checkedGetSourceValue(props, recursionGuard);
+		if (resolved == null || NO_VALUE.equals(resolved))
+			return NO_VALUE;
+
+		List<Match> ms = getMatches();
+		if (ms.size() == 0) {
+			Match match = getSelfMatch();
+			if (match != null) {
+				String result = match.match(resolved);
+				if (result != null)
+					resolved = result;
+			}
+		} else {
+			for (Match match : ms) {
+				String result = match.match(resolved);
+				if (result != null) {
+					resolved = result;
+					break;
+				}
+			}
+		}
+		return resolved;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -152,6 +208,8 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 				return isQuotePattern();
 			case CommonPackage.REPLACE__REPLACEMENT:
 				return getReplacement();
+			case CommonPackage.REPLACE__COMPILED_PATTERN:
+				return getCompiledPattern();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -161,6 +219,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -175,6 +234,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
@@ -186,6 +246,8 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 				return isSetQuotePattern();
 			case CommonPackage.REPLACE__REPLACEMENT:
 				return REPLACEMENT_EDEFAULT == null ? replacement != null : !REPLACEMENT_EDEFAULT.equals(replacement);
+			case CommonPackage.REPLACE__COMPILED_PATTERN:
+				return COMPILED_PATTERN_EDEFAULT == null ? compiledPattern != null : !COMPILED_PATTERN_EDEFAULT.equals(compiledPattern);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -195,8 +257,9 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
+
 	@Override
+	@SuppressWarnings("unchecked")
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.REPLACE__MATCHES:
@@ -221,6 +284,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
@@ -243,9 +307,28 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
+	 * @generated NOT
+	 */
+
+	public synchronized Pattern getCompiledPattern() {
+		if (compiledPattern == null) {
+			String tmp = getPattern();
+			if (tmp == null)
+				return null;
+
+			if (isQuotePattern())
+				tmp = Pattern.quote(tmp);
+			compiledPattern = Pattern.compile(tmp);
+		}
+		return compiledPattern;
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
 	 * @generated
 	 */
-	@Override
+
 	public EList<Match> getMatches() {
 		if (matches == null) {
 			matches = new EObjectContainmentEList<Match>(Match.class, this, CommonPackage.REPLACE__MATCHES);
@@ -258,7 +341,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getPattern() {
 		return pattern;
 	}
@@ -268,7 +351,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public String getReplacement() {
 		return replacement;
 	}
@@ -278,7 +361,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public boolean isQuotePattern() {
 		return quotePattern;
 	}
@@ -288,9 +371,14 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public boolean isSetQuotePattern() {
 		return quotePatternESet;
+	}
+
+	public synchronized void setPattern(String newPattern) {
+		setPatternGen(newPattern);
+		compiledPattern = null;
 	}
 
 	/**
@@ -298,21 +386,24 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
-	@Override
-	public void setPattern(String newPattern) {
+	public void setPatternGen(String newPattern) {
 		String oldPattern = pattern;
 		pattern = newPattern;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.REPLACE__PATTERN, oldPattern, pattern));
 	}
 
+	public synchronized void setQuotePattern(boolean newQuotePattern) {
+		setQuotePatternGen(newQuotePattern);
+		compiledPattern = null;
+	}
+
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	@Override
-	public void setQuotePattern(boolean newQuotePattern) {
+	public void setQuotePatternGen(boolean newQuotePattern) {
 		boolean oldQuotePattern = quotePattern;
 		quotePattern = newQuotePattern;
 		boolean oldQuotePatternESet = quotePatternESet;
@@ -327,7 +418,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setReplacement(String newReplacement) {
 		String oldReplacement = replacement;
 		replacement = newReplacement;
@@ -335,13 +426,17 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.REPLACE__REPLACEMENT, oldReplacement, replacement));
 	}
 
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
 	@Override
-	public void toString(StringBuilder result) {
-		if (eIsProxy()) {
-			result.append(super.toString());
-			return;
-		}
+	public String toString() {
+		if (eIsProxy())
+			return super.toString();
 
+		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (pattern: ");
 		result.append(pattern);
 		result.append(", quotePattern: ");
@@ -351,16 +446,10 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 			result.append("<unset>");
 		result.append(", replacement: ");
 		result.append(replacement);
+		result.append(", compiledPattern: ");
+		result.append(compiledPattern);
 		result.append(')');
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public String toStringGen() {
-		return null;
+		return result.toString();
 	}
 
 	/**
@@ -368,7 +457,7 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void unsetQuotePattern() {
 		boolean oldQuotePattern = quotePattern;
 		boolean oldQuotePatternESet = quotePatternESet;
@@ -384,9 +473,18 @@ public class ReplaceImpl extends ValueFilterImpl implements Replace {
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	protected EClass eStaticClass() {
 		return CommonPackage.Literals.REPLACE;
+	}
+
+	private Match getSelfMatch() {
+		Match match = CommonFactory.eINSTANCE.createMatch();
+		match.setPattern(getPattern());
+		match.setQuotePattern(isQuotePattern());
+		match.setReplacement(getReplacement());
+		return match;
 	}
 
 } // ReplaceImpl

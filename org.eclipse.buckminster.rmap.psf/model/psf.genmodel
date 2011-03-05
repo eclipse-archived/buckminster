@@ -17,9 +17,9 @@
     <details key="directoryURI" value="."/>
   </genAnnotations>
   <foreignModel>psf.ecore</foreignModel>
-  <genPackages prefix="Psf" basePackage="org.eclipse.buckminster.rmap" resource="XML"
-      disposableProviderFactory="true" extensibleProviderFactory="true" childCreationExtenders="true"
-      fileExtensions="" ecorePackage="psf.ecore#/">
+  <genPackages prefix="Psf" basePackage="org.eclipse.buckminster.rmap" disposableProviderFactory="true"
+      extensibleProviderFactory="true" childCreationExtenders="true" fileExtensions=""
+      ecorePackage="psf.ecore#/">
     <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
       <genAnnotations source="psf.xsd"/>
     </genAnnotations>

@@ -15,6 +15,7 @@ import org.eclipse.buckminster.model.common.CommonPackage;
 import org.eclipse.buckminster.model.common.Documentation;
 import org.eclipse.buckminster.model.common.RxGroup;
 import org.eclipse.buckminster.model.common.util.CommonSwitch;
+import org.eclipse.buckminster.rmap.RmapFactory;
 import org.eclipse.buckminster.rmap.RmapPackage;
 import org.eclipse.buckminster.rmap.util.RmapAdapterFactory;
 import org.eclipse.emf.common.notify.Adapter;
@@ -98,36 +99,9 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 			 * @generated
 			 */
 			@Override
-			public Object caseDocumentation(Documentation object) {
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__MATCH, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__GROUP, CommonFactory.eINSTANCE.createRxGroup())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__NAME, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__VERSION, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__REVISION, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__OS, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__WS, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__ARCH, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__NL, CommonFactory.eINSTANCE.createRxPattern())));
+			public Object caseAbstractDocumentRoot(EObject object) {
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_GROUP,
+						RmapFactory.eINSTANCE.createURIMatcher()));
 
 				return null;
 			}
@@ -137,37 +111,72 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 			 * 
 			 * @generated
 			 */
+
+			@Override
+			public Object caseDocumentation(Documentation object) {
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__MATCH, CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__GROUP, CommonFactory.eINSTANCE.createRxGroup())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__GROUP, CommonFactory.eINSTANCE.createRxAssembly())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__GROUP, RmapFactory.eINSTANCE.createURIMatcher())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NAME, CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__VERSION, CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__REVISION, CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP, CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__OS, CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__WS, CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__ARCH, CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__NL, CommonFactory.eINSTANCE.createRxPattern())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__LOCATORS, RmapFactory.eINSTANCE.createLocator())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__REDIRECTS, RmapFactory.eINSTANCE.createRedirect())));
+
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.DOCUMENTATION__MIXED,
+						FeatureMapUtil.createEntry(RmapPackage.Literals.DOCUMENT_ROOT__PROVIDERS, RmapFactory.eINSTANCE.createProvider())));
+
+				newChildDescriptors
+						.add(createChildParameter(
+								CommonPackage.Literals.DOCUMENTATION__MIXED,
+								FeatureMapUtil.createEntry(CommonPackage.Literals.ABSTRACT_DOCUMENT_ROOT__RX_GROUP,
+										RmapFactory.eINSTANCE.createURIMatcher())));
+
+				return null;
+			}
+
+			/**
+			 * <!-- begin-user-doc --> <!-- end-user-doc -->
+			 * 
+			 * @generated
+			 */
+
 			@Override
 			public Object caseRxGroup(RxGroup object) {
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__MATCH, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__GROUP, CommonFactory.eINSTANCE.createRxGroup())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__NAME, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__VERSION, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__REVISION, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__TIMESTAMP, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__OS, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__WS, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__ARCH, CommonFactory.eINSTANCE.createRxPattern())));
-
-				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS_GROUP, FeatureMapUtil.createEntry(
-						RmapPackage.Literals.DOCUMENT_ROOT__NL, CommonFactory.eINSTANCE.createRxPattern())));
+				newChildDescriptors.add(createChildParameter(CommonPackage.Literals.RX_GROUP__RX_PARTS, RmapFactory.eINSTANCE.createURIMatcher()));
 
 				return null;
 			}
@@ -188,7 +197,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 		 * 
 		 * @generated
 		 */
-		@Override
+
 		public Collection<Object> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
 			ArrayList<Object> result = new ArrayList<Object>();
 			new CreationSwitch(result, editingDomain).doSwitch((EObject) object);
@@ -200,7 +209,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 		 * 
 		 * @generated
 		 */
-		@Override
+
 		public ResourceLocator getResourceLocator() {
 			return RmapEditPlugin.INSTANCE;
 		}
@@ -324,12 +333,21 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 
 	/**
 	 * This keeps track of the one adapter used for all
-	 * {@link org.eclipse.buckminster.rmap.Properties} instances. <!--
+	 * {@link org.eclipse.buckminster.rmap.Repository} instances. <!--
 	 * begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
-	protected PropertiesItemProvider propertiesItemProvider;
+	protected RepositoryItemProvider repositoryItemProvider;
+
+	/**
+	 * This keeps track of the one adapter used for all
+	 * {@link org.eclipse.buckminster.rmap.BranchPoint} instances. <!--
+	 * begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+	protected BranchPointItemProvider branchPointItemProvider;
 
 	/**
 	 * This constructs an instance. <!-- begin-user-doc --> <!-- end-user-doc
@@ -351,6 +369,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter adapt(Notifier notifier, Object type) {
 		return super.adapt(notifier, this);
@@ -361,6 +380,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Object adapt(Object object, Object type) {
 		if (isFactoryForType(type)) {
@@ -378,9 +398,26 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void addListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.addListener(notifyChangedListener);
+	}
+
+	/**
+	 * This creates an adapter for a
+	 * {@link org.eclipse.buckminster.rmap.BranchPoint}. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	@Override
+	public Adapter createBranchPointAdapter() {
+		if (branchPointItemProvider == null) {
+			branchPointItemProvider = new BranchPointItemProvider(this);
+		}
+
+		return branchPointItemProvider;
 	}
 
 	/**
@@ -389,6 +426,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createDocumentRootAdapter() {
 		if (documentRootItemProvider == null) {
@@ -405,6 +443,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createLocatorAdapter() {
 		if (locatorItemProvider == null) {
@@ -416,27 +455,12 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 
 	/**
 	 * This creates an adapter for a
-	 * {@link org.eclipse.buckminster.rmap.Properties}. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @generated
-	 */
-	@Override
-	public Adapter createPropertiesAdapter() {
-		if (propertiesItemProvider == null) {
-			propertiesItemProvider = new PropertiesItemProvider(this);
-		}
-
-		return propertiesItemProvider;
-	}
-
-	/**
-	 * This creates an adapter for a
 	 * {@link org.eclipse.buckminster.rmap.Provider}. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createProviderAdapter() {
 		if (providerItemProvider == null) {
@@ -453,6 +477,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createRedirectAdapter() {
 		if (redirectItemProvider == null) {
@@ -464,11 +489,29 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 
 	/**
 	 * This creates an adapter for a
+	 * {@link org.eclipse.buckminster.rmap.Repository}. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @generated
+	 */
+
+	@Override
+	public Adapter createRepositoryAdapter() {
+		if (repositoryItemProvider == null) {
+			repositoryItemProvider = new RepositoryItemProvider(this);
+		}
+
+		return repositoryItemProvider;
+	}
+
+	/**
+	 * This creates an adapter for a
 	 * {@link org.eclipse.buckminster.rmap.ResourceMap}. <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createResourceMapAdapter() {
 		if (resourceMapItemProvider == null) {
@@ -485,6 +528,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createSearchPathAdapter() {
 		if (searchPathItemProvider == null) {
@@ -501,6 +545,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createTransformAdapter() {
 		if (transformItemProvider == null) {
@@ -517,6 +562,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createURIMatcherAdapter() {
 		if (uriMatcherItemProvider == null) {
@@ -533,6 +579,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public Adapter createVersionConverterAdapter() {
 		if (versionConverterItemProvider == null) {
@@ -548,28 +595,30 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void dispose() {
-		if (redirectItemProvider != null)
-			redirectItemProvider.dispose();
-		if (locatorItemProvider != null)
-			locatorItemProvider.dispose();
-		if (searchPathItemProvider != null)
-			searchPathItemProvider.dispose();
-		if (resourceMapItemProvider != null)
-			resourceMapItemProvider.dispose();
-		if (providerItemProvider != null)
-			providerItemProvider.dispose();
-		if (transformItemProvider != null)
-			transformItemProvider.dispose();
-		if (versionConverterItemProvider != null)
-			versionConverterItemProvider.dispose();
+		if (branchPointItemProvider != null)
+			branchPointItemProvider.dispose();
 		if (documentRootItemProvider != null)
 			documentRootItemProvider.dispose();
+		if (locatorItemProvider != null)
+			locatorItemProvider.dispose();
+		if (providerItemProvider != null)
+			providerItemProvider.dispose();
+		if (redirectItemProvider != null)
+			redirectItemProvider.dispose();
+		if (repositoryItemProvider != null)
+			repositoryItemProvider.dispose();
+		if (resourceMapItemProvider != null)
+			resourceMapItemProvider.dispose();
+		if (searchPathItemProvider != null)
+			searchPathItemProvider.dispose();
+		if (transformItemProvider != null)
+			transformItemProvider.dispose();
 		if (uriMatcherItemProvider != null)
 			uriMatcherItemProvider.dispose();
-		if (propertiesItemProvider != null)
-			propertiesItemProvider.dispose();
+		if (versionConverterItemProvider != null)
+			versionConverterItemProvider.dispose();
 	}
 
 	/**
@@ -579,7 +628,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void fireNotifyChanged(Notification notification) {
 		changeNotifier.fireNotifyChanged(notification);
 
@@ -602,7 +651,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public Collection<?> getNewChildDescriptors(Object object, EditingDomain editingDomain) {
 		return childCreationExtenderManager.getNewChildDescriptors(object, editingDomain);
 	}
@@ -612,7 +661,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ResourceLocator getResourceLocator() {
 		return childCreationExtenderManager;
 	}
@@ -623,7 +672,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public ComposeableAdapterFactory getRootAdapterFactory() {
 		return parentAdapterFactory == null ? this : parentAdapterFactory.getRootAdapterFactory();
 	}
@@ -633,6 +682,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
+
 	@Override
 	public boolean isFactoryForType(Object type) {
 		return supportedTypes.contains(type) || super.isFactoryForType(type);
@@ -643,7 +693,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void removeListener(INotifyChangedListener notifyChangedListener) {
 		changeNotifier.removeListener(notifyChangedListener);
 	}
@@ -654,7 +704,7 @@ public class RmapItemProviderAdapterFactory extends RmapAdapterFactory implement
 	 * 
 	 * @generated
 	 */
-	@Override
+
 	public void setParentAdapterFactory(ComposedAdapterFactory parentAdapterFactory) {
 		this.parentAdapterFactory = parentAdapterFactory;
 	}

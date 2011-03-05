@@ -7,25 +7,35 @@
  *****************************************************************************/
 package org.eclipse.buckminster.pde.cspecgen.feature;
 
-import java.net.URI;
-
+import org.eclipse.buckminster.core.cspec.builder.ActionBuilder;
 import org.eclipse.buckminster.core.cspec.builder.ArtifactBuilder;
 import org.eclipse.buckminster.core.cspec.builder.CSpecBuilder;
 import org.eclipse.buckminster.core.reader.ICatalogReader;
 import org.eclipse.buckminster.runtime.MonitorUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
 
 @SuppressWarnings("restriction")
 public class CSpecFromBinary extends CSpecFromFeature {
-	private final URI location;
+	private final Path location;
 
-	protected CSpecFromBinary(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature, URI uri) {
+	/**
+	 * @param cspecBuilder
+	 * @param reader
+	 * @param feature
+	 * @deprecated use
+	 *             {@link #CSpecFromBinary(CSpecBuilder, ICatalogReader, IFeature, Path)}
+	 */
+	@Deprecated
+	protected CSpecFromBinary(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature) {
+		this(cspecBuilder, reader, feature, null);
+	}
+
+	protected CSpecFromBinary(CSpecBuilder cspecBuilder, ICatalogReader reader, IFeature feature, Path location) {
 		super(cspecBuilder, reader, feature);
-		location = uri;
+		this.location = location;
 	}
 
 	@Override
@@ -35,10 +45,23 @@ public class CSpecFromBinary extends CSpecFromFeature {
 
 	@Override
 	void createFeatureJarAction(IProgressMonitor monitor) throws CoreException {
-		IPath parentDir = new Path(".."); //$NON-NLS-1$
-		ArtifactBuilder featureExport = getCSpec().addArtifact(ATTRIBUTE_FEATURE_JAR, true, null);
-		featureExport.addPath(new Path(new Path(location.getPath()).lastSegment()));
-		featureExport.setBase(parentDir);
+		if (location != null && location.toFile().isFile()) {
+			// Feature jar file is available, we just reuse it.
+			//
+			ArtifactBuilder featureExport = getCSpec().addArtifact(ATTRIBUTE_FEATURE_JAR, true, new Path("..")); //$NON-NLS-1$
+			featureExport.addPath(new Path(location.lastSegment()));
+		} else {
+			// Only an unpacked feature directory seems to be available, we have
+			// to re-pack it.
+			//
+			ActionBuilder featureExport = addAntAction(ATTRIBUTE_FEATURE_JAR, TASK_RECREATE_JAR, true);
+			featureExport.addProductPath(new Path(buildArtifactName(feature.getId(), feature.getVersion(), true)));
+			featureExport.getPrerequisitesBuilder().addSelfRequirement();
+			featureExport.setPrerequisitesAlias(ALIAS_REQUIREMENTS);
+
+			featureExport.setProductBase(OUTPUT_DIR);
+			featureExport.setProductAlias(ALIAS_OUTPUT);
+		}
 		MonitorUtils.complete(monitor);
 	}
 

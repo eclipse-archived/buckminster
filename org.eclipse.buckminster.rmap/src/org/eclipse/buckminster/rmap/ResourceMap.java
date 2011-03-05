@@ -6,8 +6,13 @@
  */
 package org.eclipse.buckminster.rmap;
 
+import java.net.URL;
+
 import org.eclipse.buckminster.model.common.Documentation;
+
+import org.eclipse.buckminster.model.common.Properties;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.FeatureMap;
 
 /**
  * <!-- begin-user-doc --> A representation of the model object '
@@ -16,22 +21,33 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getLocators <em>Locators
- * </em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getRedirects <em>
- * Redirects</em>}</li>
- * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getSearchPaths <em>Search
- * Paths</em>}</li>
  * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getDocumentation <em>
  * Documentation</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getMatcherGroup <em>
+ * Matcher Group</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getRepositories <em>
+ * Repositories</em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getMatchers <em>Matchers
+ * </em>}</li>
+ * <li>{@link org.eclipse.buckminster.rmap.ResourceMap#getSearchPaths <em>Search
+ * Paths</em>}</li>
  * </ul>
  * </p>
  * 
  * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap()
- * @model extendedMetaData="name='ResourceMap'"
+ * @model extendedMetaData="name='rmap'"
  * @generated
  */
 public interface ResourceMap extends Properties {
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * 
+	 * @model kind="operation"
+	 *        dataType="org.eclipse.buckminster.model.common.URL"
+	 * @generated
+	 */
+	URL getContextURL();
+
 	/**
 	 * Returns the value of the '<em><b>Documentation</b></em>' containment
 	 * reference. <!-- begin-user-doc -->
@@ -51,40 +67,57 @@ public interface ResourceMap extends Properties {
 	Documentation getDocumentation();
 
 	/**
-	 * Returns the value of the '<em><b>Locators</b></em>' containment reference
-	 * list. The list contents are of type
-	 * {@link org.eclipse.buckminster.rmap.Locator}. <!-- begin-user-doc -->
+	 * Returns the value of the '<em><b>Matcher Group</b></em>' attribute list.
+	 * The list contents are of type
+	 * {@link org.eclipse.emf.ecore.util.FeatureMap.Entry}. <!-- begin-user-doc
+	 * -->
 	 * <p>
-	 * If the meaning of the '<em>Locators</em>' containment reference list
-	 * isn't clear, there really should be more of a description here...
+	 * If the meaning of the '<em>Matcher Group</em>' attribute list isn't
+	 * clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Locators</em>' containment reference list.
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_Locators()
-	 * @model containment="true" extendedMetaData=
-	 *        "name='locator' namespace='##targetNamespace' kind='element'"
+	 * @return the value of the '<em>Matcher Group</em>' attribute list.
+	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_MatcherGroup()
+	 * @model dataType="org.eclipse.emf.ecore.EFeatureMapEntry" many="true"
+	 *        extendedMetaData=
+	 *        "kind='group' name='matcher:group' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	EList<Locator> getLocators();
+	FeatureMap getMatcherGroup();
 
 	/**
-	 * Returns the value of the '<em><b>Redirects</b></em>' containment
+	 * Returns the value of the '<em><b>Matchers</b></em>' containment reference
+	 * list. The list contents are of type
+	 * {@link org.eclipse.buckminster.rmap.Matcher}. <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * 
+	 * @return the value of the '<em>Matchers</em>' containment reference list.
+	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_Matchers()
+	 * @model containment="true" transient="true" volatile="true" derived="true"
+	 *        extendedMetaData=
+	 *        "kind='element' name='matcher' namespace='##targetNamespace' group='matcher:group'"
+	 * @generated
+	 */
+	EList<Matcher> getMatchers();
+
+	/**
+	 * Returns the value of the '<em><b>Repositories</b></em>' containment
 	 * reference list. The list contents are of type
-	 * {@link org.eclipse.buckminster.rmap.Redirect}. <!-- begin-user-doc -->
+	 * {@link org.eclipse.buckminster.rmap.Repository}. <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Redirects</em>' containment reference list
+	 * If the meaning of the '<em>Repositories</em>' containment reference list
 	 * isn't clear, there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * 
-	 * @return the value of the '<em>Redirects</em>' containment reference list.
-	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_Redirects()
-	 * @model containment="true" extendedMetaData=
-	 *        "name='redirect' namespace='##targetNamespace' kind='element'"
+	 * @return the value of the '<em>Repositories</em>' containment reference
+	 *         list.
+	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_Repositories()
+	 * @model containment="true"
 	 * @generated
 	 */
-	EList<Redirect> getRedirects();
+	EList<Repository> getRepositories();
 
 	/**
 	 * Returns the value of the '<em><b>Search Paths</b></em>' containment
@@ -99,7 +132,7 @@ public interface ResourceMap extends Properties {
 	 * @return the value of the '<em>Search Paths</em>' containment reference
 	 *         list.
 	 * @see org.eclipse.buckminster.rmap.RmapPackage#getResourceMap_SearchPaths()
-	 * @model containment="true" extendedMetaData=
+	 * @model containment="true" keys="name" extendedMetaData=
 	 *        "name='searchPath' namespace='##targetNamespace' kind='element'"
 	 * @generated
 	 */

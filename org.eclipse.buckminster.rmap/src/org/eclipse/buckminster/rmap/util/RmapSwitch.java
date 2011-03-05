@@ -8,6 +8,10 @@ package org.eclipse.buckminster.rmap.util;
 
 import java.util.List;
 
+import org.eclipse.buckminster.model.common.Properties;
+import org.eclipse.buckminster.model.common.RxAssembly;
+import org.eclipse.buckminster.model.common.RxGroup;
+import org.eclipse.buckminster.model.common.RxPart;
 import org.eclipse.buckminster.rmap.*;
 
 import org.eclipse.emf.ecore.EClass;
@@ -42,6 +46,40 @@ public class RmapSwitch<T> {
 		if (modelPackage == null) {
 			modelPackage = RmapPackage.eINSTANCE;
 		}
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Abstract Document Root</em>'. <!-- begin-user-doc --> This
+	 * implementation returns null; returning a non-null result will terminate
+	 * the switch. <!-- end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Abstract Document Root</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseAbstractDocumentRoot(EObject object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Branch Point</em>'. <!-- begin-user-doc --> This implementation
+	 * returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Branch Point</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBranchPoint(BranchPoint object) {
+		return null;
 	}
 
 	/**
@@ -148,6 +186,23 @@ public class RmapSwitch<T> {
 
 	/**
 	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Repository</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Repository</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRepository(Repository object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
 	 * <em>Resource Map</em>'. <!-- begin-user-doc --> This implementation
 	 * returns null; returning a non-null result will terminate the switch. <!--
 	 * end-user-doc -->
@@ -160,6 +215,57 @@ public class RmapSwitch<T> {
 	 * @generated
 	 */
 	public T caseResourceMap(ResourceMap object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Rx Assembly</em>'. <!-- begin-user-doc --> This implementation
+	 * returns null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Rx Assembly</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRxAssembly(RxAssembly object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Rx Group</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Rx Group</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRxGroup(RxGroup object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '
+	 * <em>Rx Part</em>'. <!-- begin-user-doc --> This implementation returns
+	 * null; returning a non-null result will terminate the switch. <!--
+	 * end-user-doc -->
+	 * 
+	 * @param object
+	 *            the target of the switch.
+	 * @return the result of interpreting the object as an instance of '
+	 *         <em>Rx Part</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseRxPart(RxPart object) {
 		return null;
 	}
 
@@ -290,18 +396,18 @@ public class RmapSwitch<T> {
 	 */
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case RmapPackage.MATCHER: {
-				Matcher matcher = (Matcher) theEObject;
-				T result = caseMatcher(matcher);
+			case RmapPackage.BRANCH_POINT: {
+				BranchPoint branchPoint = (BranchPoint) theEObject;
+				T result = caseBranchPoint(branchPoint);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
-			case RmapPackage.REDIRECT: {
-				Redirect redirect = (Redirect) theEObject;
-				T result = caseRedirect(redirect);
+			case RmapPackage.DOCUMENT_ROOT: {
+				EObject documentRoot = theEObject;
+				T result = caseDocumentRoot(documentRoot);
 				if (result == null)
-					result = caseMatcher(redirect);
+					result = caseAbstractDocumentRoot(documentRoot);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
@@ -315,9 +421,36 @@ public class RmapSwitch<T> {
 					result = defaultCase(theEObject);
 				return result;
 			}
-			case RmapPackage.SEARCH_PATH: {
-				SearchPath searchPath = (SearchPath) theEObject;
-				T result = caseSearchPath(searchPath);
+			case RmapPackage.MATCHER: {
+				Matcher matcher = (Matcher) theEObject;
+				T result = caseMatcher(matcher);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case RmapPackage.PROVIDER: {
+				Provider provider = (Provider) theEObject;
+				T result = caseProvider(provider);
+				if (result == null)
+					result = caseProperties(provider);
+				if (result == null)
+					result = caseMatcher(provider);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case RmapPackage.REDIRECT: {
+				Redirect redirect = (Redirect) theEObject;
+				T result = caseRedirect(redirect);
+				if (result == null)
+					result = caseMatcher(redirect);
+				if (result == null)
+					result = defaultCase(theEObject);
+				return result;
+			}
+			case RmapPackage.REPOSITORY: {
+				Repository repository = (Repository) theEObject;
+				T result = caseRepository(repository);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
@@ -331,11 +464,9 @@ public class RmapSwitch<T> {
 					result = defaultCase(theEObject);
 				return result;
 			}
-			case RmapPackage.PROVIDER: {
-				Provider provider = (Provider) theEObject;
-				T result = caseProvider(provider);
-				if (result == null)
-					result = caseProperties(provider);
+			case RmapPackage.SEARCH_PATH: {
+				SearchPath searchPath = (SearchPath) theEObject;
+				T result = caseSearchPath(searchPath);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
@@ -347,30 +478,22 @@ public class RmapSwitch<T> {
 					result = defaultCase(theEObject);
 				return result;
 			}
-			case RmapPackage.VERSION_CONVERTER: {
-				VersionConverter versionConverter = (VersionConverter) theEObject;
-				T result = caseVersionConverter(versionConverter);
-				if (result == null)
-					result = defaultCase(theEObject);
-				return result;
-			}
-			case RmapPackage.DOCUMENT_ROOT: {
-				EObject documentRoot = theEObject;
-				T result = caseDocumentRoot(documentRoot);
-				if (result == null)
-					result = defaultCase(theEObject);
-				return result;
-			}
 			case RmapPackage.URI_MATCHER: {
 				URIMatcher uriMatcher = (URIMatcher) theEObject;
 				T result = caseURIMatcher(uriMatcher);
 				if (result == null)
+					result = caseRxAssembly(uriMatcher);
+				if (result == null)
+					result = caseRxGroup(uriMatcher);
+				if (result == null)
+					result = caseRxPart(uriMatcher);
+				if (result == null)
 					result = defaultCase(theEObject);
 				return result;
 			}
-			case RmapPackage.PROPERTIES: {
-				Properties properties = (Properties) theEObject;
-				T result = caseProperties(properties);
+			case RmapPackage.VERSION_CONVERTER: {
+				VersionConverter versionConverter = (VersionConverter) theEObject;
+				T result = caseVersionConverter(versionConverter);
 				if (result == null)
 					result = defaultCase(theEObject);
 				return result;

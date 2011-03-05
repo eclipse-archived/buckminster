@@ -32,6 +32,7 @@ import org.eclipse.buckminster.core.metadata.model.WorkspaceBinding;
 import org.eclipse.buckminster.core.mspec.model.MaterializationSpec;
 import org.eclipse.buckminster.core.reader.CatalogReaderType;
 import org.eclipse.buckminster.core.reader.IReaderType;
+import org.eclipse.buckminster.core.reader.LocalReaderType;
 import org.eclipse.buckminster.core.reader.P2ReaderType;
 import org.eclipse.buckminster.core.resolver.LocalResolver;
 import org.eclipse.buckminster.runtime.Buckminster;
@@ -401,6 +402,11 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 		IProjectDescription description;
 		try {
 			description = workspace.loadProjectDescription(locationPath.append(".project")); //$NON-NLS-1$
+
+			// If we find the name in an existing description, then that name is
+			// of course prioritized.
+			//
+			suggestedProjectName = description.getName();
 		} catch (CoreException e) {
 			description = null;
 		}
@@ -434,6 +440,9 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 			}
 
 			IProject project = wsRoot.getProject(suggestedProjectName);
+			if (project.isOpen())
+				return;
+
 			if (!project.exists()) {
 				IProject describedProject = wsRoot.getProject(description.getName());
 				if (describedProject.exists()) {
@@ -463,6 +472,28 @@ public class WorkspaceMaterializer extends FileSystemMaterializer {
 			project.open(0, MonitorUtils.subMonitor(monitor, 20));
 			Resolution cr = wb.getResolution(StorageManager.getDefault());
 			IReaderType readerType = getMaterializationReaderType(cr);
+			if (readerType instanceof LocalReaderType) {
+				// This might not be the one that we want to use when sharing
+				// the project. Look for known SCM metadata. This should of
+				// course be done in a nicer way using extension points.
+				//
+				if (project.getFolder(".git").exists()) { //$NON-NLS-1$
+					try {
+						readerType = CorePlugin.getDefault().getReaderType("git"); //$NON-NLS-1$
+					} catch (CoreException e) {
+					}
+				} else if (project.getFolder(".svn").exists()) { //$NON-NLS-1$
+					try {
+						readerType = CorePlugin.getDefault().getReaderType("svn"); //$NON-NLS-1$
+					} catch (CoreException e) {
+					}
+				} else if (project.getFolder("CVS").exists()) { //$NON-NLS-1$
+					try {
+						readerType = CorePlugin.getDefault().getReaderType("cvs"); //$NON-NLS-1$
+					} catch (CoreException e) {
+					}
+				}
+			}
 			readerType.shareProject(project, cr, context, MonitorUtils.subMonitor(monitor, 50));
 			WorkspaceInfo.setComponentIdentifier(project, cr.getCSpec().getComponentIdentifier());
 			MonitorUtils.worked(monitor, 30);

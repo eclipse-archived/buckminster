@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cq:componentQuery xmlns:cq="http://www.eclipse.org/buckminster/CQuery-1.0" resourceMap="test.rmap">
-    <cq:rootRequest name="org.eclipse.egit.core"/>
+    <cq:rootRequest name="git.test" versionDesignator="[1.0.0,1.0.0]"/>
 </cq:componentQuery>
