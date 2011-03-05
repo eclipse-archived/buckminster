@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.buckminster.product"
       label="Buckminster Product"
-      version="1.2.0.qualifier"
+      version="1.2.1.qualifier"
       provider-name="Eclipse Buckminster Project">
 
    <description url="http://www.eclipse.org/buckminster">
@@ -20,6 +20,13 @@ such license is available at www.eclipse.org.
    <includes
          id="org.eclipse.equinox.p2.director.feature"
          version="0.0.0"/>
+
+   <requires>
+      <import plugin="org.eclipse.core.contenttype"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.equinox.p2.director.app"/>
+      <import plugin="org.eclipse.equinox.p2.updatesite"/>
+   </requires>
 
    <plugin
          id="org.eclipse.buckminster.cmdline"
@@ -43,28 +50,21 @@ such license is available at www.eclipse.org.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.equinox.simpleconfigurator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.ds"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.core.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.core.contenttype"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.director.app"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.equinox.p2.updatesite"
          download-size="0"
          install-size="0"
          version="0.0.0"

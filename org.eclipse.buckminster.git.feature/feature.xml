@@ -17,11 +17,6 @@
       %license
    </license>
 
-   <requires>
-      <import plugin="org.eclipse.jgit"/>
-      <import plugin="org.eclipse.egit.core"/>
-   </requires>
-
    <plugin
          id="org.eclipse.buckminster.git"
          download-size="0"

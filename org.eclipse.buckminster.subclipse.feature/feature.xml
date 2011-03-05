@@ -17,16 +17,6 @@
       %license
    </license>
 
-   <requires>
-      <import plugin="org.eclipse.buckminster.core"/>
-      <import plugin="org.eclipse.buckminster.sax"/>
-      <import plugin="org.eclipse.buckminster.runtime"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.tigris.subversion.subclipse.core"/>
-   </requires>
-
    <plugin
          id="org.eclipse.buckminster.subclipse"
          download-size="0"
