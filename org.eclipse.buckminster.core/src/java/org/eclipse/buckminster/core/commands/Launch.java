@@ -26,8 +26,8 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -100,21 +100,7 @@ public class Launch extends WorkspaceCommand {
 
 	private ILaunch launch;
 
-	public synchronized ILaunch getLaunch(IProgressMonitor monitor) throws UsageException, CoreException {
-		if (launch != null)
-			return launch;
-
-		if (launchName == null)
-			throw new UsageException(Messages.Launch_No_launch_config);
-
-		IResource launchFile = ResourcesPlugin.getWorkspace().getRoot().findMember(launchName);
-		if (launchFile == null || launchFile.getType() != IResource.FILE || !launchFile.exists())
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.Launch_Cannot_open_launch_config, launchName));
-
-		ILaunchConfiguration launchConfiguration = DebugPlugin.getDefault().getLaunchManager().getLaunchConfiguration((IFile) launchFile);
-		launch = launchConfiguration.launch(getLaunchMode(), monitor);
-		return launch;
-	}
+	private boolean background = false;
 
 	public String getLaunchName() {
 		return launchName;
@@ -168,6 +154,10 @@ public class Launch extends WorkspaceCommand {
 		return content.toString();
 	}
 
+	public void setBackground(boolean flag) {
+		background = flag;
+	}
+
 	/**
 	 * Returns the launch mode that is used for launching. Defaults to
 	 * {@link ILaunchManager#RUN_MODE}. Subclasses may override this to launch
@@ -203,7 +193,15 @@ public class Launch extends WorkspaceCommand {
 
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception {
-		launch = getLaunch(monitor);
+		if (launchName == null)
+			throw new UsageException(Messages.Launch_No_launch_config);
+
+		IResource launchFile = ResourcesPlugin.getWorkspace().getRoot().findMember(launchName);
+		if (launchFile == null || launchFile.getType() != IResource.FILE || !launchFile.exists())
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Launch_Cannot_open_launch_config, launchName));
+
+		ILaunchConfiguration launchConfiguration = DebugPlugin.getDefault().getLaunchManager().getLaunchConfiguration((IFile) launchFile);
+		launch = launchConfiguration.launch(getLaunchMode(), monitor);
 
 		// capture stdout/stderr streams
 		IProcess[] processes = launch.getProcesses();
@@ -218,8 +216,25 @@ public class Launch extends WorkspaceCommand {
 				new StreamListener(stdErr[i], stdErrFile, false);
 		}
 
+		if (background) {
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
+				public void run() {
+					try {
+						launch.terminate();
+					} catch (DebugException e) {
+						e.printStackTrace();
+					}
+					for (StreamListener listener : listeners)
+						listener.close();
+				}
+			});
+			return 0;
+		}
+
 		try {
-			// TODO: wait for a configurable, finite time and terminate process
+			// TODO: wait for a configurable, finite time and terminate
+			// process
 			// if overdue
 			while (!launch.isTerminated())
 				Thread.sleep(500);
