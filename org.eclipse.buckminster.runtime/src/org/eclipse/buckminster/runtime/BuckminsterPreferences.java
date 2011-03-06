@@ -14,8 +14,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.osgi.service.prefs.BackingStoreException;
 
 public abstract class BuckminsterPreferences implements IBuckminsterPreferenceConstants {
@@ -24,8 +24,8 @@ public abstract class BuckminsterPreferences implements IBuckminsterPreferenceCo
 	private static final IEclipsePreferences defaultNode;
 
 	static {
-		prefsNode = new InstanceScope().getNode(Buckminster.PLUGIN_ID);
-		defaultNode = new DefaultScope().getNode(Buckminster.PLUGIN_ID);
+		prefsNode = InstanceScope.INSTANCE.getNode(Buckminster.PLUGIN_ID);
+		defaultNode = DefaultScope.INSTANCE.getNode(Buckminster.PLUGIN_ID);
 		defaultNode.putInt(LOG_LEVEL_CONSOLE, LOG_LEVEL_CONSOLE_DEFAULT);
 		defaultNode.putInt(LOG_LEVEL_ANT_LOGGER, LOG_LEVEL_ANT_LOGGER_DEFAULT);
 		defaultNode.putInt(LOG_LEVEL_ECLIPSE_LOGGER, LOG_LEVEL_ECLIPSE_LOGGER_DEFAULT);
