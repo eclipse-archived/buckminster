@@ -111,9 +111,9 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 	 * implementation.
 	 */
 	private static class ServiceReferenceMap extends AbstractMap<String, Object> {
-		private final ServiceReference reference;
+		private final ServiceReference<?> reference;
 
-		ServiceReferenceMap(ServiceReference reference) {
+		ServiceReferenceMap(ServiceReference<?> reference) {
 			this.reference = reference;
 		}
 
@@ -278,12 +278,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 	}
 
 	@Override
-	public boolean matches(Map<String, ? extends Object> properties) {
-		return match0(properties == null ? Collections.<String, Object> emptyMap() : new CaseInsensitiveMap<Object>(properties));
-	}
-
-	@Override
-	public boolean match(ServiceReference reference) {
+	public boolean match(ServiceReference<?> reference) {
 		return match0(reference == null ? Collections.<String, Object> emptyMap() : new ServiceReferenceMap(reference));
 	}
 
@@ -296,6 +291,11 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 	@Override
 	public boolean matchCase(Map<String, ? extends Object> properties) {
 		return match0(properties == null ? Collections.<String, Object> emptyMap() : properties);
+	}
+
+	@Override
+	public boolean matches(Map<String, ? extends Object> properties) {
+		return match0(properties == null ? Collections.<String, Object> emptyMap() : new CaseInsensitiveMap<Object>(properties));
 	}
 
 	@Override
