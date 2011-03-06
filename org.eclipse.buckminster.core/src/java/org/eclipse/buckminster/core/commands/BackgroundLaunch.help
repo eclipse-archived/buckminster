@@ -7,6 +7,17 @@ usage: launch
        [{-D | --define} <key>[=<value>]]
        [{-P | --properties} <URL or Path>]
        {-l | --launch} <workspace location of the launch config file>
+
+This command launches a given launch configuration in the workspace.
+
+usage: launch
+       [{ -? | --help }]
+       [{-D | --define} <key>[=<value>]]
+       [{-P | --properties} <URL or Path>]
+       [{-I | --ignoremissing }]
+       {-l | --launch} <workspace location of the launch config file>
+       [{--stdout}] [<path where stdout will be written to or "-" for passthrough>]]
+       [{--stderr}] [<path where stderr will be written to or "-" for passthrough>]]
        
  -?
 --help
@@ -29,6 +40,20 @@ usage: launch
   your workspace contains a project named "com.acme.foobar" and this contains a launch
   configuration named "my.launch", you would pass "com.acme.foobar/my.launch" as an
   argument to the "-l" parameter. 
+
+--stdout
+  The path where the contents of the standard output stream of the launched process(es) will be
+  written to. Must point to a local file path. If empty, the content will be piped through
+  onto the regular standard output stream.  The special value "-" (without quotes) may also
+  be used for that purpose.
+  NOTE: If you don't specify the --stdout parameter, the content will be swallowed.
+
+--stderr
+  The path where the contents of the standard error stream of the launched process(es) will be
+  written to. Must point to a local file path. If empty, the content will be piped through
+  onto the regular standard error stream.  The special value "-" (without quotes) may also
+  be used for that purpose.
+  NOTE: If you don't specify the --stderr parameter, the content will be swallowed.
 
 --ignoremissing
   Iff the *.launch file specified by --launch cannot be resolved the background launch is silently

@@ -26,6 +26,7 @@ import org.eclipse.buckminster.runtime.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -99,8 +100,24 @@ public class Launch extends WorkspaceCommand {
 
 	private ILaunch launch;
 
-	public ILaunch getLaunch() {
+	public synchronized ILaunch getLaunch(IProgressMonitor monitor) throws UsageException, CoreException {
+		if (launch != null)
+			return launch;
+
+		if (launchName == null)
+			throw new UsageException(Messages.Launch_No_launch_config);
+
+		IResource launchFile = ResourcesPlugin.getWorkspace().getRoot().findMember(launchName);
+		if (launchFile == null || launchFile.getType() != IResource.FILE || !launchFile.exists())
+			throw BuckminsterException.fromMessage(NLS.bind(Messages.Launch_Cannot_open_launch_config, launchName));
+
+		ILaunchConfiguration launchConfiguration = DebugPlugin.getDefault().getLaunchManager().getLaunchConfiguration((IFile) launchFile);
+		launch = launchConfiguration.launch(getLaunchMode(), monitor);
 		return launch;
+	}
+
+	public String getLaunchName() {
+		return launchName;
 	}
 
 	/**
@@ -186,15 +203,7 @@ public class Launch extends WorkspaceCommand {
 
 	@Override
 	protected int internalRun(IProgressMonitor monitor) throws Exception {
-		if (launchName == null)
-			throw new UsageException(Messages.Launch_No_launch_config);
-
-		IResource launchFile = ResourcesPlugin.getWorkspace().getRoot().findMember(launchName);
-		if (launchFile == null || launchFile.getType() != IResource.FILE || !launchFile.exists())
-			throw BuckminsterException.fromMessage(NLS.bind(Messages.Launch_Cannot_open_launch_config, launchName));
-
-		ILaunchConfiguration launchConfiguration = DebugPlugin.getDefault().getLaunchManager().getLaunchConfiguration((IFile) launchFile);
-		launch = launchConfiguration.launch(getLaunchMode(), monitor);
+		launch = getLaunch(monitor);
 
 		// capture stdout/stderr streams
 		IProcess[] processes = launch.getProcesses();
