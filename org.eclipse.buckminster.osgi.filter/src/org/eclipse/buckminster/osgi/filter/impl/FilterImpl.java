@@ -278,7 +278,7 @@ abstract class FilterImpl implements Filter, Comparable<FilterImpl> {
 	}
 
 	@Override
-	public boolean match(Map<String, ? extends Object> properties) {
+	public boolean matches(Map<String, ? extends Object> properties) {
 		return match0(properties == null ? Collections.<String, Object> emptyMap() : new CaseInsensitiveMap<Object>(properties));
 	}
 

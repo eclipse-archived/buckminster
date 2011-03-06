@@ -86,7 +86,7 @@ public class PerformManager implements IPerformManager {
 
 			Attribute attr = referenced.getRequiredAttribute(prerequisite.getName());
 			Filter filter = attr.getFilter();
-			if (filter != null && !filter.match(globalCtx.getProperties()))
+			if (filter != null && !filter.matches(globalCtx.getProperties()))
 				// Attribute is not enabled
 				return Status.OK_STATUS;
 

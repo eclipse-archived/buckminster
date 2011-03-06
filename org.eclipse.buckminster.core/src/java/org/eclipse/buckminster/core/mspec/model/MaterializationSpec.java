@@ -279,7 +279,7 @@ public class MaterializationSpec extends MaterializationDirective implements ISa
 				continue;
 
 			Filter filter = aNode.getFilter();
-			if (!(filter == null || filter.match(props)))
+			if (!(filter == null || filter.matches(props)))
 				continue;
 			return aNode;
 		}

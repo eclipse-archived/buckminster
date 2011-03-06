@@ -233,7 +233,7 @@ public class ComponentQuery extends UUIDKeyed implements IUUIDPersisted, ICompon
 				continue;
 
 			Filter filter = aNode.getFilter();
-			if (filter == null || filter.match(props))
+			if (filter == null || filter.matches(props))
 				return aNode;
 		}
 		return null;

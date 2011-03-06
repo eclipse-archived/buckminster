@@ -48,20 +48,6 @@ public interface Filter extends org.osgi.framework.Filter {
 	Filter addFilterWithOr(Filter subFilter);
 
 	/**
-	 * Filter using the <code>properties</code> keys and values. The keys are
-	 * case insensitively matched with the filter.
-	 * 
-	 * @param properties
-	 *            The properties whose keys and values are used in the match.
-	 * @return <code>true</code> if the properties match this filter;
-	 *         <code>false</code> otherwise.
-	 * @throws IllegalArgumentException
-	 *             If the properties contains case variants of the same key
-	 *             name.
-	 */
-	boolean match(Map<String, ? extends Object> properties);
-
-	/**
 	 * Filter using the <code>properties</code> keys and values.
 	 * 
 	 * @param properties

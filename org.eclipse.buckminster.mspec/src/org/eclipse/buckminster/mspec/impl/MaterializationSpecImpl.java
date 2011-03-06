@@ -343,7 +343,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 				continue;
 
 			Filter filter = aNode.getFilter();
-			if (!(filter == null || filter.match(properties)))
+			if (!(filter == null || filter.matches(properties)))
 				continue;
 			return aNode;
 		}

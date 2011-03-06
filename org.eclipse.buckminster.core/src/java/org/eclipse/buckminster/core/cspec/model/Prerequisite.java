@@ -143,12 +143,12 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 	}
 
 	public Attribute getReferencedAttribute(CSpec ownerCSpec, IModelCache ctx) throws CoreException {
-		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedAttribute(componentName, componentType, versionRange,
+		return (filter == null || filter.matches(ctx.getProperties())) ? ownerCSpec.getReferencedAttribute(componentName, componentType, versionRange,
 				getName(), ctx) : null;
 	}
 
 	public CSpec getReferencedCSpec(CSpec ownerCSpec, IModelCache ctx) throws CoreException {
-		return (filter == null || filter.match(ctx.getProperties())) ? ownerCSpec.getReferencedCSpec(componentName, componentType, versionRange, ctx)
+		return (filter == null || filter.matches(ctx.getProperties())) ? ownerCSpec.getReferencedCSpec(componentName, componentType, versionRange, ctx)
 				: null;
 	}
 
@@ -163,7 +163,7 @@ public class Prerequisite extends NamedElement implements IPrerequisite {
 	}
 
 	public boolean isEnabled(IModelCache cache, CSpec cspec) throws CoreException {
-		if (!(filter == null || filter.match(cache.getProperties())))
+		if (!(filter == null || filter.matches(cache.getProperties())))
 			return false;
 
 		if (isExternal()) {
