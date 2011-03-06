@@ -71,6 +71,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.equinox.internal.p2.artifact.repository.ArtifactRequest;
+import org.eclipse.equinox.internal.p2.repository.Transport;
 import org.eclipse.equinox.internal.provisional.p2.artifact.repository.processing.ProcessingStepHandler;
 import org.eclipse.equinox.p2.metadata.IArtifactKey;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
@@ -100,8 +101,8 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 	public static class CopyRequest extends ArtifactRequest {
 		private final File destination;
 
-		public CopyRequest(IArtifactKey key, File destination) {
-			super(key);
+		public CopyRequest(IArtifactKey key, Transport transport, File destination) {
+			super(key, transport);
 			this.destination = destination;
 		}
 
@@ -422,10 +423,11 @@ public class EclipseImportReaderType extends CatalogReaderType implements IPDECo
 				//
 				IInstallableUnit iu = P2ReaderType.getIU(rInfo, monitor);
 				IArtifactRepository ar = P2ReaderType.getArtifactRepository(rInfo, monitor);
+				Transport transport = (Transport) ar.getProvisioningAgent().getService(Transport.SERVICE_NAME);
 				for (IArtifactKey ak : iu.getArtifacts()) {
 					jarName = ak.getId() + '_' + ak.getVersion() + ".jar"; //$NON-NLS-1$
 					jarFile = new File(subDir, jarName);
-					IStatus status = ar.getArtifacts(new IArtifactRequest[] { new CopyRequest(ak, jarFile) }, monitor);
+					IStatus status = ar.getArtifacts(new IArtifactRequest[] { new CopyRequest(ak, transport, jarFile) }, monitor);
 					if (!status.isOK())
 						throw new CoreException(status);
 				}

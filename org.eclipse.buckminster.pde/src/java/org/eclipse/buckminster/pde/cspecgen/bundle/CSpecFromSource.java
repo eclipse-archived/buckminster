@@ -733,7 +733,6 @@ public class CSpecFromSource extends CSpecGenerator {
 		return extraJars;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Map<IPath, LinkDescription> getLinkDescriptions() {
 		Map<IPath, LinkDescription> linkDescriptors = null;
 		if (projectDesc instanceof ProjectDescription)
@@ -845,9 +844,10 @@ public class CSpecFromSource extends CSpecGenerator {
 			IPath linkSource = entry.getKey();
 			if (linkSource.isPrefixOf(path)) {
 				URI locationURI = entry.getValue().getLocationURI();
-				
+
 				/*
-				 * Explicitly resolve relative path via workspace linked resources
+				 * Explicitly resolve relative path via workspace linked
+				 * resources
 				 */
 				URI resolvedURI = ResourcesPlugin.getWorkspace().getPathVariableManager().resolveURI(locationURI);
 				IPath linkTarget = FileUtil.toPath(resolvedURI);

@@ -54,6 +54,7 @@ import org.eclipse.pde.core.IModel;
 import org.eclipse.pde.core.build.IBuildModel;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
+import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.internal.build.IBuildPropertiesConstants;
 import org.eclipse.pde.internal.core.bundle.BundleFragmentModel;
 import org.eclipse.pde.internal.core.bundle.BundleModel;
@@ -263,7 +264,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			IPluginModelBase model = pluginBase.getPluginModel();
 			setModel(model);
 
-			IBuildModel buildModel = model.getBuildModel();
+			IBuildModel buildModel = PluginRegistry.createBuildModel(model);
 			boolean fromProject = (buildModel != null);
 			CSpecGenerator generator;
 			if (fromProject)

@@ -166,6 +166,11 @@ public class ProductVersionPatcher implements IProductDescriptor {
 	}
 
 	@Override
+	public boolean includeLaunchers() {
+		return product.includeLaunchers();
+	}
+
+	@Override
 	public boolean useFeatures() {
 		return product.useFeatures();
 	}
