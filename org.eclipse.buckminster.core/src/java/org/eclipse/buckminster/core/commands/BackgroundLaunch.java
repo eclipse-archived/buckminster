@@ -18,8 +18,6 @@ import org.eclipse.buckminster.cmdline.OptionValueType;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.ILaunch;
 
 public class BackgroundLaunch extends Launch {
 	private static final OptionDescriptor IGNORE_MISSING = new OptionDescriptor('I', "ignoremissing", //$NON-NLS-1$
@@ -52,19 +50,7 @@ public class BackgroundLaunch extends Launch {
 			if ((launchFile == null || launchFile.getType() != IResource.FILE || !launchFile.exists()))
 				return 0;
 		}
-		final ILaunch launch = getLaunch(monitor);
-
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				try {
-					launch.terminate();
-				} catch (DebugException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-
-		return 0;
+		setBackground(true);
+		return super.internalRun(monitor);
 	}
 }
