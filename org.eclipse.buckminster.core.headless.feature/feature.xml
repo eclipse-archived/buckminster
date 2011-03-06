@@ -24,7 +24,6 @@
       <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.core.filesystem.linux.ppc"/>
       <import plugin="org.eclipse.core.filesystem.linux.x86"/>
       <import plugin="org.eclipse.core.filesystem.linux.x86_64"/>
       <import plugin="org.eclipse.core.filesystem.macosx"/>
