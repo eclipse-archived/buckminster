@@ -166,7 +166,7 @@
     <extension
           point="org.eclipse.ui.perspectiveExtensions">
        <perspectiveExtension
-             targetID="org.eclipse.ui.resourcePerspective">
+             targetID="org.eclipse.pde.ui.PDEPerspective">
           <view
                 closeable="true"
                 id="org.eclipse.buckminster.ui.views.ComponentOutlineView"
