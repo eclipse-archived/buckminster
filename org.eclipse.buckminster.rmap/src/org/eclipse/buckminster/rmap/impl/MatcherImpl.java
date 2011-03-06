@@ -92,7 +92,7 @@ public abstract class MatcherImpl extends EObjectImpl implements Matcher {
 		}
 
 		Filter rf = matcher.getResolutionFilter();
-		if (rf != null && !rf.match(properties))
+		if (rf != null && !rf.matches(properties))
 			return false;
 		return true;
 	}

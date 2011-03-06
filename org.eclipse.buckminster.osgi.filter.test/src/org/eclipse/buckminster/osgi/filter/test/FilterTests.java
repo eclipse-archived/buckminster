@@ -144,12 +144,12 @@ public class FilterTests extends TestCase
 
 		comp = new SampleComparable("42"); //$NON-NLS-1$
 		hash.put("comparable", comp); //$NON-NLS-1$
-		assertTrue("does not match filter", f1.match(hash)); //$NON-NLS-1$
+		assertTrue("does not match filter", f1.matches(hash)); //$NON-NLS-1$
 		assertTrue("does not match filter", f1.match(new DictionaryServiceReference(hash))); //$NON-NLS-1$
 
 		comp = new Long(42);
 		hash.put("comparable", comp); //$NON-NLS-1$
-		assertTrue("does not match filter", f1.match(hash)); //$NON-NLS-1$
+		assertTrue("does not match filter", f1.matches(hash)); //$NON-NLS-1$
 		assertTrue("does not match filter", f1.match(new DictionaryServiceReference(hash))); //$NON-NLS-1$
 
 		Filter f2 = null;
@@ -165,12 +165,12 @@ public class FilterTests extends TestCase
 
 		comp = new SampleComparable("42"); //$NON-NLS-1$
 		hash.put("comparable", comp); //$NON-NLS-1$
-		assertTrue("does not match filter", f2.match(hash)); //$NON-NLS-1$
+		assertTrue("does not match filter", f2.matches(hash)); //$NON-NLS-1$
 		assertTrue("does not match filter", f2.match(new DictionaryServiceReference(hash))); //$NON-NLS-1$
 
 		comp = new Long(42);
 		hash.put("comparable", comp); //$NON-NLS-1$
-		assertTrue("does not match filter", f2.match(hash)); //$NON-NLS-1$
+		assertTrue("does not match filter", f2.matches(hash)); //$NON-NLS-1$
 		assertTrue("does not match filter", f2.match(new DictionaryServiceReference(hash))); //$NON-NLS-1$
 
 		assertEquals("not equal", f1, f2); //$NON-NLS-1$

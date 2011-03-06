@@ -94,7 +94,7 @@ public class FragmentsActor extends AbstractActor {
 				try {
 					Filter filter = FilterFactory.newInstance(fragment.getPlatformFilter());
 					filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
-					if (!filter.match(properties))
+					if (!filter.matches(properties))
 						continue;
 				} catch (InvalidSyntaxException e) {
 					throw BuckminsterException.wrap(e);
@@ -168,7 +168,7 @@ public class FragmentsActor extends AbstractActor {
 					try {
 						Filter filter = FilterFactory.newInstance(fragment.getPlatformFilter());
 						filter = FilterUtils.replaceAttributeNames(filter, "osgi", TargetPlatform.TARGET_PREFIX); //$NON-NLS-1$
-						if (!filter.match(properties))
+						if (!filter.matches(properties))
 							continue;
 					} catch (InvalidSyntaxException e) {
 						throw BuckminsterException.wrap(e);

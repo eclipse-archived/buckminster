@@ -115,7 +115,7 @@ public class MaterializationSpecBuilder extends MaterializationDirectiveBuilder 
 			if (filter != null) {
 				if (props == null)
 					props = res.getProperties();
-				if (!filter.match(props))
+				if (!filter.matches(props))
 					continue;
 			}
 			return aNode;
