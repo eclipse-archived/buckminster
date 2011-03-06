@@ -18,6 +18,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevObject;
 import org.eclipse.jgit.revwalk.RevTag;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
 public class VersionFinder extends AbstractSCCSVersionFinder {
@@ -40,16 +41,23 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 
 	@Override
 	protected boolean checkComponentExistence(VersionMatch versionMatch, IProgressMonitor monitor) throws CoreException {
-		return repoAccess.getComponentTree(versionMatch, monitor) != null;
+		TreeWalk walk = repoAccess.getTreeWalk(versionMatch, null, monitor);
+		try {
+			return walk.next();
+		} catch (Exception e) {
+			throw BuckminsterException.wrap(e);
+		} finally {
+			walk.release();
+		}
 	}
 
 	@Override
 	protected List<RevisionEntry> getBranchesOrTags(boolean branches, IProgressMonitor monitor) throws CoreException {
+		Repository repo = repoAccess.getRepository(monitor);
+		RevWalk revWalk = new RevWalk(repo);
 		try {
 			ArrayList<RevisionEntry> branchesOrTags = new ArrayList<RevisionEntry>();
-			Repository repo = repoAccess.getRepository(monitor);
 			String component = repoAccess.getComponent();
-			System.out.println(repo.getBranch());
 			for (Ref ref : repo.getAllRefs().values()) {
 
 				String name = ref.getName();
@@ -57,7 +65,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 				if (lastSlash < 0)
 					continue;
 
-				RevObject obj = repoAccess.getRevWalk().parseAny(ref.getObjectId());
+				RevObject obj = revWalk.parseAny(ref.getObjectId());
 				if (branches) {
 					if(!(obj instanceof RevCommit))
 						continue;
@@ -97,15 +105,17 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 			return branchesOrTags;
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
+		} finally {
+			revWalk.release();
 		}
 	}
 
 	@Override
 	protected RevisionEntry getTrunk(IProgressMonitor monitor) throws CoreException {
+		Repository repo = repoAccess.getRepository(monitor);
+		RevWalk revWalk = new RevWalk(repo);
 		try {
-			Repository repo = repoAccess.getRepository(monitor);
 			String component = repoAccess.getComponent();
-			System.out.println(repo.getBranch());
 			for (Ref ref : repo.getAllRefs().values()) {
 
 				String name = ref.getName();
@@ -113,7 +123,7 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 				if (lastSlash < 0)
 					continue;
 
-				RevObject obj = repoAccess.getRevWalk().parseAny(ref.getObjectId());
+				RevObject obj = revWalk.parseAny(ref.getObjectId());
 				if (!(obj instanceof RevCommit))
 					continue;
 
@@ -135,6 +145,8 @@ public class VersionFinder extends AbstractSCCSVersionFinder {
 			return null;
 		} catch (Exception e) {
 			throw BuckminsterException.wrap(e);
+		} finally {
+			revWalk.release();
 		}
 	}
 
