@@ -34,7 +34,7 @@ import org.osgi.framework.ServiceReference;
 @SuppressWarnings("unchecked")
 public class FilterTests extends TestCase
 {
-	private static class DictionaryServiceReference implements ServiceReference
+	private static class DictionaryServiceReference implements ServiceReference<Object>
 	{
 		private final Map<String, Object> dictionary;
 
@@ -317,7 +317,7 @@ public class FilterTests extends TestCase
 
 	private void testFilter(String query, Dictionary<String,Object> props, int expect)
 	{
-		final ServiceReference ref = new DictionaryServiceReference((Map<String, Object>)props);
+		final ServiceReference<Object> ref = new DictionaryServiceReference((Map<String, Object>)props);
 		Filter f1;
 		try
 		{
