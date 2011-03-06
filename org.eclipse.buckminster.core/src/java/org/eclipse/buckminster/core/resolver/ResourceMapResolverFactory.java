@@ -28,17 +28,17 @@ import org.eclipse.buckminster.runtime.URLUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ecf.core.security.IConnectContext;
 
 /**
  * @author Thomas Hallgren
  */
 public class ResourceMapResolverFactory extends AbstractExtension implements IResourceMapResolverFactory {
-	private static final IEclipsePreferences preferencesNode = new InstanceScope().getNode(Buckminster.PLUGIN_ID);
+	private static final IEclipsePreferences preferencesNode = InstanceScope.INSTANCE.getNode(Buckminster.PLUGIN_ID);
 
-	private static final IEclipsePreferences defaultNode = new DefaultScope().getNode(Buckminster.PLUGIN_ID);
+	private static final IEclipsePreferences defaultNode = DefaultScope.INSTANCE.getNode(Buckminster.PLUGIN_ID);
 
 	public static final String RESOURCE_MAP_URL_PARAM = "resourceMapURL"; //$NON-NLS-1$
 

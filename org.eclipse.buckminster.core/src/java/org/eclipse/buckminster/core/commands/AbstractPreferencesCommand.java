@@ -82,9 +82,9 @@ public abstract class AbstractPreferencesCommand extends WorkspaceCommand {
 
 			String scopeName = option.getValue();
 			if (scopeName.equalsIgnoreCase(InstanceScope.SCOPE))
-				scope = new InstanceScope();
+				scope = InstanceScope.INSTANCE;
 			else if (scopeName.equalsIgnoreCase(ConfigurationScope.SCOPE))
-				scope = new ConfigurationScope();
+				scope = ConfigurationScope.INSTANCE;
 			else
 				throw new UsageException(NLS.bind(Messages.Invalid_scope_Valid_scopes_are_0_and_1, ConfigurationScope.SCOPE, InstanceScope.SCOPE));
 		} else if (option.is(FILE_OPTION)) {
