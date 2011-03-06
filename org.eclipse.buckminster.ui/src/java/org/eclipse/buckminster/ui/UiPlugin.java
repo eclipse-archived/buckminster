@@ -129,12 +129,12 @@ public class UiPlugin extends AbstractUIPlugin {
 
 	public IPreferenceStore getBuckminsterPreferenceStore() {
 		if (preferenceStore == null)
-			preferenceStore = new ScopedPreferenceStore(new InstanceScope(), Buckminster.PLUGIN_ID);
+			preferenceStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, Buckminster.PLUGIN_ID);
 		return preferenceStore;
 	}
 
 	public IPreferenceStore getBuckminsterPreferenceStore(String subKey) {
-		return new ScopedPreferenceStore(new InstanceScope(), Buckminster.PLUGIN_ID + '/' + subKey);
+		return new ScopedPreferenceStore(InstanceScope.INSTANCE, Buckminster.PLUGIN_ID + '/' + subKey);
 	}
 
 	public IObjectActionDelegate getOpenRssFeedAction() {
