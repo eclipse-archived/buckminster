@@ -6,19 +6,11 @@ usage: launch
        [{ -? | --help }]
        [{-D | --define} <key>[=<value>]]
        [{-P | --properties} <URL or Path>]
-       {-l | --launch} <workspace location of the launch config file>
-
-This command launches a given launch configuration in the workspace.
-
-usage: launch
-       [{ -? | --help }]
-       [{-D | --define} <key>[=<value>]]
-       [{-P | --properties} <URL or Path>]
-       [{-I | --ignoremissing }]
+       [--ignoremissing]
        {-l | --launch} <workspace location of the launch config file>
        [{--stdout}] [<path where stdout will be written to or "-" for passthrough>]]
        [{--stderr}] [<path where stderr will be written to or "-" for passthrough>]]
-       
+
  -?
 --help
   Show this help text
