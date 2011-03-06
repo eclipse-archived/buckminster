@@ -63,7 +63,7 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 		headless = true;
 	}
 
-	private IdentityHashMap<Object, ServiceReference> services;
+	private IdentityHashMap<Object, ServiceReference<?>> services;
 
 	public Buckminster() {
 		plugin = this;
@@ -72,12 +72,12 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 	public <T> T getService(Class<T> serviceClass) throws CoreException {
 		BundleContext context = getBundle().getBundleContext();
 		String serviceName = serviceClass.getName();
-		ServiceReference serviceRef = context.getServiceReference(serviceName);
+		ServiceReference<?> serviceRef = context.getServiceReference(serviceName);
 		if (serviceRef == null)
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.Missing_OSGi_Service_0, serviceName));
 		T service = serviceClass.cast(context.getService(serviceRef));
 		if (services == null)
-			services = new IdentityHashMap<Object, ServiceReference>();
+			services = new IdentityHashMap<Object, ServiceReference<?>>();
 		services.put(service, serviceRef);
 		return service;
 	}
@@ -85,7 +85,7 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 	public <T> T getService(Class<T> serviceClass, String filter) throws CoreException {
 		BundleContext context = getBundle().getBundleContext();
 		String serviceName = serviceClass.getName();
-		ServiceReference[] serviceRef;
+		ServiceReference<?>[] serviceRef;
 		try {
 			serviceRef = context.getServiceReferences(serviceName, filter);
 		} catch (InvalidSyntaxException e) {
@@ -95,7 +95,7 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 			throw BuckminsterException.fromMessage(NLS.bind(Messages.Missing_OSGi_Service_0, serviceName));
 		T service = serviceClass.cast(context.getService(serviceRef[0]));
 		if (services == null)
-			services = new IdentityHashMap<Object, ServiceReference>();
+			services = new IdentityHashMap<Object, ServiceReference<?>>();
 		services.put(service, serviceRef[0]);
 		return service;
 	}
@@ -131,7 +131,7 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		if (services != null) {
-			for (ServiceReference serviceRef : services.values())
+			for (ServiceReference<?> serviceRef : services.values())
 				context.ungetService(serviceRef);
 			services = null;
 		}
@@ -141,7 +141,7 @@ public class Buckminster extends LogAwarePlugin implements IPreferenceChangeList
 
 	public void ungetService(Object service) {
 		if (services != null && service != null) {
-			ServiceReference serviceRef = services.remove(service);
+			ServiceReference<?> serviceRef = services.remove(service);
 			if (serviceRef != null)
 				getBundle().getBundleContext().ungetService(serviceRef);
 		}
