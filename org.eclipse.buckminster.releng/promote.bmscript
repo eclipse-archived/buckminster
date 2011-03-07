@@ -1,5 +1,5 @@
 setpref targetPlatformPath=${build.root}/tp
-import ${build.root}/org.eclipse.buckminster.releng/build.cquery
+import ${build.root}/ws/org.eclipse.buckminster.releng/build.cquery
 build --thorough
 junit -l org.eclipse.buckminster.tests/AllTests.launch -o ${test.reports}/testReport.xml --terseXML --flatXML
 perform org.eclipse.buckminster.releng#promote
