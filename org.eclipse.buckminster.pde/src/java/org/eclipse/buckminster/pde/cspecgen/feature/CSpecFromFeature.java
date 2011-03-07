@@ -32,6 +32,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.internal.p2.publisher.eclipse.IProductDescriptor;
 import org.eclipse.equinox.p2.metadata.IVersionedId;
+import org.eclipse.equinox.p2.metadata.Version;
+import org.eclipse.equinox.p2.metadata.VersionRange;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.core.PluginModelManager;
 import org.eclipse.pde.internal.core.ifeature.IFeature;
@@ -222,6 +224,21 @@ public abstract class CSpecFromFeature extends CSpecGenerator {
 				// For source generation
 				sourceBundleJars.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_BUNDLE_JARS);
 				featureSourceRefs.addExternalPrerequisite(dep, ATTRIBUTE_SOURCE_FEATURE_JARS);
+			}
+		}
+
+		String licenseFeatureID = feature.getLicenseFeatureID();
+		if (licenseFeatureID != null) {
+			VersionRange range = VersionHelper.exactRange(Version.create(feature.getLicenseFeatureVersion()));
+			ComponentRequestBuilder dep = new ComponentRequestBuilder();
+			dep.setName(licenseFeatureID);
+			dep.setComponentTypeID(IComponentType.ECLIPSE_FEATURE);
+			dep.setVersionRange(range);
+			if (!skipComponent(query, dep)) {
+				cspec.addDependency(dep);
+				featureRefs.addExternalPrerequisite(dep, ATTRIBUTE_FEATURE_JARS);
+				bundleJars.addExternalPrerequisite(dep, ATTRIBUTE_BUNDLE_JARS);
+				fullClean.addExternalPrerequisite(dep, ATTRIBUTE_FULL_CLEAN);
 			}
 		}
 	}
