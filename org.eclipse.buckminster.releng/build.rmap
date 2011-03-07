@@ -18,6 +18,14 @@
   <rm:locator searchPathRef="platform" failOnError="false"/>
   <rm:locator searchPathRef="modeling" failOnError="false"/>
   <rm:searchPath name="buckminster">
+    <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="local">
+      <rm:uri format="{0}/ws/{1}">
+        <bc:propertyRef key="build.root"/>
+        <bc:propertyRef key="buckminster.component"/>
+      </rm:uri>
+    </rm:provider>
+  </rm:searchPath>
+  <rm:searchPath name="buckminster.svn">
     <rm:provider componentTypes="osgi.bundle,eclipse.feature,buckminster" readerType="svn">
       <rm:uri format="{0}/tools/org.eclipse.buckminster/trunk/{1}?moduleAfterTag&amp;moduleAfterBranch">
         <bc:propertyRef key="eclipse.svn.prefix"/>
