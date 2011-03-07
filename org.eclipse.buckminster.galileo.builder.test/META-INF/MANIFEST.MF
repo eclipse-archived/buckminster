@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Junit Tests for the buckminster galileo assembler
-Bundle-SymbolicName: org.eclipse.buckminster.galileo.builder.test
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Eclipse Buckminster
-Fragment-Host: org.eclipse.buckminster.galileo.builder
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.junit4;bundle-version="4.5.0"
