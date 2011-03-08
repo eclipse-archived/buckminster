@@ -76,8 +76,40 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 	private static IPath platformPluginsFolder = Path.fromOSString(TargetPlatform.getPlatformInstallLocation().getAbsolutePath()).append(
 			IPDEConstants.PLUGINS_FOLDER);
 
-	public static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly, IProgressMonitor monitor)
-			throws CoreException {
+	private static void loadModel(ICatalogReader reader, String file, final IModel model, IProgressMonitor monitor) throws CoreException,
+			FileNotFoundException {
+		try {
+			reader.readFile(file, new IStreamConsumer<Object>() {
+				@Override
+				public Object consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor mon)
+						throws CoreException {
+					int len;
+					byte[] buf = new byte[4096];
+					AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
+					try {
+						while ((len = stream.read(buf)) > 0) {
+							for (int idx = 0; idx < len; ++idx) {
+								byte b = buf[idx];
+								if (b != '\r')
+									bld.write(b);
+							}
+						}
+					} catch (IOException e) {
+						throw BuckminsterException.wrap(e);
+					}
+					model.load(bld.getInputStream(), true);
+					return null;
+				}
+			}, monitor);
+		} catch (FileNotFoundException e) {
+			throw e;
+		} catch (IOException e) {
+			throw BuckminsterException.wrap(e);
+		}
+	}
+
+	private static IPluginModelBase parsePluginModelBase(ICatalogReader reader, boolean forResolutionAidOnly, IBuildModel[] buildModelHandle,
+			IProgressMonitor monitor) throws CoreException {
 		File locationFile = null;
 		if (reader instanceof EclipsePlatformReader) {
 			MonitorUtils.complete(monitor);
@@ -177,7 +209,7 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 				try {
 					IBuildModel buildModel = new ExternalBuildModel();
 					loadModel(reader, BUILD_PROPERTIES_FILE, buildModel, MonitorUtils.subMonitor(monitor, 1000));
-					bmodel.setBuildModel(buildModel);
+					buildModelHandle[0] = buildModel;
 				} catch (FileNotFoundException e) {
 				}
 				return bmodel;
@@ -203,38 +235,6 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 		}
 	}
 
-	private static void loadModel(ICatalogReader reader, String file, final IModel model, IProgressMonitor monitor) throws CoreException,
-			FileNotFoundException {
-		try {
-			reader.readFile(file, new IStreamConsumer<Object>() {
-				@Override
-				public Object consumeStream(IComponentReader fileReader, String streamName, InputStream stream, IProgressMonitor mon)
-						throws CoreException {
-					int len;
-					byte[] buf = new byte[4096];
-					AccessibleByteArrayOutputStream bld = new AccessibleByteArrayOutputStream();
-					try {
-						while ((len = stream.read(buf)) > 0) {
-							for (int idx = 0; idx < len; ++idx) {
-								byte b = buf[idx];
-								if (b != '\r')
-									bld.write(b);
-							}
-						}
-					} catch (IOException e) {
-						throw BuckminsterException.wrap(e);
-					}
-					model.load(bld.getInputStream(), true);
-					return null;
-				}
-			}, monitor);
-		} catch (FileNotFoundException e) {
-			throw e;
-		} catch (IOException e) {
-			throw BuckminsterException.wrap(e);
-		}
-	}
-
 	@Override
 	public String getComponentTypeID() {
 		return IComponentType.OSGI_BUNDLE;
@@ -254,7 +254,9 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			throws CoreException {
 		monitor.beginTask(null, 100);
 		try {
-			IPluginBase pluginBase = parsePluginModelBase(reader, forResolutionAidOnly, MonitorUtils.subMonitor(monitor, 50)).getPluginBase();
+			IBuildModel[] buildModelHandle = new IBuildModel[1];
+			IPluginBase pluginBase = parsePluginModelBase(reader, forResolutionAidOnly, buildModelHandle, MonitorUtils.subMonitor(monitor, 50))
+					.getPluginBase();
 			cspecBuilder.setName(pluginBase.getId());
 			cspecBuilder.setComponentTypeID(getComponentTypeID());
 			cspecBuilder.setVersion(VersionHelper.parseVersion(pluginBase.getVersion()));
@@ -264,7 +266,10 @@ public class BundleBuilder extends PDEBuilder implements IBuildPropertiesConstan
 			IPluginModelBase model = pluginBase.getPluginModel();
 			setModel(model);
 
-			IBuildModel buildModel = PluginRegistry.createBuildModel(model);
+			IBuildModel buildModel = buildModelHandle[0];
+			if (buildModel == null && model.getUnderlyingResource() != null)
+				buildModel = PluginRegistry.createBuildModel(model);
+
 			boolean fromProject = (buildModel != null);
 			CSpecGenerator generator;
 			if (fromProject)
