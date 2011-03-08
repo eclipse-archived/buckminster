@@ -146,6 +146,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 	 * @generated NOT
 	 */
 
+	@Override
 	public String getValue(Map<String, String> properties) {
 		return checkedGetValue(properties, 0);
 	}
@@ -156,6 +157,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 	 * @generated NOT
 	 */
 
+	@Override
 	public boolean isMultiValued() {
 		return false;
 	}
@@ -166,6 +168,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isMutable() {
 		return mutable;
 	}
@@ -176,6 +179,7 @@ public abstract class ValueImpl extends EObjectImpl implements Value {
 	 * @generated
 	 */
 
+	@Override
 	public void setMutable(boolean newMutable) {
 		boolean oldMutable = mutable;
 		mutable = newMutable;

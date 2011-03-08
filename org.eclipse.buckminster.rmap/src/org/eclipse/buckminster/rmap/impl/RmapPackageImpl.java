@@ -352,6 +352,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getBranchPoint() {
 		return branchPointEClass;
 	}
@@ -362,6 +363,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getBranchPoint_Name() {
 		return (EAttribute) branchPointEClass.getEStructuralFeatures().get(0);
 	}
@@ -372,6 +374,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getBranchPoint_OnMergeConflict() {
 		return (EAttribute) branchPointEClass.getEStructuralFeatures().get(4);
 	}
@@ -382,6 +385,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getBranchPoint_Revision() {
 		return (EAttribute) branchPointEClass.getEStructuralFeatures().get(2);
 	}
@@ -392,6 +396,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getBranchPoint_Tag() {
 		return (EAttribute) branchPointEClass.getEStructuralFeatures().get(3);
 	}
@@ -402,6 +407,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getBranchPoint_Timestamp() {
 		return (EAttribute) branchPointEClass.getEStructuralFeatures().get(1);
 	}
@@ -412,6 +418,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EEnum getConflictPolicy() {
 		return conflictPolicyEEnum;
 	}
@@ -422,6 +429,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getDocumentRoot() {
 		return documentRootEClass;
 	}
@@ -432,6 +440,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Arch() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(10);
 	}
@@ -442,6 +451,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Group() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(3);
 	}
@@ -452,6 +462,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Locators() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(13);
 	}
@@ -462,6 +473,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Match() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(2);
 	}
@@ -472,6 +484,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Matcher() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(14);
 	}
@@ -482,6 +495,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Name() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(4);
 	}
@@ -492,6 +506,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Nl() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(11);
 	}
@@ -502,6 +517,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Os() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(8);
 	}
@@ -511,6 +527,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EReference getDocumentRoot_Providers() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(16);
 	}
@@ -521,6 +538,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Redirects() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(15);
 	}
@@ -531,6 +549,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Revision() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(6);
 	}
@@ -541,6 +560,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Rmap() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(12);
 	}
@@ -551,6 +571,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Timestamp() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(7);
 	}
@@ -561,6 +582,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Version() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(5);
 	}
@@ -571,6 +593,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_Ws() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(9);
 	}
@@ -581,6 +604,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_XMLNSPrefixMap() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(0);
 	}
@@ -591,6 +615,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getDocumentRoot_XSISchemaLocation() {
 		return (EReference) documentRootEClass.getEStructuralFeatures().get(1);
 	}
@@ -600,6 +625,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getIComponentReader() {
 		return iComponentReaderEDataType;
 	}
@@ -610,6 +636,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getLocator() {
 		return locatorEClass;
 	}
@@ -620,6 +647,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getLocator_FailOnError() {
 		return (EAttribute) locatorEClass.getEStructuralFeatures().get(1);
 	}
@@ -630,6 +658,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getLocator_SearchPath() {
 		return (EReference) locatorEClass.getEStructuralFeatures().get(0);
 	}
@@ -640,6 +669,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getMatcher() {
 		return matcherEClass;
 	}
@@ -649,6 +679,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getMatcher_ComponentTypes() {
 		return (EAttribute) matcherEClass.getEStructuralFeatures().get(2);
 	}
@@ -658,6 +689,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getMatcher_ComponentTypesAttr() {
 		return (EAttribute) matcherEClass.getEStructuralFeatures().get(1);
 	}
@@ -668,6 +700,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getMatcher_Pattern() {
 		return (EAttribute) matcherEClass.getEStructuralFeatures().get(0);
 	}
@@ -677,6 +710,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getMatcher_ResolutionFilter() {
 		return (EAttribute) matcherEClass.getEStructuralFeatures().get(3);
 	}
@@ -687,6 +721,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getProvider() {
 		return providerEClass;
 	}
@@ -697,6 +732,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getProvider_Documentation() {
 		return (EReference) providerEClass.getEStructuralFeatures().get(7);
 	}
@@ -707,6 +743,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getProvider_Matcher() {
 		return (EReference) providerEClass.getEStructuralFeatures().get(6);
 	}
@@ -717,6 +754,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getProvider_Mutable() {
 		return (EAttribute) providerEClass.getEStructuralFeatures().get(2);
 	}
@@ -727,6 +765,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getProvider_ReaderType() {
 		return (EAttribute) providerEClass.getEStructuralFeatures().get(0);
 	}
@@ -737,6 +776,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getProvider_Repository() {
 		return (EReference) providerEClass.getEStructuralFeatures().get(3);
 	}
@@ -747,6 +787,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getProvider_Source() {
 		return (EAttribute) providerEClass.getEStructuralFeatures().get(1);
 	}
@@ -757,6 +798,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getProvider_URI() {
 		return (EReference) providerEClass.getEStructuralFeatures().get(5);
 	}
@@ -767,6 +809,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getProvider_VersionConverter() {
 		return (EReference) providerEClass.getEStructuralFeatures().get(4);
 	}
@@ -777,6 +820,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getRedirect() {
 		return redirectEClass;
 	}
@@ -786,6 +830,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EAttribute getRedirect_RedirectTo() {
 		return (EAttribute) redirectEClass.getEStructuralFeatures().get(0);
 	}
@@ -796,6 +841,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getRepository() {
 		return repositoryEClass;
 	}
@@ -806,6 +852,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getRepository_AllowDirty() {
 		return (EAttribute) repositoryEClass.getEStructuralFeatures().get(5);
 	}
@@ -816,6 +863,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getRepository_Branches() {
 		return (EReference) repositoryEClass.getEStructuralFeatures().get(3);
 	}
@@ -826,6 +874,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getRepository_Checkout() {
 		return (EAttribute) repositoryEClass.getEStructuralFeatures().get(4);
 	}
@@ -836,6 +885,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getRepository_Connection() {
 		return (EReference) repositoryEClass.getEStructuralFeatures().get(1);
 	}
@@ -846,6 +896,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getRepository_Documentation() {
 		return (EReference) repositoryEClass.getEStructuralFeatures().get(7);
 	}
@@ -856,6 +907,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getRepository_Id() {
 		return (EAttribute) repositoryEClass.getEStructuralFeatures().get(0);
 	}
@@ -866,6 +918,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getRepository_Type() {
 		return (EAttribute) repositoryEClass.getEStructuralFeatures().get(2);
 	}
@@ -876,6 +929,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getRepository_Update() {
 		return (EAttribute) repositoryEClass.getEStructuralFeatures().get(6);
 	}
@@ -886,6 +940,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getResourceMap() {
 		return resourceMapEClass;
 	}
@@ -896,6 +951,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getResourceMap_Documentation() {
 		return (EReference) resourceMapEClass.getEStructuralFeatures().get(0);
 	}
@@ -906,6 +962,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getResourceMap_MatcherGroup() {
 		return (EAttribute) resourceMapEClass.getEStructuralFeatures().get(1);
 	}
@@ -916,6 +973,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getResourceMap_Matchers() {
 		return (EReference) resourceMapEClass.getEStructuralFeatures().get(3);
 	}
@@ -926,6 +984,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getResourceMap_Repositories() {
 		return (EReference) resourceMapEClass.getEStructuralFeatures().get(2);
 	}
@@ -936,6 +995,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getResourceMap_SearchPaths() {
 		return (EReference) resourceMapEClass.getEStructuralFeatures().get(4);
 	}
@@ -946,6 +1006,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public RmapFactory getRmapFactory() {
 		return (RmapFactory) getEFactoryInstance();
 	}
@@ -956,6 +1017,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getSearchPath() {
 		return searchPathEClass;
 	}
@@ -966,6 +1028,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getSearchPath_Name() {
 		return (EAttribute) searchPathEClass.getEStructuralFeatures().get(0);
 	}
@@ -976,6 +1039,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getSearchPath_Providers() {
 		return (EReference) searchPathEClass.getEStructuralFeatures().get(1);
 	}
@@ -986,6 +1050,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getTransform() {
 		return transformEClass;
 	}
@@ -996,6 +1061,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getTransform_FromPattern() {
 		return (EAttribute) transformEClass.getEStructuralFeatures().get(0);
 	}
@@ -1006,6 +1072,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getTransform_FromReplacement() {
 		return (EAttribute) transformEClass.getEStructuralFeatures().get(1);
 	}
@@ -1016,6 +1083,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getTransform_ToPattern() {
 		return (EAttribute) transformEClass.getEStructuralFeatures().get(2);
 	}
@@ -1026,6 +1094,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getTransform_ToReplacement() {
 		return (EAttribute) transformEClass.getEStructuralFeatures().get(3);
 	}
@@ -1035,6 +1104,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EDataType getTransformMismatchException() {
 		return transformMismatchExceptionEDataType;
 	}
@@ -1045,6 +1115,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getURIMatcher() {
 		return uriMatcherEClass;
 	}
@@ -1055,6 +1126,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getURIMatcher_Base() {
 		return (EAttribute) uriMatcherEClass.getEStructuralFeatures().get(0);
 	}
@@ -1065,6 +1137,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getURIMatcher_VersionFormat() {
 		return (EAttribute) uriMatcherEClass.getEStructuralFeatures().get(1);
 	}
@@ -1075,6 +1148,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getURIMatcher_VersionType() {
 		return (EAttribute) uriMatcherEClass.getEStructuralFeatures().get(2);
 	}
@@ -1085,6 +1159,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EClass getVersionConverter() {
 		return versionConverterEClass;
 	}
@@ -1095,6 +1170,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EReference getVersionConverter_Transformers() {
 		return (EReference) versionConverterEClass.getEStructuralFeatures().get(1);
 	}
@@ -1105,6 +1181,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getVersionConverter_Type() {
 		return (EAttribute) versionConverterEClass.getEStructuralFeatures().get(0);
 	}
@@ -1115,6 +1192,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getVersionConverter_VersionFormat() {
 		return (EAttribute) versionConverterEClass.getEStructuralFeatures().get(2);
 	}
@@ -1125,6 +1203,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * @generated
 	 */
 
+	@Override
 	public EAttribute getVersionConverter_VersionType() {
 		return (EAttribute) versionConverterEClass.getEStructuralFeatures().get(3);
 	}
@@ -1134,6 +1213,7 @@ public class RmapPackageImpl extends EPackageImpl implements RmapPackage {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EEnum getVersionSelectorType() {
 		return versionSelectorTypeEEnum;
 	}

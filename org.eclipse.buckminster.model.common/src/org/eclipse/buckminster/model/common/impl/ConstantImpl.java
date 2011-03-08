@@ -133,6 +133,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 	 * @generated
 	 */
 
+	@Override
 	public String getValue() {
 		return value;
 	}
@@ -143,6 +144,7 @@ public class ConstantImpl extends ValueImpl implements Constant {
 	 * @generated
 	 */
 
+	@Override
 	public void setValue(String newValue) {
 		String oldValue = value;
 		value = newValue;

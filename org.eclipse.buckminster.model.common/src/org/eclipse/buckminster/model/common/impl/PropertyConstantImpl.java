@@ -254,6 +254,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	 * @generated
 	 */
 
+	@Override
 	public int getHash() {
 		if (hash == -1) {
 			Object theKey = getKey();
@@ -267,6 +268,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getKey() {
 		return getTypedKey();
 	}
@@ -309,6 +311,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Value getValue() {
 		return getTypedValue();
 	}
@@ -328,6 +331,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	 * @generated
 	 */
 
+	@Override
 	public void setHash(int hash) {
 		this.hash = hash;
 	}
@@ -337,6 +341,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setKey(String key) {
 		setTypedKey(key);
 	}
@@ -399,6 +404,7 @@ public class PropertyConstantImpl extends EObjectImpl implements BasicEMap.Entry
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Value setValue(Value value) {
 		Value oldValue = getValue();
 		setTypedValue(value);

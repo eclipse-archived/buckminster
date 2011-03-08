@@ -283,6 +283,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public ConflictResolution getConflictResolution(ComponentName component, Map<String, String> properties) {
 		MaterializationNode node = getMatchingNode(component, properties);
 		ConflictResolution cr = null;
@@ -302,6 +303,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public URL getContextURL() {
 		Resource resource = eResource();
 		if (resource == null)
@@ -319,6 +321,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public IPath getLeafArtifact(ComponentName component, Map<String, String> properties) {
 		MaterializationNode node = getMatchingNode(component, properties);
 		if (node == null)
@@ -332,6 +335,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public MaterializationNode getMatchingNode(ComponentName component, Map<String, String> properties) {
 		for (MaterializationNode aNode : getMspecNodes()) {
 			Pattern pattern = aNode.getNamePattern();
@@ -355,6 +359,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String getMaterializer(ComponentName component, Map<String, String> properties) {
 		String mat = null;
 		MaterializationNode node = getMatchingNode(component, properties);
@@ -371,6 +376,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 
+	@Override
 	public int getMaxParallelJobs() {
 		return maxParallelJobs;
 	}
@@ -381,6 +387,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 
+	@Override
 	public EList<MaterializationNode> getMspecNodes() {
 		if (mspecNodes == null) {
 			mspecNodes = new EObjectContainmentEList<MaterializationNode>(MaterializationNode.class, this,
@@ -395,6 +402,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -404,6 +412,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String getProjectName(ComponentName component, Map<String, String> properties) {
 		MaterializationNode node = getMatchingNode(component, properties);
 		if (node == null)
@@ -428,6 +437,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public URL getResolvedURL(Map<String, String> properties) {
 		if (getContextURL() == null || getUrl() == null)
 			return null;
@@ -439,6 +449,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public IPath getResourcePath(ComponentName component, Map<String, String> properties) {
 		MaterializationNode node = getMatchingNode(component, properties);
 		if (node == null)
@@ -453,6 +464,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 
+	@Override
 	public String getShortDesc() {
 		return shortDesc;
 	}
@@ -462,6 +474,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String getSuffix(ComponentName component, Map<String, String> properties) {
 		MaterializationNode node = getMatchingNode(component, properties);
 		return node == null ? null : node.getSuffix();
@@ -473,6 +486,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 
+	@Override
 	public String getUrl() {
 		return url;
 	}
@@ -482,6 +496,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean isExcluded(ComponentName component, Map<String, String> properties) {
 		MaterializationNode node = getMatchingNode(component, properties);
 		return node != null && node.isExclude();
@@ -492,6 +507,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean isExpand(ComponentName component, Map<String, String> properties) {
 		MaterializationNode node = getMatchingNode(component, properties);
 		return node != null && (node.isUnpack() && node.isExpand());
@@ -502,6 +518,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean isUnpack(ComponentName component, Map<String, String> properties) {
 		MaterializationNode node = getMatchingNode(component, properties);
 		return node != null && node.isUnpack();
@@ -513,6 +530,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 
+	@Override
 	public void setMaxParallelJobs(int newMaxParallelJobs) {
 		int oldMaxParallelJobs = maxParallelJobs;
 		maxParallelJobs = newMaxParallelJobs;
@@ -527,6 +545,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 
+	@Override
 	public void setName(String newName) {
 		String oldName = name;
 		name = newName;
@@ -540,6 +559,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 
+	@Override
 	public void setShortDesc(String newShortDesc) {
 		String oldShortDesc = shortDesc;
 		shortDesc = newShortDesc;
@@ -553,6 +573,7 @@ public class MaterializationSpecImpl extends MaterializationDirectiveImpl implem
 	 * @generated
 	 */
 
+	@Override
 	public void setUrl(String newUrl) {
 		String oldUrl = url;
 		url = newUrl;

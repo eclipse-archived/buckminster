@@ -49,10 +49,12 @@ public class ExpandingProperties implements IProperties {
 			this.entry = entry;
 		}
 
+		@Override
 		public String getKey() {
 			return entry.getKey();
 		}
 
+		@Override
 		public String getValue() {
 			String value = convertValue(entry.getValue(), 0);
 			if (value != null)
@@ -60,6 +62,7 @@ public class ExpandingProperties implements IProperties {
 			return value;
 		}
 
+		@Override
 		public synchronized String setValue(String value) {
 			String key = entry.getKey();
 			Value vh = entry.getValue();
@@ -232,6 +235,7 @@ public class ExpandingProperties implements IProperties {
 		this.map = map;
 	}
 
+	@Override
 	public void clear() {
 		if (map.isEmpty())
 			return;
@@ -243,14 +247,17 @@ public class ExpandingProperties implements IProperties {
 		map.clear();
 	}
 
+	@Override
 	public boolean containsKey(Object key) {
 		return map.containsKey(key);
 	}
 
+	@Override
 	public boolean containsValue(Object value) {
 		return map.containsValue(value);
 	}
 
+	@Override
 	public Set<Entry<String, String>> entrySet() {
 		return new AbstractSet<Entry<String, String>>() {
 
@@ -259,14 +266,17 @@ public class ExpandingProperties implements IProperties {
 				return new Iterator<Entry<String, String>>() {
 					private final Iterator<Entry<String, Value>> itor = map.entrySet().iterator();
 
+					@Override
 					public boolean hasNext() {
 						return itor.hasNext();
 					}
 
+					@Override
 					public Entry<String, String> next() {
 						return new EntryWrapper(itor.next());
 					}
 
+					@Override
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}
@@ -288,6 +298,7 @@ public class ExpandingProperties implements IProperties {
 		return (o instanceof ExpandingProperties) && map.equals(((ExpandingProperties) o).map);
 	}
 
+	@Override
 	public String get(Object key) {
 		return key instanceof String ? getExpandedProperty((String) key, 0) : null;
 	}
@@ -305,6 +316,7 @@ public class ExpandingProperties implements IProperties {
 		return map.hashCode();
 	}
 
+	@Override
 	public Set<String> immutableKeySet() {
 		HashSet<String> immutableSet = new HashSet<String>();
 		for (Map.Entry<String, Value> me : map.entrySet()) {
@@ -314,19 +326,23 @@ public class ExpandingProperties implements IProperties {
 		return immutableSet;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return map.isEmpty();
 	}
 
+	@Override
 	public boolean isMutable(String key) {
 		Value v = map.get(key);
 		return v == null || v.isMutable();
 	}
 
+	@Override
 	public Set<String> keySet() {
 		return map.keySet();
 	}
 
+	@Override
 	public Set<String> mutableKeySet() {
 		HashSet<String> mutableSet = new HashSet<String>();
 		for (Map.Entry<String, Value> me : map.entrySet()) {
@@ -336,16 +352,19 @@ public class ExpandingProperties implements IProperties {
 		return mutableSet;
 	}
 
+	@Override
 	public Set<String> overlayKeySet() {
 		return (map instanceof MapUnion<?, ?>) ? ((MapUnion<String, Value>) map).overlayKeySet() : map.keySet();
 	}
 
+	@Override
 	public String put(String key, String propVal) {
 		Constant constant = CommonFactory.eINSTANCE.createConstant();
 		constant.setValue(propVal);
 		return convertValue(setProperty(key, constant), 0);
 	}
 
+	@Override
 	public String put(String key, String propVal, boolean mutable) {
 		Constant constant = CommonFactory.eINSTANCE.createConstant();
 		constant.setValue(propVal);
@@ -353,6 +372,7 @@ public class ExpandingProperties implements IProperties {
 		return convertValue(setProperty(key, constant), 0);
 	}
 
+	@Override
 	public void putAll(Map<? extends String, ? extends String> t) {
 		putAll(t, false);
 	}
@@ -375,6 +395,7 @@ public class ExpandingProperties implements IProperties {
 		}
 	}
 
+	@Override
 	public String remove(Object key) {
 		if (key instanceof String) {
 			String strKey = (String) key;
@@ -390,6 +411,7 @@ public class ExpandingProperties implements IProperties {
 		return null;
 	}
 
+	@Override
 	public void setMutable(String key, boolean flag) {
 		Value v = map.get(key);
 		if (v != null)
@@ -405,18 +427,22 @@ public class ExpandingProperties implements IProperties {
 		return v;
 	}
 
+	@Override
 	public int size() {
 		return map.size();
 	}
 
+	@Override
 	public void store(OutputStream out, String comments) throws IOException {
 		BMProperties.store(this, out, comments);
 	}
 
+	@Override
 	public boolean supportsMutability() {
 		return true;
 	}
 
+	@Override
 	public Collection<String> values() {
 		return new AbstractCollection<String>() {
 
@@ -425,10 +451,12 @@ public class ExpandingProperties implements IProperties {
 				return new Iterator<String>() {
 					private final Iterator<Value> itor = map.values().iterator();
 
+					@Override
 					public boolean hasNext() {
 						return itor.hasNext();
 					}
 
+					@Override
 					public String next() {
 						String value = convertValue(itor.next(), 0);
 						if (value != null)
@@ -436,6 +464,7 @@ public class ExpandingProperties implements IProperties {
 						return value;
 					}
 
+					@Override
 					public void remove() {
 						throw new UnsupportedOperationException();
 					}

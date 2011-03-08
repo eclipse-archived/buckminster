@@ -3,7 +3,7 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.model.common/src"
     modelPluginID="org.eclipse.buckminster.model.common" modelName="Common" importerID="org.eclipse.emf.importer.ecore"
-    complianceLevel="5.0" copyrightFields="false">
+    complianceLevel="6.0" copyrightFields="false">
   <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
     <genAnnotations source="selectedPackages">
       <details key="http://www.eclipse.org/buckminster/Common-1.0" value="common.xsd"/>
@@ -18,23 +18,34 @@
     <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
       <genAnnotations source="common.xsd"/>
     </genAnnotations>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="common.ecore#//ConflictResolution">
+      <genEnumLiterals ecoreEnumLiteral="common.ecore#//ConflictResolution/FAIL"/>
+      <genEnumLiterals ecoreEnumLiteral="common.ecore#//ConflictResolution/KEEP"/>
+      <genEnumLiterals ecoreEnumLiteral="common.ecore#//ConflictResolution/REPLACE"/>
+      <genEnumLiterals ecoreEnumLiteral="common.ecore#//ConflictResolution/UPDATE"/>
+    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="common.ecore#//SplitType">
       <genEnumLiterals ecoreEnumLiteral="common.ecore#//SplitType/quoted"/>
       <genEnumLiterals ecoreEnumLiteral="common.ecore#//SplitType/unquoted"/>
       <genEnumLiterals ecoreEnumLiteral="common.ecore#//SplitType/groups"/>
     </genEnums>
+    <genDataTypes ecoreDataType="common.ecore#//CharSequence"/>
     <genDataTypes ecoreDataType="common.ecore#//CoreException"/>
     <genDataTypes ecoreDataType="common.ecore#//Filter"/>
+    <genDataTypes ecoreDataType="common.ecore#//IPath"/>
     <genDataTypes ecoreDataType="common.ecore#//IStatusArray"/>
+    <genDataTypes ecoreDataType="common.ecore#//IVersionFormat"/>
+    <genDataTypes ecoreDataType="common.ecore#//List">
+      <genTypeParameters ecoreTypeParameter="common.ecore#//List/T"/>
+    </genDataTypes>
     <genDataTypes ecoreDataType="common.ecore#//Pattern"/>
     <genDataTypes ecoreDataType="common.ecore#//PropertyKey"/>
+    <genDataTypes ecoreDataType="common.ecore#//StringBuilder"/>
     <genDataTypes ecoreDataType="common.ecore#//Throwable"/>
     <genDataTypes ecoreDataType="common.ecore#//URL"/>
     <genDataTypes ecoreDataType="common.ecore#//Uuid"/>
     <genDataTypes ecoreDataType="common.ecore#//VersionRange"/>
     <genDataTypes ecoreDataType="common.ecore#//Version"/>
-    <genDataTypes ecoreDataType="common.ecore#//CharSequence"/>
-    <genDataTypes ecoreDataType="common.ecore#//IVersionFormat"/>
     <genClasses image="false" dynamic="true" ecoreClass="common.ecore#//AbstractDocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//AbstractDocumentRoot/mixed"/>
       <genFeatures property="None" children="true" createChild="false" ecoreFeature="ecore:EReference common.ecore#//AbstractDocumentRoot/basicValue"/>
@@ -56,25 +67,39 @@
       </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="common.ecore#//ComponentIdentifier">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//ComponentIdentifier/type"/>
-      <genOperations ecoreOperation="common.ecore#//ComponentIdentifier/setId">
-        <genParameters ecoreParameter="common.ecore#//ComponentIdentifier/setId/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//ComponentIdentifier/version"/>
+      <genOperations ecoreOperation="common.ecore#//ComponentIdentifier/matches">
+        <genParameters ecoreParameter="common.ecore#//ComponentIdentifier/matches/ci"/>
       </genOperations>
-      <genOperations ecoreOperation="common.ecore#//ComponentIdentifier/setVersion">
-        <genParameters ecoreParameter="common.ecore#//ComponentIdentifier/setVersion/version"/>
+    </genClasses>
+    <genClasses ecoreClass="common.ecore#//ComponentName">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//ComponentName/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//ComponentName/type"/>
+      <genOperations ecoreOperation="common.ecore#//ComponentName/getProperties"/>
+      <genOperations ecoreOperation="common.ecore#//ComponentName/toPureComponentName"/>
+      <genOperations ecoreOperation="common.ecore#//ComponentName/toString">
+        <genParameters ecoreParameter="common.ecore#//ComponentName/toString/result"/>
+      </genOperations>
+      <genOperations ecoreOperation="common.ecore#//ComponentName/matches">
+        <genParameters ecoreParameter="common.ecore#//ComponentName/matches/cn"/>
       </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="common.ecore#//ComponentRequest">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//ComponentRequest/id"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//ComponentRequest/range"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//ComponentRequest/filter"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//ComponentRequest/type"/>
+      <genOperations ecoreOperation="common.ecore#//ComponentRequest/appendViewName">
+        <genParameters ecoreParameter="common.ecore#//ComponentRequest/appendViewName/result"/>
+      </genOperations>
       <genOperations ecoreOperation="common.ecore#//ComponentRequest/designates">
         <genParameters ecoreParameter="common.ecore#//ComponentRequest/designates/cid"/>
       </genOperations>
-      <genOperations ecoreOperation="common.ecore#//ComponentRequest/isOptional"/>
+      <genOperations ecoreOperation="common.ecore#//ComponentRequest/getViewName"/>
       <genOperations ecoreOperation="common.ecore#//ComponentRequest/isEnabled">
         <genParameters ecoreParameter="common.ecore#//ComponentRequest/isEnabled/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="common.ecore#//ComponentRequest/isOptional"/>
+      <genOperations ecoreOperation="common.ecore#//ComponentRequest/merge">
+        <genParameters ecoreParameter="common.ecore#//ComponentRequest/merge/request"/>
       </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="common.ecore#//Constant">
@@ -124,8 +149,8 @@
       </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="common.ecore#//IVersionedId">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//IVersionedId/id"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//IVersionedId/version"/>
+      <genOperations ecoreOperation="common.ecore#//IVersionedId/getId"/>
+      <genOperations ecoreOperation="common.ecore#//IVersionedId/getVersion"/>
     </genClasses>
     <genClasses image="false" ecoreClass="common.ecore#//Match">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//Match/pattern"/>
@@ -178,6 +203,10 @@
     <genClasses image="false" ecoreClass="common.ecore#//RxPart">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPart/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPart/optional"/>
+      <genOperations ecoreOperation="common.ecore#//RxPart/addPattern">
+        <genParameters ecoreParameter="common.ecore#//RxPart/addPattern/collector"/>
+        <genParameters ecoreParameter="common.ecore#//RxPart/addPattern/namedParts"/>
+      </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="common.ecore#//RxPattern">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute common.ecore#//RxPattern/pattern"/>
@@ -202,6 +231,9 @@
     <genClasses image="false" ecoreClass="common.ecore#//ValueFilter">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute common.ecore#//ValueFilter/multiValueGroup"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference common.ecore#//ValueFilter/values"/>
+      <genOperations ecoreOperation="common.ecore#//ValueFilter/getValues">
+        <genParameters ecoreParameter="common.ecore#//ValueFilter/getValues/properties"/>
+      </genOperations>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

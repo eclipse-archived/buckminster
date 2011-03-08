@@ -290,6 +290,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String getComponentName(String groupId, String artifactId) {
 		if (getMappings() == null)
 			return getDefaultName(groupId, artifactId);
@@ -324,6 +325,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public MapEntry getMapEntry(String name) throws CoreException {
 		if (getMappings() == null)
 			return getDefaultMapEntry(name);
@@ -361,6 +363,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * @generated
 	 */
 
+	@Override
 	public Mappings getMappings() {
 		return mappings;
 	}
@@ -370,6 +373,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Scopes getScopes() {
 		return scopes;
 	}
@@ -379,6 +383,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public boolean isTransitive() {
 		return transitive;
 	}
@@ -389,6 +394,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * @generated
 	 */
 
+	@Override
 	public void setMappings(Mappings newMappings) {
 		if (newMappings != mappings) {
 			NotificationChain msgs = null;
@@ -408,6 +414,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setScopes(Scopes newScopes) {
 		if (newScopes != scopes) {
 			NotificationChain msgs = null;
@@ -427,6 +434,7 @@ public class MavenProviderImpl extends ProviderImpl implements MavenProvider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setTransitive(boolean newTransitive) {
 		boolean oldTransitive = transitive;
 		transitive = newTransitive;

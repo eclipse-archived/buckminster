@@ -294,6 +294,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
+	@Override
 	public ConflictResolution getConflictResolution() {
 		return conflictResolution;
 	}
@@ -304,6 +305,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -314,6 +316,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
+	@Override
 	public IPath getInstallLocation() {
 		return installLocation;
 	}
@@ -324,6 +327,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
+	@Override
 	public String getMaterializer() {
 		return materializer;
 	}
@@ -334,6 +338,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
+	@Override
 	public IPath getWorkspaceLocation() {
 		return workspaceLocation;
 	}
@@ -344,6 +349,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
+	@Override
 	public void setConflictResolution(ConflictResolution newConflictResolution) {
 		ConflictResolution oldConflictResolution = conflictResolution;
 		conflictResolution = newConflictResolution == null ? CONFLICT_RESOLUTION_EDEFAULT : newConflictResolution;
@@ -358,6 +364,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -380,6 +387,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setInstallLocation(IPath newInstallLocation) {
 		IPath oldInstallLocation = installLocation;
 		installLocation = newInstallLocation;
@@ -394,6 +402,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * @generated
 	 */
 
+	@Override
 	public void setMaterializer(String newMaterializer) {
 		String oldMaterializer = materializer;
 		materializer = newMaterializer;
@@ -406,6 +415,7 @@ public class MaterializationDirectiveImpl extends PropertiesImpl implements Mate
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setWorkspaceLocation(IPath newWorkspaceLocation) {
 		IPath oldWorkspaceLocation = workspaceLocation;
 		workspaceLocation = newWorkspaceLocation;

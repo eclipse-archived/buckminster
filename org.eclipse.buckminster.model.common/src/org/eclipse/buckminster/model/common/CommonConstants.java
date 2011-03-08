@@ -2,7 +2,6 @@ package org.eclipse.buckminster.model.common;
 
 import org.eclipse.buckminster.runtime.Buckminster;
 
-
 public interface CommonConstants {
 	String COMPONENT_NAME = "buckminster.component"; //$NON-NLS-1$
 
@@ -44,7 +43,7 @@ public interface CommonConstants {
 
 	String ACTION_TEMPDIR_REF = "${" + ACTION_TEMP + "}"; //$NON-NLS-1$ //$NON-NLS-2$
 
-	String ACTION_TEMPROOT_REF = Buckminster.ACTION_TEMP_ROOT; //$NON-NLS-1$ //$NON-NLS-2$
+	String ACTION_TEMPROOT_REF = Buckminster.ACTION_TEMP_ROOT;
 
 	String BUILD_ID = "buckminster.build.id"; //$NON-NLS-1$
 }

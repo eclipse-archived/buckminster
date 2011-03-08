@@ -137,6 +137,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String createIdentifier(Version version) {
 		if (version == null)
 			return null;
@@ -163,6 +164,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public Version createVersion(String identifier) {
 		if (identifier == null)
 			return null;
@@ -313,6 +315,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 
+	@Override
 	public EList<Transform> getTransformers() {
 		if (transformers == null) {
 			transformers = new EObjectContainmentEList<Transform>(Transform.class, this, RmapPackage.VERSION_CONVERTER__TRANSFORMERS);
@@ -326,6 +329,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 
+	@Override
 	public VersionSelectorType getType() {
 		return type;
 	}
@@ -336,6 +340,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 
+	@Override
 	public IVersionFormat getVersionFormat() {
 		return versionFormat;
 	}
@@ -346,6 +351,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 
+	@Override
 	public String getVersionType() {
 		return versionType;
 	}
@@ -355,6 +361,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setType(VersionSelectorType newType) {
 		VersionSelectorType oldType = type;
 		type = newType == null ? TYPE_EDEFAULT : newType;
@@ -368,6 +375,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 
+	@Override
 	public void setVersionFormat(IVersionFormat newVersionFormat) {
 		IVersionFormat oldVersionFormat = versionFormat;
 		versionFormat = newVersionFormat;
@@ -381,6 +389,7 @@ public class VersionConverterImpl extends EObjectImpl implements VersionConverte
 	 * @generated
 	 */
 
+	@Override
 	public void setVersionType(String newVersionType) {
 		String oldVersionType = versionType;
 		versionType = newVersionType;

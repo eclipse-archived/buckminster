@@ -43,6 +43,7 @@ public interface ComponentIdentifier extends ComponentName, IVersionedId {
 	 * @model dataType="org.eclipse.buckminster.model.common.Version"
 	 * @generated
 	 */
+	@Override
 	Version getVersion();
 
 	/**

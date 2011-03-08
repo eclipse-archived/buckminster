@@ -3,7 +3,7 @@
     xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.buckminster.mspec/src"
     modelPluginID="org.eclipse.buckminster.mspec" modelName="Mspec" importerID="org.eclipse.emf.importer.ecore"
-    complianceLevel="5.0" copyrightFields="false" usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common">
+    complianceLevel="6.0" copyrightFields="false" usedGenPackages="../../org.eclipse.buckminster.model.common/model/common.genmodel#//common">
   <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
     <genAnnotations source="selectedPackages">
       <details key="http://www.eclipse.org/buckminster/MetaData-1.0" value="mspec.xsd"/>
@@ -20,12 +20,6 @@
     <genAnnotations source="http://www.eclipse.org/emf/2002/GenModel/exporter/org.eclipse.xsd.ecore.exporter">
       <genAnnotations source="mspec.xsd"/>
     </genAnnotations>
-    <genEnums typeSafeEnumCompatible="false" ecoreEnum="mspec.ecore#//ConflictResolution">
-      <genEnumLiterals ecoreEnumLiteral="mspec.ecore#//ConflictResolution/FAIL"/>
-      <genEnumLiterals ecoreEnumLiteral="mspec.ecore#//ConflictResolution/KEEP"/>
-      <genEnumLiterals ecoreEnumLiteral="mspec.ecore#//ConflictResolution/REPLACE"/>
-      <genEnumLiterals ecoreEnumLiteral="mspec.ecore#//ConflictResolution/UPDATE"/>
-    </genEnums>
     <genClasses dynamic="true" ecoreClass="mspec.ecore#//DocumentRoot">
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference mspec.ecore#//DocumentRoot/xMLNSPrefixMap"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference mspec.ecore#//DocumentRoot/xSISchemaLocation"/>
@@ -41,6 +35,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationNode/bindingNameReplacement"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference mspec.ecore#//MaterializationNode/unpack"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationNode/filter"/>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationNode/isExpand"/>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationNode/isUnpack"/>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationNode/getSuffix"/>
     </genClasses>
     <genClasses ecoreClass="mspec.ecore#//MaterializationDirective">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationDirective/conflictResolution"/>
@@ -55,6 +52,50 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationSpec/shortDesc"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationSpec/url"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//MaterializationSpec/maxParallelJobs"/>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/getMatchingNode">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getMatchingNode/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getMatchingNode/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/getConflictResolution">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getConflictResolution/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getConflictResolution/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/getContextURL"/>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/getLeafArtifact">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getLeafArtifact/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getLeafArtifact/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/getMaterializer">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getMaterializer/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getMaterializer/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/getProjectName">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getProjectName/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getProjectName/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/getResolvedURL">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getResolvedURL/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/getResourcePath">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getResourcePath/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getResourcePath/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/getSuffix">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getSuffix/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/getSuffix/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/isExcluded">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/isExcluded/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/isExcluded/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/isExpand">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/isExpand/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/isExpand/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="mspec.ecore#//MaterializationSpec/isUnpack">
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/isUnpack/component"/>
+        <genParameters ecoreParameter="mspec.ecore#//MaterializationSpec/isUnpack/properties"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="mspec.ecore#//Unpack">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute mspec.ecore#//Unpack/expand"/>

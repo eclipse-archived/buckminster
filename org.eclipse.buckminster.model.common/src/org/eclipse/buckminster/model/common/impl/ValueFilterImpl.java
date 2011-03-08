@@ -159,6 +159,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public FeatureMap getMultiValueGroup() {
 		if (multiValueGroup == null) {
 			multiValueGroup = new BasicFeatureMap(this, CommonPackage.VALUE_FILTER__MULTI_VALUE_GROUP);
@@ -172,6 +173,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 	 * @generated
 	 */
 
+	@Override
 	public EList<Value> getValues() {
 		return getMultiValueGroup().list(CommonPackage.Literals.VALUE_FILTER__VALUES);
 	}
@@ -181,6 +183,7 @@ public abstract class ValueFilterImpl extends ValueImpl implements ValueFilter {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public List<String> getValues(Map<String, String> properties) {
 		return checkedGetValues(properties, 0);
 	}

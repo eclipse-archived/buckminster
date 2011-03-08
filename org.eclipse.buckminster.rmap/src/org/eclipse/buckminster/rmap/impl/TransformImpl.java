@@ -245,6 +245,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * @generated
 	 */
 
+	@Override
 	public Pattern getFromPattern() {
 		return fromPattern;
 	}
@@ -255,6 +256,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * @generated
 	 */
 
+	@Override
 	public String getFromReplacement() {
 		return fromReplacement;
 	}
@@ -265,6 +267,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * @generated
 	 */
 
+	@Override
 	public Pattern getToPattern() {
 		return toPattern;
 	}
@@ -275,6 +278,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * @generated
 	 */
 
+	@Override
 	public String getToReplacement() {
 		return toReplacement;
 	}
@@ -285,6 +289,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * @generated
 	 */
 
+	@Override
 	public void setFromPattern(Pattern newFromPattern) {
 		Pattern oldFromPattern = fromPattern;
 		fromPattern = newFromPattern;
@@ -298,6 +303,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * @generated
 	 */
 
+	@Override
 	public void setFromReplacement(String newFromReplacement) {
 		String oldFromReplacement = fromReplacement;
 		fromReplacement = newFromReplacement;
@@ -311,6 +317,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * @generated
 	 */
 
+	@Override
 	public void setToPattern(Pattern newToPattern) {
 		Pattern oldToPattern = toPattern;
 		toPattern = newToPattern;
@@ -324,6 +331,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * @generated
 	 */
 
+	@Override
 	public void setToReplacement(String newToReplacement) {
 		String oldToReplacement = toReplacement;
 		toReplacement = newToReplacement;
@@ -360,6 +368,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String transformFrom(String source) throws TransformMismatchException {
 		return transform(source, fromPattern, fromReplacement, toPattern, toReplacement);
 	}
@@ -369,6 +378,7 @@ public class TransformImpl extends EObjectImpl implements Transform {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String transformTo(String source) throws TransformMismatchException {
 		return transform(source, toPattern, toReplacement, fromPattern, fromReplacement);
 	}

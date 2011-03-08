@@ -94,6 +94,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory {
 	 * @generated
 	 */
 
+	@Override
 	public EObject createDocumentRoot() {
 		EObject documentRoot = super.create(MspecPackage.Literals.DOCUMENT_ROOT);
 		return documentRoot;
@@ -105,6 +106,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory {
 	 * @generated
 	 */
 
+	@Override
 	public MaterializationDirective createMaterializationDirective() {
 		MaterializationDirectiveImpl materializationDirective = new MaterializationDirectiveImpl();
 		return materializationDirective;
@@ -116,6 +118,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory {
 	 * @generated
 	 */
 
+	@Override
 	public MaterializationNode createMaterializationNode() {
 		MaterializationNodeImpl materializationNode = new MaterializationNodeImpl();
 		return materializationNode;
@@ -127,6 +130,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory {
 	 * @generated
 	 */
 
+	@Override
 	public MaterializationSpec createMaterializationSpec() {
 		MaterializationSpecImpl materializationSpec = new MaterializationSpecImpl();
 		return materializationSpec;
@@ -138,6 +142,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory {
 	 * @generated
 	 */
 
+	@Override
 	public Unpack createUnpack() {
 		UnpackImpl unpack = new UnpackImpl();
 		return unpack;
@@ -149,6 +154,7 @@ public class MspecFactoryImpl extends EFactoryImpl implements MspecFactory {
 	 * @generated
 	 */
 
+	@Override
 	public MspecPackage getMspecPackage() {
 		return (MspecPackage) getEPackage();
 	}

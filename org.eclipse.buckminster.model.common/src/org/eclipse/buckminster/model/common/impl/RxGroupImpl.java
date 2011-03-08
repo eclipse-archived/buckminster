@@ -181,6 +181,7 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<RxPart> getRxParts() {
 		return getRxPartsGroup().list(CommonPackage.Literals.RX_GROUP__RX_PARTS);
 	}
@@ -190,6 +191,7 @@ public class RxGroupImpl extends RxPartImpl implements RxGroup {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	@SuppressWarnings("serial")
 	public FeatureMap getRxPartsGroup() {
 		if (rxPartsGroup == null) {

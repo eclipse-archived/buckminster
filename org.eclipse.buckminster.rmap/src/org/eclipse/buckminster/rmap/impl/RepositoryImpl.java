@@ -393,6 +393,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public EList<BranchPoint> getBranches() {
 		if (branches == null) {
 			branches = new EObjectContainmentEList<BranchPoint>(BranchPoint.class, this, RmapPackage.REPOSITORY__BRANCHES);
@@ -406,6 +407,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public Format getConnection() {
 		return connection;
 	}
@@ -416,6 +418,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -426,6 +429,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -436,6 +440,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -446,6 +451,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isAllowDirty() {
 		return allowDirty;
 	}
@@ -456,6 +462,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isCheckout() {
 		return checkout;
 	}
@@ -466,6 +473,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public boolean isUpdate() {
 		return update;
 	}
@@ -476,6 +484,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public void setAllowDirty(boolean newAllowDirty) {
 		boolean oldAllowDirty = allowDirty;
 		allowDirty = newAllowDirty;
@@ -489,6 +498,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public void setCheckout(boolean newCheckout) {
 		boolean oldCheckout = checkout;
 		checkout = newCheckout;
@@ -502,6 +512,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public void setConnection(Format newConnection) {
 		if (newConnection != connection) {
 			NotificationChain msgs = null;
@@ -522,6 +533,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -544,6 +556,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public void setId(String newId) {
 		String oldId = id;
 		id = newId;
@@ -557,6 +570,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public void setType(String newType) {
 		String oldType = type;
 		type = newType;
@@ -570,6 +584,7 @@ public class RepositoryImpl extends EObjectImpl implements Repository {
 	 * @generated
 	 */
 
+	@Override
 	public void setUpdate(boolean newUpdate) {
 		boolean oldUpdate = update;
 		update = newUpdate;

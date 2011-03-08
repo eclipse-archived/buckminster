@@ -136,6 +136,7 @@ public class ScopesImpl extends EObjectImpl implements Scopes {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public EList<Scope> getScope() {
 		if (scope == null) {
 			scope = new EObjectContainmentEList<Scope>(Scope.class, this, MavenPackage.SCOPES__SCOPE);

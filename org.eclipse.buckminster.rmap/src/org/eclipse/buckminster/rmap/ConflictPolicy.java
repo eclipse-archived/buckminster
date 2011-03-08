@@ -203,6 +203,7 @@ public enum ConflictPolicy implements Enumerator {
 	 * @generated
 	 */
 
+	@Override
 	public String getLiteral() {
 		return literal;
 	}
@@ -213,6 +214,7 @@ public enum ConflictPolicy implements Enumerator {
 	 * @generated
 	 */
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -223,6 +225,7 @@ public enum ConflictPolicy implements Enumerator {
 	 * @generated
 	 */
 
+	@Override
 	public int getValue() {
 		return value;
 	}

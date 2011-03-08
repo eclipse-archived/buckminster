@@ -1,4 +1,4 @@
-#Mon Jan 18 22:25:20 CET 2010
+#Tue Mar 08 12:47:50 CET 2011
 cleanup.add_default_serial_version_id=true
 cleanup.add_generated_serial_version_id=false
 cleanup.add_missing_annotations=false
@@ -55,3 +55,7 @@ cleanup_settings_version=2
 eclipse.preferences.version=1
 formatter_profile=_Buckminster Coding Conventions
 formatter_settings_version=11
+org.eclipse.jdt.ui.exception.name=e
+org.eclipse.jdt.ui.gettersetter.use.is=true
+org.eclipse.jdt.ui.keywordthis=false
+org.eclipse.jdt.ui.overrideannotation=true

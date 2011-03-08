@@ -267,6 +267,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public URL getContextURL() {
 		Resource resource = eResource();
 		if (resource == null)
@@ -285,6 +286,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * @generated
 	 */
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -295,6 +297,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * @generated NOT
 	 */
 
+	@Override
 	@SuppressWarnings("serial")
 	public FeatureMap getMatcherGroup() {
 		if (matcherGroup == null) {
@@ -334,6 +337,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * @generated
 	 */
 
+	@Override
 	public EList<Matcher> getMatchers() {
 		return getMatcherGroup().list(RmapPackage.Literals.RESOURCE_MAP__MATCHERS);
 	}
@@ -344,6 +348,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * @generated
 	 */
 
+	@Override
 	public EList<Repository> getRepositories() {
 		if (repositories == null) {
 			repositories = new EObjectContainmentEList<Repository>(Repository.class, this, RmapPackage.RESOURCE_MAP__REPOSITORIES);
@@ -357,6 +362,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * @generated
 	 */
 
+	@Override
 	public EList<SearchPath> getSearchPaths() {
 		if (searchPaths == null) {
 			searchPaths = new EObjectContainmentEList<SearchPath>(SearchPath.class, this, RmapPackage.RESOURCE_MAP__SEARCH_PATHS);
@@ -370,6 +376,7 @@ public class ResourceMapImpl extends PropertiesImpl implements ResourceMap {
 	 * @generated
 	 */
 
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;

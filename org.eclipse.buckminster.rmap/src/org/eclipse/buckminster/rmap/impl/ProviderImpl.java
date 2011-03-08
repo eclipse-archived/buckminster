@@ -583,6 +583,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * @generated
 	 */
 
+	@Override
 	public EList<String> getComponentTypes() {
 		if (componentTypes == null) {
 			componentTypes = new EDataTypeUniqueEList<String>(String.class, this, RmapPackage.PROVIDER__COMPONENT_TYPES);
@@ -595,6 +596,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String getComponentTypesAttr() {
 		return MatcherImpl.getComponentTypesAttr(this);
 	}
@@ -604,6 +606,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public ResourceMap getDelegationMap(IComponentReader reader, IStatus problemCollector, Map<ComponentIdentifier, Map<String, String>> queryHints,
 			IProgressMonitor monitor) throws CoreException {
 		throw new UnsupportedOperationException();
@@ -615,6 +618,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * @generated
 	 */
 
+	@Override
 	public Documentation getDocumentation() {
 		return documentation;
 	}
@@ -625,6 +629,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * @generated
 	 */
 
+	@Override
 	public URIMatcher getMatcher() {
 		return matcher;
 	}
@@ -634,6 +639,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Pattern getPattern() {
 		return pattern;
 	}
@@ -643,6 +649,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public Map<String, String> getProperties(Map<String, String> properties) {
 		Map<String, String> myProps = getProperties();
 		if (myProps.size() > 0)
@@ -658,6 +665,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public String getReaderType() {
 		return readerType;
 	}
@@ -667,6 +675,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Repository getRepository() {
 		if (repository != null && repository.eIsProxy()) {
 			InternalEObject oldRepository = (InternalEObject) repository;
@@ -684,6 +693,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Filter getResolutionFilter() {
 		return resolutionFilter;
 	}
@@ -693,6 +703,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public ResourceMap getResourceMap() {
 		EObject c = eContainer();
 		if (c instanceof SearchPath)
@@ -705,6 +716,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public Format getURI() {
 		return uri;
 	}
@@ -714,6 +726,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public String getURI(Map<String, String> properties) {
 		return getURI().getValue(getProperties(properties));
 	}
@@ -723,6 +736,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public VersionConverter getVersionConverter() {
 		return versionConverter;
 	}
@@ -732,6 +746,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean hasDelegationMap() {
 		return false;
 	}
@@ -741,6 +756,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean isMutable() {
 		String tmp = getProperties().get(RmapConstants.IS_MUTABLE);
 		return tmp == null ? MUTABLE_EDEFAULT : Boolean.valueOf(tmp);
@@ -751,6 +767,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean isSource() {
 		String tmp = getProperties().get(RmapConstants.IS_SOURCE);
 		return tmp == null ? SOURCE_EDEFAULT : Boolean.valueOf(tmp);
@@ -761,6 +778,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public boolean matches(ComponentName componentName, Map<String, String> properties) {
 		return MatcherImpl.matches(this, componentName, properties);
 	}
@@ -770,6 +788,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public void setComponentTypesAttr(String newComponentTypesAttr) {
 		MatcherImpl.setComponentTypesAttr(this, newComponentTypesAttr);
 	}
@@ -779,6 +798,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setDocumentation(Documentation newDocumentation) {
 		if (newDocumentation != documentation) {
 			NotificationChain msgs = null;
@@ -800,6 +820,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setMatcher(URIMatcher newMatcher) {
 		if (newMatcher != matcher) {
 			NotificationChain msgs = null;
@@ -819,6 +840,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public void setMutable(boolean mutable) {
 		Map<String, String> props = getProperties();
 		if (mutable == MUTABLE_EDEFAULT)
@@ -832,6 +854,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setPattern(Pattern newPattern) {
 		Pattern oldPattern = pattern;
 		pattern = newPattern;
@@ -844,6 +867,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setReaderType(String newReaderType) {
 		String oldReaderType = readerType;
 		readerType = newReaderType;
@@ -856,6 +880,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setRepository(Repository newRepository) {
 		Repository oldRepository = repository;
 		repository = newRepository;
@@ -868,6 +893,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setResolutionFilter(Filter newResolutionFilter) {
 		Filter oldResolutionFilter = resolutionFilter;
 		resolutionFilter = newResolutionFilter;
@@ -880,6 +906,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated NOT
 	 */
+	@Override
 	public void setSource(boolean source) {
 		Map<String, String> props = getProperties();
 		if (source == SOURCE_EDEFAULT)
@@ -893,6 +920,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setURI(Format newURI) {
 		if (newURI != uri) {
 			NotificationChain msgs = null;
@@ -912,6 +940,7 @@ public class ProviderImpl extends PropertiesImpl implements Provider {
 	 * 
 	 * @generated
 	 */
+	@Override
 	public void setVersionConverter(VersionConverter newVersionConverter) {
 		if (newVersionConverter != versionConverter) {
 			NotificationChain msgs = null;
